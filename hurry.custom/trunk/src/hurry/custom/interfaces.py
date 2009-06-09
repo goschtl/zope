@@ -76,7 +76,11 @@ class ITemplate(Interface):
 
         input - opaque template-language native data structure.
         """
-        
+
+class BrokenTemplate(Exception):
+    """Error when a template is broken.
+    """
+    
 class IDataLanguage(Interface):
     def __call__(data):
         """Parse data into data structure that can be passed to ITemplate()"""
@@ -128,6 +132,16 @@ class ITemplateDatabase(Interface):
         raised.
         """
 
+    def test(template_id, source):
+        """Test a template.
+
+        This tries a test-compile of the template, and if sample
+        inputs are known, test-renders of the template.
+
+        Return False if the compilation or any of the test renderings
+        fails. Returns True if there was no error.
+        """
+
     def get_source(template_id):
         """Get the source of a given template.
 
@@ -151,4 +165,3 @@ class ITemplateDatabase(Interface):
         keys are the unique ids for the sample inputs.
         values are the actual template-language native data structures.
         """
-

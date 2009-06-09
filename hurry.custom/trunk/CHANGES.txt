@@ -4,8 +4,11 @@ Changes
 0.6 (unreleased)
 ~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
-
+* Introduce the notion of a ``BrokenTemplate``. If a customized
+  template is broken, the system falls back to using the original
+  version of the template. A template is broken if it raises
+  the  ``hurry.custom.interfaces.BrokenTemplate`` exception when it is
+  created.
 
 0.5 (2009-05-22)
 ~~~~~~~~~~~~~~~~

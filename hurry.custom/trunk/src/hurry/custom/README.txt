@@ -60,7 +60,7 @@ further). Instantiating the factory should result in a callable that
 takes the input data (in whatever format is native to the template
 language). The ``ITemplate`` interface defines such an object::
 
-  >>> from hurry.custom.interfaces import ITemplate
+  >>> from hurry.custom.interfaces import ITemplate, BrokenTemplate
 
 For the purposes of demonstrating the functionality in this package,
 we supply a very simplistic push-only templating language, based on
@@ -71,6 +71,8 @@ template strings as provided by the Python ``string`` module::
   >>> class StringTemplate(object):
   ...    implements(ITemplate)
   ...    def __init__(self, text):
+  ...        if '&' in text:
+  ...            raise BrokenTemplate("& in template!")
   ...        self.source = text
   ...        self.template = string.Template(text)
   ...    def __call__(self, input):
@@ -82,6 +84,17 @@ data as an argument::
   >>> template = StringTemplate('Hello $thing')
   >>> template({'thing': 'world'})
   'Hello world'
+
+Note we have put some special logic in the ``__init__`` that triggers a
+``BrokenTemplate`` error if the string ``&`` is found in the
+template. This is so we can easily demonstrate templates that are
+broken - treat a template with ``&`` as a template with a syntax
+(compilation) error. Let's try it::
+
+  >>> template = StringTemplate('Hello & bye')
+  Traceback (most recent call last):
+    ...
+  BrokenTemplate: & in template!
 
 The template class defines a template language. Let's register the
 template language so the system is aware of it and treats ``.st`` files
@@ -111,6 +124,13 @@ We create a single template, ``test1.st`` for now::
   >>> f.write('Hello $thing')
   >>> f.close()
 
+We also create an extra template::
+
+  >>> test2_path = os.path.join(templates_path, 'test2.st')
+  >>> f = open(test2_path, 'w')
+  >>> f.write("It's full of $thing")
+  >>> f.close()
+
 In order for the system to work, we need to register this collection
 of templates on the filesystem. We need to supply a globally unique
 collection id, the templates path, and (optionally) a title::
@@ -132,6 +152,11 @@ UTF-8 string. The template source should always be in unicode format
 
   >>> template({'thing': 'world'})
   u'Hello world'
+
+We'll try another template::
+
+  >>> custom.lookup('templates', 'test2.st')({'thing': 'stars'})
+  u"It's full of stars"
 
 The underlying template will not be reloaded unless it is changed on
 the filesystem::
@@ -255,6 +280,25 @@ the template, before customization::
 This could be used to implement a "revert" functionality in a
 customization UI, for instance.
 
+Broken custom template
+----------------------
+
+If a custom template is broken, the system falls back on the
+filesystem template instead. We construct a broken custom template by
+adding ``&`` to it::
+
+  >>> template2 = custom.lookup('templates', 'test2.st')
+  >>> source = template2.source
+  >>> source = source.replace('full of', 'filled with &')
+  >>> mem_db.update('test2.st', source)
+
+We try to render this template, but instead we'll see the original
+template::
+
+  >>> template2 = custom.lookup('templates', 'test2.st')
+  >>> template2({'thing': 'planets'})
+  u"It's full of planets"
+
 Checking which template languages are recognized
 ------------------------------------------------
 
@@ -292,7 +336,11 @@ Let's retrieve the customization database for our collection::
   [{'extension': '.st',
     'name': 'test1',
     'path': 'test1.st',
-    'template': 'test1.st'}]
+    'template': 'test1.st'},
+   {'extension': '.st',
+    'name': 'test2',
+    'path': 'test2.st',
+    'template': 'test2.st'}]
 
 Samples
 -------

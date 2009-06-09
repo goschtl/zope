@@ -5,7 +5,7 @@ from zope import component
 from hurry.custom.interfaces import NotSupported
 from hurry.custom.interfaces import (
     ITemplate, IManagedTemplate, ITemplateDatabase, IDataLanguage,
-    ISampleExtension)
+    ISampleExtension, BrokenTemplate)
 
 def register_language(template_class, extension, sample_extension=None):
     component.provideUtility(template_class,
@@ -34,12 +34,19 @@ def register_collection(id, path, title=None):
 
 def lookup(id, template_path):
     db = component.getUtility(ITemplateDatabase, name=id)
-    while db.get_source(template_path) is None:
-        db = getNextUtility(db, ITemplateDatabase, name=id) 
-    dummy, ext = os.path.splitext(template_path)
-    template_class = component.getUtility(ITemplate, name=ext)
-    return ManagedTemplate(template_class, db, template_path)
-
+    while True:
+        source = db.get_source(template_path)
+        if source is None:
+            db = getNextUtility(db, ITemplateDatabase, name=id)
+            continue
+        dummy, ext = os.path.splitext(template_path)
+        template_class = component.getUtility(ITemplate, name=ext)
+        try:
+            return ManagedTemplate(template_class, db, template_path)
+        except BrokenTemplate:
+            db = getNextUtility(db, ITemplateDatabase, name=id)
+            continue
+        
 def sample_datas(id, template_path):
     db = get_filesystem_database(id)
 
@@ -88,7 +95,7 @@ class ManagedTemplate(object):
     def samples(self):
         db = _get_root_database(self.db.id)
         return db.get_samples(self.template_path)
-        
+    
 class FilesystemTemplateDatabase(object):
     implements(ITemplateDatabase)
 
