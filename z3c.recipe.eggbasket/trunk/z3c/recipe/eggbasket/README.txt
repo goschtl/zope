@@ -139,7 +139,6 @@ used.  Running the buildout gives us::
 
     >>> print 'start..\n', system(buildout)
     start.. 
-    ...
     Installing basket.
     <BLANKLINE>
 
