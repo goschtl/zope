@@ -2,10 +2,9 @@ import os, time, glob
 from datetime import datetime
 from zope.interface import implements
 from zope import component
-from hurry.custom.interfaces import NotSupported
 from hurry.custom.interfaces import (
     ITemplate, IManagedTemplate, ITemplateDatabase, IDataLanguage,
-    ISampleExtension, BrokenTemplate)
+    ISampleExtension, CompileError, RenderError, NotSupported)
 
 def register_language(template_class, extension, sample_extension=None):
     component.provideUtility(template_class,
@@ -32,23 +31,45 @@ def register_collection(id, path, title=None):
                              provides=ITemplateDatabase,
                              name=id)
 
-def lookup(id, template_path):
-    db = component.getUtility(ITemplateDatabase, name=id)
+def render(id, template_path, input):
+    template = lookup(id, template_path)
+    while True:
+        try:
+            return template(input)
+        except RenderError:
+            template = lookup(
+                id, template_path,
+                db=getNextUtility(template.db, ITemplateDatabase, name=id))
+
+def lookup(id, template_path, db=None):
+    dummy, ext = os.path.splitext(template_path)
+    template_class = component.getUtility(ITemplate, name=ext)
+
+    db = db or component.getUtility(ITemplateDatabase, name=id)
+    
     while True:
         source = db.get_source(template_path)
-        if source is None:
-            db = getNextUtility(db, ITemplateDatabase, name=id)
-            continue
-        dummy, ext = os.path.splitext(template_path)
-        template_class = component.getUtility(ITemplate, name=ext)
+        if source is not None:
+            try:
+                return ManagedTemplate(template_class, db, template_path)
+            except CompileError:
+                pass
+        db = getNextUtility(db, ITemplateDatabase, name=id)
+
+def check(id, template_path, source):
+    dummy, ext = os.path.splitext(template_path)
+    template_class = component.getUtility(ITemplate, name=ext)
+    # can raise CompileError
+    template = template_class(source)
+    db = _get_root_database(id)
+    samples = db.get_samples(template_path)
+    for key, value in samples.items():
         try:
-            return ManagedTemplate(template_class, db, template_path)
-        except BrokenTemplate:
-            db = getNextUtility(db, ITemplateDatabase, name=id)
-            continue
-        
-def sample_datas(id, template_path):
-    db = get_filesystem_database(id)
+            template(value)
+        except RenderError, e:
+            # add data_id and re-raise
+            e.data_id = key
+            raise e
 
 def structure(id):
     extensions = set([extension for
@@ -81,20 +102,9 @@ class ManagedTemplate(object):
         self.check()
         return self.template.source
 
-    @property
-    def original_source(self):
-        db = queryNextUtility(self.db, ITemplateDatabase,
-                              name=self.db.id,
-                              default=self.db)
-        return db.get_source(self.template_path)
-
     def __call__(self, input):
         self.check()
         return self.template(input)
-
-    def samples(self):
-        db = _get_root_database(self.db.id)
-        return db.get_samples(self.template_path)
     
 class FilesystemTemplateDatabase(object):
     implements(ITemplateDatabase)
@@ -105,7 +115,11 @@ class FilesystemTemplateDatabase(object):
         self.id = id
         self.path = path
         self.title = title
-        
+
+    def update(self, template_id, source):
+        raise NotSupported(
+            "Cannot update templates in FilesystemTemplateDatabase.")
+
     def get_source(self, template_id):
         template_path = os.path.join(self.path, template_id)
         f = open(template_path, 'r')
@@ -141,10 +155,6 @@ class FilesystemTemplateDatabase(object):
             result[name] = parse(data)
         return result
 
-    def update(self, template_id, source):
-        raise NotSupported(
-            "Cannot update templates in FilesystemTemplateDatabase.")
-
 class InMemoryTemplateSource(object):
     def __init__(self, source):
         self.source = source
@@ -157,6 +167,9 @@ class InMemoryTemplateDatabase(object):
         self.id = id
         self.title = title
         self._templates = {}
+
+    def update(self, template_id, source):
+        self._templates[template_id] = InMemoryTemplateSource(source)
 
     def get_source(self, template_id):
         try:
@@ -172,9 +185,6 @@ class InMemoryTemplateDatabase(object):
 
     def get_samples(self, template_id):
         return {}
-
-    def update(self, template_id, source):
-        self._templates[template_id] = InMemoryTemplateSource(source)
 
 def _get_structure_helper(path, collection_path, extensions):
     entries = os.listdir(path)

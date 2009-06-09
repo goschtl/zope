@@ -43,3 +43,25 @@ Let's try using it, passing in JSON::
 
   >>> template({'target': 'universe'})
   u'Hello universe!'
+
+Errors
+------
+
+Let's demonstrate that a compilation error is raised when the template
+cannot be compiled::
+
+  >>> r = JsonTemplate('Foo {.section foo}')
+  Traceback (most recent call last):
+    ...
+  CompileError: Got too few {end} statements
+
+If we have a template that can be compiled but not rendered, we should
+get a render error::
+
+  >>> r = JsonTemplate('Hello {thing}')
+  >>> r({'thang': 'world'})
+  Traceback (most recent call last):
+    ...
+  RenderError: 'thing' is not defined
+  ...
+

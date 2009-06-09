@@ -3,12 +3,25 @@ from zope.interface import Interface, Attribute
 class IHurryCustomAPI(Interface):
     """API for hurry.custom.
     """
-    def register_language(template_class):
+    def register_language(template_class, extension, sample_extension=None):
         """Register a template language with the system.
 
-        The template language is a class which implements ITemplate
+        template_class - a class which implements ITemplate
+        extension - the filename extension to register this
+                    language. (example: .jsont)
+        sample_extension - the filename extension of sample data files
+                           for an extension. (example: .json)
         """
 
+    def register_data_language(parse_func, extension):
+        """Register a data language for template input.
+
+        parse_func - a function that takes a text and parses it into
+                     a data structure.
+        extension - the extension to register the data language under.
+                     (example: .json).
+        """
+        
     def register_collection(id, path, title=None):
         """Register a collection of templates on the filesystem with the system.
 
@@ -17,15 +30,46 @@ class IHurryCustomAPI(Interface):
         title - optionally, human-readable title for collection.
                 By default the 'id' will be used.
         """
-    
+
+    def render(id, template_path, input):
+        """Render a template.
+
+        id - the id for the collection
+        template_path - the relative path (or filename) of the template
+                        itself, under the path of the collection
+        input - input data for the template
+
+        If the template raises a CompileError or RenderError, the
+        system will automatically fall back on the original
+        non-customized template.
+        """
+        
     def lookup(id, template_path):
         """Look up template.
         
-        id: the id for the collection
-        template_path: the relative path (or filename) of the template
-                       itself, under the path of the collection
+        id - the id for the collection
+        template_path - the relative path (or filename) of the template
+                        itself, under the path of the collection
         """
 
+    def check(id, template_path, source):
+        """Test a template (before customization).
+
+        id - the id for the collection
+        template_path - the template path of the template being customized
+        source - the source of the customized template
+
+        This tries a test-compile of the template. If the
+        compilation cannot proceed, a CompileError is raised.
+
+        Then tries to render the template with any sample inputs.
+        If a rendering fails, a RenderError is raised. In a special
+        'data_id' attribute of the error the failing input data is
+        indicated.
+
+        If the check succeeds, no exception is raised.
+        """
+        
     def structure(id):
         """Get a list with all the templates in this collection.
 
@@ -69,18 +113,30 @@ class IHurryCustomAPI(Interface):
         """
     
 class ITemplate(Interface):
+    """Uses for classes implementing a template language.
+
+    When creating an object that provides ITemplate, raise
+    a CompileError if the template text cannot be processed.
+    """
     source = Attribute("The source text of the template.")
 
     def __call__(input):
         """Render the template given input.
 
         input - opaque template-language native data structure.
+
+        Raise a RenderError if the template cannot be rendered.
         """
 
-class BrokenTemplate(Exception):
-    """Error when a template is broken.
+class CompileError(Exception):
+    """Error when a template is broken (cannot be parsed/compiled).
     """
-    
+
+class RenderError(Exception):
+    """Error when an error cannot be rendered (incorrect input data or
+    other run-time error.
+    """
+
 class IDataLanguage(Interface):
     def __call__(data):
         """Parse data into data structure that can be passed to ITemplate()"""
@@ -90,11 +146,7 @@ class ISampleExtension(Interface):
     """
 
 class IManagedTemplate(ITemplate):
-
     template = Attribute("The real template object being managed.")
-
-    original_source = Attribute("The original source of the template, "
-                                "before customization.")
 
     def check():
         """Update the template if it has changed.
@@ -102,15 +154,6 @@ class IManagedTemplate(ITemplate):
 
     def load():
         """Load the template from the filesystem.
-        """
-    
-    def samples():
-        """Get samples.
-
-        Returns a dictionary with sample inputs.
-
-        keys are the unique ids for the sample inputs.
-        values are the actual template-language native data structures.
         """
 
 class NotSupported(Exception):
@@ -130,16 +173,6 @@ class ITemplateDatabase(Interface):
 
         If this operation is not supported, a NotSupported error is
         raised.
-        """
-
-    def test(template_id, source):
-        """Test a template.
-
-        This tries a test-compile of the template, and if sample
-        inputs are known, test-renders of the template.
-
-        Return False if the compilation or any of the test renderings
-        fails. Returns True if there was no error.
         """
 
     def get_source(template_id):

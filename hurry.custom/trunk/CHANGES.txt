@@ -4,11 +4,26 @@ Changes
 0.6 (unreleased)
 ~~~~~~~~~~~~~~~~
 
-* Introduce the notion of a ``BrokenTemplate``. If a customized
-  template is broken, the system falls back to using the original
-  version of the template. A template is broken if it raises
-  the  ``hurry.custom.interfaces.BrokenTemplate`` exception when it is
-  created.
+* Introduce the notion of ``CompileError`` and ``RenderError``.  A
+  ``CompileError`` should be raised by a template if the template
+  cannot be parsed or compiled. A ``RenderError`` should be raised if
+  there is any run-time error during template rendering.
+
+* Introduce ``render`` in the API and de-emphasize the use of ``lookup``.
+  Normally templates are rendered by calling ``render``.
+
+* When a template is looked up and there is a ``CompileError`` during
+  its creation, fall back on original template.
+
+* When a template is rendered using the top-level ``render`` function
+  and there is a ``RenderError`` during the rendering process, fall
+  back on the original template.
+
+* Remove ``original_source`` and ``samples`` methods from
+  ``IManagedTemplate`` interface. These are better handled by directly
+  using the ``ITemplateDatabase`` API.
+
+* Some fixes in the interfaces, bringing them more inline with the code.
 
 0.5 (2009-05-22)
 ~~~~~~~~~~~~~~~~

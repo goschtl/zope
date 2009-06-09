@@ -51,8 +51,8 @@ The package is agnostic about (these things are pluggable):
 What this package does not do is provide a user interface. It only
 provides the API that lets you construct such user interfaces.
 
-Registering a template language
--------------------------------
+Creating and registering a template language
+--------------------------------------------
 
 In order to register a new push-only template we need to provide a
 factory that takes the template text (which could be compiled down
@@ -60,7 +60,7 @@ further). Instantiating the factory should result in a callable that
 takes the input data (in whatever format is native to the template
 language). The ``ITemplate`` interface defines such an object::
 
-  >>> from hurry.custom.interfaces import ITemplate, BrokenTemplate
+  >>> from hurry.custom.interfaces import ITemplate, CompileError, RenderError
 
 For the purposes of demonstrating the functionality in this package,
 we supply a very simplistic push-only templating language, based on
@@ -72,11 +72,14 @@ template strings as provided by the Python ``string`` module::
   ...    implements(ITemplate)
   ...    def __init__(self, text):
   ...        if '&' in text:
-  ...            raise BrokenTemplate("& in template!")
+  ...            raise CompileError("& in template!")
   ...        self.source = text
   ...        self.template = string.Template(text)
   ...    def __call__(self, input):
-  ...        return self.template.substitute(input)
+  ...        try:
+  ...            return self.template.substitute(input)
+  ...        except KeyError, e:
+  ...            raise RenderError(unicode(e))
 
 Let's demonstrate it. To render the template, simply call it with the
 data as an argument::
@@ -86,7 +89,7 @@ data as an argument::
   'Hello world'
 
 Note we have put some special logic in the ``__init__`` that triggers a
-``BrokenTemplate`` error if the string ``&`` is found in the
+``CompileError`` error if the string ``&`` is found in the
 template. This is so we can easily demonstrate templates that are
 broken - treat a template with ``&`` as a template with a syntax
 (compilation) error. Let's try it::
@@ -94,7 +97,17 @@ broken - treat a template with ``&`` as a template with a syntax
   >>> template = StringTemplate('Hello & bye')
   Traceback (most recent call last):
     ...
-  BrokenTemplate: & in template!
+  CompileError: & in template!
+
+We have also made sure we catch a possible runtime error (a
+``KeyError`` when a key is missing in the input dictionary in this
+case) and raise this as a ``RenderError``::
+
+  >>> template = StringTemplate('Hello $thing')
+  >>> template({'thang': 'world'})
+  Traceback (most recent call last):
+    ...
+  RenderError: 'thing'
 
 The template class defines a template language. Let's register the
 template language so the system is aware of it and treats ``.st`` files
@@ -137,26 +150,33 @@ collection id, the templates path, and (optionally) a title::
 
   >>> custom.register_collection(id='templates', path=templates_path)
 
-We can now look up the template in this collection::
+We can now render the template::
+
+  >>> custom.render('templates', 'test1.st', {'thing': 'world'})
+  u'Hello world'
+
+We'll try another template::
+
+  >>> custom.render('templates', 'test2.st', {'thing': 'stars'})
+  u"It's full of stars"
+
+We can also look up the template object::
 
   >>> template = custom.lookup('templates', 'test1.st')
 
 We got our proper template::
 
-  >>> template.source
-  u'Hello $thing'
-
-As we can see the source text of the template was interpreted as a
-UTF-8 string. The template source should always be in unicode format
-(or in plain ASCII).
-
   >>> template({'thing': 'world'})
   u'Hello world'
 
-We'll try another template::
+The templat also has a ``source`` attribute::
 
-  >>> custom.lookup('templates', 'test2.st')({'thing': 'stars'})
-  u"It's full of stars"
+  >>> template.source
+  u'Hello $thing'
+
+The source text of the template was interpreted as a UTF-8 string. The
+template source should always be in unicode format (or in plain
+ASCII).
 
 The underlying template will not be reloaded unless it is changed on
 the filesystem::
@@ -229,8 +249,7 @@ We haven't placed any customization in the customization database
 yet, so we'll see the same thing as before when we look up the
 template::
 
-  >>> template = custom.lookup('templates', 'test1.st')
-  >>> template({'thing': "universe"})
+  >>> custom.render('templates', 'test1.st', {'thing': "universe"})
   u'Bye universe'
 
 Customization of a template
@@ -241,7 +260,7 @@ customize the ``test1.st`` template.
 
 In this customization we change 'Bye' to 'Goodbye'::
 
-  >>> source = template.source
+  >>> source = root_db.get_source('test1.st')
   >>> source = source.replace('Bye', 'Goodbye')
 
 We now need to update the database so that it has this customized
@@ -267,36 +286,37 @@ locally in a site).
 
 Let's see whether we get the customized template now::
 
-  >>> template = custom.lookup('templates', 'test1.st')
-  >>> template({'thing': 'planet'})
+  >>> custom.render('templates', 'test1.st', {'thing': 'planet'})
   u'Goodbye planet'
-
-It is sometimes useful to be able to retrieve the original version of
-the template, before customization::
-
-  >>> template.original_source
-  u'Bye $thing'
-
-This could be used to implement a "revert" functionality in a
-customization UI, for instance.
 
 Broken custom template
 ----------------------
 
-If a custom template is broken, the system falls back on the
+If a custom template cannot be compiled, the system falls back on the
 filesystem template instead. We construct a broken custom template by
 adding ``&`` to it::
 
-  >>> template2 = custom.lookup('templates', 'test2.st')
-  >>> source = template2.source
-  >>> source = source.replace('full of', 'filled with &')
+  >>> original_source = root_db.get_source('test2.st')
+  >>> source = original_source.replace('full of', 'filled with &')
   >>> mem_db.update('test2.st', source)
 
 We try to render this template, but instead we'll see the original
 template::
 
-  >>> template2 = custom.lookup('templates', 'test2.st')
-  >>> template2({'thing': 'planets'})
+  >>> custom.render('templates', 'test2.st', {'thing': 'planets'})
+  u"It's full of planets"
+
+It could also be the case that the custom template can be compiled but
+instead cannot be rendered. Let's construct one that expects ``thang``
+instead of ``thing``::
+
+  >>> source = original_source.replace('$thing', '$thang')
+  >>> mem_db.update('test2.st', source)
+
+When rendering the system will notice the RenderError and fall back on
+the original uncustomized template for rendering::
+
+  >>> custom.render('templates', 'test2.st', {'thing': 'planets'})
   u"It's full of planets"
 
 Checking which template languages are recognized
@@ -384,7 +404,7 @@ The idea is that we can ask a particular template for those sample inputs
 that are available for it. Let's for instance check for sample inputs 
 available for ``test1.st``::
 
-  >>> template.samples()
+  >>> root_db.get_samples('test1.st')
   {}
 
 There's nothing yet.
@@ -408,7 +428,7 @@ again with an extra argument that indicates this (``sample_extension``)::
 Now we can actually look for samples. Of course there still aren't
 any as we haven't created any ``.d`` files yet::
 
-  >>> template.samples()
+  >>> root_db.get_samples('test1.st')
   {}
 
 We need a pattern to associate a sample data file with a template
@@ -427,45 +447,70 @@ template::
 Now when we ask for the samples available for our ``test1`` template,
 we should see ``sample1``::
 
-  >>> r = template.samples()
+  >>> r = root_db.get_samples('test1.st')
   >>> r
   {'sample1': {'thing': 'galaxy'}}
 
 By definition, we can use the sample data for a template and pass it
 to the template itself::
 
+  >>> template = custom.lookup('templates', 'test1.st')
   >>> template(r['sample1'])
   u'Goodbye galaxy'
+
+Testing a template
+------------------
+
+In a user interface it can be useful to be able to test whether the
+template compiles and renders. ``hurry.custom`` therefore implements a
+``check`` function that does so. This function raises an error
+(``CompileError`` or ``RenderError``), and passes silently if there is no
+problem.
+
+Let's first try it with a broken template::
+
+  >>> custom.check('templates', 'test1.st', 'foo & bar')
+  Traceback (most recent call last):
+    ...
+  CompileError: & in template!
+
+We'll now try it with a template that does compile but doesn't work
+with ``sample1``, as no ``something`` is supplied::
+
+  >>> custom.check('templates', 'test1.st', 'hello $something')
+  Traceback (most recent call last):
+    ...
+  RenderError: 'something'
 
 Error handling
 --------------
 
-Let's try to look up a template in a collection that doesn't exist. We
+Let's try to render a template in a collection that doesn't exist. We
 get a message that the template database could not be found::
 
-  >>> custom.lookup('nonexistent', 'dummy.st')
+  >>> custom.render('nonexistent', 'dummy.st', {})
   Traceback (most recent call last):
     ...
   ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplateDatabase>, 'nonexistent')
 
-Let's look up a non-existent template in an existing database. We get
+Let's render a non-existent template in an existing database. We get
 the lookup error of the deepest database, which is assumed to be the
 filesystem::
 
-  >>> template = custom.lookup('templates', 'nonexisting.st')
+  >>> custom.render('templates', 'nonexisting.st', {})
   Traceback (most recent call last):
     ...
   IOError: [Errno 2] No such file or directory: '.../nonexisting.st'
 
-Let's look up a template with an unrecognized extension::
+Let's render a template with an unrecognized extension::
 
-  >>> template = custom.lookup('templates', 'dummy.unrecognized')
+  >>> custom.render('templates', 'dummy.unrecognized', {})
   Traceback (most recent call last):
     ...
-  IOError: [Errno 2] No such file or directory: '.../dummy.unrecognized'
+  ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplate>, '.unrecognized')
 
-This of course happens because ``dummy.unrecognized`` doesn't exist. Let's
-make it exist::
+The template language ``.unrecognized`` could not be found. Let's make the
+file exist; we should get the same result::
 
   >>> unrecognized = os.path.join(templates_path, 'dummy.unrecognized')
   >>> f = open(unrecognized, 'w')
@@ -474,7 +519,7 @@ make it exist::
 
 Now let's look at it again::
 
-  >>> template = custom.lookup('templates', 'dummy.unrecognized')
+  >>> template = custom.render('templates', 'dummy.unrecognized', {})
   Traceback (most recent call last):
     ...
   ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplate>, '.unrecognized')
