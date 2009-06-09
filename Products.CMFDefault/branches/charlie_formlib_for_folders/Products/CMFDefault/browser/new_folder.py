@@ -63,6 +63,23 @@ class IDeltaItem(Interface):
         vocabulary=u'cmf.contents delta vocabulary',
         default=1)
 
+        
+class IHidden(Interface):
+    """Scheme for hidden items"""
+    
+    b_start = Int(
+        title=u"Batch start",
+        required=False)
+        
+    key = TextLine(
+        title=u"Sort key",
+        required=False)
+        
+    reverse = Bool(
+        title=u"Reverse sort order",
+        required=False)
+
+
 class BatchViewBase(ViewBase):
 
     # helpers
@@ -258,15 +275,16 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     
     def __init__(self, *args, **kw):
         super(ContentsView, self).__init__(*args, **kw)
+        self.hidden_fields =form.FormFields(IHidden)
         self.form_fields = form.FormFields()
         self.delta_field = form.FormFields(IDeltaItem)
         self.contents = self.context.contentValues()
         
         for item in self.contents:
-            for n, f in schema.getFieldsInOrder(IFolderItem):
-                field = form.FormField(f, n, item.id)
+            for name, field in schema.getFieldsInOrder(IFolderItem):
+                field = form.FormField(field, name, item.id)
                 self.form_fields += form.FormFields(field)
-          
+
     @memoize
     @decode
     def up_info(self):
@@ -292,12 +310,16 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         data = {}
         for i in self.contents:
             data['%s.name' %i.id] = i.getId()
+        self.hidden_widgets = form.setUpDataWidgets(
+                self.hidden_fields, "", self.context,
+                self.request, data=self._get_hidden_vars(),
+                        ignore_request=ignore_request)
         self.widgets = form.setUpDataWidgets(
                 self.form_fields, self.prefix, self.context,
                 self.request, data=data, ignore_request=ignore_request)
-        self.widgets += form.setUpDataWidgets(self.delta_field, self.prefix,
-                        self.context, self.request,
-                        ignore_request=ignore_request)
+        self.widgets += form.setUpDataWidgets(
+                self.delta_field, self.prefix, self.context,
+                self.request, ignore_request=ignore_request)
                 
     def _get_sorting(self):
         """How should the contents be sorted"""
@@ -355,6 +377,12 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         """Identify objects that have been selected"""
         ids = [k.split(".")[0] for k, v in data.items() if v == True]
         return ids
+
+    def _get_hidden_vars(self):
+        b_start = self._get_batch_start()
+        is_default = self.context.getDefaultSorting()
+        (key, reverse) = is_default and ('', 0) or self._get_sorting()
+        return {'b_start': b_start, 'key': key, 'reverse': reverse}
     
     #Action conditions
     @memoize
@@ -395,8 +423,12 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     #Action handlers
     def handle_rename(self, action, data):
         """Redirect to rename view passing the ids of objects to be renamed"""
-        return self._setRedirect('portal_types', 'object/rename_items')
-    
+        # currently redirects to a PythonScript
+        # should be replaced with a dedicated form
+        self.request.form['ids'] = self._get_ids(data)
+        keys = ",".join(self._get_hidden_vars().keys() + ['ids'])
+        return self._setRedirect('portal_types', 'object/rename_items', keys)
+        
     def handle_cut(self, action, data):
         """Cut the selected objects and put them in the clipboard"""
         ids = self._get_ids(data)
