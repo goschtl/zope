@@ -1,0 +1,10 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope">
+  
+  <include package="grok" file="meta.zcml" />
+  <include package="megrok.z3cform" file="meta.zcml" />
+
+  <include package="grok" />
+  <include package="megrok.z3cform" />
+
+</configure>
