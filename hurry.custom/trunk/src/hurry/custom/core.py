@@ -2,6 +2,7 @@ import os, time, glob
 from datetime import datetime
 from zope.interface import implements
 from zope import component
+from zope.component.interfaces import ComponentLookupError
 from hurry.custom.interfaces import (
     ITemplate, IManagedTemplate, ITemplateDatabase, IDataLanguage,
     ISampleExtension, CompileError, RenderError, NotSupported)
@@ -36,32 +37,58 @@ def render(id, template_path, input):
     while True:
         try:
             return template(input)
-        except RenderError:
-            template = lookup(
-                id, template_path,
-                db=getNextUtility(template.db, ITemplateDatabase, name=id))
+        except RenderError, render_error:
+            try:
+                next_db = next_collection(id, template.db)
+            except ComponentLookupError:
+                # cannot find any next collection, so this error is it
+                raise render_error
+            template = lookup(id, template_path, db=next_db)
 
 def lookup(id, template_path, db=None):
     dummy, ext = os.path.splitext(template_path)
     template_class = component.getUtility(ITemplate, name=ext)
 
-    db = db or component.getUtility(ITemplateDatabase, name=id)
-    
+    db = db or collection(id)
+
     while True:
         source = db.get_source(template_path)
         if source is not None:
             try:
                 return ManagedTemplate(template_class, db, template_path)
-            except CompileError:
+            except CompileError, e:
                 pass
-        db = getNextUtility(db, ITemplateDatabase, name=id)
+        try:
+            db = next_collection(id, db)
+        except ComponentLookupError:
+            # if we cannot find a next collection, this means the
+            # last collection had a fatal compilation error
+            raise e
+
+def collection(id):
+    return component.getUtility(ITemplateDatabase, name=id)
+
+def next_collection(id, db):
+    result = getNextUtility(db, ITemplateDatabase, name=id)
+    if result is db:
+        raise ComponentLookupError("No collection available for: %s" % id)
+    return result
+
+def root_collection(id):
+    db = collection(id)
+    while True:
+        try:
+            next_db = next_collection(id, db)
+        except ComponentLookupError:
+            return db
+        db = next_db
 
 def check(id, template_path, source):
     dummy, ext = os.path.splitext(template_path)
     template_class = component.getUtility(ITemplate, name=ext)
     # can raise CompileError
     template = template_class(source)
-    db = _get_root_database(id)
+    db = root_collection(id)
     samples = db.get_samples(template_path)
     for key, value in samples.items():
         try:
@@ -74,7 +101,7 @@ def check(id, template_path, source):
 def structure(id):
     extensions = set([extension for
                       (extension, language) in recognized_languages()])
-    db = _get_root_database(id)
+    db = root_collection(id)
     return _get_structure_helper(db.path, db.path, extensions)
 
 class ManagedTemplate(object):
@@ -212,13 +239,6 @@ def _get_structure_helper(path, collection_path, extensions):
             result.append(info)
     return result
 
-def _get_root_database(id):
-    # assume root database is always a FilesystemTemplateDatabase
-    db = component.getUtility(ITemplateDatabase, name=id)
-    while not isinstance(db, FilesystemTemplateDatabase):
-        db = getNextUtility(db, ITemplateDatabase, name=id)
-    return db
-
 # XXX copied from zope.app.component to avoid dependency on it
 # note that newer versions of zope.component have this, so
 # when the target app depends on that we can switch and
@@ -250,9 +270,9 @@ def getNextUtility(context, interface, name=''):
     """
     util = queryNextUtility(context, interface, name, _marker)
     if util is _marker:
-        raise zope.component.interfaces.ComponentLookupError(
-              "No more utilities for %s, '%s' have been found." % (
-                  interface, name))
+        raise ComponentLookupError(
+            "No more utilities for %s, '%s' have been found." % (
+                interface, name))
     return util
 
 # XXX this code comes from Python 2.6 - when switching to this

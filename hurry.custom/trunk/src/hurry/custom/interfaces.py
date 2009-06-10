@@ -47,11 +47,39 @@ class IHurryCustomAPI(Interface):
     def lookup(id, template_path):
         """Look up template.
         
-        id - the id for the collection
+        id - the id of the collection
         template_path - the relative path (or filename) of the template
                         itself, under the path of the collection
         """
 
+    def collection(id):
+        """Look up ITemplateDatabase for id.
+
+        id - the id of the collection
+
+        Will raise ComponentLookupError if no collection with this id exists.
+        """
+
+    def next_collection(id, db):
+        """Look up the collection below this one.
+
+        id - the id of the collection
+        db - the db below which to look.
+
+        Will raise ComponentLookupError if there is no db below this
+        collection.
+
+        Will also raise ComponentLookupError if no collection with this id exists.
+        """
+
+    def root_collection(id):
+        """Look up the root collection.
+
+        id - the id of the collection.
+
+        Will raise ComponentLookupError if no collection with this id exists.
+        """
+        
     def check(id, template_path, source):
         """Test a template (before customization).
 

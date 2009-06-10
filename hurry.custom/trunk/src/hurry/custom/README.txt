@@ -219,14 +219,20 @@ Customization database
 So far all our work was done in the root (filesystem) database. We can
 get it now::
 
-  >>> from zope import component
-  >>> from hurry.custom.interfaces import ITemplateDatabase
-  >>> root_db = component.getUtility(ITemplateDatabase, name='templates')
+  >>> root_db = custom.root_collection('templates')
 
+Before any customization database was registered we could also have
+gotten it using ``custom.collection``, which gets the collection in
+context::
+
+  >>> custom.collection('templates') is root_db
+  True
+ 
 Let's now register a customization database for our collection, in a
 particular site. This means in such a site, the new customized
 template database will be used (with a fallback on the original one if
-no customization can be found).
+no customization can be found or if there is an error in the use of a
+customization).
 
 Let's create a site first::
 
@@ -237,6 +243,7 @@ We register a customization database for our collection named
 database::
 
   >>> mem_db = custom.InMemoryTemplateDatabase('templates', 'Templates')
+  >>> from hurry.custom.interfaces import ITemplateDatabase
   >>> sm1 = site1.getSiteManager()
   >>> sm1.registerUtility(mem_db, provided=ITemplateDatabase, 
   ...   name='templates')
@@ -244,6 +251,23 @@ database::
 We go into this site::
 
   >>> setSite(site1)
+
+We can now find this collection using ``custom.collection``::
+
+  >>> custom.collection('templates') is mem_db
+  True
+
+The collection below it is the root collection::
+
+  >>> custom.next_collection('templates', mem_db) is root_db
+  True
+
+Below this, there is no collection and we'll get a lookup error::
+
+  >>> custom.next_collection('templates', root_db)
+  Traceback (most recent call last):
+    ...
+  ComponentLookupError: No collection available for: templates
 
 We haven't placed any customization in the customization database
 yet, so we'll see the same thing as before when we look up the
@@ -523,3 +547,58 @@ Now let's look at it again::
   Traceback (most recent call last):
     ...
   ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplate>, '.unrecognized')
+
+If we try to look up a template in the root collection with a
+CompileError in it, we'll get a CompileError::
+
+  >>> compile_error = os.path.join(templates_path, 'compileerror.st')
+  >>> f = open(compile_error, 'w')
+  >>> f.write('A & compile error')
+  >>> f.close()
+  >>> compile_error_template = custom.lookup('templates', 'compileerror.st')
+  Traceback (most recent call last):
+    ...
+  CompileError: & in template!
+
+The same applies to trying to render it::
+
+  >>> custom.render('templates', 'compileerror.st', {})
+  Traceback (most recent call last):
+    ...
+  CompileError: & in template!
+
+If we try to render a template in the root collection we get a RenderError::
+  
+  >>> render_error = os.path.join(templates_path, 'rendererror.st')
+  >>> f = open(render_error, 'w')
+  >>> f.write('A $thang')
+  >>> f.close()
+  >>> custom.render('templates', 'rendererror.st', {'thing': 'thing'})
+  Traceback (most recent call last):
+    ...
+  RenderError: u'thang'
+
+
+We'll get a ComponentLookupError if we look for a collection with an
+unknown id::
+
+  >>> custom.collection('unknown_id')
+  Traceback (most recent call last):
+    ...
+  ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplateDatabase>, 'unknown_id')
+
+We also can't look for a next collection if the id we specify is
+unknown::
+
+  >>> custom.next_collection('unknown_id', mem_db)
+  Traceback (most recent call last):
+    ...
+  ComponentLookupError: No more utilities for <InterfaceClass hurry.custom.interfaces.ITemplateDatabase>, 'unknown_id' have been found.
+
+Similarly we can't get a root collection if the id is unknown::
+
+  >>> custom.root_collection('unknown_id')
+  Traceback (most recent call last):
+    ...
+  ComponentLookupError: (<InterfaceClass hurry.custom.interfaces.ITemplateDatabase>, 'unknown_id')
+
