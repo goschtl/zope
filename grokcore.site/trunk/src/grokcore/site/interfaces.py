@@ -15,6 +15,17 @@
 from zope.interface import Interface, Attribute
 
 
+class IUtilityInstaller(Interface):
+    """This install an utility in a site. Let you have different
+    'installation' method if you want (one for Zope2 / Zope3).
+    """
+
+    def __call__(site, utility, provides, name=u'',
+                 name_in_container=None, public=False, setup=None):
+        """Setup an utility.
+        """
+
+
 class IBaseClasses(Interface):
     Site = Attribute("Mixin class for sites.")
     LocalUtility = Attribute("Base class for local utilities.")

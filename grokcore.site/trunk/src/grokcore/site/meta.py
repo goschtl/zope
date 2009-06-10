@@ -20,11 +20,13 @@ from zope.app.container.interfaces import INameChooser
 import martian
 from martian.error import GrokError
 
+import grokcore.component
 import grokcore.site
-
+import grokcore.site.components
+import grokcore.site.interfaces
 
 class SiteGrokker(martian.ClassGrokker):
-    martian.component(grokcore.site.Site)
+    martian.component(grokcore.site.components.BaseSite)
     martian.priority(500)
     martian.directive(grokcore.site.local_utility, name='infos')
 
@@ -61,6 +63,7 @@ def localUtilityRegistrationSubscriber(site, event):
     if installed:
         return
 
+    setupUtility = component.getUtility(grokcore.site.interfaces.IUtilityInstaller)
     for info in getattr(site.__class__, '__grok_utilities_to_install__', []):
         setupUtility(site, info.factory(), info.provides, name=info.name,
                      name_in_container=info.name_in_container,
@@ -71,6 +74,7 @@ def localUtilityRegistrationSubscriber(site, event):
     site.__grok_utilities_installed__ = True
 
 
+@grokcore.component.provider(grokcore.site.interfaces.IUtilityInstaller)
 def setupUtility(site, utility, provides, name=u'',
                  name_in_container=None, public=False, setup=None):
     """Set up a utility in a site.

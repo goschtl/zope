@@ -23,7 +23,15 @@ from zope.app.component.site import SiteManagerContainer
 from zope.app.container.contained import Contained
 
 
-class Site(SiteManagerContainer):
+class BaseSite(object):
+    """Mixin to grok sites in Grok applications.
+
+    It's used to let different implementation of sites to exists, and
+    still being grokked correctly.
+    """
+
+
+class Site(BaseSite, SiteManagerContainer):
     """Mixin for creating sites in Grok applications.
 
     When an application `grok.Model` or `grok.Container` also inherits

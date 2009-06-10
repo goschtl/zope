@@ -6,5 +6,6 @@
   <include package="." file="meta.zcml" />
 
   <grok:grok package=".subscriber" />
+  <utility component=".meta.setupUtility" />
 
 </configure>
