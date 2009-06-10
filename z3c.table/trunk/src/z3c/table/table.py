@@ -36,11 +36,15 @@ def getWeight(column):
 
 
 def getSortMethod(idx):
+
     def getSortKey(item):
         sublist = item[idx]
+
         def getColumnSortKey(sublist):
             return sublist[1].getSortKey(sublist[0])
+
         return getColumnSortKey(sublist)
+
     return getSortKey
 
 
@@ -89,7 +93,6 @@ class Table(zope.location.Location):
         self.rows = []
         self.selectedItems = []
 
-
     def initColumns(self):
         # setup columns
         self.columns = self.setUpColumns()
@@ -113,8 +116,8 @@ class Table(zope.location.Location):
 # setup
 
     def setUpColumns(self):
-        cols = list(zope.component.getAdapters((self.context, self.request, self),
-            interfaces.IColumn))
+        cols = list(zope.component.getAdapters(
+            (self.context, self.request, self), interfaces.IColumn))
         # use the adapter name as column name
         return [nameColumn(col, name) for name, col in cols]
 
@@ -287,7 +290,7 @@ class Table(zope.location.Location):
         # use batch values from request or the existing ones
         self.batchSize = self.getBatchSize()
         self.batchStart = self.getBatchStart()
-        # use srting values from request or the existing ones
+        # use sorting values from request or the existing ones
         self.sortOn = self.getSortOn()
         self.sortOrder = self.getSortOrder()
 
