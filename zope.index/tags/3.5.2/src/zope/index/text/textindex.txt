@@ -1,0 +1,182 @@
+Text Indexes
+============
+
+Text indexes combine an inverted index and a lexicon to support text
+indexing and searching.  A text index can be created without passing
+any arguments:
+
+    >>> from zope.index.text.textindex import TextIndex
+    >>> from zope.index.text.okapiindex import score
+    >>> index = TextIndex()
+
+By default, it uses an "Okapi" inverted index and a lexicon with a
+pipeline consistening is a simple word splitter, a case normalizer,
+and a stop-word remover.
+
+We index text using the `index_doc` method:
+
+    >>> index.index_doc(1, u"the quick brown fox jumps over the lazy dog")
+    >>> index.index_doc(2,
+    ...    u"the brown fox and the yellow fox don't need the retriever")
+    >>> index.index_doc(3, u"""
+    ... The Conservation Pledge
+    ... =======================
+    ... 
+    ... I give my pledge, as an American, to save, and faithfully
+    ... to defend from waste, the natural resources of my Country; 
+    ... it's soils, minerals, forests, waters and wildlife.
+    ... """)
+    >>> index.index_doc(4, u"Fran\xe7ois") 
+    >>> word = (
+    ...     u"\N{GREEK SMALL LETTER DELTA}"
+    ...     u"\N{GREEK SMALL LETTER EPSILON}"
+    ...     u"\N{GREEK SMALL LETTER LAMDA}"
+    ...     u"\N{GREEK SMALL LETTER TAU}"
+    ...     u"\N{GREEK SMALL LETTER ALPHA}"
+    ...     )
+    >>> index.index_doc(5, word + u"\N{EM DASH}\N{GREEK SMALL LETTER ALPHA}")
+    >>> index.index_doc(6, u"""
+    ... What we have here, is a failure to communicate.
+    ... """)
+    >>> index.index_doc(7, u"""
+    ... Hold on to your butts!
+    ... """)
+    >>> index.index_doc(8, u"""
+    ... The Zen of Python, by Tim Peters
+    ... 
+    ... Beautiful is better than ugly.
+    ... Explicit is better than implicit.
+    ... Simple is better than complex.
+    ... Complex is better than complicated.
+    ... Flat is better than nested.
+    ... Sparse is better than dense.
+    ... Readability counts.
+    ... Special cases aren't special enough to break the rules.
+    ... Although practicality beats purity.
+    ... Errors should never pass silently.
+    ... Unless explicitly silenced.
+    ... In the face of ambiguity, refuse the temptation to guess.
+    ... There should be one-- and preferably only one --obvious way to do it.
+    ... Although that way may not be obvious at first unless you're Dutch.
+    ... Now is better than never.
+    ... Although never is often better than *right* now.
+    ... If the implementation is hard to explain, it's a bad idea.
+    ... If the implementation is easy to explain, it may be a good idea.
+    ... Namespaces are one honking great idea -- let's do more of those!
+    ... """)
+
+Then we can search using the apply method, which takes a search
+string.  If we use the okascore.c module, we get different results
+because it uses different constants:
+
+    >>> if score is not None: result = [(1, '787.6832'), (2, '839.0846')]
+    >>> if score is None: result = [(1, '0.6153'), (2, '0.6734')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'brown fox').items()] == result
+    True
+
+    >>> if score is not None: result = [(1, '787.7337')]
+    >>> if score is None: result = [(1, '0.6153')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'quick fox').items()] == result
+    True
+
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'brown python').items()]
+    []
+
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'dalmatian').items()]
+    []
+
+    >>> if score is not None: result = [(1, '333.0285'), (2, '333.0285'), (8, '454.7052')]
+    >>> if score is None: result = [(1, '0.2602'), (2, '0.2529'), (8, '0.0934')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'brown or python').items()] == result
+    True
+
+    >>> from zope.index.text.okapiindex import score
+    >>> if score is not None: result = [(7, '787.7707')]
+    >>> if score is None: result =  [(7, '0.6948')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u'butts').items()] == result
+    True
+
+The outputs are mappings from document ids to integer scored. Items
+with higher scores are more relevent.
+
+We can use unicode characters in search strings.  If we use the
+okascore.c module, we get different results because it uses different
+constants:
+
+    >>> if score is not None: result = [(4, '787.7707')]
+    >>> if score is None: result = [(4, '0.7427')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(u"Fran\xe7ois").items()] == result
+    True
+
+    >>> if score is not None: result = [(5, '787.7707')]
+    >>> if score is None: result = [(5, '0.7179')]
+    >>> [(k, "%.4f" % v) for (k, v) in index.apply(word).items()] == result
+    True
+
+We can use globbing in search strings.  If we use the okascore.c
+module, we get different results because it uses different constants:
+
+    >>> if score is not None: result = [(1, '2789.000'), (2, '3153.000'), (3, '3808.000')]
+    >>> if score is None: result = [(1, '2.179'), (2, '2.651'), (3, '2.041')]
+    >>> [(k, "%.3f" % v) for (k, v) in index.apply('fo*').items()] == result
+    True
+
+Text indexes support basic statistics:
+
+    >>> index.documentCount()
+    8
+    >>> index.wordCount()
+    114
+
+If we index the same document twice, once with a zero value, and then
+with a normal value, it should still work:
+
+    >>> index2 = TextIndex()
+    >>> index2.index_doc(1, [])
+    >>> index2.index_doc(1, ["Zorro"])
+
+If we use the okascore.c module, we get different results because it
+uses different constants:
+
+    >>> if score is not None: result = [(1, '787.5803')]
+    >>> if score is None: result = [(1, '0.4545')]
+    >>> [(k, "%.4f" % v) for (k, v) in index2.apply("Zorro").items()] == result
+    True
+
+
+Tracking Changes
+================
+
+If we index a document the first time it updates the _totaldoclen of
+the underlying object.
+
+    >>> index = TextIndex()
+    >>> index.index._totaldoclen()
+    0
+    >>> index.index_doc(100, u"a new funky value")
+    >>> index.index._totaldoclen()
+    3
+
+If we index it a second time, the underlying index length should not
+be changed.
+
+    >>> index.index_doc(100, u"a new funky value")
+    >>> index.index._totaldoclen()
+    3
+
+But if we change it the length changes too.
+
+    >>> index.index_doc(100, u"an even newer funky value")
+    >>> index.index._totaldoclen()
+    5
+
+The same as for index_doc applies to unindex_doc, if an object is
+unindexed that is not indexed no indexes chould change state.
+
+    >>> index.unindex_doc(100)
+    >>> index.index._totaldoclen()
+    0
+
+    >>> index.unindex_doc(100)
+    >>> index.index._totaldoclen()
+    0
