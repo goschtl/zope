@@ -300,7 +300,7 @@ class Table(zope.location.Location):
         # update columns
         self.updateColumns()
 
-        # setup headers bsaed on columns
+        # setup headers based on columns
         self.rows = self.setUpRows()
 
         # sort items on columns
