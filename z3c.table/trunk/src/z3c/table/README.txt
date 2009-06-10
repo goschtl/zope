@@ -965,7 +965,7 @@ batch values. We do this by simply set the ``defaultSortOn``:
 
   >>> batchingTable.sortOn = u'table-number-1'
 
-Now we shuld see a nice ordered and batched table:
+Now we should see a nice ordered and batched table:
 
   >>> batchingTable.update()
   >>> print batchingTable.render()
