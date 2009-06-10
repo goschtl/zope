@@ -25,6 +25,9 @@ Changes
 
 * Some fixes in the interfaces, bringing them more inline with the code.
 
+* Expose ``collection``, ``next_collection`` and ``root_collection``
+  functions.
+
 0.5 (2009-05-22)
 ~~~~~~~~~~~~~~~~
 
