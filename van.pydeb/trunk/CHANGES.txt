@@ -4,7 +4,7 @@ Changes
 1.2.1 (unreleased)
 ------------------
 
-* ???
+* Add mapping for ZConfig.
 
 1.2.0 (2009-05-29)
 ------------------

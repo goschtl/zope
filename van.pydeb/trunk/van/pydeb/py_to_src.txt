@@ -1,8 +1,9 @@
 # Map eggs to debian source packages
 BeautifulSoup                                   beautifulsoup
 M2Crypto                                        m2crypto
-SQLAlchemy                                      sqlalchemy
-ZODB3                                           zodb
 PIL                                             python-imaging
-Reportlab                                       python-reportlab
 pytz                                            python-tz
+Reportlab                                       python-reportlab
+SQLAlchemy                                      sqlalchemy
+ZConfig						zconfig
+ZODB3                                           zodb
