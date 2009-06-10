@@ -31,7 +31,7 @@ developers:
 
 - Page Templates (using the Zope 2 Page Templates),
 
-- Formlib forms.
+- Formlib forms,
 
 - Local sites and utilities.
 
@@ -56,11 +56,42 @@ Note
 ~~~~
 
 ``five.grok`` have some dependencies on Zope 3 eggs. With Zope 2, you
-can fake those dependencies in buildout by using the option
-``fake-zope-eggs = true`` of ``plone.recipe.zope2instance``. However,
-``five.grok`` requires ``zope.component`` 3.4 at least. You can
-exclude that egg by mentioning ``zope.component`` in the option
-``skip-fake-eggs`` in the same buildout section.
+can fake those dependencies in buildout with the help of
+``plone.recipe.zope2instance``.
+
+The minium required configuration to install Zope would be::
+
+  [zope2]
+  recipe = plone.recipe.zope2install
+  url = Please complete here correctly
+  fake-zope-eggs = true
+  additional-fake-eggs =
+     ZODB3
+  skip-fake-eggs =
+     zope.app.publisher
+     zope.component
+     zope.i18n
+     zope.interface
+     zope.testing
+
+
+And for this release we recommand to pin down the following version in
+your buildout::
+
+  grokcore.component = 1.6
+  grokcore.formlib = 1.1
+  grokcore.security = 1.0
+  grokcore.view = 1.7
+  grokcore.viewlet = 1.0
+  five.localsitemanager = 1.0
+  martian = 0.11
+  zope.app.publisher = 3.5.1
+  zope.component = 3.4
+  zope.i18n = 3.6.0
+  zope.interface = 3.5.0
+  zope.testing = 3.7.1
+
+Zope 2.10 is required as bare minimum.
 
 
 More information
