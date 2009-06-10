@@ -1,0 +1,67 @@
+Integration of JSON Template
+============================
+
+Introduction
+------------
+
+We've provided an integration of JSON Template as one template
+language into hurry.custom. 
+
+More about JSON template can be found here:
+
+http://json-template.googlecode.com
+
+Using the template language
+---------------------------
+
+Before we can use the template language we need to make sure it is 
+registered with the system::
+
+  >>> from hurry.custom.jsont import JsonTemplate
+  >>> from hurry import custom
+  >>> custom.register_language(JsonTemplate, extension='.jsont')
+
+The system can now recognize ``.jsont`` templates. We demonstrate this
+by creating one on the filesystem and registering the directory it is
+in as a collection::
+
+  >>> import tempfile, os
+  >>> templates_path = tempfile.mkdtemp(prefix='hurry.custom.jsont')
+  >>> test1_path = os.path.join(templates_path, 'test1.jsont')
+  >>> f = open(test1_path, 'w')
+  >>> f.write("Hello {target}!")
+  >>> f.close()
+  >>> custom.register_collection(id='templates', path=templates_path)
+
+We can now look up the template::
+
+  >>> template = custom.lookup('templates', 'test1.jsont')
+  >>> template.source
+  u'Hello {target}!'
+
+Let's try using it, passing in JSON::
+
+  >>> template({'target': 'universe'})
+  u'Hello universe!'
+
+Errors
+------
+
+Let's demonstrate that a compilation error is raised when the template
+cannot be compiled::
+
+  >>> r = JsonTemplate('Foo {.section foo}')
+  Traceback (most recent call last):
+    ...
+  CompileError: Got too few {end} statements
+
+If we have a template that can be compiled but not rendered, we should
+get a render error::
+
+  >>> r = JsonTemplate('Hello {thing}')
+  >>> r({'thang': 'world'})
+  Traceback (most recent call last):
+    ...
+  RenderError: 'thing' is not defined
+  ...
+

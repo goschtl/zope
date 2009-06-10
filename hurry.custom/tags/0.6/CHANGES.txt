@@ -1,0 +1,34 @@
+Changes
+-------
+
+0.6 (2009-06-10)
+~~~~~~~~~~~~~~~~
+
+* Introduce the notion of ``CompileError`` and ``RenderError``.  A
+  ``CompileError`` should be raised by a template if the template
+  cannot be parsed or compiled. A ``RenderError`` should be raised if
+  there is any run-time error during template rendering.
+
+* Introduce ``render`` in the API and de-emphasize the use of ``lookup``.
+  Normally templates are rendered by calling ``render``.
+
+* When a template is looked up and there is a ``CompileError`` during
+  its creation, fall back on original template.
+
+* When a template is rendered using the top-level ``render`` function
+  and there is a ``RenderError`` during the rendering process, fall
+  back on the original template.
+
+* Remove ``original_source`` and ``samples`` methods from
+  ``IManagedTemplate`` interface. These are better handled by directly
+  using the ``ITemplateDatabase`` API.
+
+* Some fixes in the interfaces, bringing them more inline with the code.
+
+* Expose ``collection``, ``next_collection`` and ``root_collection``
+  functions.
+
+0.5 (2009-05-22)
+~~~~~~~~~~~~~~~~
+
+* Initial public release.

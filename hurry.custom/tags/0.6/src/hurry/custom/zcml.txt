@@ -1,0 +1,50 @@
+ZCML directives
+===============
+
+``hurry.custom`` defines a number of ZCML directives to configure
+itself. We'll go through them here.
+
+This helper will let us easily execute ZCML snippets::
+
+  >>> from cStringIO import StringIO
+  >>> from zope.configuration.xmlconfig import xmlconfig
+  >>> def runSnippet(snippet):
+  ...     template = """\
+  ...     <configure xmlns='http://namespaces.zope.org/zope'
+  ...                xmlns:custom='http://namespaces.zope.org/custom'
+  ...                i18n_domain="zope">
+  ...     %s
+  ...     </configure>"""
+  ...     xmlconfig(StringIO(template % snippet))
+
+We'll set up a .jsont template in a temporary directory::
+
+  >>> import tempfile, os
+  >>> templates_path = tempfile.mkdtemp(prefix='hurry.custom')
+  >>> test1_path = os.path.join(templates_path, 'test1.jsont')
+  >>> f = open(test1_path, 'w')
+  >>> f.write('Hello {thing}')
+  >>> f.close()
+
+Now we can register the ``.jsont`` template language and register the
+collection::
+
+  >>> runSnippet('''
+  ...   <custom:templateLanguage 
+  ...     template_class="hurry.custom.JsonTemplate"
+  ...     extension=".jsont"
+  ...     sample_extension=".json" />
+  ...
+  ...   <custom:collection
+  ...     id="templates"
+  ...     path="%s"
+  ...     title="Templates" />
+  ... ''' % templates_path)
+
+We can now look up the template in this collection::
+
+  >>> from hurry import custom
+  >>> template = custom.lookup('templates', 'test1.jsont')
+  >>> print template({'thing': "world"})
+  Hello world
+
