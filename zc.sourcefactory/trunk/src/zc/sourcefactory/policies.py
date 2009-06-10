@@ -17,17 +17,11 @@
 __docformat__ = "reStructuredText"
 
 
-import zope.intid.interfaces
-import zope.component
-try:
-    from zope.dublincore import interfaces as dublincoreinterfaces
-except ImportError:
-    # XXX Need to support Zope 3.2
-    from zope.app.dublincore import interfaces as dublincoreinterfaces
-
+from zope.dublincore import interfaces as dublincoreinterfaces
 import zc.sourcefactory.browser.source
 import zc.sourcefactory.interfaces
-
+import zope.component
+import zope.intid.interfaces
 
 # Term policies
 
