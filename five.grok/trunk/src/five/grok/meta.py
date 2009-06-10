@@ -17,8 +17,10 @@ import five.grok
 import grokcore.security
 import grokcore.view
 import grokcore.component
+import grokcore.site.interfaces
 
 from zope import interface, component
+from zope.app.container.interfaces import INameChooser
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components, formlib
 from grokcore.view.meta.directoryresource import _get_resource_path
@@ -110,10 +112,10 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         if not module_info.isPackage():
             return False
         resource_path = _get_resource_path(module_info, 'static')
-        
+
         if not os.path.exists(resource_path):
             return False
-        
+
         name = module_info.dotted_name
         layer = IDefaultBrowserLayer
         return _register_resource(config, resource_path, name, layer)
@@ -148,3 +150,27 @@ class ViewletSecurityGrokker(martian.ClassGrokker):
             )
 
         return True
+
+@grokcore.component.provider(grokcore.site.interfaces.IUtilityInstaller)
+def setupUtility(site, utility, provides, name=u'',
+                 name_in_container=None, public=False, setup=None):
+    """Set up a utility in a site in Zope2. It's different than Zope3,
+    because before Zope 2.12, setting up an object using [] doesn't
+    work. See the original implementation for more details.
+    """
+    site_manager = site.getSiteManager()
+
+    if not public:
+        container = site_manager
+    else:
+        container = site
+
+    if name_in_container is None:
+        name_in_container = INameChooser(container).chooseName(
+            utility.__class__.__name__, utility)
+    container._setObject(name_in_container, utility)
+
+    if setup is not None:
+        setup(utility)
+
+    site_manager.registerUtility(utility, provided=provides, name=name)

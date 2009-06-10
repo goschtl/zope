@@ -20,6 +20,7 @@ import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
+from zope.app.component.interfaces import IPossibleSite
 from zope import interface, component
 
 from grokcore.component.interfaces import IContext
@@ -29,6 +30,7 @@ from grokcore.formlib.components import default_display_template, \
 from grokcore.view.components import PageTemplate
 from grokcore.viewlet.components import Viewlet as BaseViewlet
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
+from grokcore.site.components import BaseSite
 import grokcore.view
 import grokcore.security
 
@@ -53,6 +55,14 @@ class Model(SimpleItem):
 
 class Container(Folder):
     interface.implements(IAttributeAnnotatable, IContext)
+
+
+class Site(BaseSite):
+    interface.implements(IAttributeAnnotatable, IContext, IPossibleSite)
+
+
+class LocalUtility(SimpleItem):
+    pass
 
 
 class View(grokcore.view.View, Acquisition.Explicit):

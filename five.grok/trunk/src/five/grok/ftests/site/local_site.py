@@ -12,10 +12,15 @@
   >>> from zope.app.component.site import setSite
   >>> setSite(universe.earth)
 
+  >>> universe.earth.getSiteManager()
+  <PersistentComponents ...>
+
   >>> from zope import component
   >>> manager = component.getUtility(IEnergyManager)
   >>> manager
-  <five.grok.ftests.site.local_site.EnergyManager object at ...>
+  <EnergyManager at ...>
+  >>> manager.aq_parent
+  <World at ...>
   >>> verifyObject(IEnergyManager, manager)
   True
 

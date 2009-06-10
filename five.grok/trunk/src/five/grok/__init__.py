@@ -19,7 +19,7 @@ from grokcore.view import *
 from grokcore.viewlet import *
 from grokcore.formlib import *
 
-from five.grok.components import Model, Container
+from five.grok.components import Model, Container, Site, LocalUtility
 from five.grok.components import View, Form, AddForm
 from five.grok.components import EditForm, DisplayForm
 from five.grok.components import ViewletManager, Viewlet

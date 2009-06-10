@@ -29,6 +29,7 @@ setup(name='five.grok',
       install_requires=[
         'setuptools',
         'martian',
+        'five.localsitemanager < 2.0dev',
         'grokcore.component',
         'grokcore.formlib',
         'grokcore.view >= 1.2',
