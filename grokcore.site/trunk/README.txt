@@ -12,7 +12,7 @@ This package is essentially set up like the `grokcore.component`_
 package, please refer to its documentation for details.  The only
 additional ZCML line you will need is::
 
-  <include package="grokcore.site" file="meta.zcml" />
+  <include package="grokcore.site" />
 
 Put this somewhere near the top of your root ZCML file but below the
 line where you include ``grokcore.component``'s configuration.
@@ -73,8 +73,32 @@ Directives
 
 ``local_utility(factory, provides=None, name=u'', setup=None, public=False, name_in_container=None``)
    Directive used on a site to register a local utility at the
-   creation time.
+   creation time:
 
+   ``factory``
+      Would be the component to register (required parameter),
+
+   ``provides``
+      Would be the interface used to query the local utility (required
+      parameter),
+
+   ``name``
+      Would be the name used to query the local utility,
+
+   ``setup``
+      Would be a function taking parameter. If defined it will be
+      called after the utility is created with it as first and unique
+      parameter.
+
+   ``public``
+      If true, the utility will be created in the site container
+      itself, not in the site manager, and public will be able to
+      access it directly.
+
+   ``name_in_container``
+      Would be used as id for the utility in container itwill be
+      created. If not defined it will ask NameChooser to pick a name
+      for it.
 
 In addition, the ``grokcore.security`` package exposes the
 `grokcore.component`_ API.

@@ -13,7 +13,7 @@
 ##############################################################################
 
 from zope.interface import Interface, Attribute
-
+from grokcore.component.interfaces import IGrokcoreComponentAPI
 
 class IUtilityInstaller(Interface):
     """This install an utility in a site. Let you have different
@@ -52,6 +52,6 @@ class IDirectives(Interface):
         looked up."""
 
 
-class IGrokcoreSiteAPI(IBaseClasses, IDirectives):
+class IGrokcoreSiteAPI(IGrokcoreComponentAPI, IBaseClasses, IDirectives):
     """grokcore.site's public API."""
 
