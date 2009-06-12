@@ -7,7 +7,7 @@
 
   <subscriber
       handler=".broken.installBroken"
-      for="zope.processlifetime.IDatabaseOpenedEvent"
+      for="zope.processlifetime.IDatabaseOpened"
       />
 
   <include file="browser.zcml" />
