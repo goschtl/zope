@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import unittest, doctest
-from zope import interface, component 
+from zope import interface, component
 from zope.app.testing import setup
 from zope.copypastemove import ObjectCopier
 from zope.component.event import objectEventNotify

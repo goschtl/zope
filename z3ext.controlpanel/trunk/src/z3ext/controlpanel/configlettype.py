@@ -33,7 +33,7 @@ class ConfigletType(type):
 
     >>> class IMyConfiglet(interface.Interface):
     ...   title = schema.TextLine(title = u'Title')
-    
+
     >>> class MyConfiglet(object):
     ...   pass
 
@@ -66,7 +66,7 @@ class ConfigletType(type):
     ...   pass
 
     >>> ConfigletClass = configlettype.ConfigletType(
-    ...    'myconfiglet', IMyConfiglet, 
+    ...    'myconfiglet', IMyConfiglet,
     ...    (MyConfiglet, MyConfiglet2), 'MyConfiglet', '')
 
     """
@@ -106,10 +106,10 @@ class DataProperty(object):
 
     def __set__(self, inst, value):
         raise AttributeError("Can't set __schema__")
-    
+
 
 class ConfigletProperty(object):
-    """ Special property thats reads and writes values from 
+    """ Special property thats reads and writes values from
     instance's 'data' attribute
 
     Let's define simple schema field
@@ -127,18 +127,18 @@ class ConfigletProperty(object):
     >>> class Content(object):
     ...
     ...    attr1 = ConfigletProperty(field)
-    
+
     Lets create class instance and add field values storage
 
     >>> ob = Content()
     >>> ob.data = ConfigletData()
-    
+
     By default we should get field default value
 
     >>> ob.attr1
     u'default value'
 
-    We can set only valid value 
+    We can set only valid value
 
     >>> ob.attr1 = 'value1'
     Traceback (most recent call last):

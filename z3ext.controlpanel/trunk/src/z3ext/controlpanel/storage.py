@@ -97,7 +97,7 @@ class ConfigletData(BTreeContainer):
 
 
     """
-    
+
     interface.implements(IConfigletData, IAttributeAnnotatable)
 
     def get(self, name, default=None):
@@ -167,7 +167,7 @@ def getConfigletData(configlet):
 @interface.implementer(IConfigletDataStorage)
 def getConfigletDataStorage(siteManager):
     sm = removeSecurityProxy(siteManager)
-    
+
     storage = sm.get('controlpanel', None)
     if storage is None or not IConfigletDataStorage.providedBy(storage):
         if storage is not None:

@@ -75,7 +75,7 @@ class Navigation(ViewletManagerBase):
 
                 if configlet.__id__ == path[0].__id__:
                     info['items'] = self._process(configlet, path[1:], level+1)
-                
+
                 if configlet.__id__ == self.context.__id__:
                     info['selected'] = True
                     info['items'] = self._process(configlet, [configlet], level+1)

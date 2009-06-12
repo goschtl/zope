@@ -63,12 +63,12 @@ class IConfigletDirective(interface.Interface):
         required = False)
 
     class_ = fields.GlobalObject(
-	title = u"Class",
+        title = u"Class",
         description = u'Custom configlet class',
-	required = False)
+        required = False)
 
     provides = fields.Tokens(
-	title = u'Provides',
+        title = u'Provides',
         required = False,
         value_type = fields.GlobalInterface())
 
@@ -78,10 +78,10 @@ class IConfigletDirective(interface.Interface):
         required = False)
 
     tests = fields.Tokens(
-	title = u"Tests",
+        title = u"Tests",
         description = u'Tests for check availability.',
         value_type = fields.GlobalObject(),
-	required = False)
+        required = False)
 
 
 class ConfigletDirective(object):
@@ -106,7 +106,7 @@ class ConfigletDirective(object):
         utility(_context, IConfiglet, configlet, name=name)
 
         if install_schema_utility:
-            utility(_context, schema, configlet)            
+            utility(_context, schema, configlet)
 
         interface.classImplements(ConfigletClass, schema, *provides)
 
@@ -180,7 +180,7 @@ class ConfigletDirective(object):
         "Set a permission on a bunch of names."
         for name in names:
             self._context.action(
-                discriminator = ('z3ext:controlpanel:protectSetAttribute', 
+                discriminator = ('z3ext:controlpanel:protectSetAttribute',
                                  self._class, name, object()),
                 callable = protectSetAttribute,
                 args = (self._class, name, permission_id))
