@@ -38,7 +38,7 @@ class Broken(ZODB.broken.Broken):
 
     def __name__(self):
         return self.__Broken_state__.get('__name__')
-    
+
     __name__ = property(__name__)
 
     def __getAnnotations(self):
@@ -71,10 +71,10 @@ def installBroken(event):
     database-opened event::
 
       >>> import ZODB.tests.util
-      >>> from zope.app.appsetup import DatabaseOpened
+      >>> from zope.processlifetime import DatabaseOpened
       >>> db = ZODB.tests.util.DB()
       >>> installBroken(DatabaseOpened(db))
-    
+
     If someone tries to load an object for which there is no class,
     then they will get a `Broken` object. We can simulate that by
     calling the database's class factory directly with a connection
@@ -105,9 +105,9 @@ def installBroken(event):
 
     Cleanup:
 
-      >>> ZODB.broken.broken_cache.clear()    
+      >>> ZODB.broken.broken_cache.clear()
     """
-    
+
     Broken_ = Broken # make it local for speed
     find_global = ZODB.broken.find_global
 
@@ -116,7 +116,7 @@ def installBroken(event):
         checker = zope.security.checker.getCheckerForInstancesOf(Broken_)
         cls.__Security_checker__ = checker
         return cls
-    
+
     def classFactory(connection, modulename, globalname):
         return find_global(modulename, globalname, Broken_, type_)
 
