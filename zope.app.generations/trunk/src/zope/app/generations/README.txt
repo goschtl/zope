@@ -7,7 +7,7 @@ When you change your application's data structures, for example,
 you change the semantic meaning of an existing field in a class, you will
 have a problem with databases that were created before your change.  For a
 more thorough discussion and possible solutions, see
-http://dev.zope.org/Zope3/DatabaseGenerations
+http://wiki.zope.org/zope3/DatabaseGenerations
 
 We will be using the component architecture, and we will need a database and a
 connection:
@@ -52,8 +52,8 @@ will be just fine, since we don't want it to do anything just yet.
 'some.app' is a unique identifier.  You should use a URI or the dotted name
 of your package.
 
-When you start Zope and a database is opened, an
-IDatabaseOpenedWithRootEvent is sent.  Zope registers
+When you start Zope and a database is opened, an event
+IDatabaseOpenedWithRoot is sent.  Zope registers
 evolveMinimumSubscriber by default as a handler for this event.  Let's
 simulate this:
 
