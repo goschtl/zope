@@ -24,7 +24,7 @@ import zope.component
 import zope.site.hooks
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
-from zope.app.appsetup import interfaces
+import zope.processlifetime
 
 class SystemConfigurationParticipation(object):
     zope.interface.implements(IParticipation)
@@ -144,7 +144,7 @@ def database(db):
 
     # The following will fail unless the application has been configured.
     from zope.event import notify
-    notify(interfaces.DatabaseOpened(db))
+    notify(zope.processlifetime.DatabaseOpened(db))
 
     return db
 

@@ -16,14 +16,15 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
+
+from zope.app.publication.zopepublication import ZopePublication
 import os
 import sys
 import zdaemon.zdoptions
 import zope.app.appsetup.appsetup
-import zope.app.appsetup.interfaces
 import zope.app.appsetup.product
 import zope.event
-from zope.app.publication.zopepublication import ZopePublication
+import zope.processlifetime
 
 
 def load_options(args=None):
@@ -50,7 +51,7 @@ def loadApplication(args=None):
     zope.app.appsetup.config(options.site_definition)
 
     db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-    zope.event.notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
+    zope.event.notify(zope.processlifetime.DatabaseOpened(db))
     return db
 
 

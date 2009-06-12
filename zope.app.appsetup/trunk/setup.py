@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.appsetup',
-    version = '3.11',
+    version = '3.11.1dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description="Zope app setup helper",

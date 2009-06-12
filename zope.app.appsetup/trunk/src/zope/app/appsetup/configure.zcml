@@ -2,22 +2,22 @@
 
   <subscriber
       handler=".bootstrap.bootStrapSubscriber"
-      for="zope.app.appsetup.interfaces.IDatabaseOpenedEvent"
+      for="zope.processlifetime.IDatabaseOpened"
       />
 
   <subscriber
       handler=".bootstrap.checkSecurityPolicy"
-      for="zope.app.appsetup.interfaces.IDatabaseOpenedEvent"
-      />  
+      for="zope.processlifetime.IDatabaseOpened"
+      />
 
   <subscriber
       handler=".errorlog.bootStrapSubscriber"
-      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
+      for="zope.processlifetime.IDatabaseOpenedWithRoot"
       />
 
   <subscriber
       handler=".session.bootStrapSubscriber"
-      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
+      for="zope.processlifetime.IDatabaseOpenedWithRoot"
       />
 
 </configure>

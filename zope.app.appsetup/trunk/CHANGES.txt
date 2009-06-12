@@ -1,5 +1,12 @@
-zope.app.appsetup Changelog
-===========================
+Changelog
+=========
+
+3.11.1 (unreleased)
+-------------------
+
+- Using ``zope.processlifetime`` interfaces and implementations
+  directly instead of BBB imports from ``zope.app.appsetup``.
+
 
 3.11 (2009-05-13)
 -----------------

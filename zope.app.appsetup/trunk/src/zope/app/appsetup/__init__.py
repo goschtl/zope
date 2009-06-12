@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope Application Server setup package 
+"""Zope Application Server setup package
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.app.appsetup.appsetup import config, database
+
+#BBB
 from zope.app.appsetup.interfaces import IDatabaseOpenedEvent, DatabaseOpened
 from zope.app.appsetup.interfaces import IProcessStartingEvent, ProcessStarting
-from zope.app.appsetup.appsetup import config, database

@@ -21,15 +21,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 
-import transaction
 import logging
+import transaction
 import warnings
-
 import zope.event
 import zope.lifecycleevent
+import zope.processlifetime
 
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.appsetup import interfaces
 from zope.container.interfaces import INameChooser
 from zope.location.interfaces import ISite
 from zope.security.management import getSecurityPolicy
@@ -173,7 +172,7 @@ def bootStrapSubscriber(event):
 
     connection.close()
 
-    zope.event.notify(interfaces.DatabaseOpenedWithRoot(db))
+    zope.event.notify(zope.processlifetime.DatabaseOpenedWithRoot(db))
 
 
 ########################################################################
