@@ -11,12 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.publication', '0'
 
-install_requires = ['setuptools']
+install_requires = [
+    'setuptools',
+    'zope.authentication',
+    'zope.principalregistry',
+    'zope.publisher',
+    'zope.app.component',
+    'zope.app.publication',
+    'zope.error',
+    'ZConfig',
+    ]
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
+[zope.publisher.publication_factory]
+default = zc.publication:Publication
 """
 
 from setuptools import setup

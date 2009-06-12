@@ -1,0 +1,22 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="zope.app.publisher" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.publisher" />
+  <include package="zope.app.publication" />
+
+  <utility
+      provides="zope.error.interfaces.IErrorReportingUtility"
+      component=".error"
+      />
+  <utility
+      provides="zope.authentication.interfaces.IAuthentication"
+      component=".noauth"
+      />
+  <browser:defaultView name="index.html" />
+</configure>

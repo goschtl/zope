@@ -1,0 +1,10 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   >
+  <include package="zc.publication" />
+
+
+  <class class="hello.Hello">
+    <allow attributes="__call__" />
+  </class>
+</configure>
