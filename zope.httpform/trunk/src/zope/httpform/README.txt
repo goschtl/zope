@@ -407,12 +407,6 @@ This package accepts POST data in addition to query strings.
     >>> pprint(parse(env))
     {u'x': 1, u'y': 2}
 
-The query string is ignored on POST.
-
-    >>> env = {'REQUEST_METHOD': 'POST', 'QUERY_STRING': 'x=1'}
-    >>> pprint(parse(env))
-    {}
-
 No form parsing is done for content types that don't look like forms.
 
     >>> input_fp = StringIO("x:int=1&y:int=2")

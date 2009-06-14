@@ -4,7 +4,9 @@ CHANGES
 Version 1.0.2 (unreleased)
 --------------------------
 
-- ...
+- Default to UTF-8 decoding
+
+- Fixed a test failure on Python 2.6
 
 Version 1.0.1 (2009-02-07)
 --------------------------

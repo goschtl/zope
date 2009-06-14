@@ -64,12 +64,15 @@ RECORDS = 8
 REC = RECORD | RECORDS
 CONVERTED = 32
 
+def decode_utf8(s):
+    """Decode a UTF-8 string"""
+    return unicode(s, 'utf-8')
 
 class FormParser(object):
     """Form data parser."""
     implements(IFormParser)
 
-    def __init__(self, env, wsgi_input=None, to_unicode=None):
+    def __init__(self, env, wsgi_input=None, to_unicode=decode_utf8):
         """Create a form parser for the given WSGI or CGI environment.
 
         The wsgi_input parameter provides the request input stream.
@@ -77,16 +80,13 @@ class FormParser(object):
         the request input stream from 'wsgi.input' in the environment.
 
         If to_unicode is specified, it is the function to use
-        to convert input byte strings to Unicode.
+        to convert input byte strings to Unicode.  Otherwise, UTF-8
+        encoding is assumed.
         """
         self._env = env
         if wsgi_input is None:
             wsgi_input = env.get('wsgi.input')
         self._wsgi_input = wsgi_input
-        if to_unicode is None:
-            # use the default encoding
-            def to_unicode(s):
-                return s.decode()
         self._to_unicode = to_unicode
 
     def parse(self):
@@ -410,15 +410,10 @@ class FileUpload(object):
     def __init__(self, field_storage):
 
         f = field_storage.file
-        if hasattr(f, '__methods__'):
-            methods = f.__methods__
-        else:
-            methods = ['close', 'fileno', 'flush', 'isatty',
-                'read', 'readline', 'readlines', 'seek',
-                'tell', 'truncate', 'write', 'writelines',
-                'name']
-
         d = self.__dict__
+        methods = ['close', 'fileno', 'flush', 'isatty',
+            'read', 'readline', 'readlines', 'seek',
+            'tell', 'truncate', 'write', 'writelines', 'name']
         for m in methods:
             if hasattr(f, m):
                 d[m] = getattr(f, m)
@@ -427,6 +422,6 @@ class FileUpload(object):
         self.filename = unicode(field_storage.filename, 'UTF-8')
 
 
-def parse(env, wsgi_input=None, to_unicode=None):
+def parse(env, wsgi_input=None, to_unicode=decode_utf8):
     """Shortcut for creating a FormParser and calling the parse() method."""
     return FormParser(env, wsgi_input, to_unicode).parse()
