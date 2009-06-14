@@ -58,7 +58,7 @@ When the page returns, we see a row with the entry of Stephan Richter, ...
         class="selected-option">good</span></span>
     </td>
     <td class="">
-      <input type="submit" ... value="Edit" /></td>
+      <input ... value="Edit" type="submit" /></td>
   </tr>
 
 ... but also another add evaluation row. This is by design, so that the user
