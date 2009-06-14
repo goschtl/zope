@@ -1,0 +1,105 @@
+body {
+  margin: 20px;
+  font-family: Arial, Helvetica;
+}
+
+h1 {
+  font-size: 15px;
+  padding: 0 5px 2px 5px;
+  margin: 0 0 7px 0;
+  border-bottom: 2px solid black;
+  width: auto;
+  height: 15px;
+}
+
+h1 span.name {
+  float: left;
+}
+
+h1 span.version {
+  float: right;
+}
+
+div#calculator {
+  width: 250px;
+  padding: 10px 15px 10px 15px;
+  background: #DDD;
+  border: 2px solid black;
+  -moz-border-radius: 10px;
+}
+
+div#display {
+  width: 100%;
+  border: 2px solid #999;
+  background: #A5BC98;
+  -moz-border-radius: 4px;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 4px;
+}
+
+div#stack {
+  display: none;
+}
+
+div#operator {
+  height: 10px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+div#operator span.label {
+  display: none;
+}
+
+div#current {
+  height: 30px;
+  text-align: right;
+  font-family: "Digital Readout Upright", Eurostile, Helvetica;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 3px;
+}
+
+div#current span.label {
+  display: none;
+}
+
+input[type=submit] {
+  height: 30px;
+  width: 50px;
+  border-width: 1.5px;
+  font-family: Verdana, Helvetica;
+  font-size: 20px;
+  font-weight: bold;
+  -moz-border-radius: 4px;
+}
+
+div#buttons {
+  text-align: center;
+}
+
+div#buttons table {
+  border-spacing: 0;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+div#buttons table td {
+  padding: 0px 4px 6px 4px;
+}
+
+input[name="form.buttons.clear"] {
+  width: 224px;
+  background: #FF443E;
+  color: white;
+}
+
+div.info {
+  width: 250px;
+  text-align: center;
+  font-size: 12px;
+  margin-left: 15px;
+}

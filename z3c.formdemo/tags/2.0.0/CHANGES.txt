@@ -1,0 +1,97 @@
+=======
+CHANGES
+=======
+
+Version 1.5.3 (2008-08-26)
+--------------------------
+
+- Refactoring: make links relative so it will work better with virtual
+  hosting.
+
+Version 1.5.2 (2008-04-24)
+--------------------------
+
+- Refactoring: Fixed failing tests due to widget layout changes in z3c.form
+  1.8.2.
+
+Version 1.5.1 (2007-10-30)
+--------------------------
+
+- Refactoring: Fixed deprecation warnings for ``ISession`` and
+  ``ZopeSecurityPolicy``.
+
+Version 1.5.0 (2007-10-09)
+--------------------------
+
+- Feature: Added an image button to the widgets demo.
+
+- Feature: Added a single checkbox widget for a boolean to the "all widgets"
+  demo.
+
+- Refactoring: Adjusted all tests to work with the new layout format in formui
+  and form.
+
+
+Version 1.4.0 (2007-08-24)
+--------------------------
+
+- Refactoring: Update CSS classes to reflect changes in ``z3c.form``.
+
+
+Version 1.3.0 (2007-07-18)
+--------------------------
+
+- Feature: Created functional tests for the demos.
+
+- Feature: Moved all application ZCML declarations into a ZCML file called
+  ``application.zcml``.
+
+
+Version 1.2.0 (2007-06-29)
+--------------------------
+
+- Feature: Added new field "promptChoiceField" to the "All Widgets" demo
+  demonstrating the prompt message of the select widget.
+
+- Feature: Increased the integer default value of "All Widgets" demo to show
+  off our new internationalized converter.
+
+- Feature: Made ``bytesField`` and ``passwordField`` non-required, since they
+  do not show their default values prohibiting the form to successfully
+  submit, which can be annoying when playing around.
+
+- Feature: New "Questionnaire" demo shows how to use groups effectively. It
+  also demonstrates how the label of buttons and widgets can be changed using
+  attribute value adapters.
+
+
+Version 1.1.2 (2007-06-25)
+--------------------------
+
+- Bug: Provide ``optionalChoice`` field in the content type. Pre-1.3.0
+  releases of ``z3c.form`` simply ignored missing fields, but the latest
+  version reports the error. Thanks to Luke Miller for the report.
+
+
+Version 1.1.1 (2007-06-24)
+--------------------------
+
+- Bug: Add new ``zope.rdb`` dependency to the setup and buildout
+  configuration.
+
+
+Version 1.1.0 (2007-06-22)
+--------------------------
+
+- Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with
+  non-object data. Specificically, this small application demonstrates using a
+  Gadfly database using pure SQL calls without any ORM.
+
+- Feature: New "Address Book" demo that demonstrates more complex use cases,
+  such as subforms, composite widgets, and mappings/lists
+
+
+Version 1.0.0 (2007-05-24)
+--------------------------
+
+- Initial Release

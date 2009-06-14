@@ -1,0 +1,19 @@
+<h1>Person Summary</h1>
+
+<h2>Basic Information</h2>
+<div metal:use-macro="macro:widget-rows" />
+
+<h2>Father</h2>
+<div tal:define="view nocall:view/father">
+  <div metal:use-macro="macro:widget-rows" />
+</div>
+
+<h2>Mother</h2>
+<div tal:define="view nocall:view/mother">
+  <div metal:use-macro="macro:widget-rows" />
+</div>
+
+<h2>Employer</h2>
+<div tal:define="view nocall:view/employer">
+  <div metal:use-macro="macro:widget-rows" />
+</div>
