@@ -14,6 +14,7 @@ from megrok.z3cform.interfaces import IGrokForm
 from z3c.form import form, field
 from z3c.form.interfaces import IFormLayer
 
+import megrok.layout
 
 class DefaultFields(field.Fields):
     """Marker for default fields.
@@ -26,6 +27,10 @@ class GrokForm(object):
 
     interface.implements(IGrokForm)
     martian.baseclass()
+
+    template = None
+    layout = None
+
 
     fields = DefaultFields()
 
@@ -82,6 +87,30 @@ class GrokForm(object):
         return self.render()
 
 
+class PageGrokForm(GrokForm):
+
+    def _render_template(self):
+        assert not (self.template is None)
+        if IGrokTemplate.providedBy(self.template):
+            return super(GrokForm, self)._render_template()
+        return self.template(self)
+
+
+    def __call__(self):
+        mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+        self.updateForm()
+        if self.layout is None:
+            layout = component.getMultiAdapter(
+                (self.context, self.request), megrok.layout.ILayout)
+            return layout(self)
+        return self.layout()
+
+
+
 class Form(GrokForm, form.Form, grokcore.view.View):
     """Normal z3c form.
     """
@@ -105,6 +134,33 @@ class EditForm(GrokForm, form.EditForm, grokcore.view.View):
 
 class DisplayForm(GrokForm, form.DisplayForm, grokcore.view.View):
     """z3c display form.
+    """
+    
+    martian.baseclass()
+
+class PageForm(PageGrokForm, form.Form, megrok.layout.Page):
+    """Normal z3c form with megrok.layout support.
+    """
+
+    martian.baseclass()
+
+
+class PageAddForm(PageGrokForm, form.AddForm, megrok.layout.Page):
+    """z3c add form with megrok.layout support.
+    """
+
+    martian.baseclass()
+
+
+class PageEditForm(PageGrokForm, form.EditForm, megrok.layout.Page):
+    """z3c edit form with megrok.layout support.
+    """
+
+    martian.baseclass()
+
+
+class PageDisplayForm(PageGrokForm, form.DisplayForm, megrok.layout.Page):
+    """z3c display form with megrok.layout support.
     """
     
     martian.baseclass()

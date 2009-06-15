@@ -5,6 +5,14 @@
   <include package="z3c.form" file="meta.zcml" />
   <include package="grokcore.view" file="meta-minimal.zcml" />
 
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.macro"/>
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.formui"/>
+  <include package="megrok.layout" file="meta.zcml" />
+
+
   <grok:grok package=".meta" />
 
 </configure>
