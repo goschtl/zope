@@ -51,8 +51,8 @@ Looking in the buildout file, we can see the python project versions in the debi
 
     >>> lookin('synced1', 'pypi', 'buildout_versions.cfg')
     [versions]
-        van.pydeb = 1.2.0
-        zope.component = 3.7.0
+    van.pydeb = 1.2.0
+    zope.component = 3.7.0
 
 Looking inside both, we can see that the "simple" directory just links tarballs:
 

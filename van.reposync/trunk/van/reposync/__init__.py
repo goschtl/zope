@@ -122,7 +122,7 @@ def _sync(args=sys.argv):
         introspected = set([])
         for pool_file, bin_package_name in tarballs_to_get:
             assert pool in pool_file
-            pypi_path = os.path.dirname(pool_file).replace(pool, pypi_simple)
+            pypi_path = pypi_simple # just put all the tarballs in one directory for now.
             pool_metadata_filename = '%s.reposync' % pool_file
             if exists(pool_metadata_filename):
                 continue # we already introspected this file, but for another package name
@@ -163,7 +163,7 @@ def _sync(args=sys.argv):
             if pool_metadata == 'XXX':
                 continue
             py_project_name, py_version, py_filename = pool_metadata.splitlines()[0].split()
-            bo_file.append("    %s = %s" % (py_project_name, py_version))
+            bo_file.append("%s = %s" % (py_project_name, py_version))
         bo_file.sort()
         bo_file.insert(0, '[versions]')
         logger.info("Writing out buildout versions to: %s" % join(context.pypi_root, "buildout_versions.cfg"))
