@@ -156,11 +156,15 @@ class ITemplate(Interface):
         Raise a RenderError if the template cannot be rendered.
         """
 
-class CompileError(Exception):
+class Error(Exception):
+    """Base class of errors.
+    """
+    
+class CompileError(Error):
     """Error when a template is broken (cannot be parsed/compiled).
     """
 
-class RenderError(Exception):
+class RenderError(Error):
     """Error when an error cannot be rendered (incorrect input data or
     other run-time error.
     """
