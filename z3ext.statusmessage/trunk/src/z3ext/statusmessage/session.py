@@ -16,8 +16,8 @@
 $Id$
 """
 from zope import interface, component
-from zope.component import getAdapter
-from zope.session.interfaces import ISession
+from zope.component import getAdapter, queryUtility
+from zope.session.interfaces import ISession, ISessionDataContainer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 from null import NullMessageService
@@ -30,6 +30,9 @@ def getMessageService(request):
     try:
         session = ISession(request)
     except:
+        return NullMessageService(request)
+
+    if queryUtility(ISessionDataContainer) is None:
         return NullMessageService(request)
 
     return MessageService(request, session)
