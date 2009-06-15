@@ -168,7 +168,10 @@ class FilesystemTemplateDatabase(object):
                                                   default=None)
         if sample_extension is None:
             return result
-        parse = component.getUtility(IDataLanguage, name=sample_extension)
+        try:
+            parse = component.getUtility(IDataLanguage, name=sample_extension)
+        except ComponentLookupError:
+            return result
         for path in glob.glob(
             os.path.join(template_dir,
                          template_name + '-*' + sample_extension)):

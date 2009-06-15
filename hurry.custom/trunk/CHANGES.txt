@@ -1,12 +1,13 @@
 Changes
 -------
 
-0.7 (unreleased)
+0.6.1 (unreleased)
 ~~~~~~~~~~~~~~~~
 
 * ``structure`` functionality now skips directories and files start that
   with a period.
 
+* If data language is not known, don't return any samples.
 
 0.6 (2009-06-10)
 ~~~~~~~~~~~~~~~~
