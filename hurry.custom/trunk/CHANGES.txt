@@ -1,8 +1,8 @@
 Changes
 -------
 
-0.6.2 (unreleased)
-~~~~~~~~~~~~~~~~~
+0.6.2 (2009-06-15)
+~~~~~~~~~~~~~~~~~~
 
 * Both ``RenderError`` and ``CompileError`` subclass from a common 
   ``Error`` base class.
