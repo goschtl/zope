@@ -1,8 +1,8 @@
 Changes
 -------
 
-0.6.1 (unreleased)
-~~~~~~~~~~~~~~~~
+0.6.1 (2009-06-15)
+~~~~~~~~~~~~~~~~~~
 
 * ``structure`` functionality now skips directories and files start that
   with a period.
