@@ -1,0 +1,15 @@
+Some ideas
+==========
+
+* each collection is registered under an id, not equal to the path.
+
+* a collection could also have a display title
+
+* templates are identified using collection id + template path
+
+* a collection id could be based on a dotted name + template dir name
+  (up to the system, but provide utility functionality for this?)
+
+* a Grok CustomizableView would automatically register the collection if
+  necessary, and hooks into the template lookup system.
+  (megrok.custom) (megrok.custom.Collection?)

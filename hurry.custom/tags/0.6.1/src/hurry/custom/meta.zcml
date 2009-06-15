@@ -1,0 +1,22 @@
+<configure xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/custom">
+
+    <meta:directive
+        name="templateLanguage"
+        schema=".zcml.ITemplateLanguage"
+        handler=".zcml.action_template_language" />
+
+    <meta:directive
+        name="dataLanguage"
+        schema=".zcml.IDataLanguage"
+        handler=".zcml.action_data_language" />
+
+    <meta:directive
+        name="collection"
+        schema=".zcml.ICollection"
+        handler=".zcml.action_collection" />
+
+  </meta:directives>
+
+</configure>
