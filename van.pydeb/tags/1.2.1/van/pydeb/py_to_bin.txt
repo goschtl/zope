@@ -1,0 +1,11 @@
+# Map eggs to debian binary packages
+
+BeautifulSoup                           python-beautifulsoup
+M2Crypto                                python-m2crypto
+PIL                                     python-imaging
+pytz                                    python-tz
+Reportlab                              	python-reportlab
+SQLAlchemy                           	python-sqlalchemy
+ZConfig					python-zconfig
+ZODB3                                   python-zodb
+RestrictedPython			python-restrictedpython
