@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""A traverser that skips its path element.
+
+$Id$
+"""
 
 from zope.component import adapts
 from zope.interface import implements, Interface

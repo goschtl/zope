@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""tests
+
+$Id$
+"""
 
 from zope.testing import doctest
 import pkg_resources
