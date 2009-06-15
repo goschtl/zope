@@ -14,16 +14,16 @@
 import os
 from setuptools import setup, find_packages
 
-#long_description = open('README.txt', 'r').read()
-#long_description += '\n'
-#long_description += open('CHANGES.txt', 'r').read()
+long_description = open(os.path.join('van', 'reposync', 'README.txt'), 'r').read()
+long_description += '\n'
+long_description += open('CHANGES.txt', 'r').read()
 
 setup(name="van.reposync",
       description='Mirror a pypi-style egg repository from a debian APT repository',
-#      long_description=long_description,
+      long_description=long_description,
       author="Vanguardistas",
       url='http://pypi.python.org/pypi/van.reposync',
-      version='1.0.0dev',
+      version='1.0.0',
       license = 'ZPL 2.1',
       packages=find_packages(),
       entry_points = {'console_scripts': ['van-reposync = van.reposync:main',]},
@@ -32,6 +32,7 @@ setup(name="van.reposync",
           'setuptools',
           'zc.lockfile',
           'van.pydeb',
+          # 'apt >= 0.7.91', XXX not on pypi!
           ],
       classifiers=['Development Status :: 4 - Beta',
                    'Intended Audience :: Developers',

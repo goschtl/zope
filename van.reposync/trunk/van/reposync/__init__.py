@@ -47,7 +47,7 @@ def _assert_dir(path, context):
     path = os.path.abspath(path)
     assert context.rootdir in path
     if not exists(path):
-        logger.info("Creating %s" % path)
+        logger.debug("Creating %s" % path)
         os.makedirs(path)
 
 def _sync(args=sys.argv):
@@ -57,11 +57,12 @@ def _sync(args=sys.argv):
                       help="Load an apt sources.list file into the mirror, "
                            "this only needs to be done once, or whenever you "
                            "want to change the target apt soures.")
-    parser.add_option("--root", dest="rootdir", default=os.path.curdir,
+    parser.add_option("--root", dest="rootdir",
                       help="The root directory of the mirror.")
-    parser.add_option("--loglevel", dest="loglevel", default='WARNING',
+    parser.add_option("--loglevel", dest="loglevel", default='INFO',
                       help="The loglevel to output messages at.")
     options, args = parser.parse_args(args)
+    assert options.rootdir, "Need to specify root directory for sync"
     assert len(args) == 2, "One and only one command can be specified"
     # setup logging
     loglevel = getattr(logging, options.loglevel)
@@ -139,14 +140,20 @@ def _sync(args=sys.argv):
                 assert os.path.samefile(pool_file, pypi_file)
                 continue
             _assert_dir(pypi_path, context)
-            logger.info("Linking %s to %s" % (pool_file, pypi_file))
+            logger.debug("Linking %s to %s" % (pool_file, pypi_file))
             os.symlink(pool_file, pypi_file)
+            pool_metadata_file.flush() # we need to read this later, don't want it in buffers
             pool_metadata_file.close()
             introspected.add(pool_file)
+            logger.info("Finished introspecting %s" % py_project_name)
         for pool_file in cant_introspect - introspected:
             # write out which files we cannot introspect!
             pool_metadata_filename = '%s.reposync' % pool_file
-            open(pool_metadata_filename, 'w').write('XXX')
+            pool_metadata_file = open(pool_metadata_filename, 'w')
+            pool_metadata_file.write('XXX')
+            pool_metadata_file.flush() # we need to read this later, don't want it in buffers
+            pool_metadata_file.close()
+            logger.info("Marking file unknown, couldn't figure out what this is: %s" % pool_file)
         # writeout our buildout.cfg
         bo_file = []
         for f in owned_files:
@@ -159,6 +166,7 @@ def _sync(args=sys.argv):
             bo_file.append("    %s = %s" % (py_project_name, py_version))
         bo_file.sort()
         bo_file.insert(0, '[versions]')
+        logger.info("Writing out buildout versions to: %s" % join(context.pypi_root, "buildout_versions.cfg"))
         open(join(context.pypi_root, "buildout_versions.cfg"), 'w').write('\n'.join(bo_file))
         # cleanup
         deferred_remove = set([])
@@ -182,21 +190,33 @@ def _sync(args=sys.argv):
                 if pool_metadata is not None and pool_metadata != 'XXX':
                     for f in pool_metadata.splitlines()[1:]:
                         if exists(f):
+                            logging.debug("Cleaning/Removing: %s" % f)
                             os.remove(f)
+                logging.debug("Cleaning/Removing: %s" % pool_file)
                 os.remove(pool_file)
         for f in deferred_remove:
+            logging.debug("Cleaning/Removing: %s" % f)
             os.remove(f)
     finally:
         context.close()
+    logger.info("Done")
 _COMMANDS['sync'] = _sync
 
 #
 # Generic Classes
 #
 
+def _find(dir, pattern):
+    p = Popen(['find', dir, '-name', pattern], stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode != 0:
+        raise Exception('oops')
+    return stdout.splitlines()
+
+
 def _query_setuptools_dist(tarball, tmpdir, py_package_name):
     py_package_filename = to_filename(py_package_name)
-    logger.info("Introspecting egg tarball at %s" % tarball)
+    logger.debug("Introspecting egg tarball at %s" % tarball)
     oldcwd = os.getcwd()
     os.chdir(tmpdir)
     try:
@@ -205,16 +225,14 @@ def _query_setuptools_dist(tarball, tmpdir, py_package_name):
             logger.error("Failed to unpack egg at %s" % tarball)
             return None
         # find the .egg-info and load it
-        p = Popen(['find', tmpdir, '-name', '%s.egg-info' % py_package_name], stdout=PIPE, stderr=PIPE)
-        stdout, stderr = p.communicate()
-        if p.returncode != 0:
-            raise Exception('oops')
-        if not stdout:
+        found = _find(tmpdir, '%s.egg-info' % py_package_filename)
+        if not found:
+            logging.warning("Couldn't find %s.egg-info in %s, falling back to looking for *.egg-info" % (py_package_filename, tarball))
+            found = _find(tmpdir, '*.egg-info')
+        if len(found) != 1:
+            logging.error("Found %s egg-info directories, expected 1 (in %s)" % (len(found), tarball))
             return None
-        egg_info = stdout.splitlines()
-        if len(egg_info) > 1:
-            raise Exception("oops")
-        egg_info = egg_info[0]
+        egg_info = found[0]
         basedir = os.path.dirname(egg_info)
         metadata = PathMetadata(basedir, egg_info)
         dist_name = os.path.splitext(os.path.basename(egg_info))[0]
