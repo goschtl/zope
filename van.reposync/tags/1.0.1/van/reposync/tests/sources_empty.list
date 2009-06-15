@@ -1,0 +1,2 @@
+deb file://%(tests_dir)s/sample_repo_empty ./
+deb-src file://%(tests_dir)s/sample_repo_empty ./

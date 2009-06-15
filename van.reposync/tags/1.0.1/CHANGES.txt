@@ -1,0 +1,13 @@
+Changes
+=======
+
+1.0.1 (2009-06-15)
+------------------
+
+* Fix buildout versions file syntax.
+* Use a very simple layout of pypi repository. All the tarballs in one directory.
+
+1.0.0 (2009-06-15)
+------------------
+
+* Initial Release.
