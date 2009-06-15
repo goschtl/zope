@@ -70,11 +70,14 @@ def py_to_src(setuptools_project):
 
 def bin_to_py(binary_package):
     """Convert a doebian binary package name to a setuptools project name"""
+    # try for an exact match
     py_package_name = _BIN_TO_PY.get(binary_package)
     if py_package_name is not None:
         return py_package_name
-    assert binary_package.startswith('python-')
-    return binary_package[7:]
+    # now we try guess
+    if binary_package.startswith('python-'):
+        return binary_package[7:]
+    return binary_package
 
 def src_to_py(source_package):
     """Convert a debian source package name to a setuptools project name"""

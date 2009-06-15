@@ -28,6 +28,25 @@ These conversions are also exposed in the command line interface:
     >>> runit('van-pydeb src_to_py foo')
     foo
 
+Defaults
+--------
+
+If no special rules are specified, defaults that are (hopefully) intelligent
+will take effect. For converting the binary package name to the python package
+name they look like:
+
+    * If the package name starts with python- remove it:
+        
+        >>> print pydeb.bin_to_py("python-foo")
+        foo
+        >>> print pydeb.bin_to_py("python-python-foo")
+        python-foo
+
+    * Else, return the package name:
+        
+        >>> print pydeb.bin_to_py("foo")
+        foo
+
 Paste
 -----
 

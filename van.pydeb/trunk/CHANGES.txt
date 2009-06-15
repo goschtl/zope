@@ -1,10 +1,14 @@
 Changes
 =======
 
-1.2.1 (unreleased)
+1.2.1 (2009-06-15)
 ------------------
 
-* Add mapping for ZConfig.
+* Add mapping for ZConfig and RestrictedPython.
+* Change default Debian binary to python package name conversion. The original
+  package name will be used if there is no python-prefix. This works with
+  packages such as buildbot which do not include the python-. The previous
+  version errored in this case, so we're backwards compatible :)
 
 1.2.0 (2009-05-29)
 ------------------
