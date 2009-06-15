@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.noop',
-    version = '1.0',
+    version = '1.1dev',
     author='Wolfgang Schnerring',
     author_email='ws@gocept.com',
     description='z3c.noop provides traverser that simply skips a path element, so /foo/++noop++qux/bar is equivalent to /foo/bar.',
