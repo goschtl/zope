@@ -36,7 +36,7 @@ logger = logging.getLogger("van.reposync")
 _COMMANDS = {}
 
 def main(argv=sys.argv):
-    # Handle global options and dispatch the command 
+    # Handle global options and dispatch the command
     assert len(argv) >= 2, "You need to specify a command"
     command = _COMMANDS.get(argv[1])
     if command is None:
@@ -213,7 +213,6 @@ def _find(dir, pattern):
         raise Exception('oops')
     return stdout.splitlines()
 
-
 def _query_setuptools_dist(tarball, tmpdir, py_package_name):
     py_package_filename = to_filename(py_package_name)
     logger.debug("Introspecting egg tarball at %s" % tarball)
@@ -236,15 +235,14 @@ def _query_setuptools_dist(tarball, tmpdir, py_package_name):
         basedir = os.path.dirname(egg_info)
         metadata = PathMetadata(basedir, egg_info)
         dist_name = os.path.splitext(os.path.basename(egg_info))[0]
-        dist = Distribution(basedir,project_name=dist_name,metadata=metadata)
+        dist = Distribution(basedir, project_name=dist_name,metadata=metadata)
         return dist
     finally:
         os.chdir(oldcwd)
 
-
 def _get_setuptools_data(filename, py_package_name):
     """Returns a 3 part tuple:
-    
+
     (name, version, filename)
 
     where filename is the setuptools name on the filesystem."""
@@ -261,17 +259,16 @@ def _get_setuptools_data(filename, py_package_name):
         # see: http://mail.python.org/pipermail/distutils-sig/2009-May/011877.html
         return (dist.project_name, dist.version, '%s-%s.tar.gz' % (to_filename(dist.project_name), to_filename(dist.version)))
     finally:
-       shutil.rmtree(tmpdir) 
-    
+       shutil.rmtree(tmpdir)
 
 class _ExecutionContext(object):
     """Contains the global configuration for what we are doing"""
 
     _lock = None
-    
+
     def __init__(self, rootdir):
         self._rootdir = os.path.abspath(rootdir)
-   
+
     def open(self):
         assert self._lock is None
         self._lock = LockFile(os.path.join(self.rootdir, 'lock'))
@@ -291,7 +288,6 @@ class _ExecutionContext(object):
     @property
     def pypi_root(self):
         return os.path.join(self.rootdir, 'pypi')
-
 
 def _init_apt_cache(context, apt_sources=None):
     join = os.path.join
