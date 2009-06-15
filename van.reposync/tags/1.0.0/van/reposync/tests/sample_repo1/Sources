@@ -1,0 +1,60 @@
+Package: build-dep-on-setuptools-without-egg-info
+Binary: python-build-dep-on-setuptools-without-egg-info
+Version: 1-1
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Build-Depends: debhelper (>= 5.0.38), python-all-dev (>= 2.3.5-11), python-central (>= 0.5.6), python-setuptools (>= 0.6b3-1)
+Architecture: all
+Standards-Version: 3.8.1
+Format: 1.0
+Files:
+ a867da96f61b255ca1021c569887a7e8 1050 build-dep-on-setuptools-without-egg-info_1-1.dsc
+ b875b7741a923c6c1d7e299490ad2ee3 196 build-dep-on-setuptools-without-egg-info_1.orig.tar.gz
+ 451e4de4a5a9a86ec36063cd20759109 989 build-dep-on-setuptools-without-egg-info_1-1.diff.gz
+Checksums-Sha1: 
+ 03316dabe22188e7745298c95effe131066f5e42 196 build-dep-on-setuptools-without-egg-info_1.orig.tar.gz
+ 484744861aa8efd6b7c56599823b8724b856bc5a 989 build-dep-on-setuptools-without-egg-info_1-1.diff.gz
+Checksums-Sha256: 
+ cae948291967c4d9747d624fec0234b1c9db70972e477959c03e2f0c5e1b26f7 196 build-dep-on-setuptools-without-egg-info_1.orig.tar.gz
+ c44bdbf3f362aba4aba1b98517e0f1857ea0a974e1964ee102f4a29ef1d6747d 989 build-dep-on-setuptools-without-egg-info_1-1.diff.gz
+Python-Version: all
+
+Package: van.pydeb
+Binary: python-van.pydeb
+Version: 1.2.0-3
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Build-Depends: debhelper (>= 5.0.38), python-all-dev (>= 2.3.5-11), python-central (>= 0.5.6), python-setuptools (>= 0.6b3-1)
+Architecture: all
+Standards-Version: 3.8.0
+Format: 1.0
+Files:
+ ff71797231fc247bfb391a042260137d 1084 van.pydeb_1.2.0-3.dsc
+ e170f01cc51555986694f69091781ff7 41062 van.pydeb_1.2.0.orig.tar.gz
+ 04d492807bddbd8c546755cf8e65b15e 1997 van.pydeb_1.2.0-3.diff.gz
+Checksums-Sha1: 
+ 5fb78dc6413502141e905d1da30a64bb1044cb08 41062 van.pydeb_1.2.0.orig.tar.gz
+ a737e5ff467412e1a7e988a514debabad079a0d0 1997 van.pydeb_1.2.0-3.diff.gz
+Checksums-Sha256: 
+ fa30c1934816578986f529f96e4841a7caf07a4c1b768b9592b90f0e7f260465 41062 van.pydeb_1.2.0.orig.tar.gz
+ d0f4bbcd8eaa0a79f1868cd6f5ec616bcf4248d60ce4c33a3798c797cb4df110 1997 van.pydeb_1.2.0-3.diff.gz
+Python-Version: all
+
+Package: zope.component
+Binary: python-zope.component, python-zope.component-zcml
+Version: 3.7.0-1
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Build-Depends: debhelper (>= 5.0.38), python-all-dev (>= 2.3.5-11), python-central (>= 0.5.6), python-setuptools (>= 0.6b3-1), python-van.pydeb
+Architecture: all
+Standards-Version: 3.8.0
+Format: 1.0
+Files:
+ 4cc956bdac2179d88ab08e4374c310a5 1170 zope.component_3.7.0-1.dsc
+ b8843319eb010ff073025adbfba19be0 90602 zope.component_3.7.0.orig.tar.gz
+ a4da189d95176cd2960c4adda3ddaa44 2499 zope.component_3.7.0-1.diff.gz
+Checksums-Sha1: 
+ 135508ece5f7d7891226362b809a922adec8e086 90602 zope.component_3.7.0.orig.tar.gz
+ 783babb75a2d188a45e7bbf90966800644521ec5 2499 zope.component_3.7.0-1.diff.gz
+Checksums-Sha256: 
+ 01ddc44f31439124d1273860128663acb8cb2ab74432124b4cd514de37a4c943 90602 zope.component_3.7.0.orig.tar.gz
+ c72717dd722e634a4f15a4817731418ad4de946f389aa122da5594bd56186344 2499 zope.component_3.7.0-1.diff.gz
+Python-Version: all
+

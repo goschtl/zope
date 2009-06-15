@@ -1,0 +1,91 @@
+
+Setup
+-----
+
+Get a temporary directory:
+
+    >>> import tempfile, shutil, os
+    >>> tmp_dir = tempfile.mkdtemp()
+
+    >>> from van.reposync import tests
+    >>> tests_dir = os.path.dirname(tests.__file__)
+
+Basic Synchronization
+---------------------
+
+We need to setup a sources.list file:
+
+    >>> synced1 = os.path.join(tmp_dir, 'synced1')
+    >>> os.mkdir(synced1)
+    >>> sources1_list = os.path.join(tmp_dir, 'sources1.list')
+    >>> open(sources1_list, 'w').write(open(os.path.join(tests_dir, 'sources1.list'), 'r').read() % {'tests_dir': tests_dir})
+
+    >>> tests.runit('van-reposync sync --root %s --apt-sources %s' % (synced1, sources1_list)) # doctest: +REPORT_NDIFF
+
+Lets look inside the repo and see what's there:
+
+    >>> def look(*args):
+    ...     dir = os.path.join(tmp_dir, *args)
+    ...     for i in sorted(os.listdir(dir)):
+    ...         print i
+
+    >>> def lookin(*args):
+    ...     f = os.path.join(tmp_dir, *args)
+    ...     print open(f, 'r').read()
+
+We see the apt working directory, lockfile and our mirror:
+
+    >>> look('synced1')
+    apt
+    lock
+    pypi
+
+In pypi, we see the "download" directory where apt put the files, and also the "simple" pypi mirror:
+
+    >>> look('synced1', 'pypi')
+    buildout_versions.cfg
+    download
+    simple
+    
+Looking in the buildout file, we can see the python project versions in the debian repository:
+
+    >>> lookin('synced1', 'pypi', 'buildout_versions.cfg')
+    [versions]
+        van.pydeb = 1.2.0
+        zope.component = 3.7.0
+
+Looking inside both, we can see that the "simple" directory just links tarballs:
+
+    >>> look('synced1', 'pypi', 'simple')
+    van.pydeb-1.2.0.tar.gz
+    zope.component-3.7.0.tar.gz
+    >>> look('synced1', 'pypi', 'download')
+    build-dep-on-setuptools-without-egg-info_1.orig.tar.gz
+    build-dep-on-setuptools-without-egg-info_1.orig.tar.gz.reposync
+    van.pydeb_1.2.0.orig.tar.gz
+    van.pydeb_1.2.0.orig.tar.gz.reposync
+    zope.component_3.7.0.orig.tar.gz
+    zope.component_3.7.0.orig.tar.gz.reposync
+
+    >>> os.path.samefile(os.path.join(tmp_dir, 'synced1', 'pypi', 'simple', 'zope.component-3.7.0.tar.gz'),
+    ...                  os.path.join(tmp_dir, 'synced1', 'pypi', 'download', 'zope.component_3.7.0.orig.tar.gz'))
+    True
+
+If we now use an empty source.list, and re-sync, everything is cleaned up:
+
+    >>> sources_list_empty = os.path.join(tmp_dir, 'sources_empty.list')
+    >>> open(sources_list_empty, 'w').write(open(os.path.join(tests_dir, 'sources_empty.list'), 'r').read() % {'tests_dir': tests_dir})
+    >>> tests.runit('van-reposync sync --root %s --apt-sources %s' % (synced1, sources_list_empty)) # doctest: +REPORT_NDIFF
+
+    >>> look('synced1', 'pypi', 'simple')
+    >>> look('synced1', 'pypi', 'download')
+
+    >>> lookin('synced1', 'pypi', 'buildout_versions.cfg')
+    [versions]
+
+Cleanup
+-------
+
+Remove the temporary directory:
+
+    >>> shutil.rmtree(tmp_dir)
