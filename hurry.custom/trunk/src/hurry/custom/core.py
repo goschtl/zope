@@ -217,6 +217,8 @@ def _get_structure_helper(path, collection_path, extensions):
     entries = os.listdir(path)
     result = []
     for entry in entries:
+        if entry.startswith('.'):
+            continue
         entry_path = os.path.join(path, entry)
         if os.path.isdir(entry_path):
             info = {

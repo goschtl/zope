@@ -4,7 +4,8 @@ Changes
 0.7 (unreleased)
 ~~~~~~~~~~~~~~~~
 
-- Nothing changed yet.
+* ``structure`` functionality now skips directories and files start that
+  with a period.
 
 
 0.6 (2009-06-10)
