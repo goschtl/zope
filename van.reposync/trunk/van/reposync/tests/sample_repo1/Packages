@@ -1,0 +1,83 @@
+Package: python-build-dep-on-setuptools-without-egg-info
+Priority: extra
+Section: python
+Installed-Size: 56
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Architecture: all
+Source: build-dep-on-setuptools-without-egg-info
+Version: 1-1
+Filename: ./python-build-dep-on-setuptools-without-egg-info_1-1_all.deb
+Size: 2216
+MD5sum: c2d28a6c485c515369130910f20263a8
+SHA1: 2f932c33d6202ede558da50f18f5ad9bb1546694
+SHA256: 08205b44a773285690aa0ab48cea64fa56acb8adfe51697225fa203e54ea0cdb
+Description: pathological test case for van.pydeb
+ This package build depends on python-setuptools (and otherwise looks like a
+ python package) but does not contain an egg-info file. Or anything else, for
+ that matter.
+Python-Version: all
+
+Package: python-van.pydeb
+Priority: extra
+Section: python
+Installed-Size: 456
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Architecture: all
+Source: van.pydeb
+Version: 1.2.0-3
+Replaces: python-van
+Provides: python-van
+Depends: python-pkg-resources, python, python-central (>= 0.6.7), python2.5
+Filename: ./python-van.pydeb_1.2.0-3_all.deb
+Size: 44360
+MD5sum: d5047c1317599516535aea0010daab1f
+SHA1: e8522876f5edbcf935bb688aedb2cfcd41163835
+SHA256: 6fb24af3710db81e147a8d2e9d25fb2da925ac1f9e8b5c5ad7bf86ae966f4c6a
+Description: introspection of python metadata and conversion to Debian package metadata
+ Provides a python API for accessing python package metadata and trandslating
+ that to Debian packaging metadata.
+ .
+ A binary useful in building Debian packages is also provided.
+Python-Version: all
+
+Package: python-zope.component-zcml
+Priority: extra
+Section: python
+Installed-Size: 36
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Architecture: all
+Source: zope.component
+Version: 3.7.0-1
+Depends: python-zope.component (= 3.7.0-1), python-zope.configuration, python-zope.i18nmessageid, python-zope.proxy, python-zope.security
+Filename: ./python-zope.component-zcml_3.7.0-1_all.deb
+Size: 3856
+MD5sum: 91a2bcf4bc962be1782ceaace16b6562
+SHA1: 082a53b6f1ea9f2608d58671e7ab70e3ad692502
+SHA256: 112c93570b16298e0ded1dcb35ffcb81920ccd64250ddbbff1a3ba3a0cdb230e
+Description: Metapackage for zope.component zcml extra
+ Provides support for registering components with zope.component in ZCML.
+Python-Version: all
+
+Package: python-zope.component
+Priority: extra
+Section: python
+Installed-Size: 552
+Maintainer: Brian Sutherland <brian@vanguardistas.net>
+Architecture: all
+Source: zope.component
+Version: 3.7.0-1
+Provides: python-zope.component-persistentregistry
+Depends: python-setuptools, python-zodb, python-zope, python-zope.event, python-zope.interface, python, python-central (>= 0.6.7)
+Recommends: python-zope.hookable
+Suggests: python-z3c.recipe.sphinxdoc, python-zope.location, python-zope.testing
+Filename: ./python-zope.component_3.7.0-1_all.deb
+Size: 77456
+MD5sum: 711f8822dbd34d10b843fe193b972646
+SHA1: c286808b73854f2b79a82fad41f6bf97618f6938
+SHA256: 1f30a08c373f6e2eff39fccf2d5a0f093c2e78d6e09aaca4e0ea2657252c7700
+Description: Zope Component Architecture
+ This package represents the core of the Zope Component Architecture.
+ Together with the zope.interface package, it provides facilities for
+ defining, registering and looking up components.
+Python-Version: all
+
