@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:custom="http://namespaces.zope.org/custom">
+
+  <include package="hurry.custom" file="meta.zcml" />
+
+  <custom:templateLanguage 
+        template_class=".JsonTemplate"
+        extension=".jsont"
+        sample_extension=".json" />
+
+</configure>
