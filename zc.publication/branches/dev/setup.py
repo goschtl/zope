@@ -14,20 +14,31 @@
 name, version = 'zc.publication', '0'
 
 install_requires = [
+    'ZConfig',
     'setuptools',
-    'zope.authentication',
-    'zope.principalregistry',
-    'zope.publisher',
     'zope.app.component',
     'zope.app.publication',
+    'zope.app.publisher',
+    'zope.authentication',
+    'zope.component [zcml]',
+    'zope.configuration',
     'zope.error',
-    'ZConfig',
+    'zope.interface',
+    'zope.location',
+    'zope.principalregistry',
+    'zope.publisher',
+    'zope.security',
     ]
-extras_require = dict(test=['zope.testing'])
+extras_require = dict(
+    test=['zope.testing', 'webtest', 'manuel ==1.0.0a2', 'PasteDeploy'],
+    )
 
 entry_points = """
 [zope.publisher.publication_factory]
 default = zc.publication:Publication
+
+[paste.app_factory]
+main = zc.publication:Application
 """
 
 from setuptools import setup

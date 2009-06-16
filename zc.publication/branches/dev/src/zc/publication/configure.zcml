@@ -18,5 +18,28 @@
       provides="zope.authentication.interfaces.IAuthentication"
       component=".noauth"
       />
+
+  <adapter
+     provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+     for="*
+          zope.publisher.interfaces.browser.IBrowserRequest"
+     factory=".DefaultTraverser"
+     />
+
+  <class class=".DefaultTraverser">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </class>
+
+  <adapter
+     provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+     for="zope.location.interfaces.ILocation
+          zope.publisher.interfaces.browser.IBrowserRequest"
+     factory="zope.app.publication.traversers.SimpleComponentTraverser"
+     />
+
+  <class class="zope.app.publication.traversers.SimpleComponentTraverser">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </class>
+
   <browser:defaultView name="index.html" />
 </configure>
