@@ -11,13 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface, component
+from zope.component import getMultiAdapter
 from z3c.form.interfaces import IWidget
 from z3ext.layout.interfaces import IPageletContext
+
+import interfaces
+
+
+class WidgetRenderer(object):
+
+    def render(self):
+        renderer = getMultiAdapter(
+            (self.context,) + self.contexts + (self.request,),
+            interfaces.IWidget, name=self.context.mode)
+
+        renderer.update()
+        return renderer.render()
 
 
 @component.adapter(IWidget)

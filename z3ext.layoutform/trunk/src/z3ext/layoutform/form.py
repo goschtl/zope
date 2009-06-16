@@ -47,6 +47,7 @@ class Views(util.SelectionManager):
     def __iter__(self):
         return iter(self._data_values)
 
+
 class PageletBaseForm(form.BaseForm, BrowserPagelet):
 
     __call__ = BrowserPagelet.__call__

@@ -1,4 +1,4 @@
-<configure 
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:z3ext="http://namespaces.zope.org/z3ext">
 
@@ -10,8 +10,8 @@
        permission="zope.Public"
        interface="z3c.form.interfaces.ITextAreaWidget" />
   </class>
-  
-  <adapter 
+
+  <adapter
      for="zope.schema.interfaces.IText
           ..interfaces.ILayoutFormLayer"
      factory=".textarea.TextAreaFieldWidget" />
@@ -108,13 +108,37 @@
      interface="z3ext.layoutform.browser.interfaces.IWidget" />
 
   <z3ext:pagelet
+     type="form.widget"
      for="z3c.form.interfaces.IWidget
 	  zope.schema.interfaces.IField
 	  z3c.form.interfaces.IForm"
-     template="widget.pt"
-     type="form.widget" />
+     class=".widget.WidgetRenderer" />
 
-  <adapter 
+  <z3ext:pagelet
+     name="input"
+     type="form.widget"
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IForm"
+     template="widget.pt" />
+
+  <z3ext:pagelet
+     name="hidden"
+     type="form.widget"
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IForm"
+     template="widget_hidden.pt" />
+
+  <z3ext:pagelet
+     name="display"
+     type="form.widget"
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IForm"
+     template="widget_display.pt" />
+
+  <adapter
      name="form.widget"
      factory=".widget.getWidgetManager" />
 
@@ -123,7 +147,7 @@
      for="z3c.form.interfaces.IWidget
 	  zope.schema.interfaces.IField
 	  z3c.form.interfaces.IDisplayForm"
-     template="widgetDisplay.pt"
+     template="widget_display.pt"
      type="form.widget"  />
 
   <!-- add form buttons -->
@@ -138,11 +162,11 @@
      name="z3ext-layoutform.css"
      library="z3ext" type="stylesheet"
      file="styles.css" filetype="zrt" />
-
+  
   <z3ext:resource
      file="required.gif"
      name="z3ext-layoutform-required.gif" />
-
+  
   <z3ext:resource
      file="linkOpaque.gif"
      name="z3ext-layoutform-linkOpaque.gif" />
