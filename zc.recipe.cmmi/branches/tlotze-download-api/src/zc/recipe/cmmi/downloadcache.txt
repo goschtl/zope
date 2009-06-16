@@ -66,15 +66,8 @@ download url:
 
     >>> import os
     >>> cache_path = os.path.join(cache, 'cmmi')
-    >>> cache_key = os.listdir(cache_path)[0]
-
-Each directory contains two files, the downloaded file and a record
-describing the download:
-
-    >>> cache_entry = os.path.join(cache_path, cache_key)
-    >>> ls(cache_entry)
-    -  cache.ini
-    -  foo.tgz
+    >>> len(os.listdir(cache_path))
+    1
 
 If we remove the installed parts and then re-run, we'll see that the
 files are not downloaded afresh:
