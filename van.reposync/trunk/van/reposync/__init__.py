@@ -13,16 +13,13 @@
 ##############################################################################
 import os
 import sys
-import tempfile
+import tarfile
 from os.path import exists, join
 from subprocess import Popen, PIPE, call
 import logging
 import optparse
-import shutil
 
-from van import pydeb
-from setuptools import sandbox
-from pkg_resources import to_filename, PathMetadata, Distribution
+from pkg_resources import to_filename
 import apt
 import apt_pkg
 from zc.lockfile import LockFile
@@ -127,7 +124,7 @@ def _sync(args=sys.argv):
             if exists(pool_metadata_filename):
                 continue # we already introspected this file, but for another package name
             owned_files.add(pool_metadata_filename)
-            py_data = _get_setuptools_data(pool_file, pydeb.bin_to_py(bin_package_name))
+            py_data = _get_setuptools_data(pool_file)
             if py_data is None:
                 cant_introspect.add(pool_file)
                 continue
@@ -213,53 +210,39 @@ def _find(dir, pattern):
         raise Exception('oops')
     return stdout.splitlines()
 
-def _query_setuptools_dist(tarball, tmpdir, py_package_name):
-    py_package_filename = to_filename(py_package_name)
-    logger.debug("Introspecting egg tarball at %s" % tarball)
-    oldcwd = os.getcwd()
-    os.chdir(tmpdir)
-    try:
-        retcode = call(['tar', '-xzf', tarball])
-        if retcode != 0:
-            logger.error("Failed to unpack egg at %s" % tarball)
-            return None
-        # find the .egg-info and load it
-        found = _find(tmpdir, '%s.egg-info' % py_package_filename)
-        if not found:
-            logging.warning("Couldn't find %s.egg-info in %s, falling back to looking for *.egg-info" % (py_package_filename, tarball))
-            found = _find(tmpdir, '*.egg-info')
-        if len(found) != 1:
-            logging.error("Found %s egg-info directories, expected 1 (in %s)" % (len(found), tarball))
-            return None
-        egg_info = found[0]
-        basedir = os.path.dirname(egg_info)
-        metadata = PathMetadata(basedir, egg_info)
-        dist_name = os.path.splitext(os.path.basename(egg_info))[0]
-        dist = Distribution(basedir, project_name=dist_name,metadata=metadata)
-        return dist
-    finally:
-        os.chdir(oldcwd)
-
-def _get_setuptools_data(filename, py_package_name):
+def _get_setuptools_data(filename):
     """Returns a 3 part tuple:
 
     (name, version, filename)
 
     where filename is the setuptools name on the filesystem."""
-    tmpdir = tempfile.mkdtemp()
+    tarball = filename
+    logger.debug("Introspecting egg tarball at %s" % tarball)
+    tar = tarfile.open(tarball, 'r:*')
+    random_tar_member = tar.next() # is it right that the top level dir will always be first?
+    top_level_dir = random_tar_member.name.split('/')[0]
+    pkg_info_tar_path = '/'.join([top_level_dir, 'PKG-INFO'])
     try:
-        try:
-            dist = _query_setuptools_dist(filename, tmpdir, py_package_name)
-        except:
-            logging.exception("Error on introspecting %s, ignoring and continuing anyway." % filename)
-            return None
-        if dist is None:
-            return None
-        # I think this is the right way of quoting
-        # see: http://mail.python.org/pipermail/distutils-sig/2009-May/011877.html
-        return (dist.project_name, dist.version, '%s-%s.tar.gz' % (to_filename(dist.project_name), to_filename(dist.version)))
-    finally:
-       shutil.rmtree(tmpdir)
+        pkg_info_tar = tar.getmember(pkg_info_tar_path)
+    except KeyError:
+        logger.warn("Could not fing PKG-INFO in tarball")
+        return None
+    pkg_config = tar.extractfile(pkg_info_tar).read()
+    project_name = None
+    version = None
+    for line in pkg_config.splitlines():
+        if line.startswith('Version: '):
+            version = line[9:]
+        if line.startswith('Name: '):
+            project_name = line[6:]
+        if project_name is not None and version is not None:
+            break
+    else:
+        logger.error("Invalid PKG-INFO file")
+        return None
+    # I think this is the right way of quoting
+    # see: http://mail.python.org/pipermail/distutils-sig/2009-May/011877.html
+    return (project_name, version, '%s-%s.tar.gz' % (to_filename(project_name), to_filename(version)))
 
 class _ExecutionContext(object):
     """Contains the global configuration for what we are doing"""
