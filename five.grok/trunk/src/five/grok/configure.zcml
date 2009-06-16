@@ -8,6 +8,7 @@
   <include package="five.grok" file="meta.zcml" />
 
   <include package="five.localsitemanager" />
+  <include package="grokcore.annotation" />
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
 

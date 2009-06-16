@@ -36,5 +36,6 @@ setup(name='five.grok',
         'grokcore.viewlet',
         'grokcore.security',
         'grokcore.site',
+        'grokcore.annotation',
         ],
       )

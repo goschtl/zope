@@ -87,6 +87,10 @@ def test_suite():
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
+            module='five.grok.tests.annotation',
+            setUp=setUp, tearDown=testing.tearDown),
+
+        doctestunit.DocTestSuite(
             module='five.grok.tests.multiadapter',
             setUp=setUp, tearDown=testing.tearDown),
 

@@ -13,6 +13,7 @@
 ##############################################################################
 
 from grokcore.component import *
+from grokcore.annotation import *
 from grokcore.security import *
 from grokcore.site import *
 from grokcore.view import *

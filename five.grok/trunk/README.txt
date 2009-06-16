@@ -33,7 +33,9 @@ developers:
 
 - Formlib forms,
 
-- Local sites and utilities.
+- Local sites and local utilities,
+
+- Annotations.
 
 All those components are available with exactly the same syntax than
 in grok. You just have to do::
