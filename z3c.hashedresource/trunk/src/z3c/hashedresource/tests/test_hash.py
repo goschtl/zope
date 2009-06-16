@@ -16,11 +16,19 @@
 $Id: test_directoryresource.py 95447 2009-01-29 16:28:18Z wosc $
 """
 from z3c.hashedresource import hash, testing
+import os
 import unittest
 import zope.component
 
 
+ProductionModeLayer = zope.app.testing.functional.ZCMLLayer(
+    os.path.join(os.path.dirname(testing.__file__), 'ftesting.zcml'),
+    __name__, 'ProductionModeLayer', allow_teardown=True)
+
+
 class CachingContentsHashTest(testing.FunctionalTestCase):
+
+    layer = ProductionModeLayer
 
     def test_production_mode_hash_should_not_change(self):
         zope.component.provideAdapter(

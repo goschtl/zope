@@ -15,6 +15,7 @@
 
 $Id: test_directoryresource.py 95447 2009-01-29 16:28:18Z wosc $
 """
+from z3c.hashedresource import interfaces
 import os
 import re
 import tempfile
@@ -32,8 +33,13 @@ checker = zope.security.checker.NamesChecker(
     )
 
 HashedResourcesLayer = zope.app.testing.functional.ZCMLLayer(
-    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    os.path.join(os.path.dirname(__file__), 'ftesting-devmode.zcml'),
     __name__, 'HashedResourcesLayer', allow_teardown=True)
+
+
+class TestRequest(zope.publisher.browser.TestRequest):
+
+    zope.interface.implements(interfaces.IHashedResourceSkin)
 
 
 class FunctionalTestCase(zope.app.testing.functional.FunctionalTestCase):
@@ -52,7 +58,7 @@ class FunctionalTestCase(zope.app.testing.functional.FunctionalTestCase):
         open(os.path.join(self.tmpdir, 'example.txt'), 'w').write('')
         self.dirname = os.path.basename(self.tmpdir)
 
-        self.request = zope.publisher.browser.TestRequest()
+        self.request = TestRequest()
         self.request._vh_root = self.site
         self.directory = zope.app.publisher.browser.directoryresource.DirectoryResourceFactory(
             self.tmpdir, checker, self.dirname)(self.request)

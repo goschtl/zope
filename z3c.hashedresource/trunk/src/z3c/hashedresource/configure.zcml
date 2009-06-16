@@ -3,7 +3,13 @@
   xmlns:zcml="http://namespaces.zope.org/zcml"
   >
 
-  <include package="z3c.noop"/>
+  <include package="z3c.noop" />
+
+  <utility
+    component=".interfaces.IHashedResourceSkin"
+    provides="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="z3c.hashedresource"
+    />
 
   <adapter
     factory=".url.HashingURL"

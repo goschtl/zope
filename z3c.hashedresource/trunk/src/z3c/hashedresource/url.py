@@ -14,11 +14,12 @@
 
 from z3c.hashedresource import interfaces
 from zope.component import adapts
-from zope.interface import implements, implementsOnly
+from zope.interface import implements, implementsOnly, directlyProvides
+from zope.traversing.browser.interfaces import IAbsoluteURL
+import zope.app.publisher.browser.resource
 import zope.app.publisher.interfaces
 import zope.publisher.interfaces.browser
 import zope.traversing.browser.absoluteurl
-import zope.traversing.browser.interfaces
 
 
 class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
@@ -27,9 +28,9 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
     a browser to update its cache.
     """
 
-    implementsOnly(zope.traversing.browser.interfaces.IAbsoluteURL)
+    implementsOnly(IAbsoluteURL)
     adapts(zope.app.publisher.interfaces.IResource,
-           zope.publisher.interfaces.browser.IDefaultBrowserLayer)
+           interfaces.IHashedResourceSkin)
 
     def __init__(self, context, request):
         self.context = context
@@ -39,6 +40,11 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
         self.name = self.context.__name__
         if self.name.startswith('++resource++'):
             self.name = self.name[12:]
+
+    def _site_url(self):
+        url = zope.app.publisher.browser.resource.AbsoluteURL(
+            self.context, self.request)()
+        return url.split('/@@/')[0]
 
     def __str__(self):
         hash = str(interfaces.IResourceContentsHash(self.context))

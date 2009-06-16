@@ -18,3 +18,6 @@ its URL, while in production mode the hash is computed only once, so remember
 to restart the server after changing resource files (else browsers will still
 see the old URL unchanged and use their outdated cached versions of the files).
 
+To use this package, include its configure.zcml and use
+`z3c.hashedresource.interfaces.IHashedResourceSkin` or a skin that inherits from
+it.
