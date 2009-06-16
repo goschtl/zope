@@ -4,6 +4,9 @@ Changelog for five.grok
 five.grok - 1.0b1 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+* Added support for annotations with `grokcore.annotation`_.
+  [thefunny42]
+
 * Added support for local site and utilities with `grokcore.site`_.
   [thefunny42]
 
@@ -71,6 +74,7 @@ five.grok - 1.0a1 (2008-10-22)
   views).
   [regebro, gotcha]
 
+.. _grokcore.annotation: http://pypi.python.org/pypi/grokcore.annotation
 .. _grokcore.site: http://pypi.python.org/pypi/grokcore.site
 .. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
 .. _grokcore.viewlet: http://pypi.python.org/pypi/grokcore.viewlet
