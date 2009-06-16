@@ -20,7 +20,8 @@ from zope.app.testing import setup
 
 from zope import interface, component
 from zope.component import provideAdapter
-from zope.session.interfaces import ISession
+from zope.session.interfaces import ISession, ISessionDataContainer
+from zope.session.session import RAMSessionDataContainer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.testing.functional import ZCMLLayer
 from zope.app.testing.functional import FunctionalDocFileSuite
@@ -54,7 +55,7 @@ def setUp(test):
     setUpTraversing()
     component.provideAdapter(getSession)
     component.provideAdapter(message.StatusMessage, name='statusMessage')
-
+    component.provideUtility(RAMSessionDataContainer(), ISessionDataContainer)
 
 def tearDown(test):
     session.__init__()
