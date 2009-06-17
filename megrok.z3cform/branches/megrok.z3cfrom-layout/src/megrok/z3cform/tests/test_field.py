@@ -1,6 +1,4 @@
 """
-
-  >>> grok.testing.grok(__name__)
   >>> manfred = Mammoth()
 
   >>> from zope import component
@@ -23,10 +21,7 @@
   2
   >>> [field.__name__ for field in view.fields.values()]
   ['name', 'age']
-
-
 """
-
 import grok
 
 from zope import interface, schema
@@ -51,4 +46,10 @@ class Edit(z3cform.EditForm):
 class Index(z3cform.DisplayForm):
     pass
 
+def test_suite():
+    from zope.testing import doctest
+    from megrok.z3cform.tests import FunctionalLayer
+    suite = doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
+    suite.layer = FunctionalLayer
+    return suite
 
