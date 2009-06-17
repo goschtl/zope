@@ -151,6 +151,16 @@ class PageAddForm(PageGrokForm, form.AddForm, megrok.layout.Page):
 
     martian.baseclass()
 
+    def _render_template(self):
+        assert not (self.template is None)
+        if self._finishedAdd:
+            self.request.response.redirect(self.nextURL())
+            return ""
+        if IGrokTemplate.providedBy(self.template):
+            return super(GrokForm, self)._render_template()
+        return self.template(self) 
+
+
 
 class PageEditForm(PageGrokForm, form.EditForm, megrok.layout.Page):
     """z3c edit form with megrok.layout support.
