@@ -127,8 +127,7 @@ class Recipe(object):
                 if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    if urlparse.urlparse(self.patch, None)[0] is not None:
-                        self.patch = download(self.patch)
+                    self.patch = download(self.patch)
                     system("patch %s < %s" % (self.patch_options, self.patch))
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
