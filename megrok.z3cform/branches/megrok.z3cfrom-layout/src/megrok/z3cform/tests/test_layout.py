@@ -13,7 +13,7 @@
 
   >>> view = component.getMultiAdapter((manfred, request), name='edit')
   >>> view
-  <megrok.z3cform.tests.test_form.Edit object at ...>
+  <megrok.z3cform.tests.test_layout.Edit object at ...>
 
   If we call the EditPage we found it in the renderd Layout
   
