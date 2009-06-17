@@ -154,7 +154,7 @@ the new cache is created and repopulated:
 The old cache is left in place:
 
     >>> ls(cache_path)
-    d ...
+    - ...
 
 Installing solely from a download cache
 ---------------------------------------
