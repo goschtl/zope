@@ -100,7 +100,7 @@ Directives
       created. If not defined it will ask NameChooser to pick a name
       for it.
 
-In addition, the ``grokcore.security`` package exposes the
+In addition, the ``grokcore.site`` package exposes the
 `grokcore.component`_ API.
 
 .. _grokcore.component: http://pypi.python.org/pypi/grokcore.component
