@@ -578,6 +578,59 @@ Or multiple contexts
   >>> print pagelet.publishTraverse(request, 'myPagelet5')
   <div>My pagelet5</div>
 
+We can use interface as pagelet 'type'
+
+  >>> class IMyPagelet6(interface.Interface):
+  ...     pass
+
+  >>> provideInterface('myPagelet6', IMyPagelet6, IPageletType)
+
+  >>> template6 = os.path.join(temp_dir, 'pagelet6.pt')
+  >>> open(template6, 'w').write('''<div>My pagelet6</div>''')
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       for="*"
+  ...       template="%s"
+  ...       type="z3ext.layout.TESTS.IMyPagelet6"
+  ...       permission="zope.Public" />
+  ... </configure>"""%template6, context)
+
+  >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6')
+  <div>My pagelet6</div>
+
+
+we can call named pagelets
+
+  >>> template7 = os.path.join(temp_dir, 'pagelet7.pt')
+  >>> open(template7, 'w').write('''<div>My pagelet7</div>''')
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="named"
+  ...       for="*"
+  ...       template="%s"
+  ...       type="z3ext.layout.TESTS.IMyPagelet6"
+  ...       permission="zope.Public" />
+  ... </configure>"""%template7, context)
+
+  >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6|named')
+  <div>My pagelet7</div>
+
+
+'pageletObject' - same as 'pagelet' but it doesnt call pagelet render
+
+  >>> pagelet=component.getMultiAdapter((Content(),request),name='pageletObject')
+  >>> pob = pagelet.publishTraverse(request, 'myPagelet6|named')
+  >>> pob
+  <z3ext.layout.zcml.PageletClass from None object at ...>
+  >>> print pob.render()
+  <div>My pagelet7</div>
+
 
 We can't register nameless pagelet, we can register only typed pagelet
 without name

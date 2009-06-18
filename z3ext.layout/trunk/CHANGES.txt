@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+2.1.0 (2009-06-18)
+------------------
+
+- Allow use interface as type for z3ext:pagelet directive
+
+- Allow use named typed pagelets with '@@pagelet' view and 'pagelet:' tales
+
+- Added 'pageletObject' view, it doesn't call pagelet render method
+
+
 2.0.8 (2009-06-03)
 ------------------
 

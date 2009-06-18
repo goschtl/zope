@@ -52,6 +52,7 @@ def setUp(test):
     test.globs['root'] = root
     component.provideAdapter(pagelet.queryPagelet)
     component.provideAdapter(pagelet.PageletPublisher, name='pagelet')
+    component.provideAdapter(pagelet.PageletObjectPublisher,name='pageletObject')
     setup.setUpTestAsModule(test, 'z3ext.layout.TESTS')
 
 

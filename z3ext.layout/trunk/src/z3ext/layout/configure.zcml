@@ -26,6 +26,10 @@
      name="pagelet"
      factory=".pagelet.PageletPublisher" />
 
+  <adapter
+     name="pageletObject"
+     factory=".pagelet.PageletObjectPublisher" />
+
   <class class=".pagelet.PageletPublisher">
     <allow
        attributes="__getitem__"

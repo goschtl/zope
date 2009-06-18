@@ -226,7 +226,7 @@ def layoutDirective(
     cdict['description'] = description
 
     if template:
-        cdict['template'] = LayoutTemplateFile(template, content_type=contentType)
+        cdict['template'] = LayoutTemplateFile(template,content_type=contentType)
 
     cdict.update(kwargs)
 
@@ -296,10 +296,11 @@ def sendNotification(uid, name, view, context, layer, layoutclass, keywords):
 Type = type
 
 # pagelet directive
-def pageletDirective(_context, for_, name=u'', type=(),
-                     class_=None, layer=IDefaultBrowserLayer, provides=[],
-                     allowed_interface=[], allowed_attributes=[],
-                     template=u'', layout=u'', permission='zope.Public', **kwargs):
+def pageletDirective(
+    _context, for_, name=u'', type=(),
+    class_=None, layer=IDefaultBrowserLayer, provides=[],
+    allowed_interface=[], allowed_attributes=[],
+    template=u'', layout=u'', permission='zope.Public', **kwargs):
 
     # Check paeglet name
     if not name and not type:
@@ -338,9 +339,17 @@ def pageletDirective(_context, for_, name=u'', type=(),
     new_class = Type('PageletClass from %s'%class_, bases, cdict)
 
     # extend provides with type
+    tps = []
     for tp in type:
         iface = queryUtility(IPageletType, tp)
+        if iface is None:
+            try:
+                iface = _context.resolve(tp)
+            except Exception, err:
+                pass
+
         if iface is not None:
+            tps.append(iface)
             provides.append(iface)
 
     kwargs['type'] = type
@@ -403,12 +412,13 @@ def pageletDirective(_context, for_, name=u'', type=(),
 
     # register pagelet
     for_.append(layer)
-    if type:
+    if tps:
         _context.action(
             discriminator = (
-                'z3ext.layout:registerPagelets', tuple(type), tuple(for_), layer, name),
+                'z3ext.layout:registerPagelets', 
+                tuple(tps), tuple(for_), layer, name),
             callable = registerTypedPagelets,
-            args = (for_, new_class, type, name, _context.info))
+            args = (for_, new_class, tps, name, _context.info))
     else:
         _context.action(
             discriminator = (
@@ -429,8 +439,7 @@ def registerPagelets(required, newClass, provides, name, info):
 
 
 def registerTypedPagelets(required, newClass, type, name, info):
-    for tp in type:
-        iface = getUtility(IPageletType, tp)
+    for iface in type:
         handler('registerAdapter', newClass, required, iface, name, info)
 
 

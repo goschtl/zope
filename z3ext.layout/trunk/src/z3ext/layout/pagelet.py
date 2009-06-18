@@ -108,6 +108,8 @@ class PageletPublisher(object):
     interface.implements(IBrowserPublisher)
     component.adapts(interface.Interface, interface.Interface)
 
+    render = True
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -130,7 +132,13 @@ class PageletPublisher(object):
         return u''
 
     def __getitem__(self, name):
+        pageletName = u''
+
         if name:
+            splited = name.split(u'|', 1)
+            if len(splited) > 1:
+                name, pageletName = splited
+
             iface = queryUtility(IPageletType, name)
 
             if iface is None:
@@ -155,16 +163,18 @@ class PageletPublisher(object):
             else:
                 required.append(contexts)
             required.append(self.request)
-            view = queryMultiAdapter(required, iface)
+            view = queryMultiAdapter(required, iface, pageletName)
         else:
-            view = queryMultiAdapter((context, self.request), iface)
+            view = queryMultiAdapter((context, self.request), iface, pageletName)
 
         if view is not None:
             try:
                 view.update()
                 if view.isRedirected:
                     return u''
-                return view.render()
+                if self.render:
+                    return view.render()
+                return view
             except Exception, err:
                 log = logging.getLogger('z3ext.layout')
                 log.exception(err)
@@ -173,3 +183,8 @@ class PageletPublisher(object):
 
     def browserDefault(self, request):
         return self.context, ('',)
+
+
+class PageletObjectPublisher(PageletPublisher):
+
+    render = False

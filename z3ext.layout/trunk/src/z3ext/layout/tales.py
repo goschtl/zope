@@ -31,8 +31,14 @@ class TALESPageletExpression(StringExpr):
         request = econtext.vars['request']
         modules = econtext.vars['modules']
 
+        pageletName = u''
+
         # lookup pagelet
         if name:
+            splited = name.split('|', 1)
+            if len(splited) > 1:
+                name, pageletName = splited
+
             iface = queryUtility(IPageletType, name)
 
             if iface is None:
@@ -57,9 +63,9 @@ class TALESPageletExpression(StringExpr):
             else:
                 required.append(contexts)
             required.append(request)
-            view = queryMultiAdapter(required, iface)
+            view = queryMultiAdapter(required, iface, pageletName)
         else:
-            view = queryMultiAdapter((context, request), iface)
+            view = queryMultiAdapter((context, request), iface, pageletName)
 
         if view is not None:
             try:
