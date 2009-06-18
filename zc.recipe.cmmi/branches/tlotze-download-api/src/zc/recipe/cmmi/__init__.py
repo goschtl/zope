@@ -72,9 +72,8 @@ class Recipe(object):
                         "Set the 'shared' option of zc.recipe.cmmi to an existing"
                         " directory, or set ${buildout:download-cache}")
 
-                self.shared = os.path.join(directory, download_cache, 'build')
-                if not os.path.isdir(self.shared):
-                    os.mkdir(self.shared)
+                self.shared = os.path.join(
+                    directory, download_cache, 'cmmi', 'build')
                 self.shared = os.path.join(self.shared, self._state_hash())
 
             options['location'] = self.shared
@@ -91,14 +90,15 @@ class Recipe(object):
     def install(self):
         logger = logging.getLogger(self.name)
         download = zc.buildout.download.Download(
-            self.buildout['buildout'], namespace='cmmi', hash_name=True)
+            self.buildout['buildout'], namespace='cmmi', hash_name=True,
+            logger=logger)
 
         if self.shared:
             if os.path.isdir(self.shared):
                 logger.info('using existing shared build')
                 return ()
             else:
-                os.mkdir(self.shared)
+                os.makedirs(self.shared)
 
         dest = self.options['location']
         here = os.getcwd()

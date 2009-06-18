@@ -1,8 +1,11 @@
-We have an archive with a demo foo tar ball:
+We have an archive with a demo foo tar ball and publish it by http in order
+to see  offline effects:
 
     >>> ls(distros)
     -  bar.tgz
     -  foo.tgz
+
+    >>> distros = start_server(distros)
 
 Let's update a sample buildout to installs it:
 
@@ -13,7 +16,7 @@ Let's update a sample buildout to installs it:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %sfoo.tgz
     ... """ % distros)
 
 We used the url option to specify the location of the archive.
@@ -23,7 +26,7 @@ It creates a make file which is also run:
 
     >>> print system('bin/buildout'),
     Installing foo.
-    foo: Downloading .../distros/foo.tgz
+    foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo
     echo building foo
@@ -51,14 +54,14 @@ You can supply extra configure options:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %sfoo.tgz
     ... extra_options = -a -b c
     ... """ % distros)
 
     >>> print system('bin/buildout'),
     Uninstalling foo.
     Installing foo.
-    foo: Downloading .../distros/foo.tgz
+    foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo -a -b c
     echo building foo
@@ -92,7 +95,7 @@ or make. This can be done by adding an environment statement:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %sfoo.tgz
     ... environment =
     ...   CFLAGS=-I/usr/lib/postgresql7.4/include
     ... """ % distros)
@@ -101,7 +104,7 @@ or make. This can be done by adding an environment statement:
     >>> print system('bin/buildout'),
     Uninstalling foo.
     Installing foo.
-    foo: Downloading .../distros/foo.tgz
+    foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     foo: Updating environment: CFLAGS=-I/usr/lib/postgresql7.4/include
     configuring foo --prefix=/sample_buildout/parts/foo
@@ -150,7 +153,7 @@ passed, -p0 is appended by default.
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/foo.tgz
+    ... url = %sfoo.tgz
     ... patch = ${buildout:directory}/patches/config.patch
     ... patch_options = -p0
     ... """ % distros)
@@ -158,7 +161,7 @@ passed, -p0 is appended by default.
     >>> print system('bin/buildout'),
     Uninstalling foo.
     Installing foo.
-    foo: Downloading .../distros/foo.tgz
+    foo: Downloading http://localhost/foo.tgz
     foo: Unpacking and configuring
     patching file configure
     configuring foo patched --prefix=/sample_buildout/parts/foo
@@ -176,14 +179,14 @@ It is possible to autogenerate the configure files:
     ...
     ... [foo]
     ... recipe = zc.recipe.cmmi
-    ... url = file://%s/bar.tgz
+    ... url = %s/bar.tgz
     ... autogen = autogen.sh
     ... """ % distros)
 
     >>> print system('bin/buildout'),
     Uninstalling foo.
     Installing foo.
-    foo: Downloading .../distros/bar.tgz
+    foo: Downloading http://localhost//bar.tgz
     foo: Unpacking and configuring
     foo: auto generating configure files
     configuring foo --prefix=/sample_buildout/parts/foo
