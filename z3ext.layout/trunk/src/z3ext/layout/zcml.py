@@ -349,7 +349,6 @@ def pageletDirective(
                 pass
 
         if iface is not None:
-            tps.append(iface)
             provides.append(iface)
 
     kwargs['type'] = type
@@ -412,13 +411,13 @@ def pageletDirective(
 
     # register pagelet
     for_.append(layer)
-    if tps:
+    if type:
         _context.action(
             discriminator = (
                 'z3ext.layout:registerPagelets',
-                tuple(tps), tuple(for_), layer, name),
+                tuple(type), tuple(for_), layer, name),
             callable = registerTypedPagelets,
-            args = (for_, new_class, tps, name, _context.info))
+            args = (for_, new_class, type, name, _context))
     else:
         _context.action(
             discriminator = (
@@ -438,9 +437,16 @@ def registerPagelets(required, newClass, provides, name, info):
             handler('registerAdapter', newClass, required, iface, '', info)
 
 
-def registerTypedPagelets(required, newClass, type, name, info):
-    for iface in type:
-        handler('registerAdapter', newClass, required, iface, name, info)
+def registerTypedPagelets(required, newClass, type, name, _context):
+    for tp in type:
+        iface = queryUtility(IPageletType, tp)
+        if iface is None:
+            try:
+                iface = _context.resolve(tp)
+            except Exception, err:
+                pass
+
+        handler('registerAdapter', newClass, required, iface,name,_context.info)
 
 
 def _handle_allowed_interface(
