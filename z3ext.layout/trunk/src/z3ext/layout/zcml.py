@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
@@ -277,7 +277,7 @@ def layoutDirective(
 class LayoutCreatedEvent(object):
     interface.implements(ILayoutCreatedEvent)
 
-    def __init__(self, uid, name, view, 
+    def __init__(self, uid, name, view,
                  context, layer, layoutclass, keywords):
         self.uid = uid
         self.name = name
@@ -415,7 +415,7 @@ def pageletDirective(
     if tps:
         _context.action(
             discriminator = (
-                'z3ext.layout:registerPagelets', 
+                'z3ext.layout:registerPagelets',
                 tuple(tps), tuple(for_), layer, name),
             callable = registerTypedPagelets,
             args = (for_, new_class, tps, name, _context.info))
@@ -459,7 +459,7 @@ def _handle_allowed_interface(
 def _handle_allowed_attributes(
     _context, allowed_attributes, permission, required):
 
-    # Allow access for all named attributes 
+    # Allow access for all named attributes
     if allowed_attributes:
         for name in allowed_attributes:
             required[name] = permission

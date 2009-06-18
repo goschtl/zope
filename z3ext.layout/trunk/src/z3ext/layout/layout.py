@@ -37,7 +37,7 @@ class ViewMapper(object):
         return getMultiAdapter((self.ob, self.request), name=name)
 
 
-class LayoutTemplateFile(TrustedAppPT, PageTemplateFile): 
+class LayoutTemplateFile(TrustedAppPT, PageTemplateFile):
     interface.implements(ILayoutTemplateFile)
 
     expand = False
