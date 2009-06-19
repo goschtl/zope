@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.7.2 (unreleased)
+0.8.0 (2009-06-19)
 ------------------
 
 - Removed no longer necessary dependencies on ``zope.app.zapi``,
