@@ -135,7 +135,7 @@ class PageletPublisher(object):
         pageletName = u''
 
         if name:
-            splited = name.split(u'|', 1)
+            splited = name.split(u';', 1)
             if len(splited) > 1:
                 name, pageletName = splited
 

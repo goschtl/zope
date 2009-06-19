@@ -35,7 +35,7 @@ class TALESPageletExpression(StringExpr):
 
         # lookup pagelet
         if name:
-            splited = name.split('|', 1)
+            splited = name.split(';', 1)
             if len(splited) > 1:
                 name, pageletName = splited
 

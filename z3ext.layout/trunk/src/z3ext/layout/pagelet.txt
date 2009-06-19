@@ -618,14 +618,14 @@ we can call named pagelets
   ... </configure>"""%template7, context)
 
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet6|named')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6;named')
   <div>My pagelet7</div>
 
 
 'pageletObject' - same as 'pagelet' but it doesnt call pagelet render
 
   >>> pagelet=component.getMultiAdapter((Content(),request),name='pageletObject')
-  >>> pob = pagelet.publishTraverse(request, 'myPagelet6|named')
+  >>> pob = pagelet.publishTraverse(request, 'myPagelet6;named')
   >>> pob
   <z3ext.layout.zcml.PageletClass from None object at ...>
   >>> print pob.render()
