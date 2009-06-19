@@ -24,10 +24,17 @@ setup(name='megrok.rdb',
       zip_safe=True,
       install_requires=[
           'setuptools',
+          'zope.interface',
+          'zope.schema',
+          'zope.component',
+          'zope.event',
+          'zope.location',
+          'grokcore.component',
+          'martian',
           'grok >= 0.13',
           'SQLAlchemy > 0.5beta2',
           'zope.sqlalchemy',
-          'z3c.saconfig',
+          'z3c.saconfig >= 0.1',
          ],
       entry_points="""
       # -*- Entry points: -*-
