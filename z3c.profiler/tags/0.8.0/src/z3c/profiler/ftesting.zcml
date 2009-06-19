@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="demo">
+
+  <include file="setup.zcml" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <role id="zope.Manager" title="Manager" />
+  <grantAll role="zope.Manager" />
+  <grantAll role="zope.Anonymous" />
+
+  <principal
+      id="zope.manager"
+      title="Manager"
+      login="Manager"
+      password="password"
+      />
+
+  <grant
+      role="zope.Manager"
+      principal="zope.manager"
+      />
+
+ </configure>
