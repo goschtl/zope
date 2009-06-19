@@ -5,7 +5,13 @@ CHANGES
 0.7.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed no longer necessary dependencies on ``zope.app.zapi``,
+  ``zope.app.container``, ``zope.app.component``, ``zope.app.security``.
+
+- Removed dependency on ``z3c.layer.minimal``, as it is not used.
+
+- Removed no longer necessary test dependencies on ``zope.app.folder``,
+  ``zope.app.session``, ``zope.app.schema``.
 
 
 0.7.1 (2009-04-05)

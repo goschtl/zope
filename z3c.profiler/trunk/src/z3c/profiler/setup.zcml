@@ -18,21 +18,18 @@
   <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
   <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
-  <exclude package="zope.app.folder.browser" />
-  <exclude package="zope.app.session" file="browser.zcml" />
   <exclude package="zope.dublincore.browser" />
   <exclude package="zope.app.generations.browser" />
 
 
   <!-- meta configure -->
-  <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.container.browser" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
-  <include package="zope.app.security" file="meta.zcml" />
   <include package="zope.i18n" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
+  <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.viewlet" file="meta.zcml" />
 
@@ -42,10 +39,6 @@
   <include package="z3c.pagelet" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
   <include package="z3c.zrtresource" file="meta.zcml" />
-
-
-  <!-- vocabulary setup, that's bad and weird, because this is meta configuration -->
-  <include package="zope.app.schema" />
 
 
   <!-- bootstrap Database -->
@@ -58,6 +51,7 @@
   <!-- zope packages -->
   <include package="zope.annotation" />
   <include package="zope.component" />
+  <include package="zope.container" />
   <include package="zope.contentprovider" />
   <include package="zope.dublincore" />
   <include package="zope.error" />
@@ -67,21 +61,20 @@
   <include package="zope.session" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
-
+  <include package="zope.site" />
+  <include package="zope.componentvocabulary" />
+  <include package="zope.security" />
+  <include package="zope.authentication" />
+  <include package="zope.principalregistry" />
+  <include package="zope.session" />
 
   <!-- zope app package configuration -->
   <include package="zope.app.authentication" />
-  <include package="zope.app.component" />
-  <include package="zope.app.folder" />
   <include package="zope.app.generations" file="subscriber.zcml" />
-  <include package="zope.app.http" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher" />
   <include package="zope.app.publisher.browser" />
-  <include package="zope.app.security" />
-  <include package="zope.app.session" />
 
-  <include package="z3c.layer.minimal" />
   <include package="z3c.layer.pagelet" />
   <include package="z3c.macro" />
   <include package="z3c.pagelet" />
