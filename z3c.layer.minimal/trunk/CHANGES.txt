@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.2.1 (unreleased)
+1.2.1 (2009-06-19)
 ------------------
 
 - Remove the zcml slug file and the SETUP.cfg file for zpkg.
