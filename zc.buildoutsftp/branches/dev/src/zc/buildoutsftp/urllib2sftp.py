@@ -80,12 +80,12 @@ def cleanup():
         trans = _connection_pool.pop(k)
         if trans is not False:
             trans.close()
-    
+
 atexit.register(cleanup)
 
 class SFTPHandler(urllib2.BaseHandler):
 
-    def sftp_open(self, req):        
+    def sftp_open(self, req):
         host = req.get_host()
         if not host:
             raise IOError, ('sftp error', 'no host given')
@@ -93,7 +93,7 @@ class SFTPHandler(urllib2.BaseHandler):
         parsed = parse_url_host(host)
         if not parsed:
             raise IOError, ('sftp error', 'invalid host', host)
-            
+
         user, pw, host, port = parsed.groups()
 
         host = urllib.unquote(host or '')
@@ -122,6 +122,7 @@ class SFTPHandler(urllib2.BaseHandler):
             raise paramiko.AuthenticationException(
                 "No stored host key", host)
 
+        import pdb; pdb.set_trace()
         if pw is not None:
             pool_key = (host, port, user, pw)
             trans = _connection_pool.get(pool_key)
@@ -159,7 +160,7 @@ class SFTPHandler(urllib2.BaseHandler):
             host_key = host_keys.get(remote_server_key.get_name())
             if host_key != remote_server_key:
                 raise paramiko.AuthenticationException(
-                    "Remote server authentication failed.", host) 
+                    "Remote server authentication failed.", host)
             _connection_pool[pool_key] = trans
 
         sftp = paramiko.SFTPClient.from_transport(trans)
