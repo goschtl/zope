@@ -71,6 +71,7 @@ setup(
         'zope.app.publisher',
         'zope.configuration',
         'zope.traversing',
+        'zope.app.exception',
         ],
     zip_safe = False,
 )

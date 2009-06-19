@@ -7,6 +7,8 @@ CHANGES
 
 - Remove the zcml slug file and the SETUP.cfg file for zpkg.
 
+- Added missing dependency on ``zope.app.exception``.
+
 
 1.2.0 (2009-02-21)
 ------------------
