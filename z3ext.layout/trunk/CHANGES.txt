@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-2.1.0 (2009-06-18)
+2.1.0 (2009-06-20)
 ------------------
 
 - Allow use interface as type for z3ext:pagelet directive
