@@ -7,6 +7,10 @@ Changelog
 - Using ``zope.processlifetime`` interfaces and implementations
   directly instead of BBB imports from ``zope.app.appsetup``.
 
+- Got rid of depencency on ``zope.app.component``.
+
+- Got rid of test dependency on ``zope.app.security``.
+
 
 3.11 (2009-05-13)
 -----------------

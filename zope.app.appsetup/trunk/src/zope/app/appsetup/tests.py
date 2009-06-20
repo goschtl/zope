@@ -30,12 +30,11 @@ from zope.traversing.api import traverse, getPath
 from zope.error.interfaces import IErrorReportingUtility
 from zope.error.error import ErrorReportingUtility
 
-from zope.app.component.testing import PlacefulSetup
 from zope.site import hooks
 from zope.site.folder import rootFolder, Folder
 from zope.site.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.component.site import LocalSiteManager
+from zope.site.site import LocalSiteManager
 
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \
@@ -47,6 +46,8 @@ from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISessionDataContainer
 
 from zope.app.testing import placelesssetup
+from zope.app.testing import setup
+
 
 class EventStub(object):
 
@@ -57,15 +58,15 @@ class EventStub(object):
 # TODO: some methods from the boostap module are not tested
 #
 
-class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
+class TestBootstrapSubscriber(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
+        setup.placefulSetUp()
         self.db = DB()
 
     def tearDown(self):
         transaction.abort()
-        PlacefulSetup.tearDown(self)
+        setup.placefulTearDown()
         self.db.close()
 
     def createRootFolder(self):
