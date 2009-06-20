@@ -1,0 +1,17 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   zcml:condition="installed z3ext.resourcepackage">
+
+  <include package="z3ext.resourcepackage" file="meta.zcml" />
+  <include package="z3ext.resourcepackage" />
+
+  <!-- styles -->
+  <z3ext:resourceinclude
+     name="z3ext-layout.css"
+     library="z3ext"
+     type="stylesheet"
+     file="styles.css" filetype="zrt" />
+
+</configure>
