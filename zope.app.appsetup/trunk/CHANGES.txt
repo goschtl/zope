@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.11.1 (unreleased)
+3.12.0 (2009-06-20)
 -------------------
 
 - Using ``zope.processlifetime`` interfaces and implementations
