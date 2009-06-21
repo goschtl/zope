@@ -61,6 +61,13 @@
      provides=".interfaces.ICategory"
      permission="zope.Public" />
 
+  <z3ext:configlet
+     name="principals"
+     schema=".interfaces.IPrincipalsManagement"
+     title="Principals management"
+     description="Portal principals management panel."
+     permission="z3ext.Configure" />
+
   <!-- settings view -->
   <adapter
      name="settings"

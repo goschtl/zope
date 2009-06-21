@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.4.3 (2009-06-21)
+------------------
+
+- Added 'principals' configlet category
+
+- Fixed wizard support code
+
+
 1.4.2 (2009-06-02)
 ------------------
 
