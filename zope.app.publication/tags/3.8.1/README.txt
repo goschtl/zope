@@ -1,1 +1,0 @@
-Publication and traversal components.
