@@ -35,9 +35,7 @@ simply outputs the text, "Hello World!", using the module ``hello.py``::
 
 .. -> src
 
-    >>> import sys
-    >>> sys.path.insert(0, '.')
-    >>> open('hello.py', 'w').write(src)
+    >>> update_module('hello', src)
 
 To turn this into a web application, we'll use ``zc.publication``.
 ``zc.publication`` builds on ``zope.publisher`` and Paste Deployment.
@@ -137,8 +135,7 @@ content objects.  Lets rewrite our hello resource as a view::
 
 .. -> src
 
-    >>> open('hello.py', 'w').write(src)
-    >>> del sys.modules['hello']
+    >>> update_module('hello', src)
 
 A view adapts a context, typically a content object of some sort, and
 a request and provides a call method to generate a page.
@@ -182,14 +179,7 @@ is the default view name, we can access it with either::
 
 .. -> url strio
 
-    >>> import logging
-    >>> logger = logging.getLogger()
-    >>> logger.setLevel(logging.INFO)
-    >>> logger.addHandler(logging.StreamHandler(sys.stdout))
-
-    >>> app.get(url, status=500).body
-
-    >>> app.get(url, status=200).body.strip() == expected
+    >>> app.get(url, status=200).body.strip().split() == expected.split()
     True
 
 or::
@@ -198,7 +188,7 @@ or::
 
 .. -> url strip
 
-    >>> app.get(url, status=200).body.strip() == expected
+    >>> app.get(url, status=200).body.strip().split() == expected.split()
     True
 
 
@@ -368,9 +358,3 @@ not [#traveral]_:
    matching is a reasonable approach to traversal, however, traversal
    is a useful approach in many applications, especially application
    with data-driven URL hierarchies.
-
-
-.. cleanup
-
-    >>> _ = sys.path.pop(0)
-    >>> del sys.modules['hello']

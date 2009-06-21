@@ -19,7 +19,9 @@ import manuel.testing
 import os
 import paste.deploy
 import re
+import sys
 import textwrap
+import types
 import unittest
 import webtest
 
@@ -54,6 +56,15 @@ def testapp(name, *args, **kw):
 def setUp(test):
     setupstack.setUpDirectory(test)
     test.globs['testapp'] = testapp
+
+    def update_module(name, src):
+        if name not in sys.modules:
+            sys.modules[name] = types.ModuleType(name)
+            setupstack.register(test, sys.modules.__delitem__, name)
+        module = sys.modules[name]
+        exec src in module.__dict__
+
+    test.globs['update_module'] = update_module
 
 def test_suite():
     return unittest.TestSuite((

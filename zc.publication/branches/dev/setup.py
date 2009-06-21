@@ -17,7 +17,7 @@ install_requires = [
     'ZConfig',
     'setuptools',
     'zope.app.component',
-    'zope.app.publication',
+    'zope.app.publication >=3.8.1',
     'zope.app.publisher',
     'zope.authentication',
     'zope.component [zcml]',

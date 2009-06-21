@@ -58,33 +58,8 @@ class Publication(zope.app.publication.browser.BrowserPublication):
             import logging
             logging.basicConfig()
 
-    # XXX zope.app.publication should have an overridable proxy method
-
     def proxy(self, ob):
         return ob
-
-    # XXX the following method is overridden to use
-    # self.proxy rather than ProxyFactory:
-
-    def getDefaultTraversal(self, request, ob):
-        if zope.publisher.interfaces.browser.IBrowserPublisher.providedBy(ob):
-            # ob is already proxied, so the result of calling a method will be
-            return ob.browserDefault(request)
-        else:
-            adapter = zope.component.queryMultiAdapter(
-                (ob, request),
-                zope.publisher.interfaces.browser.IBrowserPublisher,
-                )
-            if adapter is not None:
-                ob, path = adapter.browserDefault(request)
-                return self.proxy(ob), path
-            else:
-                # ob is already proxied
-                return ob, None
-
-    # XXX we should override handleException too, but it's rather complicated.
-    # *really* should release a new version of zope.app.publication.
-
 
 class Application(zope.publisher.paste.Application):
 
