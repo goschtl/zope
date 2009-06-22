@@ -5,7 +5,7 @@ Secure FTP (SFTP) Extension for zc.buildout
 The zc.buildoutsftp package provides a zc.buildout extension that
 provides support for SFTP.  To use it, simply provide the option::
 
-  extension = zc.buildoutsftp 
+  extension = zc.buildoutsftp
 
 in your buildout section. Then you can use sftp URLs for fine-links or
 index URLs. (Note that zc.buildout >=1.0.0b5 is needed for this to
@@ -60,6 +60,13 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.6.0 (2009/06/22)
+------------------
+
+Added an unload entry point.  This is necessary so we don't hang when
+the buildout process exits due to non-daemonic paramiko connection
+threads.
+
 0.5.0 (2008/12/08)
 ------------------
 
@@ -104,7 +111,7 @@ Fixed a bug in handling multiple user keys.
 0.2
 ---
 
-Added missing entry point.  
+Added missing entry point.
 
 Adjusted content-type information to work with setuptools.
 
