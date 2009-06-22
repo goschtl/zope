@@ -5,7 +5,7 @@ to see  offline effects:
     -  bar.tgz
     -  foo.tgz
 
-    >>> distros = start_server(distros)
+    >>> distros_url = start_server(distros)
 
 Let's update a sample buildout to installs it:
 
@@ -17,7 +17,7 @@ Let's update a sample buildout to installs it:
     ... [foo]
     ... recipe = zc.recipe.cmmi
     ... url = %sfoo.tgz
-    ... """ % distros)
+    ... """ % distros_url)
 
 We used the url option to specify the location of the archive.
 
@@ -56,7 +56,7 @@ You can supply extra configure options:
     ... recipe = zc.recipe.cmmi
     ... url = %sfoo.tgz
     ... extra_options = -a -b c
-    ... """ % distros)
+    ... """ % distros_url)
 
     >>> print system('bin/buildout'),
     Uninstalling foo.
@@ -98,7 +98,7 @@ or make. This can be done by adding an environment statement:
     ... url = %sfoo.tgz
     ... environment =
     ...   CFLAGS=-I/usr/lib/postgresql7.4/include
-    ... """ % distros)
+    ... """ % distros_url)
 
 
     >>> print system('bin/buildout'),
@@ -156,7 +156,7 @@ passed, -p0 is appended by default.
     ... url = %sfoo.tgz
     ... patch = ${buildout:directory}/patches/config.patch
     ... patch_options = -p0
-    ... """ % distros)
+    ... """ % distros_url)
 
     >>> print system('bin/buildout'),
     Uninstalling foo.
@@ -181,7 +181,7 @@ It is possible to autogenerate the configure files:
     ... recipe = zc.recipe.cmmi
     ... url = %s/bar.tgz
     ... autogen = autogen.sh
-    ... """ % distros)
+    ... """ % distros_url)
 
     >>> print system('bin/buildout'),
     Uninstalling foo.
@@ -194,3 +194,78 @@ It is possible to autogenerate the configure files:
     building foo
     echo installing foo
     installing foo
+
+When downloading a source archive or a patch, we can optionally make sure of
+its authenticity by supplying an MD5 checksum that must be matched. If it
+matches, we'll not be bothered with the check by buildout's output:
+
+    >>> try: from hashlib import md5
+    ... except ImportError: from md5 import new as md5
+    >>> foo_md5sum = md5(open(join(distros, 'foo.tgz')).read()).hexdigest()
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... md5sum = %s
+    ... """ % (distros_url, foo_md5sum))
+
+    >>> print system('bin/buildout'),
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading http://localhost/foo.tgz
+    foo: Unpacking and configuring
+    configuring foo --prefix=/sample_buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+
+But if the archive doesn't match the checksum, the recipe refuses to install:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sbar.tgz
+    ... md5sum = %s
+    ... patch = ${buildout:directory}/patches/config.patch
+    ... """ % (distros_url, foo_md5sum))
+
+    >>> print system('bin/buildout'),
+    Uninstalling foo.
+    Installing foo.
+    foo: Downloading http://localhost:20617/bar.tgz
+    While:
+      Installing foo.
+    Error: MD5 checksum mismatch downloading 'http://localhost/bar.tgz'
+
+Similarly, a checksum mismatch for the patch will cause the buildout run to be
+aborted:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = %sfoo.tgz
+    ... patch = ${buildout:directory}/patches/config.patch
+    ... patch-md5sum = %s
+    ... """ % (distros_url, foo_md5sum))
+
+    >>> print system('bin/buildout'),
+    Installing foo.
+    foo: Downloading http://localhost:21669/foo.tgz
+    foo: Unpacking and configuring
+    While:
+      Installing foo.
+    Error: MD5 checksum mismatch for local resource at '/.../sample-buildout/patches/config.patch'.

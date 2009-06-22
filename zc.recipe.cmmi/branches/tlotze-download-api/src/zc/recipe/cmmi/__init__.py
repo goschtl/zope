@@ -105,7 +105,7 @@ class Recipe(object):
         if not os.path.exists(dest):
             os.mkdir(dest)
 
-        fname = download(self.url)
+        fname = download(self.url, md5sum=self.options.get('md5sum'))
 
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
@@ -127,7 +127,8 @@ class Recipe(object):
                 if self.patch is not '':
                     # patch may be a filesystem path or url
                     # url patches can go through the cache
-                    self.patch = download(self.patch)
+                    self.patch = download(
+                        self.patch, md5sum=self.options.get('patch-md5sum'))
                     system("patch %s < %s" % (self.patch_options, self.patch))
                 if self.autogen is not '':
                     logger.info('auto generating configure files')
