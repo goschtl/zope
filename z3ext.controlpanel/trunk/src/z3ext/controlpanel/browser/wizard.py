@@ -16,6 +16,7 @@
 $Id$
 """
 from zope import interface
+from zope.schema import getFields
 from zope.component import getUtility
 from z3ext.layoutform import Fields, PageletEditForm
 from z3ext.wizard import WizardWithTabs
@@ -54,6 +55,12 @@ class ConfigletEditStep(WizardStepForm):
     @property
     def fields(self):
         return Fields(self.getContent().__schema__)
+
+    def isAvailable(self):
+        if not len(getFields(self.getContent().__schema__)):
+            return False
+
+        return super(ConfigletEditStep, self).isAvailable()
 
 
 next = WizardButton(
