@@ -22,3 +22,7 @@ def install(buildout=None):
         )
     logging.getLogger('paramiko').setLevel(
         logging.getLogger().getEffectiveLevel()+10)
+
+def unload(buildout=None):
+    # no uninstall_opener. Screw it. :)
+    zc.buildoutsftp.urllib2sftp.cleanup()

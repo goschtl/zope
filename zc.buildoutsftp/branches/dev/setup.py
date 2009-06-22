@@ -18,9 +18,10 @@ setup(
     namespace_packages = ['zc'],
     install_requires = ['paramiko', 'setuptools'],
     zip_safe=False,
-    entry_points = {'zc.buildout.extension':
-                    ['default = %s.buildoutsftp:install' % name]
-                    },
+    entry_points = {
+        'zc.buildout.extension': ['default = %s.buildoutsftp:install' % name],
+        'zc.buildout.unloadextension': ['default = %s.buildoutsftp:unload' % name],
+        },
     classifiers = [
        'Framework :: Buildout',
        'Development Status :: 3 - Alpha',
@@ -30,5 +31,3 @@ setup(
        'Topic :: Software Development :: Libraries :: Python Modules',
        ],
     )
-
-                      
