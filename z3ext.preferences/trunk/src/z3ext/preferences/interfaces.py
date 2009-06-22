@@ -39,7 +39,7 @@ class IPreferenceGroup(ILocation):
     The fields specified in the schema *must* be available as attributes and
     items of the group instance. It is up to the implementation how this is
     realized, however, most often one will implement __setattr__ and
-    __getattr__ as well as the common mapping API. 
+    __getattr__ as well as the common mapping API.
 
     The reason all the API fields are doubly underlined is to avoid name clashes.
     """
@@ -110,3 +110,7 @@ class IDataStorage(interface.Interface):
 
 class IPortalPreferences(IPreferenceCategory):
     """ portal preferences """
+
+
+class IMembershipPreferences(IPreferenceCategory):
+    """ membership principal preferences """

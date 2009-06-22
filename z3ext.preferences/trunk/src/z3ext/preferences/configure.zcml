@@ -52,6 +52,12 @@
      description="These are all the preferences related to common portal settings."
      schema="z3ext.preferences.interfaces.IPortalPreferences" />
 
+  <z3ext:preferenceGroup
+     id="membership"
+     title="Membership preferences"
+     description="These are all the preferences related to portal membership."
+     schema=".interfaces.IMembershipPreferences" />
+
   <!-- browser views -->
   <include package=".browser" />
 

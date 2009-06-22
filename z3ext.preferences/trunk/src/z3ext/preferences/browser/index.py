@@ -36,7 +36,7 @@ class PreferencesView(object):
             if IPreferenceCategory.providedBy(group):
                 subgroups = [(sgroup.__title__,
                               sgroup.__id__.split('.')[-1], sgroup)
-                             for t, sgroup in group.items() 
+                             for t, sgroup in group.items()
                              if sgroup.isAvailable()]
                 if (len(subgroups) > 1) or hasEditableFields(group):
                     groups.append((group.__title__, group,

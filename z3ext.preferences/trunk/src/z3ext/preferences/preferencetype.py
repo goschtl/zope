@@ -32,7 +32,7 @@ class PreferenceType(type):
 
     >>> class IMyPreference(interface.Interface):
     ...   title = schema.TextLine(title = u'Title')
-    
+
     >>> class MyPreference(object):
     ...   pass
 
@@ -65,7 +65,7 @@ class PreferenceType(type):
     ...   pass
 
     >>> PreferenceClass = preferencetype.PreferenceType(
-    ...    'mypreference', IMyPreference, 
+    ...    'mypreference', IMyPreference,
     ...    (MyPreference, MyPreference2), 'MyPreference', '')
 
     """
@@ -81,7 +81,7 @@ class PreferenceType(type):
 
         tp = type.__new__(cls, str(cname), bases, {})
         setattr(sys.modules['z3ext.preferences.preferencetype'], cname, tp)
-        
+
         return tp
 
     def __init__(cls, name, schema, class_=None, title='', description=''):
@@ -109,7 +109,7 @@ class DataProperty(object):
 
 
 class PreferenceProperty(object):
-    """ Special property thats reads and writes values from 
+    """ Special property thats reads and writes values from
     instance's 'data' attribute
 
     Let's define simple schema field
@@ -128,18 +128,18 @@ class PreferenceProperty(object):
     >>> class Content(object):
     ...
     ...    attr1 = PreferenceProperty(field)
-    
+
     Lets create class instance and add field values storage
 
     >>> ob = Content()
     >>> ob.data = DataStorage({}, None)
-    
+
     By default we should get field default value
 
     >>> ob.attr1
     u'default value'
 
-    We can set only valid value 
+    We can set only valid value
 
     >>> ob.attr1 = 'value1'
     Traceback (most recent call last):

@@ -79,7 +79,7 @@ class IPreferenceGroupDirective(interface.Interface):
         required=False)
 
     provides = fields.Tokens(
-	title = u'Provides',
+        title = u'Provides',
         required = False,
         value_type = fields.GlobalInterface())
 
@@ -94,10 +94,10 @@ class IPreferenceGroupDirective(interface.Interface):
         required = False)
 
     tests = fields.Tokens(
-	title = u"Tests",
+        title = u"Tests",
         description = u'Tests for check availability.',
         value_type = fields.GlobalObject(),
-	required = False)
+        required = False)
 
     order = Int(
         title = u'Order',
@@ -129,7 +129,7 @@ class PreferenceGroupDirective(object):
             permission = CheckerPublic
 
         if accesspermission == 'zope.Public':
-            accesspermission = CheckerPublic 
+            accesspermission = CheckerPublic
 
         Class = PreferenceType(str(id), schema, class_, title, description)
         Class.order = order

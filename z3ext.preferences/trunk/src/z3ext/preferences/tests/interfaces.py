@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -19,7 +19,7 @@ from zope import interface, schema
 
 
 class ICategory(interface.Interface):
-    
+
     category = schema.TextLine(
         title = u'Category',
         required = False)

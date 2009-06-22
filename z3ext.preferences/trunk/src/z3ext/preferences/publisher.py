@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
@@ -23,7 +23,7 @@ from z3c.traverser.interfaces import ITraverserPlugin
 class PreferenceTraverserPlugin(object):
     """A traverser that knows how to look up objects by name in a container."""
     interface.implements(ITraverserPlugin)
-    
+
     def __init__(self, container, request):
         self.context = container
         self.request = request

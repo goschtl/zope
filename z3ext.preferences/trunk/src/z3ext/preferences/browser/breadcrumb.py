@@ -27,7 +27,7 @@ class PreferenceGroupBreadcrumb(GenericBreadcrumb):
     @property
     def url(self):
         return '%s/'%(absoluteURL(self.context, self.request))
-    
+
     @property
     def name(self):
         name = self.context.__title__ or self.context.__id__
