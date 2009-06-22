@@ -122,7 +122,6 @@ class SFTPHandler(urllib2.BaseHandler):
             raise paramiko.AuthenticationException(
                 "No stored host key", host)
 
-        import pdb; pdb.set_trace()
         if pw is not None:
             pool_key = (host, port, user, pw)
             trans = _connection_pool.get(pool_key)
