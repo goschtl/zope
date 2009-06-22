@@ -1,0 +1,10 @@
+#! /bin/sh
+
+PYTHON="<<PYTHON>>"
+INSTANCE_HOME="<<INSTANCE_HOME>>"
+CONFIG_FILE="<<INSTANCE_HOME>>/etc/zope.conf"
+export INSTANCE_HOME
+
+ZDCTL="<<ZOPE2PATH>>/Startup/zopectl.py"
+
+exec "$PYTHON" "$ZDCTL" -C "$CONFIG_FILE" "$@"
