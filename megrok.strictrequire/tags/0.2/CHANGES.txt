@@ -1,0 +1,12 @@
+Changelog of megrok.strictrequire
+=================================
+
+0.2 (2009-06-22)
+----------------
+
+- Check ViewletManager and Viewlet components too.
+
+0.1 (2009-06-18)
+----------------
+
+- Initial release.
