@@ -22,7 +22,6 @@ from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 from z3c.form import subform, button
 from z3c.form.interfaces import ISubForm, IActionHandler
-from z3ext.statusmessage.interfaces import IStatusMessage
 
 from utils import applyChanges
 from form import PageletBaseForm
@@ -47,17 +46,16 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
     @button.handler(ISaveAction)
     def handleApply(self, action):
         data, errors = self.extractData()
-        if errors:
-            IStatusMessage(self.request).add(
-                (self.formErrorsMessage,) + errors, 'formError')
-        else:
+
+        if not errors:
             changes = self.applyChanges(data)
             if changes:
                 descriptions = []
                 for interface, names in changes.items():
                     descriptions.append(Attributes(interface, *names))
 
-                event.notify(ObjectModifiedEvent(self.getContent(), *descriptions))
+                event.notify(
+                    ObjectModifiedEvent(self.getContent(), *descriptions))
 
     def executeActions(self, form):
         request = self.request

@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.5.1 (Unreleased)
+------------------
+
+- Do not show status message for subform
+
+
 1.5.0 (2009-06-21)
 ------------------
 
