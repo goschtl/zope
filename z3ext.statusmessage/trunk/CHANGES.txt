@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.3.8 (Unreleased)
+1.3.8 (2009-06-23)
 ------------------
 
 - Better checks for session service availability
