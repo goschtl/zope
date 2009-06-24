@@ -5,12 +5,16 @@ import grokcore.component
 import grokcore.view
 from grokcore.view.meta.views import ViewGrokker
 from grokcore.formlib.formlib import most_specialized_interfaces
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
 
 from martian.error import GrokError
 import martian
 
 from megrok.z3cform import components
+from megrok.z3cform import directives
 from z3c.form import field
+from z3c.form.zcml import widgetTemplateDirective
 
 def get_auto_fields(context):
     """Get the form fields for context.
@@ -52,3 +56,23 @@ class FormGrokker(martian.ClassGrokker):
 
         return True
 
+
+class WidgetTemplateGrokker(martian.ClassGrokker):
+    """ grokker for widget templates """
+    martian.component(components.WidgetTemplate)
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.view.template)
+    martian.directive(directives.view)
+    martian.directive(directives.field)
+    martian.directive(directives.mode)
+
+    def grok(self, name, factory, module_info, **kw):
+        factory.module_info = module_info
+        return super(WidgetTemplateGrokker, self).grok(name, factory, module_info, **kw)
+
+    def execute(self, factory, config, context, layer, template, view, field, mode, **kw):
+        template_path = '/'.join(factory.module_info.path.split('/')[:-1])
+	template = "%s/%s" %(template_path, template)
+        widgetTemplateDirective(config, template, context, layer, view=view, field=field, mode=mode)  
+        return True

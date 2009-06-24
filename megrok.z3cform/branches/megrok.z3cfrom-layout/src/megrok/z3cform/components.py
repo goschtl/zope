@@ -138,6 +138,9 @@ class DisplayForm(GrokForm, form.DisplayForm, grokcore.view.View):
     
     martian.baseclass()
 
+
+# Page Forms
+
 class PageForm(PageGrokForm, form.Form, megrok.layout.Page):
     """Normal z3c form with megrok.layout support.
     """
@@ -175,3 +178,8 @@ class PageDisplayForm(PageGrokForm, form.DisplayForm, megrok.layout.Page):
     
     martian.baseclass()
 
+
+# Widgets
+
+class WidgetTemplate(object):
+    pass

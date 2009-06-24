@@ -13,14 +13,6 @@
   >>> [field.__name__ for field in view.fields.values()]
   ['name', 'age']
   
-
-  And on the display page:
-
-  >>> view = component.getMultiAdapter((manfred, request), name='index')
-  >>> len(view.fields)
-  2
-  >>> [field.__name__ for field in view.fields.values()]
-  ['name', 'age']
 """
 import grok
 
