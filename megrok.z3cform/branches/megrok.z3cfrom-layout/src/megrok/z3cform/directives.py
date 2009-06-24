@@ -1,5 +1,6 @@
 import martian
 from martian import validateInterfaceOrClass
+from z3c.form import interfaces
 
 class field(martian.Directive):
     scope = martian.CLASS
@@ -10,7 +11,7 @@ class field(martian.Directive):
 class mode(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
-    default = None
+    default = interfaces.INPUT_MODE 
     # validate = validateInterfaceOrClass
 
 class view(martian.Directive):
@@ -18,3 +19,8 @@ class view(martian.Directive):
     store = martian.ONCE
     default = None
     # validate = validateInterfaceOrClass
+
+class widget(martian.Directive):
+    scope = martian.CLASS
+    store = martian.ONCE
+    default = None

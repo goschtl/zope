@@ -66,13 +66,14 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
     martian.directive(directives.view)
     martian.directive(directives.field)
     martian.directive(directives.mode)
+    martian.directive(directives.widget)
 
     def grok(self, name, factory, module_info, **kw):
         factory.module_info = module_info
         return super(WidgetTemplateGrokker, self).grok(name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, template, view, field, mode, **kw):
+    def execute(self, factory, config, context, layer, template, view, field, widget, mode, **kw):
         template_path = '/'.join(factory.module_info.path.split('/')[:-1])
 	template = "%s/%s" %(template_path, template)
-        widgetTemplateDirective(config, template, context, layer, view=view, field=field, mode=mode)  
+        widgetTemplateDirective(config, template, context, layer, view=view, field=field, widget=widget, mode=mode)  
         return True
