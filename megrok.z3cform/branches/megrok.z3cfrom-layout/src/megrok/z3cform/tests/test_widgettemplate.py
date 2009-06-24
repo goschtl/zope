@@ -16,22 +16,53 @@
   >>> [field.__name__ for field in view.fields.values()]
   ['name', 'age']
 
+The widget for *name* should show it´s normal widget.
+Because no CustomWidget is provided for this field.
+
   >>> view.updateWidgets() 
   >>> print view.widgets['name'].render() 
   <input id="form-widgets-name" name="form.widgets.name"
          class="text-widget required textline-field"
          value="" type="text" /> 
 
+The second field in the edit form *age* should get a custom widget
+from the NewTemplateForIntField.
+
+  >>> print view.widgets['age'].render()
+  <span> This is custom integer widget for zope.schema.Int Fields </span>
+
+Now let´s look on a other view. Here we get a CustomWidget as a result
+of the CustomStringTemplate
+
   >>> view = component.getMultiAdapter((manfred, request), name='view')
   >>> view.updateWidgets() 
   >>> print view.widgets['name'].render()
   <span> Extra Widget </span>
 
+Our CustomTemplate class is configured for the IAdded interface.
+Let´s check if we get the right template for it.
 
   >>> view = component.getMultiAdapter((manfred, request), name='add')
   >>> view.updateWidgets() 
   >>> print view.widgets['name'].render()
-  <span> Extra Widget </span>
+  <span> Custom Widget </span>
+  <input id="form-widgets-name" name="form.widgets.name"
+         class="text-widget required textline-field"
+         value="" type="text" />
+
+  >>> print view.widgets['age'].render()
+  <span> Custom Widget </span>
+  <input id="form-widgets-age" name="form.widgets.age"
+         class="text-widget required int-field" value=""
+         type="text" />
+
+This is an example for a more complex CustomWidget.
+It uses view, widget and mode...
+
+  >>> view = component.getMultiAdapter((manfred, request), name='view2')
+  >>> view.updateWidgets() 
+  >>> print view.widgets['name'].render()
+  <span> Custom Text Widget </span>
 """
 
 import grok
@@ -64,29 +95,51 @@ class Person(grok.Model):
 class MyLayout(megrok.layout.Layout):
     grok.context(Person)
 
+### Views
+
+class Edit(z3cform.PageEditForm):
+    grok.context(Person)
+    fields = field.Fields(IPerson)
+
+
+class View(z3cform.PageDisplayForm):
+    grok.context(Person)
+    fields = field.Fields(IPerson)
+
+
+class View2(z3cform.PageDisplayForm):
+    grok.context(Person)
+    fields = field.Fields(IPerson)
+
+
+class Add(z3cform.PageAddForm):
+    grok.context(Person)
+    fields = field.Fields(IPerson)
+
+
+### Custom Templates
 
 class CustomStringTemplate(z3cform.WidgetTemplate):
     grok.context(Person)
     grok.template('new_string.pt')
     megrok.z3cform.directives.mode(interfaces.DISPLAY_MODE)
 
-class Edit(z3cform.PageEditForm):
-    grok.context(Person)
-    fields = field.Fields(IPerson)
-
-class View(z3cform.PageDisplayForm):
-    grok.context(Person)
-    fields = field.Fields(IPerson)
-
-class Add(z3cform.PageAddForm):
-    grok.context(Person)
-    fields = field.Fields(IPerson)
-
 class CustomTemplate(z3cform.WidgetTemplate):
-    grok.name('custom_template')
     grok.context(Person)
     grok.template('custom_string.pt')
     megrok.z3cform.directives.view(interfaces.IAddForm)
+
+class NewTemplateForIntField(z3cform.WidgetTemplate):
+    grok.context(Person)
+    grok.template('custom_int.pt')
+    megrok.z3cform.directives.field(schema.interfaces.IInt)
+
+class NewTemplateForTextWidget(z3cform.WidgetTemplate):
+    grok.context(Person)
+    grok.template('custom_text.pt')
+    megrok.z3cform.directives.view(View2)
+    megrok.z3cform.directives.widget(interfaces.ITextWidget)
+    megrok.z3cform.directives.mode(interfaces.DISPLAY_MODE)
 
 
 def test_suite():
