@@ -16,7 +16,7 @@
 $Id$
 """
 __docformat__='restructuredtext'
-from zope.app.component.hooks import getSite
+from zope.site.hooks import getSite
 from zope.app.publisher.fileresource import File
 from zope.app.publisher.browser.fileresource import FileResource
 
