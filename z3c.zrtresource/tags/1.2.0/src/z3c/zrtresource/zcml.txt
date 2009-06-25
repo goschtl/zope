@@ -1,0 +1,49 @@
+==========================
+``zrt-resource`` Directive
+==========================
+
+This package provides a new directive to use the special resource
+directive. Let's register it first:
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="z3c.zrtresource" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+Now we can register a resource:
+
+  >>> import tempfile
+  >>> fn = tempfile.mktemp('.css')
+  >>> open(fn, 'w').write('''\
+  ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... h1 {
+  ...   color: red;
+  ...   background: url('../img1/mybackground.gif');
+  ... }
+  ... ''')
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
+  ...   <zrt-resource
+  ...       name="test.css"
+  ...       file="%s" />
+  ... </configure>
+  ... ''' %fn, context=context)
+
+Now let's see whether the adapter has been registered:
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.publisher.browser import TestRequest
+  >>> resource = zope.component.getAdapter(
+  ...     TestRequest(), zope.interface.Interface, name='test.css')
+
+Now run it:
+
+  >>> print resource.GET()
+  h1 {
+    color: red;
+    background: url('++resource++/img/mybackground.gif');
+  }

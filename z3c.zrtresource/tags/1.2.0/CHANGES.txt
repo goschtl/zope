@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+1.2.0 (2009-06-25)
+------------------
+
+- Got rid of dependency on ``zope.app.component`` and
+  ``zope.app.pagetemplate``.
+
+- Fixed home page and author email address.
+
+
+1.1.0 (2007-12-01)
+------------------
+
+- Fix bug with spaces in replace expression
+
+- Added custom ZRT commands
+
+1.0.1 (2007-10-30)
+------------------
+
+- Fix long description of package to be valid restructured text.
+
+1.0.0 (2007-10-30)
+------------------
+
+- Initial release.
