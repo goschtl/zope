@@ -14,12 +14,6 @@ class mode(martian.Directive):
     default = interfaces.INPUT_MODE 
     # validate = validateInterfaceOrClass
 
-class view(martian.Directive):
-    scope = martian.CLASS
-    store = martian.ONCE
-    default = None
-    # validate = validateInterfaceOrClass
-
 class widget(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE

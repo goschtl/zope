@@ -127,7 +127,7 @@ class CustomStringTemplate(z3cform.WidgetTemplate):
 class CustomTemplate(z3cform.WidgetTemplate):
     grok.context(Person)
     grok.template('custom_string.pt')
-    megrok.z3cform.directives.view(interfaces.IAddForm)
+    grok.view(interfaces.IAddForm)
 
 class NewTemplateForIntField(z3cform.WidgetTemplate):
     grok.context(Person)
@@ -137,7 +137,7 @@ class NewTemplateForIntField(z3cform.WidgetTemplate):
 class NewTemplateForTextWidget(z3cform.WidgetTemplate):
     grok.context(Person)
     grok.template('custom_text.pt')
-    megrok.z3cform.directives.view(View2)
+    grok.view(View2)
     megrok.z3cform.directives.widget(interfaces.ITextWidget)
     megrok.z3cform.directives.mode(interfaces.DISPLAY_MODE)
 
