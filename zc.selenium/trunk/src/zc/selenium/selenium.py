@@ -31,11 +31,6 @@ from zope.testing import testrunner
 
 from zc.selenium.pytest import selectTestsToRun
 
-# Compute a default port; this is simple and doesn't ensure that the
-# port is available, but does better than just hardcoding a port
-# number.  The goal is to avoid browser cache effects due to resource
-# changes (especially in JavaScript resources).
-#
 DEFAULT_PORT = "8034"
 
 def run_zope(config, port):
