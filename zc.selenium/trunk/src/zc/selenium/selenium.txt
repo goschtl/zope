@@ -73,7 +73,7 @@ zc.selenium. The selenium.zcml used in this example look like this::
   </configure>
 
 Note that it included zope.app.server and zc.selenium.  This example
-also shows an adapter  registration for a Python-based test. Note that
+also shows an adapter registration for a Python-based test. Note that
 the test runner currently requires that the zope.server server is used!
 
 The buildout defines an instance with the demo part.  Two things to
