@@ -1,0 +1,17 @@
+=======================
+z3c.schema2json credits
+=======================
+
+Developers
+----------
+
+* Paul A. Wilson
+
+Thank You
+----------
+
+The developers of z3c.schema2json for inspiration:
+
+* Jan-Wijbrand Kolman
+
+* Martijn Faassen 

@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+0.10 (2009-XXX)
+=================
+
+* First checkin in svn.zope.org.
