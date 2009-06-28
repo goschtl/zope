@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zc.selenium',
-    version='1.3.0dev',
+    version='0',
     author='Zope Corporation',
     author_email='info@zope.com',
     url='http://svn.zope.org/zc.seleinum',
@@ -17,12 +17,13 @@ setup(
     license='ZPL 2.1',
     namespace_packages = ['zc'],
     install_requires =[
+        'mozrunner',
         'setuptools',
-        'zope.interface',
-        'zope.component',
-        'zope.publisher',
-        'z3c.zrtresource',
-        'zope.testing>=3.7.4',
         'wsgiref',
+        'z3c.zrtresource',
+        'zope.component',
+        'zope.interface',
+        'zope.publisher',
+        'zope.testing>=3.7.4',
     ]
 )

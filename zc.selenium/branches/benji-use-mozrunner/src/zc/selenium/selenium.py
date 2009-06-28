@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """Script to run Selenium tests.
-
-$Id$
 """
+
 from Queue import Queue, Empty
+import mozrunner
 import optparse
 import os
 import random
@@ -72,13 +72,18 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     if not zope_thread.isAlive():
         return
 
-    # start the tests
-    browser = webbrowser.get(browser_name)
-    if auto_start:
-        extra = '&auto=true'
+    # if Firefox is specified, use mozrunner instead of the built-in webbrowser
+    # module
+    if browser_name == 'firefox':
+        runner = mozrunner.FirefoxRunner(cmdargs=[url])
+        runner.start()
     else:
-        extra = ''
-    browser.open(url + extra)
+        browser = webbrowser.get(browser_name)
+        if auto_start:
+            url += '&auto=true'
+
+        # start the tests
+        browser.open(url)
 
     # wait for the test results to come in (the reason we don't do a
     # blocking-get here is because it keeps Ctrl-C from working)
@@ -147,7 +152,7 @@ def parseOptions():
     parser = optparse.OptionParser(usage)
     parser.add_option('-b', '--browser', metavar="BROWSER", default=None,
                       help='choose browser to use (mozilla, netscape, '
-                      'kfm, internet-config)')
+                      'kfm, internet-config, firefox)')
     parser.add_option('-k', '--keep-running',
                       action='store_true',
                       help='keep running after finishing the tests')
