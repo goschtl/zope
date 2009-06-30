@@ -1,7 +1,7 @@
 Changelog for five.grok
 -----------------------
 
-five.grok - 1.0b1 (unreleased)
+five.grok - 1.0b1 (2009-06-30)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Added support for annotations with `grokcore.annotation`_.
