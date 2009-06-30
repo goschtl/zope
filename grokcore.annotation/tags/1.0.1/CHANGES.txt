@@ -1,0 +1,15 @@
+Changes
+=======
+
+1.0.1 (2009-06-30)
+------------------
+
+* Reupload to pypi with a correct version of Python which doesn't
+  have a distutils bug.
+
+1.0 (2009-06-29)
+----------------
+
+* Created ``grokcore.Annotation`` by factoring annotation components,
+  grokkers and directives out of Grok.
+
