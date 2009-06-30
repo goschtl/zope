@@ -36,8 +36,8 @@ You then can connect any ZODB client (e.g. Zope starting from 2.8) with *both*
 ZEORaid servers. An excerpt from zope.conf might look like:
 
   <zeoclient>
-    server localhost:8100
-    server localhost:8101
+    server localhost:8200
+    server localhost:8201
     storage main
   </zeoclient>
 
