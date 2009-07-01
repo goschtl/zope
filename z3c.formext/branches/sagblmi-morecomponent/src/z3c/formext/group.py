@@ -73,7 +73,7 @@ class ExtJSGroupForm(group.GroupForm):
                     else:
                         error = removeSecurityProxy(error)
                     message = translate(error.message, context=self.request)
-                    if error.widget:
+                    if hasattr(error, "widget"):
                         self.jsonResponse['errors'][error.widget.id] = message
                     else:
                         self.jsonResponse['formErrors'].append(message)
