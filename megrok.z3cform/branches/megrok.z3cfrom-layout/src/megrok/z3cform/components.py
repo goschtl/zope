@@ -67,7 +67,6 @@ class GrokForm(object):
         render method in grok), but we have to call the template
         correctly.
         """
-
         if self.template is None:
             self.template = component.getMultiAdapter((self, self.request), IPageTemplate)
         return self._render_template()

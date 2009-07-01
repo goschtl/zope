@@ -9,7 +9,7 @@
   >>> request = TestRequest()
   >>> alsoProvides(request, FormSkin)
 
-  Check that fields have been created on the edition page:
+Check that fields have been created on the edition page:
 
   >>> view = component.getMultiAdapter((manfred, request), name='edit')
   >>> view
@@ -20,7 +20,7 @@
   >>> '<div class="layout">' in view()
   True
 
-  If we call the render method we get the edit-page without the layout
+If we call the render method we get the edit-page without the layout
 
   >>> view.render().startswith('<form action="http://127.0.0.1"')
   True 
@@ -35,6 +35,62 @@ to true.
 
   >>> view.updateMarker
   True
+
+Now let us try to render the complete edit form
+
+  >>> print view()
+  <html>                                                                           
+  <body>
+    <div class="layout"><form action="http://127.0.0.1" method="post"
+      enctype="multipart/form-data" class="edit-form"
+       name="form" id="form">
+   <div class="viewspace">
+       <div class="required-info">
+          <span class="required">*</span>
+          &ndash; required
+       </div>
+     <div>
+           <div id="form-widgets-name-row" class="row">
+               <div class="label">
+                 <label for="form-widgets-name">
+                   <span>Name</span>
+                   <span class="required">*</span>
+                 </label>
+               </div>
+               <div class="widget">
+     <input id="form-widgets-name" name="form.widgets.name"
+            class="text-widget required textline-field"
+            value="" type="text" />
+  </div>
+           </div>
+           <div id="form-widgets-age-row" class="row">
+               <div class="label">
+                 <label for="form-widgets-age">
+                   <span>Age</span>
+                   <span class="required">*</span>
+                 </label>
+               </div>
+               <div class="widget">
+     <input id="form-widgets-age" name="form.widgets.age"
+            class="text-widget required int-field" value=""
+            type="text" />
+  </div>
+           </div>
+     </div>
+   </div>
+   <div>
+     <div class="buttons">
+  <input id="form-buttons-apply" name="form.buttons.apply"
+        class="submit-widget button-field" value="Apply"
+        type="submit" />
+        </div>
+      </div>
+  </form>
+  </div>
+  </body>
+  </html>
+
+
 
 """
 
@@ -73,6 +129,11 @@ class Edit(z3cform.PageEditForm):
 
     def update(self):
         self.updateMarker = True
+
+
+class View(z3cform.PageDisplayForm):
+    fields = field.Fields(IMammoth)
+
 
 
 def test_suite():
