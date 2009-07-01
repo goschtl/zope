@@ -8,3 +8,4 @@ SQLAlchemy                                      sqlalchemy
 ZConfig						zconfig
 ZODB3                                           zodb
 RestrictedPython				restrictedpython
+PyQt4						python-qt4

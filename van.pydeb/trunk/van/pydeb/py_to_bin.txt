@@ -9,3 +9,4 @@ SQLAlchemy                           	python-sqlalchemy
 ZConfig					python-zconfig
 ZODB3                                   python-zodb
 RestrictedPython			python-restrictedpython
+PyQt4					python-qt4
