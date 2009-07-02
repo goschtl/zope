@@ -1,0 +1,46 @@
+
+Change History
+==============
+
+1.0b2 (2009-07-02)
+------------------
+
+- Fixed recovery issue that left `lastTid` in the wrong state for
+  ClientStorages by using `store` instead of `restore`.
+
+- Improved tests at various points.
+
+- Added capability to reload ZEO configuration online.
+  (Thanks to Dirceu Pereira Tiegs)
+
+- Documentation improvements.
+
+- Changed the recipe's name pattern for management client scripts to
+  <partname>-<storagename>-manage.
+
+- Fixed accidentally commented out assertion that only allows storages with
+  undo support to be used in ZEORaid.
+
+1.0b1 (2008-04-30)
+------------------
+
+- Finished management utility as setuptools `console_script`.
+
+- Added deployment documentation.
+
+- Added buildout recipe for installing ZEO servers with ZEORaid egg and the
+  management utility.
+
+- Added and documented blob support.
+
+- Fixed online recovery.
+
+- Added read-only flag to ZConfig schema.
+
+- Better test coverage.
+
+
+1.0a1 (2008-02-26)
+------------------
+
+Initial release.
