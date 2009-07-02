@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="templates/master.pt/macros/page">
+  <head>
+    <title metal:fill-slot="page-title">Zope 3 Known Good Sets</title>
+  </head>
+  <body>
+    <div metal:fill-slot="divider">
+      Check out the latest version
+      (<span tal:replace="latest/name"
+            tal:condition="not:latest/announcement/url">
+      </span><a href="#"
+         tal:attributes="href latest/announcement/url"
+         tal:condition="latest/announcement/url"
+         tal:content="latest/name">
+        3.4.0
+      </a>)
+      released on <span tal:content="latest/date"/>:
+      <a href="#"
+         tal:attributes="href latest/changelog/url"
+         tal:condition="latest/changelog/url">
+        Changes
+      </a>
+    </div>
+
+    <div metal:fill-slot="content">
+      <h1 id="content-header">
+        <span tal:replace="title" />
+        <span tal:replace="latest/name"/> Has Been Released!
+      </h1>
+
+      <div tal:content="structure latest/announcement/html"/>
+      <div tal:content="structure latest/changelog/html"/>
+
+    </div>
+  </body>
+</html>

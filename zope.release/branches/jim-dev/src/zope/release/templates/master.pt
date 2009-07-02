@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:define-macro="page">
+  <head>
+    <title metal:define-slot="page-title">Introduction to the KGS</title>
+    <link rel="stylesheet" type="text/css" href="resources/style.css"
+          tal:attributes="href string:${siteRoot}resources/style.css"/>
+    <script type="text/javascript" language="Javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript">
+      $(document).ready(
+        function(){
+
+          $(".left-nav .level-one > li").click(
+            function(){
+              $(".left-nav .level-one > li").removeClass('selected');
+              $(".left-nav .level-one > li > a").removeClass('selected');
+              $(".left-nav .level-two").hide();
+              $(this).children('a').andSelf().addClass('selected').find('.level-two').show();
+            });
+          $(".left-nav .level-one > li").eq(0).click();
+
+          $(".left-nav .level-one > li > a").each(
+            function(index){
+              var href = $(this).attr("href");
+              if (window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).parent().click();
+              }
+            });
+
+          $(".left-nav .level-one > li li > a").each(
+            function(index){
+              var href = $(this).attr("href").match(/[.*\/]*(.*.html)/);
+              href = href && href[1];
+              if (href && window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).addClass('selected').parents("li").click();
+              }
+            });
+
+        });
+    </script>
+  </head>
+  <body>
+    <div id="page-wrapper">
+      <div id="header-wrapper">
+        <div id="header">
+          <a href="http://new.zope.org" accesskey="1" id="logo">
+            <img height="36" width="110" title="" alt=""
+                 tal:attributes="src string:${siteRoot}resources/logo.png"/>
+          </a>
+          <div metal:define-slot="page-header"></div>
+        </div>
+        <div id="divider">
+          <span metal:define-slot="divider"></span>
+        </div>
+      </div>
+      <div id="content-wrapper">
+        <div id="content" metal:define-slot="content">
+          <h1 id="content-header">H1</h1>
+          <h2>H2</h2>
+          <h3>H3</h3>
+          <h4>H4</h4>
+          <h5>H5</h5>
+          <h6>H6</h6>
+          <p>And here is a bunch of content!</p>
+        </div>
+      </div>
+      <div id="left-nav-wrapper">
+        <div class="left-nav">
+          <div metal:define-slot="left-nav">
+            <h1>Versions</h1>
+            <ul class="level-one">
+              <li tal:repeat="version versions">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/name}/index.html">
+                  <span tal:replace="version/name">3.4.0</span>
+                  (<span tal:replace="version/date"/>)
+                </a>
+                <ul class="level-two" style="display: none;">
+                  <li>
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${version/name}/index.html">Homepage</a>
+                  </li>
+                  <li tal:condition="version/announcement/url">
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${version/announcement/url}">Announcement</a>
+                  </li>
+                  <li tal:condition="version/changelog/url">
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${version/changelog/url}">Changelog</a>
+                  </li>
+                  <li tal:repeat="file version/files">
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${file/url}"
+                       tal:content="file/name">kgs-1.0.0.tgz</a>
+                  </li>
+                  <li tal:repeat="feature version/features">
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${feature/url}"
+                       tal:content="feature/title">Feature 1</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="intro.html"
+                   tal:attributes="href string:${siteRoot}intro.html">KGS Introduction</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="footer-wrapper">
+        <div id="footer">
+          <span metal:define-slot="footer">
+            &copy; 1998-2009 by the <a href="http://foundation.zope.org/">Zope Foundation</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
