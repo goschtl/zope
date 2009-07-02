@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:define-macro="page">
+  <head>
+    <title metal:define-slot="page-title">Page Title</title>
+    <link rel="stylesheet" type="text/css"
+          href="resources/style.css"
+          tal:attributes="href string:${siteRoot}resources/style.css"/>
+    <script type="text/javascript" language="Javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript">
+      $(document).ready(
+        function(){
+
+          $("#left-hand-navigation .level-one > li").click(
+            function(){
+              $(this).removeClass('selected');
+              $("#left-hand-navigation .level-one > li > a").removeClass('selected');
+              $("#left-hand-navigation .level-two").hide();
+              $(this).children('a').andSelf().addClass('selected').find('.level-two').show();
+            });
+          $("#left-hand-navigation .level-one > li").eq(0).click();
+
+          $("#left-hand-navigation .level-one > li > a").each(
+            function(index){
+              var href = $(this).attr("href");
+              if (window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).parent().click();
+              }
+            });
+
+          $("#left-hand-navigation .level-one > li li > a").each(
+            function(index){
+              var href = $(this).attr("href").match(/[.*\/]*(.*.html)/);
+              href = href && href[1];
+              if (href && window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).addClass('selected').parents("li").click();
+              }
+            });
+
+        });
+    </script>
+
+  </head>
+  <body>
+    <h1 id="header"><span metal:define-slot="title">KGS</span></h1>
+
+    <div id="left-hand-navigation">
+      <!-- Main Menu -->
+      <div id="menu">
+
+        <ul class="level-one" metal:define-slot="left-nav">
+
+          <li tal:repeat="version versions">
+            <a href="javascript:void(0);">
+              Version <span tal:replace="version/name">1</span></a>
+            <ul class="level-two" style="display: none;">
+
+              <li>
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/name}/index.html">Home Page</a>
+              </li>
+              <li tal:condition="version/announcement/url">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/announcement/url}">Announcement</a>
+              </li>
+              <li tal:condition="version/changelog/url">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/changelog/url}">Changelog</a>
+              </li>
+              <li tal:repeat="file version/files">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${file/url}"
+                   tal:content="file/name">kgs-1.0.0.tgz</a>
+              </li>
+              <li tal:repeat="feature version/features">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${feature/url}"
+                   tal:content="feature/title">Feature 1</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 2</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 3</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 4</a>
+              </li>
+            </ul>
+
+          </li>
+          <li>
+            <a href="intro.html"
+               tal:attributes="href string:${siteRoot}intro.html">KGS Introduction</a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+
+    <div id="content-body">
+      <div id="body-main">
+
+        <div id="content" metal:define-slot="content">
+          This is where the content goes.
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>
