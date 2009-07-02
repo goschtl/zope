@@ -50,6 +50,11 @@ def compare(test, source, target):
                 test.assertEquals(getattr(source_record, name),
                                   getattr(target_record, name))
 
+            # Check that the loadBefores return the same information
+            test.assertEquals(
+                source.loadBefore(source_record.oid, source_record.tid),
+                target.loadBefore(target_record.oid, target_record.tid))
+
             if not hasattr(source, 'loadBlob'):
                 continue
             try:
@@ -117,8 +122,15 @@ class OnlineRecovery(unittest.TestCase):
     shared = False
 
     def store(self, storages, tid=None, status=' ', user=None,
-              description=None, extension={}):
-        oid = storages[0].new_oid()
+              description=None, extension={}, oid=None):
+        if oid is None:
+            oid = storages[0].new_oid()
+
+        try:
+            data, base_tid = storages[0].load(oid, '')
+        except ZODB.POSException.POSKeyError:
+            base_tid = ZODB.utils.z64
+
         data = ZODB.tests.MinPO.MinPO(7)
         data = ZODB.tests.StorageTestBase.zodb_pickle(data)
         # Begin the transaction
@@ -139,9 +151,9 @@ class OnlineRecovery(unittest.TestCase):
                     blob_file.write('I am a happy blob.')
                     blob_file.close()
                     r1 = storage.storeBlob(
-                        oid, ZODB.utils.z64, data, blob_file_name, '', t)
+                        oid, base_tid, data, blob_file_name, '', t)
                 else:
-                    r1 = storage.store(oid, ZODB.utils.z64, data, '', t)
+                    r1 = storage.store(oid, base_tid, data, '', t)
                 # Finish the transaction
                 r2 = storage.tpc_vote(t)
                 tid = ZODB.tests.StorageTestBase.handle_serials(oid, r1, r2)
@@ -151,7 +163,7 @@ class OnlineRecovery(unittest.TestCase):
             for storage in storages:
                 storage.tpc_abort(t)
             raise
-        return tid
+        return tid, oid
 
     def compare(self, source, target):
         compare(self, source, target)
@@ -172,7 +184,6 @@ class OnlineRecovery(unittest.TestCase):
             shutil.rmtree(path)
 
     def setup_raid(self):
-
         if self.use_blobs:
             blob_dir = tempfile.mkdtemp()
             self.temp_paths.append(blob_dir)
@@ -228,25 +239,25 @@ class OnlineRecovery(unittest.TestCase):
         self.assertRaises(ValueError, recovery.next)
 
     def test_verify_status_mismatch(self):
-        tid = self.store([self.source])
+        tid, _ = self.store([self.source])
         self.store([self.target], tid=tid, status='p')
         recovery = self.recovery()
         self.assertRaises(ValueError, recovery.next)
 
     def test_verify_user_mismatch(self):
-        tid = self.store([self.source])
+        tid, _ = self.store([self.source])
         self.store([self.target], tid=tid, user='Hans')
         recovery = self.recovery()
         self.assertRaises(ValueError, recovery.next)
 
     def test_verify_description_mismatch(self):
-        tid = self.store([self.source])
+        tid, _ = self.store([self.source])
         self.store([self.target], tid=tid, description='foo bar')
         recovery = self.recovery()
         self.assertRaises(ValueError, recovery.next)
 
     def test_verify_extension_mismatch(self):
-        tid = self.store([self.source])
+        tid, _ = self.store([self.source])
         self.store([self.target], tid=tid, extension=dict(foo=3))
         recovery = self.recovery()
         self.assertRaises(ValueError, recovery.next)
@@ -260,10 +271,12 @@ class OnlineRecovery(unittest.TestCase):
 
     def test_recover_simple(self):
         self.store([self.source, self.target])
-        self.store([self.source])
+        _, oid = self.store([self.source])
+        self.store([self.source], oid=oid)
         recovery = self.recovery()
         self.assertEquals('verify', recovery.next()[0])
         self.assertEquals('verified', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
         self.assertEquals('recover', recovery.next()[0])
         self.assertEquals('recovered', recovery.next()[0])
         self.compare(self.source, self.target)

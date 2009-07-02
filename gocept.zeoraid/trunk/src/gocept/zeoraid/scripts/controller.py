@@ -33,7 +33,7 @@ Commands:
 
     disable <storage> -- Disable a storage
 
-    reload </path/to/zeo.conf> -- Reload a specified zeo.conf file
+    reload -- Reload this raid storage's configuration from the zeo.conf
 
 """
 
@@ -59,12 +59,12 @@ class RAIDManager(object):
         print self.raid.raid_status()
 
     def cmd_details(self):
-        ok, recovering, failed = self.raid.raid_details()
+        ok, recovering, failed, recovery_status = self.raid.raid_details()
         print "RAID status:"
         print "\t", self.raid.raid_status()
         print "Storage status:"
         print "\toptimal\t\t", ok
-        print "\trecovering\t", recovering
+        print "\trecovering\t", recovering, recovery_status
         print "\tfailed\t\t", failed
 
     def cmd_recover(self, storage):
@@ -73,8 +73,8 @@ class RAIDManager(object):
     def cmd_disable(self, storage):
         print self.raid.raid_disable(storage)
 
-    def cmd_reload(self, path):
-        print self.raid.raid_reload(path)
+    def cmd_reload(self):
+        self.raid.raid_reload()
 
 def main(host="127.0.0.1", port=8100, storage="1"):
     usage = "usage: %prog [options] command [command-options]"

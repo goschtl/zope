@@ -13,6 +13,7 @@
 ##############################################################################
 """Online storage recovery."""
 
+import logging
 import tempfile
 
 import transaction
@@ -20,6 +21,8 @@ import ZODB.utils
 import ZODB.POSException
 
 import gocept.zeoraid.storage
+
+logger = logging.getLogger('gocept.zeoraid.recovery')
 
 
 def continuous_storage_iterator(storage):
@@ -94,7 +97,7 @@ class Recovery(object):
                         'in source transaction %r.' % (
                         name, source_value, target_value, source_txn.tid))
 
-            yield ('verify', source_txn.tid)
+            yield ('verify', ZODB.utils.tid_repr(source_txn.tid))
 
         yield ('verified',)
 
@@ -115,9 +118,17 @@ class Recovery(object):
             finally:
                 self.source.tpc_abort(t)
 
+            logger.debug('Recovering transaction %s' %
+                    ZODB.utils.tid_repr(txn_info.tid))
             self.target.tpc_begin(txn_info, txn_info.tid, txn_info.status)
 
             for r in txn_info:
+                before = self.source.loadBefore(r.oid, txn_info.tid)
+                if before is not None:
+                    _, prev_tid, _ = before
+                else:
+                    prev_tid = None
+
                 if self.recover_blobs:
                     try:
                         blob_file_name = self.source.loadBlob(
@@ -130,10 +141,13 @@ class Recovery(object):
                         gocept.zeoraid.storage.optimistic_copy(blob_file_name,
                                                                temp_file_name)
                         self.target.storeBlob(
-                            r.oid, r.tid, r.data, temp_file_name, r.version,
+                            r.oid, prev_tid, r.data, temp_file_name, r.version,
                             txn_info)
                         continue
-                self.target.store(r.oid, r.tid, r.data, r.version, txn_info)
+
+                # XXX Charlie Clark has a database that conflicts so we need
+                # to reconsider using store here.
+                self.target.store(r.oid, prev_tid, r.data, r.version, txn_info)
 
             self.target.tpc_vote(txn_info)
             self.target.tpc_finish(txn_info)

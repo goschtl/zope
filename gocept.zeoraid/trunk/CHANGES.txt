@@ -2,6 +2,21 @@
 Change History
 ==============
 
+1.0b3 (unreleased)
+------------------
+
+- Fix another recovery issue by using the correct previous Tid of a data
+  record.
+
+  Improve logging during recovery.
+
+- Show current recovery process in the management `details` command.
+
+- Fix recipe test to not mention the removed ZODB external anymore.
+
+- Don't require the ZEO configuration file to be named again, determine
+  automatically.
+
 1.0b2 (2009-07-02)
 ------------------
 

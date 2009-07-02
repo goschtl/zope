@@ -173,6 +173,7 @@ class RAIDStorage(object):
 
         # No storage is recovering initially
         self.storage_recovering = None
+        self.recovery_status = ''
 
     # IStorage
 
@@ -570,7 +571,8 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def raid_details(self):
-        return [self.storages_optimal, self.storage_recovering, self.storages_degraded]
+        return [self.storages_optimal, self.storage_recovering,
+                self.storages_degraded, self.recovery_status]
 
     @ensure_open_storage
     def raid_disable(self, name):
@@ -788,6 +790,7 @@ class RAIDStorage(object):
             self, storage, self._finalize_recovery,
             recover_blobs=(self.blob_fshelper and not self.shared_blob_dir))
         for msg in recovery():
+            self.recovery_status = msg
             logger.debug(str(msg))
 
     def _finalize_recovery(self, storage):

@@ -6,10 +6,13 @@ import ZODB.POSException
 import ZEO.zrpc.error
 import ZEO.Exceptions
 import ZODB.utils
+import logging
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger().setLevel(0)
 
 
-storage = ClientStorage([('127.0.0.1', 8100)],#, ('127.0.0.1', 8201)],
-                        storage='1')
+storage = ClientStorage([('127.0.0.1', 8200), ('127.0.0.1', 8201)],
+                        storage='main')
 db = DB(storage)
 conn = db.open()
 root = conn.root()
@@ -26,5 +29,4 @@ while True:
         transaction.abort()
         continue
     print root['x']
-    print ZODB.utils.oid_repr(storage.lastTransaction())
     time.sleep(1)
