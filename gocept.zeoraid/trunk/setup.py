@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 name = "gocept.zeoraid"
 setup(
     name = name,
-    version = "1.0c1dev",
+    version = "1.0b2dev",
     author = "Christian Theune",
     author_email = "ct@gocept.com",
     description = "A ZODB storage for replication using RAID techniques.",
@@ -27,7 +27,7 @@ setup(
     license = "ZPL 2.1",
     keywords = "zodb buildout",
     classifiers = ["Framework :: Buildout"],
-    url='http://launchpad.net/'+name,
+    url='http://pypi.python.org/pypi/gocept.zeoraid',
     zip_safe=False,
     packages = find_packages('src'),
     include_package_data = True,
@@ -36,10 +36,6 @@ setup(
     install_requires = ['setuptools',
                         'zc.zodbrecipes',
                         'ZODB3>=3.9dev'],
-    #extras_require = {
-    #    'recipe': ['zc.buildout',
-    #               'zc.zodbrecipes']
-    #},
     entry_points = """
         [zc.buildout]
         server = gocept.zeoraid.scripts.recipe:ZEORAIDServer
