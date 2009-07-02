@@ -65,7 +65,7 @@ class ThreadedApplyStorage(threading.Thread):
     exception = None
 
     def __init__(self, storage_name, method_name, args, kw,
-	         expect_connected, apply_storage):
+                 expect_connected, apply_storage):
         super(ThreadedApplyStorage, self).__init__()
         self.storage_name = storage_name
         self.method_name = method_name
