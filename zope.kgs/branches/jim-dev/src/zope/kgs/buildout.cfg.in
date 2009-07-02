@@ -1,6 +1,7 @@
 [buildout]
 parts = test
 versions = versions
+allow-picked-versions = false
 
 [test]
 recipe = zc.recipe.testrunner
