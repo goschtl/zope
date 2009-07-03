@@ -101,14 +101,11 @@ class CodeViewGrokker(martian.ClassGrokker):
         return super(CodeViewGrokker, self).grok(name, factory, module_info, **kw)
                 
     def execute(self, factory, config, context, layer, name, **kw):
-        # find templates
-        templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
-                )
+
+        # Make sure that we have a render Method
+        render = getattr(factory, 'render', None)
+        if not render:
+            raise GrokError("CodeView Class '%s' without an render method" % factory, factory)
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
@@ -130,18 +127,6 @@ class CodeViewGrokker(martian.ClassGrokker):
             args=(factory, adapts, interface.Interface, name),
             )
         return True
-
-    def checkTemplates(self, templates, module_info, factory):
-
-        def has_render(factory):
-            render = getattr(factory, 'render', None)
-            base_method = getattr(render, 'base_method', False)
-            return render and not base_method
-
-        def has_no_render(factory):
-            return not getattr(factory, 'render', None)
-        templates.checkTemplates(module_info, factory, 'view',
-                                 has_render, has_no_render)
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):
