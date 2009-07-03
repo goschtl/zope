@@ -31,11 +31,63 @@ import martian.util
 from grokcore.view import interfaces, util
 
 
-class CodeView(BrowserPage):
+class BaseView(BrowserPage):
+    interface.implements(interfaces.IGrokView)
+
+    def __init__(self, context, request):
+        super(BaseView, self).__init__(context, request)
+        self.__name__ = getattr(self, '__view_name__', None)
+
+    def update(self):
+        pass
+
+    def redirect(self, url):
+        return self.request.response.redirect(url)
+
+
+    def url(self, obj=None, name=None, data=None):
+        """Return string for the URL based on the obj and name. The data
+        argument is used to form a CGI query string.
+        """
+        if isinstance(obj, basestring):
+            if name is not None:
+                raise TypeError(
+                    'url() takes either obj argument, obj, string arguments, '
+                    'or string argument')
+            name = obj
+            obj = None
+
+        if name is None and obj is None:
+            # create URL to view itself
+            obj = self
+        elif name is not None and obj is None:
+            # create URL to view on context
+            obj = self.context
+
+        if data is None:
+            data = {}
+        else:
+            if not isinstance(data, dict):
+                raise TypeError('url() data argument must be a dict.')
+
+        return util.url(self.request, obj, name, data=data)
+
+
+class CodeView(BaseView):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(CodeView, self).__init__(context, request)
+
+    def default_namespace(self):
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['request'] = self.request
+        namespace['view'] = self
+        return namespace
+
+    def namespace(self):
+        return {}
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -49,16 +101,12 @@ class CodeView(BrowserPage):
             return self._render_template()
         return mapply(self.render, (), self.request)
 
-    def update(self):
-        pass
 
-
-class View(BrowserPage):
+class View(BaseView):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
-        self.__name__ = getattr(self, '__view_name__', None)
 
         if getattr(self, 'module_info', None) is not None:
             self.static = component.queryAdapter(
@@ -69,6 +117,8 @@ class View(BrowserPage):
         else:
             self.static = None
 
+
+    # Might be moved to BaseView currently only needed for PageTemplates CHECKTHIS
     @property
     def response(self):
         return self.request.response
@@ -112,40 +162,6 @@ class View(BrowserPage):
                       "View %r, macro %s" % (self, key),
                       DeprecationWarning, 1)
         return value
-
-
-    def url(self, obj=None, name=None, data=None):
-        """Return string for the URL based on the obj and name. The data
-        argument is used to form a CGI query string.
-        """
-        if isinstance(obj, basestring):
-            if name is not None:
-                raise TypeError(
-                    'url() takes either obj argument, obj, string arguments, '
-                    'or string argument')
-            name = obj
-            obj = None
-
-        if name is None and obj is None:
-            # create URL to view itself
-            obj = self
-        elif name is not None and obj is None:
-            # create URL to view on context
-            obj = self.context
-
-        if data is None:
-            data = {}
-        else:
-            if not isinstance(data, dict):
-                raise TypeError('url() data argument must be a dict.')
-
-        return util.url(self.request, obj, name, data=data)
-
-    def redirect(self, url):
-        return self.request.response.redirect(url)
-
-    def update(self):
-        pass
 
 
 class BaseTemplate(object):

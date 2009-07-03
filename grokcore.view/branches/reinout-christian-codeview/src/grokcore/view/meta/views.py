@@ -135,7 +135,7 @@ class CodeViewGrokker(martian.ClassGrokker):
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):
-    martian.component(components.View)
+    martian.component(components.BaseView)
     martian.directive(grokcore.security.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):

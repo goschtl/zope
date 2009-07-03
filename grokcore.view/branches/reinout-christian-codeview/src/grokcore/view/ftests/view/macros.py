@@ -19,7 +19,8 @@ Views without a template do not support macros:
 
   >>> browser.open("http://localhost/manfred/@@dancing")
   Traceback (most recent call last):
-  AttributeError: 'DancingHall' object has no attribute 'template'
+  ...
+  TraversalError: (<grokcore.view.ftests.view.macros.DancingHall object at ...>, 'macros')
 
 If the view has an attribute with the same name as a macro, the macro
 shadows the view. XXX This should probably generate a warning at runtime.
@@ -82,7 +83,7 @@ class Mammoth(grok.Context):
 class DancingHall(grok.CodeView):
 
     def render(self):
-        return "A nice large dancing hall for mammoths."
+	return "Bla Bla Dancing Hall"
 
 
 class Grilled(grok.View):
