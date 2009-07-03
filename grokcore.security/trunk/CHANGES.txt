@@ -1,13 +1,13 @@
 Changes
 =======
 
-1.1 (unreleased)
+1.1 (2009-07-03)
 ----------------
 
-* Improved documentation.
+* Changed the default permissions from zope.Public to grok.View.
 
-* Removed dependency on `zope.app.security` thanks to the `protectclass`
-  utility module having been moved to `zope.security`.
+  NOTE: YOU MUST ASSIGN THIS PERMISSION TO USERS IN YOUR 
+  site.zcml FILE. OTHERWISE YOU DO NOT HAVE ACCESS TO ANY VIEWS.
 
 1.0 (2008-08-03)
 ----------------
