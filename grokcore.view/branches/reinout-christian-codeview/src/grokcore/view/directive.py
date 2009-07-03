@@ -19,15 +19,18 @@ from martian.directive import StoreOnce
 from zope.interface.interface import TAGGED_DATA
 
 # Define grok directives
+
 class template(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
 
+
 class templatedir(martian.Directive):
     scope = martian.MODULE
     store = martian.ONCE
     validate = martian.validateText
+
 
 class OneInterfaceOrClassOnClassOrModule(martian.Directive):
     """Convenience base class.  Not for public use."""
@@ -35,8 +38,10 @@ class OneInterfaceOrClassOnClassOrModule(martian.Directive):
     store = martian.ONCE
     validate = martian.validateInterfaceOrClass
 
+
 class layer(OneInterfaceOrClassOnClassOrModule):
     pass
+
 
 class TaggedValueStoreOnce(StoreOnce):
     """Stores the directive value in a interface tagged value.
@@ -46,7 +51,8 @@ class TaggedValueStoreOnce(StoreOnce):
         return component.queryTaggedValue(directive.dotted_name(), default)
 
     def set(self, locals_, directive, value):
-        if directive.dotted_name() in locals_:
+        already_set = locals_.get('__interface_tagged_values__', [])
+        if directive.dotted_name() in already_set:
             raise GrokImportError(
                 "The '%s' directive can only be called once per %s." %
                 (directive.name, directive.scope.description))
@@ -61,12 +67,14 @@ class TaggedValueStoreOnce(StoreOnce):
     def setattr(self, context, directive, value):
         context.setTaggedValue(directive.dotted_name(), value)
 
+
 class skin(martian.Directive):
     # We cannot do any better than to check for a class scope. Ideally we
     # would've checked whether the context is indeed an Interface class.
     scope = martian.CLASS
     store = TaggedValueStoreOnce()
     validate = martian.validateText
+
 
 class path(martian.Directive):
     scope = martian.CLASS
