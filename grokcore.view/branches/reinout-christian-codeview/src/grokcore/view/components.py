@@ -44,7 +44,6 @@ class BaseView(BrowserPage):
     def redirect(self, url):
         return self.request.response.redirect(url)
 
-
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name. The data
         argument is used to form a CGI query string.
@@ -74,20 +73,9 @@ class BaseView(BrowserPage):
 
 
 class CodeView(BaseView):
-    interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(CodeView, self).__init__(context, request)
-
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['view'] = self
-        return namespace
-
-    def namespace(self):
-        return {}
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -96,14 +84,10 @@ class CodeView(BaseView):
             # continue rendering the template or doing anything else.
             return
 
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
         return mapply(self.render, (), self.request)
 
 
 class View(BaseView):
-    interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
@@ -117,7 +101,6 @@ class View(BaseView):
         else:
             self.static = None
 
-
     # Might be moved to BaseView currently only needed for PageTemplates CHECKTHIS
     @property
     def response(self):
@@ -130,12 +113,6 @@ class View(BaseView):
             # continue rendering the template or doing anything else.
             return
 
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
-
-    def _render_template(self):
         return self.template.render(self)
 
     def default_namespace(self):

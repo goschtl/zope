@@ -53,13 +53,11 @@ class ViewGrokker(martian.ClassGrokker):
 
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                #callable=templates.checkTemplates(factory.module_info, factory, 'view', False, True),
-                args=(templates, factory.module_info, factory)
-                )
+        config.action(
+            discriminator=None,
+            callable=self.checkTemplates,
+            args=(templates, factory.module_info, factory)
+            )
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
@@ -82,6 +80,9 @@ class ViewGrokker(martian.ClassGrokker):
             )
         return True
 
+
+    # CHECK THIS.  There is no template/render checking anymore, so this is a bit
+    # elaborate.
     def checkTemplates(self, templates, module_info, factory):
 
         def has_render(factory):
