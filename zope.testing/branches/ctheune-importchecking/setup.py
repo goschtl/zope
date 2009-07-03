@@ -25,6 +25,7 @@ try:
         install_requires = ['setuptools',
                             'zope.interface'],
         extras_require={'zope_tracebacks': 'zope.exceptions'},
+        entry_points = {'console_scripts': ['zope-testrunner = zope.testing.testrunner:run',]},
         include_package_data = True,
         zip_safe = False,
         )
@@ -79,14 +80,29 @@ open('documentation.txt', 'w').write(long_description)
 
 setup(
     name='zope.testing',
-    version='3.7.2dev',
+    version = '3.7.7dev',
     url='http://pypi.python.org/pypi/zope.testing',
     license='ZPL 2.1',
     description='Zope testing framework, including the testrunner script.',
     long_description=long_description,
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
 
     packages=["zope", "zope.testing"],
     package_dir = {'': 'src'},
+
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Framework :: Zope3",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Zope Public License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2.4",
+        "Programming Language :: Python :: 2.5",
+        "Programming Language :: Python :: 2.6",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Testing",
+        ],
+
     **extra)

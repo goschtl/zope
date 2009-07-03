@@ -52,7 +52,7 @@ Successful test
 A successful test run soothes the developer with warm green colors:
 
     >>> sys.argv = 'test --layer 122 -c'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     {normal}Running samplelayers.Layer122 tests:{normal}
       Set up samplelayers.Layer1 in {green}0.000{normal} seconds.
       Set up samplelayers.Layer12 in {green}0.000{normal} seconds.
@@ -71,7 +71,7 @@ Failed test
 A failed test run highlights the failures in red:
 
     >>> sys.argv = 'test -c --tests-pattern ^sampletests(f|_e|_f)?$ '.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     {normal}Running samplelayers.Layer1 tests:{normal}
       Set up samplelayers.Layer1 in {green}0.000{normal} seconds.
     {normal}  Ran {green}9{normal} tests with {green}0{normal} failures and {green}0{normal} errors in {green}0.001{normal} seconds.{normal}
@@ -118,7 +118,7 @@ A failed test run highlights the failures in red:
     {red}    Traceback (most recent call last):{normal}
     {red}      File ".../doctest.py", line 1356, in __run{normal}
     {red}        compileflags, 1) in test.globs{normal}
-    {red}      File "<doctest sample2.sampletests_e.eek[0]>", line 1, in ?{normal}
+    {red}      File "<doctest sample2.sampletests_e.eek[line 2, example 0]>", line 1, in ?{normal}
     {red}        f(){normal}
     {red}      File "testrunner-ex/sample2/sampletests_e.py", line 19, in f{normal}
     {red}        g(){normal}
@@ -154,9 +154,9 @@ A failed test run highlights the failures in red:
     {red}    Traceback (most recent call last):{normal}
     {red}      File ".../doctest.py", line 1356, in __run{normal}
     {red}        compileflags, 1) in test.globs{normal}
-    {red}      File "<doctest e.txt[1]>", line 1, in ?{normal}
+    {red}      File "<doctest e.txt[line 4, example 1]>", line 1, in ?{normal}
     {red}        f(){normal}
-    {red}      File "<doctest e.txt[0]>", line 2, in f{normal}
+    {red}      File "<doctest e.txt[line 1, example 0]>", line 2, in f{normal}
     {red}        return x{normal}
     {red}    NameError: global name 'x' is not defined{normal}
     <BLANKLINE>
@@ -186,7 +186,7 @@ The expected and actual outputs of failed doctests are shown in different
 colors:
 
     >>> sys.argv = 'test --tests-pattern ^pledge$ -c'.split()
-    >>> _ = testrunner.run(defaults)
+    >>> _ = testrunner.run_internal(defaults)
     {normal}Running zope.testing.testrunner.layer.UnitTests tests:{normal}
       Set up zope.testing.testrunner.layer.UnitTests in {green}N.NNN{normal} seconds.
     <BLANKLINE>
@@ -218,7 +218,7 @@ Diffs are highlighted so you can easily tell the context and the mismatches
 apart:
 
     >>> sys.argv = 'test --tests-pattern ^pledge$ --ndiff -c'.split()
-    >>> _ = testrunner.run(defaults)
+    >>> _ = testrunner.run_internal(defaults)
     {normal}Running zope.testing.testrunner.layer.UnitTests tests:{normal}
       Set up zope.testing.testrunner.layer.UnitTests in {green}N.NNN{normal} seconds.
     <BLANKLINE>
@@ -243,6 +243,36 @@ apart:
     {normal}Tearing down left over layers:{normal}
       Tear down zope.testing.testrunner.layer.UnitTests in {green}N.NNN{normal} seconds.
 
+Even test failures that have actual blank lines (as opposed to <BLANKLINE>) in
+them are highlighted correctly.
+
+    >>> import zope.testing.testrunner.formatter
+    >>> formatter = zope.testing.testrunner.formatter.ColorfulOutputFormatter(None)
+    >>> formatter.print_doctest_failure("""\
+    ...     File "sometest.txt", line 221, in sometest.txt
+    ... Failed example:
+    ...     foo()
+    ... Expected:
+    ...     Output that contains
+    ...
+    ...     blank lines.
+    ... Got:
+    ...     Output that still contains
+    ...
+    ...     blank lines.""")
+    {normal}    File "sometest.txt", line 221, in sometest.txt{normal}
+    Failed example:
+    {cyan}    foo(){normal}
+    Expected:
+    {green}    Output that contains{normal}
+    <BLANKLINE>
+    {green}    blank lines.{normal}
+    Got:
+    {red}    Output that still contains{normal}
+    <BLANKLINE>
+    {red}    blank lines.{normal}
+    <BLANKLINE>
+
 
 Timing individual tests
 -----------------------
@@ -250,7 +280,7 @@ Timing individual tests
 At very high verbosity levels you can see the time taken by each test
 
     >>> sys.argv = 'test -u -t test_one.TestNotMuch -c -vvv'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     {normal}Running tests at level 1{normal}
     {normal}Running zope.testing.testrunner.layer.UnitTests tests:{normal}
       Set up zope.testing.testrunner.layer.UnitTests in {green}N.NNN{normal} seconds.
@@ -272,7 +302,7 @@ Instead of creating a test that waits 10 seconds, let's lower the slow test thre
 in the test runner to 0 seconds to make all of the tests seem slow.
 
     >>> sys.argv = 'test -u -t test_one.TestNotMuch -c -vvv --slow-test 0'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     {normal}Running tests at level 1{normal}
     {normal}Running zope.testing.testrunner.layer.UnitTests tests:{normal}
       Set up zope.testing.testrunner.layer.UnitTests in {green}N.NNN{normal} seconds.
@@ -298,7 +328,7 @@ a test runner wrapper script), but no colorized output is desired, the -C or
 --no-color options will disable colorized output:
 
     >>> sys.argv = 'test --layer 122 -c -C'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     Running samplelayers.Layer122 tests:
       Set up samplelayers.Layer1 in 0.000 seconds.
       Set up samplelayers.Layer12 in 0.000 seconds.
@@ -311,7 +341,7 @@ a test runner wrapper script), but no colorized output is desired, the -C or
     False
 
     >>> sys.argv = 'test --layer 122 -c --no-color'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     Running samplelayers.Layer122 tests:
       Set up samplelayers.Layer1 in 0.000 seconds.
       Set up samplelayers.Layer12 in 0.000 seconds.
@@ -332,7 +362,7 @@ colors, and only enable colorized output if so.  Our ``Terminal`` wrapper
 pretends it is a terminal, but the curses module will realize it isn't:
 
     >>> sys.argv = 'test --layer 122 --auto-color'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     Running samplelayers.Layer122 tests:
       Set up samplelayers.Layer1 in 0.000 seconds.
       Set up samplelayers.Layer12 in 0.000 seconds.
@@ -356,7 +386,7 @@ We can fake it
     >>> sys.modules['curses'] = FakeCurses()
 
     >>> sys.argv = 'test --layer 122 --auto-color'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     {normal}Running samplelayers.Layer122 tests:{normal}
       Set up samplelayers.Layer1 in {green}0.000{normal} seconds.
       Set up samplelayers.Layer12 in {green}0.000{normal} seconds.
@@ -375,7 +405,7 @@ The real stdout is not a terminal in a doctest:
     >>> sys.stdout = real_stdout
 
     >>> sys.argv = 'test --layer 122 --auto-color'.split()
-    >>> testrunner.run(defaults)
+    >>> testrunner.run_internal(defaults)
     Running samplelayers.Layer122 tests:
       Set up samplelayers.Layer1 in 0.000 seconds.
       Set up samplelayers.Layer12 in 0.000 seconds.
