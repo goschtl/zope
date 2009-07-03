@@ -35,6 +35,7 @@ def initialize(context):
     from permissions import EditCollectorIssue
     from permissions import AddCollectorIssueFollowup
 
+    global factory_type_information # allow quickinstaller access
     factory_type_information = (
         (Collector.factory_type_information
         + CollectorIssue.factory_type_information
