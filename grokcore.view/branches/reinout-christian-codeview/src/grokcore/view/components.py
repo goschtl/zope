@@ -31,6 +31,28 @@ import martian.util
 from grokcore.view import interfaces, util
 
 
+class CodeView(BrowserPage):
+    interface.implements(interfaces.IGrokView)
+
+    def __init__(self, context, request):
+        super(CodeView, self).__init__(context, request)
+
+    def __call__(self):
+        mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+
+        template = getattr(self, 'template', None)
+        if template is not None:
+            return self._render_template()
+        return mapply(self.render, (), self.request)
+
+    def update(self):
+        pass
+
+
 class View(BrowserPage):
     interface.implements(interfaces.IGrokView)
 
