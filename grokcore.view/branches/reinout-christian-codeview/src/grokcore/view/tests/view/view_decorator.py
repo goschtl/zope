@@ -12,10 +12,12 @@ Using the @grok.require decorator in a view class is not allowed.
 import grokcore.view as grok
 import zope.interface
 
+
 class Bogus(grok.Permission):
     grok.name('bogus.perm')
 
-class BogusView(grok.View):
+
+class BogusView(grok.CodeView):
     grok.context(zope.interface.Interface)
 
     @grok.require(Bogus)

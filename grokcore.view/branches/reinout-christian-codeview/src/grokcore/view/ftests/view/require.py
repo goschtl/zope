@@ -27,17 +27,20 @@ A view protected with 'zope.Public' is always accessible:
 import grokcore.view as grok
 import zope.interface
 
+
 class ViewPainting(grok.Permission):
     grok.name('cave.ViewPainting')
 
-class Painting(grok.View):
+
+class Painting(grok.CodeView):
     grok.context(zope.interface.Interface)
     grok.require(ViewPainting)
 
     def render(self):
         return 'What a beautiful painting.'
 
-class PublicNudity(grok.View):
+
+class PublicNudity(grok.CodeView):
     grok.context(zope.interface.Interface)
     grok.require(grok.Public)
 
