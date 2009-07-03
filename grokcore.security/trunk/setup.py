@@ -12,7 +12,7 @@ long_description = (
 
 setup(
     name='grokcore.security',
-    version='1.1dev',
+    version='1.1dev2',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -36,7 +36,7 @@ setup(
                       'grokcore.component >= 1.5.1',
                       'zope.interface',
                       'zope.component',
-                      'zope.security >= 3.6.2',
+                      'zope.app.security',
                       'zope.configuration',
                       'zope.testing',
                       ],

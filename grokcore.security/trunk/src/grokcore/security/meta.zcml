@@ -6,4 +6,7 @@
   <include package="grokcore.component" file="meta.zcml" />
   <grok:grok package=".meta" />
 
+  <!-- Grok my default permission -->
+  <grok:grok package=".default_permission" />
+
 </configure>

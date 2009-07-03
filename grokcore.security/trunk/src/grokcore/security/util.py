@@ -16,8 +16,8 @@
 from martian.error import GrokError
 from zope.component import queryUtility
 from zope.security.interfaces import IPermission
-from zope.security.protectclass import protectName
-from zope.security.protectclass import protectSetAttribute
+from zope.app.security.protectclass import protectName
+from zope.app.security.protectclass import protectSetAttribute
 
 def protect_getattr(class_, name, permission=None):
     """Install a getattr permission check for the attribute ``name``.
@@ -40,7 +40,7 @@ def check_or_default_permission(class_, permission):
     otherwise make sure permission has been defined.
     """
     if permission is None:
-        permission = 'zope.Public'
+        permission = 'grok.View'
     else:
         check_permission(class_, permission)
     return permission
