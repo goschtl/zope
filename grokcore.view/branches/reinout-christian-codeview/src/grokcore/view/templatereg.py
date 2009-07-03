@@ -107,6 +107,7 @@ class TemplateRegistry(object):
                                 % (component_name, factory, template_name,
                                    factory_name), factory)
         template = self.get(template_name)
+        # TODO: strip render
         if template is not None:
             if has_render(factory):
                 # we do not accept render and template both for a view
@@ -122,8 +123,7 @@ class TemplateRegistry(object):
         else:
             if has_no_render(factory):
                 # we do not accept a view without any way to render it
-                raise GrokError("%s %r has no associated template or "
-                                "'render' method." %
+                raise GrokError("%s %r has no associated template." %
                                 (component_name.title(), factory), factory)
 
 class PageTemplateFileFactory(grokcore.component.GlobalUtility):

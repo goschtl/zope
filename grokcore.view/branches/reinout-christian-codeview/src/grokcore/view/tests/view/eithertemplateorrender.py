@@ -1,13 +1,12 @@
 """
-Only one, either a template, or render() can be specified:
+Only a template may be specified, not a render() method.  Use CodeView if you
+want a render method.
 
-  >>> grok.testing.grok(__name__)
-  Traceback (most recent call last):
+    >>> grok.testing.grok(__name__)
+    Traceback (most recent call last):
     ...
-  ConfigurationExecutionError: martian.error.GrokError: Multiple possible ways to render view
-  <class 'grokcore.view.tests.view.eithertemplateorrender.CavePainting'>.
-  It has both a 'render' method as well as an associated template.
-  in:
+    GrokError: View Class '<class 'grokcore.view.tests.view.eithertemplateorrender.CavePainting'>' has a render method
+
 """
 import grokcore.view as grok
 
