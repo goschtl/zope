@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/#"
+    xmlns:collector="http://namespaces.zope.org/cmfcollector#">
+ <rdf:Seq about="#"
+          tal:attributes="about string:${options/collector_url}/supporters">
+  <rdf:li tal:repeat="item options/supporters">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${options/collector_url}/supporters/${item}">
+    <collector:supporter tal:content="item">SUPPORTER</collector:supporter>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${options/collector_url}/status">
+  <rdf:li tal:repeat="item options/status">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${options/collector_url}/status/${item}">
+    <collector:status tal:content="item">STATUS</collector:status>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${options/collector_url}/topic">
+  <rdf:li tal:repeat="item options/topic">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${options/collector_url}/topic/${item}">
+    <collector:topic tal:content="item">TOPIC</collector:topic>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${options/collector_url}/classification">
+  <rdf:li tal:repeat="item options/classification">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${options/collector_url}/classification/${item}">
+    <collector:classification tal:content="item">CLASSIFICATION</collector:classification>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${options/collector_url}/importance">
+  <rdf:li tal:repeat="item options/importance">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${options/collector_url}/importance/${item}">
+    <collector:importance tal:content="item">IMPORTANCE</collector:importance>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+</rdf:RDF>

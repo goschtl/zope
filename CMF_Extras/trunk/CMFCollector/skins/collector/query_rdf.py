@@ -6,8 +6,6 @@ REQUEST.RESPONSE.setHeader('Content-Type', 'application/xml')
 
 kw = REQUEST.form
 
-options = {}
-
 query = kw.copy()
 query['portal_type'] = 'Collector Issue'
 
@@ -41,12 +39,8 @@ for item in found:
            }
     items.append(info)
 
-options['issues'] = tuple(items)
-
-options['supporters'] = catalog.supporters
-options['status'] = catalog.uniqueValuesFor('status')
-options['topic'] = catalog.topics
-options['classification'] = catalog.classifications
-options['importance'] = catalog.importances
+options = {'collector_url': context.absolute_url(),
+           'issues': tuple(items),
+          }
 
 return context.issues_as_rdf(**options)
