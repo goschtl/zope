@@ -13,10 +13,19 @@
 ##############################################################################
 """Grok directives.
 """
+import os.path
+
 import martian
 from martian.error import GrokImportError
 from martian.directive import StoreOnce
 from zope.interface.interface import TAGGED_DATA
+
+
+def validateLocalPath(directive, value):
+    martian.validateText(directive, value)
+    if os.path.sep in value:
+        raise GrokImportError("The '%s' directive can not contain path separator."
+                               % directive.name)
 
 # Define grok directives
 class template(martian.Directive):
@@ -27,7 +36,7 @@ class template(martian.Directive):
 class templatedir(martian.Directive):
     scope = martian.MODULE
     store = martian.ONCE
-    validate = martian.validateText
+    validate = validateLocalPath
 
 class OneInterfaceOrClassOnClassOrModule(martian.Directive):
     """Convenience base class.  Not for public use."""

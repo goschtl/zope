@@ -4,7 +4,7 @@ Changes
 1.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add validator to templatedir directive to disallow path separator.
 
 
 1.7 (2009-05-19)
