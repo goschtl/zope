@@ -6,3 +6,6 @@ Changes
 
 * initial version
 
+* Updated to support new grok.View permissions.
+* Updated the buildout to be specific about versions
+
