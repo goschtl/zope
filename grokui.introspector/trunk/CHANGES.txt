@@ -8,3 +8,5 @@ Feature changes
 ---------------
 
 - Initial Release
+
+- Updated the build mechanism. Use version.cfg copied from grok.
