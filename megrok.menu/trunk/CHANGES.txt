@@ -4,6 +4,7 @@ Changelog
 0.3 (unreleased)
 ----------------
  * Get rid of the grok dependency. Now depends only on grokcore.* packages
+ * Updated the build process
 
 0.2 (2009-03-02)
 ----------------
