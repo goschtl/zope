@@ -37,12 +37,12 @@ import grokcore.view as grok
 class Mammoth(grok.Context):
     pass
 
-class CavePainting(grok.View):
+class CavePainting(grok.CodeView):
 
     def render(self):
         return 'A cave painting of a mammoth'
 
-class Food(grok.View):
+class Food(grok.CodeView):
     """Grok says: ME NO SEE MAMMOTH, ME SEE MEAL!"""
     grok.name('meal')
 

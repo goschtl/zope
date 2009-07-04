@@ -6,6 +6,10 @@ Changes
 
 - Add validator to templatedir directive to disallow path separator.
 
+- Splitted CodeView out of View.  View only uses templates, CodeView only uses
+  a render() method.  So views that have a render method must subclass from
+  CodeView instead of View (that should be the only change needed).
+
 - Add grok.View permissions to functional tests (requires grokcore.security 1.1)
 
 

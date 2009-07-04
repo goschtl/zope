@@ -10,8 +10,10 @@ We cannot register two skins under the same name::
 
 import grokcore.view as grok
 
+
 class Skin1(grok.IBrowserRequest):
     grok.skin('foo')
+
 
 class Skin2(grok.IBrowserRequest):
     grok.skin('foo')
