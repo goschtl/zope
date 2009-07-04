@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+Version 1.1 (unreleased)
+------------------------
+
+* Updated the buildout - copied versions.cfg from grok
+* Fixed import path for ITemplateFileFactory
+
+
 Version 1.0
 -----------
 
