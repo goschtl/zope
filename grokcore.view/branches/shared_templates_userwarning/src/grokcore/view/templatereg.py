@@ -30,7 +30,6 @@ class InlineTemplateRegistry(object):
     def unassociated(self):
         return self._unassociated
 
-
 class FileTemplateRegistry(object):
     def __init__(self):
         self._reg = {}
@@ -41,7 +40,7 @@ class FileTemplateRegistry(object):
         if module_info.isPackage():
             return
 
-        template_dir = self._get_template_dir(module_info)
+        template_dir = self.get_template_dir(module_info)
         self.register_directory(template_dir)
         
     def register_directory(self, template_dir):
@@ -111,15 +110,42 @@ class FileTemplateRegistry(object):
     def unassociated(self):
         return self._unassociated
         
-    def _get_template_dir(self, module_info):
+    def get_template_dir(self, module_info):
         template_dir_name = grokcore.view.templatedir.bind().get(
             module=module_info.getModule())
         if template_dir_name is None:
             template_dir_name = module_info.name + '_templates'
 
-            template_dir = module_info.getResourcePath(template_dir_name)
+        template_dir = module_info.getResourcePath(template_dir_name)
         return template_dir
 
+inline_template_registry = InlineTemplateRegistry()
+file_template_registry = FileTemplateRegistry()
+
+def register_inline_template(module_info, template_name, template):
+    template_dir = file_template_registry.get_template_dir(module_info)
+
+    try:
+        existing_template = file_template_registry.lookup(
+            template_dir, template_name)
+    except LookupError:
+        pass # we actually want a LookupError as the template shouldn't exist
+    else:
+        raise GrokError("Conflicting templates found for name '%s': "
+                        "the inline template in module '%s' conflicts "
+                        "with the file template in directory '%s'" %
+                        (template_name, module_info.dotted_name,
+                         template_dir), None)
+    inline_template_registry.register_inline_template(
+        module_info, template_name, template)
+    
+
+def register_directory(template_dir):
+    file_template_registry.register_directory(template_dir)
+
+
+
+    
 all_directory_templates_registries = {}
 
 
