@@ -7,6 +7,9 @@ Changes
 - Fix needed for grokcore.formlib: allow a base_method'ed render() on view.
   This allows grokcore.formlib to have a render() in addition to a template.
 
+- Reverted change to checkTemplates: for some formlib edge cases it detects
+  the right templates again.
+
 
 1.8 (2009-07-04)
 ----------------
