@@ -6,6 +6,8 @@ Changes
 
 * Use zope.container instead of zope.app.container.
 
+* Add grok.View permissions for functional tests.
+
 1.1 (2009-01-07)
 ----------------
 
