@@ -1,0 +1,9 @@
+megrok.responseheaders changes
+*******************
+
+0.1 (unreleased)
+==================
+
+* Fixed up tbe buildout files so that the package builds and tests
+  with the latest version of grokcore.security.
+
