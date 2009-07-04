@@ -1,0 +1,7 @@
+five.megrok.z3cform Changes
+***************************
+
+dev (unreleased)
+==================
+
+* Updated the buildout configuration to make the tests build.
