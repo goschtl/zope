@@ -4,6 +4,10 @@ Changes
 1.8 (unreleased)
 ----------------
 
+- Fix excessive UserWarning when using multiple modules
+  with shared templates directory. This closes
+  https://bugs.launchpad.net/grok/+bug/250977
+
 - Add validator to templatedir directive to disallow path separator.
 
 
