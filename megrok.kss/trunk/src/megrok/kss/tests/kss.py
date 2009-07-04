@@ -11,7 +11,9 @@ KSS action calls `self.view.render()`.
   >>> kss = getMultiAdapter((view, request), name="getId")
   >>> print kss()
   <?xml version="1.0" ?>
-  <kukit xmlns="http://www.kukit.org/commands/1.1">
+  <kukit>
+  <!-- xmlns="http://www.kukit.org/commands/1.1" removed from kukit tag as it
+         breaks IE6 XP SP3 -->
   <commands>
   <command selector="#click-me" name="replaceHTML"
            selectorType="">
@@ -38,7 +40,9 @@ non-authenticated users::
   >>> browser.open('http://localhost/model/@@testview/@@getId')
   >>> print browser.contents
   <?xml version="1.0" ?>
-  <kukit xmlns="http://www.kukit.org/commands/1.1">
+  <kukit>
+  <!-- xmlns="http://www.kukit.org/commands/1.1" removed from kukit tag as it
+       breaks IE6 XP SP3 -->
   <commands>
   <command selector="#click-me" name="replaceHTML"
            selectorType="">
@@ -47,6 +51,7 @@ non-authenticated users::
   </command>
   </commands>
   </kukit>
+  <BLANKLINE>
 
 """
 
