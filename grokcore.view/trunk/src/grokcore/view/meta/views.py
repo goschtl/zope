@@ -81,15 +81,15 @@ class ViewGrokker(martian.ClassGrokker):
         return True
 
 
-    # CHECK THIS.  There is no template/render checking anymore, so this is a bit
-    # elaborate.
     def checkTemplates(self, templates, module_info, factory):
 
         def has_render(factory):
-	    return False
+            render = getattr(factory, 'render', None)
+            base_method = getattr(render, 'base_method', False)
+            return render and not base_method
 
         def has_no_render(factory):
-	    return True
+            return not getattr(factory, 'render', None)
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
 

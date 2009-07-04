@@ -19,6 +19,7 @@ from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 class IBaseClasses(Interface):
     View = Attribute("Base class for browser views.")
+    CodeView = Attribute("Base class for browser views with render().")
     DirectoryResource = Attribute("Base class to create new "
                                   "directory resource.")
 
