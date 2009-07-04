@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.9 (unreleased)
+1.9 (2009-07-04)
 ----------------
 
 - Fix needed for grokcore.formlib: allow a base_method'ed render() on view.
