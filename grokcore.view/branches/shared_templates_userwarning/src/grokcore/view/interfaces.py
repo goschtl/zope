@@ -162,3 +162,6 @@ class ITemplate(Interface):
 
     def render(view):
         """Renders the template"""
+
+class TemplateLookupError(Exception):
+    pass

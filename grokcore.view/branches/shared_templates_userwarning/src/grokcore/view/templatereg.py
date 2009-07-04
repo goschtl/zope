@@ -4,16 +4,33 @@ import zope.component
 import grokcore.component
 import grokcore.view
 from martian.error import GrokError
-from grokcore.view.interfaces import ITemplateFileFactory
+from grokcore.view.interfaces import ITemplateFileFactory, TemplateLookupError
 from grokcore.view.components import PageTemplate
-        
+
 
 class InlineTemplateRegistry(object):
     def __init__(self):
         self._reg = {}
         self._unassociated = set()
 
+
     def register_inline_template(self, module_info, template_name, template):
+        # verify no file template got registered with the same name
+        template_dir = file_template_registry.get_template_dir(module_info)
+
+        try:
+            existing_template = file_template_registry.lookup(
+                template_dir, template_name)
+        except TemplateLookupError:
+            pass
+        else:
+            raise GrokError("Conflicting templates found for name '%s': "
+                            "the inline template in module '%s' conflicts "
+                            "with the file template in directory '%s'" %
+                            (template_name, module_info.dotted_name,
+                             template_dir), None)
+
+        # register the inline template
         self._reg[(module_info.dotted_name, template_name)] = template
         self._unassociated.add((module_info.dotted_name, template_name))
 
@@ -23,7 +40,7 @@ class InlineTemplateRegistry(object):
     def lookup(self, module_info, template_name):
         result = self._reg.get((module_info.dotted_name, template_name))
         if result is None:
-            raise LookupError("inline template '%s' in '%s' cannot be found" % (
+            raise TemplateLookupError("inline template '%s' in '%s' cannot be found" % (
                     template_name, module_info.dotted_name))
         return result
     
@@ -35,24 +52,21 @@ class FileTemplateRegistry(object):
         self._reg = {}
         self._unassociated = set()
 
-    def register_directory_for_module(self, module_info):
+    def register_directory(self, module_info):
         # we cannot register a templates dir for a package
         if module_info.isPackage():
             return
 
         template_dir = self.get_template_dir(module_info)
-        self.register_directory(template_dir)
-        
-    def register_directory(self, template_dir):
         # we can only register for directories
         if not os.path.isdir(template_dir):
             return
-        
+    
         for template_file in os.listdir(template_dir):
-            self._register_template_file(
-                os.path.join(template_dir, template_file))
-
-    def _register_template_file(self, template_path):
+            template_path = os.path.join(template_dir, template_file)
+            self._register_template_file(module_info, template_path)
+        
+    def _register_template_file(self, module_info, template_path):
         template_dir, template_file = os.path.split(template_path)
 
         if template_file.startswith('.') or template_file.endswith('~'):
@@ -61,22 +75,24 @@ class FileTemplateRegistry(object):
             # chameleon creates '<tpl_name>.cache' files on the fly
             return
 
-#             inline_template = self.getLocal(template_name)
-#             if inline_template:
-#                 raise GrokError("Conflicting templates found for name '%s' "
-#                                 "in module %r, either inline and in template "
-#                                 "directory '%s', or two templates with the "
-#                                 "same name and different extensions."
-#                                 % (template_name, module_info.getModule(),
-#                                    template_dir), inline_template)
-
         template_name, extension = os.path.splitext(template_file)
         if (template_dir, template_name) in self._reg:
             raise GrokError("Conflicting templates found for name '%s' "
                             "in directory '%s': multiple templates with "
                             "the same name and different extensions ." %
                             (template_name, template_dir), None)
-                    
+        # verify no inline template exists with the same name
+        try:
+            inline_template_registry.lookup(module_info, template_name)
+        except TemplateLookupError:
+            pass
+        else:
+            raise GrokError("Conflicting templates found for name '%s': "
+                            "the inline template in module '%s' conflicts "
+                            "with the file template in directory '%s'" %
+                            (template_name, module_info.dotted_name,
+                             template_dir), None)
+        
         extension = extension[1:] # Get rid of the leading dot.
         template_factory = zope.component.queryUtility(
             grokcore.view.interfaces.ITemplateFileFactory,
@@ -103,7 +119,7 @@ class FileTemplateRegistry(object):
     def lookup(self, template_dir, template_name):
         result = self._reg.get((template_dir, template_name))
         if result is None:
-            raise LookupError("template '%s' in '%s' cannot be found" % (
+            raise TemplateLookupError("template '%s' in '%s' cannot be found" % (
                     template_name, template_dir))
         return result
     
@@ -122,29 +138,9 @@ class FileTemplateRegistry(object):
 inline_template_registry = InlineTemplateRegistry()
 file_template_registry = FileTemplateRegistry()
 
-def register_inline_template(module_info, template_name, template):
-    template_dir = file_template_registry.get_template_dir(module_info)
+register_inline_template = inline_template_registry.register_inline_template
 
-    try:
-        existing_template = file_template_registry.lookup(
-            template_dir, template_name)
-    except LookupError:
-        pass # we actually want a LookupError as the template shouldn't exist
-    else:
-        raise GrokError("Conflicting templates found for name '%s': "
-                        "the inline template in module '%s' conflicts "
-                        "with the file template in directory '%s'" %
-                        (template_name, module_info.dotted_name,
-                         template_dir), None)
-    inline_template_registry.register_inline_template(
-        module_info, template_name, template)
-    
-
-def register_directory(template_dir):
-    file_template_registry.register_directory(template_dir)
-
-
-
+register_directory = file_template_registry.register_directory
     
 all_directory_templates_registries = {}
 

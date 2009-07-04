@@ -14,24 +14,19 @@ When grokking views, there is a single global template registry that:
 * an action gets registered that gets executed late in configuration
   process that reports on any unassociated templates that are left.
 
+Registration functions
+----------------------
+
+In a normal run of the application, the global registration functions
+are used to register templates. These are ``register_inline_template``
+for inline templates in Python code, and ``register_directory`` for
+templates in directories associated with a module::
+
+  >>> from grokcore.view.templatereg import (register_directory, 
+  ...                                        register_inline_template)
+
 Setup
 -----
-
-We create our global template registry once::
-
-  >>> from grokcore.view.templatereg import FileTemplateRegistry
-  >>> reg = FileTemplateRegistry()
-
-For testing purposes we will create a directory with two templates in it::
-
-  >>> import os, tempfile
-  >>> template_dir = tempfile.mkdtemp()
-  >>> f = open(os.path.join(template_dir, 'foo.template'), 'w')
-  >>> f.write('foo')
-  >>> f.close()
-  >>> f = open(os.path.join(template_dir, 'bar.template'), 'w')
-  >>> f.write('bar')
-  >>> f.close()
 
 Our templates are ``.template``, so we need to register a
 ``ITemplateFileFactory`` utility for them that knows how to make the
@@ -64,21 +59,49 @@ appropriate templates::
   >>> component.provideUtility(TestTemplateFactory(), ITemplateFileFactory, 
   ...   name='template')
 
-Registration functions
-----------------------
+We create a way to create a fake module_info for a (actually
+nonexistent) module with a real directory that contains templates::
 
-Below we are going to manually create and test template registries. In
-a normal run of the application, the global registration functions are
-used to register templates. These are ``register_inline_template`` for
-inline templates in Python code, and ``register_directory`` for
-templates in directories.
+   >>> class ModuleInfo(object):
+   ...     def __init__(self, name, dir):
+   ...         self.dotted_name = name
+   ...         self.name = name
+   ...         self.dir = dir
+   ...     def getModule(self):
+   ...         return None
+   ...     def getResourcePath(self, template_dir_name):
+   ...         return os.path.join(self.dir, template_dir_name)
+   ...     def isPackage(self):
+   ...         return False
+
+   >>> import os, tempfile
+   >>> def create_module_info_with_templates(module_name):
+   ...     package_dir = tempfile.mkdtemp()
+   ...     templates_dir = os.path.join(package_dir, module_name + '_templates')
+   ...     os.mkdir(templates_dir)
+   ...     return ModuleInfo(module_name, package_dir), templates_dir
 
 Registering a directory
 -----------------------
 
-We can now register the filesystem templates with the registry::
+We create a directory with two templates in it::
 
-  >>> reg.register_directory(template_dir)
+  >>> module_info, template_dir = create_module_info_with_templates('fake')
+  >>> f = open(os.path.join(template_dir, 'foo.template'), 'w')
+  >>> f.write('foo')
+  >>> f.close()
+  >>> f = open(os.path.join(template_dir, 'bar.template'), 'w')
+  >>> f.write('bar')
+  >>> f.close()
+
+We can now register the filesystem templates associated with our
+module_info with the registry::
+
+  >>> register_directory(module_info)
+
+We'll also import the global template registry to do some checks::
+
+  >>> from grokcore.view.templatereg import file_template_registry as reg
 
 We can look up the templates in the registry now::
 
@@ -88,19 +111,19 @@ We can look up the templates in the registry now::
   <Template 'bar.template' in '...'>
 
 If we try to look up a template in a directory that doesn't exist, we get
-a LookupError::
+a TemplateLookupError::
   
   >>> reg.lookup('certainlydoesntexist', 'foo')
   Traceback (most recent call last):
     ...
-  LookupError: template 'foo' in 'certainlydoesntexist' cannot be found
+  TemplateLookupError: template 'foo' in 'certainlydoesntexist' cannot be found
 
 We get this error for templates that do not exist as well::
 
   >>> reg.lookup(template_dir, 'doesntexist')
   Traceback (most recent call last):
     ...
-  LookupError: template 'doesntexist' in ... cannot be found
+  TemplateLookupError: template 'doesntexist' in ... cannot be found
 
 Since no templates have yet been associated, retrieving the unassociated
 templates will get us all registered templates::
@@ -124,7 +147,7 @@ We set up a directory with a template language that is not recognized by
 the system::
 
   >>> import os, tempfile
-  >>> template_dir2 = tempfile.mkdtemp()
+  >>> module_info2, template_dir2 = create_module_info_with_templates('module2')
   >>> f = open(os.path.join(template_dir2, 'foo.unknown'), 'w')
   >>> f.write('unknown')
   >>> f.close()
@@ -139,7 +162,7 @@ unknown template language when we register the directory later::
 
 We register the directory now, and we get the warning::
 
-  >>> reg.register_directory(template_dir2)
+  >>> reg.register_directory(module_info2)
   From grok.testing's warn():
   ... UserWarning: File 'foo.unknown' has an unrecognized extension in directory '...'
   ...
@@ -153,7 +176,7 @@ This file will not be loaded as a template::
   >>> reg.lookup(template_dir2, 'foo.unknown')
   Traceback (most recent call last):
     ...
-  LookupError: template 'foo.unknown' in '...' cannot be found
+  TemplateLookupError: template 'foo.unknown' in '...' cannot be found
 
 Multiple templates with the same name
 -------------------------------------
@@ -169,8 +192,7 @@ We now set up a directory which contains 'foo.1' and 'foo.2'. These
 templates have the same name but use different template languages, and
 Grok won't know which one it should use::
 
-  >>> import os, tempfile
-  >>> template_dir3 = tempfile.mkdtemp()
+  >>> module_info3, template_dir3 = create_module_info_with_templates('module3')
   >>> f = open(os.path.join(template_dir3, 'foo.1'), 'w')
   >>> f.write('1')
   >>> f.close()
@@ -180,7 +202,7 @@ Grok won't know which one it should use::
 
 We expect an error when we register this directory::
 
-  >>> reg.register_directory(template_dir3)
+  >>> register_directory(module_info3)
   Traceback (most recent call last):
     ...
   GrokError: Conflicting templates found for name 'foo' in directory '...': 
@@ -192,24 +214,6 @@ Inline templates
 Inline templates are defined in a Python module instead of on the
 filesystem.
 
-First we create a fake ModuleInfo class:
-
-   >>> class ModuleInfo(object):
-   ...     dotted_name = 'module'
-   ...     name = 'module'
-   ...     def __init__(self, dotted_name, name, dir):
-   ...         self.dotted_name = dotted_name
-   ...         self.name = name
-   ...         self.dir = dir
-   ...     def getModule(self):
-   ...         return None
-   ...     def getResourcePath(self, template_dir_name):
-   ...         return os.path.join(self.dir, template_dir_name)
-
-an create an instance of this class::
-
-   >>> module_info = ModuleInfo('module', 'module', None)
-
 Let's create a class for inline template and create an instance::
 
   >>> class InlineTemplate(object):
@@ -219,73 +223,87 @@ Let's create a class for inline template and create an instance::
   ...         return "<InlineTemplate '%s'>" % self.name
   >>> cavepainting = InlineTemplate('cavepainting')
 
-We create our global inline template registry once::
-
-  >>> from grokcore.view.templatereg import InlineTemplateRegistry
-  >>> inline_reg = InlineTemplateRegistry()
-
 Let's register an inline template with the registry::
 
-  >>> inline_reg.register_inline_template(module_info, 'cavepainting', cavepainting)
+  >>> module_info4, template_dir4 = create_module_info_with_templates('module4')
+  >>> register_inline_template(module_info4, 'cavepainting', cavepainting)
+
+  >>> from grokcore.view.templatereg import inline_template_registry as inline_reg
 
 We can look it up now::
 
-  >>> inline_reg.lookup(module_info, 'cavepainting')
+  >>> inline_reg.lookup(module_info4, 'cavepainting')
   <InlineTemplate 'cavepainting'>
   
 If we cannot find the template we get an error::
 
-  >>> inline_reg.lookup(module_info, 'unknown')
+  >>> inline_reg.lookup(module_info4, 'unknown')
   Traceback (most recent call last):
     ...
-  LookupError: inline template 'unknown' in 'module' cannot be found
+  TemplateLookupError: inline template 'unknown' in 'module4' cannot be found
 
 Since no templates have yet been associated, retrieving the
 unassociated templates will get us all registered inline templates::
 
   >>> sorted(inline_reg.unassociated())
-  [('module', 'cavepainting')]
+  [('module4', 'cavepainting')]
 
 Conflicts between inline templates and file templates
 -----------------------------------------------------
-
 
 We construct a fake templates directory that's associated with the fictional
 ``module`` module::
 
   >>> import os, tempfile
-  >>> package_dir = tempfile.mkdtemp()
-  >>> module_template_dir = os.path.join(package_dir, 'module_templates')
-  >>> os.mkdir(module_template_dir)
 
-And we create the module info for this::
-
-   >>> module_info = ModuleInfo('module', 'module', package_dir)
+  >>> module_info5, template_dir5 = create_module_info_with_templates('module5')
 
 We create a template with the name ``foo`` in it::
 
-  >>> f = open(os.path.join(module_template_dir, 'foo.template'), 'w')
+  >>> f = open(os.path.join(template_dir5, 'foo.template'), 'w')
   >>> f.write('foo')
   >>> f.close()
 
 We register this directory, using the global registration functionality::
 
-  >>> from grokcore.view.templatereg import register_directory
-  >>> register_directory(module_template_dir)
+  >>> register_directory(module_info5)
 
 We now also try to register an inline template with the same name
 (``foo``), but this fails due to a conflict with the file template::
 
-  >>> from grokcore.view.templatereg import register_inline_template
-  >>> register_inline_template(module_info, 'foo', InlineTemplate('foo'))
+  >>> register_inline_template(module_info5, 'foo', InlineTemplate('foo'))
   Traceback (most recent call last):
      ...
   GrokError: Conflicting templates found for name 'foo': the inline template 
-  in module 'module' conflicts with the file template in directory 
-  '...module_templates'
+  in module 'module5' conflicts with the file template in directory 
+  '...module5_templates'
 
+Let's now demonstrate the same conflict, the other way around.
 
+First we set up a fictional filesystem structure surrounding a 
+``module6``::
 
+  >>> module_info6, template_dir6 = create_module_info_with_templates('module6')
+ 
+We add a template to it::
+
+  >>> f = open(os.path.join(template_dir6, 'bar.template'), 'w')
+  >>> f.write('bar')
+  >>> f.close()
+ 
+Now we first register an inline template ``bar`` before loading up that
+directory::
+
+  >>> register_inline_template(module_info6, 'bar', InlineTemplate('bar'))
+ 
+When we now try to register the template ``bar`` in a directory, we'll
+get an error::
+
+   >>> register_directory(module_info6)
+   Traceback (most recent call last):
+     ...
+   GrokError: Conflicting templates found for name 'bar': 
+   the inline template in module 'module6' conflicts with the file template in directory '...'
 
 
 XXX a common lookup function that looks up both inline or filesystem?
