@@ -6,6 +6,97 @@ import grokcore.view
 from martian.error import GrokError
 from grokcore.view.interfaces import ITemplateFileFactory
 from grokcore.view.components import PageTemplate
+        
+
+class TemplateRegistry(object):
+    def __init__(self):
+        self._reg = {}
+        self._unassociated = set()
+
+    def register_directory_for_module(self, module_info):
+        # we cannot register a templates dir for a package
+        if module_info.isPackage():
+            return
+
+        template_dir = self._get_template_dir(module_info)
+        self.register_directory(template_dir)
+        
+    def register_directory(self, template_dir):
+        # we can only register for directories
+        if not os.path.isdir(template_dir):
+            return
+        
+        for template_file in os.listdir(template_dir):
+            self._register_template_file(
+                os.path.join(template_dir, template_file))
+
+    def _register_template_file(self, template_path):
+        template_dir, template_file = os.path.split(template_path)
+
+        if template_file.startswith('.') or template_file.endswith('~'):
+            return
+        if template_file.endswith('.cache'):
+            # chameleon creates '<tpl_name>.cache' files on the fly
+            return
+
+#             inline_template = self.getLocal(template_name)
+#             if inline_template:
+#                 raise GrokError("Conflicting templates found for name '%s' "
+#                                 "in module %r, either inline and in template "
+#                                 "directory '%s', or two templates with the "
+#                                 "same name and different extensions."
+#                                 % (template_name, module_info.getModule(),
+#                                    template_dir), inline_template)
+
+        template_name, extension = os.path.splitext(template_file)
+        if (template_dir, template_name) in self._reg:
+            raise GrokError("Conflicting templates found for name '%s' "
+                            "in directory '%s': multiple templates with "
+                            "the same name and different extensions ." %
+                            (template_name, template_dir), None)
+                    
+        extension = extension[1:] # Get rid of the leading dot.
+        template_factory = zope.component.queryUtility(
+            grokcore.view.interfaces.ITemplateFileFactory,
+            name=extension)
+
+        if template_factory is None:
+            # Warning when importing files. This should be
+            # allowed because people may be using editors that generate
+            # '.bak' files and such.
+            warnings.warn("File '%s' has an unrecognized extension in "
+                          "directory '%s'" %
+                          (template_file, template_dir), UserWarning, 2)
+            return
+        template = template_factory(template_file, template_dir)
+        # XXX this isn't defined in the interface or anywhere...
+        template._annotateGrokInfo(template_name, template_path)
+
+        self._reg[(template_dir, template_name)] = template
+        self._unassociated.add(template_path)
+        
+        
+    def associate(self, template_file):
+        self._unassociated.remove(template_file)
+
+    def lookup(self, template_dir, template_name):
+        result = self._reg.get((template_dir, template_name))
+        if result is None:
+            raise LookupError("template '%s' in '%s' cannot be found" % (
+                    template_name, template_dir))
+        return result
+    
+    def unassociated(self):
+        return self._unassociated
+        
+    def _get_template_dir(self, module_info):
+        template_dir_name = grokcore.view.templatedir.bind().get(
+            module=module_info.getModule())
+        if template_dir_name is None:
+            template_dir_name = module_info.name + '_templates'
+
+            template_dir = module_info.getResourcePath(template_dir_name)
+        return template_dir
 
 all_directory_templates_registries = {}
 

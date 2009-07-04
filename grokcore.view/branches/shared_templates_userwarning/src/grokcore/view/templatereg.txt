@@ -1,0 +1,178 @@
+Template registry
+=================
+
+When grokking views, there is a single global template registry that:
+
+* the grokking process can issue actions to register templates into it.
+
+* the actions that set up views can quickly look up templates from it
+  to associate them with views.
+
+* the template registry keeps track of templates that are associated
+  with views, or not.
+
+* an action gets registered that gets executed late in configuration
+  process that reports on any unassociated templates that are left.
+
+Setup
+-----
+
+We create our global template registry once::
+
+  >>> from grokcore.view.templatereg import TemplateRegistry
+  >>> reg = TemplateRegistry()
+
+For testing purposes we will create a directory with two templates in it::
+
+  >>> import os, tempfile
+  >>> templates_dir = tempfile.mkdtemp()
+  >>> f = open(os.path.join(templates_dir, 'foo.template'), 'w')
+  >>> f.write('foo')
+  >>> f.close()
+  >>> f = open(os.path.join(templates_dir, 'bar.template'), 'w')
+  >>> f.write('bar')
+  >>> f.close()
+
+Our templates are ``.template``, so we need to register a
+``ITemplateFileFactory`` utility for them that knows how to make the
+appropriate templates::
+    
+  >>> from grokcore.view.interfaces import ITemplateFileFactory, ITemplate
+  >>> from zope.interface import implements
+  >>> class TestTemplate(object):
+  ...    implements(ITemplate) # we lie for testing purposes
+  ...    def __init__(self, filename, source):
+  ...        self.filename = filename
+  ...        self.source = source
+  ...    def __repr__(self):
+  ...        path, filename = os.path.split(self.filename)
+  ...        return "<Template '%s' in '%s'>" % (filename, path)
+  ...    def __cmp__(self, other):
+  ...        return cmp(self.filename, other.filename)
+  ...    def _annotateGrokInfo(self, template_name, template_path):
+  ...        pass # XXX why do we need to implement this?
+
+  >>> class TestTemplateFactory(object):
+  ...    implements(ITemplateFileFactory)
+  ...    def __call__(self, filename, _prefix=None):
+  ...        f = open(os.path.join(_prefix, filename), 'r')
+  ...        data = f.read()
+  ...        f.close()
+  ...        return TestTemplate(filename, data)
+
+  >>> from zope import component
+  >>> component.provideUtility(TestTemplateFactory(), ITemplateFileFactory, 
+  ...   name='template')
+
+Registering a directory
+-----------------------
+
+We can now register the filesystem templates with the registry::
+
+  >>> reg.register_directory(templates_dir)
+
+We can look up the templates in the registry now::
+
+  >>> reg.lookup(templates_dir, 'foo')
+  <Template 'foo.template' in '...'>
+  >>> reg.lookup(templates_dir, 'bar')
+  <Template 'bar.template' in '...'>
+
+If we try to look up a template in a directory that doesn't exist, we get
+a LookupError::
+  
+  >>> reg.lookup('certainlydoesntexist', 'foo')
+  Traceback (most recent call last):
+    ...
+  LookupError: template 'foo' in 'certainlydoesntexist' cannot be found
+
+We get this error for templates that do not exist as well::
+
+  >>> reg.lookup(templates_dir, 'doesntexist')
+  Traceback (most recent call last):
+    ...
+  LookupError: template 'doesntexist' in ... cannot be found
+
+Since no templates have yet been associated, retrieving the unassociated
+templates will get us all registered templates::
+
+  >>> sorted(reg.unassociated())
+  ['...bar.template', '...foo.template']
+
+Now we use a template, so we mark it as associated::
+
+  >>> reg.associate(os.path.join(templates_dir, 'foo.template'))
+
+There is only a single unassociated template left now::
+
+  >>> sorted(reg.unassociated()) 
+  ['...bar.template']
+
+Unknown template extensions
+---------------------------
+
+We set up a directory with a template language that is not recognized by
+the system::
+
+  >>> import os, tempfile
+  >>> templates_dir2 = tempfile.mkdtemp()
+  >>> f = open(os.path.join(templates_dir2, 'foo.unknown'), 'w')
+  >>> f.write('unknown')
+  >>> f.close()
+
+We will now start recording all the warnings, as we will get one about the
+unknown template language when we register the directory later::
+
+  >>> from grokcore.view.testing import warn
+  >>> import warnings
+  >>> saved_warn = warnings.warn
+  >>> warnings.warn = warn
+
+We register the directory now, and we get the warning::
+
+  >>> reg.register_directory(templates_dir2)
+  From grok.testing's warn():
+  ... UserWarning: File 'foo.unknown' has an unrecognized extension in directory '...'
+  ...
+
+We restore the normal warnings mechanism::
+
+  >>> warnings.warn = saved_warn
+
+This file will not be loaded as a template::
+
+  >>> reg.lookup(templates_dir2, 'foo.unknown')
+  Traceback (most recent call last):
+    ...
+  LookupError: template 'foo.unknown' in '...' cannot be found
+
+Multiple templates with the same name
+-------------------------------------
+
+Let's make the template languages ``1`` and ``2`` known::
+
+  >>> component.provideUtility(TestTemplateFactory(), ITemplateFileFactory, 
+  ...   name='1')
+  >>> component.provideUtility(TestTemplateFactory(), ITemplateFileFactory, 
+  ...   name='2')
+
+We now set up a directory which contains 'foo.1' and 'foo.2'. These
+templates have the same name but use different template languages, and
+Grok won't know which one it should use::
+
+  >>> import os, tempfile
+  >>> templates_dir3 = tempfile.mkdtemp()
+  >>> f = open(os.path.join(templates_dir3, 'foo.1'), 'w')
+  >>> f.write('1')
+  >>> f.close()
+  >>> f = open(os.path.join(templates_dir3, 'foo.2'), 'w')
+  >>> f.write('2')
+  >>> f.close()
+
+We expect an error when we register this directory::
+
+  >>> reg.register_directory(templates_dir3)
+  Traceback (most recent call last):
+    ...
+  GrokError: Conflicting templates found for name 'foo' in directory '...': 
+  multiple templates with the same name and different extensions .

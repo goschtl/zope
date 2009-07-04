@@ -4,6 +4,8 @@ from pkg_resources import resource_listdir
 from zope.testing import doctest, cleanup, renormalizing
 import zope.component.eventtesting
 
+optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
+
 def setUpZope(test):
     zope.component.eventtesting.setUp(test)
 
@@ -34,8 +36,7 @@ def suiteFromPackage(name):
                                     setUp=setUpZope,
                                     tearDown=cleanUpZope,
                                     checker=checker,
-                                    optionflags=doctest.ELLIPSIS+
-                                    doctest.NORMALIZE_WHITESPACE)
+                                    optionflags=optionflags)
 
         suite.addTest(test)
     return suite
@@ -44,4 +45,9 @@ def test_suite():
     suite = unittest.TestSuite()
     for name in ['view', 'static', 'skin', 'template', 'directoryresource']:
         suite.addTest(suiteFromPackage(name))
+    suite.addTest(doctest.DocFileSuite('../templatereg.txt',
+                                       optionflags=optionflags,
+                                       setUp=setUpZope,
+                                       tearDown=cleanUpZope,
+                                       ))
     return suite
