@@ -5,7 +5,8 @@ Changes
 ----------------
 
 - Splitted CodeView out of View.  View only uses templates, CodeView only uses
-  a render() method.
+  a render() method.  So views that have a render method must subclass from
+  CodeView instead of View (that should be the only change needed).
 
 
 1.7 (2009-05-19)

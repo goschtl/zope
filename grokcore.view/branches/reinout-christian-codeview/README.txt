@@ -319,3 +319,13 @@ In addition, the ``grokcore.view`` package exposes the
 .. _grokcore.component: http://pypi.python.org/pypi/grokcore.component
 .. _grokcore.security: http://pypi.python.org/pypi/grokcore.security
 .. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
+
+
+Upgrade notice
+==============
+
+In grokcore.view 1.8, grokcore.view.View was splitted into View (that only
+works with templates) and CodeView (that only accepts a ``render()`` method).
+
+So views that have a render method must subclass from CodeView instead of
+View.  That should be the only change needed.
