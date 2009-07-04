@@ -4,6 +4,8 @@ Changelog
 0.2 (unreleased)
 ----------------
 
+* Changed the buildout. Conflicting versions have crept into the grok versions list.
+
 0.1 (2009-05-03)
 ----------------
 
