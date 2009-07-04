@@ -30,8 +30,8 @@ the object has been modified:
 import grokcore.formlib as grok
 from zope import schema, interface
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-from zope.container.btree import BTreeContainer
-from zope.container.interfaces import IContainer
+from zope.app.container.btree import BTreeContainer
+from zope.app.container.interfaces import IContainer
 
 class Zoo(grok.testing.Model, BTreeContainer):
     grok.testing.protect_get(grok.Public, *IContainer)
@@ -45,7 +45,7 @@ class Mammoth(grok.testing.Model):
     grok.testing.protect_get(grok.Public, 'name', 'size')
     grok.testing.protect_set(grok.Public, 'name', 'size')
 
-class Index(grok.View):
+class Index(grok.CodeView):
     grok.context(Mammoth)
     def render(self):
         return 'Hi, my name is %s, and I\'m "%s"' % (self.context.name,

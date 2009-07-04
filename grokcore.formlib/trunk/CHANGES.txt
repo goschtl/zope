@@ -4,7 +4,10 @@ Changes
 1.2 (unreleased)
 ----------------
 
-* Use zope.container instead of zope.app.container.
+* Adapted tests to the grokcore.view split of View and CodeView.
+
+* Fixed forms to use self.template.render() directly instead of using a
+  removed private method from grokcore.view.
 
 * Add grok.View permissions for functional tests.
 
