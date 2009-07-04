@@ -7,7 +7,10 @@ from martian.error import GrokError
 from grokcore.view.interfaces import ITemplateFileFactory
 from grokcore.view.components import PageTemplate
 
-class TemplateRegistry(object):
+all_directory_templates_registries = {}
+
+
+class BaseTemplateRegistry(object):
 
     def __init__(self):
         self._reg = {}
@@ -16,15 +19,48 @@ class TemplateRegistry(object):
         self._reg[name] = dict(template=template, associated=False)
 
     def markAssociated(self, name):
-        self._reg[name]['associated'] = True
+        entry = self._getEntry(name)
+        entry['associated'] = True
+
+    def _getEntry(self, name):
+        return self._reg.get(name)
 
     def get(self, name):
+        entry = self._getEntry(name)
+        if entry is None:
+            return None
+        return entry['template']
+
+    def listUnassociated(self):
+        for name, entry in self._reg.iteritems():
+            if not entry['associated']:
+                yield name
+
+
+class ModuleTemplateRegistry(BaseTemplateRegistry):
+
+    _directory_registry = None
+
+    def initializeDirectoryRegistry(self, template_dir):
+        if template_dir is not None:
+            if not template_dir in all_directory_templates_registries:
+                all_directory_templates_registries[template_dir] = DirectoryTemplateRegistry(template_dir)
+            self._directory_registry = all_directory_templates_registries[template_dir]
+
+    def _getEntry(self, name):
+        entry = super(ModuleTemplateRegistry, self)._getEntry(name)
+        # self._directory_registry has not been instanciated when registering instance templates
+        if entry is None and self._directory_registry is not None:
+            entry = self._directory_registry._getEntry(name)
+        return entry
+
+    def getLocal(self, name):
         entry = self._reg.get(name)
         if entry is None:
             return None
         return entry['template']
 
-    def findFilesystem(self, module_info):
+    def _getTemplateDir(self, module_info):
         template_dir_name = grokcore.view.templatedir.bind().get(
             module=module_info.getModule())
         if template_dir_name is None:
@@ -32,8 +68,15 @@ class TemplateRegistry(object):
 
         template_dir = module_info.getResourcePath(template_dir_name)
 
+        return template_dir
+
+    def findFilesystem(self, module_info):
+        template_dir = self._getTemplateDir(module_info)
+
         if not os.path.isdir(template_dir):
             return
+
+        self.initializeDirectoryRegistry(template_dir)
 
         if module_info.isPackage():
             return
@@ -60,7 +103,7 @@ class TemplateRegistry(object):
                               (template_file, template_dir), UserWarning, 2)
                 continue
 
-            inline_template = self.get(template_name)
+            inline_template = self.getLocal(template_name)
             if inline_template:
                 raise GrokError("Conflicting templates found for name '%s' "
                                 "in module %r, either inline and in template "
@@ -69,16 +112,12 @@ class TemplateRegistry(object):
                                 % (template_name, module_info.getModule(),
                                    template_dir), inline_template)
 
-            template = template_factory(template_file, template_dir)
-            template_path = os.path.join(template_dir, template_file)
-            template._annotateGrokInfo(template_name, template_path)
+            if self._directory_registry._getEntry(template_name) is None:
+                template = template_factory(template_file, template_dir)
+                template_path = os.path.join(template_dir, template_file)
+                template._annotateGrokInfo(template_name, template_path)
 
-            self.register(template_name, template)
-
-    def listUnassociated(self):
-        for name, entry in self._reg.iteritems():
-            if not entry['associated']:
-                yield name
+                self._directory_registry.register(template_name, template)
 
     def checkUnassociated(self, module_info):
         unassociated = list(self.listUnassociated())
@@ -89,6 +128,9 @@ class TemplateRegistry(object):
                 "from grok.View to enable the template(s)." % (
                 module_info.dotted_name, ', '.join(unassociated)))
             warnings.warn(msg, UserWarning, 1)
+
+        if self._directory_registry is not None:
+            self._directory_registry.checkUnassociated(module_info)
 
     def checkTemplates(self, module_info, factory, component_name,
                        has_render, has_no_render):
@@ -125,6 +167,28 @@ class TemplateRegistry(object):
                 raise GrokError("%s %r has no associated template or "
                                 "'render' method." %
                                 (component_name.title(), factory), factory)
+
+
+class DirectoryTemplateRegistry(BaseTemplateRegistry):
+
+    _checked = False
+
+    def __init__(self, template_dir):
+        super(DirectoryTemplateRegistry, self).__init__()
+        self.template_dir = template_dir
+
+    def checkUnassociated(self, module_info):
+        if not self._checked:
+            self._checked = True
+            unassociated = list(self.listUnassociated())
+            if unassociated:
+                msg = (
+                    "Found the following unassociated template(s) when "
+                    "grokking directory %r: %s.  Define view classes inheriting "
+                    "from grok.View to enable the template(s)." % (
+                    self.template_dir, ', '.join(unassociated)))
+                warnings.warn(msg, UserWarning, 1)
+
 
 class PageTemplateFileFactory(grokcore.component.GlobalUtility):
     grokcore.component.implements(ITemplateFileFactory)

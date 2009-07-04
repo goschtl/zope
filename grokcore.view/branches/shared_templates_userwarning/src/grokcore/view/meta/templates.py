@@ -25,7 +25,7 @@ class TemplateGrokker(martian.GlobalGrokker):
     martian.priority(1001)
 
     def grok(self, name, module, module_info, config, **kw):
-        module.__grok_templates__ = templatereg.TemplateRegistry()
+        module.__grok_templates__ = templatereg.ModuleTemplateRegistry()
         return True
 
 
@@ -81,7 +81,8 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
         config.action(
             discriminator=None,
             callable=templates.checkUnassociated,
-            args=(module_info,)
+            args=(module_info,),
+            order=100
             )
         return True
 
