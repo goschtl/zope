@@ -49,7 +49,7 @@ class ViewGrokker(martian.ClassGrokker):
         # Make sure that we have a render Method
         render = getattr(factory, 'render', None)
         if render:
-            raise GrokError("View Class '%s' has a render method" % factory, factory)
+            raise GrokError("View Class '%s' has a render method, use CodeView instead" % factory, factory)
 
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
@@ -105,7 +105,7 @@ class CodeViewGrokker(martian.ClassGrokker):
         # can look up the 'static' resource directory.
         factory.module_info = module_info
         return super(CodeViewGrokker, self).grok(name, factory, module_info, **kw)
-                
+
     def execute(self, factory, config, context, layer, name, **kw):
 
         # Make sure that we have a render Method

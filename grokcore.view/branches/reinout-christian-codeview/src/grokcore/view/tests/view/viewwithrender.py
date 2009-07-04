@@ -2,8 +2,8 @@
 
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
-  ... 
-  GrokError: View Class '<class 'grokcore.view.tests.view.viewwithrender.CavePainting'>' has a render method
+  ...
+  GrokError: View Class '<class 'grokcore.view.tests.view.viewwithrender.CavePainting'>' has a render method, use CodeView instead
 
 """
 
