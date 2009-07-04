@@ -6,6 +6,8 @@ Changes
 
 - Add validator to templatedir directive to disallow path separator.
 
+- Add grok.View permissions to functional tests (requires grokcore.security 1.1)
+
 
 1.7 (2009-05-19)
 ----------------
