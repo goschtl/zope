@@ -48,7 +48,7 @@ class ViewGrokker(martian.ClassGrokker):
     def execute(self, factory, config, context, layer, name, **kw):
         # Make sure that we have a render Method
         render = getattr(factory, 'render', None)
-        if render:
+        if render and not getattr(render, 'base_method', False):
             raise GrokError("View Class '%s' has a render method, use CodeView instead" % factory, factory)
 
         # find templates
