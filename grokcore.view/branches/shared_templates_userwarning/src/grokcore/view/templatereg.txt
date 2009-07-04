@@ -176,3 +176,20 @@ We expect an error when we register this directory::
     ...
   GrokError: Conflicting templates found for name 'foo' in directory '...': 
   multiple templates with the same name and different extensions .
+
+Inline templates
+----------------
+
+Inline templates are defined in a Python module instead of on the
+filesystem.
+
+We create an inline template::
+
+
+Let's register an inline template with the registry::
+
+
+
+It is an error to have an inline template with the same name as a filesystem
+template::
+
