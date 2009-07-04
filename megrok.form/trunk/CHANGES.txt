@@ -1,0 +1,8 @@
+megrok.form changes
+*******************
+
+0.2.6 (unreleased)
+==================
+
+* Fixed up tbe buildout files so that the package builds and tests
+  with the latest version of grok.security.
