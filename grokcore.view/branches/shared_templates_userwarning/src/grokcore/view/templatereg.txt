@@ -19,8 +19,8 @@ Setup
 
 We create our global template registry once::
 
-  >>> from grokcore.view.templatereg import TemplateRegistry
-  >>> reg = TemplateRegistry()
+  >>> from grokcore.view.templatereg import FileTemplateRegistry
+  >>> reg = FileTemplateRegistry()
 
 For testing purposes we will create a directory with two templates in it::
 
@@ -179,17 +179,36 @@ We expect an error when we register this directory::
 
 Inline templates
 ----------------
-
 Inline templates are defined in a Python module instead of on the
 filesystem.
 
-We create an inline template::
+First we create a fake ModuleInfo class:
 
+   >>> class ModuleInfo(object):
+   ...     dotted_name = 'module'
+
+an create an instance of this class::
+
+   >>> module_info = ModuleInfo()
+
+Let's create a class for inline template and create an instance::
+
+  >>> class InlineTemplate(object):
+  ...     pass
+  >>> cavepainting = InlineTemplate()
+
+We create our global inline template registry once::
+
+  >>> from grokcore.view.templatereg import InlineTemplateRegistry
+  >>> inline_reg = InlineTemplateRegistry()
 
 Let's register an inline template with the registry::
 
+  >>> inline_reg.register_inline_template(module_info, 'cavepainting', cavepainting)
 
+Since no templates have yet been associated, retrieving the unassociated
+templates will get us all registered inline templates::
 
-It is an error to have an inline template with the same name as a filesystem
-template::
+  >>> sorted(inline_reg.unassociated())
+  [('module', 'cavepainting')]
 

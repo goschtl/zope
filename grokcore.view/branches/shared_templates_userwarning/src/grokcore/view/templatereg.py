@@ -8,7 +8,30 @@ from grokcore.view.interfaces import ITemplateFileFactory
 from grokcore.view.components import PageTemplate
         
 
-class TemplateRegistry(object):
+class InlineTemplateRegistry(object):
+    def __init__(self):
+        self._reg = {}
+        self._unassociated = set()
+
+    def register_inline_template(self, module_info, template_name, template):
+        self._reg[(module_info.dotted_name, template_name)] = template
+        self._unassociated.add((module_info.dotted_name, template_name))
+
+    def associate(self, module_info, template_name):
+        self._unassociated.remove((module_info.dotted_name, template_name))
+
+    def lookup(self, module_info, template_name):
+        result = self._reg.get((module_info.dotted_name, template_name))
+        if result is None:
+            raise LookupError("inline template '%s' in '%s' cannot be found" % (
+                    template_name, module_info.dotted_name))
+        return result
+    
+    def unassociated(self):
+        return self._unassociated
+
+
+class FileTemplateRegistry(object):
     def __init__(self):
         self._reg = {}
         self._unassociated = set()
@@ -75,9 +98,8 @@ class TemplateRegistry(object):
         self._reg[(template_dir, template_name)] = template
         self._unassociated.add(template_path)
         
-        
-    def associate(self, template_file):
-        self._unassociated.remove(template_file)
+    def associate(self, template_path):
+        self._unassociated.remove(template_path)
 
     def lookup(self, template_dir, template_name):
         result = self._reg.get((template_dir, template_name))
