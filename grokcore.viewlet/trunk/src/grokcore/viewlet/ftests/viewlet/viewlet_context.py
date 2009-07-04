@@ -67,6 +67,6 @@ class FredViewlet(grok.Viewlet):
 class Cave(grok.Context):
     pass
 
-class Index(grok.View):
+class Index(grok.CodeView):
     def render(self):
         return "hoi"

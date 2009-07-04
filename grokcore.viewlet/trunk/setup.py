@@ -36,7 +36,7 @@ setup(
                       'martian >= 0.10',
                       'grokcore.component >= 1.5',
                       'grokcore.security >= 1.1',
-                      'grokcore.view >= 1.1',
+                      'grokcore.view >= 1.9',
                       'zope.viewlet',
                       # for tests:
                       'zope.testing',

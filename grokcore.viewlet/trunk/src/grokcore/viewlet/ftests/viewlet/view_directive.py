@@ -27,7 +27,7 @@ import grokcore.viewlet as grok
 class Fred(grok.Context):
     pass
 
-class CaveView(grok.View):
+class CaveView(grok.CodeView):
     def render(self):
         return 'Cave'
 
