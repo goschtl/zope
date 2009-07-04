@@ -306,4 +306,9 @@ get an error::
    the inline template in module 'module6' conflicts with the file template in directory '...'
 
 
-XXX a common lookup function that looks up both inline or filesystem?
+XXX a common lookup function that looks up both inline or filesystem that
+    takes the module info
+
+XXX use configuration action conflicts with module_info.dotted_name,
+    name to determine conflicts between registrations?
+
