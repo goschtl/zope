@@ -4,7 +4,8 @@ Changes
 1.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Splitted CodeView out of View.  View only uses templates, CodeView only uses
+  a render() method.
 
 
 1.7 (2009-05-19)
