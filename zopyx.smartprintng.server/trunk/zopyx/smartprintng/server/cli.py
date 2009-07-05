@@ -16,18 +16,12 @@ tempdir = tempfile.mkdtemp(prefix='zopyx.smartprintng.server')
 class Server(xmlrpc.XMLRPC):
     """ SmartPrintNG Server """
 
-    rxcountpages = re.compile(r"$\s*/Type\s*/Page[/\s]", re.MULTILINE|re.DOTALL)
-
-    def _countPages(self, filename):
-        data = file(filename,"rb").read()
-        return len(self.rxcountpages.findall(data))
-
     def xmlrpc_convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
         def _convertZIP(zip_archive, converter_name):
 
-            LOG.debug('Incoming request (%s, %d)' % (converter_name, len(zip_archive)))
+            LOG.debug('Incoming request (%s, %d bytes)' % (converter_name, len(zip_archive)))
             ts = time.time()
             # store zip archive first
             tempdir = tempfile.mkdtemp()
@@ -50,7 +44,6 @@ class Server(xmlrpc.XMLRPC):
             html_filename = html_files[0]
             result = self.convert(html_filename, 
                                   converter_name=converter_name)
-
             basename, ext =  os.path.splitext(os.path.basename(result))
 
             # Generate result ZIP archive with base64-encoded result
@@ -60,7 +53,7 @@ class Server(xmlrpc.XMLRPC):
             ZF.close()
             encoded_result = base64.encodestring(file(zip_out, 'rb').read())
             shutil.rmtree(tempdir)
-            LOG.debug('request end (%3.2lf seconds)' % (time.time() -ts))
+            LOG.debug('Request end (%3.2lf seconds)' % (time.time() -ts))
             return encoded_result
 
         try:
