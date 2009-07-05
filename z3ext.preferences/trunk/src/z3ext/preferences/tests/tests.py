@@ -17,6 +17,7 @@ $Id$
 """
 import os.path, unittest, doctest
 
+from zope import component
 from zope.component import testing
 from zope.testing import doctestunit
 from zope.app.testing import setup, functional

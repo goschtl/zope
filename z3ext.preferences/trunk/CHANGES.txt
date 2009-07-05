@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.4.9 (2009-07-05)
+------------------
+
+- Update tests setup
+
+- Update tests for chameleon enabled setup
+
+
 1.4.8 (2009-06-22)
 ------------------
 

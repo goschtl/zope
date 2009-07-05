@@ -84,6 +84,7 @@ setup(name = 'z3ext.preferences',
                                   'zope.testing',
                                   'zope.testbrowser',
                                   'zope.app.zcmlfiles',
+				  'z3ext.autoinclude',
                                   ]),
       include_package_data = True,
       zip_safe = False
