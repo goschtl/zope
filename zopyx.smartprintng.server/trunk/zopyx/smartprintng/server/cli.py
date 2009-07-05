@@ -51,10 +51,12 @@ class Server(xmlrpc.XMLRPC):
             result = self.convert(html_filename, 
                                   converter_name=converter_name)
 
+            basename, ext =  os.path.splitext(os.path.basename(result))
+
             # Generate result ZIP archive with base64-encoded result
             zip_out = os.path.join(tempdir, 'output.zip')
             ZF = zipfile.ZipFile(zip_out, 'w')
-            ZF.writestr('output.pdf', file(result, 'rb').read())
+            ZF.writestr('output.%s' % ext, file(result, 'rb').read())
             ZF.close()
             encoded_result = base64.encodestring(file(zip_out, 'rb').read())
             shutil.rmtree(tempdir)
