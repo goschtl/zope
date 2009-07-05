@@ -4,6 +4,7 @@ import os
 import re
 import shutil
 import tempfile
+from datetime import datetime
 import time
 import uuid
 import zipfile
@@ -11,7 +12,11 @@ from zopyx.convert2.convert import Converter
 from zopyx.convert2.logger import LOG
 from twisted.web import xmlrpc, server
 
-tempdir = tempfile.mkdtemp(prefix='zopyx.smartprintng.server')
+temp_directory = os.path.join(tempfile.gettempdir(), 
+                              'zopyx.smartprintng.server')
+if not os.path.exists(temp_directory):
+    os.makedirs(temp_directory)
+
 
 class Server(xmlrpc.XMLRPC):
     """ SmartPrintNG Server """
@@ -21,10 +26,13 @@ class Server(xmlrpc.XMLRPC):
 
         def _convertZIP(zip_archive, converter_name):
 
-            LOG.debug('Incoming request (%s, %d bytes)' % (converter_name, len(zip_archive)))
+            now = datetime.now().strftime('%Y%m%d%Z%H%M%S')
+            ident = '%s-%s' % (now, uuid.uuid4())
+            tempdir = os.path.join(temp_directory, ident)
+            os.makedirs(tempdir)
+            LOG.debug('Incoming request (%s, %d bytes, %s)' % (converter_name, len(zip_archive), tempdir))
             ts = time.time()
             # store zip archive first
-            tempdir = tempfile.mkdtemp()
             zip_temp = os.path.join(tempdir, 'input.zip')
             file(zip_temp, 'wb').write(base64.decodestring(zip_archive))
             ZF = zipfile.ZipFile(zip_temp, 'r')
@@ -44,7 +52,7 @@ class Server(xmlrpc.XMLRPC):
             html_filename = html_files[0]
             result = self.convert(html_filename, 
                                   converter_name=converter_name)
-            basename, ext =  os.path.splitext(os.path.basename(result))
+            basename, ext = os.path.splitext(os.path.basename(result))
 
             # Generate result ZIP archive with base64-encoded result
             zip_out = os.path.join(tempdir, 'output.zip')
