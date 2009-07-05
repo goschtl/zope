@@ -4,7 +4,7 @@ import zipfile
 import tempfile
 
 # XMLRPC server instance
-server = xmlrpclib.Server('http://localhost:11080/demo')
+server = xmlrpclib.Server('http://localhost:7080/')
 
 # send the ZIP archive base64 encoded
 zip_data = server.convertZIP(base64.encodestring(file('test.zip', 'rb').read()))

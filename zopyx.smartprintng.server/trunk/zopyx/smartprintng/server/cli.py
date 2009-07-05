@@ -1,4 +1,10 @@
+import os
+import glob
 import re
+import zipfile
+import time
+import base64
+import tempfile
 from zopyx.convert2.convert import Converter
 from twisted.web import xmlrpc, server
 
@@ -45,7 +51,7 @@ class Server(xmlrpc.XMLRPC):
         shutil.rmtree(tempdir)
         return encoded_result
 
-    def xmlrpc_convert(self, html_filename, spool=0, converter_name='pdf-prince'):
+    def convert(self, html_filename, spool=0, converter_name='pdf-prince'):
         """ Process a single HTML file """
 
         start_time = time.time()
