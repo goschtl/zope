@@ -25,9 +25,11 @@ setup(name='zopyx.smartprintng.server',
       install_requires=[
           'setuptools',
           'twisted',
+          'uuid',
+          'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points=dict(
+          console_scripts=['smartprintng_server=zopyx.smartprintng.server.cli:main']
+      )
       )

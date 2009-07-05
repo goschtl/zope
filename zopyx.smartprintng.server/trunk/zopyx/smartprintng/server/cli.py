@@ -65,9 +65,11 @@ class Server(xmlrpc.XMLRPC):
         return output_filename
 
 
-if __name__ == '__main__':
+def main():
     from twisted.internet import reactor
     r = Server()
     reactor.listenTCP(7080, server.Site(r))
     reactor.run()
 
+if __name__ == '__main__':
+    main()
