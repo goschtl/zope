@@ -8,6 +8,7 @@ import time
 import uuid
 import zipfile
 from zopyx.convert2.convert import Converter
+from zopyx.convert2.logger import LOG
 from twisted.web import xmlrpc, server
 
 tempdir = tempfile.mkdtemp(prefix='zopyx.smartprintng.server')
@@ -24,6 +25,8 @@ class Server(xmlrpc.XMLRPC):
     def xmlrpc_convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
+        LOG.debug('Incoming request (%s, %d)' % (converter_name, len(zip_archive)))
+        ts = time.time()
         # store zip archive first
         tempdir = tempfile.mkdtemp()
         zip_temp = os.path.join(tempdir, 'input.zip')
@@ -52,6 +55,7 @@ class Server(xmlrpc.XMLRPC):
         ZF.close()
         encoded_result = base64.encodestring(file(zip_out, 'rb').read())
         shutil.rmtree(tempdir)
+        LOG.debug('request end (%3.2lf seconds)' % (time.time() -ts))
         return encoded_result
 
     def convert(self, html_filename, converter_name='pdf-prince'):
