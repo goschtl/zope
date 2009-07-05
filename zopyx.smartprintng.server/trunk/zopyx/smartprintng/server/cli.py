@@ -1,12 +1,12 @@
-import os
+import base64
 import glob
+import os
 import re
 import shutil
-import zipfile
-import time
-import base64
 import tempfile
+import time
 import uuid
+import zipfile
 from zopyx.convert2.convert import Converter
 from twisted.web import xmlrpc, server
 
@@ -67,8 +67,16 @@ class Server(xmlrpc.XMLRPC):
 
 def main():
     from twisted.internet import reactor
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option("-p", "--port", dest="port", type="int",
+                      help="port", default=7080)
+
+    (options, args) = parser.parse_args()
+    print 'Started SmartPrintNG XMLRPC server(port %d)' % options.port
     r = Server()
-    reactor.listenTCP(7080, server.Site(r))
+    reactor.listenTCP(options.port, server.Site(r))
     reactor.run()
 
 if __name__ == '__main__':
