@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment
+from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
 
 fop_home = os.environ.get('FOP_HOME')
@@ -29,7 +29,7 @@ def fo2pdf(fo_filename, output_filename=None):
     """ Convert a FO file to PDF using FOP"""
 
     if not output_filename:
-        output_filename = self.newTempfile(suffix='.pdf')
+        output_filename = newTempfile(suffix='.pdf')
 
     if not fop_available:
         raise RuntimeError("The external FOP converter isn't available")
