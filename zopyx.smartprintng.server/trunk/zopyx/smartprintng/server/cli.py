@@ -1,12 +1,16 @@
 import os
 import glob
 import re
+import shutil
 import zipfile
 import time
 import base64
 import tempfile
+import uuid
 from zopyx.convert2.convert import Converter
 from twisted.web import xmlrpc, server
+
+tempdir = tempfile.mkdtemp(prefix='zopyx.smartprintng.server')
 
 class Server(xmlrpc.XMLRPC):
     """ SmartPrintNG Server """
@@ -17,7 +21,7 @@ class Server(xmlrpc.XMLRPC):
         data = file(filename,"rb").read()
         return len(self.rxcountpages.findall(data))
 
-    def xmlrpc_convertZIP(self, zip_archive, spool=0, converter_name='pdf-prince'):
+    def xmlrpc_convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
         # store zip archive first
@@ -39,7 +43,6 @@ class Server(xmlrpc.XMLRPC):
         html_filename = html_files[0]
 
         result = self.convert(html_filename, 
-                              spool=spool, 
                               converter_name=converter_name)
 
         # Generate result ZIP archive with base64-encoded result
@@ -51,7 +54,7 @@ class Server(xmlrpc.XMLRPC):
         shutil.rmtree(tempdir)
         return encoded_result
 
-    def convert(self, html_filename, spool=0, converter_name='pdf-prince'):
+    def convert(self, html_filename, converter_name='pdf-prince'):
         """ Process a single HTML file """
 
         start_time = time.time()
@@ -59,24 +62,7 @@ class Server(xmlrpc.XMLRPC):
         output_filename = c(converter_name)
         file_size = os.stat(output_filename)[6]
         duration = time.time() - start_time
-        self.context.addJob(input_filename=html_filename, 
-                            output_filename=output_filename,
-                            output_size=file_size,
-                            duration=duration,
-                            pages=self._countPages(output_filename),
-                            converter_name=converter_name)
-        if spool:
-            id = uuid.uuid1()
-            if not os.path.exists(self.context.spool_directory):
-                os.makedirs(self.context.spool_directory)
-            new_filename = os.path.join(self.context.spool_directory, 
-                                        '%s.pdf' % id)
-            os.rename(output_filename, new_filename)
-            return grok.url(self.request, self.context) + \
-                            '/download?id=%s' % id
-        else:
-            return output_filename
-
+        return output_filename
 
 
 if __name__ == '__main__':
