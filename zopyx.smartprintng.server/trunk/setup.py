@@ -24,6 +24,7 @@ setup(name='zopyx.smartprintng.server',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'twisted',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
