@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+Version 2.1.0 (unreleased)
+--------------------------
+
+- ...
+
+Version 2.0.0 (2009-06-14)
+--------------------------
+
+- Feature: Updated setup and tests to work with the z3c.form 2.0.0 release.
+
 Version 1.5.3 (2008-08-26)
 --------------------------
 
