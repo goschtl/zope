@@ -20,6 +20,7 @@ from zope import interface, component
 from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 from zope.app.container.sample import SampleContainer
+from z3c.pt import expressions 
 
 from z3ext.layout import pagelet
 
@@ -53,6 +54,8 @@ def setUp(test):
     component.provideAdapter(pagelet.queryPagelet)
     component.provideAdapter(pagelet.PageletPublisher, name='pagelet')
     component.provideAdapter(pagelet.PageletObjectPublisher,name='pageletObject')
+    component.provideUtility(expressions.path_translator, name='path')
+
     setup.setUpTestAsModule(test, 'z3ext.layout.TESTS')
 
 

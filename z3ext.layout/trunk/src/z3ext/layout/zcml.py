@@ -22,16 +22,17 @@ from zope.schema.interfaces import IFromUnicode
 from zope.component import getUtility, queryUtility
 from zope.component.interface import provideInterface
 from zope.component.zcml import handler, adapter, utility
+from zope.security.zcml import Permission
 from zope.security.checker import defineChecker, Checker, CheckerPublic
-from zope.configuration.fields import Path, Tokens, GlobalObject, GlobalInterface
+from zope.configuration.fields import Path,Tokens,GlobalObject,GlobalInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.security.zcml import Permission
+
+from z3c.pt.pagetemplate import ViewPageTemplateFile
 
 from interfaces import IPagelet, IPageletType
 from interfaces import ILayout, ILayoutCreatedEvent

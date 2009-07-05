@@ -296,7 +296,7 @@ We can create pagelet with template:
   <z3ext.layout.zcml.PageletClass from None ...>
 
   >>> pagelet.template
-  <BoundPageTemplateFile of <z3ext.layout.zcml.PageletClass from None ...>>
+  <z3c.pt.pagetemplate.BoundViewPageTemplateFile '...'>
 
 We can create pagelet with additional context
 

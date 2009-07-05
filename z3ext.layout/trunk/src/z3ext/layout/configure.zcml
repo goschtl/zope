@@ -67,7 +67,13 @@
      uid="default.portal"
      description="Default portal layout, registered for IDefaultBrowserLayer"
      for="zope.app.component.site.SiteManagerContainer"
+     class=".layoutportal.DefaultLayoutPortal"
      template="layoutportal.pt" />
+
+  <!-- pagelet: expression for chameleon -->
+  <utility
+     name="pagelet"
+     factory=".expressions.PageletTranslator" />
 
   <!-- Registering documentation with API doc -->
   <configure

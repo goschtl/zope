@@ -16,21 +16,17 @@
 $Id: tales.py 2720 2008-08-25 11:15:10Z fafhrd91 $
 """
 import logging, sys
-from zope.tales.expressions import StringExpr
+from zope.tales.expressions import StringExpr, SimpleModuleImporter
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 
 from interfaces import IPagelet, IPageletType, IPageletContext
 
 
-class TALESPageletExpression(StringExpr):
+class PageletExpression(object):
 
-    def __call__(self, econtext):
-        name = super(TALESPageletExpression, self).__call__(econtext)
-
-        context = econtext.vars['context']
-        request = econtext.vars['request']
-        modules = econtext.vars['modules']
-
+    def render(self, context, request, view, name):
+        modules = SimpleModuleImporter()
+        
         pageletName = u''
 
         # lookup pagelet
@@ -78,3 +74,15 @@ class TALESPageletExpression(StringExpr):
                 log.exception(err)
 
         return u''
+
+
+class TALESPageletExpression(StringExpr, PageletExpression):
+
+    def __call__(self, econtext):
+        name = super(TALESPageletExpression, self).__call__(econtext)
+
+        context = econtext.vars['context']
+        request = econtext.vars['request']
+        view = econtext.vars['view']
+
+        return self.render(context, request, view, name)

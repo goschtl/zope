@@ -19,53 +19,28 @@ from zope import interface
 from zope.publisher import browser
 from zope.component import getMultiAdapter
 from zope.traversing.api import getRoot
-from zope.app.pagetemplate.engine import TrustedAppPT
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+
+from z3c.pt.pagetemplate import ViewPageTemplateFile
 
 from z3ext.layout.pagelet import queryLayout
 from z3ext.layout.interfaces import LayoutNotFound
 from z3ext.layout.interfaces import ILayout, ILayoutView, ILayoutTemplateFile
 
 
-class ViewMapper(object):
-
-    def __init__(self, ob, request):
-        self.ob = ob
-        self.request = request
-
-    def __getitem__(self, name):
-        return getMultiAdapter((self.ob, self.request), name=name)
-
-
-class LayoutTemplateFile(TrustedAppPT, PageTemplateFile):
+class LayoutTemplateFile(ViewPageTemplateFile):
     interface.implements(ILayoutTemplateFile)
 
-    expand = False
-
-    def __init__(self, filename, _prefix=None, content_type=None):
-        _prefix = self.get_path_from_prefix(_prefix)
-        super(LayoutTemplateFile, self).__init__(filename, _prefix)
-        if content_type is not None:
-            self.content_type = content_type
-
-    def pt_getContext(self, layout, **_kw):
+    def _pt_get_context(self, layout, request, kwargs):
         view = layout.view
 
-        # instance is a View component
-        namespace = super(LayoutTemplateFile, self).pt_getContext(**_kw)
-        namespace['view'] = view
-        namespace['request'] = layout.request
-        namespace['context'] = view.context
+        namespace = super(LayoutTemplateFile, self)._pt_get_context(
+            view, request, kwargs)
+
         namespace['layout'] = layout
         namespace['layoutcontext'] = layout.context
         namespace['mainview'] = layout.mainview
         namespace['maincontext'] = layout.maincontext
-        namespace['views'] = ViewMapper(view.context, layout.request)
         return namespace
-
-    def __call__(self, layout, *args, **kw):
-        namespace = self.pt_getContext(layout, args=args, options=kw)
-        return self.pt_render(namespace)
 
 
 class Layout(browser.BrowserPage):
@@ -91,7 +66,8 @@ class Layout(browser.BrowserPage):
             view.update()
             return view.render()
 
-        return self.template(self)
+        return self.template(
+            self, context=self.view.context, request=self.request)
 
     def __call__(self, layout=None, view=None, *args, **kw):
         if view is None:
