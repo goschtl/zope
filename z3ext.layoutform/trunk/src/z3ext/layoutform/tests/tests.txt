@@ -77,8 +77,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
 
   >>> addForm.update()
   >>> print addForm.render()
-  <div class="z-form z-form-add"><form action="http://127.0.0.1" method="post"
-      enctype="multipart/form-data" name="form" id="form">
+  <div class="z-form z-form-add"><form action="http://127.0.0.1" method="post" enctype="multipart/form-data" name="form" id="form">
     <div class="z-form-fieldset">
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
@@ -88,8 +87,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
                     name="form.widgets.name"
                     class="text-widget required textline-field" value="" />
         </div>
-      </div>
-      <div class="z-form-field">
+      </div> <div class="z-form-field">
         <label for="form-widgets-age" title="The person's age.">Age</label>
         <div class="z-form-help">The person's age.</div>
         <div><input type="text" id="form-widgets-age"
@@ -121,8 +119,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
            value="Cancel" />
       </span>
     </div>
-  </form>
-  </div>
+  </form></div>
 
 We have different renderer for hidden widgets
 
@@ -131,37 +128,32 @@ We have different renderer for hidden widgets
 
   >>> addForm.update()
   >>> print addForm.render()
-  <div class="z-form z-form-add"><form action="http://127.0.0.1" method="post"
-          enctype="multipart/form-data" name="form" id="form">
+  <div class="z-form z-form-add"><form action="http://127.0.0.1" method="post" enctype="multipart/form-data" name="form" id="form">
     <div class="z-form-fieldset">
       <div class="z-form-field">
-      <label for="form-widgets-name" title="">Name</label>
-      <span class="z-form-fieldRequired">&nbsp;</span>
-      <div class="z-form-help"></div>
-      <div><input type="text" id="form-widgets-name"
-           name="form.widgets.name"
-           class="text-widget required textline-field" value="" />
-    </div>
-    </div>
-      <label style="display: none;" for="form-widgets-age"
-           title="The person's age.">Age</label>
-    <input type="hidden" id="form-widgets-age"
-           name="form.widgets.age" class="hidden-widget"
-           value="20" />
-    </div>
-      <div class="z-form-controls">
-      <hr />
-      <div class="z-form-field">
-        <label for="add_input_name">Content short name</label>
-        <div class="z-form-help">
-          Should not contain spaces, underscores or mixed case.
-          Short Name is part of the item's web address.
+        <label for="form-widgets-name" title="">Name</label>
+        <span class="z-form-fieldRequired">&nbsp;</span>
+        <div class="z-form-help"></div>
+        <div><input type="text" id="form-widgets-name"
+             name="form.widgets.name"
+             class="text-widget required textline-field" value="" />
         </div>
-        <div>
-          <input type="text" name="add_input_name"
-                 id="add_input_name" />
-        </div>
+      </div> <label style="display: none;" for="form-widgets-age" title="The person's age.">Age</label><input type="hidden" id="form-widgets-age"
+             name="form.widgets.age" class="hidden-widget"
+             value="20" />
       </div>
+      <div class="z-form-controls">
+        <hr />
+        <div class="z-form-field">
+          <label for="add_input_name">Content short name</label>
+          <div class="z-form-help">
+            Should not contain spaces, underscores or mixed case.
+            Short Name is part of the item's web address.
+          </div>
+          <div>
+            <input type="text" name="add_input_name" id="add_input_name" />
+          </div>
+       </div>
       <span>
         <input type="submit" id="form-buttons-add"
            name="form.buttons.add"
@@ -172,5 +164,4 @@ We have different renderer for hidden widgets
            value="Cancel" />
       </span>
     </div>
-    </form>
-    </div>
+    </form></div>

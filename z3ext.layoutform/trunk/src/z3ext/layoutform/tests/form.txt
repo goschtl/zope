@@ -53,8 +53,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
 
   >>> form.update()
   >>> print form.render()
-  <div class="z-form z-form-standard"><form action="http://127.0.0.1" method="post"
-          enctype="multipart/form-data" name="form" id="form">
+  <div class="z-form z-form-standard"><form action="http://127.0.0.1" method="post" enctype="multipart/form-data" name="form" id="form">
     <div class="z-form-fieldset">
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
@@ -64,8 +63,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
                 name="form.widgets.name"
                 class="text-widget required textline-field" value="" />
         </div>
-      </div>
-      <div class="z-form-field">
+      </div> <div class="z-form-field">
         <label for="form-widgets-age" title="The person's age.">Age</label>
         <div class="z-form-help">The person's age.</div>
         <div><input type="text" id="form-widgets-age"
@@ -82,8 +80,7 @@ Let's now render the page. Note the output doesn't contain the layout template:
            class="z-form-savebutton button-field" value="Save" />
       </span>
     </div>
-  </form>
-  </div>
+  </form></div>
 
 Subforms
 
@@ -126,8 +123,7 @@ Group
   (<PersonEducation ...>,)
 
   >>> print form.render()
-  <div class="z-form z-form-standard"><form action="http://127.0.0.1" method="post"
-          enctype="multipart/form-data" name="form" id="form">
+  <div class="z-form z-form-standard"><form action="http://127.0.0.1" method="post" enctype="multipart/form-data" name="form" id="form">
     <div class="z-form-fieldset">
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
@@ -137,8 +133,7 @@ Group
             name="form.widgets.name"
             class="text-widget required textline-field" value="" />
         </div>
-      </div>
-      <div class="z-form-field">
+      </div> <div class="z-form-field">
         <label for="form-widgets-age" title="The person's age.">Age</label>
         <div class="z-form-help">The person's age.</div>
         <div><input type="text" id="form-widgets-age"
@@ -146,8 +141,7 @@ Group
             value="20" />
         </div>
        </div>
-      </div>
-      <div class="z-form-group">
+      </div><div class="z-form-group">
         <div class="z-form-fieldset">
           <div class="z-form-field">
             <label for="form-widgets-education" title="">Education</label>
@@ -167,8 +161,7 @@ Group
              class="z-form-savebutton button-field" value="Save" />
         </span>
       </div>
-    </form>
-  </div>
+  </form></div>
 
 Subform
 
@@ -210,7 +203,7 @@ Subform
           class="textarea-widget text-field" rows="5"></textarea>
   </div>
   ...
-  </div>
+  ...</div>
 
   >>> request = TestRequest(
   ...     form={'form.widgets.name': u'',
@@ -250,7 +243,7 @@ Subform
      </div>
   </div>
   ...
-  </div>
+  ...</div>
 
   >>> request = TestRequest(
   ...     form={'form.widgets.name': u'Nikolay',
