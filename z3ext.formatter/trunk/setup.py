@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.7dev'
+version = '1.3.0dev'
 
 
 setup(name='z3ext.formatter',
@@ -65,6 +65,7 @@ setup(name='z3ext.formatter',
                           'zope.app.appsetup',
                           'zope.app.pagetemplate',
                           'zope.app.publisher',
+			  'z3c.pt',
                           ],
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',

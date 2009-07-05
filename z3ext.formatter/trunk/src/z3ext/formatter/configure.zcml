@@ -9,6 +9,11 @@
   <!-- zope.conf configuration -->
   <subscriber handler=".config.initFormatter" />
 
+  <!-- formatter: chameleon expression -->
+  <utility
+     name="formatter"
+     factory=".chameleonexpr.FormatterTranslator" />
+
   <!-- formatter: tales expresison -->
   <tales:expressiontype
      name="formatter"

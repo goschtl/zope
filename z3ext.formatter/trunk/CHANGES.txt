@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.3.0 (2009-07-05)
+------------------
+
+- Added chameleon support
+
+- Added 'formatter' chameleon expression
+
+
 1.2.7 (2009-04-??)
 ------------------
 

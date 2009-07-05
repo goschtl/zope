@@ -19,6 +19,7 @@ $Id$
 from pytz import utc, timezone
 from datetime import datetime
 from zope import interface, component
+from zope.i18n import translate
 from zope.component import getUtility
 from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -73,8 +74,9 @@ class FancyDatetimeFormatter(object):
                 pos = pattern.find('H')
 
             formatter.setPattern(pattern[pos:])
-            value = _(u'Today at ${value}',
-                      mapping={'value': formatter.format(value)})
+            value = translate(
+                u'Today at ${value}', 'z3ext.formatter',
+                mapping={'value': formatter.format(value)})
             formatter.setPattern(oldpattern)
             return value
 
@@ -85,8 +87,9 @@ class FancyDatetimeFormatter(object):
                 pos = pattern.find('H')
 
             formatter.setPattern(pattern[pos:])
-            value = _(u'Yesterday at ${value}',
-                      mapping={'value': formatter.format(value)})
+            value = translate(
+                u'Yesterday at ${value}', 'z3ext.formatter',
+                mapping={'value': formatter.format(value)})
             formatter.setPattern(oldpattern)
             return value
 

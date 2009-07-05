@@ -16,7 +16,6 @@ Author: Nikolay Kim <fafhrd91@gmail.com>
 
 $Id$
 """
-
 from zope.component import queryAdapter
 from zope.proxy import removeAllProxies
 from zope.tales.expressions import PathExpr, simpleTraverse

@@ -18,6 +18,7 @@ $Id$
 from pytz import utc, timezone
 from datetime import datetime
 from zope import interface, component
+from zope.i18n import translate
 from zope.component import getUtility
 from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.http import IHTTPRequest
@@ -59,31 +60,32 @@ class HumanDatetimeFormatter(object):
             delta.seconds/3600, delta.seconds/60)
 
         if years > 0:
-            return _(u'${value} year(s) ago',
-                     mapping={'value': years})
+            return translate(
+                u'${value} year(s) ago', 'z3ext.formatter',
+                mapping={'value': years})
 
         if months > 0:
-            return _(u'${value} month(s) ago',
-                     mapping={'value': months})
+            return translate(u'${value} month(s) ago', 'z3ext.formatter',
+                             mapping={'value': months})
 
         if weeks > 0:
-            return _(u'${value} week(s) ago',
-                     mapping={'value': weeks})
+            return translate(u'${value} week(s) ago', 'z3ext.formatter',
+                             mapping={'value': weeks})
 
         if delta.days > 0:
-            return _(u'${value} day(s) ago',
-                     mapping={'value': delta.days})
+            return translate(u'${value} day(s) ago', 'z3ext.formatter',
+                             mapping={'value': delta.days})
 
         if hours > 0:
-            return _(u'${value} hour(s) ago',
-                     mapping={'value': hours})
+            return translate(u'${value} hour(s) ago', 'z3ext.formatter',
+                             mapping={'value': hours})
 
         if minutes > 0:
-            return _(u'${value} minute(s) ago',
-                     mapping={'value': minutes})
+            return translate(u'${value} minute(s) ago', 'z3ext.formatter',
+                             mapping={'value': minutes})
 
-        return _(u'${value} second(s) ago',
-                 mapping={'value': delta.seconds})
+        return translate(u'${value} second(s) ago', 'z3ext.formatter',
+                         mapping={'value': delta.seconds})
 
 
 class HumanDatetimeFormatterFactory(object):
