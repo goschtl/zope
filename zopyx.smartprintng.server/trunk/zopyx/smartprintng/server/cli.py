@@ -2,6 +2,7 @@ import base64
 import glob
 import os
 import re
+import gc
 import shutil
 import tempfile
 from datetime import datetime
