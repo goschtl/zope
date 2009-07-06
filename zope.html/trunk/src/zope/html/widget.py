@@ -25,7 +25,7 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
 
     editorWidth = 600
     editorHeight = 400
-    fckVersion = 2.6
+    fckVersion = '2.6.4.1'
 
     configurationPath = "/@@/zope_fckconfig.js"
     toolbarConfiguration = "zope"
