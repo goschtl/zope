@@ -1,3 +1,8 @@
+##########################################################################
+# zopyx.smartprintng.server
+# (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
+
 import base64
 import glob
 import os
@@ -8,7 +13,7 @@ import time
 import uuid
 import zipfile
 from zopyx.convert2.convert import Converter
-from zopyx.convert2.logger import LOG
+from logger import LOG
 
 temp_directory = os.path.join(tempfile.gettempdir(), 
                               'zopyx.smartprintng.server')
@@ -19,8 +24,7 @@ if not os.path.exists(temp_directory):
 class ServerCore(object):
     """ SmartPrintNG Server Core Implementation """
 
-
-    def _convertZIP(zip_archive, converter_name='pdf-prince'):
+    def convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
         now = datetime.now().strftime('%Y%m%d%Z%H%M%S')
@@ -47,8 +51,8 @@ class ServerCore(object):
         if len(html_files) > 1:
             raise RuntimeError('Archive contains more than one html file')
         html_filename = html_files[0]
-        result = self.convert(html_filename, 
-                              converter_name=converter_name)
+        result = self._convert(html_filename, 
+                               converter_name=converter_name)
         basename, ext = os.path.splitext(os.path.basename(result))
 
         # Generate result ZIP archive with base64-encoded result
@@ -61,7 +65,7 @@ class ServerCore(object):
         LOG.debug('Request end (%3.2lf seconds)' % (time.time() -ts))
         return encoded_result
 
-    def convert(self, html_filename, converter_name='pdf-prince'):
+    def _convert(self, html_filename, converter_name='pdf-prince'):
         """ Process a single HTML file """
         return Converter(html_filename)(converter_name)
 

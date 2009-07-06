@@ -1,5 +1,9 @@
-from twisted.web import xmlrpc, server
+##########################################################################
+# zopyx.smartprintng.server
+# (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
 
+from twisted.web import xmlrpc, server
 from base import ServerCore
 from logger import LOG
 
