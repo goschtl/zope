@@ -4,11 +4,11 @@ import zipfile
 import tempfile
 
 # XMLRPC server instance
-server = xmlrpclib.Server('http://localhost:7080/')
+server = xmlrpclib.ServerProxy('http://localhost:6543/convertZIP')
 
 # send the ZIP archive base64 encoded
-zip_data = server.convertZIP(base64.encodestring(file('test.zip', 'rb').read()),
-                             'pdf-prince')
+zip_data = server(base64.encodestring(file('test.zip', 'rb').read())[:-10],
+                  'pdf-prince')
 
 # and receive the result PDF as base64 encoded ZIP archive
 zip_temp = tempfile.mktemp()

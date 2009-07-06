@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.2.0'
+version = '0.3.0'
 
 setup(name='zopyx.smartprintng.server',
       version=version,
@@ -24,12 +24,13 @@ setup(name='zopyx.smartprintng.server',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'twisted',
+          'repoze.bfg',
           'uuid',
           'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
-      entry_points=dict(
-          console_scripts=['smartprintng_server_twisted=zopyx.smartprintng.server.twisted_srv:main']
-      )
+      entry_points="""\
+      [paste.app_factory]
+      app = zopyx.smartprintng.server.run:app
+      """
       )
