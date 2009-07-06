@@ -30,6 +30,6 @@ setup(name='zopyx.smartprintng.server',
           # -*- Extra requirements: -*-
       ],
       entry_points=dict(
-          console_scripts=['smartprintng_server=zopyx.smartprintng.server.cli:main']
+          console_scripts=['smartprintng_server_twisted=zopyx.smartprintng.server.twisted:main']
       )
       )
