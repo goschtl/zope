@@ -17,7 +17,8 @@ Check that fields have been created on the edition page:
 
 Now what happens with the render and call functions?
 
-  >>> #view.render() 
+  >>> print view() 
+  ...
 
 Does the field functions (omit, select, ...) work
 
@@ -27,6 +28,25 @@ Does the field functions (omit, select, ...) work
 
   >>> 'name' in index.fields.keys()
   True
+
+  >>> print index()
+  <div class="viewspace">
+    <div>
+      <div id="form-widgets-name-row" class="row">
+	 <div class="label">
+		<label for="form-widgets-name">
+		  <span>Name</span>
+	 </label>
+      </div>
+      <div class="widget">
+      <span id="form-widgets-name"
+	  class="text-widget required textline-field"></span>
+      </div>
+     </div>
+    </div>
+  </div>
+
+
 
 """
 import grok

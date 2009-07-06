@@ -59,7 +59,7 @@ class GrokForm(object):
         assert not (self.template is None)
         if IGrokTemplate.providedBy(self.template):
             return super(GrokForm, self)._render_template()
-        return self.template()
+        return self.template(self)
 
     def render(self):
         """People don't have to define a render method here, and we
@@ -81,7 +81,6 @@ class GrokForm(object):
             # A redirect was triggered somewhere in update().  Don't
             # continue rendering the template or doing anything else.
             return
-
         self.updateForm()
         return self.render()
 
@@ -129,6 +128,7 @@ class EditForm(GrokForm, form.EditForm, grokcore.view.View):
     """
 
     martian.baseclass()
+    
 
 
 class DisplayForm(GrokForm, form.DisplayForm, grokcore.view.View):
