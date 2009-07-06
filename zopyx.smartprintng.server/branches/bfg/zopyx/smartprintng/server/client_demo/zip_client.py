@@ -7,7 +7,7 @@ import tempfile
 server = xmlrpclib.ServerProxy('http://localhost:6543/convertZIP')
 
 # send the ZIP archive base64 encoded
-zip_data = server(base64.encodestring(file('test.zip', 'rb').read()),
+zip_data = server(base64.encodestring(file('test.zip', 'rb').read())[:-10],
                   'pdf-prince')
 
 # and receive the result PDF as base64 encoded ZIP archive
