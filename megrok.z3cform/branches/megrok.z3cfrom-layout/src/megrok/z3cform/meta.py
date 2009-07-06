@@ -6,16 +6,16 @@ import grokcore.component
 
 from z3c.form import field
 from martian.error import GrokError
+from megrok.z3cform import wizard 
 from zope.interface import Interface
 from megrok.z3cform import directives
 from megrok.z3cform import components
+from z3c.wizard.zcml import wizardStepDirective
 from zope.interface.interfaces import IInterface
-from grokcore.view.meta.views import ViewGrokker
+from grokcore.view.meta.views import ViewGrokker, default_view_name
 from z3c.form.zcml import widgetTemplateDirective
 from grokcore.formlib.formlib import most_specialized_interfaces
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-
 
 
 def get_auto_fields(context):
@@ -77,5 +77,18 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
     def execute(self, factory, config, context, layer, template, view, field, widget, mode, **kw):
         template_path = '/'.join(factory.module_info.path.split('/')[:-1])
 	template = "%s/%s" %(template_path, template)
-        widgetTemplateDirective(config, template, context, layer, view=view, field=field, widget=widget, mode=mode)  
+        widgetTemplateDirective(config, template, context, layer, 
+	                        view=view, field=field, widget=widget, mode=mode)  
         return True
+
+
+class WizardStepGrokker(martian.ClassGrokker):
+    martian.component(wizard.Step)
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.component.name, get_default=default_view_name)
+
+    def execute(self, factory, config, context, name, **kw):
+
+        wizardStepDirective(config, factory, name, 'zope.Public', wizard=context)
+        return True
+	
