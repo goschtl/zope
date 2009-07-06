@@ -121,22 +121,22 @@ class Add(z3cform.PageAddForm):
 
 class CustomStringTemplate(z3cform.WidgetTemplate):
     grok.context(Person)
-    grok.template('new_string.pt')
+    grok.template('templates/new_string.pt')
     megrok.z3cform.directives.mode(interfaces.DISPLAY_MODE)
 
 class CustomTemplate(z3cform.WidgetTemplate):
     grok.context(Person)
-    grok.template('custom_string.pt')
+    grok.template('templates/custom_string.pt')
     grok.view(interfaces.IAddForm)
 
 class NewTemplateForIntField(z3cform.WidgetTemplate):
     grok.context(Person)
-    grok.template('custom_int.pt')
+    grok.template('templates/custom_int.pt')
     megrok.z3cform.directives.field(schema.interfaces.IInt)
 
 class NewTemplateForTextWidget(z3cform.WidgetTemplate):
     grok.context(Person)
-    grok.template('custom_text.pt')
+    grok.template('templates/custom_text.pt')
     grok.view(View2)
     megrok.z3cform.directives.widget(interfaces.ITextWidget)
     megrok.z3cform.directives.mode(interfaces.DISPLAY_MODE)
