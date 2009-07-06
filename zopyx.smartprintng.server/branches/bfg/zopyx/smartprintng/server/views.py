@@ -27,5 +27,5 @@ def convertZIP(context, zip_archive, converter_name='pdf_prince'):
     except Exception, e:
         msg = 'Conversion failed (%s)' % e
         LOG.error(msg, exc_info=True)
-        raise xmlrpclib.Fault(123, msg)
+        return xmlrpclib.Fault(123, msg)
 
