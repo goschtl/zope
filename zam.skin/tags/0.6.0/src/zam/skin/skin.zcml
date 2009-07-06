@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <interface
+      interface="zam.skin.IZAMBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="ZAM"
+      />
+
+  <interface
+      interface="zam.skin.IZAMBrowserSkin"
+      type="z3c.jsonrpc.interfaces.IJSONRPCSkinType"
+      name="ZAM"
+      />
+
+</configure>

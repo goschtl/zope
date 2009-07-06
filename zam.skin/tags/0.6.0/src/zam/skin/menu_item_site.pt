@@ -1,0 +1,6 @@
+<td tal:define="subProviderName view/subMenuProviderName">
+  <a href="#" class="topMenu"
+     tal:attributes="href view/approvedURL"><tal:block i18n:translate="" content="view/title">Title</tal:block></a>
+  <div class="menuGroup" tal:condition="subProviderName">
+  </div>
+</td>

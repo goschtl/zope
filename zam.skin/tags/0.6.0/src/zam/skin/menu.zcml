@@ -1,0 +1,56 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <!-- tweak the zam.api.menu configuration and render them with divmenu.js
+       the divmenu.js will go into a own package later but I need to implement
+       real nested menu support first. -->
+
+  <viewletManager
+      name="IGlobalMenu"
+      class="z3c.menu.ready2go.manager.MenuManager"
+      provides="zam.api.menu.IGlobalMenu"
+      template="menu_global.pt"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="ISiteMenu"
+      class="z3c.menu.ready2go.manager.MenuManager"
+      provides="zam.api.menu.ISiteMenu"
+      template="menu_site.pt"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IAddMenu"
+      class="z3c.menu.ready2go.manager.MenuManager"
+      provides="zam.api.menu.IAddMenu"
+      template="menu_global.pt"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      for="z3c.menu.ready2go.interfaces.IGlobalMenuItem"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="menu_item_global.pt"
+      />
+
+  <z3c:template
+      for="z3c.menu.ready2go.interfaces.ISiteMenuItem"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="menu_item_site.pt"
+      />
+
+  <z3c:template
+      for="z3c.menu.ready2go.interfaces.IAddMenuItem"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="menu_item_global.pt"
+      />
+
+</configure>

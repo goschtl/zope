@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="zam">
+<head>
+<title>ZAM</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="pragma" content="no-cache" />
+<script type="text/javascript"
+        tal:define="contexturl context/@@absolute_url; 
+                    viewurl request/URL"
+        tal:content="string:
+	var contexturl = '${contexturl}';
+	var viewurl = '${viewurl}';"> 
+</script>
+<script tal:replace="structure provider:IJavaScript"> </script>
+<style tal:replace="structure provider:ICSS"> 
+</style>
+<link rel="icon" type="image/png"
+      tal:attributes="href context/++resource++favicon.png" />
+</head>
+<body tal:define="applicationURL request/getApplicationURL;
+                  globalMenu provider:IGlobalMenu;
+                  siteMenu provider:ISiteMenu">
+<div id="layoutContainer">
+  <div id="headerContainer">
+    <div id="user">
+      <span i18n:translate="">User:</span>
+      <span tal:content="request/principal/title">Manager</span>
+      &nbsp;&nbsp;
+      <a href="" style="font-size: 100%"
+           tal:attributes="href string:${context/@@siteURL}/logout.html"
+           i18n:translate="">[Logout]</a>
+    </div>
+    <img id="logo" src="logo.gif" width="180" height="45" alt="logo"
+             tal:attributes="src context/++resource++img/logo.gif" />
+  </div>
+  <div id="appMenuContainer">
+    <table cellspacing="0" cellpadding="0" class="z3cDivMenu">
+	<tr>
+	<td tal:condition="globalMenu">
+    <a class="topMenu" href="#">Global Menu</a>
+    <tal:block replace="structure globalMenu">
+      <div class="menuGroup">
+        <a href="#" class="selected">Menu item</a>
+        <a href="#">Menu item</a>
+        <a href="#">Menu item</a>
+      </div>
+	</tal:block>
+	</td>
+	<td tal:condition="siteMenu"
+	    tal:replace="structure siteMenu">
+      <div class="menuGroup">
+        <a href="#" class="selected">Menu item</a>
+      </div>
+    </td>
+	</tr>
+	</table>
+  </div>
+      <div id="breadcrumbs" class="sortable">
+      <span i18n:translate="">Breadcrumb: </span>
+      <tal:block replace="structure provider:IBreadcrumbs">breaadcrumb</tal:block>
+    </div>
+  <div id="sideBarContainer">
+    <tal:block replace="structure provider:ISideBar">navigation</tal:block>
+  </div>
+  <div id="contentContainer">
+    <div id="contextMenuContainer">
+      <div id="addMenu" class="addMenu">
+        <a href="#" class="topMenu" i18n:translate="">+</a>
+        <tal:block replace="structure provider:IAddMenu">
+        </tal:block>
+      </div>
+      <ul tal:replace="structure provider:IContextMenu">
+        <li>
+          <a href="#" class="selected">Menu item</a>
+        </li>
+      </ul>
+    </div>
+    <div id="content">
+      <tal:block replace="structure provider:pagelet">pagelet provider</tal:block>
+    </div>
+  </div>
+</div>
+</body>
+</html>

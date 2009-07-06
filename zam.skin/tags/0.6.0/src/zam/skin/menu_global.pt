@@ -1,0 +1,6 @@
+<div class="menuGroup">
+  <tal:block repeat="viewlet view/viewlets"
+             content="structure viewlet/render" />
+</div>
+
+

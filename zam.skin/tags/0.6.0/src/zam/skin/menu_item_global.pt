@@ -1,0 +1,2 @@
+<a href="#" class="subMenu"
+   tal:attributes="href view/approvedURL"><tal:block i18n:translate="" content="view/title">Title</tal:block></a>

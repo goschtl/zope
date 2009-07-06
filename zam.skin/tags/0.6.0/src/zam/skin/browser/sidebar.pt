@@ -1,0 +1,11 @@
+<tal:block repeat="viewlet options/viewlets">
+  <div class="sideBarBox">
+    <div class="sideBarBoxHeader">
+      <tal:block i18n:translate="" content="viewlet/title">Title</tal:block>
+    </div>
+    <div class="sideBarBoxBody">
+      <tal:block replace="structure viewlet/render" />
+    </div>
+  </div>
+	<div class="sideBarBoxSpacer">&nbsp;</div>
+</tal:block>
