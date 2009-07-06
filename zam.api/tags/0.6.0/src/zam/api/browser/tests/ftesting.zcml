@@ -1,0 +1,81 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <!-- load ftesting form zam.api -->
+  <include package="zam.api" file="ftesting.zcml" />
+
+
+  <!-- configure the zam test plugin -->
+  <utility
+      component="zam.api.testing.ZAMTestBaseRegistry"
+      provides="zope.component.interfaces.IComponents"
+      name="zam.api.testing"
+      />
+
+  <utility
+      factory="zam.api.testing.ZAMTestPlugin"
+      provides="zam.api.interfaces.IPlugin"
+      name="zam.api.testing"
+      />
+
+  <!-- plugin management for NavigationPlugin -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zam.api.testing.ZAMTestPlugin
+           zam.api.browser.tests.IZAMTestPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <!-- setup test skin -->
+  <interface
+      interface="zam.api.browser.tests.IZAMTestBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="ZAMTest"
+      />
+
+  <z3c:layout
+      for="*"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      template="template.pt"
+      />
+
+  <z3c:pagelet
+      for="*"
+      name="index.html"
+      permission="zope.ManageContent"
+      class="zam.api.browser.tests.TestPage"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for="zam.api.browser.tests.TestPage"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      template="index.pt"
+      />
+
+
+  <!-- configure a plugin page -->
+  <registerIn registry="zam.api.testing.ZAMTestBaseRegistry">
+    <z3c:pagelet
+        for="*"
+        name="test.html"
+        permission="zope.ManageContent"
+        class="zam.api.browser.tests.PluginTestPage"
+        layer="zam.api.layer.IZAMBrowserLayer"
+        />
+    <z3c:template
+        for="zam.api.browser.tests.PluginTestPage"
+        layer="zam.api.layer.IZAMBrowserLayer"
+        template="test.pt"
+        />
+  </registerIn>
+
+
+  <browser:defaultSkin name="ZAMTest" />
+  <browser:defaultView name="index.html" />
+
+</configure>
