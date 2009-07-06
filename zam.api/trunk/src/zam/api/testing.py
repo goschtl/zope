@@ -22,7 +22,7 @@ import zope.schema
 from zope.schema.fieldproperty import FieldProperty
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.component.interfaces import IPossibleSite
-from zope.app import folder
+from zope.site import folder
 from zope.app.component import site
 
 from z3c.baseregistry import baseregistry

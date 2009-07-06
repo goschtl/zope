@@ -80,9 +80,10 @@ Now we see the plugins.html page:
     </div>
     <div>
       <div class="buttons">
-        <input type="submit" id="zam-api-testing-buttons-install"
-         name="zam.api.testing.buttons.install"
-         class="submit-widget button-field" value="Install" />
+        <input id="zam-api-testing-buttons-install"
+               name="zam.api.testing.buttons.install"
+               class="submit-widget button-field" value="Install"
+               type="submit" />
       </div>
     </div>
     </fieldset>
@@ -123,9 +124,10 @@ Now we can see that the plugin is installed:
   ...
   <div>
     <div class="buttons">
-      <input type="submit" id="zam-api-testing-buttons-uninstall"
-       name="zam.api.testing.buttons.uninstall"
-       class="submit-widget button-field" value="Uninstall" />
+      <input id="zam-api-testing-buttons-uninstall"
+             name="zam.api.testing.buttons.uninstall"
+             class="submit-widget button-field" value="Uninstall"
+             type="submit" />
     </div>
   </div>
   ...

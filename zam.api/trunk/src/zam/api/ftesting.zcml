@@ -27,12 +27,21 @@
         />
     <require
         permission="zope.Public"
-        attributes="title"
+        attributes="title testAttr"
         interface="zope.app.container.interfaces.IContained"
         />
     <require
         permission="zope.ManageSite"
+        set_attributes="testAttr"
         set_schema=".testing.IZAMTestSite"
+        />
+    <require
+        permission="zope.Public"
+        interface="zope.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface="zope.container.interfaces.IWriteContainer"
         />
   </class>
 

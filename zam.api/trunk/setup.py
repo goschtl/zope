@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zam.api',
-    version='0.5.4dev',
+    version='0.6.0',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "API for ZAM (Zope Application Management",
@@ -50,17 +50,30 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['zam'],
     extras_require = dict(
-        test = [
+        app = [
             'z3c.baseregistry',
             'z3c.zrtresource',
             'zope.annotation',
+            'zope.app.broken',
             'zope.app.component',
+            'zope.app.error',
+            'zope.app.keyreference',
+            'zope.app.i18n',
             'zope.app.intid',
+            'zope.app.principalannotation',
+            'zope.app.schema',
             'zope.app.securitypolicy',
             'zope.app.server',
             'zope.app.testing',
             'zope.app.twisted',
             'zope.app.session',
+            'zope.app.zopeappgenerations',
+            'zope.site',
+            ],
+        test = [
+            'z3c.pt',
+            'z3c.ptcompat',
+            'zope.site',
             'zope.testbrowser',
             'zope.testing',
             ],
