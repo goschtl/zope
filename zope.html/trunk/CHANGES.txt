@@ -7,6 +7,8 @@ CHANGES
 
 - Use FCKeditor 2.6.4.1
 
+- Remove _samples directory and erect a barrier to its resurrection
+
 
 1.1.0 (2008-06-18)
 ------------------
