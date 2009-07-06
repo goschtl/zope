@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zam.skin',
-    version='0.5.3dev',
+    version='0.6.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope 3 Application Management skin",
@@ -84,7 +84,7 @@ setup (
             'z3c.table',
             'z3c.template',
             'z3c.zrtresource',
-            'zam.api',
+            'zam.api [app]',
             'zope.app.appsetup',
             'zope.app.authentication',
             'zope.app.component',
