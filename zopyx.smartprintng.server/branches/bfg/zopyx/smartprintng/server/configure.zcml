@@ -5,25 +5,13 @@
 
   <view
      for=".models.MyModel"
-     view=".views.my_view"
+     view=".views.index"
      />
 
   <view
      for=".models.MyModel"
-     name="foo"
-     view=".views.my_view2"
-     />
-
-  <view
-     for=".models.MyModel"
-         view=".views.hello"
-     name="hello"
+     view=".views.convertZIP"
+     name="convertZIP"
      /> 
-
-  <view
-     for=".models.MyModel"
-     view=".views.static_view"
-     name="static"
-     />
 
 </configure>
