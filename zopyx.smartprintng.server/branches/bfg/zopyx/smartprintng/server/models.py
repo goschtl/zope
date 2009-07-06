@@ -1,7 +1,7 @@
-class MyModel(object):
+class Server(object):
     pass
 
-root = MyModel()
+root = Server()
 
 def get_root(environ):
     return root
