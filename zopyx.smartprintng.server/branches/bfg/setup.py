@@ -24,12 +24,13 @@ setup(name='zopyx.smartprintng.server',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'twisted',
+          'repoze.bfg',
           'uuid',
           'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
-      entry_points=dict(
-          console_scripts=['smartprintng_server_twisted=zopyx.smartprintng.server.twisted_srv:main']
-      )
+      entry_points="""\
+      [paste.app_factory]
+      app = zopyx.smartprintng.server.run:app
+      """
       )
