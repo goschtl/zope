@@ -21,7 +21,7 @@ import zope.component
 import zope.schema
 from zope.schema.fieldproperty import FieldProperty
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.component.interfaces import IPossibleSite
+from zope.location.interfaces import IPossibleSite
 from zope.site import folder
 from zope.app.component import site
 

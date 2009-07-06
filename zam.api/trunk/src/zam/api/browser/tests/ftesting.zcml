@@ -26,7 +26,7 @@
       factory="zam.api.browser.plugin.PluginManagement"
       for="zam.api.testing.ZAMTestPlugin
            zam.api.browser.tests.IZAMTestPluginLayer
-           zope.app.component.interfaces.ISite"
+           zope.location.interfaces.ISite"
       provides="zam.api.interfaces.IPluginManagement"
       />
 

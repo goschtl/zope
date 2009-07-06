@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zam.api',
-    version='0.6.1dev',
+    version='0.6.1',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "API for ZAM (Zope Application Management",
