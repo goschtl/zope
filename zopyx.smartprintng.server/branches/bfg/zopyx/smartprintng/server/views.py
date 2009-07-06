@@ -19,7 +19,7 @@ from repoze.bfg.xmlrpc import xmlrpc_view
 import xmlrpclib
 
 @xmlrpc_view
-def convertZIP(context, zip_archive, converter_name='pdf_prince'):
+def convertZIP(context, zip_archive, converter_name='pdf-prince'):
     from zopyx.smartprintng.server.base import ServerCore
     core = ServerCore()
     try:
