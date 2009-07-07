@@ -3,7 +3,7 @@ import os
 
 version = '0.1'
 
-setup(name='.',
+setup(name='zopyx.smartprintng.client',
       version=version,
       description="SmartPrintNG Client Library",
       long_description=open("README.txt").read() + "\n" +
