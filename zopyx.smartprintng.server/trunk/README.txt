@@ -1,7 +1,16 @@
 zopyx.smartprintng.server
 =========================
 
-A small Twisted-based XMLRPC server implementation for the SmartPrintNG framework.
+A repoze.bfg based implementation for the SmartPrintNG framework.
+
+
+Installation
+============
+
+- create virtualenv environment (Python 2.5 or 2.6)
+- run::
+
+    bin/easy_install -i http://dist.repoze.org/bfgsite/simple repoze.bfg.xmlrpc
 
 
 Contact
