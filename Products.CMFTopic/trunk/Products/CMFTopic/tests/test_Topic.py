@@ -23,9 +23,9 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Acquisition import Implicit
 
-from zope.app.component.hooks import setSite
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
+from zope.site.hooks import setSite
 
 from Products.CMFCore.interfaces import ISyndicationTool
 from Products.CMFCore.testing import ConformsToFolder
