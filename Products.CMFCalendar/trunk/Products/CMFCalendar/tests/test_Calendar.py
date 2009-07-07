@@ -24,8 +24,8 @@ import locale
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from DateTime import DateTime
-from zope.app.component.hooks import setSite
 from zope.interface.verify import verifyClass
+from zope.site.hooks import setSite
 
 from Products.CMFCalendar.testing import FunctionalLayer
 
