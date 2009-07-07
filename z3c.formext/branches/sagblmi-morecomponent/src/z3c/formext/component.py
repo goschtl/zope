@@ -200,11 +200,15 @@ class ComboBox(Field):
 
     def _getConfig(self, json=False):
         config = super(ComboBox, self)._getConfig()
+        emptyText = [self.widget.noValueMessage]
+        if self.widget.prompt:
+            emptyText = [self.widget.promptMessage]
         config.update(dict(
             hiddenName = config['name']+':list',
             triggerAction = 'all',
             editable = True,
             forceSelection = True,
+            emptyText = emptyText,
             store= [(item['value'], item['content'])
                 for item in self.widget.items],
             ))

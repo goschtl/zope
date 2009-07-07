@@ -221,6 +221,7 @@ ChoiceField
   >>> choiceWidget.update()
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
   {'editable': True,
+   'emptyText': [u'no value'],
    'fieldLabel': u'Choice',
    'forceSelection': True,
    'hiddenName': 'choiceField:list',
@@ -243,8 +244,9 @@ Works also with optional choice
   ...     IFieldWidget)
   >>> choiceWidget.update()
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
-  {'editable': True,                                                                                               
-   'fieldLabel': u'Choice (Not Required)',                                                                          
+  {'editable': True,                      
+   'emptyText': [u'no value'],
+   'fieldLabel': u'Choice (Not Required)',
    'forceSelection': True,
    'hiddenName': 'optionalChoiceField:list',                                                                        
    'id': 'optionalChoiceField',                                                                                     
@@ -647,6 +649,7 @@ Here is a select widget
 
   >>> pprint(config['items'][3])
   {'editable': True,
+   'emptyText': [u'no value'],
    'fieldLabel': u'Gender',
    'forceSelection': True,
    'hiddenName': 'form.widgets.gender:list',
