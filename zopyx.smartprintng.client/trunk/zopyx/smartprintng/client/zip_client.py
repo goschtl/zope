@@ -32,6 +32,8 @@ def convertZIP(dirname, converter_name='pdf-prince', host='localhost', port=6543
     output_filename = names[0]
     file(output_filename, 'wb').write(ZF.read(output_filename))
     ZF.close()
+    os.unlink(zip_filename)
+    os.unlink(zip_temp)
     return output_filename
 
 if __name__ == '__main__':
