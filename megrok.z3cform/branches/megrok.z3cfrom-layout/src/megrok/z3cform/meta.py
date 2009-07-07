@@ -6,7 +6,7 @@ import grokcore.component
 
 from z3c.form import field
 from martian.error import GrokError
-from megrok.z3cform import wizard 
+from megrok.z3cform import wizard
 from zope.interface import Interface
 from megrok.z3cform import directives
 from megrok.z3cform import components
@@ -20,7 +20,6 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 def get_auto_fields(context):
     """Get the form fields for context.
-
     This methods is the same than for formlib implementation, but use
     z3cform fields instead.
     """
@@ -47,7 +46,7 @@ class FormGrokker(martian.ClassGrokker):
         # Set fields by default.
         if isinstance(form.fields, components.DefaultFields):
             form.fields = get_auto_fields(context)
- 
+
         # Don't override render method.
         if not getattr(form.render, 'base_method', False):
             raise GrokError(
@@ -72,13 +71,15 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
 
     def grok(self, name, factory, module_info, **kw):
         factory.module_info = module_info
-        return super(WidgetTemplateGrokker, self).grok(name, factory, module_info, **kw)
+        return super(WidgetTemplateGrokker, self).grok(
+                          name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, template, view, field, widget, mode, **kw):
+    def execute(self, factory, config, context, layer,
+                template, view, field, widget, mode, **kw):
         template_path = '/'.join(factory.module_info.path.split('/')[:-1])
-	template = "%s/%s" %(template_path, template)
-        widgetTemplateDirective(config, template, context, layer, 
-	                        view=view, field=field, widget=widget, mode=mode)  
+        template = "%s/%s" %(template_path, template)
+        widgetTemplateDirective(config, template, context, layer,
+                    view=view, field=field, widget=widget, mode=mode)
         return True
 
 
@@ -89,6 +90,6 @@ class WizardStepGrokker(martian.ClassGrokker):
 
     def execute(self, factory, config, context, name, **kw):
 
-        wizardStepDirective(config, factory, name, 'zope.Public', wizard=context)
+        wizardStepDirective(config, factory, name,
+                            'zope.Public', wizard=context)
         return True
-	

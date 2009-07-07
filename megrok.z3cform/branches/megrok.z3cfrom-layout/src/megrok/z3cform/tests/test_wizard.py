@@ -31,81 +31,116 @@ basic setup
   >>> names
   ('personstep',)
 
+Render the personStep
+
   >>> personStep = obj.publishTraverse(request, names[0])
+  >>> personStep.update()
+  >>> page = personStep.render()
+  >>> print page
+  <div class="wizard">
+      <div class="header">Person Wizard</div>
+      <div class="wizardMenu">
+        <span class="selected">
+            <span>Person</span>
+        </span>
+        <span>
+            <a href="http://127.0.0.1/person/personwizard/addressstep">Address</a>
+        </span>
+      </div>
+    <form action="http://127.0.0.1" method="post"
+          enctype="multipart/form-data" class="edit-form"
+          id="form">
+        <div class="viewspace">
+            <div class="label">Person</div>
+            <div class="required-info">
+               <span class="required">*</span>
+               &ndash; required
+            </div>
+          <div class="step">
+            <div id="form-widgets-firstName-row" class="row">
+                <div class="label">
+                  <label for="form-widgets-firstName">
+                    <span>First Name</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-firstName"
+             name="form.widgets.firstName"
+             class="text-widget required textline-field"
+             value="" type="text" />
+    </div>
+            </div>
+            <div id="form-widgets-lastName-row" class="row">
+                <div class="label">
+                  <label for="form-widgets-lastName">
+                    <span>Last Name</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-lastName"
+             name="form.widgets.lastName"
+             class="text-widget required textline-field"
+             value="" type="text" />
+    </div>
+            </div>
+          </div>
+            <div>
+              <div class="buttons">
+                <span class="back">
+                </span>
+                <span class="step">
+  <input id="form-buttons-apply" name="form.buttons.apply"
+         class="submit-widget button-field" value="Apply"
+         type="submit" />
+                </span>
+                <span class="forward">
+  <input id="form-buttons-next" name="form.buttons.next"
+         class="submit-widget button-field" value="Next"
+         type="submit" />
+                </span>
+              </div>
+            </div>
+        </div>
+    </form>
+  </div>
+
+Sending an request but with no data
+
+  >>> request = TestRequest(form={'form.buttons.next': 'Next'})
+  >>> alsoProvides(request, FormWizardLayer)
+  >>> personWizard = PersonWizard(person, request)
+  >>> personWizard.__parent__ = person
+  >>> personWizard.__name__ = u'wizard'
+  >>> personStep = personWizard.publishTraverse(request, names[0])
   >>> personStep.update()
   >>> print personStep.render()
   <div class="wizard">
-        <div class="header">Person Wizard</div>
-        <div class="wizardMenu">
-          <span class="selected">
-              <span>Person</span>
-          </span>
-          <span>
-              <a href="http://127.0.0.1/person/personwizard/addressstep">Address</a>
-          </span>
-        </div>
-      <form action="http://127.0.0.1" method="post"
-            enctype="multipart/form-data" class="edit-form"
-            id="form">
-          <div class="viewspace">
-              <div class="label">Person</div>
-              <div class="required-info">
-                 <span class="required">*</span>
-                 &ndash; required
-              </div>
-            <div class="step">
-              <div id="form-widgets-firstName-row" class="row">
-                  <div class="label">
-                    <label for="form-widgets-firstName">
-                      <span>First Name</span>
-                      <span class="required">*</span>
-                    </label>
-                  </div>
-                  <div class="widget">
-        <input id="form-widgets-firstName"
-               name="form.widgets.firstName"
-               class="text-widget required textline-field"
-               value="" type="text" />
-    </div>
-              </div>
-              <div id="form-widgets-lastName-row" class="row">
-                  <div class="label">
-                    <label for="form-widgets-lastName">
-                      <span>Last Name</span>
-                      <span class="required">*</span>
-                    </label>
-                  </div>
-                  <div class="widget">
-        <input id="form-widgets-lastName"
-               name="form.widgets.lastName"
-               class="text-widget required textline-field"
-               value="" type="text" />
-    </div>
-              </div>
-            </div>
-              <div>
-                <div class="buttons">
-                  <span class="back">
-                  </span>
-                  <span class="step">
-    <input id="form-buttons-apply" name="form.buttons.apply"
-           class="submit-widget button-field" value="Apply"
-           type="submit" />
-                  </span>
-                  <span class="forward">
-                  </span>
-                </div>
-              </div>
-          </div>
-      </form>
-    </div>
+  ...
+    <div class="summary">There were some errors.</div>
+  ...
+    <div class="error">Required input is missing.</div>
+  ...
+    <div class="error">Required input is missing.</div>
+  ...
+  
+Sending an request with a working data set...
 
+  >>> request = TestRequest(form={'form.widgets.firstName': u'Roger',
+  ...                             'form.widgets.lastName': u'Ineichen',
+  ...                             'form.buttons.next': 'Next'})
+  >>> alsoProvides(request, FormWizardLayer)
+  >>> personWizard = PersonWizard(person, request)
+  >>> personWizard.__parent__ = person
+  >>> personWizard.__name__ = u'wizard'
+  >>> personStep = personWizard.publishTraverse(request, names[0])
+  >>> personStep.update()
+  >>> print personStep.render()
 
-  >>> #from zope.testbrowser.testing import Browser
-  >>> #browser = Browser()
-  >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> #browser.open('http://localhost/++skin++formwizardlayer/person')  
-  >>> #import pdb; pdb.set_trace()
+  >>> print personWizard.nextURL
+  http://127.0.0.1/person/wizard/addressstep
+
 """
 
 import grok
