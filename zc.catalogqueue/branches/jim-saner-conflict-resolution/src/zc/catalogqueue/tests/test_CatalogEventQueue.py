@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2002-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 
 import os
@@ -26,8 +26,9 @@ from zc.catalogqueue.CatalogEventQueue import CHANGED_ADDED
 from zc.catalogqueue.CatalogEventQueue import REMOVED
 from zc.catalogqueue.CatalogEventQueue import SAFE_POLICY
 from zc.catalogqueue.CatalogEventQueue import ALTERNATIVE_POLICY
-from ZODB.POSException import ConflictError 
+from ZODB.POSException import ConflictError
 
+from zope.testing import doctest, setupstack
 
 class QueueConflictTests(unittest.TestCase):
 
@@ -39,7 +40,7 @@ class QueueConflictTests(unittest.TestCase):
 
         self.assertEquals(self.queue._conflict_policy, ALTERNATIVE_POLICY)
         self.assertEquals(self.queue2._conflict_policy, ALTERNATIVE_POLICY)
- 
+
 
     def _insane_update(self, queue, uid, etype):
         # Queue update method that allows insane state changes, needed
@@ -151,7 +152,7 @@ class QueueConflictTests(unittest.TestCase):
         # commit an ADDED event while the conflict resolution policy is
         # NOT the SAFE_POLICY, we won't get a conflict.
         self._setAlternativePolicy()
-        
+
         self.queue.update('/f0', ADDED)
         self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
@@ -182,7 +183,7 @@ class QueueConflictTests(unittest.TestCase):
         # commit an ADDED event while the conflict resolution policy is
         # NOT the SAFE_POLICY, we won't get a conflict.
         self._setAlternativePolicy()
-        
+
         self.queue.update('/f0', ADDED)
         self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
@@ -228,12 +229,12 @@ class QueueConflictTests(unittest.TestCase):
 
     def test_resolved_new_old_current_all_different(self):
         # If the events we get from the current, new and old states are
-        # all different and the SAFE_POLICY conflict resolution policy is 
+        # all different and the SAFE_POLICY conflict resolution policy is
         # not enforced, the conflict resolves without bloodshed.
         # This test relies on the fact that no OLD state is de-facto treated
         # as a state.
         self._setAlternativePolicy()
- 
+
         self.queue.update('/f0', ADDED)
         self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
@@ -242,8 +243,8 @@ class QueueConflictTests(unittest.TestCase):
         self._insane_update(self.queue2, '/f0', REMOVED)
         self.queue2._p_jar.transaction_manager.commit()
 
-        # In this scenario (the incoming new state has a REMOVED event), 
-        # the new state is disregarded and the old state is used. We are 
+        # In this scenario (the incoming new state has a REMOVED event),
+        # the new state is disregarded and the old state is used. We are
         # left with a CHANGED_ADDED event. (see queue.update method; ADDED
         # plus CHANGED results in CHANGED_ADDED)
         self.queue._p_jar.sync()
@@ -280,10 +281,10 @@ class QueueConflictTests(unittest.TestCase):
 
     def test_resolved_new_old_current_all_different_2(self):
         # If the events we get from the current, new and old states are
-        # all different and the SAFE_POLICY conflict resolution policy is 
+        # all different and the SAFE_POLICY conflict resolution policy is
         # not enforced, the conflict resolves without bloodshed.
         self._setAlternativePolicy()
- 
+
         self.queue.update('/f0', ADDED)
         self.queue.update('/f0', CHANGED)
         self.queue._p_jar.transaction_manager.commit()
@@ -299,7 +300,7 @@ class QueueConflictTests(unittest.TestCase):
         self._insane_update(self.queue2, '/f0', REMOVED)
         self.queue2._p_jar.transaction_manager.commit()
 
-        # In this scenario (the incoming new state has a REMOVED event), 
+        # In this scenario (the incoming new state has a REMOVED event),
         # we will take the new state to resolve the conflict, because its
         # generation number is higher then the oldstate and current state.
         self.queue._p_jar.sync()
@@ -311,10 +312,43 @@ class QueueConflictTests(unittest.TestCase):
         self.failUnless(event1 == event2 == REMOVED)
 
 
+def conflict_with_repeated_events():
+    r"""
+    >>> import ZODB
+    >>> db = ZODB.DB('data.fs')
+    >>> import transaction
+    >>> conn1 = db.open()
+    >>> q1 = conn1.root()['q'] = CatalogEventQueue()
+    >>> q1.update('x', CHANGED)
+    1
+    >>> transaction.commit()
+    >>> q1.update('x', CHANGED)
+    1
+    >>> q1.update('y', CHANGED)
+    1
+    >>> tm2 = transaction.TransactionManager()
+    >>> conn2 = db.open(transaction_manager=tm2)
+    >>> q2 = conn2.root()['q']
+    >>> q2.update('z', CHANGED)
+    1
+    >>> tm2.commit()
+    >>> import zope.testing.loggingsupport
+    >>> handler = zope.testing.loggingsupport.InstalledHandler(
+    ...    'zc.catalogeventqueue.CatalogEventQueue')
+    >>> transaction.commit()
+    >>> q1
+    >>> print handler
+    >>> handler.uninstall()
+    >>> db.close()
+    """
+
+
 def test_suite():
     return unittest.TestSuite((
-            unittest.makeSuite(QueueConflictTests),
-                    ))
+#         doctest.DocTestSuite(
+#             setUp=setupstack.setUpDirectory, tearDown=setupstack.tearDown),
+        unittest.makeSuite(QueueConflictTests),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
