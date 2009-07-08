@@ -22,3 +22,15 @@ inline = components.ChameleonPageTemplate(
 
 class Vars(grok.View):
     pass
+
+class Expressions(grok.View):
+    pass
+
+class MainArea(grok.ViewletManager):
+    grok.name('main')
+
+class MainContent(grok.Viewlet):
+    grok.view(Expressions)
+    grok.viewletmanager(MainArea)
+    def render(self):
+        return 'Hello from viewlet'
