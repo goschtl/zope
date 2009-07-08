@@ -18,6 +18,10 @@ class Proxy(object):
         self.host = host
         self.port = port
 
+    def ping(self):
+        server = xmlrpclib.ServerProxy('http://%s:%d/ping' % (self.host, self.port))
+        return server()
+
     def availableConverters(self):
         server = xmlrpclib.ServerProxy('http://%s:%d/availableConverters' % (self.host, self.port))
         return server()
@@ -56,6 +60,7 @@ class Proxy(object):
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
     proxy = Proxy()
+    print proxy.ping()
     print proxy.availableConverters()
     print proxy.convertZIP(sys.argv[1])
 
