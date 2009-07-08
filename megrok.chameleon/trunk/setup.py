@@ -38,6 +38,7 @@ setup(name='megrok.chameleon',
                         'chameleon.zpt',
                         'chameleon.genshi',
                         'z3c.pt',
+                        'lxml', # Needed by chameleon.genshi
                         ],
       entry_points="""
       # Add entry points here
