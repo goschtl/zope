@@ -20,7 +20,7 @@ from chameleon.genshi.template import (GenshiTemplateFile, GenshiTemplate,
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
-from z3c.pt.pagetemplate import evaluate_exists, evaluate_path
+from z3c.pt.pagetemplate import evaluate_exists
 
 #
 # Chameleon Zope Page Templates...
@@ -48,8 +48,8 @@ class ChameleonPageTemplate(GrokTemplate):
         namespace.update(dict(
                 template=self,
                 nothing=None,
-                path=evaluate_path,
-                exists=evaluate_exists))
+                exists=evaluate_exists,
+                ))                
         return namespace
     
     def render(self, view):
