@@ -34,3 +34,7 @@ def availableConverters(context):
     from zopyx.smartprintng.server.base import ServerCore
     return ServerCore().availableConverters()
 
+@xmlrpc_view
+def ping(context):
+    return 'pong'
+

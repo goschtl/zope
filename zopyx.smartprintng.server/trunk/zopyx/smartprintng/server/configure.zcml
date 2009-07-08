@@ -20,6 +20,12 @@
      name="availableConverters"
      /> 
 
+  <view
+     for=".models.Server"
+     view=".views.ping"
+     name="ping"
+     /> 
+
 
   <view
      for=".models.Server"
