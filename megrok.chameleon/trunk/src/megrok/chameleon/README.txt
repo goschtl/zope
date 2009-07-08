@@ -103,13 +103,14 @@ template looks like this::
     >>> print open(food_cpt, 'rb').read()
     <html>
     <body>
-    <span tal:define="foo 'a FOO'" />
+    <span tal:define="foo 'a FOO'" >
     ${view.me_do()}
     <span tal:replace="view.me_do()" />
     CSS-URL: ${static['test.css']()}
     My context is: ${view.url(context)}
     ${foo}
     <span tal:replace="foo" />
+    </span>
     </body>
     </html>
 
@@ -119,13 +120,13 @@ The rendered view looks like this::
     >>> print view()
     <html>
     <body>
-    <span />
-    <ME GROK EAT MAMMOTH!>
-    &lt;ME GROK EAT MAMMOTH!&gt;
+    <span>
+    ...&lt;ME GROK EAT MAMMOTH!&gt;
     CSS-URL: http://127.0.0.1/@@/megrok.chameleon.tests.cpt_fixture/test.css
     My context is: http://127.0.0.1/manfred
     a FOO
     a FOO
+    </span>
     </body>
     </html>
 
@@ -206,13 +207,13 @@ and render it::
     This template knows about the following vars:
     <BLANKLINE>
       template (the template instance):
-       <vars template in ...vars.cpt>
+       &lt;vars template in ...vars.cpt&gt;
     <BLANKLINE>
       view (the associated view):
-       <megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...>
+       &lt;megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...&gt;
     <BLANKLINE>
       context (the context of the view):
-       <megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...>
+       &lt;megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...&gt;
     <BLANKLINE>
       request (the current request):
        CONTENT_LENGTH:	0
@@ -221,7 +222,7 @@ and render it::
     SERVER_URL:	http://127.0.0.1
     <BLANKLINE>
       static (the static dir of the application):
-       <grokcore.view.components.DirectoryResource object at 0x...>
+       &lt;grokcore.view.components.DirectoryResource object at 0x...&gt;
     </body>
     </html>
 
@@ -248,6 +249,138 @@ If we render this view we get::
     >>> view = getMultiAdapter((manfred, request), name='inline')
     >>> print view()
     <html><body>ME GROK HAS INLINES! Some Text</body></html>
+
+TAL expressions
+---------------
+
+What TAL/TALES expressions in templates are supported depends mainly
+from the installed version of `chameleon.zpt`.
+
+A list of all supported expressions and statements can be found at the
+`chameleon.zpt documentation <http://chameleon.repoze.org/docs/zpt/>`_.
+
+Furthermore `megrok.chameleon` currently comes with support for
+`z3c.pt`, a package that supports the more Zope specific expressions
+often used in page templates.
+
+These include, for instance, support for viewlets, etc. The set of
+additional language constructs supported with this package can be seen
+at the `z3c.pt documentation
+<http://chameleon.repoze.org/docs/z3c/>`_. Please note, that
+`megrok.chameleon` templates (a.k.a. CPT templates), different to
+`z3c.pt` still use Python expressions by default.
+
+.. warning:: `z3c.pt` support might be factored out in future.
+
+   While it is nice to have support for all the additional expressions
+   provided by `z3c.pt`, using this package means a lot of more
+   dependencies which might be unwanted in certain cases.
+
+   We therefore think about factoring additional z3c.pt support out to
+   a separate package in not too far future.
+
+In our ``app.py`` we defined a special view for showing some special
+expressions. This also includes a viewlet::
+
+   import grok
+   from megrok.chameleon import components
+
+   class Mammoth(grok.Application, grok.Container):
+       pass
+
+   ...
+
+   class Expressions(grok.View):
+       pass
+
+   class MainArea(grok.ViewletManager):
+       grok.name('main')
+
+   class MainContent(grok.Viewlet):
+       grok.view(Expressions)
+       grok.viewletmanager(MainArea)
+       def render(self):
+           return 'Hello from viewlet'
+
+
+At least the following TAL/TALES expressions are supported by time of
+writing this:
+
+* ``exists``
+     Tell whether a name exists in the templates' namespace.
+
+* ``not``
+     Evaluate the trailing expression to a boolean value and invert it.
+
+* ``path`` 
+     Handle the trailing expression as a path and not as a
+     Python expression.
+
+* ``provider``
+     Support for viewlet providers.
+
+as we can see, when we look at the ``expressions.cpt`` from our fixture::
+
+    >>> cpt_file = os.path.join(template_dir, 'expressions.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <html>
+    <body>
+      <div tal:define="food 'Yummy Dinoburger'"
+           tal:omit-tag="">
+        <!-- We support `exists` -->
+        <div tal:condition="exists: food">
+          ${food}
+        </div>
+        <div tal:condition="exists('food')">
+          ${food}
+        </div>
+    <BLANKLINE>
+        <!-- We support `not` -->
+        <div tal:content="not: food" />
+        <div tal:content="not('food')" />
+        <div tal:content="not: 1 in [2,3]" />
+        <div tal:content="not: not: food" />
+    <BLANKLINE>
+        <!-- We support `path` -->
+        <div tal:content="path: food/upper" />
+    <BLANKLINE>
+        <!-- We support `provider` -->
+        <tal:main content="structure provider:main" />
+    <BLANKLINE>
+      </div>
+    </body>
+    </html>
+
+and render it::
+
+    >>> view = getMultiAdapter((manfred, request), name='expressions')
+    >>> print view()
+    <html>
+    <body>
+    <BLANKLINE>
+        <!-- We support `exists` -->
+        <div>
+          Yummy Dinoburger
+        </div>
+        <div>
+          Yummy Dinoburger
+        </div>
+    <BLANKLINE>
+        <!-- We support `not` -->
+        <div>False</div>
+        <div>False</div>
+        <div>True</div>
+        <div>True</div>
+    <BLANKLINE>
+        <!-- We support `path` -->
+        <div>YUMMY DINOBURGER</div>
+    <BLANKLINE>
+        <!-- We support `provider` -->
+        Hello from viewlet
+    <BLANKLINE>
+    <BLANKLINE>
+    </body>
+    </html>
 
 
 Clean up::
