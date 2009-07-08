@@ -69,4 +69,10 @@ class ServerCore(object):
         """ Process a single HTML file """
         return Converter(html_filename)(converter_name)
 
+    def availableConverters(self):
+        from zopyx.convert2.registry import availableConverters
+        return availableConverters()
 
+if __name__ == '__main__':
+    s = ServerCore()
+    print s.availableConverters() 
