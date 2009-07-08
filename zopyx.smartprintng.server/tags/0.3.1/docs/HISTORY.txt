@@ -1,0 +1,36 @@
+Changelog
+=========
+
+
+0.3.1 (2009/07/08)
+------------------
+
+* disabled check for maximum size of the request within
+  parse_xmlrpc_request() since 8MB is too small for us
+
+
+0.3.0 (2009/07/06)
+------------------
+
+* switched to repoze.bfg
+
+0.2.0 (2009/07/06)
+------------------
+
+* improved handling of temporary directories
+
+
+0.1.2 (2009/07/05)
+------------------
+
+* improved handling of temporary directories
+
+0.1.1 (2009/07/05)
+------------------
+
+* improved logging and error handling
+
+0.1 (2009/07/05)
+----------------
+
+* Initial release

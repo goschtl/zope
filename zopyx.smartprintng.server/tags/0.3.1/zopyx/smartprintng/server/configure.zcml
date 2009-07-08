@@ -1,0 +1,30 @@
+<configure xmlns="http://namespaces.repoze.org/bfg">
+
+  <!-- this must be included for the view declarations to work -->
+  <include package="repoze.bfg.includes" />
+
+  <view
+     for=".models.Server"
+     view=".views.index"
+     />
+
+  <view
+     for=".models.Server"
+     view=".views.convertZIP"
+     name="convertZIP"
+     /> 
+
+  <view
+     for=".models.Server"
+     view=".views.availableConverters"
+     name="availableConverters"
+     /> 
+
+
+  <view
+     for=".models.Server"
+     view=".views.static_view"
+     name="static"
+     />
+
+</configure>
