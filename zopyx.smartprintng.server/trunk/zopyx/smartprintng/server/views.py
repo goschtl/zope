@@ -29,3 +29,8 @@ def convertZIP(context, zip_archive, converter_name='pdf-prince'):
         LOG.error(msg, exc_info=True)
         return xmlrpclib.Fault(123, msg)
 
+@xmlrpc_view
+def availableConverters(context)
+    from zopyx.smartprintng.server.base import ServerCore
+    return ServerCore().availableConverters()
+
