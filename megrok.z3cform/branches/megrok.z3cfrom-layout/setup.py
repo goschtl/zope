@@ -10,6 +10,7 @@ install_requires = [
     'grokcore.formlib',
     'z3c.form',
     'z3c.formui',
+    'z3c.wizard',
     'megrok.layout',
     ]
 
