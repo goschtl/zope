@@ -150,9 +150,6 @@ class PageletForm(form.Form, PageletBaseForm):
             for form in self.forms:
                 form.postUpdate()
 
-    def isAvailable(self):
-        return True
-
     def postUpdate(self):
         for form in self.groups:
             form.postUpdate()
