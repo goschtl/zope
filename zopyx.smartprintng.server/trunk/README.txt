@@ -9,7 +9,7 @@ Installation
 
 - create an virtualenv environment (Python 2,4, 2.5 or 2.6)::
 
-    virtualenv .
+    virtualenv --no-site-packages .
 
 - install ``repoze.bfg`` (by installing ``repoze.bfg.xmlrpc`` having ``repoze.bfg``
   as a dependency) ::
