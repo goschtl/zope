@@ -487,26 +487,26 @@ We need register types
 
 Access typed pagelet from view
 
-  >>> pagelet = component.getMultiAdapter((object(), request), name='pagelet')
+  >>> publisher = component.getMultiAdapter((object(), request), name='pagelet')
 
-  >>> print pagelet.publishTraverse(
+  >>> print publisher.publishTraverse(
   ...     request, 'test.unknown')
   Traceback (most recent call last):
   ...
   NotFound: Object: ..., name: 'test.unknown'
 
-  >>> pagelet.browserDefault(request)
+  >>> publisher.browserDefault(request)
   (..., ('',))
 
 by default IPagelet
 
-  >>> print pagelet()
+  >>> print publisher()
   <div>My pagelet - default</div>
 
-  >>> print pagelet.publishTraverse(request, '')
+  >>> print publisher.publishTraverse(request, '')
   <div>My pagelet - default</div>
 
-  >>> print pagelet.publishTraverse(
+  >>> print publisher.publishTraverse(
   ...     request, 'z3ext.layout.tests.ITestPagelet')
   <div>My pagelet</div>
 
@@ -517,7 +517,7 @@ instead of full module path
   ...     ITestPagelet, z3ext.layout.interfaces.IPageletType, name='testPageletType')
   >>> interface.alsoProvides(ITestPagelet, z3ext.layout.interfaces.IPageletType)
 
-  >>> print pagelet.publishTraverse(request, 'testPageletType')
+  >>> print publisher.publishTraverse(request, 'testPageletType')
   <div>My pagelet</div>
 
 We can provide additional context for pagelet
@@ -545,8 +545,8 @@ We can provide additional context for pagelet
   ...       permission="zope.Public" />
   ... </configure>"""%template41, context)
 
-  >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet4')
+  >>> publisher = component.getMultiAdapter((Content(),request), name='pagelet')
+  >>> print publisher.publishTraverse(request, 'myPagelet4')
   <div>My pagelet4</div>
 
 Or multiple contexts
@@ -574,8 +574,8 @@ Or multiple contexts
   ...       permission="zope.Public" />
   ... </configure>"""%template5, context)
 
-  >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet5')
+  >>> publisher = component.getMultiAdapter((Content(),request), name='pagelet')
+  >>> print publisher.publishTraverse(request, 'myPagelet5')
   <div>My pagelet5</div>
 
 We can use interface as pagelet 'type'
@@ -618,14 +618,14 @@ we can call named pagelets
   ... </configure>"""%template7, context)
 
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet6;named')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6+named')
   <div>My pagelet7</div>
 
 
 'pageletObject' - same as 'pagelet' but it doesnt call pagelet render
 
   >>> pagelet=component.getMultiAdapter((Content(),request),name='pageletObject')
-  >>> pob = pagelet.publishTraverse(request, 'myPagelet6;named')
+  >>> pob = pagelet.publishTraverse(request, 'myPagelet6+named')
   >>> pob
   <z3ext.layout.zcml.PageletClass from None object at ...>
   >>> print pob.render()
@@ -684,7 +684,7 @@ We can register typed pagelet with name
 Pagelets with errors
 
   >>> class PageletWithError(object):
-  ...     def render(self):
+  ...     def update(self):
   ...         raise Exception('Error')
 
   >>> context = xmlconfig.string("""
@@ -709,6 +709,13 @@ Pagelets with errors
   Traceback (most recent call last):
   ...
   KeyError: 'myPagelet2'
+
+  >>> pagelet = component.getMultiAdapter(
+  ...     (content, request), name='pageletObject')
+  >>> pagelet.publishTraverse(request, 'myPagelet2')
+  Traceback (most recent call last):
+  ...
+  NotFound: ...
 
 
 The TALES `pagelet` expression

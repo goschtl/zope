@@ -51,7 +51,7 @@ def setUp(test):
     root = setup.placefulSetUp(site=True)
     root.__name__ = 'root'
     test.globs['root'] = root
-    component.provideAdapter(pagelet.queryPagelet)
+    component.provideAdapter(pagelet.queryDefaultView)
     component.provideAdapter(pagelet.PageletPublisher, name='pagelet')
     component.provideAdapter(pagelet.PageletObjectPublisher,name='pageletObject')
     component.provideUtility(expressions.path_translator, name='path')

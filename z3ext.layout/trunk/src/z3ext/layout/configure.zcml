@@ -14,7 +14,12 @@
      interface="z3ext.layout.interfaces.ILayoutView" />
 
   <!-- adapter provides IPagelet for (context, request) -->
-  <adapter factory=".pagelet.queryPagelet" />
+  <adapter factory=".pagelet.queryDefaultView" />
+
+  <!-- pagelet: chameleon expression -->
+  <utility
+     name="pagelet"
+     factory=".expressions.PageletTranslator" />
 
   <!-- pagelet: tales expression -->
   <tales:expressiontype
@@ -69,11 +74,6 @@
      for="zope.app.component.site.SiteManagerContainer"
      class=".layoutportal.DefaultLayoutPortal"
      template="layoutportal.pt" />
-
-  <!-- pagelet: expression for chameleon -->
-  <utility
-     name="pagelet"
-     factory=".expressions.PageletTranslator" />
 
   <!-- Registering documentation with API doc -->
   <configure

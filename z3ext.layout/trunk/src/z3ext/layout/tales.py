@@ -15,63 +15,32 @@
 
 $Id: tales.py 2720 2008-08-25 11:15:10Z fafhrd91 $
 """
+from datetime import datetime
 import logging, sys
 from zope.tales.expressions import StringExpr, SimpleModuleImporter
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 
+from pagelet import queryPagelet
 from interfaces import IPagelet, IPageletType, IPageletContext
 
 
 class PageletExpression(object):
 
     def render(self, context, request, view, name):
-        modules = SimpleModuleImporter()
-        
-        pageletName = u''
+        try:
+            pagelet = queryPagelet(context, request, name)
+            if pagelet is not None:
+                dt = datetime.now()
+                rendered = pagelet.updateAndRender()
 
-        # lookup pagelet
-        if name:
-            splited = name.split(';', 1)
-            if len(splited) > 1:
-                name, pageletName = splited
-
-            iface = queryUtility(IPageletType, name)
-
-            if iface is None:
-                try:
-                    iface, iname = name.rsplit('.', 1)
-                    iface = getattr(modules[iface], iname)
-                except Exception, err:
-                    log = logging.getLogger('z3ext.layout')
-                    log.exception(err)
-                    return u''
-        else:
-            iface = IPagelet
-
-        if iface.providedBy(context):
-            return context.render()
-
-        contexts = queryAdapter(context, IPageletContext, name)
-        if contexts is not None:
-            required = [context]
-            if type(contexts) in (list, tuple):
-                required.extend(contexts)
-            else:
-                required.append(contexts)
-            required.append(request)
-            view = queryMultiAdapter(required, iface, pageletName)
-        else:
-            view = queryMultiAdapter((context, request), iface, pageletName)
-
-        if view is not None:
-            try:
-                view.update()
-                if view.isRedirected:
-                    return u''
-                return view.render()
-            except Exception, err:
-                log = logging.getLogger('z3ext.layout')
-                log.exception(err)
+                td = datetime.now() - dt
+                secs = (td.days*86400+td.seconds) + (0.000001*td.microseconds)
+                print >>sys.stderr, 'pagelet:      ', secs, name
+  
+                return rendered
+        except Exception, err:
+            log = logging.getLogger('z3ext.layout')
+            log.exception(err)
 
         return u''
 

@@ -15,6 +15,8 @@
 
 $Id$
 """
+from datetime import datetime
+
 import logging, sys
 from zope import interface, component
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
@@ -25,16 +27,6 @@ from zope.tales.expressions import SimpleModuleImporter
 from zope.app.publisher.browser import queryDefaultViewName
 
 from interfaces import ILayout, IPagelet, IPageletType, IPageletContext
-
-
-@interface.implementer(IPagelet)
-@component.adapter(interface.Interface, interface.Interface)
-def queryPagelet(context, request):
-    name = queryDefaultViewName(context, request, None)
-    if name:
-        view = queryMultiAdapter((context, request), name=name)
-        if IPagelet.providedBy(view):
-            return view
 
 
 def queryLayout(view, request, context=None, iface=ILayout, name=''):
@@ -51,11 +43,60 @@ def queryLayout(view, request, context=None, iface=ILayout, name=''):
     return None
 
 
+def queryPagelet(context, request, name, modules=SimpleModuleImporter()):
+    pageletName = u''
+
+    if name:
+        splited = name.split(u'+', 1)
+        if len(splited) > 1:
+            name, pageletName = splited
+
+        if name:
+            iface = queryUtility(IPageletType, name)
+        else:
+            iface = IPagelet
+
+        if iface is None:
+            try:
+                iface, iname = name.rsplit('.', 1)
+                iface = getattr(modules[iface], iname)
+            except:
+                raise KeyError(name)
+    else:
+        iface = IPagelet
+
+    if iface.providedBy(context):
+        return context
+
+    contexts = queryAdapter(context, IPageletContext, name)
+    if contexts is not None:
+        required = [context]
+        if type(contexts) in (list, tuple):
+            required.extend(contexts)
+        else:
+            required.append(contexts)
+        required.append(request)
+        return queryMultiAdapter(required, iface, pageletName)
+    else:
+        return queryMultiAdapter((context, request), iface, pageletName)
+
+
+@interface.implementer(IPagelet)
+@component.adapter(interface.Interface, interface.Interface)
+def queryDefaultView(context, request):
+    name = queryDefaultViewName(context, request, None)
+    if name:
+        view = queryMultiAdapter((context, request), name=name)
+        if IPagelet.providedBy(view):
+            return view
+
+
 class BrowserPagelet(BrowserPage):
     interface.implements(IPagelet)
 
     template = None
     layoutname = u''
+    isRedirected = False
 
     def __init__(self, context, *args):
         request = args[-1]
@@ -82,6 +123,22 @@ class BrowserPagelet(BrowserPage):
                 return template.render()
             raise LookupError("Can't find IPagelet for this pagelet.")
 
+    def updateAndRender(self):
+        self.update()
+        if self.isRedirected or not self.isAvailable():
+            return u''
+
+        return self.render()
+
+    def isAvailable(self):
+        return True
+
+    def redirect(self, url=''):
+        if url:
+            self.request.response.redirect(url)
+
+        self.isRedirected = True
+
     def __call__(self, *args, **kw):
         self.update()
 
@@ -95,14 +152,6 @@ class BrowserPagelet(BrowserPage):
         else:
             return layout()
 
-    isRedirected = False
-
-    def redirect(self, url=''):
-        if url:
-            self.request.response.redirect(url)
-
-        self.isRedirected = True
-
 
 class PageletPublisher(object):
     interface.implements(IBrowserPublisher)
@@ -113,7 +162,6 @@ class PageletPublisher(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.modules = SimpleModuleImporter()
 
     def publishTraverse(self, request, name):
         try:
@@ -132,49 +180,17 @@ class PageletPublisher(object):
         return u''
 
     def __getitem__(self, name):
-        pageletName = u''
-
-        if name:
-            splited = name.split(u';', 1)
-            if len(splited) > 1:
-                name, pageletName = splited
-
-            iface = queryUtility(IPageletType, name)
-
-            if iface is None:
-                try:
-                    iface, iname = name.rsplit('.', 1)
-                    iface = getattr(self.modules[iface], iname)
-                except:
-                    raise KeyError(name)
-        else:
-            iface = IPagelet
-
-        context = self.context
-
-        if iface.providedBy(context):
-            return context.render()
-
-        contexts = queryAdapter(context, IPageletContext, name)
-        if contexts is not None:
-            required = [context]
-            if type(contexts) in (list, tuple):
-                required.extend(contexts)
-            else:
-                required.append(contexts)
-            required.append(self.request)
-            view = queryMultiAdapter(required, iface, pageletName)
-        else:
-            view = queryMultiAdapter((context, self.request), iface, pageletName)
+        view = queryPagelet(self.context, self.request, name)
 
         if view is not None:
             try:
-                view.update()
-                if view.isRedirected:
-                    return u''
-                if self.render:
-                    return view.render()
-                return view
+                dt = datetime.now()
+                rendered = view.updateAndRender()
+
+                td = datetime.now() - dt
+                secs = (td.days*86400+td.seconds) + (0.000001*td.microseconds)
+                print >>sys.stderr, 'pagelet:      ', secs, name
+                return rendered
             except Exception, err:
                 log = logging.getLogger('z3ext.layout')
                 log.exception(err)
@@ -187,4 +203,15 @@ class PageletPublisher(object):
 
 class PageletObjectPublisher(PageletPublisher):
 
-    render = False
+    def __getitem__(self, name):
+        view = queryPagelet(self.context, self.request, name)
+
+        if view is not None:
+            try:
+                view.update()
+                return view
+            except Exception, err:
+                log = logging.getLogger('z3ext.layout')
+                log.exception(err)
+
+        raise KeyError(name)

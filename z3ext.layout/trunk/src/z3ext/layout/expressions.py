@@ -28,16 +28,11 @@ class PageletTraverser(PageletExpression):
 
 
 class PageletTranslator(expressions.ExpressionTranslator):
-    provider_regex = re.compile(r'^[A-Za-z][A-Za-z0-9_\.-;:]*$')
 
     symbol = '_get_z3ext_pagelet'
     pagelet_traverser = PageletTraverser()
 
     def translate(self, string, escape=None):
-        if self.provider_regex.match(string) is None:
-            raise SyntaxError(
-                "%s is not a valid content provider name." % string)
-
         value = types.value("%s(context, request, view, '%s')" % \
                                 (self.symbol, string))
         value.symbol_mapping[self.symbol] = self.pagelet_traverser

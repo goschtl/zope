@@ -43,6 +43,12 @@ class IPagelet(interface.Interface):
     def render():
         """Render the pagelet content w/o o-wrap."""
 
+    def updateAndRender():
+        """Update pagelet and render. Prefered way to render pagelet."""
+
+    def isAvailable():
+        """Is available"""
+
 
 class IPageletType(interface.interfaces.IInterface):
     """ pagelet interface type """

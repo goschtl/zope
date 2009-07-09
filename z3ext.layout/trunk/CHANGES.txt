@@ -9,6 +9,8 @@ CHANGES
 
 - Do not use metal in default layouts
 
+- Use '+' for named pagelet instead of ';'
+
 
 2.1.0 (2009-06-20)
 ------------------
