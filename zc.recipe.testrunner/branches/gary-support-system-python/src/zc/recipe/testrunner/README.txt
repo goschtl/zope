@@ -235,17 +235,18 @@ extra-paths option to specify them:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/usr/local/zope/lib/python',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -278,17 +279,18 @@ directory:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/usr/local/zope/lib/python',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -333,17 +335,18 @@ using the -v option:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/usr/local/zope/lib/python',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -395,7 +398,6 @@ Running them with the current buildout will produce a failure:
     Failure in test test (demo.tests.DemoTests)
     Traceback (most recent call last):
       ...
-        raise self.failureException, \
     AssertionError: '42' != '23'
     <BLANKLINE>
     <BLANKLINE>
@@ -431,16 +433,17 @@ the environment variable. Also, the tests pass again:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -487,17 +490,18 @@ end of the script:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/usr/local/zope/lib/python',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -535,17 +539,18 @@ This will also work with a multi-line initialization section:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+    sys.path[:] = [
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/usr/local/zope/lib/python',
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -582,24 +587,25 @@ generated relative to the test script.
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(__file__)
+    base = os.path.dirname(os.path.abspath(__file__))
     base = os.path.dirname(base)
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      join(base, 'demo'),
-      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
-      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
-      '/usr/local/zope/lib/python',
-      join(base, 'sources'),
-      ]
+    sys.path[:] = [
+        join(base, 'demo'),
+        join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+        join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+        join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+        '/usr/local/zope/lib/python',
+        join(base, 'sources'),
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -632,24 +638,25 @@ The relative-paths option can be specified at the buildout level:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(__file__)
+    base = os.path.dirname(os.path.abspath(__file__))
     base = os.path.dirname(base)
     <BLANKLINE>
     import sys
-    sys.path[0:0] = [
-      join(base, 'demo'),
-      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
-      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
-      '/usr/local/zope/lib/python',
-      join(base, 'sources'),
-      ]
+    sys.path[:] = [
+        join(base, 'demo'),
+        join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+        join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+        join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+        '/usr/local/zope/lib/python',
+        join(base, 'sources'),
+        ...
+        ]
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])

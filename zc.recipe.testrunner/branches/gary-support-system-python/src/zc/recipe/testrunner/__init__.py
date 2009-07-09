@@ -37,6 +37,14 @@ class TestRunner:
                 buildout['buildout']['parts-directory'], name)
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
+        include_site_packages = self.options.setdefault(
+            'include-site-packages',
+            self.buildout['buildout'].get('include-site-packages', 'true'))
+        if include_site_packages not in ('true', 'false'):
+            self._error('Invalid value for include-site-packages option: %s',
+                        include_site_packages)
+        self.include_site_packages = (include_site_packages=='true')
+
     def install(self):
         options = self.options
         dest = []
@@ -90,6 +98,7 @@ class TestRunner:
                             for p in test_paths)
                     +'        ]'),
             initialization = initialization,
+            include_site_packages=self.include_site_packages,
             relative_paths = self.egg._relative_paths,
             ))
 
