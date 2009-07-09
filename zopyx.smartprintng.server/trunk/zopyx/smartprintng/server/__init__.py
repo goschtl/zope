@@ -12,4 +12,7 @@ def parse_xmlrpc_request(request):
 import repoze.bfg.xmlrpc
 repoze.bfg.xmlrpc.parse_xmlrpc_request = parse_xmlrpc_request
 
-
+# initialize mimetypes on our own to avoid stupid
+# recursion error in guess_type()
+import mimetypes
+mimetypes.init()
