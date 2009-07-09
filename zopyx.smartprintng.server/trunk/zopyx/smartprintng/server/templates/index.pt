@@ -20,7 +20,6 @@
     <li tal:repeat="c converters" tal:content="c" />
   </ul>
   </div>
-  <hr/>
   <div id="footer">
       (C) 2009, ZOPYX Ltd. &amp; Co. KG, www.zopyx.com, info@zopyx.com
   </div>
