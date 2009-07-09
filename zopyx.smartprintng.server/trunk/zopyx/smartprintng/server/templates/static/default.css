@@ -3,13 +3,11 @@ body {
 }
 
 #logo h2 {
-    float: left;
     padding-left: 200px;
 
 }
 
 #logo img {
-    float: left;
 }
 
 #footer {

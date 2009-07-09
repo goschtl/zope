@@ -15,10 +15,18 @@ static_view = static('templates/static')
 # HTTP views
 ##################
 
-def index(context, request):
-    return render_template_to_response('templates/index.pt',
-                                       request = request,
-                                       project = 'zopyx.smartprintng.server')
+class index(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        converters = ServerCore().availableConverters()
+        return render_template_to_response('templates/index.pt',
+                                           converters=converters,
+                                           request=self.request,
+                                           project='zopyx.smartprintng.server')
 
 ##################
 # XMLRPC views
