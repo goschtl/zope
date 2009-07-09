@@ -1,7 +1,7 @@
 zopyx.smartprintng.server
 =========================
 
-A repoze.bfg based implementation for the SmartPrintNG framework.
+A repoze.bfg based server implementation for the SmartPrintNG framework.
 
 
 Installation
