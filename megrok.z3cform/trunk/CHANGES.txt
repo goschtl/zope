@@ -1,0 +1,8 @@
+CHANGES
+*******
+
+0.1 (unreleased)
+================
+
+* Updated the versions.cfg to match the grok 1.0 release candidate set.
+
