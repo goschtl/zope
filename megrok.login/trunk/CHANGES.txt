@@ -4,6 +4,10 @@ megrok.login changes
 0.2 (unreleased)
 ================
 
+* Changed the test configuration to handle the new grok.View permission.
+
+* Added the versions.cfg file from grok. 
+
 
 0.1 (2008-12-26)
 ================

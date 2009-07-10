@@ -15,10 +15,21 @@
       id="zope.anybody"
       title="Unauthenticated User"
       />
+
+  <!--
+    The new grok.View permission must be assigned to all users.
+    Use the role based assignments to allow to to propagate to our logged in users by default
+  -->
+  <role
+      id="zope.Anonymous"
+      title="Everybody"
+      description="All users have this role implicitly" />
   <grant
       permission="zope.View"
-      principal="zope.anybody"
-      />
+      role="zope.Anonymous" />
+  <grant
+      permission="grok.View"
+      role="zope.Anonymous" />
 
   <principal
       id="zope.mgr"

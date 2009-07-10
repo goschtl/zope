@@ -17,7 +17,7 @@ We create an instance of App and store it in the ZODB::
   >>> browser.open('http://localhost/app')
   Traceback (most recent call last):
   ...
-  HTTPError: HTTP Error 401: Unauthorized
+  httperror_seek_wrapper: HTTP Error 401: Unauthorized
 
 We can, however, use basic-auth::
 
