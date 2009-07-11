@@ -7,5 +7,7 @@ def app(global_config, **kw):
     # paster app config callback
     from zopyx.smartprintng.server.models import get_root
     import zopyx.smartprintng.server
+    from logger import LOG
+    LOG.info('SmartPrintNG server started')
     return make_app(get_root, zopyx.smartprintng.server, options=kw)
 
