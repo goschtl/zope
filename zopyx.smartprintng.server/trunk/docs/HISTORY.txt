@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.3.3 (2009/07/12)
+------------------
+
+* fix for missing BASE tag within HTML files
+
 0.3.2 (2009/07/12)
 ------------------
 
