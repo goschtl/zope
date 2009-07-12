@@ -24,6 +24,20 @@ if not os.path.exists(temp_directory):
 class ServerCore(object):
     """ SmartPrintNG Server Core Implementation """
 
+    def _inject_base_tag(self, html_filename):
+        """ All input HTML files contain relative urls (relative
+            to the path of the main HTML file (the "working dir").
+            So we must inject a BASE tag in order to call the external
+            converters properly with the full path of the html input file
+            since we do not want to change the process working dir (not
+            acceptable in a multi-threaded environment).
+            ATT: this should perhaps handled within zopyx.convert2
+        """
+        html = file(html_filename).read()
+        pos = html.lower().find('<head>')
+        html = html[:pos] + '<head><base href="%s"/>' % html_filename + html[pos+6:]
+        file(html_filename, 'wb').write(html)
+
     def convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
@@ -51,6 +65,8 @@ class ServerCore(object):
         if len(html_files) > 1:
             raise RuntimeError('Archive contains more than one html file')
         html_filename = html_files[0]
+        # inject BASE tag containing the full local path (required by PrinceXML)
+        self._inject_base_tag(html_filename)
         result = self._convert(html_filename, 
                                converter_name=converter_name)
         basename, ext = os.path.splitext(os.path.basename(result))
