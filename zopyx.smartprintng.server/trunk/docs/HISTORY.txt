@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.2 (unreleased)
+0.3.2 (2009/07/12)
 ------------------
 
 * better logging
