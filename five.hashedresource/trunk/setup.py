@@ -25,19 +25,11 @@ setup(
     namespace_packages=['five'],
     install_requires=[
         'setuptools',
-        'z3c.noop',
-        'zope.app.publisher',
+        'z3c.hashedresource>=1.0',
         'zope.component',
-        'zope.interface',
         'zope.publisher',
+        'zope.traversing',
         ],
-    extras_require=dict(test=[
-        'zope.app.testing',
-        'zope.app.zcmlfiles',
-        'zope.security',
-        'zope.site',
-        'zope.testbrowser',
-        ]),
     include_package_data = True,
     zip_safe = False,
 )
