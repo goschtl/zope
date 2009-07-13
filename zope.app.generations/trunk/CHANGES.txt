@@ -8,6 +8,7 @@ CHANGES
 - Depend on new ``zope.processlifetime`` interfaces instead of using
   BBB imports from ``zope.app.appsetup``.
 
+- Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
 3.5.0 (2009-04-05)
 ------------------
