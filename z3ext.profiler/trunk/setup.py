@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.2.0dev'
+version='2.0.0dev'
 
 
 setup(name = 'z3ext.profiler',
@@ -51,6 +51,12 @@ setup(name = 'z3ext.profiler',
 			  'zope.app.wsgi',
                           'zope.app.folder',
 			  'zope.app.publisher',
+			  'z3ext.cache',
+                          'z3ext.layout',
+                          'z3ext.portlet',
+                          'z3ext.pageelement',
+                          'z3ext.controlpanel',
+                          'z3ext.wizard',
                           ],
       include_package_data = True,
       zip_safe = False

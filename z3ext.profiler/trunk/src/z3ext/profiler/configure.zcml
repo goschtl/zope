@@ -1,14 +1,31 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:page
-     name="z3ext.profiler"
-     for="zope.app.folder.interfaces.IRootFolder"
-     template="view.pt"
-     class=".view.Profiler"
+  <z3ext:configlet
      title="Profiler"
-     menu="zmi_actions"
+     name="system.profiler"
+     schema=".interfaces.IProfilerConfiglet"
+     class=".configlet.ProfilerConfiglet"
      permission="zope.ManageServices" />
+
+  <!-- browser view -->
+  <z3ext:pagelet
+     name="index.html"
+     for=".interfaces.IProfilerConfiglet"
+     class="z3ext.controlpanel.browser.wizard.ConfigletEditWizard"
+     permission="z3ext.Configure" />
+
+  <z3ext:pagelet
+     name="portlet"
+     type="wizard.step"
+     title="Portlet"
+     label="Portlet Profiler"
+     for=".interfaces.IProfilerConfiglet
+	  z3ext.controlpanel.browser.interfaces.IConfigletEditWizard"
+     template="edit.pt"
+     class=".portlet.PortletProfiler"
+     weight="200" />
 
 </configure>

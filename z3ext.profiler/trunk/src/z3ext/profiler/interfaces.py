@@ -1,0 +1,37 @@
+##############################################################################
+#
+# Copyright (c) 2009 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" 
+
+$Id:  2007-12-12 12:27:02Z fafhrd $
+"""
+from zope import interface, schema
+from z3ext.widget.list import SimpleList
+
+
+class IPortletProfiler(interface.Interface):
+    """ portlet profiler """
+
+    pnumber = schema.Int(
+        title = u'Number of calls',
+        default = 1,
+        required = True)
+
+    portlets = SimpleList(
+        title = u'Portlet ids',
+        default = [],
+        required = True)
+
+
+class IProfilerConfiglet(IPortletProfiler):
+    """ profiler """
