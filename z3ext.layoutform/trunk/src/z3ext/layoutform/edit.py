@@ -31,8 +31,7 @@ from interfaces import _, IPageletEditForm, ISaveAction
 class PageletEditForm(PageletForm, form.EditForm):
     interface.implements(IPageletEditForm)
 
-    @button.buttonAndHandler(
-        _(u'Save'), name='save', provides=ISaveAction)
+    @button.buttonAndHandler(_(u'Save'), name='save', provides=ISaveAction)
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:
