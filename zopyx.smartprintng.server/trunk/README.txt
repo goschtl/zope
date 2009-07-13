@@ -2,7 +2,8 @@ zopyx.smartprintng.server
 =========================
 
 A repoze.bfg based server implementation for the SmartPrintNG framework.
-
+The SmartPrintNG server is part of the SmartPrintNG web-to-print solution
+of ZOPYX.
 
 Installation
 ============
@@ -20,7 +21,7 @@ Installation
 
     bin/easy_install zopyx.smartprintng.server
 
-- create a ``server.ini`` configuration file::
+- create a ``server.ini`` configuration file (and change according to your needs)::
 
     [DEFAULT]
     debug = true
@@ -35,11 +36,38 @@ Installation
     use = egg:Paste#http
     host = 127.0.0.1
     port = 6543
-    bin/python setup.py develop
 
 - start the server::
 
     bin/paster serve server.ini 
+
+XMLRPC API
+==========
+
+The SmartPrintNG server exposes several methods through XMLRPC::
+
+    def convertZIP(zip_archive, converter_name):
+        """ 'zip_archive' is ZIP archive (encoded as base-64 byte string).
+            The archive must contain exactly *one* HTML file to be converted
+            including all related resources like stylesheets and images.
+            All files must be stored flat within the archive (no subfolders).
+            All references to externals resources like the 'src' attribute
+            of the IMG tag or references to the stylesheet(s) must use
+            relative paths.
+        """
+
+    def availableConverters():
+        """ returns a list of available converter names on the 
+            SmartPrintNG backend.
+        """
+
+    def ping():
+        """ says 'pong' - or something similar """
+
+Support
+=======
+
+Support for SmartPrintNG server is currently only available on a project basis.
 
 
 Contact
