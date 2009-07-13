@@ -54,11 +54,12 @@ The SmartPrintNG server exposes several methods through XMLRPC::
             All files must be stored flat within the archive (no subfolders).
             All references to externals resources like the 'src' attribute
             of the IMG tag or references to the stylesheet(s) must use
-            relative paths.
+            relative paths. The method returns the converted output file
+            also as base64-encoded ZIP archive.
         """
 
     def availableConverters():
-        """ returns a list of available converter names on the 
+        """ Returns a list of available converter names on the 
             SmartPrintNG backend.
         """
 
