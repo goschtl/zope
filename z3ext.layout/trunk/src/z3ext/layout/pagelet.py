@@ -184,13 +184,16 @@ class PageletPublisher(object):
 
         if view is not None:
             try:
-                dt = datetime.now()
-                rendered = view.updateAndRender()
+                if __debug__:
+                    dt = datetime.now()
+                    rendered = view.updateAndRender()
 
-                td = datetime.now() - dt
-                secs = (td.days*86400+td.seconds) + (0.000001*td.microseconds)
-                print >>sys.stderr, 'pagelet:      ', secs, name
-                return rendered
+                    td = datetime.now() - dt
+                    secs = (td.days*86400+td.seconds)+(0.000001*td.microseconds)
+                    print >>sys.stderr, 'pagelet:      ', secs, name
+                    return rendered
+                else:
+                    return view.updateAndRender()
             except Exception, err:
                 log = logging.getLogger('z3ext.layout')
                 log.exception(err)

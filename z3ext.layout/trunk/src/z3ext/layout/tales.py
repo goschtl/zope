@@ -30,14 +30,17 @@ class PageletExpression(object):
         try:
             pagelet = queryPagelet(context, request, name)
             if pagelet is not None:
-                dt = datetime.now()
-                rendered = pagelet.updateAndRender()
+                if __debug__:
+                    dt = datetime.now()
+                    rendered = pagelet.updateAndRender()
 
-                td = datetime.now() - dt
-                secs = (td.days*86400+td.seconds) + (0.000001*td.microseconds)
-                print >>sys.stderr, 'pagelet:      ', secs, name
+                    td = datetime.now() - dt
+                    secs = (td.days*86400+td.seconds)+(0.000001*td.microseconds)
+                    print >>sys.stderr, 'pagelet:      ', secs, name
   
-                return rendered
+                    return rendered
+                else:
+                    return pagelet.updateAndRender()
         except Exception, err:
             log = logging.getLogger('z3ext.layout')
             log.exception(err)
