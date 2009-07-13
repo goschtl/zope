@@ -26,17 +26,19 @@ setup(
     install_requires=[
         'setuptools',
         'z3c.noop',
-        'zope.app.publisher>=3.8.2',
+        # When using Zope3, we need zope.app.publisher>=3.8.2.
+        'zope.app.publisher',
         'zope.component',
         'zope.interface',
         'zope.publisher',
         ],
-    extras_require=dict(test=[
-        'zope.app.testing',
-        'zope.app.zcmlfiles',
-        'zope.security',
-        'zope.site',
-        'zope.testbrowser',
+    extras_require=dict(
+        test=[
+            'zope.app.testing',
+            'zope.app.zcmlfiles',
+            'zope.security',
+            'zope.site',
+            'zope.testbrowser',
         ]),
     include_package_data = True,
     zip_safe = False,

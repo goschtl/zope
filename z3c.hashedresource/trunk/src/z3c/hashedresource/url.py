@@ -17,9 +17,12 @@ from zope.component import adapts
 from zope.interface import implements, implementsOnly, directlyProvides
 from zope.traversing.browser.interfaces import IAbsoluteURL
 import zope.app.publisher.browser.resource
-import zope.app.publisher.interfaces
 import zope.publisher.interfaces.browser
 import zope.traversing.browser.absoluteurl
+try:
+    from zope.app.publisher.interfaces import IResource
+except ImportError:
+    from zope.component.interfaces import IResource
 
 
 class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
@@ -29,8 +32,7 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
     """
 
     implementsOnly(IAbsoluteURL)
-    adapts(zope.app.publisher.interfaces.IResource,
-           interfaces.IHashedResourceSkin)
+    adapts(IResource, interfaces.IHashedResourceSkin)
 
     def __init__(self, context, request):
         self.context = context

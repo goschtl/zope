@@ -21,3 +21,7 @@ see the old URL unchanged and use their outdated cached versions of the files).
 To use this package, include its configure.zcml and use
 `z3c.hashedresource.interfaces.IHashedResourceSkin` or a skin that inherits from
 it.
+
+The dependency on zope.app.publisher >= 3.8.2 is not longer declared
+explicitly in order to gain compatibility with Zope2, but it is still required
+when using Zope3.
