@@ -82,7 +82,6 @@ test4 = zc.recipe.macro:Test
 empty = zc.recipe.macro:Empty
 """
 
-
 setuptools.setup(
     name="zc.recipe.macro",
     version="1.3.0dev",
