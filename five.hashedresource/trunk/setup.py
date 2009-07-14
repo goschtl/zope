@@ -25,7 +25,7 @@ setup(
     namespace_packages=['five'],
     install_requires=[
         'setuptools',
-        'z3c.hashedresource>=1.0',
+        'z3c.hashedresource>1.0',
         'zope.component',
         'zope.publisher',
         'zope.traversing',
