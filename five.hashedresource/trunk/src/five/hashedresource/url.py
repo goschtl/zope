@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,14 +12,12 @@
 #
 ##############################################################################
 
-from z3c.hashedresource import interfaces
 from zope.component import adapts
-from zope.interface import implements, implementsOnly, directlyProvides
-from zope.traversing.browser.interfaces import IAbsoluteURL
-import zope.app.publisher.browser.resource
-import zope.publisher.interfaces.browser
-import zope.traversing.browser.absoluteurl
 from zope.component.interfaces import IResource
+from zope.interface import implementsOnly
+from zope.traversing.browser.interfaces import IAbsoluteURL
+import z3c.hashedresource
+import zope.traversing.browser.absoluteurl
 
 
 class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
@@ -29,7 +27,7 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
     """
 
     implementsOnly(IAbsoluteURL)
-    adapts(IResource, interfaces.IHashedResourceSkin)
+    adapts(IResource, z3c.hashedresource.interfaces.IHashedResourceSkin)
 
     def __init__(self, context, request):
         self.context = context
@@ -44,6 +42,7 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
         return self.context.absolute_url().split('/++resource++')[0]
 
     def __str__(self):
-        hash = str(interfaces.IResourceContentsHash(self.context))
+        hash = str(z3c.hashedresource.interfaces.IResourceContentsHash(
+                self.context))
         return "%s/++noop++%s/++resource++%s" % (
             self._site_url(), hash, self.name)
