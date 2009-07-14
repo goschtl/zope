@@ -22,7 +22,6 @@ import zope.app.publisher.browser.directoryresource
 import zope.app.publisher.browser.tests
 import zope.app.publisher.testing
 import zope.app.testing.functional
-import zope.site.hooks
 
 
 class HashingURLTest(testing.FunctionalTestCase):

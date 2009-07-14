@@ -18,11 +18,13 @@ $Id: test_directoryresource.py 95447 2009-01-29 16:28:18Z wosc $
 from z3c.hashedresource import interfaces
 import os
 import re
+import shutil
 import tempfile
 import z3c.hashedresource.tests
 import zope.app.testing.functional
 import zope.publisher.browser
 import zope.security.checker
+import zope.site
 
 
 fixture = os.path.join(
@@ -63,6 +65,10 @@ class FunctionalTestCase(zope.app.testing.functional.FunctionalTestCase):
         self.directory = zope.app.publisher.browser.directoryresource.DirectoryResourceFactory(
             self.tmpdir, checker, self.dirname)(self.request)
         self.directory.__parent__ = self.site
+
+    def tearDown(self):
+        super(FunctionalTestCase, self).tearDown()
+        shutil.rmtree(self.tmpdir)
 
     def _hash(self, text):
         return re.match('http://127.0.0.1/\+\+noop\+\+([^/]*)/.*', text).group(1)
