@@ -33,8 +33,7 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
         self.context = context
         self.request = request
 
-        # XXX duplicated from zope.app.publisher.browser.resource.AbsoluteURL
-        self.name = self.context.__name__
+        self.name = self.context.__parent__.__name__
         if self.name.startswith('++resource++'):
             self.name = self.name[12:]
 

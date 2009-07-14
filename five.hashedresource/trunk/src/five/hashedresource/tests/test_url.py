@@ -16,7 +16,6 @@
 $Id$
 """
 from five.hashedresource import testing
-import Products.Five.browser.resource
 import os.path
 import unittest
 import zope.component
@@ -30,34 +29,24 @@ class HashingURLTest(testing.FunctionalTestCase):
                 (self.directory, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
         self.assertMatches(
-            r'http://127.0.0.1/\+\+noop\+\+[^/]*/\+\+resource\+\+%s' %
+            r'http://nohost/\+\+noop\+\+[^/]*/\+\+resource\+\+%s' %
             self.dirname, directory_url)
 
     def test_file_url_should_contain_hash(self):
-        file = Products.Five.browser.resource.FileResourceFactory(
-            'test.txt', os.path.join(testing.fixture, 'test.txt'))(
-            self.request)
-        file.__name__ = 'test.txt'
-        file.absolute_url = lambda: 'http://127.0.0.1'
+        file = zope.component.getAdapter(self.request, name='test.txt')
         file_url = str(zope.component.getMultiAdapter((file, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
         self.assertMatches(
-            'http://127.0.0.1/\+\+noop\+\+[^/]*/\+\+resource\+\+test.txt',
+            'http://nohost/\+\+noop\+\+[^/]*/\+\+resource\+\+test.txt',
             file_url)
 
     def test_different_files_hashes_should_differ(self):
-        file1 = Products.Five.browser.resource.FileResourceFactory(
-            'test.txt', os.path.join(testing.fixture, 'test.txt'))(
-            self.request)
-        file1.__name__ = 'test.txt'
-        file1.absolute_url = lambda: 'http://127.0.0.1'
+        open(os.path.join(testing.fixture, 'example.txt'), 'w').write('foo')
+        file1 = zope.component.getAdapter(self.request, name='example.txt')
         file1_url = str(zope.component.getMultiAdapter((file1, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
-        file2 = Products.Five.browser.resource.FileResourceFactory(
-            'test.txt', os.path.join(testing.fixture, 'test.pt'))(
-            self.request)
-        file2.__name__ = 'test.txt'
-        file2.absolute_url = lambda: 'http://127.0.0.1'
+        open(os.path.join(testing.fixture, 'example.txt'), 'w').write('bar')
+        file2 = zope.component.getAdapter(self.request, name='example.txt')
         file2_url = str(zope.component.getMultiAdapter((file2, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
         self.assertNotEqual(self._hash(file1_url), self._hash(file2_url))

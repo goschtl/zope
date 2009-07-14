@@ -23,6 +23,7 @@ import Testing.ZopeTestCase.layer
 import Testing.ZopeTestCase.utils
 import five.hashedresource
 import five.hashedresource.tests
+import os
 import os.path
 import re
 import shutil
@@ -40,10 +41,15 @@ class HashedResourcesLayer(Testing.ZopeTestCase.layer.ZopeLiteLayer):
 
     @classmethod
     def setUp(cls):
+        open(os.path.join(fixture, 'example.txt'), 'w').write('')
         Products.Five.zcml.load_config(
             'configure.zcml', Products.Five)
         Products.Five.zcml.load_config(
             'ftesting-devmode.zcml', five.hashedresource)
+
+    @classmethod
+    def tearDown(cls):
+        os.unlink(os.path.join(fixture, 'example.txt'))
 
 
 class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
@@ -66,13 +72,11 @@ class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
         zope.interface.directlyProvides(
             self.request, z3c.hashedresource.interfaces.IHashedResourceSkin)
         self.request.getVirtualHostRoot = lambda: None
-        self.directory = Products.Five.browser.resource.DirectoryResourceFactory(
-            self.dirname, self.tmpdir)(self.request)
-        self.directory.__name__ = self.dirname
-        self.directory.absolute_url = lambda: 'http://127.0.0.1'
+        self.directory = zope.component.getAdapter(
+            self.request, name='myresource')
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
 
     def _hash(self, text):
-        return re.match('http://127.0.0.1/\+\+noop\+\+([^/]*)/.*', text).group(1)
+        return re.match('http://nohost/\+\+noop\+\+([^/]*)/.*', text).group(1)

@@ -13,4 +13,12 @@
     directory="tests/fixture"
     name="myresource"
     />
+  <browser:resource
+    file="tests/fixture/example.txt"
+    name="example.txt"
+    />
+  <browser:resource
+    file="tests/fixture/test.txt"
+    name="test.txt"
+    />
 </configure>
