@@ -84,7 +84,7 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
 
 
 class WizardStepGrokker(martian.ClassGrokker):
-    martian.component(wizard.Step)
+    martian.component(wizard.BaseStep)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
