@@ -7,6 +7,7 @@ Skin tool allow configure skin at runtime for each ISite object.
   >>> from z3ext.skintool import interfaces, zcml
   >>> from z3ext.skintool.tool import skinToolModified
 
+
   >>> from zope import interface, component, schema
 
 We need site object and request
@@ -17,22 +18,48 @@ We need site object and request
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
 
+We register skintool configlet
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext"
+  ...    xmlns="http://namespaces.zope.org/zope" i18n_domain="z3ext">
+  ...
+  ...    <include package="z3ext.controlpanel" file="meta.zcml" />
+  ...
+  ...    <z3ext:configlet
+  ...      name="portalskin"
+  ...      title="Portal skin"
+  ...      description="Portal skin configuration."
+  ...      class="z3ext.skintool.tool.SkinTool"
+  ...      schema="z3ext.skintool.interfaces.ISkinTool" />
+  ...
+  ... </configure>""")
+
 Now let's define layer and skin
 
-  >>> from zope import interface
+  >>> from zope import interface, schema
   >>> class IMySkin(interface.Interface):
   ...     pass
   >>> class IMyLayer(interface.Interface):
   ...     pass
 
+
+We define skin schema
+
+  >>> class IMySkinSchema(interface.Interface):
+  ...     param1 = schema.TextLine(title=u'Param 1')
+
 Before we can use IMySkin and IMyLayer we should register it in local registry
 
-  >>> zcml.skinDirective(IMySkin, u'myskin', u'My skin', '', ())
+  >>> zcml.skinDirective(IMySkin, u'myskin', u'My skin', '', (), IMySkinSchema)
   >>> zcml.layerDirective(IMyLayer, u'mylayer', u'My layer', '')
 
 Now skin and layer should be listed in vocabulary.
 
+  >>> from zope.schema.vocabulary import getVocabularyRegistry
   >>> from z3ext.skintool.vocabulary import SkinsVocabulary
+  >>> getVocabularyRegistry().register('z3ext skins', SkinsVocabulary())
   >>> voc = SkinsVocabulary()(site)
   >>> term = voc.getTerm(IMySkin)
   >>> term.value == u'myskin'
@@ -43,6 +70,7 @@ Now skin and layer should be listed in vocabulary.
   True
 
   >>> from z3ext.skintool.vocabulary import LayersVocabulary
+  >>> getVocabularyRegistry().register('z3ext layers', LayersVocabulary())
   >>> voc = LayersVocabulary()(site)
   >>> term = voc.getTerm(IMyLayer)
   >>> term.value == u'mylayer'
@@ -88,6 +116,15 @@ Let's try again
   >>> IMyLayer.providedBy(request)
   True
 
+We have skin configuration data:
+
+  >>> tool.skinData
+  <z3ext.skintool.skindatatype.SkinData<ui.portalskin.skindata> ...>
+
+And default attributes:
+
+  >>> tool.skinData.param1
+
 Change layers config
 
   >>> tool.layers = []
@@ -129,7 +166,6 @@ We have to register utility IDefaultLayer
   True
   >>> IDefaultLayer.providedBy(request)
   True
-
 
 z3ext:layer directive
 ---------------------

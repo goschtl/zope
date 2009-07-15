@@ -1,4 +1,4 @@
-<configure 
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:i18n="http://namespaces.zope.org/i18n"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
@@ -24,6 +24,14 @@
      description="Portal skin configuration."
      class=".tool.SkinTool"
      schema=".interfaces.ISkinTool" />
+
+  <!-- edit schema -->
+  <z3ext:pagelet
+     name="schema"
+     type="form.subform"
+     for=".interfaces.ISkinTool *"
+     class=".tool.SchemaEditForm"
+     weight="10" />
 
   <!-- translations -->
   <i18n:registerTranslations directory="locales"/>

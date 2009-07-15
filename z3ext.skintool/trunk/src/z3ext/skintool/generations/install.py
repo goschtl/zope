@@ -52,6 +52,6 @@ def evolve(context):
 
                 if layer in tool.layers_byname:
                     ulayers.append(layer)
-                
+
             skintool.skin = skin
             skintool.layers = ulayers

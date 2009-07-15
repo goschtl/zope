@@ -35,7 +35,7 @@ def threadServiceSubscriber(site, event,
 
     if INoSkinSwitching.providedBy(event.request):
         return
-    
+
     site = removeAllProxies(site)
 
     if not ISkinable.providedBy(site):

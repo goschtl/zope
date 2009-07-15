@@ -18,81 +18,93 @@ $Id$
 from zope import schema, interface, component
 from zope.configuration.fields import Tokens, GlobalInterface, PythonIdentifier
 
+from skindatatype import SkinDataType
+
 from z3ext.skintool import tool
 
 
 class ISkinDirective(interface.Interface):
 
     layer = GlobalInterface(
-	title = u'Skin',
-        description = u'Skin interface.',
-	required = True)
+                title = u'Skin',
+                description = u'Skin interface.',
+                required = True)
 
     name = PythonIdentifier(
-	title = u'Name',
-	description = u'Content name.',
-	required = True)
+                title = u'Name',
+                description = u'Content name.',
+                required = True)
 
     title = schema.TextLine(
-	title = u'Title',
-	description = u'Content title.',
-	required = True)
+                title = u'Title',
+                description = u'Content title.',
+                required = True)
 
     description = schema.TextLine(
-	title = u'Description',
-	description = u'Content description.',
-	required = False)
+                title = u'Description',
+                description = u'Content description.',
+                required = False)
 
     require = Tokens(
-        title = u'Require',
-        description = u'Interface of layers that are '\
-            u'required by this layer.',
-        required = False,
-        value_type = GlobalInterface())
+                title = u'Require',
+                description = u'Interface of layers that are '\
+                    u'required by this layer.',
+                required = False,
+                value_type = GlobalInterface())
+
+    schema = GlobalInterface(
+                title = u'Schema',
+                description = u'Skin schema interface.',
+                default = interface.Interface)
 
 
 class ILayerDirective(interface.Interface):
 
     layer = GlobalInterface(
-	title = u'Layer',
-        description = u'Skin layer.',
-	required = True)
+                title = u'Layer',
+                description = u'Skin layer.',
+                required = True)
 
     name = PythonIdentifier(
-	title = u'Name',
-	description = u'Content name.',
-	required = True)
+                title = u'Name',
+                description = u'Content name.',
+                required = True)
 
     title = schema.TextLine(
-	title = u'Title',
-	description = u'Content title.',
-	required = True)
+                title = u'Title',
+                description = u'Content title.',
+                required = True)
 
     description = schema.TextLine(
-	title = u'Description',
-	description = u'Content description.',
-	required = False)
+                title = u'Description',
+                description = u'Content description.',
+                required = False)
 
 
-def skinDirectiveHandler(_context, layer, name, title, description='', require=[]):
+def skinDirectiveHandler(_context, layer, name, title, 
+                         description='',require=[],schema=interface.Interface):
     _context.action(
-	discriminator = ('z3ext.skintool-skin', layer, name),
-	callable = skinDirective,
-	args = (layer, name, title, description, require))
+        discriminator = ('z3ext.skintool-skin', layer, name),
+        callable = skinDirective,
+        args = (layer, name, title, description, require, schema))
 
 
-def skinDirective(layer, name, title, description, require):
+def skinDirective(layer, name, title, description, 
+                  require, schema=interface.Interface):
     sitemanager = component.getGlobalSiteManager()
 
     tool.skins_byname[name] = layer
-    tool.skins_registry[layer] = (layer, name, title, description, require)
+    skinDataClass = SkinDataType('ui.portalskin.skindata', schema)
+    interface.classImplements(skinDataClass, schema)
+    tool.skins_registry[layer] = (layer, name, title, 
+                                  description, require, skinDataClass)
 
 
 def layerDirectiveHandler(_context, layer, name, title, description=''):
     _context.action(
-	discriminator = ('z3ext.skintool-layer', layer, name),
-	callable = layerDirective,
-	args = (layer, name, title, description))
+        discriminator = ('z3ext.skintool-layer', layer, name),
+        callable = layerDirective,
+        args = (layer, name, title, description))
 
 
 def layerDirective(layer, name, title, description):

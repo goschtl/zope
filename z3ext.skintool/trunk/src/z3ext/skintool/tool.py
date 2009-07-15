@@ -24,6 +24,7 @@ from zope.publisher.interfaces.browser import \
      IDefaultSkin, IBrowserRequest, IDefaultBrowserLayer
 from zope.app.component.hooks import getSite
 from zope.app.intid.interfaces import IIntIds
+from z3ext.layoutform import Fields, PageletEditSubForm
 
 from interfaces import IDefaultLayer, IDefaultLayers, ISkinTool
 
@@ -83,6 +84,17 @@ class SkinTool(object):
         bases.reverse()
         return bases
 
+    @property
+    def skinData(self):
+        skin = skins_byname.get(self.skin)
+        if skin:
+            data = self.data.get('skinData')
+            if data is None:
+                data = skins_registry[skin][-1]()
+                self.data['skinData'] = data
+            return data
+        return None
+
 
 @component.adapter(ISkinTool, IObjectModifiedEvent)
 def skinToolModified(*args):
@@ -91,3 +103,19 @@ def skinToolModified(*args):
     id = getUtility(IIntIds).queryId(getSite())
     if id in cache:
         del cache[id]
+
+
+class SchemaEditForm(PageletEditSubForm):
+
+    @property
+    def fields(self):
+        data = self.getContent()
+        if data is not None:
+            return Fields(data.__schema__)
+        return Fields(interface.Interface)
+
+    def getContent(self):
+        return removeSecurityProxy(self.context).skinData
+
+    def isAvailable(self):
+        return len(self.fields)

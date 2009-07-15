@@ -57,5 +57,7 @@ class ISkinTool(interface.Interface):
         default = [],
         required = False)
 
+    skinData = interface.Attribute('Skin data')
+
     def generate():
         """ generate skin interface """

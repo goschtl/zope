@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.1.3dev'
+version = '1.2.0dev'
 
 
 setup(name='z3ext.skintool',
@@ -54,23 +54,27 @@ setup(name='z3ext.skintool',
       namespace_packages=['z3ext'],
       install_requires = ['setuptools',
                           'zope.schema',
-			  'zope.proxy',
+                          'zope.proxy',
                           'zope.component',
                           'zope.interface',
-			  'zope.security',
-			  'zope.configuration',
-			  'zope.lifecycleevent',
-			  'zope.app.intid',
+                          'zope.security',
+                          'zope.configuration',
+                          'zope.lifecycleevent',
+                          'zope.app.intid',
                           'zope.app.component',
-			  'zope.app.publication',
+                          'zope.app.publication',
                           'zope.i18nmessageid',
                           'zope.i18n',
-			  'z3ext.controlpanel',
-			  'z3ext.widget.radio',
-			  'z3ext.widget.checkbox',
+                          'z3ext.controlpanel',
+                          'z3ext.widget.radio',
+                          'z3ext.widget.checkbox',
                           ],
       extras_require = dict(test=['zope.app.testing',
+                                  'zope.app.zcmlfiles',
                                   'zope.testing',
+                                  'zope.testbrowser',
+                                  'z3ext.autoinclude',
+                                  'z3ext.security',
                                   ]),
       include_package_data = True,
       zip_safe = False
