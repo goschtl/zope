@@ -85,6 +85,16 @@ or text message
    <div class="statusStopMessage">Exception: Error message</div>
    <div class="statusStopMessage">Error message</div>
 
+Serive will oppress duplicated messages:
+
+   >>> service.add('Error message', 'error')
+   >>> for msg in service.messages():
+   ...     print msg
+   <div class="statusMessage">Test message</div>
+   <div class="statusWarningMessage">Warning message</div>
+   <div class="statusStopMessage">Exception: Error message</div>
+   <div class="statusStopMessage">Error message</div>
+
 
 Clearing service
 ----------------

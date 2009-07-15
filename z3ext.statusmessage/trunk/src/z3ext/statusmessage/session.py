@@ -53,7 +53,9 @@ class MessageService(object):
         try:
             data = self.session[SESSIONKEY]
             messages = data.get('messages', [])
-            messages.append(message.render(text))
+            text = message.render(text)
+            if text not in self.messages():
+                messages.append(text)
             data['messages'] = messages
         except Exception, e:
             pass
