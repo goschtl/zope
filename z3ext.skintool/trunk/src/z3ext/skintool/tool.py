@@ -15,6 +15,8 @@
 
 $Id$
 """
+from BTrees import OOBTree
+
 from zope import interface, component
 from zope.component import getSiteManager
 from zope.component import getUtility, getAdapters, getUtilitiesFor
@@ -89,10 +91,10 @@ class SkinTool(object):
         skin = skins_byname.get(self.skin)
         if skin:
             data = self.data.get('skinData')
-            if data is None:
-                data = skins_registry[skin][-1]()
+            if data is None or not isinstance(data, OOBTree.OOBTree):
+                data = OOBTree.OOBTree()
                 self.data['skinData'] = data
-            return data
+            return skins_registry[skin][-1](data)
         return None
 
 
