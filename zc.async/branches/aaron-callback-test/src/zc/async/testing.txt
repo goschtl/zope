@@ -18,14 +18,23 @@ see everything that's been done. [#setup]_.
     >>> def sub_one(start):
     ...     logging.log(logging.INFO, "Executing job %d" % start)
     ...     return start - 1
+    >>> def log_error(*args):
+    ...     logging.log(logging.ERROR, "ERROR in job!")
     >>> def make_job(queue, remaining_jobs_to_make):
     ...     if remaining_jobs_to_make == 0:
     ...         return None # Done
     ...     logging.log(logging.INFO, "Making job %d" % remaining_jobs_to_make)
+    ...     conn = ZODB.interfaces.IConnection(queue)
     ...     job = zc.async.job.Job(sub_one, remaining_jobs_to_make)
-    ...     job.addCallback(make_job, queue)
+    ...     success = zc.async.job.Job(make_job, queue)
+    ...     failure = zc.async.job.Job(log_error)
+    ...     for j in (job, success, failure):
+    ...         conn.add(j)
+    ...     job.addCallbacks(success=success, failure=failure)
     ...     all_jobs.append(job)
-    ...     return queue.put(job)
+    ...     job = queue.put(job)
+    ...     transaction.commit()
+    ...     return job
 
 Now we'll set things up to make and run 5 jobs.  We want to have to do a
 reactor.wait_for() for each one.
@@ -34,40 +43,32 @@ reactor.wait_for() for each one.
     INFO: Making job 5
     >>> len(all_jobs)
     1
-    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    >>> reactor.wait_for(all_jobs[-1], poll_interval=interval, attempts=attempts)
     INFO: Executing job 5
     INFO: Making job 4
     >>> len(all_jobs)
     2
-    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    >>> import pdb; pdb.set_trace(); reactor.wait_for(all_jobs[-1], poll_interval=interval, attempts=attempts)
     INFO: Executing job 4
     INFO: Making job 3
     >>> len(all_jobs)
     3
-    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    >>> reactor.wait_for(all_jobs[-1], poll_interval=interval, attempts=attempts)
     INFO: Executing job 3
     INFO: Making job 2
     >>> len(all_jobs)
     4
-    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    >>> reactor.wait_for(all_jobs[-1], poll_interval=interval, attempts=attempts)
     INFO: Executing job 2
     INFO: Making job 1
     >>> len(all_jobs)
     5
+    >>> reactor.wait_for(all_jobs[-1], poll_interval=interval, attempts=attempts)
+    INFO: Executing job 1
+    >>> len(all_jobs)
+    5
 
 [#cleanup]_.
-
-
-_datetime Edge Case
--------------------
-
-This tests that the _datetime class provided in the zc.asynt.testing module
-takes correctly named arguments to its now method.
-
-    >>> import zc.async.testing
-    >>> import datetime
-    >>> dt_now = datetime.datetime.now(tz=None)
-    >>> z_a_t_dt_now = zc.async.testing._datetime.now(tz=None)
 
 
 Footnotes
@@ -130,12 +131,12 @@ Footnotes
     to let the dispatcher register with the queue.
 
     >>> import zc.async.dispatcher
-    >>> interval = .5
-    >>> attempts = 40
+    >>> interval = 5
+    >>> attempts = 10
     >>> dispatcher = zc.async.dispatcher.Dispatcher(db, reactor, poll_interval=interval)
     >>> dispatcher.activate()
     >>> reactor.time_flies(1)
-    3
+    1
 
     The UUID is set on the dispatcher.
 
