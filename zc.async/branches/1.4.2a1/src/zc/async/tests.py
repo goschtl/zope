@@ -147,6 +147,7 @@ def test_suite():
             'README_2.txt',
             'catastrophes.txt',
             'ftesting.txt',
+            'testing.txt',
             'QUICKSTART_1_VIRTUALENV.txt',
             setUp=modSetUp, tearDown=modTearDown,
             optionflags=doctest.INTERPRET_FOOTNOTES,
