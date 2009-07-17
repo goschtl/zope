@@ -1,7 +1,9 @@
-<configure xmlns="http://namespaces.repoze.org/bfg">
+<configure xmlns="http://namespaces.repoze.org/bfg"
+           xmlns:mail="http://namespaces.repoze.org/mail">
 
   <!-- this must be included for the view declarations to work -->
   <include package="repoze.bfg.includes" />
+  <include package="repoze.sendmail"  file="meta.zcml"/>
 
   <view
      for=".models.Server"
@@ -12,6 +14,12 @@
      for=".models.Server"
      view=".views.convertZIP"
      name="convertZIP"
+     /> 
+
+  <view
+     for=".models.Server"
+     view=".views.convertZIPEmail"
+     name="convertZIPEmail"
      /> 
 
   <view
@@ -32,5 +40,11 @@
      view=".views.static_view"
      name="static"
      />
+
+  <mail:smtpMailer
+    name="my-app.smtp"
+    hostname="localhost"
+    port="25"
+  />
 
 </configure>

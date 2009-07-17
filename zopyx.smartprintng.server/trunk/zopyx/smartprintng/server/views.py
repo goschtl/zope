@@ -46,6 +46,16 @@ def convertZIP(context, zip_archive, converter_name='pdf-prince'):
         return xmlrpclib.Fault(123, msg)
 
 @xmlrpc_view
+def convertZIPEmail(context, zip_archive, converter_name='pdf-prince'):
+    core = ServerCore()
+    try:
+        return core.convertZIPEmail(zip_archive, converter_name)
+    except Exception, e:
+        msg = 'Conversion failed (%s)' % e
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
+
+@xmlrpc_view
 def availableConverters(context):
     return ServerCore().availableConverters()
 

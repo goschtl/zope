@@ -85,8 +85,23 @@ class ServerCore(object):
         LOG.debug('Request end (%3.2lf seconds)' % (time.time() -ts))
         return encoded_result
 
-    def convertZIPEmail(zip_archive, converter_name='pdf-prince', email_param={}):
+    def convertZIPEmail(self, zip_archive, converter_name='pdf-prince', email_param={}):
+
+        def send_email(sender, recipient, subject, body):
+            import email.MIMEText
+            import email.Header
+            from repoze.sendmail.interfaces import IMailDelivery
+            from zope.component import getUtility
+            msg = email.MIMEText.MIMEText(body.encode('UTF-8'), 'plain', 'UTF-8')
+            msg["From"] = sender
+            msg["To"] = recipient
+            msg["Subject"] = email.Header.Header(subject, 'UTF-8')
+            mailer = getUtility(IMailDelivery, 'my-app.smtp')
+            mailer.send(sender, [recipient], msg.as_string())
+    
         result = self.convertZIP(zip_archive, converter_name)
+        send_email('info@zopyx.com', 'info@zopyx.com', 'test', 'test')
+        return 'foo'
 
 
     def availableConverters(self):
