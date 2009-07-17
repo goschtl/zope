@@ -41,8 +41,8 @@ class Proxy(object):
         ZF.close()
 
         # send the ZIP archive base64 encoded
-        zip_data = server.convertZIP(base64.encodestring(file(zip_filename, 'rb').read()),
-                                     converter_name)
+        zip_data = server(base64.encodestring(file(zip_filename, 'rb').read()),
+                          converter_name)
 
         # and receive the result PDF as base64 encoded ZIP archive
         zip_temp = tempfile.mktemp()
@@ -57,10 +57,32 @@ class Proxy(object):
         os.chdir(cwd)
         return output_filename
 
+    def convertZIPEmail(self, dirname, converter_name='pdf-prince'):
+
+        cwd = os.getcwd()
+        os.chdir(dirname)
+        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
+        zip_filename = tempfile.mktemp()
+        ZF = zipfile.ZipFile(zip_filename, 'w')
+        for fname in os.listdir('.'):
+            if not os.path.isfile(fname):
+                continue
+            fullname = os.path.join(dirname, fname)
+            ZF.write(fname)
+        ZF.close()
+
+        # send the ZIP archive base64 encoded
+        result = server.convertZIPEmail(base64.encodestring(file(zip_filename, 'rb').read()),
+                                        converter_name)
+        return result
+
+ 
+
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
-    proxy = Proxy()
+    proxy = Proxy(port=6543)
     print proxy.ping()
     print proxy.availableConverters()
-    print proxy.convertZIP(sys.argv[1])
+#    print proxy.convertZIP(sys.argv[1])
+    print proxy.convertZIPEmail(sys.argv[1])
 
