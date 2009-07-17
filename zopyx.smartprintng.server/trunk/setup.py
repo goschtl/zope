@@ -27,7 +27,7 @@ setup(name='zopyx.smartprintng.server',
           'repoze.bfg',
           'uuid',
           'zopyx.convert2',
-         'zope.sendmail',
+          'repoze.sendmail',
           # -*- Extra requirements: -*-
       ],
       entry_points="""\

@@ -38,6 +38,10 @@ class ServerCore(object):
         html = html[:pos] + '<head><base href="%s"/>' % html_filename + html[pos+6:]
         file(html_filename, 'wb').write(html)
 
+    def _convert(self, html_filename, converter_name='pdf-prince'):
+        """ Process a single HTML file """
+        return Converter(html_filename)(converter_name)
+
     def convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
 
@@ -81,9 +85,9 @@ class ServerCore(object):
         LOG.debug('Request end (%3.2lf seconds)' % (time.time() -ts))
         return encoded_result
 
-    def _convert(self, html_filename, converter_name='pdf-prince'):
-        """ Process a single HTML file """
-        return Converter(html_filename)(converter_name)
+    def convertZIPEmail(zip_archive, converter_name='pdf-prince', email_param={}):
+        result = self.convertZIP(zip_archive, converter_name)
+
 
     def availableConverters(self):
         from zopyx.convert2.registry import availableConverters
