@@ -2,6 +2,62 @@ Testing Edge Cases
 ==================
 
 
+Recursive Callback Edge Case
+----------------------------
+
+When a job gets a callback that recursively adds jobs,
+zc.async.testing.reactor.wait_for should only wait for the jobs it's told to
+wait for, not for the job and all jobs created by its callback.
+
+First we'll create a function that creates jobs, and adds itself to them as a
+callback.  It will also append those jobs to a global list, so we can easily
+see everything that's been done. [#setup]_.
+
+    >>> import zc.async.job
+    >>> all_jobs = []
+    >>> def sub_one(start):
+    ...     logging.log(logging.INFO, "Executing job %d" % start)
+    ...     return start - 1
+    >>> def make_job(queue, remaining_jobs_to_make):
+    ...     if remaining_jobs_to_make == 0:
+    ...         return None # Done
+    ...     logging.log(logging.INFO, "Making job %d" % remaining_jobs_to_make)
+    ...     job = zc.async.job.Job(sub_one, remaining_jobs_to_make)
+    ...     job.addCallback(make_job, queue)
+    ...     all_jobs.append(job)
+    ...     return queue.put(job)
+
+Now we'll set things up to make and run 5 jobs.  We want to have to do a
+reactor.wait_for() for each one.
+
+    >>> job = make_job(queue, 5)
+    INFO: Making job 5
+    >>> len(all_jobs)
+    1
+    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    INFO: Executing job 5
+    INFO: Making job 4
+    >>> len(all_jobs)
+    2
+    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    INFO: Executing job 4
+    INFO: Making job 3
+    >>> len(all_jobs)
+    3
+    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    INFO: Executing job 3
+    INFO: Making job 2
+    >>> len(all_jobs)
+    4
+    >>> reactor.wait_for(job, interval=interval, attempts=attempts)
+    INFO: Executing job 2
+    INFO: Making job 1
+    >>> len(all_jobs)
+    5
+
+[#cleanup]_.
+
+
 _datetime Edge Case
 -------------------
 
@@ -11,7 +67,109 @@ takes correctly named arguments to its now method.
     >>> import zc.async.testing
     >>> import datetime
     >>> dt_now = datetime.datetime.now(tz=None)
-    >>> zc.async.testing.set_now(dt_now) #set the frozen now
     >>> z_a_t_dt_now = zc.async.testing._datetime.now(tz=None)
 
 
+Footnotes
+=========
+
+.. [#setup] We set up the configuration for our usage examples here.
+
+    You must have two adapter registrations: IConnection to
+    ITransactionManager, and IPersistent to IConnection.  We will also
+    register IPersistent to ITransactionManager because the adapter is
+    designed for it.
+
+    We also need to be able to get data manager partials for functions and
+    methods; normal partials for functions and methods; and a data manager for
+    a partial. Here are the necessary registrations.
+
+    The dispatcher will look for a UUID utility, so we also need one of these.
+
+    The ``zc.async.configure.base`` function performs all of these
+    registrations. If you are working with zc.async without ZCML you might want
+    to use it or ``zc.async.configure.minimal`` as a convenience.
+
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
+
+    Now we'll set up the database, and make some policy decisions.  As
+    the subsequent ``configuration`` sections discuss, some helpers are
+    available for you to set this up if you'd like, though it's not too
+    onerous to do it by hand.
+
+    We'll use a test reactor that we can control.
+
+    >>> import zc.async.testing
+    >>> reactor = zc.async.testing.Reactor()
+    >>> reactor.start() # this monkeypatches datetime.datetime.now
+
+    We need to instantiate the dispatcher with a reactor and a DB.  We
+    have the reactor, so here is the DB.  We use a FileStorage rather
+    than a MappingStorage variant typical in tests and examples because
+    we want MVCC.
+
+    >>> import ZODB.FileStorage
+    >>> storage = ZODB.FileStorage.FileStorage(
+    ...     'zc_async.fs', create=True)
+    >>> from ZODB.DB import DB
+    >>> db = DB(storage)
+    >>> conn = db.open()
+    >>> root = conn.root()
+
+    Now let's create the mapping of queues, and a single queue.
+
+    >>> import zc.async.queue
+    >>> import zc.async.interfaces
+    >>> mapping = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
+    >>> queue = mapping[''] = zc.async.queue.Queue()
+    >>> import transaction
+    >>> transaction.commit()
+
+    Now we can instantiate, activate, and perform some reactor work in order
+    to let the dispatcher register with the queue.
+
+    >>> import zc.async.dispatcher
+    >>> interval = .5
+    >>> attempts = 40
+    >>> dispatcher = zc.async.dispatcher.Dispatcher(db, reactor, poll_interval=interval)
+    >>> dispatcher.activate()
+    >>> reactor.time_flies(1)
+    3
+
+    The UUID is set on the dispatcher.
+
+    >>> import zope.component
+    >>> import zc.async.interfaces
+    >>> UUID = zope.component.getUtility(zc.async.interfaces.IUUID)
+    >>> dispatcher.UUID == UUID
+    True
+
+    Here's an agent named 'main'
+
+    >>> import zc.async.agent
+    >>> agent = zc.async.agent.Agent()
+    >>> queue.dispatchers[dispatcher.UUID]['main'] = agent
+    >>> agent.filter is None
+    True
+    >>> agent.size
+    3
+    >>> transaction.commit()
+
+    For this test we want to override the `logging.log` function.
+
+    >>> import logging
+    >>> original_log = logging.log
+    >>> def fake_log(severity, msg, *args):
+    ...     _dct = {
+    ...         logging.INFO: 'INFO: ',
+    ...         logging.WARNING: 'WARNING: ',
+    ...         logging.ERROR: 'ERROR: ',
+    ...         }
+    ...     print _dct[severity] + msg % args
+    >>> logging.log = fake_log
+
+
+..  [#cleanup] Put the `logging.log` function back.
+
+    >>> logging.log = original_log
