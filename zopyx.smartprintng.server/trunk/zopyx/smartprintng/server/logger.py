@@ -16,6 +16,7 @@ def getLogger(filename=None, level='INFO'):
     formatter = logging.Formatter('%(asctime)s %(levelname)-6s %(message)s', '%d.%m.%y %H:%M:%S')
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
+    logger.addHandler(logging.StreamHandler())  
     logger.setLevel(getattr(logging, level))
     return logger
 
