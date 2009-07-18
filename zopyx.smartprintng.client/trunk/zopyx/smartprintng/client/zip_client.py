@@ -18,6 +18,24 @@ class Proxy(object):
         self.host = host
         self.port = port
 
+    def _makeZipFromDirectory(self, directory):
+        """ generate a ZIP file from a directory containing all its 
+            contents
+        """
+
+        directory = os.path.abspath(directory)
+
+        zip_filename = tempfile.mktemp()
+        ZF = zipfile.ZipFile(zip_filename, 'w')
+        for dirname, dirnames, filenames in os.walk(directory):
+            for fname in filenames:
+                arcname = os.path.join(dirname, fname).replace(directory + os.path.sep, '')
+                fullname = os.path.abspath(os.path.join(dirname, fname))
+                ZF.write(fullname, arcname)
+
+        ZF.close()
+        return zip_filename
+
     def ping(self):
         server = xmlrpclib.ServerProxy('http://%s:%d/ping' % (self.host, self.port))
         return server()
@@ -28,23 +46,16 @@ class Proxy(object):
 
     def convertZIP(self, dirname, converter_name='pdf-prince'):
         """ XMLRPC client to SmartPrintNG server """
-        cwd = os.getcwd()
-        os.chdir(dirname)
-        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIP' % (self.host, self.port))
-        zip_filename = tempfile.mktemp()
-        ZF = zipfile.ZipFile(zip_filename, 'w')
-        for fname in os.listdir('.'):
-            if not os.path.isfile(fname):
-                continue
-            fullname = os.path.join(dirname, fname)
-            ZF.write(fname)
-        ZF.close()
+
+        zip_filename = self._makeZipFromDirectory(dirname)
 
         # send the ZIP archive base64 encoded
+        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIP' % (self.host, self.port))
         zip_data = server(base64.encodestring(file(zip_filename, 'rb').read()),
                           converter_name)
 
-        # and receive the result PDF as base64 encoded ZIP archive
+        # and receive the conversion result as base64 encoded ZIP archive
+        # (it will contain only *one* file)
         zip_temp = tempfile.mktemp()
         file(zip_temp, 'wb').write(base64.decodestring(zip_data))
         ZF = zipfile.ZipFile(zip_temp, 'r')
@@ -54,24 +65,14 @@ class Proxy(object):
         ZF.close()
         os.unlink(zip_filename)
         os.unlink(zip_temp)
-        os.chdir(cwd)
         return output_filename
 
     def convertZIPEmail(self, dirname, converter_name='pdf-prince'):
 
-        cwd = os.getcwd()
-        os.chdir(dirname)
-        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
-        zip_filename = tempfile.mktemp()
-        ZF = zipfile.ZipFile(zip_filename, 'w')
-        for fname in os.listdir('.'):
-            if not os.path.isfile(fname):
-                continue
-            fullname = os.path.join(dirname, fname)
-            ZF.write(fname)
-        ZF.close()
+        zip_filename = self._makeZipFromDirectory(dirname)
 
         # send the ZIP archive base64 encoded
+        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
         result = server.convertZIPEmail(base64.encodestring(file(zip_filename, 'rb').read()),
                                         converter_name)
         return result
@@ -83,6 +84,6 @@ if __name__ == '__main__':
     proxy = Proxy(port=6543)
     print proxy.ping()
     print proxy.availableConverters()
-#    print proxy.convertZIP(sys.argv[1])
+    print proxy.convertZIP(sys.argv[1])
     print proxy.convertZIPEmail(sys.argv[1])
 
