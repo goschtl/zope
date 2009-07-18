@@ -19,12 +19,11 @@ class Proxy(object):
         self.port = port
 
     def _makeZipFromDirectory(self, directory):
-        """ generate a ZIP file from a directory containing all its 
-            contents
+        """ Generate a ZIP file from a directory containing all its 
+            contents. Returns the filename of the generated ZIP file.
         """
 
         directory = os.path.abspath(directory)
-
         zip_filename = tempfile.mktemp()
         ZF = zipfile.ZipFile(zip_filename, 'w')
         for dirname, dirnames, filenames in os.walk(directory):
@@ -32,7 +31,6 @@ class Proxy(object):
                 arcname = os.path.join(dirname, fname).replace(directory + os.path.sep, '')
                 fullname = os.path.abspath(os.path.join(dirname, fname))
                 ZF.write(fullname, arcname)
-
         ZF.close()
         return zip_filename
 
@@ -48,8 +46,6 @@ class Proxy(object):
         """ XMLRPC client to SmartPrintNG server """
 
         zip_filename = self._makeZipFromDirectory(dirname)
-
-        # send the ZIP archive base64 encoded
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIP' % (self.host, self.port))
         zip_data = server(base64.encodestring(file(zip_filename, 'rb').read()),
                           converter_name)
@@ -70,14 +66,11 @@ class Proxy(object):
     def convertZIPEmail(self, dirname, converter_name='pdf-prince'):
 
         zip_filename = self._makeZipFromDirectory(dirname)
-
-        # send the ZIP archive base64 encoded
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
         result = server.convertZIPEmail(base64.encodestring(file(zip_filename, 'rb').read()),
                                         converter_name)
         return result
 
- 
 
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
