@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.4.0 (unreleased)
+------------------
+
+* added convertZIPEmail() API
+
 0.3.4 (2009/07/13)
 ------------------
 

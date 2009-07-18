@@ -12,8 +12,9 @@ from datetime import datetime
 import time
 import uuid
 import zipfile
-from zopyx.convert2.convert import Converter
 from logger import LOG
+import mail_util
+from zopyx.convert2.convert import Converter
 
 temp_directory = os.path.join(tempfile.gettempdir(), 
                               'zopyx.smartprintng.server')
@@ -42,15 +43,14 @@ class ServerCore(object):
         """ Process a single HTML file """
         return Converter(html_filename)(converter_name)
 
-    def convertZIP(self, zip_archive, converter_name='pdf-prince'):
-        """ Process html-file + images within a ZIP archive """
+    def _processZIP(self, zip_archive, converter_name):
 
+        # temp direcotry handling 
         now = datetime.now().strftime('%Y%m%d%Z%H%M%S')
         ident = '%s-%s' % (now, uuid.uuid4())
         tempdir = os.path.join(temp_directory, ident)
         os.makedirs(tempdir)
-        LOG.debug('Incoming request (%s, %d bytes, %s)' % (converter_name, len(zip_archive), tempdir))
-        ts = time.time()
+
         # store zip archive first
         zip_temp = os.path.join(tempdir, 'input.zip')
         file(zip_temp, 'wb').write(base64.decodestring(zip_archive))
@@ -80,29 +80,30 @@ class ServerCore(object):
         ZF = zipfile.ZipFile(zip_out, 'w')
         ZF.writestr('output%s' % ext, file(result, 'rb').read())
         ZF.close()
+
+        return zip_out, result
+
+    def convertZIP(self, zip_archive, converter_name='pdf-prince'):
+        """ Process html-file + images within a ZIP archive """
+
+        LOG.debug('Incoming request (%s, %d bytes)' % (converter_name, len(zip_archive)))
+        ts = time.time()
+        zip_out, output_filename = self._processZIP(zip_archive, converter_name)
         encoded_result = base64.encodestring(file(zip_out, 'rb').read())
-        shutil.rmtree(tempdir)
-        LOG.debug('Request end (%3.2lf seconds)' % (time.time() -ts))
+        shutil.rmtree(os.path.dirname(zip_out))
+        LOG.debug('Request end (%3.2lf seconds)' % (time.time() - ts))
         return encoded_result
 
     def convertZIPEmail(self, zip_archive, converter_name='pdf-prince', email_param={}):
+        """ Process zip archive and send conversion result as mail """
 
-        def send_email(sender, recipient, subject, body):
-            import email.MIMEText
-            import email.Header
-            from repoze.sendmail.interfaces import IMailDelivery
-            from zope.component import getUtility
-            msg = email.MIMEText.MIMEText(body.encode('UTF-8'), 'plain', 'UTF-8')
-            msg["From"] = sender
-            msg["To"] = recipient
-            msg["Subject"] = email.Header.Header(subject, 'UTF-8')
-            mailer = getUtility(IMailDelivery, 'my-app.smtp')
-            mailer.send(sender, [recipient], msg.as_string())
-    
-        result = self.convertZIP(zip_archive, converter_name)
-        send_email('info@zopyx.com', 'info@zopyx.com', 'test', 'test')
-        return 'foo'
-
+        LOG.debug('Incoming request (%s, %d bytes)' % (converter_name, len(zip_archive)))
+        ts = time.time()
+        zip_out, output_filename = self._processZIP(zip_archive, converter_name)
+        mail_util.send_email('info@zopyx.com', 'info@zopyx.com', 'test', 'test', [output_filename])
+        shutil.rmtree(os.path.dirname(zip_out))
+        LOG.debug('Request end (%3.2lf seconds)' % (time.time() - ts))
+        return True
 
     def availableConverters(self):
         from zopyx.convert2.registry import availableConverters

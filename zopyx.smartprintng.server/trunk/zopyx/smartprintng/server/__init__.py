@@ -16,3 +16,6 @@ repoze.bfg.xmlrpc.parse_xmlrpc_request = parse_xmlrpc_request
 # recursion error in guess_type()
 import mimetypes
 mimetypes.init()
+
+# init email subsystem
+import mail_util

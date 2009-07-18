@@ -25,7 +25,10 @@ def makeMailer():
 
 def send_email(sender, recipient, subject, body, attachments=[]):
 
-    mailer = makeMailer()
+    try:
+        mailer = makeMailer()
+    except Exception,e:
+        raise RuntimeError('Email configuration error (%s)' % e)
 
     msg = email.MIMEMultipart.MIMEMultipart()
     msg["From"] = sender
