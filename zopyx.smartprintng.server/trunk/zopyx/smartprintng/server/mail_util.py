@@ -10,7 +10,7 @@ import email.MIMEBase
 import email.MIMEMultipart
 from email import Encoders
 from ConfigParser import ConfigParser
-from zope.sendmail.mailer import SMTPMailer
+from repoze.sendmail.mailer import SMTPMailer
 
 
 def makeMailer():
