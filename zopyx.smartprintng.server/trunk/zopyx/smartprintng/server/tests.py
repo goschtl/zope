@@ -22,12 +22,12 @@ class ViewTests(unittest.TestCase):
         testing.cleanUp()
 
     def test_my_view(self):
-        from my_server.views import my_view
+        from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
-        renderer = testing.registerDummyRenderer('templates/mytemplate.pt')
-        response = my_view(context, request)
-        renderer.assert_(project='my_server')
+        renderer = testing.registerDummyRenderer('templates/index.pt')
+        response = index(context, request)
+        renderer.assert_(project='zopyx.smartprintng.server')
 
 class ViewIntegrationTests(unittest.TestCase):
     """ These tests are integration tests for the view.  These test
@@ -48,10 +48,10 @@ class ViewIntegrationTests(unittest.TestCase):
         (including dependent registrations for repoze.bfg itself).
         """
         testing.cleanUp()
-        import my_server
+        import zopyx.smartprintng.server
         import zope.configuration.xmlconfig
         zope.configuration.xmlconfig.file('configure.zcml',
-                                          package=my_server)
+                                          package=zopyx.smartprintng.server)
 
     def tearDown(self):
         """ Clear out the application registry """
