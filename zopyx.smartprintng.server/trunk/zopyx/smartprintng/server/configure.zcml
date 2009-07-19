@@ -3,7 +3,6 @@
 
   <!-- this must be included for the view declarations to work -->
   <include package="repoze.bfg.includes" />
-  <include package="repoze.sendmail"  file="meta.zcml"/>
 
   <view
      for=".models.Server"
