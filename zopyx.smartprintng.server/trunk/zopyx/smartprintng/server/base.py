@@ -94,13 +94,13 @@ class ServerCore(object):
         LOG.info('Request end (%3.2lf seconds)' % (time.time() - ts))
         return encoded_result
 
-    def convertZIPEmail(self, zip_archive, converter_name='pdf-prince', sender=None, recipients=None, subject=None, body=None):
+    def convertZIPEmail(self, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
         """ Process zip archive and send conversion result as mail """
 
         LOG.info('Incoming request (%s, %d bytes)' % (converter_name, len(zip_archive)))
         ts = time.time()
         zip_out, output_filename = self._processZIP(zip_archive, converter_name)
-        mail_util.send_email(sender, recipients, subject, body, [output_filename])
+        mail_util.send_email(sender, recipient, subject, body, [output_filename])
         shutil.rmtree(os.path.dirname(zip_out))
         LOG.info('Request end (%3.2lf seconds)' % (time.time() - ts))
         return True
