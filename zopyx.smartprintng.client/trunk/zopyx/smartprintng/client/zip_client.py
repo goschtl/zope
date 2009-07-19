@@ -63,20 +63,30 @@ class Proxy(object):
         os.unlink(zip_temp)
         return output_filename
 
-    def convertZIPEmail(self, dirname, converter_name='pdf-prince'):
+    def convertZIPEmail(self, dirname, converter_name='pdf-prince', 
+                        sender=None, recipients=None, subject=None, body=None):
 
         zip_filename = self._makeZipFromDirectory(dirname)
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
         result = server.convertZIPEmail(base64.encodestring(file(zip_filename, 'rb').read()),
-                                        converter_name)
+                                        converter_name,
+                                        sender,
+                                        recipients,
+                                        subject,
+                                        body)
         return result
 
 
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
+
     proxy = Proxy(port=6543)
     print proxy.ping()
     print proxy.availableConverters()
     print proxy.convertZIP(sys.argv[1])
-    print proxy.convertZIPEmail(sys.argv[1])
+    print proxy.convertZIPEmail(sys.argv[1], 
+                                sender='foo@bar.org', 
+                                recipients='foo@bar.org', 
+                                subject='üצה', 
+                                body=u'üצה')
 
