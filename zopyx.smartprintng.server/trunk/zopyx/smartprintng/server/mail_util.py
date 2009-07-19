@@ -12,6 +12,7 @@ from email import Encoders
 from ConfigParser import ConfigParser
 from zope.sendmail.mailer import SMTPMailer
 
+
 def makeMailer():
 
     mail_config = os.environ.get('EMAIL_CONFIG')
@@ -23,11 +24,24 @@ def makeMailer():
     CP = ConfigParser()
     CP.read('email.ini')
 
-    return SMTPMailer(hostname=CP.get('mail', 'hostname') or 'localhost',
-                      username=CP.get('mail', 'username') or None,
-                      password=CP.get('mail', 'password') or None,
-                      no_tls=CP.getboolean('mail', 'no_tls') or False,
-                      force_tls=CP.getboolean('mail', 'force_tls') or False)
+    hostname = 'localhost'
+    username = None
+    password = None
+    no_tls = False
+    force_tls = False
+
+    if CP.has_option('mail', 'hostname'): hostname = CP.get('mail', 'hostname')
+    if CP.has_option('mail', 'username'): username = CP.get('mail', 'username')
+    if CP.has_option('mail', 'password'): password = CP.get('mail', 'password')
+    if CP.has_option('mail', 'no_tls'): no_tls = CP.getboolean('mail', 'no_tls')
+    if CP.has_option('mail', 'force_tls'): force_tls = CP.getboolean('mail', 'force_tls')
+
+    return SMTPMailer(hostname=hostname,
+                      username=username,
+                      password=password,
+                      no_tls=no_tls,
+                      force_tls=force_tls)
+
 
 def send_email(sender, recipient, subject, body, attachments=[]):
 
