@@ -1,3 +1,5 @@
+# *-* coding: iso-8859-15 *-*
+
 ##########################################################################
 # zopyx.smartprintng.client - client library for the SmartPrintNG server
 # (C) 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
@@ -87,6 +89,6 @@ if __name__ == '__main__':
     print proxy.convertZIPEmail(sys.argv[1], 
                                 sender='foo@bar.org', 
                                 recipients='foo@bar.org', 
-                                subject='üצה', 
-                                body=u'üצה')
+                                subject=unicode('üצה', 'latin1').encode('utf-8'),
+                                body=unicode('üצה', 'latin1').encode('utf-8'))
 
