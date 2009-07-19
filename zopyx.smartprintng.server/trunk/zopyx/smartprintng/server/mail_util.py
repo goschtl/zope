@@ -18,12 +18,16 @@ from logger import LOG
 
 
 def getMailConfiguration():
+    """ read the email configuration from an INI file and
+        return it as dict
+    """
 
     mail_config = os.environ.get('EMAIL_CONFIG')
     if not mail_config:
         raise RuntimeError('No email configuration found')
+
     if not os.path.exists(mail_config):
-        raise RuntimeError('Configured email configuration file not available')
+        raise RuntimeError('Configured email configuration file not available (%s)' % mail_config)
 
     CP = ConfigParser()
     CP.read('email.ini')
@@ -59,9 +63,9 @@ def getMailConfiguration():
 
 
 def setupMailer():
+    """ Set up zope.sendmail delivery thread """
 
     config = getMailConfiguration()
-
     thread = QueueProcessorThread()
     thread.setMailer(makeMailer())
     thread.setQueuePath(config['maildir'])
@@ -69,12 +73,14 @@ def setupMailer():
     return config
 
 def makeMailer():
+    """ Create an SMTP mailer """
     config = getMailConfiguration().copy()
     del config['maildir']
     return SMTPMailer(**config)
 
 
 def send_email(sender, recipient, subject, body, attachments=[]):
+    """ Asynchronous mail delivery """
 
     msg = email.MIMEMultipart.MIMEMultipart()
     msg["From"] = sender
