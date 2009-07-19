@@ -40,10 +40,4 @@
      name="static"
      />
 
-  <mail:smtpMailer
-    name="my-app.smtp"
-    hostname="localhost"
-    port="25"
-  />
-
 </configure>
