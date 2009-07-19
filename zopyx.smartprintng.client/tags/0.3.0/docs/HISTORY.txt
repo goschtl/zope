@@ -1,0 +1,24 @@
+Changelog
+=========
+
+0.3.0 (2007-07-19)
+------------------
+
+* support for the email API (as of zopyx.smartprintng.server>=0.4.0)
+
+
+0.2.0 (2009-07-08)
+------------------
+
+* added object-oriented API
+
+
+0.1.1 (2009-07-08)
+------------------
+
+* minor cleanup
+
+0.1 (2009-07-07)
+----------------
+
+* Initial release
