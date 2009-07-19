@@ -20,7 +20,9 @@ def app(global_config, **kw):
         mail_config = os.path.abspath(global_config['mail_config'])
         LOG.info('Using email configuration at %s' % mail_config)
         os.environ['EMAIL_CONFIG'] = mail_config
-        mail_util.setupMailer()
+        config = mail_util.setupMailer()
+        LOG.info('Using email configuration at %s' % mail_config)
+        LOG.info(config)
     LOG.info('SmartPrintNG server started')
     return make_app(get_root, zopyx.smartprintng.server, options=kw)
 

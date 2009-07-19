@@ -66,6 +66,7 @@ def setupMailer():
     thread.setMailer(makeMailer())
     thread.setQueuePath(config['maildir'])
     thread.start()
+    return config
 
 def makeMailer():
     config = getMailConfiguration().copy()
