@@ -1,0 +1,16 @@
+body {
+    font-family: "Arial";
+}
+
+#logo h2 {
+}
+
+#logo img {
+}
+
+#footer {
+    clear: both;
+    margin-top: 1em;
+    border-top: 1px solid black;
+    font-size: 10px;
+}
