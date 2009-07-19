@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.4.1'
+version = '0.4.2'
 
 setup(name='zopyx.smartprintng.server',
       version=version,
@@ -27,7 +27,8 @@ setup(name='zopyx.smartprintng.server',
           'repoze.bfg',
           'uuid',
           'zopyx.convert2',
-          'repoze.sendmail',
+          'zope.sendmail',
+          'transaction',
           'nose',
           # -*- Extra requirements: -*-
       ],

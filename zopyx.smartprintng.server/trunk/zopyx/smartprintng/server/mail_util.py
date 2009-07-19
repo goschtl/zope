@@ -4,16 +4,20 @@
 ##########################################################################
 
 import os
+import tempfile
 import email.MIMEText
 import email.Header
 import email.MIMEBase
 import email.MIMEMultipart
 from email import Encoders
 from ConfigParser import ConfigParser
-from repoze.sendmail.mailer import SMTPMailer
+from zope.sendmail.mailer import SMTPMailer
+from zope.sendmail.delivery import QueuedMailDelivery, QueueProcessorThread
+import transaction
+from logger import LOG
 
 
-def makeMailer():
+def getMailConfiguration():
 
     mail_config = os.environ.get('EMAIL_CONFIG')
     if not mail_config:
@@ -29,26 +33,47 @@ def makeMailer():
     password = None
     no_tls = False
     force_tls = False
+    maildir = tempfile.mkdtemp(prefix='zopyx.smartprintng.server')
 
     if CP.has_option('mail', 'hostname'): hostname = CP.get('mail', 'hostname')
     if CP.has_option('mail', 'username'): username = CP.get('mail', 'username')
     if CP.has_option('mail', 'password'): password = CP.get('mail', 'password')
+    if CP.has_option('mail', 'maildir'): maildir = CP.get('mail', 'maildir')
     if CP.has_option('mail', 'no_tls'): no_tls = CP.getboolean('mail', 'no_tls')
     if CP.has_option('mail', 'force_tls'): force_tls = CP.getboolean('mail', 'force_tls')
 
-    return SMTPMailer(hostname=hostname,
-                      username=username,
-                      password=password,
-                      no_tls=no_tls,
-                      force_tls=force_tls)
+    # setup maildir structure
+    if not os.path.exists(maildir):
+        os.makedirs(maildir)
+    for subdir in ('cur', 'tmp', 'new'):
+        destdir = os.path.join(maildir, subdir)
+        if not os.path.exists(destdir):
+            os.makedirs(destdir)
+
+    return dict(hostname=hostname,
+                username=username,
+                password=password,
+                maildir=maildir,
+                force_tls=force_tls,
+                no_tls=no_tls)
+
+
+def setupMailer():
+
+    config = getMailConfiguration()
+
+    thread = QueueProcessorThread()
+    thread.setMailer(makeMailer())
+    thread.setQueuePath(config['maildir'])
+    thread.start()
+
+def makeMailer():
+    config = getMailConfiguration().copy()
+    del config['maildir']
+    return SMTPMailer(**config)
 
 
 def send_email(sender, recipient, subject, body, attachments=[]):
-
-    try:
-        mailer = makeMailer()
-    except Exception,e:
-        raise RuntimeError('Email configuration error (%s)' % e)
 
     msg = email.MIMEMultipart.MIMEMultipart()
     msg["From"] = sender
@@ -64,6 +89,8 @@ def send_email(sender, recipient, subject, body, attachments=[]):
                         'attachment; filename="%s"' % os.path.basename(att))
         msg.attach(part)
 
-    mailer.send(sender, [recipient], msg.as_string())
-
+    config = getMailConfiguration()
+    delivery = QueuedMailDelivery(config['maildir'])
+    delivery.send(sender, [recipient], msg.as_string())
+    transaction.commit()
 

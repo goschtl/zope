@@ -5,6 +5,7 @@
 
 import os
 from repoze.bfg.router import make_app
+import mail_util
 
 def app(global_config, **kw):
     """ This function returns a repoze.bfg.router.Router object.  It
@@ -19,6 +20,7 @@ def app(global_config, **kw):
         mail_config = os.path.abspath(global_config['mail_config'])
         LOG.info('Using email configuration at %s' % mail_config)
         os.environ['EMAIL_CONFIG'] = mail_config
+        mail_util.setupMailer()
     LOG.info('SmartPrintNG server started')
     return make_app(get_root, zopyx.smartprintng.server, options=kw)
 
