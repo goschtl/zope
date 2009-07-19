@@ -58,6 +58,12 @@ The SmartPrintNG server exposes several methods through XMLRPC::
             also as base64-encoded ZIP archive.
         """
 
+    def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', 
+                        sender=None, recipient=None, subject=None, body=None):
+        """ Similar to convertZIP() except that this method will send the 
+            converted output document to a recipient by email.
+        """
+
     def availableConverters():
         """ Returns a list of available converter names on the 
             SmartPrintNG backend.
