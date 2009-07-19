@@ -18,7 +18,6 @@ def app(global_config, **kw):
     from logger import LOG
     if 'mail_config' in global_config:
         mail_config = os.path.abspath(global_config['mail_config'])
-        LOG.info('Using email configuration at %s' % mail_config)
         os.environ['EMAIL_CONFIG'] = mail_config
         config = mail_util.setupMailer()
         LOG.info('Using email configuration at %s' % mail_config)
