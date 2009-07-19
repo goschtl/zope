@@ -14,6 +14,12 @@ from zope.sendmail.mailer import SMTPMailer
 
 def makeMailer():
 
+    mail_config = os.environ.get('EMAIL_CONFIG')
+    if not mail_config:
+        raise RuntimeError('No email configuration found')
+    if not os.path.exists(mail_config):
+        raise RuntimeError('Configured email configuration file not available')
+
     CP = ConfigParser()
     CP.read('email.ini')
 

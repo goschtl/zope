@@ -61,7 +61,8 @@ The SmartPrintNG server exposes several methods through XMLRPC::
     def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', 
                         sender=None, recipient=None, subject=None, body=None):
         """ Similar to convertZIP() except that this method will send the 
-            converted output document to a recipient by email.
+            converted output document to a recipient by email. 'subject' and
+            'body' parameters *must* be utf-8 encoded.
         """
 
     def availableConverters():
@@ -71,6 +72,26 @@ The SmartPrintNG server exposes several methods through XMLRPC::
 
     def ping():
         """ says 'pong' - or something similar """
+
+Email configuration
+===================
+
+For using the email support through the ``convertZIPEmail()`` the email server must be
+configured through a dedicated configuration file. An ``email.ini`` may look like this::
+
+    [mail]
+    hostname = smtp.gmail.com
+    username = some_username
+    password = some_password
+    force_tls = False
+    no_tls = False
+
+You have to pass the name of the email configuration file to ``paster`` when starting
+then server::
+
+    bin/paster serve server.ini mail_config=/path/to/email.ini
+
+
 
 Support
 =======
