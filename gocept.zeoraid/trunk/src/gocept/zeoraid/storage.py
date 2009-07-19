@@ -277,6 +277,7 @@ class RAIDStorage(object):
         #
         # Here, we rely on the following behaviour:
         # a) always read from the first optimal storage
+        # XXX a) isn't true anymore!
         # b) pack beginning with the first optimal storage, working our way
         #    through the list.
         # This is a simplified implementation of a way to prioritize the list
