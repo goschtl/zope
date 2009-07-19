@@ -1,0 +1,49 @@
+<configure xmlns="http://namespaces.repoze.org/bfg"
+           xmlns:mail="http://namespaces.repoze.org/mail">
+
+  <!-- this must be included for the view declarations to work -->
+  <include package="repoze.bfg.includes" />
+
+  <view
+     for=".models.Server"
+     view=".views.index"
+     />
+
+  <view
+     for=".models.Server"
+     view=".views.convertZIP"
+     name="convertZIP"
+     /> 
+
+  <view
+     for=".models.Server"
+     view=".views.convertZIPEmail"
+     name="convertZIPEmail"
+     /> 
+
+  <view
+     for=".models.Server"
+     view=".views.availableConverters"
+     name="availableConverters"
+     /> 
+
+  <view
+     for=".models.Server"
+     view=".views.ping"
+     name="ping"
+     /> 
+
+
+  <view
+     for=".models.Server"
+     view=".views.static_view"
+     name="static"
+     />
+
+  <mail:smtpMailer
+    name="my-app.smtp"
+    hostname="localhost"
+    port="25"
+  />
+
+</configure>
