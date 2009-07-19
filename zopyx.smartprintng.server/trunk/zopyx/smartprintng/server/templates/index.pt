@@ -12,6 +12,7 @@
   <div id="logo">
       <img src="${request.application_url}/static/zopyx_logo.png" /> 
       <h2>ZOPYX SmartPrintNG Server</h2>
+      <div id="version">Version: ${version}</div>
   </div>
   <br/>
   <div>
@@ -21,7 +22,7 @@
   </ul>
   </div>
   <div id="footer">
-      (C) 2009, ZOPYX Ltd. &amp; Co. KG, www.zopyx.com, info@zopyx.com
+      (C) 2009, ZOPYX Ltd. &amp; Co. KG, <a href="http://www.zopyx.com">www.zopyx.com</a>, <a href="mailto:info@zopyx.com">info@zopyx.com</a>
   </div>
 
 

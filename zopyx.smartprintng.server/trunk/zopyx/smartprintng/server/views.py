@@ -3,7 +3,7 @@
 # (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
-
+import pkg_resources
 from repoze.bfg.chameleon_zpt import render_template_to_response
 from repoze.bfg.view import static
 from zopyx.smartprintng.server.base import ServerCore
@@ -23,9 +23,11 @@ class index(object):
 
     def __call__(self):
         converters = ServerCore().availableConverters()
+        version = pkg_resources.require('zopyx.smartprintng.server')[0].version 
         return render_template_to_response('templates/index.pt',
                                            converters=converters,
                                            request=self.request,
+                                           version=version,
                                            project='zopyx.smartprintng.server')
 
 ##################

@@ -27,7 +27,7 @@ class ViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         renderer = testing.registerDummyRenderer('templates/index.pt')
         response = index(context, request)
-        renderer.assert_(project='zopyx.smartprintng.server')
+        renderer.assert_(project='my_server')
 
 class ViewIntegrationTests(unittest.TestCase):
     """ These tests are integration tests for the view.  These test
