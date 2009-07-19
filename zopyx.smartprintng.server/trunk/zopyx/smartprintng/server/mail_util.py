@@ -18,10 +18,10 @@ def makeMailer():
     CP.read('email.ini')
 
     return SMTPMailer(hostname=CP.get('mail', 'hostname') or 'localhost',
-                        username=CP.get('mail', 'username') or None,
-                        password=CP.get('mail', 'password') or None,
-                        no_tls=CP.getboolean('mail', 'no_tls') or False,
-                        force_tls=CP.getboolean('mail', 'force_tls') or False)
+                      username=CP.get('mail', 'username') or None,
+                      password=CP.get('mail', 'password') or None,
+                      no_tls=CP.getboolean('mail', 'no_tls') or False,
+                      force_tls=CP.getboolean('mail', 'force_tls') or False)
 
 def send_email(sender, recipient, subject, body, attachments=[]):
 
