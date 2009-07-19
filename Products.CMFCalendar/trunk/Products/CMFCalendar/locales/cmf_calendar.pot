@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2009 Zope Corporation and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -81,6 +81,106 @@ msgstr ""
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:49
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:31
 msgid "${DYNAMIC_CONTENT}"
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:32
+msgid "Import various settings for CMF Calendar."
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:32
+msgid "Various Calendar Settings"
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:42
+msgid "CMFCalendar"
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:42
+msgid "Adds calendar support."
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:50
+msgid "Hooks up the oldstyle skins."
+msgstr ""
+
+#: Products/CMFCalendar/configure.zcml:50
+msgid "CMFCalendar Oldstyle Skins"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:1
+msgid "Su"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:10
+msgid "We"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:13
+msgid "Th"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:16
+msgid "Fr"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:19
+msgid "Sa"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:22
+msgid "January"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:25
+msgid "February"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:28
+msgid "March"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:31
+msgid "April"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:34
+msgid "May"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:37
+msgid "June"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:4
+msgid "Mo"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:40
+msgid "July"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:43
+msgid "August"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:46
+msgid "September"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:49
+msgid "October"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:52
+msgid "November"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:55
+msgid "December"
+msgstr ""
+
+#: Products/CMFCalendar/locales/cmf_calendar-manual.pot:7
+msgid "Tu"
 msgstr ""
 
 #: Products/CMFCalendar/profiles/default/types/Event.xml:5
@@ -172,59 +272,3 @@ msgstr ""
 msgid "Stop Date"
 msgstr ""
 
-msgid "Su"
-msgstr ""
-
-msgid "Mo"
-msgstr ""
-
-msgid "Tu"
-msgstr ""
-
-msgid "We"
-msgstr ""
-
-msgid "Th"
-msgstr ""
-
-msgid "Fr"
-msgstr ""
-
-msgid "Sa"
-msgstr ""
-
-msgid "January"
-msgstr ""
-
-msgid "February"
-msgstr ""
-
-msgid "March"
-msgstr ""
-
-msgid "April"
-msgstr ""
-
-msgid "May"
-msgstr ""
-
-msgid "June"
-msgstr ""
-
-msgid "July"
-msgstr ""
-
-msgid "August"
-msgstr ""
-
-msgid "September"
-msgstr ""
-
-msgid "October"
-msgstr ""
-
-msgid "November"
-msgstr ""
-
-msgid "December"
-msgstr ""
