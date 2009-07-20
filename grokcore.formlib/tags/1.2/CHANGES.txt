@@ -1,0 +1,25 @@
+Changes
+=======
+
+1.2 (2009-07-20)
+----------------
+
+* Adapted tests to the grokcore.view split of View and CodeView.
+
+* Fixed forms to use self.template.render() directly instead of using a
+  removed private method from grokcore.view.
+
+* Add grok.View permissions for functional tests.
+
+1.1 (2009-01-07)
+----------------
+
+* Have GrokForm define an empty actions attribute by default, in order
+  for "action-less" forms to work easily.
+
+1.0 (2008-09-25)
+----------------
+
+* Created ``grokcore.formlib`` in July 2008 by factoring
+  ``zope.formlib``-based components, grokkers and directives out of
+  Grok.
