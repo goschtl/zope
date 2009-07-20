@@ -25,6 +25,14 @@
      class=".tool.SkinTool"
      schema=".interfaces.ISkinTool" />
 
+
+  <z3ext:pagelet
+     name="index.html"
+     for=".interfaces.ISkinTool"
+     class=".tool.ConfigletEditForm"
+     permission="zope.Public" />
+
+
   <!-- edit schema -->
   <z3ext:pagelet
      name="schema"

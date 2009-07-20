@@ -26,7 +26,9 @@ from zope.publisher.interfaces.browser import \
      IDefaultSkin, IBrowserRequest, IDefaultBrowserLayer
 from zope.app.component.hooks import getSite
 from zope.app.intid.interfaces import IIntIds
+
 from z3ext.layoutform import Fields, PageletEditSubForm
+from z3ext.controlpanel.browser.configlet import Configlet
 
 from interfaces import IDefaultLayer, IDefaultLayers, ISkinTool
 
@@ -105,6 +107,12 @@ def skinToolModified(*args):
     id = getUtility(IIntIds).queryId(getSite())
     if id in cache:
         del cache[id]
+
+
+class ConfigletEditForm(Configlet):
+
+    def nextURL(self):
+        return self.request.getURL()
 
 
 class SchemaEditForm(PageletEditSubForm):
