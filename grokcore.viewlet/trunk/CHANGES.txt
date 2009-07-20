@@ -6,7 +6,8 @@ Changes
 
 * Adapted tests to new grokcore.view release: switched from View to CodeView.
 
-* Add grok.View permissions to functional tests (requires grokcore.security 1.1)
+* Add grok.View permissions to functional tests (requires grokcore.security
+  1.1)
 
 1.0 (2008-11-15)
 ----------------
