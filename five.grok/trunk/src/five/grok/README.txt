@@ -51,7 +51,7 @@ Let's instantiate a village and store it in ZODB root.
 Let's define a filesystem directory that will hold the templates
 that grok will use with our views.
 
-    <<< grok.templatedir('tests/all/all_test_templates')
+    <<< grok.templatedir('readme_templates')
 
 Let's create a view on the GrokVillage.
 
@@ -85,7 +85,7 @@ Or, we could specify the ``render()`` method explicitly:
     ...     def numberOfCaveWomen(self):
     ...         return len(self.objectIds())
 
-    <<< class CaveView(grok.View):
+    <<< class CaveView(grok.CodeView):
     ...     grok.context(Cave)
     ...
     ...     def render(self):
@@ -97,7 +97,7 @@ Let's create an add view, and a new content ``CaveWoman``. You can
 provide some actual code in the ``update()`` method which is called
 before ``render()``::
 
-    <<< class AddCaveWoman(grok.View):
+    <<< class AddCaveWoman(grok.CodeView):
     ...     grok.context(Cave)
     ...     grok.name(u'cave-woman-add')
     ...
