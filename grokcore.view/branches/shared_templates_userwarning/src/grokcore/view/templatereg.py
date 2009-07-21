@@ -16,14 +16,13 @@ class InlineTemplateRegistry(object):
 
     def register_inline_template(self, module_info, template_name, template):
         # verify no file template got registered with the same name
-        template_dir = file_template_registry.get_template_dir(module_info)
-
         try:
             existing_template = file_template_registry.lookup(
-                template_dir, template_name)
+                module_info, template_name)
         except TemplateLookupError:
             pass
         else:
+            template_dir = file_template_registry.get_template_dir(module_info)
             raise GrokError("Conflicting templates found for name '%s': "
                             "the inline template in module '%s' conflicts "
                             "with the file template in directory '%s'" %
@@ -116,7 +115,8 @@ class FileTemplateRegistry(object):
     def associate(self, template_path):
         self._unassociated.remove(template_path)
 
-    def lookup(self, template_dir, template_name):
+    def lookup(self, module_info, template_name):
+        template_dir = self.get_template_dir(module_info)
         result = self._reg.get((template_dir, template_name))
         if result is None:
             raise TemplateLookupError("template '%s' in '%s' cannot be found" % (
@@ -144,6 +144,15 @@ register_directory = file_template_registry.register_directory
     
 all_directory_templates_registries = {}
 
+def lookup(module_info, template_name):
+    try:
+        return file_template_registry.lookup(module_info, template_name)
+    except TemplateLookupError, e:
+        try:
+            return inline_template_registry.lookup(module_info, template_name)
+        except TemplateLookupError, e2:
+            # re-raise first error again
+            raise e
 
 class BaseTemplateRegistry(object):
 

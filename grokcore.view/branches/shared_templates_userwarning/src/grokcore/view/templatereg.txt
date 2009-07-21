@@ -53,7 +53,7 @@ appropriate templates::
   ...        f = open(os.path.join(_prefix, filename), 'r')
   ...        data = f.read()
   ...        f.close()
-  ...        return TestTemplate(filename, data)
+  ...        return TestTemplate(os.path.join(_prefix, filename), data)
 
   >>> from zope import component
   >>> component.provideUtility(TestTemplateFactory(), ITemplateFileFactory, 
@@ -75,6 +75,9 @@ nonexistent) module with a real directory that contains templates::
    ...         return False
 
    >>> import os, tempfile
+   >>> def create_module_info(module_name):
+   ...     package_dir = tempfile.mkdtemp()
+   ...     return ModuleInfo(module_name, package_dir)
    >>> def create_module_info_with_templates(module_name):
    ...     package_dir = tempfile.mkdtemp()
    ...     templates_dir = os.path.join(package_dir, module_name + '_templates')
@@ -105,22 +108,23 @@ We'll also import the global template registry to do some checks::
 
 We can look up the templates in the registry now::
 
-  >>> reg.lookup(template_dir, 'foo')
+  >>> reg.lookup(module_info, 'foo')
   <Template 'foo.template' in '...'>
-  >>> reg.lookup(template_dir, 'bar')
+  >>> reg.lookup(module_info, 'bar')
   <Template 'bar.template' in '...'>
 
 If we try to look up a template in a directory that doesn't exist, we get
 a TemplateLookupError::
   
-  >>> reg.lookup('certainlydoesntexist', 'foo')
+  >>> nonexistent_module_info = create_module_info('nonexistent')
+  >>> reg.lookup(nonexistent_module_info, 'foo')
   Traceback (most recent call last):
     ...
-  TemplateLookupError: template 'foo' in 'certainlydoesntexist' cannot be found
+  TemplateLookupError: template 'foo' in '...' cannot be found
 
 We get this error for templates that do not exist as well::
 
-  >>> reg.lookup(template_dir, 'doesntexist')
+  >>> reg.lookup(module_info, 'doesntexist')
   Traceback (most recent call last):
     ...
   TemplateLookupError: template 'doesntexist' in ... cannot be found
@@ -173,7 +177,7 @@ We restore the normal warnings mechanism::
 
 This file will not be loaded as a template::
 
-  >>> reg.lookup(template_dir2, 'foo.unknown')
+  >>> reg.lookup(module_info2, 'foo.unknown')
   Traceback (most recent call last):
     ...
   TemplateLookupError: template 'foo.unknown' in '...' cannot be found
@@ -247,6 +251,37 @@ unassociated templates will get us all registered inline templates::
 
   >>> sorted(inline_reg.unassociated())
   [('module4', 'cavepainting')]
+
+A common template lookup function
+---------------------------------
+
+There is a single lookup function available that can used to look up
+both filesystem templates as well as inline templates.
+
+  >>> lookuptest_info, lookuptest_template_dir = create_module_info_with_templates('lookuptest')
+  >>> f = open(os.path.join(lookuptest_template_dir, 'foo.template'), 'w')
+  >>> f.write('foo')
+  >>> f.close()
+  >>> register_directory(lookuptest_info)
+
+  >>> from grokcore.view.templatereg import lookup
+  >>> lookup(lookuptest_info, 'foo')
+  <Template 'foo.template' in '...'>
+
+This can also be used to look up inline templates::
+
+  >>> bar = InlineTemplate('bar')
+  >>> register_inline_template(lookuptest_info, 'bar', bar)
+  >>> lookup(lookuptest_info, 'bar')
+  <InlineTemplate 'bar'>
+
+If we look up a template that doesn't exist, we get an error (about it
+missing on the filesystem)::
+
+  >>> lookup(lookuptest_info, 'qux')
+  Traceback (most recent call last):
+    ...
+  TemplateLookupError: template 'qux' in '...' cannot be found
 
 Conflicts between inline templates and file templates
 -----------------------------------------------------
