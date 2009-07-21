@@ -39,6 +39,11 @@ class polymorphic_identity(Directive):
     store = ONCE
     default = None
 
+class table(Directive):
+    scope = CLASS
+    store = ONCE
+    default = None
+
 class tableargs(Directive):
     scope = CLASS
     store = ONCE

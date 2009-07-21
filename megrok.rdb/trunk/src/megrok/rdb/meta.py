@@ -13,13 +13,19 @@ class ModelGrokker(martian.ClassGrokker):
     martian.directive(rdb.tablename, get_default=default_tablename)
     martian.directive(rdb.metadata)
     martian.directive(rdb.reflected)
+    martian.directive(rdb.table)
     martian.directive(rdb.tableargs)
     martian.directive(rdb.inherits)
     martian.directive(rdb.polymorphic_identity)
     martian.directive(rdb.polymorphic_on)
     
-    def execute(self, class_, tablename, metadata, reflected, tableargs, inherits, polymorphic_identity, polymorphic_on, **kw):
-        class_.__tablename__ = tablename
+    def execute(self, class_, tablename, metadata, reflected, table,
+                tableargs, inherits, polymorphic_identity, polymorphic_on,
+                **kw):
+        if table is not None:
+            class_.__table__ = table
+        else:
+            class_.__tablename__ = tablename
         if tableargs is not None:
             class_.__table_args__ = tableargs
         
@@ -44,9 +50,9 @@ class ModelGrokker(martian.ClassGrokker):
         try:
             instrument_declarative(class_, metadata._decl_registry, metadata)
         except sqlalchemy.exc.InvalidRequestError:
-            # XXX scary - catching too many errors
+            # FIXME scary - catching too many errors
             # allows re-grokking of classes that were already
-            # instrument. Better would be to un-instrument classes
+            # instrumented. Better would be to un-instrument classes
             # after tests, but how to uninstrument?
             pass
 

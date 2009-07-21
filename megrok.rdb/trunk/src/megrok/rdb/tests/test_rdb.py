@@ -47,6 +47,11 @@ def test_suite():
         tearDown=zopeTearDown,
         optionflags=optionflags))
     suite.addTest(doctest.DocTestSuite(
+        'megrok.rdb.tests.explicittable',
+        setUp=zopeSetUp,
+        tearDown=zopeTearDown,
+        optionflags=optionflags))
+    suite.addTest(doctest.DocTestSuite(
         'megrok.rdb.tests.reflection',
         setUp=zopeSetUp,
         tearDown=zopeTearDown,
