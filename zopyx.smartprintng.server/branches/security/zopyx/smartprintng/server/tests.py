@@ -14,7 +14,7 @@ class ViewTests(unittest.TestCase):
         between tests (done in setUp for good measure too)
         """
         testing.cleanUp()
-        
+
     def tearDown(self):
         """ cleanUp() is required to clear out the application registry
         between tests
@@ -27,7 +27,8 @@ class ViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         renderer = testing.registerDummyRenderer('templates/index.pt')
         response = index(context, request)
-        renderer.assert_(project='my_server')
+        renderer.assert_(project='zopyx.smartprintng.server')
+
 
 class ViewIntegrationTests(unittest.TestCase):
     """ These tests are integration tests for the view.  These test
@@ -58,13 +59,12 @@ class ViewIntegrationTests(unittest.TestCase):
         testing.cleanUp()
 
     def test_my_view(self):
-        from my_server.views import my_view
+        from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
-        result = my_view(context, request)
+        result = index(context, request)
         self.assertEqual(result.status, '200 OK')
         body = result.app_iter[0]
-        self.failUnless('Welcome to' in body)
         self.assertEqual(len(result.headerlist), 2)
         self.assertEqual(result.headerlist[0],
                          ('Content-Type', 'text/html; charset=UTF-8'))
