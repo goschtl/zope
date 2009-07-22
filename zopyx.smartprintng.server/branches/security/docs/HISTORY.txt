@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.4.3 (2009/07/22)
+------------------
+
+* removed most of the ZCML configuration
+* tests, tests, tests
+ 
 0.4.2 (2009/07/19)
 ------------------
 
