@@ -4,8 +4,6 @@ CHANGES
 1.3.0 (2009-07-22)
 ------------------
 
-- Names of sections created by macro invocations are now stored in
-  ${invocation-section:result-sections}.
 - The recipe option for result sections is now pulled from the following
   sources, in this order:
 
