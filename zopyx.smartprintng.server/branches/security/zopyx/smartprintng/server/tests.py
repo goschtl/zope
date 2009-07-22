@@ -3,6 +3,8 @@
 # (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
+import os
+import base64
 import xmlrpclib
 import unittest
 from repoze.bfg import testing
@@ -10,6 +12,12 @@ from repoze.bfg import testing
 xml = """<?xml version="1.0"?>
 <methodCall>
    <methodName>ping</methodName>
+</methodCall>
+"""
+xml2 = """<?xml version="1.0"?>
+<methodCall>
+   <methodName>convertZIP</methodName>
+    %s
 </methodCall>
 """
 
@@ -94,5 +102,22 @@ class ViewIntegrationTests(unittest.TestCase):
         body = result.app_iter[0]
         params, methodname = xmlrpclib.loads(result.body)
         self.assertEqual(params[0], 'zopyx.smartprintng.server')
+
+    def test_xmlrpc_convertZIP(self):
+        from zopyx.smartprintng.server.views import convertZIP
+        context = testing.DummyModel()
+        headers = dict()
+        headers['content-type'] = 'text/xml'
+        request = testing.DummyRequest(headers=headers, post=True)
+        zip_archive = os.path.join(os.path.dirname(__file__), 'test_data', 'test.zip')
+        zip_data = file(zip_archive, 'rb').read()
+        params = xmlrpclib.dumps((base64.encodestring(zip_data), 'pdf-prince'))
+        request.body = xml2 % params
+        result = convertZIP(context, request)
+        self.assertEqual(result.status, '200 OK')
+        body = result.app_iter[0]
+        params, methodname = xmlrpclib.loads(result.body)
+        output_zipdata = base64.decodestring(params[0])
+
 
 
