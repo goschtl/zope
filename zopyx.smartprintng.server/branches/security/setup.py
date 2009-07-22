@@ -32,6 +32,7 @@ setup(name='zopyx.smartprintng.server',
           'nose',
           # -*- Extra requirements: -*-
       ],
+      test_suite='nose.collector',
       entry_points="""\
       [paste.app_factory]
       app = zopyx.smartprintng.server.run:app
