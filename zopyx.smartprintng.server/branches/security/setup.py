@@ -29,10 +29,10 @@ setup(name='zopyx.smartprintng.server',
           'zopyx.convert2',
           'zope.sendmail',
           'transaction',
-          'nose',
           # -*- Extra requirements: -*-
       ],
       test_suite='nose.collector',
+      tests_require=('nose',),
       entry_points="""\
       [paste.app_factory]
       app = zopyx.smartprintng.server.run:app
