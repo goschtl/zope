@@ -4,10 +4,7 @@
   <!-- this must be included for the view declarations to work -->
   <include package="repoze.bfg.includes" />
 
-  <view
-     for=".models.Server"
-     view=".views.index"
-     />
+  <scan package="."/>
 
   <view
      for=".models.Server"

@@ -6,7 +6,9 @@
 import pkg_resources
 from repoze.bfg.chameleon_zpt import render_template_to_response
 from repoze.bfg.view import static
+from repoze.bfg.view import bfg_view
 from zopyx.smartprintng.server.base import ServerCore
+from models import Server
 from logger import LOG
 
 static_view = static('templates/static')
@@ -15,6 +17,7 @@ static_view = static('templates/static')
 # HTTP views
 ##################
 
+@bfg_view(for_=Server, request_type='GET', permission='read')
 class index(object):
 
     def __init__(self, context, request):
