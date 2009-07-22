@@ -80,7 +80,6 @@ class ServerCore(object):
         ZF = zipfile.ZipFile(zip_out, 'w')
         ZF.writestr('output%s' % ext, file(result, 'rb').read())
         ZF.close()
-
         return zip_out, result
 
     def convertZIP(self, zip_archive, converter_name='pdf-prince'):
