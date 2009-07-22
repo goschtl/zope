@@ -8,31 +8,6 @@
 
   <view
      for=".models.Server"
-     view=".views.convertZIP"
-     name="convertZIP"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.convertZIPEmail"
-     name="convertZIPEmail"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.availableConverters"
-     name="availableConverters"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.ping"
-     name="ping"
-     /> 
-
-
-  <view
-     for=".models.Server"
      view=".views.static_view"
      name="static"
      />
