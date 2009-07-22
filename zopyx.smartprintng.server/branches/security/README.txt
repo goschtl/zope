@@ -6,6 +6,11 @@ A repoze.bfg based server implementation for the SmartPrintNG framework.
 The SmartPrintNG server is part of the SmartPrintNG web-to-print solution
 of ZOPYX.
 
+Requirements
+============
+
+* Python 2.6 (no Python 3 support)
+
 Installation
 ============
 
