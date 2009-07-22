@@ -1,5 +1,9 @@
-import unittest
+##########################################################################
+# zopyx.smartprintng.server
+# (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
 
+import unittest
 from repoze.bfg import testing
 
 class ViewTests(unittest.TestCase):
