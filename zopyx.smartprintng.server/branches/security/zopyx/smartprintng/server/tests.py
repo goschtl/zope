@@ -3,8 +3,15 @@
 # (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
+import xmlrpclib
 import unittest
 from repoze.bfg import testing
+
+xml = """<?xml version="1.0"?>
+<methodCall>
+   <methodName>ping</methodName>
+</methodCall>
+"""
 
 class ViewTests(unittest.TestCase):
 
@@ -25,7 +32,7 @@ class ViewTests(unittest.TestCase):
         """
         testing.cleanUp()
 
-    def test_my_view(self):
+    def test_index(self):
         from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
@@ -62,7 +69,7 @@ class ViewIntegrationTests(unittest.TestCase):
         """ Clear out the application registry """
         testing.cleanUp()
 
-    def test_my_view(self):
+    def test_index(self):
         from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
@@ -74,4 +81,18 @@ class ViewIntegrationTests(unittest.TestCase):
                          ('Content-Type', 'text/html; charset=UTF-8'))
         self.assertEqual(result.headerlist[1], ('Content-Length',
                                                 str(len(body))))
+
+    def test_xmlrpc_ping(self):
+        from zopyx.smartprintng.server.views import ping
+        context = testing.DummyModel()
+        headers = dict()
+        headers['content-type'] = 'text/xml'
+        request = testing.DummyRequest(headers=headers, post=True)
+        request.body = xml
+        result = ping(context, request)
+        self.assertEqual(result.status, '200 OK')
+        body = result.app_iter[0]
+        params, methodname = xmlrpclib.loads(result.body)
+        self.assertEqual(params[0], 'zopyx.smartprintng.server')
+
 
