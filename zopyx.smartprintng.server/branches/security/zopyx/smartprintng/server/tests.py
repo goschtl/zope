@@ -7,6 +7,8 @@ import os
 import base64
 import xmlrpclib
 import unittest
+import zipfile
+import tempfile
 from repoze.bfg import testing
 
 xml = """<?xml version="1.0"?>
@@ -118,6 +120,8 @@ class ViewIntegrationTests(unittest.TestCase):
         body = result.app_iter[0]
         params, methodname = xmlrpclib.loads(result.body)
         output_zipdata = base64.decodestring(params[0])
-
-
+        output_zip_filename = tempfile.mktemp()
+        file(output_zip_filename, 'wb').write(output_zipdata)
+        ZIP = zipfile.ZipFile(output_zip_filename, 'r')
+        self.assertEqual('output.pdf' in ZIP.namelist(), True)
 
