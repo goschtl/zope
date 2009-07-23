@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Setup for zope.ramcache package
-
-$Id$
 """
 import os
 from setuptools import setup, find_packages
@@ -49,6 +47,10 @@ setup(name = 'zope.ramcache',
       namespace_packages=['zope'],
       install_requires = [
           'setuptools',
+          'zope.interface',
+          'zope.location',
+          'zope.testing',
+          'ZODB3',
           ],
       include_package_data = True,
       zip_safe = False,
