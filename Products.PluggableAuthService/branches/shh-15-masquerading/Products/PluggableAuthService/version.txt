@@ -1,1 +1,1 @@
-PluggableAuthService-1.5.5dev-jarn.masquerading.1
+PluggableAuthService-1.5.5dev
