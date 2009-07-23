@@ -10,6 +10,7 @@ version = '0.5.3'
 tests_require = ['z3c.pt',
                  'zope.tal',
                  'zope.viewlet',
+                 'zope.app.form',
                  'zope.app.publisher',
                  'zope.app.pagetemplate',
                  'lxml',

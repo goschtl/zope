@@ -11,7 +11,7 @@ if PREFER_Z3C_PT:
     except ImportError:
         logging.getLogger('z3c.ptcompat').warn(
             "Unable to import ``z3c.pt``.")
-        PREFER_Z3C_PT = False    
+        PREFER_Z3C_PT = False
 
 def enable():
     global PREFER_Z3C_PT
@@ -22,4 +22,4 @@ def disable():
     global PREFER_Z3C_PT
     PREFER_Z3C_PT = False
     reload(z3c.ptcompat)
-    
+
