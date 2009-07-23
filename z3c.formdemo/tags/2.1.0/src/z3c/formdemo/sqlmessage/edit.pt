@@ -1,0 +1,10 @@
+<h1>Hello World Message Edit Form</h1>
+
+<div id="body">
+  <div metal:use-macro="macro:form">
+    <metal:block fill-slot="above-buttons">
+      <input type="hidden" name="id" value=""
+             tal:attributes="value request/form/id" />
+    </metal:block>
+  </div>
+</div>
