@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.publisher.browser import BrowserView
-from zope.app.cache.interfaces.ram import IRAMCache
+from zope.ramcache.interfaces.ram import IRAMCache
 
 class RAMCacheView(BrowserView):
 

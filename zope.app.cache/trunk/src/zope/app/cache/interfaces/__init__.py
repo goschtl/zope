@@ -36,27 +36,5 @@ class ICacheable(Interface):
         """Sets the associated cache manager ID."""
 
 
-class ICache(Interface):
-    """Interface for caches."""
-
-    def invalidate(ob, key=None):
-        """Invalidates cached entries that apply to the given object.
-
-        `ob` is an object location.  If `key` is specified, only
-        invalidates entry for the given key.  Otherwise invalidates
-        all entries for the object.
-        """
-
-    def invalidateAll():
-        """Invalidates all cached entries."""
-
-    def query(ob, key=None, default=None):
-        """Returns the cached data previously stored by `set()`.
-
-        `ob` is the location of the content object being cached.  `key` is
-        a mapping of keywords and values which should all be used to
-        select a cache entry.
-        """
-
-    def set(data, ob, key=None):
-        """Stores the result of executing an operation."""
+# BBB import. Leave in place
+from zope.ramcache.interfaces import ICache

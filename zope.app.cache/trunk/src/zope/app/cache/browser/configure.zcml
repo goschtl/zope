@@ -6,12 +6,12 @@
   <addMenuItem
       title="RAM Cache"
       description="A RAM cache is a volatile (in memory) cache"
-      class="zope.app.cache.ram.RAMCache"
+      class="zope.ramcache.ram.RAMCache"
       permission="zope.ManageServices"
       />
 
   <pages
-      for="zope.app.cache.interfaces.ram.IRAMCache"
+      for="zope.ramcache.interfaces.ram.IRAMCache"
       class="zope.app.cache.browser.ram.RAMCacheView"
       permission="zope.ManageServices">
     <page name="editAction.html" attribute="action" />
