@@ -36,7 +36,7 @@ long_description = (
 
 setup(
     name='zope.app.zapi',
-    version='3.4.1dev',
+    version='3.4.1',
     url='http://pypi.python.org/pypi/zope.app.zapi',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
@@ -58,13 +58,16 @@ setup(
     package_dir={'': 'src'},
     namespace_packages=['zope', 'zope.app'],
     include_package_data=True,
-    install_requires=['setuptools',
-                      'zope.interface',
-                      'zope.component',
-                      'zope.traversing',
-                      'zope.app.publisher',
-                      'zope.app.interface'
-                      ],
+    install_requires=[
+        'setuptools',
+        'zope.app.interface',
+        'zope.app.publisher',
+        'zope.component',
+        'zope.deferredimport',
+        'zope.deprecation',
+        'zope.interface',
+        'zope.traversing',
+        ],
     extras_require=dict(test=['zope.app.testing']),
     zip_safe=False,
     )
