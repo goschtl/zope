@@ -4,8 +4,13 @@ Changelog
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Allow to pass in a ``package-map`` manually, mapping distribution names
+  to different package names.
 
+- Added additional ``extras`` option, to control wether or not extra
+  dependencies (like test requirements) should be included.
+
+- Corrected distribution name discovery to preserve case.
 
 0.2 (2009-05-24)
 ----------------

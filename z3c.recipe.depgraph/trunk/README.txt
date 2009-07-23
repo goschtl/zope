@@ -13,6 +13,14 @@ eggs
 exclude
   A list of eggs which should be excluded from the graph processing.
 
+extras
+  A boolean determining if extra requirements should be included. Defaults
+  to False.
+
+package-map
+  An buildout section containing a mapping of distribution names to package
+  names.
+
 variants
   A whitespace separated list of variants of graphs to create. The available
   options are:

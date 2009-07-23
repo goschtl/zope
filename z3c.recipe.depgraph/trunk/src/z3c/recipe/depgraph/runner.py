@@ -1,14 +1,11 @@
 import os
 
-GENERATE = "./bin/%(scriptname)s -x -d %(package)s -i setuptools > %(output)s"
+GENERATE = "./bin/%(scriptname)s %(extras)s-d %(package)s -i setuptools > %(output)s"
 TRED = "tred %(input)s > %(output)s"
 GRAPH = "dot -Tsvg %(input)s > %(output)s"
 SCCMAP = "sccmap %(input)s > %(output)s"
 SCCGRAPH = "dot -Tsvg %(input)s -O"
 
-PACKAGE_EXCEPTIONS = {
-    'Plone' : 'Products.CMFPlone',
-}
 
 def execute(template, **kwargs):
     os.system(template % kwargs)
@@ -17,19 +14,29 @@ def execute(template, **kwargs):
 def main(args):
     name = args.get('name')
     packages = args.get('packages')
+    package_map = args.get('package_map')
     path = args.get('path')
     scriptname = name + '-eggdeps'
     variants = args.get('variants', ['base', 'tred', 'scc'])
+    extras = args.get('extras')
 
     for package in packages:
-        package = PACKAGE_EXCEPTIONS.get(package, package)
-        deeppath = os.path.join(path, package.replace('.', os.sep))
+        name = package
+        if name in package_map:
+            name = package_map[name]
+        deeppath = os.path.join(path, name.replace('.', os.sep))
 
         if not os.path.exists(deeppath):
             os.makedirs(deeppath)
 
+        if extras:
+            extras = '-x '
+        else:
+            extras = ''
+
         specfile = os.path.join(deeppath, 'spec')
         execute(GENERATE,
+            extras=extras,
             scriptname=scriptname,
             package=package,
             output=specfile + '.dot')

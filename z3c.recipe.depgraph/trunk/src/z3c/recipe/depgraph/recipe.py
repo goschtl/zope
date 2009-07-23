@@ -26,6 +26,8 @@ class Recipe(object):
         self.output = self.options.get(
             'output', os.path.join(
             self.buildout['buildout']['parts-directory'], self.name))
+        extras = self.options.get('extras', 'false')
+        self.extras = extras.lower() in ('1', 'true', 'yes')
 
     def install(self):
         options = self.options
@@ -38,17 +40,27 @@ class Recipe(object):
         variants = [v.strip() for v in variants.split()]
 
         # Install an interpreter
-        packages = set(ws.by_key.keys()) - EXCLUDE_PACKAGES - self.exclude
+        packages = set([dist.project_name for dist in ws.by_key.values()])
+        packages = packages - EXCLUDE_PACKAGES - self.exclude
         packages = list(packages)
+
+        # Allow to map distribution names to different package names
+        pmap = dict()
+        package_map = options.get('package-map', '').strip()
+        if package_map:
+            pmap = self.buildout[package_map]
         packages.sort()
+
         easy_install.scripts(
             [('graph-%s' % self.name, 'z3c.recipe.depgraph.runner', 'main')],
             ws, options['executable'], options['bin-directory'],
             arguments=dict(
                 packages=packages,
+                package_map=package_map,
                 name=self.name,
                 path=self.output,
-                variants=variants
+                variants=variants,
+                extras=self.extras,
                 ),
             )
 
