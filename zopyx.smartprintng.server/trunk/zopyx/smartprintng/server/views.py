@@ -6,7 +6,9 @@
 import pkg_resources
 from repoze.bfg.chameleon_zpt import render_template_to_response
 from repoze.bfg.view import static
+from repoze.bfg.view import bfg_view
 from zopyx.smartprintng.server.base import ServerCore
+from models import Server
 from logger import LOG
 
 static_view = static('templates/static')
@@ -15,6 +17,7 @@ static_view = static('templates/static')
 # HTTP views
 ##################
 
+@bfg_view(for_=Server, request_type='GET', permission='read')
 class index(object):
 
     def __init__(self, context, request):
@@ -37,6 +40,7 @@ class index(object):
 from repoze.bfg.xmlrpc import xmlrpc_view
 import xmlrpclib
 
+@bfg_view(name='convertZIP', for_=Server)
 @xmlrpc_view
 def convertZIP(context, zip_archive, converter_name='pdf-prince'):
     core = ServerCore()
@@ -47,6 +51,8 @@ def convertZIP(context, zip_archive, converter_name='pdf-prince'):
         LOG.error(msg, exc_info=True)
         return xmlrpclib.Fault(123, msg)
 
+
+@bfg_view(name='convertZIPEmail', for_=Server)
 @xmlrpc_view
 def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
     core = ServerCore()
@@ -57,10 +63,14 @@ def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=No
         LOG.error(msg, exc_info=True)
         return xmlrpclib.Fault(123, msg)
 
+
+@bfg_view(name='availableConverters', for_=Server)
 @xmlrpc_view
 def availableConverters(context):
     return ServerCore().availableConverters()
 
+
+@bfg_view(name='ping', for_=Server)
 @xmlrpc_view
 def ping(context):
     return 'zopyx.smartprintng.server'

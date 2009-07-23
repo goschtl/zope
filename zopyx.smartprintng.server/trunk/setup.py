@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.4.2.2'
+version = '0.5.0'
 
 setup(name='zopyx.smartprintng.server',
       version=version,
@@ -29,9 +29,10 @@ setup(name='zopyx.smartprintng.server',
           'zopyx.convert2',
           'zope.sendmail',
           'transaction',
-          'nose',
           # -*- Extra requirements: -*-
       ],
+      test_suite='nose.collector',
+      tests_require=('nose',),
       entry_points="""\
       [paste.app_factory]
       app = zopyx.smartprintng.server.run:app

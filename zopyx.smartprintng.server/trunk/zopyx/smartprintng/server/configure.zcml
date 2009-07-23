@@ -4,35 +4,7 @@
   <!-- this must be included for the view declarations to work -->
   <include package="repoze.bfg.includes" />
 
-  <view
-     for=".models.Server"
-     view=".views.index"
-     />
-
-  <view
-     for=".models.Server"
-     view=".views.convertZIP"
-     name="convertZIP"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.convertZIPEmail"
-     name="convertZIPEmail"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.availableConverters"
-     name="availableConverters"
-     /> 
-
-  <view
-     for=".models.Server"
-     view=".views.ping"
-     name="ping"
-     /> 
-
+  <scan package="."/>
 
   <view
      for=".models.Server"

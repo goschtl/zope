@@ -1,6 +1,27 @@
-import unittest
+##########################################################################
+# zopyx.smartprintng.server
+# (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
 
+import os
+import base64
+import xmlrpclib
+import unittest
+import zipfile
+import tempfile
 from repoze.bfg import testing
+
+xml = """<?xml version="1.0"?>
+<methodCall>
+   <methodName>ping</methodName>
+</methodCall>
+"""
+xml2 = """<?xml version="1.0"?>
+<methodCall>
+   <methodName>convertZIP</methodName>
+    %s
+</methodCall>
+"""
 
 class ViewTests(unittest.TestCase):
 
@@ -14,20 +35,21 @@ class ViewTests(unittest.TestCase):
         between tests (done in setUp for good measure too)
         """
         testing.cleanUp()
-        
+
     def tearDown(self):
         """ cleanUp() is required to clear out the application registry
         between tests
         """
         testing.cleanUp()
 
-    def test_my_view(self):
+    def test_index(self):
         from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
         renderer = testing.registerDummyRenderer('templates/index.pt')
         response = index(context, request)
-        renderer.assert_(project='my_server')
+        renderer.assert_(project='zopyx.smartprintng.server')
+
 
 class ViewIntegrationTests(unittest.TestCase):
     """ These tests are integration tests for the view.  These test
@@ -57,17 +79,49 @@ class ViewIntegrationTests(unittest.TestCase):
         """ Clear out the application registry """
         testing.cleanUp()
 
-    def test_my_view(self):
-        from my_server.views import my_view
+    def test_index(self):
+        from zopyx.smartprintng.server.views import index
         context = testing.DummyModel()
         request = testing.DummyRequest()
-        result = my_view(context, request)
+        result = index(context, request)
         self.assertEqual(result.status, '200 OK')
         body = result.app_iter[0]
-        self.failUnless('Welcome to' in body)
         self.assertEqual(len(result.headerlist), 2)
         self.assertEqual(result.headerlist[0],
                          ('Content-Type', 'text/html; charset=UTF-8'))
         self.assertEqual(result.headerlist[1], ('Content-Length',
                                                 str(len(body))))
+
+    def test_xmlrpc_ping(self):
+        from zopyx.smartprintng.server.views import ping
+        context = testing.DummyModel()
+        headers = dict()
+        headers['content-type'] = 'text/xml'
+        request = testing.DummyRequest(headers=headers, post=True)
+        request.body = xml
+        result = ping(context, request)
+        self.assertEqual(result.status, '200 OK')
+        body = result.app_iter[0]
+        params, methodname = xmlrpclib.loads(result.body)
+        self.assertEqual(params[0], 'zopyx.smartprintng.server')
+
+    def test_xmlrpc_convertZIP(self):
+        from zopyx.smartprintng.server.views import convertZIP
+        context = testing.DummyModel()
+        headers = dict()
+        headers['content-type'] = 'text/xml'
+        request = testing.DummyRequest(headers=headers, post=True)
+        zip_archive = os.path.join(os.path.dirname(__file__), 'test_data', 'test.zip')
+        zip_data = file(zip_archive, 'rb').read()
+        params = xmlrpclib.dumps((base64.encodestring(zip_data), 'pdf-prince'))
+        request.body = xml2 % params
+        result = convertZIP(context, request)
+        self.assertEqual(result.status, '200 OK')
+        body = result.app_iter[0]
+        params, methodname = xmlrpclib.loads(result.body)
+        output_zipdata = base64.decodestring(params[0])
+        output_zip_filename = tempfile.mktemp()
+        file(output_zip_filename, 'wb').write(output_zipdata)
+        ZIP = zipfile.ZipFile(output_zip_filename, 'r')
+        self.assertEqual('output.pdf' in ZIP.namelist(), True)
 
