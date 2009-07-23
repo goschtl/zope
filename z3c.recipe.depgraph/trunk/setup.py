@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.recipe.depgraph',
-    version = '0.3dev',
+    version = '0.3',
     author='Zope Community',
     author_email='zope-dev@zope.org',
     description='Buildout recipe to generate dependency graphs.',
