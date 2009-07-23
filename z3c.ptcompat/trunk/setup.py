@@ -6,7 +6,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '0.5.4'
+version = '0.5.5dev'
 tests_require = ['z3c.pt',
                  'zope.tal',
                  'zope.viewlet',
