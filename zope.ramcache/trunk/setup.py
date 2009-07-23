@@ -29,7 +29,7 @@ setup(name = 'zope.ramcache',
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords = "zope3 cache",
+      keywords = "zope cache",
       classifiers = [
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -39,7 +39,7 @@ setup(name = 'zope.ramcache',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
-          'Framework :: Zope3'],
+          ],
       url='http://pypi.python.org/pypi/zope.ramcache',
       license='ZPL 2.1',
       packages=find_packages('src'),
