@@ -6,10 +6,19 @@
 
   <!-- Content Security Declarations -->
 
+  <class class=".contact.Addresses">
+    <allow interface="zope.container.interfaces.IContainer" />
+  </class>
+
   <class class=".contact.Address">
     <allow interface=".interfaces.IAddress" />
     <require permission="zope.Public"
              set_schema=".interfaces.IAddress" />
+  </class>
+
+  <class class=".contact.EMails">
+    <allow interface="zope.interface.common.sequence.ISequence"
+           attributes="__iter__" />
   </class>
 
   <class class=".contact.EMail">

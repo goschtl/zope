@@ -18,10 +18,10 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.component
 import zope.location
-from zope.app.container import btree
 from zope.session.interfaces import ISession
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.publisher import browser
+from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.viewlet.viewlet import CSSViewlet, JavaScriptViewlet
 from z3c.template.interfaces import ILayoutTemplate
@@ -96,7 +96,7 @@ class AddressesForm(form.AddForm):
         # container in a session variable.
         session = ISession(self.request)[SESSION_KEY]
         if 'addresses' not in session:
-            session['addresses'] = btree.BTreeContainer()
+            session['addresses'] = contact.Addresses()
         return session['addresses']
 
     def update(self):
@@ -381,7 +381,9 @@ class AddressBook(browser.BrowserPage):
             return session.get('selectedContact')
         def set(self, value):
             session = ISession(self.request)[SESSION_KEY]
-            session['selectedContact'] = value
+            # The session data is stored in the ZODB, so we must remove
+            # security proxies.
+            session['selectedContact'] = removeSecurityProxy(value)
         return property(get, set)
 
     def update(self):

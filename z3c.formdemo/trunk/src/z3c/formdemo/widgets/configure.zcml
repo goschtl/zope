@@ -18,8 +18,18 @@
       permission="zope.Public"
       />
 
+  <class class=".browser.AllFields">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IAllFields" />
+    <require
+        permission="zope.Public"
+        set_schema=".interfaces.IAllFields" />
+  </class>
+
   <adapter
       factory=".browser.getAllFields"
+      trusted="true"
       />
 
 </configure>

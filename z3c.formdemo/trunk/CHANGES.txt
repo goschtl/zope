@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-Version 2.1.0 (unreleased)
+Version 2.1.0 (2009-07-23)
 --------------------------
 
-- ...
+- Feature: Updated tests and code to latest pacakge versions.
 
 Version 2.0.0 (2009-06-14)
 --------------------------

@@ -35,7 +35,7 @@
   <viewletManager
       name="ICSS"
       provides="z3c.formdemo.skin.ICSS"
-      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
       layer="z3c.formdemo.layer.IDemoBrowserLayer"
       permission="zope.Public"
       />
@@ -43,7 +43,7 @@
   <viewletManager
       name="IJavaScript"
       provides="z3c.formdemo.skin.IJavaScript"
-      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
       layer="z3c.formdemo.layer.IDemoBrowserLayer"
       permission="zope.Public"
       />

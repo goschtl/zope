@@ -12,6 +12,7 @@ screen:
   >>> from z3c.etestbrowser.testing import ExtendedTestBrowser
   >>> user = ExtendedTestBrowser()
   >>> user.addHeader('Accept-Language', 'en')
+  >>> user.handleErrors = False
   >>> user.open('http://localhost:8080')
 
 Since all demos are purely public, there is no need to log in. Let's now click

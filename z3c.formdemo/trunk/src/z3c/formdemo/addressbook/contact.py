@@ -19,11 +19,13 @@ __docformat__ = "reStructuredText"
 import persistent
 import zope.interface
 import zope.location
-from zope.app.container import contained
+from zope.container import contained, btree
 from zope.schema.fieldproperty import FieldProperty
 
 from z3c.formdemo.addressbook import interfaces
 
+class Addresses(btree.BTreeContainer):
+    pass
 
 class Address(contained.Contained, persistent.Persistent):
     zope.interface.implements(interfaces.IAddress)
