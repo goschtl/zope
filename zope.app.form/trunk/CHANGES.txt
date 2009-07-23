@@ -2,9 +2,10 @@
 CHANGES
 =======
 
-3.8.1 (unreleased)
+3.8.1 (2009-07-23)
 ==================
 
+- Fix unittest failure due to translation update.
 
 3.8.0 (2009-05-24)
 ==================
