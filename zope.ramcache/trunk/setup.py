@@ -20,7 +20,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'zope.ramcache',
-      version = '1.0dev',
+      version = '1.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope RAM Cache',
