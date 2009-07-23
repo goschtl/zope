@@ -1,5 +1,10 @@
-from setuptools import setup, find_packages
+
+import sys
 import os
+from setuptools import setup, find_packages
+
+if sys.version_info < (2,6):
+    raise RuntimeError('Please use Python 2.6.X')
 
 version = '0.5.0'
 
