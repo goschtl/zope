@@ -81,10 +81,10 @@ class GrokForm(object):
     def __call__(self):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
             return
         self.updateForm()
+        if self.request.response.getStatus() in (302, 303):
+            return
         return self.render()
 
 
@@ -99,10 +99,10 @@ class PageGrokForm(GrokForm):
     def __call__(self):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
             return
         self.updateForm()
+        if self.request.response.getStatus() in (302, 303):
+            return
         if self.layout is None:
             layout = component.getMultiAdapter(
                 (self.context, self.request), megrok.layout.ILayout)
