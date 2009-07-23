@@ -166,7 +166,7 @@ prefix.
 
 To show this we'll create some dummy objects.
 
-  >>> from zope.app.container.contained import Contained
+  >>> from zope.container.contained import Contained
   >>> class DummyObject(Contained):
   ...     def __init__(self, parent, name):
   ...         self.__parent__ = parent

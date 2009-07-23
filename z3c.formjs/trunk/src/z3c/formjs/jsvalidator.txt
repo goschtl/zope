@@ -104,7 +104,7 @@ code. As you can see, we get the expected error message:
   >>> edit = AddressEditForm(None, request)
   >>> edit.update()
   >>> AJAXPlugin(edit).publishTraverse(None, 'validate')()
-  u'The system could not process the given value.'
+  u'The entered value is not a valid integer literal.'
 
 Of course, one cannot just traverse to any attribute in the form:
 

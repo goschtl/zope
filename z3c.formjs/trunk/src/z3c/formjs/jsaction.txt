@@ -246,7 +246,7 @@ this is much simpler.)
 
 * Hook up the "provider" TALES expression type:
 
-  >>> from zope.app.pagetemplate.engine import TrustedEngine
+  >>> from zope.pagetemplate.engine import TrustedEngine
   >>> from zope.contentprovider import tales
   >>> TrustedEngine.registerType('provider', tales.TALESProviderExpression)
 
@@ -487,30 +487,41 @@ After adding a simple template for the form, it can be rendered:
   <html>
     <head>
       <script type="text/javascript">
-        $(document).ready(function(){
-          $("#form-widgets-name").bind("change",
-              function(){alert("The Name was Changed!");});
-          $("#form-widgets-age").bind("click",
-              function(){alert("The Age was Clicked!");});
-        })
-      </script>
+  $(document).ready(function(){
+    $("#form-widgets-name").bind("change",
+                                 function(){alert("The Name was Changed!");});
+    $("#form-widgets-age").bind("click",
+                                function(){alert("The Age was Clicked!");});
+  })
+  </script>
     </head>
     <body>
+  <BLANKLINE>
+  <BLANKLINE>
       <form action=".">
         <div class="row">
           <label for="form-widgets-name">Name</label>
-          <input type="text" id="form-widgets-name" name="form.widgets.name"
-                 class="text-widget required textline-field" value="" />
-        </div>
+  <BLANKLINE>
+      <input id="form-widgets-name" name="form.widgets.name"
+             class="text-widget required textline-field"
+             value="" type="text" />
+  <BLANKLINE>
+  </div>
         <div class="row">
           <label for="form-widgets-age">Age</label>
-          <input type="text" id="form-widgets-age" name="form.widgets.age"
-                 class="text-widget required int-field" value="" />
-        </div>
+  <BLANKLINE>
+      <input id="form-widgets-age" name="form.widgets.age"
+             class="text-widget required int-field" value=""
+             type="text" />
+  <BLANKLINE>
+  </div>
         <div class="action">
-          <input type="submit" id="form-buttons-add" name="form.buttons.add"
-                 class="submit-widget button-field" value="Add" />
-        </div>
+  <BLANKLINE>
+  <input id="form-buttons-add" name="form.buttons.add"
+         class="submit-widget button-field" value="Add"
+         type="submit" />
+  <BLANKLINE>
+  </div>
       </form>
     </body>
   </html>

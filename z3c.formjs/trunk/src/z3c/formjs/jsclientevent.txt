@@ -201,7 +201,7 @@ request as an annotation.
 
   >>> caughtEvents = request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
   >>> caughtEvents
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>]
   >>> event in caughtEvents
   True
 
@@ -280,14 +280,14 @@ as is normally done, then the event will be caught:
   >>> form.update()
 
   >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>]
 
 More importantly, now our form knows about this event via the
 ``eventCalls`` property.  This property returns a list of all events
 for which there are registered listeners/renderers.
 
   >>> form.eventCalls
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>]
 
 If there are no handlers for the thrown event, they do not appear in
 the list given by ``eventCalls``, even though they are still in the
@@ -296,11 +296,11 @@ request annotation:
   >>> from zope.component.interfaces import ObjectEvent
   >>> notify(ObjectEvent('foo'))
   >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
-   <zope.app.event.objectevent.ObjectEvent object at ...>]
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>,
+   <zope.component.interfaces.ObjectEvent object at ...>]
 
   >>> form.eventCalls
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>]
 
 We can then call all the listeners/renderers for the events with
 handlers and get back the renderer javascript injection using the
@@ -308,7 +308,7 @@ handlers and get back the renderer javascript injection using the
 
   >>> print form.eventInjections
   alert("This event occured:
-         <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");
+         <zope.lifecycleevent.ObjectModifiedEvent object at ...>");
 
 Note that it is up to the page that sent the (possibly) asynchronous
 http request to the form to properly handle the javascript injection

@@ -32,7 +32,7 @@ chapters = '\n'.join(
 
 setup (
     name='z3c.formjs',
-    version='0.4.2dev',
+    version='0.5.0',
     author = "Paul Carduner and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Javascript integration into ``z3c.form``",
@@ -65,8 +65,19 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
-        test = ['zope.testing', 'zope.app.testing', 'z3c.coverage'],
-        docs = ['Sphinx', 'z3c.recipe.sphinxdoc'],
+        test = [
+            'lxml',
+            'z3c.coverage',
+            'zope.container',
+            'zope.contenttype',
+            'zope.site',
+            'zope.testing',
+            'zope.app.testing',
+            ],
+        docs = [
+            'Sphinx',
+            'z3c.recipe.sphinxdoc',
+            ],
         ),
     install_requires = [
         'jquery.layer',
@@ -82,6 +93,5 @@ setup (
         'zope.traversing',
         'python-cjson',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )

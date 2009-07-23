@@ -176,7 +176,7 @@ is replaced with.
 
 So let's create a widget switcher instance:
 
-  >>> from zope.app.folder import rootFolder
+  >>> from zope.site.folder import rootFolder
   >>> root = rootFolder()
   >>> form = Form(root, request)
   >>> form.__name__ = 'form.html'

@@ -23,7 +23,7 @@ from z3c.form import testing
 
 def tearDown(test):
     testing.tearDown(test)
-    from zope.app.pagetemplate import engine
+    from zope.pagetemplate import engine
     engine.TrustedEngine = engine._TrustedEngine()
 
 def test_suite():

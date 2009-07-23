@@ -80,7 +80,7 @@ Before we can render the form, we need to register some necessary components:
 
 * Hook up the "provider" TALES expression type:
 
-  >>> from zope.app.pagetemplate.engine import TrustedEngine
+  >>> from zope.pagetemplate.engine import TrustedEngine
   >>> from zope.contentprovider import tales
   >>> TrustedEngine.registerType('provider', tales.TALESProviderExpression)
 
@@ -184,12 +184,14 @@ problem:
   >>> showPerson.update()
 
   >>> print showPerson.getInputWidget(showPerson)
-  <input type="text" id="form-widgets-age"
+  <input id="form-widgets-age"
          name="form.widgets.age"
          class="text-widget required int-field"
+         value="27"
+         type="text"
          onblur="$.get('saveValue',
              function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
-         value="27" />
+         />
 
 Once the editing is complete, the value gets saved:
 
@@ -234,9 +236,11 @@ id:
   ...     }))
   >>> showPerson.update()
   >>> print showPerson.getInputWidget(showPerson)
-  <input type="text" id="form-widgets-age"
+  <input id="form-widgets-age"
          name="form.widgets.age"
          class="text-widget required int-field"
+         value="25"
+         type="text"
          onblur="$.get('saveValue',
                  function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
-         value="25" />
+         />
