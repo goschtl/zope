@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.4.3 (unreleased)
+3.5.0 (2009-07-24)
 ------------------
 
-- ...
+- Update tests to work with latest packages.
 
 3.4.2 (2009-01-27)
 ------------------
@@ -19,7 +19,7 @@ CHANGES
 - Remove dependency on zope.app.zapi, substituting its uses with direct
   imports.
 
-- Change "cheeseshop" to "pypi" in the package homepage. 
+- Change "cheeseshop" to "pypi" in the package homepage.
 
 3.4.1 (2008-02-02)
 ------------------
