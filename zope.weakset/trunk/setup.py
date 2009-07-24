@@ -41,16 +41,21 @@ Operating System :: Microsoft :: Windows
 Operating System :: Unix
 """
 
-setup(name='zope_weakset',
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+setup(name='zope.weakset',
       version='3.6.0',
-      url='http://svn.zope.org/ZODB',
-      download_url = "http://www.zope.org/Products/ZODB3.6",
-      license='ZPL 2.1',
-      description='ZODB weakset implementation',
       author='Zope Corporation and Contributors',
-      maintainer='Zope Corporation and Contributors',
       author_email='zodb-dev@zope.org',
-      maintainer_email='zodb-dev@zope.org',
+      description='ZODB weakset implementation',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      url='http://pypi.python.org/pypi/zope.weakset',
+      license='ZPL 2.1',
       platforms = ['any'],
       classifiers = filter(None, classifiers.split("\n")),
       long_description = __doc__,
@@ -58,9 +63,7 @@ setup(name='zope_weakset',
       package_dir = {'': 'src'},
       namespace_packages = ['zope'],
       tests_require = [],
-      install_requires=[],
+      install_requires=['setuptools'],
       include_package_data = True,
       zip_safe = True,
       )
-
-

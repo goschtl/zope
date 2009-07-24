@@ -55,7 +55,8 @@ class WeakSetTests(unittest.TestCase):
         w.add(dummy3)
         del dummy3
         L = [x() for x in w.as_weakref_list()]
-        self.assertEqual(L, [dummy, dummy2])
+        self.assert_(dummy in L)
+        self.assert_(dummy2 in L)
 
     def test_map(self):
         w = WeakSet()
@@ -70,11 +71,11 @@ class WeakSetTests(unittest.TestCase):
         w.map(poker)
         for thing in dummy, dummy2, dummy3:
             self.assertEqual(thing.poked, 1)
-        
-        
+
+
 def test_suite():
     return unittest.makeSuite(WeakSetTests)
 
 if __name__ == '__main__':
     unittest.main()
-    
+
