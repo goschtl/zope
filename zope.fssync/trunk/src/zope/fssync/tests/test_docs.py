@@ -33,7 +33,7 @@ from zope.fssync import pickle
 
 _test_dirs = []
 
-TESTDIR = os.path.join(os.path.dirname(__file__), 'svntestdir')
+TESTDIR = os.path.dirname(__file__)
 
 def cleanUpZope(test):
     for wcdir in _test_dirs:
@@ -41,16 +41,14 @@ def cleanUpZope(test):
     cleanup.cleanUp()
 
 def svn_test_checkout():
-    if not os.path.exists(TESTDIR):
-        os.mkdir(TESTDIR)
-    base = py.path.local(__file__).dirpath('svntestdir')
+    base = py.path.svnwc(TESTDIR).mkdir('svntestdir')
     pat = 'test%s'
     count = 1
     while base.join(pat % count).check():
         count += 1
     name = pat % count
     wcdir = py.path.svnwc(base).mkdir(name)
-    _test_dirs.append(wcdir)
+    _test_dirs.append(base)
     return wcdir
 
 def rel_paths(checkout, paths):
