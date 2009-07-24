@@ -1,8 +1,15 @@
 Changes
 =======
 
-3.5
----
+3.5.1 (2009-07-24)
+------------------
+
+- Properly setup tests, so that they will work in a release as well.
+
+- Removed slugs.
+
+3.5 (????)
+----------
 
 - Added the support for empty directories in snarf format. Now
   directories can be explicitly described by snarf.
@@ -17,8 +24,8 @@ Changes
   this is to avoid conflicts after commit on files that are
   formatted differently on the server from local versions.
 
-3.4.0b1
--------
+3.4.0b1 (????)
+--------------
 
 Refactoring of zope.fssync and zope.app.fssync into two clearly
 separated packages:

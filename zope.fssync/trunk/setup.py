@@ -24,7 +24,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.fssync',
-      version = '3.5',
+      version = '3.5.1',
       url='http://pypi.python.org/pypi/zope.fssync',
       license='ZPL 2.1',
       description="Filesystem synchronization utility for Zope 3.",
@@ -32,8 +32,9 @@ setup(name='zope.fssync',
       author_email='zope3-dev@zope.org',
       long_description=(read('README.txt')
                         + '\n\n' +
-                        read('src', 'zope', 'fssync', 'CHANGES.txt')
-                        ),
+                        read('src', 'zope', 'fssync', 'README.txt')
+                        + '\n\n' +
+                        read('CHANGES.txt')),
       keywords = "zope3 serialization synchronization",
       classifiers = [
           'Development Status :: 5 - Production/Stable',
@@ -48,7 +49,11 @@ setup(name='zope.fssync',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope',],
-      tests_require = ['zope.testing'],
+      tests_require = ['zope.testing', 'py'],
+      extras_require={
+          'test': ['zope.testing',
+                   'py'],
+          },
       install_requires = ['setuptools',
                           'zope.annotation',
                           'zope.component',
