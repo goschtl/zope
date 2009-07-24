@@ -82,7 +82,7 @@ def normalize(request, dt):
     >>> normalize(request,dt)
     Traceback (most recent call last):
     ...
-    AmbiguousTimeError: 2006-03-26 03:30:00
+    NonExistentTimeError: 2006-03-26 03:30:00
 
     An ambiguous time:
 

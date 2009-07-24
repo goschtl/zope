@@ -2,7 +2,15 @@
 CHANGES
 =======
 
+0.7.0 (2009-07-24)
+------------------
+
+- Fixed tests to work with latest package versions.
+
+- The buildout now also pulls in the test extras, which is required.
+
 0.6.1 (2008-05-20)
+------------------
 
 - No code changes, and only a very minor documentation tweak.
   Re-released to avoid confusion over package versions found in the wild.
