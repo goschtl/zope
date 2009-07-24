@@ -1,3 +1,5 @@
+import re
+
 # BBB for Zope 2.10
 try:
     from App.class_init import InitializeClass
@@ -19,6 +21,7 @@ from AccessControl import getSecurityManager
 from RestrictedPython import Utilities
 
 from five.pt.pagetemplate import BaseTemplateFile
+
 
 class FSPageTemplate(BaseTemplateFile, FSObject, Script):
     meta_type = 'Filesystem Page Template'
@@ -96,3 +99,9 @@ DirectoryView.registerFileExtension('cpt', FSControllerPageTemplate)
 
 DirectoryView.registerMetaType('Page Template', FSPageTemplate)
 DirectoryView.registerMetaType('Controller Page Template', FSControllerPageTemplate)
+
+# Patch the ignore list, so that our .py source files don't show up in skins
+# folders
+old_ignore = DirectoryView.ignore_re
+new_ignore_re = re.compile(r'\.|(.*~$)|#|(.*\.(.?pt|htm.?)\.py$)')
+DirectoryView.ignore_re = new_ignore_re

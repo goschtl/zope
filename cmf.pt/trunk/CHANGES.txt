@@ -4,6 +4,8 @@ Changelog
 0.5 - unreleased
 ----------------
 
+- Extend the ignore_re list of CMFCore.DirectoryView to ignore our cache
+  files named `.<original extension>.py`. [hannosch]
 
 0.4 - 2009-05-18
 ----------------
