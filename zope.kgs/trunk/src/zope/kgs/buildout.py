@@ -38,6 +38,12 @@ def getVersionsListing(packages):
          for package in packages])
 
 
+def getPackageSpec(package):
+    spec = package.name
+    if package.testExtras:
+        spec += ' ['+ package.testExtras + ']'
+    return spec
+
 def generateBuildout(packageConfigPath, outputPath):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     # Load all package information from the controlled pacakge config file.
@@ -46,7 +52,8 @@ def generateBuildout(packageConfigPath, outputPath):
     # Create the data dictionary
     data = {
         'tested-packages': '\n    '.join(
-            [package.name for package in packages if package.tested]),
+            [getPackageSpec(package) for package in packages
+             if package.tested]),
         'versions': getVersionsListing(packages)
         }
 

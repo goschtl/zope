@@ -33,6 +33,7 @@ like:
   ...
   ... [packageB]
   ... versions = 1.2.3
+  ... test-extras = test
   ...
   ... [packageC]
   ... # Do not test this package.
@@ -164,7 +165,7 @@ file that will create and install a testrunner over all packages for you:
   [test]
   recipe = zc.recipe.testrunner
   eggs = packageA
-      packageB
+      packageB [test]
   <BLANKLINE>
   [versions]
   packageA = 1.0.1
@@ -186,7 +187,7 @@ Let's make sure that the buildout generation also honors the extensions:
   [test]
   recipe = zc.recipe.testrunner
   eggs = packageA
-      packageB
+      packageB [test]
       packageD
   <BLANKLINE>
   [versions]

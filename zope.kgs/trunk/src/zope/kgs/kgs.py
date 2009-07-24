@@ -84,10 +84,11 @@ def _getAbsolutePath(section, basePath, name, default):
 
 class Package(object):
 
-    def __init__(self, name, versions, tested):
+    def __init__(self, name, versions, tested, testExtras):
         self.name = name
         self.versions = versions
         self.tested = tested
+        self.testExtras = testExtras
 
     def __repr__(self):
         return '<%s %r>' %(self.__class__.__name__, self.name)
@@ -143,7 +144,8 @@ class KGS(object):
                 Package(section,
                         result[section]['versions'].split(),
                         ConfigParser.ConfigParser._boolean_states[
-                            result[section]['tested']]
+                            result[section]['tested']],
+                        result[section].get('test-extras')
                         )
                 )
 
