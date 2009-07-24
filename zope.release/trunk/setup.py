@@ -51,7 +51,7 @@ setup(name='zope.release',
           'setuptools',
           'zc.buildout',
           'zc.lockfile',
-          'zope.kgs',
+          'zope.kgs>=1.2.0',
           ],
       entry_points = dict(console_scripts=[
           'upload = zope.release.upload:main',
