@@ -25,7 +25,7 @@ Before updating the engine we need to ensure that persistent objects can be
 adapted to key references:
 
   >>> import zope.component
-  >>> from zope.app.keyreference import testing
+  >>> from zope.keyreference import testing
 
   >>> zope.component.provideAdapter(testing.SimpleKeyReference)
 
@@ -170,7 +170,7 @@ tag objects can be queried by tagnames, users and items.
   >>> sorted(engine.getTagObjects(tags=(u'personal',),
   ...                             items=(3,)))
   [<Tag u'personal' for 3 by u'jodok'>]
-  
+
 We can also search fr
 
 Tagging Statistics
@@ -412,7 +412,7 @@ Tag Clouds
 All portals like Flickr, del.icio.us use tagging and generate tag clouds.
 Tag clouds contain tags and their frequency.
 
-The ``getCloud`` method returns a set of tuples in the form of 
+The ``getCloud`` method returns a set of tuples in the form of
 ('tag', frequency). It takes the same arguments as getTags.
 
   >>> type(engine.getCloud())
@@ -436,12 +436,12 @@ items, only a single one is allowed:
 
   >>> sorted(engine.getCloud(items=[1]))
   [(u'USA', 1)]
-  
+
 The same applies to queries by user:
 
   >>> sorted(engine.getCloud(users=[u'srichter']))
   [(u'guru', 1), (u'zope3', 1)]
-  
+
 Or more users, and a few items.
 
   >>> sorted(engine.getCloud(items=[1, 2, 3], users=[u'srichter', u'jodok']))
@@ -570,7 +570,7 @@ The 'Austria' tag is still there.
 
   >>> sorted(engine.getTags())
   [u'Austria', u'USA', u'guru', u'lovely', u'zope3']
-  
+
 Let us setup the handler and events.
 
   >>> from zope.component import eventtesting
@@ -619,7 +619,7 @@ Let us add our image object again.
 
 This is our first and only entry in the intid util
 
-   >>> intIds.refs.keys()[0] in engine.getItems() 
+   >>> intIds.refs.keys()[0] in engine.getItems()
    True
 
 Our stale entry is 2. The intids of the items deleted are returned.
@@ -628,7 +628,7 @@ Our stale entry is 2. The intids of the items deleted are returned.
    True
    >>> engine.cleanStaleItems()
    [2]
-   
+
 We now only have our real image item.
 
    >>> 2  in engine.getItems()

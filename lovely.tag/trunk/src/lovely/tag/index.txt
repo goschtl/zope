@@ -26,7 +26,7 @@ We need a tagging engine.
 
 
   >>> import zope.component
-  >>> from zope.app.keyreference import testing
+  >>> from zope.keyreference import testing
   >>> zope.component.provideAdapter(testing.SimpleKeyReference)
 
   >>> engine.update(1, u'srichter', [u'USA', u'personal'])
