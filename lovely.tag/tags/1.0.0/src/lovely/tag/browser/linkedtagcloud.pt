@@ -1,0 +1,8 @@
+<div class="tagCloud">
+    <a class="tag" href=""
+       tal:repeat="tag view/getCloud"
+       tal:attributes="class string:tag${tag/normalized};
+                       href string:?tagname=${tag/name}
+                      "
+       tal:content="string:${tag/name}(${tag/frequency})"/>
+</div>

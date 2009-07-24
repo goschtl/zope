@@ -1,0 +1,73 @@
+=========
+Tag Index
+=========
+
+The tag index allows the use of the tags of a tagging engine in a catallog
+lookup.
+
+  >>> from lovely.tag.index import TagIndex
+
+  >>> index = TagIndex()
+
+  >>> index.apply({'any_of':['lovely']})
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: (<InterfaceClass lovely.tag.interfaces.ITaggingEngine>, '')
+
+We need a tagging engine.
+
+  >>> from zope import component
+  >>> from lovely.tag.engine import TaggingEngine
+  >>> from lovely.tag.interfaces import ITaggingEngine
+  >>> engine = TaggingEngine()
+  >>> component.provideUtility(engine, ITaggingEngine)
+  >>> sorted(index.apply({'any_of':['lovely']}))
+  []
+
+
+  >>> import zope.component
+  >>> from zope.keyreference import testing
+  >>> zope.component.provideAdapter(testing.SimpleKeyReference)
+
+  >>> engine.update(1, u'srichter', [u'USA', u'personal'])
+  >>> engine.update(2, u'srichter', [u'austria', u'lovely'])
+  >>> engine.update(3, u'jodok', [u'Austria', u'personal'])
+  >>> engine.update(4, u'jodok', [u'austria', u'lovely', u'work'])
+
+  >>> sorted(index.apply({'any_of':['lovely']}))
+  [2, 4]
+  >>> sorted(index.apply({'all_of':['lovely', 'work']}))
+  [4]
+
+
+Use With A Named Engine
+-----------------------
+
+  >>> namedEngine = TaggingEngine()
+  >>> component.provideUtility(namedEngine, ITaggingEngine, 'named')
+  >>> namedIndex = TagIndex('named')
+
+  >>> namedEngine.update(5, u'kartnaller', [u'Austria', u'personal'])
+  >>> namedEngine.update(6, u'kartnaller', [u'austria', u'lovely'])
+  >>> namedEngine.update(4, u'jodok', [u'austria', u'lovely', u'work'])
+
+  >>> sorted(namedIndex.apply({'any_of':['lovely']}))
+  [4, 6]
+
+
+Use In A Catalog
+----------------
+
+  >>> from zope.app.catalog.catalog import Catalog
+  >>> cat = Catalog()
+  >>> cat['tags'] = index
+
+  >>> sorted(cat.apply({'tags':{'any_of':['lovely']}}))
+  [2, 4]
+
+  >>> cat['namedTags'] = namedIndex
+  >>> sorted(cat.apply({'tags':{'any_of':['lovely']},
+  ...                   'namedTags':{'any_of':['lovely']}
+  ...                  }))
+  [4]
+
