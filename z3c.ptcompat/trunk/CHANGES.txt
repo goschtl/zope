@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.5.5 (unreleased)
+0.5.5 (2009-07-24)
 ------------------
 
-- ...
+- Make tests pass in a binary release by not relying on the pacakge structure.
 
 0.5.4 (2009-07-23)
 ------------------
