@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+     name="FTP"
+     component=".ftpserver"
+     provides="..interfaces.IServerType"
+     />
+
+</configure>
