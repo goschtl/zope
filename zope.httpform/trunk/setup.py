@@ -28,7 +28,7 @@ long_description = (read('README.txt') +
 
 setup(
     name='zope.httpform',
-    version='1.0.2',
+    version='1.0.3dev',
     url='http://pypi.python.org/pypi/zope.httpform',
     license='ZPL 2.1',
     author='Zope Corporation and Contributors',
