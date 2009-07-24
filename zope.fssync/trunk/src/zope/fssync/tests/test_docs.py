@@ -82,7 +82,7 @@ class PersistentLoaderTestCase(unittest.TestCase):
         self.o2 = o2
 
     def testPathPersistentLoader(self):
-        
+
         pickler = pickle.StandardUnpickler(self.o1)
         loader = pickle.PathPersistentLoader(pickler)
         self.assert_(loader.load('/') is self.root)
@@ -104,7 +104,7 @@ def test_suite():
 
     flags = doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS
     suite = unittest.TestSuite()
-    
+
     suite = unittest.makeSuite(PersistentLoaderTestCase)
     suite.addTest(doctest.DocTestSuite('zope.fssync.pickle'))
 
@@ -124,10 +124,11 @@ def test_suite():
                                             setUp=setUp, tearDown=tearDown,
                                             optionflags=flags))
 
-    suite.addTest(doctest.DocFileSuite('../svn.txt',
-                                            globs=globs,
-                                            setUp=setUp, tearDown=tearDown,
-                                            optionflags=flags))
+    if '.svn' in os.listdir(TESTDIR):
+        suite.addTest(doctest.DocFileSuite('../svn.txt',
+                                           globs=globs,
+                                           setUp=setUp, tearDown=tearDown,
+                                           optionflags=flags))
 
     return suite
 
