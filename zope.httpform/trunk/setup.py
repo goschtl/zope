@@ -47,6 +47,7 @@ setup(
         ],
 
     packages=find_packages('src'),
+    include_package_data = True,
     package_dir={'': 'src'},
     namespace_packages=['zope'],
     zip_safe=False,
