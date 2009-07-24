@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup(
     name='zc.i18n',
-    version = '0.7.0',
+    version = '0.7.1dev',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
     description='Additional I18n Support APIs',
