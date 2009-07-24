@@ -62,11 +62,22 @@ _PY_TO_SRC, _SRC_TO_PY = _read_map(os.path.join(_HERE, 'py_to_src.txt'))
 
 def py_to_bin(setuptools_project):
     """Convert a setuptools project name to a debian binary package name"""
-    return _PY_TO_BIN.get(setuptools_project, 'python-%s' % setuptools_project.lower())
+    return _PY_TO_BIN.get(setuptools_project) or py_to_bin_default(setuptools_project)
+
+def py_to_bin_default(setuptools_project):
+    """Convert a setuptools project name to a debian binary package name.
+    
+    This function is the fallback and represents the "default" naming schema.
+    """
+    return 'python-%s' % setuptools_project.lower()
 
 def py_to_src(setuptools_project):
     """Convert a setuptools project name to a debian source package name"""
-    return _PY_TO_SRC.get(setuptools_project, setuptools_project.lower())
+    return _PY_TO_SRC.get(setuptools_project) or py_to_src_default(setuptools_project)
+
+def py_to_src_default(setuptools_project):
+    """Convert a setuptools project name to a debian source package name"""
+    return setuptools_project.lower()
 
 def bin_to_py(binary_package):
     """Convert a doebian binary package name to a setuptools project name"""
@@ -75,13 +86,19 @@ def bin_to_py(binary_package):
     if py_package_name is not None:
         return py_package_name
     # now we try guess
+    return bin_to_py_default(binary_package)
+
+def bin_to_py_default(binary_package):
     if binary_package.startswith('python-'):
         return binary_package[7:]
     return binary_package
 
 def src_to_py(source_package):
     """Convert a debian source package name to a setuptools project name"""
-    return _SRC_TO_PY.get(source_package, source_package)
+    return _SRC_TO_PY.get(source_package) or src_to_py_default(source_package)
+
+def src_to_py_default(source_package):
+    return source_package
 
 def _string_command(argv):
     command = argv[1]
