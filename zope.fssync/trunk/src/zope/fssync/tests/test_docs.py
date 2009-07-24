@@ -15,12 +15,12 @@
 
 $Id: test_docs.py 70826 2006-10-20 03:41:16Z baijum $
 """
+import os
 import sys
 import unittest
 import tempfile
 import zope
 import py
-#import shutil
 
 from zope import interface
 from zope.testing import doctest, doctestunit, module, cleanup
@@ -33,12 +33,16 @@ from zope.fssync import pickle
 
 _test_dirs = []
 
+TESTDIR = os.path.join(os.path.dirname(__file__), 'svntestdir')
+
 def cleanUpZope(test):
     for wcdir in _test_dirs:
         wcdir.remove()
     cleanup.cleanUp()
 
 def svn_test_checkout():
+    if not os.path.exists(TESTDIR):
+        os.mkdir(TESTDIR)
     base = py.path.local(__file__).dirpath('svntestdir')
     pat = 'test%s'
     count = 1
