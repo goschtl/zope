@@ -48,6 +48,7 @@ setup(
         'Framework :: Zope3'],
 
     url = 'http://pypi.python.org/pypi/zope.app.versioncontrol',
+    include_package_data = True,
     packages = find_packages('src'),
     namespace_packages = ['zope', 'zope.app'],
     package_dir = {'': 'src'},
