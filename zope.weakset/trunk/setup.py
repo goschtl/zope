@@ -45,7 +45,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.weakset',
-      version='3.6.0',
+      version='3.7.0dev',
       author='Zope Corporation and Contributors',
       author_email='zodb-dev@zope.org',
       description='ZODB weakset implementation',
