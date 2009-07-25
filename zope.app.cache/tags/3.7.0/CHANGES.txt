@@ -1,0 +1,33 @@
+=======
+CHANGES
+=======
+
+3.7.0 (2009-07-25)
+------------------
+
+- Use the RAM cache implementation from zope.ramcache.
+
+3.6.0 (2009-05-27)
+------------------
+
+- Use zope.componentvocabulary instead of zope.app.component.
+
+3.5.0 (2009-01-31)
+------------------
+
+- Use zope.container instead of zope.app.container.
+
+3.4.1 (2008-07-30)
+------------------
+
+- Remove find-links from buildout.cfg.
+
+- Get rid of zope.app.zapi as a dependency.  See http://launchpad.net/bugs/219302
+
+- Fixed deprecation warning in zope.app.cache.browser.cacheable: zope.app.i18n
+  became zope.i18nmessageid.
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
