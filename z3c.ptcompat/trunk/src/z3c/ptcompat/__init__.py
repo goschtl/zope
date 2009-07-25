@@ -54,6 +54,11 @@ else:
             return output.getvalue()
 
         return render
-    
+
 class ViewPageTemplateFile(ViewPageTemplateFile):
     """View page template file."""
+
+    def __new__(cls, *args, **kwargs):
+        inst = object.__new__(cls)
+        config.REGISTRY[inst] = (args, kwargs)
+        return inst
