@@ -54,7 +54,9 @@ class HashingURLTest(testing.FunctionalTestCase):
         before = str(zope.component.getMultiAdapter(
                 (self.directory, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
-        open(os.path.join(self.tmpdir, 'example.txt'), 'w').write('foo')
+        f = open(os.path.join(self.tmpdir, 'example.txt'), 'w')
+        f.write('foo')
+        f.close()
         after = str(zope.component.getMultiAdapter(
                 (self.directory, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
