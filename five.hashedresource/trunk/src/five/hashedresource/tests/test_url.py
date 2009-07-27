@@ -30,7 +30,7 @@ class HashingURLTest(testing.FunctionalTestCase):
                 zope.traversing.browser.interfaces.IAbsoluteURL))
         self.assertMatches(
             r'http://nohost/\+\+noop\+\+[^/]*/\+\+resource\+\+%s' %
-            self.dirname, directory_url)
+            'myresource', directory_url)
 
     def test_file_url_should_contain_hash(self):
         file = self.app.aq_inner.restrictedTraverse('++resource++test.txt')
@@ -41,12 +41,12 @@ class HashingURLTest(testing.FunctionalTestCase):
             file_url)
 
     def test_different_files_hashes_should_differ(self):
-        open(os.path.join(testing.fixture, 'example.txt'), 'w').write('foo')
-        file = self.app.aq_inner.restrictedTraverse('++resource++example.txt')
-        file1_url = str(zope.component.getMultiAdapter((file, self.request),
+        open(os.path.join(self.fixture, 'example.txt'), 'w').write('foo')
+        file_ = self.app.aq_inner.restrictedTraverse('++resource++example.txt')
+        file1_url = str(zope.component.getMultiAdapter((file_, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
-        open(os.path.join(testing.fixture, 'example.txt'), 'w').write('bar')
-        file2_url = str(zope.component.getMultiAdapter((file, self.request),
+        open(os.path.join(self.fixture, 'example.txt'), 'w').write('bar')
+        file2_url = str(zope.component.getMultiAdapter((file_, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
         self.assertNotEqual(self._hash(file1_url), self._hash(file2_url))
 
@@ -54,7 +54,7 @@ class HashingURLTest(testing.FunctionalTestCase):
         before = str(zope.component.getMultiAdapter(
                 (self.directory, self.request),
                 zope.traversing.browser.interfaces.IAbsoluteURL))
-        f = open(os.path.join(self.tmpdir, 'example.txt'), 'w')
+        f = open(os.path.join(self.fixture, 'example.txt'), 'w')
         f.write('foo')
         f.close()
         after = str(zope.component.getMultiAdapter(

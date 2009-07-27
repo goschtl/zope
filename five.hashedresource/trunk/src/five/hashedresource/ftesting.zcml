@@ -9,15 +9,15 @@
 
   <!-- example resource for testing -->
   <browser:resourceDirectory
-    directory="tests/fixture"
+    directory="fixture"
     name="myresource"
     />
   <browser:resource
-    file="tests/fixture/example.txt"
+    file="fixture/example.txt"
     name="example.txt"
     />
   <browser:resource
-    file="tests/fixture/test.txt"
+    file="fixture/test.txt"
     name="test.txt"
     />
 </configure>

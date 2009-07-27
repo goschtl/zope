@@ -21,22 +21,15 @@ import Products.Five.browser.resource
 import Products.Five.zcml
 import Testing.ZopeTestCase.layer
 import five.hashedresource
+import five.hashedresource.testing
 import os
 import unittest
 import zope.component
 
 
-class ProductionModeLayer(Testing.ZopeTestCase.layer.ZopeLiteLayer):
-
-    @classmethod
-    def setUp(cls):
-        Products.Five.zcml.load_config(
-            'ftesting.zcml', five.hashedresource)
-
-
 class CachingContentsHashTest(testing.FunctionalTestCase):
 
-    layer = ProductionModeLayer
+    zcml = 'ftesting.zcml'
 
     def test_production_mode_hash_should_not_change(self):
         zope.component.provideAdapter(

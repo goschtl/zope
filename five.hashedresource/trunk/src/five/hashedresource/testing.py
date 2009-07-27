@@ -33,28 +33,9 @@ import zope.app.testing.functional
 import zope.interface
 
 
-fixture = os.path.join(
-    os.path.dirname(five.hashedresource.tests.__file__), 'fixture')
-
-
-class HashedResourcesLayer(Testing.ZopeTestCase.layer.ZopeLiteLayer):
-
-    @classmethod
-    def setUp(cls):
-        open(os.path.join(fixture, 'example.txt'), 'w').write('')
-        Products.Five.zcml.load_config(
-            'configure.zcml', Products.Five)
-        Products.Five.zcml.load_config(
-            'ftesting-devmode.zcml', five.hashedresource)
-
-    @classmethod
-    def tearDown(cls):
-        os.unlink(os.path.join(fixture, 'example.txt'))
-
-
 class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
 
-    layer = HashedResourcesLayer
+    zcml = 'ftesting-devmode.zcml'
 
     def assertMatches(self, regex, text):
         self.assert_(re.match(regex, text), "/%s/ did not match '%s'" % (
@@ -64,8 +45,19 @@ class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
         super(FunctionalTestCase, self).setUp()
 
         self.tmpdir = tempfile.mkdtemp()
-        open(os.path.join(self.tmpdir, 'example.txt'), 'w').write('')
-        self.dirname = os.path.basename(self.tmpdir)
+        self.fixture = os.path.join(self.tmpdir, 'fixture')
+        os.mkdir(self.fixture)
+        open(os.path.join(self.fixture, 'example.txt'), 'w').write('')
+        open(os.path.join(self.fixture, 'test.txt'), 'w').write('test\ndata\n')
+
+        for file_ in ['ftesting.zcml', 'ftesting-devmode.zcml']:
+            shutil.copy(os.path.join(os.path.dirname(__file__), file_),
+                os.path.join(self.tmpdir, file_))
+
+        Products.Five.zcml.load_config(
+            'configure.zcml', Products.Five)
+        Products.Five.zcml.load_config(
+            os.path.join(self.tmpdir, self.zcml))
 
         self.app = self._app()
         self.request = Testing.ZopeTestCase.utils.makerequest(
@@ -77,6 +69,8 @@ class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
             '++resource++myresource')
 
     def tearDown(self):
+        super(FunctionalTestCase, self).tearDown()
+        Products.Five.zcml.cleanUp()
         shutil.rmtree(self.tmpdir)
 
     def _hash(self, text):

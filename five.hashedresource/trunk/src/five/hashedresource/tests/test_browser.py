@@ -24,9 +24,7 @@ import zope.component
 import zope.publisher.browser
 
 
-class BrowserTest(Testing.ZopeTestCase.FunctionalTestCase):
-
-    layer = testing.HashedResourcesLayer
+class BrowserTest(testing.FunctionalTestCase):
 
     def setUp(self):
         super(BrowserTest, self).setUp()
