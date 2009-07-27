@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:define-macro="page">
+  <head metal:define-slot="head">
+    <title>Keas GooleMap Demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <script type="text/javascript"
+            tal:attributes="src context/++resource++jquery.js">
+    </script>
+    <style tal:replace="structure provider:ICSS"> </style>
+    <style type="text/css">
+      body{
+        font-size: small;
+	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+      }
+      td{
+        vertical-align: top;
+      }
+      h1{
+        font-size: large;
+      }
+      h2{
+        font-size: medium;
+      }
+      #form-widgets-controls-row span.option {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div tal:replace="structure provider:pagelet"/>
+  </body>
+  <script tal:replace="structure provider:IJavaScript"> </script>
+
+</html>

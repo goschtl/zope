@@ -1,0 +1,53 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+	   i18n_domain="keas">
+
+  <resource
+      name="keas.googlemap.js"
+      file="keas.googlemap.js"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer" />
+
+  <resource
+      name="markermanager.js"
+      file="markermanager.js"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer" />
+
+  <viewletManager
+      name="keas.googlemap.browser.interfaces.IJavaScript"
+      provides=".interfaces.IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewlet
+      name="keas.googlemap.js"
+      for="*"
+      manager="keas.googlemap.browser.interfaces.IJavaScript"
+      class="keas.googlemap.browser.GoogleMapJavaScriptViewlet"
+      permission="zope.Public"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer"
+      weight="3"
+      />
+
+  <viewlet
+      name="google map api key viewlet"
+      for="*"
+      manager="keas.googlemap.browser.interfaces.IJavaScript"
+      class="keas.googlemap.apikey.APIKeyViewlet"
+      permission="zope.Public"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer"
+      weight="5"
+      />
+
+  <viewlet
+      name="markermanager.js"
+      for="*"
+      manager="keas.googlemap.browser.interfaces.IJavaScript"
+      class="keas.googlemap.browser.GoogleMapMarkersViewletLocal"
+      permission="zope.Public"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer"
+      weight="10"
+      />
+
+</configure>
+

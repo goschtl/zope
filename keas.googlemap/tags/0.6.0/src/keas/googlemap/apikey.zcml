@@ -1,0 +1,16 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- API Key for localhost domain -->
+  <utility
+      provides="keas.googlemap.interfaces.IGoogleMapAPIKey"
+      component="keas.googlemap.apikey.LocalhostAPIKey"
+      name="localhost"
+      />
+
+  <utility
+      provides="keas.googlemap.interfaces.IGoogleMapAPIKey"
+      component="keas.googlemap.apikey.LocalhostAPIKey"
+      name="127.0.0.1"
+      />
+
+</configure>

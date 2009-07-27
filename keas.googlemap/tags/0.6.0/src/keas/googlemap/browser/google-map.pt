@@ -1,0 +1,13 @@
+<div tal:attributes="id options/view/id;
+		     style options/view/style">
+Loading Map...
+</div>
+
+<script type="text/javascript" tal:content="structure options/view/javascript">
+  //This is example code.
+  $(document).ready( function() {
+      keas.googlemap.initialize({id:'some-id',
+                                 zoom:12,
+				 type:SOME_CONSTANT);} );
+  $(document).unload( function() {GUnload();} );
+</script>
