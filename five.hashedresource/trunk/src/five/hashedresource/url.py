@@ -12,12 +12,13 @@
 #
 ##############################################################################
 
-from zope.component import adapts
 from zope.component.interfaces import IResource
 from zope.interface import implementsOnly
 from zope.traversing.browser.interfaces import IAbsoluteURL
+import Products.Five.browser.resource
+import urllib
 import z3c.hashedresource
-import zope.traversing.browser.absoluteurl
+import zope.component
 
 
 class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
@@ -27,21 +28,30 @@ class HashingURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
     """
 
     implementsOnly(IAbsoluteURL)
-    adapts(IResource, z3c.hashedresource.interfaces.IHashedResourceSkin)
+    zope.component.adapts(IResource,
+                          z3c.hashedresource.interfaces.IHashedResourceSkin)
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-        self.name = self.context.__name__
-        if self.name.startswith('++resource++'):
-            self.name = self.name[12:]
+        container = self.context.__parent__
+        container_url = str(zope.component.getMultiAdapter(
+                (container, self.request), IAbsoluteURL))
+        container_url = urllib.unquote(container_url)
 
-    def _site_url(self):
-        return self.context.absolute_url().split('/++resource++')[0]
+        name = self.context.__name__
+        if name.startswith('++resource++'):
+            name = name[12:]
+        if not isinstance(container,
+                          Products.Five.browser.resource.DirectoryResource):
+            name = '++resource++' + name
+
+        self.url = "%s/%s" % (container_url, name)
 
     def __str__(self):
         hash = str(z3c.hashedresource.interfaces.IResourceContentsHash(
                 self.context))
-        return "%s/++noop++%s/++resource++%s" % (
-            self._site_url(), hash, self.name)
+
+        first, last = self.url.split('/++resource++')
+        return "%s/++noop++%s/++resource++%s" % (first, hash, last)

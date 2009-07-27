@@ -67,13 +67,14 @@ class FunctionalTestCase(Testing.ZopeTestCase.FunctionalTestCase):
         open(os.path.join(self.tmpdir, 'example.txt'), 'w').write('')
         self.dirname = os.path.basename(self.tmpdir)
 
+        self.app = self._app()
         self.request = Testing.ZopeTestCase.utils.makerequest(
-            self._app()).REQUEST
+            self.app).REQUEST
         zope.interface.directlyProvides(
             self.request, z3c.hashedresource.interfaces.IHashedResourceSkin)
-        self.request.getVirtualHostRoot = lambda: None
-        self.directory = zope.component.getAdapter(
-            self.request, name='myresource')
+
+        self.directory = self.app.aq_inner.restrictedTraverse(
+            '++resource++myresource')
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
