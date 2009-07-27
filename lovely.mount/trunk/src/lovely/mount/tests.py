@@ -16,31 +16,30 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-
 import doctest
+import transaction
 import unittest
-import ZODB.tests.util, transaction
+import ZODB.tests.util
 from zope import component
-from zope.app.folder import rootFolder
+from zope.site.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
-from zope.app.testing import functional
-from zope.app.testing import setup
+from zope.app.testing import functional, setup
 from zope.testing.doctestunit import DocFileSuite
 from ZODB.interfaces import IDatabase
 from zope.schema.interfaces import IVocabularyFactory
-from vocabulary import DatabaseVocabulary
+from lovely.mount.vocabulary import DatabaseVocabulary
 
 from zope.app.schema import vocabulary
 
 
 def setUpBasic(test):
     vocabulary._clear()
-    component.provideUtility(DatabaseVocabulary, IVocabularyFactory, 
+    component.provideUtility(DatabaseVocabulary, IVocabularyFactory,
                              name="Database Names")
 
 def setUp(test):
     setup.placefulSetUp()
-    setUpBasic(test)    
+    setUpBasic(test)
     databases = {}
     db1 = ZODB.tests.util.DB(databases=databases, database_name='1')
     db2 = ZODB.tests.util.DB(databases=databases, database_name='2')

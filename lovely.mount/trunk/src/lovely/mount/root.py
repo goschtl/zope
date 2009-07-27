@@ -1,8 +1,8 @@
-import interfaces
-from zope import interface
-from zope import component
-from zope.schema.fieldproperty import FieldProperty
 from ZODB.interfaces import IDatabase
+from zope import component
+from zope import interface
+from zope.schema.fieldproperty import FieldProperty
+import interfaces
 import persistent
 import transaction
 
@@ -27,13 +27,13 @@ class DBRoot(persistent.Persistent):
         else:
             conn = self._p_jar
         return conn.get_connection(self.dbName)
-        
-    
+
+
     @property
     def _data(self):
         root = self._conn.root()
         return root
-        
+
     def keys(self):
         '''See interface `IReadContainer`'''
         return self._data.keys()

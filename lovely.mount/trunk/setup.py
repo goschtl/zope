@@ -1,23 +1,69 @@
-#!python
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: setup.py 102278 2009-07-24 19:00:17Z srichter $
+"""
+import os
 from setuptools import setup, find_packages
 
-setup(name='lovely.mount',
-      version='0.1',
-      author="Stephan Richter, Jodok Batlogg",
-      author_email="srichter@cosmos.phy.tufts.edu, jodok.batlogg@lovelysystems.com",
-      description="Database mounts for zope 3",
-      license = "ZPL 2.1",
-      keywords = "zope3 web20 zope database mount",
-      url='svn://svn.zope.org/repos/main/lovely.mount',
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      packages=find_packages('src'),
-      include_package_data=True,
-      package_dir = {'':'src'},
-      namespace_packages=['lovely'],
-      install_requires=['setuptools',
-                        'zope.interface',
-                        'zope.component',
-                        ],
-      extras_require={"test": ["zope.app.testing"]},
-      dependency_links=['http://download.zope.org/distribution'],
-      )
+setup (
+    name='lovely.mount',
+    version='0.1.0',
+    author="Stephan Richter, Jodok Batlogg and the Zope Community",
+    author = "Lovely Systems",
+    author_email = "zope-dev@zope.org",
+    description="Database mounts for Zope 3",
+    long_description=(
+        read('src', 'lovely', 'mount', 'README.txt')
+        + '\n\n' +
+        read('src', 'lovely', 'mount', 'container.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    license = "ZPL 2.1",
+    keywords = "zope3 lovely zodb mount",
+    classifiers = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+    url = 'http://pypi.python.org/pypi/lovely.mount',
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['lovely'],
+    extras_require = dict(
+        test = [
+            'zope.app.testing',
+            'zope.site']
+        ),
+    install_requires = [
+        'ZODB3',
+        'setuptools',
+        'zope.app.schema',
+        'zope.component',
+        'zope.componentvocabulary',
+        'zope.container',
+        'zope.interface',
+        ],
+    zip_safe = False,
+)

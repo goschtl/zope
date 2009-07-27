@@ -1,14 +1,13 @@
-from zope.app.container.contained import Contained, setitem, uncontained
-import root
+from zope.container.contained import Contained, setitem, uncontained
 from zope import interface
-import interfaces
 from zope.schema.fieldproperty import FieldProperty
-from zope.app.container.interfaces import IContained
+from zope.container.interfaces import IContained
+from lovely.mount import interfaces, root
 
 class MountpointContainer(root.DBRoot, Contained):
-    
+
     interface.implements(interfaces.IMountpointContainer)
-    
+
     dbName = FieldProperty(interfaces.IMountpointContainer['dbName'])
 
     def get(self, key, default=None):
