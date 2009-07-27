@@ -2,14 +2,15 @@
 CHANGES
 =======
 
-Version 0.5.2 (unreleased)
+Version 0.6.0 (2009-07-26)
+--------------------------
 
-- ...
+- Feature: Updated text to latest packages.
 
 Version 0.5.1 (2008-11-07)
 --------------------------
 
-- Bug: Fix error with non-lating geocode queries. 
+- Bug: Fix error with non-lating geocode queries.
 
 - Feature: You can now do::
 

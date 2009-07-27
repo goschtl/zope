@@ -57,9 +57,9 @@ for you in zcml),
   >>> try:
   ...     geo = interfaces.IGeocode(geoQuery)
   ... except IOError, e:
-  ...     geo = geocode.Geocode(33.944066, -118.408294)
+  ...     geo = geocode.Geocode(33.9440655, -118.408294)
   >>> geo
-  Geocode(33.944066, -118.408294)
+  Geocode(33.9440655, -118.408294)
 
 We can also use non-latin letters for queries, let's try to query
 Saint-Petersburg, Russia in Russian
@@ -69,7 +69,7 @@ Saint-Petersburg, Russia in Russian
   ...     geo = interfaces.IGeocode(geoQuery)
   ... except IOError, e:
   ...     geo = geocode.Geocode(59.939039, 30.315785)
-  >>> geo 
+  >>> geo
   Geocode(59.939039, 30.315785)
 
 The ValueError will be raised if no geocode found for the query:

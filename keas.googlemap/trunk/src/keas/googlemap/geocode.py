@@ -25,7 +25,7 @@ from math import asin, sqrt, cos, sin, pi
 from zope.component import adapts, adapter
 from zope.interface import implements, implementer
 from zope.schema.fieldproperty import FieldProperty
-from zope.app.container.btree import BTreeContainer
+from zope.container.btree import BTreeContainer
 import zope.annotation
 
 from keas.googlemap import interfaces, apikey

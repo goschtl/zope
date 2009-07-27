@@ -15,7 +15,7 @@ def read(*rnames):
 
 setup(
     name='keas.googlemap',
-    version = '0.5.2-dev',
+    version = '0.6.0',
     author='Paul Carduner, Keas, Inc., and the Zope Community',
     author_email = "zope3-dev@zope.org",
     description='Integration of Google Maps with Zope 3',
@@ -66,6 +66,7 @@ setup(
     install_requires=[
         'setuptools',
         'simplejson>=1.7.3',
+        'zope.container',
         'zope.interface',
         'zope.schema',
         'zope.viewlet',
