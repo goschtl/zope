@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup (
     name='keas.unit',
-    version='1.0.0',
+    version='1.1.0dev',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A simple wrapper around the 'units' shell command",
