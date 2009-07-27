@@ -1,0 +1,23 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+  <include package="five.hashedresource" />
+
+  <browser:defaultSkin name="z3c.hashedresource" />
+
+  <!-- example resource for testing -->
+  <browser:resourceDirectory
+    directory="fixture"
+    name="myresource"
+    />
+  <browser:resource
+    file="fixture/example.txt"
+    name="example.txt"
+    />
+  <browser:resource
+    file="fixture/test.txt"
+    name="test.txt"
+    />
+</configure>

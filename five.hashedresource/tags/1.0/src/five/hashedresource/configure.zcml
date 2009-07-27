@@ -1,0 +1,27 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="z3c.hashedresource" />
+
+  <adapter factory=".url.HashingURL" />
+  <adapter zcml:condition="have devmode"
+    factory="z3c.hashedresource.hash.ContentsHash"
+    for="Products.Five.browser.resource.DirectoryResource"
+    />
+  <adapter zcml:condition="have devmode"
+    factory="z3c.hashedresource.hash.ContentsHash"
+    for="Products.Five.browser.resource.FileResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory="z3c.hashedresource.hash.CachingContentsHash"
+    for="Products.Five.browser.resource.DirectoryResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory="z3c.hashedresource.hash.CachingContentsHash"
+    for="Products.Five.browser.resource.FileResource"
+    />
+
+</configure>
+
