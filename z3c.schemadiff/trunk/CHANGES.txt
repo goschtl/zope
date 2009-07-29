@@ -3,6 +3,9 @@ Changelog
 
 In next release:
 
+- Bind schema field to source context to provide a context to the
+  field diff instance. [malthe]
+
 - Drop field if either value is ``None``. [malthe]
 
 0.1 (2008-04-30)

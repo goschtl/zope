@@ -11,9 +11,10 @@ def diff(source, target, *interfaces):
     for iface in interfaces:
         for name in iface.names():
             field = iface[name]
+            bound = field.bind(source)
 
             try:
-                diff = IFieldDiff(field)
+                diff = IFieldDiff(bound)
             except TypeError:
                 continue
 
