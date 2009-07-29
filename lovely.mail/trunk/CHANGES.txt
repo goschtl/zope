@@ -5,6 +5,8 @@ Changes for lovely.mail
 After
 =====
 
+ - added attachments
+
 2009/04/22 0.2.0
 ================
 

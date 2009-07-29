@@ -80,6 +80,78 @@ If we provide tuples for the addresses we get this :
     'Message-Id: ...\nFrom: ich <me@gmail.org>\nTo: du <you@gmail.org>\n...\nmy mail body')]
 
 
+Attachments
+-----------
+
+Attachments must be provided as a list of tuples containing a file like object
+providing "read", the filename and the mime type of the attachment (if known).
+
+  >>> from StringIO import StringIO
+  >>> f1 = StringIO("I am the content of file 1")
+  >>> sendmail('subject', ('ich', 'me@gmail.org'), [('du','you@gmail.org',)],
+  ...          'my mail body', attachments=[(f1, 'f1.txt', None)])
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  [('ich <me@gmail.org>',
+    ('du <you@gmail.org>',),
+    'Message-Id: ...')]
+  >>> pprint(testing.sentMails[0][2].split('\n'))
+  ['Message-Id: <...>',
+   'Content-Type: multipart/mixed; boundary="===============...=="',
+   'MIME-Version: 1.0',
+   'Subject: subject',
+   'From: ich <me@gmail.org>',
+   'To: du <you@gmail.org>',
+   'Date: ...',
+   '',
+   '--===============...==',
+   'Content-Type: text/plain; charset="utf-8"',
+   'MIME-Version: 1.0',
+   'Content-Transfer-Encoding: 7bit',
+   '',
+   'my mail body',
+   '--===============...==',
+   'Content-Type: application/octet-stream',
+   'MIME-Version: 1.0',
+   'Content-Transfer-Encoding: base64',
+   'Content-Disposition: attachment; filename="f1.txt"',
+   '',
+   'SSBhbSB0aGUgY29udGVudCBvZiBmaWxlIDE=',
+   '--===============...==--']
+
+  >>> f1.seek(0)
+  >>> sendmail('subject', ('ich', 'me@gmail.org'), [('du','you@gmail.org',)],
+  ...          'my mail body', attachments=[(f1, 'f1.txt', ('text','plain'))])
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  [('ich <me@gmail.org>',
+    ('du <you@gmail.org>',),
+    'Message-Id: ...')]
+  >>> pprint(testing.sentMails[0][2].split('\n'))
+  ['Message-Id: <...>',
+   'Content-Type: multipart/mixed; boundary="===============...=="',
+   'MIME-Version: 1.0',
+   'Subject: subject',
+   'From: ich <me@gmail.org>',
+   'To: du <you@gmail.org>',
+   'Date: ...',
+   '',
+   '--===============...==',
+   'Content-Type: text/plain; charset="utf-8"',
+   'MIME-Version: 1.0',
+   'Content-Transfer-Encoding: 7bit',
+   '',
+   'my mail body',
+   '--===============...==',
+   'Content-Type: text/plain',
+   'MIME-Version: 1.0',
+   'Content-Transfer-Encoding: base64',
+   'Content-Disposition: attachment; filename="f1.txt"',
+   '',
+   'SSBhbSB0aGUgY29udGVudCBvZiBmaWxlIDE=',
+   '--===============...==--']
 
 And clean up.
 
