@@ -1,6 +1,5 @@
 
 import twisted.conch.ssh.channel
-import twisted.conch.ssh.common
 import twisted.conch.ssh.connection
 import twisted.conch.ssh.keys
 import twisted.conch.ssh.transport
@@ -35,18 +34,13 @@ class Connection(twisted.conch.ssh.connection.SSHConnection):
     def serviceStarted(self):
         self.openChannel(Channel(conn = self))
 
+# Channels are twisted.internet.interfaces.ITransports
 class Channel(twisted.conch.ssh.channel.SSHChannel):
 
-    name = 'session'
+    name = 'echo'
 
     def channelOpen(self, data):
-        d = self.conn.sendRequest(
-            self, 'shell', '',
-            wantReply = 1)
-        d.addCallback(self._cbSendRequest)
         self.catData = ''
-
-    def _cbSendRequest(self, ignored):
         self.write('This data will be echoed back to us by "cat."\r\n')
         self.conn.sendEOF(self)
         self.loseConnection()
