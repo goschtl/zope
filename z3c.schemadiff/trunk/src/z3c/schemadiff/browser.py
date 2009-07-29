@@ -15,11 +15,20 @@ class DiffView(object):
     
     def __call__(self, *interfaces):
         results = diff(self.source, self.target, *interfaces)
-        
-        tables = [{'name': field.__name__,
-                   'title': field.title,
-                   'html': self.htmldiff.make_table(a, b, context=True)} for \
-                  (field, (a, b)) in results.items()]
+
+        tables = []
+        for field, result in results.items():
+            try:
+                a, b = result
+            except ValueError:
+                html = result
+            else:
+                html = self.htmldiff.make_table(a, b, context=True)
+
+            tables.append({
+                'name': field.__name__,
+                'title': field.title,
+                'html': html})
 
         return self.template(tables=tables)
 

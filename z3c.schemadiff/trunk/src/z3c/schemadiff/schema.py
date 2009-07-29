@@ -23,11 +23,13 @@ def diff(source, target, *interfaces):
 
             if source_value is None or target_value is None:
                 continue
-            
-            a = diff.lines(source_value)
-            b = diff.lines(target_value)
+
+            if diff.lines is not None:
+                result = diff.lines(source_value), diff.lines(target_value)
+            else:
+                result = diff.html_diff(source_value, target_value)
                 
-            results[field] = (a, b)
+            results[field] = result
 
     return results
     
