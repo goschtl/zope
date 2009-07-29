@@ -24,6 +24,9 @@ class Channel(twisted.conch.ssh.channel.SSHChannel):
 
     name = 'echo'
 
+    def channelOpen(self, data):
+        self.write('Hi client!\n')
+
     def dataReceived(self, data):
         if data == '\r':
             data = '\r\n'
