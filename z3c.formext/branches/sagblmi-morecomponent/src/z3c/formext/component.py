@@ -76,6 +76,7 @@ class Field(Component):
             config['disabled'] = True
         if self.widget.mode == HIDDEN_MODE:
             config['hidden'] = True
+            config['hideLabel'] = True
         if self.widget.required:
             config['itemCls'] = 'required'
         return config
