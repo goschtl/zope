@@ -47,6 +47,15 @@ later use:
 Clearly, there is not much to version managers and they are only interesting
 within the larger context of this package.
 
+An advanced implementation of the version manager uses the SVN revision number
+to produce the version string. You simply pass in a working path and the
+version is computed:
+
+  >>> import os
+  >>> manager = version.SVNVersionManager(os.path.dirname(__file__))
+  >>> manager
+  <SVNVersionManager 'r...'>
+
 
 Versioned Resource Traversal
 ----------------------------

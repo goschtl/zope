@@ -17,11 +17,16 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.component
+import zope.interface
+import zope.site.hooks
+import zope.traversing.browser.absoluteurl
 from zope.publisher.interfaces import NotFound
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser import resource, resources
 from zope.app.publisher.browser import directoryresource
 from zope.app.publisher.browser import fileresource
 from zope.app.publisher.browser import pagetemplateresource
+from zope.traversing.browser.interfaces import IAbsoluteURL
 from z3c.versionedresource import interfaces
 
 class Resources(resources.Resources):
@@ -42,17 +47,39 @@ class Resources(resources.Resources):
         return res
 
 
-class VersionedResourceBase(object):
+class AbsoluteURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
+    zope.interface.implementsOnly(IAbsoluteURL)
+    zope.component.adapts(interfaces.IVersionedResource, IBrowserRequest)
 
-    def _createUrl(self, baseUrl, name):
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __str__(self):
+        name = self.context.__name__
+        if name.startswith('++resource++'):
+            name = name[12:]
+
+        site = zope.site.hooks.getSite()
+        base = zope.component.queryMultiAdapter(
+            (site, self.request), IAbsoluteURL, name="resource")
+        if base is None:
+            url = str(zope.component.getMultiAdapter(
+                (site, self.request), IAbsoluteURL))
+        else:
+            url = str(base)
+
         vm = zope.component.queryUtility(interfaces.IVersionManager)
-        return '%s/@@/%s/%s' %(baseUrl, vm.version, name)
 
-class Resource(VersionedResourceBase, resource.Resource):
-    pass
+        return '%s/@@/%s/%s' % (url, vm.version, name)
 
 
-class FileResource(VersionedResourceBase, fileresource.FileResource):
+class Resource(resource.Resource):
+    zope.interface.implements(interfaces.IVersionedResource)
+
+class FileResource(fileresource.FileResource):
+    zope.interface.implements(interfaces.IVersionedResource)
+
     # 10 years expiration date
     cacheTimeout = 10 * 365 * 24 * 3600
 
@@ -66,8 +93,8 @@ class ImageResourceFactory(fileresource.ImageResourceFactory):
     resourceClass = FileResource
 
 
-class DirectoryResource(VersionedResourceBase,
-                        directoryresource.DirectoryResource):
+class DirectoryResource(directoryresource.DirectoryResource):
+    zope.interface.implements(interfaces.IVersionedResource)
 
     resource_factories = {
         '.gif':  ImageResourceFactory,

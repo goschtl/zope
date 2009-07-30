@@ -57,7 +57,7 @@ def getResourceUrls(resources):
         if not isinstance(res, DirectoryResource):
             # Avoid duplicate paths
             if res() not in paths:
-                paths.append(res())
+                paths.append(unicode(res()))
         # For directory resources, we want to walk the tree.
         baseURL = res()
         path = res.context.path

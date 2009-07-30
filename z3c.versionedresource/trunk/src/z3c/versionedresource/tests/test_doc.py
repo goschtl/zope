@@ -23,6 +23,7 @@ from zope.component import globalregistry
 from zope.testing import doctest
 from zope.app.testing import placelesssetup
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.app.publisher.browser.resource import AbsoluteURL
 from z3c.versionedresource import interfaces, resource
 
 class ITestLayer(IDefaultBrowserLayer):
@@ -51,11 +52,16 @@ def ls(dir):
             name,
             os.stat(path).st_size)
 
+def setUp(test):
+    placelesssetup.setUp(test)
+    zope.component.provideAdapter(AbsoluteURL)
+    zope.component.provideAdapter(resource.AbsoluteURL)
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             '../README.txt',
-            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+            setUp=setUp, tearDown=placelesssetup.tearDown,
             globs = {'ls': ls, 'unregister': unregister},
             optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         ))

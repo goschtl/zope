@@ -16,7 +16,7 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-
+import subprocess
 import zope.interface
 from zope.schema.fieldproperty import FieldProperty
 from z3c.versionedresource import interfaces
@@ -32,3 +32,18 @@ class VersionManager(object):
 
     def __repr__(self):
         return '<%s %r>' %(self.__class__.__name__, self.version)
+
+class SVNVersionManager(VersionManager):
+    zope.interface.implements(interfaces.IVersionManager)
+
+    COMMAND = 'svnversion -n %s'
+
+    def __init__(self, path):
+        process = subprocess.Popen(
+            [self.COMMAND %path],
+            shell=True, close_fds=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        status = process.wait()
+        if status != 0:
+            print process.stderr.read()
+        self.version = 'r' + process.stdout.read()
