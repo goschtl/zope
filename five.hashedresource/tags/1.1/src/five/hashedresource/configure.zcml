@@ -1,0 +1,34 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  xmlns:meta="http://namespaces.zope.org/meta">
+
+  <include package="z3c.hashedresource" />
+
+  <adapter factory=".url.HashingURL" />
+
+  <!-- We need to have accessed the package before this point in order to give
+       the package's init code a chance to tell us about debug-mode. -->
+
+  <meta:provides zcml:condition="installed five.hashedresource.__debug_mode__"
+                 feature="devmode"/>
+
+  <adapter zcml:condition="have devmode"
+    factory="z3c.hashedresource.hash.ContentsHash"
+    for="Products.Five.browser.resource.DirectoryResource"
+    />
+  <adapter zcml:condition="have devmode"
+    factory="z3c.hashedresource.hash.ContentsHash"
+    for="Products.Five.browser.resource.FileResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory="z3c.hashedresource.hash.CachingContentsHash"
+    for="Products.Five.browser.resource.DirectoryResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory="z3c.hashedresource.hash.CachingContentsHash"
+    for="Products.Five.browser.resource.FileResource"
+    />
+
+</configure>
+
