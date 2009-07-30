@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='five.hashedresource',
-    version = '1.1',
+    version = '1.2dev',
     author='gocept gmbh & co. kg',
     author_email='sw@gocept.com',
     description='Provides URLs for resources that change whenever their content changes.',
