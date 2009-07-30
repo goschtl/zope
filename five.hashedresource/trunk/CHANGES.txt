@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1 (unreleased)
+1.1 (2009-07-30)
 ================
 
 - Added a hack to communicate to ZCML whether Zope2 debug-mode is on.
