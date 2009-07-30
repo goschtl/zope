@@ -1,0 +1,23 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="versionedResource"
+        schema="zope.app.publisher.browser.metadirectives.IResourceDirective"
+        handler=".zcml.resource"
+        />
+
+    <meta:directive
+        name="versionedResourceDirectory"
+        schema="
+          zope.app.publisher.browser.metadirectives.IResourceDirectoryDirective"
+        handler=".zcml.resourceDirectory"
+        />
+
+  </meta:directives>
+
+</configure>
