@@ -5,6 +5,9 @@ Changes for lovely.remotetask
 unreleased (0.5):
 -----------------
 
+- Fixed a bug with SimpleProcessor: if the job aborted the transaction, it would
+  never be removed from the queue, but re-tried over and over again.
+
 2009/05/20 (0.4):
 -----------------
 

@@ -238,6 +238,8 @@ class TaskService(contained.Contained, persistent.Persistent):
             job = self.jobs[jobid]
         if job is None:
             return False
+        if job.status == interfaces.COMPLETED:
+            return True
         try:
             jobtask = component.getUtility(self.taskInterface, name=job.task)
         except ComponentLookupError, error:

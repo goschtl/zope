@@ -120,6 +120,39 @@ were all completed in the order they were defined.
   lovely.remotetask INFO
     Job: 4
 
+Transactions in jobs
+--------------------
+
+With the SimpleProcessor, jobs _should_ not change the transaction status, since
+both the administration of the jobs by the TaskService and the job itself run in
+the same transaction, so aborting it from inside the job could wreak havoc with
+the administrative part.
+
+This is a regression test that aborting the transaction inside the job does not
+lead to an infinite loop (because SimpleProcessor pulls the job inside the
+transaction, so if it is aborted, the job remains on the queue):
+
+  >>> counter = 0
+  >>> def count(arg):
+  ...     global counter
+  ...     counter += 1
+  ...     transaction.abort()
+  >>> countTask = remotetask.task.SimpleTask(count)
+  >>> zope.component.provideUtility(countTask, name='count')
+
+  >>> jobid = tasks.add(u'count', ())
+  >>> transaction.commit()
+
+  >>> tasks.startProcessing()
+  >>> transaction.commit()
+  >>> time.sleep(0.5)
+  >>> tasks.stopProcessing()
+  >>> transaction.commit()
+  >>> time.sleep(0.5)
+  >>> transaction.abort() # prevent spurious conflict errors
+  >>> counter
+  1
+
 
 The Multi-thread Processor
 --------------------------
@@ -164,7 +197,7 @@ Once you know that jobs are available, you can claim a job:
 
   >>> jobid = proc.claimNextJob()
   >>> jobid
-  1392637179
+  1392637180
 
 We need to claim a job before executing it, so that the database marks the job
 as claimed and no new thread picks up the job. Once we claimed a particular
