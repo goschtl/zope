@@ -78,27 +78,13 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestIdGenerator),
         DocFileSuite('README.txt',
+                     'startlater.txt',
+                     'processor.txt',
+                     'TESTING.txt',
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE
                      |doctest.ELLIPSIS
                      |INTERPRET_FOOTNOTES
-                     ),
-        DocFileSuite('startlater.txt',
-                     setUp=setUp,
-                     tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE
-                     |doctest.ELLIPSIS
-                     ),
-        DocFileSuite('processor.txt',
-                     setUp=setUp,
-                     tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE
-                     |doctest.ELLIPSIS
-                     ),
-        DocFileSuite('TESTING.txt',
-                     setUp=placelesssetup.setUp,
-                     tearDown=placelesssetup.tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))
