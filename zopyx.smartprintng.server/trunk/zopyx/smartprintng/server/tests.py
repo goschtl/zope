@@ -10,6 +10,7 @@ import unittest
 import zipfile
 import tempfile
 from repoze.bfg import testing
+from models import Server
 
 xml = """<?xml version="1.0"?>
 <methodCall>
@@ -19,6 +20,13 @@ xml = """<?xml version="1.0"?>
 xml2 = """<?xml version="1.0"?>
 <methodCall>
    <methodName>convertZIP</methodName>
+    %s
+</methodCall>
+"""
+
+xml3 = """<?xml version="1.0"?>
+<methodCall>
+   <methodName>convertZIPandRedirect</methodName>
     %s
 </methodCall>
 """
@@ -44,7 +52,7 @@ class ViewTests(unittest.TestCase):
 
     def test_index(self):
         from zopyx.smartprintng.server.views import index
-        context = testing.DummyModel()
+        context = Server()
         request = testing.DummyRequest()
         renderer = testing.registerDummyRenderer('templates/index.pt')
         response = index(context, request)
@@ -64,6 +72,7 @@ class ViewIntegrationTests(unittest.TestCase):
     provided by bfg and only the registrations you need, as in the
     above ViewTests.
     """
+
     def setUp(self):
         """ This sets up the application registry with the
         registrations your application declares in its configure.zcml
@@ -81,7 +90,7 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def test_index(self):
         from zopyx.smartprintng.server.views import index
-        context = testing.DummyModel()
+        context = Server()
         request = testing.DummyRequest()
         result = index(context, request)
         self.assertEqual(result.status, '200 OK')
@@ -94,7 +103,7 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def test_xmlrpc_ping(self):
         from zopyx.smartprintng.server.views import ping
-        context = testing.DummyModel()
+        context = Server()
         headers = dict()
         headers['content-type'] = 'text/xml'
         request = testing.DummyRequest(headers=headers, post=True)
@@ -107,7 +116,7 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def test_xmlrpc_convertZIP(self):
         from zopyx.smartprintng.server.views import convertZIP
-        context = testing.DummyModel()
+        context = Server()
         headers = dict()
         headers['content-type'] = 'text/xml'
         request = testing.DummyRequest(headers=headers, post=True)
@@ -125,3 +134,47 @@ class ViewIntegrationTests(unittest.TestCase):
         ZIP = zipfile.ZipFile(output_zip_filename, 'r')
         self.assertEqual('output.pdf' in ZIP.namelist(), True)
 
+    def test_xmlrpc_convertZIPandRedirect(self):
+        from zopyx.smartprintng.server.views import convertZIPandRedirect
+        context = Server()
+        headers = dict()
+        headers['content-type'] = 'text/xml'
+        request = testing.DummyRequest(headers=headers, post=True)
+        zip_archive = os.path.join(os.path.dirname(__file__), 'test_data', 'test.zip')
+        zip_data = file(zip_archive, 'rb').read()
+        params = xmlrpclib.dumps((base64.encodestring(zip_data), 'pdf-prince'))
+        request.body = xml3 % params
+        result = convertZIPandRedirect(context, request)
+        self.assertEqual(result.status, '200 OK')
+        body = result.app_iter[0]
+        params, methodname = xmlrpclib.loads(result.body)
+        location = params[0]
+        self.assertEqual('deliver?' in location, True)
+
+    def test_deliver_non_existing_filename(self):
+        from zopyx.smartprintng.server.views import deliver
+        context = Server()
+        request = testing.DummyRequest(params=dict(filename='does-not-exist.pdf'))
+        result = deliver(context, request)
+        self.assertEqual(result.status, '404 Not Found')
+
+    def test_deliver_existing_filename(self):
+        from zopyx.smartprintng.server.views import deliver
+        from views import spool_directory
+        file(os.path.join(spool_directory, 'foo.pdf'), 'wb').write('foo')
+        context = Server()
+        request = testing.DummyRequest(params=dict(filename='foo.pdf'))
+        result = deliver(context, request)
+        self.assertEqual(result.status, '200 OK')
+        self.assertEqual(('content-type', 'application/pdf') in result.headerlist, True)
+        self.assertEqual(('content-disposition', 'attachment; filename=foo.pdf') in result.headerlist, True)
+
+    def test_deliver_existing_filename_with_prefix(self):
+        from zopyx.smartprintng.server.views import deliver
+        from views import spool_directory
+        file(os.path.join(spool_directory, 'foo.pdf'), 'wb').write('foo')
+        context = Server()
+        request = testing.DummyRequest(params=dict(filename='foo.pdf', prefix='bar'))
+        result = deliver(context, request)
+        self.assertEqual(result.status, '200 OK')
+        self.assertEqual(('content-disposition', 'attachment; filename=bar.pdf') in result.headerlist, True)

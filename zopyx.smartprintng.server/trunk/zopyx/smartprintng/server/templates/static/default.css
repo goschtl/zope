@@ -2,10 +2,8 @@ body {
     font-family: "Arial";
 }
 
-#logo h2 {
-}
-
-#logo img {
+.label {
+    font-weight: bold;
 }
 
 #footer {
@@ -18,9 +16,6 @@ body {
 #version {
     font-size: 110%;
     font-weight: bold;
-}
-
-a {
 }
 
 a,

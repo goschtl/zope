@@ -14,9 +14,14 @@ Requirements
 Installation
 ============
 
-- create an virtualenv environment (Python 2,4, 2.5 or 2.6)::
+- create an virtualenv environment (Python 2,4, 2.5 or 2.6) - either within your
+  current (empty) directory or by letting virtualenv create one for you::
 
     virtualenv --no-site-packages .
+
+  or:: 
+
+    virtualenv --no-site-packages smartprintng
 
 - install ``repoze.bfg`` (by installing ``repoze.bfg.xmlrpc`` having ``repoze.bfg``
   as a dependency) ::

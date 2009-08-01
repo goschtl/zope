@@ -15,7 +15,10 @@ def app(global_config, **kw):
     # paster app config callback
     from zopyx.smartprintng.server.models import get_root
     import zopyx.smartprintng.server
+    from models import root
     from logger import LOG
+    from views import spool_directory
+
     if 'mail_config' in global_config:
         mail_config = os.path.abspath(global_config['mail_config'])
         os.environ['EMAIL_CONFIG'] = mail_config
@@ -23,5 +26,7 @@ def app(global_config, **kw):
         LOG.info('Using email configuration at %s' % mail_config)
         LOG.info(config)
     LOG.info('SmartPrintNG server started')
+    LOG.info('Temp directory: %s' % root.temp_directory)
+    LOG.info('Spool directory: %s' % spool_directory)
     return make_app(get_root, zopyx.smartprintng.server, options=kw)
 

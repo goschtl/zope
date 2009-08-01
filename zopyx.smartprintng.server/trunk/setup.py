@@ -1,3 +1,7 @@
+##########################################################################
+# zopyx.smartprintng.server
+# (C) 2008, 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
 
 import sys
 import os
@@ -21,7 +25,7 @@ setup(name='zopyx.smartprintng.server',
       keywords='SmartPrintNG Conversion repoze.bfg',
       author='Andreas Jung',
       author_email='info@zopyx.com',
-      url='',
+      url='http://www.zopyx.com/projects/smartprintng',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['zopyx', 'zopyx.smartprintng'],
