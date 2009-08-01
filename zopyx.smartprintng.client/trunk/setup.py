@@ -1,7 +1,13 @@
+##########################################################################
+# zopyx.smartprintng.client - client library for the SmartPrintNG server
+# (C) 2009, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
+
+
 from setuptools import setup, find_packages
 import os
 
-version = '0.3.0'
+version = '0.4.0'
 
 setup(name='zopyx.smartprintng.client',
       version=version,

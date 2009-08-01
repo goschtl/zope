@@ -65,6 +65,17 @@ class Proxy(object):
         os.unlink(zip_temp)
         return output_filename
 
+    def convertZIPandRedirect(self, dirname, converter_name='pdf-prince', prefix=None):
+        """ XMLRPC client to SmartPrintNG server """
+
+        zip_filename = self._makeZipFromDirectory(dirname)
+        server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPandRedirect' % (self.host, self.port))
+        location = server(base64.encodestring(file(zip_filename, 'rb').read()),
+                          converter_name,
+                          prefix)
+        os.unlink(zip_filename)
+        return location
+
     def convertZIPEmail(self, dirname, converter_name='pdf-prince', 
                         sender=None, recipients=None, subject=None, body=None):
 
@@ -86,9 +97,9 @@ if __name__ == '__main__':
     print proxy.ping()
     print proxy.availableConverters()
     print proxy.convertZIP(sys.argv[1])
-    print proxy.convertZIPEmail(sys.argv[1], 
-                                sender='foo@bar.org', 
-                                recipients='foo@bar.org', 
-                                subject=unicode('üצה', 'latin1').encode('utf-8'),
-                                body=unicode('üצה', 'latin1').encode('utf-8'))
+#    print proxy.convertZIPEmail(sys.argv[1], 
+#                                sender='foo@bar.org', 
+#                                recipients='foo@bar.org', 
+#                                subject=unicode('üצה', 'latin1').encode('utf-8'),
+#                                body=unicode('üצה', 'latin1').encode('utf-8'))
 
