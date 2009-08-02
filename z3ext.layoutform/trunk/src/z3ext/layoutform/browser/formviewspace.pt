@@ -1,6 +1,6 @@
-<h1 class="z-form-label"
+<h1 class="z-form-label" i18n:translate=""
     tal:condition="context/label" tal:content="context/label">Do something</h1>
-<div class="z-form-description"
+<div class="z-form-description" i18n:translate=""
      tal:condition="context/description" tal:content="context/description"></div>
 
 <tal:block tal:content="structure pagelet:form.viewspaceInfo" />

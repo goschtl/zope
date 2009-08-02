@@ -7,6 +7,8 @@ CHANGES
 
 - Do not show status message for subform
 
+- Add status message in edit subform
+
 - Update tests to pass with chameleon
 
 

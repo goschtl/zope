@@ -78,6 +78,8 @@ class PageletForm(form.Form, PageletBaseForm):
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
 
+    successMessage = _('Data successfully updated.')
+    noChangesMessage = _('No changes were applied.')
     formErrorsMessage = _(u'Please fix indicated errors.')
 
     def extractData(self):
@@ -97,7 +99,7 @@ class PageletForm(form.Form, PageletBaseForm):
 
     def _loadSubforms(self):
         return [(name, form) for name, form in
-                getAdapters((self.context, self, self.request), IPageletSubform)]
+                getAdapters((self.context,self,self.request), IPageletSubform)]
 
     def updateForms(self):
         wrapped = IFormWrapper.providedBy(self)

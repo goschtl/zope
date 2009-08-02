@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -23,6 +23,8 @@ from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 from z3c.form import subform, button
 from z3c.form.interfaces import ISubForm, IActionHandler
 
+from z3ext.statusmessage.interfaces import IStatusMessage
+
 from utils import applyChanges
 from form import PageletBaseForm
 from interfaces import _, IPageletEditSubForm, IPageletSubform, ISaveAction
@@ -33,6 +35,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
 
     label = u''
     description = u''
+    changesApplied = False
 
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
@@ -54,6 +57,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
                 for interface, names in changes.items():
                     descriptions.append(Attributes(interface, *names))
 
+                self.changesApplied = True
                 event.notify(
                     ObjectModifiedEvent(self.getContent(), *descriptions))
 

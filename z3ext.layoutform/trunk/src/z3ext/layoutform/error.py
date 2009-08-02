@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -31,6 +31,6 @@ class FormErrorStatusMessage(Message):
 
     def render(self, message):
         self.message = message[0]
-        self.errors = [err for err in message[1:] 
+        self.errors = [err for err in message[1:]
                        if IErrorViewSnippet.providedBy(err) and err.widget is None]
         return self.index()

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
@@ -42,7 +42,15 @@ class PageletEditForm(PageletForm, form.EditForm):
             if changes:
                 IStatusMessage(self.request).add(self.successMessage)
             else:
-                IStatusMessage(self.request).add(self.noChangesMessage)
+                changed = False
+                for subform in self.subforms:
+                    if subform.changesApplied:
+                        IStatusMessage(self.request).add(self.successMessage)
+                        self.changed = True
+                        break
+
+                if not changed:
+                    IStatusMessage(self.request).add(self.noChangesMessage)
 
             nextURL = self.nextURL()
             if nextURL:

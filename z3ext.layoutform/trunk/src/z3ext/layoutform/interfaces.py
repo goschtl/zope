@@ -58,6 +58,8 @@ class IPageletForm(IPageletBaseForm):
     subforms = interface.Attribute('Ordered list of managed subforms')
     views = interface.Attribute('Ordered list of managed views')
 
+    successMessage = interface.Attribute('Success message')
+    noChangesMessage = interface.Attribute('No changes message')
     formErrorsMessage = interface.Attribute('Error message')
 
     def updateForms():
@@ -92,6 +94,8 @@ class IPageletEditForm(IPageletForm):
 
 class IPageletEditSubForm(IPageletBaseForm):
     """ Sub form mixin for pagelet implementation."""
+
+    changesApplied = interface.Attribute('Changes applied')
 
     def executeActions(form):
         """Execute form actions."""
