@@ -1,16 +1,20 @@
 Changelog
 =========
 
-0.5.0 (unreleased)
+0.5.1 (2009/08/01)
 ------------------
 
-* now requires Python 2.6
 * added convertZIPandRedirect() method
 * added deliver() method
 * moved base.ServerCore to models.py
 * delivered files must be younger than 'delivery_max_age' seconds
+* cleanup code
+* internal refactoring
 * more tests
 
+0.5.0 (2009/07/23)
+------------------
+* now requires Python 2.6
 
 0.4.3 (2009/07/22)
 ------------------
