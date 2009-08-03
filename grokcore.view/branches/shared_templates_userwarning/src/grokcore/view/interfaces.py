@@ -183,9 +183,10 @@ class ITemplateRegAPI(Interface):
         module_info - the module_info of the module
         """
 
-    def lookup(module_info, template_name):
+    def lookup(module_info, template_name, mark_as_associated=False):
         """Look up a template for a module.
 
         module_info - the module info for which to look up the template
-        template_name - the name of the template to look up.
+        template_name - the name of the template to look up
+        mark_as_associated - if a template is found, mark it as associated (disabled by default).
         """

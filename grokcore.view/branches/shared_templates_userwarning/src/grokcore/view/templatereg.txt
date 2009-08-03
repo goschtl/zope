@@ -39,6 +39,7 @@ appropriate templates::
   ...    def __init__(self, filename, source):
   ...        self.filename = filename
   ...        self.source = source
+  ...        self.__grok_location__ = filename
   ...    def __repr__(self):
   ...        path, filename = os.path.split(self.filename)
   ...        return "<Template '%s' in '%s'>" % (filename, path)
@@ -144,6 +145,17 @@ There is only a single unassociated template left now::
   >>> sorted(reg.unassociated()) 
   ['...bar.template']
 
+Registering the templates directory again should do nothing and thus the unassociated list should be the same::
+
+  >>> register_directory(module_info)
+  >>> sorted(reg.unassociated()) 
+  ['...bar.template']
+
+We can associate several times a template without error::
+
+  >>> reg.associate(os.path.join(template_dir, 'foo.template'))
+
+
 Unknown template extensions
 ---------------------------
 
@@ -210,7 +222,7 @@ We expect an error when we register this directory::
   Traceback (most recent call last):
     ...
   GrokError: Conflicting templates found for name 'foo' in directory '...': 
-  multiple templates with the same name and different extensions .
+  multiple templates with the same name and different extensions.
 
 Inline templates
 ----------------
@@ -252,8 +264,28 @@ unassociated templates will get us all registered inline templates::
   >>> sorted(inline_reg.unassociated())
   [('module4', 'cavepainting')]
 
+Let's associate this template::
+
+  >>> inline_reg.associate(module_info4, 'cavepainting')
+
+Unassociated list is now empty::
+
+  >>> sorted(inline_reg.unassociated())
+  []
+  
+We can associate several times an inline template without error::
+  
+  >>> inline_reg.associate(module_info4, 'cavepainting')
+
+
 A common template lookup function
 ---------------------------------
+First clean up the registries::
+
+  >>> from grokcore.view.templatereg import _clear
+  >>> _clear()
+  >>> from grokcore.view.templatereg import file_template_registry as reg
+  >>> from grokcore.view.templatereg import inline_template_registry as inline_reg
 
 There is a single lookup function available that can used to look up
 both filesystem templates as well as inline templates.
@@ -282,6 +314,26 @@ missing on the filesystem)::
   Traceback (most recent call last):
     ...
   TemplateLookupError: template 'qux' in '...' cannot be found
+
+The file template and the inline template are unassociated::
+
+  >>> sorted(reg.unassociated())
+  ['...foo.template']
+  >>> sorted(inline_reg.unassociated())
+  [('lookuptest', 'bar')]
+
+We can give the parameter mark_as_associated=True to the lookup call to
+mark the returned template as associated::
+
+  >>> lookup(lookuptest_info, 'foo', mark_as_associated=True)
+  <Template 'foo.template' in '...'>
+  >>> sorted(reg.unassociated())
+  []
+  >>> lookup(lookuptest_info, 'bar', mark_as_associated=True)
+  <InlineTemplate 'bar'>
+  >>> sorted(inline_reg.unassociated())
+  []
+
 
 Conflicts between inline templates and file templates
 -----------------------------------------------------
@@ -340,9 +392,6 @@ get an error::
    GrokError: Conflicting templates found for name 'bar': 
    the inline template in module 'module6' conflicts with the file template in directory '...'
 
-
-XXX a common lookup function that looks up both inline or filesystem that
-    takes the module info
 
 XXX use configuration action conflicts with module_info.dotted_name,
     name to determine conflicts between registrations?

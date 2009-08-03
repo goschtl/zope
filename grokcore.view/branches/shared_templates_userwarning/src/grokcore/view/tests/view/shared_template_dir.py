@@ -14,8 +14,8 @@ When modules share a template directory, templates that have not been associated
   ...UserWarning: Found the following unassociated template(s) when grokking
   'grokcore.view.tests.view.shared_template_fixture.first_module': unassociated_instance.  Define view classes inheriting from
   grok.View to enable the template(s)...
-  ...UserWarning: Found the following unassociated template(s) when grokking directory
-  '...shared_template_fixture...templates': unassociated.  Define view classes inheriting from
+  ...UserWarning: Found the following unassociated template(s) when grokking views:
+  ...shared_template_fixture...templates...unassociated.pt.  Define view classes inheriting from
   grok.View to enable the template(s)...
 
 """

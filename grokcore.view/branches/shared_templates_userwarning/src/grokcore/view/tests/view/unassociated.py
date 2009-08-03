@@ -9,8 +9,8 @@ error:
 
   >>> grok.testing.grok(__name__)
   From grok.testing's warn():
-  ...UserWarning: Found the following unassociated template(s) when grokking directory
-  '...unassociated_templates': index.  Define view classes inheriting from
+  ...UserWarning: Found the following unassociated template(s) when grokking views:
+  ...unassociated_templates...index.pt.  Define view classes inheriting from
   grok.View to enable the template(s)...
 
 Also templates of modules named equally as the package name the module
