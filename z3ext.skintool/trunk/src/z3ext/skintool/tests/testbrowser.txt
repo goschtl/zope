@@ -40,8 +40,13 @@ Browser
   '1'
   >>> admin.getControl('Param 1').value = 'Nikolay'
   >>> admin.getControl(name="form.buttons.save").click()
-  >>> 'Data successfully updated.' in admin.contents
-  True
+
+  >>> admin.open("http://localhost/settings/")
+  >>> admin.getLink('Portal skin').click()
+
+  >>> admin.getControl('Param 1').value
+  'Nikolay'
+
 
 We see changes in tool
 

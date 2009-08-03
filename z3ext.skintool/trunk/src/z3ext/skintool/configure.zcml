@@ -10,6 +10,7 @@
   <!-- layers changed -->
   <subscriber handler=".tool.skinToolModified" />
 
+  <!-- vocabularies -->
   <utility
      name="z3ext skins"
      factory=".vocabulary.SkinsVocabulary" />
@@ -18,6 +19,7 @@
      name="z3ext layers"
      factory=".vocabulary.LayersVocabulary" />
 
+  <!-- configlet -->
   <z3ext:configlet
      name="ui.portalskin"
      title="Portal skin"
@@ -25,13 +27,11 @@
      class=".tool.SkinTool"
      schema=".interfaces.ISkinTool" />
 
-
   <z3ext:pagelet
      name="index.html"
      for=".interfaces.ISkinTool"
      class=".tool.ConfigletEditForm"
      permission="zope.Public" />
-
 
   <!-- edit schema -->
   <z3ext:pagelet
