@@ -1,0 +1,5 @@
+setuptools
+zc.buildout
+zc.recipe.egg
+zc.recipe.testrunner
+zope.kgs

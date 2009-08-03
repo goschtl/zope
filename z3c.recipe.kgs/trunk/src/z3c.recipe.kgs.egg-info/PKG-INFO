@@ -1,0 +1,32 @@
+Metadata-Version: 1.0
+Name: z3c.recipe.kgs
+Version: 0.1dev
+Summary: Buildout recipe to create testrunners for testing compatibility with packages from a KGS
+Home-page: http://pypi.python.org/pypi/z3c.recipe.kgs
+Author: Fabio Tranchitella
+Author-email: fabio@tranchitella.it
+License: ZPL 2.1
+Description: ==============
+        z3c.recipe.kgs
+        ==============
+        
+        This buildout recipe generates a list of packages to test and a test runner
+        that runs each package's tests (isolated from any other tests) from a KGS.
+        
+        
+        =======
+        CHANGES
+        =======
+        
+        0.1 (unreleased)
+        ================
+        
+        - first public release
+        
+Keywords: zope3 setuptools egg kgs
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: Programming Language :: Python
+Classifier: Operating System :: OS Independent
+Classifier: Framework :: Zope3
