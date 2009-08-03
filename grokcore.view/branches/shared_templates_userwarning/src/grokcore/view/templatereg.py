@@ -89,13 +89,10 @@ class FileTemplateRegistry(object):
 
         template_name, extension = os.path.splitext(template_file)
         if (template_dir, template_name) in self._reg:
-            registered_template_path = self._reg.get((template_dir, template_name)).__grok_location__
-            # __grok_location__ is set by _annotateGrokInfo
-            if template_path != registered_template_path:
-                raise GrokError("Conflicting templates found for name '%s' "
-                                "in directory '%s': multiple templates with "
-                                "the same name and different extensions." %
-                                (template_name, template_dir), None)
+            raise GrokError("Conflicting templates found for name '%s' "
+                            "in directory '%s': multiple templates with "
+                            "the same name and different extensions." %
+                            (template_name, template_dir), None)
         # verify no inline template exists with the same name
         try:
             inline_template_registry.lookup(module_info, template_name)
