@@ -30,7 +30,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import weakref
-from zope.interface.interface import InterfaceClass, Specification
+from zope.interface.interface import InterfaceMetaclass, Specification
 from ro import mergeOrderings, ro
 import exceptions
 from types import ClassType, ModuleType
@@ -1363,7 +1363,7 @@ def _normalizeargs(sequence, output = None):
         output = []
 
     cls = sequence.__class__
-    if InterfaceClass in cls.__mro__ or Implements in cls.__mro__:
+    if InterfaceMetaclass in cls.__mro__ or Implements in cls.__mro__:
         output.append(sequence)
     else:
         for v in sequence:

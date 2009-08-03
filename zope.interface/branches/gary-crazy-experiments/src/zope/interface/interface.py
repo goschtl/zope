@@ -272,22 +272,20 @@ class Specification(SpecificationBase):
         else:
             raise KeyError(dependent)
 
-    def __setBases(self, bases):
+    _bases = ()
+    def _setBases(self, bases):
         # Register ourselves as a dependent of our old bases
-        for b in self.__bases__:
+        for b in self._bases:
             b.unsubscribe(self)
-
         # Register ourselves as a dependent of our bases
-        self.__dict__['__bases__'] = bases
+        self._bases = bases
         for b in bases:
             b.subscribe(self)
-
         self.changed(self)
 
     __bases__ = property(
-
-        lambda self: self.__dict__.get('__bases__', ()),
-        __setBases,
+        lambda self: self._bases,
+        _setBases,
         )
 
     def changed(self, originally_changed):
@@ -307,7 +305,7 @@ class Specification(SpecificationBase):
 
         self.__sro__ = tuple(ancestors)
         self.__iro__ = tuple([ancestor for ancestor in ancestors
-                              if isinstance(ancestor, InterfaceClass)
+                              if isinstance(ancestor, InterfaceMetaclass)
                               ])
 
         for ancestor in ancestors:
@@ -421,7 +419,7 @@ class Specification(SpecificationBase):
         else:
             return attr
 
-class InterfaceClass(Element, InterfaceBase, Specification):
+class InterfaceMetaclass(type, Element, InterfaceBase, Specification):
     """Prototype (scarecrow) Interfaces Implementation."""
 
     # We can't say this yet because we don't have enough
@@ -429,11 +427,30 @@ class InterfaceClass(Element, InterfaceBase, Specification):
     #
     #implements(IInterface)
 
+    # we will consume all of the bits other than the name in the __init__.
+    def __new__(cls, name, bases=(), attrs=None, __doc__=None,
+                __module__=None):
+        return super(InterfaceMetaclass, cls).__new__(cls, name, (), {})
+
+    # We don't want to instantiate a class on a call, but get an object of this
+    # interface.
+    __call__ = InterfaceBase.__call__
+
+    # We need to make sure that the Specification's implementation of __bases__
+    # is used, not type's
+    __bases__ = property(
+        lambda self: self._bases,
+        lambda self, value: self._setBases(value),
+        )
+
     def __init__(self, name, bases=(), attrs=None, __doc__=None,
                  __module__=None):
 
         if attrs is None:
             attrs = {}
+
+        if not bases: # (I.e., this is the root "interface.")
+            del attrs['__metaclass__'] # Interfaces don't want "real" attrs.
 
         if __module__ is None:
             __module__ = attrs.get('__module__')
@@ -468,7 +485,7 @@ class InterfaceClass(Element, InterfaceBase, Specification):
                 self.setTaggedValue(key, val)
 
         for base in bases:
-            if not isinstance(base, InterfaceClass):
+            if not isinstance(base, InterfaceMetaclass):
                 raise TypeError('Expected base interfaces')
 
         Specification.__init__(self, bases)
@@ -690,7 +707,9 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         return c > 0
 
 
-Interface = InterfaceClass("Interface", __module__ = 'zope.interface')
+class Interface:
+    __metaclass__ = InterfaceMetaclass
+
 
 class Attribute(Element):
     """Attribute descriptions
@@ -802,7 +821,7 @@ def _wire():
     classImplements(Method, IMethod)
 
     from zope.interface.interfaces import IInterface, ISpecification
-    classImplements(InterfaceClass, IInterface)
+    classImplements(InterfaceMetaclass, IInterface)
     classImplements(Specification, ISpecification)
 
 # We import this here to deal with module dependencies.
