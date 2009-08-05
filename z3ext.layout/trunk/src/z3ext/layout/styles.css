@@ -118,6 +118,7 @@
   ul.z-listing li .z-listing-details { 
     float: left;
     padding-bottom: 0.5em;
+    width: 90%;
   }
 
   ul.z-listing li a,

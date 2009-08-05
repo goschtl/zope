@@ -20,7 +20,7 @@ from zope import interface, component
 from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 from zope.app.container.sample import SampleContainer
-from z3c.pt import expressions 
+from z3c.pt import expressions
 
 from z3ext.layout import pagelet
 

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -28,7 +28,7 @@ class DefaultLayoutPortal(object):
 
         tmpl = self.content(self)
 
-        parts = tmpl.split(u'<!-- default layout portal contents -->', 1) 
+        parts = tmpl.split(u'<!-- default layout portal contents -->', 1)
 
         if len(parts) == 2:
             return parts[0] + rendered + parts[1]
