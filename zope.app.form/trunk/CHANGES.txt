@@ -5,7 +5,9 @@ CHANGES
 3.8.2 (unreleased)
 ==================
 
-- ...
+- Added dependency on transaction.
+- Moved dependency on ZODB3 to the test extra.
+
 
 3.8.1 (2009-07-23)
 ==================
