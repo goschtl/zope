@@ -71,7 +71,7 @@ def setUp(test):
 
 def tearDown(test):
     setup.placelessTearDown()
-    
+
 
 def test_suite():
     return unittest.TestSuite((

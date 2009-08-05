@@ -27,19 +27,19 @@ class IPermissionsMap(interface.Interface):
     """ named IRolePermissionMap object """
 
     name = schema.TextLine(
-	title=u"Name",
-	description=u"Permissions map identifier.",
-	required=True)
+        title=u"Name",
+        description=u"Permissions map identifier.",
+        required=True)
 
     title = schema.TextLine(
-	title=u"Title",
-	description=u"Permissions map title.",
-	required=True)
+        title=u"Title",
+        description=u"Permissions map title.",
+        required=True)
 
     description = schema.TextLine(
-	title=u"Description",
-	description=u"Permissions map description.",
-	required=False)
+        title=u"Description",
+        description=u"Permissions map description.",
+        required=False)
 
 
 class IDefaultPermissionsMap(interface.Interface):

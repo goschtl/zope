@@ -32,28 +32,28 @@ class IPermissionsMapDirective(interface.Interface):
     """ define permissions map directive"""
 
     name = schema.TextLine(
-	title=u"Name",
-	description=u"Permissions map identifier.",
-	required=True)
+        title=u"Name",
+        description=u"Permissions map identifier.",
+        required=True)
 
     for_ = GlobalObject(
-	title=u"For",
-	required=False)
+        title=u"For",
+        required=False)
 
     title = schema.TextLine(
-	title=u"Title",
-	description=u"Permissions map title.",
-	required=False)
+        title=u"Title",
+        description=u"Permissions map title.",
+        required=False)
 
     description = schema.TextLine(
-	title=u"Description",
-	description=u"Permissions map description.",
-	required=False)
+        title=u"Description",
+        description=u"Permissions map description.",
+        required=False)
 
     override = schema.Bool(
-	title=u"Override",
-	description=u"Allow override sub directives for this declaration.",
-	required=False,
+        title=u"Override",
+        description=u"Allow override sub directives for this declaration.",
+        required=False,
         default=True)
 
 
@@ -63,13 +63,13 @@ class IGrantDirective(interface.Interface):
         title=u"Role",
         description=u"Specifies the role.",
         required=True,
-	value_type=schema.TextLine())
+        value_type=schema.TextLine())
 
     permission = Tokens(
         title=u"Permission",
         description=u"Specifies the permission to be mapped.",
         required=True,
-	value_type=Permission())
+        value_type=Permission())
 
 
 class IDenyDirective(interface.Interface):
@@ -78,7 +78,7 @@ class IDenyDirective(interface.Interface):
         title=u"Role",
         description=u"Specifies the role.",
         required=True,
-	value_type=schema.TextLine())
+        value_type=schema.TextLine())
 
     permission = Tokens(
         title=u"Permission",
@@ -93,7 +93,7 @@ class IUnsetDirective(interface.Interface):
         title=u"Role",
         description=u"Specifies the role.",
         required=True,
-	value_type=schema.TextLine())
+        value_type=schema.TextLine())
 
     permission = Tokens(
         title=u"Permission",
@@ -137,30 +137,45 @@ class ClassPermissionsFactory(object):
     def __call__(self, context):
         return self.permissionsmap
 
+classPermissions = {}
+
 
 def permissionsHandler(name, for_, title, description):
     # check if map already exists
     sm = globalregistry.globalSiteManager
 
-    perms = sm.queryUtility(IPermissionsMap, name)
-    if perms is not None:
-        return
-
-    # register map as utility
-    perms = PermissionsMap(name, title, description)
-    sm.registerUtility(perms, IPermissionsMap, name)
-
     if for_ is not None:
-        # register map as adapter for for_
+        global classPermissions
+
+        perms = classPermissions.get(for_)
+        if perms is not None:
+            return
+
+        perms = PermissionsMap(name, title, description)
+        classPermissions[for_] = perms
         interface.alsoProvides(perms, IDefaultPermissionsMap)
+
+        # register map as adapter for for_
         factory = ClassPermissionsFactory(perms)
         sm.registerAdapter(factory, (for_,), IPermissionsMap, name)
 
+    else:
+        perms = sm.queryUtility(IPermissionsMap, name)
+        if perms is not None:
+            return
 
-def directiveHandler(name, method, permissions, roles, check=False):
+        # register map as utility
+        perms = PermissionsMap(name, title, description)
+        sm.registerUtility(perms, IPermissionsMap, name)
+
+
+def directiveHandler(name, method, permissions, roles, for_=None, check=False):
     sm = globalregistry.globalSiteManager
 
-    permissionmap = sm.getUtility(IPermissionsMap, name)
+    if for_ is not None:
+        permissionmap = classPermissions[for_]
+    else:
+        permissionmap = sm.getUtility(IPermissionsMap, name)
 
     for role in roles:
         for permission in permissions:
@@ -170,10 +185,13 @@ def directiveHandler(name, method, permissions, roles, check=False):
                 getattr(permissionmap, method)(permission, role)
 
 
-def directiveHandlerAll(name, method, permissions, attr):
+def directiveHandlerAll(name, method, permissions, attr, for_=None):
     sm = globalregistry.globalSiteManager
 
-    permissionmap = sm.getUtility(IPermissionsMap, name)
+    if for_ is not None:
+        permissionmap = classPermissions[for_]
+    else:
+        permissionmap = sm.getUtility(IPermissionsMap, name)
 
     if attr == 'unsetall':
         for role_id, role in getUtilitiesFor(IRole):
@@ -188,8 +206,9 @@ def directiveHandlerAll(name, method, permissions, attr):
 
 class permissionsMapDirective(object):
 
-    def __init__(self, _context, name, for_=None, 
+    def __init__(self, _context, name, for_=None,
                  title='', description='', override=True):
+        self.for_ = for_
         self.name = name
         self.override = override
 
@@ -206,48 +225,53 @@ class permissionsMapDirective(object):
     def grant(self, _context, role, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.grant', 
-                 self.name, tuple(role), tuple(permission))),
+                ('z3ext.permissions.grant',
+                 self.name, self.for_, tuple(role), tuple(permission))),
             callable = directiveHandler,
-            args = (self.name, 'grantPermissionToRole', permission, role))
+            args = (self.name, 'grantPermissionToRole',
+                    permission, role, self.for_))
 
     def deny(self, _context, role, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.deny', 
-                 self.name, tuple(role), tuple(permission))),
+                ('z3ext.permissions.deny',
+                 self.name, self.for_, tuple(role), tuple(permission))),
             callable = directiveHandler,
-            args = (self.name, 'denyPermissionToRole', permission, role))
+            args = (self.name, 'denyPermissionToRole',
+                    permission, role, self.for_))
 
     def unset(self, _context, role, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.unset', 
-                 self.name, tuple(role), tuple(permission))),
+                ('z3ext.permissions.unset',
+                 self.name, self.for_, tuple(role), tuple(permission))),
             callable = directiveHandler,
             args = (self.name, 'unsetPermissionFromRole',
-                    permission, role, True))
+                    permission, role, self.for_, True))
 
     def grantAll(self, _context, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.grantAll', 
-                 self.name, tuple(permission))),
+                ('z3ext.permissions.grantAll',
+                 self.name, self.for_, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'grantPermissionToRole', permission, 'grantall'))
+            args = (self.name, 'grantPermissionToRole',
+                    permission, 'grantall', self.for_))
 
     def denyAll(self, _context, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.denyAll', 
-                 self.name, tuple(permission))),
+                ('z3ext.permissions.denyAll',
+                 self.name, self.for_, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'denyPermissionToRole', permission, 'denyall'))
+            args = (self.name, 'denyPermissionToRole',
+                    permission, 'denyall', self.for_))
 
     def unsetAll(self, _context, permission):
         _context.action(
             discriminator = self.discriminator(
-                ('z3ext.permissions.unsetAll', 
-                 self.name, tuple(permission))),
+                ('z3ext.permissions.unsetAll',
+                 self.name, self.for_, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'unsetPermissionFromRole', permission, 'unsetall'))
+            args = (self.name, 'unsetPermissionFromRole',
+                    permission, 'unsetall', self.for_))

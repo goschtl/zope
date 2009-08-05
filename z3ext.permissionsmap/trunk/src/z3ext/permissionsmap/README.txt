@@ -157,6 +157,11 @@ PermissionsMap access
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns="http://namespaces.zope.org/zope">
+  ...   <permissions name="myPermissions1">
+  ...     <grant permission="my.p1" role="r1 r2 r3" />
+  ...     <deny permission="my.p2" role="r1 r3" />
+  ...     <denyAll permission="my.p3" />
+  ...   </permissions>
   ...   <permissions name="myPermissions2" title="My Permissions2">
   ...     <grant permission="my.p3" role="r1" />
   ...     <grant permission="my.p2" role="r2" />
