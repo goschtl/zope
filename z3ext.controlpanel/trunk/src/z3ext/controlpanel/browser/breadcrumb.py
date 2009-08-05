@@ -15,8 +15,7 @@
 
 $Id$
 """
-from zope import interface, component
-from z3c.breadcrumb.interfaces import IBreadcrumb
+from zope import component
 from z3c.breadcrumb.browser import GenericBreadcrumb
 from z3ext.controlpanel.interfaces import IConfiglet
 

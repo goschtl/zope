@@ -11,7 +11,7 @@
 	     tal:attributes="class string:z-cp-level${item/level|nothing}">
 	  <a tal:attributes="href string:${item/configlet/@@absolute_url}/">
 	    <tal:block tal:content="structure item/icon" />
-	    <tal:block tal:content="item/title" />
+	    <tal:block tal:content="item/title" i18n:translate="" />
 	  </a>
 	</div>
       </div>
