@@ -17,9 +17,9 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import unittest, doctest
+import os, unittest, doctest
 from zope import interface, component
-from zope.app.testing import setup
+from zope.app.testing import setup, functional
 from zope.copypastemove import ObjectCopier
 from zope.component.event import objectEventNotify
 from zope.location.interfaces import ILocation
@@ -30,6 +30,11 @@ from zope.app.container.contained import dispatchToSublocations
 
 from z3ext.controlpanel.configlet import Configlet
 from z3ext.controlpanel.testing import setUpControlPanel
+
+
+z3extControlPanelLayer = functional.ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'z3extControlPanelLayer', allow_teardown=True)
 
 
 def setUp(test):
@@ -52,9 +57,15 @@ def tearDown(test):
 
 
 def test_suite():
+    testbrowser = functional.FunctionalDocFileSuite(
+        "testbrowser.txt",
+        optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
+    testbrowser.layer = z3extControlPanelLayer
+
     return unittest.TestSuite((
+            testbrowser,
             doctest.DocFileSuite(
-                'README.txt',
+                '../README.txt',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             doctest.DocFileSuite(

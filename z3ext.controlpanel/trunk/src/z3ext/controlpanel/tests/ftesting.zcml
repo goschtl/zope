@@ -1,14 +1,22 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
   <include package="z3ext.autoinclude" file="meta.zcml" />
   <includeAllDependencies package="z3ext.controlpanel" extras="test" />
 
-  <include package="z3ext.controlpanel.browser.tests" />
+  <include package="z3ext.controlpanel.tests" />
 
   <securityPolicy
      component="z3ext.security.securitypolicy.SecurityPolicy" />
+
+  <interface
+     name="DefaultSkin"
+     interface="z3ext.controlpanel.tests.interfaces.IDefaultSkin"
+     type="zope.publisher.interfaces.browser.IBrowserSkinType" />
+
+  <browser:defaultSkin name="DefaultSkin" />
 
   <role id="zope.Anonymous" title="Everybody"
         description="All users have this role implicitly" />

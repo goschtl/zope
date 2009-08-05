@@ -3,11 +3,6 @@
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <interface
-     name="MySkin"
-     interface=".interfaces.MySkin"
-     type="zope.publisher.interfaces.browser.IBrowserSkinType" />
-
   <z3ext:configlet
      name="category1"
      schema=".interfaces.ICategory1"

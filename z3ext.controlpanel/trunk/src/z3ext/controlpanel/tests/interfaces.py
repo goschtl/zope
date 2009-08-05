@@ -20,7 +20,7 @@ from zope.app.rotterdam import Rotterdam
 from z3ext.layoutform.interfaces import ILayoutFormLayer
 
 
-class MySkin(ILayoutFormLayer, Rotterdam):
+class IDefaultSkin(ILayoutFormLayer, Rotterdam):
     """ my skin """
 
 

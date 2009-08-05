@@ -15,12 +15,10 @@
 
 $Id$
 """
-import os
 from zope import component, interface
 from zope.app.testing import setup
 from zope.annotation.attribute import AttributeAnnotations
 from zope.app.component.hooks import getSite, setSite
-from zope.app.testing.functional import ZCMLLayer
 
 from z3ext.controlpanel import storage, root, interfaces
 
@@ -49,8 +47,3 @@ def setUpControlPanel():
     component.provideAdapter(storage.getConfigletData)
     component.provideAdapter(getConfigletDataStorage)
     component.provideAdapter(storage.DefaultConfigletDataFactory)
-
-
-z3extControlPanelLayer = ZCMLLayer(
-    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
-    __name__, 'z3extControlPanelLayer', allow_teardown=True)

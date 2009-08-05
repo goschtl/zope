@@ -56,13 +56,6 @@
      action="settings/"
      permission="z3ext.Configure" />
 
-  <browser:menuItem
-     for="zope.app.component.interfaces.ILocalSiteManager"
-     menu="zmi_actions"
-     title="System settings"
-     action="../settings/"
-     permission="z3ext.Configure" />
-
   <browser:containerViews
      for="..interfaces.IConfigletDataStorage"
      index="z3ext.Configure"
