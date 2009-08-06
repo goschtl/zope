@@ -53,6 +53,9 @@ def main():
 
     global server
 
+    if len(sys.argv) != 3:
+        print 'Usage: z2_kgs <tag-name> <destination-dirname>'
+
     tag = sys.argv[1]
     dirname = sys.argv[2]
     if not os.path.exists(dirname):
