@@ -16,19 +16,20 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope import component
-
-from zope.sendmail.interfaces import IMailDelivery
-from email.mime.audio import MIMEAudio
-from email.mime.image import MIMEImage
-from email.MIMEText import MIMEText
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
-from email import Encoders
 import email.Charset
+from datetime import datetime
+from email import Encoders
+from email.MIMEAudio import MIMEAudio
+from email.MIMEBase import MIMEBase
+from email.MIMEImage import MIMEImage
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+
+from zope import component
+from zope.sendmail.interfaces import IMailDelivery
+
 email.Charset.add_charset('utf-8', email.Charset.SHORTEST, None, None)
 
-from datetime import datetime
 
 
 def sendmail(subject, fromaddr, toaddrs, body,
