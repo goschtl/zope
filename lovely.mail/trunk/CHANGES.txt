@@ -5,6 +5,8 @@ Changes for lovely.mail
 After
 =====
 
+ - handle attachments according to their type
+
 2009/07/30 0.3.0
 ================
 

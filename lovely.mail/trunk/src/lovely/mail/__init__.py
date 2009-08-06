@@ -19,7 +19,8 @@ __docformat__ = "reStructuredText"
 from zope import component
 
 from zope.sendmail.interfaces import IMailDelivery
-
+from email.mime.audio import MIMEAudio
+from email.mime.image import MIMEImage
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
@@ -53,12 +54,23 @@ def sendmail(subject, fromaddr, toaddrs, body,
         message['Reply-To'] = replyTo
     message['To'] = ', '.join(recipients)
     message['Date'] = datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000')
+
+
     for f, name, mimetype in attachments:
         if mimetype is None:
             mimetype = ('application', 'octet-stream')
-        part = MIMEBase(*mimetype)
-        part.set_payload( f.read() )
-        Encoders.encode_base64(part)
+        maintype, subtype = mimetype
+        if maintype == 'text':
+            # XXX: encoding?
+            part = MIMEText(f.read(), _subtype=subtype)
+        elif maintype == 'image':
+            part = MIMEImage(f.read(), _subtype=subtype)
+        elif maintype == 'audio':
+            part = MIMEAudio(f.read(), _subtype=subtype)
+        else:
+            part = MIMEBase(maintype, subtype)
+            part.set_payload(f.read())
+            Encoders.encode_base64(part)
         part.add_header('Content-Disposition', 'attachment; filename="%s"' % name)
         message.attach(part)
     mailer = component.getUtility(IMailDelivery, name='lovely-mail-delivery')

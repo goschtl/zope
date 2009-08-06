@@ -1,5 +1,6 @@
-Lovely.Mail and Mail Testing
-============================
+==============================
+ Lovely.Mail and Mail Testing
+==============================
 
 This package mainly provides a simple way to test the mail delivery using the
 current configuration. There is no need to change the mailing configuration
@@ -117,8 +118,9 @@ providing "read", the filename and the mime type of the attachment (if known).
    'Content-Transfer-Encoding: base64',
    'Content-Disposition: attachment; filename="f1.txt"',
    '',
-   'SSBhbSB0aGUgY29udGVudCBvZiBmaWxlIDE=',
+   'SS...',
    '--===============...==--']
+
 
   >>> f1.seek(0)
   >>> sendmail('subject', ('ich', 'me@gmail.org'), [('du','you@gmail.org',)],
@@ -145,12 +147,12 @@ providing "read", the filename and the mime type of the attachment (if known).
    '',
    'my mail body',
    '--===============...==',
-   'Content-Type: text/plain',
+   'Content-Type: text/plain; charset="us-ascii"',
    'MIME-Version: 1.0',
-   'Content-Transfer-Encoding: base64',
+   'Content-Transfer-Encoding: 7bit',
    'Content-Disposition: attachment; filename="f1.txt"',
    '',
-   'SSBhbSB0aGUgY29udGVudCBvZiBmaWxlIDE=',
+   'I am the content of file 1',
    '--===============...==--']
 
 And clean up.
