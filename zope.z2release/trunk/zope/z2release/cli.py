@@ -55,6 +55,7 @@ def main():
 
     if len(sys.argv) != 3:
         print 'Usage: z2_kgs <tag-name> <destination-dirname>'
+        sys.exit(1)
 
     tag = sys.argv[1]
     dirname = sys.argv[2]
