@@ -13,16 +13,17 @@ Usage
 Add a part to your buildout.cfg that uses this recipe.
 No further configuration is required, but you can set the following options:
 
-- ``svn_url``: SVN repository to search for packages,
-- ``include``: only packages matching a regex in this list (one regex per line)
-  will be included (default:``^zope\..*``, ``^grokcore\..*``),
-- ``exclude``: packages matching any regex in this list will be excluded, even if
-  they match ``include`` (default: a list of deprectated/obsolete
-  ``zope.*`` packages, see ``z3c.recipe.compattest.recipe`` for
-  details),
-- ``script``: the name of the runner script (default: test-compat).
+- ``include``: list of packages to include (one package per line)
+  If an entry has the form ``[section]``, all keys of that
+  buildout section are included.
+  (default: the version-section of the buildout (``${buildout:versions}``)
+  if one is defined)
+- ``exclude``: packages matching any regex in this list will be excluded
+  (default: empty)
+- ``script``: the name of the runner script (default: test-<partname>)
 
-- ``use_svn``: use SVN checkouts instead of releases (see below)
+- ``svn_url``: SVN repository to search for packages instead of using releases
+  (see below)
 - ``svn_directory``: directory to place checkouts in (default: parts/<partname>)
 
 >>> cd(sample_buildout)
@@ -34,10 +35,6 @@ No further configuration is required, but you can set the following options:
 ... recipe = z3c.recipe.compattest
 ... include = z3c.recipe.compattest
 ... """)
-
-For this test, we only include a single package. With the default
-include/exclude values, about 150 packages will be included, so be aware
-that running the buildout will take some time.
 
 >>> print system(buildout)
 Couldn't...Installing compattest...
@@ -68,7 +65,7 @@ picked up:
 Using SVN checkouts
 ===================
 
-When you set ``use_svn`` to true, the test runners will not refer to released
+When you set an ``svn_url``, the test runners will not refer to released
 eggs, but rather use development-egg links to SVN checkouts of the trunks of
 each package (the checkouts are placed in ``svn_directory``).
 
@@ -83,12 +80,17 @@ package we're working on:
 >>> write('buildout.cfg', """
 ... [buildout]
 ... parts = compattest-trunk
+... versions = versions
+...
+... [versions]
+... # we don't care about the version numbers, we just extract
+... # which package names to include from here
+... z3c.recipe.compattest =
+... zope.dottedname =
 ...
 ... [compattest-trunk]
 ... recipe = z3c.recipe.compattest
-... include = zope.dottedname
-...           z3c.recipe.compattest
-... use_svn = true
+... svn_url = svn://svn.zope.org/repos/main/
 ... """)
 >>> ignore = system(buildout)
 

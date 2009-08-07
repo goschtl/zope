@@ -5,6 +5,10 @@ CHANGES
 0.6 (unreleased)
 ================
 
+- Restructured the way we construct our list of packages to test:
+  We no longer filter a list we retrieved from SVN with includes/excludes,
+  but use an explicit list that can be populated from a buildout section,
+  e. g. [versions]. Thus, we can now easily test against a KGS.
 - Always enable all extras of packages under test.
 
 0.5 (2009-01-29)

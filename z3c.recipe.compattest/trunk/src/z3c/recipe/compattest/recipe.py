@@ -8,38 +8,6 @@ import zc.recipe.egg
 import zc.recipe.testrunner
 
 
-INCLUDE = ['^zope\..*', '^grokcore\..*']
-
-EXCLUDE = [
-    'zope.agxassociation',
-    'zope.app.boston',
-    'zope.app.css',
-    'zope.app.demo',
-    'zope.app.fssync',
-    'zope.app.recorder',
-    'zope.app.schemacontent',
-    'zope.app.sqlexpr',
-    'zope.app.styleguide',
-    'zope.app.tests',
-    'zope.app.versioncontrol',
-    'zope.app.zopetop',
-    'zope.bobo',
-    'zope.browserzcml2',
-    'zope.fssync',
-    'zope.generic',
-    'zope.importtool',
-    'zope.kgs',
-    'zope.pytz',
-    'zope.release',
-    'zope.timestamp',
-    'zope.tutorial',
-    'zope.ucol',
-    'zope.weakset',
-    'zope.webdev',
-    'zope.xmlpickle',
-    ]
-
-
 def string2list(string, default):
     result = string and string.split('\n') or default
     return [item.strip() for item in result]
@@ -55,24 +23,25 @@ class Recipe(object):
         if not 'max_jobs' in options:
             options['max_jobs'] = '1'
 
-        self.svn_url = self.options.get('svn_url',
-                                        'svn://svn.zope.org/repos/main/')
-        if self.svn_url[-1] != '/':
-            self.svn_url += '/'
-        self.exclude = (
-            string2list(self.options.get('exclude', ''), []) + EXCLUDE)
-        self.include = string2list(self.options.get('include', ''), INCLUDE)
-
-        self.script = self.options.get('script', 'test-%s' % self.name)
+        self.exclude = string2list(self.options.get('exclude', ''), [])
+        self.include = string2list(self.options.get('include', ''), [])
+        versions_section = self.buildout['buildout'].get('versions')
+        if versions_section:
+            self.include.append('[%s]' % versions_section)
+        self._expand_includes()
         self.wanted_packages = self._wanted_packages()
 
-        self.use_svn = self.options.get('use_svn', False)
+        self.script = self.options.get('script', 'test-%s' % self.name)
+
+        self.svn_url = self.options.get('svn_url', None)
+        if self.svn_url and self.svn_url[-1] != '/':
+            self.svn_url += '/'
         self.svn_directory = self.options.get(
             'svn_directory', os.path.join(
             self.buildout['buildout']['parts-directory'], self.name))
 
     def install(self):
-        if self.use_svn:
+        if self.svn_url:
             if not os.path.exists(self.svn_directory):
                 os.mkdir(self.svn_directory)
         return self.update()
@@ -80,14 +49,14 @@ class Recipe(object):
     def update(self):
         installed = []
 
-        if self.use_svn:
+        if self.svn_url:
             zc.buildout.easy_install.distribution_cache = {}
             self._install_checkouts()
 
         installed.extend(self._install_testrunners())
         installed.extend(self._install_run_script())
 
-        if self.use_svn:
+        if self.svn_url:
             self._remove_develop_eggs()
             zc.buildout.easy_install.distribution_cache = {}
 
@@ -101,7 +70,7 @@ class Recipe(object):
                 package_ = ws.find(pkg_resources.Requirement.parse(package))
                 extras = '[' + ','.join(package_.extras) + ']'
             except zc.buildout.easy_install.MissingDistribution, e:
-                if e.data[0].project_name == package and not self.use_svn:
+                if e.data[0].project_name == package and not self.svn_url:
                     # This package has a project in subversion but no
                     # release (yet). We'll ignore it for now.
                     print "No release found for %s. Ignoring." % package
@@ -127,22 +96,21 @@ class Recipe(object):
             bindir, arguments='%s, %s' % (self.options['max_jobs'],
                                           ', '.join(runners)))
 
+    def _expand_includes(self):
+        """expands entries of the form [section] to the keys in that section"""
+        sections = [x for x in self.include if x.startswith('[')]
+        for section in sections:
+            self.include.remove(section)
+            for package in self.buildout[section[1:-1]]:
+                self.include.append(package)
+
     def _wanted_packages(self):
-        projects = []
-        svn_list, _ = popen2.popen2("svn ls %s" % self.svn_url)
-        for project in svn_list:
-            project = project[:-2]
-            include = False
-            for regex in self.include:
-                if re.compile(regex).search(project):
-                    include = True
-                    break
+        projects = self.include
+        for project in projects:
             for regex in self.exclude:
                 if re.compile(regex).search(project):
-                    include = False
+                    projects.remove(project)
                     break
-            if include:
-                projects.append(project)
         return projects
 
     def _working_set(self, package):
