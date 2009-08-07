@@ -1,0 +1,45 @@
+=====================================
+Combined runner for multiple packages
+=====================================
+
+To run the compatibility tests for the huge amount of individual
+packages in isolation we provide a wrapper script which runs all
+individual test runners together, but each in a separate process.
+
+It monitors the stdout of those processes and reports back packages with
+failures.
+
+>>> import os
+>>> ok_script = os.path.join(sample_buildout, 'test-ok')
+>>> write(ok_script, '#!/bin/bash\n sleep 1; exit')
+>>> os.chmod(ok_script, 0755)
+
+>>> failure_script = os.path.join(sample_buildout, 'test-failure')
+>>> write(failure_script, '#!/bin/bash\n sleep 1; echo ouch; exit 1')
+>>> os.chmod(failure_script, 0755)
+
+>>> import os.path
+>>> from z3c.recipe.compattest.runner import main
+>>> main(1, ok_script, failure_script)
+Running test-ok
+Running test-failure
+test-failure failed with:
+ouch
+<BLANKLINE>
+1 failure(s).
+- test-failure
+
+>>> main(2, failure_script, ok_script, failure_script, ok_script)
+Running test-failure
+Running test-ok
+test-failure failed with:
+ouch
+<BLANKLINE>
+Running test-failure
+Running test-ok
+test-failure failed with:
+ouch
+<BLANKLINE>
+2 failure(s).
+- test-failure
+- test-failure
