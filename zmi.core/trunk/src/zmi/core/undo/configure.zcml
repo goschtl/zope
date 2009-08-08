@@ -1,0 +1,98 @@
+<configure
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <browser:pages
+      for="*"
+      permission="zope.UndoOwnTransactions"
+      class="zmi.core.undo.browser.UndoView"
+      >
+
+    <browser:page
+        name="principalLastTransactionIsUndo"
+        attribute="principalLastTransactionIsUndo"
+        />
+
+    <browser:page
+        name="undo.html"
+        attribute="undoPrincipalLastTransaction"
+        />
+
+    <browser:page
+        name="undoPrincipalTransactions.html"
+        attribute="undoPrincipalTransactions"
+        />
+
+    <browser:page
+        name="undoMore.html"
+        template="undo_more.pt"
+        />
+
+  </browser:pages>
+
+  <browser:pages
+      for="*"
+      permission="zope.UndoAllTransactions"
+      class="zmi.core.undo.browser.UndoView"
+      >
+
+    <browser:page
+        name="undoAllTransactions.html"
+        attribute="undoAllTransactions"
+        />
+
+    <browser:page
+        name="undoAll.html"
+        template="undo_all.pt"
+        />
+
+  </browser:pages>
+
+  <!-- We hereby imply that users having zope.UndoAllTransactions also
+       have zope.UndoOwnTransactions -->
+  <browser:page
+      for="*"
+      name="undo_macros"
+      permission="zope.UndoOwnTransactions"
+      template="undo_macros.pt"
+      />
+
+
+  <!-- menu items -->
+
+  <browser:menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo!"
+      action="@@undo.html"
+      permission="zope.UndoOwnTransactions"
+      filter="not:context/@@principalLastTransactionIsUndo"
+      />
+
+  <browser:menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Redo!"
+      action="@@undo.html"
+      permission="zope.UndoOwnTransactions"
+      filter="context/@@principalLastTransactionIsUndo"
+      />
+
+  <browser:menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo more"
+      action="@@undoMore.html"
+      permission="zope.UndoOwnTransactions"
+      />
+
+  <browser:menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo all"
+      action="@@undoAll.html"
+      permission="zope.UndoAllTransactions"
+      />
+
+</configure>
