@@ -27,6 +27,7 @@ from Acquisition import aq_base
 from App.class_init import InitializeClass
 from OFS.ObjectManager import ObjectManager
 from ZODB.POSException import ConflictError
+from zope.interface import implements
 
 logger = logging.getLogger('CMFCore.Skinnable')
 
@@ -51,6 +52,8 @@ class SkinDataCleanup:
 class SkinnableObjectManager(ObjectManager):
 
     security = ClassSecurityInfo()
+    
+    implements(ISkinnableObjectManager)
 
     security.declarePrivate('getSkinsFolderName')
     def getSkinsFolderName(self):

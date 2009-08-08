@@ -1248,6 +1248,48 @@ class ISkinsTool(ISkinsContainer):
         o Permission:  Public
         """
 
+class ISkinnableObjectManager(object):
+    
+    """ An object that has skins applied to it."""
+
+
+    def __getattr__(self, name):
+        '''
+        Looks for the name in an object with wrappers that only reach
+        up to the root skins folder.
+
+        This should be fast, flexible, and predictable.
+        '''
+        
+    def getSkin(self, name=None):
+        """Returns the requested skin.
+        """
+
+    def getSkinNameFromRequest(self, REQUEST=None):
+        '''Returns the skin name from the Request.'''
+
+    def changeSkin(self, skinname, REQUEST=_MARKER):
+        '''Change the current skin.
+
+        Can be called manually, allowing the user to change
+        skins in the middle of a request.
+        '''
+    
+    def getCurrentSkinName(self):
+        '''Return the current skin name.
+        '''
+
+    def clearCurrentSkin(self):
+        """Clear the current skin."""
+
+    def setupCurrentSkin(self, REQUEST=_MARKER):
+        '''
+        Sets up skindata so that __getattr__ can find it.
+
+        Can NOT be called manually to change skins in the middle of a
+        request! Use changeSkin for that.
+        '''
+
 #
 # Syndication tool interface
 #
