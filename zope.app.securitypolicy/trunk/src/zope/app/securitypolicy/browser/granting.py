@@ -27,13 +27,13 @@ from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.interfaces import IRole
 from zope.securitypolicy.vocabulary import GrantVocabulary
 
-from zope.app.security.vocabulary import PrincipalSource
+from zope.authentication.principal import PrincipalSource
 from zope.app.form.utility import setUpWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.widget import renderElement
 from zope.app.form.interfaces import MissingInputError
 from zope.app.form.interfaces import IInputWidget
-from zope.app.security.interfaces import IPermission
+from zope.security.interfaces import IPermission
 
 
 settings_vocabulary = GrantVocabulary(
