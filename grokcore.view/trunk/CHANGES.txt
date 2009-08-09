@@ -4,7 +4,7 @@ Changes
 1.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Bring versions.cfg in line with current grok versions.cfg.
 
 
 1.9 (2009-07-04)
