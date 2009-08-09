@@ -4,7 +4,7 @@ Changes
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+* Bring versions.cfg in line with grok r102586 versions.cfg.
 
 
 1.1 (2009-07-20)
