@@ -65,7 +65,7 @@ class IDeltaItem(Interface):
 
         
 class IHidden(Interface):
-    """Scheme for hidden items"""
+    """Schema for hidden items"""
     
     b_start = Int(
         title=u"Batch start",
@@ -82,32 +82,32 @@ class IHidden(Interface):
 
 class BatchViewBase(ViewBase):
 
-    # helpers
+    """Helper class for creating batch-based views."""
 
     _BATCH_SIZE = 25
 
     @memoize
-    def _get_batch_start(self):
+    def _getBatchStart(self):
         return self.request.form.get('b_start', 0)
 
     @memoize
-    def _get_batch_obj(self):
-        b_start = self._get_batch_start()
+    def _getBatchObj(self):
+        b_start = self._getBatchStart()
         items = self._get_items()
         return Batch(items, self._BATCH_SIZE, b_start, orphan=0)
 
     @memoize
-    def _get_hidden_vars(self):
+    def _getHiddenVars(self):
         return {}
 
     @memoize
-    def _get_navigation_vars(self):
+    def _getNavigationVars(self):
         return self._get_hidden_vars()
 
     @memoize
-    def _get_navigation_url(self, b_start):
+    def _getNavigationURL(self, b_start):
         target = self._getViewURL()
-        kw = self._get_navigation_vars().copy()
+        kw = self._getNavigationVars().copy()
 
         kw['b_start'] = b_start
         for k, v in kw.items():
@@ -121,7 +121,7 @@ class BatchViewBase(ViewBase):
 
     @memoize
     @decode
-    def list_batch_items(self):
+    def listBatchItems(self):
         batch_obj = self._get_batch_obj()
         portal_url = self._getPortalURL()
 
@@ -152,12 +152,12 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def navigation_previous(self):
-        batch_obj = self._get_batch_obj().previous
+        batch_obj = self._getBatchObj().previous
         if batch_obj is None:
             return None
 
         length = len(batch_obj)
-        url = self._get_navigation_url(batch_obj.first)
+        url = self._getNavigationURL(batch_obj.first)
         if length == 1:
             title = _(u'Previous item')
         else:
@@ -166,12 +166,12 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def navigation_next(self):
-        batch_obj = self._get_batch_obj().next
+        batch_obj = self._getBatchObj().next
         if batch_obj is None:
             return None
 
         length = len(batch_obj)
-        url = self._get_navigation_url(batch_obj.first)
+        url = self._getNavigationURL(batch_obj.first)
         if length == 1:
             title = _(u'Next item')
         else:
@@ -180,7 +180,7 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def summary_length(self):
-        length = self._get_batch_obj().sequence_length
+        length = self._getBatchObj().sequence_length
         return length and thousands_commas(length) or ''
 
     @memoize
@@ -275,7 +275,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     
     def __init__(self, *args, **kw):
         super(ContentsView, self).__init__(*args, **kw)
-        self.hidden_fields =form.FormFields(IHidden)
+        self.hidden_fields = form.FormFields(IHidden)
         self.form_fields = form.FormFields()
         self.delta_field = form.FormFields(IDeltaItem)
         self.contents = self.context.contentValues()
@@ -357,7 +357,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     
     def list_batch_items(self):
         """Return the widgets for the form in the interface field order"""
-        batch_obj = self._get_batch_obj()
+        batch_obj = self._getBatchObj()
         fields = []
 
         for item in batch_obj:
@@ -379,7 +379,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         return ids
 
     def _get_hidden_vars(self):
-        b_start = self._get_batch_start()
+        b_start = self._getBatchStart()
         is_default = self.context.getDefaultSorting()
         (key, reverse) = is_default and ('', 0) or self._get_sorting()
         return {'b_start': b_start, 'key': key, 'reverse': reverse}
