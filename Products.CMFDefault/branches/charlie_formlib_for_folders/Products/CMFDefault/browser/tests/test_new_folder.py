@@ -141,6 +141,27 @@ class FolderBrowserViewTests(unittest.TestCase):
         self.assertEquals(view.navigation_previous()['title'], 
                             "Previous ${count} items")
         self.failIf(view.navigation_next())
+        
+    def test_page_count(self):
+        """Check batch page count"""
+        self._make_batch()
+        request = TestRequest(ACTUAL_URL='http://foo.com/bar')
+        view = ContentsView(self.folder, request)
+        self.assertEquals(view.page_count(), 2)
+        
+    def test_page_range(self):
+        """Check page range by starting on page fifteen.
+        The page range should then be 10 to 19"""
+        batch_size = ContentsView._BATCH_SIZE
+        for i in range(batch_size * 20):
+            content_id = "Dummy%s" % i
+            self._make_one(content_id)
+        request = TestRequest(ACTUAL_URL='http://foo.com/bar')
+        request.form = {'b_start':batch_size * 15}
+        view = ContentsView(self.folder, request)
+        self.assertEquals(view.page_range()[0]['number'], 10)
+        self.assertEquals(view.page_range()[-1]['number'], 19)
+        
 
 def test_suite():
     suite = unittest.TestSuite()

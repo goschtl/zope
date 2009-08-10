@@ -1,0 +1,18 @@
+<metal:macro metal:define-macro="pagination"
+  tal:define="current_page view/current_page_number">
+	<a href="" 
+	   tal:condition="python: current_page != 1"
+		 tal:attributes="href view/navigation_previous/url">&lt;&lt;</a>
+	<tal:repeat repeat="page view/getPages">
+		<a tal:condition="python: not page['number'] == current_page" 
+		  tal:attributes="href page/url"
+		  tal:content="page/number">Page number</a>
+	  <span tal:condition="python: page['number'] == current_page"
+	        tal:content="page/number">Page number</span>
+		<tal:condition condition="not: repeat/page/end">|</tal:condition> 
+	</tal:repeat>
+	
+	<a href="" 
+	   tal:condition="python: current_page != view/page_count()" 
+	   tal:attributes="href view/navigation_next/url">&gt;&gt;</a>
+</metal>
