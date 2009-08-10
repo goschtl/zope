@@ -96,6 +96,11 @@ class FolderBrowserViewTests(unittest.TestCase):
                                        'DummyItem2.select':False,
                                        'DummyItem3.select':True}),
                         ['DummyItem1', 'DummyItem3'])
+        self.assertEquals(
+                        view._get_ids({'delta':True,
+                                       'delta':1}),
+                        []
+                        )
         
     def _make_one(self, name="DummyItem"):
         content = DummyContent(name)

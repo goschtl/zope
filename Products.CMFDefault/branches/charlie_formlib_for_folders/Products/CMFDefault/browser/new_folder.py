@@ -122,7 +122,7 @@ class BatchViewBase(ViewBase):
     @memoize
     @decode
     def listBatchItems(self):
-        batch_obj = self._get_batch_obj()
+        batch_obj = self._getBatchObj()
         portal_url = self._getPortalURL()
 
         items = []
@@ -405,7 +405,9 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                 
     def _get_ids(self, data):
         """Identify objects that have been selected"""
-        ids = [k.split(".")[0] for k, v in data.items() if v == True]
+        ids = [k.split(".")[0] for k, v in data.items() 
+                            if v is True \
+                            and k.split(".")[-1] == 'select']
         return ids
 
     def _get_hidden_vars(self):
