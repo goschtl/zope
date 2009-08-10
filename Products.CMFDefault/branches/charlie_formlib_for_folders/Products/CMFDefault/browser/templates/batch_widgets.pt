@@ -51,13 +51,14 @@
 ></metal:macro>
 
 <metal:macro metal:define-macro="pagination"
-  tal:define="current_page view/current_page;
+  tal:define="current_page view/page_number;
               prev_info view/navigation_previous;
               next_info view/navigation_next">
 	<a href="" 
 	   tal:condition="prev_info"
 		 tal:attributes="href prev_info/url">&lt;&lt;</a>
-	<tal:repeat repeat="page view/page_range">
+  <tal:repeat condition="python: prev_info or next_info"
+                        repeat="page view/page_range">
 		<a tal:condition="python: not page['number'] == current_page" 
 		  tal:attributes="href page/url"
 		  tal:content="page/number">Page number</a>

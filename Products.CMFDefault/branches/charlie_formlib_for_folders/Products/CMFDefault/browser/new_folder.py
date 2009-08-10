@@ -188,25 +188,25 @@ class BatchViewBase(ViewBase):
                         self._BATCH_SIZE)
                     )
                 ]
-        range_start = max(self.current_page() - 5, 0)
-        range_stop = min(max(self.current_page() + 5, 10), len(pages))
-        page_range = []
+        range_start = max(self.page_number() - 5, 0)
+        range_stop = min(max(self.page_number() + 5, 10), len(pages))
+        _page_range = []
         for page, b_start in pages[range_start:range_stop]:
-            page_range.append({'number':page, 
+            _page_range.append({'number':page, 
             'url':batch_query % (url, b_start)})
-        return page_range
+        return _page_range
 
     @memoize
     def page_count(self):
         """Count total number of pages in the batch"""
         batch_obj = self._getBatchObj()
         count = (batch_obj.sequence_length - 1) / self._BATCH_SIZE + 1
-        return count or 1
+        return count
 
     @memoize
-    def current_page(self):
+    def page_number(self):
         """Get the number of the current page in the batch"""
-        return self._getBatchStart() / (self._BATCH_SIZE + 1)
+        return (self._getBatchStart() / self._BATCH_SIZE) + 1
 
     @memoize
     def summary_length(self):

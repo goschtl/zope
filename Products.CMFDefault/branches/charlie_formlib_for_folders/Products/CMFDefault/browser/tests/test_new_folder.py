@@ -162,10 +162,10 @@ class FolderBrowserViewTests(unittest.TestCase):
             content_id = "Dummy%s" % i
             self._make_one(content_id)
         request = TestRequest(ACTUAL_URL='http://foo.com/bar')
-        request.form = {'b_start':batch_size * 15}
+        request.form = {'b_start':batch_size * 14}
         view = ContentsView(self.folder, request)
-        self.assertEquals(view.page_range()[0]['number'], 10)
-        self.assertEquals(view.page_range()[-1]['number'], 19)
+        self.assertEquals(view.page_range()[0]['number'], 11)
+        self.assertEquals(view.page_range()[-1]['number'], 20)
         
 
 def test_suite():
