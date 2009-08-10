@@ -16,12 +16,12 @@ Author: Nikolay Kim <fafhrd91@gmail.com>
 
 $Id$
 """
-
+from datetime import date
 from zope import interface, component
-from zope.interface.common.idatetime import ITZInfo
+from zope.component import getUtility
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from interfaces import IFormatter, IFormatterFactory
+from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet
 
 
 class DateFormatter(object):
@@ -33,10 +33,12 @@ class DateFormatter(object):
         except:
             self.tp = 'medium'
 
-        self.formatter = request.locale.dates.getFormatter('date', self.tp)
-
     def format(self, value):
-        return self.formatter.format(value)
+        if not isinstance(value, date):
+            return value
+
+        configlet = getUtility(IFormatterConfiglet)
+        return value.strftime(str(getattr(configlet, 'date_'+self.tp)))
 
 
 class DateFormatterFactory(object):
@@ -45,6 +47,6 @@ class DateFormatterFactory(object):
 
     def __init__(self, request):
         self.request = request
-        
+
     def __call__(self, *args, **kw):
         return DateFormatter(self.request, *args)

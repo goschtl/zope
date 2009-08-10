@@ -9,14 +9,10 @@ For configure default settings, add following code to zope.conf
 
 <product-config z3ext.formatter>
   timezone UTC
-  timezoneFormat 2
-  principalTimezone true
 </product-config>
 
 Values for timezoneFormat are:
     1: No timezone
-    2: Number of hours
-    3: Timezone name
 
 We need register controlpanel configlet
 
@@ -95,11 +91,11 @@ By default we use UTC timezone for output:
    >>> print page.render(request, now=dt)
    <html>
      <body>
-       1/1/07 12:00 AM
-       Jan 1, 2007 12:00:00 AM
-       January 1, 2007 12:00:00 AM +000
-       Monday, January 1, 2007 12:00:00 AM +000
-       Jan 1, 2007 12:00:00 AM
+       01/01/07 12:00 AM
+       Jan 01, 2007 12:00:00 AM
+       January 01, 2007 12:00:00 AM +0000
+       Monday, January 01, 2007 12:00:00 AM UTC
+       Jan 01, 2007 12:00:00 AM
      </body>
    </html>
 
@@ -109,11 +105,11 @@ If datetime object doesn't contain timezone information, UTC is used
    >>> print page.render(request, now=datetime(2007, 1, 1, 0, 0))
    <html>
      <body>
-       1/1/07 12:00 AM
-       Jan 1, 2007 12:00:00 AM
-       January 1, 2007 12:00:00 AM +000
-       Monday, January 1, 2007 12:00:00 AM +000
-       Jan 1, 2007 12:00:00 AM
+       01/01/07 12:00 AM
+       Jan 01, 2007 12:00:00 AM
+       January 01, 2007 12:00:00 AM +0000
+       Monday, January 01, 2007 12:00:00 AM UTC
+       Jan 01, 2007 12:00:00 AM
      </body>
    </html>
 
@@ -126,79 +122,13 @@ not datetime value
    >>> print page.render(request, now=dt)
    <html>
      <body>
-       12/31/06 4:00 PM
-       Dec 31, 2006 4:00:00 PM
-       December 31, 2006 4:00:00 PM -800
-       Sunday, December 31, 2006 4:00:00 PM -800
-       Dec 31, 2006 4:00:00 PM
+       12/31/06 04:00 PM
+       Dec 31, 2006 04:00:00 PM
+       December 31, 2006 04:00:00 PM -0800
+       Sunday, December 31, 2006 04:00:00 PM PST
+       Dec 31, 2006 04:00:00 PM
      </body>
    </html>
-
-
-Now we can change timezone format to 3 (Timezone name)
-
-   >>> configlet.timezoneFormat = 3
-   
-   >>> print page.render(request, now=dt)
-   <html>
-     <body>
-       12/31/06 4:00 PM
-       Dec 31, 2006 4:00:00 PM US/Pacific
-       December 31, 2006 4:00:00 PM -800
-       Sunday, December 31, 2006 4:00:00 PM US/Pacific
-       Dec 31, 2006 4:00:00 PM US/Pacific
-     </body>
-   </html>
-
-
-We also can redefine timezone for principal if we use principalTimezone true
-
-   >>> from pytz import timezone
-   >>> from zope import interface, component
-   >>> class IPrincipal(interface.Interface):
-   ...   pass
-
-   >>> class Principal:
-   ...     interface.implements(IPrincipal)
-   ...
-   ...     def __init__(self, id):
-   ...         self.id = id
-   ...         self.groups = []
-
-   >>> @component.adapter(IPrincipal)
-   ... @interface.implementer(interface.common.idatetime.ITZInfo)
-   ... def getTimezone(prin):
-   ...   if prin.id == 'user1':
-   ...     return timezone('Europe/Paris')
-   ...   elif prin.id == 'user2':
-   ...     return timezone('Asia/Almaty')
-   >>> component.provideAdapter(getTimezone)
-
-   >>> request.setPrincipal(Principal('user1'))
-   >>> print page.render(request, now=dt)
-   <html>
-     <body>
-       1/1/07 1:00 AM
-       Jan 1, 2007 1:00:00 AM Europe/Paris
-       January 1, 2007 1:00:00 AM +100
-       Monday, January 1, 2007 1:00:00 AM Europe/Paris
-       Jan 1, 2007 1:00:00 AM Europe/Paris
-     </body>
-   </html>
-
-   >>> request.setPrincipal(Principal('user2'))
-   >>> print page.render(request, now=dt)
-   <html>
-     <body>
-       1/1/07 6:00 AM
-       Jan 1, 2007 6:00:00 AM Asia/Almaty
-       January 1, 2007 6:00:00 AM +600
-       Monday, January 1, 2007 6:00:00 AM Asia/Almaty
-       Jan 1, 2007 6:00:00 AM Asia/Almaty
-     </body>
-   </html>
-
-   >>> request.setPrincipal(None)
 
 
 fancyDatetime formatter
@@ -280,8 +210,8 @@ Date formatter
    >>> print datepage.render(request, today=d)
    <html>
      <body>
-       Jan 1, 2007
-       1/1/07
+       Jan 01, 2007
+       01/01/07
      </body>
    </html>
 
@@ -291,7 +221,7 @@ Also you can get formatter from python code
    >>> from z3ext.formatter.utils import getFormatter
    >>> formatter = getFormatter(request, 'dateTime', 'full')
    >>> formatter.format(dt)
-   u'Sunday, December 31, 2006 4:00:00 PM US/Pacific'
+   u'Sunday, December 31, 2006 04:00:00 PM PST'
 
 We will get FormatterNotDefined if formatter is unknown
 
@@ -319,6 +249,31 @@ Unknown formatter
    Traceback (most recent call last):
    ...
    FormatterNotDefined: unknown
+
+
+Time formatter
+--------------
+
+   >>> datepage = ZPTPage()
+   >>> datepage.pt_edit(u'''
+   ... <html>
+   ...   <body>
+   ...     <tal:block tal:content="formatter:time:options/time" />
+   ...     <tal:block tal:content="formatter:time,short:options/time" />
+   ...   </body>
+   ... </html>''', 'text/html')
+
+   >>> t = datetime(2007, 1, 1, 10, 34, 03)
+   >>> t
+   datetime.datetime(2007, 1, 1, 10, 34, 3)
+
+   >>> print datepage.render(request, time=t)
+   <html>
+     <body>
+       10:34:03 AM
+       10:34 AM
+     </body>
+   </html>
 
 
 Custom formatter

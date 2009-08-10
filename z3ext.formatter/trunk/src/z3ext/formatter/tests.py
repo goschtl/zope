@@ -29,12 +29,13 @@ from zope.app.pagetemplate.metaconfigure import clear
 
 from z3ext.controlpanel.testing import setUpControlPanel
 
-from z3ext.formatter import dformatter, dtformatter, fancydatetime
+from z3ext.formatter import \
+    dformatter, dtformatter, fancydatetime, timeformatter
 from z3ext.formatter.expression import FormatterExpression
 
 
 class ZPTPage(TrustedAppPT, PageTemplate):
-    
+
     def render(self, request, *args, **kw):
         namespace = self.pt_getContext(args, kw)
         namespace['request'] = request
@@ -53,6 +54,7 @@ def setUp(test):
     provideAdapter(dtformatter.DatetimeFormatterFactory, name='dateTime')
     provideAdapter(
         fancydatetime.FancyDatetimeFormatterFactory, name='fancyDatetime')
+    provideAdapter(timeformatter.TimeFormatterFactory, name='time')
 
 
 def tearDown(test):
@@ -66,6 +68,4 @@ def test_suite():
                 'README.txt',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-            doctest.DocFileSuite(
-                'config.txt', setUp=setUp, tearDown=tearDown),
             ))

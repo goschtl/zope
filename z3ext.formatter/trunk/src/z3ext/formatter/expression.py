@@ -41,7 +41,7 @@ class FormatterExpression(PathExpr):
 
         super(FormatterExpression, self).__init__(
             name, pathExpr, engine, traverser=simpleTraverse)
-    
+
     def __call__(self, econtext):
         request = removeAllProxies(econtext.request)
 

@@ -24,11 +24,6 @@ from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('z3ext.formatter')
 
 
-timezonesOptions = SimpleVocabulary(
-    [SimpleTerm(1, '1', _(u'No timezone')),
-     SimpleTerm(2, '2', _(u'Number of hours')),
-     SimpleTerm(3, '3', _(u'Timezone name'))])
-
 timezones = SimpleVocabulary(
     [SimpleTerm(unicode(tz), tz, unicode(tz)) for tz in pytz.common_timezones])
 

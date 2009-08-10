@@ -23,6 +23,9 @@
   <adapter name="date"
 	   factory=".dformatter.DateFormatterFactory" />
 
+  <adapter name="time"
+	   factory=".timeformatter.TimeFormatterFactory" />
+
   <adapter name="dateTime"
 	   factory=".dtformatter.DatetimeFormatterFactory" />
 

@@ -39,18 +39,4 @@ def initFormatter(event):
     except LookupError:
         timezone = u'US/Pacific'
 
-    principalTimezone = config.get('principalTimezone', u'true').lower()
-    if principalTimezone == 'true':
-        principalTimezone = True
-    else:
-        principalTimezone = False
-
-    try:
-        timezoneFormat = vocabulary.timezonesOptions.getTermByToken(
-            config.get('timezoneFormat', u'2')).value
-    except LookupError:
-        timezoneFormat = 2
-
     IFormatterConfiglet['timezone'].default = timezone
-    IFormatterConfiglet['timezoneFormat'].default = timezoneFormat
-    IFormatterConfiglet['principalTimezone'].default = principalTimezone
