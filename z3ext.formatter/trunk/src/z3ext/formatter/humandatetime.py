@@ -20,11 +20,9 @@ from datetime import datetime
 from zope import interface, component
 from zope.i18n import translate
 from zope.component import getUtility
-from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from z3ext.formatter.interfaces import _, \
-    IFormatter, IFormatterFactory, IFormatterConfiglet
+from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet
 
 
 class HumanDatetimeFormatter(object):
@@ -35,20 +33,13 @@ class HumanDatetimeFormatter(object):
 
     def format(self, value):
         configlet = getUtility(IFormatterConfiglet)
-        tz = None
-        if configlet.principalTimezone:
-            tz = ITZInfo(self.request.principal, None)
-
-        if tz is None:
-            tz = timezone(configlet.timezone)
+        tz = timezone(configlet.timezone)
 
         if value.tzinfo is None:
             value = datetime(value.year, value.month, value.day, value.hour,
-                             value.minute, value.second, value.microsecond, utc)
+                             value.minute, value.second, value.microsecond, tz)
 
         value = value.astimezone(tz)
-
-        timezoneFormat = configlet.timezoneFormat
 
         d1 = datetime.now(utc)
         d2 = value.astimezone(utc)
