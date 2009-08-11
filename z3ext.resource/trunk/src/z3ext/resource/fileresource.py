@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -24,7 +24,7 @@ from zope.app.publisher.browser.fileresource import FileResource as BaseFileReso
 from interfaces import IResource, IResourceFactoryType
 
 
-class File(BaseFile): 
+class File(BaseFile):
 
     def __init__(self, path, name):
         super(File, self).__init__(path, name)
@@ -42,7 +42,7 @@ class FileResource(BaseFileResource):
             return long(file.lmt)
         else:
             return default
-    
+
     def render(self, request):
         file = self.chooseContext()
         f = open(file.path,'rb')
@@ -63,7 +63,7 @@ class FileResourceAdapter(object):
             return long(file.lmt)
         else:
             return default
-    
+
     def render(self, request):
         file = self.context.chooseContext()
         f = open(file.path,'rb')

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.2dev'
+version = '1.3.0dev'
 
 
 setup(name='z3ext.resource',
@@ -56,13 +56,13 @@ setup(name='z3ext.resource',
                           'zope.schema',
                           'zope.component',
                           'zope.interface',
-			  'zope.configuration',
-			  'zope.publisher',
-			  'zope.security',
+                          'zope.configuration',
+                          'zope.publisher',
+                          'zope.security',
                           'zope.app.publisher',
                           'z3c.zrtresource',
-			  'z3ext.cacheheaders',
-			  'z3ext.cssregistry',
+                          'z3ext.cacheheaders',
+                          'z3ext.cssregistry',
                           ],
       extras_require = dict(test=['zope.traversing',
                                   'zope.app.testing',

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -174,7 +174,7 @@ class ResourceDirectoryDirective(object):
             info['ext'] = file[1:]
         else:
             info['file'] = file
-        
+
         self.factory.types[file] = info
 
 

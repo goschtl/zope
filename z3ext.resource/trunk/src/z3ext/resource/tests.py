@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -37,7 +37,7 @@ from z3ext.cssregistry import zcml, command, property, interfaces
 
 class CustomResource(fileresource.FileResource):
     pass
-    
+
 
 class CustomFileResourceFactory(fileresource.FileResourceFactory):
 

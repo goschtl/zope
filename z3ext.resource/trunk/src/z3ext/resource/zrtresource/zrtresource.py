@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -29,7 +29,7 @@ from processor import ExtZRTProcessor
 
 class ZRTFileResource(FileResource):
     """ zrt resource """
-    
+
     _commands_file = ''
 
     def index_html(self, *args):
@@ -45,7 +45,7 @@ class ZRTFileResource(FileResource):
         data = f.read()
         f.close()
         p = ExtZRTProcessor(
-            data, commands={'replace': Replace}, 
+            data, commands={'replace': Replace},
             commands_file = self._commands_file)
         return p.process(getSite(), self.request)
 
@@ -55,7 +55,7 @@ class ZRTFileResource(FileResource):
         if self.request.response.getStatus() == 304:
             return ''
 
-	# Process the file
+        # Process the file
         p = ExtZRTProcessor(data, commands={'replace': Replace},
                             commands_file = self._commands_file)
         return p.process(getSite(), self.request)

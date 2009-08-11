@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -34,7 +34,7 @@ class ExtZRTProcessor(ZRTProcessor):
 
     def compile(self):
         """See interfaces.IZRTProcessor"""
-	# get extra commands from external file
+        # get extra commands from external file
         extra = ''
         try:
             if bool(self.commands_file):
@@ -63,7 +63,7 @@ class ExtZRTProcessor(ZRTProcessor):
                     raise UnknownZRTCommand(command)
 
                 # Add the command
-                bytecode.append((EXTERNAL_COMMAND, 
+                bytecode.append((EXTERNAL_COMMAND,
                                  (cmd, args, match.start(), match.end())))
             else:
                 # Add the command
@@ -93,7 +93,7 @@ class ExtZRTProcessor(ZRTProcessor):
                     raise UnknownZRTCommand(command)
 
                 # Add the command
-                bytecode.append((EXTERNAL_COMMAND, 
+                bytecode.append((EXTERNAL_COMMAND,
                                  (cmd, args, match.start(), match.end())))
             else:
                 # Add the command
