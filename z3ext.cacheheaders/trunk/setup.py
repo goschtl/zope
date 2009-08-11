@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '1.1.0dev'
+version = '1.1.1dev'
 
 setup(name='z3ext.cacheheaders',
       version=version,
