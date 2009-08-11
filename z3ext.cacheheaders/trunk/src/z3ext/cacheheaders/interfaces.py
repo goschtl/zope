@@ -16,6 +16,21 @@
 $Id$
 """
 from zope import schema, interface
+from zope.component.interfaces import IObjectEvent
+
+
+class IAfterCallEvent(IObjectEvent):
+    """ after call event """
+
+    request = interface.Attribute('Request')
+
+
+class AfterCallEvent(object):
+    interface.implements(IAfterCallEvent)
+
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
 
 
 class IModificationInfo(interface.Interface):

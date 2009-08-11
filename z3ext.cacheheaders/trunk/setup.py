@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '1.0.4dev'
+version = '1.1.0dev'
 
 
 setup(name='z3ext.cacheheaders',
@@ -54,13 +54,13 @@ setup(name='z3ext.cacheheaders',
       package_dir = {'':'src'},
       namespace_packages=['z3ext'],
       install_requires = ['setuptools',
-			  'zope.proxy',
+                          'zope.proxy',
                           'zope.event',
                           'zope.schema',
-			  'zope.datetime',
+                          'zope.datetime',
                           'zope.component',
                           'zope.interface',
-			  'zope.publisher',
+                          'zope.publisher',
                           'zope.dublincore',
                           'zope.cachedescriptors',
                           'zope.app.publication',

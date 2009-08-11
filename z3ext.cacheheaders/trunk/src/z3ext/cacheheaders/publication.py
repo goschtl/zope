@@ -18,6 +18,8 @@ $Id$
 from types import MethodType
 from datetime import datetime
 
+import transaction
+
 from zope import interface
 from zope.event import notify
 from zope.component import queryUtility
@@ -27,10 +29,11 @@ from zope.publisher.publish import mapply
 from zope.publisher.browser import BrowserRequest
 
 from zope.app.publication import browser
+from zope.app.publication import zopepublication
 from zope.app.publication.interfaces import IBrowserRequestFactory
 from zope.app.publication.interfaces import IRequestPublicationFactory
 
-from interfaces import ICacheStrategy
+from interfaces import ICacheStrategy, AfterCallEvent
 
 
 class BrowserPublication(browser.BrowserPublication):
@@ -79,3 +82,16 @@ class BrowserFactory(object):
         request_class = queryUtility(
             IBrowserRequestFactory, default=BrowserRequest)
         return request_class, BrowserPublication
+
+
+def afterCall(self, request, ob):
+    notify(AfterCallEvent(ob, request))
+
+    txn = transaction.get()
+    if txn.isDoomed():
+        txn.abort()
+    else:
+        self.annotateTransaction(txn, request, ob)
+        txn.commit()
+
+zopepublication.ZopePublication.afterCall = afterCall

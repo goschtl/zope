@@ -35,7 +35,7 @@ def getStaticCache(context):
         return StaticCache(context, info)
     else:
         return None
-    
+
 
 class StaticCache(object):
     interface.implements(IStaticCacheStrategy)
@@ -63,7 +63,7 @@ class StaticCache(object):
             header = header.split(';')[0]
             try:    mod_since=long(timeFromDateTimeString(header))
             except: mod_since=None
-            
+
             if mod_since is not None:
                 lmt = self.info.modified()
                 if lmt > 0 and lmt <= mod_since:
@@ -86,12 +86,12 @@ class StaticCache(object):
         t = time.time() + self.maxage
 
         response.setHeader(
-            'Expires', time.strftime("%a, %d %b %Y %H:%M:%S GMT", 
+            'Expires', time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                      time.gmtime(t)))
 
         if not response.getHeader('Last-Modified', None):
             year, month, day, hh, mm, ss, wd, y, z = time.localtime(modified)
-            
+
             lmod = "%s, %02d %3s %4d %02d:%02d:%02d GMT" % (weekday_abbr[wd],
                                                             day, monthname[month],
                                                             year, hh, mm, ss)
