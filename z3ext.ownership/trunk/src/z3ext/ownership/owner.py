@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -65,7 +65,7 @@ class Ownership(object):
             self._ownerId = owner.id
             self.isGroup = IGroup.providedBy(owner)
 
-            self.annotations[ANNOTATION_KEY] = {'ownerId': self._ownerId, 
+            self.annotations[ANNOTATION_KEY] = {'ownerId': self._ownerId,
                                                 'isGroup': self.isGroup}
 
             event.notify(OwnerChangedEvent(self.context, owner, oldOwner))

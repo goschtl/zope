@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
@@ -49,7 +49,7 @@ class Participation:
 def setUp(test):
     sectests.setUp(test)
     zope.security.management.setSecurityPolicy(SecurityPolicy)
-    
+
     sm = component.getSiteManager()
     sm.registerAdapter(Ownership)
     sm.registerAdapter(InheritedOwnership, (IInheritOwnership,), IOwnership)
@@ -57,7 +57,7 @@ def setUp(test):
     sm.registerAdapter(getGroupLocalRoles, name="z3ext.ownership-groupowner")
     sm.registerAdapter(AttributeAnnotations)
     sm.registerHandler(initObjectOwnership)
-    
+
 
 def test_suite():
     return unittest.TestSuite((
