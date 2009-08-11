@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.4.0 (Unreleased)
+1.4.0 (2009-08-11)
 ------------------
 
 - Use AfterCallEvent from z3ext.cacheheaders package
