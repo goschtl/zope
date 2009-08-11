@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -66,7 +66,7 @@ class Product(object):
 
     def install(self):
         self._checkRequiredInstall()
-        
+
         if self.__installed__:
             raise interfaces.ProductAlreadyInstalledError(
                 _('Product already installed.'))

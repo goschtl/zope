@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -46,7 +46,7 @@ class ProductRegistry(globalregistry.BaseGlobalComponents):
         return "<Product: %s>"%self.title
 
     def __reduce__(self):
-        # Global site managers are pickled as global objects 
+        # Global site managers are pickled as global objects
         return BC, (self.__parent__, self.__name__)
 
 
