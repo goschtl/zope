@@ -1,0 +1,127 @@
+===========================
+Products for enclosed sites
+===========================
+
+Loading zcml configuration
+
+  >>> import z3ext.product
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext"
+  ...    xmlns="http://namespaces.zope.org/zope" i18n_domain="z3ext">
+  ...    <include package="z3ext.controlpanel" file="meta.zcml" />
+  ...    <include package="z3ext.product" file="meta.zcml" />
+  ...    <include package="zope.security" file="meta.zcml" />
+  ...    <include package="z3c.baseregistry" file="meta.zcml" />
+  ...    
+  ...    <permission
+  ...      id="z3ext.ManageProducts"
+  ...      title="Manage products" />
+  ...      
+  ...    <z3ext:configlet
+  ...      name="product"
+  ...      schema="z3ext.product.interfaces.IProductInstaller"
+  ...      title="Products management"
+  ...      description="This is the Add-on Products install section."
+  ...      class="z3ext.product.installer.ProductsInstaller"
+  ...      permission="z3ext.ManageProducts" />
+  ...
+  ... </configure>""")
+
+
+Product
+
+  >>> from zope import schema, component, interface
+
+  >>> class IMyProduct(interface.Interface):
+  ...     """ Basic product """
+
+  >>> context = xmlconfig.string('''
+  ... <configure
+  ...    xmlns:z3ext="http://namespaces.zope.org/z3ext" i18n_domain="test">
+  ... 
+  ...   <z3ext:product
+  ...     name="my-product"
+  ...     title="My product"
+  ...     configurable="true"
+  ...     schema="z3ext.product.README.IMyProduct" />
+  ...
+  ... </configure>''', context)
+
+  >>> from z3ext import product
+  >>> from z3ext.product.interfaces import IProduct
+
+  >>> productRegistry = z3ext.product.registries['my-product']
+
+  >>> class IMyUtility(interface.Interface):
+  ...     """ """
+
+  >>> class MyUtility(object):
+  ...     interface.implements(IMyUtility)
+
+  >>> utility = MyUtility()
+  >>> productRegistry.registerUtility(utility, name='myUtility')
+
+  >>> from zope.app.folder.folder import Folder
+  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.app.component.hooks import getSite, setSite
+
+  >>> site = getSite()
+  >>> site1 = Folder()
+  >>> site['site1'] = site1
+  >>> sm = LocalSiteManager(site1)
+  >>> site1.setSiteManager(sm)
+
+  >>> site.getSiteManager().queryUtility(IMyUtility, name='myUtility') is None
+  True
+
+  >>> site1.getSiteManager().queryUtility(IMyUtility, name='myUtility') is None
+  True
+
+Install product
+
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.isInstalled()
+  False
+  >>> product.install()
+
+  >>> site.getSiteManager().queryUtility(IMyUtility, name='myUtility')
+  <z3ext.product.README.MyUtility object at ...>
+
+  >>> site1.getSiteManager().queryUtility(IMyUtility, name='myUtility')
+  <z3ext.product.README.MyUtility object at ...>
+
+  >>> product.isInstalled()
+  True
+  >>> product.isUninstallable()
+  True
+
+Installation status in subsite
+
+  >>> setSite(site1)
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.isInstalled()
+  True
+  >>> product.isUninstallable()
+  False
+
+  >>> setSite(site)
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.uninstall()
+
+  >>> setSite(site1)
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.isInstalled()
+  False
+  >>> product.install()
+  
+  >>> site1.getSiteManager().queryUtility(IMyUtility, name='myUtility')
+  <z3ext.product.README.MyUtility object at ...>
+
+  >>> setSite(site)
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.isInstalled()
+  False
+
+  >>> site.getSiteManager().queryUtility(IMyUtility, name='myUtility') is None
+  True
