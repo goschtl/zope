@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -81,7 +81,7 @@ class ILayerDirective(interface.Interface):
                 required = False)
 
 
-def skinDirectiveHandler(_context, layer, name, title, 
+def skinDirectiveHandler(_context, layer, name, title,
                          description='',require=[],schema=interface.Interface):
     _context.action(
         discriminator = ('z3ext.skintool-skin', layer, name),
@@ -89,14 +89,14 @@ def skinDirectiveHandler(_context, layer, name, title,
         args = (layer, name, title, description, require, schema))
 
 
-def skinDirective(layer, name, title, description, 
+def skinDirective(layer, name, title, description,
                   require, schema=interface.Interface):
     sitemanager = component.getGlobalSiteManager()
 
     tool.skins_byname[name] = layer
     skinDataClass = SkinDataType('ui.portalskin.skindata', schema)
     interface.classImplements(skinDataClass, schema)
-    tool.skins_registry[layer] = (layer, name, title, 
+    tool.skins_registry[layer] = (layer, name, title,
                                   description, require, skinDataClass)
 
 
