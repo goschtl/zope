@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.5.0 (Unreleased)
+------------------
+
+- Copyright holder changed
+
+
 1.4.9 (2009-07-05)
 ------------------
 

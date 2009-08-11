@@ -28,7 +28,7 @@ class DependencyFinder(object):
 
     def includableInfo(self, zcml_to_look_for, seen=None):
         result = dict([(key, []) for key in zcml_to_look_for])
-        
+
         if seen is None:
             seen = set()
 

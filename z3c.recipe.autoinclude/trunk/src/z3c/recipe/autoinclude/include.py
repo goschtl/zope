@@ -66,7 +66,7 @@ class AutoIncludeSetup(object):
             ['<include package="%s" file="meta.zcml" />\n'%pkg for pkg in meta])
 
         overrides = ''.join(
-            ['<includeOverrides package="%s" file="overrides.zcml" />\n'%pkg 
+            ['<includeOverrides package="%s" file="overrides.zcml" />\n'%pkg
              for pkg in overrides])
 
         exclude = ''.join(

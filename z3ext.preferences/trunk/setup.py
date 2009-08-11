@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -84,7 +84,7 @@ setup(name = 'z3ext.preferences',
                                   'zope.testing',
                                   'zope.testbrowser',
                                   'zope.app.zcmlfiles',
-				  'z3ext.autoinclude',
+                                  'z3ext.autoinclude',
                                   ]),
       include_package_data = True,
       zip_safe = False

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -55,10 +55,10 @@ setup(name = 'z3ext.pathindex',
       install_requires = ['setuptools',
                           'zope.component',
                           'zope.interface',
-			  'zope.traversing',
+                          'zope.traversing',
                           'zope.app.intid',
                           'zope.app.catalog',
-			  'zc.catalog',
+                          'zc.catalog',
                           ],
      extras_require = dict(test=['ZODB3',
                                  'zope.app.testing',

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2009 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -50,9 +50,9 @@ setup(name='z3c.recipe.autoinclude',
       package_dir = {'':'src'},
       namespace_packages=['z3c', 'z3c.recipe'],
       zip_safe = True,
-      install_requires = ['setuptools', 
+      install_requires = ['setuptools',
                           'zc.buildout',
-			  'zc.recipe.egg',
+                          'zc.recipe.egg',
                           ],
       entry_points = {
         'zc.buildout': [

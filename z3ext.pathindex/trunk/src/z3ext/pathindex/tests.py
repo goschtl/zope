@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -44,7 +44,7 @@ class ConnectionStub(object):
         return self
 
     database_name = 'ConnectionStub'
-    
+
     def add(self, ob):
         ob._p_jar = self
         ob._p_oid = self.next
