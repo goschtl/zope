@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -56,6 +56,7 @@ def setUp(test):
     component.provideAdapter(getSession)
     component.provideAdapter(message.StatusMessage, name='statusMessage')
     component.provideUtility(RAMSessionDataContainer(), ISessionDataContainer)
+
 
 def tearDown(test):
     session.__init__()

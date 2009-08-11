@@ -19,6 +19,7 @@
   <include package="zope.app.authentication" />
   <include package="zope.session" />
 
+  <include package="z3ext.cacheheaders" />
   <include package="z3ext.statusmessage" />
 
   <browser:page

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -56,14 +56,15 @@ setup(name='z3ext.statusmessage',
                           'zope.component',
                           'zope.interface',
                           'zope.session',
-			  'zope.publisher',
+                          'zope.publisher',
                           'zope.contentprovider',
-			  'zope.app.component',
-			  'zope.app.publication',
+                          'zope.app.component',
+                          'zope.app.publication',
+                          'z3ext.cacheheaders',
                           ],
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
-				  'zope.testbrowser',
+                                  'zope.testbrowser',
                                   'zope.app.zcmlfiles',
                                   'zope.securitypolicy',
                                   ]),

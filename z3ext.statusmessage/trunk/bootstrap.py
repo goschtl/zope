@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -51,9 +51,9 @@ ws  = pkg_resources.working_set
 
 if is_jython:
     import subprocess
-    
-    assert subprocess.Popen([sys.executable] + ['-c', quote(cmd), '-mqNxd', 
-           quote(tmpeggs), 'zc.buildout'], 
+
+    assert subprocess.Popen([sys.executable] + ['-c', quote(cmd), '-mqNxd',
+           quote(tmpeggs), 'zc.buildout'],
            env=dict(os.environ,
                PYTHONPATH=
                ws.find(pkg_resources.Requirement.parse('setuptools')).location

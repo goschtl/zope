@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
-from threading import local
-from zope import interface, component
-from zope.app.publication.zopepublication import ZopePublication
+from zope import component
+from z3ext.cacheheaders.interfaces import IAfterCallEvent
 
 from interfaces import IStatusMessage
 
 
-# BAD! VERY BAD
-
-def newAfterCall(self, request, ob):
+@component.adapter(IAfterCallEvent)
+def afterCallHandler(event):
+    request = event.request
     response = request.response
 
     status = response.getStatus()
@@ -40,8 +39,3 @@ def newAfterCall(self, request, ob):
                 body = response.consumeBody()
                 body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
                 response.setResult(body)
-
-    afterCall(self, request, ob)
-
-afterCall = ZopePublication.afterCall
-ZopePublication.afterCall = newAfterCall
