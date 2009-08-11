@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -27,48 +27,48 @@ class ICSSRegistry(IMapping):
     properties = interface.Attribute('css properties')
 
     name = schema.TextLine(
-	title = _(u'Name'),
-	description = _(u'CSS Registry name'),
-	default = u'',
-	required = False)
+        title = _(u'Name'),
+        description = _(u'CSS Registry name'),
+        default = u'',
+        required = False)
 
     title = schema.TextLine(
-	title = _(u'Title'),
-	description = _(u'CSS Registry title'),
-	default = u'',
-	required = False)
+        title = _(u'Title'),
+        description = _(u'CSS Registry title'),
+        default = u'',
+        required = False)
 
 
 class ICSSProperty(interface.Interface):
 
     name = schema.TextLine(
-	title = _(u'Name'),
-	description = _(u'Property name'),
-	required = True)
+        title = _(u'Name'),
+        description = _(u'Property name'),
+        required = True)
 
     title = schema.TextLine(
-	title = _(u'Title'),
+        title = _(u'Title'),
         description = _(u'Property title'),
-	required = False)
+        required = False)
 
     description = schema.TextLine(
-	title = _(u'Description'),
+        title = _(u'Description'),
         description = _(u'Property description'),
-	required = False)
+        required = False)
 
     value = schema.TextLine(
-	title = _(u'Value'),
-	description = _(u'Property value'),
-	required = True)
+        title = _(u'Value'),
+        description = _(u'Property value'),
+        required = True)
 
     type = schema.TextLine(
-	title = _(u'Type'),
+        title = _(u'Type'),
         description = _(u'Property type. (color, font, size)'),
-	required = False)
+        required = False)
 
     def process(text):
         """ replace property in text """
-    
+
 
 class ICSSRegistryLayer(interface.Interface):
     """ marker interface """
