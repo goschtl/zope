@@ -36,6 +36,7 @@ __metaclass__ = type
 
 import re
 import sys
+import types
 import webob
 
 bbbbad_errors = KeyboardInterrupt, SystemExit, MemoryError
@@ -198,6 +199,8 @@ class Application:
         except bbbbad_errors:
             raise
         except Exception:
+            if self.config.get('debug', False):
+                print 'Routestack:', request.route_stack.routes
             if not hasattr(self, 'exception'):
                 raise
             return self.exception(request, method, sys.exc_info())
@@ -206,6 +209,7 @@ class Application:
         """Handle a WSGI application request.
         """
         request = webob.Request(environ)
+        request.route_stack = Routestack(debug=self.config.get('debug',False))
         if request.charset is None:
             # Maybe middleware can be more tricky?
             request.charset = 'utf8'
@@ -584,6 +588,7 @@ class _Handler:
     def bobo_response(self, *args):
         request, path, method = args[-3:]
         route_data = self.match(request, path, method)
+        request.route_stack.update(self.bobo_route, route_data, path)
         if route_data is None:
             return self.bobo_sub_find(*args)
 
@@ -1045,6 +1050,7 @@ class Subroute(_Handler):
     def bobo_response(self, *args):
         request, path, method = args[-3:]
         route_data = self.match(request, path)
+        request.route_stack.update(self.bobo_route, route_data, path)
         if route_data is None:
             return self.bobo_sub_find(*args)
 
@@ -1176,6 +1182,7 @@ def _subroute_class(route, ob):
     def bobo_response(self, request, path, method):
         for matcher in matchers:
             route_data = matcher(route, path)
+            request.route_stack.update(route, route_data, path)
             if route_data:
                 route_data, path = route_data
                 resource = ob(request, **route_data)
@@ -1285,3 +1292,32 @@ class NotFound(Exception):
 
     This exception can be raised by application code.
     """
+
+class Routestack:
+    """A sequence that holds the already consumed path, its matching route and
+    route data and the remaining path.
+    """
+    def __init__(self, debug=False):
+        self.routes = []
+        self.debug = debug
+
+    def routestack(self):
+        return [part['route'] for part in self.routes]
+
+    def pathstack(self):
+        return [part['path'] for part in self.routes]
+
+    def update(self, route, route_data, path):
+        if self.debug:
+            self.routes.append(route)
+            if route_data is None:
+                self.routes.pop()
+            else:
+                params = route_data
+                path_ = path
+                leftover = ''
+                if type(route_data) == types.TupleType:
+                    params, leftover = route_data
+                    if len(leftover) > 0:
+                        path_ = path[:- len(leftover)]
+                self.routes[-1] = {'route':route, 'route_data':params, 'path':path_, 'leftover':leftover}

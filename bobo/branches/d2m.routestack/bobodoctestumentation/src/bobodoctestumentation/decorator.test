@@ -174,6 +174,9 @@ route.  It also provides automation of response creation.
     ... def hi(request, name=None):
     ...     print 'request:'
     ...     print str(request).replace('\r', '')
+    ...     if hasattr(request, 'route_stack'):
+    ...         print '-----'
+    ...         print 'Routestack:', request.route_stack.routes
     ...     print '-----'
     ...     return 'Hi %s.' % name
 
@@ -197,6 +200,7 @@ We use resources by calling the result of calling bobo_response:
     ...         env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded'
     ...         env['REQUEST_METHOD'] = 'POST'
     ...     request = webob.Request.blank(url, env, **kw)
+    ...     request.route_stack = bobo.Routestack(debug=True)
     ...     try:
     ...         found = resource.bobo_response(
     ...             request, request.path_info, request.method)
@@ -212,6 +216,8 @@ We use resources by calling the result of calling bobo_response:
     Host: localhost:80
     <BLANKLINE>
     <BLANKLINE>
+    -----
+    Routestack: [{'route_data': {}, 'path': '/foo', 'route': '/foo', 'leftover': ''}]
     -----
     BoboException:
     {'body': 'Hi None.',
@@ -232,6 +238,8 @@ order.
     Host: localhost:80
     <BLANKLINE>
     <BLANKLINE>
+    -----
+    Routestack: [{'route_data': {'name': 'bar'}, 'path': '/bar', 'route': '/:name', 'leftover': ''}]
     -----
     BoboException:
     {'body': 'Hi bar.',
