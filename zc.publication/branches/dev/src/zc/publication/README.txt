@@ -254,7 +254,7 @@ The second interface to be aware of is
             """
 
 ``IBrowserPublisher`` is used for ``GET``, ``HEAD``, and ``POST``
-requests to identify a default resource for an object.  Whwn ll of the
+requests to identify a default resource for an object.  When all of the
 steps in a URL path have been traversed, the resulting object is
 adapted to this interface and browserDefault is called.  If no names
 are returned, then traversal is completed, and the object returned is
