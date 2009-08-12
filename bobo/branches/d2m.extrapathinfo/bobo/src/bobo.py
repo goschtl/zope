@@ -908,7 +908,7 @@ def query(route=None, method=('GET', 'POST', 'HEAD'),
     return _handler(route, method=method, params='params', check=check,
                     content_type=content_type, order_=order)
 
-route_re = re.compile(r'(/:[a-zA-Z]\w*\??)(\.[^/]+)?')
+route_re = re.compile(r'(/:[a-zA-Z]\w*[\?\*]?)(\.[^/]+)?')
 def _compile_route(route, partial=False):
     assert route.startswith('/') or not route
     pat = route_re.split(route)
@@ -920,8 +920,13 @@ def _compile_route(route, partial=False):
     while pat:
         name = pat.pop()[2:]
         optional = name.endswith('?')
-        if optional:
+        wildcard = name.endswith('*')
+        if optional or wildcard:
             name = name[:-1]
+        if wildcard:
+            name = '/(?P<%s>.*)' % name
+            rpat.append(name)
+            break
         name = '/(?P<%s>[^/]*)' % name
         ext = pat.pop()
         if ext:

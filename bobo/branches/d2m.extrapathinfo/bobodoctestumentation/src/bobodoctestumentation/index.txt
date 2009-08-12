@@ -410,6 +410,56 @@ or::
     'Hello Sally! My name is jim.'
 
 
+If the placeholder is a '*' everything up to the end of the path is available
+in the placeholder variable::
+
+    @bobo.query('/greeters/:extra_path*')
+    def hello(name="world", extra_path=''):
+        return "Hello %s! Extra path info is '%s'." % (name, extra_path)
+
+.. -> src
+
+    >>> update_module('helloapp', src)
+    >>> app = webtest.TestApp(bobo.Application(bobo_resources='helloapp'))
+
+Then we can use a URL like::
+
+    http://localhost:8080/greeters/name/Sally
+.. -> url strip
+
+    >>> app.get(url, status=200).body
+    "Hello world! Extra path info is 'name/Sally'."
+
+And get::
+
+    Hello world! Extra path info is 'name/Sally'.
+
+It is up to you to further process the extra path information.
+
+Extra path info can be combined with the suffix pattern::
+
+    @bobo.query('/greeters/:extra_path*.html')
+    def hello(name="world", extra_path=''):
+        return "Hello %s! Extra path info is '%s'." % (name, extra_path)
+
+.. -> src
+
+    >>> update_module('helloapp', src)
+    >>> app = webtest.TestApp(bobo.Application(bobo_resources='helloapp'))
+
+::
+
+    http://localhost:8080/greeters/name/Sally.html
+.. -> url strip
+
+    >>> app.get(url, status=200).body
+    "Hello world! Extra path info is 'name/Sally.html'."
+
+We now get::
+
+    Hello world! Extra path info is 'name/Sally.html'.
+
+
 Subroutes
 ---------
 
