@@ -410,7 +410,7 @@ or::
     'Hello Sally! My name is jim.'
 
 
-If the placeholder is a '*' everything up to the end of the path is available
+If the placeholder is starred, everything up to the end of the URL is available
 in the placeholder variable::
 
     @bobo.query('/greeters/:extra_path*')
@@ -437,17 +437,6 @@ And get::
 It is up to you to further process the extra path information.
 
 Extra path info can be combined with the suffix pattern::
-
-    @bobo.query('/greeters/:extra_path*.html')
-    def hello(name="world", extra_path=''):
-        return "Hello %s! Extra path info is '%s'." % (name, extra_path)
-
-.. -> src
-
-    >>> update_module('helloapp', src)
-    >>> app = webtest.TestApp(bobo.Application(bobo_resources='helloapp'))
-
-::
 
     http://localhost:8080/greeters/name/Sally.html
 .. -> url strip
