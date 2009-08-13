@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.7 (unreleased)
+0.7 (2009-08-13)
 ================
 
 - Simplified building the list of packages even more: we now just take a list of
