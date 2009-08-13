@@ -88,7 +88,7 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def _getBatchStart(self):
-        return self.request.form.get('b_start', 0)
+        return int(self.request.form.get('b_start', 0))
 
     @memoize
     def _getBatchObj(self):
@@ -215,7 +215,7 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def summary_type(self):
-        length = self._get_batch_bj().sequence_length
+        length = self._getBatchObj().sequence_length
         return (length == 1) and _(u'item') or _(u'items')
 
     @memoize
@@ -393,11 +393,11 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                              ((key, 'cmp', reverse and 'desc' or 'asc'),))
     
     @memoize
-    def list_batch_items(self):
+    def listBatchItems(self):
         """Return the widgets for the form in the interface field order"""
         batch_obj = self._getBatchObj()
         b_start = self._getBatchStart()
-        (key, reverse) = self._get_sorting()
+        key, reverse = self._get_sorting()
         fields = []
 
         for idx, item in enumerate(batch_obj):
@@ -414,7 +414,6 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
             fields.append(field.copy())
         return fields
                 
-    @memoize
     def _get_ids(self, data):
         """Identify objects that have been selected"""
         ids = [k.split(".")[0] for k, v in data.items() 
