@@ -2,7 +2,11 @@
 CHANGES
 =======
 
-0.2.1 (unreleased)
+0.2.2 (Unreleased)
+------------------
+
+
+0.2.1 (2009-08-14)
 ------------------
 
 - Correctly implemented timeout behavior of session data.
