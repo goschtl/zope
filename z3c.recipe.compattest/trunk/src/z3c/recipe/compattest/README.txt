@@ -13,11 +13,8 @@ Usage
 Add a part to your buildout.cfg that uses this recipe.
 No further configuration is required, but you can set the following options:
 
-- ``include``: list of packages to include (one package per line)
-  If an entry has the form ``[section]``, all keys of that
-  buildout section are included.
-  (default: the version-section of the buildout (``${buildout:versions}``)
-  if one is defined)
+- ``include``: list of packages to include (whitespace-separated)
+  (default: empty)
 - ``exclude``: packages matching any regex in this list will be excluded
   (default: empty)
 - ``script``: the name of the runner script (default: test-<partname>)
@@ -80,16 +77,13 @@ package we're working on:
 >>> write('buildout.cfg', """
 ... [buildout]
 ... parts = compattest-trunk
-... versions = versions
 ...
-... [versions]
-... # we don't care about the version numbers, we just extract
-... # which package names to include from here
-... z3c.recipe.compattest =
-... zope.dottedname =
+... [kgs]
+... packages = z3c.recipe.compattest zope.dottedname
 ...
 ... [compattest-trunk]
 ... recipe = z3c.recipe.compattest
+... include = ${kgs:packages}
 ... svn_url = svn://svn.zope.org/repos/main/
 ... """)
 >>> ignore = system(buildout)

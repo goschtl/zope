@@ -5,8 +5,8 @@ CHANGES
 0.7 (unreleased)
 ================
 
-- Nothing changed yet.
-
+- Simplified building the list of packages even more: we now just take a list of
+  packages, period.
 
 0.6 (2009-08-07)
 ================

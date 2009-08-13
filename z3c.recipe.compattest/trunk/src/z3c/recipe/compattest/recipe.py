@@ -9,7 +9,7 @@ import zc.recipe.testrunner
 
 
 def string2list(string, default):
-    result = string and string.split('\n') or default
+    result = string and string.split() or default
     return [item.strip() for item in result]
 
 
@@ -23,12 +23,8 @@ class Recipe(object):
         if not 'max_jobs' in options:
             options['max_jobs'] = '1'
 
-        self.exclude = string2list(self.options.get('exclude', ''), [])
         self.include = string2list(self.options.get('include', ''), [])
-        versions_section = self.buildout['buildout'].get('versions')
-        if versions_section:
-            self.include.append('[%s]' % versions_section)
-        self._expand_includes()
+        self.exclude = string2list(self.options.get('exclude', ''), [])
         self.wanted_packages = self._wanted_packages()
 
         self.script = self.options.get('script', 'test-%s' % self.name)
@@ -95,14 +91,6 @@ class Recipe(object):
             self.buildout['buildout']['executable'],
             bindir, arguments='%s, %s' % (self.options['max_jobs'],
                                           ', '.join(runners)))
-
-    def _expand_includes(self):
-        """expands entries of the form [section] to the keys in that section"""
-        sections = [x for x in self.include if x.startswith('[')]
-        for section in sections:
-            self.include.remove(section)
-            for package in self.buildout[section[1:-1]]:
-                self.include.append(package)
 
     def _wanted_packages(self):
         projects = self.include
