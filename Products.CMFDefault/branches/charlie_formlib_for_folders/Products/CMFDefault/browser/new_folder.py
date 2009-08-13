@@ -102,7 +102,7 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def _getNavigationVars(self):
-        return self._get_hidden_vars()
+        return self._getHiddenVars()
 
     @memoize
     def _getNavigationURL(self, b_start):
@@ -342,7 +342,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
             data['%s.name' %i.id] = i.getId()
         self.hidden_widgets = form.setUpDataWidgets(
                 self.hidden_fields, "", self.context,
-                self.request, data=self._get_hidden_vars(),
+                self.request, data=self._getHiddenVars(),
                         ignore_request=ignore_request)
         self.widgets = form.setUpDataWidgets(
                 self.form_fields, self.prefix, self.context,
@@ -351,6 +351,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                 self.delta_field, self.prefix, self.context,
                 self.request, ignore_request=ignore_request)
                 
+    @memoize
     def _get_sorting(self):
         """How should the contents be sorted"""
         key = self.request.form.get('key', None)
@@ -358,9 +359,14 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
             return (key, self.request.form.get('reverse', 0))
         else:
             return self.context.getDefaultSorting()
+            
+    @memoize
+    def _is_default_sorting(self):
+        return self._get_sorting() == self.context.getDefaultSorting()
     
+    @memoize
     def column_headings(self):
-        (key, reverse) = self._get_sorting()
+        key, reverse = self._get_sorting()
         columns = ( {'key': 'Type',
                      'title': _(u'Type'),
                      'colspan': '2'}
@@ -373,36 +379,42 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                   )
         for column in columns:
             if key == column['key'] and not reverse and key != 'position':
-                query = urllib.urlencode({'key':column['key'], 'reverse':1})
+                query = make_query(key=column['key'], reverse=1)
             else:
-                query = urllib.urlencode({'key':column['key']})
+                query = make_query(key=column['key'])
             column['url'] = '%s?%s' % (self._getViewURL(), query)
         return tuple(columns)
         
+    @memoize
     def _get_items(self):
         (key, reverse) = self._get_sorting()
         items = self.contents
         return sequence.sort(items,
                              ((key, 'cmp', reverse and 'desc' or 'asc'),))
     
+    @memoize
     def list_batch_items(self):
         """Return the widgets for the form in the interface field order"""
         batch_obj = self._getBatchObj()
+        b_start = self._getBatchStart()
+        (key, reverse) = self._get_sorting()
         fields = []
 
-        for item in batch_obj:
+        for idx, item in enumerate(batch_obj):
             field = {'ModificationDate':item.ModificationDate()}
             field['select'] = self.widgets['%s.select' % item.getId()]
             field['name'] = self.widgets['%s.name' % item.getId()]
             field['url'] = item.absolute_url()
             field['title'] = item.TitleOrId()
             field['icon'] = item.icon
-            field['position'] = self.context.contentIds().index(
-                                                item.getId()) + 1
+            field['position'] = (key == 'position') \
+                                and str(b_start + idx + 1) \
+                                or '...'
             field['type'] = item.Type() or None
             fields.append(field.copy())
         return fields
                 
+    @memoize
     def _get_ids(self, data):
         """Identify objects that have been selected"""
         ids = [k.split(".")[0] for k, v in data.items() 
@@ -410,9 +422,10 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                             and k.split(".")[-1] == 'select']
         return ids
 
-    def _get_hidden_vars(self):
+    @memoize    
+    def _getHiddenVars(self):
         b_start = self._getBatchStart()
-        is_default = self.context.getDefaultSorting()
+        is_default = self._is_default_sorting()
         (key, reverse) = is_default and ('', 0) or self._get_sorting()
         return {'b_start': b_start, 'key': key, 'reverse': reverse}
     
@@ -458,7 +471,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         # currently redirects to a PythonScript
         # should be replaced with a dedicated form
         self.request.form['ids'] = self._get_ids(data)
-        keys = ",".join(self._get_hidden_vars().keys() + ['ids'])
+        keys = ",".join(self._getHiddenVars().keys() + ['ids'])
+        # keys = 'b_start, ids, key, reverse'
         return self._setRedirect('portal_types', 'object/rename_items', keys)
         
     def handle_cut(self, action, data):
