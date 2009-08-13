@@ -17,23 +17,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import unittest
-from zope import component
-import zope.interface
-import zope.security
 from zope.testing import doctest
-from zope.testing.doctestunit import DocTestSuite, DocFileSuite
-from zope.app.testing import setup
 
 
 def test_suite():
-    level2Suites = (
-        DocFileSuite('README.txt',
-             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-             ),
-            )
-    for suite in level2Suites:
-        suite.level = 2
-    return unittest.TestSuite(level2Suites)
+    return unittest.TestSuite((
+            doctest.DocFileSuite(
+                'README.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
