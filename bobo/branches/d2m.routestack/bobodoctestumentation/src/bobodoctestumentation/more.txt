@@ -792,3 +792,35 @@ match a path, the first one defined will be used.
    :term:`resource` implementations.  Custom resource implementations
    must implement the resource interface and will provide an order
    using the ``bobo_order`` attribute.  See :ref:`resourceinterface`.
+
+Accessing matched route information
+-----------------------------------
+
+The request URL is matched against all registered routes and their possible
+subroutes. On each successful match, route and path information is collected
+into the request.route_stack object and is now accessible from within every
+function or method::
+
+   bobo_request.routestack.route
+      sequence of already matched routes, route data, path and remaining path
+   
+   bobo_request.routestack.routestack
+      method, returns a sequence of matched routes
+   
+   bobo_request.routestack.pathstack
+      method, returns a sequence of matched paths
+
+Here is an example::
+
+    import bobo
+    
+    @bobo.query('/hello/:name')
+    def hi(bobo_request, name=''):
+        print bobo_request.route_stack.routes
+        return 'Hello %s' % name
+
+We get::
+
+   [{'route_data': {'name': 'world'}, 'path': '/hello/world', 'route': '/hello/:name', 'leftover': ''}]
+
+
