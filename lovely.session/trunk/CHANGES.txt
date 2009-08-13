@@ -7,6 +7,8 @@ CHANGES
 
 - Correctly implemented timeout behavior of session data.
 
+- Remove duplicate extras_require (python2.4 compatibility)
+
 
 0.2.0 (2008-09-25)
 ------------------
