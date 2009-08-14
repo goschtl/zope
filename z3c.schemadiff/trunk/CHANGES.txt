@@ -12,6 +12,9 @@ In next release:
 
 - Drop field if either value is ``None``. [malthe]
 
+- Use field.query instead of getattr
+
+
 0.1 (2008-04-30)
 ----------------
 

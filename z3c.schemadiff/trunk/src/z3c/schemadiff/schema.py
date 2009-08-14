@@ -18,8 +18,8 @@ def diff(source, target, *interfaces):
             except TypeError:
                 continue
 
-            source_value = getattr(source, name, field.default)
-            target_value = getattr(target, name, field.default)
+            source_value = bound.query(source, field.default)
+            target_value = bound.query(target, field.default)
 
             if source_value is None or target_value is None:
                 continue
