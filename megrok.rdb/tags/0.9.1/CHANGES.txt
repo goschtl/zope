@@ -1,0 +1,15 @@
+=======
+CHANGES
+=======
+
+0.9.1 (2009-08-14)
+------------------
+
+- megrok.rdb 0.9 accidentally had zip_safe set to True, which resulted
+  in a dud release as its ZCML wouldn't be loaded. Set zip_safe to
+  False.
+
+0.9 (2009-08-14)
+----------------
+
+- Initial public release.
