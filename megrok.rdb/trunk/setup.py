@@ -8,7 +8,7 @@ long_description = read('src/megrok/rdb/README.txt') + '\n' +\
     read('CHANGES.txt')
 
 setup(name='megrok.rdb',
-      version = '0.10dev',
+      version = '0.9.1dev',
       description="SQLAlchemy based RDB support for Grok.",
       long_description=long_description,
       classifiers=['Development Status :: 4 - Beta',
@@ -30,7 +30,7 @@ setup(name='megrok.rdb',
       package_dir = {'': 'src'},
       namespace_packages=['megrok'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       install_requires=[
           'setuptools',
           'zope.interface',
