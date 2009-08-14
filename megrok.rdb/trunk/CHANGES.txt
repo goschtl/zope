@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.9.1 (unreleased)
+0.9.1 (2009-08-14)
 ------------------
 
 - megrok.rdb 0.9 accidentally had zip_safe set to True, which resulted
