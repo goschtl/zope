@@ -1,23 +1,30 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-long_description = ''
+long_description = read('src/megrok/rdb/README.txt') + '\n' +\
+    read('CHANGES.txt')
 
 setup(name='megrok.rdb',
-      version=version,
+      version='0.9dev',
       description="SQLAlchemy based RDB support for Grok.",
       long_description=long_description,
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
-      keywords='',
+      classifiers=['Development Status :: 4 - Beta',
+                   'Environment :: Web Environment',
+                   'Framework :: Zope3',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: Zope Public License',
+                   'Operating System :: OS Independent',
+                   'Programming Language :: Python',
+                   'Topic :: Internet :: WWW/HTTP',
+                   'Topic :: Software Development :: Libraries',
+                   'Topic :: Database',
+                   ],
+      keywords='rdb relational sqlalchemy grok database',
       author='Grok Team',
       author_email='grok-dev@zope.org',
-      url='',
       license='ZPL',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

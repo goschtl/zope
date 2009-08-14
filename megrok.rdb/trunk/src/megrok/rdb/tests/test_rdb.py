@@ -13,7 +13,7 @@ from megrok.rdb.tests import tableargs, polymorphic
 def moduleSetUp(test):
     # using zope.testing.module.setUp to work around
     # __module__ being '__builtin__' by default
-    module.setUp(test, '__main__')
+    module.setUp(test, 'foo')
     
 def moduleTearDown(test):
     # make sure scope func is empty before we tear down component architecture

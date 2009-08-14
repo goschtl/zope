@@ -2,6 +2,9 @@
 megrok.rdb
 ==========
 
+Introduction
+------------
+
 The ``megrok.rdb`` package adds powerful relational database support
 to Grok, based on the powerful SQLAlchemy_ library. It makes available
 a new ``megrok.rdb.Model`` and ``megrok.rdb.Container`` which behave
@@ -10,13 +13,10 @@ database.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org
 
-XXX a hack to make things work in doctests. In some particular setup
-this hack wasn't needed anymore, but I am unable at this time to
-reestablish this combination of packages::
-
-  >>> __file__ = 'foo'
-
 In this document we will show you how to use ``megrok.rdb``.
+
+Declarative models
+------------------
 
 ``megrok.rdb`` uses SQLAlchemy's ORM system, in particular its
 declarative extension, almost directly. ``megrok.rdb`` just supplies a
@@ -52,6 +52,12 @@ courses::
 That's all. If the ``rdb.key`` directive is not used the key in the
 container will be defined as the (possibly automatically assigned)
 primary key in the database.
+
+FIXME a hack to make things work in doctests. In some particular setup
+this hack wasn't needed anymore, but I am unable at this time to
+reestablish this combination of packages::
+
+  >>> __file__ = 'foo'
 
 Now we can set up the ``Department`` class. This has the ``courses``
 relation that links to its courses::
@@ -97,6 +103,9 @@ class::
 
 We see here that ``Course`` links back to the department it is in,
 using a foreign key.
+
+Configuration
+-------------
 
 We need to actually grok these objects to have them fully set
 up. Normally grok takes care of this automatically, but in this case
@@ -153,9 +162,6 @@ But again we'll just register it directly for the tests::
 
   >>> component.provideUtility(scoped_session, provides=IScopedSession)
 
-Let's make sure that as soon as the engine is created, we create the
-appropriate metadata::
-
 We now need to create the tables we defined in our database. We can do this
 only when the engine is first created, so we set up a handler for it::
 
@@ -164,6 +170,9 @@ only when the engine is first created, so we set up a handler for it::
   ... def engine_created(event):
   ...    rdb.setupDatabase(metadata)
   >>> component.provideHandler(engine_created)
+
+Using the database
+------------------
 
 Now all that is out the way, we can use the ``rdb.Session`` object to make
 a connection to the database.
@@ -299,14 +308,14 @@ the special ``query`` method::
   >>> qc = MyQueryContainer()
 
 Let's try some common read-only container operations, such as
-``__getitem__``1::
+``__getitem__``::
 
   >>> qc['1'].name
   u'Philosophy'
   >>> qc['2'].name
   'Physics'
 
-XXX Why the unicode difference between u'Philosophy' and 'Physics'?
+FIXME Why the unicode difference between u'Philosophy' and 'Physics'?
 
 ``__getitem__`` with a ``KeyError``::
 
