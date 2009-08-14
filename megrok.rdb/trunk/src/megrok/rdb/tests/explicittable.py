@@ -3,7 +3,7 @@ It's possible to directly specify a table using ``rdb.table`` as well.
 
 Let's first grok things::
 
-  >>> from grok.testing import grok
+  >>> from grokcore.component.testing import grok
   >>> grok('megrok.rdb.meta')
   >>> grok(__name__)
 
@@ -33,7 +33,6 @@ We can now verify that the users are there::
 """
 
 
-import grok
 from megrok import rdb
 
 from sqlalchemy import (Table, Column, MetaData, Integer, Unicode)

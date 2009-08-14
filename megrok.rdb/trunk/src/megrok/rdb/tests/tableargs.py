@@ -2,7 +2,7 @@ import unittest
 
 from megrok import rdb
 
-import grok.testing
+import grokcore.component.testing
 
 from sqlalchemy import Column
 from sqlalchemy.types import Integer
@@ -10,14 +10,14 @@ from sqlalchemy.schema import ForeignKeyConstraint
 
 class TableArgs(unittest.TestCase):
     def setUp(self):
-        grok.testing.grok('megrok.rdb.meta')
+        grokcore.component.testing.grok('megrok.rdb.meta')
 
     def test_no_tableargs(self):
         class MyClass(rdb.Model):
             rdb.metadata(rdb.MetaData())
             id = Column(Integer, primary_key=True)
             
-        grok.testing.grok_component('MyClass', MyClass)
+        grokcore.component.testing.grok_component('MyClass', MyClass)
         self.assert_(not hasattr(MyClass, '__table_args__'))
     
     def test_empty_tableargs(self):
@@ -26,7 +26,7 @@ class TableArgs(unittest.TestCase):
             id = Column(Integer, primary_key=True)
             rdb.tableargs()
     
-        grok.testing.grok_component('MyClass', MyClass)
+        grokcore.component.testing.grok_component('MyClass', MyClass)
         self.assert_(not hasattr(MyClass, '__table_args__'))
 
     def test_non_keyword_tableargs(self):
@@ -35,7 +35,7 @@ class TableArgs(unittest.TestCase):
             rdb.tableargs(ForeignKeyConstraint(['id'], ['whah.id']))
             id = Column(Integer, primary_key=True)
             
-        grok.testing.grok_component('MyClass', MyClass)
+        grokcore.component.testing.grok_component('MyClass', MyClass)
         arg, kw = MyClass.__table_args__
         self.assert_(isinstance(arg, ForeignKeyConstraint))
         self.assertEquals({}, kw)
@@ -46,7 +46,7 @@ class TableArgs(unittest.TestCase):
             rdb.tableargs(schema='bar')
             id = Column(Integer, primary_key=True)
             
-        grok.testing.grok_component('MyClass', MyClass)
+        grokcore.component.testing.grok_component('MyClass', MyClass)
         self.assertEquals({'schema': 'bar'}, MyClass.__table_args__)
 
     def test_both_tableargs(self):
@@ -56,7 +56,7 @@ class TableArgs(unittest.TestCase):
                           schema='bar')
             id = Column(Integer, primary_key=True)
             
-        grok.testing.grok_component('MyClass', MyClass)
+        grokcore.component.testing.grok_component('MyClass', MyClass)
         arg = MyClass.__table_args__[:-1]
         kw = MyClass.__table_args__[-1]
         self.assertEquals(1, len(arg))

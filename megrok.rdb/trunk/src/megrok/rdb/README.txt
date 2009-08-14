@@ -104,12 +104,12 @@ we'll need to do it manually.
 
 First we grok this package's grokkers::
 
-  >>> import grok.testing
-  >>> grok.testing.grok('megrok.rdb.meta')
+  >>> import grokcore.component.testing
+  >>> grokcore.component.testing.grok('megrok.rdb.meta')
 
 Now we can grok the components::
 
-  >>> from grok.testing import grok_component
+  >>> from grokcore.component.testing import grok_component
   >>> grok_component('Courses', Courses)
   True
   >>> grok_component('Department', Department)

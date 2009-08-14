@@ -3,10 +3,12 @@ import os
 
 version = '0.1'
 
+long_description = ''
+
 setup(name='megrok.rdb',
       version=version,
       description="SQLAlchemy based RDB support for Grok.",
-      long_description=open("README.txt").read(),
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
@@ -30,11 +32,11 @@ setup(name='megrok.rdb',
           'zope.event',
           'zope.location',
           'grokcore.component',
-          'martian',
-          'grok >= 0.13',
+          'zope.app.container', # want to depend on zope.container directly but can't yet to retain grok compatibility
+          'martian < 0.12', # 0.12 is too new for grokcore.component..
           'SQLAlchemy > 0.5beta2',
           'zope.sqlalchemy',
-          'z3c.saconfig >= 0.1',
+          'z3c.saconfig >= 0.9',
          ],
       entry_points="""
       # -*- Entry points: -*-

@@ -4,7 +4,7 @@ database (as opposed to defining the database table in Python).
 
 Let's first grok things::
 
-  >>> from grok.testing import grok
+  >>> from grokcore.component.testing import grok
   >>> grok('megrok.rdb.meta')
   >>> grok(__name__)
 
@@ -68,7 +68,6 @@ We can now verify that the courses are there::
 """
 
 
-import grok
 from megrok import rdb
 
 from sqlalchemy import Column, ForeignKey

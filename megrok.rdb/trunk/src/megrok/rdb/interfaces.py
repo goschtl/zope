@@ -1,8 +1,13 @@
 from zope.interface import Interface, Attribute, implements
 
 from zope.app.container.interfaces import IContainer as IContainerBase
+from grokcore.component.interfaces import IContext
 
-class IContainer(IContainerBase):
+# FIXME: this doesn't depend on grok.interfaces.IContainer. If something
+# is registered directly for those containers, it won't show up for
+# this IContainer... Want to avoid directly having to depend on Grok
+# with megrok.rdb however
+class IContainer(IContext, IContainerBase):
     def set(value):
         """Add a new value to the container without having to specify the key.
 

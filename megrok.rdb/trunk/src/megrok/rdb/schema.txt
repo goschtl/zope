@@ -21,11 +21,11 @@ First we define a model with a SQLAlchemy schema::
   
 Let's grok the ``Department`` class now::
 
-  >>> from grok.testing import grok
+  >>> from grokcore.component.testing import grok
   >>> grok('megrok.rdb.meta')
   >>> grok('megrok.rdb.schema')
   >>> __file__ = 'foo' # hack
-  >>> from grok.testing import grok_component
+  >>> from grokcore.component.testing import grok_component
   >>> grok_component('Department', Department)
   True
 

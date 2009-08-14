@@ -1,4 +1,5 @@
-import grok
+#import grok
+import grokcore.component
 from zope.schema.interfaces import IField
 from zope.interface import Interface
 from zope.interface.interface import InterfaceClass
@@ -10,8 +11,8 @@ from zope.schema import Int
 from zope.schema import Text
 from zope.schema import TextLine
 
-def Fields(model):
-    return grok.Fields(schema_from_model(model))
+#def Fields(model):
+#    return grok.Fields(schema_from_model(model))
 
 def schema_from_model(model):
     table = model.__table__
@@ -32,14 +33,14 @@ def schema_from_model(model):
                           attrs=attrs,
                           __doc__='Generated from metadata')
 
-@grok.adapter(String)
-@grok.implementer(IField)
+@grokcore.component.adapter(String)
+@grokcore.component.implementer(IField)
 def field_from_sa_string(s):
     return TextLine(__name__ = u'__dummy__',
                 title = u'__dummy__')
 
-@grok.adapter(Integer)
-@grok.implementer(IField)
+@grokcore.component.adapter(Integer)
+@grokcore.component.implementer(IField)
 def field_from_sa_integer(i):
     return Int(__name__ = u'__dummy__',
                 title = u'__dummy__')

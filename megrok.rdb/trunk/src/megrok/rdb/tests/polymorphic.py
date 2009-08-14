@@ -1,6 +1,6 @@
 import unittest
 
-import grok.testing
+import grokcore.component.testing
 
 from megrok import rdb
 
@@ -9,7 +9,7 @@ rdb.metadata(metadata)
 
 class Polymorphic(unittest.TestCase):
     def setUp(self):
-        grok.testing.grok('megrok.rdb.meta')
+        grokcore.component.testing.grok('megrok.rdb.meta')
         from megrok.rdb.testing import configureEngine
         engine = configureEngine()
 
@@ -52,8 +52,8 @@ class Polymorphic(unittest.TestCase):
             rdb.inherits(Content)
             rdb.polymorphic_identity('person')
 
-        grok.testing.grok_component('Content', Content)
-        grok.testing.grok_component('Person', Person)
+        grokcore.component.testing.grok_component('Content', Content)
+        grokcore.component.testing.grok_component('Person', Person)
 
         # this has to be called after classes are grokked
         rdb.setupDatabase(metadata)

@@ -5,7 +5,7 @@ from zope.interface import implements
 from zope.location.interfaces import ILocation
 
 from grokcore.component import Context
-from grok.interfaces import IContainer
+from megrok.rdb.interfaces import IContainer
 
 from megrok.rdb import directive
 from z3c.saconfig import Session

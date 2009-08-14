@@ -4,7 +4,7 @@ have an ILocation so it is easy to generate a URL for them.
 
 Let's first grok things::
 
-  >>> from grok.testing import grok
+  >>> from grokcore.component.testing import grok
   >>> grok('megrok.rdb.meta')
   >>> grok(__name__)
 
@@ -69,8 +69,6 @@ They now should have the proper parents::
   
 """
 
-
-import grok
 from megrok import rdb
 
 from sqlalchemy import Column, ForeignKey
