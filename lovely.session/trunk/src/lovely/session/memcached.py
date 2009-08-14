@@ -48,6 +48,8 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
 
     cacheName = FieldProperty(IMemCachedSessionDataContainer['cacheName'])
 
+    lastAccessTime = int(time.time())
+
     def __init__(self):
         self.resolution = 5*60
         self.timeout = 1 * 60 * 60
