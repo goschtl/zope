@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.1 (2009-08-15)
 ------------------
 
-- ...
+- Fixed a spurious test failure when run with with Python 2.6
 
 3.5.0 (2009-02-01)
 ------------------

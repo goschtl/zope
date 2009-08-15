@@ -143,7 +143,7 @@ class PythonPage(Contained, Persistent):
       ... except SyntaxError, err:
       ...     print_err(err)
       ... # doctest: +ELLIPSIS
-      EOF while scanning triple-quoted string, /pp, line 1, offset ...
+      EOF while scanning triple-quoted string... /pp, line 1, offset ...
 
       >>> try:
       ...     pp.setSource(u"prin 'hello'")
