@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """Setup for zope.app.i18n package
-
-$Id$
 """
+version = '0'
 
 import os
 
@@ -24,7 +23,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.i18n',
-    version = '3.6.1dev',
+    version = version,
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description='Persistent translation domains and message catalogs',
