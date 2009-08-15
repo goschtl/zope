@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.security package
 
-$Id$
-"""
+version = '0'
+
 import os
 from setuptools import setup, find_packages
 
@@ -22,7 +21,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.security',
-      version = '3.7.1dev',
+      version = '0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='ZMI Views For Zope3 Security Components',
