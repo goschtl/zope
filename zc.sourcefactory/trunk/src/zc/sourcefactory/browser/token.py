@@ -16,8 +16,10 @@
 """
 __docformat__ = "reStructuredText"
 
-
-import md5
+try:
+    import hashlib
+except ImportError:
+    import md5 as hashlib # Python 2.4 compat
 
 import ZODB.utils
 import ZODB.interfaces
@@ -35,7 +37,7 @@ import zc.sourcefactory.interfaces
 def fromString(value):
     # We hash generic strings to be sure they are suitable
     # for URL encoding.
-    return md5.md5(value).hexdigest()
+    return hashlib.md5(value).hexdigest()
 
 
 @zope.component.adapter(unicode)

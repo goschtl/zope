@@ -2,12 +2,14 @@
 Changes
 =======
 
-0.6.0 (unreleased)
+0.6.0 (2009-08-15)
 ==================
 
     - Change package homepage to PyPI instead of Subversion.
 
     - Dropped Support for Zope 3.2 by removing a conditional import.
+
+    - Use hashlib for Python 2.5 and later to avoid deprecation warnings.
 
 
 0.5.0 (2009-02-03)
