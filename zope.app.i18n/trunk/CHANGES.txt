@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2009-08-15)
 ------------------
 
-- ...
+- Added a missing testing dependency on zope.app.component.
 
 3.6.0 (2009-03-18)
 ------------------
@@ -23,7 +23,7 @@ CHANGES
      ``zope.publisher``.
 
 - Depend on zope.component >= 3.6 instead of zope.app.component as the
-  `queryNextUtility` function was moved there. 
+  `queryNextUtility` function was moved there.
 
 - Remove the old ``zope.app.i18n.metadirectives`` module as the directive was
   moved to ``zope.i18n`` ages ago.
