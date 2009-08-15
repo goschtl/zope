@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,10 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.pythonpage package
+version = '0'
 
-$Id$
-"""
 import os
 from setuptools import setup, find_packages
 
@@ -22,7 +20,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.pythonpage',
-      version = '3.5.1dev',
+      version = version,
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Python Page -- Zope 3 Content Components',
