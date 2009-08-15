@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.4.1 (2009-08-15)
 ------------------
 
-- Added zope.app.component to the test dependences.
+- Added missing test dependency: zope.app.component.
 
 3.4.0 (2007-10-11)
 ------------------
