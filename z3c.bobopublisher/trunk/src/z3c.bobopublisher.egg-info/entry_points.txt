@@ -1,0 +1,6 @@
+
+    [paste.app_factory]
+    main = z3c.bobopublisher.application:Application
+    [paste.filter_app_factory]
+    proxy = z3c.bobopublisher.middleware:make_proxy_middleware
+    
