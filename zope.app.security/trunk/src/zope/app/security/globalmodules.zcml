@@ -114,10 +114,6 @@
     <allow attributes="array ArrayType" />
   </module>
 
-  <module module="sets">
-    <allow attributes="Set ImmutableSet" />
-  </module>
-
   <module module="itertools">
     <allow attributes="chain count cycle dropwhile iffilter iffilterfalse imap
                        islice izip repeat starmap takewhile" />
@@ -290,16 +286,8 @@
                        Maildir BabylMailbox" />
   </module>
 
-  <module module="mhlib">
-    <allow attributes="MH Folder Message" />
-  </module>
-
   <module module="mimetypes">
     <allow attributes="guess_type guess_all_extensions guess_extension" />
-  </module>
-
-  <module module="multifile">
-    <allow attributes="MultiFile" />
   </module>
 
   <module module="rfc822">
@@ -430,5 +418,20 @@
           zcml:condition="not-installed json">
     <allow attributes="new blocksize digest_size" />
   </module>
+
+  <!-- The following packages have been deprecated in Python 2.6 also.
+       We'll use the same trick. -->
+
+  <configure zcml:condition="not-installed json">
+    <module module="sets">
+      <allow attributes="Set ImmutableSet" />
+    </module>
+    <module module="mhlib">
+      <allow attributes="MH Folder Message" />
+    </module>
+    <module module="multifile">
+      <allow attributes="MultiFile" />
+    </module>>
+  </configure>
 
 </configure>
