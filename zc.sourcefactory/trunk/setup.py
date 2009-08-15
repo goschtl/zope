@@ -1,3 +1,18 @@
+##############################################################################
+#
+# Copyright Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+version = '0'
+
 from setuptools import setup, find_packages
 import os.path
 
@@ -8,7 +23,7 @@ def read_file(*args):
 
 setup(
     name="zc.sourcefactory",
-    version="0.6.0dev",
+    version=version,
     author="Zope Corporation and Contributors",
     author_email="zope-dev@zope.org",
     url="http://pypi.python.org/pypi/zc.sourcefactory",
