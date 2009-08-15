@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """Setup for zope.app.basicskin package
-
-$Id$
 """
+version = '0'
+
 import os
 from setuptools import setup, find_packages
 
@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.basicskin',
-      version = '3.5.0dev',
+      version = version,
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Zope 3 ZMI Basic Skin',
