@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.5 (unreleased)
+3.5.5 (2009-08-15)
 ------------------
 
 - Add zope.deferredimport as a dependency as it's used directly by
