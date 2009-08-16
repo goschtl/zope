@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id$
 """
@@ -107,11 +107,11 @@ def renderPagelet(self, context, request, view, name):
         dt = datetime.now()
         pagelet = queryPagelet(context, request, name)
         if pagelet is not None:
-             rendered = pagelet.updateAndRender()
-             td = datetime.now() - dt
-             secs = (td.days*86400+td.seconds)+(0.000001*td.microseconds)
-             print >>sys.stderr, 'pagelet:      ', '%0.6f'%secs, name
-             return rendered
+            rendered = pagelet.updateAndRender()
+            td = datetime.now() - dt
+            secs = (td.days*86400+td.seconds)+(0.000001*td.microseconds)
+            print >>sys.stderr, 'pagelet:      ', '%0.6f'%secs, name
+            return rendered
     except Exception, err:
         pass
 
