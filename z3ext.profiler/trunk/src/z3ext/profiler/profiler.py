@@ -35,7 +35,7 @@ def monkey_call(self, environ, start_response):
 
     prof = profile.Profile(time.time)
     response = prof.runcall(orig_call, self, environ, start_response)
-    
+
     lock= _lock
 
     lock.acquire()
@@ -43,7 +43,7 @@ def monkey_call(self, environ, start_response):
         global _stats
 
         uri = environ.get('REQUEST_URI', '')
-        
+
         if _stats.has_key(uri):
             _stats[uri][0].add(prof)
             _stats[uri][2] = _stats[uri][2] + 1

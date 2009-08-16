@@ -61,7 +61,7 @@ class Profiler(object):
             stats.setOutputFile(output)
             getattr(stats, 'show%s' % mode.capitalize())(str(stdnameRe), limit)
             res = output.getvalue()
-            if not res: 
+            if not res:
                 res = 'No matching functions'
             return res
         else:

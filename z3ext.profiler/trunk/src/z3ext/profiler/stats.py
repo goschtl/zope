@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -62,7 +62,7 @@ class ProfilerStatistics(object):
             stats.setOutputFile(output)
             getattr(stats, 'show%s' % mode.capitalize())(str(stdnameRe), limit)
             res = output.getvalue()
-            if not res: 
+            if not res:
                 res = 'No matching functions'
             return res
         else:

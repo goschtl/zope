@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -23,11 +23,10 @@ from z3ext.wizard.step import WizardStepForm
 from z3ext.portlet.manager import PortletManagerBase
 from z3ext.portlet.interfaces import IPortletManagerView
 from z3ext.statusmessage.interfaces import IStatusMessage
-from z3ext.cache import configlet as cacheconfiglet
 
 from DMstats import Stats
 from stats import ProfilerStatistics
-from interfaces import IPortletProfiler
+from interfaces import profilerEnabled, IPortletProfiler
 
 
 class PortletProfiler(WizardStepForm, PageletEditForm, ProfilerStatistics):
@@ -38,15 +37,20 @@ class PortletProfiler(WizardStepForm, PageletEditForm, ProfilerStatistics):
     handlers = PageletEditForm.handlers.copy()
 
     def getStats(self):
-        global _stats
         return _stats
 
     @button.buttonAndHandler(u'Run Profiler')
     def handleProfiler(self, action):
-        configlet = self.getContent()
+        if profilerEnabled:
+            IStatusMessage(self.request).add(
+                u'Can not start profiler. Another profiler is running.',
+                'warning')
+        else:
+            configlet = self.getContent()
 
-        installProfiler(configlet.pnumber, configlet.portlets)
-        IStatusMessage(self.request).add(u'Profiler has started.')
+            installProfiler(configlet.pnumber, configlet.portlets)
+            IStatusMessage(self.request).add(
+                u'Portlets profiler has been started.')
 
 
 _calls = 1
@@ -57,6 +61,8 @@ originalMethod = PortletManagerBase.render
 
 
 def renderPortletManager(self):
+    global _calls, profilerEnabled
+
     if not self.portlets or not self.isAvailable():
         return u''
 
@@ -67,28 +73,21 @@ def renderPortletManager(self):
     portlets = []
 
     for portlet in self.portlets:
-        if portlet.__name__ in _portlets:
-            uri = 'portlet: %s'%portlet.__name__
+        if _calls > 0 and (not _portlets or portlet.__name__ in _portlets):
             prof = profile.Profile(time.time)
-
-            cache = cacheconfiglet.cache
-            cacheconfiglet.cache = None
-
             response = prof.runcall(portlet.updateAndRender)
 
-            cacheconfiglet.cache = cache
-
+            uri = 'portlet: %s'%portlet.__name__
             if _stats.has_key(uri):
                 _stats[uri][0].add(prof)
                 _stats[uri][1] = _stats[uri][1] + 1
             else:
                 _stats[uri] = ([Stats(prof), 1])
 
-            global _calls
             if _calls > 0:
                 _calls = _calls - 1
-
             if _calls <= 0:
+                profilerEnabled = False
                 PortletManagerBase.render = originalMethod
 
             portlets.append(response)
@@ -99,10 +98,11 @@ def renderPortletManager(self):
 
 
 def installProfiler(calls, portlets):
-    global _calls, _stats, _portlets
+    global _calls, _stats, _portlets, profilerEnabled
 
     _calls = calls
     _stats = {}
     _portlets = tuple(portlets)
+    profilerEnabled = True
 
     PortletManagerBase.render = renderPortletManager

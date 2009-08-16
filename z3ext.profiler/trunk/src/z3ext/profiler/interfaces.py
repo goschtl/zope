@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface, schema
 from z3ext.widget.list import SimpleList
+
+profilerEnabled = False
 
 
 class IPortletProfiler(interface.Interface):
@@ -25,13 +27,29 @@ class IPortletProfiler(interface.Interface):
     pnumber = schema.Int(
         title = u'Number of calls',
         default = 1,
+        min = 1,
         required = True)
 
     portlets = SimpleList(
         title = u'Portlet ids',
         default = [],
+        required = False)
+
+
+class IPageElementProfiler(interface.Interface):
+    """ pageelement profiler """
+
+    penumber = schema.Int(
+        title = u'Number of calls',
+        default = 1,
+        min = 1,
+        required = True)
+
+    pageelements = SimpleList(
+        title = u'Page element ids',
+        default = [],
         required = True)
 
 
-class IProfilerConfiglet(IPortletProfiler):
+class IProfilerConfiglet(IPortletProfiler, IPageElementProfiler):
     """ profiler """

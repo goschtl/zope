@@ -28,4 +28,25 @@
      class=".portlet.PortletProfiler"
      weight="200" />
 
+  <z3ext:pagelet
+     name="pageelement"
+     type="wizard.step"
+     title="Page element"
+     label="Page element profiler"
+     for=".interfaces.IProfilerConfiglet
+	  z3ext.controlpanel.browser.interfaces.IConfigletEditWizard"
+     template="edit.pt"
+     class=".pageelement.PageElementProfiler"
+     weight="210" />
+
+  <z3ext:pagelet
+     name="timelogger"
+     type="wizard.step"
+     title="Time logger"
+     label="Time logger"
+     for=".interfaces.IProfilerConfiglet
+	  z3ext.controlpanel.browser.interfaces.IConfigletEditWizard"
+     class=".timelog.TimeLogger"
+     weight="250" />
+
 </configure>
