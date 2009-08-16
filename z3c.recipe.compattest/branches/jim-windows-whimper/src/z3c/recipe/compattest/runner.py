@@ -27,9 +27,10 @@ class Job(object):
     def start(self):
         self.start = time.time()
         self.process = subprocess.Popen(
-            [self.script, '--exit-with-status'] + self.args,
+            [sys.executable, self.script, '--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             close_fds=True)
 
     def poll(self):
@@ -65,7 +66,9 @@ def main(max_jobs, *scripts):
         default_time = sum(stats.values()) / float(len(stats))
     else:
         default_time = 0
-    scripts.sort(key=lambda package:-stats.get(os.path.basename(package), default_time))
+    scripts.sort(
+        key=lambda package:-stats.get(os.path.basename(package), default_time)
+        )
 
     # Main loop for controlling test runs
     while scripts or running:

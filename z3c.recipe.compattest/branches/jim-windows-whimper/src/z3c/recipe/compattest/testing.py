@@ -1,5 +1,4 @@
 import doctest
-import unittest
 import zc.buildout.testing
 
 
@@ -26,7 +25,6 @@ def DocFileSuite(*args, **kw):
     kw['setUp'] = setUp
     kw['tearDown'] = tearDown
     kw['optionflags'] = (doctest.ELLIPSIS
-                         | doctest.REPORT_NDIFF
                          | doctest.NORMALIZE_WHITESPACE)
 
     return doctest.DocFileSuite(*args, **kw)
