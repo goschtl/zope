@@ -18,8 +18,12 @@ $Id$
 import unittest
 import Testing
 
+from zope.component import adapts, getGlobalSiteManager, queryMultiAdapter
+from zope.interface import implements, Interface
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
+
+from Products.CMFCore.traverser import PortalRootPublishTraverse
 
 
 class SkinsContainerTests(unittest.TestCase):
@@ -107,7 +111,40 @@ class SkinnableTests(unittest.TestCase):
         # after a changeSkin the new skin name should be returned
         som.changeSkin('skinB', som.REQUEST)
         self.failUnless(som.getCurrentSkinName() == 'skinB')
+    
+    def test_publish_traversal(self):
+        som = self._makeOne()
+        fake_request = {"URL":"/"}
+        pt = PortalRootPublishTraverse(som, fake_request)
+        
+        class FakeView(object):
+            implements(Interface)
+            adapts(som.__class__, object)
+            
+            def __init__(self, context, request):
+                pass
 
+        a_root = object()
+        a_skinlayer = object()
+        
+        class mock_skin(object):
+            def __init__(self):
+                self.a = a_skinlayer
+
+        # We set up a fake skin that contains a marker object at "a"
+        som.tool.getSkinByName = lambda x:mock_skin()
+        som.changeSkin("mock")
+        assert pt.publishTraverse({"URL":"/"}, "a") is a_skinlayer
+        
+        # Now, we override that with a view
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(FakeView, (som.__class__, object), Interface, 'a')
+        assert pt.publishTraverse({"URL":"/"}, "a").__class__ is FakeView
+        
+        # Finally, we override that with a real object at the skinnable root
+        setattr(som, "a", a_root)
+        assert pt.publishTraverse({"URL":"/"}, "a") is a_root
+        
 
 def test_suite():
     return unittest.TestSuite((
