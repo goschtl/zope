@@ -17,17 +17,18 @@ $Id$
 """
 
 import bobo
+
 import os
 
 from z3c.bobopublisher.interfaces import IDefaultViewName, IRequest, \
     IGETRequest, IPOSTRequest, IPUTRequest, IDELETERequest
 from z3c.bobopublisher.resources import Directory, File
 
-from zope.component import getGlobalSiteManager
-from zope.component.zcml import adapter
+from zope.component.zcml import handler
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
+
 
 
 def page(_context, name='index.html', for_=None, class_=None, permission=None,
@@ -46,9 +47,12 @@ def page(_context, name='index.html', for_=None, class_=None, permission=None,
             elif m == 'DELETE':
                 requests.append(IDELETERequest)
     for request in requests:
-        adapter(
-            _context, (class_,), provides=Interface, for_=(for_, request),
-            name=name, permission=permission,
+        _context.action(
+            discriminator = ('page', for_, name),
+            callable = handler,
+            args = ('registerAdapter',
+                class_, (for_, request), Interface, name, _context.info,
+            ),
         )
 
 def resources(_context, name, directory, for_=IRoot, permission=None):
@@ -56,9 +60,13 @@ def resources(_context, name, directory, for_=IRoot, permission=None):
         return Directory(directory)
     if not os.path.isdir(directory):
         raise ConfigurationError('Directory %s does not exist' % directory)
-    adapter(
-        _context, (resourcesFactory,), provides=Interface,
-        for_=(for_, IGETRequest), name=name, permission=permission,
+    _context.action(
+        discriminator = ('page', for_, name),
+        callable = handler,
+        args = ('registerAdapter',
+            resourcesFactory, (for_, IGETRequest), Interface, name,
+            _context.info,
+        ),
     )
 
 
@@ -67,13 +75,21 @@ def resource(_context, name, file, for_=IRoot, permission=None):
         return File(file)
     if not os.path.isfile(file):
         raise ConfigurationError('File %s does not exist' % directory)
-    adapter(
-        _context, (resourcesFactory,), provides=Interface,
-        for_=(for_, IGETRequest), name=name, permission=permission,
+    _context.action(
+        discriminator = ('page', for_, name),
+        callable = handler,
+        args = ('registerAdapter',
+            resourcesFactory, (for_, IGETRequest), Interface, name,
+            _context.info,
+        ),
     )
 
 
-def defaultView(_context, name, for_=None):
-    adapter(
-        _context, (lambda x: name,), provides=IDefaultViewName, for_=(for_,),
+def defaultView(_context, name, for_):
+    _context.action(
+        discriminator = ('defaultView', for_, name),
+        callable = handler,
+        args = ('registerAdapter',
+            lambda x: name, (for_,), IDefaultViewName, '', _context.info,
+        ),
     )
