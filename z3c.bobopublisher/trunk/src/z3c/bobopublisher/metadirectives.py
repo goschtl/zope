@@ -83,6 +83,31 @@ class IResourcesDirective(Interface):
     )
 
 
+class IResourceDirective(Interface):
+    """bobo:resource directive"""
+
+    name = TextLine(
+        title=u'Name',
+        required=True,
+    )
+
+    for_ = GlobalInterface(
+        title=u"The interface this resource is registered for",
+        required=False,
+        default=IRoot,
+    )
+
+    file = Path(
+        title=u"Resource path",
+        required=True,
+    )
+
+    permission = Permission(
+        title=u"Permission",
+        required=False,
+    )
+
+
 class IDefaultViewDirective(Interface):
     """bobo:defaultView directive"""
 

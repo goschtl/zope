@@ -17,13 +17,15 @@ $Id$
 """
 
 import bobo
+import os
 
 from z3c.bobopublisher.interfaces import IDefaultViewName, IRequest, \
     IGETRequest, IPOSTRequest, IPUTRequest, IDELETERequest
-from z3c.bobopublisher.resources import Directory
+from z3c.bobopublisher.resources import Directory, File
 
 from zope.component import getGlobalSiteManager
 from zope.component.zcml import adapter
+from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
 
@@ -52,6 +54,19 @@ def page(_context, name='index.html', for_=None, class_=None, permission=None,
 def resources(_context, name, directory, for_=IRoot, permission=None):
     def resourcesFactory(context, request):
         return Directory(directory)
+    if not os.path.isdir(directory):
+        raise ConfigurationError('Directory %s does not exist' % directory)
+    adapter(
+        _context, (resourcesFactory,), provides=Interface,
+        for_=(for_, IGETRequest), name=name, permission=permission,
+    )
+
+
+def resource(_context, name, file, for_=IRoot, permission=None):
+    def resourcesFactory(context, request):
+        return File(file)
+    if not os.path.isfile(file):
+        raise ConfigurationError('File %s does not exist' % directory)
     adapter(
         _context, (resourcesFactory,), provides=Interface,
         for_=(for_, IGETRequest), name=name, permission=permission,

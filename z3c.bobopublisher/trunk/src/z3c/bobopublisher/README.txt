@@ -233,7 +233,7 @@ Resources
 ---------
 
 z3c.bobopublisher provides a ZCML directive which can be used to publish static
-resources from a directory in the filesystem:
+resources from a directory or from a single file in the filesystem:
 
     >>> import os, tempfile
     >>> tempdir = tempfile.mktemp()
@@ -246,8 +246,12 @@ resources from a directory in the filesystem:
     ...       name="images"
     ...       directory="%s"
     ...       />
+    ...   <resource
+    ...       name="resource.txt"
+    ...       file="%s/resource.txt"
+    ...       />
     ... </configure>
-    ... """ % tempdir, context=context, execute=True)
+    ... """ % (tempdir, tempdir), context=context, execute=True)
 
 By the default resources are registered for the IRoot interface, as shown below:
 
@@ -258,6 +262,19 @@ By the default resources are registered for the IRoot interface, as shown below:
     '...resource.txt...'
 
     >>> response = testapp.get('/images/resource.txt', status=200)
+    >>> response.content_type, response.charset, response.body
+    ('text/plain', 'UTF-8', 'RESOURCE')
+
+    >>> response.headers['Cache-Control']
+    'public,max-age=86400'
+    >>> 'Expires' in response.headers
+    True
+    >>> 'Last-Modified' in response.headers
+    True
+
+Single file resources work in a similar way:
+
+    >>> response = testapp.get('/resource.txt', status=200)
     >>> response.content_type, response.charset, response.body
     ('text/plain', 'UTF-8', 'RESOURCE')
 

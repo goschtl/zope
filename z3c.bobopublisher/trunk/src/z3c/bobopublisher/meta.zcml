@@ -18,6 +18,13 @@
 
   <meta:directive
       namespace="http://namespaces.zope.org/bobo"
+      name="resource"
+      schema=".metadirectives.IResourceDirective"
+      handler=".metaconfigure.resource"
+      />
+
+  <meta:directive
+      namespace="http://namespaces.zope.org/bobo"
       name="defaultView"
       schema=".metadirectives.IDefaultViewDirective"
       handler=".metaconfigure.defaultView"
