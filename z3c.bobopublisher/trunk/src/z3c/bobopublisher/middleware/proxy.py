@@ -20,7 +20,7 @@ from zope.dottedname.resolve import resolve
 
 
 class ProxyMiddleware(object):
-    """WSGI application filter to add support for object proxy"""
+    """WSGI middleware to add support for object proxies"""
 
     def __init__(self, app, proxy):
         self.app = app

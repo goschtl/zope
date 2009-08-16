@@ -166,7 +166,7 @@ filter middleware to configure the proxy factory:
 In this example, we configure a proxied application to use the ProxyFactory
 from zope.security:
 
-    >>> from z3c.bobopublisher.middleware import ProxyMiddleware
+    >>> from z3c.bobopublisher.middleware.proxy import ProxyMiddleware
     >>> proxyapp = TestApp(ProxyMiddleware(Application(),
     ...     'zope.security.checker.ProxyFactory'))
 
@@ -176,6 +176,47 @@ Using the test application, we are able to call the page and get its result:
     Traceback (most recent call last):
     ....
     ForbiddenAttribute: ('get', <Root object at ...>)
+
+
+Integration with zope.security
+------------------------------
+
+z3c.bobopublisher provides a middleware to ease the integration with
+zope.security; it uses the value referenced by the given key in the WSGI
+environment and adapts it to `zope.security.interfaces.IPrincipal':
+
+    [filter-app:security]
+    use = egg:z3c.bobopublisher#security
+    key = remote_user
+    next = application
+
+In this example, we configure an application to use the remote_user key from
+the WSGI environment for zope.security:
+
+    >>> from z3c.bobopublisher.middleware.security import SecurityMiddleware
+    >>> secureapp = TestApp(SecurityMiddleware(Application(), 'remote_user'))
+
+Using the test application, we are able to call the page and get its result,
+but we don't have any adapter registered for IPrincipal:
+
+    >>> secureapp.get('/', extra_environ={'remote_user': 'test'}).body
+    Traceback (most recent call last):
+    ...
+    TypeError: ('Could not adapt', 'test', <InterfaceClass zope.security.interfaces.IPrincipal>)
+
+We register a dummy adapter for IPrincipal:
+
+    >>> from zope.interface import Interface
+    >>> from zope.security.interfaces import IPrincipal
+    >>> from zope.security.testing import Principal
+    >>> def principal(key):
+    ...     return key == 'test' and Principal(u'test') or None
+    >>> getGlobalSiteManager().registerAdapter(principal, (Interface,), IPrincipal)
+
+Using the test application, we are able to call the page and get its result:
+
+    >>> secureapp.get('/', extra_environ={'remote_user': 'test'}).body
+    'ABC'
 
 
 Defining browser pages with ZCML

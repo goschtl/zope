@@ -22,8 +22,10 @@ src/z3c/bobopublisher/interfaces.py
 src/z3c/bobopublisher/meta.zcml
 src/z3c/bobopublisher/metaconfigure.py
 src/z3c/bobopublisher/metadirectives.py
-src/z3c/bobopublisher/middleware.py
 src/z3c/bobopublisher/publication.py
 src/z3c/bobopublisher/resources.py
 src/z3c/bobopublisher/tests.py
 src/z3c/bobopublisher/traversing.py
+src/z3c/bobopublisher/middleware/__init__.py
+src/z3c/bobopublisher/middleware/proxy.py
+src/z3c/bobopublisher/middleware/security.py

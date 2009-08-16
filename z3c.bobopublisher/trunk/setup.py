@@ -42,7 +42,8 @@ setup(
     [paste.app_factory]
     main = z3c.bobopublisher.application:Application
     [paste.filter_app_factory]
-    proxy = z3c.bobopublisher.middleware:make_proxy_middleware
+    proxy = z3c.bobopublisher.middleware.proxy:make_proxy_middleware
+    security = z3c.bobopublisher.middleware.security:make_security_middleware
     """,
     include_package_data=True,
     zip_safe=False,
