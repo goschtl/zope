@@ -11,18 +11,18 @@ failures.
 
     >>> import os, sys
 
-    >>> ok_script = os.path.join(sample_buildout, 'test-ok')
-    >>> failure_script = os.path.join(sample_buildout, 'test-failure')
+    >>> ok_script = ok_path = os.path.join(sample_buildout, 'test-ok')
+    >>> failure_script = failure_path = os.path.join(sample_buildout, 'test-failure')
     >>> if sys.platform.startswith('win'):
-    ...     ok_script += '-script.py'
-    ...     failure_script += '-script.py'
+    ...     ok_path += '-script.py'
+    ...     failure_path += '-script.py'
 
-    >>> write(ok_script, """
+    >>> write(ok_path, """
     ... import time
     ... time.sleep(1)
     ... print 'ok'
     ... """)
-    >>> write(failure_script, """
+    >>> write(failure_path, """
     ... import time
     ... time.sleep(1)
     ... raise SystemError('Fail!')
