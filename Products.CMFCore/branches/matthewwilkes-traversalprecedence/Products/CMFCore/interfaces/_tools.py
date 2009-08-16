@@ -1248,12 +1248,12 @@ class ISkinsTool(ISkinsContainer):
         o Permission:  Public
         """
 
-class ISkinnableObjectManager(object):
+class ISkinnableObjectManager(Interface):
     
     """ An object that has skins applied to it."""
 
 
-    def __getattr__(self, name):
+    def __getattr__(name):
         '''
         Looks for the name in an object with wrappers that only reach
         up to the root skins folder.
@@ -1261,28 +1261,28 @@ class ISkinnableObjectManager(object):
         This should be fast, flexible, and predictable.
         '''
         
-    def getSkin(self, name=None):
+    def getSkin(name):
         """Returns the requested skin.
         """
 
-    def getSkinNameFromRequest(self, REQUEST=None):
+    def getSkinNameFromRequest(REQUEST):
         '''Returns the skin name from the Request.'''
 
-    def changeSkin(self, skinname, REQUEST=_MARKER):
+    def changeSkin(skinname, REQUEST):
         '''Change the current skin.
 
         Can be called manually, allowing the user to change
         skins in the middle of a request.
         '''
     
-    def getCurrentSkinName(self):
+    def getCurrentSkinName():
         '''Return the current skin name.
         '''
 
-    def clearCurrentSkin(self):
+    def clearCurrentSkin():
         """Clear the current skin."""
 
-    def setupCurrentSkin(self, REQUEST=_MARKER):
+    def setupCurrentSkin(REQUEST):
         '''
         Sets up skindata so that __getattr__ can find it.
 

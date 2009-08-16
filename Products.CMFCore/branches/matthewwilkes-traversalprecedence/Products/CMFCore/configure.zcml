@@ -13,4 +13,10 @@
 
   <include file="tool.zcml"/>
 
+  <adapter
+      factory = ".traverser.PortalRootPublishTraverse"
+      for = ".interfaces.ISkinnableObjectManager zope.interface.Interface"
+      />
+  
+  
 </configure>
