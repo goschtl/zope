@@ -50,10 +50,16 @@ class PortalRootPublishTraverse(DefaultPublishTraverse):
             # No __bobo_traverse__
             # Try with an unacquired attribute:
             try:
-                subobject = object.__getattribute__(name).aq_base.__of__(object)
+                subobject = object.__getattribute__(name)
             except AttributeError:
                 # this is not a direct object
                 pass
+            else:
+                try:
+                    subobject = subobject.aq_base.__of__(object)
+                except (AttributeError, TypeError):
+                    pass # We can't aq wrap whatever this is
+                
             
             
             if subobject is None:
