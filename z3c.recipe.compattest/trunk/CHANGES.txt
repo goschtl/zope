@@ -2,13 +2,6 @@
 CHANGES
 =======
 
-0.9 (unreleased)
-================
-
-- Runner: set the exit code to 1 in case of failures, needed to simplify
-  buildbot and shell scripts.
-
-
 0.8 (2009-08-17)
 ================
 

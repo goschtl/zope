@@ -113,7 +113,3 @@ def main(max_jobs, *scripts):
         pass
     else:
         pickle.dump(stats, stat_file)
-
-    # exit code
-    if failures:
-        sys.exit(1)
