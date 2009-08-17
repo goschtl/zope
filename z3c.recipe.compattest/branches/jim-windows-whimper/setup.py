@@ -36,6 +36,7 @@ setup(
     # with, it's not actually imported
     extras_require=dict(test=[
           'zope.dottedname',
+          'zope.testing',
         ]),
     entry_points = {
         'zc.buildout': ['default = z3c.recipe.compattest.recipe:Recipe'],

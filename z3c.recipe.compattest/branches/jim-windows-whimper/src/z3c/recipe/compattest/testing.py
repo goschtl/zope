@@ -1,6 +1,12 @@
 import doctest
+import re
 import zc.buildout.testing
+from zope.testing import renormalizing
 
+
+normalize_script = (
+    re.compile('(\n?)-  ([a-zA-Z0-9_.-]+)-script.py\n-  \\2.exe\n'),
+    '\\1-  \\2\n')
 
 def DocFileSuite(*args, **kw):
     def setUp(test):
@@ -26,5 +32,9 @@ def DocFileSuite(*args, **kw):
     kw['tearDown'] = tearDown
     kw['optionflags'] = (doctest.ELLIPSIS
                          | doctest.NORMALIZE_WHITESPACE)
+    kw['checker'] = renormalizing.RENormalizing([
+               zc.buildout.testing.normalize_path,
+               normalize_script,
+               ])
 
     return doctest.DocFileSuite(*args, **kw)
