@@ -25,9 +25,13 @@ class BrowserPage(object):
 
     implements(IBrowserView)
 
-    def __init__(self, context, request):
+    def __init__(self, context, request, attribute=None):
         self.context = context
         self.request = request
+        self._page_attribute = attribute
 
     def __call__(self):
+        if hasattr(self, '_page_attribute') and \
+           self._page_attribute is not None:
+            return getattr(self, self._page_attribute)()
         raise NotImplemented, '__call__ method not implemented'

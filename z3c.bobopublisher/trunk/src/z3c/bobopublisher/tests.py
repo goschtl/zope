@@ -47,3 +47,10 @@ class TestBrowserPage(BrowserPage):
 
     def __call__(self):
         return u'TEST PAGE'
+
+
+class TestAttributeBrowserPage(BrowserPage):
+    """Test browser page"""
+
+    def attribute(self):
+        return u'ATTRIBUTE'

@@ -243,11 +243,19 @@ Description: z3c.bobopublisher
         ...       name="something.html"
         ...       for="zope.location.interfaces.IRoot"
         ...       class="z3c.bobopublisher.tests.TestBrowserPage"
+        ...       permission="zope.Public"
+        ...       />
+        ...   <page
+        ...       name="attribute.html"
+        ...       for="zope.location.interfaces.IRoot"
+        ...       class="z3c.bobopublisher.tests.TestAttributeBrowserPage"
+        ...       attribute="attribute"
         ...       />
         ...   <page
         ...       name="delete.html"
         ...       for="zope.location.interfaces.IRoot"
         ...       class="z3c.bobopublisher.tests.TestBrowserPage"
+        ...       permission="zope.Public"
         ...       methods="DELETE"
         ...       />
         ...   <defaultView
@@ -261,6 +269,9 @@ Description: z3c.bobopublisher
         
         >>> testapp.get('/something.html', status=200).body
         'TEST PAGE'
+        
+        >>> testapp.get('/attribute.html', status=200).body
+        'ATTRIBUTE'
         
         As shown above, it is possible to register browser pages for one or more
         specific HTTP methods:
@@ -294,10 +305,12 @@ Description: z3c.bobopublisher
         ...   <resources
         ...       name="images"
         ...       directory="%s"
+        ...       permission="zope.Public"
         ...       />
         ...   <resource
         ...       name="resource.txt"
         ...       file="%s/resource.txt"
+        ...       permission="zope.Public"
         ...       />
         ... </configure>
         ... """ % (tempdir, tempdir), context=context, execute=True)
@@ -343,6 +356,11 @@ Description: z3c.bobopublisher
         
         >>> os.unlink(os.path.join(tempdir, 'resource.txt'))
         >>> os.rmdir(tempdir)
+        
+        Clean-up the global registries:
+        
+        >>> from zope.testing.cleanup import cleanUp
+        >>> cleanUp()
         
         
         CHANGES

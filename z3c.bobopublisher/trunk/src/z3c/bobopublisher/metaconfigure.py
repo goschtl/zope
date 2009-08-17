@@ -28,11 +28,24 @@ from zope.component.zcml import handler
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
+from zope.security.checker import CheckerPublic
+from zope.security.interfaces import Unauthorized
+from zope.security.management import checkPermission
 
+
+def _page_factory(class_, name, permission, attribute=None):
+    def factory(context, request):
+        if permission is not None and \
+           not checkPermission(permission, context):
+            raise Unauthorized(context, name, permission)
+        if attribute is not None:
+            return class_(context, request, attribute)
+        return class_(context, request)
+    return factory
 
 
 def page(_context, name='index.html', for_=None, class_=None, permission=None,
-    methods=None):
+    methods=None, attribute=None):
     requests = []
     if methods == None:
         requests.append(IRequest)
@@ -46,6 +59,13 @@ def page(_context, name='index.html', for_=None, class_=None, permission=None,
                 requests.append(IPUTRequest)
             elif m == 'DELETE':
                 requests.append(IDELETERequest)
+    if attribute is not None and not hasattr(class_, attribute):
+        raise ConfigurationError("The provided class doesn't have the "
+            "specified attribute")
+    elif permission is not None or attribute is not None:
+        if permission == 'zope.Public':
+            permission = CheckerPublic
+        class_ = _page_factory(class_, name, permission, attribute)
     for request in requests:
         _context.action(
             discriminator = ('page', for_, name),
@@ -56,10 +76,14 @@ def page(_context, name='index.html', for_=None, class_=None, permission=None,
         )
 
 def resources(_context, name, directory, for_=IRoot, permission=None):
-    def resourcesFactory(context, request):
-        return Directory(directory)
     if not os.path.isdir(directory):
         raise ConfigurationError('Directory %s does not exist' % directory)
+    if permission == 'zope.Public':
+        permission = CheckerPublic
+    def resourcesFactory(context, request):
+        if not checkPermission(permission, context):
+            raise Unauthorized(context, name, permission)
+        return Directory(directory)
     _context.action(
         discriminator = ('page', for_, name),
         callable = handler,
@@ -71,15 +95,19 @@ def resources(_context, name, directory, for_=IRoot, permission=None):
 
 
 def resource(_context, name, file, for_=IRoot, permission=None):
-    def resourcesFactory(context, request):
-        return File(file)
     if not os.path.isfile(file):
         raise ConfigurationError('File %s does not exist' % directory)
+    if permission == 'zope.Public':
+        permission = CheckerPublic
+    def resourceFactory(context, request):
+        if not checkPermission(permission, context):
+            raise Unauthorized(context, name, permission)
+        return File(file)
     _context.action(
         discriminator = ('page', for_, name),
         callable = handler,
         args = ('registerAdapter',
-            resourcesFactory, (for_, IGETRequest), Interface, name,
+            resourceFactory, (for_, IGETRequest), Interface, name,
             _context.info,
         ),
     )

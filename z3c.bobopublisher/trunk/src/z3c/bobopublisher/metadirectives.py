@@ -17,7 +17,7 @@ $Id$
 """
 
 from zope.configuration.fields import GlobalInterface, GlobalObject, Path, \
-    Tokens
+    PythonIdentifier, Tokens
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
 from zope.schema import TextLine, BytesLine
@@ -55,6 +55,12 @@ class IPageDirective(Interface):
         ),
         required=False,
         default=None,
+    )
+
+    attribute = PythonIdentifier(
+        title=u"The name of the view attribute implementing the page.",
+        required=False,
+        default=u'__call__',
     )
 
 

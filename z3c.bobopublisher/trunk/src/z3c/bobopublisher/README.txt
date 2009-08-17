@@ -235,11 +235,19 @@ pages and the name of the default page.
     ...       name="something.html"
     ...       for="zope.location.interfaces.IRoot"
     ...       class="z3c.bobopublisher.tests.TestBrowserPage"
+    ...       permission="zope.Public"
+    ...       />
+    ...   <page
+    ...       name="attribute.html"
+    ...       for="zope.location.interfaces.IRoot"
+    ...       class="z3c.bobopublisher.tests.TestAttributeBrowserPage"
+    ...       attribute="attribute"
     ...       />
     ...   <page
     ...       name="delete.html"
     ...       for="zope.location.interfaces.IRoot"
     ...       class="z3c.bobopublisher.tests.TestBrowserPage"
+    ...       permission="zope.Public"
     ...       methods="DELETE"
     ...       />
     ...   <defaultView
@@ -253,6 +261,9 @@ Using the test application, we are able to call the page and get its result:
 
     >>> testapp.get('/something.html', status=200).body
     'TEST PAGE'
+
+    >>> testapp.get('/attribute.html', status=200).body
+    'ATTRIBUTE'
 
 As shown above, it is possible to register browser pages for one or more
 specific HTTP methods:
@@ -286,10 +297,12 @@ resources from a directory or from a single file in the filesystem:
     ...   <resources
     ...       name="images"
     ...       directory="%s"
+    ...       permission="zope.Public"
     ...       />
     ...   <resource
     ...       name="resource.txt"
     ...       file="%s/resource.txt"
+    ...       permission="zope.Public"
     ...       />
     ... </configure>
     ... """ % (tempdir, tempdir), context=context, execute=True)
@@ -335,3 +348,8 @@ We can remove now the temporary directory:
 
     >>> os.unlink(os.path.join(tempdir, 'resource.txt'))
     >>> os.rmdir(tempdir)
+
+Clean-up the global registries:
+
+    >>> from zope.testing.cleanup import cleanUp
+    >>> cleanUp()
