@@ -1,5 +1,4 @@
 CHANGES.txt
-TODO.txt
 bootstrap.py
 buildout.cfg
 setup.py

@@ -1,6 +1,0 @@
-Missing features
-================
-
- - Views (with multiple pages) (bobo:view)
- - Bobo subroutes (bobo:subroute)
-
