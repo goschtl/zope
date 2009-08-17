@@ -15,10 +15,14 @@ All given options will be passed to each test runner. To know which
 options you can use, refer to the test runner documentation.
 """ % sys.argv[0]
 
+windoze = sys.platform.startswith('win')
+
 class Job(object):
 
     def __init__(self, script, args):
         self.script = script
+        if windoze:
+            self.script += '-script.py'
         self.args = args
         self.name = os.path.basename(script)
         self.output = StringIO.StringIO()
@@ -27,18 +31,23 @@ class Job(object):
     def start(self):
         self.start = time.time()
         self.process = subprocess.Popen(
-            [self.script, '--exit-with-status'] + self.args,
+            [sys.executable, self.script, '--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            close_fds=True)
+            stderr=subprocess.STDOUT,
+            close_fds = not windoze,
+            )
 
     def poll(self):
         self.exitcode = self.process.poll()
         if self.exitcode is not None:
             self.end = time.time()
-        read, _, _ = select.select([self.process.stdout], [], [], 0.01)
-        if read:
-            self.output.write(read[0].read())
+            # We're done, get it all
+            data = self.process.stdout.read()
+        else:
+            # We're not done, so just get some
+            data = self.process.stdout.readline()
+        self.output.write(data.replace('\r\n', '\n'))
 
 
 def main(max_jobs, *scripts):
@@ -65,7 +74,9 @@ def main(max_jobs, *scripts):
         default_time = sum(stats.values()) / float(len(stats))
     else:
         default_time = 0
-    scripts.sort(key=lambda package:-stats.get(os.path.basename(package), default_time))
+    scripts.sort(
+        key=lambda package:-stats.get(os.path.basename(package), default_time)
+        )
 
     # Main loop for controlling test runs
     while scripts or running:
