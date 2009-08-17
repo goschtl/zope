@@ -183,7 +183,7 @@ Integration with zope.security
 
 z3c.bobopublisher provides a middleware to ease the integration with
 zope.security; it uses the value referenced by the given key in the WSGI
-environment and adapts it to `zope.security.interfaces.IPrincipal':
+environment and adapts it to zope.security.interfaces.IPrincipal:
 
     [filter-app:security]
     use = egg:z3c.bobopublisher#security
