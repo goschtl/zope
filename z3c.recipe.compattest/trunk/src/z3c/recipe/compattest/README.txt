@@ -17,7 +17,7 @@ No further configuration is required, but you can set the following options:
   (default: empty)
 - ``exclude``: packages matching any regex in this list will be excluded
   (default: empty)
-- ``script``: the name of the runner script (default: test-<partname>)
+- ``script``: the name of the runner script (defaults to the part name)
 
 - ``svn_url``: SVN repository to search for packages instead of using releases
   (see below)
@@ -44,10 +44,11 @@ script (called `test-compat` by default) that will run all of them:
 
 >>> ls('bin')
 - buildout
+- compattest
 - compattest-z3c.recipe.compattest
-- test-compattest
->>> cat('bin', 'test-compattest')
-#!/...python...
+
+>>> cat('bin', 'compattest')
+#!...python...
 ...main(...compattest-z3c.recipe.compattest...
 
 We take care about installing the test dependencies for the packages
@@ -56,7 +57,7 @@ declared a (superfluous) test dependency on ``zope.dottedname``, which is
 picked up:
 
 >>> cat('bin', 'compattest-z3c.recipe.compattest')
-#!/...python...
+#!...python...
 ...zope.dottedname...
 
 Using SVN checkouts
@@ -101,7 +102,7 @@ d zope.dottedname
 The testrunner uses the checked out version of zope.dottedname:
 
 >>> cat('bin', 'compattest-trunk-zope.dottedname')
-#!/...python...
+#!...python...
 ...parts/compattest-trunk/zope.dottedname/src...
 
 But no additional develop-egg links are present:
