@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zExceptions import Forbidden
 
+from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
 
 from zope.interface import implements, Interface
@@ -55,12 +56,8 @@ class PortalRootPublishTraverse(DefaultPublishTraverse):
                 # this is not a direct object
                 pass
             else:
-                try:
-                    subobject = subobject.aq_base.__of__(object)
-                except (AttributeError, TypeError):
-                    pass # We can't aq wrap whatever this is
-                
-            
+                if IAcquirer.providedBy(subobject):
+                    subobject = aq_base(subobject).__of__(object)
             
             if subobject is None:
                 # We try to fall back to a view:
