@@ -32,7 +32,7 @@ class Directory:
 
     @bobo.query('')
     def base(self, bobo_request):
-        return bobo.redirect(bobo_request.url+'/')
+        return bobo.redirect(bobo_request.url + '/')
 
     @bobo.query('/')
     def index(self):
