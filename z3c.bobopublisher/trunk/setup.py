@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.bobopublisher',
-    version='0.0.1dev',
+    version='0.1.0',
     url='http://pypi.python.org/pypi/z3c.bobopublisher',
     license='ZPL 2.1',
     author='Fabio Tranchitella',
