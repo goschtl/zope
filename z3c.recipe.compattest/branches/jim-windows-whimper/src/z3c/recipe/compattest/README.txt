@@ -17,7 +17,7 @@ No further configuration is required, but you can set the following options:
   (default: empty)
 - ``exclude``: packages matching any regex in this list will be excluded
   (default: empty)
-- ``script``: the name of the runner script (default: test-<partname>)
+- ``script``: the name of the runner script (defaults to the part name)
 
 - ``svn_url``: SVN repository to search for packages instead of using releases
   (see below)
@@ -44,10 +44,10 @@ script (called `test-compat` by default) that will run all of them:
 
 >>> ls('bin')
 - buildout
+- compattest
 - compattest-z3c.recipe.compattest
-- test-compattest
 
->>> cat('bin', 'test-compattest')
+>>> cat('bin', 'compattest')
 #!...python...
 ...main(...compattest-z3c.recipe.compattest...
 

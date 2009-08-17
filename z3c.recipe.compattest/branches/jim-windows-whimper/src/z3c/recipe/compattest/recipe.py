@@ -1,7 +1,6 @@
 import infrae.subversion
 import os
 import pkg_resources
-import popen2
 import re
 import zc.buildout.easy_install
 import zc.recipe.egg
@@ -27,7 +26,7 @@ class Recipe(object):
         self.exclude = string2list(self.options.get('exclude', ''), [])
         self.wanted_packages = self._wanted_packages()
 
-        self.script = self.options.get('script', 'test-%s' % self.name)
+        self.script = self.options.get('script', self.name)
 
         self.svn_url = self.options.get('svn_url', None)
         if self.svn_url and self.svn_url[-1] != '/':
