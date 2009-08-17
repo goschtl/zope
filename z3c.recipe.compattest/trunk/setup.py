@@ -1,4 +1,4 @@
-version = '0'
+version = '0.8.0'
 
 import os
 from setuptools import setup, find_packages
