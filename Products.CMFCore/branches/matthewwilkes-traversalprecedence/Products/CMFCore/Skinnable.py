@@ -23,12 +23,28 @@ from thread import get_ident
 from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.ZopeGuards import guard, guarded_getattr
+from AccessControl.SecurityManagement import getSecurityManager
+from AccessControl.unauthorized import Unauthorized
+from Acquisition import Acquired
+from Acquisition import aq_acquire
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from OFS.interfaces import ITraversable
+from zExceptions import NotFound
+
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from OFS.ObjectManager import ObjectManager
 from ZODB.POSException import ConflictError
 from zope.interface import implements
-
+from zope.traversing.interfaces import TraversalError
+from zope.traversing.namespace import namespaceLookup
+from zope.traversing.namespace import nsParse
+from Acquisition.interfaces import IAcquirer
+from zope.interface import Interface
+from zope.component import queryMultiAdapter
 from interfaces import ISkinnableObjectManager
 
 logger = logging.getLogger('CMFCore.Skinnable')
@@ -216,5 +232,198 @@ class SkinnableObjectManager(ObjectManager):
                 if sd is not None:
                     SKINDATA[tid] = sd
         return superCheckId(self, id, allow_dup)
+
+    def unrestrictedTraverse(self, path, default=_MARKER, restricted=False):
+        """Lookup an object by path.
+
+        path -- The path to the object. May be a sequence of strings or a slash
+        separated string. If the path begins with an empty path element
+        (i.e., an empty string or a slash) then the lookup is performed
+        from the application root. Otherwise, the lookup is relative to
+        self. Two dots (..) as a path element indicates an upward traversal
+        to the acquisition parent.
+
+        default -- If provided, this is the value returned if the path cannot
+        be traversed for any reason (i.e., no object exists at that path or
+        the object is inaccessible).
+
+        restricted -- If false (default) then no security checking is performed.
+        If true, then all of the objects along the path are validated with
+        the security machinery. Usually invoked using restrictedTraverse().
+        """
+        from webdav.NullResource import NullResource
+        if not path:
+            return self
+
+        if isinstance(path, str):
+            # Unicode paths are not allowed
+            path = path.split('/')
+        else:
+            path = list(path)
+
+        REQUEST = {'TraversalRequestNameStack': path}
+        path.reverse()
+        path_pop = path.pop
+
+        if len(path) > 1 and not path[0]:
+            # Remove trailing slash
+            path_pop(0)
+
+        if restricted:
+            validate = getSecurityManager().validate
+
+        if not path[-1]:
+            # If the path starts with an empty string, go to the root first.
+            path_pop()
+            obj = self.getPhysicalRoot()
+            if restricted:
+                validate(None, None, None, obj) # may raise Unauthorized
+        else:
+            obj = self
+
+        resource = _MARKER
+        try:
+            while path:
+                name = path_pop()
+                __traceback_info__ = path, name
+
+                if name[0] == '_':
+                    # Never allowed in a URL.
+                    raise NotFound, name
+
+                if name == '..':
+                    next = aq_parent(obj)
+                    if next is not None:
+                        if restricted and not validate(obj, obj, name, next):
+                            raise Unauthorized(name)
+                        obj = next
+                        continue
+
+                bobo_traverse = getattr(obj, '__bobo_traverse__', None)
+                try:
+                    if name and name[:1] in '@+' and name != '+' and nsParse(name)[1]:
+                        # Process URI segment parameters.
+                        ns, nm = nsParse(name)
+                        try:
+                            next = namespaceLookup(
+                                ns, nm, obj, aq_acquire(self, 'REQUEST'))
+                            if IAcquirer.providedBy(next):
+                                next = next.__of__(obj)
+                            if restricted and not validate(
+                                obj, obj, name, next):
+                                raise Unauthorized(name)
+                        except TraversalError:
+                            raise AttributeError(name)
+
+                    elif bobo_traverse is not None:
+                        next = bobo_traverse(REQUEST, name)
+                        if restricted:
+                            if aq_base(next) is not next:
+                                # The object is wrapped, so the acquisition
+                                # context is the container.
+                                container = aq_parent(aq_inner(next))
+                            elif getattr(next, 'im_self', None) is not None:
+                                # Bound method, the bound instance
+                                # is the container
+                                container = next.im_self
+                            elif getattr(aq_base(obj), name, _MARKER) is next:
+                                # Unwrapped direct attribute of the object so
+                                # object is the container
+                                container = obj
+                            else:
+                                # Can't determine container
+                                container = None
+                            # If next is a simple unwrapped property, its
+                            # parentage is indeterminate, but it may have
+                            # been acquired safely. In this case validate
+                            # will raise an error, and we can explicitly
+                            # check that our value was acquired safely.
+                            try:
+                                ok = validate(obj, container, name, next)
+                            except Unauthorized:
+                                ok = False
+                            if not ok:
+                                if (container is not None or
+                                    guarded_getattr(obj, name, _MARKER)
+                                        is not next):
+                                    raise Unauthorized(name)
+                    else:
+                        next = None
+                        try:
+                            next = obj.__getattribute__(name)
+                        except AttributeError:
+                            # this is not a direct object
+                            pass
+                        else:
+                            try:
+                                next = next.aq_base.__of__(obj)
+                            except (AttributeError, TypeError):
+                                pass # We can't aq wrap whatever this is
+                            if restricted:
+                                guard(obj, next)
+                        if next is None:
+                            try:
+                                next = obj[name]
+                                # The item lookup may return a NullResource,
+                                # if this is the case we save it and return it
+                                # if all other lookups fail.
+                                if isinstance(next, NullResource):
+                                    resource = next
+                                    raise KeyError(name)
+                            except AttributeError:
+                                # Raise NotFound for easier debugging
+                                # instead of AttributeError: __getitem__
+                                raise NotFound(name)
+                            if restricted and not validate(
+                                obj, obj, None, next):
+                                raise Unauthorized(name)
+                        if next is None:
+                            if restricted:
+                                next = guarded_getattr(obj, name, _MARKER)
+                            else:
+                                next = getattr(obj, name, _MARKER)
+
+
+                except (AttributeError, NotFound, KeyError), e:
+                    # Try to look for a view
+                    next = queryMultiAdapter((obj, aq_acquire(self, 'REQUEST')),
+                                             Interface, name)
+
+                    if next is not None:
+                        if IAcquirer.providedBy(next):
+                            next = next.__of__(obj)
+                        if restricted and not validate(obj, obj, name, next):
+                            raise Unauthorized(name)
+                    elif bobo_traverse is not None:
+                        # Attribute lookup should not be done after
+                        # __bobo_traverse__:
+                        raise e
+                    else:
+                        # No view, try acquired attributes
+                        try:
+                            if restricted:
+                                next = guarded_getattr(obj, name, _MARKER)
+                            else:
+                                next = getattr(obj, name, _MARKER)
+                        except AttributeError:
+                            raise e
+                        if next is _MARKER:
+                            # If we have a NullResource from earlier use it.
+                            next = resource
+                            if next is _MARKER:
+                                # Nothing found re-raise error
+                                raise e
+
+                obj = next
+
+            return obj
+
+        except ConflictError:
+            raise
+        except:
+            if default is not _MARKER:
+                return default
+            else:
+                raise
 
 InitializeClass(SkinnableObjectManager)

@@ -55,6 +55,8 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         (ReviewPortalContent, ()),
         )
 
+    unrestrictedTraverse = SkinnableObjectManager.unrestrictedTraverse
+
     def __init__(self, id, title='', description=''):
         super(PortalObjectBase, self).__init__(id, title, description)
         components = PersistentComponents('++etc++site')
