@@ -144,8 +144,39 @@ class SkinnableTests(unittest.TestCase):
         # Finally, we override that with a real object at the skinnable root
         setattr(som, "a", a_root)
         assert pt.publishTraverse({"URL":"/"}, "a") is a_root
-        
 
+    def test_path_traversal(self):
+        som = self._makeOne()
+        fake_request = som.REQUEST
+    
+        class FakeView(object):
+            implements(Interface)
+            adapts(som.__class__, object)
+            
+            def __init__(self, context, request):
+                pass
+
+        a_root = object()
+        a_skinlayer = object()
+        
+        class mock_skin(object):
+            def __init__(self):
+                self.a = a_skinlayer
+
+        # We set up a fake skin that contains a marker object at "a"
+        som.tool.getSkinByName = lambda x:mock_skin()
+        som.changeSkin("mock")
+        assert som.unrestrictedTraverse("a") is a_skinlayer
+        
+        # Now, we override that with a view
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(FakeView, (som.__class__, fake_request), Interface, 'a')
+        assert som.unrestrictedTraverse("a").__class__ is FakeView
+        
+        # Finally, we override that with a real object at the skinnable root
+        setattr(som, "a", a_root)
+        assert som.unrestrictedTraverse("a") is a_root
+        
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(SkinsContainerTests),

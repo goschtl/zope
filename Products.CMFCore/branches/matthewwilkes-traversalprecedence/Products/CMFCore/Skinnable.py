@@ -255,6 +255,8 @@ class SkinnableObjectManager(ObjectManager):
         if not path:
             return self
 
+        next = None
+
         if isinstance(path, str):
             # Unicode paths are not allowed
             path = path.split('/')
@@ -348,7 +350,6 @@ class SkinnableObjectManager(ObjectManager):
                                         is not next):
                                     raise Unauthorized(name)
                     else:
-                        next = None
                         try:
                             next = obj.__getattribute__(name)
                         except AttributeError:
@@ -362,27 +363,9 @@ class SkinnableObjectManager(ObjectManager):
                             if restricted:
                                 guard(obj, next)
                         if next is None:
-                            try:
-                                next = obj[name]
-                                # The item lookup may return a NullResource,
-                                # if this is the case we save it and return it
-                                # if all other lookups fail.
-                                if isinstance(next, NullResource):
-                                    resource = next
-                                    raise KeyError(name)
-                            except AttributeError:
-                                # Raise NotFound for easier debugging
-                                # instead of AttributeError: __getitem__
-                                raise NotFound(name)
-                            if restricted and not validate(
-                                obj, obj, None, next):
-                                raise Unauthorized(name)
-                        if next is None:
-                            if restricted:
-                                next = guarded_getattr(obj, name, _MARKER)
-                            else:
-                                next = getattr(obj, name, _MARKER)
-
+                            # Go to the case below which handles views and 
+                            # acquired attributes.
+                            raise NotFound(name)
 
                 except (AttributeError, NotFound, KeyError), e:
                     # Try to look for a view
@@ -407,12 +390,28 @@ class SkinnableObjectManager(ObjectManager):
                                 next = getattr(obj, name, _MARKER)
                         except AttributeError:
                             raise e
-                        if next is _MARKER:
+                        if next is None:
                             # If we have a NullResource from earlier use it.
                             next = resource
                             if next is _MARKER:
                                 # Nothing found re-raise error
                                 raise e
+                        if next is None:
+                            try:
+                                next = obj[name]
+                                # The item lookup may return a NullResource,
+                                # if this is the case we save it and return it
+                                # if all other lookups fail.
+                                if isinstance(next, NullResource):
+                                    resource = next
+                                    raise KeyError(name)
+                            except AttributeError:
+                                # Raise NotFound for easier debugging
+                                # instead of AttributeError: __getitem__
+                                raise NotFound(name)
+                            if restricted and not validate(
+                                obj, obj, None, next):
+                                raise Unauthorized(name)
 
                 obj = next
 
