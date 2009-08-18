@@ -23,6 +23,7 @@ setup(
         'setuptools',
         'bobo',
         'WebOb',
+        'z3c.request',
         'zope.browser',
         'zope.component [zcml]',
         'zope.configuration',

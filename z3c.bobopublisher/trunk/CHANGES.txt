@@ -4,7 +4,9 @@ CHANGES
 0.1.1 (unreleased)
 ------------------
 
-- ...
+- Use the IRequest interface from the z3c.request package; this will simplify
+  the dependencies of packages providing components which are not dependent on
+  a specific implementation of the request object.
 
 0.1.0 (2009-08-17)
 ------------------

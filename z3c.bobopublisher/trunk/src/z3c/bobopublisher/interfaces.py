@@ -16,6 +16,8 @@
 $Id$
 """
 
+from z3c.request import interfaces
+
 from zope.interface import Interface
 
 
@@ -37,7 +39,7 @@ class IDefaultViewName(Interface):
     """Marker interface for the bobo:defaultView directive"""
 
 
-class IRequest(Interface):
+class IRequest(interfaces.IWebObRequest):
     """Interface for webob.Request objects"""
 
 
