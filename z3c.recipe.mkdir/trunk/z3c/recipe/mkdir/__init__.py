@@ -30,6 +30,9 @@ class Recipe:
 
     def createIntermediatePaths(self, path):
         parent = os.path.dirname(path)
+        if os.path.exists(path) and not os.path.isdir(path):
+            raise zc.buildout.UserError(
+                "Cannot create directory: %s. It's a file." % path)
         if os.path.exists(path) or parent == path:
             return
         self.createIntermediatePaths(parent)
