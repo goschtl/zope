@@ -50,7 +50,7 @@ class Job(object):
         self.output.write(data.replace('\r\n', '\n'))
 
 
-def main(max_jobs, *scripts):
+def main(max_jobs, *scripts, **options):
     argv = sys.argv[1:]
     if '-h' in argv or '--help' in argv:
         usage()
@@ -113,3 +113,6 @@ def main(max_jobs, *scripts):
         pass
     else:
         pickle.dump(stats, stat_file)
+
+    if not options.get('no_exit_code') and failures:
+        sys.exit(1)
