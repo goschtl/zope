@@ -25,7 +25,7 @@ from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
 
 
-def CSVVocabulary(filename, messageFactory=_):
+def CSVVocabulary(filename, messageFactory=_, encoding='latin1'):
     # Create a prefix
     prefix = os.path.split(filename)[-1][:-4]
     # Open a file and read the data
@@ -34,7 +34,7 @@ def CSVVocabulary(filename, messageFactory=_):
     # Create the terms and the vocabulary
     terms = []
     for id, title in reader:
-        title = unicode(title, 'latin1')
+        title = unicode(title, encoding)
         term = vocabulary.SimpleTerm(
             id, title=messageFactory(prefix+'-'+id, default=title))
         terms.append(term)

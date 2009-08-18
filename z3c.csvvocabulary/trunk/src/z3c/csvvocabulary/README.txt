@@ -74,6 +74,24 @@ does not detect updates in the csv file or loads the data when needed. But as
 I said, this is totally okay.
 
 
+Encoding
+````````
+
+By default the vocabulary expects the csv file to be latin1 encoded.
+
+  >>> csvfile = os.path.join(path, 'testing', 'data', 'utf-8.csv')
+  >>> wrongEncoding = z3c.csvvocabulary.CSVVocabulary(csvfile)
+  >>> print wrongEncoding.getTerm('ae').title.default
+  Ã¤
+
+If you csv file has a different encoding you can specify it explicitly:
+
+  >>> utf8Encoded = z3c.csvvocabulary.CSVVocabulary(csvfile, encoding='utf-8')
+  >>> term = utf8Encoded.getTerm('ae')
+  >>> print term.title.default
+  ä
+
+
 CSV Message String Extraction
 -----------------------------
 
@@ -90,4 +108,6 @@ will be used:
    u'sample-value2': [('...sample.csv', 2)],
    u'sample-value3': [('...sample.csv', 3)],
    u'sample-value4': [('...sample.csv', 4)],
-   u'sample-value5': [('...sample.csv', 5)]}
+   u'sample-value5': [('...sample.csv', 5)],
+   u'utf-8-ae': [('...utf-8.csv', 1)],
+   u'utf-8-oe': [('...utf-8.csv', 2)]}
