@@ -57,7 +57,7 @@ class FolderBrowserViewTests(unittest.TestCase):
         
     def test_list_batch_items(self):
         view = ContentsView(self.folder, TestRequest())
-        self.assertEquals(view.list_batch_items(), [])
+        self.assertEquals(view.listBatchItems(), [])
     
     def test_is_orderable(self):
         view = ContentsView(self.folder, TestRequest())
@@ -141,7 +141,7 @@ class FolderBrowserViewTests(unittest.TestCase):
         self.site_login()
         self._make_batch()
         request = TestRequest(ACTUAL_URL='http://foo.com/bar')
-        request.form = {'b_start':25}
+        request.form = {'form.b_start':25}
         view = ContentsView(self.folder, request)
         self.assertEquals(view.navigation_previous()['title'], 
                             "Previous ${count} items")
@@ -162,7 +162,7 @@ class FolderBrowserViewTests(unittest.TestCase):
             content_id = "Dummy%s" % i
             self._make_one(content_id)
         request = TestRequest(ACTUAL_URL='http://foo.com/bar')
-        request.form = {'b_start':batch_size * 14}
+        request.form = {'form.b_start':batch_size * 14}
         view = ContentsView(self.folder, request)
         self.assertEquals(view.page_range()[0]['number'], 11)
         self.assertEquals(view.page_range()[-1]['number'], 20)
