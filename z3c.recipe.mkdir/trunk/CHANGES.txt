@@ -4,6 +4,8 @@ Changes
 0.2 (unreleased)
 ================
 
+* Added check whether a file exists as part of path and emit error.
+
 
 0.1 (2009-08-17)
 ================
