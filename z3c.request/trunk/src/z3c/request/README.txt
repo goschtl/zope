@@ -3,7 +3,8 @@ z3c.request
 
 This package provides a common interface for browser request implementations.
 
-There is not much we can test except that IView is importable and an interface:
+There is not much we can test except that IRequest is importable and an
+interface:
 
     >>> from z3c.request.interfaces import IRequest
     >>> from zope.interface import Interface
