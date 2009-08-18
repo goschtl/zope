@@ -69,13 +69,14 @@ class IHidden(Interface):
     
     b_start = Int(
         title=u"Batch start",
-        required=False)
+        required=False,
+        default=0)
         
-    key = TextLine(
+    sort_key = TextLine(
         title=u"Sort key",
         required=False)
         
-    reverse = Bool(
+    reverse = Int(
         title=u"Reverse sort order",
         required=False)
 
@@ -85,10 +86,22 @@ class BatchViewBase(ViewBase):
     """Helper class for creating batch-based views."""
 
     _BATCH_SIZE = 25
+    hidden_fields = form.FormFields(IHidden)
+    prefix = ''
+    
+    def __call__(self):
+        self.setUpWidgets()
+        return super(BatchViewBase, self).__call__()
+    
+    @memoize
+    def setUpWidgets(self, ignore_request=False):
+        self.hidden_widgets = form.setUpWidgets(
+        self.hidden_fields, self.prefix, self.context,
+            self.request, ignore_request=ignore_request)
 
     @memoize
     def _getBatchStart(self):
-        return int(self.request.form.get('b_start', 0))
+        return self._getHiddenVars().get('b_start', 0)
 
     @memoize
     def _getBatchObj(self):
@@ -98,23 +111,35 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def _getHiddenVars(self):
-        return {}
+        data = {}
+        form.getWidgetsData(self.hidden_widgets, self.prefix, data)
+        return data
 
     @memoize
     def _getNavigationVars(self):
         return self._getHiddenVars()
+    
+    @memoize
+    def expand_prefix(self, key,):
+        """Return a form specific query key for use in GET strings"""
+        return "%s%s" % (form.expandPrefix(self.prefix), key)
 
     @memoize
-    def _getNavigationURL(self, b_start):
+    def _getNavigationURL(self, b_start=None):
         target = self._getViewURL()
         kw = self._getNavigationVars().copy()
+        if 'bstart' not in kw:
+            kw['b_start'] = b_start
 
-        kw['b_start'] = b_start
         for k, v in kw.items():
             if not v or k == 'portal_status_message':
-                del kw[k]
+                pass
+            else:
+                new_key = self.expand_prefix(k)
+                kw[new_key] = v
+            del kw[k]
 
-        query = kw and ('?%s' % make_query(kw)) or ''
+        query = kw and ('?%s' % urllib.urlencode(kw)) or ''
         return u'%s%s' % (target, query)
 
     # interface
@@ -180,8 +205,6 @@ class BatchViewBase(ViewBase):
 
     def page_range(self):
         """Create a range of up to ten pages around the current page"""
-        url = self._getViewURL()
-        batch_query = '%s?b_start:int=%s'
         pages = [(idx + 1, b_start) for idx, b_start in enumerate(
                     range(0, 
                         self._getBatchObj().sequence_length, 
@@ -192,8 +215,11 @@ class BatchViewBase(ViewBase):
         range_stop = min(max(self.page_number() + 5, 10), len(pages))
         _page_range = []
         for page, b_start in pages[range_start:range_stop]:
-            _page_range.append({'number':page, 
-            'url':batch_query % (url, b_start)})
+            _page_range.append(
+                {'number':page, 
+                 'url':self._getNavigationURL(b_start)
+                }
+                              )
         return _page_range
 
     @memoize
@@ -228,6 +254,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     """Folder contents view"""
     
     template = ViewPageTemplateFile('templates/contents.pt')
+    prefix = 'form'
     
     object_actions = form.Actions(
         form.Action(
@@ -305,7 +332,6 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     
     def __init__(self, *args, **kw):
         super(ContentsView, self).__init__(*args, **kw)
-        self.hidden_fields = form.FormFields(IHidden)
         self.form_fields = form.FormFields()
         self.delta_field = form.FormFields(IDeltaItem)
         self.contents = self.context.contentValues()
@@ -337,13 +363,10 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         
     def setUpWidgets(self, ignore_request=False):
         """Create widgets for the folder contents."""
+        super(ContentsView, self).setUpWidgets(ignore_request)
         data = {}
         for i in self.contents:
-            data['%s.name' %i.id] = i.getId()
-        self.hidden_widgets = form.setUpDataWidgets(
-                self.hidden_fields, "", self.context,
-                self.request, data=self._getHiddenVars(),
-                        ignore_request=ignore_request)
+            data['%s.name' % i.id] = i.getId()
         self.widgets = form.setUpDataWidgets(
                 self.form_fields, self.prefix, self.context,
                 self.request, data=data, ignore_request=ignore_request)
@@ -354,40 +377,42 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     @memoize
     def _get_sorting(self):
         """How should the contents be sorted"""
-        key = self.request.form.get('key', None)
+        data = self._getHiddenVars()
+        key = data.get('sort_key')
         if key:
-            return (key, self.request.form.get('reverse', 0))
+            return (key, data.get('reverse', 0))
         else:
             return self.context.getDefaultSorting()
             
     @memoize
-    def _is_default_sorting(self):
+    def _is_default_sorting(self,):
         return self._get_sorting() == self.context.getDefaultSorting()
-    
+        
     @memoize
     def column_headings(self):
         key, reverse = self._get_sorting()
-        columns = ( {'key': 'Type',
+        columns = ( {'sort_key': 'Type',
                      'title': _(u'Type'),
                      'colspan': '2'}
-                  , {'key': 'getId',
+                  , {'sort_key': 'getId',
                      'title': _(u'Name')}
-                  , {'key': 'modified',
+                  , {'sort_key': 'modified',
                      'title': _(u'Last Modified')}
-                  , {'key': 'position',
+                  , {'sort_key': 'position',
                      'title': _(u'Position')}
                   )
         for column in columns:
-            if key == column['key'] and not reverse and key != 'position':
-                query = make_query(key=column['key'], reverse=1)
-            else:
-                query = make_query(key=column['key'])
+            paras = {'hidden.sort_key':column['sort_key']}
+            if key == column['sort_key'] \
+            and not reverse and key != 'position':
+                paras['hidden.reverse'] = 1
+            query = urllib.urlencode(paras)
             column['url'] = '%s?%s' % (self._getViewURL(), query)
         return tuple(columns)
         
     @memoize
     def _get_items(self):
-        (key, reverse) = self._get_sorting()
+        key, reverse = self._get_sorting()
         items = self.contents
         return sequence.sort(items,
                              ((key, 'cmp', reverse and 'desc' or 'asc'),))
@@ -421,13 +446,6 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                             and k.split(".")[-1] == 'select']
         return ids
 
-    @memoize    
-    def _getHiddenVars(self):
-        b_start = self._getBatchStart()
-        is_default = self._is_default_sorting()
-        (key, reverse) = is_default and ('', 0) or self._get_sorting()
-        return {'b_start': b_start, 'key': key, 'reverse': reverse}
-    
     #Action conditions
     @memoize
     def has_subobjects(self, action=None):
