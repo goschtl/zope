@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.request',
-    version='0.1.0dev',
+    version='0.1.0',
     url='http://pypi.python.org/pypi/z3c.request',
     license='ZPL 2.1',
     author='Fabio Tranchitella and the Zope Community',
