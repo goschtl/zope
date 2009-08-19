@@ -1,7 +1,5 @@
 import logging
 import os
-import re
-import stat
 import zc.buildout
 
 class Recipe:
