@@ -93,6 +93,74 @@ The directory was indeed created:
   d  myotherdir
 
 
+Creating directories that are removed on updates
+================================================
+
+We can tell, that a directory should be removed on updates by using
+the ``remove-on-update`` option:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... remove-on-update = true
+  ... paths = newdir
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  mydir: created path: /sample-buildout/newdir
+
+The ``newdir/`` directory was created:
+
+  >>> ls('.')
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  develop-eggs
+  d  eggs
+  d  newdir
+  d  parts
+
+We rewrite `buildout.cfg` and set a different path:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... remove-on-update = true
+  ... paths = newdir2
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  mydir: created path: /sample-buildout/newdir2
+
+Now ``newdir/`` has vanished and ``newdir2`` exists:
+
+  >>> ls('.')
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  develop-eggs
+  d  eggs
+  d  newdir2
+  d  parts
+
+Note, that the created directory will be removed on next modification
+of `buildout.cfg`.
+
+
 Creating relative paths
 =======================
 
