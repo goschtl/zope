@@ -19,6 +19,16 @@ Recipe Options
 
       /path/to/buildout-dir/foo/bar
 
+* ``remove-on-update``
+     Default: ``no``
+
+     By default, created directories are not removed
+     on updates of buildout configuration. This is a security measure
+     as created directories might contain valuable data.
+
+     You can, however, enforce automatic removing on updates by
+     setting this option to ``on``, ``yes`` or ``true``.
+
 
 Simple creation of directories via buildout
 ===========================================
@@ -79,6 +89,7 @@ Now we can run buildout:
 The directory was indeed created:
 
   >>> ls('parts')
+  d  mydir
   d  myotherdir
 
 
@@ -114,10 +125,11 @@ buildout directory:
   d  myrootdir
   d  parts
 
-  The old directory will vanish:
+  The old directories will **not** vanish:
 
-  >>> ls('parts') is None
-  True
+  >>> ls('parts')
+  d  mydir
+  d  myotherdir
 
 
 Creating intermediate paths
@@ -200,6 +212,7 @@ We can create multiple paths in one buildout section:
 
 
   >>> ls('myroot')
+  d  bar
   d  dir1
   d  dir2
 
@@ -245,6 +258,9 @@ or without:
   mydir: created path: /sample-buildout/myroot/dir4
 
   >>> ls('myroot')
+  d  bar
+  d  dir1
+  d  dir2
   d  dir3
   d  dir4
 
@@ -252,7 +268,8 @@ Things to be aware of
 =====================
 
 If you change the setting of some path, the old directory and all its
-contents will be lost:
+contents will **not** be deleted (as you might expect from a buildout
+recipe):
 
   >>> write('buildout.cfg',
   ... '''
@@ -293,9 +310,10 @@ Now we switch the setting of mydir to ``path2``:
   mydir: created path: /sample-buildout/path2
   <BLANKLINE>
 
+The file we created above is still alive:
+
   >>> ls('path1')
-  Traceback (most recent call last):
-  OSError: [Errno ...] No such file or directory: 'path1'
+  -  myfile
 
 
 Things, one should not do
@@ -315,17 +333,17 @@ raised:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... paths = myrootdir/somefile/foo
+  ... paths = rootdir2/somefile/foo
   ... ''')
 
 Now we create the first part of the path beforehand:
 
   >>> import os
-  >>> os.mkdir('myrootdir')
+  >>> os.mkdir('rootdir2')
 
 And make the second part of the path a file:
 
-  >>> write(join('myrootdir', 'somefile'),
+  >>> write(join('rootdir2', 'somefile'),
   ... '''
   ... blah
   ... ''')
@@ -335,7 +353,7 @@ And make the second part of the path a file:
   Installing mydir.
   While:
     Installing mydir.
-  Error: Cannot create directory: /.../myrootdir/somefile. It's a file.
+  Error: Cannot create directory: /.../rootdir2/somefile. It's a file.
 
 
 Don't use ``path`` option
@@ -355,6 +373,7 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
   ... path = myrootdir
+  ... remove-on-update = yes
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -363,3 +382,5 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
   mydir: created path: /sample-buildout/parts/mydir
 
 The ``path`` option will be supported only for a limited time!
+
+
