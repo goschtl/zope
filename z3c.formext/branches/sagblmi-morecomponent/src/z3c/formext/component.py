@@ -93,7 +93,7 @@ class TextField(Field):
 
     xtype = 'textfield'
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(TextField, self)._getConfig()
         config['allowBlank'] = not self.widget.required
         if zope.schema.interfaces.IMinMaxLen.providedBy(self.field):
@@ -144,7 +144,7 @@ class NumberField(TextField):
             zope.schema.interfaces.IField)
     xtype = 'numberfield'
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(NumberField, self)._getConfig()
         config['allowDecimals'] = \
                 not zope.schema.interfaces.IInt.providedBy(self.field)
@@ -160,7 +160,7 @@ class Password(TextField):
             ITextWidget,
             zope.schema.interfaces.IPassword)
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(Password, self)._getConfig()
         config['inputType'] = 'password'
         return config
@@ -199,7 +199,7 @@ class ComboBox(Field):
 
     xtype = 'combo'
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(ComboBox, self)._getConfig()
         emptyText = [self.widget.noValueMessage]
         if self.widget.prompt:
@@ -227,7 +227,7 @@ class CheckBox(Field):
 
     xtype = 'checkbox'
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(CheckBox, self)._getConfig()
         checkbox = self.widget.items[0]
         config.update(dict(
@@ -247,7 +247,7 @@ class RadioGroup(Field):
             IRadioWidget,
             zope.schema.interfaces.IField)
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = dict(
             fieldLabel = self.widget.label,
             id = self.widget.id,
@@ -295,7 +295,7 @@ class Button(Field):
     def __init__(self, widget):
         super(Button, self).__init__(None, None, None, widget, None)
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(Button, self)._getConfig()
         config['text'] = self.widget.value
         del config['fieldLabel']
@@ -342,12 +342,12 @@ def getWidgetsConfig(form, asDict=True):
     return widgets
 
 
-def getGroupsConfig(form, json=False):
+def getGroupsConfig(form):
     items = []
     if form.groups:
         for group in form.groups:
             groupComponent = interfaces.IExtJSComponent(group)
-            groupConfig = groupComponent._getConfig(json)
+            groupConfig = groupComponent._getConfig()
             items.append(groupConfig)
     return items
 
@@ -361,11 +361,13 @@ class Panel(Component):
     def __init__(self, form):
         self.form = form
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = dict(
             xtype=self.xtype)
         if self.form.label:
             config['title'] = self.form.label
+        else:
+            config['xtype'] = 'container'
         if not self.form.widgets:
             self.form.updateWidgets()
         items = getWidgetsConfig(self.form, asDict=False)
@@ -386,10 +388,10 @@ class GroupPanel(Panel):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(IGroup)
 
-    def _getConfig(self, json=False):
-        config = super(GroupPanel, self)._getConfig(json)
+    def _getConfig(self):
+        config = super(GroupPanel, self)._getConfig()
         items = config.get("items", [])
-        items += getGroupsConfig(self.form, json)
+        items += getGroupsConfig(self.form)
         config['items'] = items
         return config
 
@@ -400,8 +402,8 @@ class FormPanel(Panel):
 
     xtype = 'formpanel'
 
-    def _getConfig(self, json=False):
-        config = super(FormPanel, self)._getConfig(json)
+    def _getConfig(self):
+        config = super(FormPanel, self)._getConfig()
         config['id'] = self.form.id
         config['submitURL'] = self.form.action
         buttons = getButtonsConfig(self.form, asDict=False)
@@ -414,7 +416,7 @@ class ClientButton(Button):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(interfaces.IClientButtonAction)
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(ClientButton, self)._getConfig()
         config['handler'] = {}
         if self.widget.field.success:
@@ -447,7 +449,7 @@ class ExtFormPanel(FormPanel):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(interfaces.IExtJSForm)
 
-    def _getConfig(self, json=False):
+    def _getConfig(self):
         config = super(ExtFormPanel, self)._getConfig()
         config['ajaxHandlers'] = {}
         if hasattr(self.form, 'ajaxRequestHandlers'):
@@ -463,6 +465,6 @@ class ExtFormPanel(FormPanel):
             config['ownerCt'] = self.form.ownerCt
         if hasattr(self.form, 'groups'):
             items = config.get("items", [])
-            items += getGroupsConfig(self.form, json)
+            items += getGroupsConfig(self.form)
             config['items'] = items
         return config
