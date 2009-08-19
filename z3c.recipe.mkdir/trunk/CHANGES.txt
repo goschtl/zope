@@ -4,6 +4,10 @@ Changes
 0.2 (unreleased)
 ================
 
+* Make paths absolute and normalize them before creation.
+
+* Support creation of several paths in a row.
+
 * Added check whether a file exists as part of path and emit error.
 
 
