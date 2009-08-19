@@ -19,7 +19,7 @@ The WebOb Request class will automatically implement the IRequest interface:
 
 WebOb Request objects will automatically provide the IRequest interface:
 
-    >>> obj = webob.Request({})
+    >>> obj = webob.Request.blank('/test')
     >>> IRequest.providedBy(obj)
     True
 
