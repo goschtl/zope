@@ -7,6 +7,8 @@ Changes
 * Renamed ``path`` option to ``paths`` (plural). Please do not use
   ``path`` anymore!
 
+* Created directories are now displayed during buildout runs.
+
 
 0.2 (2009-08-19)
 ================
