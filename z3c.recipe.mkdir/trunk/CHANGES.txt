@@ -4,7 +4,8 @@ Changes
 0.3 (unreleased)
 ================
 
-No changes yet.
+* Renamed ``path`` option to ``paths`` (plural). Please do not use
+  ``path`` anymore!
 
 
 0.2 (2009-08-19)
