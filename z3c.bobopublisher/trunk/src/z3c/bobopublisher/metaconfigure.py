@@ -24,8 +24,8 @@ from z3c.bobopublisher.interfaces import IDefaultViewName, IRequest, \
     IGETRequest, IPOSTRequest, IPUTRequest, IDELETERequest
 from z3c.bobopublisher.resources import Directory, File
 
-from zope.component.zcml import handler
 from zope.configuration.exceptions import ConfigurationError
+from zope.component import getGlobalSiteManager
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
 from zope.security.checker import CheckerPublic
@@ -42,6 +42,11 @@ def _page_factory(class_, name, permission, attribute=None):
             return class_(context, request, attribute)
         return class_(context, request)
     return factory
+
+
+def handler(methodName, *args, **kwargs):
+    method = getattr(getGlobalSiteManager(), methodName)
+    method(*args, **kwargs)
 
 
 def page(_context, name='index.html', for_=None, class_=None, permission=None,

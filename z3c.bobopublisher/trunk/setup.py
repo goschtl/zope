@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.bobopublisher',
-    version='0.1.1',
+    version='0.1.2',
     url='http://pypi.python.org/pypi/z3c.bobopublisher',
     license='ZPL 2.1',
     author='Fabio Tranchitella',
@@ -25,7 +25,7 @@ setup(
         'WebOb',
         'z3c.request',
         'zope.browser',
-        'zope.component [zcml]',
+        'zope.component',
         'zope.configuration',
         'zope.dottedname',
         'zope.interface',
