@@ -112,7 +112,8 @@ class BatchViewBase(ViewBase):
     @memoize
     def _getHiddenVars(self):
         data = {}
-        form.getWidgetsData(self.hidden_widgets, self.prefix, data)
+        if hasattr(self, 'hidden_widgets'):
+            form.getWidgetsData(self.hidden_widgets, self.prefix, data)
         return data
 
     @memoize
@@ -365,12 +366,12 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         """Create widgets for the folder contents."""
         super(ContentsView, self).setUpWidgets(ignore_request)
         data = {}
-        for i in self.contents:
+        for i in self._getBatchObj():
             data['%s.name' % i.id] = i.getId()
         self.widgets = form.setUpDataWidgets(
                 self.form_fields, self.prefix, self.context,
                 self.request, data=data, ignore_request=ignore_request)
-        self.widgets += form.setUpDataWidgets(
+        self.widgets += form.setUpWidgets(
                 self.delta_field, self.prefix, self.context,
                 self.request, ignore_request=ignore_request)
                 
@@ -402,10 +403,10 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                      'title': _(u'Position')}
                   )
         for column in columns:
-            paras = {'hidden.sort_key':column['sort_key']}
+            paras = {'form.sort_key':column['sort_key']}
             if key == column['sort_key'] \
             and not reverse and key != 'position':
-                paras['hidden.reverse'] = 1
+                paras['form.reverse'] = 1
             query = urllib.urlencode(paras)
             column['url'] = '%s?%s' % (self._getViewURL(), query)
         return tuple(columns)
