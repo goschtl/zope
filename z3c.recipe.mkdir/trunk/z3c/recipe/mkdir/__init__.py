@@ -30,6 +30,7 @@ class Recipe:
         for path in self.paths:
             self.createIntermediatePaths(path)
             self.options.created(path)
+            self.logger.info('created path: %s' % path)
         return self.options.created()
 
 
