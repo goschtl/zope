@@ -9,13 +9,13 @@ Recipe Options
 
 ``z3c.recipe.mkdir`` provides the following options:
 
-* ``path``
+``path``
     Contains the path(s) of directories created in normalized,
     absolute form. I.e.:: 
 
       mydir/../foo/bar
 
-    becomes
+    becomes::
 
       /path/to/buildout-dir/foo/bar
 
@@ -23,7 +23,7 @@ Recipe Options
 Simple creation of directories via buildout
 ===========================================
 
-Lets create a minimal `buildout.cfg` file::
+Lets create a minimal `buildout.cfg` file:
 
   >>> write('buildout.cfg',
   ... '''
@@ -35,12 +35,12 @@ Lets create a minimal `buildout.cfg` file::
   ... recipe = z3c.recipe.mkdir
   ... ''')
 
-Now we can run buildout::
+Now we can run buildout:
 
   >>> print system(join('bin', 'buildout')),
   Installing mydir.
 
-The directory was indeed created in the ``parts`` directory::
+The directory was indeed created in the ``parts`` directory:
 
   >>> ls('parts')
   d  mydir
@@ -68,13 +68,13 @@ that we want it to be created in the ``parts/`` directory. We set the
   ... path = ${buildout:parts-directory}/myotherdir
   ... ''')
 
-Now we can run buildout::
+Now we can run buildout:
 
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
 
-The directory was indeed created::
+The directory was indeed created:
 
   >>> ls('parts')
   d  myotherdir
@@ -83,7 +83,7 @@ The directory was indeed created::
 Creating relative paths
 =======================
 
-If we specify a relative path, this path will be read relative to the
+If we specify a relative path, this path will be constructed relative to the
 buildout directory:
 
   >>> write('buildout.cfg',
@@ -110,7 +110,7 @@ buildout directory:
   d  myrootdir
   d  parts
 
-  The old directory will vanish:
+The old directory will vanish:
 
   >>> ls('parts') is None
   True
@@ -196,11 +196,11 @@ We can create multiple paths in one buildout section:
 
 Note, that in this case you cannot easily reference the set path from
 other recipes or templates. If, for example in a template you
-reference::
+reference:
 
   root_dir = ${mydir:path}
 
-the result will become::
+the result will become:
 
   root_dir = /path/to/buildout/dir1
   path/to/buildout/dir2
@@ -285,8 +285,8 @@ Now we switch the setting of mydir to ``path2``:
   OSError: [Errno ...] No such file or directory: 'path1'
 
 
-Things, one should not do
-=========================
+Things one should not do
+========================
 
 If the path given already contains a file, an error is raised:
 
