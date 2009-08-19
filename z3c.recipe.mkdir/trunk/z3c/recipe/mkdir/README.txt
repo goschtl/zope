@@ -9,7 +9,7 @@ Recipe Options
 
 ``z3c.recipe.mkdir`` provides the following options:
 
-``path``
+* ``paths``
     Contains the path(s) of directories created in normalized,
     absolute form. I.e.:: 
 
@@ -55,7 +55,7 @@ Creating a directory in a given path
 Lets create a minimal `buildout.cfg` file. This time the directory
 has a name different from section name and we have to tell explicitly,
 that we want it to be created in the ``parts/`` directory. We set the
-``path`` option to do so:
+``paths`` option to do so:
 
   >>> write('buildout.cfg',
   ... '''
@@ -65,7 +65,7 @@ that we want it to be created in the ``parts/`` directory. We set the
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = ${buildout:parts-directory}/myotherdir
+  ... paths = ${buildout:parts-directory}/myotherdir
   ... ''')
 
 Now we can run buildout:
@@ -83,7 +83,7 @@ The directory was indeed created:
 Creating relative paths
 =======================
 
-If we specify a relative path, this path will be constructed relative to the
+If we specify a relative path, this path will be read relative to the
 buildout directory:
 
   >>> write('buildout.cfg',
@@ -94,7 +94,7 @@ buildout directory:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myrootdir
+  ... paths = myrootdir
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -110,7 +110,7 @@ buildout directory:
   d  myrootdir
   d  parts
 
-The old directory will vanish:
+  The old directory will vanish:
 
   >>> ls('parts') is None
   True
@@ -130,7 +130,7 @@ will be created for us as well:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myrootdir/other/dir/finaldir
+  ... paths = myrootdir/other/dir/finaldir
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -156,7 +156,7 @@ creating it:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myroot/foo/../dir1/../bar/.
+  ... paths = myroot/foo/../dir1/../bar/.
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -182,8 +182,8 @@ We can create multiple paths in one buildout section:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myroot/dir1
-  ...        myroot/dir2
+  ... paths = myroot/dir1
+  ...         myroot/dir2
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -196,11 +196,11 @@ We can create multiple paths in one buildout section:
 
 Note, that in this case you cannot easily reference the set path from
 other recipes or templates. If, for example in a template you
-reference:
+reference::
 
   root_dir = ${mydir:path}
 
-the result will become:
+the result will become::
 
   root_dir = /path/to/buildout/dir1
   path/to/buildout/dir2
@@ -225,8 +225,8 @@ or without:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myroot/dir3/
-  ...        myroot/dir4
+  ... paths = myroot/dir3/
+  ...         myroot/dir4
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -251,7 +251,7 @@ contents will be lost:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = path1
+  ... paths = path1
   ... ''')
 
   >>> print system(join('bin', 'buildout')),
@@ -272,7 +272,7 @@ Now we switch the setting of mydir to ``path2``:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = path2
+  ... paths = path2
   ... ''')
 
   >>> print system(join('bin', 'buildout'))
@@ -285,10 +285,14 @@ Now we switch the setting of mydir to ``path2``:
   OSError: [Errno ...] No such file or directory: 'path1'
 
 
-Things one should not do
-========================
+Things, one should not do
+=========================
 
-If the path given already contains a file, an error is raised:
+Trying to create directories that exist and are files
+-----------------------------------------------------
+
+If a part of a given path already exists and is a file, an error is
+raised:
 
   >>> write('buildout.cfg',
   ... '''
@@ -298,7 +302,7 @@ If the path given already contains a file, an error is raised:
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... path = myrootdir/somefile/foo
+  ... paths = myrootdir/somefile/foo
   ... ''')
 
 Now we create the first part of the path beforehand:
@@ -319,3 +323,29 @@ And make the second part of the path a file:
   While:
     Installing mydir.
   Error: Cannot create directory: /.../myrootdir/somefile. It's a file.
+
+
+Don't use ``path`` option
+-------------------------
+
+.. note:: ``path`` is deprectated!
+
+Starting with version 0.3 the ``path`` option is deprecated. Use
+``paths`` instead:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... path = myrootdir
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  mydir: Use of 'path' option is deprectated. Use 'paths' instead.
+  Installing mydir.
+
+The ``path`` option will be supported only for a limited time!
