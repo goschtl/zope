@@ -25,7 +25,7 @@ setup (
     name='z3c.csvvocabulary',
     version='1.0.0',
     author = "Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "A package to create vocabularies based on CSV files.",
     long_description=(
         read('README.txt')
