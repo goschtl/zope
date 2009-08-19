@@ -39,6 +39,7 @@ Now we can run buildout:
 
   >>> print system(join('bin', 'buildout')),
   Installing mydir.
+  mydir: created path: /sample-buildout/parts/mydir
 
 The directory was indeed created in the ``parts`` directory:
 
@@ -73,6 +74,7 @@ Now we can run buildout:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/parts/myotherdir
 
 The directory was indeed created:
 
@@ -100,6 +102,8 @@ buildout directory:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myrootdir
+
 
   >>> ls('.')
   -  .installed.cfg
@@ -136,6 +140,7 @@ will be created for us as well:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myrootdir/other/dir/finaldir
 
   >>> ls('myrootdir', 'other', 'dir')
   d  finaldir
@@ -162,6 +167,7 @@ creating it:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myroot/bar
 
 Only ``bar/`` will be created:
 
@@ -189,6 +195,9 @@ We can create multiple paths in one buildout section:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myroot/dir1
+  mydir: created path: /sample-buildout/myroot/dir2
+
 
   >>> ls('myroot')
   d  dir1
@@ -232,6 +241,8 @@ or without:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myroot/dir3
+  mydir: created path: /sample-buildout/myroot/dir4
 
   >>> ls('myroot')
   d  dir3
@@ -257,6 +268,7 @@ contents will be lost:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/path1
 
   >>> write(join('path1', 'myfile'), 'blah\n')
   >>> ls('path1')
@@ -278,6 +290,7 @@ Now we switch the setting of mydir to ``path2``:
   >>> print system(join('bin', 'buildout'))
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/path2
   <BLANKLINE>
 
   >>> ls('path1')
@@ -347,5 +360,6 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
   >>> print system(join('bin', 'buildout')),
   mydir: Use of 'path' option is deprectated. Use 'paths' instead.
   Installing mydir.
+  mydir: created path: /sample-buildout/parts/mydir
 
 The ``path`` option will be supported only for a limited time!
