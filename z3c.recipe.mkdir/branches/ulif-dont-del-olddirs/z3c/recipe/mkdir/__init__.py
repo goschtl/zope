@@ -47,7 +47,8 @@ class Recipe:
             return
         self.createIntermediatePaths(parent)
         os.mkdir(path)
-        self.options.created(path)
+        if self.remove_on_update:
+            self.options.created(path)
 
 def string_to_bool(value):
     if value is True or value is False:
