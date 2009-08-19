@@ -1,0 +1,26 @@
+Changes
+*******
+
+0.3 (unreleased)
+================
+
+* Renamed ``path`` option to ``paths`` (plural). Please do not use
+  ``path`` anymore!
+
+* Created directories are now displayed during buildout runs.
+
+
+0.2 (2009-08-19)
+================
+
+* Make paths absolute and normalize them before creation.
+
+* Support creation of several paths in a row.
+
+* Added check whether a file exists as part of path and emit error.
+
+
+0.1 (2009-08-17)
+================
+
+Initial release.
