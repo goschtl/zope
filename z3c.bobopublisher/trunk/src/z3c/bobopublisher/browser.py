@@ -34,4 +34,4 @@ class BrowserPage(object):
         if hasattr(self, '_page_attribute') and \
            self._page_attribute is not None:
             return getattr(self, self._page_attribute)()
-        raise NotImplemented, '__call__ method not implemented'
+        raise NotImplementedError('__call__ method not implemented')
