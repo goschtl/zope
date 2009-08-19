@@ -11,17 +11,21 @@ class Recipe:
         self.options=options
         self.logger=logging.getLogger(self.name)
 
-        self.path = None
+        path = None
         if "path" in options:
-            self.path = options["path"]
+            path = options["path"]
         else:
-            self.path = os.path.join(
+            path = os.path.join(
                 buildout['buildout']['parts-directory'], name)
-        self.path = os.path.abspath(self.path)
+        path = [x.strip() for x in path.split('\n')]
+        path = [os.path.abspath(x) for x in path]
+        path = [os.path.normpath(x) for x in path]
+        self.path = path
 
     def install(self):
-        self.createIntermediatePaths(self.path)
-        self.options.created(self.path)
+        for path in self.path:
+            self.createIntermediatePaths(path)
+            self.options.created(path)
         return self.options.created()
 
 
