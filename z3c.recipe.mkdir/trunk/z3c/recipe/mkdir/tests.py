@@ -12,29 +12,25 @@
 #
 ##############################################################################
 
-import os, re
-import pkg_resources
+import re
+import unittest
 
 import zc.buildout.testing
-
-import unittest
-import zope.testing
 from zope.testing import doctest, renormalizing
 
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('z3c.recipe.mkdir', test)
-    zc.buildout.testing.install('zope.testing', test)
 
 
 checker = renormalizing.RENormalizing([
     zc.buildout.testing.normalize_path,
     (re.compile(
-    "Couldn't find index page for '[a-zA-Z0-9.]+' "
-    "\(maybe misspelled\?\)"
-    "\n"
-    ), ''),
+        "Couldn't find index page for '[a-zA-Z0-9.]+' "
+        "\(maybe misspelled\?\)"
+        "\n"),
+     ''),
     (re.compile("""['"][^\n"']+z3c.recipe.i18n[^\n"']*['"],"""),
      "'/z3c.recipe.i18n',"),
     (re.compile('#![^\n]+\n'), ''),

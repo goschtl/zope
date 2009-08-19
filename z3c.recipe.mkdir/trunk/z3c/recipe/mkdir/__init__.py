@@ -1,10 +1,10 @@
 import logging
 import os
-import re
-import stat
 import zc.buildout
 
+
 class Recipe:
+
     def __init__(self, buildout, name, options):
         self.buildout=buildout
         self.name=name
@@ -27,7 +27,6 @@ class Recipe:
             self.createIntermediatePaths(path)
             self.options.created(path)
         return self.options.created()
-
 
     def update(self):
         return self.install()
