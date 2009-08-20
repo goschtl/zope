@@ -88,14 +88,14 @@ calls `setGroupsForPrincipal`, which is normally called as an event subscriber,
 when principals are created. In order for `setGroupsForPrincipal` to find out
 group folder, we have to register it as a utility:
 
-  >>> from zope.app.testing import ztapi
   >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
-  >>> ztapi.provideUtility(IAuthenticatorPlugin, groups)
+  >>> from zope.component import provideUtility
+  >>> provideUtility(groups, IAuthenticatorPlugin)
 
 We will create and register a new principals utility:
 
   >>> principals = Principals(groups)
-  >>> ztapi.provideUtility(IAuthentication, principals)
+  >>> provideUtility(principals, IAuthentication)
 
 Now we can set the principals on the group:
 
@@ -300,8 +300,7 @@ Now, if we define the Everybody group:
   ...     interface.implements(zope.authentication.interfaces.IEveryoneGroup)
 
   >>> everybody = EverybodyGroup('all')
-  >>> ztapi.provideUtility(zope.authentication.interfaces.IEveryoneGroup,
-  ...                      everybody)
+  >>> provideUtility(everybody, zope.authentication.interfaces.IEveryoneGroup)
 
 Then the group will be added to the principal:
 
@@ -316,8 +315,7 @@ Similarly for the authenticated group:
   ...         zope.authentication.interfaces.IAuthenticatedGroup)
 
   >>> authenticated = AuthenticatedGroup('auth')
-  >>> ztapi.provideUtility(zope.authentication.interfaces.IAuthenticatedGroup,
-  ...                      authenticated)
+  >>> provideUtility(authenticated, zope.authentication.interfaces.IAuthenticatedGroup)
 
 Then the group will be added to the principal:
 

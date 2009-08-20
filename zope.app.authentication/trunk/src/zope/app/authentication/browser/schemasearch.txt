@@ -3,13 +3,15 @@ The Query View for Schema Search Plugins
 
 Placefull setup for making the search plugin IPhysicallyLocatable::
 
-  >>> from zope.app.testing import ztapi
+  >>> from zope.component import provideAdapter
   >>> from zope.schema.interfaces import ITextLine
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
   >>> from zope.app.form.browser import TextWidget
   >>> from zope.app.form.interfaces import IInputWidget
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
-  >>> ztapi.browserView(ITextLine, '', TextWidget, providing=IInputWidget)
+  >>> provideAdapter(TextWidget, (ITextLine, IDefaultBrowserLayer),
+  ... IInputWidget)
 
 If a plugin supports `IQuerySchemaSearch`::
 

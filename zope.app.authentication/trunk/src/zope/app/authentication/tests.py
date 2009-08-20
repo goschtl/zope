@@ -21,11 +21,11 @@ import unittest
 
 from zope.testing import doctest
 from zope.interface import implements
-from zope.component import provideUtility, provideAdapter
+from zope.component import provideUtility, provideAdapter, provideHandler
 from zope.component.eventtesting import getEvents, clearEvents
 from zope.publisher.interfaces import IRequest
 
-from zope.app.testing import placelesssetup, ztapi
+from zope.app.testing import placelesssetup
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer
@@ -50,20 +50,20 @@ def siteTearDown(test):
 
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     placelesssetup.setUp()
-    ztapi.provideAdapter(IRequest, IClientId, TestClientId)
-    ztapi.provideAdapter(IRequest, ISession, Session)
-    ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    provideAdapter(TestClientId, [IRequest], IClientId)
+    provideAdapter(Session, [IRequest], ISession)
+    provideUtility(CookieClientIdManager(), IClientIdManager)
     sdc = session_data_container_class()
-    ztapi.provideUtility(ISessionDataContainer, sdc, '')
+    provideUtility(sdc, ISessionDataContainer, '')
 
 def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
     # I am getting an error with ClientId and not TestClientId
     placelesssetup.setUp()
-    ztapi.provideAdapter(IRequest, IClientId, ClientId)
-    ztapi.provideAdapter(IRequest, ISession, Session)
-    ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    provideAdapter(ClientId, [IRequest], IClientId)
+    provideAdapter(Session, [IRequest], ISession)
+    provideUtility(CookieClientIdManager(), IClientIdManager)
     sdc = sdc_class()
-    ztapi.provideUtility(ISessionDataContainer, sdc, '')
+    provideUtility(sdc, ISessionDataContainer, '')
 
 
 class NonHTTPSessionTestCase(unittest.TestCase):
@@ -114,9 +114,9 @@ def test_suite():
                              tearDown=siteTearDown,
                              globs={'provideUtility': provideUtility,
                                     'provideAdapter': provideAdapter,
+                                    'provideHandler': provideHandler,
                                     'getEvents': getEvents,
                                     'clearEvents': clearEvents,
-                                    'subscribe': ztapi.subscribe,
                                     }),
         doctest.DocFileSuite('groupfolder.txt',
                              setUp=placelesssetup.setUp,

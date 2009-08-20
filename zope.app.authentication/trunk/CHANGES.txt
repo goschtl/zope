@@ -7,6 +7,9 @@ Changes
 
 * Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
+* Don't use ``zope.app.testing.ztapi`` in tests, use zope.component's
+  testing functions instead.
+
 
 3.6.0 (2009-03-14)
 ------------------

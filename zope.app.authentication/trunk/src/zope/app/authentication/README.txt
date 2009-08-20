@@ -197,7 +197,7 @@ the title::
 
   >>> def add_info(event):
   ...     event.principal.title = event.info.title
-  >>> subscribe([interfaces.IAuthenticatedPrincipalCreated], None, add_info)
+  >>> provideHandler(add_info, [interfaces.IAuthenticatedPrincipalCreated])
 
 Now, if we authenticate a principal, its title is set::
 
@@ -459,7 +459,7 @@ As we have seen with authenticated principals, it is common to subscribe to
 principal created events to add information to the newly created principal.
 In this case, we need to subscribe to IFoundPrincipalCreated events::
 
-  >>> subscribe([interfaces.IFoundPrincipalCreated], None, add_info)
+  >>> provideHandler(add_info, [interfaces.IFoundPrincipalCreated])
 
 Now when a principal is created as a result of a search, it's title and
 description will be set (by the add_info handler function).
