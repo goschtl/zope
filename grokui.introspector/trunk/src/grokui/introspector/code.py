@@ -36,6 +36,7 @@ class GrokUIPackage(Package):
     grok.context(PackageInfo)
     grok.name('index')
     grok.layer(IntrospectorLayer)
+    grok.template('package')
 
     def getDocString(self, item=None, heading_only=True):
         if item is None:
@@ -50,14 +51,11 @@ class GrokUIPackage(Package):
         result = get_url_with_namespaces(self.request, result)
         return result
         
-    def render(self):
-        # We have to provide a dummy renderer, that will not be used.
-        return
-
 class GrokUIModule(Module):
     grok.context(ModuleInfo)
     grok.name('index')
     grok.layer(IntrospectorLayer)
+    grok.template('module')
 
     def getDocString(self, item=None, heading_only=True):
         if item is None:
@@ -69,10 +67,6 @@ class GrokUIModule(Module):
         result = super(GrokUIModule, self).url(*args, **kw)
         result = get_url_with_namespaces(self.request, result)
         return result
-
-    def render(self):
-        # We have to provide a dummy renderer, that will not be used.
-        return
 
 class GrokUIFile(File):
     grok.context(FileInfo)
