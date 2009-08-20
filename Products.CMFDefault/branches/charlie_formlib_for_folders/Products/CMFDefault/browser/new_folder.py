@@ -442,9 +442,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                 
     def _get_ids(self, data):
         """Identify objects that have been selected"""
-        ids = [k.split(".")[0] for k, v in data.items() 
-                            if v is True \
-                            and k.split(".")[-1] == 'select']
+        ids = [k[:-7] for k, v in data.items()
+                 if v is True and k.endswith('.select')]
         return ids
 
     #Action conditions
