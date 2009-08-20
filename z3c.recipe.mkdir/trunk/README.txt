@@ -12,7 +12,7 @@ A short example::
   recipe = z3c.recipe.mkdir
 
 This will create a directory named ``var/`` in the buildout ``parts/``
-directory. If you want a different path, you can set the ``path``
+directory. If you want a different path, you can set the ``paths``
 option::
 
   [buildout]
@@ -20,7 +20,7 @@ option::
 
   [foo]
   recipe = z3c.recipe.mkdir
-  path = foo/bar
+  paths = foo/bar
 
 which will create 'foo/bar/' in the buildout root directory (not the
 ``parts/`` directory). Also intermediate directories are created (if
