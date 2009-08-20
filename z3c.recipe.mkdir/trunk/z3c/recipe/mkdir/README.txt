@@ -96,7 +96,7 @@ The directory was indeed created:
 Creating directories that are removed on updates
 ================================================
 
-We can tell, that a directory should be removed on updates by using
+We can tell the recipe that a directory should be removed on updates by using
 the ``remove-on-update`` option:
 
   >>> write('buildout.cfg',
@@ -164,7 +164,7 @@ of `buildout.cfg`.
 Creating relative paths
 =======================
 
-If we specify a relative path, this path will be read relative to the
+If we specify a relative path, this path will be created relative to the
 buildout directory:
 
   >>> write('buildout.cfg',
