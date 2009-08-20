@@ -8,6 +8,8 @@ class Recipe:
         self.name=name
         self.options=options
         self.logger=logging.getLogger(self.name)
+        self.remove_on_update = string_to_bool(
+            options.get('remove-on-update', 'no'))
 
         paths = None
         
@@ -29,7 +31,6 @@ class Recipe:
     def install(self):
         for path in self.paths:
             self.createIntermediatePaths(path)
-            self.options.created(path)
             self.logger.info('created path: %s' % path)
         return self.options.created()
 
@@ -46,4 +47,11 @@ class Recipe:
             return
         self.createIntermediatePaths(parent)
         os.mkdir(path)
-        self.options.created(path)
+        if self.remove_on_update:
+            self.options.created(path)
+
+def string_to_bool(value):
+    if value is True or value is False:
+        return value
+    value = value.lower()
+    return value in ['yes', 'on', 'true', '1']

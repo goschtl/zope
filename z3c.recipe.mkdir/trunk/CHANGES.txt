@@ -9,6 +9,13 @@ Changes
 
 * Created directories are now displayed during buildout runs.
 
+* Changed default behaviour: directories created once will not be
+  removed on updates, except you require that explicitly.
+
+* Added new option ``remove-on-update``: if set to ``yes``, ``true``
+  or ``on`` the set directories will be removed on updates of
+  `buildout` configuration.
+
 
 0.2 (2009-08-19)
 ================
