@@ -20,7 +20,6 @@ import re
 import unittest
 from zope.testing import doctest
 from zope.testing import renormalizing
-
 import zc.buildout.testing
 
 
@@ -29,7 +28,6 @@ def setUp(test):
     zc.buildout.testing.install('Paste', test)
     zc.buildout.testing.install('PasteDeploy', test)
     zc.buildout.testing.install('PasteScript', test)
-    zc.buildout.testing.install('RestrictedPython', test)
     zc.buildout.testing.install('ZConfig', test)
     zc.buildout.testing.install('ZODB3', test)
     zc.buildout.testing.install('pytz', test)
@@ -38,55 +36,30 @@ def setUp(test):
     zc.buildout.testing.install('zc.recipe.egg', test)
     zc.buildout.testing.install('zc.recipe.filestorage', test)
     zc.buildout.testing.install('zdaemon', test)
-    zc.buildout.testing.install('zodbcode', test)
     zc.buildout.testing.install('zope.annotation', test)
-    zc.buildout.testing.install('zope.app.applicationcontrol', test)
     zc.buildout.testing.install('zope.app.appsetup', test)
-    zc.buildout.testing.install('zope.app.basicskin', test)
-    zc.buildout.testing.install('zope.app.component', test)
-    zc.buildout.testing.install('zope.app.container', test)
-    zc.buildout.testing.install('zope.app.dependable', test)
-    zc.buildout.testing.install('zope.app.exception', test)
-    zc.buildout.testing.install('zope.app.form', test)
-    zc.buildout.testing.install('zope.app.http', test)
-    zc.buildout.testing.install('zope.app.interface', test)
-    zc.buildout.testing.install('zope.app.localpermission', test)
-    zc.buildout.testing.install('zope.app.pagetemplate', test)
     zc.buildout.testing.install('zope.app.publication', test)
-    zc.buildout.testing.install('zope.app.publisher', test)
-    zc.buildout.testing.install('zope.app.security', test)
     zc.buildout.testing.install('zope.app.wsgi', test)
     zc.buildout.testing.install('zope.authentication', test)
     zc.buildout.testing.install('zope.broken', test)
     zc.buildout.testing.install('zope.browser', test)
     zc.buildout.testing.install('zope.cachedescriptors', test)
     zc.buildout.testing.install('zope.component', test)
-    zc.buildout.testing.install('zope.componentvocabulary', test)
     zc.buildout.testing.install('zope.configuration', test)
     zc.buildout.testing.install('zope.container', test)
-    zc.buildout.testing.install('zope.contenttype', test)
     zc.buildout.testing.install('zope.copy', test)
-    zc.buildout.testing.install('zope.copypastemove', test)
-    zc.buildout.testing.install('zope.datetime', test)
     zc.buildout.testing.install('zope.deferredimport', test)
-    zc.buildout.testing.install('zope.deprecation', test)
     zc.buildout.testing.install('zope.dottedname', test)
-    zc.buildout.testing.install('zope.dublincore', test)
     zc.buildout.testing.install('zope.error', test)
     zc.buildout.testing.install('zope.event', test)
     zc.buildout.testing.install('zope.exceptions', test)
     zc.buildout.testing.install('zope.filerepresentation', test)
-    zc.buildout.testing.install('zope.formlib', test)
-    zc.buildout.testing.install('zope.hookable', test)
     zc.buildout.testing.install('zope.i18n', test)
     zc.buildout.testing.install('zope.i18nmessageid', test)
     zc.buildout.testing.install('zope.interface', test)
     zc.buildout.testing.install('zope.lifecycleevent', test)
     zc.buildout.testing.install('zope.location', test)
     zc.buildout.testing.install('zope.minmax', test)
-    zc.buildout.testing.install('zope.pagetemplate', test)
-    zc.buildout.testing.install('zope.password', test)
-    zc.buildout.testing.install('zope.principalregistry', test)
     zc.buildout.testing.install('zope.processlifetime', test)
     zc.buildout.testing.install('zope.proxy', test)
     zc.buildout.testing.install('zope.publisher', test)
@@ -95,8 +68,6 @@ def setUp(test):
     zc.buildout.testing.install('zope.session', test)
     zc.buildout.testing.install('zope.site', test)
     zc.buildout.testing.install('zope.size', test)
-    zc.buildout.testing.install('zope.tal', test)
-    zc.buildout.testing.install('zope.tales', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.traversing', test)
     zc.buildout.testing.install_develop('z3c.recipe.paster', test)
@@ -131,7 +102,3 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker),
         ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
