@@ -45,6 +45,22 @@ class FolderBrowserViewTests(unittest.TestCase):
         folder = PortalFolder('test_folder')
         self.folder = site._setObject('test_folder', folder)
         self.uf = self.site._setObject('acl_users', DummyUserFolder())
+        
+    def _make_one(self, name="DummyItem"):
+        content = Document(name)
+        content.portal_type = "Document"
+        self.folder._setObject(name, content)
+
+    def _make_batch(self):
+        """Add enough objects to force pagination"""
+        batch_size = ContentsView._BATCH_SIZE
+        for i in range(batch_size + 2):
+            content_id = "Dummy%s" % i
+            self._make_one(content_id)
+
+    def site_login(self):
+        newSecurityManager(None, 
+                    UnrestrictedUser('god', '', ['Manager'], ''))
     
     def test_view(self):
         view = ContentsView(self.folder, TestRequest())
@@ -74,6 +90,7 @@ class FolderBrowserViewTests(unittest.TestCase):
     def test_has_subobjects(self):
         self._make_one()
         view = ContentsView(self.folder, TestRequest())
+        print(self.folder.objectIds())
         self.failUnless(view.has_subobjects())
         
     def test_check_clipboard_data(self):
@@ -102,22 +119,6 @@ class FolderBrowserViewTests(unittest.TestCase):
                         []
                         )
         
-    def _make_one(self, name="DummyItem"):
-        content = DummyContent(name)
-        content.portal_type = "Dummy Content"
-        self.folder._setObject(name, content)
-        
-    def _make_batch(self):
-        """Add enough objects to force pagination"""
-        batch_size = ContentsView._BATCH_SIZE
-        for i in range(batch_size + 2):
-            content_id = "Dummy%s" % i
-            self._make_one(content_id)
-
-    def site_login(self):
-        newSecurityManager(None, 
-                    UnrestrictedUser('god', '', ['Manager'], ''))
-    
     ### Form tests are not possible in Zope with
     #  zope.publisher.browser.TestRquest                
     # def test_no_batches(self):
@@ -125,16 +126,17 @@ class FolderBrowserViewTests(unittest.TestCase):
     #     self.site_login()
     #     request = TestRequest(ACTUAL_URL='http://foo.com/bar')
     #     view = ContentsView(self.folder, request)
+    #     view.setUpWidgets()
     #     self.failIf(view.navigation_next())
     #     self.failIf(view.navigation_previous())
     # 
-    # def test_check_next_page(self):
+    # # def test_check_next_page(self):
     #     """First page has a next but no previous page"""
     #     self.site_login()
     #     self._make_batch()
     #     request = TestRequest(ACTUAL_URL='http://foo.com/bar')
     #     view = ContentsView(self.folder, request)
-    #     print view._getNavigationURL(25)
+    #     view.setUpWidgets()
     #     self.assertEquals(view.navigation_next()['title'], 
     #                         "Next ${count} items")
     #     self.failIf(view.navigation_previous())
@@ -146,6 +148,7 @@ class FolderBrowserViewTests(unittest.TestCase):
     #     request = TestRequest(ACTUAL_URL='http://foo.com/bar')
     #     request.form = {'form.b_start':25}
     #     view = ContentsView(self.folder, request)
+    #     view.setUpWidgets()
     #     self.assertEquals(view.navigation_previous()['title'], 
     #                         "Previous ${count} items")
     #     self.failIf(view.navigation_next())
