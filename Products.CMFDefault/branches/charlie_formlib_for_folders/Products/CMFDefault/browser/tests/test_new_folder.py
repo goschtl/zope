@@ -47,8 +47,8 @@ class FolderBrowserViewTests(unittest.TestCase):
         self.uf = self.site._setObject('acl_users', DummyUserFolder())
         
     def _make_one(self, name="DummyItem"):
-        content = Document(name)
-        content.portal_type = "Document"
+        content = DummyContent(name)
+        content.portal_type = "Dummy Content"
         self.folder._setObject(name, content)
 
     def _make_batch(self):
@@ -90,7 +90,7 @@ class FolderBrowserViewTests(unittest.TestCase):
     def test_has_subobjects(self):
         self._make_one()
         view = ContentsView(self.folder, TestRequest())
-        print(self.folder.objectIds())
+        # print(self.folder.objectIds())
         self.failUnless(view.has_subobjects())
         
     def test_check_clipboard_data(self):
