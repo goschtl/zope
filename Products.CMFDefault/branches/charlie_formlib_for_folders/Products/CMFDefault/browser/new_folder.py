@@ -5,7 +5,6 @@ import urllib
 
 from ZTUtils import Batch
 from ZTUtils import LazyFilter
-from ZTUtils import make_query
 from DocumentTemplate import sequence
 
 from zope.interface import Interface, directlyProvides
