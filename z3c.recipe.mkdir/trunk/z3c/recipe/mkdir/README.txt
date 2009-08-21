@@ -452,3 +452,97 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
 The ``path`` option will be supported only for a limited time!
 
 
+Referencing options
+===================
+
+From other buildout recipe components you can reference the options of
+`z3c.recipe.mkdir` like this::
+
+  ${<sectionname>:paths}
+
+where ``<sectionname>`` is the name of the `buildout.cfg` section
+wherein you set the paths.
+
+Referencing without giving a path
+---------------------------------
+
+You can reference also, if no path was given explicitly in
+`buildout.cfg`:
+
+  >>> import z3c.recipe.mkdir
+  >>> buildout = dict(
+  ...   buildout = {
+  ...     'directory': '/buildout',
+  ...     'parts-directory' : '/buildout/parts',
+  ...   },
+  ...   somedir = {},
+  ... )
+
+  >>> recipe = z3c.recipe.mkdir.Recipe(
+  ...   buildout, 'somedir', buildout['somedir'])
+
+  >>> print buildout['somedir']['paths']
+  /buildout/parts/somedir
+
+This means that if you have a `buildout.cfg` like this::
+
+  [buildout]
+  parts = somedir ...
+
+  [somedir]
+  recipe = z3c.recipe.mkdir
+
+  ...
+
+then for instance in a template you can write::
+
+  mydir = ${somedir:paths}
+
+which will turn into::
+
+  mydir = /buildout/parts/somedir
+
+
+Referencing with single path set
+--------------------------------
+
+If you reference a single path, you will get this back in references:
+
+  >>> buildout = dict(
+  ...   buildout = {
+  ...     'directory': '/buildout',
+  ...     'parts-directory' : '/buildout/parts',
+  ...   },
+  ...   somedir = {
+  ...     'paths' : 'otherdir',
+  ...   },
+  ... )
+
+  >>> recipe = z3c.recipe.mkdir.Recipe(
+  ...   buildout, 'somedir', buildout['somedir'])
+
+  >>> print buildout['somedir']['paths']
+  /sample-buildout/otherdir
+
+Referencing with multiple paths set
+-----------------------------------
+
+If you set several paths in `buildout.cfg`, you will get several lines
+of output when referencing:
+
+  >>> buildout = dict(
+  ...   buildout = {
+  ...     'directory': '/buildout',
+  ...     'parts-directory' : '/buildout/parts',
+  ...   },
+  ...   somedir = {
+  ...     'paths' : 'dir1  \n  dir2',
+  ...   },
+  ... )
+
+  >>> recipe = z3c.recipe.mkdir.Recipe(
+  ...   buildout, 'somedir', buildout['somedir'])
+
+  >>> print buildout['somedir']['paths']
+  /sample-buildout/dir1
+  /sample-buildout/dir2
