@@ -36,7 +36,6 @@ class Recipe:
     def install(self):
         for path in self.paths:
             self.createIntermediatePaths(path)
-            self.logger.info('created path: %s' % path)
         return self.options.created()
 
 
@@ -52,6 +51,7 @@ class Recipe:
             return
         self.createIntermediatePaths(parent)
         os.mkdir(path)
+        self.logger.info('created path: %s' % path)
         if self.remove_on_update:
             self.options.created(path)
 
