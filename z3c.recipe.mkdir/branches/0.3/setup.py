@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.3.1dev'
+version = '0.3.2dev'
 
 setup(name='z3c.recipe.mkdir',
       version=version,
