@@ -28,6 +28,11 @@ class Recipe:
         paths = [os.path.normpath(x) for x in paths]
         self.paths = paths
 
+        # Update options to be referencable...
+        paths_strings = '\n'.join(paths)
+        options['path'] = paths_strings
+        options['paths'] = paths_strings
+
     def install(self):
         for path in self.paths:
             self.createIntermediatePaths(path)
