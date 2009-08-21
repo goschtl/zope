@@ -6,6 +6,9 @@ Changes
 
 * Update options ``path`` and ``paths`` to be referencable.
 
+* Output ``created`` message only if a directory was really created
+  but display this message also for intermediate directories.
+
 0.3 (2009-08-20)
 ================
 
