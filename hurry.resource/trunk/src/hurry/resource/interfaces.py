@@ -177,3 +177,6 @@ class ILibraryUrl(Interface):
         This is the URL that we can add inclusion.rel_path to, to obtain
         the complete URL of the resource.
         """
+
+class UnknownResourceExtension(Exception):
+    """Unknown resource extension"""

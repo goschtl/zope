@@ -4,7 +4,9 @@ CHANGES
 0.4 (unreleased)
 ================
 
-* ...
+* Fix NameError when trying to render an inclusion with unknown extension.
+
+* Document inclusion renderers mechanism in the README.txt.
 
 0.3 (2008-10-15)
 ================

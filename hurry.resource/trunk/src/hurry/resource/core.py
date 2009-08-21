@@ -350,7 +350,7 @@ def render_inclusions(inclusions, library_urls=None):
 def render_inclusion(inclusion, url):
     renderer = inclusion_renderers.get(inclusion.ext(), None)
     if renderer is None:
-        raise UnknownResourceExtension(
+        raise interfaces.UnknownResourceExtension(
             "Unknown resource extension %s for resource inclusion: %s" %
             (inclusion.ext(), repr(inclusion)))
     return renderer(url)
