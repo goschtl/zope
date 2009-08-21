@@ -4,6 +4,8 @@ Changes
 0.4 (unreleased)
 ================
 
+* Update options ``path`` and ``paths`` to be referencable.
+
 0.3 (2009-08-20)
 ================
 
