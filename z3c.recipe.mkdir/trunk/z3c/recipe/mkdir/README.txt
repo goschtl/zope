@@ -220,6 +220,8 @@ will be created for us as well:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myrootdir/other
+  mydir: created path: /sample-buildout/myrootdir/other/dir
   mydir: created path: /sample-buildout/myrootdir/other/dir/finaldir
 
   >>> ls('myrootdir', 'other', 'dir')
@@ -247,6 +249,7 @@ creating it:
   >>> print system(join('bin', 'buildout')),
   Uninstalling mydir.
   Installing mydir.
+  mydir: created path: /sample-buildout/myroot
   mydir: created path: /sample-buildout/myroot/bar
 
 Only ``bar/`` will be created:
@@ -447,7 +450,6 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
   >>> print system(join('bin', 'buildout')),
   mydir: Use of 'path' option is deprectated. Use 'paths' instead.
   Installing mydir.
-  mydir: created path: /sample-buildout/parts/mydir
 
 The ``path`` option will be supported only for a limited time!
 
