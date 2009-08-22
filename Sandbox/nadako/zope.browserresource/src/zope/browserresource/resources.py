@@ -35,8 +35,7 @@ class Resources(BrowserView):
         if resource is None:
             raise NotFound(self, name)
 
-        sm = zope.component.getSiteManager()
-        locate(resource, sm, name)
+        locate(resource, self.context, name)
         return resource
 
     def browserDefault(self, request):

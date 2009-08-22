@@ -7,3 +7,12 @@ CHANGES
 
 Initial release. This package was splitted off zope.app.publisher as a part
 of refactoring process.
+
+Additional changes that are made during refactoring:
+
+ * Fix a regular expression that were used for icon titles when titles
+   are not specified in the icon directive. It does strip the "I" from
+   the interface name as intended.
+
+ * When publishing a resource via Resources view, set resource parent
+   to an ISite object, not to current site manager.

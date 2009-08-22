@@ -41,9 +41,12 @@ class Test(CleanUp, TestCase):
             def __init__(self, request): pass
             def __call__(self): return 42
 
+        site = object()
         provideAdapter(Resource, (IDefaultBrowserLayer,), Interface, 'test')
-        view = Resources(None, request)
+        view = Resources(site, request)
         resource = view.publishTraverse(request, 'test')
+        self.assertTrue(resource.__parent__ is site)
+        self.assertEqual(resource.__name__, 'test') 
         self.assertEqual(resource(), 42)
 
     def test_getitem(self):
