@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.0 (unreleased)
+1.0 - 2009-08-22
 ----------------
 
 - Initial implementation based on zope.i18nmessageid but following the newer
