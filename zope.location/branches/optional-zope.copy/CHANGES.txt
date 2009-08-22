@@ -2,6 +2,20 @@
 CHANGES
 =======
 
+3.6.0 (unreleased)
+------------------
+
+- New feature release: deprecated locationCopy, CopyPersistent and
+  PathPersistent from zope.location.pickling. These changes were already part
+  of the 3.5.3 release, which was erroneously numbered as a bugfix relese.
+
+- Removed dependency on zope.deferredimport, directly import deprecated modules
+  without using it.
+
+- Removed dependency on zope.copy: the adapter registration for
+  zope.location.pickling.LocationCopyHook is conditional and only run if
+  zope.copy is installed.
+
 3.5.5 (2009-08-15)
 ------------------
 

@@ -19,12 +19,12 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import adapts
 from zope.copy.interfaces import ICopyHook, ResumeCopy
-from zope.deferredimport import deprecated
 from zope.interface import implements
 
-import zope.location.interfaces
+from zope.location.interfaces import ILocation, IRoot, ITraverser
 from zope.location.location import inside
 from zope.location.traversing import LocationPhysicallyLocatable
+
 
 class LocationCopyHook(object):
     """Copy hook to preserve copying referenced objects that are not
@@ -62,7 +62,7 @@ class LocationCopyHook(object):
     
     """
     
-    adapts(zope.location.interfaces.ILocation)
+    adapts(ILocation)
     implements(ICopyHook)
     
     def __init__(self, context):
@@ -74,18 +74,17 @@ class LocationCopyHook(object):
         raise ResumeCopy
         
 # BBB 2009/02/09
-deprecated(
-    'The locationCopy was replaced by more generic "clone" function'
-    'in the zope.copy package. This reference may be removed someday.',
-    locationCopy='zope.copy:clone'
-    )
-deprecated(
-    'The CopyPersistent was made more generic and moved to the'
-    'zope.copy package. This reference may be removed someday.',
-    CopyPersistent='zope.copy:CopyPersistent',
-)
+# The locationCopy was replaced by more generic "clone" function
+# in the zope.copy package. This reference may be removed someday.
+from zope.copy import clone as locationCopy
 
-# XXX: is this actually used anywhere? (nadako, 2009/02/09)
+# BBB 2009/02/09
+# The CopyPersistent was made more generic and moved to the
+# zope.copy package. This reference may be removed someday.
+from zope.copy import CopyPersistent
+
+# BBB 2009/08/22
+# This class is not used anywhere; this reference may be removed someday.
 class PathPersistent(object):
     """Persistence hooks for pickling locations
 
@@ -124,7 +123,7 @@ class PathPersistent(object):
     >>> from zope.location.tests import TLocation
     >>> from zope.interface import directlyProvides
     >>> root = TLocation()
-    >>> directlyProvides(root, zope.location.interfaces.IRoot)
+    >>> directlyProvides(root, IRoot)
     >>> o3 = TLocation()
     >>> o3.__name__ = 'o3'
     >>> o3.__parent__ = root
@@ -162,7 +161,7 @@ class PathPersistent(object):
         self.location = location
 
     def id(self, object):
-        if zope.location.interfaces.ILocation.providedBy(object):
+        if ILocation.providedBy(object):
             if not inside(object, self.location):
                 return LocationPhysicallyLocatable(object).getPath()
         return None
@@ -171,4 +170,4 @@ class PathPersistent(object):
         if not path.startswith(u'/'):
             raise ValueError("Persistent paths must be absolute", path)
         root = LocationPhysicallyLocatable(self.location).getRoot()
-        return zope.location.interfaces.ITraverser(root).traverse(path[1:])
+        return ITraverser(root).traverse(path[1:])
