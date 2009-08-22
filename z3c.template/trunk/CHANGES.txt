@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.2.1 (unreleased)
+1.2.1 (2009-08-22)
 ------------------
 
 * Corrected description of ``ITemplateDirective.name``.
