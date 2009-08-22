@@ -24,11 +24,16 @@ from zope.publisher.browser import TestRequest
 import zope.location.interfaces
 from zope.browserresource.resource import Resource
 from zope.browserresource.tests import support
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.browser.absoluteurl import AbsoluteURL
+from zope.testing import cleanup
 
 
-class TestResource(support.SiteHandler, PlacelessSetup, unittest.TestCase):
+class TestResource(support.SiteHandler, cleanup.CleanUp, unittest.TestCase):
+
+    def setUp(self):
+        super(TestResource, self).setUp()
+        component.provideAdapter(AbsoluteURL, (None, None), IAbsoluteURL)
 
     def testGlobal(self):
         req = TestRequest()

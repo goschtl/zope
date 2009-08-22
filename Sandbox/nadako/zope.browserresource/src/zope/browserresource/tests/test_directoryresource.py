@@ -25,8 +25,12 @@ from zope.security import proxy
 from zope.security.checker import NamesChecker, ProxyFactory
 from zope.interface import implements
 from zope.location.interfaces import IContained
+from zope.traversing.browser.absoluteurl import AbsoluteURL
+from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.component import provideAdapter
 
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.testing import cleanup
+
 from zope.browserresource.directoryresource import \
      DirectoryResourceFactory, DirectoryResource
 from zope.browserresource.fileresource import FileResource
@@ -47,7 +51,11 @@ class Ob(object):
 
 ob = Ob()
 
-class Test(support.SiteHandler, PlacelessSetup, TestCase):
+class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
+
+    def setUp(self):
+        super(Test, self).setUp()
+        provideAdapter(AbsoluteURL, (None, None), IAbsoluteURL)
 
     def testNotFound(self):
         path = os.path.join(test_directory, 'testfiles')

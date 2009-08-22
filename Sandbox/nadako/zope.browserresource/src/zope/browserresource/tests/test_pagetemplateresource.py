@@ -24,8 +24,8 @@ from zope.security.checker import NamesChecker
 from zope.publisher.browser import TestRequest
 from zope.traversing.interfaces import ITraversable
 from zope.traversing.adapters import DefaultTraversable
+from zope.testing import cleanup
 
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.browserresource.pagetemplateresource import \
      PageTemplateResourceFactory
 import zope.browserresource.tests as p
@@ -39,7 +39,7 @@ checker = NamesChecker(
     )
 
 
-class Test(PlacelessSetup, TestCase):
+class Test(cleanup.CleanUp, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()

@@ -21,7 +21,7 @@ import os
 from zope.publisher.interfaces import NotFound
 
 from zope.component import provideAdapter, provideUtility
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.testing import cleanup
 
 from zope.i18n.interfaces import IUserPreferredCharsets, IUserPreferredLanguages
 
@@ -41,7 +41,7 @@ from zope.i18n.tests.testii18naware import TestII18nAware
 test_directory = os.path.dirname(p.__file__)
 
 
-class Test(PlacelessSetup, TestII18nAware):
+class Test(cleanup.CleanUp, TestII18nAware):
 
     def setUp(self):
         super(Test, self).setUp()

@@ -45,7 +45,7 @@ from zope.component import provideAdapter, provideUtility
 from zope.component.testfiles.views import IC, V1, VZMI, R1, IV
 from zope.browserresource.fileresource import FileResource
 from zope.browserresource.i18nfileresource import I18nFileResource
-from zope.app.testing import placelesssetup
+from zope.testing import cleanup
 
 tests_path = os.path.join(
     os.path.dirname(zope.browserresource.__file__),
@@ -112,7 +112,7 @@ class MyResource(object):
         self.request = request
 
 
-class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
+class Test(cleanup.CleanUp, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
@@ -267,8 +267,8 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test),
         DocTestSuite('zope.browserresource.metaconfigure',
-                     setUp=placelesssetup.setUp,
-                     tearDown=placelesssetup.tearDown)
+                     setUp=cleanup.setUp,
+                     tearDown=cleanup.tearDown)
         ))
 
 if __name__=='__main__':

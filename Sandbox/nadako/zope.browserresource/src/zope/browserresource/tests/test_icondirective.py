@@ -28,12 +28,14 @@ from zope.security.checker import ProxyFactory, CheckerPublic
 from zope.security.interfaces import Forbidden
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.browser.absoluteurl import AbsoluteURL
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 import zope.location.interfaces
 import zope.browserresource
 from zope.component.testfiles.views import IC
 from zope.browserresource.tests import support
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.testing import cleanup
 
 
 template = """<configure
@@ -60,12 +62,13 @@ def defineCheckers():
     protectName(FileResource, '__call__', 'zope.Public')
 
 
-class Test(support.SiteHandler, PlacelessSetup, TestCase):
+class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
         XMLConfig('meta.zcml', zope.browserresource)()
         defineCheckers()
+        component.provideAdapter(AbsoluteURL, (None, None), IAbsoluteURL)
         
     def test(self):
         self.assertEqual(

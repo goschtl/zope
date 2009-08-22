@@ -25,9 +25,9 @@ from zope.publisher.interfaces.browser import IBrowserView, IDefaultBrowserLayer
 
 from zope.component import provideAdapter
 from zope.interface import Interface
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.testing.cleanup import CleanUp
 
-class Test(PlacelessSetup, TestCase):
+class Test(CleanUp, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()

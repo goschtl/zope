@@ -23,7 +23,7 @@ from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import NamesChecker
 
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.testing import cleanup
 from zope.component import provideAdapter
 
 from zope.publisher.http import IHTTPRequest
@@ -40,7 +40,7 @@ checker = NamesChecker(
 
 test_directory = os.path.dirname(p.__file__)
 
-class Test(PlacelessSetup, TestCase):
+class Test(cleanup.CleanUp, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()

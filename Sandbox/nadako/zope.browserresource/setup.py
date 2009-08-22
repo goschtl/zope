@@ -56,7 +56,7 @@ setup(name='zope.browserresource',
                         'zope.browser',
                         ],
       extras_require={
-          'test': ['zope.testing', 'zope.app.testing'],
+          'test': ['zope.testing'],
           },
 
       zip_safe = False,
