@@ -24,18 +24,17 @@ resource directory from the name of the file within the directory.
 $Id: directoryresource.py 89359 2008-08-05 07:35:05Z srichter $
 """
 import os
-import posixpath
 
 from zope.interface import implements
-from zope.publisher.interfaces import NotFound
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
-from zope.browserresource.resource import Resource
-from zope.browserresource.resources import empty
 from zope.browserresource.fileresource import FileResourceFactory
 from zope.browserresource.fileresource import ImageResourceFactory
 from zope.browserresource.pagetemplateresource import PageTemplateResourceFactory
+from zope.browserresource.resource import Resource
+from zope.browserresource.resources import empty
 
 _marker = object()
 
@@ -94,7 +93,7 @@ class DirectoryResource(BrowserView, Resource):
         else:
             factory = self.directory_factory
 
-        rname = posixpath.join(self.__name__, name)
+        rname = self.__name__ + '/' + name
         resource = factory(filename, self.context.checker, rname)(self.request)
         resource.__parent__ = self
         return resource

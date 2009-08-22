@@ -96,6 +96,8 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
             'width="16" height="16" border="0" />'
             % rname)
 
+        self.assertEqual(view.url(), 'http://127.0.0.1/@@/' + rname)
+
         # Make sure that the title attribute works
         xmlconfig(StringIO(template % (
             '''
@@ -204,6 +206,3 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
 
 def test_suite():
     return makeSuite(Test)
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')

@@ -17,9 +17,9 @@ This module defines the schemas for browser directives.
 
 $Id: metadirectives.py 100280 2009-05-23 06:03:27Z shane $
 """
-from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface
 from zope.configuration.fields import Path, MessageID
+from zope.interface import Interface
 from zope.schema import TextLine, Int
 from zope.security.zcml import Permission
 

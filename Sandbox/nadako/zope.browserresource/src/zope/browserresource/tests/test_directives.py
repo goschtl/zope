@@ -270,7 +270,3 @@ def test_suite():
                      setUp=cleanup.setUp,
                      tearDown=cleanup.tearDown)
         ))
-
-if __name__=='__main__':
-    unittest.main(defaultTest="test_suite")
-

@@ -78,6 +78,22 @@ class Test(cleanup.CleanUp, TestCase):
         response = removeSecurityProxy(resource.request).response
         self.assertEqual(response.getHeader('Content-Type'), 'text/plain')
 
+    def testBrowserDefault(self):
+        path = os.path.join(test_directory, 'testfiles', 'test.txt')
+        factory = FileResourceFactory(path, checker, 'test.txt')
+
+        request = TestRequest(REQUEST_METHOD='GET')
+        resource = factory(request)
+        view, next = resource.browserDefault(request)
+        self.assertEqual(view(), open(path, 'rb').read())
+        self.assertEqual(next, ())
+
+        request = TestRequest(REQUEST_METHOD='HEAD')
+        resource = factory(request)
+        view, next = resource.browserDefault(request)
+        self.assertEqual(view(), '')
+        self.assertEqual(next, ())
+
     def testImageGET(self):
 
         path = os.path.join(test_directory, 'testfiles', 'test.gif')
@@ -105,6 +121,3 @@ class Test(cleanup.CleanUp, TestCase):
 
 def test_suite():
     return makeSuite(Test)
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')

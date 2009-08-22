@@ -1,5 +1,16 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+  <adapter factory=".resource.AbsoluteURL" />
+  
+  <view
+      for="zope.location.interfaces.ISite"
+      type="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+      name=""
+      factory=".resources.Resources"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      />
+
   <class class=".fileresource.FileResource">
     <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
     <allow attributes="GET HEAD __call__" />
@@ -19,16 +30,5 @@
     <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
     <allow attributes="get __getitem__" />
   </class>
-  
-  <adapter factory=".resource.AbsoluteURL" />
-  
-  <view
-      for="zope.location.interfaces.ISite"
-      type="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
-      name=""
-      factory=".resources.Resources"
-      permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-      />
 
 </configure>

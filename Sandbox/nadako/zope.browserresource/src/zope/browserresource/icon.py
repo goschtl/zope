@@ -18,12 +18,12 @@ $Id: icon.py 72646 2007-02-16 14:06:12Z romanofski $
 import os
 import re
 
-from zope.interface import Interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.configuration.exceptions import ConfigurationError
-from zope.traversing.namespace import getResource
 from zope.component.interface import provideInterface
 from zope.component.zcml import handler
+from zope.configuration.exceptions import ConfigurationError
+from zope.interface import Interface
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.traversing.namespace import getResource
 
 from zope.browserresource import metaconfigure
 

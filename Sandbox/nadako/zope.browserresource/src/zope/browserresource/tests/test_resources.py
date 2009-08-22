@@ -49,6 +49,15 @@ class Test(CleanUp, TestCase):
         self.assertEqual(resource.__name__, 'test') 
         self.assertEqual(resource(), 42)
 
+    def test_browserDefault(self):
+        from zope.browserresource.resources import Resources
+        request = TestRequest()
+        site = object()
+        view = Resources(site, request)
+        empty, path = view.browserDefault(request)
+        self.assertEqual(empty(), '')
+        self.assertEqual(path, ())
+
     def test_getitem(self):
         from zope.browserresource.resources import Resources
         request = TestRequest()
@@ -73,9 +82,5 @@ class Test(CleanUp, TestCase):
                           )
 
 
-
 def test_suite():
     return makeSuite(Test)
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')

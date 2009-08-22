@@ -134,6 +134,3 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
 
 def test_suite():
     return makeSuite(Test)
-
-if __name__ == '__main__':
-    main(defaultTest='test_suite')

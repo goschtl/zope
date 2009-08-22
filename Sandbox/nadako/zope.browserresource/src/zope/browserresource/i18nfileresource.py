@@ -15,13 +15,12 @@
 
 $Id: i18nfileresource.py 38178 2005-08-30 21:50:19Z mj $
 """
+from zope.i18n.interfaces import II18nAware
+from zope.i18n.negotiator import negotiator
+from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.browserresource.fileresource import FileResource
-
-from zope.i18n.negotiator import negotiator
-from zope.i18n.interfaces import II18nAware
-from zope.interface import implements
 
 
 class I18nFileResource(FileResource):

@@ -17,20 +17,13 @@ $Id: resourcemeta.py 73579 2007-03-25 10:14:23Z fdrake $
 """
 import os
 
-from zope.configuration.exceptions import ConfigurationError
-from zope.interface import Interface
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.security.checker import CheckerPublic, NamesChecker
 from zope.component.zcml import handler
-
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.checker import CheckerPublic, NamesChecker, Checker
 from zope.security.proxy import Proxy
-from zope.security.checker import CheckerPublic, Checker
-from zope.component.zcml import handler
 
 from zope.browserresource.directoryresource import DirectoryResourceFactory
 from zope.browserresource.fileresource import File, Image

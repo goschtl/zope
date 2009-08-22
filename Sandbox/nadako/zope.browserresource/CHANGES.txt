@@ -16,3 +16,5 @@ Additional changes that are made during refactoring:
 
  * When publishing a resource via Resources view, set resource parent
    to an ISite object, not to current site manager.
+
+ * Clean up code and improve test coverage a little.

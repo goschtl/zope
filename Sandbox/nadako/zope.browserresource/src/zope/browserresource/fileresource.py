@@ -23,12 +23,12 @@ try:
 except ImportError: # python 2.4
     from email.Utils import formatdate
 
-from zope.interface import implements
 from zope.contenttype import guess_content_type
 from zope.datetime import time as timeFromDateTimeString
+from zope.interface import implements
+from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.publisher.browser import BrowserView
 
 from zope.browserresource.resource import Resource
 
@@ -49,6 +49,13 @@ class File(object):
 
 class Image(File):
     """Image objects stored in external files."""
+    
+    # XXX: this class looks nonsense, as it's doesn't seem to be
+    # very smart to construct media type from file extension,
+    # for example, there's no "image/jpg" type.
+    # I'd propose to remove this class completely and do
+    # Image = File for backward compatibility.
+    # nadako, 23 Aug 2009
 
     def __init__(self, path, name):
         super(Image, self).__init__(path, name)
