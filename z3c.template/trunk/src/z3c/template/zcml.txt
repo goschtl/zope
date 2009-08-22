@@ -2,7 +2,7 @@
 Template directive
 ==================
 
-Show how we can use the template directive. Register the meta configuration for 
+Show how we can use the template directive. Register the meta configuration for
 the directive.
 
   >>> import sys
@@ -12,7 +12,7 @@ the directive.
 
 
 PageTemplate
-~~~~~~~~~~~~
+------------
 
 We need a custom content template
 
@@ -41,7 +41,7 @@ and a view class:
 Make them available under the fake package ``custom``:
 
   >>> sys.modules['custom'] = type(
-  ...     'Module', (), 
+  ...     'Module', (),
   ...     {'IView': IView})()
 
 and register them as a template within the ``z3c:template`` directive:
@@ -61,7 +61,7 @@ Let's get the template
   >>> import zope.component
   >>> from z3c.template.interfaces import IContentTemplate
   >>> template = zope.component.queryMultiAdapter(
-  ...     (view, request), 
+  ...     (view, request),
   ...     interface=IContentTemplate)
 
 and check them:
@@ -75,7 +75,7 @@ and check them:
 
 
 Layout template
-~~~~~~~~~~~~~~~
+---------------
 
 Define a layout template
 
@@ -97,7 +97,7 @@ and register them as a layout template within the ``z3c:layout`` directive:
 Let's get the template
 
   >>> from z3c.template.interfaces import ILayoutTemplate
-  >>> layout = zope.component.queryMultiAdapter((view, request), 
+  >>> layout = zope.component.queryMultiAdapter((view, request),
   ...     interface=ILayoutTemplate)
 
 and check them:
@@ -110,7 +110,7 @@ and check them:
 
 
 Context-specific template
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 Most of views have some object as their context and it's ofter very
 useful to be able register context-specific template. We can do that
@@ -147,7 +147,7 @@ We can now lookup it using the (view, request, context) discriminator:
   >>> content = Content()
   >>> view = View(content, request)
 
-  >>> template = zope.component.queryMultiAdapter((view, request, content), 
+  >>> template = zope.component.queryMultiAdapter((view, request, content),
   ...     interface=IContentTemplate)
 
   >>> print template(view)
@@ -168,7 +168,7 @@ The same will work with layout registration directive:
   ... </configure>
   ... """ % file, context=context)
 
-  >>> layout = zope.component.queryMultiAdapter((view, request, content), 
+  >>> layout = zope.component.queryMultiAdapter((view, request, content),
   ...     interface=ILayoutTemplate)
 
   >>> print layout(view)
@@ -199,7 +199,7 @@ And call it:
 
   >>> from z3c.template.interfaces import ILayoutTemplate
   >>> template = zope.component.queryMultiAdapter(
-  ...     (view, request), 
+  ...     (view, request),
   ...     interface=IContentTemplate, name='edit')
 
   >>> print template(view)
@@ -238,7 +238,7 @@ Dfine a new template
 Let's see if we get the template by the new interface:
 
   >>> from z3c.template.interfaces import ILayoutTemplate
-  >>> template = zope.component.queryMultiAdapter((view, request), 
+  >>> template = zope.component.queryMultiAdapter((view, request),
   ...     interface=IMyTemplate,)
 
   >>> print template(view)

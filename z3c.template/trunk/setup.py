@@ -29,11 +29,10 @@ setup (
     description = "A package implementing advanced Page Template patterns.",
     long_description=(
         read('README.txt')
-        + '\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
-        + '\n' +
+        + '\n\n.. contents::\n\n'+
         read('src', 'z3c', 'template', 'README.txt')
+        + '\n' +
+        read('src', 'z3c', 'template', 'zcml.txt')
         + '\n' +
         read('CHANGES.txt')
         ),
