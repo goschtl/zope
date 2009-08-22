@@ -27,7 +27,7 @@ from zope.component.zcml import handler
 
 from zope.browserresource import metaconfigure
 
-IName = re.compile('I[A-Z][a-z]')
+IName = re.compile('I[A-Za-z]+')
 
 class IconView(object):
 

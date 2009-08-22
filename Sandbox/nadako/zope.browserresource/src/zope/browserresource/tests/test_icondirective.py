@@ -92,7 +92,7 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
         rname = 'zope-component-testfiles-views-IC-zmi_icon.gif'
         self.assertEqual(
             view(),
-            '<img src="http://127.0.0.1/@@/%s" alt="IC" '
+            '<img src="http://127.0.0.1/@@/%s" alt="C" '
             'width="16" height="16" border="0" />'
             % rname)
 
@@ -130,7 +130,7 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
                  'zmi_icon_w_width_and_height.gif')
         self.assertEqual(
             view(),
-            '<img src="http://127.0.0.1/@@/%s" alt="IC" '
+            '<img src="http://127.0.0.1/@@/%s" alt="C" '
             'width="20" height="12" border="0" />'
             % rname)
 
@@ -162,7 +162,7 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
         rname = "zmi_icon_res"
         self.assertEqual(
             view(),
-            '<img src="http://127.0.0.1/@@/%s" alt="IC" width="16" '
+            '<img src="http://127.0.0.1/@@/%s" alt="C" width="16" '
             'height="16" border="0" />'
             % rname)
 
