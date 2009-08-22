@@ -1,0 +1,115 @@
+I18n Messages
+=============
+
+Rationale
+---------
+
+To translate any text, we must be able to discover the source domain of the
+text. A source domain is an identifier that identifies a project that produces
+program source strings. Source strings occur as literals in python programs,
+text in templates, and some text in XML data. The project implies a source
+language and an application context.
+
+We can think of a source domain as a collection of messages and associated
+translation strings.
+
+We often need to create unicode strings that will be displayed by separate
+views. The view cannot translate the string without knowing its source domain.
+A string or unicode literal carries no domain information, therefore we use
+messages. Messages are unicode strings which carry a translation source domain
+and possibly a more specific translation context. They are created by a message
+factory. The message factory is created by calling ``MessageFactory`` with the
+source domain.
+
+ZopeMessageFactory
+------------------
+
+  >>> from zope.i18nmessage import ZopeMessageFactory as _z_
+  >>> foo = _z_(u'foo')
+  >>> foo.domain
+  u'zope'
+
+
+Example
+-------
+
+In this example, we create a message factory and assign it to _. By convention,
+we use _ as the name of our factory to be compatible with translatable string
+extraction tools such as xgettext. We then call _ with a string that needs to
+be translatable:
+
+  >>> from zope.i18nmessage import MessageFactory, Message
+  >>> _ = MessageFactory(u"futurama")
+  >>> robot = _(u"${name} is a robot.")
+
+Messages at first seem like they are unicode strings:
+
+  >>> robot
+  u'${name} is a robot.'
+  >>> isinstance(robot, unicode)
+  True
+
+The additional domain, context and mapping information is available through
+attributes:
+
+  >>> robot.domain
+  u'futurama'
+  >>> robot.context is None
+  True
+  >>> robot.mapping
+
+You can make a new message object from an existing one:
+
+  >>> new_robot = Message(robot, mapping={u'name': u'Bender'})
+  >>> new_robot
+  u'${name} is a robot.'
+  >>> new_robot.domain
+  u'futurama'
+  >>> new_robot.context is None
+  True
+  >>> new_robot.mapping
+  {u'name': u'Bender'}
+
+Last but not least, messages are reduceable for pickling:
+
+  >>> callable, args = new_robot.__reduce__()
+  >>> callable is Message
+  True
+  >>> args
+  (u'${name} is a robot.', u'futurama', None, {u'name': u'Bender'})
+
+  >>> fembot = Message(u'fembot')
+  >>> callable, args = fembot.__reduce__()
+  >>> callable is Message
+  True
+  >>> args
+  (u'fembot', None, None, None)
+
+
+More specific message context
+-----------------------------
+
+Sometimes a translation domain can be very broad, so we might need to
+differentiate between the same message text based on a narrower context.
+
+  >>> from zope.i18nmessage import MessageFactory, Message
+  >>> _ = MessageFactory(u"shopping")
+
+Especially if we have very short labels like for example in menu entries or on
+button labels, it is sometimes hard to differentiate them.
+
+  >>> money = _(u'Save', context=u'Save some money')
+
+  >>> money
+  u'Save'
+  >>> money.context
+  u'Save some money'
+
+Or in the same domain we might have:
+
+  >>> change = _(u'Save', context=u'Save the changes')
+
+  >>> change
+  u'Save'
+  >>> change.context
+  u'Save the changes'

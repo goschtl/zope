@@ -1,0 +1,8 @@
+CHANGES
+=======
+
+1.0 - 2009-08-22
+----------------
+
+- Initial implementation based on zope.i18nmessageid but following the newer
+  gettext semantics as provided by the msgctxt support.
