@@ -56,8 +56,12 @@ class SecurityMiddleware(object):
     def __call__(self, environ, start_response):
         principal = IPrincipal(environ.get(self.key))
         newInteraction(Participation(principal))
-        result = self.app(environ, start_response)
-        endInteraction()
+        try:
+            result = self.app(environ, start_response)
+        except:
+            raise
+        finally:
+            endInteraction()
         return result
 
 

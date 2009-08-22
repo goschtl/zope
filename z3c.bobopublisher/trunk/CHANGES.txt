@@ -1,6 +1,15 @@
 CHANGES
 =======
 
+0.1.3 (2009-08-22)
+------------------
+
+- Security middleware: ensure that endInteraction is called even if the
+  application raises an exception.
+
+- Publication: ensure that the traversal key is a unicode string, decoding it
+  from the request's charset.
+
 0.1.2 (2009-08-19)
 ------------------
 

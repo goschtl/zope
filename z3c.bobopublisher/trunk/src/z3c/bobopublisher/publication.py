@@ -67,7 +67,8 @@ class Publication(object):
     @bobo.subroute('/:name')
     def traverse(self, request, name):
         traverser = IPublishTraverse(self.context)
-        name = name or IDefaultViewName(self.context, u'index.html')
+        name = name.decode(request.charset or 'utf-8') or \
+            IDefaultViewName(self.context, u'index.html')
         try:
             obj = traverser.publishTraverse(request, name)
         except KeyError:

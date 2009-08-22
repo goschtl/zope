@@ -47,6 +47,7 @@ testing purposes:
     >>> class Root(object):
     ...     implements(IRoot, IReadMapping)
     ...     def get(self, name, default=None):
+    ...         assert isinstance(name, unicode)
     ...         return name == u'subitem' and SubItem() or default
     >>> class ISubItem(Interface):
     ...     pass
