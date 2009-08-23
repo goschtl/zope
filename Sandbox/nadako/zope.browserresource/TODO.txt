@@ -1,4 +1,0 @@
- * Clean up tests, possibly move them to doctests.
- * Simplify the overall mechanism, remove extra entities.
- * Move PageTemplateResource to a separate package, so this
-   one could be independent on any templating system.

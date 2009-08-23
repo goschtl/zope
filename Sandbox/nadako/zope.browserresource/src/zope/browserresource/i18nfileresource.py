@@ -30,7 +30,7 @@ class I18nFileResource(FileResource):
 
     def __init__(self, data, request, defaultLanguage='en'):
         """Creates an internationalized file resource.  data should be
-        a mapping from languages to File or Image objects.
+        a mapping from languages to File objects.
         """
         self._data = data
         self.request = request

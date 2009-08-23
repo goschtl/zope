@@ -31,7 +31,6 @@ from zope.publisher.http import HTTPCharsets
 from zope.publisher.browser import TestRequest
 
 from zope.browserresource.fileresource import FileResourceFactory
-from zope.browserresource.fileresource import ImageResourceFactory
 import zope.browserresource.tests as p
 
 checker = NamesChecker(
@@ -93,30 +92,6 @@ class Test(cleanup.CleanUp, TestCase):
         view, next = resource.browserDefault(request)
         self.assertEqual(view(), '')
         self.assertEqual(next, ())
-
-    def testImageGET(self):
-
-        path = os.path.join(test_directory, 'testfiles', 'test.gif')
-
-        factory = ImageResourceFactory(path, checker, 'test.gif')
-        resource = factory(TestRequest())
-
-        self.assertEqual(resource.GET(), open(path, 'rb').read())
-
-        response = removeSecurityProxy(resource.request).response
-        self.assertEqual(response.getHeader('Content-Type'), 'image/gif')
-
-    def testImageHEAD(self):
-
-        path = os.path.join(test_directory, 'testfiles', 'test.gif')
-        factory = ImageResourceFactory(path, checker, 'test.gif')
-        resource = factory(TestRequest())
-
-        self.assertEqual(resource.HEAD(), '')
-
-        response = removeSecurityProxy(resource.request).response
-        self.assertEqual(response.getHeader('Content-Type'), 'image/gif')
-
 
 
 def test_suite():

@@ -28,15 +28,12 @@ from zope.location.interfaces import IContained
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.component import provideAdapter
-from zope.configuration.xmlconfig import XMLConfig
 
 from zope.testing import cleanup
 
 from zope.browserresource.directoryresource import \
      DirectoryResourceFactory, DirectoryResource
 from zope.browserresource.fileresource import FileResource
-from zope.browserresource.pagetemplateresource import \
-     PageTemplateResource
 import zope.browserresource.tests as p
 from zope.browserresource.tests import support
 
@@ -57,10 +54,6 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
     def setUp(self):
         super(Test, self).setUp()
         provideAdapter(AbsoluteURL, (None, None), IAbsoluteURL)
-        import zope.browserresource
-        import zope.component
-        XMLConfig('meta.zcml', zope.component)()
-        XMLConfig('resourcefactories.zcml', zope.browserresource)()
 
     def testNotFound(self):
         path = os.path.join(test_directory, 'testfiles')
@@ -130,8 +123,6 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
 
         image = resource['test.gif']
         self.assert_(proxy.isinstance(image, FileResource))
-        template = resource['test.pt']
-        self.assert_(proxy.isinstance(template, PageTemplateResource))
         file = resource['test.txt']
         self.assert_(proxy.isinstance(file, FileResource))
         file = resource['png']

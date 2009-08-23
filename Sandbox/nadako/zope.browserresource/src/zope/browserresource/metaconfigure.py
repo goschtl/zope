@@ -28,11 +28,8 @@ from zope.security.checker import CheckerPublic, NamesChecker, Checker
 from zope.security.proxy import Proxy
 
 from zope.browserresource.directoryresource import DirectoryResourceFactory
-from zope.browserresource.fileresource import File, Image
-from zope.browserresource.fileresource import FileResourceFactory
-from zope.browserresource.fileresource import ImageResourceFactory
+from zope.browserresource.fileresource import File, FileResourceFactory
 from zope.browserresource.i18nfileresource import I18nFileResourceFactory
-from zope.browserresource.pagetemplateresource import PageTemplateResourceFactory
 from zope.browserresource.icon import IconViewFactory
 from zope.browserresource.interfaces import IResourceFactory
 from zope.browserresource.interfaces import IResourceFactoryFactory
@@ -75,26 +72,33 @@ def resource(_context, name, layer=IDefaultBrowserLayer,
             " attributes for resource directives"
             )
 
+    if image or template:
+        import warnings
+        warnings.warn('The "template" and "image" attributes of resource '
+                      'directive are deprecated in favor of pluggable '
+                      'file resource factories based on file extensions. '
+                      'Use the "file" attribute instead.',
+                      DeprecationWarning)
+        if image:
+            file = image
+        elif template:
+            file = template
+
     _context.action(
         discriminator = ('resource', name, IBrowserRequest, layer),
         callable = resourceHandler,
-        args = (name, layer, checker, factory, file, image, template, _context.info),
+        args = (name, layer, checker, factory, file, _context.info),
         )
 
 
-def resourceHandler(name, layer, checker, factory, file, image, template, context_info):
+def resourceHandler(name, layer, checker, factory, file, context_info):
     if factory is not None:
         factory = ResourceFactoryWrapper(factory, checker, name)
-    elif file:
+    else:
         ext = os.path.splitext(os.path.normcase(file))[1][1:]
         factory_factory = queryUtility(IResourceFactoryFactory, ext,
                                        FileResourceFactory)
         factory = factory_factory(file, checker, name)
-    elif image:
-        factory = ImageResourceFactory(image, checker, name)
-    else:
-        factory = PageTemplateResourceFactory(template, checker, name)
-
     handler('registerAdapter', factory, (layer,), Interface, name, context_info)
 
 

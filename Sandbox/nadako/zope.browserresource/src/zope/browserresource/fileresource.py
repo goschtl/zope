@@ -49,23 +49,6 @@ class File(object):
         self.lmh = formatdate(self.lmt, usegmt=True)
 
 
-class Image(File):
-    """Image objects stored in external files."""
-    
-    # XXX: this class looks nonsense, as it's doesn't seem to be
-    # very smart to construct media type from file extension,
-    # for example, there's no "image/jpg" type.
-    # I'd propose to remove this class completely and do
-    # Image = File for backward compatibility.
-    # nadako, 23 Aug 2009
-
-    def __init__(self, path, name):
-        super(Image, self).__init__(path, name)
-        if self.content_type in (None, 'application/octet-stream'):
-            ext = os.path.splitext(self.path)[1]
-            if ext:
-                self.content_type = 'image/%s' % ext[1:]
-
 class FileResource(BrowserView, Resource):
 
     implements(IBrowserPublisher)
@@ -164,25 +147,6 @@ class FileResourceFactory(object):
 
     def __init__(self, path, checker, name):
         self.__file = File(path, name)
-        self.__checker = checker
-        self.__name = name
-
-    def __call__(self, request):
-        resource = self.resourceClass(self.__file, request)
-        resource.__Security_checker__ = self.__checker
-        resource.__name__ = self.__name
-        return resource
-
-
-class ImageResourceFactory(object):
-
-    resourceClass = FileResource
-    
-    implements(IResourceFactory)
-    classProvides(IResourceFactoryFactory)
-
-    def __init__(self, path, checker, name):
-        self.__file = Image(path, name)
         self.__checker = checker
         self.__name = name
 

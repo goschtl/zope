@@ -21,16 +21,9 @@
     <allow attributes="GET HEAD __call__" />
   </class>
   
-  <class class=".pagetemplateresource.PageTemplateResource">
-    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-    <allow attributes="__call__" />
-  </class>
-  
   <class class=".directoryresource.DirectoryResource">
     <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
     <allow attributes="get __getitem__" />
   </class>
-
-  <include file="resourcefactories.zcml" />
 
 </configure>
