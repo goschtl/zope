@@ -25,16 +25,17 @@ $Id$
 """
 import os
 
-from zope.interface import implements
+from zope.component import queryUtility
+from zope.interface import implements, classProvides
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.browserresource.fileresource import FileResourceFactory
-from zope.browserresource.fileresource import ImageResourceFactory
-from zope.browserresource.pagetemplateresource import PageTemplateResourceFactory
 from zope.browserresource.resource import Resource
 from zope.browserresource.resources import empty
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 
 _marker = object()
 
@@ -49,15 +50,6 @@ class Directory(object):
 class DirectoryResource(BrowserView, Resource):
 
     implements(IBrowserPublisher)
-
-    resource_factories = {
-        '.gif':  ImageResourceFactory,
-        '.png':  ImageResourceFactory,
-        '.jpg':  ImageResourceFactory,
-        '.pt':   PageTemplateResourceFactory,
-        '.zpt':  PageTemplateResourceFactory,
-        '.html': PageTemplateResourceFactory,
-        }
 
     default_factory = FileResourceFactory
     directory_factory = None
@@ -88,8 +80,9 @@ class DirectoryResource(BrowserView, Resource):
             return default
 
         if isfile:
-            ext = os.path.splitext(os.path.normcase(name))[1]
-            factory = self.resource_factories.get(ext, self.default_factory)
+            ext = os.path.splitext(os.path.normcase(name))[1][1:]
+            factory = queryUtility(IResourceFactoryFactory, ext,
+                                   self.default_factory)
         else:
             factory = self.directory_factory
 
@@ -100,6 +93,9 @@ class DirectoryResource(BrowserView, Resource):
 
 
 class DirectoryResourceFactory(object):
+
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     factoryClass = DirectoryResource
 
@@ -113,6 +109,5 @@ class DirectoryResourceFactory(object):
         resource.__Security_checker__ = self.__checker
         resource.__name__ = self.__name
         return resource
-
 
 DirectoryResource.directory_factory = DirectoryResourceFactory

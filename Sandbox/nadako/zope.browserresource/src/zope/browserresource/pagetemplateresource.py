@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.publisher.browser import BrowserView
@@ -24,6 +24,8 @@ from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.browserresource.resource import Resource
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 
 class PageTemplate(TrustedAppPT, PageTemplateFile):
     """
@@ -69,6 +71,9 @@ class PageTemplateResource(BrowserView, Resource):
         return pt(self.request)
 
 class PageTemplateResourceFactory(object):
+
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     def __init__(self, path, checker, name):
         self.__pt = PageTemplate(path)

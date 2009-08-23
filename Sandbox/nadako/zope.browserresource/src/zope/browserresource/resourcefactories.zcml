@@ -1,0 +1,39 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+      name="gif"
+      component=".fileresource.ImageResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+  
+  <utility
+      name="png"
+      component=".fileresource.ImageResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+  
+  <utility
+      name="jpg"
+      component=".fileresource.ImageResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+  
+  <utility
+      name="pt"
+      component=".pagetemplateresource.PageTemplateResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+  
+  <utility
+      name="zpt"
+      component=".pagetemplateresource.PageTemplateResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+  
+  <utility
+      name="html"
+      component=".pagetemplateresource.PageTemplateResourceFactory"
+      provides=".interfaces.IResourceFactoryFactory"
+      />
+
+</configure>

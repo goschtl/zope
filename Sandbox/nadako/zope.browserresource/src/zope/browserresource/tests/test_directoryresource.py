@@ -28,6 +28,7 @@ from zope.location.interfaces import IContained
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.component import provideAdapter
+from zope.configuration.xmlconfig import XMLConfig
 
 from zope.testing import cleanup
 
@@ -56,6 +57,10 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
     def setUp(self):
         super(Test, self).setUp()
         provideAdapter(AbsoluteURL, (None, None), IAbsoluteURL)
+        import zope.browserresource
+        import zope.component
+        XMLConfig('meta.zcml', zope.component)()
+        XMLConfig('resourcefactories.zcml', zope.browserresource)()
 
     def testNotFound(self):
         path = os.path.join(test_directory, 'testfiles')

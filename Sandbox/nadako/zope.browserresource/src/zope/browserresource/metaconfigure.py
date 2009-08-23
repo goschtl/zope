@@ -17,10 +17,11 @@ $Id$
 """
 import os
 
+from zope.component import queryUtility
 from zope.component.interface import provideInterface
 from zope.component.zcml import handler
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import Interface
+from zope.interface import Interface, implements, classProvides
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.checker import CheckerPublic, NamesChecker, Checker
@@ -33,11 +34,16 @@ from zope.browserresource.fileresource import ImageResourceFactory
 from zope.browserresource.i18nfileresource import I18nFileResourceFactory
 from zope.browserresource.pagetemplateresource import PageTemplateResourceFactory
 from zope.browserresource.icon import IconViewFactory
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 
 allowed_names = ('GET', 'HEAD', 'publishTraverse', 'browserDefault',
                  'request', '__call__')
 
 class ResourceFactoryWrapper(object):
+
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     def __init__(self, factory, checker, name):
         self.__factory = factory
@@ -69,21 +75,27 @@ def resource(_context, name, layer=IDefaultBrowserLayer,
             " attributes for resource directives"
             )
 
+    _context.action(
+        discriminator = ('resource', name, IBrowserRequest, layer),
+        callable = resourceHandler,
+        args = (name, layer, checker, factory, file, image, template, _context.info),
+        )
+
+
+def resourceHandler(name, layer, checker, factory, file, image, template, context_info):
     if factory is not None:
         factory = ResourceFactoryWrapper(factory, checker, name)
     elif file:
-        factory = FileResourceFactory(file, checker, name)
+        ext = os.path.splitext(os.path.normcase(file))[1][1:]
+        factory_factory = queryUtility(IResourceFactoryFactory, ext,
+                                       FileResourceFactory)
+        factory = factory_factory(file, checker, name)
     elif image:
         factory = ImageResourceFactory(image, checker, name)
     else:
         factory = PageTemplateResourceFactory(template, checker, name)
 
-    _context.action(
-        discriminator = ('resource', name, IBrowserRequest, layer),
-        callable = handler,
-        args = ('registerAdapter',
-                factory, (layer,), Interface, name, _context.info),
-        )
+    handler('registerAdapter', factory, (layer,), Interface, name, context_info)
 
 
 def resourceDirectory(_context, name, directory, layer=IDefaultBrowserLayer,

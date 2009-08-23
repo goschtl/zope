@@ -10,6 +10,20 @@ of refactoring process.
 
 Additional changes that are made during refactoring:
 
+ * Resource class for file resources are now selected the pluggable way.
+   The resource directory publisher and browser:resource ZCML directive
+   now creating file resources using factory utility lookup based on the
+   file extension, so it's now possible to add new resource types without
+   introducing new ZCML directives and they will work inside resource
+   directories as well.
+   
+   NOTE: the "resource_factories" attribute from the DirectoryResource
+   was removed, so if you were using this attribute for changing resource
+   classes for some file extensions, you need to migrate your code to new
+   utility-based mechanism.
+
+   See zope.browserresource.interfaces.IResourceFactoryFactory interface.
+
  * Fix stripping the "I" from an interface name for icon title, if no
    title is specified.
 

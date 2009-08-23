@@ -72,7 +72,12 @@ class IResourceDirective(IBasicResourceInformation):
 
     file = Path(
         title=u"File",
-        description=u"The file containing the resource data.",
+        description=u"The file containing the resource data. The resource "
+                    u"type that will be created depends on file extension. "
+                    u"The named IResourceFactoryFactory utilities are "
+                    u"registered per extension. If no factory is registered "
+                    u"for given file extension, the default FileResource "
+                    u"factory will be used.",
         required=False
         )
 

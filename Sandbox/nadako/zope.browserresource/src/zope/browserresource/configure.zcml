@@ -31,4 +31,6 @@
     <allow attributes="get __getitem__" />
   </class>
 
+  <include file="resourcefactories.zcml" />
+
 </configure>

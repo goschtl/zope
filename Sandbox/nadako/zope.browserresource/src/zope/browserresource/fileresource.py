@@ -25,12 +25,14 @@ except ImportError: # python 2.4
 
 from zope.contenttype import guess_content_type
 from zope.datetime import time as timeFromDateTimeString
-from zope.interface import implements
+from zope.interface import implements, classProvides
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.browserresource.resource import Resource
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 
 
 class File(object):
@@ -157,6 +159,9 @@ class FileResourceFactory(object):
 
     resourceClass = FileResource
 
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
+
     def __init__(self, path, checker, name):
         self.__file = File(path, name)
         self.__checker = checker
@@ -172,6 +177,9 @@ class FileResourceFactory(object):
 class ImageResourceFactory(object):
 
     resourceClass = FileResource
+    
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     def __init__(self, path, checker, name):
         self.__file = Image(path, name)

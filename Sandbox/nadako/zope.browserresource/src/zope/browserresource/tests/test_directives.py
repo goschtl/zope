@@ -42,7 +42,7 @@ from zope.traversing.interfaces import ITraversable
 import zope.publisher.defaultview
 import zope.browserresource
 from zope.component import provideAdapter, provideUtility
-from zope.component.testfiles.views import IC, V1, VZMI, R1, IV
+from zope.component.testfiles.views import R1, IV
 from zope.browserresource.fileresource import FileResource
 from zope.browserresource.i18nfileresource import I18nFileResource
 from zope.testing import cleanup
@@ -60,44 +60,6 @@ template = """<configure
 
 
 request = TestRequest()
-
-class V2(V1, object):
-
-    def action(self):
-        return self.action2()
-
-    def action2(self):
-        return "done"
-
-class VT(V1, object):
-    def publishTraverse(self, request, name):
-        try:
-            return int(name)
-        except:
-            return super(VT, self).publishTraverse(request, name)
-
-class Ob(object):
-    implements(IC)
-
-ob = Ob()
-
-class NCV(object):
-    "non callable view"
-
-    def __init__(self, context, request):
-        pass
-
-class CV(NCV):
-    "callable view"
-    def __call__(self):
-        pass
-
-
-class C_w_implements(NCV):
-    implements(Interface)
-
-    def index(self):
-        return self
 
 class ITestLayer(IBrowserRequest):
     """Test Layer."""

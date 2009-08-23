@@ -17,9 +17,11 @@ $Id$
 """
 from zope.i18n.interfaces import II18nAware
 from zope.i18n.negotiator import negotiator
-from zope.interface import implements
+from zope.interface import implements, classProvides
 
 from zope.browserresource.fileresource import FileResource
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 
 
 class I18nFileResource(FileResource):
@@ -78,6 +80,9 @@ class I18nFileResource(FileResource):
 
 
 class I18nFileResourceFactory(object):
+
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     def __init__(self, data, defaultLanguage):
         self.__data = data

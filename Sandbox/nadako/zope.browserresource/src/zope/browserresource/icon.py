@@ -35,8 +35,7 @@ class IconView(object):
         # The context is important here, since it becomes the parent of the
         # icon, which is needed to generate the absolute URL.
         resource = getResource(self.context, self.rname, self.request)
-        src = resource()
-        return src
+        return resource()
 
 class IconViewFactory(object):
 
