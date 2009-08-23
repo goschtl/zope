@@ -17,6 +17,7 @@ setup(
     namespace_packages=['z3c'],
     tests_require=[
         'webtest',
+        'zope.security',
         'zope.testing',
     ],
     install_requires=[
@@ -35,8 +36,12 @@ setup(
     extras_require=dict(
         test=[
             'webtest',
+            'zope.security',
             'zope.testing',
         ],
+        security=[
+            'zope.security',
+        ]
     ),
     entry_points="""
     [paste.app_factory]

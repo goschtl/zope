@@ -7,6 +7,9 @@ CHANGES
 - Removed dependency on zope.browser, defining a z3c.bobpublisher-specific
   IBrowserPage interface.
 
+- Removed the strict dependency on zope.security, which is now available under
+  the 'security' extra.
+
 0.1.3 (2009-08-22)
 ------------------
 

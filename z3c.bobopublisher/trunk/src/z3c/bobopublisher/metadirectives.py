@@ -21,7 +21,12 @@ from zope.configuration.fields import GlobalInterface, GlobalObject, Path, \
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
 from zope.schema import TextLine, BytesLine
-from zope.security.zcml import Permission
+
+try:
+    from zope.security.zcml import Permission
+except ImportError:
+    class Permission(TextLine):
+        pass
 
 
 class IPageDirective(Interface):

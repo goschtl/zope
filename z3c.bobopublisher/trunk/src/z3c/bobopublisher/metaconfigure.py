@@ -28,9 +28,17 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.component import getGlobalSiteManager
 from zope.interface import Interface
 from zope.location.interfaces import IRoot
-from zope.security.checker import CheckerPublic
-from zope.security.interfaces import Unauthorized
-from zope.security.management import checkPermission
+
+try:
+    from zope.security.checker import CheckerPublic
+    from zope.security.interfaces import Unauthorized
+    from zope.security.management import checkPermission
+except ImportError:
+    CheckerPublic = None
+    def checkPermission(permission, context):
+        return True
+    class Unauthorized(Exception):
+        pass
 
 
 def _page_factory(class_, name, permission, attribute=None):
