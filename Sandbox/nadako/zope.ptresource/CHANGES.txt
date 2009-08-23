@@ -1,0 +1,11 @@
+=======
+CHANGES
+=======
+
+3.9.0 (unreleased)
+==================
+
+Initial release. This package was splitted off zope.app.publisher as a part
+of refactoring process. It's now a plugin for another package that was
+refactored from zope.app.publisher - zope.browserresource. See its
+documentation for more details.
