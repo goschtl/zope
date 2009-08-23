@@ -30,7 +30,7 @@
     <meta:directive
         name="icon"
         schema=".metadirectives.IIconDirective"
-        handler=".icon.IconDirective"
+        handler=".metaconfigure.icon"
         />
 
   </meta:directives>

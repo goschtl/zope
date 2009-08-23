@@ -17,6 +17,7 @@ $Id$
 """
 import os
 
+from zope.component.interface import provideInterface
 from zope.component.zcml import handler
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
@@ -31,6 +32,7 @@ from zope.browserresource.fileresource import FileResourceFactory
 from zope.browserresource.fileresource import ImageResourceFactory
 from zope.browserresource.i18nfileresource import I18nFileResourceFactory
 from zope.browserresource.pagetemplateresource import PageTemplateResourceFactory
+from zope.browserresource.icon import IconViewFactory
 
 allowed_names = ('GET', 'HEAD', 'publishTraverse', 'browserDefault',
                  'request', '__call__')
@@ -83,6 +85,7 @@ def resource(_context, name, layer=IDefaultBrowserLayer,
                 factory, (layer,), Interface, name, _context.info),
         )
 
+
 def resourceDirectory(_context, name, directory, layer=IDefaultBrowserLayer,
                       permission='zope.Public'):
     if permission == 'zope.Public':
@@ -102,6 +105,56 @@ def resourceDirectory(_context, name, directory, layer=IDefaultBrowserLayer,
         callable = handler,
         args = ('registerAdapter',
                 factory, (layer,), Interface, name, _context.info),
+        )
+
+
+def icon(_context, name, for_, file=None, resource=None,
+                  layer=IDefaultBrowserLayer, title=None,
+                  width=16, height=16):
+
+    iname = for_.getName()
+
+    if title is None:
+        title = iname
+        if title.startswith('I'):
+            title = title[1:] # Remove leading 'I'
+
+    if file is not None and resource is not None:
+        raise ConfigurationError(
+            "Can't use more than one of file, and resource "
+            "attributes for icon directives"
+            )
+    elif file is not None:
+        resource = '-'.join(for_.__module__.split('.'))
+        resource = "%s-%s-%s" % (resource, iname, name)
+        ext = os.path.splitext(file)[1]
+        if ext:
+            resource += ext
+
+        # give this module another name, so we can use the "resource" directive
+        # in it that won't conflict with our local variable with the same name.
+        from zope.browserresource import metaconfigure
+        metaconfigure.resource(_context, image=file, name=resource, layer=layer)
+    elif resource is None:
+        raise ConfigurationError(
+            "At least one of the file, and resource "
+            "attributes for resource directives must be specified"
+            )
+
+    vfactory = IconViewFactory(resource, title, width, height)
+
+    _context.action(
+        discriminator = ('view', name, vfactory, layer),
+        callable = handler,
+        args = ('registerAdapter',
+                vfactory, (for_, layer), Interface, name, _context.info)
+        )
+
+    _context.action(
+        discriminator = None,
+        callable = provideInterface,
+        args = (for_.__module__+'.'+for_.getName(),
+                for_)
         )
 
 
