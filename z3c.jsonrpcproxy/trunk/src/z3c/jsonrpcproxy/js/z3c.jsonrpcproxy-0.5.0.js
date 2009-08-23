@@ -2,7 +2,7 @@
 /** 
  * @fileoverview JSON-RPC client implementation 
  * @author Roger Ineichen dev at projekt01 dot ch
- * @version 0.6, supports JSON-RPC 1.0, 1.1 and 2.0
+ * @version 0.5.0 supports JSON-RPC 1.0, 1.1 and 2.0
  */
 //----------------------------------------------------------------------------
 
@@ -157,15 +157,8 @@ JSONRPCMethod.prototype.handleResponse = function(resp){
             alert("The server responded with an empty document.");
         }else{
             var res = this.unmarshall(respTxt);
-            var oldVersion = false;
-            if (this.version == '1.0' || this.version == '1.1') {
-                oldVersion = true;
-            }
-            if(oldVersion  && res.error != null){
-                alert(res.error);
-            }
-            else if(!oldVersion  && res.error != null){
-                alert(res.error.message);
+            if(res.error != null){
+                return res.error
             }
             else if (res.requestId != self.requestId) {
                 alert("wrong json id returned");
