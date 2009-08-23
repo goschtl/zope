@@ -13,7 +13,7 @@
 ##############################################################################
 """Directory-based resources test
 
-$Id: test_directoryresource.py 95447 2009-01-29 16:28:18Z wosc $
+$Id$
 """
 import os
 from unittest import TestCase, main, makeSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Page Template Resource
 
-$Id: pagetemplateresource.py 73637 2007-03-26 16:22:07Z dobe $
+$Id$
 """
 
 from zope.interface import implements

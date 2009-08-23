@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Resource URL acess
+"""Resource URL access
 
-$Id: resources.py 67630 2006-04-27 00:54:03Z jim $
+$Id$
 """
 from zope.component import queryAdapter
 from zope.interface import implements

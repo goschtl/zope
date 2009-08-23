@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Resource
 
-$Id: resource.py 101130 2009-06-18 21:38:57Z rogerineichen $
+$Id$
 """
 from zope.component import adapts, getMultiAdapter, queryMultiAdapter
 from zope.interface import implements, implementsOnly

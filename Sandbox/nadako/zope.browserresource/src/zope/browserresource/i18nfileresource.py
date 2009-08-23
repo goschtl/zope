@@ -13,7 +13,7 @@
 ##############################################################################
 """Internationalized file resource.
 
-$Id: i18nfileresource.py 38178 2005-08-30 21:50:19Z mj $
+$Id$
 """
 from zope.i18n.interfaces import II18nAware
 from zope.i18n.negotiator import negotiator

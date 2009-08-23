@@ -13,7 +13,7 @@
 ##############################################################################
 """Resource
 
-$Id: __init__.py 100783 2009-06-10 08:17:59Z wosc $
+$Id$
 """
 from zope.interface import Interface, Attribute
 

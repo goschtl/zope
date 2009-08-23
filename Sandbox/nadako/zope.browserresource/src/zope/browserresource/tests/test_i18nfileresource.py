@@ -13,7 +13,7 @@
 ##############################################################################
 """I18n File-Resource Tests
 
-$Id: testi18nfileresource.py 29143 2005-02-14 22:43:16Z srichter $
+$Id$
 """
 from unittest import main, makeSuite
 import os

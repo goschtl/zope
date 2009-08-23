@@ -13,7 +13,7 @@
 ##############################################################################
 """Page Template based Resources Test
 
-$Id: test_pagetemplateresource.py 73025 2007-03-07 10:44:01Z zagy $
+$Id$
 """
 import os
 from unittest import TestCase, main, makeSuite

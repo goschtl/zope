@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: resourcemeta.py 73579 2007-03-25 10:14:23Z fdrake $
+$Id$
 """
 import os
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """File-based browser resources.
 
-$Id: fileresource.py 89359 2008-08-05 07:35:05Z srichter $
+$Id$
 """
 
 import os

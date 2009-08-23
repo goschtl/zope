@@ -13,7 +13,7 @@
 ##############################################################################
 """File-based browser resource tests.
 
-$Id: test_fileresource.py 29143 2005-02-14 22:43:16Z srichter $
+$Id$
 """
 import os
 from unittest import TestCase, main, makeSuite

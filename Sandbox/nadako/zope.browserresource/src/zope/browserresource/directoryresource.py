@@ -21,7 +21,7 @@ can in turn be treated as resources.  The contained files have
 __name__ values which include a '/' separating the __name__ of the
 resource directory from the name of the file within the directory.
 
-$Id: directoryresource.py 89359 2008-08-05 07:35:05Z srichter $
+$Id$
 """
 import os
 

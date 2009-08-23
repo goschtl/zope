@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for Resource
 
-$Id: test_resource.py 95607 2009-01-30 21:55:25Z ctheune $
+$Id$
 """
 import unittest
 

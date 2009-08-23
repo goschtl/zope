@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for tests that need a simple site to be provided.
 
-$Id: support.py 100783 2009-06-10 08:17:59Z wosc $
+$Id$
 """
 
 import zope.component

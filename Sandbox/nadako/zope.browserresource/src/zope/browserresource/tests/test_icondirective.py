@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Icon-Directive
 
-$Id: test_icondirective.py 100223 2009-05-22 00:40:23Z asmith $
+$Id$
 """
 import os
 from StringIO import StringIO

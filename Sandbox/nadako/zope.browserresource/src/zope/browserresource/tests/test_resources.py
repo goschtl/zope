@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Browser Resources
 
-$Id: test_resources.py 67630 2006-04-27 00:54:03Z jim $
+$Id$
 """
 import unittest
 from zope.testing import cleanup, doctest
