@@ -65,11 +65,7 @@ The minium required configuration to install Zope would be::
 
   [zope2]
   recipe = plone.recipe.zope2install
-  url = http://www.zope.org/Products/Zope/2.10.8/Zope-2.10.8-final.tgz
-  skip-fake-eggs =
-     zope.app.publisher
-     zope.component
-     zope.i18n
+  url = http://www.zope.org/Products/Zope/2.10.9/Zope-2.10.9-final.tgz
 
 And for this release we recommend to pin down the following version in
 your buildout::
@@ -87,7 +83,7 @@ your buildout::
   zope.app.publisher = 3.5.1
   zope.app.zcmlfiles = 3.4.3
   zope.component = 3.4.0
-  zope.i18n = 3.6.0
+  zope.i18n = 3.4.0
   zope.securitypolicy = 3.4.1
 
 Zope 2.10 is required as bare minimum.
