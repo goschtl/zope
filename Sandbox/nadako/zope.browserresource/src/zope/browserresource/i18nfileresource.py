@@ -18,14 +18,13 @@ $Id$
 from zope.i18n.interfaces import II18nAware
 from zope.i18n.negotiator import negotiator
 from zope.interface import implements
-from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.browserresource.fileresource import FileResource
 
 
 class I18nFileResource(FileResource):
 
-    implements(IBrowserPublisher, II18nAware)
+    implements(II18nAware)
 
     def __init__(self, data, request, defaultLanguage='en'):
         """Creates an internationalized file resource.  data should be
