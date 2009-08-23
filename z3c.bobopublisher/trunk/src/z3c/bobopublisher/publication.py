@@ -21,9 +21,9 @@ import bobo
 from webob import Request
 
 from z3c.bobopublisher.interfaces import IPublishTraverse, IDefaultViewName, \
-    IRequest, IGETRequest, IPOSTRequest, IPUTRequest, IDELETERequest
+    IBrowserPage, IRequest, IGETRequest, IPOSTRequest, IPUTRequest, \
+    IDELETERequest
 
-from zope.browser.interfaces import IBrowserView
 from zope.component import getUtility, queryUtility
 from zope.interface import directlyProvides
 from zope.location import LocationProxy, locate
@@ -73,7 +73,7 @@ class Publication(object):
             obj = traverser.publishTraverse(request, name)
         except KeyError:
             raise bobo.NotFound
-        if IBrowserView.providedBy(obj):
+        if IBrowserPage.providedBy(obj):
             return bobo.query('', method=self.methods)(obj)
         elif hasattr(obj, 'bobo_response'):
             return obj

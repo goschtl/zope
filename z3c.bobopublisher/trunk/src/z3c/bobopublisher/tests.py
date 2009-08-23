@@ -29,6 +29,7 @@ docfiles = [
 
 doctests = [
     'z3c.bobopublisher.absoluteurl',
+    'z3c.bobopublisher.browser',
     'z3c.bobopublisher.middleware.security',
 ]
 

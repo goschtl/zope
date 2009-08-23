@@ -18,7 +18,7 @@ $Id$
 
 from z3c.request import interfaces
 
-from zope.interface import Interface
+from zope.interface import Attribute, Interface
 
 
 class IPublishTraverse(Interface):
@@ -57,6 +57,21 @@ class IPUTRequest(IRequest):
 
 class IDELETERequest(IRequest):
     """Interface for webob.Request objects (DELETE method)"""
+
+
+class IBrowserView(Interface):
+    """Browser views are multi-adapters for context and request objects"""
+
+    context = Attribute("The context object the view renders")
+
+    request = Attribute("The request object driving the view")
+
+
+class IBrowserPage(IBrowserView):
+    """Browser pages are callable browser views"""
+
+    def __call__():
+        """Return the result of the page"""
 
 
 class IAbsoluteURL(Interface):

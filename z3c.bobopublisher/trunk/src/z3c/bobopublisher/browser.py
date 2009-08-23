@@ -16,14 +16,30 @@
 $Id$
 """
 
-from zope.browser.interfaces import IBrowserView
+from z3c.bobopublisher.interfaces import IBrowserPage
+
 from zope.interface import implements
 
 
 class BrowserPage(object):
-    """Simple browser page"""
+    """Base class for browser pages
 
-    implements(IBrowserView)
+    Verify that the class implements the interfaces:
+
+        >>> from zope.interface.verify import verifyClass
+        >>> verifyClass(IBrowserPage, BrowserPage)
+        True
+
+    Verify that the object provides the interfaces:
+
+        >>> from zope.interface.verify import verifyObject
+        >>> obj = BrowserPage(None, None)
+        >>> verifyObject(IBrowserPage, obj)
+        True
+
+    """
+
+    implements(IBrowserPage)
 
     def __init__(self, context, request, attribute=None):
         self.context = context

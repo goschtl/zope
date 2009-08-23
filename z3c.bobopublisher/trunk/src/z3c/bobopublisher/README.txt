@@ -85,11 +85,10 @@ Browser pages
 Browser pages are named multi-adapters which adapt the context object and the
 request; we register a browser page for the root object:
 
-    >>> from z3c.bobopublisher.interfaces import IRequest
-    >>> from zope.browser.interfaces import IBrowserView
+    >>> from z3c.bobopublisher.interfaces import IRequest, IBrowserPage
     >>> class BrowserPage(object):
     ...     adapts(IRoot, IRequest)
-    ...     implements(IBrowserView)
+    ...     implements(IBrowserPage)
     ...     def __init__(self, context, request):
     ...         self.context = context
     ...         self.request = request
@@ -107,7 +106,7 @@ It is also possible to register a page for a specific HTTP method:
     >>> from z3c.bobopublisher.interfaces import IDELETERequest
     >>> class BrowserPageDelete(object):
     ...     adapts(IRoot, IDELETERequest)
-    ...     implements(IBrowserView)
+    ...     implements(IBrowserPage)
     ...     def __init__(self, context, request):
     ...         self.context = context
     ...         self.request = request
@@ -135,11 +134,9 @@ If we traverse to the sub-item, we don't have any page defined:
 
 We register a browser page for the sub-item:
 
-    >>> from z3c.bobopublisher.interfaces import IRequest
-    >>> from zope.browser.interfaces import IBrowserView
     >>> class SubItemBrowserPage(object):
     ...     adapts(ISubItem, IRequest)
-    ...     implements(IBrowserView)
+    ...     implements(IBrowserPage)
     ...     def __init__(self, context, request):
     ...         self.context = context
     ...         self.request = request
