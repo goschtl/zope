@@ -10,9 +10,8 @@ of refactoring process.
 
 Additional changes that are made during refactoring:
 
- * Fix a regular expression that were used for icon titles when titles
-   are not specified in the icon directive. It does strip the "I" from
-   the interface name as intended.
+ * Fix stripping the "I" from an interface name for icon title, if no
+   title is specified.
 
  * When publishing a resource via Resources view, set resource parent
    to an ISite object, not to current site manager.
