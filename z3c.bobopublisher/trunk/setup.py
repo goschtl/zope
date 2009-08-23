@@ -31,7 +31,6 @@ setup(
         'zope.interface',
         'zope.location',
         'zope.schema',
-        'zope.security',
     ],
     extras_require=dict(
         test=[
