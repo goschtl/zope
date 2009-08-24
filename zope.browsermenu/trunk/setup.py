@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""zope.app.publisher setup
+"""zope.browsermenu setup
 """
 from setuptools import setup, find_packages, Extension
 
@@ -31,8 +31,7 @@ setup(name='zope.browsermenu',
                      'Topic :: Internet :: WWW/HTTP',
                      'Framework :: Zope3',
                      ],
-      description='Implementations and means for configuration of Zope 3-'
-                  'style views and resources.',
+      description='Browser menu implementation for Zope 3.',
       long_description=long_description,
 
       packages=find_packages('src'),
