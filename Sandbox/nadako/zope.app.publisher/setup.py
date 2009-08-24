@@ -61,6 +61,7 @@ setup(name='zope.app.publisher',
                         'zope.browserresource',
                         'zope.ptresource',
                         'zope.browsermenu',
+                        'zope.browserpage',
                         ],
       extras_require={
           'test': ['zope.testing',

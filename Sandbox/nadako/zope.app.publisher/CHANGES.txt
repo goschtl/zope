@@ -15,7 +15,12 @@ Refactor package, spliting it to several new packages:
      See zope.ptresource's CHANGES.txt for more information.
 
    * ``zope.browsermenu`` - the menu mechanism was moved here completely.
-
+   
+   * ``zope.browserpage`` - the browser:page directive and friends were
+     moved here. Also, these directives don't depend hardly on menu system
+     anymore, so they simply ignore the "menu" argument when zope.browsermenu
+     is not available.
+   
 Backward-compatibility imports are provided, so there should not be much impact
 for those who uses old imports.
 

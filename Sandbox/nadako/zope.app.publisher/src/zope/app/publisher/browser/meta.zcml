@@ -5,59 +5,15 @@
 
   <include package="zope.browserresource" file="meta.zcml" />
   <include package="zope.browsermenu" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
 
   <meta:directives namespace="http://namespaces.zope.org/browser">
-
-    <!-- browser views -->
-
-    <meta:complexDirective
-        name="view"
-        schema=".metadirectives.IViewDirective"
-        handler=".viewmeta.view"
-        >
-
-      <meta:subdirective
-          name="page"
-          schema=".metadirectives.IViewPageSubdirective"
-          />
-
-      <meta:subdirective
-          name="defaultPage"
-          schema=".metadirectives.IViewDefaultPageSubdirective"
-          />
-
-    </meta:complexDirective>
 
     <meta:directive
         name="defaultView"
         schema=".metadirectives.IDefaultViewDirective"
         handler=".metaconfigure.defaultView"
         />
-
-
-    <!-- browser pages -->
-
-    <meta:directive
-        name="page"
-        schema=".metadirectives.IPageDirective"
-        handler=".viewmeta.page"
-        />
-
-    <meta:complexDirective
-        name="pages"
-        schema=".metadirectives.IPagesDirective"
-        handler=".viewmeta.pages"
-        >
-
-      <meta:subdirective
-          name="page"
-          schema=".metadirectives.IPagesPageSubdirective"
-          />
-
-    </meta:complexDirective>
-
-
-    <!-- misc. directives -->
 
     <meta:directive
         name="defaultSkin"

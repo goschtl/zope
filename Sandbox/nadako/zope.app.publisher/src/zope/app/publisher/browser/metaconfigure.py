@@ -30,7 +30,7 @@ from zope.publisher.interfaces.browser import IDefaultSkin
 from zope.app.publisher.browser.resourcemeta import resource
 from zope.app.publisher.browser.resourcemeta import resourceDirectory
 from zope.app.publisher.browser.i18nresourcemeta import I18nResource
-from zope.app.publisher.browser.viewmeta import view
+from zope.browserpage.metaconfigure import view
 
 
 def setDefaultSkin(name, info=''):
