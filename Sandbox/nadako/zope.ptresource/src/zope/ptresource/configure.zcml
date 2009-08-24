@@ -3,19 +3,19 @@
   <utility
       name="pt"
       component=".ptresource.PageTemplateResourceFactory"
-      provides=".interfaces.IResourceFactoryFactory"
+      provides="zope.browserresource.interfaces.IResourceFactoryFactory"
       />
   
   <utility
       name="zpt"
       component=".ptresource.PageTemplateResourceFactory"
-      provides=".interfaces.IResourceFactoryFactory"
+      provides="zope.browserresource.interfaces.IResourceFactoryFactory"
       />
   
   <utility
       name="html"
       component=".ptresource.PageTemplateResourceFactory"
-      provides=".interfaces.IResourceFactoryFactory"
+      provides="zope.browserresource.interfaces.IResourceFactoryFactory"
       />
 
   <class class=".ptresource.PageTemplateResource">

@@ -61,13 +61,16 @@ class PageTemplateResource(BrowserView, Resource):
 
     def browserDefault(self, request):
         '''See interface IBrowserPublisher'''
-        return self, ()
+        return getattr(self, request.method), ()
 
-    def __call__(self):
-        # TODO: this method violates the IResource contract according to
-        # which, it sould return an absolute URL. Let's do something with
-        # it. Probably move the rendering code to another method and point
-        # to it with browserDefault. nadako, 23 Aug 2009
+    def HEAD(self):
+        pt = self.context
+        response = self.request.response
+        if not response.getHeader("Content-Type"):
+            response.setHeader("Content-Type", pt.content_type)
+        return ''
+
+    def GET(self):
         pt = self.context
         response = self.request.response
         if not response.getHeader("Content-Type"):

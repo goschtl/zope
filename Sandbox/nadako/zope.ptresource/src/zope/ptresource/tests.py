@@ -54,17 +54,28 @@ class Test(cleanup.CleanUp, unittest.TestCase):
                           resource.request, ())
         os.unlink(path)
 
-    def testCall(self):
+    def testBrowserDefault(self):
         path = self.createTestFile(
             '<html><body tal:content="request/test_data"></body></html>')
         test_data = "Foobar"
         request = TestRequest(test_data=test_data)
         factory = PageTemplateResourceFactory(path, checker, 'testresource.pt')
         resource = factory(request)
-        self.assertEquals(resource(),
+        view, next = resource.browserDefault(request)
+        self.assertEquals(view(),
                           '<html><body>%s</body></html>' % test_data)
         self.assertEquals('text/html',
                           request.response.getHeader('Content-Type'))
+        self.assertEquals(next, ())
+
+        request = TestRequest(test_data=test_data, REQUEST_METHOD='HEAD')
+        resource = factory(request)
+        view, next = resource.browserDefault(request)
+        self.assertEquals(view(), '')
+        self.assertEquals('text/html',
+                          request.response.getHeader('Content-Type'))
+        self.assertEquals(next, ())
+        
         os.unlink(path)
 
 
