@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <interface interface=".interfaces.IMenuItemType" />
+
+  <view
+      for="*"
+      type="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+      name="view_get_menu"
+      factory=".menu.MenuAccessView"
+      allowed_interface=".interfaces.IMenuAccessView"
+      permission="zope.Public"
+      />
+
+</configure>
