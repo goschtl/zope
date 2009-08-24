@@ -3,14 +3,6 @@
     xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
     >
 
-  <class class="xmlrpclib.Fault">
-    <allow attributes="faultCode faultString" />
-  </class>
-
-  <class class="xmlrpclib.DateTime">
-    <allow attributes="value" />
-  </class>
-
   <view 
       for=".IMethodPublisher"
       type="zope.publisher.interfaces.xmlrpc.IXMLRPCRequest"

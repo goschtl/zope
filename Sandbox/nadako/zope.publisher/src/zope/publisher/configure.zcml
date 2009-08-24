@@ -61,6 +61,14 @@
     <allow attributes="data encode decode" />
   </class>
 
+  <class class="xmlrpclib.Fault">
+    <allow attributes="faultCode faultString" />
+  </class>
+
+  <class class="xmlrpclib.DateTime">
+    <allow attributes="value" />
+  </class>
+
   <adapter factory=".xmlrpc.ListPreMarshaller" />
   <adapter factory=".xmlrpc.TuplePreMarshaller" />
   <adapter factory=".xmlrpc.BinaryPreMarshaller" />
