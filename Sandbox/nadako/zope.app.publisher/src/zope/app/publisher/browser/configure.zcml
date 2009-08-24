@@ -5,15 +5,13 @@
 
   <include package="zope.browserresource" />
   <include package="zope.ptresource" />
+  <include package="zope.browsermenu" />
 
 <adapter
     factory=".ModifiableBrowserLanguages"
     for="zope.publisher.interfaces.http.IHTTPRequest"
     provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
     />
-
-<interface
-  interface="zope.app.publisher.interfaces.browser.IMenuItemType" />
 
 <utility
     name="Browser Skins"
@@ -57,15 +55,6 @@
     permission="zope.ManageContent"
     class=".managementviewselector.ManagementViewSelector"
     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-    />
-
-<!-- Menu access -->
-<browser:page
-    for="*"
-    name="view_get_menu"
-    permission="zope.Public"
-    class=".menu.MenuAccessView"
-    allowed_interface="zope.app.publisher.interfaces.browser.IMenuAccessView"
     />
 
 </configure>

@@ -24,7 +24,7 @@ from zope.schema import TextLine, Id, Int, Bool
 from zope.security.zcml import Permission
 
 from zope.component.zcml import IBasicViewInformation
-from zope.app.publisher.browser.fields import MenuField
+from zope.browsermenu.field import MenuField
 
 # BBB imports
 from zope.browserresource.metadirectives import (
@@ -32,7 +32,18 @@ from zope.browserresource.metadirectives import (
     IResourceDirective,
     II18nResourceDirective,
     II18nResourceTranslationSubdirective,
-    IResourceDirectoryDirective
+    IResourceDirectoryDirective,
+    IIconDirective
+)
+from zope.browsermenu.metadirectives import (
+    IMenuDirective,
+    IMenuItemsDirective,
+    IMenuItem,
+    IMenuItemSubdirective,
+    IMenuItemDirective,
+    ISubMenuItemSubdirective,
+    ISubMenuItemDirective,
+    IAddMenuItemDirective,
 )
 
 #
@@ -226,226 +237,6 @@ class IPageDirective(IPagesDirective, IPagesPageSubdirective):
     """
 
 #
-# browser menus
-#
-
-class IMenuDirective(Interface):
-    """Define a browser menu"""
-
-    id = TextLine(
-        title=u"The name of the menu.",
-        description=u"This is, effectively, an id.",
-        required=False
-        )
-
-    title = MessageID(
-        title=u"Title",
-        description=u"A descriptive title for documentation purposes",
-        required=False
-        )
-    
-    description = MessageID(
-        title=u"Description",
-        description=u"A description title of the menu.",
-        required=False
-        )
-
-    class_ = GlobalObject(
-        title=u"Menu Class",
-        description=u"The menu class used to generate the menu.",
-        required=False
-        )
-
-    interface = GlobalInterface(
-        title=u"The menu's interface.",
-        required=False
-        )
-    
-
-class IMenuItemsDirective(Interface):
-    """
-    Define a group of browser menu items
-
-    This directive is useful when many menu items are defined for the
-    same interface and menu.
-    """
-
-    menu = MenuField(
-        title=u"Menu name",
-        description=u"The (name of the) menu the items are defined for",
-        required=True,
-        )
-
-    for_ = GlobalObject(
-        title=u"Interface",
-        description=u"The interface the menu items are defined for",
-        required=True
-        )
-
-    layer = GlobalInterface(
-        title=u"Layer",
-        description=u"The Layer for which the item is declared.",
-        required=False
-        )
-
-    permission = Permission(
-        title=u"The permission needed access the item",
-        description=u"""
-        This can usually be inferred by the system, however, doing so
-        may be expensive. When displaying a menu, the system tries to
-        traverse to the URLs given in each action to determine whether
-        the url is accessible to the current user. This can be
-        avoided if the permission is given explicitly.""",
-        required=False
-        )
-
-
-class IMenuItem(Interface):
-    """Common menu item configuration
-    """
-
-    title = MessageID(
-        title=u"Title",
-        description=u"The text to be displayed for the menu item",
-        required=True
-        )
-
-    description = MessageID(
-        title=u"A longer explanation of the menu item",
-        description=u"""
-        A UI may display this with the item or display it when the
-        user requests more assistance.""",
-        required=False
-        )
-
-    icon = TextLine(
-        title=u"Icon Path",
-        description=u"Path to the icon resource representing this menu item.",
-        required=False
-        )
-
-    permission = Permission(
-        title=u"The permission needed access the item",
-        description=u"""
-        This can usually be inferred by the system, however, doing so
-        may be expensive. When displaying a menu, the system tries to
-        traverse to the URLs given in each action to determine whether
-        the url is accessible to the current user. This can be
-        avoided if the permission is given explicitly.""",
-        required=False
-        )
-
-    filter = TextLine(
-        title=u"A condition for displaying the menu item",
-        description=u"""
-        The condition is given as a TALES expression. The expression
-        has access to the variables:
-
-        context -- The object the menu is being displayed for
-
-        request -- The browser request
-
-        nothing -- None
-
-        The menu item will not be displayed if there is a filter and
-        the filter evaluates to a false value.""",
-        required=False
-        )
-
-    order = Int(
-        title=u"Order",
-        description=u"A relative position of the menu item in the menu.",
-        required=False,
-        default=0
-        )
-
-    item_class = GlobalObject(
-        title=u"Menu item class",
-        description=u"""
-        A class to be used as a factory for creating menu item""",
-        required=False
-        )
-
-class IMenuItemSubdirective(IMenuItem):
-    """Define a menu item within a group of menu items"""
-
-    action = TextLine(
-        title=u"The relative url to use if the item is selected",
-        description=u"""
-        The url is relative to the object the menu is being displayed
-        for.""",
-        required=True
-        )
-
-class IMenuItemDirective(IMenuItemsDirective, IMenuItemSubdirective):
-    """Define one menu item"""
-
-class ISubMenuItemSubdirective(IMenuItem):
-    """Define a menu item that represents a a sub menu.
-
-    For a sub-menu menu item, the action is optional, this the item itself
-    might not represent a destination, but just an entry point to the sub menu. 
-    """
-
-    action = TextLine(
-        title=u"The relative url to use if the item is selected",
-        description=u"""
-        The url is relative to the object the menu is being displayed
-        for.""",
-        required=False
-        )
-
-    submenu = TextLine(
-        title=u"Sub-Menu Id",
-        description=u"The menu that will be used to provide the sub-entries.",
-        required=True,
-        )
-    
-class ISubMenuItemDirective(IMenuItemsDirective, ISubMenuItemSubdirective):
-    """Define one menu item"""
-
-class IAddMenuItemDirective(IMenuItem):
-    """Define an add-menu item"""
-
-    for_ = GlobalInterface(
-        title=u"Interface",
-        description=u"The interface the menu items are defined for",
-        required=False
-        )
-
-    class_ = GlobalObject(
-        title=u"Class",
-        description=u"""
-        A class to be used as a factory for creating new objects""",
-        required=False
-        )
-
-    factory = Id(
-        title=u"Factory",
-        description=u"A factory id for creating new objects",
-        required = False,
-        )
-
-    view = TextLine(
-        title=u"Custom view name",
-        description=u"The name of a custom add view",
-        required = False,
-        )
-
-    menu = MenuField(
-        title=u"Menu name",
-        description=u"The (name of the) menu the items are defined for",
-        required=False,
-        )
-
-    layer = GlobalInterface(
-        title=u"The layer the custom view is declared for",
-        description=u"The default layer for which the custom view is "
-                    u"applicable. By default it is applied to all layers.",
-        required=False
-        )
-
-#
 # misc. directives
 #
 
@@ -457,68 +248,4 @@ class IDefaultSkinDirective(Interface):
         title=u"Default skin name",
         description=u"Default skin name",
         required=True
-        )
-
-
-class IIconDirective(Interface):
-    """
-    Define an icon for an interface
-    """
-
-    name = TextLine(
-        title=u"The name of the icon.",
-        description=u"The name shows up in URLs/paths. For example 'foo'.",
-        required=True
-        )
-
-    for_ = GlobalInterface(
-        title=u"The interface this icon is for.",
-        description=u"""
-        The icon will be for all objects that implement this
-        interface.""",
-        required=True
-        )
-
-    file = Path(
-        title=u"File",
-        description=u"The file containing the icon.",
-        required=False
-        )
-
-    resource = TextLine(
-        title=u"Resource",
-        description=u"A resource containing the icon.",
-        required=False
-        )
-
-    title = MessageID(
-        title=u"Title",
-        description=u"Descriptive title",
-        required=False
-        )
-
-    layer = GlobalInterface(
-        title=u"The layer the icon should be found in",
-        description=u"""
-        For information on layers, see the documentation for the skin
-        directive. Defaults to "default".""",
-        required=False
-        )
-
-    width = Int(
-        title=u"The width of the icon.",
-        description=u"""
-        The width will be used for the <img width="..." />
-        attribute. Defaults to 16.""",
-        required=False,
-        default=16
-        )
-    
-    height = Int(
-        title=u"The height of the icon.",
-        description=u"""
-        The height will be used for the <img height="..." />
-        attribute. Defaults to 16.""",
-        required=False,
-        default=16
         )

@@ -23,7 +23,7 @@ from zope.traversing.interfaces import IContainmentRoot
 
 from zope.site.hooks import setSite
 
-from zope.app.publisher.browser.menu import BrowserMenu
+from zope.browsermenu.menu import BrowserMenu
 
 class Site:
 

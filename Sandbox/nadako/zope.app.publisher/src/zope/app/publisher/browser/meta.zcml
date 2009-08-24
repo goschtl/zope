@@ -4,53 +4,9 @@
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <include package="zope.browserresource" file="meta.zcml" />
+  <include package="zope.browsermenu" file="meta.zcml" />
 
   <meta:directives namespace="http://namespaces.zope.org/browser">
-
-    <!-- browser menus -->
-
-    <meta:directive
-        name="menu"
-        schema=".metadirectives.IMenuDirective"
-        handler=".menumeta.menuDirective"
-        />
-
-    <meta:complexDirective
-        name="menuItems"
-        schema=".metadirectives.IMenuItemsDirective"
-        handler=".menumeta.menuItemsDirective"
-        >
-
-      <meta:subdirective
-          name="menuItem"
-          schema=".metadirectives.IMenuItemSubdirective"
-          />
-
-      <meta:subdirective
-          name="subMenuItem"
-          schema=".metadirectives.ISubMenuItemSubdirective"
-          />
-
-    </meta:complexDirective>
-
-    <meta:directive
-        name="menuItem"
-        schema=".metadirectives.IMenuItemDirective"
-        handler=".menumeta.menuItemDirective"
-        />
-
-    <meta:directive
-        name="subMenuItem"
-        schema=".metadirectives.ISubMenuItemDirective"
-        handler=".menumeta.subMenuItemDirective"
-        />
-
-    <meta:directive
-        name="addMenuItem"
-        schema=".metadirectives.IAddMenuItemDirective"
-        handler=".menumeta.addMenuItem"
-        />
-
 
     <!-- browser views -->
 

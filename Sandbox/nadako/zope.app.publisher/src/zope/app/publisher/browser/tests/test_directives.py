@@ -44,8 +44,8 @@ import zope.app.publisher.browser
 from zope.component.testfiles.views import IC, V1, VZMI, R1, IV
 from zope.app.publisher.browser.fileresource import FileResource
 from zope.app.publisher.browser.i18nfileresource import I18nFileResource
-from zope.app.publisher.browser.menu import getFirstMenuItem
-from zope.app.publisher.interfaces.browser import IMenuItemType, IBrowserMenu
+from zope.browsermenu.menu import getFirstMenuItem
+from zope.browsermenu.interfaces import IMenuItemType, IBrowserMenu
 from zope.app.testing import placelesssetup, ztapi
 
 tests_path = os.path.join(
@@ -1110,32 +1110,6 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
         self.assert_(isinstance(v, V1))
 
-    def testMenuItemNeedsFor(self):
-        # <browser:menuItem> directive fails if no 'for' argument was provided
-        from zope.configuration.exceptions import ConfigurationError
-        self.assertRaises(ConfigurationError, xmlconfig, StringIO(template %
-            '''
-            <browser:menu
-                id="test_menu" title="Test menu" />
-            <browser:menuItem
-                title="Test Entry"
-                menu="test_menu"
-                action="@@test"
-            />
-            '''
-            ))
-
-	# it works, when the argument is there and a valid interface
-	xmlconfig(StringIO(template %
-            '''
-            <browser:menuItem
-                for="zope.component.testfiles.views.IC"
-                title="Test Entry"
-                menu="test_menu"
-               action="@@test"
-            />
-            '''
-            ))
 
 def test_suite():
     return unittest.TestSuite((

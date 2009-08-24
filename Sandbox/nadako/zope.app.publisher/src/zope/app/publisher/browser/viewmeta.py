@@ -31,7 +31,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser.menumeta import menuItemDirective
+from zope.browsermenu.metaconfigure import menuItemDirective
 
 # There are three cases we want to suport:
 #
