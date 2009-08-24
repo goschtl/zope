@@ -43,8 +43,8 @@ import zope.publisher.defaultview
 import zope.browserresource
 from zope.component import provideAdapter, provideUtility
 from zope.component.testfiles.views import R1, IV
-from zope.browserresource.fileresource import FileResource
-from zope.browserresource.i18nfileresource import I18nFileResource
+from zope.browserresource.file import FileResource
+from zope.browserresource.i18nfile import I18nFileResource
 from zope.testing import cleanup
 
 tests_path = os.path.join(
@@ -138,17 +138,6 @@ class Test(cleanup.CleanUp, unittest.TestCase):
             <browser:i18n-resource name="test" defaultLanguage="fr">
               <browser:translation language="en" file="%s" />
               <browser:translation language="lt" file="%s" />
-            </browser:i18n-resource>
-            ''' % (path1, path2)
-            ))
-        self.assertRaises(ConfigurationError, xmlconfig, config)
-
-        # files and images can't be mixed
-        config = StringIO(template % (
-            '''
-            <browser:i18n-resource name="test" defaultLanguage="fr">
-              <browser:translation language="en" file="%s" />
-              <browser:translation language="fr" image="%s" />
             </browser:i18n-resource>
             ''' % (path1, path2)
             ))

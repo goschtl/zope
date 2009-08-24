@@ -39,12 +39,13 @@ class File(object):
     
     def __init__(self, path, name):
         self.path = path
+        self.__name__ = name
 
         f = open(path, 'rb')
         data = f.read()
         f.close()
-        self.content_type, enc = guess_content_type(path, data)
-        self.__name__ = name
+        self.content_type = guess_content_type(path, data)[0]
+
         self.lmt = float(os.path.getmtime(path)) or time.time()
         self.lmh = formatdate(self.lmt, usegmt=True)
 
@@ -63,21 +64,9 @@ class FileResource(BrowserView, Resource):
         '''See interface IBrowserPublisher'''
         return getattr(self, request.method), ()
 
-    #
-    ############################################################
-
-    # for unit tests
-    def _testData(self):
-        f = open(self.context.path, 'rb')
-        data = f.read()
-        f.close()
-        return data
-
-
     def chooseContext(self):
         """Choose the appropriate context"""
         return self.context
-
 
     def GET(self):
         """Default document"""
@@ -100,8 +89,10 @@ class FileResource(BrowserView, Resource):
             # with common servers such as Apache (which can usually
             # understand the screwy date string as a lucky side effect
             # of the way they parse it).
-            try:    mod_since=long(timeFromDateTimeString(header))
-            except: mod_since=None
+            try:
+                mod_since = long(timeFromDateTimeString(header))
+            except:
+                mod_since = None
             if mod_since is not None:
                 if getattr(file, 'lmt', None):
                     last_mod = long(file.lmt)
@@ -127,6 +118,13 @@ class FileResource(BrowserView, Resource):
         response.setHeader('Last-Modified', file.lmh)
         setCacheControl(response, self.cacheTimeout)
         return ''
+
+    # for unit tests
+    def _testData(self):
+        f = open(self.context.path, 'rb')
+        data = f.read()
+        f.close()
+        return data
 
 
 def setCacheControl(response, secs=86400):

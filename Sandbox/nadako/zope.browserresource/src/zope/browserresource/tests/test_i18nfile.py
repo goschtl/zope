@@ -28,9 +28,9 @@ from zope.i18n.interfaces import IUserPreferredCharsets, IUserPreferredLanguages
 from zope.publisher.http import IHTTPRequest, HTTPCharsets
 from zope.publisher.browser import BrowserLanguages, TestRequest
 
-from zope.browserresource.i18nfileresource import I18nFileResource
-from zope.browserresource.i18nfileresource import I18nFileResourceFactory
-from zope.browserresource.fileresource import File
+from zope.browserresource.i18nfile import I18nFileResource
+from zope.browserresource.i18nfile import I18nFileResourceFactory
+from zope.browserresource.file import File
 import zope.browserresource.tests as p
 
 from zope.i18n.interfaces import INegotiator

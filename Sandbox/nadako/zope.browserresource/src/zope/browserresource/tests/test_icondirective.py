@@ -58,7 +58,7 @@ request._vh_root = support.site
 def defineCheckers():
     # define the appropriate checker for a FileResource for these tests
     from zope.security.protectclass import protectName
-    from zope.browserresource.fileresource import FileResource
+    from zope.browserresource.file import FileResource
     protectName(FileResource, '__call__', 'zope.Public')
 
 

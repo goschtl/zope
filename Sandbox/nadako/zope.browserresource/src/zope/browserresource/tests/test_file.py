@@ -30,7 +30,7 @@ from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets
 from zope.publisher.browser import TestRequest
 
-from zope.browserresource.fileresource import FileResourceFactory
+from zope.browserresource.file import FileResourceFactory
 import zope.browserresource.tests as p
 
 checker = NamesChecker(

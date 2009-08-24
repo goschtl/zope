@@ -11,19 +11,25 @@
       allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
       />
 
-  <class class=".fileresource.FileResource">
-    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-    <allow attributes="GET HEAD __call__" />
+  <class class=".file.FileResource">
+    <allow
+        interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+        attributes="GET HEAD __call__"
+        />
   </class>
   
-  <class class=".i18nfileresource.I18nFileResource">
-    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-    <allow attributes="GET HEAD __call__" />
+  <class class=".i18nfile.I18nFileResource">
+    <allow
+        interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+        attributes="GET HEAD __call__"
+        />
   </class>
   
-  <class class=".directoryresource.DirectoryResource">
-    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-    <allow attributes="get __getitem__" />
+  <class class=".directory.DirectoryResource">
+    <allow
+        interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+        attributes="get __getitem__"
+        />
   </class>
 
 </configure>

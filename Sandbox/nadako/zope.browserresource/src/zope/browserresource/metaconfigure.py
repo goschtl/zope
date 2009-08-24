@@ -27,9 +27,9 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.checker import CheckerPublic, NamesChecker, Checker
 from zope.security.proxy import Proxy
 
-from zope.browserresource.directoryresource import DirectoryResourceFactory
-from zope.browserresource.fileresource import File, FileResourceFactory
-from zope.browserresource.i18nfileresource import I18nFileResourceFactory
+from zope.browserresource.directory import DirectoryResourceFactory
+from zope.browserresource.file import File, FileResourceFactory
+from zope.browserresource.i18nfile import I18nFileResourceFactory
 from zope.browserresource.icon import IconViewFactory
 from zope.browserresource.interfaces import IResourceFactory
 from zope.browserresource.interfaces import IResourceFactoryFactory
@@ -187,7 +187,6 @@ class I18nResource(object):
         self.layer = layer
         self.permission = permission
         self.__data = {}
-        self.__format = None
 
     def translation(self, _context, language, file=None, image=None):
 
@@ -196,34 +195,26 @@ class I18nResource(object):
                 "Can't use more than one of file, and image "
                 "attributes for resource directives"
                 )
-        elif file is not None:
-            if self.__format is not None and self.__format != File:
-                raise ConfigurationError(
-                    "Can't use both files and images in the same "
-                    "i18n-resource directive"
-                    )
-            self.__data[language] = File(_context.path(file), self.name)
-            self.__format = File
-        elif image is not None:
-            if self.__format is not None and self.__format != Image:
-                raise ConfigurationError(
-                    "Can't use both files and images in the same "
-                    "i18n-resource directive"
-                    )
-            self.__data[language] = Image(_context.path(image), self.name)
-            self.__format = Image
-        else:
+        elif file is None and image is None:
             raise ConfigurationError(
                 "At least one of the file, and image "
                 "attributes for resource directives must be specified"
                 )
 
-        return ()
+        if image is not None:
+            import warnings
+            warnings.warn('The "image" attribute of i18n-resource directive is '
+                          'deprecated in favor of simple files. Use the "file" '
+                          'attribute instead.',
+                          DeprecationWarning)
+            file = image
+
+        self.__data[language] = File(_context.path(file), self.name)
 
 
     def __call__(self, require = None):
         if self.name is None:
-            return ()
+            return
 
         if not self.__data.has_key(self.defaultLanguage):
             raise ConfigurationError(

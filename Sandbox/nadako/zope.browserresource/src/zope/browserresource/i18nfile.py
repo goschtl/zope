@@ -19,7 +19,7 @@ from zope.i18n.interfaces import II18nAware
 from zope.i18n.negotiator import negotiator
 from zope.interface import implements, classProvides
 
-from zope.browserresource.fileresource import FileResource
+from zope.browserresource.file import FileResource
 from zope.browserresource.interfaces import IResourceFactory
 from zope.browserresource.interfaces import IResourceFactoryFactory
 
@@ -36,7 +36,6 @@ class I18nFileResource(FileResource):
         self.request = request
         self.defaultLanguage = defaultLanguage
 
-
     def chooseContext(self):
         """Choose the appropriate context according to language"""
         langs = self.getAvailableLanguages()
@@ -45,20 +44,6 @@ class I18nFileResource(FileResource):
             return self._data[language]
         except KeyError:
             return self._data[self.defaultLanguage]
-
-
-    # for unit tests
-    def _testData(self, language):
-        file = self._data[language]
-        f=open(file.path,'rb')
-        data=f.read()
-        f.close()
-        return data
-
-
-    ############################################################
-    # Implementation methods for interface
-    # II18nAware.py
 
     def getDefaultLanguage(self):
         'See II18nAware'
@@ -75,8 +60,13 @@ class I18nFileResource(FileResource):
         'See II18nAware'
         return self._data.keys()
 
-    #
-    ############################################################
+    # for unit tests
+    def _testData(self, language):
+        file = self._data[language]
+        f=open(file.path,'rb')
+        data=f.read()
+        f.close()
+        return data
 
 
 class I18nFileResourceFactory(object):

@@ -31,9 +31,9 @@ from zope.component import provideAdapter
 
 from zope.testing import cleanup
 
-from zope.browserresource.directoryresource import \
+from zope.browserresource.directory import \
      DirectoryResourceFactory, DirectoryResource
-from zope.browserresource.fileresource import FileResource
+from zope.browserresource.file import FileResource
 import zope.browserresource.tests as p
 from zope.browserresource.tests import support
 
