@@ -46,6 +46,9 @@ class AbsoluteURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
         self.context = context
         self.request = request
 
+    def _createUrl(self, baseUrl, name):
+        return "%s/@@/%s" % (baseUrl, name)
+
     def __str__(self):
         name = self.context.__name__
         if name.startswith('++resource++'):
@@ -59,4 +62,4 @@ class AbsoluteURL(zope.traversing.browser.absoluteurl.AbsoluteURL):
         else:
             url = str(base)
 
-        return "%s/@@/%s" % (url, name)
+        return self._createUrl(url, name)

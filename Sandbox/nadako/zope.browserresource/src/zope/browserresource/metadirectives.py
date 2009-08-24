@@ -85,7 +85,11 @@ class IResourceDirective(IBasicResourceInformation):
         title=u"Image",
         description=u"""
         If the image attribute is used, then an image resource, rather
-        than a file resource will be created.""",
+        than a file resource will be created.
+        
+        This attribute is deprecated in favor of pluggable resource types,
+        registered per extension. Use the "file" attribute instead.
+        """,
         required=False
         )
 
@@ -93,7 +97,13 @@ class IResourceDirective(IBasicResourceInformation):
         title=u"Template",
         description=u"""
         If the template attribute is used, then a page template resource,
-        rather than a file resource will be created.""",
+        rather than a file resource will be created.
+
+        This attribute is deprecated in favor of pluggable resource types,
+        registered per extension. Use the "file" attribute instead. To
+        use page template resources, you need to instal zope.ptresource
+        package.
+        """,
         required=False
         )
 
@@ -141,7 +151,11 @@ class II18nResourceTranslationSubdirective(IBasicResourceInformation):
         title=u"Image",
         description=u"""
         If the image attribute is used, then an image resource, rather
-        than a file resource will be created.""",
+        than a file resource will be created.
+
+        This attribute is deprecated, as images are now simply files.
+        Use the "file" attribute instead.
+        """,
         required=False
         )
 
