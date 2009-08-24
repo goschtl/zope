@@ -82,32 +82,6 @@ class Test(cleanup.CleanUp, unittest.TestCase):
     def tearDown(self):
         super(Test, self).tearDown()
 
-    def testSkinResource(self):
-        self.assertEqual(
-            component.queryAdapter(Request(IV), name='test'), None)
-
-        xmlconfig(StringIO(template % (
-            '''
-            <browser:resource
-                name="test"
-                factory="zope.component.testfiles.views.RZMI"
-                layer="
-                  zope.browserresource.tests.test_directives.ITestLayer"
-                />
-            <browser:resource
-                name="test"
-                factory="zope.component.testfiles.views.R1"
-                />
-            '''
-            )))
-
-        self.assertEqual(
-            component.queryAdapter(request, name='test').__class__, R1)
-        self.assertEqual(
-            component.queryAdapter(
-                TestRequest(skin=ITestSkin), name='test').__class__,
-            RZMI)
-
     def testI18nResource(self):
         self.assertEqual(component.queryAdapter(request, name='test'), None)
 
@@ -219,7 +193,7 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         r = component.getAdapter(request, name='test.gif')
         self.assertTrue(isinstance(r, ImageResource))
 
-    def testSkinResource(self):
+    def test_SkinResource(self):
         self.assertEqual(component.queryAdapter(request, name='test'), None)
 
         path = os.path.join(tests_path, 'testfiles', 'test.pt')
@@ -239,6 +213,7 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         r = component.getAdapter(TestRequest(skin=ITestSkin), name='test')
         r = removeSecurityProxy(r)
         self.assertEqual(r._testData(), open(path, 'rb').read())
+
 
 def test_suite():
     return unittest.makeSuite(Test)

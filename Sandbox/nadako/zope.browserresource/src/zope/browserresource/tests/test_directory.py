@@ -64,6 +64,15 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
                           resource.request, 'doesnotexist')
         self.assertRaises(NotFound, resource.get, 'doesnotexist')
 
+    def testBrowserDefault(self):
+        path = os.path.join(test_directory, 'testfiles')
+        request = TestRequest()
+        factory = DirectoryResourceFactory(path, checker, 'testfiles')
+        resource = factory(request)
+        view, next = resource.browserDefault(request)
+        self.assertEquals(view(), '')
+        self.assertEquals(next, ())
+
     def testGetitem(self):
         path = os.path.join(test_directory, 'testfiles')
         request = TestRequest()

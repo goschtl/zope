@@ -28,7 +28,7 @@ class IResource(Interface):
 class IResourceFactory(Interface):
     
     def __call__(request):
-        pass
+        """Return an IResource object"""
 
 class IResourceFactoryFactory(Interface):
     """A factory for IResourceFactory objects
