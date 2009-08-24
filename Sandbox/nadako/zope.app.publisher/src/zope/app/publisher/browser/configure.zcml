@@ -7,36 +7,10 @@
   <include package="zope.ptresource" />
   <include package="zope.browsermenu" />
 
-<adapter
-    factory=".ModifiableBrowserLanguages"
-    for="zope.publisher.interfaces.http.IHTTPRequest"
-    provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
-    />
-
 <utility
     name="Browser Skins"
     component=".vocabulary.BrowserSkinsVocabulary"
     />
-
-<class class="zope.publisher.browser.BrowserRequest">
-  <allow
-    interface="zope.publisher.interfaces.browser.IBrowserApplicationRequest"
-    attributes="response locale __str__"
-    />
-</class>
-
-<class class="zope.publisher.browser.TestRequest">
-  <allow
-    interface="zope.publisher.interfaces.browser.IBrowserApplicationRequest"
-    attributes="response"
-    />
-</class>
-
-<class class="zope.publisher.browser.BrowserResponse">
-  <allow
-    interface="zope.publisher.interfaces.http.IHTTPResponse"
-    />
-</class>
 
 <!-- Management view selector -->
 <!-- Get first accessible item from zmi_views menu -->

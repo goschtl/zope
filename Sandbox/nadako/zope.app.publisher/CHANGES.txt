@@ -19,6 +19,11 @@ Refactor package, spliting it to several new packages:
 Backward-compatibility imports are provided, so there should not be much impact
 for those who uses old imports.
 
+The CacheableBrowserLanguages and ModifiableBrowserLanguages adapters were
+moved into ``zope.publisher`` package, as well as ZCML class configuration
+for zope.publisher classes.
+
+
 3.8.4 (2009-07-23)
 ==================
 
