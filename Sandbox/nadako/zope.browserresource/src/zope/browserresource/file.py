@@ -57,19 +57,65 @@ class FileResource(BrowserView, Resource):
     cacheTimeout = 86400
 
     def publishTraverse(self, request, name):
-        '''See interface IBrowserPublisher'''
+        '''File resources can't be traversed further, so raise NotFound if
+        someone tries to traverse it.
+        
+          >>> factory = FileResourceFactory(testFilePath, nullChecker, 'test.txt')
+          >>> request = TestRequest()
+          >>> resource = factory(request)
+          >>> resource.publishTraverse(request, '_testData')
+          Traceback (most recent call last):
+          ...
+          NotFound: Object: None, name: '_testData'
+
+        '''
         raise NotFound(None, name)
 
     def browserDefault(self, request):
-        '''See interface IBrowserPublisher'''
+        '''Return a callable for processing browser requests.
+
+          >>> factory = FileResourceFactory(testFilePath, nullChecker, 'test.txt')
+          >>> request = TestRequest(REQUEST_METHOD='GET')
+          >>> resource = factory(request)
+          >>> view, next = resource.browserDefault(request)
+          >>> view() == open(testFilePath, 'rb').read()
+          True
+          >>> next == ()
+          True
+
+          >>> request = TestRequest(REQUEST_METHOD='HEAD')
+          >>> resource = factory(request)
+          >>> view, next = resource.browserDefault(request)
+          >>> view() == ''
+          True
+          >>> next == ()
+          True
+        
+        '''
         return getattr(self, request.method), ()
 
     def chooseContext(self):
-        """Choose the appropriate context"""
+        '''Choose the appropriate context.
+        
+        This method can be overriden in subclasses, that need to choose
+        appropriate file, based on current request or other condition,
+        like, for example, i18n files.
+        
+        '''
         return self.context
 
     def GET(self):
-        """Default document"""
+        '''Return a file data for downloading with GET requests
+        
+          >>> factory = FileResourceFactory(testFilePath, nullChecker, 'test.txt')
+          >>> request = TestRequest()
+          >>> resource = factory(request)
+          >>> resource.GET() ==  open(testFilePath, 'rb').read()
+          True
+          >>> request.response.getHeader('Content-Type') == 'text/plain'
+          True
+
+        '''
 
         file = self.chooseContext()
         request = self.request
@@ -112,6 +158,17 @@ class FileResource(BrowserView, Resource):
         return data
 
     def HEAD(self):
+        '''Return proper headers and no content for HEAD requests
+        
+          >>> factory = FileResourceFactory(testFilePath, nullChecker, 'test.txt')
+          >>> request = TestRequest()
+          >>> resource = factory(request)
+          >>> resource.HEAD() == ''
+          True
+          >>> request.response.getHeader('Content-Type') == 'text/plain'
+          True
+
+        '''
         file = self.chooseContext()
         response = self.request.response
         response.setHeader('Content-Type', file.content_type)

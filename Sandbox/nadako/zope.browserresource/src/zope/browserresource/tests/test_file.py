@@ -16,83 +16,29 @@
 $Id$
 """
 import os
-from unittest import TestCase, main, makeSuite
+import unittest
+from zope.testing import cleanup, doctest
 
-from zope.publisher.interfaces import NotFound
-from zope.i18n.interfaces import IUserPreferredCharsets
-from zope.security.proxy import removeSecurityProxy
+from zope.publisher.browser import TestRequest
 from zope.security.checker import NamesChecker
 
-from zope.testing import cleanup
-from zope.component import provideAdapter
 
-from zope.publisher.http import IHTTPRequest
-from zope.publisher.http import HTTPCharsets
-from zope.publisher.browser import TestRequest
+def setUp(test):
+    cleanup.setUp()
+    data_dir = os.path.join(os.path.dirname(__file__), 'testfiles')
 
-from zope.browserresource.file import FileResourceFactory
-import zope.browserresource.tests as p
+    test.globs['testFilePath'] = os.path.join(data_dir, 'test.txt')
+    test.globs['nullChecker'] = NamesChecker()
+    test.globs['TestRequest'] = TestRequest
 
-checker = NamesChecker(
-    ('__call__', 'HEAD', 'request', 'publishTraverse', 'GET')
-    )
 
-test_directory = os.path.dirname(p.__file__)
-
-class Test(cleanup.CleanUp, TestCase):
-
-    def setUp(self):
-        super(Test, self).setUp()
-        provideAdapter(HTTPCharsets, (IHTTPRequest,), IUserPreferredCharsets)
-
-    def testNoTraversal(self):
-
-        path = os.path.join(test_directory, 'testfiles', 'test.txt')
-        factory = FileResourceFactory(path, checker, 'test.txt')
-        resource = factory(TestRequest())
-        self.assertRaises(NotFound,
-                          resource.publishTraverse,
-                          resource.request,
-                          '_testData')
-
-    def testFileGET(self):
-
-        path = os.path.join(test_directory, 'testfiles', 'test.txt')
-
-        factory = FileResourceFactory(path, checker, 'test.txt')
-        resource = factory(TestRequest())
-        self.assertEqual(resource.GET(), open(path, 'rb').read())
-
-        response = removeSecurityProxy(resource.request).response
-        self.assertEqual(response.getHeader('Content-Type'), 'text/plain')
-
-    def testFileHEAD(self):
-
-        path = os.path.join(test_directory, 'testfiles', 'test.txt')
-        factory = FileResourceFactory(path, checker, 'test.txt')
-        resource = factory(TestRequest())
-
-        self.assertEqual(resource.HEAD(), '')
-
-        response = removeSecurityProxy(resource.request).response
-        self.assertEqual(response.getHeader('Content-Type'), 'text/plain')
-
-    def testBrowserDefault(self):
-        path = os.path.join(test_directory, 'testfiles', 'test.txt')
-        factory = FileResourceFactory(path, checker, 'test.txt')
-
-        request = TestRequest(REQUEST_METHOD='GET')
-        resource = factory(request)
-        view, next = resource.browserDefault(request)
-        self.assertEqual(view(), open(path, 'rb').read())
-        self.assertEqual(next, ())
-
-        request = TestRequest(REQUEST_METHOD='HEAD')
-        resource = factory(request)
-        view, next = resource.browserDefault(request)
-        self.assertEqual(view(), '')
-        self.assertEqual(next, ())
-
+def tearDown(test):
+    cleanup.tearDown()
 
 def test_suite():
-    return makeSuite(Test)
+    return unittest.TestSuite((
+        doctest.DocTestSuite(
+            'zope.browserresource.file',
+            setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
+        ))
