@@ -28,11 +28,10 @@ setup(name='zc.datetimewidget',
       description='Javascript-based widgets for date and datetime fields.',
       long_description=(
           read('README.txt')
-          + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '======================\n'
-          + '\n\n' +
+          + '\n\n.. contents::\n\n' +
           read('src', 'zc', 'datetimewidget', 'widgets.txt')
+          + '\n\n' +
+          read('src', 'zc', 'datetimewidget', 'datetimewidget.txt')
           + '\n\n' +
           read('src', 'zc', 'datetimewidget', 'demo', 'README.txt')
           + '\n\n' +
@@ -49,7 +48,7 @@ setup(name='zc.datetimewidget',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zc.datetimewidget',
+      url='http://pypi.python.org/pypi/zc.datetimewidget',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir={'': 'src'},

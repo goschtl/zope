@@ -5,19 +5,32 @@ CHANGES
 0.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed handling of naive datetime objects, they no longer result in
+  an exception but are displayed unchanged. When they get saved again
+  they are saved with UTC timezone like all other ones.
+
+- Added `datetimewidget.txt` doctest to ``long_description`` to show
+  up on pypi home page.
+
+- Fixed home page name in `setup.py`.
+
+- Added coverage analysis tools to buildout.
+
+- Removed deprecated zpkg and zcml slugs.
 
 
 0.6.2 (2009-05-20)
 ------------------
 
-- Using ++resource++ instead of @@/ to load resources.
+- Using `++resource++` instead of `@@/` to load resources.
 
-- Renaming "lang" directory (ZPublisher gets confused 
-  because of a view with the same same in zope.traversing.namespace).
+- Renaming "lang" directory (``ZPublisher`` gets confused because of a
+  view with the same name exists in ``zope.traversing.namespace``).
 
-(See gocept.datetimewidget for more details on how to use
-zc.datetimewidget with zope2.)
+  See `gocept.datetimewidget`_ for more details on how to use
+  zc.datetimewidget with zope2.
+
+.. _`gocept.datetimewidget` : http://pypi.python.org/pypi/gocept.datetimewidget
 
 0.6.1 (2008-05-29)
 ------------------

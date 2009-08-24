@@ -16,7 +16,6 @@
 $Id: datetimewidget.py 4368 2005-12-08 22:19:15Z gary $
 """
 import datetime
-import pytz
 
 from zope.schema import TextLine, Bool, Int, Date, Choice
 from zope.schema import getFieldsInOrder
@@ -52,8 +51,9 @@ def normalizeDateTime(dt, request):
     return dt
 
 def localizeDateTime(dt, request):
-    if isinstance(dt, datetime.datetime) and \
-        dt.tzinfo.utcoffset(None) == datetime.timedelta(0):
+    if (isinstance(dt, datetime.datetime) and
+        dt.tzinfo is not None and
+        dt.tzinfo.utcoffset(None) == datetime.timedelta(0)):
 
         tzinfo = ITZInfo(request, None)
         if tzinfo is not None:
