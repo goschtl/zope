@@ -43,6 +43,7 @@ from zope.component import provideAdapter, provideUtility
 from zope.component.testfiles.views import R1, IV
 from zope.browserresource.file import FileResource
 from zope.browserresource.i18nfile import I18nFileResource
+from zope.browserresource.directory import DirectoryResource
 from zope.testing import cleanup
 
 tests_path = os.path.join(
@@ -149,19 +150,17 @@ class Test(cleanup.CleanUp, unittest.TestCase):
             ))
 
         r = component.getAdapter(request, name='index.html')
-        self.assertEquals(r.__class__, FileResource)
+        self.assertTrue(isinstance(r, FileResource))
         r = ProxyFactory(r)
         self.assertEqual(r.__name__, "index.html")
 
         # Make sure we can access available attrs and not others
         for n in ('GET', 'HEAD', 'publishTraverse', 'request', '__call__'):
             getattr(r, n)
-        self.assertEqual(r.__name__, "index.html")
 
         self.assertRaises(Exception, getattr, r, '_testData')
 
         r = removeSecurityProxy(r)
-        self.assert_(r.__class__ is FileResource)
         self.assertEqual(r._testData(), open(path, 'rb').read())
 
 
@@ -193,6 +192,42 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         r = component.getAdapter(request, name='test.gif')
         self.assertTrue(isinstance(r, ImageResource))
 
+    def testDirectory(self):
+        path = os.path.join(tests_path, 'testfiles', 'subdir')
+
+        self.assertEqual(component.queryAdapter(request, name='dir'), None)
+
+        xmlconfig(StringIO(template %
+            '''
+            <browser:resourceDirectory
+                name="dir"
+                directory="%s"
+                />
+            ''' % path
+            ))
+
+        r = component.getAdapter(request, name='dir')
+        self.assertTrue(isinstance(r, DirectoryResource))
+        r = ProxyFactory(r)
+        self.assertEqual(r.__name__, "dir")
+
+        # Make sure we can access available attrs and not others
+        for n in ('publishTraverse', 'browserDefault', 'request', '__call__',
+                  'get', '__getitem__'):
+            getattr(r, n)
+
+        self.assertRaises(Exception, getattr, r, 'directory_factory')
+
+        inexistent_dir = StringIO(template %
+            '''
+            <browser:resourceDirectory
+                name="dir"
+                directory="does-not-exist"
+                />
+            ''')
+
+        self.assertRaises(ConfigurationError, xmlconfig, inexistent_dir)
+
     def test_SkinResource(self):
         self.assertEqual(component.queryAdapter(request, name='test'), None)
 
@@ -211,7 +246,6 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         self.assertEqual(component.queryAdapter(request, name='test'), None)
 
         r = component.getAdapter(TestRequest(skin=ITestSkin), name='test')
-        r = removeSecurityProxy(r)
         self.assertEqual(r._testData(), open(path, 'rb').read())
 
 
