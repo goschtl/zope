@@ -74,11 +74,13 @@ def resource(_context, name, layer=IDefaultBrowserLayer,
 
     if image or template:
         import warnings
-        warnings.warn('The "template" and "image" attributes of resource '
-                      'directive are deprecated in favor of pluggable '
-                      'file resource factories based on file extensions. '
-                      'Use the "file" attribute instead.',
-                      DeprecationWarning)
+        warnings.warn_explicit(
+            'The "template" and "image" attributes of resource '
+            'directive are deprecated in favor of pluggable '
+            'file resource factories based on file extensions. '
+            'Use the "file" attribute instead.',
+            DeprecationWarning,
+            _context.info.file, _context.info.line)
         if image:
             file = image
         elif template:
@@ -203,10 +205,12 @@ class I18nResource(object):
 
         if image is not None:
             import warnings
-            warnings.warn('The "image" attribute of i18n-resource directive is '
-                          'deprecated in favor of simple files. Use the "file" '
-                          'attribute instead.',
-                          DeprecationWarning)
+            warnings.warn_explicit(
+                'The "image" attribute of i18n-resource directive is '
+                'deprecated in favor of simple files. Use the "file" '
+                'attribute instead.',
+                DeprecationWarning,
+                _context.info.file, _context.info.line)
             file = image
 
         self.__data[language] = File(_context.path(file), self.name)
