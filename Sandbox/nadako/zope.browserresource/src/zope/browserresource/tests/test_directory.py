@@ -27,7 +27,7 @@ from zope.interface import implements
 from zope.location.interfaces import IContained
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
-from zope.component import provideAdapter
+from zope.component import provideAdapter, provideUtility
 
 from zope.testing import cleanup
 
@@ -116,16 +116,28 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
         self.assertEquals(file(),
                           'http://127.0.0.1/@@/test_files/subdir/test.gif')
 
-    def testCorrectFactories(self):
+    def testPluggableFactories(self):
         path = os.path.join(test_directory, 'testfiles')
         request = TestRequest()
         resource = DirectoryResourceFactory(path, checker, 'files')(request)
 
+        class ImageResource(object):
+            def __init__(self, image, request):
+                pass
+
+        class ImageResourceFactory(object):
+            def __init__(self, path, checker, name):
+                pass
+            def __call__(self, request):
+                return ImageResource(None, request)
+
+        from zope.browserresource.interfaces import IResourceFactoryFactory
+        provideUtility(ImageResourceFactory, IResourceFactoryFactory, 'gif')
+
         image = resource['test.gif']
-        self.assert_(proxy.isinstance(image, FileResource))
+        self.assert_(proxy.isinstance(image, ImageResource))
+
         file = resource['test.txt']
-        self.assert_(proxy.isinstance(file, FileResource))
-        file = resource['png']
         self.assert_(proxy.isinstance(file, FileResource))
 
 def test_suite():

@@ -16,7 +16,6 @@
 $Id$
 """
 
-import sys
 import os
 import unittest
 from cStringIO import StringIO
@@ -35,7 +34,6 @@ from zope.publisher.interfaces.browser import IBrowserSkinType, IDefaultSkin
 from zope.security.proxy import removeSecurityProxy, ProxyFactory
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
-from zope.testing.doctestunit import DocTestSuite
 from zope.traversing.adapters import DefaultTraversable
 from zope.traversing.interfaces import ITraversable
 
@@ -193,6 +191,34 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         self.assertEqual(r._testData(), open(path, 'rb').read())
 
 
+    def testPluggableFactory(self):
+
+        class ImageResource(object):
+            def __init__(self, image, request):
+                pass
+
+        class ImageResourceFactory(object):
+            def __init__(self, path, checker, name):
+                pass
+            def __call__(self, request):
+                return ImageResource(None, request)
+
+        from zope.browserresource.interfaces import IResourceFactoryFactory
+        component.provideUtility(ImageResourceFactory, IResourceFactoryFactory,
+                                 name='gif')
+
+        xmlconfig(StringIO(template %
+            '''
+            <browser:resource
+                name="test.gif"
+                file="%s"
+                />
+            ''' % os.path.join(tests_path, 'testfiles', 'test.gif')
+            ))
+
+        r = component.getAdapter(request, name='test.gif')
+        self.assertTrue(isinstance(r, ImageResource))
+
     def testSkinResource(self):
         self.assertEqual(component.queryAdapter(request, name='test'), None)
 
@@ -215,9 +241,4 @@ class Test(cleanup.CleanUp, unittest.TestCase):
         self.assertEqual(r._testData(), open(path, 'rb').read())
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(Test),
-        DocTestSuite('zope.browserresource.metaconfigure',
-                     setUp=cleanup.setUp,
-                     tearDown=cleanup.tearDown)
-        ))
+    return unittest.makeSuite(Test)

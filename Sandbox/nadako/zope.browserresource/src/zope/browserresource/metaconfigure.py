@@ -150,7 +150,7 @@ def icon(_context, name, for_, file=None, resource=None,
         # give this module another name, so we can use the "resource" directive
         # in it that won't conflict with our local variable with the same name.
         from zope.browserresource import metaconfigure
-        metaconfigure.resource(_context, image=file, name=resource, layer=layer)
+        metaconfigure.resource(_context, file=file, name=resource, layer=layer)
     elif resource is None:
         raise ConfigurationError(
             "At least one of the file, and resource "

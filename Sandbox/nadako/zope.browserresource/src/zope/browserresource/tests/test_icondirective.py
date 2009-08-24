@@ -153,7 +153,7 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
         xmlconfig(StringIO(template % (
             '''
             <browser:resource name="zmi_icon_res"
-                      image="%s" />
+                      file="%s" />
             <browser:icon name="zmi_icon"
                       for="zope.component.testfiles.views.IC"
                       resource="zmi_icon_res" />
@@ -185,7 +185,7 @@ class Test(support.SiteHandler, cleanup.CleanUp, TestCase):
         config = StringIO(template % (
             '''
             <browser:resource name="zmi_icon_res"
-                      image="%s" />
+                      file="%s" />
             <browser:icon name="zmi_icon"
                       for="zope.component.testfiles.views.IC"
                       file="%s"
