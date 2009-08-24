@@ -24,7 +24,7 @@ from zope.schema import TextLine, Id, Int, Bool
 from zope.security.zcml import Permission
 
 from zope.component.zcml import IBasicViewInformation
-from zope.browsermenu.fields import MenuField
+from zope.browsermenu.field import MenuField
 
 
 class IMenuDirective(Interface):

@@ -20,7 +20,7 @@ from zope.testing import cleanup, doctest
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.browsermenu.fields',
+        doctest.DocTestSuite('zope.browsermenu.field',
                      setUp=lambda test:cleanup.setUp(),
                      tearDown=lambda test:cleanup.tearDown()),
         ))

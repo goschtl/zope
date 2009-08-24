@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Browser-Presentation related Fields.
+"""Menu field
 
 $Id: fields.py 100240 2009-05-22 16:33:41Z faassen $
 """
