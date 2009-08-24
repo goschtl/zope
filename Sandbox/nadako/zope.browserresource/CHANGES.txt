@@ -24,10 +24,25 @@ Additional changes that are made during refactoring:
 
    See zope.browserresource.interfaces.IResourceFactoryFactory interface.
 
+ * The Image resource class was removed, as they are actually simple files.
+   To migrate, simply rename the "image" argument in browser:resource and
+   browser:i18n-resource directives to "file", if you don't do this, resouces
+   will work, but you'll get deprecation warnings.
+ 
+   If you need custom behaviour for images, you can register a resource
+   factory utility for needed file extensions.
+
+ * The PageTemplateResource was moved into a separate package, "zope.ptresource",
+   which is a plugin for this package now. Because of that, the "template"
+   argument of browser:resource directive was deprecated and you should rename
+   it to "file" to migrate. The PageTemplateResource will be created for
+   "pt", "zpt" and "html" files automatically, if zope.ptresource package is
+   included in your configuration.
+
  * Fix stripping the "I" from an interface name for icon title, if no
    title is specified.
 
  * When publishing a resource via Resources view, set resource parent
    to an ISite object, not to current site manager.
 
- * Clean up code and improve test coverage a little.
+ * Clean up code and improve test coverage.

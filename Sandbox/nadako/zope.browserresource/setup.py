@@ -51,7 +51,6 @@ setup(name='zope.browserresource',
                         'zope.schema',
                         'zope.site',
                         'zope.traversing>3.7.0',
-                        'zope.browser',
                         ],
       extras_require={
           'test': ['zope.testing'],
