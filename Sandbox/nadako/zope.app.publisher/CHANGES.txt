@@ -28,6 +28,9 @@ The CacheableBrowserLanguages and ModifiableBrowserLanguages adapters were
 moved into ``zope.publisher`` package, as well as ZCML class configuration
 for zope.publisher classes.
 
+ZCML registrations of IXMLRPCPublisher adapters for zope.container were moved
+into zope.container for now.
+
 
 3.8.4 (2009-07-23)
 ==================
