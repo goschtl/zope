@@ -20,7 +20,7 @@ import os
 import doctest
 import unittest
 
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import functional, setup
 
 
