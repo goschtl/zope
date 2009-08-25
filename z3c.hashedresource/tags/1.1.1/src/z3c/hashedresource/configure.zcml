@@ -1,0 +1,33 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  >
+
+  <include package="z3c.noop" />
+
+  <utility
+    component=".interfaces.IHashedResourceSkin"
+    provides="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="z3c.hashedresource"
+    />
+
+  <adapter
+    factory=".url.HashingURL"
+    />
+  <adapter zcml:condition="have devmode"
+    factory=".hash.ContentsHash"
+    for="zope.app.publisher.browser.directoryresource.DirectoryResource"
+    />
+  <adapter zcml:condition="have devmode"
+    factory=".hash.ContentsHash"
+    for="zope.app.publisher.browser.fileresource.FileResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory=".hash.CachingContentsHash"
+    for="zope.app.publisher.browser.directoryresource.DirectoryResource"
+    />
+  <adapter zcml:condition="not-have devmode"
+    factory=".hash.CachingContentsHash"
+    for="zope.app.publisher.browser.fileresource.FileResource"
+    />
+</configure>
