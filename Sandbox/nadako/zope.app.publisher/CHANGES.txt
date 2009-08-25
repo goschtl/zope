@@ -25,8 +25,9 @@ Backward-compatibility imports are provided, so there should not be much impact
 for those who uses old imports.
 
 The CacheableBrowserLanguages and ModifiableBrowserLanguages adapters were
-moved into ``zope.publisher`` package, as well as ZCML class configuration
-for zope.publisher classes.
+moved into ``zope.publisher`` package, as well as browser:defaultSkin and
+browser:defaultView ZCML directives and ZCML class configuration for
+zope.publisher classes.
 
 ZCML registrations of IXMLRPCPublisher adapters for zope.container were moved
 into zope.container for now.
