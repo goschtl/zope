@@ -1,8 +1,16 @@
 CHANGES
 =======
 
-3.8.1 (unreleased)
+3.9.0 (unreleased)
 ------------------
+
+- Some parts of zope.app.publisher packages was moved into this package
+  during zope.app.publisher refactoring:
+  
+   * IModifiableUserPreferredLanguages adapter for requests
+   * browser:defaultView and browser:defaultSkin ZCML directives
+   * IHTTPView, IXMLRPCView and like interfaces
+   * security ZCML declarations for some of zope.publisher classes
 
 - Introduced ``IReRaiseException`` interface. If during publishing an
   exception occurs and for this exception an adapter is available that
