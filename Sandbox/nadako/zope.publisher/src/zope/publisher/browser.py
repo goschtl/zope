@@ -623,7 +623,10 @@ class FileUpload(object):
                 d[m] = getattr(file,m)
 
         self.headers = aFieldStorage.headers
-        self.filename = unicode(aFieldStorage.filename, 'UTF-8')
+        filename = unicode(aFieldStorage.filename, 'UTF-8')
+        # fix for IE full paths
+        filename = filename[filename.rfind('\\')+1:].strip()
+        self.filename = filename
 
 class RedirectingBrowserRequest(BrowserRequest):
     """Browser requests that redirect when the actual and effective URLs differ

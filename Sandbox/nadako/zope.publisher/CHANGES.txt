@@ -29,6 +29,9 @@ CHANGES
 
 - Removed behavior of doing a time.sleep in the supportsRetry http request.
 
+- Add a fix for Internet Explorer versions that upload files will full
+  filesystem paths as filenames.
+
 3.8.0 (2009-05-23)
 ------------------
 
