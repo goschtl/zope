@@ -5,8 +5,8 @@ CHANGES
 0.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Added to SQLAlchemy to zope.schema adapters so that most of the types in
+  sqlalchemy.types are covered.
 
 0.9.1 (2009-08-14)
 ------------------
