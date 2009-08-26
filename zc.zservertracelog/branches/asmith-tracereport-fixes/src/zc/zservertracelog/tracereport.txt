@@ -1,0 +1,111 @@
+===================
+Analyzing Tracelogs
+===================
+
+`tracereport.py` provides a basic means to analyze a tracelog and generate a
+report.
+
+    >>> import zc.zservertracelog.tracereport
+
+The '--help' option displays the following usage information:
+
+    >>> try:
+    ...     zc.zservertracelog.tracereport.main(['--help'])
+    ... except SystemExit:
+    ...     pass
+    usage: test [options] trace_log_file
+    <BLANKLINE>
+    Output trace log data showing:
+    <BLANKLINE>
+    - number of active requests,
+    - number of input requests (requests gathering input),
+    - number of application requests,
+    - number of output requests,
+    - number of requests completed in the minute shown,
+    - mean seconds per request and
+    - mean application seconds per request.
+    <BLANKLINE>
+    Note that we don't seem to be logging when a connection to the client
+    is broken, so the number of active requests, and especially the number
+    of outputing requests tends to grow over time. This is spurious.
+    <BLANKLINE>
+    Also, note that, unfortunately, application requests include requests
+    that are running in application threads and requests waiting to get an
+    application thread.
+    <BLANKLINE>
+    When application threads get above the app request threshold, then we
+    show the requests that have been waiting the longest.
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    options:
+      -h, --help            show this help message and exit
+      -a APPS, --app-request-threshold=APPS
+                             Number of pending application requests at which
+                            detailed request information if printed.
+      -r APP_REQUESTS, --app-requests=APP_REQUESTS
+                             How many requests to show when the maximum number of
+                            pending apps is exceeded.
+      -o OLD_REQUESTS, --old-requests=OLD_REQUESTS
+                             Number of seconds beyond which a request is
+                            considered old.
+      -e EVENT_LOG, --event-log=EVENT_LOG
+                             The name of an event log that goes with the trace
+                            log.  This is used to determine when the server is
+                            restarted, so that the running trace data structures
+                            can be reinitialized.
+      --html                 Generate HTML output.
+      --remove-prefix=REMOVE_PREFIX
+                             A prefex to be removed from URLS.
+      --summary-only         Only output summary lines.
+      --summary-lines=SUMMARY_LINES
+                            The number of summary lines to show
+
+Here, we display the summarized report for a sample trace log.
+
+    >>> zc.zservertracelog.tracereport.main(['--summary-only', sample_log])
+    <BLANKLINE>
+    URL statistics:
+       Impact count    min median   mean    max hangs
+    ========= ===== ====== ====== ====== ====== =====
+          9.0     1      9   9.00   9.00      9     0 /planets/saturn.html -> 200
+          8.0     1      8   8.00   8.00      8     0 /moons/io.html -> 200
+          7.0     1      7   7.00   7.00      7     0 /planets/jupiter.html -> 200
+          2.0     1      2   2.00   2.00      2     0 /constellations/andromeda.html -> 500
+          1.0     1      1   1.00   1.00      1     0 /stars/alpha-centauri.html -> 200
+
+This can also be displayed as HTML.
+
+    >>> zc.zservertracelog.tracereport.main(
+    ...     ['--summary-only', '--html', sample_log])
+    <html title="trace log statistics"><body>
+    <BLANKLINE>
+    URL statistics:
+    <table border="1">
+    <tr><th>Impact</th><th>count</th><th>min</th>
+    <th>median</th><th>mean</th><th>max</th><th>hangs</th></tr>
+    <tr>
+    <td><a name="u54">9.0</td><td>1</td><td>9</td><td>9</td><td>9.0</td><td>9</td><td>0</td>
+    <td>/planets/saturn.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u58">8.0</td><td>1</td><td>8</td><td>8</td><td>8.0</td><td>8</td><td>0</td>
+    <td>/moons/io.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u62">7.0</td><td>1</td><td>7</td><td>7</td><td>7.0</td><td>7</td><td>0</td>
+    <td>/planets/jupiter.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u41">2.0</td><td>1</td><td>2</td><td>2</td><td>2.0</td><td>2</td><td>0</td>
+    <td>/constellations/andromeda.html -> 500</td>
+    </tr>
+    <tr>
+    <td><a name="u60">1.0</td><td>1</td><td>1</td><td>1</td><td>1.0</td><td>1</td><td>0</td>
+    <td>/stars/alpha-centauri.html -> 200</td>
+    </tr>
+    </table>
+    </body></html>
+
+TODO: test full report
+TODO: redo examples for sub-second resolution

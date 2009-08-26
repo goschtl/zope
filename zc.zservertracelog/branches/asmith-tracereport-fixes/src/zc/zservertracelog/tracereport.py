@@ -15,9 +15,12 @@
 """Yet another trace log analysis tool
 """
 
-import datetime, optparse, sys
+import datetime
+import optparse
+import sys
+import time
 
-class Request:
+class Request(object):
 
     output_bytes = '-'
 
@@ -53,7 +56,8 @@ class Request:
     def total_seconds(self):
         return (self.end - self.start).seconds
 
-class Times:
+
+class Times(object):
 
     tid = 1l
 
@@ -113,16 +117,28 @@ class Times:
         result.hangs = self.hangs + other.hangs
         return result
 
-def parsedt(s):
-    date, time = s.split(' ')
-    h_m_s, ms = time.split('.')
-    return datetime.datetime(*(
-        map(int, date.split('-'))
-        +
-        map(int, h_m_s.split(':'))
-        +
-        [int(ms)]
-        ))
+
+def parse_line(line):
+    parts = line.split(' ', 4)
+    code, rid, rdate, rtime = parts[:4]
+    if len(parts) > 4:
+        msg = parts[4]
+    else:
+        msg = ''
+    return (code, rid, rdate + ' ' + rtime, msg)
+
+
+def parse_datetime(s):
+    # XXX this chokes on tracelogs with the 'T' time separator.
+    date, t = s.split(' ')
+    try:
+        h_m_s, ms = t.split('.')
+    except ValueError:
+        h_m_s = t.strip()
+        ms = '0'
+    args = [int(arg) for arg in (date.split('-') + h_m_s.split(':') + [ms])]
+    return datetime.datetime(*args)
+
 
 def main(args=None):
     if args is None:
@@ -171,9 +187,9 @@ def main(args=None):
         file = open(file)
 
     for record in file:
-        record = record.split()
-        typ, rid, dt, min = record[:4]
-        dt = parsedt(' '.join([dt,min]))
+        typ, rid, strtime, msg = parse_line(record)
+        min = strtime.split()[1]
+        dt = parse_datetime(strtime)
         if dt == restart:
             continue
         while dt > restart:
@@ -215,7 +231,8 @@ def main(args=None):
                     input -= 1
 
             input += 1
-            request = Request(dt, *record[3:5])
+            method, url = msg.split(' ', 1)
+            request = Request(dt, method, url.strip())
             if remove_prefix and request.url.startswith(remove_prefix):
                 request.url = request.url[len(remove_prefix):]
             requests[rid] = request
@@ -233,7 +250,12 @@ def main(args=None):
             if rid in requests:
                 apps -= 1
                 output += 1
-                requests[rid].A(dt, *record[3:5])
+                try:
+                    response_code, bytes_len = msg.split()
+                except ValueError:
+                    response_code = '500'
+                    bytes_len = len(msg)
+                requests[rid].A(dt, response_code, bytes_len)
         elif typ == 'E':
             if rid in requests:
                 output -= 1
@@ -344,7 +366,7 @@ def minutes_footer_html():
     print '</table>'
 
 def output_minute_text(lmin, requests, input, wait, apps, output, n, spr, spa):
-    print lmin.replace('T', ' '), " %5d I=%3d W=%3d A=%3d O=%5d " % (
+    print lmin, " %5d I=%3d W=%3d A=%3d O=%5d " % (
         len(requests), input, wait, apps, output),
     if n:
         print "N=%4d %10.2f %10.2f" % (n, spr/n, spa/n)
@@ -363,7 +385,7 @@ def output_minute_html(lmin, requests, input, wait, apps, output, n, spr, spa):
     else:
         print '<tr>'
     apps = '<font size="+2"><strong>%s</strong></font>' % apps
-    print td(lmin.replace('T', ' '), len(requests), input, wait, apps, output)
+    print td(lmin, len(requests), input, wait, apps, output)
     if n:
         print td(n, "%10.2f" % (spr/n), "%10.2f" % (spa/n))
     print '</tr>'
@@ -431,7 +453,7 @@ def print_app_requests_html(requests, dt, min_seconds, max_requests, allurls,
             print label
             label = ''
         if not printed:
-            minutes_footer_html()
+            print '</table>'
             print '<table border="1">'
             print '<tr><th>age</th><th>R</th><th>url</th><th>state</th></tr>'
             printed = True
@@ -448,8 +470,7 @@ def print_app_requests_html(requests, dt, min_seconds, max_requests, allurls,
         print '</table>'
         minutes_header_html()
 
-parser = optparse.OptionParser("""
-Usage: %prog [options] trace_log_file
+parser = optparse.OptionParser("""%prog [options] trace_log_file
 
 Output trace log data showing:
 
