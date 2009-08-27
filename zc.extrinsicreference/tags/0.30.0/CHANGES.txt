@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+0.3.0 (2009-08-27)
+------------------
+
+- Fix errors introduced in 0.2.0 refactoring:
+
+  1. Stop referring to extrinsicreference module from ZCML.
+     The code is now in ``__init__.py``.
+
+  2. Revert `registerShortcut` and `unregisterShortcut` changes.
+     These two functions are handlers in ``track_shortcuts.zcml``.
+
+  3. Add more package infrastructure, such as this file.
+
+
+0.2.0 (2009-08-26)
+------------------
+
+- Refactored an existing stable code.
+- Initial release as an egg.
