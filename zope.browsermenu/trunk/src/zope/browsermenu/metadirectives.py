@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Browser configuration code
-
-This module defines the schemas for browser directives.
+"""Menu ZCML directives
 
 $Id: metadirectives.py 103143 2009-08-24 12:28:19Z nadako $
 """

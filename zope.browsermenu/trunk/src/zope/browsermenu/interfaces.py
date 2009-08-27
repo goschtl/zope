@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Browser-Specific Publisher interfaces
+"""Menu-specific interfaces
 
 $Id: browser.py 97455 2009-03-03 19:57:53Z nadako $
 """

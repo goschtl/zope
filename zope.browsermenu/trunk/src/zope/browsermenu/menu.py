@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Menu Registration code.
+"""Menu implementation code
 
 $Id: menu.py 100372 2009-05-25 19:31:23Z tseaver $
 """
