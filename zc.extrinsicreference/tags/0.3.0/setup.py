@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name='zc.extrinsicreference',
-    version='0.3.0dev',
+    version='0.3.0',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description='Extrinsic reference registries',
