@@ -9,3 +9,6 @@ chunk of the Zope Toolkit and its assumptions. It is maintained by the*
 This package provides a "page template" resource class, a resource which
 content is processed with Zope Page Templates engine before returning to
 client.
+
+The resource factory class is registered for "pt", "zpt" and "html" file
+extensions in package's ``configure.zcml`` file.
