@@ -61,7 +61,7 @@ Watch for the ``startLater=True``.
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'}, startLater=True)
   >>> jobid
-  1
+  1392637175 
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
@@ -87,7 +87,7 @@ Add a job again:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'}, startLater=True)
   >>> jobid
-  2
+  1392637176 
 
 It's still in the status ``start later``:
 

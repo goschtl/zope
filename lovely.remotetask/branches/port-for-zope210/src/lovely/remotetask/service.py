@@ -13,13 +13,20 @@
 ##############################################################################
 """Task Service Implementation
 
-$Id$
 """
 __docformat__ = 'restructuredtext'
 
+from lovely.remotetask import interfaces, job, task, processor
+from zope import component
+from zope.app.container import contained
+from zope.app.publication.zopepublication import ZopePublication
+from zope.component.interfaces import ComponentLookupError
+from zope.traversing.api import getParents
+import BTrees
 import datetime
 import logging
 import persistent
+import random
 import threading
 import time
 import zc.queue
@@ -32,6 +39,8 @@ from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
 from zope.component.interfaces import ComponentLookupError
 from lovely.remotetask import interfaces, job, task, processor
+import zope.location
+
 
 log = logging.getLogger('lovely.remotetask')
 
@@ -40,11 +49,13 @@ try:
     from App.config import getConfiguration
     ZOPE2 = True
     del Five
+    import sys
 except ImportError:
     from zope.app.appsetup.product import getProductConfiguration
     ZOPE2 = False
 
 storage = threading.local()
+
 
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
@@ -63,14 +74,20 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     _scheduledJobs  = None
     _scheduledQueue = None
+    _v_nextid = None
+    if not ZOPE2:
+        family = BTrees.family32
 
     def __init__(self):
         super(TaskService, self).__init__()
-        self._counter = 1
-        self.jobs = IOBTree()
-        self._queue = zc.queue.PersistentQueue()
-        self._scheduledJobs = IOBTree()
-        self._scheduledQueue = zc.queue.PersistentQueue()
+        if not ZOPE2:
+            self.jobs = self.family.IO.BTree()
+            self._scheduledJobs = self.family.IO.BTree()
+        else:
+            self.jobs = IOBTree()
+            self._scheduledJobs = IOBTree()
+        self._queue = zc.queue.Queue()
+        self._scheduledQueue = zc.queue.Queue()
 
     def getAvailableTasks(self):
         """See interfaces.ITaskService"""
@@ -80,8 +97,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if task not in self.getAvailableTasks():
             raise ValueError('Task does not exist')
-        jobid = self._counter
-        self._counter += 1
+        jobid = self._generateId()
         newjob = job.Job(jobid, task, input)
         self.jobs[jobid] = newjob
         if startLater:
@@ -99,8 +115,7 @@ class TaskService(contained.Contained, persistent.Persistent):
                    dayOfWeek=(),
                    delay=None,
                   ):
-        jobid = self._counter
-        self._counter += 1
+        jobid = self._generateId()
         newjob = job.CronJob(jobid, task, input,
                 minute, hour, dayOfMonth, month, dayOfWeek, delay)
         self.jobs[jobid] = newjob
@@ -122,16 +137,16 @@ class TaskService(contained.Contained, persistent.Persistent):
     def reschedule(self, jobid):
         self._scheduledQueue.put(self.jobs[jobid])
 
-    def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR,
-                           interfaces.COMPLETED]):
+    def clean(self, status=[interfaces.CANCELLED, interfaces.ERROR,
+                            interfaces.COMPLETED]):
         """See interfaces.ITaskService"""
         allowed = [interfaces.CANCELLED, interfaces.ERROR,
                    interfaces.COMPLETED]
         for key in list(self.jobs.keys()):
             job = self.jobs[key]
-            if job.status in stati:
+            if job.status in status:
                 if job.status not in allowed:
-                    raise ValueError('Not allowed status for removing. %s' % \
+                    raise ValueError('Not allowed status for removing. %s' %
                         job.status)
                 del self.jobs[key]
 
@@ -166,15 +181,17 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if self.__parent__ is None:
             return
-        if self._scheduledJobs == None:
-            self._scheduledJobs = IOBTree()
-        if self._scheduledQueue == None:
+        if self._scheduledJobs is None:
+            if not ZOPE2:
+                self._scheduledJobs = self.family.IOB.Tree()
+            else:
+                self._scheduledJobs = IOBTree()
+        if self._scheduledQueue is None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
         if not ZOPE2:
-            servicePath = [parent.__name__ for parent in zapi.getParents(self)
-                            if parent.__name__]
-            servicePath.append(self.__name__)
+            servicePath = [parent.__name__ for parent in getParents(self)
+                           if parent.__name__]
         else:
             servicePath = [path for path in self.getPhysicalPath() if path]
         servicePath.reverse()
@@ -212,7 +229,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
         if not ZOPE2:
-            path = [parent.__name__ for parent in zapi.getParents(self)
+            path = [parent.__name__ for parent in getParents(self)
                     if parent.__name__]
             path.append('remotetasks')
             path.reverse()
@@ -257,6 +274,8 @@ class TaskService(contained.Contained, persistent.Persistent):
             job = self.jobs[jobid]
         if job is None:
             return False
+        if job.status == interfaces.COMPLETED:
+            return True
         try:
             jobtask = component.getUtility(self.taskInterface, name=job.task)
         except ComponentLookupError, error:
@@ -349,6 +368,26 @@ class TaskService(contained.Contained, persistent.Persistent):
         jobs = self._scheduledJobs[nextCallTime]
         self._scheduledJobs[nextCallTime] = jobs + (job,)
 
+    def _generateId(self):
+        """Generate an id which is not yet taken.
+
+        This tries to allocate sequential ids so they fall into the
+        same BTree bucket, and randomizes if it stumbles upon a
+        used one.
+        """
+        while True:
+            if self._v_nextid is None:
+                if not ZOPE2:
+                    self._v_nextid = random.randrange(0, self.family.maxint)
+                else:
+                    self._v_nextid = random.randrange(0, sys.maxint)
+            uid = self._v_nextid
+            self._v_nextid += 1
+            if uid not in self.jobs:
+                return uid
+            self._v_nextid = None
+
+
 
 def getAutostartServiceNames():
     """get a list of services to start"""
@@ -394,7 +433,7 @@ def bootStrapSubscriber(event):
             sites = []
             sites.append(root_folder)
             for folder in root_folder.values():
-                if ISite.providedBy(folder):
+                if zope.location.interfaces.ISite.providedBy(folder):
                     sites.append(folder)
         else:
             sites = [root_folder.get(siteName)]

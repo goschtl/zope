@@ -113,7 +113,7 @@ class ITaskService(IContained):
         This is neccessary if the cron jobs parameters are changed.
         """
 
-    def clean(stati=[CANCELLED, ERROR, COMPLETED]):
+    def clean(status=[CANCELLED, ERROR, COMPLETED]):
         """removes all jobs which are completed or canceled or have errors."""
 
     def cancel(jobid):
