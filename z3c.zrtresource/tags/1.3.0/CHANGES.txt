@@ -11,7 +11,7 @@ CHANGES
 - Register ZRTFileResourceFactory as a resource factory with name "zrt" in
   package's configure.zcml. This makes ZRT resources created automatically
   when using ``browser:resource`` directive for files with "zrt" extensions.
-  It will also make *.zrt files inside resourse directories a ZRTFileResource.
+  It will also make \*.zrt files inside resourse directories a ZRTFileResource.
 
 - Get rid of ``zope.app.testing`` test dependency.
 
