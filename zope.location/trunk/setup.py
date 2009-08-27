@@ -21,7 +21,7 @@ def read(*rnames):
     return text
 
 setup(name='zope.location',
-      version = '3.5.5dev',
+      version = '3.6.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Location',
@@ -36,7 +36,7 @@ setup(name='zope.location',
           read('CHANGES.txt')
           ),
       license='ZPL 2.1',
-      keywords=('zope3 location strutural'),
+      keywords=('zope3 location structural'),
       classifiers = [
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -53,7 +53,6 @@ setup(name='zope.location',
       namespace_packages=['zope',],
       install_requires=['setuptools',
                         'zope.interface',
-                        'zope.deferredimport',
                         'zope.schema>=3.5.1dev',
                         'zope.component',
                         'zope.proxy>3.3',

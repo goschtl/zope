@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+3.6.0 (2009-08-27)
+------------------
+
+- New feature release: deprecated locationCopy, CopyPersistent and
+  PathPersistent from zope.location.pickling. These changes were already part
+  of the 3.5.3 release, which was erroneously numbered as a bugfix relese.
+
+- Removed dependency on zope.deferredimport, directly import deprecated modules
+  without using it.
+
 3.5.5 (2009-08-15)
 ------------------
 
