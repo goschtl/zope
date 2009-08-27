@@ -13,14 +13,14 @@
 ##############################################################################
 """Browser Menu Item Tests
 
-$Id: test_menu.py 29570 2005-03-18 22:53:37Z rogerineichen $
+$Id$
 """
 import unittest
 from zope.testing import doctest, cleanup, doctestunit
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('../menu.txt',
+        doctest.DocFileSuite('../README.txt',
                              setUp=lambda test:cleanup.setUp(),
                              tearDown=lambda test:cleanup.tearDown(),
                              globs={'pprint': doctestunit.pprint},

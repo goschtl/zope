@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Directives Tests
 
-$Id: test_menudirectives.py 70102 2006-09-11 20:47:15Z ctheune $
+$Id$
 """
 import unittest
 

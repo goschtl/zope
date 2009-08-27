@@ -13,7 +13,7 @@
 ##############################################################################
 """Test fields.
 
-$Id: test_fields.py 29570 2005-03-18 22:53:37Z rogerineichen $
+$Id$
 """
 import unittest
 from zope.testing import cleanup, doctest

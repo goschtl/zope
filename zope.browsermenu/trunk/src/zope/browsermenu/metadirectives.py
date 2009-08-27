@@ -13,7 +13,7 @@
 ##############################################################################
 """Menu ZCML directives
 
-$Id: metadirectives.py 103143 2009-08-24 12:28:19Z nadako $
+$Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface

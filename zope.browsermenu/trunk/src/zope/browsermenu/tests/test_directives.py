@@ -13,7 +13,7 @@
 ##############################################################################
 """'browser' namespace directive tests
 
-$Id: test_directives.py 103143 2009-08-24 12:28:19Z nadako $
+$Id$
 """
 
 import sys

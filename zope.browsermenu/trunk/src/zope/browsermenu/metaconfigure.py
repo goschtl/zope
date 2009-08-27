@@ -13,7 +13,7 @@
 ##############################################################################
 """Menu Directives Configuration Handlers
 
-$Id: menumeta.py 100372 2009-05-25 19:31:23Z tseaver $
+$Id$
 """
 from zope.browser.interfaces import IAdding
 from zope.component import getGlobalSiteManager, getUtility

@@ -13,7 +13,7 @@
 ##############################################################################
 """Menu-specific interfaces
 
-$Id: browser.py 97455 2009-03-03 19:57:53Z nadako $
+$Id$
 """
 from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.interface import Interface, directlyProvides

@@ -60,7 +60,7 @@
    <InterfaceClass zope.publisher.interfaces.browser.IDefaultBrowserLayer>),
   {}))
 
-$Id: test_addMenuItem.py 100126 2009-05-19 12:55:59Z faassen $
+$Id$
 """
 
 import unittest
