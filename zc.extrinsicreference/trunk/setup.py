@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.extrinsicreference",
-    version = "0.2.0dev",
+    version = "0.3.0dev",
     license = 'ZPL 2.1',
     description = '',
     author = 'Zope Corporation and Contributors',
@@ -16,8 +16,8 @@ setup(
         'setuptools',
         'zc.shortcut',
         'zope.app.keyreference',
+        'zope.component',
         'zope.interface',
-        'zope.location',
         'zope.testing',
         ],
     zip_safe = False

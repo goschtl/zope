@@ -3,12 +3,12 @@
     xmlns:browser='http://namespaces.zope.org/browser'
     i18n_domain="zc.intranet">
 
-  <class class=".extrinsicreference.ExtrinsicReferences">
+  <class class=".ExtrinsicReferences">
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable"/>
   </class>
 
   <browser:addMenuItem
-      class=".extrinsicreference.ExtrinsicReferences"
+      class=".ExtrinsicReferences"
       title="Extrinsic References"
       permission= "zope.ManageContent"
   />

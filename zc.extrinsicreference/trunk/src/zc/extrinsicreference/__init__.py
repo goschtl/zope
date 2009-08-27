@@ -89,19 +89,17 @@ class ExtrinsicReferences(persistent.Persistent):
         for kr in refs:
             yield kr()
 
-    @property
-    def shortcut_registry(self):
-        return zope.component.queryUtility(
-            zc.extrinsicreference.interfaces.IExtrinsicReferences, 'shortcuts')
 
-    def registerShortcut(shortcut, event):
-        """Subscriber to add an extrinsic reference."""
-        if self.shortcut_registry is not None:
-            # We use raw_target because we don't want a proxy.
-            registry.add(shortcut.raw_target, shortcut)
+def registerShortcut(shortcut, event):
+    """Subscriber to add an extrinsic reference."""
+    registry = zope.component.queryUtility(IExtrinsicReferences, 'shortcuts')
+    if registry is not None:
+        # We use raw_target because we don't want a proxy.
+        registry.add(shortcut.raw_target, shortcut)
 
-    def unregisterShortcut(shortcut, event):
-        """Subscriber to remove an extrinsic reference."""
-        if self.shortcut_registry is not None:
-            # We use raw_target because we don't want a proxy.
-            registry.discard(shortcut.raw_target, shortcut)
+def unregisterShortcut(shortcut, event):
+    """Subscriber to remove an extrinsic reference."""
+    registry = zope.component.queryUtility(IExtrinsicReferences, 'shortcuts')
+    if registry is not None:
+        # We use raw_target because we don't want a proxy.
+        registry.discard(shortcut.raw_target, shortcut)
