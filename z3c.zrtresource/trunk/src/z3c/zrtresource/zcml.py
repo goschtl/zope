@@ -21,7 +21,8 @@ from zope.component.zcml import handler
 from zope.interface import Interface
 from zope.publisher.interfaces import browser
 from zope.security.checker import CheckerPublic, NamesChecker
-from zope.app.publisher.browser import metadirectives, resourcemeta
+from zope.browserresource import metadirectives
+from zope.browserresource import metaconfigure as resourcemeta
 
 import z3c.zrtresource
 

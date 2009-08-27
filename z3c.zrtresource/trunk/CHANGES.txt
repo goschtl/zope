@@ -2,10 +2,15 @@
 CHANGES
 =======
 
-1.2.1 (unreleased)
+1.3.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use new ``zope.browserresource`` package instead of ``zope.app.publisher``,
+  as the resources mechanism was moved there to reduce dependencies.
+
+- Get rid of ``zope.app.testing`` test dependency.
+
+- Remove unused SETUP.CFG and z3c.zrtresource-meta.zcml files.
 
 
 1.2.0 (2009-06-25)

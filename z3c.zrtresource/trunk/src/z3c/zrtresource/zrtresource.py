@@ -16,9 +16,11 @@
 $Id$
 """
 __docformat__='restructuredtext'
+from zope.browserresource.file import File, FileResource
+from zope.browserresource.interfaces import IResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
+from zope.interface import implements, classProvides
 from zope.site.hooks import getSite
-from zope.app.publisher.fileresource import File
-from zope.app.publisher.browser.fileresource import FileResource
 
 from z3c.zrtresource import processor, replace
 
@@ -33,6 +35,9 @@ class ZRTFileResource(FileResource):
 
 
 class ZRTFileResourceFactory(object):
+    
+    implements(IResourceFactory)
+    classProvides(IResourceFactoryFactory)
 
     def __init__(self, path, checker, name):
         self.__file = File(path, name)

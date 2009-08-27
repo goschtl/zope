@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.1dev'
+version = '1.3.0dev'
 
 
 setup(name='z3c.zrtresource',
@@ -54,14 +54,13 @@ setup(name='z3c.zrtresource',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['z3c'],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
+      extras_require = dict(test=['zope.testing',
                                   'zope.traversing',
                                   ]),
       install_requires = ['setuptools',
                           'zope.site',
                           'zope.pagetemplate >= 3.5.0',
-                          'zope.app.publisher',
+                          'zope.browserresource',
                           'zope.component',
                           'zope.configuration',
                           'zope.interface',
