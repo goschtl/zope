@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+      name="zrt"
+      component=".zrtresource.ZRTFileResourceFactory"
+      provides="zope.browserresource.interfaces.IResourceFactoryFactory"
+      />
+
+</configure>

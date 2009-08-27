@@ -1,0 +1,100 @@
+==========================
+``zrt-resource`` Directive
+==========================
+
+This package provides a new directive to use the special resource
+directive. Let's register it first:
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="z3c.zrtresource" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+Now we can register a resource:
+
+  >>> import tempfile
+  >>> fn = tempfile.mktemp('.css')
+  >>> open(fn, 'w').write('''\
+  ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... h1 {
+  ...   color: red;
+  ...   background: url('../img1/mybackground.gif');
+  ... }
+  ... ''')
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
+  ...   <zrt-resource
+  ...       name="test.css"
+  ...       file="%s" />
+  ... </configure>
+  ... ''' %fn, context=context)
+
+Now let's see whether the adapter has been registered:
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.publisher.browser import TestRequest
+  >>> resource = zope.component.getAdapter(
+  ...     TestRequest(), zope.interface.Interface, name='test.css')
+
+Now run it:
+
+  >>> print resource.GET()
+  h1 {
+    color: red;
+    background: url('++resource++/img/mybackground.gif');
+  }
+
+We can also register a ZRT resource using standard ``browser:resource`` directive.
+The ``configure.zcml`` file in this package registers a ZRT resource factory for
+files with "zrt" extension, so any file with "zrt" extension will be a ZRT
+resource.
+
+First, let's include the ``browser:resource`` directive and the resource factory
+registration:
+
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="zope.browserresource" file="meta.zcml" />
+  ...   <include package="zope.component" file="meta.zcml" />
+  ...   <include package="z3c.zrtresource" />
+  ... </configure>
+  ... ''')
+
+Now we need to create a file with "zrt" extension:
+
+  >>> fn = tempfile.mktemp('.zrt')
+  >>> open(fn, 'w').write('''\
+  ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... h1 {
+  ...   color: red;
+  ...   background: url('../img1/mybackground.gif');
+  ... }
+  ... ''')
+
+And register it as a resource using browser:resource directive.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
+  ...   <resource
+  ...       name="test2.css"
+  ...       file="%s" />
+  ... </configure>
+  ... ''' %fn, context=context)
+
+Let's see whether the adapter has been registered:
+
+  >>> resource2 = zope.component.getAdapter(
+  ...     TestRequest(), zope.interface.Interface, name='test2.css')
+
+Now, let's render it and check if ZRT mechanism works for it.
+
+  >>> print resource2.GET()
+  h1 {
+    color: red;
+    background: url('++resource++/img/mybackground.gif');
+  }
+  
