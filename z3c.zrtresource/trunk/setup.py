@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.3.0dev'
+version = '1.3.1dev'
 
 
 setup(name='z3c.zrtresource',
@@ -59,7 +59,7 @@ setup(name='z3c.zrtresource',
                                   ]),
       install_requires = ['setuptools',
                           'zope.site',
-                          'zope.pagetemplate >= 3.5.0',
+                          'zope.pagetemplate >= 3.5',
                           'zope.browserresource',
                           'zope.component',
                           'zope.configuration',
