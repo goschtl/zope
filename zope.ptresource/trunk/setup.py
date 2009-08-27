@@ -19,7 +19,7 @@ long_description = (open('README.txt').read() + '\n\n' +
                     open('CHANGES.txt').read())
 
 setup(name='zope.ptresource',
-      version = '3.9.0dev',
+      version = '3.9.1dev',
       url='http://pypi.python.org/pypi/zope.ptresource/',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
