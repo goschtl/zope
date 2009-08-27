@@ -146,6 +146,9 @@ We register a browser page for the sub-item:
 
 Using the test application, we are able to call the page and get its result:
 
+    >>> testapp.get('/subitem', status=302).body
+    'See http://localhost/subitem/'
+
     >>> testapp.get('/subitem/index.html', status=200).body
     'XYZ: <Root object at ...>'
 

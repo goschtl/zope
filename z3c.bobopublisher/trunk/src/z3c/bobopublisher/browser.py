@@ -37,6 +37,13 @@ class BrowserPage(object):
         >>> verifyObject(IBrowserPage, obj)
         True
 
+    This class is not directly usable and should be subclassed:
+
+        >>> obj()
+        Traceback (most recent call last):
+        ...
+        NotImplementedError: __call__ method not implemented
+
     """
 
     implements(IBrowserPage)
