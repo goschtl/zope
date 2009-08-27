@@ -57,12 +57,12 @@ class AbsoluteURL(object):
         >>> a = SubItem(u'\xe1', root)
         >>> b = SubItem(u'b', a)
 
-        >>> from zope.component import getGlobalSiteManager
+        >>> from zope.component import provideAdapter
         >>> from zope.location.traversing import LocationPhysicallyLocatable
-        >>> getGlobalSiteManager().registerAdapter(LocationPhysicallyLocatable)
+        >>> provideAdapter(LocationPhysicallyLocatable)
 
         >>> from zope.interface import Interface
-        >>> getGlobalSiteManager().registerAdapter(AbsoluteURL, (Interface, Interface), IAbsoluteURL)
+        >>> provideAdapter(AbsoluteURL, (Interface, Interface), IAbsoluteURL)
 
     Verify the object:
 

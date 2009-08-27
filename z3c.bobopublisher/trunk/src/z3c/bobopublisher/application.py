@@ -18,8 +18,6 @@ $Id$
 
 import bobo
 
-from zope.component import getGlobalSiteManager
-
 
 class Application(bobo.Application):
     """Create a WSGI application based on bobo"""

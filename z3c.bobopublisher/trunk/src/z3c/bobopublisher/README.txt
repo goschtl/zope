@@ -40,7 +40,7 @@ zope.location.interfaces.IRoot:
 We register a dummy root object with a single hard-coded sub-item for our
 testing purposes:
 
-    >>> from zope.component import adapts, getGlobalSiteManager
+    >>> from zope.component import adapts, provideAdapter, provideUtility
     >>> from zope.interface import implements, Interface
     >>> from zope.interface.common.mapping import IReadMapping
     >>> from zope.location.interfaces import IRoot
@@ -53,7 +53,7 @@ testing purposes:
     ...     pass
     >>> class SubItem(object):
     ...     implements(ISubItem)
-    >>> getGlobalSiteManager().registerUtility(Root(), IRoot)
+    >>> provideUtility(Root(), IRoot)
 
 
 PublishTraverse adapters
@@ -70,8 +70,8 @@ PublishTraverse adapter, so every request will raise an exception:
 z3c.bobopublisher provides two generic PublishTraverse adapters:
 
     >>> from z3c.bobopublisher.traversing import PublishTraverse, PublishTraverseMapping
-    >>> getGlobalSiteManager().registerAdapter(PublishTraverse)
-    >>> getGlobalSiteManager().registerAdapter(PublishTraverseMapping)
+    >>> provideAdapter(PublishTraverse)
+    >>> provideAdapter(PublishTraverseMapping)
 
 It is now possible to perform a GET request on the test application:
 
@@ -94,7 +94,7 @@ request; we register a browser page for the root object:
     ...         self.request = request
     ...     def __call__(self):
     ...         return u'ABC'
-    >>> getGlobalSiteManager().registerAdapter(BrowserPage, name='index.html')
+    >>> provideAdapter(BrowserPage, name='index.html')
 
 Using the test application, we are able to call the page and get its result:
 
@@ -112,7 +112,7 @@ It is also possible to register a page for a specific HTTP method:
     ...         self.request = request
     ...     def __call__(self):
     ...         return u'DELETE'
-    >>> getGlobalSiteManager().registerAdapter(BrowserPageDelete, name='index.html')
+    >>> provideAdapter(BrowserPageDelete, name='index.html')
 
 Using the test application, we are able to call the page and get its result:
 
@@ -142,7 +142,7 @@ We register a browser page for the sub-item:
     ...         self.request = request
     ...     def __call__(self):
     ...         return u'XYZ: %s' % repr(self.context.__parent__)
-    >>> getGlobalSiteManager().registerAdapter(SubItemBrowserPage, name='index.html')
+    >>> provideAdapter(SubItemBrowserPage, name='index.html')
 
 Using the test application, we are able to call the page and get its result:
 
@@ -209,7 +209,7 @@ We register a dummy adapter for IPrincipal:
     >>> from zope.security.testing import Principal
     >>> def principal(key):
     ...     return key == 'test' and Principal(u'test') or None
-    >>> getGlobalSiteManager().registerAdapter(principal, (Interface,), IPrincipal)
+    >>> provideAdapter(principal, (Interface,), IPrincipal)
 
 Using the test application, we are able to call the page and get its result:
 
