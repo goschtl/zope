@@ -14,11 +14,11 @@
 ##############################################################################
 """Yet another trace log analysis tool
 """
-
 import datetime
 import optparse
 import sys
 import time
+
 
 class Request(object):
 
@@ -188,7 +188,8 @@ def main(args=None):
 
     for record in file:
         typ, rid, strtime, msg = parse_line(record)
-        min = strtime.split()[1]
+        min = strtime.split('.')[0]
+        min = min[:-3]
         dt = parse_datetime(strtime)
         if dt == restart:
             continue
@@ -366,7 +367,7 @@ def minutes_footer_html():
     print '</table>'
 
 def output_minute_text(lmin, requests, input, wait, apps, output, n, spr, spa):
-    print lmin, " %5d I=%3d W=%3d A=%3d O=%5d " % (
+    print lmin, "%5d I=%3d W=%3d A=%3d O=%4d" % (
         len(requests), input, wait, apps, output),
     if n:
         print "N=%4d %10.2f %10.2f" % (n, spr/n, spa/n)
