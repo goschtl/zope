@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-1.1.1 (Unreleased)
+1.1.1 (2009-08-28)
 ------------------
+
+- Tring to get object instead of MethodType object for AfterCallEvent
 
 
 1.1.0 (2009-08-11)

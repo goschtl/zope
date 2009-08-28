@@ -85,7 +85,11 @@ class BrowserFactory(object):
 
 
 def afterCall(self, request, ob):
-    notify(AfterCallEvent(ob, request))
+    orig = removeAllProxies(ob)
+    if type(orig) is MethodType:
+        notify(AfterCallEvent(orig.im_self, request))
+    else:
+        notify(AfterCallEvent(orig, request))
 
     txn = transaction.get()
     if txn.isDoomed():
