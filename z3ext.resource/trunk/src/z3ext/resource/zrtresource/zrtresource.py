@@ -51,14 +51,7 @@ class ZRTFileResource(FileResource):
 
     def GET(self):
         """ default content """
-        data = super(ZRTFileResource, self).GET()
-        if self.request.response.getStatus() == 304:
-            return ''
-
-        # Process the file
-        p = ExtZRTProcessor(data, commands={'replace': Replace},
-                            commands_file = self._commands_file)
-        return p.process(getSite(), self.request)
+        return self.render(self.request)
 
 
 class ZRTFileResourceFactory(object):
