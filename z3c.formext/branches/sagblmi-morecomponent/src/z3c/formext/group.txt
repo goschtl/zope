@@ -154,8 +154,7 @@ We can now get the form definition
                  'minLength': 0,
                  'name': 'form.widgets.address',
                  'xtype': 'textfield'}],
-      'title': u'License',
-      'xtype': 'panel'},
+      'title': u'License'},
      {'items': [{'allowBlank': False,
                  'fieldLabel': u'Model',
                  'id': 'form-widgets-model',
@@ -177,8 +176,7 @@ We can now get the form definition
                  'minLength': 0,
                  'name': 'form.widgets.year',
                  'xtype': 'textfield'}],
-      'title': u'Car',
-      'xtype': 'panel'}]
+      'title': u'Car'}]
 
 
 Ext JS provide a lot of way to support grouping fields.
@@ -187,10 +185,10 @@ Ext JS provide a lot of way to support grouping fields.
  * TabPanel
  * FieldSet
 
-By default, group are rendered as 'panel'
+By default, group are rendered without xtype
 
-  >>> interfaces.IExtJSComponent(myForm.groups[0])._getConfig()['xtype']
-  'panel'
+  >>> 'xtype' not in interfaces.IExtJSComponent(myForm.groups[0])._getConfig().keys()
+  True
 
 You can override this attribute by providing an adapter for IExtJSConfigValue
 
@@ -209,8 +207,8 @@ You can override this attribute by providing an adapter for IExtJSConfigValue
   'tabpanel'
 
 Only the LicenseGroup class is affected by the adapter
-  >>> interfaces.IExtJSComponent(myForm.groups[1])._getConfig()['xtype']
-  'panel'
+  >>> 'xtype' not in interfaces.IExtJSComponent(myForm.groups[1])._getConfig()
+  True
 
   >>> from zope.component import getGlobalSiteManager
   >>> gsm = getGlobalSiteManager()
@@ -307,8 +305,7 @@ Let's create a FormPanel with 1 fieldset and 2 tabs
                                    'minLength': 0,
                                    'name': 'form.widgets.address',
                                    'xtype': 'textfield'}],
-                        'title': u'License',
-                        'xtype': 'panel'},
+                        'title': u'License'},
                        {'items': [{'allowBlank': False,
                                    'fieldLabel': u'Model',
                                    'id': 'form-widgets-model',
@@ -330,8 +327,7 @@ Let's create a FormPanel with 1 fieldset and 2 tabs
                                    'minLength': 0,
                                    'name': 'form.widgets.year',
                                    'xtype': 'textfield'}],
-                        'title': u'Car',
-                        'xtype': 'panel'}],
+                        'title': u'Car'}],
              'xtype': 'tabpanel'}],
   'submitURL': 'http://127.0.0.1',
   'xtype': 'formpanel'}

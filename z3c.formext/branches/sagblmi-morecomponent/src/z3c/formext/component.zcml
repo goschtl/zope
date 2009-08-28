@@ -8,7 +8,7 @@
       factory=".component.Panel"
       />
   <adapter
-      factory=".component.GroupPanel"
+      factory=".component.Group"
       />
   <adapter
       factory=".component.FormPanel"

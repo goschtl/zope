@@ -105,7 +105,7 @@ def setupExtJSComponents():
                 ISingleCheckBoxWidget, zope.schema.interfaces.IField),
             interfaces.IExtJSComponent)
     zope.component.provideAdapter(component.Panel)
-    zope.component.provideAdapter(component.GroupPanel)
+    zope.component.provideAdapter(component.Group)
     zope.component.provideAdapter(component.FormPanel)
     zope.component.provideAdapter(component.ExtFormPanel)
     zope.component.provideAdapter(component.Button)

@@ -352,22 +352,24 @@ def getGroupsConfig(form):
     return items
 
 
-class Panel(Component):
-    zope.interface.implements(interfaces.IExtJSComponent)
-    zope.component.adapts(IForm)
+class Container(Component):
+    """Container config
+    """
 
-    xtype = 'panel'
+    xtype = None
+    layout = None
 
     def __init__(self, form):
         self.form = form
 
     def _getConfig(self):
-        config = dict(
-            xtype=self.xtype)
+        config = {}
+        if self.xtype:
+            config['xtype'] = self.xtype
+        if self.layout:
+            config['layout'] = self.layout
         if self.form.label:
             config['title'] = self.form.label
-        else:
-            config['xtype'] = 'container'
         if not self.form.widgets:
             self.form.updateWidgets()
         items = getWidgetsConfig(self.form, asDict=False)
@@ -384,12 +386,19 @@ class Panel(Component):
         return config
 
 
-class GroupPanel(Panel):
+class Panel(Container):
+    zope.interface.implements(interfaces.IExtJSComponent)
+    zope.component.adapts(IForm)
+
+    xtype = 'panel'
+
+
+class Group(Container):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(IGroup)
 
     def _getConfig(self):
-        config = super(GroupPanel, self)._getConfig()
+        config = super(Group, self)._getConfig()
         items = config.get("items", [])
         items += getGroupsConfig(self.form)
         config['items'] = items
