@@ -68,13 +68,41 @@ Here, we display the summarized report for a sample trace log.
     URL statistics:
        Impact count    min median   mean    max hangs
     ========= ===== ====== ====== ====== ====== =====
-         62.0     1     62  62.00  62.00     62     0 /constellations/andromeda.html -> 500
-         61.0     1     61  61.00  61.00     61     0 /stars/alpha-centauri.html -> 200
-         60.0     1     60  60.00  60.00     60     0 /space-travel/plans/supplies.txt -> 304
-         60.0     2      0  30.00  30.00     60     0 /favicon.png -> 404
-          9.0     1      9   9.00   9.00      9     0 /planets/saturn.html -> 200
-          8.0     1      8   8.00   8.00      8     0 /moons/io.html -> 200
-          7.0     1      7   7.00   7.00      7     0 /planets/jupiter.html -> 200
+         62.4     1  62.42  62.42  62.42  62.42     0 /constellations/andromeda.html -> 500
+         61.5     1  61.50  61.50  61.50  61.50     0 /stars/alpha-centauri.html -> 200
+         60.3     1  60.34  60.34  60.34  60.34     0 /space-travel/plans/supplies.txt -> 304
+         60.3     2   0.13  30.13  30.13  60.13     0 /favicon.png -> 404
+          9.7     1   9.69   9.69   9.69   9.69     0 /planets/saturn.html -> 200
+          8.3     1   8.30   8.30   8.30   8.30     0 /moons/io.html -> 200
+          7.3     1   7.34   7.34   7.34   7.34     0 /planets/jupiter.html -> 200
+          0.9     1   0.88   0.88   0.88   0.88     0 /stories/aliens-posing-as-humans.html -> 200
+          0.7     2   0.35   0.37   0.37   0.38     0 /space-travel/plans/signals.html -> 200
+          0.7     2   0.34   0.36   0.36   0.38     0 /space-travel/plans/space-logs.txt -> 200
+          0.6     1   0.64   0.64   0.64   0.64     0 /columns/t-jansen -> 200
+          0.5     3   0.15   0.16   0.16   0.18     0 /space-travelers/famous/kirk.jpg -> 200
+          0.5     1   0.47   0.47   0.47   0.47     0 /submit-photo -> 200
+          0.4     1   0.42   0.42   0.42   0.42     0 /space-travel/plans/launchpad.html -> 200
+          0.4     1   0.40   0.40   0.40   0.40     0 /space-travel/plans/moon-buggy.jpg -> 200
+          0.4     1   0.38   0.38   0.38   0.38     0 /space-travel/plans/space-diary.txt -> 200
+          0.4     2   0.18   0.19   0.19   0.19     0 /faqs/how-to-recognize-lazer-fire.html -> 200
+          0.4     1   0.36   0.36   0.36   0.36     0 /space-travel/plans/orbit.html -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /js/photo.js -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/visor.jpg -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/lunar-cycles.html -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/launchpad.html -> 304
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/moon-base.jpg -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /faqs/how-to-charge-lazers.html -> 200
+          0.3     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/moon-base.jpg -> 304
+          0.3     1   0.34   0.34   0.34   0.34     0 /space-travel/plans/supplies.txt -> 200
+          0.3     1   0.33   0.33   0.33   0.33     0 /space-travel/plans/cryostasis.txt -> 200
+          0.3     1   0.32   0.32   0.32   0.32     0 /space-travel/plans/space-suit.jpg -> 200
+          0.3     1   0.32   0.32   0.32   0.32     0 /space-travel/ships/tardis.html -> 200
+          0.3     1   0.31   0.31   0.31   0.31     0 /space-travel/plans/signals.html -> 304
+          0.3     1   0.25   0.25   0.25   0.25     0 /approve-photo -> 200
+          0.2     1   0.18   0.18   0.18   0.18     0 /ufo-sightings/report -> 200
+          0.2     1   0.16   0.16   0.16   0.16     0 /space-travelers/famous/spock.jpg -> 200
+          0.2     1   0.16   0.16   0.16   0.16     0 /login -> 302
+          0.1     1   0.14   0.14   0.14   0.14     0 /space-travel/ships/soyuz.html -> 404
 
 This can also be displayed as HTML.
 
@@ -87,32 +115,144 @@ This can also be displayed as HTML.
     <tr><th>Impact</th><th>count</th><th>min</th>
     <th>median</th><th>mean</th><th>max</th><th>hangs</th></tr>
     <tr>
-    <td><a name="u41">62.0</td><td>1</td><td>62</td><td>62</td><td>62.0</td><td>62</td><td>0</td>
+    <td><a name="u41">62.41844</td><td>1</td><td>62.41844</td><td>62.41844</td><td>62.41844</td><td>62.41844</td><td>0</td>
     <td>/constellations/andromeda.html -> 500</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u60">61.0</td><td>1</td><td>61</td><td>61</td><td>61.0</td><td>61</td><td>0</td>
+    <td><a name="u60">61.502412</td><td>1</td><td>61.502412</td><td>61.502412</td><td>61.502412</td><td>61.502412</td><td>0</td>
     <td>/stars/alpha-centauri.html -> 200</td>
     </tr>
     <tr>
-    <td><a name="u38">60.0</td><td>1</td><td>60</td><td>60</td><td>60.0</td><td>60</td><td>0</td>
+    <td><a name="u38">60.3431</td><td>1</td><td>60.3431</td><td>60.3431</td><td>60.3431</td><td>60.3431</td><td>0</td>
     <td>/space-travel/plans/supplies.txt -> 304</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u48">60.0</td><td>2</td><td>0</td><td>30.0</td><td>30.0</td><td>60</td><td>0</td>
+    <td><a name="u48">60.267171</td><td>2</td><td>0.132899</td><td>30.1335855</td><td>30.1335855</td><td>60.134272</td><td>0</td>
     <td>/favicon.png -> 404</td>
     </tr>
     <tr>
-    <td><a name="u54">9.0</td><td>1</td><td>9</td><td>9</td><td>9.0</td><td>9</td><td>0</td>
+    <td><a name="u54">9.693661</td><td>1</td><td>9.693661</td><td>9.693661</td><td>9.693661</td><td>9.693661</td><td>0</td>
     <td>/planets/saturn.html -> 200</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u58">8.0</td><td>1</td><td>8</td><td>8</td><td>8.0</td><td>8</td><td>0</td>
+    <td><a name="u58">8.29953</td><td>1</td><td>8.29953</td><td>8.29953</td><td>8.29953</td><td>8.29953</td><td>0</td>
     <td>/moons/io.html -> 200</td>
     </tr>
     <tr>
-    <td><a name="u62">7.0</td><td>1</td><td>7</td><td>7</td><td>7.0</td><td>7</td><td>0</td>
+    <td><a name="u62">7.339574</td><td>1</td><td>7.339574</td><td>7.339574</td><td>7.339574</td><td>7.339574</td><td>0</td>
     <td>/planets/jupiter.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u67">0.879732</td><td>1</td><td>0.879732</td><td>0.879732</td><td>0.879732</td><td>0.879732</td><td>0</td>
+    <td>/stories/aliens-posing-as-humans.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u63">0.7302</td><td>2</td><td>0.3526</td><td>0.3651</td><td>0.3651</td><td>0.3776</td><td>0</td>
+    <td>/space-travel/plans/signals.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u42">0.7221</td><td>2</td><td>0.3385</td><td>0.36105</td><td>0.36105</td><td>0.3836</td><td>0</td>
+    <td>/space-travel/plans/space-logs.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u37">0.63826</td><td>1</td><td>0.63826</td><td>0.63826</td><td>0.63826</td><td>0.63826</td><td>0</td>
+    <td>/columns/t-jansen -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u49">0.49124</td><td>3</td><td>0.1529</td><td>0.16141</td><td>0.163746666667</td><td>0.17693</td><td>0</td>
+    <td>/space-travelers/famous/kirk.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u46">0.470764</td><td>1</td><td>0.470764</td><td>0.470764</td><td>0.470764</td><td>0.470764</td><td>0</td>
+    <td>/submit-photo -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u52">0.4232</td><td>1</td><td>0.4232</td><td>0.4232</td><td>0.4232</td><td>0.4232</td><td>0</td>
+    <td>/space-travel/plans/launchpad.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u50">0.3967</td><td>1</td><td>0.3967</td><td>0.3967</td><td>0.3967</td><td>0.3967</td><td>0</td>
+    <td>/space-travel/plans/moon-buggy.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u55">0.3794</td><td>1</td><td>0.3794</td><td>0.3794</td><td>0.3794</td><td>0.3794</td><td>0</td>
+    <td>/space-travel/plans/space-diary.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u45">0.374609</td><td>2</td><td>0.184486</td><td>0.1873045</td><td>0.1873045</td><td>0.190123</td><td>0</td>
+    <td>/faqs/how-to-recognize-lazer-fire.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u69">0.3645</td><td>1</td><td>0.3645</td><td>0.3645</td><td>0.3645</td><td>0.3645</td><td>0</td>
+    <td>/space-travel/plans/orbit.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u65">0.3542</td><td>1</td><td>0.3542</td><td>0.3542</td><td>0.3542</td><td>0.3542</td><td>0</td>
+    <td>/js/photo.js -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u71">0.354</td><td>1</td><td>0.354</td><td>0.354</td><td>0.354</td><td>0.354</td><td>0</td>
+    <td>/space-travel/plans/visor.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u59">0.3526</td><td>1</td><td>0.3526</td><td>0.3526</td><td>0.3526</td><td>0.3526</td><td>0</td>
+    <td>/space-travel/plans/lunar-cycles.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u40">0.3523</td><td>1</td><td>0.3523</td><td>0.3523</td><td>0.3523</td><td>0.3523</td><td>0</td>
+    <td>/space-travel/plans/launchpad.html -> 304</td>
+    </tr>
+    <tr>
+    <td><a name="u51">0.3514</td><td>1</td><td>0.3514</td><td>0.3514</td><td>0.3514</td><td>0.3514</td><td>0</td>
+    <td>/space-travel/plans/moon-base.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u61">0.350755</td><td>1</td><td>0.350755</td><td>0.350755</td><td>0.350755</td><td>0.350755</td><td>0</td>
+    <td>/faqs/how-to-charge-lazers.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u39">0.3474</td><td>1</td><td>0.3474</td><td>0.3474</td><td>0.3474</td><td>0.3474</td><td>0</td>
+    <td>/space-travel/plans/moon-base.jpg -> 304</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u57">0.3372</td><td>1</td><td>0.3372</td><td>0.3372</td><td>0.3372</td><td>0.3372</td><td>0</td>
+    <td>/space-travel/plans/supplies.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u44">0.3325</td><td>1</td><td>0.3325</td><td>0.3325</td><td>0.3325</td><td>0.3325</td><td>0</td>
+    <td>/space-travel/plans/cryostasis.txt -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u53">0.3211</td><td>1</td><td>0.3211</td><td>0.3211</td><td>0.3211</td><td>0.3211</td><td>0</td>
+    <td>/space-travel/plans/space-suit.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u56">0.31994</td><td>1</td><td>0.31994</td><td>0.31994</td><td>0.31994</td><td>0.31994</td><td>0</td>
+    <td>/space-travel/ships/tardis.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u70">0.3092</td><td>1</td><td>0.3092</td><td>0.3092</td><td>0.3092</td><td>0.3092</td><td>0</td>
+    <td>/space-travel/plans/signals.html -> 304</td>
+    </tr>
+    <tr>
+    <td><a name="u43">0.252708</td><td>1</td><td>0.252708</td><td>0.252708</td><td>0.252708</td><td>0.252708</td><td>0</td>
+    <td>/approve-photo -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u64">0.181654</td><td>1</td><td>0.181654</td><td>0.181654</td><td>0.181654</td><td>0.181654</td><td>0</td>
+    <td>/ufo-sightings/report -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u66">0.15727</td><td>1</td><td>0.15727</td><td>0.15727</td><td>0.15727</td><td>0.15727</td><td>0</td>
+    <td>/space-travelers/famous/spock.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u47">0.15669</td><td>1</td><td>0.15669</td><td>0.15669</td><td>0.15669</td><td>0.15669</td><td>0</td>
+    <td>/login -> 302</td>
+    </tr>
+    <tr>
+    <td><a name="u68">0.137797</td><td>1</td><td>0.137797</td><td>0.137797</td><td>0.137797</td><td>0.137797</td><td>0</td>
+    <td>/space-travel/ships/soyuz.html -> 404</td>
     </tr>
     </table>
     </body></html>
@@ -123,25 +263,53 @@ The full report shows the request activity per minute.
     <BLANKLINE>
               minute   req input  wait   app output
     ================ ===== ===== ===== ===== ======
-    2009-07-30 15:47     1 I=  0 W=  0 A=  1 O=   0 N=   1       0.00       0.00
-    2009-07-30 15:48     2 I=  0 W=  1 A=  1 O=   0 N=   3      20.00      20.00
-    2009-07-30 15:49     0 I=  0 W=  0 A=  0 O=   0 N=   4      31.25      15.50
-    2009-07-30 15:50     1 I=  0 W=  0 A=  1 O=   0 N=   3       0.00       0.00
-    2009-07-30 15:51     2 I=  0 W=  1 A=  0 O=   1 N=   5      12.00      12.00
-    2009-07-30 15:52     2 I=  0 W=  1 A=  1 O=   0 N=   8      20.00       2.12
-    2009-07-30 15:53     2 I=  0 W=  2 A=  0 O=   0 N=  11      14.09       6.18
+    2009-07-30 15:47     1 I=  0 W=  0 A=  1 O=   0 N=   1       0.64       0.64
+    2009-07-30 15:48     2 I=  0 W=  1 A=  1 O=   0 N=   3      20.43      20.35
+    2009-07-30 15:49     0 I=  0 W=  0 A=  0 O=   0 N=   4      31.81      15.85
+    2009-07-30 15:50     1 I=  0 W=  0 A=  1 O=   0 N=   3       0.38       0.27
+    2009-07-30 15:51     2 I=  0 W=  1 A=  0 O=   1 N=   5      12.31      12.25
+    2009-07-30 15:52     2 I=  0 W=  1 A=  1 O=   0 N=   8      20.65       2.52
+    2009-07-30 15:53     2 I=  0 W=  2 A=  0 O=   0 N=  11      14.53       6.53
     <BLANKLINE>
     <BLANKLINE>
     URL statistics:
        Impact count    min median   mean    max hangs
     ========= ===== ====== ====== ====== ====== =====
-         62.0     1     62  62.00  62.00     62     0 /constellations/andromeda.html -> 500
-         61.0     1     61  61.00  61.00     61     0 /stars/alpha-centauri.html -> 200
-         60.0     1     60  60.00  60.00     60     0 /space-travel/plans/supplies.txt -> 304
-         60.0     2      0  30.00  30.00     60     0 /favicon.png -> 404
-          9.0     1      9   9.00   9.00      9     0 /planets/saturn.html -> 200
-          8.0     1      8   8.00   8.00      8     0 /moons/io.html -> 200
-          7.0     1      7   7.00   7.00      7     0 /planets/jupiter.html -> 200
+         62.4     1  62.42  62.42  62.42  62.42     0 /constellations/andromeda.html -> 500
+         61.5     1  61.50  61.50  61.50  61.50     0 /stars/alpha-centauri.html -> 200
+         60.3     1  60.34  60.34  60.34  60.34     0 /space-travel/plans/supplies.txt -> 304
+         60.3     2   0.13  30.13  30.13  60.13     0 /favicon.png -> 404
+          9.7     1   9.69   9.69   9.69   9.69     0 /planets/saturn.html -> 200
+          8.3     1   8.30   8.30   8.30   8.30     0 /moons/io.html -> 200
+          7.3     1   7.34   7.34   7.34   7.34     0 /planets/jupiter.html -> 200
+          0.9     1   0.88   0.88   0.88   0.88     0 /stories/aliens-posing-as-humans.html -> 200
+          0.7     2   0.35   0.37   0.37   0.38     0 /space-travel/plans/signals.html -> 200
+          0.7     2   0.34   0.36   0.36   0.38     0 /space-travel/plans/space-logs.txt -> 200
+          0.6     1   0.64   0.64   0.64   0.64     0 /columns/t-jansen -> 200
+          0.5     3   0.15   0.16   0.16   0.18     0 /space-travelers/famous/kirk.jpg -> 200
+          0.5     1   0.47   0.47   0.47   0.47     0 /submit-photo -> 200
+          0.4     1   0.42   0.42   0.42   0.42     0 /space-travel/plans/launchpad.html -> 200
+          0.4     1   0.40   0.40   0.40   0.40     0 /space-travel/plans/moon-buggy.jpg -> 200
+          0.4     1   0.38   0.38   0.38   0.38     0 /space-travel/plans/space-diary.txt -> 200
+          0.4     2   0.18   0.19   0.19   0.19     0 /faqs/how-to-recognize-lazer-fire.html -> 200
+          0.4     1   0.36   0.36   0.36   0.36     0 /space-travel/plans/orbit.html -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /js/photo.js -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/visor.jpg -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/lunar-cycles.html -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/launchpad.html -> 304
+          0.4     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/moon-base.jpg -> 200
+          0.4     1   0.35   0.35   0.35   0.35     0 /faqs/how-to-charge-lazers.html -> 200
+          0.3     1   0.35   0.35   0.35   0.35     0 /space-travel/plans/moon-base.jpg -> 304
+          0.3     1   0.34   0.34   0.34   0.34     0 /space-travel/plans/supplies.txt -> 200
+          0.3     1   0.33   0.33   0.33   0.33     0 /space-travel/plans/cryostasis.txt -> 200
+          0.3     1   0.32   0.32   0.32   0.32     0 /space-travel/plans/space-suit.jpg -> 200
+          0.3     1   0.32   0.32   0.32   0.32     0 /space-travel/ships/tardis.html -> 200
+          0.3     1   0.31   0.31   0.31   0.31     0 /space-travel/plans/signals.html -> 304
+          0.3     1   0.25   0.25   0.25   0.25     0 /approve-photo -> 200
+          0.2     1   0.18   0.18   0.18   0.18     0 /ufo-sightings/report -> 200
+          0.2     1   0.16   0.16   0.16   0.16     0 /space-travelers/famous/spock.jpg -> 200
+          0.2     1   0.16   0.16   0.16   0.16     0 /login -> 302
+          0.1     1   0.14   0.14   0.14   0.14     0 /space-travel/ships/soyuz.html -> 404
 
 Again, this report is also available in HTML form.
 
@@ -161,31 +329,31 @@ Again, this report is also available in HTML form.
     </tr>
     <tr style="background: lightgrey">
     <td>2009-07-30 15:47</td><td>1</td><td>0</td><td>0</td><td><font size="+2"><strong>1</strong></font></td><td>0</td>
-    <td>1</td><td>      0.00</td><td>      0.00</td>
+    <td>1</td><td>      0.64</td><td>      0.64</td>
     </tr>
     <tr>
     <td>2009-07-30 15:48</td><td>2</td><td>0</td><td>1</td><td><font size="+2"><strong>1</strong></font></td><td>0</td>
-    <td>3</td><td>     20.00</td><td>     20.00</td>
+    <td>3</td><td>     20.43</td><td>     20.35</td>
     </tr>
     <tr style="background: lightgrey">
     <td>2009-07-30 15:49</td><td>0</td><td>0</td><td>0</td><td><font size="+2"><strong>0</strong></font></td><td>0</td>
-    <td>4</td><td>     31.25</td><td>     15.50</td>
+    <td>4</td><td>     31.81</td><td>     15.85</td>
     </tr>
     <tr>
     <td>2009-07-30 15:50</td><td>1</td><td>0</td><td>0</td><td><font size="+2"><strong>1</strong></font></td><td>0</td>
-    <td>3</td><td>      0.00</td><td>      0.00</td>
+    <td>3</td><td>      0.38</td><td>      0.27</td>
     </tr>
     <tr style="background: lightgrey">
     <td>2009-07-30 15:51</td><td>2</td><td>0</td><td>1</td><td><font size="+2"><strong>0</strong></font></td><td>1</td>
-    <td>5</td><td>     12.00</td><td>     12.00</td>
+    <td>5</td><td>     12.31</td><td>     12.25</td>
     </tr>
     <tr>
     <td>2009-07-30 15:52</td><td>2</td><td>0</td><td>1</td><td><font size="+2"><strong>1</strong></font></td><td>0</td>
-    <td>8</td><td>     20.00</td><td>      2.12</td>
+    <td>8</td><td>     20.65</td><td>      2.52</td>
     </tr>
     <tr style="background: lightgrey">
     <td>2009-07-30 15:53</td><td>2</td><td>0</td><td>2</td><td><font size="+2"><strong>0</strong></font></td><td>0</td>
-    <td>11</td><td>     14.09</td><td>      6.18</td>
+    <td>11</td><td>     14.53</td><td>      6.53</td>
     </tr>
     </table>
     <BLANKLINE>
@@ -194,35 +362,144 @@ Again, this report is also available in HTML form.
     <tr><th>Impact</th><th>count</th><th>min</th>
     <th>median</th><th>mean</th><th>max</th><th>hangs</th></tr>
     <tr>
-    <td><a name="u111">62.0</td><td>1</td><td>62</td><td>62</td><td>62.0</td><td>62</td><td>0</td>
+    <td><a name="u111">62.41844</td><td>1</td><td>62.41844</td><td>62.41844</td><td>62.41844</td><td>62.41844</td><td>0</td>
     <td>/constellations/andromeda.html -> 500</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u130">61.0</td><td>1</td><td>61</td><td>61</td><td>61.0</td><td>61</td><td>0</td>
+    <td><a name="u130">61.502412</td><td>1</td><td>61.502412</td><td>61.502412</td><td>61.502412</td><td>61.502412</td><td>0</td>
     <td>/stars/alpha-centauri.html -> 200</td>
     </tr>
     <tr>
-    <td><a name="u108">60.0</td><td>1</td><td>60</td><td>60</td><td>60.0</td><td>60</td><td>0</td>
+    <td><a name="u108">60.3431</td><td>1</td><td>60.3431</td><td>60.3431</td><td>60.3431</td><td>60.3431</td><td>0</td>
     <td>/space-travel/plans/supplies.txt -> 304</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u118">60.0</td><td>2</td><td>0</td><td>30.0</td><td>30.0</td><td>60</td><td>0</td>
+    <td><a name="u118">60.267171</td><td>2</td><td>0.132899</td><td>30.1335855</td><td>30.1335855</td><td>60.134272</td><td>0</td>
     <td>/favicon.png -> 404</td>
     </tr>
     <tr>
-    <td><a name="u124">9.0</td><td>1</td><td>9</td><td>9</td><td>9.0</td><td>9</td><td>0</td>
+    <td><a name="u124">9.693661</td><td>1</td><td>9.693661</td><td>9.693661</td><td>9.693661</td><td>9.693661</td><td>0</td>
     <td>/planets/saturn.html -> 200</td>
     </tr>
     <tr style="background: lightgrey;">
-    <td><a name="u128">8.0</td><td>1</td><td>8</td><td>8</td><td>8.0</td><td>8</td><td>0</td>
+    <td><a name="u128">8.29953</td><td>1</td><td>8.29953</td><td>8.29953</td><td>8.29953</td><td>8.29953</td><td>0</td>
     <td>/moons/io.html -> 200</td>
     </tr>
     <tr>
-    <td><a name="u132">7.0</td><td>1</td><td>7</td><td>7</td><td>7.0</td><td>7</td><td>0</td>
+    <td><a name="u132">7.339574</td><td>1</td><td>7.339574</td><td>7.339574</td><td>7.339574</td><td>7.339574</td><td>0</td>
     <td>/planets/jupiter.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u137">0.879732</td><td>1</td><td>0.879732</td><td>0.879732</td><td>0.879732</td><td>0.879732</td><td>0</td>
+    <td>/stories/aliens-posing-as-humans.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u133">0.7302</td><td>2</td><td>0.3526</td><td>0.3651</td><td>0.3651</td><td>0.3776</td><td>0</td>
+    <td>/space-travel/plans/signals.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u112">0.7221</td><td>2</td><td>0.3385</td><td>0.36105</td><td>0.36105</td><td>0.3836</td><td>0</td>
+    <td>/space-travel/plans/space-logs.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u107">0.63826</td><td>1</td><td>0.63826</td><td>0.63826</td><td>0.63826</td><td>0.63826</td><td>0</td>
+    <td>/columns/t-jansen -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u119">0.49124</td><td>3</td><td>0.1529</td><td>0.16141</td><td>0.163746666667</td><td>0.17693</td><td>0</td>
+    <td>/space-travelers/famous/kirk.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u116">0.470764</td><td>1</td><td>0.470764</td><td>0.470764</td><td>0.470764</td><td>0.470764</td><td>0</td>
+    <td>/submit-photo -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u122">0.4232</td><td>1</td><td>0.4232</td><td>0.4232</td><td>0.4232</td><td>0.4232</td><td>0</td>
+    <td>/space-travel/plans/launchpad.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u120">0.3967</td><td>1</td><td>0.3967</td><td>0.3967</td><td>0.3967</td><td>0.3967</td><td>0</td>
+    <td>/space-travel/plans/moon-buggy.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u125">0.3794</td><td>1</td><td>0.3794</td><td>0.3794</td><td>0.3794</td><td>0.3794</td><td>0</td>
+    <td>/space-travel/plans/space-diary.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u115">0.374609</td><td>2</td><td>0.184486</td><td>0.1873045</td><td>0.1873045</td><td>0.190123</td><td>0</td>
+    <td>/faqs/how-to-recognize-lazer-fire.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u139">0.3645</td><td>1</td><td>0.3645</td><td>0.3645</td><td>0.3645</td><td>0.3645</td><td>0</td>
+    <td>/space-travel/plans/orbit.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u135">0.3542</td><td>1</td><td>0.3542</td><td>0.3542</td><td>0.3542</td><td>0.3542</td><td>0</td>
+    <td>/js/photo.js -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u141">0.354</td><td>1</td><td>0.354</td><td>0.354</td><td>0.354</td><td>0.354</td><td>0</td>
+    <td>/space-travel/plans/visor.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u129">0.3526</td><td>1</td><td>0.3526</td><td>0.3526</td><td>0.3526</td><td>0.3526</td><td>0</td>
+    <td>/space-travel/plans/lunar-cycles.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u110">0.3523</td><td>1</td><td>0.3523</td><td>0.3523</td><td>0.3523</td><td>0.3523</td><td>0</td>
+    <td>/space-travel/plans/launchpad.html -> 304</td>
+    </tr>
+    <tr>
+    <td><a name="u121">0.3514</td><td>1</td><td>0.3514</td><td>0.3514</td><td>0.3514</td><td>0.3514</td><td>0</td>
+    <td>/space-travel/plans/moon-base.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u131">0.350755</td><td>1</td><td>0.350755</td><td>0.350755</td><td>0.350755</td><td>0.350755</td><td>0</td>
+    <td>/faqs/how-to-charge-lazers.html -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u109">0.3474</td><td>1</td><td>0.3474</td><td>0.3474</td><td>0.3474</td><td>0.3474</td><td>0</td>
+    <td>/space-travel/plans/moon-base.jpg -> 304</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u127">0.3372</td><td>1</td><td>0.3372</td><td>0.3372</td><td>0.3372</td><td>0.3372</td><td>0</td>
+    <td>/space-travel/plans/supplies.txt -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u114">0.3325</td><td>1</td><td>0.3325</td><td>0.3325</td><td>0.3325</td><td>0.3325</td><td>0</td>
+    <td>/space-travel/plans/cryostasis.txt -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u123">0.3211</td><td>1</td><td>0.3211</td><td>0.3211</td><td>0.3211</td><td>0.3211</td><td>0</td>
+    <td>/space-travel/plans/space-suit.jpg -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u126">0.31994</td><td>1</td><td>0.31994</td><td>0.31994</td><td>0.31994</td><td>0.31994</td><td>0</td>
+    <td>/space-travel/ships/tardis.html -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u140">0.3092</td><td>1</td><td>0.3092</td><td>0.3092</td><td>0.3092</td><td>0.3092</td><td>0</td>
+    <td>/space-travel/plans/signals.html -> 304</td>
+    </tr>
+    <tr>
+    <td><a name="u113">0.252708</td><td>1</td><td>0.252708</td><td>0.252708</td><td>0.252708</td><td>0.252708</td><td>0</td>
+    <td>/approve-photo -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u134">0.181654</td><td>1</td><td>0.181654</td><td>0.181654</td><td>0.181654</td><td>0.181654</td><td>0</td>
+    <td>/ufo-sightings/report -> 200</td>
+    </tr>
+    <tr>
+    <td><a name="u136">0.15727</td><td>1</td><td>0.15727</td><td>0.15727</td><td>0.15727</td><td>0.15727</td><td>0</td>
+    <td>/space-travelers/famous/spock.jpg -> 200</td>
+    </tr>
+    <tr style="background: lightgrey;">
+    <td><a name="u117">0.15669</td><td>1</td><td>0.15669</td><td>0.15669</td><td>0.15669</td><td>0.15669</td><td>0</td>
+    <td>/login -> 302</td>
+    </tr>
+    <tr>
+    <td><a name="u138">0.137797</td><td>1</td><td>0.137797</td><td>0.137797</td><td>0.137797</td><td>0.137797</td><td>0</td>
+    <td>/space-travel/ships/soyuz.html -> 404</td>
     </tr>
     </table>
     </body></html>
-
-
-TODO: redo examples for sub-second resolution

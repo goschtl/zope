@@ -50,11 +50,11 @@ class Request(object):
 
     @property
     def app_seconds(self):
-        return (self.app_time - self.start_app_time).seconds
+        return seconds_difference(self.app_time, self.start_app_time)
 
     @property
     def total_seconds(self):
-        return (self.end - self.start).seconds
+        return seconds_difference(self.end, self.start)
 
 
 class Times(object):
@@ -97,7 +97,7 @@ class Times(object):
 
         n = len(times)
         m = self.median
-        return "%9.1f %5d %6.0f %6.2f %6.2f %6.0f %5d" % (
+        return "%9.1f %5d %6.2f %6.2f %6.2f %6.2f %5d" % (
             self.impact, n, times[0], m, self.mean, times[-1], self.hangs)
 
     def html(self):
@@ -116,6 +116,12 @@ class Times(object):
         result.times = self.times + other.times
         result.hangs = self.hangs + other.hangs
         return result
+
+
+def seconds_difference(dt1, dt2):
+    delta = dt1 - dt2
+    micros = float('0.' + str(delta.microseconds))
+    return delta.seconds + micros
 
 
 def parse_line(line):
