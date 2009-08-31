@@ -47,6 +47,32 @@ name they look like:
         >>> print pydeb.bin_to_py("foo")
         foo
 
+Setuptools
+----------
+
+    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=543551
+
+Setuptools is a special case, most packages in debian which depend on
+setuptools are namespace packages and only require pkg-resources.
+
+van.pydeb therefore defaults to defining python-pkg-resources as the debian
+translation od setuptools:
+
+    >>> print pydeb.py_to_bin("setuptools")
+    python-pkg-resources
+    
+    >>> print pydeb.py_to_src("setuptools")
+    python-setuptools
+
+    >>> print pydeb.bin_to_py("python-setuptools")
+    setuptools
+    >>> print pydeb.bin_to_py("python-pkg-resources")
+    setuptools
+    
+    >>> print pydeb.src_to_py("python-setuptools")
+    setuptools
+     
+
 Paste
 -----
 
