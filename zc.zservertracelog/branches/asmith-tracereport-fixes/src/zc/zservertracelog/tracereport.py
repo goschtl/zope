@@ -103,11 +103,13 @@ class Times(object):
     def html(self):
         times = self.times
         if not times:
-            print td('', 0, '', '', '', '', self.hangs)
+            impact = '<a name="u%s">&nbsp;</a>' % self.tid
+            print td(
+                impact, 0, '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', self.hangs)
         else:
+            impact = '<a name="u%s">%s</a>' % (self.tid, self.impact)
             n = len(times)
             m = self.median
-            impact = '<a name="u%s">%s' % (self.tid, self.impact)
             print td(impact, n, times[0], m, self.mean, times[-1],
                      self.hangs)
 
@@ -243,6 +245,9 @@ def main(args=None):
             if remove_prefix and request.url.startswith(remove_prefix):
                 request.url = request.url[len(remove_prefix):]
             requests[rid] = request
+            times = urls.get(request.url)
+            if times is None:
+                times = urls[request.url] = Times()
         elif typ == 'I':
             if rid in requests:
                 input -= 1
@@ -271,10 +276,7 @@ def main(args=None):
                 spr += request.total_seconds
                 spa += request.app_seconds
                 n += 1
-                url = "%s -> %s" % (request.url, request.response)
-                times = urls.get(url)
-                if times is None:
-                    times = urls[url] = Times()
+                times = urls[request.url]
                 times.finished(request)
 
         elif typ in 'SX':
@@ -290,6 +292,7 @@ def main(args=None):
         else:
             print 'WTF', record
 
+    record_hung(urls, requests)
     print_app_requests(requests, dt,
                        options.old_requests,
                        options.app_requests,
@@ -395,6 +398,8 @@ def output_minute_html(lmin, requests, input, wait, apps, output, n, spr, spa):
     print td(lmin, len(requests), input, wait, apps, output)
     if n:
         print td(n, "%10.2f" % (spr/n), "%10.2f" % (spa/n))
+    else:
+        print td(n, '&nbsp;', '&nbsp;')
     print '</tr>'
 
 def find_restarts(event_log):
@@ -411,7 +416,7 @@ def record_hung(urls, requests):
             times = urls[request.url] = Times()
         times.hung()
 
-def print_app_requests_text(requests, dt, min_seconds, max_requests, urls,
+def print_app_requests_text(requests, dt, min_seconds, max_requests, allurls,
                        label=''):
     requests = [
         ((dt-request.start).seconds, request)
