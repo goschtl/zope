@@ -419,7 +419,7 @@ def record_hung(urls, requests):
 def print_app_requests_text(requests, dt, min_seconds, max_requests, allurls,
                        label=''):
     requests = [
-        ((dt-request.start).seconds, request)
+        (seconds_difference(dt, request.start), request)
         for request in requests.values()
         if request.state == 'app'
     ]

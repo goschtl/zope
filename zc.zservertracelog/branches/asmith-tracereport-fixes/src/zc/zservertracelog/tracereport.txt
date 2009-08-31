@@ -246,22 +246,22 @@ The full report shows the request activity per minute.
               minute   req input  wait   app output
     ================ ===== ===== ===== ===== ======
     2009-07-30 15:47     1 I=  0 W=  0 A=  1 O=   0 N=   1       0.64       0.64
-    60 /space-travel/plans/supplies.txt
+    60.4106 /space-travel/plans/supplies.txt
     2009-07-30 15:48     2 I=  0 W=  1 A=  1 O=   0 N=   3      20.43      20.35
-    60 /constellations/andromeda.html
+    60.791825 /constellations/andromeda.html
     2009-07-30 15:49     0 I=  0 W=  0 A=  0 O=   0 N=   4      31.81      15.85
     2009-07-30 15:50     2 I=  0 W=  0 A=  2 O=   0 N=   2       0.34       0.17
-    60 /submit-photo
-    60 /favicon.png
+    60.62335 /submit-photo
+    60.209388 /favicon.png
     2009-07-30 15:51     3 I=  0 W=  1 A=  1 O=   1 N=   5      12.31      12.25
-    121 /submit-photo
+    121.301024 /submit-photo
     2009-07-30 15:52     3 I=  0 W=  1 A=  2 O=   0 N=   8      20.65       2.52
-    200 /submit-photo
-    68 /stars/alpha-centauri.html
+    200.494494 /submit-photo
+    68.9801 /stars/alpha-centauri.html
     2009-07-30 15:53     3 I=  0 W=  2 A=  1 O=   0 N=  11      14.53       6.53
-    270 /submit-photo
+    270.622261 /submit-photo
     Left over:
-    271 /submit-photo
+    271.214443 /submit-photo
     <BLANKLINE>
     <BLANKLINE>
     URL statistics:
