@@ -59,6 +59,9 @@ class IMIMEType(Interface):
     def __str__():
         """Return a ``media/subtype`` presentation of mime type"""
 
+    def __cmp__(string_or_mimetype):
+        """Mime type objects should be comparable to strings and other types"""
+
 
 class IConvenienceAPI(Interface):
     """Convenience API to be provided by the __init__ module."""

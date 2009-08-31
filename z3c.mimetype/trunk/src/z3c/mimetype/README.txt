@@ -97,8 +97,8 @@ Detection by contents
 ~~~~~~~~~~~~~~~~~~~~~
 
 Another useful method is ``getTypeByContents``. It's first argument should
-be an opened file. Also, it can take ``min_priority`` and ``max_priority`` arguments,
-but it's only useful if you know the shared-mime-info specification.
+be file-like object. Also, it can take ``min_priority`` and ``max_priority``
+arguments, but it's only useful if you know the shared-mime-info specification.
 
 We have some sample files that should be detected by contents::
 
@@ -226,6 +226,13 @@ Here's how to use passing separate media and subtype arguments::
   >>> z3c.mimetype.lookup('image', 'png')
   <_MIMEType image/png>
 
+Note, that the IMIMETypes objects are singletons (one object per mime type), so
+if you youse lookup function with same mime type once again, you'll get the same
+object::
+
+  >>> z3c.mimetype.lookup('text/plain') is mt
+  True
+
 The ``getType`` function is just a wrapper for the ``getType`` function of
 global mimetype utility, so it works like described above::
 
@@ -246,3 +253,37 @@ global mimetype utility, so it works like described above::
   text/plain
 
   >>> del fpng, funknownbinary
+
+MIME type object comparsion
+---------------------------
+
+It's own useful to compare a mime type to some string if we need to check if
+some file is of specific type, the IMIMEType objects should be comparable to
+strings::
+
+  >>> mt = z3c.mimetype.lookup('image/png')
+  >>> mt == 'image/png'
+  True
+  >>> mt == u'image/png'
+  True
+  >>> 'image/png' == mt 
+  True
+  >>> u'image/png' == mt 
+  True
+
+Of course, it can also be compared to other IMIMEType objects::
+
+  >>> mt2 = z3c.mimetype.lookup('image/jpeg')
+  >>> mt == mt2
+  False
+
+Let's use some internal API to create a second instance of image/png IMIMEType
+object and try to compare it with the first one::
+
+  >>> from z3c.mimetype.mimetype import _MIMEType, MIME_TYPES
+  >>> del MIME_TYPES[('image', 'png')]
+  >>> mt3 = _MIMEType('image', 'png')
+  >>> mt is not mt3
+  True
+  >>> mt == mt3
+  True

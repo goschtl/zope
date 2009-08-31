@@ -86,3 +86,8 @@ class _MIMEType(object):
 
     def __repr__(self):
         return '<%s %s/%s>' % (self.__class__.__name__, self.media, self.subtype)
+
+    def __cmp__(self, other):
+        if IMIMEType.providedBy(other):
+            other = str(other)
+        return cmp(str(self), other)
