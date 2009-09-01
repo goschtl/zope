@@ -1,0 +1,691 @@
+/*
+  This file is based on the ploneCustom.css.dtml file shipped with Plone.
+
+  <dtml-with base_properties> (do not remove this)
+  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either)
+*/
+
+
+body {
+font: &dtml-fontBaseSize; <dtml-var fontFamily>;
+background-color: #D7DCE1;
+background-image: url(hiblau.gif);
+background-position: 0 0;
+background-repeat: repeat-x;
+color: &dtml-fontColor;;
+margin: 0;
+padding: 0;
+}
+
+a {
+color: &dtml-linkColor;;
+background-color: transparent;
+}
+
+img {
+border: none;
+vertical-align: top;
+}
+
+p {
+margin: 0 0 1em 0;
+line-height: 1.75em;
+}
+
+h1 {
+font-size: 220%;
+border-bottom: none;
+}
+h2 {
+font-size: 170%;
+border-bottom: none;
+}
+h3 {
+font-size: 140%;
+border-bottom: none;
+font-weight: bold;
+}
+h4 {
+font-size: 120%;
+border-bottom: none;
+font-weight: bold;
+}
+h5 {
+font-size: 100%;
+border-bottom: none;
+font-weight: bold;
+}
+h6 {
+font-size: &dtml-fontSmallSize;;
+border-bottom: none;
+font-weight: bold;
+}
+
+#visual-portal-wrapper {
+width: 900px;
+margin-top: 3px;
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 0;
+padding: 0;
+}
+
+.topimage {
+width: 606px;
+border-top: none;
+border-left: none;
+border-bottom: none;
+border-right: 1px solid #FFFFFF;
+}
+
+#portal-logo {
+background: #4B82D7 url(&dtml-portal_url;/&dtml-logoName;) no-repeat;
+width: 295px;
+border: none;
+margin: 0;
+padding: 0;
+}
+
+#portal-logo img {
+float: right;
+border: 0;
+padding: 0;
+margin: 0;
+background-color: #4B82D7;
+}
+
+#portal-top {
+/* Top section */
+width: 900px;
+margin: 0;
+padding: 0;
+background-color: transparent;
+}
+
+#portal-globalnav {
+background-color: #3C3C3C;
+padding: 0;
+white-space: nowrap;
+list-style: none;
+margin: 0;
+height: auto;
+line-height: 4.5em;
+border-bottom: 2px solid #FFFFFF;
+}
+#portal-globalnav li {
+display: inline;
+}
+#portal-globalnav li a {
+background-color: transparent;
+border-color: none;
+border-width: none;
+border-style: none;
+color: #DDDDDD;
+height: auto;
+margin-right: 0;
+padding: 0 4.5em 0 4.5em;
+font-size: 130%;
+text-decoration: none;
+text-transform: &dtml-textTransform;;
+}
+#portal-globalnav li.selected a {
+background-color: transparent;
+border: none;
+border-bottom: none;
+color: #FFFFFF;
+text-decoration: underline;
+}
+#portal-globalnav li a:hover {
+background-color: transparent;
+border-color: none;
+border-bottom-color: none;
+color: #FFFFFF;
+}
+
+.contentViews {
+background-color: transparent;
+padding-left: 1em;
+line-height: normal;
+margin: 0;
+list-style: none;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-contentViewBorderColor;;
+border-top-width: 0px;
+border-left-width: 0px;
+border-right-width: 0px;
+}
+.contentViews li {
+display: inline;
+padding-top: 0.5em;
+}
+.contentViews li a {
+background-color: transparent;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-contentViewBorderColor;;
+border-style: &dtml-borderStyle;;
+color: &dtml-contentViewFontColor;;
+height: auto;
+margin-right: 0.5em;
+padding: 0em 1em;
+line-height: normal;
+text-decoration: none;
+text-transform: &dtml-textTransform;;
+z-index: 1;
+}
+.contentViews .selected a {
+background-color: &dtml-contentViewBackgroundColor;;
+border-bottom: &dtml-contentViewBackgroundColor; &dtml-borderWidth; &dtml-borderStyle;;
+color: &dtml-contentViewFontColor;;
+}
+.contentViews li a:hover {
+background-color: &dtml-contentViewBackgroundColor;;
+color: &dtml-contentViewFontColor;;
+}
+
+.documentContent {
+font-size: 125%;
+padding: 25px 30px 1em 40px !important;
+background: &dtml-backgroundColor;;
+}
+.documentContent ul {
+list-style-image: url(&dtml-portal_url;/bullet.gif);
+list-style-type: square;
+margin: 0.5em 0 0 1.5em;
+}
+.documentContent ol {
+margin: 0.5em 0 0 2.5em;
+}
+
+/* Links with differently colored link underlines - only for content */
+.documentContent p a {
+text-decoration: none;
+border-bottom: 1px #ccc solid;
+}
+.documentContent p a:visited {
+color: &dtml-linkVisitedColor;;
+background-color: transparent;
+}
+.documentContent p a:active {
+color: &dtml-linkActiveColor;;
+background-color: transparent;
+}
+#content a:target {
+background-color: #fd7 !important;
+}
+.documentContent li a {
+text-decoration: none;
+border-bottom: 1px #cccccc solid;
+}
+.documentContent li a:visited {
+color: &dtml-linkVisitedColor;;
+}
+.documentContent li a:active {
+color: &dtml-linkActiveColor;;
+}
+.documentContent dd a {
+text-decoration: none;
+border-bottom: 1px #cccccc solid;
+}
+.documentContent dd a:visited {
+color: &dtml-linkVisitedColor;;
+background-color: transparent;
+}
+.documentContent dd a:active {
+color: &dtml-linkActiveColor;;
+background-color: transparent;
+}
+
+.documentDescription {
+/* The summary text describing the document */
+font-weight: bold;
+display: block;
+margin: 0em 0em 0.5em 0em;
+line-height: 1.5em;
+}
+
+.documentByLine {
+display: none;
+font-size: &dtml-fontSmallSize;;
+font-weight: normal;
+color: &dtml-discreetColor;;
+margin-bottom: 0.5em;
+}
+
+.reviewHistory,
+.contentHistory {
+display: none;
+font-size: 110% !important;
+color: Black;
+}
+
+.standalone,
+.documentEditable * .standalone {
+background: &dtml-globalBackgroundColor; none;
+color: &dtml-fontColor;;
+cursor: pointer;
+font-size: &dtml-fontSmallSize;;
+padding: 1px 1px 1px 1px;
+text-transform: &dtml-textTransform;;
+border: &dtml-borderWidth; solid &dtml-globalBorderColor;;
+}
+
+.context,
+.formControls .actionButtons .button,
+.documentEditable * .context {
+background: transparent none;
+color: &dtml-fontColor;;
+cursor: pointer;
+font-size: &dtml-fontSmallSize;;
+padding: 1px 1px 1px 1px;
+text-transform: &dtml-textTransform;;
+border: &dtml-borderWidth; solid &dtml-globalBorderColor;;
+}
+
+.destructive,
+.documentEditable * .destructive {
+background: &dtml-notifyBackgroundColor; none;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-notifyBorderColor;;
+color: &dtml-fontColor;;
+cursor: pointer;
+font-size: &dtml-fontSmallSize;;
+padding: 1px 1px 1px 1px;
+text-transform: &dtml-textTransform;;
+border: &dtml-borderWidth; solid &dtml-globalBorderColor;;
+}
+
+input {
+font-family: <dtml-var fontFamily>;
+visibility: visible;
+border: 1px solid #ddd;
+border-color:#666 #ddd #ddd #666;
+color: &dtml-inputFontColor;;
+vertical-align: middle;
+background: #EBF5FF; none;
+font-size: 100%;
+}
+
+input.searchButton {
+margin-bottom: &dtml-borderWidth; ! important;
+color: &dtml-fontColor;;
+font-size: &dtml-fontSmallSize;;
+background: #EBF5FF; none;
+cursor: pointer;
+padding: 1px 1px 1px 1px;
+text-transform: &dtml-textTransform;;
+border: &dtml-borderWidth; solid &dtml-globalBorderColor;;
+}
+
+.searchSection {
+display: none;
+color: &dtml-discreetColor;;
+margin-top: 0.25em;
+}
+.searchSection label:hover {
+color: &dtml-fontColor;;
+}
+
+#portal-searchbox {
+width: 294px;
+height: 60px;
+float: right;
+clear: right;
+background-color: #4B82D7;
+background-image: url(hisearch.jpg);
+background-position: 0 0;
+background-repeat: repeat-x;
+margin: 0;
+padding: 11px 0 0 0;
+text-align: center;
+text-transform: &dtml-textTransform;;
+white-space: nowrap;
+z-index: 2;
+}
+#portal-advanced-search {
+margin-top: 0.2em;
+clear: both;
+}
+#portal-advanced-search a {
+color: &dtml-discreetColor;;
+text-decoration: none;
+text-transform: &dtml-textTransform;;
+}
+
+dl.searchResults dt {
+font-size: 100%;
+font-weight: normal;
+}
+
+form.searchPage {
+text-align: center;
+}
+
+input.searchPage {
+font-size: 100% !important;
+}
+
+form.searchPage input.searchButton {
+background-position:5px 7px;
+padding:1px 10px 1px 25px;
+}
+
+.LSBox {
+width: 250px;
+clear: left;
+float: center;
+text-align: center;
+padding-right: 1px;
+display:block;
+}
+
+.LSRes {
+font-family: <dtml-var fontFamily>;
+visibility: visible;
+color: &dtml-globalFontColor;;
+background-color: &dtml-backgroundColor;;
+vertical-align: middle;
+display:block;
+list-style-image: none;
+list-style-type: none;
+text-align: left;
+min-width: 16.5em;
+text-transform: none;
+margin-left: 0;
+line-height: 1.1em;
+}
+#LSHighlight,
+.LSHighlight {
+background-color: &dtml-globalBackgroundColor;;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+color: &dtml-globalFontColor;;
+}
+.LSTable {
+margin: 1em 0;
+}
+.LSRow {
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-backgroundColor;;
+white-space: normal;
+padding:0;
+margin: 0;
+list-style-image: none;
+list-style-type: none;
+}
+.LSRow a {
+text-decoration: none;
+font-weight:bold;
+white-space:nowrap
+}
+.LSDescr {
+color: &dtml-discreetColor;;
+font-size: &dtml-fontSmallSize;;
+font-weight: normal;
+margin-left: 2.5em;
+}
+.LSResult {
+position: relative;
+display: block;
+text-align: right;
+padding-top: 5px;
+margin: 0;
+left: 3px;
+z-index: 3;
+}
+.LSShadow {
+position: relative;
+text-align: right;
+}
+.livesearchContainer {
+background-color: &dtml-backgroundColor;;
+margin-top: 0;
+padding: 0 !important;
+position: absolute;
+right: -1px;
+/* Currently exposes a rendering bug in Mozilla */
+top: 0;
+white-space: normal;
+font-family: <dtml-var fontFamily>;
+visibility: visible;
+text-align: left;
+color: &dtml-globalFontColor;;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+width: 292px;
+text-transform: none;
+}
+* html .livesearchContainer {
+padding: &dtml-borderWidth; !important;
+padding-top: 0 !important;
+background-color: &dtml-globalBorderColor;;
+border: 0;
+}
+#livesearchLegend {
+display: none;
+line-height: 1em;
+margin-top: -2em;
+margin-left: -0.1em;
+border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+border-bottom: 0;
+}
+* html #livesearchLegend {
+margin-top: -1.9em;
+margin-left: -8px;
+position: relative;
+}
+
+#portal-siteactions {
+width: 265px;
+height: 195px;
+background-color: #3C3C3C;
+white-space: nowrap;
+list-style-image: none;
+list-style-type: none;
+margin: 0;
+font-size: 110%;
+line-height: 1.5em;
+float: left;
+padding: 20px 4px 0px 25px;
+border-top: none;
+border-left: none;
+border-right: none;
+border-bottom: 1px solid #D7DCE1;
+}
+#portal-siteactions li {
+list-style-image: none;
+list-style-type: none;
+display: block !important;
+}
+#portal-siteactions li a {
+list-style-image: none;
+list-style-type: none;
+background-color: transparent;
+border: none;
+color: #DDDDDD;
+height: auto;
+padding: 0;
+margin-right: 0.2em;
+text-decoration: none;
+text-transform: &dtml-textTransform;;
+}
+#portal-siteactions li.selected a {
+background-color: transparent;
+color: #FFFFFF;
+border: none;
+}
+#portal-siteactions li a:hover {
+background-color: transparent;
+color: #FFFFFF;
+border: none;
+}
+
+#portal-footer {
+width: 545px;
+background-color: #3C3C3C;
+border-top: none;
+border-left: none;
+border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+border-bottom: none;
+float: left;
+line-height: 1.5em;
+font-size: 110%;
+text-align: left;
+color: #FFFFFF;
+margin: 0;
+padding: 15px 20px 20px 40px;
+}
+#portal-footer p {
+margin: 0.25em 0;
+}
+#portal-footer a {
+text-decoration: none;
+color: #DDDDDD;
+border: none;
+}
+#portal-footer a:visited {
+color: #FFFFFF;
+}
+#portal-footer a:hover {
+color: #FFFFFF;
+text-decoration: underline;
+}
+
+.colophonWrapper {
+width: 605px;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+
+#portal-colophon {
+width: 605px;
+float: right;
+margin: 0;
+padding: 10px 20px 40px 40px;
+text-align: left;
+color: #FFFFFF;
+background-color: #3C3C3C;
+border-top: none;
+border-left: none;
+border-right: none;
+border-bottom: none;
+}
+#portal-colophon  a {
+list-style-image: none;
+list-style-type: none;
+text-decoration: none;
+padding: 10px 20px 40px 40px;
+line-height: 2em;
+border-bottom: 1px #ccc solid;
+color: #DDDDDD;;
+}
+
+.portlet {
+width: 245px;
+margin: 1px 0 1em 0;
+border-bottom: 1px solid #323232;
+background-color: transparent;
+}
+.portlet a {
+text-decoration: none;
+}
+.portlet a.tile {
+display: block;
+}
+
+.portletItem ul {
+list-style-type: none
+}
+
+/* XXX: The two below rules should really be in the rule above, but that makes the items grow/shrink on :hover (navtree) - need to investigate how to make it not do that. ~limi, Dec 2005 */
+.portletItem a,
+.portletFooter a {
+border-bottom: none;
+}
+
+.portletItem a:visited,
+.portletFooter a:visited {
+color: &dtml-linkColor;;
+}
+.portletHeader, .managedPortlet .portletHeader {
+background-color: transparent;
+border-top: none;
+border-left: none;
+border-right: none;
+border-bottom: 2px solid #323232;
+padding: 0;
+text-transform: &dtml-textTransform;;
+font-size: 140%;
+font-weight: bold;
+line-height: 1.25em;
+color: #323232;
+}
+.portletHeader a, .managedPortlet .portletHeader a {
+color: &dtml-fontColor;;
+}
+.inheritedPortlet .portletHeader {
+background-color: transparent;
+}
+.portletItem {
+margin: 0;
+padding: 0.5em 0 0.5em 0;
+border-left: none;
+border-right: none;
+}
+.portletItem ol {
+margin: 0 0 0 1em;
+}
+.portletItemDetails {
+text-align: right;
+display: block;
+color: &dtml-fontColor;;
+}
+.portletFooter {
+display: none;
+background-color: &dtml-evenRowBackgroundColor;;
+margin: 0;
+padding: 0.25em 1em;
+border: none;
+border-style: none;
+text-align: right;
+}
+
+#portal-personaltools {
+float: none;
+background-color: #D7DCE1;
+border-top-color: #FFFFFF;
+border-top-style: solid;
+border-top-width: 1px;
+border-bottom-color: none;
+border-bottom-style: none;
+border-bottom-width: none;
+line-height: 1.25em;
+color: &dtml-fontColor;;
+padding: 0 3em 0em 2.5em;
+margin: 0 0 0 12px;
+text-align: left;
+text-transform: &dtml-textTransform;;
+list-style: none;
+}
+#portal-personaltools .portalUser {
+background: transparent url(&dtml-portal_url;/user.gif) center left no-repeat;
+padding-left: 18px;
+}
+#portal-personaltools .portalNotLoggedIn {
+/* Used on all descriptions relevant to those not logged in */
+color: &dtml-fontColor;;
+padding: 0;
+background: transparent;
+background-image: none;
+}
+#portal-personaltools li {
+color: #3C3C3C;
+margin-left: 1em;
+display: inline;
+}
+#portal-personaltools li a {
+text-decoration: none;
+color: #323232;
+}
+#portal-personaltools .visualIconPadding {
+padding-left: 10px;
+}
+
+/* </dtml-with> */
+
+/* Latest version of the documentation on pre-defined properties from Plone 
+   can be found in CMFPlone/skins/plone_styles/ploneCustom.css.dtml */
+

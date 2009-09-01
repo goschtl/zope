@@ -1,0 +1,47 @@
+title:string=zope2 theme's color, font, logo and border defaults
+
+plone_skin:string=zope2 theme
+
+logoName:string=logo.jpg
+
+fontFamily:string=Arial, Verdana, Helvetica, Arial, sans-serif
+fontBaseSize:string=70%
+fontColor:string=#323232
+fontSmallSize:string=90%
+
+backgroundColor:string=White
+
+linkColor:string=#4B82D7
+linkActiveColor:string=Red
+linkVisitedColor:string=Purple
+
+borderWidth:string=1px
+borderStyle:string=solid
+borderStyleAnnotations:string=dashed
+
+globalBorderColor:string=#BBBBBB
+globalBackgroundColor:string=#FFFFFF
+globalFontColor:string=#323232
+
+headingFontFamily:string=Arial, Verdana, Helvetica, Arial, sans-serif
+
+contentViewBorderColor:string=#74ae0b
+contentViewBackgroundColor:string=#cde2a7
+contentViewFontColor:string=#578308
+
+inputFontColor:string=Black
+
+textTransform:string=
+
+evenRowBackgroundColor:string=#F0F0F0
+oddRowBackgroundColor:string=#EBF5FF
+
+notifyBorderColor:string=#ffa500
+notifyBackgroundColor:string=#ffce7b
+
+discreetColor:string=#76797c
+helpBackgroundColor:string=#ffffe1
+
+portalMinWidth:string=70em
+columnOneWidth:string=0px
+columnTwoWidth:string=294px

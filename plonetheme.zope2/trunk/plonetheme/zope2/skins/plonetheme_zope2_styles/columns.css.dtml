@@ -1,0 +1,62 @@
+/*
+** Table-based column layout for all browsers.
+**
+** There's a table-less column layout alternative in the plone_tableless
+** skin layer, if you prefer layouts without tables.
+*/
+
+/* <dtml-with base_properties> */
+
+#portal-columns {
+    width: 900px !important;
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#portal-column-one {
+    background-color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    width: <dtml-var columnOneWidth missing="16em">;
+}
+
+#portal-column-content {
+    background-color: #FFFFFF; 
+    vertical-align: top;
+    border-bottom: 1px solid #DDDDDD;
+    margin: 0;
+    padding: 0;
+}
+
+#portal-column-two {
+    background-color: #EBF5FF;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    width: <dtml-var columnTwoWidth missing="16em">;
+}
+
+#portal-column-one .visualPadding {
+padding: 25px 0 0 0;
+}
+
+#portal-column-two .visualPadding {
+padding: 15px 0 0 25px;
+}
+
+/* fullscreen */
+
+body.fullscreen #portal-column-one,
+body.fullscreen #portal-column-two {
+    display: none;
+}
+
+body.fullscreen #portal-column-content {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* </dtml-with> */

@@ -1,0 +1,27 @@
+Metadata-Version: 1.0
+Name: plonetheme.zope2
+Version: 1.0dev-r10519
+Summary: Plone theme for the zope site on zope.org
+Home-page: http://svn.plone.org/svn/collective/
+Author: redCOR AG
+Author-email: robert@redcor.ch
+License: GPL
+Description: Introduction
+        ============
+        
+        
+        
+        Changelog
+        =========
+        
+        1.0 - Unreleased
+        ----------------
+        
+        * Initial release
+        
+        
+Keywords: web zope plone theme
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

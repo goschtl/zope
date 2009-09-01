@@ -1,0 +1,6 @@
+
+<div class="topimage">
+    <a href="about-zope"
+    i18n:domain="plone">
+        <img src="sixtop.jpg" alt="sixtop" width="605" /></a>
+</div>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<import-steps>
+  <import-step id="plonetheme.zope2.various"
+               version="20081215-01"
+               handler="plonetheme.zope2.setuphandlers.setupVarious"
+               title="zope2 Plone Theme: miscellaneous import steps">
+    <dependency step="skins" />
+    Various import steps that are not handled by GS import/export
+    handlers.
+  </import-step>
+</import-steps>

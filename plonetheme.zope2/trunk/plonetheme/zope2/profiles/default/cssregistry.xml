@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<object name="portal_css">
+
+ <stylesheet title=""
+    id="++resource++plonetheme.zope2.stylesheets/main.css"
+    media="screen" rel="stylesheet" rendering="import"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="1" expression=""/>
+
+ <stylesheet title=""
+    id="++resource++plonetheme.zope2.stylesheets/plonestyles.css"
+    media="screen" rel="stylesheet" rendering="import"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="1" expression=""/>
+
+ <stylesheet title=""
+    id="++resource++plonetheme.zope2.stylesheets/style.css"
+    media="screen" rel="stylesheet" rendering="import"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="1" expression=""/>
+
+ <stylesheet title=""
+    id="++resource++plonetheme.zope2.stylesheets/nav.css"
+    media="screen" rel="stylesheet" rendering="import"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="1" expression=""/>
+
+ <!--<stylesheet title=""
+    id="++resource++plonetheme.zope2.stylesheets/print.css"
+    media="screen" rel="stylesheet" rendering="import"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="1" expression=""/>-->
+
+</object>

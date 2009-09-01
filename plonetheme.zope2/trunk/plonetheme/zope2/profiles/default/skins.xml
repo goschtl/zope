@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<object name="portal_skins" allow_any="False" cookie_persistence="False"
+   default_skin="zope2 Plone Theme">
+
+ <object name="plonetheme_zope2_custom_images"
+    meta_type="Filesystem Directory View"
+    directory="plonetheme.zope2:skins/plonetheme_zope2_custom_images"/>
+ <object name="plonetheme_zope2_custom_templates"
+    meta_type="Filesystem Directory View"
+    directory="plonetheme.zope2:skins/plonetheme_zope2_custom_templates"/>
+ <object name="plonetheme_zope2_styles"
+    meta_type="Filesystem Directory View"
+    directory="plonetheme.zope2:skins/plonetheme_zope2_styles"/>
+
+ <skin-path name="zope2 Plone Theme" based-on="Plone Default">
+  <layer name="plonetheme_zope2_custom_images"
+     insert-after="custom"/>
+  <layer name="plonetheme_zope2_custom_templates"
+     insert-after="plonetheme_zope2_custom_images"/>
+  <layer name="plonetheme_zope2_styles"
+     insert-after="plonetheme_zope2_custom_templates"/>
+ </skin-path>
+
+</object>
