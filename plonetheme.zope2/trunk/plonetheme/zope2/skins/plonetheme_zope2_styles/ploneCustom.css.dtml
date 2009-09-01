@@ -470,7 +470,7 @@ position: relative;
 
 #portal-siteactions {
 width: 265px;
-height: 195px;
+height: 110px;
 background-color: #3C3C3C;
 white-space: nowrap;
 list-style-image: none;
@@ -479,7 +479,7 @@ margin: 0;
 font-size: 110%;
 line-height: 1.5em;
 float: left;
-padding: 20px 4px 0px 25px;
+padding: 15px 4px 0px 25px;
 border-top: none;
 border-left: none;
 border-right: none;
@@ -515,6 +515,7 @@ border: none;
 
 #portal-footer {
 width: 545px;
+height: 110px;
 background-color: #3C3C3C;
 border-top: none;
 border-left: none;
@@ -526,7 +527,7 @@ font-size: 110%;
 text-align: left;
 color: #FFFFFF;
 margin: 0;
-padding: 15px 20px 20px 40px;
+padding: 15px 20px 0px 40px;
 }
 #portal-footer p {
 margin: 0.25em 0;
@@ -644,6 +645,7 @@ text-align: right;
 }
 
 #portal-personaltools {
+display: none; //ajung
 float: none;
 background-color: #D7DCE1;
 border-top-color: #FFFFFF;

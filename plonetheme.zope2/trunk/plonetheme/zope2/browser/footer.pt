@@ -1,74 +1,15 @@
 <div id="portal-footer" metal:define-macro="portal_footer" i18n:domain="plone">
 
 <p>
-    <span i18n:translate="description_copyright" tal:omit-tag="">
-    The
-    <span i18n:name="plonecms" tal:omit-tag="">
-        <a href="http://plone.org" i18n:translate="label_plone_cms">Plone<sup>&reg;</sup> CMS &mdash; Open Source Content Management System</a>
-    </span>
-    is
-    <acronym title="Copyright" i18n:name="copyright" i18n:attributes="title title_copyright;">&copy;</acronym>
-    2000-<span i18n:name="current_year"
-               tal:omit-tag=""
-               tal:define="now modules/DateTime/DateTime"
-               tal:content="now/year" />
-    by the
-    <span i18n:name="plonefoundation" tal:omit-tag="">
-        <a href="http://plone.org/foundation" i18n:translate="label_plone_foundation">Plone Foundation</a></span>
-    et al.
-    </span>
-    <span i18n:translate="description_trademark" tal:omit-tag="">
-    Plone<sup>&reg;</sup> and the Plone logo are registered trademarks of the
-        <span i18n:name="plonefoundation" tal:omit-tag="">
-            <a href="http://plone.org/foundation" i18n:translate="label_plone_foundation">Plone Foundation</a></span>.
-    </span>
-
-    <span i18n:translate="description_license" tal:omit-tag="">
-    Distributed under the
-        <span i18n:name="license" tal:omit-tag="">
-            <a href="http://creativecommons.org/licenses/GPL/2.0/" i18n:translate="label_gnu_gpl_licence">GNU GPL license</a></span>.
-    </span>
+     This site is &copy; 2009,  Zope Foundation and
+      <a href="http://plone.org"
+         title="This site was built using Plone CMS, the Open Source Content Management System. Click for more information."
+         i18n:attributes="title title_built_with_plone;"
+         i18n:translate="label_powered_by_plone">
+        powered by Plone</a>
 </p>
-<p></p>
-
-      <div class="colophonWrapper">
-
-        <span>
-          <a href="http://plone.org"
-             title="This site was built using Plone CMS, the Open Source Content Management System. Click for more information."
-             i18n:attributes="title title_built_with_plone;"
-             i18n:translate="label_powered_by_plone">
-            Powered by Plone</a>
-        </span><br />
-        <span>
-          <a href="http://validator.w3.org/check/referer"
-             title="This site is valid XHTML."
-             i18n:attributes="title title_valid_xhtml;"
-             i18n:translate="label_xhtml">
-            Valid XHTML</a>
-        </span><br />
-        <span>
-          <a href="http://jigsaw.w3.org/css-validator/check/referer?warning=no&amp;profile=css3&amp;usermedium=all"
-             title="This site was built with valid CSS."
-             i18n:attributes="title title_built_with_css;"
-             i18n:translate="label_css">
-            Valid CSS</a>
-        </span><br />
-        <span>
-          <a href="http://www.section508.gov"
-             title="This site conforms to the US Government Section 508 Accessibility Guidelines."
-             i18n:attributes="title title_section_508;"
-             i18n:translate="label_section_508">
-            Section 508</a>
-        </span><br />
-        <span>
-          <a href="http://www.w3.org/WAI/WCAG1AA-Conformance"
-             title="This site conforms to the W3C-WAI Web Content Accessibility Guidelines."
-             i18n:attributes="title title_wcag_conformance;"
-             i18n:translate="label_wcag">
-            WCAG</a>
-        </span><br />
-
-      </div>
-
+<p>
+    <span class="label">Design:</span> Alma Ong, <a href="http://www.clearnoodle.com">Clearnoodle</a> <br/>
+    <span class="label">Implementation:</span> Robert Rottermann + Gerhard Hug, <a href="http://www.redcor.ch">Redcor</a> <br/>
+    <span class="label">Webmaster/Coordinator:</span> Andreas Jung, <a href="http://www.zopyx.com">ZOPYX</a> <br/>
 </div>
