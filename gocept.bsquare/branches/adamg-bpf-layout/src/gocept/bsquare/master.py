@@ -20,7 +20,8 @@ from gocept.bsquare import status
 
 is_win32 = sys.platform == 'win32'
 
-def split_file(path):
+def split_file_pbf(path):
+    #PROJECT/BRANCHNAME/FILEPATH repositories
     pieces = path.split("/")
     if len(pieces) < 2:
         return None
@@ -30,9 +31,37 @@ def split_file(path):
     return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
 
 
+def split_file_bpf(path):
+    #BRANCHNAME/PROJECT/FILEPATH repositories
+    pieces = path.split("/")
+    if len(pieces) < 2:
+        return None
+    project, branch = pieces[1], pieces[0]
+    if branch != "trunk":
+        return None
+    return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
+
+def split_file_i(path):
+    #intelligent
+    log.msg("split_file_i: %s" % path)
+    pieces = path.split("/")
+    if len(pieces) < 2:
+        return None
+    project, branch = pieces[0], pieces[1]
+    #if project in ('trunk','branches','tags'):
+        #this is a BPF
+        #project, branch = branch, project
+    #if branch != "trunk":
+        #return None
+    rv = ("%s/%s" % (project, branch), "/".join(pieces[2:]))
+    log.msg("split_file_i: %s" % repr(rv))
+    return rv
+
+
 def make_factory(svn_url, passOnNoTest=True):
     f = BuildFactory()
-    f.addStep(SVN(baseURL=svn_url, mode='clobber'))
+    log.msg("make_factory svn_url: %s" % svn_url)
+    f.addStep(SVN(baseURL=svn_url, mode='clobber',defaultBranch=''))
     f.addStep(Compile(name='bootstrap',
                 command='buildout bootstrap .',
                 description=['bootstrapping'],
@@ -109,7 +138,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
     c['slavePortnum'] = 8989
     if poller is None:
         c['change_source'] = SVNPoller(svn_url,
-                                       split_file=split_file,
+                                       split_file=split_file_i,
                                        svnuser=svnuser,
                                        svnpasswd=svnpasswd,
                                        pollinterval=pollinterval,
@@ -125,6 +154,15 @@ def configure(svn_url, http_port=8010, allowForce=False,
     projects = [x.strip() for x in projects]
 
     for project in projects:
+        realsvn_url = svn_url
+        if '/' in project:
+            parts = project.split('/')
+            realsvn_url = svn_url+project+'/'
+            project = parts[-1]
+            branch = "trunk/%s" % project
+        else:
+            branch = "%s/trunk" % project
+
         if isinstance(make_factory, dict):
             f = makefactory.get(project,
                                 makefactory.get('__default__', make_factory))
@@ -141,11 +179,11 @@ def configure(svn_url, http_port=8010, allowForce=False,
         del f
 
         c['schedulers'].append(Scheduler(
-            project, "%s/trunk" % project, pollinterval+10, [project]))
+            project, branch, pollinterval+10, [project]))
         if nightlyhour is not None:
             c['schedulers'].append(Nightly(
                 "%s nightly" % project, [project], hour=[nightlyhour],
-                branch="%s/trunk" % project))
+                branch=branch))
 
     # Status display(s)
     c['status'] = []

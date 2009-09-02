@@ -21,16 +21,14 @@ import os
 import subprocess
 
 SVNBIN = 'svn'
-#SSL certificate you still need to accept by 'hand'
 #usually authentication will be cached by svn, in case not fill in below
-SVNUSER = ''
-SVNPASS = ''
+SVNUSER = 'buildbot'
+SVNPASS = 'tHe6a9Uq'
 
 is_win32 = sys.platform == 'win32'
 
 def system(command, input=''):
-    #enable for debugging
-    #print command
+    print command
 
     p = subprocess.Popen(command,
                          shell=True,
@@ -75,7 +73,7 @@ def svnls(url):
     else:
         svnpass = ''
 
-    return system("svn ls --non-interactive %s%s%s" % (url, svnuser, svnpass))
+    return system("svn --non-interactive ls %s%s%s" % (url, svnuser, svnpass))
 
 def main():
     if len(sys.argv) < 3:
@@ -84,6 +82,8 @@ def main():
 
     home = sys.argv[1]
     base = sys.argv[2]
+    if not base.endswith('/'):
+        base += '/'
 
     projects = svnls(base)
     cleaned = []
@@ -91,8 +91,21 @@ def main():
         if project.endswith('/'):
             project = project[:-1]
 
+        if project == 'trunk':
+            subprojects = svnls(base+'trunk')
+            for subproject in subprojects.splitlines():
+                if subproject.endswith('/'):
+                    subproject = subproject[:-1]
+
+                try:
+                    svnls("%strunk/%s/buildout.cfg" % (base, subproject))
+                    cleaned.append("trunk/"+subproject)
+                except OSError:
+                    pass
+
+
         try:
-            svnls("%s/%s/trunk/buildout.cfg" % (base, project))
+            svnls("%s%s/trunk/buildout.cfg" % (base, project))
             cleaned.append(project)
         except OSError:
             pass
