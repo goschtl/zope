@@ -11,6 +11,9 @@ Changes
   it's results and weed out extra packages that match the default conversions.
 * Make python-pkg-resources the default translation for setuptools:
   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=543551
+* Add the concept of options to the list of dependencies.
+* Create a "reduced" option that causes warnings to be printed when a reduced
+  dependncy is used.
 
 1.2.1 (2009-06-15)
 ------------------

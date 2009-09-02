@@ -1,4 +1,17 @@
 # Map eggs to debian binary packages
+#
+# This file has 2 columns with the option of a third:
+# 	[python package]	[debian binary package]		[option]
+
+#
+# Options:
+#
+# 	The only option implemented so far is "reduced" which means that the
+# 	python dependency is not completely fulfilled by the debian dependency.
+# 	This is useful when splitting packages but should be done with care.
+# 	Using this option means warning messages are displayed every time that
+# 	translation is used.
+#
 
 #
 # The following is a hand maintained list
@@ -7,7 +20,7 @@
 Reportlab                              	python-reportlab
 RestrictedPython			python-restrictedpython
 PyQt4					python-qt4
-setuptools				python-pkg-resources
+setuptools				python-pkg-resources			reduced=python-setuptools
 
 #
 # The following list is automatically generated from apt-file info by the scripts/generate script

@@ -14,11 +14,14 @@
 import sys
 import os.path
 import optparse
+import logging
 
 from pkg_resources import PathMetadata, Distribution
 from pkg_resources import component_re # Is this a public interface?
 
 _HERE = os.path.dirname(__file__)
+
+logger = logging.getLogger('van.pydeb')
 
 #
 # Command Line Interface
@@ -27,6 +30,8 @@ _HERE = os.path.dirname(__file__)
 _COMMANDS = {}
 
 def main(argv=sys.argv):
+    # Setup logging early
+    logging.basicConfig(level=logging.INFO, stream=sys.stderr)
     # Handle global options and dispatch the command 
     assert len(argv) >= 2, "You need to specify a command"
     command = _COMMANDS.get(argv[1])
@@ -48,11 +53,24 @@ def _read_map(file):
             line = line.strip()
             if not line or line.startswith('#'):
                 continue
-            k, v = line.split()
+            items = line.split()
+            items.append('')
+            k, v, options = items[:3]
+            options = options.split(',')
+            optdict = {}
+            for option in options:
+                if not option:
+                    continue
+                if '=' in option:
+                    option, value = option.split('=')
+                if option in set(['reduced']):
+                    optdict[option] = value
+                    continue
+                raise Exception("Unknown option %s" % option)
             assert k not in map, "Duplicate key %s already in map. File %s" % (k, file)
-            map[k] = v
+            map[k] = (v, optdict)
             assert v not in reverse_map, "Duplicate key %s already in reverse map. File %s" % (v, file)
-            reverse_map[v] = k
+            reverse_map[v] = (k, optdict)
     finally:
         f.close()
     return map, reverse_map
@@ -60,9 +78,16 @@ def _read_map(file):
 _PY_TO_BIN, _BIN_TO_PY = _read_map(os.path.join(_HERE, 'py_to_bin.txt'))
 _PY_TO_SRC, _SRC_TO_PY = _read_map(os.path.join(_HERE, 'py_to_src.txt'))
 
+_DEFVAL = (None, None)
+
 def py_to_bin(setuptools_project):
     """Convert a setuptools project name to a debian binary package name"""
-    return _PY_TO_BIN.get(setuptools_project) or py_to_bin_default(setuptools_project)
+    bin, options = _PY_TO_BIN.get(setuptools_project, _DEFVAL)
+    if bin is None:
+        return py_to_bin_default(setuptools_project)
+    if 'reduced' in options:
+        logger.info("Using %(bin)s as a dependency for %(st)s rather than %(full)s. This works in most cases, if not for you, adjust by hand", {'bin': bin, 'full': options['reduced'], 'st': setuptools_project})
+    return bin
 
 def py_to_bin_default(setuptools_project):
     """Convert a setuptools project name to a debian binary package name.
@@ -73,7 +98,7 @@ def py_to_bin_default(setuptools_project):
 
 def py_to_src(setuptools_project):
     """Convert a setuptools project name to a debian source package name"""
-    return _PY_TO_SRC.get(setuptools_project) or py_to_src_default(setuptools_project)
+    return _PY_TO_SRC.get(setuptools_project, _DEFVAL)[0] or py_to_src_default(setuptools_project)
 
 def py_to_src_default(setuptools_project):
     """Convert a setuptools project name to a debian source package name"""
@@ -82,7 +107,7 @@ def py_to_src_default(setuptools_project):
 def bin_to_py(binary_package):
     """Convert a doebian binary package name to a setuptools project name"""
     # try for an exact match
-    py_package_name = _BIN_TO_PY.get(binary_package)
+    py_package_name = _BIN_TO_PY.get(binary_package, _DEFVAL)[0]
     if py_package_name is not None:
         return py_package_name
     # now we try guess
@@ -95,7 +120,7 @@ def bin_to_py_default(binary_package):
 
 def src_to_py(source_package):
     """Convert a debian source package name to a setuptools project name"""
-    return _SRC_TO_PY.get(source_package) or src_to_py_default(source_package)
+    return _SRC_TO_PY.get(source_package, _DEFVAL)[0] or src_to_py_default(source_package)
 
 def src_to_py_default(source_package):
     return source_package
