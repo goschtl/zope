@@ -1,14 +1,15 @@
 <div id="portal-footer" metal:define-macro="portal_footer" i18n:domain="plone">
 
 <p>
-     This site is &copy; 2009,  Zope Foundation and
+     This site is &copy; 2009,  
+     <a href="http://foundation.zope.org">Zope Foundation</a> and
       <a href="http://plone.org"
          title="This site was built using Plone CMS, the Open Source Content Management System. Click for more information."
          i18n:attributes="title title_built_with_plone;"
          i18n:translate="label_powered_by_plone">
-        powered by Plone</a>
+        powered by the Plone CMS</a>
 </p>
-<p>
+<p id="contributors">
     <span class="label">Design:</span> Alma Ong, <a href="http://www.clearnoodle.com">Clearnoodle</a> <br/>
     <span class="label">Implementation:</span> Robert Rottermann + Gerhard Hug, <a href="http://www.redcor.ch">Redcor</a> <br/>
     <span class="label">Webmaster/Coordinator:</span> Andreas Jung, <a href="http://www.zopyx.com">ZOPYX</a> <br/>

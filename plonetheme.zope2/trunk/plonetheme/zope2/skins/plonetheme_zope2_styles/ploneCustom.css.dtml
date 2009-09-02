@@ -184,6 +184,7 @@ color: &dtml-contentViewFontColor;;
 font-size: 125%;
 padding: 25px 30px 1em 40px !important;
 background: &dtml-backgroundColor;;
+width: 536px;
 }
 .documentContent ul {
 list-style-image: url(&dtml-portal_url;/bullet.gif);
@@ -684,6 +685,10 @@ color: #323232;
 }
 #portal-personaltools .visualIconPadding {
 padding-left: 10px;
+}
+
+#contributors {
+    font-size: 8px;
 }
 
 /* </dtml-with> */
