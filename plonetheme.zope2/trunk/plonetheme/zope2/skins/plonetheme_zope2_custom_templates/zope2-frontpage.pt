@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:fill-slot="main">
+    <div id="front-page">
+        <h1>The Zope 2 Application Server</h1>
+        <p class="description">
+            Zope is a Python-based application server for building secure and large-scale web applications.
+        </p>
+
+        <tal:def define="newsitems context/getZope2News">
+            <div id="news" tal:condition="newsitems">
+                <h1>News</h1>
+                <tal:loop repeat="news newsitems">
+                    <div class="news-item">
+                        <a tal:attributes="href news/absolute_url">
+                            <span class="headline">                        
+                                <span tal:replace="python: context.toLocalizedTime(news.effective())" />:
+                                <span tal:replace="news/Title" />
+                            </span>
+                        </a>
+                        <div tal:content="news/Description" />
+                    </div>
+
+                </tal:loop>             
+            </div>
+        </tal:def>
+
+
+    </div>
+</div>
+</body>
+</html>
