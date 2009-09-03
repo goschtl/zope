@@ -42,3 +42,11 @@ Zope CVS Repository (obsolete)
 
    cvs
 
+Repository committee operations (internal)
+------------------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   new-members-procedure
+
