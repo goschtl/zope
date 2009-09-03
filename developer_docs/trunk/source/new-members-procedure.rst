@@ -21,10 +21,7 @@ Procedure for accepting new committer applications
 
    - applicant  (TO:)
    - reference committer  (CC:)
-   - ZF secretary (Jens Vagelpohl) (CC:)
    - foundation-info@zope.org list (CC:)
-
-
 
    containing:: 
 
