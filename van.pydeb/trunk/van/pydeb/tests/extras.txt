@@ -72,3 +72,11 @@ But packages that don't, get the original dependency:
 
     >>> runit('van-pydeb depends --egg-info %s' % zope_security) # doctest: +ELLIPSIS
     python-..., python-zope.component, ...
+    
+Overriding binary dependencies
+------------------------------
+
+The --override-bdep command line option can be used to override mappings of binary dependencies.
+
+    >>> runit('van-pydeb depends --egg-info %s --exclude-extra docs --override-bdep "setuptools python-setuptools" --override-bdep "ZODB3 python-zodb3"' % zope_component)
+    python-setuptools, python-zodb3, python-zope, python-zope.configuration, python-zope.event, python-zope.hookable, python-zope.i18nmessageid, python-zope.interface, python-zope.location, python-zope.proxy, python-zope.security, python-zope.testing

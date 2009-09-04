@@ -78,6 +78,18 @@ def _read_map(file):
 _PY_TO_BIN, _BIN_TO_PY = _read_map(os.path.join(_HERE, 'py_to_bin.txt'))
 _PY_TO_SRC, _SRC_TO_PY = _read_map(os.path.join(_HERE, 'py_to_src.txt'))
 
+def _parse_override_bdep(parser):
+    parser.add_option("--override-bdep", dest="override_bdep", action="append",
+                      help="Override a binary-python dependency relation. Format: 'python_package_name binary_package_name'. Can be used multiple times.")
+
+def _handle_override_bdep(options):
+    if options.override_bdep is None:
+        return
+    for override in options.override_bdep:
+        py, bin = override.split()
+        _PY_TO_BIN[py] = (bin, {})
+        _BIN_TO_PY[bin] = (py, {})
+
 _DEFVAL = (None, None)
 
 def py_to_bin(setuptools_project):
@@ -128,13 +140,15 @@ def src_to_py_default(source_package):
 def _string_command(argv):
     command = argv[1]
     parser = optparse.OptionParser(usage="usage: %%prog %s argument" % command)
+    _parse_override_bdep(parser)
     options, args = parser.parse_args(argv)
-    assert len(argv) == 3, "Too many or few arguments"
+    _handle_override_bdep(options)
+    assert len(args) == 3, "Too many or few arguments %s" % args
     print {'py_to_src': py_to_src,
            'py_to_bin': py_to_bin,
            'bin_to_py': bin_to_py,
            'src_to_py': src_to_py,
-           'py_version_to_deb': py_version_to_deb}[command](argv[2])
+           'py_version_to_deb': py_version_to_deb}[command](args[2])
     return 0
 _COMMANDS['py_to_src'] = _COMMANDS['py_to_bin'] = _string_command
 _COMMANDS['src_to_py'] = _COMMANDS['bin_to_py'] = _string_command
@@ -206,7 +220,9 @@ def _depends_or_provides(argv):
                       help="Exclude extras from dependencies")
     parser.add_option("--extra", dest="extras", action="append",
                       help="Generate dependency for extra[s]")
+    _parse_override_bdep(parser)
     options, args = parser.parse_args(argv)
+    _handle_override_bdep(options)
     assert len(args) == 2, "One and only one command can be specified"
     command = args[1]
     assert os.path.exists(options.egg_info), "Does not exist: %s" % options.egg_info

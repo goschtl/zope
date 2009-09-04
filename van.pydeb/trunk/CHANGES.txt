@@ -14,6 +14,8 @@ Changes
 * Add the concept of options to the list of dependencies.
 * Create a "reduced" option that causes warnings to be printed when a reduced
   dependncy is used.
+* Implement a --override-dep option which can be used to override python to
+  binary package dependencies.
 
 1.2.1 (2009-06-15)
 ------------------

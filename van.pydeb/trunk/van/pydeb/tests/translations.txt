@@ -47,6 +47,22 @@ name they look like:
         >>> print pydeb.bin_to_py("foo")
         foo
 
+Overriding binary package translations
+--------------------------------------
+
+The --override-bdep command line option can be used to override mappings of binary dependencies.
+
+    >>> runit('van-pydeb py_to_bin foo')
+    python-foo
+    >>> runit('van-pydeb py_to_bin --override-bdep "foo python-bar" foo')
+    python-bar
+    >>> runit('van-pydeb py_to_bin --override-bdep "Test python-tst" --override-bdep "foo python-bar" foo')
+    python-bar
+    >>> runit('van-pydeb py_to_bin --override-bdep "foo python-bar" --override-bdep "foo python-bar" foo')
+    python-bar
+
+
+
 Setuptools
 ----------
 
