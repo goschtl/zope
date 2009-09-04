@@ -6,7 +6,7 @@ in combination with easy_install -i <some_url>
 Usage:
 
 cli.py tags/2.12.0a3 /tmp/index/2.12.0a3
-cli.py branches/2.12 tmp/index/2.12
+cli.py branches/2.12 /tmp/index/2.12
 
 """
 
@@ -55,6 +55,7 @@ def main():
 
     if len(sys.argv) != 3:
         print 'Usage: z2_kgs <tag-name> <destination-dirname>'
+        print 'Example: z2_kgs tags/2.10.0b4  /var/www/download.zope.org/Zope2/index/2.12.0b4/'
         sys.exit(1)
 
     tag = sys.argv[1]
