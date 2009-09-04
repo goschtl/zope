@@ -29,7 +29,7 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
-    install_requires = ['zc.buildout >=1.4.0dev',
+    install_requires = ['zc.buildout >=1.5.0dev',
                         'zope.testing >=3.6.0',
                         'setuptools',
                         'zc.recipe.egg  >=1.3.0dev',

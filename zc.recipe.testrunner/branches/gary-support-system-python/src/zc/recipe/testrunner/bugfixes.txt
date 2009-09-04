@@ -79,12 +79,13 @@ Now when we run the buildout:
 We can run the test script now:
 
 >>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv -j2'),
+... # doctest: +ELLIPSIS
 Running tests at level 1
 Running bugfix1.tests.Layer1 tests:
   Set up bugfix1.tests.Layer1 in 0.000 seconds.
   Running:
  test (bugfix1.tests.TestDemo1)
-  Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+  Ran 1 tests with 0 failures and 0 errors in 0.000 seconds...
 Running bugfix1.tests.Layer2 tests:
   Running in a subprocess.
   Set up bugfix1.tests.Layer2 in 0.000 seconds.

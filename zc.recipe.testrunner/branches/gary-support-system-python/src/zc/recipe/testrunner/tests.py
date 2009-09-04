@@ -13,9 +13,9 @@
 ##############################################################################
 
 import doctest
+import pkg_resources
 import re
 import unittest
-
 import zc.buildout.testing
 import zope.testing.doctest
 import zope.testing.renormalizing
@@ -27,6 +27,10 @@ def setUp(test):
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.interface', test)
+    dist = pkg_resources.working_set.find(
+        pkg_resources.Requirement.parse('zope.exceptions'))
+    if dist is not None: # we are probably using zope.testing >= 3.8
+        zc.buildout.testing.install('zope.exceptions', test)
 
 def test_suite():
     return unittest.TestSuite((

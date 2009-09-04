@@ -236,17 +236,28 @@ extra-paths option to specify them:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -280,17 +291,28 @@ directory:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -336,17 +358,28 @@ using the -v option:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -434,16 +467,27 @@ the environment variable. Also, the tests pass again:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
-        '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
         ...
         ]
+    sys.path.extend([
+        '/sample-buildout/demo',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
+        ...
+        ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -457,7 +501,6 @@ the environment variable. Also, the tests pass again:
         zope.testing.testrunner.run([
             '--test-path', '/sample-buildout/demo',
             ])
-
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'),
     Running tests at level 1
     Running zope.testing.testrunner.layer.UnitTests tests:
@@ -491,17 +534,28 @@ end of the script:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -540,17 +594,28 @@ This will also work with a multi-line initialization section:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         '/sample-buildout/demo',
-        '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
-        '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-        '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+        '/sample-buildout/eggs/zope.testing-X-pyN.N.egg',
+        '/sample-buildout/eggs/zope.interface-X-pyN.N.egg'...
+        '/sample-buildout/eggs/setuptools-X-pyN.N.egg'
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -588,24 +653,35 @@ generated relative to the test script.
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(os.path.abspath(__file__))
+    base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
     base = os.path.dirname(base)
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         join(base, 'demo'),
-        join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
-        join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-        join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+        join(base, 'eggs/zope.testing-X-pyN.N.egg'),
+        join(base, 'eggs/zope.interface-X-pyN.N.egg')...
+        join(base, 'eggs/setuptools-X-pyN.N.egg')
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         join(base, 'sources'),
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
@@ -639,24 +715,35 @@ The relative-paths option can be specified at the buildout level:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +ELLIPSIS
-    #!/usr/local/bin/python2.4
+    #!python
     <BLANKLINE>
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(os.path.abspath(__file__))
+    base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
     base = os.path.dirname(base)
     <BLANKLINE>
+    import site
     import sys
     sys.path[:] = [
+        ...
+        ]
+    sys.path.extend([
         join(base, 'demo'),
-        join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
-        join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-        join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+        join(base, 'eggs/zope.testing-X-pyN.N.egg'),
+        join(base, 'eggs/zope.interface-X-pyN.N.egg')...
+        join(base, 'eggs/setuptools-X-pyN.N.egg')
+        ])
+    site_dirs = [
         '/usr/local/zope/lib/python',
         join(base, 'sources'),
         ...
         ]
+    # Add the site_dirs before `addsitedir` in case it has setuptools.
+    sys.path.extend(site_dirs)
+    # Process .pth files.
+    for p in site_dirs:
+        site.addsitedir(p)
     <BLANKLINE>
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
