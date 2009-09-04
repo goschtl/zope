@@ -71,4 +71,11 @@
       name="zope_fckconfig.js"
       />
 
+  <resourceLibrary name="ckeditor">
+    <directory
+        source="ckeditor"
+        include="3.0/ckeditor/ckeditor.js"
+        />
+  </resourceLibrary>
+
 </configure>

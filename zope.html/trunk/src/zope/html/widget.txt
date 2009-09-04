@@ -35,3 +35,17 @@ arbitrary documents.  Let's create a field and a widget::
   ...
   </script>
   <BLANKLINE>
+
+We should also test the CkeditorWidget.
+
+  >>> ckwidget = widget.CkeditorWidget(myfield, request)
+  >>> ckwidget.configurationPath = "/myconfig.js"
+  >>> ckwidget.editorHeight = 200
+
+  >>> print ckwidget()
+  <textarea...></textarea>
+  <script...
+  ...height: 200...
+  ...customConfig : "/myconfig.js"...
+  </script>
+  <BLANKLINE>

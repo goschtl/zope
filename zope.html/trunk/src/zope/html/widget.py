@@ -59,3 +59,39 @@ var oFCKeditor_%(shortname)s = new FCKeditor(
     oFCKeditor_%(shortname)s.ReplaceTextarea();
 </script>
 '''
+
+class CkeditorWidget(zope.app.form.browser.TextAreaWidget):
+
+    editorHeight = 400
+    fckVersion = '3.0'
+
+    configurationPath = "/@@/zope_ckconfig.js"
+
+    def __call__(self):
+        zc.resourcelibrary.need("ckeditor")
+        #
+        # XXX The 'shortname' here needs some salt to ensure that
+        # multiple widgets with the same trailing name are
+        # distinguishable; some encoding of the full name seems
+        # appropriate, or a per-request counter would also do nicely.
+        #
+        d = {
+            "config": self.configurationPath,
+            "name": self.name,
+            "shortname": self.name.split('.', 1)[-1],
+            "height": self.editorHeight,
+            "fckversion": self.fckVersion,
+            }
+        textarea = super(CkeditorWidget, self).__call__()
+        return textarea + (self.javascriptTemplate % d)
+
+    javascriptTemplate = '''
+<script type="text/javascript" language="JavaScript">
+var CKeditor_%(shortname)s = new CKEDITOR.replace("%(name)s",
+    {
+        height: %(height)s,
+        customConfig : "%(config)s",
+    }
+);
+</script>
+'''
