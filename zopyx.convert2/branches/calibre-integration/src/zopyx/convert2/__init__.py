@@ -10,6 +10,7 @@ import xinc
 import fop
 import prince
 import xfc
+import calibre
 from convert import Converter
 
 
