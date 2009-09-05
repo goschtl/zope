@@ -21,7 +21,7 @@ First, We need to create and register a pluggable authentication utility.
   ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ...
   ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""")
   HTTP/1.1 303 See Other
@@ -31,7 +31,7 @@ First, We need to create and register a pluggable authentication utility.
   ... GET /++etc++site/default/PAU/@@registration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... """)
   HTTP/1.1 200 OK
   ...
@@ -44,7 +44,7 @@ Register PAU.
   ... Content-Length: 687
   ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
+  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
   ...
   ... -----------------------------5559795404609280911441883437
   ... Content-Disposition: form-data; name="field.comment"
@@ -67,7 +67,7 @@ Add a Principal folder plugin `users` to PAU.
   ... Content-Length: 429
   ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/+/AddPrincipalFolder.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
   ...
   ... -----------------------------95449631112274213651507932125
   ... Content-Disposition: form-data; name="field.prefix"
@@ -94,7 +94,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -137,7 +137,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -180,7 +180,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -223,7 +223,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -265,7 +265,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -307,7 +307,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -349,7 +349,7 @@ Next we will add some users.
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ...
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -391,7 +391,7 @@ Next, We'll add out group folder plugin in PAU.
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 427
   ... Content-Type: multipart/form-data; boundary=---------------------------4150524541658557772058105275
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/+/AddGroupFolder.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/+/AddGroupFolder.html=
   ...
   ... -----------------------------4150524541658557772058105275
   ... Content-Disposition: form-data; name="field.prefix"
@@ -418,7 +418,7 @@ Next we'll select the credentials and authenticators for the PAU:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1313
   ... Content-Type: multipart/form-data; boundary=---------------------------2026736768606413562109112352
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/@@configure.html
+  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
   ...
   ... -----------------------------2026736768606413562109112352
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
@@ -470,7 +470,7 @@ Now, we can define some groups.  Let's start with a group named "Admin":
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 550
   ... Content-Type: multipart/form-data; boundary=---------------------------20619400354342370301249668954
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ...
   ... -----------------------------20619400354342370301249668954
   ... Content-Disposition: form-data; name="field.title"
@@ -501,7 +501,7 @@ That includes Betty, Mary and Mike:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1509
   ... Content-Type: multipart/form-data; boundary=---------------------------6981402699601872602121555350
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/admin/@@edit.html
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/admin/@@edit.html
   ...
   ... -----------------------------6981402699601872602121555350
   ... Content-Disposition: form-data; name="field.title"
@@ -557,7 +557,7 @@ and a group "Power Users"
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 561
   ... Content-Type: multipart/form-data; boundary=---------------------------168380148515549442351132560943
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ...
   ... -----------------------------168380148515549442351132560943
   ... Content-Disposition: form-data; name="field.title"
@@ -587,7 +587,7 @@ with Bill and Betty as members:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1729
   ... Content-Type: multipart/form-data; boundary=---------------------------181944013812647128322134918391
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/power/@@edit.html
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/power/@@edit.html
   ...
   ... -----------------------------181944013812647128322134918391
   ... Content-Disposition: form-data; name="field.title"

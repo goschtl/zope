@@ -8,7 +8,7 @@ We'll add a  pluggable authentication utility:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... 
   ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""")
   HTTP/1.1 303 See Other
@@ -22,7 +22,7 @@ And register it:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 699
   ... Content-Type: multipart/form-data; boundary=---------------------------191720529414243436931796477300
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
+  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------191720529414243436931796477300
   ... Content-Disposition: form-data; name="field.comment"
@@ -45,7 +45,7 @@ Next, we'll add the group folder:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 427
   ... Content-Type: multipart/form-data; boundary=---------------------------4150524541658557772058105275
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/+/AddGroupFolder.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/+/AddGroupFolder.html=
   ... 
   ... -----------------------------4150524541658557772058105275
   ... Content-Disposition: form-data; name="field.prefix"
@@ -73,7 +73,7 @@ And add some groups:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 550
   ... Content-Type: multipart/form-data; boundary=---------------------------12719796373012316301953477158
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ... 
   ... -----------------------------12719796373012316301953477158
   ... Content-Disposition: form-data; name="field.title"
@@ -102,7 +102,7 @@ And add some groups:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 550
   ... Content-Type: multipart/form-data; boundary=---------------------------10816732208483809451400699513
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ... 
   ... -----------------------------10816732208483809451400699513
   ... Content-Disposition: form-data; name="field.title"
@@ -135,7 +135,7 @@ group folder:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1040
   ... Content-Type: multipart/form-data; boundary=---------------------------1786480431902757372789659730
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/@@configure.html
+  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
   ... 
   ... -----------------------------1786480431902757372789659730
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
@@ -178,7 +178,7 @@ Now, if we search for a group, but don't supply a string:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 166
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal.displayed=y&"""
   ... "field.principal.MC5ncm91cHM_.field.search=&"
