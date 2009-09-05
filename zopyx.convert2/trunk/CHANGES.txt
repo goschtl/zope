@@ -1,6 +1,8 @@
-2.1.0 (unreleased)
+2.1.0 (2009-09-05)
 ==================
 - Calibre integration
+- API change: convert() now returns a richer dict with all related
+  conversion results
 
 2.0.4 (2009-07-07)
 ====================
