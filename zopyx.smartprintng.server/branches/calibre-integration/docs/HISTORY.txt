@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.5.2 (2009/09/05)
+------------------
+* adjusted to newest zopyx.convert2 version
+
 0.5.1 (2009/08/01)
 ------------------
 

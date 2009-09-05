@@ -127,16 +127,17 @@ class Server(object):
         self._inject_base_tag(html_filename)
         result = self._convert(html_filename, 
                                converter_name=converter_name)
-        basename, ext = os.path.splitext(os.path.basename(result))
+        output_filename = result['output_filename']
+        basename, ext = os.path.splitext(os.path.basename(output_filename))
 
         # Generate result ZIP archive with base64-encoded result
         zip_out = os.path.join(tempdir, '%s.zip' % ident)
         ZF = zipfile.ZipFile(zip_out, 'w')
-        ZF.writestr('output%s' % ext, file(result, 'rb').read())
+        ZF.writestr('output%s' % ext, file(output_filename, 'rb').read())
         ZF.close()
 
         LOG.info('Request end (%3.2lf seconds)' % (time.time() - ts))
-        return zip_out, result
+        return zip_out, output_filename
 
     def convertZIP(self, zip_archive, converter_name='pdf-prince'):
         """ Process html-file + images within a ZIP archive """
