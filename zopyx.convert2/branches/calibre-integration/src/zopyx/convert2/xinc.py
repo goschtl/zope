@@ -42,7 +42,11 @@ def fo2pdf(fo_filename, output_filename=None):
     status, output = runcmd(cmd)
     if status != 0:
         raise RuntimeError('Error executing: %s' % cmd)
-    return output_filename
+    
+    return dict(output_filename=output_filename,
+                status=status,
+                output=output)
+
 
 
 class HTML2PDF(BaseConverter):
@@ -57,9 +61,9 @@ class HTML2PDF(BaseConverter):
         return xinc_available
 
     def convert(self, output_filename=None, **options):
-
         self.convert2FO(**options)
-        return fo2pdf(self.fo_filename, output_filename)
+        result = fo2pdf(self.fo_filename, output_filename)
+        return result
 
 
 xinc_available = _check_xinc()

@@ -49,7 +49,9 @@ def html2calibre(html_filename, output_filename=None, **calibre_options):
     status, output = runcmd(cmd)
     if status != 0:
         raise RuntimeError('Error executing: %s' % cmd)
-    return output_filename
+    return dict(output_filename=output_filename,
+                status=status,
+                output=output)
 
 
 class HTML2Calibre(BaseConverter):
@@ -65,9 +67,9 @@ class HTML2Calibre(BaseConverter):
 
     def convert(self, output_filename=None, **calibre_options):
         tidy_filename = tidyhtml(self.filename, self.encoding)
-        output_filename = html2calibre(tidy_filename, output_filename, **calibre_options)
+        result = html2calibre(tidy_filename, output_filename, **calibre_options)
         os.unlink(tidy_filename)
-        return output_filename
+        return result
 
 
 from registry import registerConverter
