@@ -71,6 +71,7 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
 
 
     def _getRequest(self, **kw):
+        kw['HTTP_HOST'] = 'foo'
         request = BrowserRequest(StringIO(''), kw)
         request._cookies = {'edit_languages': 'en,de'}
         request._traversed_names = ['foo', 'bar']
