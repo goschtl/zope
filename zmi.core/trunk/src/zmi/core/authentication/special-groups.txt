@@ -24,7 +24,7 @@ Create pluggable authentication utility and register it.
   ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... 
   ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""")
   HTTP/1.1 303 See Other
@@ -36,7 +36,7 @@ Create pluggable authentication utility and register it.
   ... Content-Length: 687
   ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
+  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------5559795404609280911441883437
   ... Content-Disposition: form-data; name="field.comment"
@@ -59,7 +59,7 @@ Add a Principal folder plugin to PAU.
   ... Content-Length: 429
   ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/+/AddPrincipalFolder.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
   ... 
   ... -----------------------------95449631112274213651507932125
   ... Content-Disposition: form-data; name="field.prefix"
@@ -86,7 +86,7 @@ Add a principal to it:
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ... 
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -130,7 +130,7 @@ Configure PAU, with registered principal folder plugin.
   ... Content-Length: 1038
   ... Content-Type: multipart/form-data; boundary=---------------------------6519411471194050603270010787
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/@@configure.html
+  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
   ... 
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
@@ -195,13 +195,13 @@ we'll be unauthorized:
 We'll even be unauthorized if we try to access it as bob:
 
   >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html HTTP/1.1
+  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
   ... Content-Length: 94
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost:8081/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html
+  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
   ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html""")
+  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
   ...
   HTTP/1.1 303 See Other
   ...
@@ -246,7 +246,7 @@ Now, we'll grant to unauthenticated:
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal=em9wZS5Bbnlib2R5"""
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=allow"""
@@ -288,13 +288,13 @@ Now, we'll remove the authenticated group grant:
 And anonymous people will be able to access the page, but bob won't be able to:
 
   >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html HTTP/1.1
+  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
   ... Content-Length: 94
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost:8081/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html
+  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
   ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html""")
+  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
   ...
   HTTP/1.1 303 See Other
   ...
@@ -316,7 +316,7 @@ Now, we'll remove the unauthenticated group grant:
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal=em9wZS5Bbnlib2R5"""
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=unset"""
@@ -326,13 +326,13 @@ Now, we'll remove the unauthenticated group grant:
   ...
 
   >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html HTTP/1.1
+  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
   ... Content-Length: 94
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost:8081/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html
+  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
   ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40index.html""")
+  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
   ...
   HTTP/1.1 303 See Other
   ...

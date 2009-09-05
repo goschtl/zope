@@ -26,7 +26,7 @@ We need to create and register a pluggable authentication utility.
   ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... 
   ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""",
   ... handle_errors=False)
@@ -37,7 +37,7 @@ We need to create and register a pluggable authentication utility.
   ... GET /++etc++site/default/PAU/@@registration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... """)
   HTTP/1.1 200 OK
   ...
@@ -50,7 +50,7 @@ Register PAU.
   ... Content-Length: 687
   ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/addRegistration.html
+  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
   ... 
   ... -----------------------------5559795404609280911441883437
   ... Content-Disposition: form-data; name="field.comment"
@@ -73,7 +73,7 @@ Add a Principal folder plugin to PAU.
   ... Content-Length: 429
   ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/+/AddPrincipalFolder.html=
+  ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
   ... 
   ... -----------------------------95449631112274213651507932125
   ... Content-Disposition: form-data; name="field.prefix"
@@ -103,7 +103,7 @@ Next we'll view the contents page of the principal folder:
   ... GET /++etc++site/default/PAU/users/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/addRegistration.html
+  ... Referer: http://localhost/++etc++site/default/PAU/users/addRegistration.html
   ... """)
   HTTP/1.1 200 OK
   ...
@@ -118,7 +118,7 @@ And we'll add a principal, Bob:
   ... Content-Length: 780
   ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
   ... 
   ... -----------------------------5110544421083023415453147877
   ... Content-Disposition: form-data; name="field.login"
@@ -168,7 +168,7 @@ select any one credentials.
   ... Content-Length: 1038
   ... Content-Type: multipart/form-data; boundary=---------------------------6519411471194050603270010787
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost:8081/++etc++site/default/PAU/@@configure.html
+  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
   ... 
   ... -----------------------------6519411471194050603270010787
   ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
@@ -208,13 +208,13 @@ access the management interface. When he attempts to do so, the PAU
 issues a challenge to let bob login as a different user
 
   >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40login.html HTTP/1.1
+  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html HTTP/1.1
   ... Content-Length: 94
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost:8081/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40login.html
+  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html
   ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%3A8081%2F%40%40login.html""")
+  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html""")
   HTTP/1.1 303 See Other
   ...
 
@@ -234,7 +234,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... GET /@@grant.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost:8081/@@contents.html
+  ... Referer: http://localhost/@@contents.html
   ... """)
   HTTP/1.1 200 OK
   ...
@@ -245,7 +245,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... Content-Length: 210
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
   HTTP/1.1 200 OK
@@ -258,7 +258,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... Content-Length: 210
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
   HTTP/1.1 200 OK
@@ -272,7 +272,7 @@ We select Bob and grant him the Manager role:
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 5316
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal=dXNlcnMuMQ__"""
   ... """&field.principal.displayed=y"""
@@ -291,7 +291,7 @@ We select Bob and grant him the Manager role:
   ... Content-Length: 2598
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost:8081/@@grant.html
+  ... Referer: http://localhost/@@grant.html
   ... 
   ... field.principal=dXNlcnNib2I_&field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MQ__.query.searchstring=&GRANT_SUBMIT=Change&field.dXNlcnNib2I_.role.bugtracker.Admin=unset&field.dXNlcnNib2I_.role.bugtracker.Editor=unset&field.dXNlcnNib2I_.role.bugtracker.User=unset&field.dXNlcnNib2I_.role.zope.Anonymous=unset&field.dXNlcnNib2I_.role.zope.Manager=allow&field.dXNlcnNib2I_.role.zope.Member=unset&field.dXNlcnNib2I_.role.zwiki.Admin=unset&field.dXNlcnNib2I_.role.zwiki.Editor=unset&field.dXNlcnNib2I_.role.zwiki.User=unset&field.dXNlcnNib2I_.permission.bugtracker.AddBug=unset&field.dXNlcnNib2I_.permission.bugtracker.AddAttachment=unset&field.dXNlcnNib2I_.permission.bugtracker.AddComment=unset&field.dXNlcnNib2I_.permission.zwiki.AddWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.CommentWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.DeleteWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.EditBug=unset&field.dXNlcnNib2I_.permission.zwiki.EditWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ManageBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ReparentWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBug=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ViewWikiPage=unset&field.dXNlcnNib2I_.permission.zope.AddImages=unset&field.dXNlcnNib2I_.permission.zope.AddSQLScripts=unset&field.dXNlcnNib2I_.permission.zope.Security=unset&field.dXNlcnNib2I_.permission.zope.workflow.CreateProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.ManageApplication=unset&field.dXNlcnNib2I_.permission.zope.ManageCode=unset&field.dXNlcnNib2I_.permission.zope.ManageContent=unset&field.dXNlcnNib2I_.permission.zope.ManagePrincipals=unset&field.dXNlcnNib2I_.permission.zope.ManageBindings=unset&field.dXNlcnNib2I_.permission.zope.ManageServices=unset&field.dXNlcnNib2I_.permission.zope.ManageSite=unset&field.dXNlcnNib2I_.permission.zope.workflow.ManageProcessDefinitions=unset&field.dXNlcnNib2I_.permission.zope.SendMail=unset&field.dXNlcnNib2I_.permission.zope.UndoAllTransactions=unset&field.dXNlcnNib2I_.permission.zope.UndoOwnTransactions=unset&field.dXNlcnNib2I_.permission.zope.workflow.UseProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.View=unset&field.dXNlcnNib2I_.permission.zope.app.apidoc.UseAPIDoc=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.change=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.view=unset&field.dXNlcnNib2I_.permission.zope.app.introspector.Introspect=unset&field.dXNlcnNib2I_.permission.zope.app.rdb.Use=unset""")
   HTTP/1.1 200 OK
