@@ -10,6 +10,8 @@ Changes
 * Don't use ``zope.app.testing.ztapi`` in tests, use zope.component's
   testing functions instead.
 
+* Fix functional tests and stop using port 8081. Redirecting to
+  different port without trusted flag is not allowed.
 
 3.6.0 (2009-03-14)
 ------------------
