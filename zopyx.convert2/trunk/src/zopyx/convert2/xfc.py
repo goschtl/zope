@@ -46,7 +46,10 @@ def fo2xfc(fo_filename, format='rtf', output_filename=None):
     status, output = runcmd(cmd)
     if status != 0:
         raise RuntimeError('Error executing: %s' % cmd)
-    return output_filename
+
+    return dict(output_filename=output_filename,
+                status=status,
+                output=output)
 
 class RTFConverter(BaseConverter):
 

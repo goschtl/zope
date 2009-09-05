@@ -36,7 +36,8 @@ def convert(options, args):
                 print '%s: %s.html -> %s.%s' % (name, tmpf, tmpf, cls.output_format)
                 C = Converter(tmpf + '.html', verbose=True)
                 try:
-                    output_filename = C(name, output_filename=tmpf + '.' + cls.output_format)
+                    result = C(name, output_filename=tmpf + '.' + cls.output_format)
+                    print result
                 except Exception, e:
                     print 'FAILED (%s)' % e
 
@@ -48,9 +49,9 @@ def convert(options, args):
 
         for fn in args:
             C = Converter(fn, verbose=options.verbose)
-            output_filename = C(options.format, 
+            result = C(options.format, 
                                 output_filename=options.output_filename)
-            print 'Generated file: %s' % output_filename
+            print 'Generated file: %s' % result['output_filename']
    
 
 def main():

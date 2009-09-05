@@ -8,6 +8,7 @@ import os
 import sys
 import tempfile
 
+import commands
 from subprocess import Popen, PIPE
 from logger import LOG
 
@@ -33,6 +34,9 @@ def runcmd(cmd):
         if execute_mode == 'system':
             status = os.system(cmd)
             return status, ''
+
+        elif execute_mode == 'commands':
+            return commands.getstatusoutput(cmd)
 
         elif execute_mode == 'process':
 

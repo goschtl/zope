@@ -44,7 +44,9 @@ def html2pdf(html_filename, output_filename=None, **prince_options):
     status, output = runcmd(cmd)
     if status != 0:
         raise RuntimeError('Error executing: %s' % cmd)
-    return output_filename
+    return dict(output_filename=output_filename,
+                status=status,
+                output=output)
 
 
 class HTML2PDF(BaseConverter):
@@ -60,9 +62,9 @@ class HTML2PDF(BaseConverter):
 
     def convert(self, output_filename=None, **prince_options):
         tidy_filename = tidyhtml(self.filename, self.encoding)
-        output_filename = html2pdf(tidy_filename, output_filename, **prince_options)
+        result = html2pdf(tidy_filename, output_filename, **prince_options)
         os.unlink(tidy_filename)
-        return output_filename
+        return result
 
 
 from registry import registerConverter
@@ -74,4 +76,4 @@ if __name__ == '__main__':
                                               'disallow-copy' : None,
                                               'disallow-modify' : None,
                                               'owner-password' : 'foo1',
-                                              'user-password' : 'foo'})
+                                              'user-password' : 'foo'})['output_filename']
