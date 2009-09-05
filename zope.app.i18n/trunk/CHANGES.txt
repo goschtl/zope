@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+3.6.2 (unreleased)
+------------------
+
+- Fix test_translate and follow recent change of HTTPResponse.redirect.
+
 3.6.1 (2009-08-15)
 ------------------
 
