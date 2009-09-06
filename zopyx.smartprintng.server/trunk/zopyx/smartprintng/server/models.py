@@ -128,7 +128,7 @@ class Server(object):
         result = self._convert(html_filename, 
                                converter_name=converter_name)
         output_filename = result['output_filename']
-        basename, ext = os.path.splitext(output_filename)
+        basename, ext = os.path.splitext(os.path.basename(output_filename))
 
         # Generate result ZIP archive with base64-encoded result
         zip_out = os.path.join(tempdir, '%s.zip' % ident)
