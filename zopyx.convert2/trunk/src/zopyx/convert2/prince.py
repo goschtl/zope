@@ -29,17 +29,17 @@ def html2pdf(html_filename, output_filename=None, **options):
     if not prince_available:
         raise RuntimeError("The external PrinceXML converter isn't available")
 
-    options = list()
+    cmd_options = list()
     for k,v in options.items():
         if v is None:
-            options.append('--%s ' % k)
+            cmd_options.append('--%s ' % k)
         else:
-            options.append('--%s="%s" ' % (k, v)) 
+            cmd_options.append('--%s="%s" ' % (k, v)) 
 
     if sys.platform == 'win32':
         raise NotImplementedError('No support for PrinceXML on Windows available')
     else:
-        cmd = 'sh "prince" "%s" %s -o "%s"' % (html_filename, ' '.join(options), output_filename)
+        cmd = 'sh "prince" "%s" %s -o "%s"' % (html_filename, ' '.join(cmd_options), output_filename)
     
     status, output = runcmd(cmd)
     if status != 0:

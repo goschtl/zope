@@ -17,7 +17,7 @@ class Converter(object):
         self.cleanup = cleanup
         self.verbose = verbose
 
-    def convert(self, format, output_filename=None, **options):
+    def convert(self, format, output_filename=None, options={}):
 
         converter = registry.converter_registry.get(format)
         if converter is None:
@@ -30,7 +30,7 @@ class Converter(object):
                                         encoding=self.encoding)
         else:
             c = converter(self.filename, self.encoding, self.cleanup, self.verbose)
-            output_filename = c.convert(output_filename)
+            output_filename = c.convert(output_filename, **options)
         return output_filename
 
     __call__ = convert
