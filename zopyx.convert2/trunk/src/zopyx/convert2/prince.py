@@ -20,7 +20,7 @@ def _check_prince():
 
 prince_available = _check_prince()
 
-def html2pdf(html_filename, output_filename=None, **prince_options):
+def html2pdf(html_filename, output_filename=None, **options):
     """ Convert a HTML file to PDF using FOP"""
 
     if not output_filename:
@@ -30,7 +30,7 @@ def html2pdf(html_filename, output_filename=None, **prince_options):
         raise RuntimeError("The external PrinceXML converter isn't available")
 
     options = list()
-    for k,v in prince_options.items():
+    for k,v in options.items():
         if v is None:
             options.append('--%s ' % k)
         else:
@@ -60,9 +60,9 @@ class HTML2PDF(BaseConverter):
     def available():
         return prince_available
 
-    def convert(self, output_filename=None, **prince_options):
+    def convert(self, output_filename=None, **options):
         tidy_filename = tidyhtml(self.filename, self.encoding)
-        result = html2pdf(tidy_filename, output_filename, **prince_options)
+        result = html2pdf(tidy_filename, output_filename, **options)
         os.unlink(tidy_filename)
         return result
 
