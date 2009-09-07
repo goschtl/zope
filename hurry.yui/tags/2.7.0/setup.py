@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-YUI_VERSION = '2.7.0'
-
 import sys, os
 
 def read(*rnames):
@@ -19,7 +17,7 @@ long_description = (
 
 setup(
     name='hurry.yui',
-    version=YUI_VERSION + 'dev',
+    version='2.7.0',
     description="hurry.resource style resources for YUI.",
     long_description = long_description,
     classifiers=[],
