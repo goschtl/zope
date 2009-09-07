@@ -72,6 +72,8 @@ In some cases it is possible that the filename of the ZIP file is
 different than the actual official name of the release.  For instance,
 in the case of YUI 2.7.0 the ZIP file is named ``YUI_2.7.0b.zip``. In
 this case, you can give a second argument to the ``bin/yuiprepare``
-script to supply it with a separate ZIP file version number.
+script to supply it with a separate ZIP file version number. For instance::
+  
+  $ bin/yuiprepare 2.7.0 2.7.0b
 
 .. _`release instructions`: http://docs.zope.org/zopetoolkit/process/releasing-software.html
