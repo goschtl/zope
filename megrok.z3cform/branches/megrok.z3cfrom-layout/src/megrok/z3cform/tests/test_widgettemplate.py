@@ -5,7 +5,6 @@
   >>> from zope.interface import alsoProvides
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> alsoProvides(request, Skin)
 
   Check that fields have been created on the edition page:
 
@@ -16,7 +15,7 @@
   >>> [field.__name__ for field in view.fields.values()]
   ['name', 'age']
 
-The widget for *name* should show it´s normal widget.
+The widget for *name* should show it's normal widget.
 Because no CustomWidget is provided for this field.
 
   >>> view.updateWidgets() 
@@ -31,7 +30,7 @@ from the NewTemplateForIntField.
   >>> print view.widgets['age'].render()
   <span> This is custom integer widget for zope.schema.Int Fields </span>
 
-Now let´s look on a other view. Here we get a CustomWidget as a result
+Now let's look on a other view. Here we get a CustomWidget as a result
 of the CustomStringTemplate
 
   >>> view = component.getMultiAdapter((manfred, request), name='view')
@@ -40,7 +39,7 @@ of the CustomStringTemplate
   <span> Extra Widget </span>
 
 Our CustomTemplate class is configured for the IAdded interface.
-Let´s check if we get the right template for it.
+Let's check if we get the right template for it.
 
   >>> view = component.getMultiAdapter((manfred, request), name='add')
   >>> view.updateWidgets() 
@@ -73,11 +72,6 @@ from zope.schema.fieldproperty import FieldProperty
 from megrok import z3cform
 
 from z3c.form import field, interfaces
-
-class Skin(z3cform.FormLayer):
-    grok.skin('skin')
-
-grok.layer(Skin)
 
 
 class IPerson(interface.Interface):

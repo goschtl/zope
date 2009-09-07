@@ -1,12 +1,16 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:grok="http://namespaces.zope.org/grok">
+   xmlns:grok="http://namespaces.zope.org/grok"
+   >
 
   <include package="grok" />
   <include package="grok" file="meta.zcml" />
+  <include package="megrok.pagetemplate" file="meta.zcml" />
+   
 
   <include package="megrok.z3cform" file="meta.zcml" />
   <include package="megrok.z3cform" />
+  <include package="megrok.z3cform" file="default_form_layer.zcml" />
 
   <grok:grok package="megrok.z3cform.tests" />
 
@@ -16,7 +20,7 @@
 
   <unauthenticatedPrincipal
       id="zope.anybody"
-      title="Unauthenticated User"
+      title="Unauthenticated Principal"
       />
   <grant
       permission="zope.View"

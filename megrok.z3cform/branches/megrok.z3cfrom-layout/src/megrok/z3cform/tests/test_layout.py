@@ -7,7 +7,6 @@
   >>> from zope.interface import alsoProvides
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> alsoProvides(request, FormSkin)
 
 Add Form
 
@@ -16,49 +15,46 @@ Add Form
   <html>                                                                           
    <body>
      <div class="layout"><form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="form" id="form">
-    <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
-      <div>
-            <div id="form-widgets-name-row" class="row">
-                <div class="label">
-                  <label for="form-widgets-name">
-                    <span>Name</span>
-                    <span class="required">*</span>
-                  </label>
-                </div>
-                <div class="widget"> 
+        enctype="multipart/form-data" class="form-add">
+    <div class="errors">
+    </div>
+    <p class="documentDescription"></p>
+    <input type="hidden" name="camefrom" />
+      <div id="edition-fields">
+      <div class="field ">
+        <label for="form-widgets-name">
+          <span>Name</span>
+          <span class="fieldRequired" title="Required">
+            <span class="textual-info">(Required)</span>
+          </span>
+        </label>
+        <div class="widget"> 
       <input id="form-widgets-name" name="form.widgets.name"
              class="text-widget required textline-field"
              value="" type="text" />
   </div>
-            </div>
-            <div id="form-widgets-age-row" class="row">
-                <div class="label">
-                  <label for="form-widgets-age">
-                    <span>Age</span>
-                    <span class="required">*</span>
-                  </label>
-                </div>
-                <div class="widget"> 
+      </div>
+      <div class="field ">
+        <label for="form-widgets-age">
+          <span>Age</span>
+          <span class="fieldRequired" title="Required">
+            <span class="textual-info">(Required)</span>
+          </span>
+        </label>
+        <div class="widget"> 
       <input id="form-widgets-age" name="form.widgets.age"
              class="text-widget required int-field" value=""
              type="text" />
   </div>
-            </div>
       </div>
-    </div>
-    <div>
-      <div class="buttons">
+      </div>
+      <div id="actionsView">
+        <span class="actionButtons">
   <input id="form-buttons-add" name="form.buttons.add"
          class="submit-widget button-field" value="Add"
          type="submit" />
+        </span>
       </div>
-    </div>
   </form>
   </div>
    </body>
@@ -96,54 +92,51 @@ Now let us try to render the complete edit form
 
   >>> print view()
   <html>                                                                           
-  <body>
-    <div class="layout"><form action="http://127.0.0.1" method="post"
-      enctype="multipart/form-data" class="edit-form"
-       name="form" id="form">
-   <div class="viewspace">
-       <div class="required-info">
-          <span class="required">*</span>
-          &ndash; required
-       </div>
-     <div>
-           <div id="form-widgets-name-row" class="row">
-               <div class="label">
-                 <label for="form-widgets-name">
-                   <span>Name</span>
-                   <span class="required">*</span>
-                 </label>
-               </div>
-               <div class="widget">
-     <input id="form-widgets-name" name="form.widgets.name"
-            class="text-widget required textline-field"
-            value="" type="text" />
+   <body>
+     <div class="layout"><form action="http://127.0.0.1" method="post"
+        enctype="multipart/form-data" class="form-edit">
+    <div class="errors">
+    </div>
+    <p class="documentDescription"></p>
+    <input type="hidden" name="camefrom" />
+      <div id="edition-fields">
+      <div class="field ">
+        <label for="form-widgets-name">
+          <span>Name</span>
+          <span class="fieldRequired" title="Required">
+            <span class="textual-info">(Required)</span>
+          </span>
+        </label>
+        <div class="widget"> 
+      <input id="form-widgets-name" name="form.widgets.name"
+             class="text-widget required textline-field"
+             value="" type="text" />
   </div>
-           </div>
-           <div id="form-widgets-age-row" class="row">
-               <div class="label">
-                 <label for="form-widgets-age">
-                   <span>Age</span>
-                   <span class="required">*</span>
-                 </label>
-               </div>
-               <div class="widget">
-     <input id="form-widgets-age" name="form.widgets.age"
-            class="text-widget required int-field" value=""
-            type="text" />
+      </div>
+      <div class="field ">
+        <label for="form-widgets-age">
+          <span>Age</span>
+          <span class="fieldRequired" title="Required">
+            <span class="textual-info">(Required)</span>
+          </span>
+        </label>
+        <div class="widget"> 
+      <input id="form-widgets-age" name="form.widgets.age"
+             class="text-widget required int-field" value=""
+             type="text" />
   </div>
-           </div>
-     </div>
-   </div>
-   <div>
-     <div class="buttons">
+      </div>
+      </div>
+      <div id="actionsView">
+        <span class="actionButtons">
   <input id="form-buttons-apply" name="form.buttons.apply"
-        class="submit-widget button-field" value="Apply"
-        type="submit" />
-        </div>
+         class="submit-widget button-field" value="Apply"
+         type="submit" />
+        </span>
       </div>
   </form>
   </div>
-  </body>
+   </body>
   </html>
 
 
@@ -157,12 +150,6 @@ from megrok import z3cform
 from zope import interface, schema
 from zope.schema.fieldproperty import FieldProperty
 from z3c.form import button, field
-
-
-class FormSkin(z3cform.FormLayer):
-    grok.skin('formskin')
-
-grok.layer(FormSkin)
 
 
 class IMammoth(interface.Interface):

@@ -9,8 +9,8 @@ install_requires = [
     'grokcore.view >= 1.1',
     'grokcore.formlib',
     'z3c.form',
-    'z3c.formui',
     'megrok.layout',
+    'megrok.pagetemplate',
     ]
 
 # The grok dependency is not added explicitly, so we can factor out a
