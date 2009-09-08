@@ -11,7 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Convenience imports to ease usage of this package
+
+NOTE: importing this module will read mime info data and initialize the
+database, as the global MIME types utility is created in the "utility"
+module.
+
 $Id$
 """
 from z3c.sharedmimeinfo.utility import getType

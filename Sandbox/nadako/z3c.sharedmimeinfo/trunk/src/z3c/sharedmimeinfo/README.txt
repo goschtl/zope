@@ -21,6 +21,13 @@ other ways to install and extend the database.
 
 .. _specification: http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.13.html#s2_layout
 
+Thread-safety
+-------------
+
+Note, that this package is currently not thread-safe, because data are meant to
+be loaded only once, on module import. If there will be any problems because of
+that, it could be changed in future.
+
 MIME type guessing
 ------------------
 
