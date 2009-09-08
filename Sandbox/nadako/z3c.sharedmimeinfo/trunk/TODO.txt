@@ -2,3 +2,4 @@
   how it goes.
 - Think about MIME info data path pluggability, so for instance one could
   install shared-mime-info as a python egg and use it with z3c.sharedmimeinfo.
+- Add tests for the "magic" module.
