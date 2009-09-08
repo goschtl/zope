@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.zeologhack', '0.1'
+name, version = 'zc.zeoinputlog', '0.1'
 
 install_requires = ['setuptools']
 extras_require = dict(test=['zope.testing'])
