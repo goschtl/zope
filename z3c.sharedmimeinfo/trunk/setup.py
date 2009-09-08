@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup(
     name='z3c.sharedmimeinfo',
-    version='0.1.0dev',
+    version='0.1.1dev',
     url='http://pypi.python.org/pypi/z3c.sharedmimeinfo',
     license='ZPL 2.1',
     description='MIME type guessing framework for Zope, based on shared-mime-info',
