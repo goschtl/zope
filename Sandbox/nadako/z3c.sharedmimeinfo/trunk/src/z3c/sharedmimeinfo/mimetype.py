@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""MIME type helper objects
+"""MIME type representation objects and MIME type titles translation domain
 
 $Id$
 """

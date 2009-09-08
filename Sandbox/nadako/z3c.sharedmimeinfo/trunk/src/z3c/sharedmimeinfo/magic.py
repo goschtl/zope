@@ -82,7 +82,6 @@ class MagicType(object):
     """A representation of the mime type, determined by magic.
     
     It can tell if some data matches its mime type or not.
-
     """
 
     def __init__(self, mtype):

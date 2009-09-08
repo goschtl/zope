@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""The actual MIME type guessing utility class and global object (see the end
-of file). You want to use the guessing via this utility. :-)
+"""MIME type guessing utility
+
+This module also initializes a global utility object, thus loading the MIME
+info data at the module import time (see the end of this file). 
 
 $Id$
 """
