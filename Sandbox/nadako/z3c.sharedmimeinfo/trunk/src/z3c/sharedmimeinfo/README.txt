@@ -24,14 +24,13 @@ other ways to install and extend the database.
 MIME type detection utility
 ---------------------------
 
-The core of this package is the global IMIMETypesUtility component::
+The core of this package is the IMIMETypesUtility component::
 
-  >>> from zope.component import getUtility
   >>> from zope.interface.verify import verifyObject
   >>> from z3c.sharedmimeinfo.interfaces import IMIMETypesUtility
+  >>> from z3c.sharedmimeinfo.utility import mimeTypesUtility
 
-  >>> util = getUtility(IMIMETypesUtility)
-  >>> verifyObject(IMIMETypesUtility, util)
+  >>> verifyObject(IMIMETypesUtility, mimeTypesUtility)
   True
 
 It has three methods for getting mime type. Those three methods are
@@ -45,7 +44,7 @@ Detection by file name
 The simpliest method is ``getTypeByFileName`` that looks up the type by
 filename::
 
-  >>> mt = util.getTypeByFileName('example.doc')
+  >>> mt = mimeTypesUtility.getTypeByFileName('example.doc')
 
 The mime type is the object implementing IMIMEType interface::
 
@@ -76,21 +75,21 @@ MIMEType object also has a title attribute that is a translatable string::
 Shared-Mime-Info is nice, it can even detect mime type for file names like
 ``Makefile``::
 
-  >>> print util.getTypeByFileName('Makefile')
+  >>> print mimeTypesUtility.getTypeByFileName('Makefile')
   text/x-makefile
 
 Also, it know the difference in extension letter case. For example the ``.C``
 should be detected as C++ file, when ``.c`` is plain C file::
 
-  >>> print util.getTypeByFileName('hello.C')
+  >>> print mimeTypesUtility.getTypeByFileName('hello.C')
   text/x-c++src
   
-  >>> print util.getTypeByFileName('main.c')
+  >>> print mimeTypesUtility.getTypeByFileName('main.c')
   text/x-csrc
 
 The method returns ``None`` if it can determine type from file name::
 
-  >>> print util.getTypeByFileName('somefilename')
+  >>> print mimeTypesUtility.getTypeByFileName('somefilename')
   None
 
 Detection by contents
@@ -107,25 +106,25 @@ We have some sample files that should be detected by contents::
   ...     return open(os.path.join(SAMPLE_DATA_DIR, 'sample.' + extension))
 
   >>> fdoc = openSample('doc')
-  >>> print util.getTypeByContents(fdoc)
+  >>> print mimeTypesUtility.getTypeByContents(fdoc)
   application/msword
 
   >>> fhtml = openSample('html')
-  >>> print util.getTypeByContents(fhtml)
+  >>> print mimeTypesUtility.getTypeByContents(fhtml)
   text/html
   
   >>> fpdf = openSample('pdf')
-  >>> print util.getTypeByContents(fpdf)
+  >>> print mimeTypesUtility.getTypeByContents(fpdf)
   application/pdf
 
   >>> fpng = openSample('png')
-  >>> print util.getTypeByContents(fpng)
+  >>> print mimeTypesUtility.getTypeByContents(fpng)
   image/png
 
 If we pass the file without any magic bytes, it will return ``None``::
 
   >>> funknown = openSample('unknown')
-  >>> print util.getTypeByContents(funknown)
+  >>> print mimeTypesUtility.getTypeByContents(funknown)
   None
 
 Detection by both file name and contents
@@ -140,26 +139,26 @@ detect).
 
 It needs at least one argument, so you can't call it with no arguments::
 
-  >>> util.getType()
+  >>> mimeTypesUtility.getType()
   Traceback (most recent call last):
   ...
   TypeError: Either filename or file should be provided or both of them
 
-  >>> print util.getType(filename='wrong.doc')
+  >>> print mimeTypesUtility.getType(filename='wrong.doc')
   application/msword
 
-  >>> print util.getType(file=fpng)
+  >>> print mimeTypesUtility.getType(file=fpng)
   image/png
 
 If type cannot be detected, it WILL return either ``text/plain`` or
 ``application/octet-stream`` mime type. It will try to guess is it text
 or binary by checking first 32 bytes:: 
 
-  >>> print util.getType(filename='somefile', file=funknown)
+  >>> print mimeTypesUtility.getType(filename='somefile', file=funknown)
   text/plain
 
   >>> funknownbinary = openSample('binary')
-  >>> print util.getType(filename='somefile2', file=funknownbinary)
+  >>> print mimeTypesUtility.getType(filename='somefile2', file=funknownbinary)
   application/octet-stream
 
 Let's close files, because we won't need them anymore::
@@ -175,7 +174,7 @@ messages and can be easily rendered in UI.
 
 Let's get some mime type to play with::
 
-  >>> mt = util.getTypeByFileName('example.png')
+  >>> mt = mimeTypesUtility.getTypeByFileName('example.png')
 
 By default, mimetype title message id is its media/subtype form::
 
@@ -216,7 +215,7 @@ global mimetype utility, so it works like described above::
   image/png
 
   >>> funknownbinary = openSample('binary')
-  >>> print util.getType(filename='somefile2.txt', file=funknownbinary)
+  >>> print mimeTypesUtility.getType(filename='somefile2.txt', file=funknownbinary)
   text/plain
 
   >>> del fpng, funknownbinary

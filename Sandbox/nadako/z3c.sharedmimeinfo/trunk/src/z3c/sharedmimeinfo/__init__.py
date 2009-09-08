@@ -14,7 +14,4 @@
 """
 $Id$
 """
-from z3c.sharedmimeinfo.utility import globalMIMETypesUtility
-
-def getType(filename=None, file=None):
-    return globalMIMETypesUtility.getType(filename, file)
+from z3c.sharedmimeinfo.utility import getType

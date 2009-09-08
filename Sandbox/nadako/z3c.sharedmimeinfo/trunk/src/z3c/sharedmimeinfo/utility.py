@@ -141,4 +141,5 @@ class MIMETypesUtility(object):
         return type
 
 
-globalMIMETypesUtility = MIMETypesUtility()
+mimeTypesUtility = MIMETypesUtility()
+getType = mimeTypesUtility.getType

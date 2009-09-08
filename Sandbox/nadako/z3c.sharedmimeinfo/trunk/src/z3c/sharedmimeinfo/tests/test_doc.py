@@ -21,12 +21,10 @@ import unittest
 from zope.testing import doctest
 from zope.component import provideUtility
 
-from z3c.sharedmimeinfo.utility import globalMIMETypesUtility
 from z3c.sharedmimeinfo.mimetype import mimeTypesTranslationDomain
 
 
 def setUp(test):
-    provideUtility(globalMIMETypesUtility)
     provideUtility(mimeTypesTranslationDomain, name='shared-mime-info')
     test.globs['SAMPLE_DATA_DIR'] = os.path.join(os.path.dirname(__file__), 'sample_data')
 
