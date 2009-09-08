@@ -1,0 +1,5 @@
+- The MIMEType object caching should be probably made thread-safe, we'll se
+  how it goes.
+- Think about MIME info data path pluggability, so for instance one could
+  install shared-mime-info as a python egg and use it with z3c.sharedmimeinfo.
+- Add tests for the "magic" module.
