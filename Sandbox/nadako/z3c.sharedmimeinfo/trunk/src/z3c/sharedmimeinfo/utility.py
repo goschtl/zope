@@ -22,10 +22,10 @@ import fnmatch
 
 from zope.interface import implements
 
-from z3c.mimetype.magic import MagicDB
-from z3c.mimetype.mimetype import lookup
-from z3c.mimetype.util import iterDataPaths
-from z3c.mimetype.interfaces import IMIMETypesUtility
+from z3c.sharedmimeinfo.magic import MagicDB
+from z3c.sharedmimeinfo.mimetype import lookup
+from z3c.sharedmimeinfo.util import iterDataPaths
+from z3c.sharedmimeinfo.interfaces import IMIMETypesUtility
 
 findBinary = re.compile('[\0-\7]').search
 

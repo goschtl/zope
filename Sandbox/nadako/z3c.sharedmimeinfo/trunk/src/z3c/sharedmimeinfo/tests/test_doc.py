@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for z3c.mimetype functionality.
+"""Tests for z3c.sharedmimeinfo functionality.
 
 $Id$
 """
@@ -21,8 +21,8 @@ import unittest
 from zope.testing import doctest
 from zope.component import provideUtility
 
-from z3c.mimetype.utility import globalMIMETypesUtility
-from z3c.mimetype.mimetype import mimeTypesTranslationDomain
+from z3c.sharedmimeinfo.utility import globalMIMETypesUtility
+from z3c.sharedmimeinfo.mimetype import mimeTypesTranslationDomain
 
 
 def setUp(test):

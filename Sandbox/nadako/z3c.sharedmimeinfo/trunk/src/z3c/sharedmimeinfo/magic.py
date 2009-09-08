@@ -15,7 +15,7 @@
 
 $Id$
 """
-from z3c.mimetype.mimetype import lookup
+from z3c.sharedmimeinfo.mimetype import lookup
 
 
 class MagicDB(object):

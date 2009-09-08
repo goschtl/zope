@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for z3c.mimetype package
+"""Setup for z3c.sharedmimeinfo package
 
 $Id$
 """
@@ -23,15 +23,15 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='z3c.mimetype',
+    name='z3c.sharedmimeinfo',
     version='0.1.0dev',
-    url='http://pypi.python.org/pypi/z3c.mimetype',
+    url='http://pypi.python.org/pypi/z3c.sharedmimeinfo',
     license='ZPL 2.1',
     description='MIME type guessing framework for Zope, based on shared-mime-info',
     author='Dan Korostelev and Zope Community',
     author_email='zope-dev@zope.org',
     long_description=\
-        read('src', 'z3c', 'mimetype', 'README.txt') + \
+        read('src', 'z3c', 'sharedmimeinfo', 'README.txt') + \
         '\n\n' + \
         read('CHANGES.txt'),
     packages=find_packages('src'),
@@ -46,7 +46,6 @@ setup(
       'zope.schema',
       ],
     extras_require = dict(
-        docs=['Sphinx', 'z3c.recipe.sphinxdoc'],
         test=['zope.testing'],
         ),
     include_package_data=True,

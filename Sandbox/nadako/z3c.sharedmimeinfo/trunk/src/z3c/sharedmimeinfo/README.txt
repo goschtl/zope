@@ -28,7 +28,7 @@ The core of this package is the global IMIMETypesUtility component::
 
   >>> from zope.component import getUtility
   >>> from zope.interface.verify import verifyObject
-  >>> from z3c.mimetype.interfaces import IMIMETypesUtility
+  >>> from z3c.sharedmimeinfo.interfaces import IMIMETypesUtility
 
   >>> util = getUtility(IMIMETypesUtility)
   >>> verifyObject(IMIMETypesUtility, util)
@@ -50,7 +50,7 @@ filename::
 The mime type is the object implementing IMIMEType interface::
 
   >>> from zope.interface.verify import verifyObject
-  >>> from z3c.mimetype.interfaces import IMIMEType
+  >>> from z3c.sharedmimeinfo.interfaces import IMIMEType
 
   >>> verifyObject(IMIMEType, mt)
   True
@@ -195,12 +195,12 @@ But if we translate it, we'll get a human-friendly string::
 Convenience API
 ---------------
 
-The root module, ``z3c.mimetype`` provides a convenience API for easy using
+The root module, ``z3c.sharedmimeinfo`` provides a convenience API for easy using
 MIME types detection and lookup. It provides a IConvenienceAPI interface::
 
-  >>> import z3c.mimetype
-  >>> from z3c.mimetype.interfaces import IConvenienceAPI
-  >>> IConvenienceAPI.providedBy(z3c.mimetype)
+  >>> import z3c.sharedmimeinfo
+  >>> from z3c.sharedmimeinfo.interfaces import IConvenienceAPI
+  >>> IConvenienceAPI.providedBy(z3c.sharedmimeinfo)
   True
   
 This interface defines two functions::
@@ -214,7 +214,7 @@ first argument in the "media/subtype" form.
 
 Here's how to use it with single argument::
 
-  >>> mt = z3c.mimetype.lookup('text/plain')
+  >>> mt = z3c.sharedmimeinfo.lookup('text/plain')
   >>> mt
   <_MIMEType text/plain>
   
@@ -223,29 +223,29 @@ Here's how to use it with single argument::
 
 Here's how to use passing separate media and subtype arguments::
 
-  >>> z3c.mimetype.lookup('image', 'png')
+  >>> z3c.sharedmimeinfo.lookup('image', 'png')
   <_MIMEType image/png>
 
 Note, that the IMIMETypes objects are singletons (one object per mime type), so
 if you youse lookup function with same mime type once again, you'll get the same
 object::
 
-  >>> z3c.mimetype.lookup('text/plain') is mt
+  >>> z3c.sharedmimeinfo.lookup('text/plain') is mt
   True
 
 The ``getType`` function is just a wrapper for the ``getType`` function of
 global mimetype utility, so it works like described above::
 
-  >>> z3c.mimetype.getType()
+  >>> z3c.sharedmimeinfo.getType()
   Traceback (most recent call last):
   ...
   TypeError: Either filename or file should be provided or both of them
 
-  >>> print z3c.mimetype.getType(filename='wrong.doc')
+  >>> print z3c.sharedmimeinfo.getType(filename='wrong.doc')
   application/msword
 
   >>> fpng = openSample('png')
-  >>> print z3c.mimetype.getType(file=fpng)
+  >>> print z3c.sharedmimeinfo.getType(file=fpng)
   image/png
 
   >>> funknownbinary = openSample('binary')
@@ -261,7 +261,7 @@ It's own useful to compare a mime type to some string if we need to check if
 some file is of specific type, the IMIMEType objects should be comparable to
 strings::
 
-  >>> mt = z3c.mimetype.lookup('image/png')
+  >>> mt = z3c.sharedmimeinfo.lookup('image/png')
   >>> mt == 'image/png'
   True
   >>> mt == u'image/png'
@@ -273,14 +273,14 @@ strings::
 
 Of course, it can also be compared to other IMIMEType objects::
 
-  >>> mt2 = z3c.mimetype.lookup('image/jpeg')
+  >>> mt2 = z3c.sharedmimeinfo.lookup('image/jpeg')
   >>> mt == mt2
   False
 
 Let's use some internal API to create a second instance of image/png IMIMEType
 object and try to compare it with the first one::
 
-  >>> from z3c.mimetype.mimetype import _MIMEType, MIME_TYPES
+  >>> from z3c.sharedmimeinfo.mimetype import _MIMEType, MIME_TYPES
   >>> del MIME_TYPES[('image', 'png')]
   >>> mt3 = _MIMEType('image', 'png')
   >>> mt is not mt3

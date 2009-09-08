@@ -22,8 +22,8 @@ from zope.interface import implements
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.i18nmessageid import MessageFactory
 
-from z3c.mimetype.interfaces import IMIMEType
-from z3c.mimetype.util import iterDataPaths
+from z3c.sharedmimeinfo.interfaces import IMIMEType
+from z3c.sharedmimeinfo.util import iterDataPaths
 
 SMI_NAMESPACE = 'http://www.freedesktop.org/standards/shared-mime-info'
 
