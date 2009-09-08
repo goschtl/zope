@@ -13,7 +13,10 @@
 ##############################################################################
 name, version = 'zc.zeoinputlog', '0.1'
 
-install_requires = ['setuptools']
+install_requires = [
+    'setuptools',
+    'ZODB3 >=3.9.0dev, <3.10.0dev',
+    ]
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """

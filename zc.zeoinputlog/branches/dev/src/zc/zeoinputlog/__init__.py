@@ -15,7 +15,7 @@ def log(connection, action=None):
     global path
 
     if action is None:
-        connection.write("%r\n" % path)
+        connection.write(path and ("%r\n" % path) or 'disabled')
         return
 
     if action == 'disable':
@@ -33,9 +33,11 @@ def log(connection, action=None):
     if path:
         log(connection, 'disable')
 
-    path = os.path.join(base, time.strftime("%y%m%d%H%M%S", time.gmtime()))
+    _path = os.path.join(base, time.strftime("%y%m%d%H%M%S",
+                                             time.gmtime(time.time())))
 
-    log_file = open(path, 'w')
+    log_file = open(_path, 'w')
+    path = _path
     base_message_input = ZEO.zrpc.connection.Connection.message_input
     dump = marshal.dump
     timetime = time.time
