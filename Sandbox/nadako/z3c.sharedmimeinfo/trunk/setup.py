@@ -39,14 +39,16 @@ setup(
     namespace_packages=['z3c'],
     install_requires=[
       'setuptools',
-      'zope.component',
       'zope.i18n',
       'zope.i18nmessageid',
       'zope.interface',
       'zope.schema',
       ],
     extras_require = dict(
-        test=['zope.testing'],
+        test=[
+            'zope.testing',
+            'zope.component',
+            ],
         ),
     include_package_data=True,
     zip_safe=False,
