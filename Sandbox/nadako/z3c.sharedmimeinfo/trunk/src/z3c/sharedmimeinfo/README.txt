@@ -195,43 +195,10 @@ But if we translate it, we'll get a human-friendly string::
 Convenience API
 ---------------
 
-The root module, ``z3c.sharedmimeinfo`` provides a convenience API for easy using
-MIME types detection and lookup. It provides a IConvenienceAPI interface::
+The root module, ``z3c.sharedmimeinfo`` provides a convenience getType function
+for easy using MIME type detection mechanism.
 
   >>> import z3c.sharedmimeinfo
-  >>> from z3c.sharedmimeinfo.interfaces import IConvenienceAPI
-  >>> IConvenienceAPI.providedBy(z3c.sharedmimeinfo)
-  True
-  
-This interface defines two functions::
-
-  >>> sorted(IConvenienceAPI)
-  ['getType', 'lookup']
-
-The lookup function is used for getting IMIMEType objects by their media and
-subtype names. You can specify media and subtype as two arguments or as one,
-first argument in the "media/subtype" form.
-
-Here's how to use it with single argument::
-
-  >>> mt = z3c.sharedmimeinfo.lookup('text/plain')
-  >>> mt
-  <_MIMEType text/plain>
-  
-  >>> IMIMEType.providedBy(mt)
-  True
-
-Here's how to use passing separate media and subtype arguments::
-
-  >>> z3c.sharedmimeinfo.lookup('image', 'png')
-  <_MIMEType image/png>
-
-Note, that the IMIMETypes objects are singletons (one object per mime type), so
-if you youse lookup function with same mime type once again, you'll get the same
-object::
-
-  >>> z3c.sharedmimeinfo.lookup('text/plain') is mt
-  True
 
 The ``getType`` function is just a wrapper for the ``getType`` function of
 global mimetype utility, so it works like described above::
@@ -254,36 +221,32 @@ global mimetype utility, so it works like described above::
 
   >>> del fpng, funknownbinary
 
-MIME type object comparsion
----------------------------
+MIME type objects
+-----------------
 
-It's own useful to compare a mime type to some string if we need to check if
-some file is of specific type, the IMIMEType objects should be comparable to
-strings::
+MIMEType class are actually an extended str that adds additional info about
+the mime type, like its title, media and subtype.
 
-  >>> mt = z3c.sharedmimeinfo.lookup('image/png')
-  >>> mt == 'image/png'
+  >>> from z3c.sharedmimeinfo.mimetype import MIMEType
+
+We can create MIMEType objects specifying media and subtype as two arguments
+or as argument in the "media/subtype" form.
+
+Here's how to use it with single argument::
+
+  >>> mt = MIMEType('text/plain')
+  >>> mt
+  <MIMEType text/plain>
+  >>> IMIMEType.providedBy(mt)
   True
-  >>> mt == u'image/png'
-  True
-  >>> 'image/png' == mt 
-  True
-  >>> u'image/png' == mt 
-  True
 
-Of course, it can also be compared to other IMIMEType objects::
+Here's how to use passing separate media and subtype arguments::
 
-  >>> mt2 = z3c.sharedmimeinfo.lookup('image/jpeg')
-  >>> mt == mt2
-  False
+  >>> MIMEType('image', 'png')
+  <MIMEType image/png>
 
-Let's use some internal API to create a second instance of image/png IMIMEType
-object and try to compare it with the first one::
+Note, that the IMIMETypes objects are cached, so if you you'll create another
+object for the same mime type, you'll get the same object::
 
-  >>> from z3c.sharedmimeinfo.mimetype import _MIMEType, MIME_TYPES
-  >>> del MIME_TYPES[('image', 'png')]
-  >>> mt3 = _MIMEType('image', 'png')
-  >>> mt is not mt3
-  True
-  >>> mt == mt3
+  >>> MIMEType('text/plain') is mt
   True

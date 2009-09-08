@@ -23,7 +23,7 @@ import fnmatch
 from zope.interface import implements
 
 from z3c.sharedmimeinfo.magic import MagicDB
-from z3c.sharedmimeinfo.mimetype import lookup
+from z3c.sharedmimeinfo.mimetype import MIMEType
 from z3c.sharedmimeinfo.util import iterDataPaths
 from z3c.sharedmimeinfo.interfaces import IMIMETypesUtility
 
@@ -60,7 +60,7 @@ class MIMETypesUtility(object):
             line = line[:-1]
     
             type_name, pattern = line.split(':', 1)
-            mtype = lookup(type_name)
+            mtype = MIMEType(type_name)
     
             if pattern.startswith('*.'):
                 rest = pattern[2:]
@@ -132,11 +132,11 @@ class MIMETypesUtility(object):
             type = self.getTypeByContents(file, max_priority=80)
         
         if not type:
-            type = lookup('application', 'octet-stream')
+            type = MIMEType('application', 'octet-stream')
             if file:
                 file.seek(0, 0)
                 if not findBinary(file.read(32)):
-                    type = lookup('text', 'plain')
+                    type = MIMEType('text', 'plain')
 
         return type
 

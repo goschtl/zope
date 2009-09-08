@@ -14,16 +14,7 @@
 """
 $Id$
 """
-from zope.interface import moduleProvides
-from z3c.sharedmimeinfo.interfaces import IConvenienceAPI
 from z3c.sharedmimeinfo.utility import globalMIMETypesUtility
-
-
-from z3c.sharedmimeinfo.mimetype import lookup
 
 def getType(filename=None, file=None):
     return globalMIMETypesUtility.getType(filename, file)
-
-
-moduleProvides(IConvenienceAPI)
-__all__ = tuple(IConvenienceAPI)

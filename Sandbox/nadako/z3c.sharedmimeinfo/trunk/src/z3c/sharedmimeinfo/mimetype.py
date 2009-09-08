@@ -30,40 +30,25 @@ SMI_NAMESPACE = 'http://www.freedesktop.org/standards/shared-mime-info'
 msgfactory = MessageFactory('shared-mime-info')
 mimeTypesTranslationDomain = SimpleTranslationDomain('shared-mime-info')
 
-MIME_TYPES = {}
+_mime_type_cache = {}
 
-
-def lookup(media, subtype=None):
-    """Lookup an IMIMEType object.
-    
-    Either a pair of arguments (media and subtype) or single argument in
-    the ``media/subtype`` form can be used.
-    """
-    
-    if subtype is None and '/' in media:
-        media, subtype = media.split('/', 1)
-    if (media, subtype) not in MIME_TYPES:
-        MIME_TYPES[(media, subtype)] = _MIMEType(media, subtype)
-    return MIME_TYPES[(media, subtype)]
-
-
-class _MIMEType(object):
-    """Single MIME type representation
-    
-    Never create these objects using this class, use the ``lookup`` function
-    defined above instead.
-    """
+class MIMEType(unicode):
+    """Single MIME type representation"""
 
     implements(IMIMEType)
+    
+    __slots__ = ('_media', '_subtype', '_title')
 
-    _title = None
+    def __new__(cls, media, subtype=None):
+        if subtype is None and '/' in media:
+            media, subtype = media.split('/', 1)
 
-    def __init__(self, media, subtype):
-        assert media and '/' not in media
-        assert subtype and '/' not in subtype
-        assert (media, subtype) not in MIME_TYPES
-        self.media = media
-        self.subtype = subtype
+        if (media, subtype) in _mime_type_cache:
+            return _mime_type_cache[(media, subtype)]
+        obj = super(MIMEType, cls).__new__(cls, media+'/'+subtype)
+        obj._media = media
+        obj._subtype = subtype
+        obj._title = None
         for path in iterDataPaths(os.path.join('mime', media, subtype + '.xml')):
             doc = minidom.parse(path)
             if doc is None:
@@ -73,21 +58,15 @@ class _MIMEType(object):
                 lang = comment.getAttributeNS(XML_NAMESPACE, 'lang')
                 msgid = '%s/%s' % (media, subtype)
                 if not lang:
-                    self._title = msgfactory(msgid, default=data)
+                    obj._title = msgfactory(msgid, default=data)
                 else:
                     mimeTypesTranslationDomain.messages[(lang, msgid)] = data
+        _mime_type_cache[(media, subtype)] = obj
+        return obj
 
-    @property
-    def title(self):
-        return self._title or unicode(self)
-
-    def __str__(self):
-        return self.media + '/' + self.subtype
+    title = property(lambda self:self._title or unicode(self))
+    media = property(lambda self:self._media)
+    subtype = property(lambda self:self._subtype)
 
     def __repr__(self):
-        return '<%s %s/%s>' % (self.__class__.__name__, self.media, self.subtype)
-
-    def __cmp__(self, other):
-        if IMIMEType.providedBy(other):
-            other = str(other)
-        return cmp(str(self), other)
+        return '<%s %s>' % (self.__class__.__name__, str(self))

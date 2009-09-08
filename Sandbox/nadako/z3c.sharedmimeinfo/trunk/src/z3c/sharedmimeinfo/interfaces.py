@@ -55,27 +55,3 @@ class IMIMEType(Interface):
         title=u'Title',
         required=True,
         readonly=True)
-
-    def __str__():
-        """Return a ``media/subtype`` presentation of mime type"""
-
-    def __cmp__(string_or_mimetype):
-        """Mime type objects should be comparable to strings and other types"""
-
-
-class IConvenienceAPI(Interface):
-    """Convenience API to be provided by the __init__ module."""
-    
-    def getType(filename=None, file=None):
-        """Guess content type either by file name or contents or both
-        
-        See IMIMETypesUtility.getType documentation.
-        """
-    
-    def lookup(media, subtype=None):
-        """Return a IMIMEType object for given string representation.
-        
-        If ``media`` argument is in the "media/subtype" form, then the
-        ``subtype`` argument should't be specified and will be extracted
-        from the ``media`` argument.
-        """

@@ -15,7 +15,7 @@
 
 $Id$
 """
-from z3c.sharedmimeinfo.mimetype import lookup
+from z3c.sharedmimeinfo.mimetype import MIMEType
 
 
 class MagicDB(object):
@@ -41,7 +41,7 @@ class MagicDB(object):
                 raise Exception('Malformed section heading')
             pri, tname = shead[1:-2].split(':')
             pri = int(pri)
-            mtype = lookup(tname)
+            mtype = MIMEType(tname)
 
             ents = self.types.setdefault(pri, [])
             magictype = MagicType(mtype)
