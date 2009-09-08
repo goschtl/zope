@@ -185,12 +185,12 @@ class MagicRule(object):
 
     def match(self, buffer):
         """Try to match data with this rule and its subrules"""
-        if self.match0(buffer):
+        if self.matchFirst(buffer):
             if self.next:
                 return self.next.match(buffer)
             return True
 
-    def match0(self, buffer):
+    def matchFirst(self, buffer):
         """Try to match data using this rule definition"""
         l = len(buffer)
         for o in xrange(self.range):
