@@ -23,11 +23,14 @@ from zope.component import provideUtility
 
 from z3c.sharedmimeinfo.mimetype import mimeTypesTranslationDomain
 
+SAMPLE_DATA_DIR = os.path.join(os.path.dirname(__file__), 'sample_data')
+
+def openSample(extension):
+    return open(os.path.join(SAMPLE_DATA_DIR, 'sample.' + extension))
 
 def setUp(test):
     provideUtility(mimeTypesTranslationDomain, name='shared-mime-info')
-    test.globs['SAMPLE_DATA_DIR'] = os.path.join(os.path.dirname(__file__), 'sample_data')
-
+    test.globs['openSample'] = openSample
 
 def test_suite():
     return unittest.TestSuite(

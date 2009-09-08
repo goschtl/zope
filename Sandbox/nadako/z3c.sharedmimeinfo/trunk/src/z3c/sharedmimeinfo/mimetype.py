@@ -46,8 +46,8 @@ class MIMEType(unicode):
         if (media, subtype) in _mime_type_cache:
             return _mime_type_cache[(media, subtype)]
         obj = super(MIMEType, cls).__new__(cls, media+'/'+subtype)
-        obj._media = media
-        obj._subtype = subtype
+        obj._media = unicode(media)
+        obj._subtype = unicode(subtype)
         obj._title = None
         for path in iterDataPaths(os.path.join('mime', media, subtype + '.xml')):
             doc = minidom.parse(path)
