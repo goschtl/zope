@@ -1,0 +1,20 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <include file="meta.zcml" />
+  <include file="permissions.zcml" />
+  <include file="deprecated.zcml"/>
+
+  <include package="zope.traversing" />
+  <include package="OFS "/>
+  <include package="ZPublisher" />
+
+  <include package=".component" />
+  <include package=".browser" />
+  <include package=".form" />
+  <include package=".formlib" />
+  <include package=".skin" />
+  <include package=".utilities" />
+  <include package=".viewlet" />
+
+</configure>
