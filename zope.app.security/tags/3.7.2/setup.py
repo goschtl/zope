@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-version = '0'
+version = '3.7.2'
 
 import os
 from setuptools import setup, find_packages
@@ -21,7 +21,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.security',
-      version = '0',
+      version = '3.7.2',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='ZMI Views For Zope3 Security Components',
