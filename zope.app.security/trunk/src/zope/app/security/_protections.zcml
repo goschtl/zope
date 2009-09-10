@@ -112,12 +112,12 @@
 
 <class class="persistent.list.PersistentList">
    <allow attributes="__getitem__ __getslice__ __len__ __iter__
-                      __contains__ index count" /> 
+                      __contains__ index count data" /> 
 </class>
 <class class="persistent.dict.PersistentDict">
    <allow attributes="__getitem__ __len__ __iter__ get has_key
                       __copy__ keys values items iterkeys iteritems
-                      itervalues __contains__" /> 
+                      itervalues __contains__ data" /> 
 </class>
 
 <!-- ===================================================================== -->
