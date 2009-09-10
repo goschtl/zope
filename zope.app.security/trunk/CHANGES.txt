@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.7.2 (2009-09-10)
+------------------
+
+- Added data attribute to '_protections.zcml' for PersistentList
+  and PersistentDict to accomodate UserList and UserDict behavior
+  when they are proxied.
+
 3.7.1 (2009-08-15)
 ------------------
 
