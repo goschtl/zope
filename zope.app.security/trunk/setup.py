@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-version = '0'
+version = '3.7.2'
 
 import os
 from setuptools import setup, find_packages
@@ -59,6 +59,8 @@ setup(name='zope.app.security',
                         'zope.app.pagetemplate',
                         'zope.app.publisher',
                         'zope.app.localpermission',
+                        'zope.app.testing',
+                        'zope.app.zcmlfiles',
                         'zope.authentication',
                         'zope.component>=3.6.0',
                         'zope.i18n',
