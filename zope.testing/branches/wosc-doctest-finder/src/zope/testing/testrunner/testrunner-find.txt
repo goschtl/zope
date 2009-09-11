@@ -1,0 +1,34 @@
+===================
+ Registering tests
+===================
+
+register_tests() can be called multiple times.
+
+>>> from unittest import TestSuite
+>>> from zope.testing.testrunner.runner import Runner
+
+>>> def test1():
+...     return None
+>>> def test2():
+...     return None
+>>> suite1 = TestSuite([test1])
+>>> suite2 = TestSuite([test2])
+
+Different layers are simply merged:
+
+>>> runner = Runner()
+>>> runner.register_tests(dict(layer1=suite1))
+>>> runner.register_tests(dict(layer2=suite2))
+>>> runner.tests_by_layer_name
+{'layer2': <unittest.TestSuite tests=[<function test2 at 0x...>]>,
+'layer1': <unittest.TestSuite tests=[<function test1 at 0x...>]>}
+
+Multiple calls for the same layer append the new tests to the existing ones:
+
+>>> runner = Runner()
+>>> runner.register_tests(dict(layer1=suite1))
+>>> runner.register_tests(dict(layer1=suite2))
+>>> runner.tests_by_layer_name
+{'layer1': <unittest.TestSuite...>}
+>>> [x for x in runner.tests_by_layer_name['layer1']]
+[<function test1 at 0x...>, <function test2 at 0x...>]

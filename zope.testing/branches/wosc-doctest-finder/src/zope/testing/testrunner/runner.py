@@ -106,9 +106,10 @@ class Runner(object):
 
     def register_tests(self, tests):
         """Registers tests."""
-        # XXX To support multiple features that find tests this shouldn't be
-        # an update but merge the various layers individually.
-        self.tests_by_layer_name.update(tests)
+        for layer, suite in tests.items():
+            existing = self.tests_by_layer_name.setdefault(
+                layer, unittest.TestSuite())
+            existing.addTests(suite)
 
     def run(self):
         self.configure()

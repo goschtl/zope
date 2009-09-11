@@ -150,6 +150,7 @@ def test_suite():
         'testrunner-debugging.txt',
         'testrunner-edge-cases.txt',
         'testrunner-errors.txt',
+        'testrunner-find.txt',
         'testrunner-layers-buff.txt',
         'testrunner-layers-ntd.txt',
         'testrunner-layers.txt',
