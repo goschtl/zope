@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# This package is developed by the Zope Toolkit project, documented here:
+# http://docs.zope.org/zopetoolkit
+# When developing and releasing this package, please follow the documented
+# Zope Toolkit policies as described by this documentation.
+##############################################################################
 """Setup for zope.app.form package
 
 $Id: setup.py 81002 2007-10-24 01:19:47Z srichter $
