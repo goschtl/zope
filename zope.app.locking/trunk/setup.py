@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# This package is developed by the Zope Toolkit project, documented here:
+# http://docs.zope.org/zopetoolkit
+# When developing and releasing this package, please follow the documented
+# Zope Toolkit policies as described by this documentation.
+##############################################################################
 """Setup for zope.app.server package
 
 $Id: setup.py 74669 2007-04-23 12:04:26Z ctheune $
