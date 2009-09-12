@@ -548,7 +548,7 @@ IBase::
 к спецификациям. Объявления фактически расширяют интерфейсы которые они
 объявляют::
 
-  >>> class Baz:
+  >>> class Baz(object):
   ...     zope.interface.implements(IBaz)
 
   >>> baz_implements = zope.interface.implementedBy(Baz)
