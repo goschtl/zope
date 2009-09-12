@@ -124,7 +124,7 @@ try:
         
     from setuptools.command.build_py import build_py
     
-    class build_py_2to3(build_py, Mixin2to3):
+    class build_py_2to3(Mixin2to3, build_py):
         def run(self):
             self.updated_files = []
             self.possible_doctests = []
