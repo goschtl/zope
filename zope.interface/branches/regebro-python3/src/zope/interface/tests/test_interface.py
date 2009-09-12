@@ -341,12 +341,12 @@ def test_suite():
     suite.addTest(doctest.DocFileSuite(
         '../README.txt',
         globs={'__name__': '__main__'},
-        optionflags=doctest.NORMALIZE_WHITESPACE,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
         ))
     suite.addTest(doctest.DocFileSuite(
         '../README.ru.txt',
         globs={'__name__': '__main__'},
-        optionflags=doctest.NORMALIZE_WHITESPACE,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
         ))
     return suite
 

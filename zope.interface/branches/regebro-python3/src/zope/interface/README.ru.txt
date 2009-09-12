@@ -553,7 +553,7 @@ IBase::
 
   >>> baz_implements = zope.interface.implementedBy(Baz)
   >>> baz_implements.__bases__
-  (<InterfaceClass __main__.IBaz>,)
+  (<InterfaceClass __main__.IBaz>, <implementedBy ...object>)
 
   >>> baz_implements.extends(IFoo)
   True
@@ -571,7 +571,8 @@ IBase::
    <InterfaceClass __main__.IBaz>,
    <InterfaceClass __main__.IFoo>,
    <InterfaceClass __main__.IBlat>,
-   <InterfaceClass zope.interface.Interface>)
+   <InterfaceClass zope.interface.Interface>,
+   <implementedBy ...object>)
 
 Помеченные значения
 ===================

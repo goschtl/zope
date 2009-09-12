@@ -550,12 +550,12 @@ What we described above for interface inheritance applies to both
 declarations and specifications.  Declarations actually extend the
 interfaces that they declare::
 
-  >>> class Baz:
+  >>> class Baz(object):
   ...     zope.interface.implements(IBaz)
 
   >>> baz_implements = zope.interface.implementedBy(Baz)
   >>> baz_implements.__bases__
-  (<InterfaceClass __main__.IBaz>,)
+  (<InterfaceClass __main__.IBaz>, <implementedBy ...object>)
 
   >>> baz_implements.extends(IFoo)
   True
@@ -573,7 +573,8 @@ that lists the specification and all of it's ancestors::
    <InterfaceClass __main__.IBaz>,
    <InterfaceClass __main__.IFoo>,
    <InterfaceClass __main__.IBlat>,
-   <InterfaceClass zope.interface.Interface>)
+   <InterfaceClass zope.interface.Interface>,
+   <implementedBy ...object>)
 
 
 Tagged Values
