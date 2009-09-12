@@ -308,7 +308,7 @@ class FixerTest(unittest.TestCase):
 class ImplementsFixerTest(FixerTest):
     
     def setUp(self):
-        self.refactor = RefactoringTool(['zope.fixers.fix_implements']).refactor_string
+        self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements']).refactor_string
             
     def test_imports(self):
         self._test(imports_source, imports_target)
@@ -367,7 +367,7 @@ class Foo:
 class ImplementsOnlyFixerTest(FixerTest):
     
     def setUp(self):
-        self.refactor = RefactoringTool(['zope.fixers.fix_implements_only']).refactor_string
+        self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements_only']).refactor_string
     
 
     def test_implements_only(self):
@@ -406,7 +406,7 @@ doctest_target = """
 class DoctestFixerTest(FixerTest):
                     
     def setUp(self):
-        self.refactor = RefactoringTool(['zope.fixers.fix_implements']).refactor_docstring
+        self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements']).refactor_docstring
         
     def test_doctest(self):
         self._test(doctest_source, doctest_target)
@@ -427,8 +427,8 @@ dual_fixes_target = """
 class DualFixersTest(FixerTest):
     
     def setUp(self):
-        self.refactor = RefactoringTool(['zope.fixers.fix_implements',
-                                         'zope.fixers.fix_class_provides']
+        self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements',
+                                         'zope.interface.fixers.fix_class_provides']
                                         ).refactor_docstring
         
     def test_dualfixers(self):
