@@ -1,5 +1,24 @@
+# coding: utf-8
+#############################################################################
+#
+# Copyright (c) 2009 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import unittest
-from lib2to3.refactor import RefactoringTool
+import sys
+
+if sys.version_info >= (3,):
+    from lib2to3.refactor import RefactoringTool
+
 
 # Check that various import syntaxes get renamed properly.
 imports_source = """
@@ -29,7 +48,7 @@ class IFoo(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     implements(IFoo)
 """
 
@@ -56,7 +75,7 @@ class IBar(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     implements(IFoo, IBar)
 """
 
@@ -80,10 +99,10 @@ from zope.interface import implements as renamed
 
 class IBar(Interface):
     pass
-    
+
 class Bar:
     "An IBar class"
-    
+
     renamed(IBar)
 """
 
@@ -92,7 +111,7 @@ from zope.interface import implementer as renamed
 
 class IBar(Interface):
     pass
-    
+
 @renamed(IBar)
 class Bar:
     "An IBar class"
@@ -107,7 +126,7 @@ class IFoo(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     interface.implements(IFoo)
 """
 
@@ -131,7 +150,7 @@ class IFoo(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     zopeinterface.implements(IFoo)
 """
 
@@ -155,7 +174,7 @@ class IFoo(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     zope.interface.implements(IFoo)
 """
 
@@ -204,10 +223,10 @@ class IFoo(Interface):
 def forceindent():
     class Foo:
         zope.interface.implements(IFoo)
-        
+
     class Bar:
         zope.interface.implements(IFoo)
-        
+
 """
 
 indented_class_target = """
@@ -220,11 +239,11 @@ def forceindent():
     @zope.interface.implementer(IFoo)
     class Foo:
         pass
-        
+
     @zope.interface.implementer(IFoo)
     class Bar:
         pass
-        
+
 """
 
 # Edge cases I've encountered.
@@ -233,13 +252,13 @@ class Test(unittest.TestCase):
 
     # Note that most of the tests are in the doc strings of the
     # declarations module.
-    
+
     def test_builtins(self):
         # Setup
 
         intspec = implementedBy(int)
         olddeclared = intspec.declared
-                
+
         classImplements(int, I1)
         class myint(int):
             implements(I2)
@@ -260,13 +279,13 @@ class Test(unittest.TestCase):
 
     # Note that most of the tests are in the doc strings of the
     # declarations module.
-    
+
     def test_builtins(self):
         # Setup
 
         intspec = implementedBy(int)
         olddeclared = intspec.declared
-                
+
         classImplements(int, I1)
         @implementer(I2)
         class myint(int):
@@ -286,7 +305,7 @@ class Test(unittest.TestCase):
 """
 
 class FixerTest(unittest.TestCase):
-    
+
     def _test(self, source, target):
         refactored = str(self.refactor(source, 'zope.fixer.test'))
         if refactored != target:
@@ -304,12 +323,12 @@ class FixerTest(unittest.TestCase):
             msg = msg.replace('\t', '------->')
             msg = ("Test failed at character %i" % i) + msg
             self.fail(msg)
-            
+
 class ImplementsFixerTest(FixerTest):
-    
+
     def setUp(self):
         self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements']).refactor_string
-            
+
     def test_imports(self):
         self._test(imports_source, imports_target)
 
@@ -318,16 +337,16 @@ class ImplementsFixerTest(FixerTest):
 
     def test_multi(self):
         self._test(multi_source, multi_target)
-        
+
     def test_renamed(self):
         self._test(renamed_source, renamed_target)
-        
+
     def test_module_import(self):
         self._test(module_import_source, module_import_target)
-        
+
     def test_module_renamed(self):
         self._test(module_renamed_source, module_renamed_target)
-        
+
     def test_full_import(self):
         self._test(full_import_source, full_import_target)
 
@@ -340,7 +359,7 @@ class ImplementsFixerTest(FixerTest):
     def test_edge_cases(self):
         self._test(edge_cases_source, edge_cases_target)
 
- 
+
 implements_only_source = """
 from zope.interface import implementsOnly
 
@@ -349,7 +368,7 @@ class IFoo(Interface):
 
 class Foo:
     "An IFoo class"
-    
+
     implementsOnly(IFoo)
 """
 
@@ -365,21 +384,21 @@ class Foo:
 """
 
 class ImplementsOnlyFixerTest(FixerTest):
-    
+
     def setUp(self):
         self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements_only']).refactor_string
-    
+
 
     def test_implements_only(self):
         self._test(implements_only_source, implements_only_target)
-        
+
 doctest_source = """
     >>> class A(object):
     ...     implements(I1)
 
     >>> class B(object):
     ...     implements(I2)
-    
+
     >>> class Foo(object):
     ...     implements(IFoo)
     ...     x = 1
@@ -395,7 +414,7 @@ doctest_target = """
     >>> @implementer(I2)
     ... class B(object):
     ...     pass
-    
+
     >>> @implementer(IFoo)
     ... class Foo(object):
     ...     x = 1
@@ -404,17 +423,17 @@ doctest_target = """
 """
 
 class DoctestFixerTest(FixerTest):
-                    
+
     def setUp(self):
         self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements']).refactor_docstring
-        
+
     def test_doctest(self):
         self._test(doctest_source, doctest_target)
 
 dual_fixes_source = """
       >>> class C(object):
       ...     implements(IFoo)
-      ...     classProvides(IFooFactory)      
+      ...     classProvides(IFooFactory)
 """
 
 dual_fixes_target = """
@@ -425,12 +444,17 @@ dual_fixes_target = """
 """
 
 class DualFixersTest(FixerTest):
-    
+
     def setUp(self):
         self.refactor = RefactoringTool(['zope.interface.fixers.fix_implements',
                                          'zope.interface.fixers.fix_class_provides']
                                         ).refactor_docstring
-        
+
     def test_dualfixers(self):
         self._test(dual_fixes_source, dual_fixes_target)
-    
+
+
+if sys.version_info < (3,):
+    # skip tests
+    def test_suite():
+        return unittest.TestSuite()
