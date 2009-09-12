@@ -2,10 +2,11 @@ CHANGES
 *******
 
 ==================
-3.5.3 (unreleased)
+3.6.0 (unreleased)
 ==================
 
-...
+- None is now allowed as a placeholder for zope.interface.Interface anymore,
+  in preparation for python3 compatibility.
 
 
 ==================

@@ -35,10 +35,9 @@ class Test(TestCase):
         l.sort()
         self.assertEqual(l, [I1, I2, I3, I4, I5, I6])
 
-    def test_w_None(self):
-        l = [I1, None, I3, I5, None, I6, I4, I2]
-        l.sort()
-        self.assertEqual(l, [I1, I2, I3, I4, I5, I6, None, None])
+    def test_none_not_allowed_anymore(self):
+        l = [I1, I3, I5, None, I6, I4, I2]
+        self.assertRaises(TypeError, l.sort)
 
 def test_suite():
     return TestSuite((

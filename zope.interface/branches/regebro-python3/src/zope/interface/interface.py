@@ -640,7 +640,7 @@ class InterfaceClass(Element, InterfaceBase, Specification):
     def __reduce__(self):
         return self.__name__
 
-    def __cmp(self, o1, o2):
+    def __cmp(self, other):
         # Yes, I did mean to name this __cmp, rather than __cmp__.
         # It is a private method used by __lt__ and __gt__.
         # I don't want to override __eq__ because I want the default
@@ -657,33 +657,27 @@ class InterfaceClass(Element, InterfaceBase, Specification):
 
         For now, sort on interface and module name.
 
-        None is treated as a pseudo interface that implies the loosest
-        contact possible, no contract. For that reason, all interfaces
-        sort before None.
-
         """
-        if o1 == o2:
+        if self == other:
             return 0
 
-        if o1 is None:
-            return 1
-        if o2 is None:
-            return -1
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: %s, %s' % self, other)
 
-        n1 = (getattr(o1, '__name__', ''),
-              getattr(getattr(o1,  '__module__', None), '__name__', ''))
-        n2 = (getattr(o2, '__name__', ''),
-              getattr(getattr(o2,  '__module__', None), '__name__', ''))
+        n1 = (getattr(self, '__name__', ''),
+              getattr(getattr(self,  '__module__', None), '__name__', ''))
+        n2 = (getattr(other, '__name__', ''),
+              getattr(getattr(other,  '__module__', None), '__name__', ''))
 
         return (n1 > n2) - (n1 < n2)
 
     def __lt__(self, other):
-        c = self.__cmp(self, other)
+        c = self.__cmp(other)
         #print '<', self, other, c < 0, c
         return c < 0
 
     def __gt__(self, other):
-        c = self.__cmp(self, other)
+        c = self.__cmp(other)
         #print '>', self, other, c > 0, c
         return c > 0
 
