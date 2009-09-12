@@ -437,8 +437,8 @@ dual_fixes_source = """
 """
 
 dual_fixes_target = """
-      >>> @provider(IFooFactory)
-      ... @implementer(IFoo)
+      >>> @implementer(IFoo)
+      ... @provider(IFooFactory)
       ... class C(object):
       ...     pass
 """
