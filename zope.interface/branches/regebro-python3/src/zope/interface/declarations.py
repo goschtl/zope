@@ -32,7 +32,6 @@ import sys
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
-from zope.interface import exceptions
 from types import ModuleType, MethodType, FunctionType
 from zope.interface.advice import addClassAdvisor
 
