@@ -2,13 +2,24 @@ CHANGES
 *******
 
 ==================
-3.5.2 (unreleased)
+3.5.3 (unreleased)
 ==================
 
-- ...
+...
+
 
 ==================
-3.5.1 (2009-10-13)
+3.5.2 (2009-07-01)
+==================
+
+- BaseAdapterRegistry.unregister, unsubscribe: Remove empty portions of
+  the data structures when something is removed.  This avoids leaving
+  references to global objects (interfaces) that may be slated for
+  removal from the calling application.
+
+
+==================
+3.5.1 (2009-03-18)
 ==================
 
 - verifyObject: use getattr instead of hasattr to test for object attributes

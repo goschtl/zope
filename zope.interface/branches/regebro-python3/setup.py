@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# This package is developed by the Zope Toolkit project, documented here:
+# http://docs.zope.org/zopetoolkit
+# When developing and releasing this package, please follow the documented
+# Zope Toolkit policies as described by this documentation.
+##############################################################################
 """Setup for zope.interface package
 
 $Id$
@@ -96,7 +101,7 @@ except (ImportError, SyntaxError):
         from build_ext_2 import optional_build_ext
     
 setup(name='zope.interface',
-      version = '3.5.2dev',
+      version = '3.5.3dev',
       url='http://pypi.python.org/pypi/zope.interface',
       license='ZPL 2.1',
       description='Interfaces for Python',

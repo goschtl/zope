@@ -39,6 +39,13 @@ class BaseAdapterRegistry(object):
         #   {provided -> {name -> valie}}
         # but for order == 2, we have:
         #   {r1 -> {r2 -> {provided -> {name -> valie}}}}
+        #
+        # XXX ^^^ what does the above comment have to do with any code
+        # in this method?  and.. "interfaces is really a nested key"?
+        # i don't see "interfaces" mentioned.  does it mean
+        # "provided"?  what are r1 and r2?  why is the structure just
+        # below this a list?  is this comment 100% bitrotten or just a
+        # little? /XXX
         self._adapters = []
 
         # {order -> {required -> {provided -> {name -> [value]}}}}
@@ -63,6 +70,8 @@ class BaseAdapterRegistry(object):
         #   Verifying registies can't rely on getting invalidation message,
         #     so have to check the generations of base registries to determine
         #     if their cache data are current
+
+        # ^^^ XXX what are the above comments describing? /XXX
 
         # Base registries:
         self.__bases__ = bases
@@ -146,10 +155,13 @@ class BaseAdapterRegistry(object):
         components = byorder[order]
         key = required + (provided,)
         
+        # Keep track of how we got to `components`:
+        lookups = []
         for k in key:
             d = components.get(k)
             if d is None:
                 return
+            lookups.append((components, k))
             components = d
 
         old = components.get(name)
@@ -159,6 +171,20 @@ class BaseAdapterRegistry(object):
             return
 
         del components[name]
+        if not components:
+            # Clean out empty containers, since we don't want our keys
+            # to reference global objects (interfaces) unnecessarily.
+            # This is often a problem when an interface is slated for
+            # removal; a hold-over entry in the registry can make it
+            # difficult to remove such interfaces.
+            for comp, k in reversed(lookups):
+                d = comp[k]
+                if d:
+                    break
+                else:
+                    del comp[k]
+            while byorder and not byorder[-1]:
+                del byorder[-1]
         n = self._provided[provided] - 1
         if n == 0:
             del self._provided[provided]
@@ -167,9 +193,6 @@ class BaseAdapterRegistry(object):
             self._provided[provided] = n
 
         self.changed(self)
-
-        return
-
 
     def subscribe(self, required, provided, value):
         required = tuple(map(_convert_None_to_Interface, required))
@@ -207,10 +230,13 @@ class BaseAdapterRegistry(object):
         components = byorder[order]
         key = required + (provided,)
         
+        # Keep track of how we got to `components`:
+        lookups = []
         for k in key:
             d = components.get(k)
             if d is None:
                 return
+            lookups.append((components, k))
             components = d
 
         old = components.get(u'')
@@ -224,8 +250,26 @@ class BaseAdapterRegistry(object):
 
         if new == old:
             return
-        
-        components[u''] = new
+
+        if new:
+            components[u''] = new
+        else:
+            # Instead of setting components[u''] = new, we clean out
+            # empty containers, since we don't want our keys to
+            # reference global objects (interfaces) unnecessarily.  This
+            # is often a problem when an interface is slated for
+            # removal; a hold-over entry in the registry can make it
+            # difficult to remove such interfaces.
+            if u'' in components:
+                del components[u'']
+            for comp, k in reversed(lookups):
+                d = comp[k]
+                if d:
+                    break
+                else:
+                    del comp[k]
+            while byorder and not byorder[-1]:
+                del byorder[-1]
 
         if provided is not None:
             n = self._provided[provided] + len(new) - len(old)
