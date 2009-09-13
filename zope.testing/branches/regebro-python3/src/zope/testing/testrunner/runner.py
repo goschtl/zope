@@ -16,21 +16,19 @@
 $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 """
 
+import subprocess
+
 import cStringIO
 import gc
-import glob
-import os
+import Queue
 import re
 import sys
-import tempfile
 import threading
 import time
 import traceback
 import unittest
 
-from zope.testing import doctest
-from zope.testing.testrunner.find import find_tests, test_dirs
-from zope.testing.testrunner.find import StartUpFailure, import_name
+from zope.testing.testrunner.find import import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 from zope.testing.testrunner.refcount import TrackRefs
 from zope.testing.testrunner.options import get_options
@@ -43,13 +41,16 @@ import zope.testing.testrunner.filter
 import zope.testing.testrunner.garbagecollection
 import zope.testing.testrunner.listing
 import zope.testing.testrunner.statistics
-import zope.testing.testrunner.subprocess
+import zope.testing.testrunner.process
 import zope.testing.testrunner.interfaces
 import zope.testing.testrunner.debug
+import zope.testing.testrunner.tb_format
+
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
 
 is_jython = sys.platform.startswith('java')
+
 
 class SubprocessError(Exception):
     """An error occurred when running a subprocess
@@ -77,11 +78,12 @@ class Runner(object):
     """
 
     def __init__(self, defaults=None, args=None, found_suites=None,
-                 options=None):
+                 options=None, script_parts=None):
         self.defaults = defaults
         self.args = args
         self.found_suites = found_suites
         self.options = options
+        self.script_parts = script_parts
         self.failed = True
 
         self.ran = 0
@@ -147,7 +149,6 @@ class Runner(object):
     def configure(self):
         if self.args is None:
             self.args = sys.argv[:]
-
         # Check to see if we are being run as a subprocess. If we are,
         # then use the resume-layer and defaults passed in.
         if len(self.args) > 1 and self.args[1] == '--resume-layer':
@@ -171,9 +172,6 @@ class Runner(object):
 
         self.options = options
 
-        # XXX I moved this here mechanically. Move to find feature?
-        self.test_directories = test_dirs(self.options, {})
-
         self.features.append(zope.testing.testrunner.selftest.SelfTest(self))
         self.features.append(zope.testing.testrunner.logsupport.Logging(self))
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
@@ -183,14 +181,18 @@ class Runner(object):
             # Jython GC support is not yet implemented
             pass
         else:
-            self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
-            self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
+            self.features.append(
+                zope.testing.testrunner.garbagecollection.Threshold(self))
+            self.features.append(
+                zope.testing.testrunner.garbagecollection.Debug(self))
 
         self.features.append(zope.testing.testrunner.find.Find(self))
-        self.features.append(zope.testing.testrunner.subprocess.SubProcess(self))
+        self.features.append(zope.testing.testrunner.process.SubProcess(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
         self.features.append(zope.testing.testrunner.listing.Listing(self))
-        self.features.append(zope.testing.testrunner.statistics.Statistics(self))
+        self.features.append(
+            zope.testing.testrunner.statistics.Statistics(self))
+        self.features.append(zope.testing.testrunner.tb_format.Traceback(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
@@ -228,11 +230,12 @@ class Runner(object):
         if should_resume:
             setup_layers = None
             if layers_to_run:
-                self.ran += resume_tests(self.options, self.features,
+                self.ran += resume_tests(
+                    self.script_parts, self.options, self.features,
                     layers_to_run, self.failures, self.errors)
 
         if setup_layers:
-            if self.options.resume_layer == None:
+            if self.options.resume_layer is None:
                 self.options.output.info("Tearing down left over layers:")
             tear_down_unneeded(self.options, (), setup_layers, True)
 
@@ -308,7 +311,8 @@ def run_tests(options, tests, name, failures, errors):
         output.stop_tests()
         failures.extend(result.failures)
         errors.extend(result.errors)
-        output.summary(result.testsRun, len(result.failures), len(result.errors), t)
+        output.summary(result.testsRun, len(result.failures),
+            len(result.errors), t)
         ran = result.testsRun
 
         if is_jython:
@@ -353,8 +357,8 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
         output.info("Running %s tests:" % layer_name)
     tear_down_unneeded(options, needed, setup_layers)
 
-    if options.resume_layer != None:
-        output.info_suboptimal( "  Running in a subprocess.")
+    if options.resume_layer is not None:
+        output.info_suboptimal("  Running in a subprocess.")
 
     try:
         setup_layer(options, layer, setup_layers)
@@ -369,18 +373,23 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
     else:
         return run_tests(options, tests, layer_name, failures, errors)
 
+
 class SetUpLayerFailure(unittest.TestCase):
 
     def runTest(self):
         "Layer set up failure."
 
-def spawn_layer_in_subprocess(result, options, features, layer_name, layer,
-        failures, errors, resume_number):
+
+def spawn_layer_in_subprocess(result, script_parts, options, features,
+                              layer_name, layer, failures, errors,
+                              resume_number):
     try:
-        args = [sys.executable,
-                sys.argv[0],
-                '--resume-layer', layer_name, str(resume_number),
-                ]
+        # BBB
+        if script_parts is None:
+            script_parts = sys.argv[0:1]
+        args = [sys.executable]
+        args.extend(script_parts)
+        args.extend(['--resume-layer', layer_name, str(resume_number)])
         for d in options.testrunner_defaults:
             args.extend(['--default', d])
 
@@ -388,87 +397,150 @@ def spawn_layer_in_subprocess(result, options, features, layer_name, layer,
 
         # this is because of a bug in Python (http://www.python.org/sf/900092)
         if (options.profile == 'hotshot'
-            and sys.version_info[:3] <= (2,4,1)):
+            and sys.version_info[:3] <= (2, 4, 1)):
             args.insert(1, '-O')
 
         if sys.platform.startswith('win'):
             args = args[0] + ' ' + ' '.join([
                 ('"' + a.replace('\\', '\\\\').replace('"', '\\"') + '"')
-                for a in args[1:]
-                ])
+                for a in args[1:]])
 
         for feature in features:
             feature.layer_setup(layer)
 
-        subin, subout, suberr = os.popen3(args)
+        child = subprocess.Popen(args, shell=False, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            close_fds=not sys.platform.startswith('win'))
+
         while True:
             try:
-                for line in subout:
-                    result.stdout.append(line)
+                while True:
+                    # We use readline() instead of iterating over stdout
+                    # because it appears that iterating over stdout causes a
+                    # lot more buffering to take place (probably so it can
+                    # return its lines as a batch). We don't want too much
+                    # buffering because this foils automatic and human monitors
+                    # trying to verify that the subprocess is still alive.
+                    l = child.stdout.readline()
+                    if not l:
+                        break
+                    result.write(l)
             except IOError, e:
                 if e.errno == errno.EINTR:
-                    # If the reading the subprocess input is interruped (as
-                    # be caused by recieving SIGCHLD), then retry.
+                    # If the subprocess dies before we finish reading its
+                    # output, a SIGCHLD signal can interrupt the reading.
+                    # The correct thing to to in that case is to retry.
                     continue
-                options.output.error(
+                output.error(
                     "Error reading subprocess output for %s" % layer_name)
-                options.output.info(str(e))
+                output.info(str(e))
             else:
                 break
 
-        # The subprocess may have spewed any number of things to stderr, so
-        # we'll keep looking until we find the information we're looking for.
-        whole_suberr = ''
-        while True:
-            line = suberr.readline()
-            whole_suberr += line
-            if not line:
-                raise SubprocessError(
-                    'No subprocess summary found', repr(whole_suberr))
-
+        # Now stderr should be ready to read the whole thing.
+        erriter = iter(child.stderr.read().splitlines())
+        nfail = nerr = 0
+        for line in erriter:
             try:
                 result.num_ran, nfail, nerr = map(int, line.strip().split())
-                break
-            except KeyboardInterrupt:
-                raise
-            except:
+            except ValueError:
                 continue
+            else:
+                break
+        else:
+            output = options.output
+            output.error_with_banner("Could not communicate with subprocess:\n"
+                                     "\n" + suberr)
 
         while nfail > 0:
             nfail -= 1
-            failures.append((suberr.readline().strip(), None))
+            failures.append((erriter.next().strip(), None))
         while nerr > 0:
             nerr -= 1
-            errors.append((suberr.readline().strip(), None))
+            errors.append((erriter.next().strip(), None))
 
     finally:
         result.done = True
 
 
-class SubprocessResult(object):
-    def __init__(self):
-        self.num_ran = 0
+class AbstractSubprocessResult(object):
+    """A result of a subprocess layer run."""
+
+    num_ran = 0
+    done = False
+
+    def __init__(self, layer_name, queue):
+        self.layer_name = layer_name
+        self.queue = queue
         self.stdout = []
-        self.done = False
+
+    def write(self, out):
+        """Receive a line of the subprocess out."""
 
 
-def resume_tests(options, features, layers, failures, errors):
+class DeferredSubprocessResult(AbstractSubprocessResult):
+    """Keeps stdout around for later processing,"""
+    
+    def write(self, out):
+        if not _is_dots(out):
+            self.stdout.append(out)
+
+
+class ImmediateSubprocessResult(AbstractSubprocessResult):
+    """Sends complete output to queue."""
+
+    def write(self, out):
+        sys.stdout.write(out)
+        # Help keep-alive monitors (human or automated) keep up-to-date.
+        sys.stdout.flush()
+
+
+_is_dots = re.compile(r'\.+\n').match
+class KeepaliveSubprocessResult(AbstractSubprocessResult):
+    "Keeps stdout for later processing; sends marks to queue to show activity."
+
+    _done = False
+
+    def _set_done(self, value):
+        self._done = value
+        assert value, 'Internal error: unexpectedly setting done to False'
+        self.queue.put((self.layer_name, ' LAYER FINISHED'))
+    done = property(lambda self: self._done, _set_done) 
+
+    def write(self, out):
+        if _is_dots(out):
+            self.queue.put((self.layer_name, out.strip()))
+        else:
+            self.stdout.append(out)
+
+
+def resume_tests(script_parts, options, features, layers, failures, errors):
     results = []
+    stdout_queue = None
+    if options.processes == 1:
+        result_factory = ImmediateSubprocessResult
+    elif options.verbose > 1:
+        result_factory = KeepaliveSubprocessResult
+        stdout_queue = Queue.Queue()
+    else:
+        result_factory = DeferredSubprocessResult
     resume_number = int(options.processes > 1)
     ready_threads = []
     for layer_name, layer, tests in layers:
-        result = SubprocessResult()
+        result = result_factory(layer_name, stdout_queue)
         results.append(result)
         ready_threads.append(threading.Thread(
             target=spawn_layer_in_subprocess,
-            args=(result, options, features, layer_name, layer, failures,
-                errors, resume_number)))
+            args=(result, script_parts, options, features, layer_name, layer,
+                  failures, errors, resume_number)))
         resume_number += 1
 
     # Now start a few threads at a time.
     running_threads = []
     results_iter = iter(results)
     current_result = results_iter.next()
+    last_layer_intermediate_output = None
+    output = None
     while ready_threads or running_threads:
         while len(running_threads) < options.processes and ready_threads:
             thread = ready_threads.pop(0)
@@ -479,9 +551,27 @@ def resume_tests(options, features, layers, failures, errors):
             if not thread.isAlive():
                 del running_threads[index]
 
-        # We want to display results in the order they would have been
-        # displayed, had the work not been done in parallel.
+        # Clear out any messages in queue
+        while stdout_queue is not None:
+            previous_output = output
+            try:
+                layer_name, output = stdout_queue.get(False)
+            except Queue.Empty:
+                break
+            if layer_name != last_layer_intermediate_output:
+                # Clarify what layer is reporting activity.
+                if previous_output is not None:
+                    sys.stdout.write(']\n')
+                sys.stdout.write(
+                    '[Parallel tests running in %s:\n  ' % (layer_name,))
+                last_layer_intermediate_output = layer_name
+            sys.stdout.write(output)
+        # Display results in the order they would have been displayed, had the
+        # work not been done in parallel.
         while current_result and current_result.done:
+            if output is not None:
+                sys.stdout.write(']\n')
+                output = None
             map(sys.stdout.write, current_result.stdout)
 
             try:
@@ -489,6 +579,8 @@ def resume_tests(options, features, layers, failures, errors):
             except StopIteration:
                 current_result = None
 
+        # Help keep-alive monitors (human or automated) keep up-to-date.
+        sys.stdout.flush()
         time.sleep(0.01) # Keep the loop from being too tight.
 
     # Return the total number of tests run.
@@ -496,8 +588,8 @@ def resume_tests(options, features, layers, failures, errors):
 
 
 def tear_down_unneeded(options, needed, setup_layers, optional=False):
-    # Tear down any layers not needed for these tests. The unneeded
-    # layers might interfere.
+    # Tear down any layers not needed for these tests. The unneeded layers
+    # might interfere.
     unneeded = [l for l in setup_layers if l not in needed]
     unneeded = order_by_bases(unneeded)
     unneeded.reverse()
@@ -521,6 +613,7 @@ cant_pm_in_subprocess_message = """
 Can't post-mortem debug when running a layer as a subprocess!
 Try running layer %r by itself.
 """
+
 
 def setup_layer(options, layer, setup_layers):
     assert layer is not object
@@ -656,7 +749,7 @@ def layer_from_name(layer_name):
        to allow locating layers in cases where it would otherwise be
        impossible.
     """
-    if _layer_name_cache.has_key(layer_name):
+    if layer_name in _layer_name_cache:
         return _layer_name_cache[layer_name]
     layer_names = layer_name.split('.')
     layer_module, module_layer_name = layer_names[:-1], layer_names[-1]

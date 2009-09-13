@@ -153,7 +153,15 @@ def find_suites(options):
                         )
                 else:
                     try:
-                        suite = getattr(module, options.suite_name)()
+                        if hasattr(module, options.suite_name):
+                            suite = getattr(module, options.suite_name)()
+                        else:
+                            suite = unittest.defaultTestLoader.loadTestsFromModule(module)
+                            if suite.countTestCases() == 0:
+                                raise TypeError(
+                                    "Module %s does not define any tests"
+                                    % module_name)
+
                         if isinstance(suite, unittest.TestSuite):
                             check_suite(suite, module_name)
                         else:
@@ -204,7 +212,10 @@ def find_test_files_(options):
     for (p, package) in test_dirs(options, {}):
         for dirname, dirs, files in walk_with_symlinks(options, p):
             if dirname != p and not contains_init_py(options, files):
-                continue    # not a plausible test directory
+                # This is not a plausible test directory. Avoid descending
+                # further.
+                del dirs[:]
+                continue
             root2ext = {}
             dirs[:] = filter(identifier, dirs)
             d = os.path.split(dirname)[1]
