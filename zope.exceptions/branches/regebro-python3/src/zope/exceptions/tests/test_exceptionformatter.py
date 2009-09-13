@@ -19,7 +19,14 @@ import sys
 from unittest import TestCase, main, makeSuite
 
 from zope.exceptions.exceptionformatter import format_exception
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+
+# zope.testing is not ported yet, temporary workaround:
+try:
+    from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+    class CleanUpTestCase(CleanUp, TestCase):
+        pass
+except ImportError:
+    CleanUpTestCase = TestCase
 
 def tb(as_html=0):
     t, v, b = sys.exc_info()
@@ -46,7 +53,7 @@ class TestingTracebackSupplement(object):
 
 
 
-class Test(CleanUp, TestCase):
+class Test(CleanUpTestCase):
 
     def testBasicNamesText(self, as_html=0):
         try:
