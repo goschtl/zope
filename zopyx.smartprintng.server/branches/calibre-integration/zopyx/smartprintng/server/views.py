@@ -19,6 +19,13 @@ from webob import Response
 from models import Server
 from logger import LOG
 
+try:
+    from zopyx.smartprintng.authentication import authenticateRequest, authorizeRequest
+    have_authentication = True
+except ImportError:
+    from nullauth import authenticateRequest, authorizeRequest
+    have_authentication = False
+
 static_view = static('templates/static')
 
 spool_directory = os.path.join(tempfile.gettempdir(), 
@@ -83,10 +90,26 @@ def deliver(context, request):
 # XMLRPC views
 ##################
 
+@bfg_view(name='authenticate', for_=Server)
+@xmlrpc_view
+def authenticate(context, username, password):
+
+    if not have_authentication:
+        return True
+
+    try:
+        return authenticateRequest(username, password)
+    except Exception, e:
+        msg = 'Authentication failed (%s)' % e
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
 
 @bfg_view(name='convertZIP', for_=Server)
 @xmlrpc_view
-def convertZIP(context, zip_archive, converter_name='pdf-prince'):
+def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
+
+    authorizeRequest(auth_token)
+
     try:
         return context.convertZIP(zip_archive, converter_name)
     except Exception, e:
@@ -97,7 +120,10 @@ def convertZIP(context, zip_archive, converter_name='pdf-prince'):
 
 @bfg_view(name='convertZIPEmail', for_=Server)
 @xmlrpc_view
-def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
+def convertZIPEmail(context, auth_token, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
+
+    authorizeRequest(auth_token)
+
     try:
         return context.convertZIPEmail(zip_archive, converter_name, sender, recipient, subject, body)
     except Exception, e:
@@ -108,7 +134,7 @@ def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=No
 
 @bfg_view(name='convertZIPandRedirect',  for_=Server)
 @xmlrpc_view
-def convertZIPandRedirect(context, zip_archive, converter_name='prince-pdf', prefix=None):
+def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prince-pdf', prefix=None):
     """ This view appects a ZIP archive through a POST request containing all
         relevant information (similar to the XMLRPC API). However the converted
         output file is not returned to the caller but delivered "directly" through
@@ -118,6 +144,8 @@ def convertZIPandRedirect(context, zip_archive, converter_name='prince-pdf', pre
         (This class is only a base class for the related http_ and xmlrpc_
          view (in order to avoid redudant code).)
     """
+
+    authorizeRequest(auth_token)
 
     try:
         output_archivename, output_filename = context._processZIP(zip_archive, converter_name)
