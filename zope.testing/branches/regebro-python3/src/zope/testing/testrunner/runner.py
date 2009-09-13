@@ -438,7 +438,8 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
                 break
 
         # Now stderr should be ready to read the whole thing.
-        erriter = iter(child.stderr.read().splitlines())
+        suberr = child.stderr.read()
+        erriter = iter(suberr.splitlines())
         nfail = nerr = 0
         for line in erriter:
             try:
@@ -448,6 +449,7 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
             else:
                 break
         else:
+            # XXX This code path is untested
             output = options.output
             output.error_with_banner("Could not communicate with subprocess:\n"
                                      "\n" + suberr)
