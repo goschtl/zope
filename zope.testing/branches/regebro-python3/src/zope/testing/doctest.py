@@ -1360,11 +1360,11 @@ class DocTestRunner:
                 exec compile(example.source, filename, "single",
                              compileflags, 1) in test.globs
                 self.debugger.set_continue() # ==== Example Finished ====
-                exception = None
+                exc_info = None
             except KeyboardInterrupt:
                 raise
             except:
-                exception = sys.exc_info()
+                exc_info = sys.exc_info()
                 self.debugger.set_continue() # ==== Example Finished ====
             got = self._fakeout.getvalue()  # the actual output
             self._fakeout.truncate(0)
@@ -1372,13 +1372,12 @@ class DocTestRunner:
 
             # If the example executed without raising any exceptions,
             # verify its output.
-            if exception is None:
+            if exc_info is None:
                 if check(example.want, got, self.optionflags):
                     outcome = SUCCESS
 
             # The example raised an exception:  check if it was expected.
             else:
-                exc_info = sys.exc_info()
                 exc_msg = traceback.format_exception_only(*exc_info[:2])[-1]
                 if not quiet:
                     got += _exception_traceback(exc_info)
