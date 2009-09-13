@@ -283,8 +283,9 @@ class _SpoofOut(StringIO):
             del self.softspace
 
     def write(self, value):
-        if isinstance(value, unicode):
-            value = value.encode('utf8')
+        if sys.version_info < (3,):
+            if isinstance(value, unicode):
+                value = value.encode('utf8')
         StringIO.write(self, value)
 
 # Worst-case linear-time ellipsis matching.
@@ -2304,6 +2305,14 @@ class DocTestCase(unittest.TestCase):
         test = self._dt_test
         old = sys.stdout
         new = StringIO()
+        if sys.version_info < (3,):
+            def write(value):
+                if isinstance(value, unicode):
+                    value = value.encode('utf8')
+                new.write(value)
+        else:
+            write = new.write
+
         optionflags = self._dt_optionflags
 
         if not (optionflags & REPORTING_FLAGS):
@@ -2316,10 +2325,6 @@ class DocTestCase(unittest.TestCase):
 
         runner = DocTestRunner(optionflags=optionflags,
                                checker=self._dt_checker, verbose=False)
-        def write(value):
-            if isinstance(value, unicode):
-                value = value.encode('utf8')
-            new.write(value)
 
         try:
             runner.DIVIDER = "-"*70
