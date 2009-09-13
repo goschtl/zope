@@ -32,6 +32,12 @@ try:
     import setuptools
 
     setuptools.run_2to3 = True
+    from setuptools import lib2to3_fixer_packages
+    # this is a bit kludgy since our fixers live inside ourselves,
+    # which we can't import since 2to3 has not been run yet
+    sys.path.append(os.path.join('src', 'zope', 'interface'))
+    lib2to3_fixer_packages.append('fixers')
+
 except ImportError:
     # do we need to support plain distutils for building when even
     # the package itself requires setuptools for installing?
