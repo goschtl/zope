@@ -51,7 +51,7 @@ class OutputFormatter(object):
         self.compute_max_width()
 
     progress = property(lambda self: self.options.progress)
-    verbose = property(lambda self: self.options.verbose)
+    verbose = property(lambda self: self.options.verbose or 0)
     in_subprocess = property(
         lambda self: self.options.resume_layer is not None and
                      self.options.processes > 1)

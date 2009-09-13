@@ -267,7 +267,7 @@ def run_tests(options, tests, name, failures, errors):
         if repeat > 1:
             output.info("Iteration %d" % (iteration + 1))
 
-        if options.verbose > 0 or options.progress:
+        if (options.verbose and options.verbose > 0) or options.progress:
             output.info('  Running:')
         result = TestResult(options, tests, layer_name=name)
 
