@@ -34,7 +34,7 @@ try:
         include_package_data = True,
         zip_safe = False,
         )
-except ImportError, e:
+except ImportError:
     from distutils.core import setup
     extra = {}
 
