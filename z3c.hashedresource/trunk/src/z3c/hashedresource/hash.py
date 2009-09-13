@@ -14,7 +14,10 @@
 
 from z3c.hashedresource import interfaces
 from zope.interface import implements, implementsOnly
-import hashlib
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import new as md5
 import os
 
 
@@ -32,7 +35,7 @@ class ContentsHash(object):
         else:
             files = [path]
 
-        result = hashlib.new('md5')
+        result = md5()
         for file in files:
             f = open(file, 'rb')
             data = f.read()
