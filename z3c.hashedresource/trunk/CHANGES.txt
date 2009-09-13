@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1.2 (unreleased)
+1.1.2 (2009-09-13)
 ==================
 
 - Restored compatibility with Python 2.4 by importing hashlib conditionally.
