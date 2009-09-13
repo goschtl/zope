@@ -31,13 +31,6 @@ try:
     from setuptools.command.build_ext import build_ext
     import setuptools
 
-    setuptools.run_2to3 = True
-    from setuptools import lib2to3_fixer_packages
-    # this is a bit kludgy since our fixers live inside ourselves,
-    # which we can't import since 2to3 has not been run yet
-    sys.path.append(os.path.join('src', 'zope', 'interface'))
-    lib2to3_fixer_packages.append('fixers')
-
 except ImportError:
     # do we need to support plain distutils for building when even
     # the package itself requires setuptools for installing?
@@ -74,6 +67,22 @@ else:
         extras_require={'docs': ['z3c.recipe.sphinxdoc']},
         features = {'codeoptimization': codeoptimization}
         )
+
+
+try:
+    from setuptools import lib2to3_fixer_packages
+    setuptools.run_2to3 = True
+    # this is a bit kludgy since our fixers live inside ourselves,
+    # which we can't import since 2to3 has not been run yet
+    sys.path.append(os.path.join('src', 'zope', 'interface'))
+    lib2to3_fixer_packages.append('fixers')
+
+    #extra['convert_doctest_2to3'] = XXX
+except ImportError:
+    # either no setuptools or this setuptools is not distribute,
+    # 2to3 support will not be enabled
+    pass
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
