@@ -1,0 +1,36 @@
+If you want to know what I did (all in a Python2.6 virtualenv):
+
+1) Check out the grok trunk.
+
+Then, alternatively:
+
+2a) Download http://svn.zope.org/zopetoolkit/branches/jim-kgs/kgs/ztk.cfg
+   and save it as versions.ztk.cfg.
+
+3a) In versions.ztk.cfg remove all but the lower part starting with 
+   [versions]. So you have a new versions.cfg.
+
+4a) In buildout.cfg, after 'extends versions.cfg' add a new line::
+
+   extends versions.ztk.cfg
+
+or:
+
+2b) In buildout.cfg refer to the above ztk.cfg using the buildout
+    `extends` directive.
+
+5) In buildout.cfg, in the [versions] section add an entry::
+
+   martian = 0.11
+
+   Grok still needs martian 0.11 (might be fixed on the sprint).
+
+6) in src/grok/configure.zcml:
+
+   comment out or remove the last adapter registration (which registers 
+   for IReRaiseException). This means, that you have to go to 
+   @@login.html if you want to login when the paster debugger was 
+   started in background.
+
+   The mentioned interface is registered with newer zope.publisher
+   versions, but the current ZTK publisher still lacks this.
