@@ -374,9 +374,14 @@ def tigetnum(attr, default=None):
         # avoid reimporting a broken module in python 2.3
         sys.modules['curses'] = None
     else:
+        ignored_exceptions = [curses.error, TypeError]
+        if sys.version_info >= (3,):
+            import io
+            ignored_exceptions.append(io.UnsupportedOperation)
+        ignored_exceptions = tuple(ignored_exceptions)
         try:
             curses.setupterm()
-        except (curses.error, TypeError):
+        except ignored_exceptions:
             # You get curses.error when $TERM is set to an unknown name
             # You get TypeError when sys.stdout is not a real file object
             # (e.g. in unit tests that use various wrappers).
