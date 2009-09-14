@@ -273,7 +273,7 @@ We can create pagelet with template:
   ... """, context)
   Traceback (most recent call last):
   ...
-  ZopeXMLConfigurationError: File "<string>", line 3.2-6.30
+  ZopeXMLConfigurationError: File "<string>", ...
   ConfigurationError: ('No such file', '...unknown.pt')
 
   >>> temp_dir = tempfile.mkdtemp()

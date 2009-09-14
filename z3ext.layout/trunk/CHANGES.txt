@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-2.2.2 (Unreleased)
+2.2.2 (2009-09-14)
 ------------------
+
+- Update tests for 64bit python
 
 
 2.2.1 (2009-08-11)
