@@ -28,10 +28,6 @@ except ImportError:
 
 static_view = static('templates/static')
 
-spool_directory = os.path.join(tempfile.gettempdir(), 
-                              'zopyx.smartprintng.server-spool')
-if not os.path.exists(spool_directory):
-    os.makedirs(spool_directory)
 
 ##################
 # HTTP views
@@ -62,13 +58,13 @@ def deliver(context, request):
 
     filename = request.params['filename']
     prefix = request.params.get('prefix')
-    dest_filename = os.path.abspath(os.path.join(spool_directory, filename))
+    dest_filename = os.path.abspath(os.path.join(context.spool_directory, filename))
 
     # various (security) checks
     if not os.path.exists(dest_filename):
         return Response(status=404)
 
-    if not dest_filename.startswith(spool_directory):
+    if not dest_filename.startswith(context.spool_directory):
         return Response(status=404)
 
     if time.time() - os.stat(dest_filename)[ST_CTIME] >= context.delivery_max_age:
@@ -108,7 +104,10 @@ def authenticate(context, username, password):
 @xmlrpc_view
 def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
 
-    authorizeRequest(auth_token)
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
 
     try:
         return context.convertZIP(zip_archive, converter_name)
@@ -122,7 +121,10 @@ def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
 @xmlrpc_view
 def convertZIPEmail(context, auth_token, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
 
-    authorizeRequest(auth_token)
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
 
     try:
         return context.convertZIPEmail(zip_archive, converter_name, sender, recipient, subject, body)
@@ -145,7 +147,10 @@ def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prin
          view (in order to avoid redudant code).)
     """
 
-    authorizeRequest(auth_token)
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
 
     try:
         output_archivename, output_filename = context._processZIP(zip_archive, converter_name)
@@ -155,8 +160,8 @@ def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prin
         ident = os.path.splitext(os.path.basename(output_archivename))[0]
 
         # move output file to spool directory
-        dest_filename = os.path.join(spool_directory, '%s%s' % (ident, output_ext))
-        rel_output_filename = dest_filename.replace(spool_directory + os.sep, '')
+        dest_filename = os.path.join(context.spool_directory, '%s%s' % (ident, output_ext))
+        rel_output_filename = dest_filename.replace(context.spool_directory + os.sep, '')
         shutil.move(output_filename, dest_filename)
         host = 'localhost'
         port = 6543
