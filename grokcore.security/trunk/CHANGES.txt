@@ -4,6 +4,17 @@ Changes
 1.2 (unreleased)
 ----------------
 
+* Changed the default permissions from grok.View to zope.View. There seems no
+  particular reason not to use the standard zope.View permission defined
+  in zope.app.security.
+
+  NOTE: YOU MUST STILL ASSIGN THIS PERMISSION TO USERS IN YOUR
+  site.zcml FILE. OTHERWISE YOU DO NOT HAVE ACCESS TO ANY VIEWS.
+
+* Made sure to include zope.app.security configuration as well, as that
+  package defines the zope.View permission. Note that in the future this will
+  change to zope.security.
+
 * Bring versions.cfg in line with grok 1.0 release candidate
   versions.cfg.
 
@@ -13,7 +24,7 @@ Changes
 
 * Changed the default permissions from zope.Public to grok.View.
 
-  NOTE: YOU MUST ASSIGN THIS PERMISSION TO USERS IN YOUR 
+  NOTE: YOU MUST ASSIGN THIS PERMISSION TO USERS IN YOUR
   site.zcml FILE. OTHERWISE YOU DO NOT HAVE ACCESS TO ANY VIEWS.
 
 1.0 (2008-08-03)

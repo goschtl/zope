@@ -36,11 +36,11 @@ def protect_setattr(class_, name, permission=None):
     protectSetAttribute(class_, name, permission)
 
 def check_or_default_permission(class_, permission):
-    """Return default permission (public) if permission is None,
+    """Return default permission (zope.View) if permission is None,
     otherwise make sure permission has been defined.
     """
     if permission is None:
-        permission = 'grok.View'
+        permission = 'zope.View'
     else:
         check_permission(class_, permission)
     return permission

@@ -9,7 +9,7 @@ before it can be used in grok.require().
   >>> obj = ProxyFactory(obj)
   >>> checker = getChecker(obj)
   >>> checker.permission_id('protected')
-  'grok.View'
+  'zope.View'
 """
 import grokcore.security as grok
 

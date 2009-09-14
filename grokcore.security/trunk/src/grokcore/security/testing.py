@@ -39,6 +39,5 @@ def grok(module_name):
     zcml.do_grok('grokcore.component.meta', config)
     zcml.do_grok('grokcore.security.meta', config)
     zcml.do_grok('grokcore.security.testing', config)
-    zcml.do_grok('grokcore.security.default_permission', config)
     zcml.do_grok(module_name, config)
     config.execute_actions()
