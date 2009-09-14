@@ -36,6 +36,10 @@ class Proxy(object):
         ZF.close()
         return zip_filename
 
+    def authenticate(self, username, password):
+        server = xmlrpclib.ServerProxy('http://%s:%d/authenticate' % (self.host, self.port))
+        return server(username, password)
+
     def ping(self):
         server = xmlrpclib.ServerProxy('http://%s:%d/ping' % (self.host, self.port))
         return server()
@@ -44,12 +48,13 @@ class Proxy(object):
         server = xmlrpclib.ServerProxy('http://%s:%d/availableConverters' % (self.host, self.port))
         return server()
 
-    def convertZIP(self, dirname, converter_name='pdf-prince'):
+    def convertZIP(self, auth_token, dirname, converter_name='pdf-prince'):
         """ XMLRPC client to SmartPrintNG server """
 
         zip_filename = self._makeZipFromDirectory(dirname)
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIP' % (self.host, self.port))
-        zip_data = server(base64.encodestring(file(zip_filename, 'rb').read()),
+        zip_data = server(auth_token,
+                          base64.encodestring(file(zip_filename, 'rb').read()),
                           converter_name)
 
         # and receive the conversion result as base64 encoded ZIP archive
@@ -65,23 +70,25 @@ class Proxy(object):
         os.unlink(zip_temp)
         return output_filename
 
-    def convertZIPandRedirect(self, dirname, converter_name='pdf-prince', prefix=None):
+    def convertZIPandRedirect(self, auth_token, dirname, converter_name='pdf-prince', prefix=None):
         """ XMLRPC client to SmartPrintNG server """
 
         zip_filename = self._makeZipFromDirectory(dirname)
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPandRedirect' % (self.host, self.port))
-        location = server(base64.encodestring(file(zip_filename, 'rb').read()),
+        location = server(auth_token,
+                          base64.encodestring(file(zip_filename, 'rb').read()),
                           converter_name,
                           prefix)
         os.unlink(zip_filename)
         return location
 
-    def convertZIPEmail(self, dirname, converter_name='pdf-prince', 
+    def convertZIPEmail(self, auth_token, dirname, converter_name='pdf-prince', 
                         sender=None, recipients=None, subject=None, body=None):
 
         zip_filename = self._makeZipFromDirectory(dirname)
         server = xmlrpclib.ServerProxy('http://%s:%d/convertZIPEmail' % (self.host, self.port))
-        result = server.convertZIPEmail(base64.encodestring(file(zip_filename, 'rb').read()),
+        result = server.convertZIPEmail(auth_token,
+                                        base64.encodestring(file(zip_filename, 'rb').read()),
                                         converter_name,
                                         sender,
                                         recipients,
@@ -95,9 +102,11 @@ if __name__ == '__main__':
 
     proxy = Proxy(port=6543)
     print proxy.ping()
+    print proxy.authenticate('dummy', 'dummy')
     print proxy.availableConverters()
-    print proxy.convertZIP(sys.argv[1])
-#    print proxy.convertZIPEmail(sys.argv[1], 
+    print proxy.convertZIP('', sys.argv[1])
+#    print proxy.convertZIPEmail('',
+#                                sys.argv[1], 
 #                                sender='foo@bar.org', 
 #                                recipients='foo@bar.org', 
 #                                subject=unicode('üצה', 'latin1').encode('utf-8'),
