@@ -30,6 +30,7 @@ try:
         install_requires = ['setuptools',
                             'zope.exceptions',
                             'zope.interface'],
+        setup_requires = ['zope.interface'],
         entry_points = {'console_scripts': ['zope-testrunner = zope.testing.testrunner:run',]},
         include_package_data = True,
         zip_safe = False,
@@ -37,6 +38,17 @@ try:
 except ImportError:
     from distutils.core import setup
     extra = {}
+
+try:
+    import setuptools
+    from setuptools import lib2to3_fixer_packages
+    setuptools.run_2to3 = True
+    lib2to3_fixer_packages.append('zope.interface.fixers')
+    #extra['convert_doctest_2to3'] = XXX
+except ImportError:
+    # either no setuptools or this setuptools is not distribute,
+    # 2to3 support will not be enabled
+    pass
 
 chapters = '\n'.join([
     open(os.path.join('src', 'zope', 'testing', 'testrunner', name)).read()
