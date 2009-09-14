@@ -7,10 +7,11 @@ Setting up ``grokcore.security``
 ================================
 
 This package is essentially set up like the `grokcore.component`_
-package, please refer to its documentation for details.  The only
-additional ZCML line you will need is::
+package, please refer to its documentation for details.  The
+additional ZCML lines you will need are::
 
   <include package="grokcore.security" file="meta.zcml" />
+  <include package="grokcore.security" />
 
 Put this somewhere near the top of your root ZCML file but below the
 line where you include ``grokcore.component``'s configuration.
