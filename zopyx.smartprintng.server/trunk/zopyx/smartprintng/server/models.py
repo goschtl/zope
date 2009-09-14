@@ -36,6 +36,11 @@ class Server(object):
         if not os.path.exists(self.temp_directory):
             os.makedirs(self.temp_directory)
 
+        self.spool_directory = os.path.join(tempfile.gettempdir(), 
+                                           'zopyx.smartprintng.server-spool')
+        if not os.path.exists(self.spool_directory):
+            os.makedirs(self.spool_directory)
+
     def countRequest(self):
         self._lock.acquire()
         self.num_requests += 1

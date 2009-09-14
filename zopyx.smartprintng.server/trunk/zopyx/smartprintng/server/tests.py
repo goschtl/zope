@@ -122,7 +122,7 @@ class ViewIntegrationTests(unittest.TestCase):
         request = testing.DummyRequest(headers=headers, post=True)
         zip_archive = os.path.join(os.path.dirname(__file__), 'test_data', 'test.zip')
         zip_data = file(zip_archive, 'rb').read()
-        params = xmlrpclib.dumps((base64.encodestring(zip_data), 'pdf-prince'))
+        params = xmlrpclib.dumps(('', base64.encodestring(zip_data), 'pdf-prince'))
         request.body = xml2 % params
         result = convertZIP(context, request)
         self.assertEqual(result.status, '200 OK')
@@ -142,7 +142,7 @@ class ViewIntegrationTests(unittest.TestCase):
         request = testing.DummyRequest(headers=headers, post=True)
         zip_archive = os.path.join(os.path.dirname(__file__), 'test_data', 'test.zip')
         zip_data = file(zip_archive, 'rb').read()
-        params = xmlrpclib.dumps((base64.encodestring(zip_data), 'pdf-prince'))
+        params = xmlrpclib.dumps(('', base64.encodestring(zip_data), 'pdf-prince'))
         request.body = xml3 % params
         result = convertZIPandRedirect(context, request)
         self.assertEqual(result.status, '200 OK')

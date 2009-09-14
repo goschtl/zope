@@ -19,12 +19,15 @@ from webob import Response
 from models import Server
 from logger import LOG
 
+try:
+    from zopyx.smartprintng.authentication import authenticateRequest, authorizeRequest
+    have_authentication = True
+except ImportError:
+    from nullauth import authenticateRequest, authorizeRequest
+    have_authentication = False
+
 static_view = static('templates/static')
 
-spool_directory = os.path.join(tempfile.gettempdir(), 
-                              'zopyx.smartprintng.server-spool')
-if not os.path.exists(spool_directory):
-    os.makedirs(spool_directory)
 
 ##################
 # HTTP views
@@ -55,13 +58,13 @@ def deliver(context, request):
 
     filename = request.params['filename']
     prefix = request.params.get('prefix')
-    dest_filename = os.path.abspath(os.path.join(spool_directory, filename))
+    dest_filename = os.path.abspath(os.path.join(context.spool_directory, filename))
 
     # various (security) checks
     if not os.path.exists(dest_filename):
         return Response(status=404)
 
-    if not dest_filename.startswith(spool_directory):
+    if not dest_filename.startswith(context.spool_directory):
         return Response(status=404)
 
     if time.time() - os.stat(dest_filename)[ST_CTIME] >= context.delivery_max_age:
@@ -83,10 +86,29 @@ def deliver(context, request):
 # XMLRPC views
 ##################
 
+@bfg_view(name='authenticate', for_=Server)
+@xmlrpc_view
+def authenticate(context, username, password):
+
+    if not have_authentication:
+        return True
+
+    try:
+        return authenticateRequest(username, password)
+    except Exception, e:
+        msg = 'Authentication failed (%s)' % e
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
 
 @bfg_view(name='convertZIP', for_=Server)
 @xmlrpc_view
-def convertZIP(context, zip_archive, converter_name='pdf-prince'):
+def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
+
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
+
     try:
         return context.convertZIP(zip_archive, converter_name)
     except Exception, e:
@@ -97,7 +119,13 @@ def convertZIP(context, zip_archive, converter_name='pdf-prince'):
 
 @bfg_view(name='convertZIPEmail', for_=Server)
 @xmlrpc_view
-def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
+def convertZIPEmail(context, auth_token, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
+
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
+
     try:
         return context.convertZIPEmail(zip_archive, converter_name, sender, recipient, subject, body)
     except Exception, e:
@@ -108,7 +136,7 @@ def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', sender=No
 
 @bfg_view(name='convertZIPandRedirect',  for_=Server)
 @xmlrpc_view
-def convertZIPandRedirect(context, zip_archive, converter_name='prince-pdf', prefix=None):
+def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prince-pdf', prefix=None):
     """ This view appects a ZIP archive through a POST request containing all
         relevant information (similar to the XMLRPC API). However the converted
         output file is not returned to the caller but delivered "directly" through
@@ -119,6 +147,11 @@ def convertZIPandRedirect(context, zip_archive, converter_name='prince-pdf', pre
          view (in order to avoid redudant code).)
     """
 
+    if not authorizeRequest(auth_token):
+        msg = 'Authorization failed'
+        LOG.error(msg, exc_info=True)
+        return xmlrpclib.Fault(123, msg)
+
     try:
         output_archivename, output_filename = context._processZIP(zip_archive, converter_name)
         output_ext = os.path.splitext(output_filename)[1]
@@ -127,8 +160,8 @@ def convertZIPandRedirect(context, zip_archive, converter_name='prince-pdf', pre
         ident = os.path.splitext(os.path.basename(output_archivename))[0]
 
         # move output file to spool directory
-        dest_filename = os.path.join(spool_directory, '%s%s' % (ident, output_ext))
-        rel_output_filename = dest_filename.replace(spool_directory + os.sep, '')
+        dest_filename = os.path.join(context.spool_directory, '%s%s' % (ident, output_ext))
+        rel_output_filename = dest_filename.replace(context.spool_directory + os.sep, '')
         shutil.move(output_filename, dest_filename)
         host = 'localhost'
         port = 6543
