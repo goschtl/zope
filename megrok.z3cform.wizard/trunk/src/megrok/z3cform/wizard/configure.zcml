@@ -1,0 +1,18 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3c="http://namespaces.zope.org/z3c">
+
+  <include package="megrok.z3cform.base" file="meta.zcml" />
+  <include package="megrok.z3cform.base" />
+  <include package="z3c.template" file="meta.zcml"/>
+  <include package="z3c.macro"/>
+  <include package="z3c.macro" file="meta.zcml"/>
+  <include package="z3c.wizard"/>
+
+  <z3c:macro
+      name="widget-rows"
+      macro="widget-rows"
+      template="formelements.pt"
+      />
+
+</configure>
