@@ -148,6 +148,7 @@ def test_suite():
         'testrunner-coverage.txt',
         'testrunner-debugging-layer-setup.test',
         'testrunner-debugging.txt',
+        'testrunner-doctestfinder.txt',
         'testrunner-edge-cases.txt',
         'testrunner-errors.txt',
         'testrunner-layers-buff.txt',

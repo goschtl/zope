@@ -379,6 +379,17 @@ containing tests.
 """)
 
 setup.add_option(
+    '--doctests-pattern', action="store", dest='doctests_pattern',
+    help="""\
+The test runner looks for files containing doctests.  It uses this
+pattern to identify these files.
+
+Only doctests that contain a `testcase` directive
+(e. g. `.. testcase:: some.package.DocTestCase`) will be picked up
+and registered as doctests, using the given TestCase.
+""")
+
+setup.add_option(
     '--suite-name', action="store", dest='suite_name',
     help="""\
 Specify the name of the object in each test_module that contains the
@@ -451,6 +462,7 @@ parser.add_option_group(other)
 parser.set_defaults(
     ignore_dir=['.svn', 'CVS', '{arch}', '.arch-ids', '_darcs'],
     tests_pattern='^tests$',
+    doctests_pattern='\.txt$'
     at_level=1,
     test_file_pattern='^test',
     suite_name='test_suite',
@@ -547,6 +559,7 @@ def get_options(args=None, defaults=None):
     options.ignore_dir = dict([(d,1) for d in options.ignore_dir])
     options.test_file_pattern = re.compile(options.test_file_pattern).search
     options.tests_pattern = re.compile(options.tests_pattern).search
+    options.doctests_pattern = re.compile(options.tests_pattern).search
     options.test = map(compile_filter, options.test or ('.'))
     options.module = map(compile_filter, options.module or ('.'))
 
