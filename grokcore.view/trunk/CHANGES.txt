@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.10 (unreleased)
+1.10 (2009-09-14)
 -----------------
 
 - Up the version requirement for grokcore.security to 1.2.
