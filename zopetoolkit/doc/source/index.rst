@@ -31,7 +31,7 @@ Documentation
    :maxdepth: 2
 
    about/index
+   releases/index
    process/index
    codingstyle/index
-   migration/index
    steeringgroup/index

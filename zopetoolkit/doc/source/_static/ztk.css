@@ -5,3 +5,8 @@ div.body dd,
 div.body li {
     text-align:left;
 }
+
+
+table.packagelist {
+    width: 100%;
+}

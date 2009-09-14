@@ -11,9 +11,9 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html web pickle htmlhelp latex changes linkcheck all
+.PHONY: help clean html web pickle htmlhelp latex changes linkcheck all releaseinfo
 
-all: html
+all: releaseinfo html
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -27,6 +27,9 @@ help:
 
 clean:
 	-rm -rf build/*
+
+releaseinfo:
+	bin/py scripts/update-releaseinfo.py
 
 html:
 	mkdir -p build/html build/doctrees

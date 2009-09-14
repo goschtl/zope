@@ -8,6 +8,5 @@ About the Zope Toolkit
    history
    coreextra
    concepts
-   packages
 
 
