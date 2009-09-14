@@ -4,6 +4,8 @@ Changes
 1.10 (unreleased)
 -----------------
 
+- Up the version requirement for grokcore.security to 1.2.
+
 - Bring versions.cfg in line with current grok versions.cfg.
 
 
