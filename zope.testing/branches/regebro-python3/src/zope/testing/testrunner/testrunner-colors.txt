@@ -379,6 +379,7 @@ pretends it is a terminal, but the curses module will realize it isn't:
 We can fake it
 
     >>> class FakeCurses(object):
+    ...     error = None
     ...     class error(Exception):
     ...         pass
     ...     def setupterm(self):
