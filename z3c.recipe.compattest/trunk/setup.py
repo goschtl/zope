@@ -1,4 +1,4 @@
-version = '0.9'
+version = '0.10dev'
 
 import os
 from setuptools import setup, find_packages
