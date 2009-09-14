@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.6.0 (2009/09/15)
+------------------
+* authentication and authorization support
+
 0.5.2 (2009/09/05)
 ------------------
 * adjusted to newest zopyx.convert2 version
