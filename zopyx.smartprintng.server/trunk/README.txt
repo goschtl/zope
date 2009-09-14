@@ -14,7 +14,7 @@ Requirements
 Installation
 ============
 
-- create an virtualenv environment (Python 2,4, 2.5 or 2.6) - either within your
+- create an virtualenv environment (Python 2.6) - either within your
   current (empty) directory or by letting virtualenv create one for you::
 
     virtualenv --no-site-packages .
@@ -57,7 +57,7 @@ XMLRPC API
 
 The SmartPrintNG server exposes several methods through XMLRPC::
 
-    def convertZIP(zip_archive, converter_name):
+    def convertZIP(auth_token, zip_archive, converter_name):
         """ 'zip_archive' is ZIP archive (encoded as base-64 byte string).
             The archive must contain exactly *one* HTML file to be converted
             including all related resources like stylesheets and images.
@@ -68,7 +68,7 @@ The SmartPrintNG server exposes several methods through XMLRPC::
             also as base64-encoded ZIP archive.
         """
 
-    def convertZIPEmail(context, zip_archive, converter_name='pdf-prince', 
+    def convertZIPEmail(auth_token, context, zip_archive, converter_name='pdf-prince', 
                         sender=None, recipient=None, subject=None, body=None):
         """ Similar to convertZIP() except that this method will send the 
             converted output document to a recipient by email. 'subject' and
@@ -79,6 +79,9 @@ The SmartPrintNG server exposes several methods through XMLRPC::
         """ Returns a list of available converter names on the 
             SmartPrintNG backend.
         """
+
+    def authenticate(username, password):
+        """ Log into the server. Returns an auth_token """
 
     def ping():
         """ says 'pong' - or something similar """
