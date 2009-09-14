@@ -26,7 +26,7 @@ $Id$
 """
 import sys
 if sys.version_info < (3,):
-    import urllib2.urlparse as urlparse
+    import urlparse as urlparse
 else:
     import urllib.parse as urlparse
 import webbrowser
