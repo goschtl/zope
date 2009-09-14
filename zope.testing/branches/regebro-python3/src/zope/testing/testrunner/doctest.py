@@ -17,7 +17,6 @@ $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 """
 
 from zope.testing import doctest
-import re
 import zope.testing.testrunner.feature
 
 
@@ -51,43 +50,3 @@ class DocTest(zope.testing.testrunner.feature.Feature):
 
     def global_shutdown(self):
         doctest.set_unittest_reportflags(self.old_reporting_flags)
-
-
-class DocFileFind(zope.testing.testrunner.feature.Feature):
-    """Finds doctest files and registers them with the test runner."""
-
-    active = True
-
-    def global_setup(self):
-        tests = self._find_doctest_files()
-        #self.runner.register_tests(tests)
-
-    def _find_doctest_files(self):
-        pass
-
-
-def parse_directive_from_string(directive, text):
-    """Looks for a reST directive in a string.
-
-    Returns the found value or `None`. A directive has the form::
-
-     .. <directive>:: <value>
-    """
-
-    directive_pattern = re.compile(
-        r'^(\.\.\s+)%s\s*::(.*)$' % (directive,), re.IGNORECASE)
-    for line in text.split('\n'):
-        line = line.strip()
-        result = directive_pattern.match(line)
-        if result is None:
-            continue
-        result = result.groups()[1].strip()
-        return unicode(result)
-    return None
-
-
-def parse_directive_from_file(directive, filepath):
-    """Looks for a reST directive in a file. (see `parse_directive_from_string`)
-    """
-
-    return parse_directive_from_string(directive, open(filepath, 'rb').read())
