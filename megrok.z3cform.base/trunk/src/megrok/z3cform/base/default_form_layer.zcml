@@ -6,7 +6,5 @@
     <implements interface="z3c.form.interfaces.IFormLayer" />
   </class>
 
-  <grok:grok package=".layout" />
-
 </configure>
 

@@ -7,17 +7,27 @@ class field(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = None
-    # validate = validateInterfaceOrClass
+    validate = validateInterfaceOrClass
 
 
 class mode(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = interfaces.INPUT_MODE
-    # validate = validateInterfaceOrClass
+    validate = validateText
 
 
 class widget(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = None
+    validate = validateInterfaceOrClass
+
+
+class cancellable(martian.Directive):
+    """This directive allows to include/exlude the button cancel.
+    The value must be anything that can be evaluated to True or False.
+    """
+    scope = martian.CLASS
+    store = martian.ONCE
+    default = False
