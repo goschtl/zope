@@ -50,6 +50,6 @@ class LayoutStep(BaseStep):
             return
         if self.layout is None:
             layout = component.getMultiAdapter(
-                (self.context, self.request), megrok.layout.ILayout)
+                (self.request, self.context), megrok.layout.ILayout)
             return layout(self)
         return self.layout()
