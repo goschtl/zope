@@ -239,7 +239,7 @@ class PageTemplate(GrokTemplate):
         factory.macros = property(_get_macros)
 
     def render(self, view):
-        assert interfaces.IGrokView.providedBy(view)
+        assert interfaces.IGrokBaseView.providedBy(view)
         namespace = self.getNamespace(view)
         template = self._template
         namespace.update(template.pt_getContext())
