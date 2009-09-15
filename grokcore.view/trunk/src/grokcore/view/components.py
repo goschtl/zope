@@ -32,13 +32,13 @@ from grokcore.view import interfaces, util
 
 
 class BaseView(BrowserPage):
-    interface.implements(interfaces.IGrokView)
+    interface.implements(interfaces.IGrokBaseView)
 
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
         self.__name__ = getattr(self, '__view_name__', None)
 
-    def update(self):
+    def update(self, **kwargs):
         pass
 
     def redirect(self, url):
@@ -78,10 +78,12 @@ class BaseView(BrowserPage):
 
 class CodeView(BaseView):
 
+    interface.implements(interfaces.IGrokCodeView)
+
     def __init__(self, context, request):
         super(CodeView, self).__init__(context, request)
 
-    def __call__(self):
+    def __call__(self, *args, **kwargs):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
             # A redirect was triggered somewhere in update().  Don't
@@ -92,6 +94,8 @@ class CodeView(BaseView):
 
 
 class View(BaseView):
+
+    interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
@@ -105,7 +109,7 @@ class View(BaseView):
         else:
             self.static = None
 
-    def __call__(self):
+    def __call__(self, *args, **kwargs):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
             # A redirect was triggered somewhere in update().  Don't
@@ -236,6 +240,7 @@ class PageTemplate(GrokTemplate):
         factory.macros = property(_get_macros)
 
     def render(self, view):
+        assert interfaces.IGrokView.providedBy(view)
         namespace = self.getNamespace(view)
         template = self._template
         namespace.update(template.pt_getContext())

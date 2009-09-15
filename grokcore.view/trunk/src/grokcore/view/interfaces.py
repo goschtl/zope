@@ -74,7 +74,7 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
     IDefaultBrowserLayer = Attribute('Default layer for browser views.')
 
 
-class IGrokView(IBrowserPage, IBrowserView):
+class IGrokBaseView(IBrowserPage, IBrowserView):
     """Grok views all provide this interface."""
 
     context = Attribute('context', "Object that the view presents.")
@@ -83,9 +83,6 @@ class IGrokView(IBrowserPage, IBrowserView):
 
     response = Attribute('response', "Response object that is "
                          "associated with the current request.")
-
-    static = Attribute('static', "Directory resource containing "
-                       "the static files of the view's package.")
 
     def redirect(url):
        """Redirect to given URL"""
@@ -107,6 +104,35 @@ class IGrokView(IBrowserPage, IBrowserView):
         as a cgi query string.
         """
 
+    def update(**kw):
+        """This method is meant to be implemented by grok.View
+        subclasses.  It will be called *before* the view's associated
+        template is rendered and can be used to pre-compute values
+        for the template.
+
+        update() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request)."""
+
+
+class IGrokCodeView(IGrokBaseView):
+
+    def render(**kw):
+        """A view can either be rendered by an associated template, or
+        it can implement this method to render itself from Python.
+        This is useful if the view's output isn't XML/HTML but
+        something computed in Python (plain text, PDF, etc.)
+
+        render() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request)."""
+
+
+class IGrokView(IGrokBaseView):
+
+    static = Attribute('static', "Directory resource containing "
+                       "the static files of the view's package.")
+
     def default_namespace():
         """Returns a dictionary of namespaces that the template
         implementation expects to always be available.
@@ -123,25 +149,6 @@ class IGrokView(IBrowserPage, IBrowserView):
         developer.
         """
 
-    def update(**kw):
-        """This method is meant to be implemented by grok.View
-        subclasses.  It will be called *before* the view's associated
-        template is rendered and can be used to pre-compute values
-        for the template.
-
-        update() can take arbitrary keyword parameters which will be
-        filled in from the request (in that case they *must* be
-        present in the request)."""
-
-    def render(**kw):
-        """A view can either be rendered by an associated template, or
-        it can implement this method to render itself from Python.
-        This is useful if the view's output isn't XML/HTML but
-        something computed in Python (plain text, PDF, etc.)
-
-        render() can take arbitrary keyword parameters which will be
-        filled in from the request (in that case they *must* be
-        present in the request)."""
 
 
 class ITemplateFileFactory(Interface):
