@@ -13,7 +13,6 @@
   <include package="megrok.z3cform.base" file="default_form_layer.zcml" />
 
   <grok:grok package="megrok.z3cform.base.tests" />
-  <grok:grok package="megrok.z3cform.base.ftests" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
