@@ -1,0 +1,12 @@
+setuptools
+grok
+grokui.admin
+z3c.testsetup
+grokcore.startup
+megrok.layout
+megrok.z3cform.base
+megrok.z3cform.layout
+megrok.z3cform.wizard
+z3c.csvvocabulary
+hurry.jquery
+hurry.zoperesource

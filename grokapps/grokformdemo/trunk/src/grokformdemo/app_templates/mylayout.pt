@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"                  
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>EXAMPLE</title>
+    <link rel="stylesheet" type="text/css" href="#" tal:attributes="href static/my.css" />
+  </head>
+  <body>
+    <h1>Grok Form Demo</h1>
+
+    <!-- Die Magie findet in der naechsten Zeile statt! -->
+    <div id="content"
+         tal:content="structure view/render">Page Content</div>
+
+    <i> For Information you can contact: cklinger@novareto.de</i>
+  </body>
+</html>
+
