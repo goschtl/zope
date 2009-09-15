@@ -474,7 +474,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                 expect += '<%s xmlns="a0"></%s>' % (p, p)
         props = getFieldNamesInOrder(IDAVSchema)
         pvalues = {'displayname':'zpt',
-                   'creationdate':now.strftime('%Y-%m-%d %TZ')}
+                   'creationdate':now.strftime('%Y-%m-%d %Z')}
         for p in props:
             if pvalues.has_key(p):
                 expect += '<%s>%s</%s>' % (p, pvalues[p], p)

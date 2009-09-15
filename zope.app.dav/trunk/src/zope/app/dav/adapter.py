@@ -47,7 +47,7 @@ class DAVSchemaAdapter(object):
         dc = IDCTimes(self.context, None)
         if dc is None or dc.created is None:
             return ''
-        return dc.created.strftime('%Y-%m-%d %TZ')
+        return dc.created.strftime('%Y-%m-%d %Z')
     creationdate = property(creationdate)
 
     def resourcetype(self):

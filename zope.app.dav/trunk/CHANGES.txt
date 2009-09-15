@@ -5,7 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Corrected invalid use of datetime.strftime. The timezone is denoted by %Z.
 
 3.5.0 (2009-02-01)
 ------------------

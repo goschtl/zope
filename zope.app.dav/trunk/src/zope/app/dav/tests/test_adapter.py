@@ -105,7 +105,7 @@ def test_DAVSchemaAdapter():
 
     >>> dav.displayname
     u'bender'
-    >>> dav.creationdate == y2k.strftime('%Y-%m-%d %TZ')
+    >>> dav.creationdate == y2k.strftime('%Y-%m-%d %Z')
     True
     >>> dav.resourcetype, dav.getcontentlength
     ('', '')
