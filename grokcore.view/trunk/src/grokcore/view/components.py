@@ -71,6 +71,10 @@ class BaseView(BrowserPage):
 
         return util.url(self.request, obj, name, data=data)
 
+    @property
+    def response(self):
+        return self.request.response
+
 
 class CodeView(BaseView):
 
@@ -100,11 +104,6 @@ class View(BaseView):
                 )
         else:
             self.static = None
-
-    # Might be moved to BaseView currently only needed for PageTemplates CHECKTHIS
-    @property
-    def response(self):
-        return self.request.response
 
     def __call__(self):
         mapply(self.update, (), self.request)

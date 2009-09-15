@@ -4,8 +4,7 @@ Changes
 1.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- The response attribute needs to be available in CodeView as well.
 
 1.10 (2009-09-14)
 -----------------
