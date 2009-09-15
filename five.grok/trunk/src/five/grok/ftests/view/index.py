@@ -12,8 +12,9 @@ The default view name for a model is 'index':
   <html>
   <body>
   <h1>Hello, world!</h1>
-  <span>Blue</span>
-  <span>Blue</span>
+  Color: <span>Blue</span>
+  Color: <span>Blue</span>
+  URL: <span>http://localhost/manfred/index</span>
   </body>
   </html>
 
@@ -30,8 +31,9 @@ index = grok.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, world!</h1>
-<span tal:content="python:context.teeth">green</span>
-<span tal:content="context/teeth">green</span>
+Color: <span tal:content="python:context.teeth">green</span>
+Color: <span tal:content="context/teeth">green</span>
+URL: <span tal:content="view/url">url</span>
 </body>
 </html>
 """)
