@@ -4,6 +4,10 @@ Changes
 1.12 (unreleased)
 -----------------
 
+- Use 1.0b1 versions.cfg in Grok's release info instead of a local
+  copy; a local copy for all grokcore packages is just too hard to
+  maintain.
+
 - Fix View and CodeView interfaces.
 
 
