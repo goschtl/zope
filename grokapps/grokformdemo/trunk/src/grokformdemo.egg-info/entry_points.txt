@@ -1,7 +1,0 @@
-
-      [console_scripts]
-      grokformdemo-debug = grokcore.startup:interactive_debug_prompt
-      grokformdemo-ctl = grokcore.startup:zdaemon_controller
-      [paste.app_factory]
-      main = grokcore.startup:application_factory
-      
