@@ -20,7 +20,7 @@ import Acquisition
 class Layout(megrok.layout.Layout, Acquisition.Explicit):
 
     def __init__(self, *args):
-        super(View, self).__init__(*args)
+        super(Layout, self).__init__(*args)
         if not (self.static is None):
             # static should be wrapper correctly with acquisition,
             # otherwise you will not be able to compute URL for
@@ -32,11 +32,10 @@ class Layout(megrok.layout.Layout, Acquisition.Explicit):
     getPhysicalPath = Acquisition.Acquired
 
 
-class Page(megrok.layout.Layout, Acquisition.Explicit):
-
+class Page(megrok.layout.Page, Acquisition.Explicit):
 
     def __init__(self, *args):
-        super(View, self).__init__(*args)
+        super(Page, self).__init__(*args)
         if not (self.static is None):
             # static should be wrapper correctly with acquisition,
             # otherwise you will not be able to compute URL for
@@ -46,3 +45,9 @@ class Page(megrok.layout.Layout, Acquisition.Explicit):
     # We let getPhysicalPath to be acquired. This make static URL's
     # work, and prevent us to inherit from Acquisition.Implicit
     getPhysicalPath = Acquisition.Acquired
+
+
+class CodePage(megrok.layout.CodePage, Acquisition.Explicit):
+    pass
+
+

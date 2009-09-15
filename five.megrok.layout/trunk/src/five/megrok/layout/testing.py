@@ -29,6 +29,7 @@ def grok(module_name):
     # zcml.do_grok('grokcore.view.templatereg', config)
     zcml.do_grok('five.grok.templatereg', config)
     zcml.do_grok('five.grok.meta', config)
+    zcml.do_grok('megrok.layout.meta', config)
     zcml.do_grok(module_name, config)
     config.execute_actions()
 
@@ -62,7 +63,7 @@ def warn(message, category=None, stacklevel=1):
 
     When zope.deprecation is fixed, this warn function can be removed again.
     """
-    print "From five.grok.testing's warn():"
+    print "From five.megrok.layout.testing's warn():"
 
     frame = sys._getframe(stacklevel)
     path = frame.f_globals['__file__']
@@ -97,14 +98,14 @@ def setDebugMode(mode):
     import Products.Five.fiveconfigure as fc
     fc.debug_mode = mode
 
-import five.grok
+import five.megrok.layout
 def safe_load_site():
     '''Loads entire component architecture (w/ debug mode on).'''
     cleanUp()
     setDebugMode(1)
     import Products.Five.zcml as zcml
     zcml.load_site()
-    zcml.load_config('ftesting.zcml', five.grok)
+    zcml.load_config('ftesting.zcml', five.megrok.layout)
     setDebugMode(0)
 
 class Layer:

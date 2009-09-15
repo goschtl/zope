@@ -29,6 +29,7 @@ setup(name='five.megrok.layout',
       install_requires=[
           'setuptools',
           'five.grok',
-          'megrok.layout >= 0.6',
+          'grokcore.view >= 1.9',
+          'megrok.layout >= 0.7',
       ],
       )

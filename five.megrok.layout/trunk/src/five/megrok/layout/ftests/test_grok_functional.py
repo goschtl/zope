@@ -3,7 +3,7 @@ import unittest
 from pkg_resources import resource_listdir
 from zope.testing import doctest
 from zope.app.testing.functional import HTTPCaller
-from five.grok.testing import GrokFunctionalLayer
+from five.megrok.layout.testing import GrokFunctionalLayer
 from Testing.ZopeTestCase.zopedoctest.functional import getRootFolder, sync
 from Testing.ZopeTestCase import FunctionalDocTestSuite
 
@@ -44,7 +44,7 @@ def suiteFromPackage(name):
             # annoying.
             continue
 
-        dottedname = 'five.grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'five.megrok.layout.ftests.%s.%s' % (name, filename[:-3])
         test = FunctionalDocTestSuite(
             dottedname,
             extraglobs=dict(http=HTTPCaller(),
@@ -62,7 +62,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['directoryresource', 'view', 'viewlet','form', 'site']:
+    for name in ['layout', ]:
         suite.addTest(suiteFromPackage(name))
     return suite
 
