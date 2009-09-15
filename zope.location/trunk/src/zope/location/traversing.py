@@ -160,6 +160,38 @@ class LocationPhysicallyLocatable(object):
 
         raise TypeError("Not enough context to determine location root")
 
+    def getParent(self):
+        """Returns the container the object was traversed via.
+
+        Returns None if the object is a containment root.
+        Raises TypeError if the object doesn't have enough context to get the
+        parent.
+
+        >>> root = Location()
+        >>> zope.interface.directlyProvides(root, IRoot)
+        >>> o1 = Location()
+        >>> o2 = Location()
+
+        >>> LocationPhysicallyLocatable(o2).getParent() # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        TypeError: ('Not enough context information to get parent', <zope.location.location.Location object at 0x...>)
+
+        >>> o1.__parent__ = root
+        >>> LocationPhysicallyLocatable(o1).getParent() == root
+        True
+
+        >>> o2.__parent__ = o1
+        >>> LocationPhysicallyLocatable(o2).getParent() == o1
+        True
+
+        """
+        parent = getattr(self.context, '__parent__', None)
+        if parent is not None:
+            return parent
+
+        raise TypeError('Not enough context information to get parent',
+                        self.context)
+
     def getParents(self):
         """Returns a list starting with the object's parent followed by
         each of its parents.
@@ -302,6 +334,19 @@ class RootPhysicallyLocatable(object):
         
         """
         return u''
+
+    def getParent(self):
+        """Returns the container the object was traversed via.
+
+        Returns None if the object is a containment root.
+        Raises TypeError if the object doesn't have enough context to get the
+        parent.
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getParent()
+
+        """
+        return None
 
     def getParents(self):
         """See ILocationInfo
