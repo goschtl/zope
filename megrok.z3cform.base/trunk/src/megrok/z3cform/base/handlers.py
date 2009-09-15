@@ -11,9 +11,9 @@ from zope.i18nmessageid import MessageFactory
 from zope.traversing.browser import AbsoluteURL
 
 from megrok.z3cform.base import button, IGrokForm
-from megrok.z3cform.layout import cancellable, ICancelButton
+from megrok.z3cform.base import cancellable, ICancelButton 
 
-_ = MessageFactory("dolmen")
+_ = MessageFactory("megrok.z3cform")
 
 
 class CancelButton(button.Button):

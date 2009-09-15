@@ -7,21 +7,21 @@ class field(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = None
-    validate = validateInterfaceOrClass
+    validate = martian.validateInterfaceOrClass
 
 
 class mode(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = interfaces.INPUT_MODE
-    validate = validateText
+    validate = martian.validateText
 
 
 class widget(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = None
-    validate = validateInterfaceOrClass
+    validate = martian.validateInterfaceOrClass
 
 
 class cancellable(martian.Directive):
