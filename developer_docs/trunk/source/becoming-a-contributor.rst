@@ -12,9 +12,10 @@ Becoming a contributor
 
    The contact details can be found on the `Zope Foundation website <http://foundation.zope.org/about>`_.
 
-4. Wait for an acknowledgement. If you don't get this in a reasonable amount of
-   time, then nag jim@zope.com, or J1m on the freenode #zope3 IRC channel.  A
-   reasonable time depends on the way the agreement was sent, as described above.
+4. Wait for an acknowledgement. f you don't get this in a reasonable amount of
+   time, then ask back on the Zope Foundation list (foundation-info@zope.org) or
+   try to contact a member of the repository committee (Andreas Jung and Christian 
+   Theune).
 
 5. Deposit your SSH public key(s) as described in the section below.
 
