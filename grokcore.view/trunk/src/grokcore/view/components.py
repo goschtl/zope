@@ -37,6 +37,14 @@ class BaseView(BrowserPage):
     def __init__(self, context, request):
         super(BaseView, self).__init__(context, request)
         self.__name__ = getattr(self, '__view_name__', None)
+        if getattr(self, 'module_info', None) is not None:
+            self.static = component.queryAdapter(
+                self.request,
+                interface.Interface,
+                name=self.module_info.package_dotted_name
+                )
+        else:
+            self.static = None
 
     def update(self, **kwargs):
         pass
@@ -75,6 +83,17 @@ class BaseView(BrowserPage):
     def response(self):
         return self.request.response
 
+    def default_namespace(self):
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['request'] = self.request
+        namespace['static'] = self.static
+        namespace['view'] = self
+        return namespace
+
+    def namespace(self):
+        return {}
+
 
 class CodeView(BaseView):
 
@@ -100,15 +119,6 @@ class View(BaseView):
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
 
-        if getattr(self, 'module_info', None) is not None:
-            self.static = component.queryAdapter(
-                self.request,
-                interface.Interface,
-                name=self.module_info.package_dotted_name
-                )
-        else:
-            self.static = None
-
     def __call__(self, *args, **kwargs):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
@@ -117,17 +127,6 @@ class View(BaseView):
             return
 
         return self.template.render(self)
-
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['static'] = self.static
-        namespace['view'] = self
-        return namespace
-
-    def namespace(self):
-        return {}
 
     def __getitem__(self, key):
         # This is BBB code for Zope page templates only:

@@ -114,22 +114,6 @@ class IGrokBaseView(IBrowserPage, IBrowserView):
         filled in from the request (in that case they *must* be
         present in the request)."""
 
-
-class IGrokCodeView(IGrokBaseView):
-
-    def render(**kw):
-        """A view can either be rendered by an associated template, or
-        it can implement this method to render itself from Python.
-        This is useful if the view's output isn't XML/HTML but
-        something computed in Python (plain text, PDF, etc.)
-
-        render() can take arbitrary keyword parameters which will be
-        filled in from the request (in that case they *must* be
-        present in the request)."""
-
-
-class IGrokView(IGrokBaseView):
-
     static = Attribute('static', "Directory resource containing "
                        "the static files of the view's package.")
 
@@ -149,6 +133,23 @@ class IGrokView(IGrokBaseView):
         developer.
         """
 
+
+class IGrokCodeView(IGrokBaseView):
+
+    def render(**kw):
+        """A view can either be rendered by an associated template, or
+        it can implement this method to render itself from Python.
+        This is useful if the view's output isn't XML/HTML but
+        something computed in Python (plain text, PDF, etc.)
+
+        render() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request)."""
+
+
+class IGrokView(IGrokBaseView):
+    """Marker Interface for Views with a template
+    """
 
 
 class ITemplateFileFactory(Interface):
