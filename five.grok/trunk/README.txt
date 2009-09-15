@@ -73,12 +73,11 @@ your buildout::
   grokcore.annotation = 1.0.1
   grokcore.component = 1.7
   grokcore.formlib = 1.2
-  grokcore.security = 1.1
+  grokcore.security = 1.2
   grokcore.site = 1.0.1
-  grokcore.view = 1.9
+  grokcore.view = 1.10
   grokcore.viewlet = 1.1
   five.localsitemanager = 1.1
-  # You should remove five.localsitemanager from this list if you use Plone >= 3.3
   martian = 0.11
   zope.app.publisher = 3.5.1
   zope.app.zcmlfiles = 3.4.3
