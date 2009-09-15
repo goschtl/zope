@@ -3,9 +3,9 @@ Releasing software
 
 When releasing software, the following steps should be taken:
 
-1. Make sure all automated tests of the package pass. If the package
-   is tracking bugs on launchpad, make sure there are no release
-   critical bugs for that release.
+1. Make sure all automated tests of the package pass. The ZTK packages track
+   bugs on Launchpad. Make sure there are no release-critical bugs left for
+   the package.
 
 2. Fill in the release date in ``CHANGES.txt``.  Make sure the
    changelog is complete.

@@ -12,8 +12,7 @@ done through the zope-dev mailing list (:ref:`mailing-list`).
 .. toctree::
     :maxdepth: 1
 
-    decisions
-    openissues
     decisionmaking
+    decisions
     members
 

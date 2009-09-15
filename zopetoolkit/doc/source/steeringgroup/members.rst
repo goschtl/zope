@@ -1,11 +1,10 @@
-Membership of the Zope Toolkit Steering Group
-=============================================
+Members
+=======
 
 * Martijn Faassen
 
 * Stephan Richter
 
-* Christian Theune
+* Christian Theune <ct@gocept.com>
 
 * Jim Fulton
-

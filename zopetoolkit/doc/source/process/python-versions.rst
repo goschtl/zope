@@ -1,8 +1,5 @@
-Python versions supported by the Zope Toolkit
-=============================================
-
-:Author: Martijn Faassen <faassen@startifact.com>
-:Status: Current
+Supported versions of Python
+============================
 
 The Zope Toolkit currently supports the following versions of Python:
 
@@ -14,4 +11,3 @@ The Zope Toolkit currently supports the following versions of Python:
 
 This means that no features beyond Python 2.4 should be used in any
 library that is part of the Zope Toolkit.
-

@@ -1,5 +1,5 @@
-How the Zope Toolkit Steering Group can help you
-================================================
+How we can help you
+===================
 
 If you want to make some change to the Zope Toolkit, start a thread
 on zope-dev about it. The Steering Group is watching.

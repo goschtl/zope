@@ -13,12 +13,12 @@ developing Zope Toolkit components.
 .. toctree::
     :maxdepth: 1
 
-    releasing-software
+    bug-tracking
+    buildbots
     python-versions
+    releasing-software
+    proposals
     maintaining-software
     repository
-    bug-tracking
     communication
-    proposals
-    tools
     old-references

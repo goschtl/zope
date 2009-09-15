@@ -1,5 +1,5 @@
-Maintaining software in the Zope software repository
-====================================================
+Maintaining software
+====================
 
 :Author: Philipp von Weitershausen <philipp@weitershausen.de>
 :Status: Draft

@@ -32,6 +32,7 @@ Documentation
 
    about/index
    releases/index
+   proposals/index
    process/index
    codingstyle/index
    steeringgroup/index

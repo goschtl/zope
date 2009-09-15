@@ -1,5 +1,5 @@
-Decisions of the Zope Toolkit Steering Group
-============================================
+Decisions
+=========
 
 This is a temporary place to note decisions. The idea is to later
 integrate them into the Zope Toolkit documentation, but we need a
