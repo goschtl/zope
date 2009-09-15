@@ -3,7 +3,7 @@
 .. pinned there.
 
 
-0.4.3 (unreleased)
+0.4.3 (2009-09-15)
 ==================
 
 - Stop using an API internal to zc.buildout for retrieving versions
