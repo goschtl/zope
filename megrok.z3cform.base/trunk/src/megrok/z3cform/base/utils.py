@@ -10,8 +10,8 @@ def apply_data_event(form, context, data):
     """
     changes = applyChanges(form, context, data)
     if changes:
-	descriptions = []
-	for interface, names in changes.items():
-	    descriptions.append(Attributes(interface, *names))
-	notify(ObjectModifiedEvent(context, *descriptions))
-    return changes	
+        descriptions = []
+        for interface, names in changes.items():
+            descriptions.append(Attributes(interface, *names))
+    notify(ObjectModifiedEvent(context, *descriptions))
+    return changes
