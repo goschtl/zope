@@ -1,0 +1,2 @@
+http://svn.zope.org/repos/main/gzo.plonepolicy/trunk/ gzo.plonepolicy
+http://svn.zope.org/repos/main/gzo.plonesmashtheme/trunk/ gzo.plonesmashtheme
