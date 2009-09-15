@@ -90,8 +90,7 @@ class TemplateRegistry(object):
                 module_info.dotted_name, ', '.join(unassociated)))
             warnings.warn(msg, UserWarning, 1)
 
-    def checkTemplates(self, module_info, factory, component_name,
-                       has_render, has_no_render):
+    def checkTemplates(self, module_info, factory, component_name):
         factory_name = factory.__name__.lower()
         template_name = grokcore.view.template.bind().get(factory)
         if template_name is None:
@@ -107,24 +106,13 @@ class TemplateRegistry(object):
                                 % (component_name, factory, template_name,
                                    factory_name), factory)
         template = self.get(template_name)
-        # TODO: strip render
         if template is not None:
-            if has_render(factory):
-                # we do not accept render and template both for a view
-                # (unless it's a form, they happen to have render.
-                raise GrokError(
-                    "Multiple possible ways to render %s %r. "
-                    "It has both a 'render' method as well as "
-                    "an associated template." %
-                    (component_name, factory), factory)
             self.markAssociated(template_name)
             factory.template = template
-            template._initFactory(factory)
-        else:
-            if has_no_render(factory):
-                # we do not accept a view without any way to render it
-                raise GrokError("%s %r has no associated template." %
-                                (component_name.title(), factory), factory)
+        elif getattr(factory, 'template', None) is None:
+            raise GrokError("%s %r has no associated template." %
+                            (component_name.title(), factory), factory)
+        factory.template._initFactory(factory)
 
 class PageTemplateFileFactory(grokcore.component.GlobalUtility):
     grokcore.component.implements(ITemplateFileFactory)
