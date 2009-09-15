@@ -98,18 +98,15 @@ def create_source_tarball(egg=None, versionfile='buildout.cfg'):
     import zc.buildout.buildout
 
     # Read the buildout/versions file.  versionfile can be a file in
-    # the current working directory or on some url.  zc.buildout
-    # nicely takes care of that for us.
-    config = zc.buildout.buildout._open(os.getcwd(), versionfile, [])
+    # the current working directory or on some url.  zc.buildout nicely
+    # takes care of that for us.
 
-    # Get the version information.
-    buildout = config.get('buildout')
-    if buildout is None:
-        versions = config.get('versions')
-    else:
-        versions = buildout.get('versions')
-        if versions is not None:
-            versions = config.get(versions)
+    # Buildout needs a buildout:directory directive. It can compute
+    # one for local config files but not for URLs referencing config
+    # files. We pass the "." directory as the buildout:directory here.
+    buildout = zc.buildout.buildout.Buildout(
+        versionfile, [('buildout', 'directory', '.')])
+    versions = buildout.get('versions')
     if versions is None:
         log.error("Could not get versions from %s.", versionfile)
         sys.exit(1)
