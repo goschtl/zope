@@ -4,7 +4,12 @@ Changes
 1.3 (unreleased)
 ----------------
 
-* Bring versions.cfg in line with grok 1.0 release candidate versions.cfg.
+* Remove the reference to the grok.View permission that is no longer in
+  grokcore.security 1.2
+
+* Use 1.0b1 versions.cfg in Grok's release info instead of a local
+  copy; a local copy for all grokcore packages is just too hard to
+  maintain.
 
 
 1.2 (2009-07-20)

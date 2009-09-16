@@ -35,7 +35,7 @@ setup(
     install_requires=['setuptools',
                       'martian >= 0.10',
                       'grokcore.component >= 1.5',
-                      'grokcore.security >= 1.1',
+                      'grokcore.security >= 1.2',
                       'grokcore.view >= 1.9',
                       'zope.formlib',
                       # for tests:
