@@ -7,6 +7,10 @@ Changes
 * Use the grok.zope.org/releaseinfo information instead of our own
   copy of ``versions.cfg``, for easier maintenance.
 
+* Depend on grokcore.component 2.0 and the 0.12 Martian - this changesw
+  inheritance issues but doesn't appear to affect grokcore.security
+  itself.
+
 1.2 (2009-09-14)
 ----------------
 
