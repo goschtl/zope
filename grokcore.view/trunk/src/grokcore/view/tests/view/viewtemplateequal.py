@@ -30,5 +30,5 @@ class Mammoth(grok.Context):
     pass
 
 class CavePainting(grok.View):
-    template = grok.PageTemplate(filename='view_templates/cavepainting.pt')
+    template = grok.PageTemplate(filename='templates/cavepainting.pt')
 

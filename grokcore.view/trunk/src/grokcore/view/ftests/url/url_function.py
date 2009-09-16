@@ -61,26 +61,20 @@ It works properly in the face of non-ascii characters in URLs:
   >>> expected = unicode('http://127.0.0.1/herd/árgh', 'UTF-8')
   >>> urllib.unquote(u).decode('utf-8') == expected
   True
-
 """
 import grokcore.view as grok
 from grokcore.view import url
 from zope.app.container.contained import Contained
-
 
 class Mammoth(Contained):
     pass
 
 grok.context(Mammoth)
 
-
-class Index(grok.CodeView):
+class Index(grok.View):
     def render(self):
         return url(self.request, self)
 
-
 class Another(grok.View):
-    pass
-
-
-another = grok.PageTemplate('<p tal:replace="view/url" />')
+    def render(self):
+        return url(self.request, self)

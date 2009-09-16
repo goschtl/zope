@@ -8,7 +8,7 @@ Changes
   copy; a local copy for all grokcore packages is just too hard to
   maintain.
 
-- Fix View and CodeView interfaces.
+- Revert the splitting CodeView/View.
 
 - Fix the template = way to associate a template to a view.
 

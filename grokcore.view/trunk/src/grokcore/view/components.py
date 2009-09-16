@@ -31,12 +31,13 @@ import martian.util
 from grokcore.view import interfaces, util
 
 
-class BaseView(BrowserPage):
-    interface.implements(interfaces.IGrokBaseView)
+class View(BrowserPage):
+    interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
-        super(BaseView, self).__init__(context, request)
+        super(View, self).__init__(context, request)
         self.__name__ = getattr(self, '__view_name__', None)
+
         if getattr(self, 'module_info', None) is not None:
             self.static = component.queryAdapter(
                 self.request,
@@ -46,11 +47,50 @@ class BaseView(BrowserPage):
         else:
             self.static = None
 
-    def update(self, **kwargs):
-        pass
+    @property
+    def response(self):
+        return self.request.response
 
-    def redirect(self, url):
-        return self.request.response.redirect(url)
+    def __call__(self):
+        mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+
+        template = getattr(self, 'template', None)
+        if template is not None:
+            return self._render_template()
+        return mapply(self.render, (), self.request)
+
+    def _render_template(self):
+        return self.template.render(self)
+
+    def default_namespace(self):
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['request'] = self.request
+        namespace['static'] = self.static
+        namespace['view'] = self
+        return namespace
+
+    def namespace(self):
+        return {}
+
+    def __getitem__(self, key):
+        # This is BBB code for Zope page templates only:
+        if not isinstance(self.template, PageTemplate):
+            raise AttributeError("View has no item %s" % key)
+
+        value = self.template._template.macros[key]
+        # When this deprecation is done with, this whole __getitem__ can
+        # be removed.
+        warnings.warn("Calling macros directly on the view is deprecated. "
+                      "Please use context/@@viewname/macros/macroname\n"
+                      "View %r, macro %s" % (self, key),
+                      DeprecationWarning, 1)
+        return value
+
 
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name. The data
@@ -79,68 +119,16 @@ class BaseView(BrowserPage):
 
         return util.url(self.request, obj, name, data=data)
 
-    @property
-    def response(self):
-        return self.request.response
+    def redirect(self, url):
+        return self.request.response.redirect(url)
 
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['static'] = self.static
-        namespace['view'] = self
-        return namespace
+    def update(self, **kwargs):
+        pass
 
-    def namespace(self):
-        return {}
+    def render(self, **kwargs):
+        pass
 
-
-class CodeView(BaseView):
-
-    interface.implements(interfaces.IGrokCodeView)
-
-    def __init__(self, context, request):
-        super(CodeView, self).__init__(context, request)
-
-    def __call__(self, *args, **kwargs):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        return mapply(self.render, (), self.request)
-
-
-class View(BaseView):
-
-    interface.implements(interfaces.IGrokView)
-
-    def __init__(self, context, request):
-        super(View, self).__init__(context, request)
-
-    def __call__(self, *args, **kwargs):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        return self.template.render(self)
-
-    def __getitem__(self, key):
-        # This is BBB code for Zope page templates only:
-        if not isinstance(self.template, PageTemplate):
-            raise AttributeError("View has no item %s" % key)
-
-        value = self.template._template.macros[key]
-        # When this deprecation is done with, this whole __getitem__ can
-        # be removed.
-        warnings.warn("Calling macros directly on the view is deprecated. "
-                      "Please use context/@@viewname/macros/macroname\n"
-                      "View %r, macro %s" % (self, key),
-                      DeprecationWarning, 1)
-        return value
+    render.base_method = True
 
 
 class BaseTemplate(object):
@@ -211,11 +199,14 @@ class GrokTemplate(BaseTemplate):
         namespace.update(view.namespace())
         return namespace
 
+
 class TrustedPageTemplate(TrustedAppPT, pagetemplate.PageTemplate):
     pass
 
+
 class TrustedFilePageTemplate(TrustedAppPT, pagetemplatefile.PageTemplateFile):
     pass
+
 
 class PageTemplate(GrokTemplate):
 
@@ -239,7 +230,7 @@ class PageTemplate(GrokTemplate):
         factory.macros = property(_get_macros)
 
     def render(self, view):
-        assert interfaces.IGrokBaseView.providedBy(view)
+        assert interfaces.IGrokView.providedBy(view)
         namespace = self.getNamespace(view)
         template = self._template
         namespace.update(template.pt_getContext())
@@ -253,6 +244,7 @@ class PageTemplateFile(PageTemplate):
             module = sys.modules[self.__grok_module__]
             _prefix = os.path.dirname(module.__file__)
         self.setFromFilename(filename, _prefix)
+
 
 class DirectoryResource(directoryresource.DirectoryResource):
     # We subclass this, because we want to override factories for
@@ -268,8 +260,10 @@ class DirectoryResource(directoryresource.DirectoryResource):
     # having defined the DirectoryResourceFactory class.
     directory_factory = None
 
+
 class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
     # We need this to allow hooking up our own DirectoryResource class.
     factoryClass = DirectoryResource
+
 
 DirectoryResource.directory_factory = DirectoryResourceFactory

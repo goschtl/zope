@@ -19,7 +19,7 @@ from grokcore.security import *
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-from grokcore.view.components import View, CodeView
+from grokcore.view.components import View
 from grokcore.view.components import PageTemplate, PageTemplateFile
 from grokcore.view.components import DirectoryResource
 from grokcore.view.directive import layer, template, templatedir, skin, path

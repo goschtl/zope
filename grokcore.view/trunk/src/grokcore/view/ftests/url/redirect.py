@@ -12,18 +12,18 @@ point to mammoth:
   >>> browser.open('http://localhost/manfred')
   >>> browser.url
   'http://localhost/manfred/another'
-
+  
 """
 import grokcore.view as grok
 
 class Mammoth(grok.Context):
     pass
 
-class Index(grok.CodeView):
+class Index(grok.View):
     def render(self):
         self.redirect(self.url('another'))
 
-class Another(grok.CodeView):
+class Another(grok.View):
     def render(self):
         return "Another view"
 

@@ -49,17 +49,14 @@ The same works with views that define update():
 """
 import grokcore.view as grok
 
-
 class Mammoth(grok.Context):
     pass
 
-
-class RenderWithArguments(grok.CodeView):
+class RenderWithArguments(grok.View):
     grok.name('render')
 
     def render(self, message, another):
         return "Message: %s\nAnother: %s" % (message, another)
-
 
 class UpdateWithArguments(grok.View):
     grok.name('update')
@@ -68,7 +65,6 @@ class UpdateWithArguments(grok.View):
     def update(self, message, another):
         self.message = message
         self.another = another
-
 
 update = grok.PageTemplate("""
 Coming to us from update():

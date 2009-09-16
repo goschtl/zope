@@ -19,7 +19,6 @@ from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 class IBaseClasses(Interface):
     View = Attribute("Base class for browser views.")
-    CodeView = Attribute("Base class for browser views with render().")
     DirectoryResource = Attribute("Base class to create new "
                                   "directory resource.")
 
@@ -74,7 +73,7 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
     IDefaultBrowserLayer = Attribute('Default layer for browser views.')
 
 
-class IGrokBaseView(IBrowserPage, IBrowserView):
+class IGrokView(IBrowserPage, IBrowserView):
     """Grok views all provide this interface."""
 
     context = Attribute('context', "Object that the view presents.")
@@ -83,6 +82,9 @@ class IGrokBaseView(IBrowserPage, IBrowserView):
 
     response = Attribute('response', "Response object that is "
                          "associated with the current request.")
+
+    static = Attribute('static', "Directory resource containing "
+                       "the static files of the view's package.")
 
     def redirect(url):
        """Redirect to given URL"""
@@ -104,19 +106,6 @@ class IGrokBaseView(IBrowserPage, IBrowserView):
         as a cgi query string.
         """
 
-    def update(**kw):
-        """This method is meant to be implemented by grok.View
-        subclasses.  It will be called *before* the view's associated
-        template is rendered and can be used to pre-compute values
-        for the template.
-
-        update() can take arbitrary keyword parameters which will be
-        filled in from the request (in that case they *must* be
-        present in the request)."""
-
-    static = Attribute('static', "Directory resource containing "
-                       "the static files of the view's package.")
-
     def default_namespace():
         """Returns a dictionary of namespaces that the template
         implementation expects to always be available.
@@ -133,8 +122,15 @@ class IGrokBaseView(IBrowserPage, IBrowserView):
         developer.
         """
 
+    def update(**kw):
+        """This method is meant to be implemented by grok.View
+        subclasses.  It will be called *before* the view's associated
+        template is rendered and can be used to pre-compute values
+        for the template.
 
-class IGrokCodeView(IGrokBaseView):
+        update() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request)."""
 
     def render(**kw):
         """A view can either be rendered by an associated template, or
@@ -146,10 +142,10 @@ class IGrokCodeView(IGrokBaseView):
         filled in from the request (in that case they *must* be
         present in the request)."""
 
-
-class IGrokView(IGrokBaseView):
-    """Marker Interface for Views with a template
-    """
+    def __call__():
+        """This is the main method called by Zope to render the
+        view. You can use that method if you whish to render the
+        view."""
 
 
 class ITemplateFileFactory(Interface):

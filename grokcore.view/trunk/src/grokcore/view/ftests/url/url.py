@@ -180,18 +180,18 @@ class Mammoth(Contained):
 
 grok.context(Mammoth)
 
-class Index(grok.CodeView):
+class Index(grok.View):
     def render(self):
         return self.url()
 
-class Another(grok.CodeView):
+class Another(grok.View):
     def render(self):
         return self.url()
 
 class YetAnother(grok.View):
     pass
 
-class Multiplier(grok.CodeView):
+class Multiplier(grok.View):
     def update(self, age=0):
         self.age = age
 

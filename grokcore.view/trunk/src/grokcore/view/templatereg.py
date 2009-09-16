@@ -4,7 +4,7 @@ import zope.component
 import grokcore.component
 import grokcore.view
 from martian.error import GrokError
-from grokcore.view.interfaces import ITemplateFileFactory
+from grokcore.view.interfaces import ITemplateFileFactory, ITemplate
 from grokcore.view.components import PageTemplate
 
 class TemplateRegistry(object):
@@ -90,7 +90,9 @@ class TemplateRegistry(object):
                 module_info.dotted_name, ', '.join(unassociated)))
             warnings.warn(msg, UserWarning, 1)
 
-    def checkTemplates(self, module_info, factory, component_name):
+    def checkTemplates(self, module_info, factory, component_name,
+                       has_render, has_no_render):
+        # TODO: remove has_no_render arg, it's not used anymore
         factory_name = factory.__name__.lower()
         template_name = grokcore.view.template.bind().get(factory)
         if template_name is None:
@@ -105,14 +107,37 @@ class TemplateRegistry(object):
                                 "a template called '%s'."
                                 % (component_name, factory, template_name,
                                    factory_name), factory)
+
+        # Check if view already have a template
+        factory_have_template = (
+            getattr(factory, 'template', None) is not None and
+            ITemplate.providedBy(factory.template))
+
+        # Lookup a template in the registry
         template = self.get(template_name)
         if template is not None:
             self.markAssociated(template_name)
             factory.template = template
-        elif getattr(factory, 'template', None) is None:
-            raise GrokError("%s %r has no associated template." %
+            factory_have_template = True
+
+        if factory_have_template and has_render(factory):
+            # we do not accept render and template both for a view
+            # (unless it's a form, they happen to have render.
+            raise GrokError(
+                "Multiple possible ways to render %s %r. "
+                "It has both a 'render' method as well as "
+                "an associated template." %
+                (component_name, factory), factory)
+
+        if not factory_have_template and not has_render(factory):
+            # we do not accept a view without any way to render it
+            raise GrokError("%s %r has no associated template or "
+                            "'render' method." %
                             (component_name.title(), factory), factory)
-        factory.template._initFactory(factory)
+
+        if factory_have_template:
+            factory.template._initFactory(factory)
+
 
 class PageTemplateFileFactory(grokcore.component.GlobalUtility):
     grokcore.component.implements(ITemplateFileFactory)

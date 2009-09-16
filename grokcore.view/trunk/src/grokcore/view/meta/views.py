@@ -46,18 +46,14 @@ class ViewGrokker(martian.ClassGrokker):
         return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, context, layer, name, **kw):
-        # Make sure that we have a render Method
-        render = getattr(factory, 'render', None)
-        if render and not getattr(render, 'base_method', False):
-            raise GrokError("View Class '%s' has a render method, use CodeView instead" % factory, factory)
-
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
-        config.action(
-            discriminator=None,
-            callable=self.checkTemplates,
-            args=(templates, factory.module_info, factory)
-            )
+        if templates is not None:
+            config.action(
+                discriminator=None,
+                callable=self.checkTemplates,
+                args=(templates, factory.module_info, factory)
+                )
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
@@ -79,55 +75,22 @@ class ViewGrokker(martian.ClassGrokker):
             args=(factory, adapts, interface.Interface, name),
             )
         return True
-
 
     def checkTemplates(self, templates, module_info, factory):
-        templates.checkTemplates(module_info, factory, 'view')
 
+        def has_render(factory):
+            render = getattr(factory, 'render', None)
+            base_method = getattr(render, 'base_method', False)
+            return render and not base_method
 
-class CodeViewGrokker(martian.ClassGrokker):
-    martian.component(components.CodeView)
-    martian.directive(grokcore.component.context)
-    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
-    martian.directive(grokcore.component.name, get_default=default_view_name)
-
-    def grok(self, name, factory, module_info, **kw):
-        # Need to store the module info object on the view class so that it
-        # can look up the 'static' resource directory.
-        factory.module_info = module_info
-        return super(CodeViewGrokker, self).grok(name, factory, module_info, **kw)
-
-    def execute(self, factory, config, context, layer, name, **kw):
-
-        # Make sure that we have a render Method
-        render = getattr(factory, 'render', None)
-        if not render:
-            raise GrokError("CodeView Class '%s' without an render method" % factory, factory)
-
-        # safety belt: make sure that the programmer didn't use
-        # @grok.require on any of the view's methods.
-        methods = util.methods_from_class(factory)
-        for method in methods:
-            if grokcore.security.require.bind().get(method) is not None:
-                raise GrokError('The @grok.require decorator is used for '
-                                'method %r in view %r. It may only be used '
-                                'for XML-RPC methods.'
-                                % (method.__name__, factory), factory)
-
-        # __view_name__ is needed to support IAbsoluteURL on views
-        factory.__view_name__ = name
-        adapts = (context, layer)
-
-        config.action(
-            discriminator=('adapter', adapts, interface.Interface, name),
-            callable=component.provideAdapter,
-            args=(factory, adapts, interface.Interface, name),
-            )
-        return True
+        def has_no_render(factory):
+            return not getattr(factory, 'render', None)
+        templates.checkTemplates(module_info, factory, 'view',
+                                 has_render, has_no_render)
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):
-    martian.component(components.BaseView)
+    martian.component(components.View)
     martian.directive(grokcore.security.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):

@@ -19,8 +19,7 @@ Views without a template do not support macros:
 
   >>> browser.open("http://localhost/manfred/@@dancing")
   Traceback (most recent call last):
-  ...
-  TraversalError: (<grokcore.view.ftests.view.macros.DancingHall object at ...>, 'macros')
+  AttributeError: 'DancingHall' object has no attribute 'template'
 
 If the view has an attribute with the same name as a macro, the macro
 shadows the view. XXX This should probably generate a warning at runtime.
@@ -72,35 +71,25 @@ Restore situation::
   >>> open(template_file, 'w').write(before)
 
 
+
 """
 import grokcore.view as grok
-
 
 class Mammoth(grok.Context):
     pass
 
-
-class DancingHall(grok.CodeView):
+class DancingHall(grok.View):
 
     def render(self):
-	return "Bla Bla Dancing Hall"
-
+        return "A nice large dancing hall for mammoths."
 
 class Grilled(grok.View):
 
     def update(self):
         self.spices = "Pepper and salt"
 
-
-grilled = grok.PageTemplate("""\
-<html metal:define-macro="spices">
-Curry
-</html>""")
-
-
 class Painting(grok.View):
     pass
-
 
 painting = grok.PageTemplate("""\
 <html metal:use-macro="context/@@layout/macros/main">
@@ -110,40 +99,38 @@ GROK SLOT!
 </html>
 """)
 
-
 class Layout(grok.View):
     # Layout template is in macros_templates/layout.pt for reload test
     # purposes.
     pass
 
-
 class Dancing(grok.View):
     pass
-
 
 dancing = grok.PageTemplate("""\
 <html metal:use-macro="context/@@dancinghall/macros/something">
 </html>
 """)
 
-
 class GrillDish(grok.View):
     pass
-
 
 grilldish = grok.PageTemplate("""
 <html metal:use-macro="context/@@grilled/macros/spices">
 </html>""")
 
-
-
 class Burnt(grok.View):
     pass
-
 
 burnt = grok.PageTemplate("""\
 <html metal:use-macro="context/@@grilled/spices">
 </html>""")
 
+class Grilled(grok.View):
+    pass
 
+grilled = grok.PageTemplate("""\
+<html metal:define-macro="spices">
+Curry
+</html>""")
 

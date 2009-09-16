@@ -47,14 +47,14 @@ cavedrawings = grok.PageTemplate("""\
 </html>
 """)
 
-class MoreDrawings(grok.CodeView):
+class MoreDrawings(grok.View):
     grok.layer(rotterdam)
 
     def render(self):
         return "Pretty"
 
 
-class EvenMoreDrawings(grok.CodeView):
+class EvenMoreDrawings(grok.View):
     grok.layer(MySkinLayer)
 
     def render(self):
