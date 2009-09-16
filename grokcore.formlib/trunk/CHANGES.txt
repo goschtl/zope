@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.3 (unreleased)
+1.3 (2009-09-16)
 ----------------
 
 * Remove the reference to the grok.View permission that is no longer in
