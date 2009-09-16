@@ -17,7 +17,15 @@ Changes
   View components will now again behave like it did up until the latest alpha
   release of Grok.
 
-- Fix the template = way to associate a template to a view.
+- Fix the template registry and grokker for views to let View and
+  other components using View as base class to be associated with a
+  template directly by setting it as 'template' attribute on the view
+  class. Example::
+
+    class MyView(grokcore.view.View):
+
+        template = grokcore.view.PageTemplate('<p>hello</p>')
+
 
 1.11 (2009-09-15)
 -----------------
