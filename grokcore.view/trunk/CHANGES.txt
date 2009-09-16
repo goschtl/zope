@@ -10,6 +10,7 @@ Changes
 
 - Fix View and CodeView interfaces.
 
+- Fix the template = way to associate a template to a view.
 
 1.11 (2009-09-15)
 -----------------
