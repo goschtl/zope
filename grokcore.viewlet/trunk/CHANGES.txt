@@ -4,6 +4,9 @@ Changes
 1.2 (unreleased)
 ----------------
 
+* Remove the reference to the grok.View permission that is no longer in
+  grokcore.security 1.2
+
 * Use the grok.zope.org/releaseinfo information instead of our own
   copy of ``versions.cfg``, for easier maintenance.
 
