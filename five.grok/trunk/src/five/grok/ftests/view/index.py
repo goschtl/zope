@@ -1,6 +1,8 @@
 """
   >>> from five.grok.ftests.view.index import *
-  >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
+  >>> root_folder = getRootFolder()
+  >>> mammoth = Mammoth(id='manfred')
+  >>> id = root_folder._setObject("manfred", mammoth)
 
 The default view name for a model is 'index':
 
