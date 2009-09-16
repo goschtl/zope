@@ -66,6 +66,12 @@ The minium required configuration to install Zope would be::
   [zope2]
   recipe = plone.recipe.zope2install
   url = http://www.zope.org/Products/Zope/2.10.9/Zope-2.10.9-final.tgz
+  skip-fake-eggs =
+     zope.app.publisher
+     zope.component
+     zope.i18n
+     zope.interface
+     zope.testing
 
 And for this release we recommend to pin down the following version in
 your buildout::
@@ -75,7 +81,7 @@ your buildout::
   grokcore.formlib = 1.2
   grokcore.security = 1.2
   grokcore.site = 1.0.1
-  grokcore.view = 1.10
+  grokcore.view = 1.11
   grokcore.viewlet = 1.1
   five.localsitemanager = 1.1
   martian = 0.11
@@ -83,7 +89,10 @@ your buildout::
   zope.app.zcmlfiles = 3.4.3
   zope.component = 3.4.0
   zope.i18n = 3.4.0
+  zope.interface = 3.4.1
+  zope.schema = 3.4.0
   zope.securitypolicy = 3.4.1
+  zope.testing = 3.7.6
 
 Zope 2.10 is required as bare minimum.
 
