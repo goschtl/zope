@@ -8,7 +8,14 @@ Changes
   copy; a local copy for all grokcore packages is just too hard to
   maintain.
 
-- Revert the splitting CodeView/View.
+- Revert the splitting CodeView/View. The original reasons for the split
+  have been obsoleted by the recent martain developments regarding inheritted
+  module level directives. At the same time the split up components proofed
+  cumbersome to use and a too big a change between the 1.0a and 1.0b releases
+  of Grok.
+
+  View components will now again behave like it did up until the latest alpha
+  release of Grok.
 
 - Fix the template = way to associate a template to a view.
 
