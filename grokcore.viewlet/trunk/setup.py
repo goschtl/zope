@@ -12,7 +12,7 @@ long_description = (
 
 setup(
     name='grokcore.viewlet',
-    version = '1.3',
+    version = '1.4dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
