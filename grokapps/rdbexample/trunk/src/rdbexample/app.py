@@ -1,5 +1,6 @@
 import grok
 from megrok import rdb
+from megrok.rdb.schema import schema_from_model
 
 from zope.location.location import located
 
@@ -8,7 +9,7 @@ from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
 
 from z3c.saconfig import EngineFactory, GloballyScopedSession
-from z3c.saconfig.interfaces import IEngineFactory, IEngineCreatedEvent
+from z3c.saconfig.interfaces import IEngineCreatedEvent
 
 # we set up the engine factory and the session
 # we set them up as global utilities here. It is also possible to
@@ -69,7 +70,8 @@ class AddFaculty(grok.AddForm):
 
     @property
     def form_fields(self):
-        return rdb.Fields(Faculty)
+        return grok.Fields(schema_from_model(Faculty))
+        #return rdb.Fields(Faculty)
 
     @grok.action('add')
     def handle_add(self, *args, **kw):

@@ -4,12 +4,11 @@
    package="rdbexample"
    >
 
-  <include package="grok" />
   <include package="rdbexample" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
 
   <unauthenticatedPrincipal
