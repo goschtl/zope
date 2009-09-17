@@ -1,0 +1,38 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:define-macro="portlet">
+
+<dl class="portlet" id="portlet-search">
+
+    <dt class="portletHeader">
+      <span class="portletTopLeft"></span>
+      <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem odd">
+
+    <form name="searchform"
+          action="#"
+		  tal:attributes="action string: ${here/portal_url}/search">
+
+        <label for="searchGadget" class="hiddenStructure">Search Site</label>
+
+		<input class="inputLabelActive searchField portlet-search-gadget"
+			type="text" title="Search Site" size="15" name="SearchableText"
+			autocomplete="off" />
+		
+		<input class="searchButton" type="submit" value="Search"/>
+		
+    </form>
+	</dd>
+	
+</dl>
+
+</div>
+
+</body>
+</html>

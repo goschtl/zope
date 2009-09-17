@@ -1,0 +1,22 @@
+<div id="portal-colophon" metal:define-macro="colophon" i18n:domain="plone">
+
+    <metal:slot define-slot="colophon" />
+
+    <div class="colophonWrapper">
+	
+    <div style="text-align: center;">
+      <a href="http://www.zope.org" style="border-width: 0">
+        <img src="#" tal:attributes="src string: ${here/portal_url}/LogoZope.jpg">
+      </a>
+      <a href="http://www.python.org" style="border-width: 0">
+        <img src="#" tal:attributes="src string: ${here/portal_url}/LogoPython.jpg">
+      </a>
+    </div>
+
+    <p id="copyright">&copy; Copyright 2007-2008, The Grok Community<br />
+    Hosting provided by <a href="http://quintagroup.com/">Quintagroup</a>
+    </p>
+    
+	</div>
+
+</div>

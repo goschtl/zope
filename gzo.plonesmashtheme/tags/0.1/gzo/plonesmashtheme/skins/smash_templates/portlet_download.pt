@@ -1,0 +1,34 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:define-macro="portlet">
+
+<dl class="portlet" id="portlet-download">
+
+    <dt class="portletHeader">
+      <span class="portletTopLeft"></span>
+      <div class="discreet">Current release</div>
+      <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem odd">
+      <p><b>Grok 0.11.1</b> <span style="font-size: 10px">released on 2008-01-20</span></p>
+      <p><a href="/about/download">Download &#187;</a></p>
+      <p><a href="/project/releases/0.11.1">View release notes &#187;</a></p>
+    </dd>
+
+    <dd class="portletFooter">
+      <span class="portletBottomLeft"></span>
+      <span class="portletBottomRight"></span>
+    </dd>
+
+</dl>
+
+</div>
+
+</body>
+
+</html>

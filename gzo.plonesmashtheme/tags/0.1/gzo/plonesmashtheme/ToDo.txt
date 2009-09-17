@@ -1,0 +1,7 @@
+ToDo list for gzo.plonesmashtheme:
+------------------------------
+
+- switch classic portlets (portlet_download, portlet_news, portlet_tagcloud)
+  to the new portlet approach of plone 3.
+
+- replace absolute px styles from sebastians styles with relative em.

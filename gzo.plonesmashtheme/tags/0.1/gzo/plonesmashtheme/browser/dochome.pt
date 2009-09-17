@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plonehelpcenter">
+<body>
+
+<div metal:fill-slot="main">
+
+  <div metal:define-macro="main">
+      
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+    <h1 class="documentFirstHeading">Official Grok Documentation</h1>
+    
+    <p>
+    The <a href="http://grok.zope.org/doc/current/">Official Grok Documentation</a>
+    documents the core features of the Grok framework.
+    </p>
+    
+    <div style="width: 70%; padding-left: 1em" >
+
+      <div style="background: #ffffff; float: right; padding: 0 0 0.5em 1em;">
+      <img src="#" alt=""
+           tal:attributes="src string:${portal_url}/grok-caveman.png" />
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/tutorial_icon.gif" /> 
+      <a href="http://grok.zope.org/doc/current/tutorial.html">
+        The Grok Tutorial
+      </a>
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/referencemanual_icon.gif" /> 
+        <a href="http://grok.zope.org/doc/current/grok_overview.html">
+        The Grok Developer's Notes
+        </a>
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/referencemanual_icon.gif" /> 
+        <a href="http://grok.zope.org/doc/current/reference/">
+        The Grok Reference
+        </a>
+      </div>
+    </div>
+    
+    <h1 class="documentFirstHeading">Community Grok Documentation</h1>
+
+    <p>
+    The community documentation covers a much wider scope than the official
+    docs. However documentation assets in here may not always be applicable
+    to the current release of Grok.
+    <div>
+    
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/howto_icon.gif" /> 
+      <a href=""
+         tal:attributes="href string:$portal_url/feeds/all-howtos-tutorials" >
+              All Howtos and Tutorials
+      </a> 
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/info_icon.gif" /> 
+      <a href="./tutorial/contribute-to-the-grok-documentation" >
+           Writing Documentation for Grok
+      </a> 
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/rss.gif" /> 
+      <a tal:attributes="href string:$portal_url/feeds/community-documentation/RSS" >
+           Feed for all documentation
+      </a> 
+      </div>
+
+    </div>
+
+    <div class="visualClear"></div>
+    
+    <h2>Browse Documentation By Topic</h2>
+    
+    <dl class="topicList"
+        tal:repeat="section view/getSectionMap">
+      <dt><a href="[section-url]" tal:attributes="href section/url"
+             tal:content="section/title" /></dt>
+      <dd tal:repeat="item section/subtopics" class="discreet">
+          <a href="[item url]" 
+              tal:attributes="href item/url;" 
+              tal:content="python:item['title'].split(':')[-1]" 
+              >[Title of start-here item]
+          </a><tal:separator condition="not:repeat/item/end"> |</tal:separator>
+      </dd>
+    </dl>
+
+    <div class="visualClear"></div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

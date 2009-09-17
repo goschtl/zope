@@ -1,0 +1,9 @@
+<portlets>
+    
+    <portlet
+        addview="gzo.GrokDoc"
+        title="Grok Documentation by Topic"
+        description=""
+        />
+
+</portlets>
