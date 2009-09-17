@@ -1,0 +1,3 @@
+<div id="content">
+  <span tal:replace="structure view/renderFormTable"/>
+</div>
