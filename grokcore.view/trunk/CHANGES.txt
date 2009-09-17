@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.12 (unreleased)
+1.12 (2009-09-17)
 -----------------
 
 - Use 1.0b1 versions.cfg in Grok's release info instead of a local
