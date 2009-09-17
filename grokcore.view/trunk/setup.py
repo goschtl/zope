@@ -12,7 +12,7 @@ long_description = (
 
 setup(
     name='grokcore.view',
-    version = '1.13dev',
+    version = '2.0dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -33,9 +33,9 @@ setup(
     include_package_data = True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'martian >= 0.10',
-                      'grokcore.component >= 1.5',
-                      'grokcore.security >= 1.2',
+                      'martian >= 0.12',
+                      'grokcore.component >= 2.0',
+                      'grokcore.security >= 1.3',
                       'zope.schema',
                       'zope.security',
                       'zope.traversing',

@@ -35,7 +35,8 @@ def default_fallback_to_name(factory, module, name, **data):
 
 class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
-    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.component.context,
+                      get_default=grokcore.component.meta.default_context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 

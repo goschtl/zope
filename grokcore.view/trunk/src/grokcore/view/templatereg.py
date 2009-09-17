@@ -26,7 +26,7 @@ class TemplateRegistry(object):
 
     def findFilesystem(self, module_info):
         template_dir_name = grokcore.view.templatedir.bind().get(
-            module=module_info.getModule())
+            module_info.getModule())
         if template_dir_name is None:
             template_dir_name = module_info.name + '_templates'
 

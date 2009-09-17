@@ -75,6 +75,8 @@ Restore situation::
 """
 import grokcore.view as grok
 
+grok.templatedir('macros_templates')
+
 class Mammoth(grok.Context):
     pass
 

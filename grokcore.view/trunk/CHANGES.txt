@@ -1,11 +1,12 @@
 Changes
 =======
 
-1.13 (unreleased)
------------------
+2.0 (unreleased)
+----------------
 
-- Bugfix: support windows paths.
+- Works with new Martian (0.12) and grokcore.component 2.0.
 
+- Test fix: support windows paths.
 
 1.12.1 (2009-09-17)
 -------------------
