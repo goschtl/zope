@@ -53,7 +53,7 @@
 from five import grok
 
 from zope import interface
-from five.megrok.layout import Layout, Page, CodePage
+from five.megrok.layout import Layout, Page
 
 
 class Cow(grok.Context):
@@ -69,7 +69,7 @@ class Master(Layout):
     grok.context(Cow)
 
 
-class MyView(CodePage):
+class MyView(Page):
     grok.context(interface.Interface)
 
     def render(self):

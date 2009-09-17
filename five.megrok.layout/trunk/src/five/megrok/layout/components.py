@@ -47,7 +47,5 @@ class Page(megrok.layout.Page, Acquisition.Explicit):
     getPhysicalPath = Acquisition.Acquired
 
 
-class CodePage(megrok.layout.CodePage, Acquisition.Explicit):
-    pass
 
 
