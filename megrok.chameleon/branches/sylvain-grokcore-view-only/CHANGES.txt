@@ -4,6 +4,8 @@ CHANGES
 0.2 (unreleased)
 ================
 
+* Don't depend anymore on grok, but only grokcore.view.
+
 * Added support for `path()` and `exists()` in page templates. This
   was introduced from `z3c.pt`.
 
