@@ -6,8 +6,6 @@ from zope.schema.interfaces import IField
 from zope.interface import Interface
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
-from zope.component import getUtility
-from megrok.rdb import Model
 
 #def Fields(model):
 #    return grok.Fields(schema_from_model(model))
