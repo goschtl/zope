@@ -71,7 +71,7 @@ class GrokForm(object):
                 # causes the widgets to have different data
                 self.resetForm()
                 self.form_reset = False
-            self.form_result = self.template.render(self)
+            self.form_result = self._render_template()
 
         return self.form_result
 

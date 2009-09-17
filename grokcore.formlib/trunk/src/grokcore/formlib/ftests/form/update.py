@@ -57,7 +57,7 @@ class Mammoth(grok.testing.Model):
 
     name = u'Manfred'
 
-class Index(grok.CodeView):
+class Index(grok.View):
 
     def render(self):
         return "%s, the Mammoth reports: %s" % (self.context.name,

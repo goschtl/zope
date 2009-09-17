@@ -48,7 +48,7 @@ class Mammoth(Contained, grok.testing.Model):
         self.name = name
         self.size = size
 
-class Index(grok.CodeView):
+class Index(grok.View):
     grok.context(Mammoth)
     def render(self):
         return 'Hi, my name is %s, and I\'m "%s"' % (self.context.name,

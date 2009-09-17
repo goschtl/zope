@@ -45,7 +45,7 @@ class Mammoth(grok.testing.Model):
     grok.testing.protect_get(grok.Public, 'name', 'size')
     grok.testing.protect_set(grok.Public, 'name', 'size')
 
-class Index(grok.CodeView):
+class Index(grok.View):
     grok.context(Mammoth)
     def render(self):
         return 'Hi, my name is %s, and I\'m "%s"' % (self.context.name,

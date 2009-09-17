@@ -36,7 +36,7 @@ setup(
                       'martian >= 0.10',
                       'grokcore.component >= 1.5',
                       'grokcore.security >= 1.2',
-                      'grokcore.view >= 1.9',
+                      'grokcore.view >= 1.12',
                       'zope.formlib',
                       # for tests:
                       'zope.testing',
