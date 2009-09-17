@@ -92,7 +92,6 @@ class TemplateRegistry(object):
 
     def checkTemplates(self, module_info, factory, component_name,
                        has_render, has_no_render):
-        # TODO: remove has_no_render arg, it's not used anymore
         factory_name = factory.__name__.lower()
         template_name = grokcore.view.template.bind().get(factory)
         if template_name is None:
@@ -129,7 +128,7 @@ class TemplateRegistry(object):
                 "an associated template." %
                 (component_name, factory), factory)
 
-        if not factory_have_template and not has_render(factory):
+        if not factory_have_template and has_no_render(factory):
             # we do not accept a view without any way to render it
             raise GrokError("%s %r has no associated template or "
                             "'render' method." %

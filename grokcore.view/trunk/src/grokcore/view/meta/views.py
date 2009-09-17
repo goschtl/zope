@@ -84,7 +84,8 @@ class ViewGrokker(martian.ClassGrokker):
             return render and not base_method
 
         def has_no_render(factory):
-            return not getattr(factory, 'render', None)
+            return not has_render(factory)
+        
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
 
