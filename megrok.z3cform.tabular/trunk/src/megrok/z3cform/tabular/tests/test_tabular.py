@@ -20,10 +20,92 @@ Now setup some items:
 
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> table_view = getMultiAdapter((cont, TestRequest()), name=u"formtable") 
-  >>> print table_view
+  >>> table_view = getMultiAdapter((cont, TestRequest()), name=u"myformtable") 
+  >>> print table_view()
+  <form action="http://127.0.0.1" method="post"
+        enctype="multipart/form-data" class="edit-form"
+        name="formTable" id="formTable">
+    <div class="viewspace">
+      <div>
+      <div class="tabluarTable">
+        <table class="contents">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="even">
+        <td>first</td>
+      </tr>
+      <tr class="odd">
+        <td>second</td>
+      </tr>
+      <tr class="even">
+        <td>third</td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+      <div class="tabluarForm">
+      </div>
+    </div>
+    </div>
+    <div>
+      <div class="buttons">
+  <input id="formTable-buttons-cancel"
+         name="formTable.buttons.cancel"
+         class="submit-widget button-field" value="Cancel"
+         type="submit" />
+      </div>
+    </div>
+  </form>
+
   >>> table_with_template = getMultiAdapter((cont, TestRequest()), name=u"contentstablewithtemplate")
-  >>> print table_with_template
+  >>> print table_with_template()
+  <html>
+   <body>
+    <form action="http://127.0.0.1" method="post"
+        enctype="multipart/form-data" class="edit-form"
+        name="formTable" id="formTable">
+    <div class="viewspace">
+      <div>
+      <div class="tabluarTable">
+        <table class="contents">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="even">
+        <td>first</td>
+      </tr>
+      <tr class="odd">
+        <td>second</td>
+      </tr>
+      <tr class="even">
+        <td>third</td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+      <div class="tabluarForm">
+      </div>
+    </div>
+    </div>
+    <div>
+      <div class="buttons">
+  <input id="formTable-buttons-cancel"
+         name="formTable.buttons.cancel"
+         class="submit-widget button-field" value="Cancel"
+         type="submit" />
+      </div>
+    </div>
+  </form>
+   </body> 
+  </html>
+
 """
 
 import grokcore.component as grok
@@ -32,7 +114,7 @@ from megrok.z3cform.tabular import FormTable
 from megrok.z3cform.base import button 
 from megrok.z3ctable import CheckBoxColumn, NameColumn
 
-class FormTable(FormTable):
+class MyFormTable(FormTable):
     grok.context(Container)
 
     status = None
@@ -42,7 +124,7 @@ class FormTable(FormTable):
 
 class Name(NameColumn):
     grok.name('checkBox')
-    grok.adapts(None, None, FormTable)
+    grok.adapts(None, None, MyFormTable)
     weight = 0
 
 #
