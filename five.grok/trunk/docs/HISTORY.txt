@@ -4,11 +4,14 @@ Changelog
 1.0b3 (unreleased)
 ------------------
 
-- Define an IFiveGrokAPI. [thefunny42]
+- Define an IFiveGrokAPI.
+  [thefunny42]
 
-- Fix the broken ``url`` method on views. [thefunny42]
+- Fix the broken ``url`` method on views.
+  [thefunny42]
 
-- Reverted the CodeView stuff, see grokcore.view changelog for more details.
+- Reverted the CodeView base class, see grokcore.view changelog for
+  more details.
 
   ``CodeView`` is still available as a backwards compatibility alias
   for ``View``. Please update all references to ``CodeView`` to
