@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.12.2 (unreleased)
+1.12.2 (2009-09-17)
 -------------------
 
 - Test fix: support windows paths.
