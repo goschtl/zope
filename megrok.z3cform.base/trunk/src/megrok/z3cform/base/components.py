@@ -60,7 +60,7 @@ class GrokForm(object):
             return super(GrokForm, self)._render_template()
         return self.template(self)
 
-    def render(self):
+    def renderForm(self):
         """People don't have to define a render method here, and we
         have to use the one provided by z3c.form (people can provide
         render method in grok), but we have to call the template
@@ -71,9 +71,6 @@ class GrokForm(object):
                             (self, self.request), IPageTemplate)
         return self._render_template()
 
-
-    render.base_method = True   # Mark the method to prevent people to
-                                # override it.
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -125,6 +122,7 @@ class EditForm(GrokForm, form.EditForm, grok.View):
     """z3c edit form.
     """
     grok.baseclass()
+
 
 
 class DisplayForm(GrokForm, form.DisplayForm, grok.View):

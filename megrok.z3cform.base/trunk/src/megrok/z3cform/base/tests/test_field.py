@@ -46,8 +46,7 @@ class Mammoth(grok.Context):
 
 
 class Edit(EditForm):
-    pass
-
+   pass
 
 class Index(DisplayForm):
     fields = field.Fields(IMammoth).omit('age') 

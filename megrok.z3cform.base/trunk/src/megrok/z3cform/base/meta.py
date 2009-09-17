@@ -44,13 +44,6 @@ class FormGrokker(martian.ClassGrokker):
         if isinstance(form.fields, components.DefaultFields):
             form.fields = get_auto_fields(context)
 
-        # Don't override render method.
-        if not getattr(form.render, 'base_method', False):
-            raise GrokError(
-                "It is not allowed to specify a custom 'render' "
-                "method for form %r. Forms either use the default "
-                "template or a custom-supplied one." % form,
-                form)
 
         return True
 
