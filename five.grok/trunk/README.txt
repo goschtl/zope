@@ -81,7 +81,7 @@ your buildout::
   grokcore.formlib = 1.4
   grokcore.security = 1.2
   grokcore.site = 1.0.1
-  grokcore.view = 1.12.1
+  grokcore.view = 1.12.2
   grokcore.viewlet = 1.3
   five.localsitemanager = 1.1
   martian = 0.11
