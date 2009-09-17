@@ -21,9 +21,8 @@ from zope.component import adapts
 from zope.copy.interfaces import ICopyHook, ResumeCopy
 from zope.interface import implements
 
-from zope.location.interfaces import ILocation, IRoot, ITraverser
+from zope.location.interfaces import ILocation
 from zope.location.location import inside
-from zope.location.traversing import LocationPhysicallyLocatable
 
 
 class LocationCopyHook(object):
