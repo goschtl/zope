@@ -54,7 +54,7 @@ from five import grok
 class Mammoth(grok.Model):
     pass
 
-class RenderWithArguments(grok.CodeView):
+class RenderWithArguments(grok.View):
     grok.name('render')
 
     def render(self, message, another):

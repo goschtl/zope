@@ -82,12 +82,6 @@ class View(grokcore.view.View, Acquisition.Explicit):
     # in Products/Five/browser/absoluteurl.py
     absolute_url = Acquisition.Acquired
 
-class CodeView(grokcore.view.CodeView, Acquisition.Explicit):
-
-    # We let getPhysicalPath to be acquired. This make static URL's
-    # work, and prevent us to inherit from Acquisition.Implicit
-    getPhysicalPath = Acquisition.Acquired
-
 # TODO: This should probably move to Products.Five.browser
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):

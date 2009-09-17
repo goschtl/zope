@@ -85,7 +85,7 @@ Or, we could specify the ``render()`` method explicitly:
     ...     def numberOfCaveWomen(self):
     ...         return len(self.objectIds())
 
-    <<< class CaveView(grok.CodeView):
+    <<< class CaveView(grok.View):
     ...     grok.context(Cave)
     ...
     ...     def render(self):
@@ -97,7 +97,7 @@ Let's create an add view, and a new content ``CaveWoman``. You can
 provide some actual code in the ``update()`` method which is called
 before ``render()``::
 
-    <<< class AddCaveWoman(grok.CodeView):
+    <<< class AddCaveWoman(grok.View):
     ...     grok.context(Cave)
     ...     grok.name(u'cave-woman-add')
     ...

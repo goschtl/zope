@@ -21,10 +21,14 @@ from grokcore.viewlet import *
 from grokcore.formlib import *
 
 from five.grok.components import Model, Container, Site, LocalUtility
-from five.grok.components import View, CodeView, Form, AddForm
+from five.grok.components import View, Form, AddForm
 from five.grok.components import EditForm, DisplayForm
 from five.grok.components import ViewletManager, Viewlet
 from five.grok.formlib import AutoFields
+
+# backwards compatibility. Probably not needed by many, but just in case.
+# please start using grokcore.view.View again.
+CodeView = View
 
 # Temporary import explicitly path from grokcore.view (it was missing
 # in its API interface)
