@@ -176,3 +176,14 @@ quick way to note decisions first.
 
   When a package is *removed* from the ZTK this header should be removed
   from its ``setup.py`` as well.
+
+* There was a discussion about whether the version in ``setup.py``
+  should be set to ``0`` instead of the next expected version. There
+  was a discussion and the majority of the steering group was against
+  this change - the ZTK release policy remains the same for the ZTK.
+
+  The mailing list threads discusses various pros and cons::
+
+  https://mail.zope.org/pipermail/zope-dev/2009-September/037725.html
+
+  https://mail.zope.org/pipermail/zope-dev/2009-September/037735.html
