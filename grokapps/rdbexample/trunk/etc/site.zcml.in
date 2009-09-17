@@ -4,7 +4,7 @@
   <include package="rdbexample" />
 
     <configure i18n_domain="rdbexample">
-    
+
       <unauthenticatedPrincipal id="zope.anybody"
                                 title="Unauthenticated User" />
       <unauthenticatedGroup id="zope.Anybody"
