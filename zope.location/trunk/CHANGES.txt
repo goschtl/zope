@@ -8,7 +8,8 @@ CHANGES
 - Added getParent() to ILocationInfo and moved the actual implementation here
   from zope.traversal.api, analogous to getParents().
 
-- Actually removed deprecated code from zope.location.pickling.
+- Actually removed deprecated PathPersistent class from
+  zope.location.pickling.
 
 3.6.0 (2009-08-27)
 ------------------
