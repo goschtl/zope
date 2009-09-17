@@ -1,0 +1,25 @@
+Metadata-Version: 1.0
+Name: megrok.z3cform.ui
+Version: 0.1
+Summary: grok add on for createing an Wizard
+Home-page: UNKNOWN
+Author: Christian Klinger
+Author-email: cklinger@novareto.de
+License: GPL
+Description: Introduction
+        ============
+        
+        
+        
+        Changelog
+        =========
+        
+        0.1 (xxxx-xx-xx)
+        ----------------
+        
+        * Initial release
+        
+Keywords: grok z3c.form megrok.z3cform.wizard
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
