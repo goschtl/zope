@@ -40,23 +40,28 @@ registered for::
 import grokcore.viewlet as grok
 from zope import interface
 
+
 class AContext(grok.Context):
     pass
 
-class ViewWithItems(grok.CodeView):
+
+class ViewWithItems(grok.View):
     grok.name('with_items')
 
     def render(self):
         return ''
 
+
 class ViewItemsManager(grok.ViewletManager):
     grok.name('view_items_manager')
+
 
 class ItemOneViewlet(grok.Viewlet):
     grok.name('item_one')
 
     def render(self):
         return "Item one reporting, sir!"
+
 
 class ItemTwoViewlet(grok.Viewlet):
     grok.name('item_two')
