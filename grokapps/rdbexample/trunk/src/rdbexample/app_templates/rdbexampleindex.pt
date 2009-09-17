@@ -8,7 +8,7 @@
   </li>
 </ul>
 <p>
-  <a tal:attributes="href python:view.url('addfaculty')">Add Faculty</a>
+  <a tal:attributes="href python:view.url('@@addfaculty')">Add Faculty</a>
 </p>
 </body>
 </html>
