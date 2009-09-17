@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.6.1 (unreleased)
+------------------
+* logging available converters at startup
+
 0.6.0 (2009/09/15)
 ------------------
 * authentication and authorization support
