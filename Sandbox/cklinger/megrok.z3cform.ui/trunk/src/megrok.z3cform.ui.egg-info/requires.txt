@@ -1,3 +1,0 @@
-setuptools
-grok
-z3c.formui
