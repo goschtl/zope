@@ -17,6 +17,10 @@ Changes
   View components will now again behave like it did up until the latest alpha
   release of Grok.
 
+  ``CodeView`` is still available as a backwards compatibility alias
+  for ``View``. Please update all references to ``CodeView`` to
+  ``View``.
+
 - Fix the template registry and grokker for views to let View and
   other components using View as base class to be associated with a
   template directly by setting it as 'template' attribute on the view
@@ -26,6 +30,8 @@ Changes
 
         template = grokcore.view.PageTemplate('<p>hello</p>')
 
+  This isn't exactly *officially* supported but enough people depend
+  on it and have documented it so that we don't want to just break it.
 
 1.11 (2009-09-15)
 -----------------

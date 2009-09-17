@@ -130,6 +130,9 @@ class View(BrowserPage):
 
     render.base_method = True
 
+# backwards compatibility. Probably not needed by many, but just in case.
+# please start using grokcore.view.View again.
+CodeView = View
 
 class BaseTemplate(object):
     """Any sort of page template"""
