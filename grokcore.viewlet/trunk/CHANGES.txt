@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.3 (unreleased)
+1.3 (2009-09-17)
 ----------------
 
 * Reverted the use of grokcore.view.CodeView. We now require
