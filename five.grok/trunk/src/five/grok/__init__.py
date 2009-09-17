@@ -30,13 +30,13 @@ from five.grok.formlib import AutoFields
 # please start using grokcore.view.View again.
 CodeView = View
 
-# Temporary import explicitly path from grokcore.view (it was missing
-# in its API interface)
-from grokcore.view import path
-
 # Override the one from grokcore.view so that we get Zope 2 semantics
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate
 from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile
 
 # Override DirectoryResource to use Zope 2 one
 from five.grok.components import ZopeTwoDirectoryResource as DirectoryResource
+
+# Only export public API
+from five.grok.interfaces import IFiveGrokAPI
+__all__ = list(IFiveGrokAPI)

@@ -34,6 +34,8 @@ from grokcore.site.components import BaseSite
 import grokcore.view
 import grokcore.security
 
+from five.grok.interfaces import IFiveGrokView
+
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
     as BaseViewPageTemplateFile
 from Products.Five.browser.pagetemplatefile import getEngine
@@ -52,6 +54,12 @@ import Acquisition
 class Model(SimpleItem):
     interface.implements(IAttributeAnnotatable, IContext)
 
+    def __init__(self, id):
+        self._id = id
+
+    def getId(self):
+        return self._id
+
 
 class Container(Folder):
     interface.implements(IAttributeAnnotatable, IContext)
@@ -67,6 +75,8 @@ class LocalUtility(SimpleItem):
 
 class View(grokcore.view.View, Acquisition.Explicit):
 
+    interface.implements(IFiveGrokView)
+
     def __init__(self, *args):
         super(View, self).__init__(*args)
         if not (self.static is None):
@@ -78,9 +88,7 @@ class View(grokcore.view.View, Acquisition.Explicit):
     # We let getPhysicalPath to be acquired. This make static URL's
     # work, and prevent us to inherit from Acquisition.Implicit
     getPhysicalPath = Acquisition.Acquired
-    # We need absolute_url method to be acquired, it's used by AbsoluteURL adapter
-    # in Products/Five/browser/absoluteurl.py
-    absolute_url = Acquisition.Acquired
+
 
 # TODO: This should probably move to Products.Five.browser
 

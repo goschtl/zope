@@ -7,7 +7,7 @@
 We can adapt a model to an annotation interface and obtain a
 persistent annotation storage:
 
-  >>> manfred = Mammoth()
+  >>> manfred = Mammoth('manfred')
   >>> branding = IBranding(manfred)
   >>> branding.addBrand('mine')
   >>> branding.addBrand('yours')

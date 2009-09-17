@@ -13,6 +13,8 @@
   <include package="grokcore.viewlet" />
 
   <grok:grok package=".subscribers" />
+  <grok:grok package=".absoluteurl" />
+
   <utility component=".meta.setupUtility" />
 
   <browser:defaultView
