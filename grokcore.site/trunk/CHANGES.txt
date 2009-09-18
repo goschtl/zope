@@ -1,8 +1,10 @@
 Changes
 =======
 
-1.0.2 (unreleased)
-------------------
+1.1 (unreleased)
+----------------
+
+* A local utility implements now IAttributeAnnotatable.
 
 * Update code documentation from Grok itself.
 

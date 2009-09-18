@@ -12,7 +12,7 @@ long_description = (
 
 setup(
     name='grokcore.site',
-    version='1.0.2dev',
+    version='1.1dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -35,6 +35,7 @@ setup(
     install_requires=['setuptools',
                       'martian',
                       'ZODB3',
+                      'zope.annotation',
                       'zope.component',
                       'zope.interface',
                       'zope.app.component',

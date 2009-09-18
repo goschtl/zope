@@ -26,6 +26,7 @@ import grokcore.site.components
 import grokcore.site.interfaces
 
 class SiteGrokker(martian.ClassGrokker):
+    """Grokker for subclasses of `grokcore.site.Site`."""
     martian.component(grokcore.site.components.BaseSite)
     martian.priority(500)
     martian.directive(grokcore.site.local_utility, name='infos')
@@ -63,7 +64,8 @@ def localUtilityRegistrationSubscriber(site, event):
     if installed:
         return
 
-    setupUtility = component.getUtility(grokcore.site.interfaces.IUtilityInstaller)
+    setupUtility = component.getUtility(
+        grokcore.site.interfaces.IUtilityInstaller)
     for info in getattr(site.__class__, '__grok_utilities_to_install__', []):
         setupUtility(site, info.factory(), info.provides, name=info.name,
                      name_in_container=info.name_in_container,
@@ -75,7 +77,7 @@ def localUtilityRegistrationSubscriber(site, event):
 
 
 @grokcore.component.provider(grokcore.site.interfaces.IUtilityInstaller)
-def setupUtility(site, utility, provides, name=u'',
+def setupUtility(Site, utility, provides, name=u'',
                  name_in_container=None, public=False, setup=None):
     """Set up a utility in a site.
 
