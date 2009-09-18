@@ -73,7 +73,7 @@ class Proxy(object):
         file(zip_temp, 'wb').write(base64.decodestring(zip_data))
         ZF = zipfile.ZipFile(zip_temp, 'r')
         names = ZF.namelist()
-        output_filename = os.path.abspath(names[0])
+        output_filename = os.path.join(self.output_directory, os.path.basename(names[0]))
         file(output_filename, 'wb').write(ZF.read(names[0]))
         ZF.close()
         os.unlink(zip_filename)
