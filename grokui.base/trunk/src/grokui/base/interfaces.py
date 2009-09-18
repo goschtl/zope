@@ -3,7 +3,7 @@
 from zope import schema
 from zope.location import ILocation
 from zope.interface import Interface
-from zope.contentprovider import IContentProvider
+from zope.contentprovider.interfaces import IContentProvider
 
 
 class IAdminPanelMenu(Interface):
@@ -41,7 +41,6 @@ class IInstalledApplication(IApplication, ILocation):
     """
     url = schema.URI(
         title = u"Absolute URL of the application",
-        default = u"",
         required = True
         )
 
