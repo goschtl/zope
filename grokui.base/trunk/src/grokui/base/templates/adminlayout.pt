@@ -1,14 +1,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" i18n:domain="zope">
   <head>
-    <title>grok administration interface</title>
-    <link rel="stylesheet" type="text/css" href="static/grok.css"
-	  tal:on-error="nothing"
-	  tal:attributes="href view/static/grok.css" />
+    <title tal:content="layout/title" />
+    <link rel="stylesheet" type="text/css" 
+	  tal:attributes="href static/grok.css" />
   </head>
   <body>
-    <tal:header replace="structure provider:grokui_admin_header" />
-    <div id="content"
+    <div id="grokui-header"
+	 tal:content="structure provider:grokui_admin_header" />
+
+    <div id="grokui-content"
 	 tal:content="structure view/content" />
-    <tal:header replace="structure provider:grokui_admin_footer" />
+
+    <div id="grokui-footer"
+	 tal:content="structure provider:grokui_admin_footer" />
   </body>
 </html>

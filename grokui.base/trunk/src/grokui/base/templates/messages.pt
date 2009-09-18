@@ -1,7 +1,5 @@
-<ul>
-  <li
-    tal:repeat="message viewlet/messages"
-    tal:attributes="class message/type"
-    tal:content="message/message">Sauron will arrive soon!
-  </li>
+<ul id="grokui-messages">
+  <li tal:repeat="message viewlet/messages"
+      tal:attributes="class message/type"
+      tal:content="message/message" />
 </ul>

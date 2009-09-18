@@ -1,4 +1,4 @@
-<div id="logout" metal:define-macro="logged_user">
+<div id="logout">
   <span tal:condition="viewlet/is_authenticated">
     <span i18n:translate="">User:
     <span tal:replace="request/principal/title"

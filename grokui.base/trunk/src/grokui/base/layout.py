@@ -11,6 +11,7 @@ class AdminLayout(Layout):
     """
     grok.context(IRootFolder)
     template = grok.PageTemplateFile('templates/adminlayout.pt')
+    title = u"Grok Administration Interface"
     
 
 class AdminView(Page):

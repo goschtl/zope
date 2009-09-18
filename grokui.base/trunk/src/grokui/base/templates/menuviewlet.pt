@@ -1,12 +1,8 @@
-<dl class="display-menu incontext-action" tal:condition="viewlet/actions">
-  <dd>
-    <ul>
-      <li tal:repeat="action viewlet/actions">
-	<a href="" tal:content="action/title"
-	   tal:attributes="href string:${viewlet/contexturl}/${action/action};
-			   title action/title;"
-	   />
-      </li>
-    </ul>
-  </dd>
-</dl>
+<ul id="grokui-menu-entries" tal:condition="viewlet/actions">
+  <li tal:repeat="action viewlet/actions">
+    <a href="" tal:content="action/title"
+       tal:attributes="href string:${viewlet/contexturl}/${action/action};
+		       title action/title;"
+       />
+  </li>
+</ul>
