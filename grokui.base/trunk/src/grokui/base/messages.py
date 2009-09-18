@@ -34,17 +34,6 @@ class AdminMessageSource(grok.GlobalUtility):
             raise KeyError(message)
 
 
-class Messages(grok.View):
-    """Messages render.
-    """
-    grok.context(Interface)
-
-    @property
-    def messages(self):
-        receiver = getUtility(IMessageReceiver)
-        return receiver.receive()
-
-
 grok.global_utility(GlobalMessageReceiver)
 grok.global_utility(SessionMessageSource, name='session')
 
