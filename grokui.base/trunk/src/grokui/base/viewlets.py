@@ -37,6 +37,11 @@ class Messages(grok.Viewlet):
     grok.order(40)
     grok.name('admin_messages')
 
+    @property
+    def messages(self):
+        receiver = getUtility(IMessageReceiver)
+        return receiver.receive()
+
 
 class LoginInformation(grok.Viewlet):
     grok.order(30)
