@@ -1,17 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      i18n:domain="zope"
-      metal:define-macro="gaia-page">
+<html xmlns="http://www.w3.org/1999/xhtml" i18n:domain="zope">
   <head>
-    <title
-      metal:define-slot="title"
-      >grok administration interface</title>
-    <link metal:define-slot="header"
-      rel="stylesheet" type="text/css" href="static/grok.css"
-      tal:on-error="nothing"
-      tal:attributes="href view/static/grok.css" />
-
+    <title>grok administration interface</title>
+    <link rel="stylesheet" type="text/css" href="static/grok.css"
+	  tal:on-error="nothing"
+	  tal:attributes="href view/static/grok.css" />
   </head>
-
   <body>
     <tal:header replace="structure provider:grokui_admin_header" />
     <div id="content"
