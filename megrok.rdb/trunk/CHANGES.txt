@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.10 (unreleased)
+0.10 (2009-09-18)
 -----------------
 
 - Added to SQLAlchemy to zope.schema adapters so that most of the types in
