@@ -8,6 +8,10 @@ CHANGES
 - Added to SQLAlchemy to zope.schema adapters so that most of the types in
   sqlalchemy.types are covered.
 
+- Import schema_from_model into ``megrok.rdb`` package namespace.
+
+- Update buildout to use Grok 1.0b2 versions.
+
 0.9.1 (2009-08-14)
 ------------------
 
