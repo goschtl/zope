@@ -59,7 +59,7 @@ body {
 }
 
 #navTree {
-	padding: 0;
+	padding: 0 !important;
 }
 
 #portal-column-content {
