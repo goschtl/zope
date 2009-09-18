@@ -1,6 +1,5 @@
 import grok
 from megrok import rdb
-from megrok.rdb.schema import schema_from_model
 
 from zope.location.location import located
 
@@ -14,7 +13,8 @@ from z3c.saconfig.interfaces import IEngineCreatedEvent
 # we set up the engine factory and the session
 # we set them up as global utilities here. It is also possible to
 # use a local engine factory and a special locally scoped session
-TEST_DSN = 'sqlite:///:memory:'
+# XXX for some reason it fails to work properly with a :memory: database
+TEST_DSN = 'sqlite:///test.db'
 
 engine_factory = EngineFactory(TEST_DSN)
 scoped_session = GloballyScopedSession()
@@ -70,8 +70,7 @@ class AddFaculty(grok.AddForm):
 
     @property
     def form_fields(self):
-        return grok.Fields(schema_from_model(Faculty))
-        #return rdb.Fields(Faculty)
+        return grok.Fields(rdb.schema_from_model(Faculty))
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
@@ -132,7 +131,7 @@ class AddDepartment(grok.AddForm):
 
     @property
     def form_fields(self):
-        return rdb.Fields(Department)
+        return grok.Fields(rdb.schema_from_model(Department))
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
