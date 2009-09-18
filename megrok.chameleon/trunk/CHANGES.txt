@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.2 (unreleased)
+0.2 (2009-09-18)
 ================
 
 * Provides a macros access from the template.
