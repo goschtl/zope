@@ -16,9 +16,14 @@ class IAdminPanel(Interface):
     """
 
 
-class IApplication(Interface):
+class IApplicationRepresentation(Interface):
     """Defines an Grok application 
     """
+    __name__ = schema.ASCIILine(
+        title = u"Name",
+        required = True
+        )
+    
     classname = schema.ASCIILine(
         title = u"Dotted name of the Application class",
         required = True
@@ -31,12 +36,12 @@ class IApplication(Interface):
         )
 
 
-class IInstallableApplication(IApplication):
+class IInstallableApplication(IApplicationRepresentation):
     """Defines an installable application.
     """
 
 
-class IInstalledApplication(IApplication, ILocation):
+class IInstalledApplication(IApplicationRepresentation, ILocation):
     """Defines an application that is installed in our system.
     """
     url = schema.URI(
