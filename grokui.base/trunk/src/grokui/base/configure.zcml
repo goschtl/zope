@@ -1,9 +1,7 @@
 <configure
     xmlns:grok="http://namespaces.zope.org/grok"
     xmlns="http://namespaces.zope.org/zope">
-  <include package="grokcore.view" file="meta.zcml" />
-  <include package="grokcore.view" />
-  <include package="grokcore.viewlet" file="meta.zcml" />
+  <include package="grok" />
   <include package="megrok.menu" file="meta.zcml" />
   <include package="megrok.layout" file="meta.zcml" />
   <grok:grok package="." />
