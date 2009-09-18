@@ -23,8 +23,8 @@ def addSiteHandler(site, event):
     """Add a local site manager to a Grok site object upon its creation.
 
     Grok registers this function so that it gets called each time a
-    `grok.Site` instance is added to a container.  It creates a local
-    site manager and installs it on the newly created site.
+    `grokcore.site.Site` instance is added to a container.  It creates
+    a local site manager and installs it on the newly created site.
 
     """
 

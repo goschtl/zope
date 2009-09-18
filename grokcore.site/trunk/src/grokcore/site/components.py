@@ -35,9 +35,10 @@ class Site(BaseSite, SiteManagerContainer):
     """Mixin for creating sites in Grok applications.
 
     When an application `grok.Model` or `grok.Container` also inherits
-    from `grok.Site`, then it can additionally support the registration
-    of local Component Architecture entities like `grok.LocalUtility`
-    and `grok.Indexes` objects; see those classes for more information.
+    from `grokcore.site.Site`, then it can additionally support the
+    registration of local Component Architecture entities like
+    `grokcore.site.LocalUtility` and `grok.Indexes` objects; see those
+    classes for more information.
 
     """
 
@@ -46,17 +47,18 @@ class LocalUtility(Contained, Persistent):
     """The base class for local utilities in Grok applications.
 
     Although application developers can create local utilies without
-    actually subclassing `grok.LocalUtility`, they gain three benefits
-    from doing so.  First, their code is more readable because their
-    classes "look like" local utilities to casual readers.  Second,
-    their utility will know how to persist itself to the Zope database,
-    which means that they can set its object attributes and know that
-    the values are getting automatically saved.  Third, they can omit
-    the `grok.provides()` directive naming the interface that the
-    utility provides, if their class only `grok.implements()` a single
-    interface (unless the interface is one that the `grok.LocalUtility`
-    already implements, in which case Grok cannot tell them apart, and
-    `grok.provides()` must be used explicitly anyway).
+    actually subclassing `grokcore.site.LocalUtility`, they gain three
+    benefits from doing so.  First, their code is more readable
+    because their classes "look like" local utilities to casual
+    readers.  Second, their utility will know how to persist itself to
+    the Zope database, which means that they can set its object
+    attributes and know that the values are getting automatically
+    saved.  Third, they can omit the `grok.provides()` directive
+    naming the interface that the utility provides, if their class
+    only `grok.implements()` a single interface (unless the interface
+    is one that the `grok.LocalUtility` already implements, in which
+    case Grok cannot tell them apart, and `grok.provides()` must be
+    used explicitly anyway).
 
     """
     implements(IContext)

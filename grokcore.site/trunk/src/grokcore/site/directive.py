@@ -26,6 +26,39 @@ from martian import util
 from martian.error import GrokImportError
 
 class local_utility(martian.Directive):
+    """The `grokcore.site.local_utility()` directive.
+
+    Place this directive inside of a `grokcore.site.Site` subclass,
+    and provide the name of a utility you want activated inside of
+    that site::
+
+        class MySite(grokcore.site.Site):
+            grok.local_utility(MyMammothUtility)
+            ...
+
+    This directive can be supplied several times within the same site.
+    Thanks to the presence of this directive, any time an instance of
+    your class is created in the Zope database it will have a copy of
+    the given local utility installed along with it.
+
+    This directive accepts several normal Component-registration keyword
+    arguments, like `provides` and `name`, and uses them each time it
+    registers your local utility.
+
+    If you do not supply a `provides` keyword, then Grok attempts to
+    guess a sensible default.  Its first choice is to use any
+    interface(s) that you listed with the grok.provides() directive
+    when defining your utility.  Otherwise, if your utility is a
+    subclass of `grokcore.site.LocalUtility`, then Grok will use any
+    interfaces that your utility supplies beyond those are supplied
+    because of its inheritance from `grokcore.site.LocalUtility`.
+    Else, as a final fallback, it checks to see whether the class you
+    are registering supplies one, and only one, interface; if so, then
+    it can register the utility unambiguously as providing that one
+    interface.
+
+    """
+
     scope = martian.CLASS
     store = martian.DICT
 
@@ -74,13 +107,14 @@ class local_utility(martian.Directive):
 class LocalUtilityInfo(object):
     """The information about how to register a local utility.
 
-    An instance of this class is created for each `grok.local_utility()`
-    in a Grok application's code, to remember how the user wants their
-    local utility registered.  Later, whenever the application creates
-    new instances of the site or application for which the local utility
-    directive was supplied, this block of information is used as the
-    parameters to the creation of the local utility which is created
-    along with the new site in the Zope database.
+    An instance of this class is created for each
+    `grokcore.site.local_utility()` in a Grok application's code, to
+    remember how the user wants their local utility registered.
+    Later, whenever the application creates new instances of the site
+    or application for which the local utility directive was supplied,
+    this block of information is used as the parameters to the
+    creation of the local utility which is created along with the new
+    site in the Zope database.
 
     """
     _order = 0

@@ -1,10 +1,15 @@
 Changes
 =======
 
-1.1 (unreleased)
-----------------
+1.0.2 (unreleased)
+------------------
 
-* Bring versions.cfg in line with grok current versions.cfg.
+* Update code documentation from Grok itself.
+
+* Use 1.0b2 versions.cfg in Grok's release info instead of a local
+  copy; a local copy for all grokcore packages is just too hard to
+  maintain.
+
 
 1.0.1 (2009-06-30)
 ------------------
