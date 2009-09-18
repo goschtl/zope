@@ -1,0 +1,11 @@
+<html>
+<body>
+<h2>Faculty <span tal:content="context/title"></span></h2>
+<h3>Departments</h3>
+
+<p>
+  <a tal:attributes="href python:view.url(context.departments)">Departments</a>
+</p>
+
+</body>
+</html>
