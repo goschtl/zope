@@ -1,5 +1,7 @@
 from megrok.rdb.components import Model, Container, QueryContainer
-#from megrok.rdb.schema import Fields
+
+from megrok.rdb.schema import schema_from_model
+
 from megrok.rdb.directive import (key, metadata, tablename, reflected, table,
                                   tableargs, polymorphic_on, inherits,
                                   polymorphic_identity)
