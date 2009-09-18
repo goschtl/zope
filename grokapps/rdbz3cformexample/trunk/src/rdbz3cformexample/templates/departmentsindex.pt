@@ -1,5 +1,3 @@
-<html>
-<body>
 <h3>Departments of faculty <span tal:replace="context/__parent__/title"></span></h3>
 <ul>
   <li tal:repeat="department context/values">
@@ -11,5 +9,3 @@
 <p>
   <a tal:attributes="href python:view.url(context, '@@adddepartment')">Add Department</a>
 </p>
-</body>
-</html>

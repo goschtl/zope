@@ -1,5 +1,3 @@
-<html>
-<body>
 <h2>RDB Example</h2>
 <h3>Faculty listing</h3>
 <ul>
@@ -10,5 +8,3 @@
 <p>
   <a tal:attributes="href python:view.url('@@addfaculty')">Add Faculty</a>
 </p>
-</body>
-</html>

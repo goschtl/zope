@@ -10,6 +10,10 @@ from sqlalchemy.orm import relation
 from z3c.saconfig import EngineFactory, GloballyScopedSession
 from z3c.saconfig.interfaces import IEngineCreatedEvent
 
+from megrok.layout import Page
+from megrok.z3cform.base import PageAddForm
+from z3c.form import field
+
 # we set up the engine factory and the session
 # we set them up as global utilities here. It is also possible to
 # use a local engine factory and a special locally scoped session
@@ -36,6 +40,8 @@ rdb.metadata(metadata)
 def setUpDatabase(event):
     rdb.setupDatabase(metadata)
 
+grok.templatedir('templates')
+
 class RDBExample(grok.Application, grok.Model, rdb.QueryContainer):
     """The application object.
 
@@ -52,7 +58,7 @@ class RDBExample(grok.Application, grok.Model, rdb.QueryContainer):
         # allow browsing to a subset
         return session.query(Faculty)
 
-class RDBExampleIndex(grok.View):
+class RDBExampleIndex(Page):
     """The index page for RDBExample. This shows all faculties available.
     """
     grok.name('index')
@@ -63,21 +69,25 @@ class RDBExampleIndex(grok.View):
         for faculty in session.query(Faculty).all():
             yield located(faculty, self.context, str(faculty.id))
 
-class AddFaculty(grok.AddForm):
+class AddFaculty(PageAddForm):
     """A form to add a new Faculty object to the application.
     """
     grok.context(RDBExample)
 
     @property
-    def form_fields(self):
-        return grok.Fields(rdb.schema_from_model(Faculty))
+    def fields(self):
+        return field.Fields(rdb.schema_from_model(Faculty))
 
-    @grok.action('add')
-    def handle_add(self, *args, **kw):
-        faculty = Faculty(**kw)
+    def create(self, data):
+        faculty = Faculty(**data)
+        return faculty
+
+    def add(self, object):
         session = rdb.Session()
-        session.add(faculty)
-        self.redirect(self.url(self.context))
+        session.add(object)
+
+    def nextURL(self):
+        return self.url(self.context)
 
 class Departments(rdb.Container):
     """This container implements the departments relation on Faculty.
@@ -106,7 +116,7 @@ class Faculty(rdb.Model):
                            backref='faculty',
                            collection_class=Departments)
 
-class FacultyIndex(grok.View):
+class FacultyIndex(Page):
     """This is the default view for Faculty.
     """
     grok.name('index')
@@ -126,26 +136,30 @@ class Department(rdb.Model):
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
     title = Column('title', String(50))
 
-class AddDepartment(grok.AddForm):
+class AddDepartment(PageAddForm):
     grok.context(Departments)
 
     @property
-    def form_fields(self):
-        return grok.Fields(rdb.schema_from_model(Department))
+    def fields(self):
+        return field.Fields(rdb.schema_from_model(Department))
 
-    @grok.action('add')
-    def handle_add(self, *args, **kw):
-        department = Department(**kw)
+    def create(self, data):
+        department = Department(**data)
+        return department
+
+    def add(self, department):
         session = rdb.Session()
         session.add(department)
         self.context.set(department)
-        self.redirect(self.url(self.context))
-            
-class DepartmentIndex(grok.View):
+
+    def nextURL(self):
+        return self.url(self.context)
+
+class DepartmentIndex(Page):
     grok.name('index')
     grok.context(Department)
 
-class DepartmentsIndex(grok.View):
+class DepartmentsIndex(Page):
     grok.name('index')
     grok.context(Departments)
 

@@ -1,0 +1,15 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      i18n:domain="zope"
+      metal:define-macro="master">
+  <head>
+    <title
+      metal:define-slot="title"
+      >RDB z3cform example application</title>
+  </head>
+
+  <body>
+<!--    <tal:header replace="structure provider:rdb_header" /> -->
+    <div id="content"
+         tal:content="structure view/content" />
+  </body>
+</html>

@@ -25,6 +25,8 @@ setup(name='rdbz3cformexample',
                         'grokcore.startup',
                         'z3c.saconfig',
                         'megrok.rdb >= 0.10',
+                        'megrok.layout',
+                        'megrok.z3cform.base',
                         # Add extra requirements here
                         ],
       entry_points = """
