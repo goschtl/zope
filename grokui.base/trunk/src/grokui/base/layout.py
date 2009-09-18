@@ -1,3 +1,4 @@
+import grok
 from megrok.layout import Layout, Page
 from zope.app.folder.interfaces import IRootFolder
 
