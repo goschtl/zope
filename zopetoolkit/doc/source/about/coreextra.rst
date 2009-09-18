@@ -61,8 +61,8 @@ or removing a library from the ZTK are::
 
 * if a library contains specific user interface code this makes it a
   candidate for splitting it into a reusable non-UI part and a UI part
-  that is outside of the toolkit. If a library is UI focused it makes it
-  a candidate for removal from the toolkit.
+  that is outside of the toolkit. If a library is UI focused it makes
+  it a candidate for removal from the toolkit.
 
 * if a library doesn't have narrative documentation and there is no
   commitment from maintainers to create such documentation. Naturally
