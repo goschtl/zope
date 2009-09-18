@@ -58,6 +58,10 @@ body {
 	padding-left: 10px;
 }
 
+#navTree {
+	padding: 0;
+}
+
 #portal-column-content {
 	padding: 1.25em 1.5em 0 1.5em;
 }
@@ -147,7 +151,7 @@ body {
 }
 
 .documentContent tt {
-	font-size: 120%;    
+	font-size: 120%;
 }
 
 .documentContent ul {
@@ -168,7 +172,7 @@ body {
 
 .documentContent ol li {
 	margin: 0 50px 1em 0;
-	padding: 0;    
+	padding: 0;
 }
 
 .documentContent a:link {
@@ -607,7 +611,7 @@ table.listing th.title {
         font-weight: bold;
         font-size: 120%;
         padding: 0.5em 1em 0.5em 1em;
-        white-space: nowrap;   
+        white-space: nowrap;
 }
 
 table.listing td.top {
@@ -739,9 +743,9 @@ div.sidebar p.rubric {
     margin-left: 1em;
 }
 
-/* 
+/*
   -------------------------
-  ReStructured Text Classes 
+  ReStructured Text Classes
   -------------------------
 */
 /*
@@ -749,11 +753,11 @@ div.sidebar p.rubric {
   ------------------------------------------
 */
 .docinfo {} /* Table that contains docinfos */
-.docinfo-name {} /* Table-headomg cell that contains a meta field 
+.docinfo-name {} /* Table-headomg cell that contains a meta field
                     description */
 
-/* 
-  Directives, i.e. divs with an included text-block 
+/*
+  Directives, i.e. divs with an included text-block
   -------------------------------------------------
 */
 .desc-function {
@@ -770,7 +774,7 @@ div.sidebar p.rubric {
 
 /*
   seealso, versionchanged, versionadded and deprecated are admonitions, whose
-  first line (i.e. the heading text like 'Changed in version 0.11:') is 
+  first line (i.e. the heading text like 'Changed in version 0.11:') is
   attributed with class 'admonition-title'.
 
   Furthermore the first line has class 'first' and the last line 'last'.
@@ -806,7 +810,7 @@ div.sidebar p.rubric {
 */
 
 /* All role terms are (additionally) attributed 'role' */
-.role {} 
+.role {}
 
 .role-data {}
 .role-exc {}
@@ -827,8 +831,8 @@ div.sidebar p.rubric {
 .role-file {}
 .role-samp {}
 
-/* 
-  Misc. ReStructured Text classes 
+/*
+  Misc. ReStructured Text classes
   -------------------------------
 */
 div.highlight {} /* Source code block with inline CSS */
