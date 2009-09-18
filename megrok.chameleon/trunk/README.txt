@@ -17,11 +17,9 @@ For more information on Grok and Chameleon templates see:
 Requirements
 ============
 
-.. note:: **This package works only with Python2.5**
-
-- Chameleon templates (`chameleon.zpt`)  Tested with v 1.0b9.
-- Chameleon genshi templates (`chameleon.genshi`) Tested with v 1.0b3.
-- Grok v1.0a1 or later.  Tested with 1.0a1.
+- Chameleon templates (`chameleon.zpt`).
+- Chameleon genshi templates (`chameleon.genshi`).
+- Grok v1.0a1 or later, or five.grok 1.0 or later.
 
 Installation
 ============
@@ -34,7 +32,6 @@ used grokprojet to create your application ``setup.py`` is located in the
 project root. It should look something like this::
 
    install_requires=['setuptools',
-                     'grok',
                      'megrok.chameleon',
                      # Add extra requirements here
                      ],
@@ -56,7 +53,7 @@ Then run ``bin/buildout`` again. You should now see buildout saying
 something like::
 
    Getting distribution for 'megrok.chameleon'.
-   Got megrok.genshi 0.1.
+   Got megrok.chameleon 0.2.
 
 That's all. You can now start using Chameleon page templates in your
 Grok application!
