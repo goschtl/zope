@@ -50,9 +50,9 @@ We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
 are registered with the framework::
 
-    >>> import grok
-    >>> grok.testing.grok('megrok.chameleon')
-    >>> grok.testing.grok('megrok.chameleon.tests.cpt_fixture')
+    >>> import grokcore.view
+    >>> grokcore.view.testing.grok('megrok.chameleon')
+    >>> grokcore.view.testing.grok('megrok.chameleon.tests.cpt_fixture')
 
 We create a mammoth, which should provide us a bunch of chameleon page
 template driven views and put it in the database to setup location
@@ -103,9 +103,9 @@ template looks like this::
     >>> print open(food_cpt, 'rb').read()
     <html>
     <body>
-    <span tal:define="foo 'a FOO'" >
+    <span tal:define="foo 'a FOO'">
     ${view.me_do()}
-    <span tal:replace="view.me_do()" />
+    <span tal:replace="structure view.me_do()" />
     CSS-URL: ${static['test.css']()}
     My context is: ${view.url(context)}
     ${foo}
@@ -121,7 +121,8 @@ The rendered view looks like this::
     <html>
     <body>
     <span>
-    ...&lt;ME GROK EAT MAMMOTH!&gt;
+    &lt;ME GROK EAT MAMMOTH!&gt;
+    <ME GROK EAT MAMMOTH!>
     CSS-URL: http://127.0.0.1/@@/megrok.chameleon.tests.cpt_fixture/test.css
     My context is: http://127.0.0.1/manfred
     a FOO
@@ -233,12 +234,11 @@ Inline Templates
 We can also define inline templates. In our ``app.py`` we defined an
 inline template like this::
 
-  import grok
   from megrok.chameleon import components
 
   ...
 
-  class Inline(grok.View):
+  class Inline(grokcore.view.View):
     sometext = 'Some Text'
 
   inline = components.ChameleonPageTemplate(
@@ -426,9 +426,8 @@ We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
 are registered with the framework::
 
-    >>> import grok
-    >>> grok.testing.grok('megrok.chameleon')
-    >>> grok.testing.grok('megrok.chameleon.tests.genshi_fixture')
+    >>> grokcore.view.testing.grok('megrok.chameleon')
+    >>> grokcore.view.testing.grok('megrok.chameleon.tests.genshi_fixture')
 
 We create a mammoth, which should provide us a bunch of Genshi driven
 views and put it in the database to setup location info::

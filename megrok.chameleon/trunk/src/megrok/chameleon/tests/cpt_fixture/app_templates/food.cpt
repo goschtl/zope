@@ -1,8 +1,8 @@
 <html>
 <body>
-<span tal:define="foo 'a FOO'" >
+<span tal:define="foo 'a FOO'">
 ${view.me_do()}
-<span tal:replace="view.me_do()" />
+<span tal:replace="structure view.me_do()" />
 CSS-URL: ${static['test.css']()}
 My context is: ${view.url(context)}
 ${foo}

@@ -1,36 +1,41 @@
-import grok
+from grokcore.component.interfaces import IContext
+from zope.app.container.btree import BTreeContainer
+from zope.interface import implements
 from megrok.chameleon import components
 
-class Mammoth(grok.Application, grok.Container):
+import grokcore.view
+import grokcore.viewlet
+
+class Mammoth(BTreeContainer):
+    implements(IContext)
+
+class CavePainting(grokcore.view.View):
     pass
 
-class CavePainting(grok.View):
-    pass
+class Food(grokcore.view.View):
 
-class Food(grok.View):
-    
     text = "<ME GROK EAT MAMMOTH!>"
-    
+
     def me_do(self):
         return self.text
 
-class Inline(grok.View):
+class Inline(grokcore.view.View):
     sometext = 'Some Text'
 
 inline = components.ChameleonPageTemplate(
     "<html><body>ME GROK HAS INLINES! ${view.sometext}</body></html>")
 
-class Vars(grok.View):
+class Vars(grokcore.view.View):
     pass
 
-class Expressions(grok.View):
+class Expressions(grokcore.view.View):
     pass
 
-class MainArea(grok.ViewletManager):
-    grok.name('main')
+class MainArea(grokcore.viewlet.ViewletManager):
+    grokcore.viewlet.name('main')
 
-class MainContent(grok.Viewlet):
-    grok.view(Expressions)
-    grok.viewletmanager(MainArea)
+class MainContent(grokcore.viewlet.Viewlet):
+    grokcore.viewlet.view(Expressions)
+    grokcore.viewlet.viewletmanager(MainArea)
     def render(self):
         return 'Hello from viewlet'

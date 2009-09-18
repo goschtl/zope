@@ -4,6 +4,10 @@ CHANGES
 0.2 (unreleased)
 ================
 
+* Provides a macros access from the template.
+
+* Don't depend anymore on grok, but only grokcore.view.
+
 * Added support for `path()` and `exists()` in page templates. This
   was introduced from `z3c.pt`.
 
