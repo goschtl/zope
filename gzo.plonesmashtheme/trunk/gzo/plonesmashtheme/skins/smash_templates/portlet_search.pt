@@ -15,21 +15,32 @@
 
     <dd class="portletItem odd">
 
-    <form name="searchform"
-          action="#"
-		  tal:attributes="action string: ${here/portal_url}/search">
+	    <form name="searchform"
+	          action="http://www.google.com/search">
 
-        <label for="searchGadget" class="hiddenStructure">Search Site</label>
+	        <label for="searchGadget" class="hiddenStructure"
+	                    i18n:translate="text_search">Search Site</label>
 
-		<input class="inputLabelActive searchField portlet-search-gadget"
-			type="text" title="Search Site" size="15" name="SearchableText"
-			autocomplete="off" />
-		
-		<input class="searchButton" type="submit" value="Search"/>
-		
-    </form>
+			<input type="hidden" name="domains" value="grok.zope.org">
+			<input type="hidden" name="sitesearch" value="grok.zope.org" checked="checked">
+	        <input name="q"
+	               type="text"
+	               size="18"
+	               value=""
+	               title="Search Site"
+	               accesskey="4"
+	               i18n:attributes="title title_search_site;"
+	               tal:attributes="value request/SearchableText|nothing;"
+	               class="inputLabel" />
+
+	        <input class="searchButton"
+	               type="submit"
+	               value="Search"
+	               i18n:attributes="value label_search;" />
+	    </form>
+
 	</dd>
-	
+
 </dl>
 
 </div>
