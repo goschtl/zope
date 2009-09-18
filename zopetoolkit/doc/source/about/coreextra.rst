@@ -56,16 +56,25 @@ according to these loose guidelines:
 Libraries may have a different status in the core to convey extra
 information about them, such as deprecation status.
 
-Reasons to consider removing a library from the core are (or at least
-factoring out code):
+Reasons to consider refactoring packages, making dependencies optional
+or removing a library from the ZTK are::
+
+* if a library contains specific user interface code this makes it a
+  candidate for splitting it into a reusable non-UI part and a UI part
+  that is outside of the toolkit. If a library is UI focused it makes it
+  a candidate for removal from the toolkit.
 
 * if a library doesn't have narrative documentation and there is no
-  commitment from maintainers to create such documentation.
+  commitment from maintainers to create such documentation. Naturally
+  critical libraries with a lot of use won't just removed for this reason,
+  but this should also be a good motivator to add documentation.
 
-* if a library depends on a zope.* package that is itself not in the
-  core.
-
-* if a library contains specific user interface code.
+* if a library depends on another library maintained in the Zope
+  repository that is itself not in the core we should think about
+  removing this dependency or making the dependency optional. Another
+  possibility is to remove the library that has this dependency from
+  the toolkit altogether, or to adopt the dependency itself into the
+  toolkit.
 
 Extra libraries
 ---------------
