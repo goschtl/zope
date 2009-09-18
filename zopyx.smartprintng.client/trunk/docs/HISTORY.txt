@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.5.2 (2007-09-18)
+------------------
+
+* added method for setting the output directory
+
+
 0.5.1 (2007-09-17)
 ------------------
 

@@ -21,6 +21,12 @@ class Proxy(object):
         self.port = port
         self.username = username
         self.password = password
+        self.output_directory = os.getcwd()
+
+    def setOutputDirectory(self, output_directory):
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)
+        self.output_directory = output_directory
 
     def _makeZipFromDirectory(self, directory):
         """ Generate a ZIP file from a directory containing all its
