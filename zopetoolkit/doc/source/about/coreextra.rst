@@ -56,6 +56,17 @@ according to these loose guidelines:
 Libraries may have a different status in the core to convey extra
 information about them, such as deprecation status.
 
+Reasons to consider removing a library from the core are (or at least
+factoring out code):
+
+* if a library doesn't have narrative documentation and there is no
+  commitment from maintainers to create such documentation.
+
+* if a library depends on a zope.* package that is itself not in the
+  core.
+
+* if a library contains specific user interface code.
+
 Extra libraries
 ---------------
 
