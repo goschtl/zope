@@ -28,10 +28,11 @@
 	               size="18"
 	               value=""
 	               title="Search Site"
+	               size="15"
 	               accesskey="4"
 	               i18n:attributes="title title_search_site;"
 	               tal:attributes="value request/SearchableText|nothing;"
-	               class="inputLabel" />
+	               class="inputLabel portlet-search-gadget" />
 
 	        <input class="searchButton"
 	               type="submit"
