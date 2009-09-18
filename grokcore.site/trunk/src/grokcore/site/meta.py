@@ -77,7 +77,7 @@ def localUtilityRegistrationSubscriber(site, event):
 
 
 @grokcore.component.provider(grokcore.site.interfaces.IUtilityInstaller)
-def setupUtility(Site, utility, provides, name=u'',
+def setupUtility(site, utility, provides, name=u'',
                  name_in_container=None, public=False, setup=None):
     """Set up a utility in a site.
 
