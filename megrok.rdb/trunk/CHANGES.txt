@@ -12,6 +12,9 @@ CHANGES
 
 - Update buildout to use Grok 1.0b2 versions.
 
+- Added a test that demonstrates a common initialization pattern using
+  `rdb.setupDatabase`` in a ``IEngineCreatedEvent`` subscriber.
+
 0.9.1 (2009-08-14)
 ------------------
 
