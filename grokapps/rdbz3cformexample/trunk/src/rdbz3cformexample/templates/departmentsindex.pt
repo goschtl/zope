@@ -7,5 +7,5 @@
 </ul>
 
 <p>
-  <a tal:attributes="href python:view.url(context, '@@addepartment')">Add Department</a>
+  <a tal:attributes="href python:view.url(context, '@@adddepartment')">Add Department</a>
 </p>
