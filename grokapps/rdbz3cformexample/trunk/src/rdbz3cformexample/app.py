@@ -11,6 +11,7 @@ from z3c.saconfig import EngineFactory, GloballyScopedSession
 from z3c.saconfig.interfaces import IEngineCreatedEvent
 
 from megrok.layout import Page
+from megrok import menu
 from megrok.z3cform.base import PageAddForm
 from z3c.form import field
 
@@ -41,6 +42,10 @@ def setUpDatabase(event):
     rdb.setupDatabase(metadata)
 
 grok.templatedir('templates')
+
+class AdministrationMenu(menu.Menu):
+    grok.name('rdb_links_menu')
+    grok.title('Links')
 
 class RDBExample(grok.Application, grok.Model, rdb.QueryContainer):
     """The application object.
@@ -73,6 +78,8 @@ class AddFaculty(PageAddForm):
     """A form to add a new Faculty object to the application.
     """
     grok.context(RDBExample)
+    grok.title(u"Add Faculty")
+    menu.menuitem('rdb_links_menu')
 
     @property
     def fields(self):
