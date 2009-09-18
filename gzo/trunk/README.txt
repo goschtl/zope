@@ -6,6 +6,10 @@ Plone Instance:
 
 	/var/zope/instances/gzo
 
+Plone ZMI:
+
+	http://grok.zope.org/site-admin/manage_main
+
 Apache Configuration:
 
 	/etc/httpd/vhosts/grok/plone.grok.quintagroup.com.conf
@@ -22,6 +26,10 @@ Neanderthal II Sprint
 
 - Replace the Plone search box to a google search based search box.
   This way, we are able to search inside the Sphinx based documentation.
+
+- Updated Message of a day on the server
+
+- gzo buildout added to svn
 
 
 Plone 3.0.5 Instance (old)
