@@ -1,0 +1,19 @@
+CHANGES
+*******
+
+0.2 (2009-09-18)
+================
+
+* Provides a macros access from the template.
+
+* Don't depend anymore on grok, but only grokcore.view.
+
+* Added support for `path()` and `exists()` in page templates. This
+  was introduced from `z3c.pt`.
+
+* Fix ZCML includes.
+
+0.1 (2009-02-22)
+================
+
+* Initial release
