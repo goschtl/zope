@@ -17,13 +17,25 @@ $Id$
 
 import unittest
 from Testing import ZopeTestCase
+from Products.Five.schema import Zope2VocabularyRegistry
 
 from Products.CMFCalendar.testing import FunctionalLayer
 
+def _setupVocabulary(ztc):
+    from zope.schema.vocabulary import setVocabularyRegistry
+    setVocabularyRegistry(Zope2VocabularyRegistry())
+
+def _clearVocabulary(ztc):
+    from zope.schema.vocabulary import _clear
+    _clear()
+    
 
 def test_suite():
     suite = unittest.TestSuite()
-    s = ZopeTestCase.FunctionalDocFileSuite('event.txt')
+    s = ZopeTestCase.FunctionalDocFileSuite('event.txt',
+                                            setUp=_setupVocabulary,
+                                            tearDown=_clearVocabulary,
+                                           )
     s.layer = FunctionalLayer
     suite.addTest(s)
     return suite
