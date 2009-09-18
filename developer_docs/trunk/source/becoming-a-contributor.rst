@@ -12,7 +12,7 @@ Becoming a contributor
 
    The contact details can be found on the `Zope Foundation website <http://foundation.zope.org/about>`_.
 
-4. Wait for an acknowledgement. f you don't get this in a reasonable amount of
+4. Wait for an acknowledgement. If you don't get this in a reasonable amount of
    time, then ask back on the Zope Foundation list (foundation-info@zope.org) or
    try to contact a member of the repository committee (Andreas Jung and Christian 
    Theune).
