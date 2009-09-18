@@ -16,7 +16,6 @@ $Id$
 """
 
 from zope.app.form.browser import DatetimeI18nWidget
-from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.component import adapts
 from zope.component import getUtility
 from zope.formlib import form
@@ -28,6 +27,7 @@ from zope.schema import Set
 from zope.schema import Text
 from zope.schema import TextLine
 from zope.schema import URI
+from zope.schema.interfaces import IVocabularyFactory
 
 from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFDefault.formlib.form import ContentEditFormBase
