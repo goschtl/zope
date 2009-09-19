@@ -11,6 +11,6 @@
     <tal:block replace="structure view/widgets/connectorName/render" />
   </td>
   <td style="padding-right:5px;">
-	<input tal:replace="structure view/actions/remove/render" />
+    <input tal:replace="structure view/actions/remove/render" />
   </td>
 </tr>

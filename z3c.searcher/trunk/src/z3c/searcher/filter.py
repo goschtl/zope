@@ -45,9 +45,12 @@ class SearchFilter(persistent.Persistent, contained.Contained):
     """
     zope.interface.implements(interfaces.ISearchFilter)
 
+    counter = 0
+
     def __init__(self):
         super(SearchFilter, self).__init__()
         self.criteria = persistent.list.PersistentList()
+        self.counter = 0
 
     def clear(self):
         """See interfaces.ISearchFilter"""
@@ -66,13 +69,13 @@ class SearchFilter(persistent.Persistent, contained.Contained):
             self, interfaces.ISearchCriteriumFactory, name=name)()
         if value is not interfaces.NOVALUE:
             criterium.value = value
-        criterium.__name__ = name
         criterium.__parent__ = self
         return criterium
 
     def addCriterium(self, criterium):
         """See interfaces.ISearchFilter"""
-        location.locate(criterium, self)
+        self.counter += 1
+        location.locate(criterium, self, unicode(self.counter))
         self.criteria.append(criterium)
 
     def createAndAddCriterium(self, name, value=interfaces.NOVALUE):

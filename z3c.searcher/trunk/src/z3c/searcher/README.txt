@@ -450,6 +450,7 @@ Now let's cleanup our search session and remove the filter stored by the key:
 
 Criterium Form
 --------------
+
 Now we will show you how the form part is working. Each criterium can render 
 itself within a form. We offer a CriteriumForm class for doing this. Let's
 create and render such a criterium form:
@@ -459,6 +460,15 @@ create and render such a criterium form:
   >>> criteriumRow = form.CriteriumForm(textCriterium, request)
   >>> criteriumRow
   <z3c.searcher.form.CriteriumForm object at ...>
+
+We also need to set a prefix, this is normaly done by the search form by
+calling setupCriteriumRows. And normaly the criterium is located in the search
+filter. We just need a criterium __name__ for now:
+
+  >>> textCriterium.__name__ = u'1'
+  >>> criteriumRow.prefix = 'form.criterium.%s' % str(textCriterium.__name__)
+  >>> criteriumRow.prefix
+  'form.criterium.1'
 
 Before we can render the form, we need to register the templates:
 
@@ -521,41 +531,45 @@ Now we can render the criterium form:
       <b>matches</b>
     </td>
     <td style="padding-right:5px;">
-      <input type="text" id="form-widgets-value"
-         name="form.widgets.value"
-         class="text-widget required textline-field" value="" />
-      <span class="option">
-    <label for="form-widgets-connectorName-0">
-      <input type="radio" id="form-widgets-connectorName-0"
-             name="form.widgets.connectorName:list"
+      <input id="form-criterium-1-widgets-value"
+             name="form.criterium.1.widgets.value"
+             class="text-widget required textline-field"
+             value="" type="text" />
+  <span class="option">
+    <label for="form-criterium-1-widgets-connectorName-0">
+      <input id="form-criterium-1-widgets-connectorName-0"
+             name="form.criterium.1.widgets.connectorName:list"
              class="radio-widget required choice-field"
-             value="OR" checked="checked" />
+             value="OR" checked="checked" type="radio" />
       <span class="label">or</span>
     </label>
-  </span><span class="option">
-    <label for="form-widgets-connectorName-1">
-      <input type="radio" id="form-widgets-connectorName-1"
-             name="form.widgets.connectorName:list"
+  </span>
+  <span class="option">
+    <label for="form-criterium-1-widgets-connectorName-1">
+      <input id="form-criterium-1-widgets-connectorName-1"
+             name="form.criterium.1.widgets.connectorName:list"
              class="radio-widget required choice-field"
-             value="AND" />
+             value="AND" type="radio" />
       <span class="label">and</span>
     </label>
-  </span><span class="option">
-    <label for="form-widgets-connectorName-2">
-      <input type="radio" id="form-widgets-connectorName-2"
-             name="form.widgets.connectorName:list"
+  </span>
+  <span class="option">
+    <label for="form-criterium-1-widgets-connectorName-2">
+      <input id="form-criterium-1-widgets-connectorName-2"
+             name="form.criterium.1.widgets.connectorName:list"
              class="radio-widget required choice-field"
-             value="NOT" />
+             value="NOT" type="radio" />
       <span class="label">not</span>
     </label>
   </span>
-  <input name="form.widgets.connectorName-empty-marker"
+  <input name="form.criterium.1.widgets.connectorName-empty-marker"
          type="hidden" value="1" />
     </td>
     <td style="padding-right:5px;">
-      <input type="submit" id="form-buttons-remove"
-         name="form.buttons.remove"
-         class="submit-widget button-field" value="Remove" />
+  <input id="form-criterium-1-buttons-remove"
+         name="form.criterium.1.buttons.remove"
+         class="submit-widget button-field" value="Remove"
+         type="submit" />
     </td>
   </tr>
 
@@ -590,17 +604,20 @@ Now we can render our filter form:
     <select name="filterformnewCriterium" size="1">
       <option value="fullText">fullText</option>
     </select>
-    <input type="submit" id="filterform-buttons-add"
-           name="filterform.buttons.add"
-           class="submit-widget button-field" value="Add" />
+  <input id="filterform-buttons-add"
+         name="filterform.buttons.add"
+         class="submit-widget button-field" value="Add"
+         type="submit" />
   </div>
   <div>
-    <input type="submit" id="filterform-buttons-search"
-           name="filterform.buttons.search"
-           class="submit-widget button-field" value="Search" />
-    <input type="submit" id="filterform-buttons-clear"
-           name="filterform.buttons.clear"
-           class="submit-widget button-field" value="Clear" />
+  <input id="filterform-buttons-search"
+         name="filterform.buttons.search"
+         class="submit-widget button-field" value="Search"
+         type="submit" />
+  <input id="filterform-buttons-clear"
+         name="filterform.buttons.clear"
+         class="submit-widget button-field" value="Clear"
+         type="submit" />
   </div>
   </fieldset>
 
@@ -632,10 +649,6 @@ content search filter and of corse the criteria configured for this filter.
         enctype="multipart/form-data" class="edit-form"
         name="form" id="form">
     <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
       <div>
     <fieldset>
   <legend>Filter</legend>
@@ -646,17 +659,20 @@ content search filter and of corse the criteria configured for this filter.
     <select name="filterformnewCriterium" size="1">
       <option value="fullText">fullText</option>
     </select>
-    <input type="submit" id="filterform-buttons-add"
-           name="filterform.buttons.add"
-           class="submit-widget button-field" value="Add" />
+  <input id="filterform-buttons-add"
+         name="filterform.buttons.add"
+         class="submit-widget button-field" value="Add"
+         type="submit" />
   </div>
   <div>
-    <input type="submit" id="filterform-buttons-search"
-           name="filterform.buttons.search"
-           class="submit-widget button-field" value="Search" />
-    <input type="submit" id="filterform-buttons-clear"
-           name="filterform.buttons.clear"
-           class="submit-widget button-field" value="Clear" />
+  <input id="filterform-buttons-search"
+         name="filterform.buttons.search"
+         class="submit-widget button-field" value="Search"
+         type="submit" />
+  <input id="filterform-buttons-clear"
+         name="filterform.buttons.clear"
+         class="submit-widget button-field" value="Clear"
+         type="submit" />
   </div>
   </fieldset>
     </div>
@@ -698,10 +714,6 @@ content search filter and of corse the criteria configured for this filter.
         enctype="multipart/form-data" class="edit-form"
         name="formTable" id="formTable">
     <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
       <div>
       <div class="filterForm">
         <fieldset>
@@ -713,17 +725,20 @@ content search filter and of corse the criteria configured for this filter.
     <select name="filterformnewCriterium" size="1">
       <option value="fullText">fullText</option>
     </select>
-    <input type="submit" id="filterform-buttons-add"
+  <input id="filterform-buttons-add"
          name="filterform.buttons.add"
-         class="submit-widget button-field" value="Add" />
+         class="submit-widget button-field" value="Add"
+         type="submit" />
   </div>
   <div>
-    <input type="submit" id="filterform-buttons-search"
+  <input id="filterform-buttons-search"
          name="filterform.buttons.search"
-         class="submit-widget button-field" value="Search" />
-    <input type="submit" id="filterform-buttons-clear"
+         class="submit-widget button-field" value="Search"
+         type="submit" />
+  <input id="filterform-buttons-clear"
          name="filterform.buttons.clear"
-         class="submit-widget button-field" value="Clear" />
+         class="submit-widget button-field" value="Clear"
+         type="submit" />
   </div>
   </fieldset>
       </div>

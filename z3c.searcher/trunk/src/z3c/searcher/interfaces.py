@@ -189,13 +189,65 @@ class ISearchFilter(zope.interface.Interface):
         """Generate a query object."""
 
 
+class ICriteriumForm(IForm):
+    """Criterium form."""
+
+    criteriumName = zope.schema.Field(
+        title=_('Criterium name'),
+        description=_('The criterium name'),
+        required=True)
+
+    def save():
+        """Save criterium changes."""
+
+
 class IFilterForm(IForm):
     """Filter form."""
+
+    criteriumRows = zope.schema.List(
+        title=_('List of criterium forms'),
+        description=_('A list of criterium forms'),
+        value_type=zope.schema.Field(
+            title=_('Criterium form'),
+            description=_('Criterium form'),
+            required=True
+            ),
+        default=[],
+        required=False)
+
+    rowName = zope.schema.Field(
+        title=_('Row name'),
+        description=_('The row name used for lookup row forms.'),
+        required=True)
+
+    filterKey = zope.schema.Field(
+        title=_('Seach filter key'),
+        description=_('The search filter annotation key.'),
+        required=True,
+        default=SEARCH_SESSION_FILTER_KEY)
+
+    addCriteriumName = zope.schema.Field(
+        title=_('Add criterium name'),
+        description=_('The name used for identify add criterium action.'),
+        required=True)
+
+    criteriumFactories = zope.schema.Dict(
+        title=_('Name criterium factory dictionary'),
+        description=_('The name criterium factory dictionary'),
+        required=True,
+        default={})
+
+    searchFilter = zope.schema.Field(
+        title=_('Search filter class'),
+        description=_('The search filter class'),
+        required=False)
+
+    def setupCriteriumRows():
+        """Setup criterium row forms."""
 
 
 class ISearchForm(IForm):
     """Search form."""
-
 
 class ISearchTable(ITable):
     """Search table."""

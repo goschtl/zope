@@ -95,7 +95,7 @@ class FilterForm(form.Form):
     prefix = 'filterform'
     ignoreContext = True
     criteriumRows = []
-    searchFilter = None
+    rowName = 'row'
 
     # The filterName is used in the ISearchSession to identify filter
     filterName = 'searchFilter'
@@ -113,6 +113,11 @@ class FilterForm(form.Form):
         """
         return interfaces.SEARCH_SESSION_FILTER_KEY
 
+    @property
+    def addCriteriumName(self):
+        return self.prefix + '-add'
+
+    @property
     def criteriumFactories(self):
         for name, factory in self.searchFilter.criteriumFactories:
             yield {'name': name, 'title': factory.title}
@@ -147,34 +152,34 @@ class FilterForm(form.Form):
     def setupCriteriumRows(self):
         self.criteriumRows = []
         append = self.criteriumRows.append
-        index = 0
         for criterium in self.searchFilter.criteria:
             row = zope.component.getMultiAdapter(
-                (criterium, self.request), name='row')
-            row.prefix = str(index)
+                (criterium, self.request), name=self.rowName)
+            row.__name__ = row.criteriumName
+            row.prefix = '%s.criterium.%s' % (self.prefix,
+                str(row.criteriumName))
             row.update()
             append(row)
-            index += 1
 
     def update(self):
         self.setupCriteriumRows()
         super(FilterForm, self).update()
 
-    @button.buttonAndHandler(u'Add')
+    @button.buttonAndHandler(_(u'Add'), name='add')
     def handleAdd(self, action):
-        name = self.request.get(self.prefix + 'newCriterium', None)
+        name = self.request.get(self.addCriteriumName, None)
         if name is not None:
             self.searchFilter.createAndAddCriterium(name)
             self.setupCriteriumRows()
             self.status = _('New criterium added.')
 
-    @button.buttonAndHandler(u'Clear', name='clear')
+    @button.buttonAndHandler(_(u'Clear'), name='clear')
     def handleClear(self, action):
         self.searchFilter.clear()
         self.setupCriteriumRows()
         self.status = _('Criteria cleared.')
 
-    @button.buttonAndHandler(u'Search', name='search')
+    @button.buttonAndHandler(_(u'Search'), name='search')
     def handleSearch(self, action):
         data, errors = self.widgets.extract()
         for row in self.criteriumRows:

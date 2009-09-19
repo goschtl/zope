@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.searcher',
-    version='0.5.3dev',
+    version='0.6.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Persistent and session based search form for Zope3",
