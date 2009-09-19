@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+      name="z3c.searcher"
+      provides="zope.app.generations.interfaces.ISchemaManager"
+      component=".schemaManager"
+      />
+
+</configure>

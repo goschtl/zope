@@ -1,0 +1,40 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2009-09-20)
+------------------
+
+- Bugfix: Criterium didn't get correct located in SearchFilter. The criterium
+  __name__ was allways an empty unicode value.
+
+- Bugfix: The criterim filter didn't work with more then one criterium used.
+  The search form now locates the filter form and will set a individual prefix
+  for the criterium form. If you use a custom criterium form, you probably 
+  have to review your custom implementation. Especialy review the prefix setup
+  in the setupCriteriumRows method.
+
+- adjust tests, reflect latest changes and fix element attribute order which
+  get changed in z3c.form
+
+
+0.5.2 (2009-03-10)
+------------------
+
+- Cleanup dependencies. Change package's mailing list address to
+  zope-dev at zope.org instead of retired one.
+
+
+0.5.1 (2009-02-22)
+------------------
+
+- Fix: added missing zope.interface import in z3c.searcher.table and added
+  tests for SearchTable
+
+
+0.5.0 (2009-02-22)
+------------------
+
+- Added initial generations configuration files
+
+- Initial Release
