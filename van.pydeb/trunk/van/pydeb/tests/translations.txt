@@ -99,6 +99,16 @@ Paste
     >>> print pydeb.py_to_bin("PasteScript")
     python-pastescript
 
+python-gettext
+--------------
+
+http://pypi.python.org/pypi/python-gettext
+
+    >>> print pydeb.py_to_bin("python-gettext")
+    python-gettext
+    >>> print pydeb.bin_to_py("python-gettext")
+    python-gettext
+
 ZODB3
 -----
 

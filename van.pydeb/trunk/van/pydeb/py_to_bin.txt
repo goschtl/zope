@@ -21,6 +21,7 @@ Reportlab                              	python-reportlab
 RestrictedPython			python-restrictedpython
 PyQt4					python-qt4
 setuptools				python-pkg-resources			reduced=python-setuptools
+python-gettext				python-gettext
 
 #
 # The following list is automatically generated from apt-file info by the scripts/generate script
