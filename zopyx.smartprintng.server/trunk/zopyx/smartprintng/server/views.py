@@ -51,6 +51,30 @@ class index(object):
                                            version=version,
                                            project='zopyx.smartprintng.server')
 
+@bfg_view(for_=Server, request_type='GET', permission='read', name='selftest')
+class selftest(object):
+    """ Server selftest """
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, converter=None):
+        converter = self.request.params['converter']
+        test_file = os.path.join(os.path.dirname(__file__), 'test_data', 'test.html')
+        result = self.context._convert(test_file, converter)
+        if result['status'] == 0:
+            output_filename = result['output_filename']
+            ct, dummy = mimetypes.guess_type(output_filename)
+            basename, ext = os.path.splitext(output_filename)
+            headers = [('content-disposition','attachment; filename=selftest-%s%s' % (converter,ext)),
+                       ('content-type', ct)]
+            return Response(body=file(output_filename, 'rb').read(),
+                            content_type=ct,
+                            headerlist=headers
+                        )
+        raise RuntimeError
+
 
 @bfg_view(for_=Server, name='deliver')
 def deliver(context, request):

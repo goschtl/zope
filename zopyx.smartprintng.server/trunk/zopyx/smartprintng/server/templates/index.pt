@@ -22,6 +22,13 @@
       <span class="label">Available converters:</span> 
       <span tal:content="python: ', '.join(converters)" />
   </div>
+  <div>
+      <span class="label">Self-test:</span>
+      <tal:loop repeat ="c converters">
+        <a href="selftest?converter=$c">$c</a>
+      </tal:loop>
+  </div>   
+
   <div id="footer">
       (C) 2009, ZOPYX Ltd. &amp; Co. KG, <a href="http://www.zopyx.com">www.zopyx.com</a>, <a href="mailto:info@zopyx.com">info@zopyx.com</a>
   </div>
