@@ -28,7 +28,7 @@ To use Chameleon page templates with Grok all you need is to install
 megrok.chameleon as an egg and include its ZCML. The best place to do
 this is to make `megrok.chameleon` a dependency of your application by
 adding it to your ``install_requires`` list in ``setup.cfg``. If you
-used grokprojet to create your application ``setup.py`` is located in the
+used grokproject to create your application ``setup.py`` is located in the
 project root. It should look something like this::
 
    install_requires=['setuptools',
