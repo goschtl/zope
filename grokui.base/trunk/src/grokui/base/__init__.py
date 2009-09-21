@@ -1,2 +1,2 @@
 from grokui.base.namespace import GrokUILayer, GrokUISkin
-from grokui.base import AdminView
+from grokui.base.layout import AdminView
