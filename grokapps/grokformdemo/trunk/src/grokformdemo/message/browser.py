@@ -69,4 +69,9 @@ class HelloWorldDisplayForm(megrok.z3cform.base.PageDisplayForm):
     grok.name('index')
     template = grok.PageTemplateFile('display.pt')
 
+    # This is a fix for new grokcore.version.
+    def render(self):
+        return ""
+    render.base_method = True     
+
     fields = field.Fields(interfaces.IHelloWorld)

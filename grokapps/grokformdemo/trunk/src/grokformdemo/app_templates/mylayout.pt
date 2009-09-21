@@ -10,9 +10,9 @@
 
     <!-- Die Magie findet in der naechsten Zeile statt! -->
     <div id="content"
-         tal:content="structure view/render">Page Content</div>
+         tal:content="structure view/content">Page Content</div>
 
-    <i> For Information you can contact: cklinger@novareto.de</i>
+    <i> For Information you can contact: grok-dev@zope.org or channel #grok on freenode irc</i>
   </body>
 </html>
 
