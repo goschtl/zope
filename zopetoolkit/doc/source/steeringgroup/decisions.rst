@@ -187,3 +187,10 @@ quick way to note decisions first.
   https://mail.zope.org/pipermail/zope-dev/2009-September/037725.html
 
   https://mail.zope.org/pipermail/zope-dev/2009-September/037735.html
+
+* We want to encourage narrative documentation for packages (doctested
+  or not). Even though we do not require that this documentation is
+  executable (doctested), we do prefer a project setup so that it easy
+  to support executable documentation as well, in cooperation with
+  tools like manuel. The bobo documentation is an example of such a
+  setup. We should document this better.
