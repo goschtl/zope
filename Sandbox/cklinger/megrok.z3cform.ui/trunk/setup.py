@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 import os
 
 version = '0.1'
-print "INSTALLING"
 setup(name='megrok.z3cform.ui',
       version=version,
       description="Installation Helper for z3c.formui",

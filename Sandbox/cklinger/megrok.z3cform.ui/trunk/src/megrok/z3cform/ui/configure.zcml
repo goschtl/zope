@@ -10,10 +10,11 @@
   <include package="z3c.macro" file="meta.zcml"/>
   <include package="z3c.macro"/>
   <include package="z3c.template" file="meta.zcml"/>
-  <include package="z3cform.ui"/>
+  <include package="z3c.formui"/>
   <include package="megrok.z3cform.ui"/>
 
   <class class="zope.publisher.http.HTTPRequest">
+    <implements interface="z3c.form.interfaces.IFormLayer" />
     <implements interface="z3c.formui.interfaces.IDivFormLayer" />
   </class>
 
