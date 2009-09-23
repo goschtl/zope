@@ -2,11 +2,10 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.6.1 (unreleased)
 ------------------
 
-- Added getParent() to ILocationInfo and moved the actual implementation here
-  from zope.traversal.api, analogous to getParents().
+- ...
 
 - Actually removed deprecated PathPersistent class from
   zope.location.pickling.

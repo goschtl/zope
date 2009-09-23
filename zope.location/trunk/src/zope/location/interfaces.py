@@ -75,15 +75,6 @@ class ILocationInfo(zope.interface.Interface):
 
         """
 
-    def getParent():
-        """Returns the container the object was traversed via.
-
-        Returns None if the object is a containment root.
-        Raises TypeError if the object doesn't have enough context to get the
-        parent.
-
-        """
-
     def getParents():
         """Returns a list starting with the object's parent followed by
         each of its parents.
