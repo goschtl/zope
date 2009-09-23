@@ -76,11 +76,12 @@ The minium required configuration to install Zope would be::
 And for this release we recommend to pin down the following version in
 your buildout::
 
-  grokcore.annotation = 1.0.1
+  five.grok = 1.0  
+  grokcore.annotation = 1.1
   grokcore.component = 1.7
   grokcore.formlib = 1.4
   grokcore.security = 1.2
-  grokcore.site = 1.0.1
+  grokcore.site = 1.1
   grokcore.view = 1.12.2
   grokcore.viewlet = 1.3
   five.localsitemanager = 1.1
