@@ -55,7 +55,7 @@ import threading
 import time
 import zc.ngi.async
 import zc.ngi.adapters
-import ZODB.Blob
+import ZODB.blob
 import ZODB.FileStorage
 import ZODB.POSException
 import ZODB.TimeStamp
@@ -78,21 +78,29 @@ def truncatefs(t, fs, blobs=None):
         return
     for base, dirs, files in os.walk(blobs):
         for name in files:
-            if not name.endswith(BLOB_SUFFIX):
+            if not name.endswith(ZODB.blob.BLOB_SUFFIX):
                 continue
-            serial = filename[:-len(ZODB.Blob.BLOB_SUFFIX)]
+            serial = name[:-len(ZODB.blob.BLOB_SUFFIX)]
             serial = ZODB.utils.repr_to_oid(serial)
             if serial >= tid:
-                ZODB.Blob.remove_committed(os.path.join(base, name))
+                #print 'remove', base, name
+                ZODB.blob.remove_committed(os.path.join(base, name))
 
+def lastfs(fs):
+    f = open(fs, 'rb')
+    f.seek(-8, 2)
+    f.seek(-8-ZODB.utils.u64(f.read(8)), 2)
+    tid = f.read(8)
+    return str(ZODB.TimeStamp.TimeStamp(tid))
 
 def extract(fsname, log, outname):
     start = time_stamp(log.start())
     end = time_stamp(log.end())
     out = open(outname, 'wb')
     for t in ZODB.FileStorage.FileIterator(fsname, start, end):
-        marshal.dump(('t', t.tid, t.status, t.user, t.desc, t.extension),
-                     out)
+        marshal.dump(
+            ('t', t.tid, t.status, t.user, t.description, t.extension),
+            out)
         for r in t:
             marshal.dump(('r', r.oid, r.tid, r.data), out)
         marshal.dump(('c',), out)
@@ -106,10 +114,16 @@ class Log(object):
     def start(self):
         return iter(self).next()[1]
 
+    _end = None
     def end(self):
+        if self._end is not None:
+            return self._end
+        
         end = None
         for x in self:
             end = x[1]
+
+        self._end = end
         return end
 
     def __iter__(self):
@@ -167,9 +181,9 @@ class Handler:
                 err = ret[1]
                 self.errtimes.append(now-start)
                 if isinstance(err, ZODB.POSException.POSKeyError):
-                    if op == 'sendBlob':
-                        # Hm. May be due to a bad serial.
-                        # queue a
+#                     if op == 'sendBlob':
+#                         # Hm. May be due to a bad serial.
+#                         # queue a
                     self.queue.append((op, args))
                     return
                 print 'OOPS', ret[0].__name__, ret[1]
