@@ -5,7 +5,11 @@ CHANGES
 1.1.0 (unreleased)
 ------------------
 
-- ...
+- Fixed error on tag handling in update : tag where registered more
+  than once for same user, item and tag  as with set what imports is
+  hash and not cmp. Added a test to put this in evidence with
+  getCloud. [trollfot]
+
 
 1.0.0 (2009-07-24)
 ------------------
@@ -13,6 +17,7 @@ CHANGES
 - Fixed tests to conform to latest packages.
 
 - Cleanup release boilerplate.
+
 
 0.3.0b2 (2007-07-18)
 --------------------

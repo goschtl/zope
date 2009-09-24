@@ -91,19 +91,20 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         for t in tags:
             tags_tags.update(self._name_to_tagids.get(t, ()))
         old_tag_ids = tags_item.intersection(tags_user)
-        # any tags of the same user/item that are not in tags
-        old_tag_ids = old_tag_ids.difference(tags_tags)
+        # any tags of the same user/item that are  in tags
+        common_tag_ids = old_tag_ids.intersection(tags_tags)
             
-        old_tags = set([self._tagid_to_obj[id]
+        common_tags = set([self._tagid_to_obj[id].brain()
                         for id in old_tag_ids])
 
-        new_tags = set([tag.Tag(item, user, tagName)
+        new_tags = set([tag.Tag(item, user, tagName).brain()
                         for tagName in tags])
 
-        add_tags = new_tags.difference(old_tags)
+        add_tags = new_tags.difference(common_tags)
         
         add_tag_ids = []
-        for tagObj in add_tags:
+        for tagBrain in add_tags:
+            tagObj = tag.Tag.from_brain(tagBrain)
             id = self._add(tagObj)
             add_tag_ids.append(id)
             ids = self._user_to_tagids.get(user)
@@ -123,7 +124,7 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
                 self._name_to_tagids[tagObj.name] = IOBTree.IOSet((id,))
             else:
                 ids.insert(id)
-        del_tag_ids = old_tag_ids.difference(add_tag_ids)
+        del_tag_ids = old_tag_ids.difference(tags_tags)
         self._delTags(del_tag_ids)
 
     def _delTags(self, del_tag_ids):

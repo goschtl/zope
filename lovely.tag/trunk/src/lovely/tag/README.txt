@@ -25,7 +25,7 @@ Before updating the engine we need to ensure that persistent objects can be
 adapted to key references:
 
   >>> import zope.component
-  >>> from zope.keyreference import testing
+  >>> from zope.app.keyreference import testing
 
   >>> zope.component.provideAdapter(testing.SimpleKeyReference)
 
@@ -447,6 +447,22 @@ Or more users, and a few items.
   >>> sorted(engine.getCloud(items=[1, 2, 3], users=[u'srichter', u'jodok']))
   [(u'Austria', 1), (u'USA', 1), (u'austria', 1),
    (u'lovely', 1), (u'personal', 1), (u'work', 1)]
+
+Re-updating tags for same user does not affect cloud weight
+
+   >>> engine.update(1, u'jodok', [u'USA',])
+   >>> sorted(engine.getCloud(items=[1, 2, 3], users=[u'srichter', u'jodok']))
+   [(u'Austria', 1), (u'USA', 1), (u'austria', 1),
+   (u'lovely', 1), (u'personal', 1), (u'work', 1)]
+
+
+Re-updating tags for same user does not affect cloud weight
+
+  >>> engine.update(1, u'jodok', [u'USA',])
+  >>> sorted(engine.getCloud(items=[1, 2, 3], users=[u'srichter', u'jodok']))
+  [(u'Austria', 1), (u'USA', 1), (u'austria', 1),
+   (u'lovely', 1), (u'personal', 1), (u'work', 1)]
+
 
 Related Tags
 ------------

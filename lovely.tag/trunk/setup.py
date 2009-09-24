@@ -51,7 +51,7 @@ setup (
     extras_require = dict(
         test = ['zope.app.testing',
                 'zope.app.catalog',
-                'zope.keyreference',
+                'zope.app.keyreference',
                 'z3c.sampledata']
         ),
     install_requires = [
