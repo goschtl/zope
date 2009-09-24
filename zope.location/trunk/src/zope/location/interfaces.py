@@ -20,8 +20,6 @@ __docformat__ = 'restructuredtext'
 import zope.interface
 import zope.schema
 
-_RAISE_KEYERROR = object()
-
 
 class ILocation(zope.interface.Interface):
     """Objects that can be located in a hierachy.
@@ -110,30 +108,6 @@ class ISublocations(zope.interface.Interface):
 class IRoot(zope.interface.Interface):
     """Marker interface to designate root objects within a location hierarchy.
     """
-
-
-
-
-class ITraverser(zope.interface.Interface):
-    """Provide traverse features"""
-
-    # XXX This is used like a utility but implemented as an adapter: The
-    # traversal policy is only implemented once and repeated for all objects
-    # along the path.
-
-    def traverse(path, default=_RAISE_KEYERROR):
-        """Return an object given a path.
-
-        Path is either an immutable sequence of strings or a slash ('/')
-        delimited string.
-
-        If the first string in the path sequence is an empty string, or the
-        path begins with a '/', start at the root. Otherwise the path is
-        relative to the current context.
-
-        If the object is not found, return 'default' argument.
-
-        """
 
 
 class LocationError(KeyError, LookupError):

@@ -17,23 +17,8 @@ $Id$
 """
 
 import unittest
-import zope.interface
 import zope.testing.doctest
 from zope.testing.doctestunit import DocTestSuite
-from zope.location.interfaces import ITraverser
-from zope.location.location import Location
-
-
-class TLocation(Location):
-    """Simple traversable location used in examples."""
-
-    zope.interface.implements(ITraverser)
-
-    def traverse(self, path, default=None, request=None):
-        o = self
-        for name in path.split(u'/'):
-           o = getattr(o, name)
-        return o
 
 
 def test_suite():

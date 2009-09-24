@@ -10,6 +10,10 @@ CHANGES
 - Actually removed deprecated PathPersistent class from
   zope.location.pickling.
 
+- Moved ITraverser back to zope.traversing where it belongs conceptually. The
+  interface had been moved to zope.location to invert the package
+  interdependency but is no longer used here.
+
 3.6.0 (2009-08-27)
 ------------------
 
