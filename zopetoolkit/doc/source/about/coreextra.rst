@@ -57,7 +57,7 @@ Libraries may have a different status in the core to convey extra
 information about them, such as deprecation status.
 
 Reasons to consider refactoring packages, making dependencies optional
-or removing a library from the ZTK are::
+or removing a library from the ZTK are:
 
 * if a library contains specific user interface code this makes it a
   candidate for splitting it into a reusable non-UI part and a UI part
