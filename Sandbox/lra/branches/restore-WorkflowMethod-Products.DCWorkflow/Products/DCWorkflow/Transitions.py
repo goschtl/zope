@@ -31,6 +31,7 @@ from Products.DCWorkflow.utils import _dtmldir
 
 TRIGGER_AUTOMATIC = 0
 TRIGGER_USER_ACTION = 1
+TRIGGER_WORKFLOW_METHOD = 2
 
 
 class TransitionDefinition (SimpleItem):

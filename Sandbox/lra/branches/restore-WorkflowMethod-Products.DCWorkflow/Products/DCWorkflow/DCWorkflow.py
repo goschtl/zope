@@ -40,6 +40,7 @@ from Products.DCWorkflow.interfaces import IDCWorkflowDefinition
 from Products.DCWorkflow.permissions import ManagePortal
 from Products.DCWorkflow.Transitions import TRIGGER_AUTOMATIC
 from Products.DCWorkflow.Transitions import TRIGGER_USER_ACTION
+from Products.DCWorkflow.Transitions import TRIGGER_WORKFLOW_METHOD
 from Products.DCWorkflow.utils import Message as _
 from Products.DCWorkflow.utils import modifyRolesForGroup
 from Products.DCWorkflow.utils import modifyRolesForPermission
@@ -280,6 +281,52 @@ class DCWorkflowDefinition(WorkflowUIMixin, Folder):
         if not self._checkTransitionGuard(tdef, ob, **kw):
             raise Unauthorized(action)
         self._changeStateOf(ob, tdef, kw)
+
+    security.declarePrivate('isWorkflowMethodSupported')
+    def isWorkflowMethodSupported(self, ob, method_id):
+        '''
+        Returns a true value if the given workflow method
+        is supported in the current state.
+        '''
+        sdef = self._getWorkflowStateOf(ob)
+        if sdef is None:
+            return 0
+        if method_id in sdef.transitions:
+            tdef = self.transitions.get(method_id, None)
+            if (tdef is not None and
+                tdef.trigger_type == TRIGGER_WORKFLOW_METHOD and
+                self._checkTransitionGuard(tdef, ob)):
+                return 1
+        return 0
+
+    security.declarePrivate('wrapWorkflowMethod')
+    def wrapWorkflowMethod(self, ob, method_id, func, args, kw):
+        '''
+        Allows the user to request a workflow action.  This method
+        must perform its own security checks.
+        '''
+        sdef = self._getWorkflowStateOf(ob)
+        if sdef is None:
+            raise WorkflowException, 'Object is in an undefined state'
+        if method_id not in sdef.transitions:
+            raise Unauthorized(method_id)
+        tdef = self.transitions.get(method_id, None)
+        if tdef is None or tdef.trigger_type != TRIGGER_WORKFLOW_METHOD:
+            raise WorkflowException, (
+                'Transition %s is not triggered by a workflow method'
+                % method_id)
+        if not self._checkTransitionGuard(tdef, ob):
+            raise Unauthorized(method_id)
+        res = func(*args, **kw)
+        try:
+            self._changeStateOf(ob, tdef)
+        except ObjectDeleted:
+            # Re-raise with a different result.
+            raise ObjectDeleted(res)
+        except ObjectMoved, ex:
+            # Re-raise with a different result.
+            raise ObjectMoved(ex.getNewObject(), res)
+        return res
 
     security.declarePrivate('isInfoSupported')
     def isInfoSupported(self, ob, name):

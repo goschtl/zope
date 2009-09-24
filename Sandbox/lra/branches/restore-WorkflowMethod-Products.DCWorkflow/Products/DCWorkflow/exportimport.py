@@ -34,7 +34,7 @@ from Products.DCWorkflow.utils import _xmldir
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import BodyAdapterBase
 
-TRIGGER_TYPES = ( 'AUTOMATIC', 'USER' )
+TRIGGER_TYPES = ( 'AUTOMATIC', 'USER', 'METHOD' )
 _FILENAME = 'workflows.xml'
 
 
