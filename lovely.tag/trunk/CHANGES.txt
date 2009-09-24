@@ -5,10 +5,12 @@ CHANGES
 1.1.0 (unreleased)
 ------------------
 
-- Fixed error on tag handling in update : tag where registered more
-  than once for same user, item and tag  as with set what imports is
-  hash and not cmp. Added a test to put this in evidence with
-  getCloud. [trollfot]
+- Fixed an important error on the tag update handling : tags were
+  registered more than once if an update was made for the same user,
+  item and tag. The issue came from the set comparison method, that
+  uses the hash and not a classical cmp method. We had to introduce a
+  comparison basis we called "brain" in order to get the expected
+  behavior. A test was added to emphasis this behavior. [trollfot]
 
 
 1.0.0 (2009-07-24)

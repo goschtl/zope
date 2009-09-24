@@ -104,7 +104,7 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         
         add_tag_ids = []
         for tagBrain in add_tags:
-            tagObj = tag.Tag.from_brain(tagBrain)
+            tagObj = tag.Tag(*tagBrain)
             id = self._add(tagObj)
             add_tag_ids.append(id)
             ids = self._user_to_tagids.get(user)
@@ -287,7 +287,6 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         return '<%s entries=%i>' %(self.__class__.__name__,
                                    len(self._tagid_to_obj))
 
-
     def cleanStaleItems(self):
         """clean out stale items which have no associated object"""
         intIds = zope.component.getUtility(IIntIds, context=self)
@@ -325,9 +324,9 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
                 count += self.rename(name, newName)
         return count
 
+
 @component.adapter(IIntIdRemovedEvent)
 def removeItemSubscriber(event):
-    
     """A subscriber to IntIdRemovedEvent which removes an item from
     the tagging engine"""
     ob = event.object

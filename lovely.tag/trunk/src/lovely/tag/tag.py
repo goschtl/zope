@@ -52,10 +52,6 @@ class Tag(persistent.Persistent):
         """ representation to build sets"""
         return (self.item, self.user, self.name)
 
-    @classmethod
-    def from_brain(cls, brain):
-        return cls(*brain)
-
     def __repr__(self):
         return '<%s %r for %i by %r>' %(
             self.__class__.__name__, self.name, self.item, self.user)
