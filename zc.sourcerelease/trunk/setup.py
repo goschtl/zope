@@ -46,7 +46,7 @@ setup(
     url='http://www.python.org/pypi/zc.sourcerelease',
     author='Jim Fulton', author_email='jim@zope.com',
     long_description=long_description,
-    
+
     entry_points = entry_points,
     packages = find_packages('src'),
     include_package_data = True,
