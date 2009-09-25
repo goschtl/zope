@@ -7,6 +7,7 @@ from plone.z3cform.layout import wrap_form, FormWrapper
 from grokcore.view.meta.views import ViewGrokker, default_view_name
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.megrok.z3cform.directive import wrapper
+import Acquisition
 
 
 class FiveGrokFormGrokker(ViewSecurityGrokker, ViewGrokker):
@@ -25,6 +26,7 @@ class FiveGrokFormGrokker(ViewSecurityGrokker, ViewGrokker):
             newfactory = wrap_form(factory, formwrapper)
             newfactory.module_info = factory.module_info
             factory = newfactory
+            factory.getPhysicalPath = Acquisition.Acquired
             factory.render = factory.__call__
 
         ViewSecurityGrokker.execute(self, factory, config, permission, **kw)

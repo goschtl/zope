@@ -1,4 +1,4 @@
-
+import Acquisition
 import martian
 from megrok.z3cform.base import components
 from plone.z3cform import z2
@@ -13,6 +13,8 @@ class GrokForm(components.GrokForm):
         super(GrokForm, self).__init__(*args)
         if not (self.static is None):
             self.static = self.static.__of__(self)
+
+    getPhysicalPath = Acquisition.Acquired
 
     def __call__(self):
         """Render the form, patching the request first with
