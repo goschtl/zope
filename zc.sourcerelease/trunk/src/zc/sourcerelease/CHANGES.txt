@@ -1,7 +1,14 @@
 Release History
 ===============
 
-0.3 (unreleased)
+0.3.1 (2009-09-25)
+------------------
+
+Fixed a latent bug that was exposed by recent changes to zc.buildout.
+
+The bug causes installation scripts included in source releases to fail.
+
+0.3 (sometime :)
 ----------------
 
 New Features

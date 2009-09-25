@@ -182,6 +182,7 @@ distributions will come from the release, not from the link
 server. Now, let's run the installer:
 
     >>> import sys
+
     >>> print system(sys.executable+' '+join('test', 'sample', 'install.py')),
     ... # doctest: +ELLIPSIS
     Creating directory ...

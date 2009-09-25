@@ -40,7 +40,7 @@ def _relative(path, to):
         if b:
             break
         to = d
-    
+
     while path and path != to and path != '/':
         path, base = os.path.split(path)
         if base:
@@ -48,7 +48,7 @@ def _relative(path, to):
     if path != to:
         return None
     return os.path.join(*rel)
-    
+
 def source_release(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -69,7 +69,7 @@ def source_release(args=None):
         name, value = arg.split('=', 1)
         section, option = name.split(':')
         clopts.append((section, option, value))
-    
+
     name = url.split('/')[-1]
 
     # use optparse to find custom filename
@@ -105,19 +105,19 @@ def source_release(args=None):
 
         buildout.bootstrap([])
 
-        args.extend([
+        buildargs = args[:]+[
             '-Uvc', os.path.join(co1, config),
             'buildout:download-cache='+cache
-            ])
+            ]
 
-        _system(os.path.join(co1, 'bin', 'buildout'), *args)
-        
+        _system(os.path.join(co1, 'bin', 'buildout'), *buildargs)
+
         os.chdir(here)
 
         env = pkg_resources.Environment([eggs_directory])
         dists = [env[project][0].location
                  for project in ('zc.buildout', 'setuptools')]
-                 
+
         eggs = os.path.join(co2, reggs)
         os.mkdir(eggs)
         for dist in dists:
@@ -135,10 +135,10 @@ def source_release(args=None):
                 config = config,
                 version = sys.version_info[:2],
                 eggs_directory = reggs,
-                args = repr(args)[1:-1],
+                args = args and repr(args)[1:-1]+',' or '',
             ))
 
-        
+
         tar = tarfile.open(name+'.tgz', 'w:gz')
         tar.add(co2, name)
         tar.close()
@@ -166,7 +166,7 @@ config = os.path.join(here, %(config)r)
 
 import zc.buildout.buildout
 zc.buildout.buildout.main([
-    %(args)s,
+    %(args)s
     '-Uc', config,
     'buildout:download-cache='+os.path.join(here, 'release-distributions'),
     'buildout:install-from-cache=true',
