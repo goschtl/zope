@@ -1,2 +1,2 @@
 # svn propset svn:externals -F EXTERNALS.txt .
-megrok.z3cform svn://svn.zope.org/repos/main/megrok.z3cform/trunk
+megrok.z3cform.base svn://svn.zope.org/repos/main/megrok.z3cform.base/trunk

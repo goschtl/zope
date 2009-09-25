@@ -2,8 +2,9 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-  <include package="five.grok" />
+  <include package="z3c.form" file="meta.zcml"/>
+  <include package="z3c.form" />
   <include package="plone.z3cform" />
-  <include package="megrok.z3cform" />
+  <include package="megrok.z3cform.base" />
 
 </configure>

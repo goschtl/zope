@@ -1,11 +1,11 @@
 
 import martian
-from five import grok
-from megrok.z3cform import components
+from megrok.z3cform.base import components
 from plone.z3cform import z2
 
 from z3c.form import form
 from z3c.form.interfaces import IFormLayer
+
 
 class GrokForm(components.GrokForm):
 
@@ -21,21 +21,22 @@ class GrokForm(components.GrokForm):
         z2.switch_on(self, request_layer=IFormLayer)
         return super(GrokForm, self).__call__()
 
-class Form(GrokForm, form.Form, grok.View):
 
-    martian.baseclass()
-
-class AddForm(GrokForm, form.AddForm, grok.View):
-
-    martian.baseclass()
-
-
-class EditForm(GrokForm, form.EditForm, grok.View):
+class Form(GrokForm, form.Form):
 
     martian.baseclass()
 
 
-class DisplayForm(GrokForm, form.DisplayForm, grok.View):
+class AddForm(GrokForm, form.AddForm):
 
     martian.baseclass()
 
+
+class EditForm(GrokForm, form.EditForm):
+
+    martian.baseclass()
+
+
+class DisplayForm(GrokForm, form.DisplayForm):
+
+    martian.baseclass()

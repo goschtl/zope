@@ -30,7 +30,7 @@ setup(name='five.megrok.z3cform',
       install_requires=[
           'setuptools',
           'five.grok',
-          'megrok.z3cform',
+          'megrok.z3cform.base',
           'plone.z3cform'
       ],
       entry_points="""

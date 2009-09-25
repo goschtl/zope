@@ -7,7 +7,7 @@ from zope.component import testing
 import Products.Five
 from Products.Five import zcml
 import five.megrok.z3cform
-import os
+from five.grok.testing import grok
 
 
 def setUp(test=None):
@@ -16,8 +16,6 @@ def setUp(test=None):
     zcml.load_config('configure.zcml', package=Products.Five)
     zcml.load_config('testing.zcml', package=five.megrok.z3cform)
 
-from five.grok.testing import grok
-from zope import component
 
 def suiteFromPackage(name):
     files = resource_listdir(__name__, name)
@@ -43,7 +41,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['form',]:
+    for name in ['form', 'formwithlayout']:
         suite.addTest(suiteFromPackage(name))
     return suite
 
