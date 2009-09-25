@@ -1,0 +1,9 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="five.grok" />
+  <include package="plone.z3cform" />
+  <include package="megrok.z3cform" />
+
+</configure>
