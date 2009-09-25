@@ -1,3 +1,18 @@
+##############################################################################
+#
+# Copyright (c) Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+version = '0'
+
 import os
 from setuptools import setup, find_packages
 
@@ -26,8 +41,8 @@ open('doc.txt', 'w').write(long_description)
 setup(
     name = "zc.sourcerelease",
     description = "Utility script to create source releases from buildouts",
-    version = "0.2",
-    license = "ZPL 1.0",
+    version = version,
+    license = "ZPL 2.1",
     url='http://www.python.org/pypi/zc.sourcerelease',
     author='Jim Fulton', author_email='jim@zope.com',
     long_description=long_description,
