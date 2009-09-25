@@ -40,43 +40,38 @@ class HumanDatetimeFormatter(object):
                              value.minute, value.second, value.microsecond, tz)
 
         value = value.astimezone(tz)
-
-        d1 = datetime.now(utc)
-        d2 = value.astimezone(utc)
-
-        delta = d1 - d2
+        delta = datetime.now(utc) - value.astimezone(utc)
 
         years, months, weeks, hours, minutes = (
             delta.days/365, delta.days/30, delta.days/7,
             delta.seconds/3600, delta.seconds/60)
-
+        formatted = None
         if years > 0:
-            return translate(
+            formatted = translate(
                 u'${value} year(s) ago', 'z3ext.formatter',
                 mapping={'value': years})
 
         if months > 0:
-            return translate(u'${value} month(s) ago', 'z3ext.formatter',
+            formatted = translate(u'${value} month(s) ago', 'z3ext.formatter',
                              mapping={'value': months})
-
-        if weeks > 0:
-            return translate(u'${value} week(s) ago', 'z3ext.formatter',
+        elif weeks > 0:
+            formatted = translate(u'${value} week(s) ago', 'z3ext.formatter',
                              mapping={'value': weeks})
-
-        if delta.days > 0:
-            return translate(u'${value} day(s) ago', 'z3ext.formatter',
+        elif delta.days > 0:
+            formatted = translate(u'${value} day(s) ago', 'z3ext.formatter',
                              mapping={'value': delta.days})
-
-        if hours > 0:
-            return translate(u'${value} hour(s) ago', 'z3ext.formatter',
+        elif hours > 0:
+            formatted = translate(u'${value} hour(s) ago', 'z3ext.formatter',
                              mapping={'value': hours})
-
-        if minutes > 0:
-            return translate(u'${value} minute(s) ago', 'z3ext.formatter',
+        elif minutes > 0:
+            formatted = translate(u'${value} minute(s) ago', 'z3ext.formatter',
                              mapping={'value': minutes})
-
-        return translate(u'${value} second(s) ago', 'z3ext.formatter',
+        else:
+            formatted = translate(u'${value} second(s) ago', 'z3ext.formatter',
                          mapping={'value': delta.seconds})
+
+        return """<span class="z3ext-formatter-humandatetime" value="%s">%s</span>""" \
+                % (value.strftime('%Y %B %d %H:%M:%S %Z'), formatted)
 
 
 class HumanDatetimeFormatterFactory(object):

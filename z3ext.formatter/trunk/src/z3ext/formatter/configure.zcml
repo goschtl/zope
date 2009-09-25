@@ -21,19 +21,19 @@
 
   <!-- formatters -->
   <adapter name="date"
-	   factory=".dformatter.DateFormatterFactory" />
+     factory=".dformatter.DateFormatterFactory" />
 
   <adapter name="time"
-	   factory=".timeformatter.TimeFormatterFactory" />
+     factory=".timeformatter.TimeFormatterFactory" />
 
   <adapter name="dateTime"
-	   factory=".dtformatter.DatetimeFormatterFactory" />
+     factory=".dtformatter.DatetimeFormatterFactory" />
 
   <adapter name="fancyDatetime"
-	   factory=".fancydatetime.FancyDatetimeFormatterFactory" />
+     factory=".fancydatetime.FancyDatetimeFormatterFactory" />
 
   <adapter name="humanDatetime"
-	   factory=".humandatetime.HumanDatetimeFormatterFactory" />
+     factory=".humandatetime.HumanDatetimeFormatterFactory" />
 
   <!-- vocabularies -->
   <utility
@@ -61,6 +61,22 @@
        name="zmi_icon"
        for=".interfaces.IFormatterConfiglet"
        file="preferences-formatter.png" />
+  </configure>
+
+  <configure
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     xmlns:browser="http://namespaces.zope.org/browser"
+     zcml:condition="installed z3ext.resourcepackage">
+
+    <!-- ecmascripts -->
+    <z3ext:resourceinclude
+       name="humandatetime.js"
+       type="javascript"
+       library="z3ext-formatter"
+       require="jquery-plugins"
+       file="resources/humandatetime.js"
+       />
+
   </configure>
 
   <!-- Registering documentation with API doc -->

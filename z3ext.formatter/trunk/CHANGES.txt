@@ -5,6 +5,8 @@ CHANGES
 1.4.1 (Unreleased)
 ------------------
 
+- Add `humandatetime` formatter js implementation
+
 
 1.4.0 (2009-08-11)
 ------------------
