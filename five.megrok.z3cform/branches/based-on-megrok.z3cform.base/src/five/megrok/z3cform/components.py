@@ -28,17 +28,29 @@ class Form(GrokForm, form.Form):
 
     martian.baseclass()
 
+    def update(self):
+        form.Form.update(self)
+
 
 class AddForm(GrokForm, form.AddForm):
 
     martian.baseclass()
+
+    def update(self):
+        form.AddForm.update(self)
 
 
 class EditForm(GrokForm, form.EditForm):
 
     martian.baseclass()
 
+    def update(self):
+        form.EditForm.update(self)
+
 
 class DisplayForm(GrokForm, form.DisplayForm):
 
     martian.baseclass()
+
+    def update(self):
+        form.Form.update(self)
