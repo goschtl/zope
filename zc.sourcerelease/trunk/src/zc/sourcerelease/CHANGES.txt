@@ -8,8 +8,8 @@ Fixed a latent bug that was exposed by recent changes to zc.buildout.
 
 The bug causes installation scripts included in source releases to fail.
 
-0.3 (sometime :)
-----------------
+0.3.0 (2008-11-21)
+------------------
 
 New Features
 ++++++++++++
