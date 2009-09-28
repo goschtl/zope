@@ -112,13 +112,15 @@ def extract(fsname, log, outname):
 def mergelogs(l1, l2, out):
     files = open(l1, 'rb'), open(l2, 'rb')
     records = [marshal.load(f) for f in files]
+    counts = [0, 0]
     fo = open(out, 'wb')
     while 1:
         if records[0][1] <= records[1][1]:
             index = 0
         else:
             index = 1
-        marshal.dump(records[index], fo)
+        session, timetime, message = records[index]
+        marshal.dump(('%s%s' % (index, session), timetime, message), fo)
         try:
             records[index] = marshal.load(files[index])
         except EOFError:
