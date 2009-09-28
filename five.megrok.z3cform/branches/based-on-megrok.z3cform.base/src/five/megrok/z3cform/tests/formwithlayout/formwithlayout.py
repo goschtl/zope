@@ -20,53 +20,53 @@
   >>> edit
   <plone.z3cform.layout.MyFormWrapper object at ...>
   >>> print edit()
-  <html xmlns="http://www.w3.org/1999/xhtml">
-  <body>
-    <h1></h1>
-    <div id="layout-contents">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <body>
+      <h1></h1>
+      <div id="layout-contents">
       <form action="http://127.0.0.1" method="post"
-         enctype="multipart/form-data">
-                <div class="row">
-                    <div class="field">
-                      <label for="form-widgets-name">
-                        <span>Name</span>
-                      </label>
-                      <span class="fieldRequired"
-                            title="Required">
-                        (Required)
-                      </span>
-                      <div class="widget">
-                        <input type="text" id="form-widgets-name"
-         name="form.widgets.name"
-         class="text-widget required textline-field" value="" />
+           enctype="multipart/form-data">
+                  <div class="row">
+                      <div class="field">
+                        <label for="form-widgets-name">
+                          <span>Name</span>
+                        </label>
+                        <span class="fieldRequired"
+                              title="Required">
+                          (Required)
+                        </span>
+                        <div class="widget">
+        <input id="form-widgets-name" name="form.widgets.name"
+               class="text-widget required textline-field"
+               value="" type="text" />
+                        </div>
                       </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="field">
-                      <label for="form-widgets-age">
-                        <span>Age</span>
-                      </label>
-                      <span class="fieldRequired"
-                            title="Required">
-                        (Required)
-                      </span>
-                      <div class="widget">
-                        <input type="text" id="form-widgets-age"
-         name="form.widgets.age"
-         class="text-widget required int-field" value="" />
+                  </div>
+                  <div class="row">
+                      <div class="field">
+                        <label for="form-widgets-age">
+                          <span>Age</span>
+                        </label>
+                        <span class="fieldRequired"
+                              title="Required">
+                          (Required)
+                        </span>
+                        <div class="widget">
+        <input id="form-widgets-age" name="form.widgets.age"
+               class="text-widget required int-field" value=""
+               type="text" />
+                        </div>
                       </div>
-                    </div>
+                  </div>
+                <div class="action">
+    <input id="form-buttons-apply" name="form.buttons.apply"
+           class="submit-widget button-field" value="Apply"
+           type="submit" />
                 </div>
-              <div class="action">
-                <input type="submit" id="form-buttons-apply"
-         name="form.buttons.apply"
-         class="submit-widget button-field" value="Apply" />
-              </div>
-      </form>
-    </div>
-  </body>
-  </html>
+        </form>
+      </div>
+    </body>
+    </html>
 """
 import os
 from five import grok
