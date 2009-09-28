@@ -33,8 +33,8 @@ No further configuration is required, but you can set the following options:
 ... include = z3c.recipe.compattest
 ... """)
 
->>> print system(buildout)
-Couldn't...Installing compattest...
+>>> 'Installing compattest' in system(buildout)
+True
 
 Details
 =======
