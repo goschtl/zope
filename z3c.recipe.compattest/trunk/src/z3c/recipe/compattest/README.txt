@@ -109,3 +109,28 @@ But no additional develop-egg links are present:
 
 >>> ls('develop-eggs')
 - z3c.recipe.compattest.egg-link
+
+Passing options to the test runners
+===================================
+
+If you want to use custom options in the generated test runners, you can specify
+them in the part options, prefixed by ``runner-``. That is, if you want to pass
+the ``--foo`` option by default to all generated test runners, you can set
+``runner-defaults = ['--foo']`` in your part:
+
+>>> write('buildout.cfg', """
+... [buildout]
+... parts = compattest
+...
+... [compattest]
+... recipe = z3c.recipe.compattest
+... include = z3c.recipe.compattest
+... runner-defaults = ['-c', '-v', '-v']
+... """)
+>>> ignore = system(buildout)
+>>> cat('bin', 'compattest-z3c.recipe.compattest')
+#!...python...
+...run(...['-c', '-v', '-v']...
+
+Every options prefixed by ``runner-`` will be automatically passed to the
+generated test runners.

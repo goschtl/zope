@@ -12,6 +12,9 @@ def string2list(string, default):
     return [item.strip() for item in result]
 
 
+RUNNER_PREFIX = 'runner-'
+
+
 class Recipe(object):
 
     def __init__(self, buildout, name, options):
@@ -34,6 +37,13 @@ class Recipe(object):
         self.svn_directory = self.options.get(
             'svn_directory', os.path.join(
             self.buildout['buildout']['parts-directory'], self.name))
+
+        # gather options to be passed to the underlying testrunner
+        self.testrunner_options = {}
+        for opt in self.options:
+            if opt.startswith(RUNNER_PREFIX):
+                runner_opt = opt[len(RUNNER_PREFIX):]
+                self.testrunner_options[runner_opt] = self.options[opt]
 
     def install(self):
         if self.svn_url:
@@ -72,7 +82,10 @@ class Recipe(object):
                     self.wanted_packages.remove(package)
                     continue
                 raise
-            options = dict(eggs=package + extras)
+
+            options = self.testrunner_options.copy()
+            options['eggs'] = package + extras
+
             recipe = zc.recipe.testrunner.TestRunner(
                 self.buildout, '%s-%s' % (self.name, package), options)
             installed.extend(recipe.install())
