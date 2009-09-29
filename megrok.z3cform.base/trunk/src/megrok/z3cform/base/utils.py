@@ -13,5 +13,5 @@ def apply_data_event(form, context, data):
         descriptions = []
         for interface, names in changes.items():
             descriptions.append(Attributes(interface, *names))
-    notify(ObjectModifiedEvent(context, *descriptions))
+        notify(ObjectModifiedEvent(context, *descriptions))
     return changes
