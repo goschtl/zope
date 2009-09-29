@@ -385,6 +385,7 @@ Footnotes
     ...     def __init__(self, call):
     ...         self.call = call
     ...         self.thread = threading.Thread(target=self.run)
+    ...         self.thread.setDaemon(True)
     ...         _thread.acquire()
     ...         _main.acquire()
     ...         self.thread.start()
