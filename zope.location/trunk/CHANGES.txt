@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.7.0 (2009-09-29)
 ------------------
 
 - Added getParent() to ILocationInfo and moved the actual implementation here
