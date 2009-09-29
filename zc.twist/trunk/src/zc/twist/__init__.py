@@ -1,4 +1,4 @@
-import copy, random, types, warnings
+import random, types, warnings
 
 import ZODB.interfaces
 import ZODB.POSException
@@ -130,9 +130,8 @@ class Failure(twisted.python.failure.Failure):
         pass # already done
 
     def __getstate__(self):
-        res = self.__dict__
+        res = self.__dict__.copy()
         if not self.sanitized:
-            res = copy.deepcopy(res)
             res['stack'] = []
             res['frames'] = [
                 [

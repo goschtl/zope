@@ -788,6 +788,25 @@ Footnotes
     *--- End of Failure #... ---
     <BLANKLINE>
 
+    In some cases, it is possible that a Failure object may include references
+    to itself, for example, indirectly through a zc.async job whose result
+    is a Failure.  Failure's __getstate__ method used to use deepcopy, which
+    in cases like this could result in infinite recursion.
+
+    >>> import zc.twist
+    >>> class Kaboom(Exception):
+    ...     pass
+    >>> class Foo(object):
+    ...     failure = None
+    ...     def fail(self):
+    ...         raise Kaboom, self
+    >>> foo = Foo()
+    >>> try:
+    ...     foo.fail()
+    ... except Kaboom:
+    ...     foo.failure = zc.twist.Failure()
+    >>> ignored = foo.failure.__getstate__() # used to cause RunTimeError.
+
 .. [#teardown_monkeypatch]
 
     >>> twisted.internet.reactor.callLater = oldCallLater
