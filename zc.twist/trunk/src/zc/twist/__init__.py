@@ -96,7 +96,7 @@ missing = object()
 def get_connection(db, deferred=None, backoff=0, reactor=None):
     if deferred is None:
         deferred = twisted.internet.defer.Deferred()
-    backoff += random.random() / 20.0 + .05 # .05 to .10 of a second
+    backoff += random.random() / 20.0 + .0625 # 1/16 second (USE POWERS OF 2!)
     # if this is taking too long (i.e., the cumulative backoff is taking
     # more than half a second) then we'll just take one.  This might be
     # a bad idea: we'll have to see in practice.  Otherwise, if the

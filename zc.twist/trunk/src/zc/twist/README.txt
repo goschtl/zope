@@ -215,6 +215,10 @@ if the pool is at its maximum size.  This code relies on the twisted
 reactor; we'll use a `time_flies` function, which takes seconds to move
 ahead, to simulate time passing in the reactor.
 
+We use powers of 2 for the floating-points numbers (e.g. 0.125) to avoid
+a floating-point additive accumulation error that happened in the tests
+when values such as 0.1 were used.
+
     >>> db.setPoolSize(1)
     >>> db.getPoolSize()
     1
@@ -226,7 +230,7 @@ ahead, to simulate time passing in the reactor.
     >>> d = deferred.addCallback(get_result)
     >>> call.attempt_count
     0
-    >>> time_flies(.1) >= 1 # returns number of connection attempts
+    >>> time_flies(.125) >= 1 # returns number of connection attempts
     True
     >>> call.attempt_count
     0
@@ -234,7 +238,7 @@ ahead, to simulate time passing in the reactor.
     >>> db.setPoolSize(2)
     >>> db.getPoolSize()
     2
-    >>> time_flies(.2) >= 1
+    >>> time_flies(.25) >= 1
     True
     >>> call.attempt_count > 0
     True
@@ -256,12 +260,12 @@ one.  This behavior may change.
     >>> d = deferred.addCallback(get_result)
     >>> call.attempt_count
     0
-    >>> time_flies(.1) >= 1
+    >>> time_flies(.125) >= 1
     True
     >>> call.attempt_count
     0
     >>> res # None
-    >>> time_flies(2.0) >= 2 # for a total of at least 3
+    >>> time_flies(2) >= 2 # for a total of at least 3
     True
     >>> res
     2
@@ -800,7 +804,7 @@ Footnotes
     >>> d = deferred.addCallback(get_result)
     >>> call.attempt_count
     0
-    >>> time_flies(.1) >= 1 # returns number of connection attempts
+    >>> time_flies(.125) >= 1 # returns number of connection attempts
     True
     >>> call.attempt_count
     0
@@ -808,7 +812,7 @@ Footnotes
     >>> db.setPoolSize(2)
     >>> db.getPoolSize()
     2
-    >>> time_flies(.2) >= 1
+    >>> time_flies(.25) >= 1
     True
     >>> call.attempt_count > 0
     True
@@ -830,12 +834,12 @@ one.  This behavior may change.
     >>> d = deferred.addCallback(get_result)
     >>> call.attempt_count
     0
-    >>> time_flies(.1) >= 1
+    >>> time_flies(.125) >= 1
     True
     >>> call.attempt_count
     0
     >>> res # None
-    >>> time_flies(1.9) >= 2 # for a total of at least 3
+    >>> time_flies(2) >= 2 # for a total of at least 3
     True
     >>> res
     2
