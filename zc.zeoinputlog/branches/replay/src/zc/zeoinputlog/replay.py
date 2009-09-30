@@ -166,6 +166,22 @@ class Log(object):
 
             yield session, timetime, msgid, async, op, args
 
+    def sessions(self):
+        sessions = {}
+        f = open(self.fname)
+        while 1:
+            try:
+                session, timetime, message = marshal.load(f)
+            except EOFError:
+                break
+
+            start_stop = sessions.get(session)
+            if not start_stop:
+                start_stop = sessions[session] = [timetime, timetime]
+            start_stop[1] = timetime
+
+        return sorted(sessions.itervalues())
+
 class Transactions(object):
 
 
@@ -274,14 +290,14 @@ class Handler:
             traceback.print_exception(*sys.exc_info())
             return
 
-        print '  got', self.session, msgid, flags, op
+        #print '  got', self.session, msgid, flags, op
         if (op == '.reply'):
             ret = args
             op, args, start = self.messages.pop(msgid)
             elapsed = time.time()-start
-            print '    reply', op, [
-                (v[0], v[2]) for v in self.messages.values()
-                ], elapsed
+            #print '    reply', op, [
+            #    (v[0], v[2]) for v in self.messages.values()
+            #    ], elapsed
             self.handlers.replies += 1
             if (isinstance(ret, tuple)
                 and len(ret) == 2
@@ -308,7 +324,7 @@ class Handler:
             return
 
         if op == 'vote':
-            print self.session, 'vote'
+            #print self.session, 'vote'
             self.voting = self.queueing = True
             if not processing_queue:
                 self.queue.insert(0, (0, 'tpc_abort', args))
@@ -316,7 +332,7 @@ class Handler:
                 assert self.queue[0][1] == 'tpc_abort'
 
         self.msgid += 1
-        print '  call', self.session, self.msgid, async, op
+        #print '  call', self.session, self.msgid, async, op
         if not async:
             #print '    prev out', self.session, [
             #    (v[0], v[2]) for v in self.messages.values()]
@@ -434,7 +450,7 @@ def main(args=None):
 
     print '='*70
 
-    print speed, work
+    print speed, nt*3+nr, ni
 
     for op in sorted(handlers.errtimes):
         n, t = handlers.times[op]
