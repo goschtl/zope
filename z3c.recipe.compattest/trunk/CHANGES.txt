@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.11 (unreleased)
+0.11 (2009-09-30)
 =================
 
 - Removed the "check out packages from subversion" feature.
