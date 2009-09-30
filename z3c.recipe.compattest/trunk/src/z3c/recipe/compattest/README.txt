@@ -19,10 +19,6 @@ No further configuration is required, but you can set the following options:
   (default: empty)
 - ``script``: the name of the runner script (defaults to the part name)
 
-- ``svn_url``: SVN repository to search for packages instead of using releases
-  (see below)
-- ``svn_directory``: directory to place checkouts in (default: parts/<partname>)
-
 >>> cd(sample_buildout)
 >>> write('buildout.cfg', """
 ... [buildout]
@@ -60,55 +56,6 @@ picked up:
 #!...python...
 ...zope.dottedname...
 
-Using SVN checkouts
-===================
-
-When you set an ``svn_url``, the test runners will not refer to released
-eggs, but rather use development-egg links to SVN checkouts of the trunks of
-each package (the checkouts are placed in ``svn_directory``).
-
-Note: Even though the generated testrunners will use development-egg links, this
-does not change the develop-eggs for your buildout itself. We check that before
-the installation of the recipe, there's just the single develop-egg link of the
-package we're working on:
-
->>> ls('develop-eggs')
-- z3c.recipe.compattest.egg-link
-
->>> write('buildout.cfg', """
-... [buildout]
-... parts = compattest-trunk
-...
-... [kgs]
-... packages = z3c.recipe.compattest zope.dottedname
-...
-... [compattest-trunk]
-... recipe = z3c.recipe.compattest
-... include = ${kgs:packages}
-... svn_url = svn://svn.zope.org/repos/main/
-... """)
->>> ignore = system(buildout)
-
-The checkouts are placed in the ``parts/`` folder by default, but you can
-override this by setting ``svn_directory`` -- so you can share checkouts
-between several buildouts, for example.
-
-Note that for packages that already exist as develop eggs (in our example,
-z3c.recipe.compattest), no checkout is performed.
-
->>> ls('parts/compattest-trunk')
-d zope.dottedname
-
-The testrunner uses the checked out version of zope.dottedname:
-
->>> cat('bin', 'compattest-trunk-zope.dottedname')
-#!...python...
-...parts/compattest-trunk/zope.dottedname/src...
-
-But no additional develop-egg links are present:
-
->>> ls('develop-eggs')
-- z3c.recipe.compattest.egg-link
 
 Passing options to the test runners
 ===================================

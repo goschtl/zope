@@ -20,9 +20,6 @@ def DocFileSuite(*args, **kw):
         zc.buildout.testing.install('zope.testing', test)
         zc.buildout.testing.install('zope.interface', test)
         zc.buildout.testing.install('zope.exceptions', test)
-
-        zc.buildout.testing.install('infrae.subversion', test)
-        zc.buildout.testing.install('py', test)
         zc.buildout.testing.install('zope.dottedname', test)
 
     def tearDown(test):

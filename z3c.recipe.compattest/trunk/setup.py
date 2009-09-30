@@ -27,7 +27,6 @@ setup(
     package_dir = {'': 'src'},
     namespace_packages=['z3c', 'z3c.recipe'],
     install_requires=[
-        'infrae.subversion>=1.4.5',
         'setuptools',
         'zc.buildout',
         'zc.recipe.testrunner',

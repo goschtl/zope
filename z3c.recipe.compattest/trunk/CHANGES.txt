@@ -5,8 +5,10 @@ CHANGES
 0.11 (unreleased)
 =================
 
-- Nothing changed yet.
-
+- Removed the "check out packages from subversion" feature.
+  If you require such functionality, mr.developer
+  <http://pypi.python.org/pypi/mr.developer> provides this much more
+  comprehensively (and for multiple version control systems, too) .
 
 0.10 (2009-09-28)
 =================
@@ -27,7 +29,6 @@ CHANGES
 
 - Changed the default master script name to the part name. (Don't add
   a "test-" prefix any more.)
-
 
 0.7 (2009-08-13)
 ================
