@@ -114,7 +114,7 @@ If datetime object doesn't contain timezone information, UTC is used
    </html>
 
 
-Now let's chane timezone to US/Pacific, we change only time zone 
+Now let's chane timezone to US/Pacific, we change only time zone
 not datetime value
 
    >>> configlet.timezone = 'US/Pacific'
@@ -280,8 +280,8 @@ Custom formatter
 ================
 
 We should define formatter factory and formatter itself
-Let's implement formatter that accept string and currency name and 
-format as currency. Format of TALES expression whould be as 
+Let's implement formatter that accept string and currency name and
+format as currency. Format of TALES expression whould be as
 'formatter:<formatter name>,<formatter var1>,<formatter var2>,...:<path expression>'
 <formatter name> is name of adapter that adapts IHTTPRequest to IFormatterFactory
 also expression will pass <formatter var[1-...]> as args to factory.
@@ -332,3 +332,202 @@ Now we can use formatter
    >>> print page.render(request)
    121.04 $
    121.04 Eur
+
+
+humanDatetime formatter
+-----------------------
+
+   >>> now = datetime.now(UTC)
+
+   >>> fpage = ZPTPage()
+   >>> fpage.pt_edit(u'''
+   ... <html>
+   ...   <body>
+   ...     <tal:block tal:content="structure formatter:humanDatetime:options/now" />
+   ...     <tal:block tal:content="structure formatter:humanDatetime,short:options/now" />
+   ...     <tal:block tal:content="structure formatter:humanDatetime,medium:options/now" />
+   ...     <tal:block tal:content="structure formatter:humanDatetime,full:options/now" />
+   ...   </body>
+   ... </html>''', 'text/html')
+
+Now datetime
+
+   >>> print fpage.render(request, now=now)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">0 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">0 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">0 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">0 second(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(seconds=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 second(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 second(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(minutes=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 minute(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 minute(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 minute(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 minute(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(hours=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 hour(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 hour(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 hour(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 hour(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(days=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 day(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 day(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 day(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 day(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(days=7)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 week(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 week(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 week(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 week(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(days=30)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 month(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 month(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 month(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 month(s) ago</span>
+      </body>
+    </html>
+
+   >>> today = now - timedelta(days=367)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">1 year(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 year(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 year(s) ago</span>
+        <span class="z3ext-formatter-humandatetime" value="...">1 year(s) ago</span>
+      </body>
+    </html>
+
+Tomorrow's datetime
+
+   >>> today = now + timedelta(seconds=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 second(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 second(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 second(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 second(s)</span>
+      </body>
+    </html>
+
+   >>> today = now + timedelta(minutes=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 minute(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 minute(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 minute(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 minute(s)</span>
+      </body>
+    </html>
+
+   >>> today = now + timedelta(hours=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 hour(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 hour(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 hour(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 hour(s)</span>
+      </body>
+    </html>
+
+   >>> today = now + timedelta(days=1)
+
+   >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 day(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 day(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 day(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 day(s)</span>
+      </body>
+    </html>
+
+  >>> today = now + timedelta(days=7)
+
+  >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 week(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 week(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 week(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 week(s)</span>
+      </body>
+    </html>
+
+  >>> today = now + timedelta(days=30)
+
+  >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 month(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 month(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 month(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 month(s)</span>
+      </body>
+    </html>
+
+  >>> today = now + timedelta(days=365)
+
+  >>> print fpage.render(request, now=today)
+   <html>
+      <body>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 year(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 year(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 year(s)</span>
+        <span class="z3ext-formatter-humandatetime" value="...">in 1 year(s)</span>
+      </body>
+    </html>

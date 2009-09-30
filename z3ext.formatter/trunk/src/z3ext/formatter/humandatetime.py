@@ -15,63 +15,78 @@
 
 $Id$
 """
-from pytz import utc, timezone
-from datetime import datetime
+from pytz import utc, timezone, FixedOffset
+from datetime import datetime, timedelta
 from zope import interface, component
 from zope.i18n import translate
 from zope.component import getUtility
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet
+from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet, _
 
 
 class HumanDatetimeFormatter(object):
     interface.implements(IFormatter)
 
+    messages = {'past': {'year': u'${value} year(s) ago',
+                         'month': u'${value} month(s) ago',
+                         'week': u'${value} week(s) ago',
+                         'day': u'${value} day(s) ago',
+                         'hour': u'${value} hour(s) ago',
+                         'minute': u'${value} minute(s) ago',
+                         'second': u'${value} second(s) ago',
+                         },
+                'future': {'year': u'in ${value} year(s)',
+                         'month': u'in ${value} month(s)',
+                         'week': u'in ${value} week(s)',
+                         'day': u'in ${value} day(s)',
+                         'hour': u'in ${value} hour(s)',
+                         'minute': u'in ${value} minute(s)',
+                         'second': u'in ${value} second(s)',
+                         }}
+
     def __init__(self, request, *args):
         self.request = request
 
     def format(self, value):
-        configlet = getUtility(IFormatterConfiglet)
-        tz = timezone(configlet.timezone)
-
         if value.tzinfo is None:
-            value = datetime(value.year, value.month, value.day, value.hour,
-                             value.minute, value.second, value.microsecond, tz)
-
-        value = value.astimezone(tz)
-        delta = datetime.now(utc) - value.astimezone(utc)
+            value = utc.localize(datetime)
+        now = datetime.now(utc)
+        delta = now - value.astimezone(utc)
+        key = 'past'
+        if delta < timedelta():
+            delta = - delta + timedelta(seconds=1) #due to python implementation
+            key = 'future'
+        offset = (value.tzinfo.utcoffset(value).seconds/600)*10
+        value = FixedOffset(offset).normalize(value)
 
         years, months, weeks, hours, minutes = (
             delta.days/365, delta.days/30, delta.days/7,
             delta.seconds/3600, delta.seconds/60)
         formatted = None
         if years > 0:
-            formatted = translate(
-                u'${value} year(s) ago', 'z3ext.formatter',
-                mapping={'value': years})
-
-        if months > 0:
-            formatted = translate(u'${value} month(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['year'], 'z3ext.formatter',
+                             mapping={'value': years})
+        elif months > 0:
+            formatted = translate(self.messages[key]['month'],'z3ext.formatter',
                              mapping={'value': months})
         elif weeks > 0:
-            formatted = translate(u'${value} week(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['week'], 'z3ext.formatter',
                              mapping={'value': weeks})
         elif delta.days > 0:
-            formatted = translate(u'${value} day(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['day'], 'z3ext.formatter',
                              mapping={'value': delta.days})
         elif hours > 0:
-            formatted = translate(u'${value} hour(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['hour'], 'z3ext.formatter',
                              mapping={'value': hours})
         elif minutes > 0:
-            formatted = translate(u'${value} minute(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['minute'], 'z3ext.formatter',
                              mapping={'value': minutes})
         else:
-            formatted = translate(u'${value} second(s) ago', 'z3ext.formatter',
+            formatted = translate(self.messages[key]['second'], 'z3ext.formatter',
                          mapping={'value': delta.seconds})
-
         return """<span class="z3ext-formatter-humandatetime" value="%s">%s</span>""" \
-                % (value.strftime('%Y %B %d %H:%M:%S %Z'), formatted)
+                % (value.strftime('%Y %B %d %H:%M:%S %z'), formatted)
 
 
 class HumanDatetimeFormatterFactory(object):

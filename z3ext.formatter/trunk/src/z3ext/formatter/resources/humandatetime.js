@@ -1,21 +1,34 @@
-var my_dictionary = {
-    'year(s) ago'  : 'year(s) ago',
-    'month(s) ago'  : 'month(s) ago',
-    'weeks(s) ago': 'weeks(s) ago',
-    'days(s) ago' : 'days(s) ago',
-    'hours(s) ago' : 'hours(s) ago',
-    'minutes(s) ago' : 'minutes(s) ago',
-    'second(s) ago' : 'second(s) ago'
+var past_dictionary = {
+    '%s year(s) ago'  : '%s year(s) ago',
+    '%s month(s) ago'  : '%s month(s) ago',
+    '%s week(s) ago': '%s week(s) ago',
+    '%s day(s) ago' : '%s day(s) ago',
+    '%s hour(s) ago' : '%s hour(s) ago',
+    '%s minute(s) ago' : '%s minute(s) ago',
+    '%s second(s) ago' : '%s second(s) ago'
 };
 
-$.i18n.setDictionary(my_dictionary);
+var future_dictionary = {
+        '%s year(s) ago'  : '%s year(s) ago',
+        '%s month(s) ago'  : '%s month(s) ago',
+        '%s week(s) ago': '%s week(s) ago',
+        '%s day(s) ago' : '%s day(s) ago',
+        '%s hour(s) ago' : '%s hour(s) ago',
+        '%s minute(s) ago' : '%s minute(s) ago',
+        '%s second(s) ago' : '%s second(s) ago'
+    };
 
 function setFormatter(el)
 {
-    var time = new Date()
+    var time = new Date();
     time.setTime(Date.parse(el.attr('value')));
     var new_time = new Date();
     delta = new_time-time;
+    $.i18n.setDictionary(past_dictionary);
+    if (delta < 0) {
+        delta = Math.abs(delta);
+        $.i18n.setDictionary(future_dictionary)
+    }
     years = Math.floor(delta/(365*24*60*60*1000.0));
     months = Math.floor(delta/(30*24*60*60*1000.0));
     weeks = Math.floor(delta/(7*24*60*60*1000.0));
@@ -25,19 +38,19 @@ function setFormatter(el)
     seconds = Math.floor(delta/(1000.0));
     var res;
     if (years)
-        res = years + ' ' +$.i18n._('year(s) ago')
+        res = $.i18n._('%s year(s) ago', [years])
     else if (months)
-        res = months + ' ' +$.i18n._('month(s) ago')
+        res = $.i18n._('%s month(s) ago', [months])
     else if (weeks)
-        res = weeks + ' ' +$.i18n._('weeks(s) ago')
+        res = $.i18n._('%s week(s) ago', [weeks])
     else if (days)
-        res = days + ' ' +$.i18n._('days(s) ago')
+        res = $.i18n._('%s day(s) ago', [days])
     else if (hours)
-        res = hours + ' ' +$.i18n._('hours(s) ago')
+        res = $.i18n._('%s hour(s) ago', [hours])
     else if (minutes)
-        res = minutes + ' ' +$.i18n._('minutes(s) ago')
+        res = $.i18n._('%s minute(s) ago', [minutes])
     else
-        res = seconds + ' ' +$.i18n._('second(s) ago')
+        res = $.i18n._('%s second(s) ago', [seconds])
     el.text(res);
     el.attr('processed', 'true')
 }
@@ -53,42 +66,3 @@ $(document).ready(function() {
         }
     }
 });
-
-/*
-d1 = datetime.now(utc)
-d2 = value.astimezone(utc)
-
-delta = d1 - d2
-
-years, months, weeks, hours, minutes = (
-    delta.days/365, delta.days/30, delta.days/7,
-    delta.seconds/3600, delta.seconds/60)
-
-if years > 0:
-    return translate(
-        u'${value} year(s) ago', 'z3ext.formatter',
-        mapping={'value': years})
-
-if months > 0:
-    return translate(u'${value} month(s) ago', 'z3ext.formatter',
-                     mapping={'value': months})
-
-if weeks > 0:
-    return translate(u'${value} week(s) ago', 'z3ext.formatter',
-                     mapping={'value': weeks})
-
-if delta.days > 0:
-    return translate(u'${value} day(s) ago', 'z3ext.formatter',
-                     mapping={'value': delta.days})
-
-if hours > 0:
-    return translate(u'${value} hour(s) ago', 'z3ext.formatter',
-                     mapping={'value': hours})
-
-if minutes > 0:
-    return translate(u'${value} minute(s) ago', 'z3ext.formatter',
-                     mapping={'value': minutes})
-
-return translate(u'${value} second(s) ago', 'z3ext.formatter',
-                 mapping={'value': delta.seconds})
-*/

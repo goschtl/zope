@@ -30,7 +30,7 @@ from zope.app.pagetemplate.metaconfigure import clear
 from z3ext.controlpanel.testing import setUpControlPanel
 
 from z3ext.formatter import \
-    dformatter, dtformatter, fancydatetime, timeformatter
+    dformatter, dtformatter, fancydatetime, timeformatter, humandatetime
 from z3ext.formatter.expression import FormatterExpression
 
 
@@ -54,6 +54,8 @@ def setUp(test):
     provideAdapter(dtformatter.DatetimeFormatterFactory, name='dateTime')
     provideAdapter(
         fancydatetime.FancyDatetimeFormatterFactory, name='fancyDatetime')
+    provideAdapter(
+        humandatetime.HumanDatetimeFormatterFactory, name='humanDatetime')
     provideAdapter(timeformatter.TimeFormatterFactory, name='time')
 
 
