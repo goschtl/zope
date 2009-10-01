@@ -1,6 +1,6 @@
 
 <div class="topimage" tal:define="portal_url python: context.portal_url.getPortalObject().absolute_url()">
-    <a tal:attributes="href string:${context/portal_url}/about-zope-2/six-reasons-for-using-zope"
+    <a tal:attributes="href string:$portal_url/about-zope-2/six-reasons-for-using-zope"
        i18n:domain="plone">
-        <img src="sixtop.jpg" alt="sixtop" width="605" /></a>
+        <img tal:attributes="src string:$portal_url/sixtop.jpg" alt="sixtop" width="605" /></a>
 </div>
