@@ -14,7 +14,7 @@ class menuitem(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
 
-    def factory(self, menu, icon=None, filter=None, order=0, extra=None):
+    def factory(self, menu, icon=None, filter=None, order=None, extra=None):
         if martian.util.check_subclass(menu, Menu):
             menu = grokcore.component.name.bind().get(menu)
         if martian.util.not_unicode_or_ascii(menu):

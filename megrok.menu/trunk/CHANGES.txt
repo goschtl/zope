@@ -3,6 +3,13 @@ Changelog
 
 0.3 (unreleased)
 ----------------
+ * Added the support of the grokcore.viewlet 'order' directive to
+ reorder the menu items and sub menus. This permits to have a
+ baseclass defining the basic menu and to keep the ordering
+ possibility in the sublasses. We probably should do that for the
+ different arguments of the menuitem directive. That would allow more
+ genericity and reusability. Note : this change is 100% backward
+ compatible. Simply added tests to show the behavior. [trollfot]
  * Get rid of the grok dependency. Now depends only on grokcore.* packages
  * Updated the build process
 

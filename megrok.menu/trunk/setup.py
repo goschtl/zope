@@ -28,6 +28,7 @@ setup(name='megrok.menu',
           'setuptools',
           'grokcore.component',
           'grokcore.view',
+          'grokcore.viewlet',
           'grokcore.security',
       ],
       entry_points="""
