@@ -1,0 +1,621 @@
+Directives
+==========
+
+When grokking a class, the grokking procedure can be informed by
+directives, on a class, or a module. If a directive is absent, the
+system falls back to a default. Here we introduce a general way to
+define these directives, and how to use them to retrieve information
+for a class for use during the grokking procedure.
+
+A simple directive
+------------------
+
+We define a simple directive that sets a description::
+
+  >>> from martian import Directive, CLASS, ONCE
+  >>> class description(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...     default = u''
+
+The name of the directive is ``description``. We specify that the
+directive can only be used in the scope of a class. We also specify it
+can only be used a single time. Finally we define the default in case
+the directive is absent (the empty string).
+
+Now we look at the directive in action::
+
+  >>> class Foo(object):
+  ...    description(u"This is a description")
+
+After setting the description, we bind the directive and obtain a
+bound directive object.  This object has means for retrieving the data
+set by the directive, in particular the ``get`` method::
+
+  >>> description.bind().get(Foo)
+  u'This is a description'
+
+Directives in different namespaces get stored differently. We'll
+define a similar directive in another namespace::
+
+  >>> class description2(description):
+  ...     pass
+
+  >>> class Foo(object):
+  ...     description(u"Description1")
+  ...     description2(u"Description2")
+  >>> description.bind().get(Foo)
+  u'Description1'
+  >>> description2.bind().get(Foo)
+  u'Description2'
+
+If we check the value of a class without the directive, we see the
+default value for that directive, this case the empty unicode string::
+
+  >>> class Foo(object):
+  ...     pass
+  >>> description.bind().get(Foo)
+  u''
+
+In certain cases we need to set a value on a component as if the directive was
+actually used::
+
+  >>> description.set(Foo, u'value as set')
+  >>> description.bind().get(Foo)
+  u'value as set'
+
+Subclasses of the original class will inherit the properties set by the
+directive:
+
+  >>> class Foo(object):
+  ...     description('This is a foo.')
+  ...
+  >>> class Bar(Foo):
+  ...     pass
+  ...
+  >>> description.bind().get(Bar)
+  'This is a foo.'
+
+When we use the directive outside of class scope, we get an error
+message::
+
+  >>> description('Description')
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'description' directive can only be used on class level.
+
+In particular, we cannot use it in a module::
+
+  >>> class testmodule(FakeModule):
+  ...   fake_module = True
+  ...   description("Description")
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'description' directive can only be used on class level.
+
+We cannot use the directive twice in the class scope. If we do so, we
+get an error message as well::
+
+  >>> class Foo(object):
+  ...   description(u"Description1")
+  ...   description(u"Description2")
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'description' directive can only be called once per class.
+
+We cannot call the directive with no argument either::
+
+  >>> class Foo(object):
+  ...   description()
+  Traceback (most recent call last):
+    ...
+  TypeError: description takes exactly 1 argument (0 given)
+
+Class and module scope
+----------------------
+
+We define a ``layer`` directive that can be used in class and module
+scope both::
+
+  >>> from martian import CLASS_OR_MODULE
+  >>> class layer(Directive):
+  ...     scope = CLASS_OR_MODULE
+  ...     store = ONCE
+
+By default, the ``default`` property is None which is why we can omit
+specifying it here.
+
+This directive has been declared ``CLASS_OR_MODULE``, so you will
+always have to pass a module to the directive. Since we don't have a
+module yet we'll simply create a dummy, empty, fallback module::
+
+  >>> dummy = object()
+
+We can use this directive now on a class::
+
+  >>> class Foo(object):
+  ...   layer('Test')
+  >>> layer.bind().get(Foo, dummy)
+  'Test'
+
+The defaulting to ``None`` works::
+
+  >>> class Foo(object):
+  ...   pass
+  >>> layer.bind().get(Foo, dummy) is None
+  True
+
+We can also use it in a module::
+
+  >>> class testmodule(FakeModule):
+  ...    layer('Test2')
+  ...    class Foo(object):
+  ...       pass
+  >>> testmodule = fake_import(testmodule)
+
+When we now try to access ``layer`` on ``Foo``, we find the
+module-level default which we just set. We pass the module as the
+second argument to the ``get`` method to have it fall back on this::
+
+  >>> layer.bind().get(testmodule.Foo, testmodule)
+  'Test2'
+
+Let's look at a module where the directive is not used::
+
+  >>> class testmodule(FakeModule):
+  ...   class Foo(object):
+  ...      pass
+  >>> testmodule = fake_import(testmodule)
+
+In this case, the value cannot be found so the system falls back on
+the default, ``None``::
+
+  >>> layer.bind().get(testmodule.Foo, testmodule) is None
+  True
+
+Let's now look at this using a directive with CLASS scope only::
+
+  >>> class layer2(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+
+Using a directive multiple times
+--------------------------------
+
+A directive can be configured to allow it to be called multiple times
+in the same scope::
+
+  >>> from martian import MultipleTimesDirective
+  >>> class multi(MultipleTimesDirective):
+  ...     scope = CLASS
+
+We can now use the directive multiple times without any errors::
+
+  >>> class Foo(object):
+  ...   multi(u"Once")
+  ...   multi(u"Twice")
+
+We can now retrieve the value and we'll get a list::
+
+  >>> multi.bind().get(Foo)
+  [u'Once', u'Twice']
+
+The default value for a MultipleTimesDirective is an empty list::
+
+  >>> class Bar(object):
+  ...   pass
+  >>> multi.bind().get(Bar)
+  []
+
+Whenever the directive is used on a sub class of a component, the values set by
+directives on the base classes are combined::
+
+  >>> class Qux(Foo):
+  ...     multi(u'Triple')
+  ...
+  >>> multi.bind().get(Qux)
+  [u'Once', u'Twice', u'Triple']
+
+You can also create a directive that ignores the values on the base classes::
+
+  >>> from martian import MULTIPLE_NOBASE
+  >>> class multi(Directive):
+  ...     scope = CLASS
+  ...     store = MULTIPLE_NOBASE
+
+  >>> class Foo(object):
+  ...     multi(u"Once")
+  ...     multi(u"Twice")
+  >>> multi.bind().get(Foo)
+  [u'Once', u'Twice']
+
+  >>> class Qux(Foo):
+  ...     multi(u'Triple')
+  ...     multi(u'More')
+  >>> multi.bind().get(Qux)
+  [u'Triple', u'More']
+
+Using a directive multiple times, as a dictionary
+-------------------------------------------------
+
+A directive can be configured to allow it to be called multiple times in the
+same scope. In this case the factory method should be overridden to return a
+key-value pair::
+
+  >>> from martian import DICT
+  >>> class multi(Directive):
+  ...     scope = CLASS
+  ...     store = DICT
+  ...     def factory(self, value):
+  ...         return value.lower(), value
+
+We can now use the directive multiple times without any errors::
+
+  >>> class Bar(object):
+  ...   multi(u"Once")
+  ...   multi(u"Twice")
+
+We can now retrieve the value and we'll get a to the items::
+
+  >>> d = multi.bind().get(Bar)
+  >>> print sorted(d.items())
+  [(u'once', u'Once'), (u'twice', u'Twice')]
+
+When the factory method does not return a key-value pair, an error is raised::
+
+  >>> class wrongmulti(Directive):
+  ...     scope = CLASS
+  ...     store = DICT
+  ...     def factory(self, value):
+  ...         return None
+
+  >>> class Baz(object):
+  ...   wrongmulti(u"Once")
+  Traceback (most recent call last):
+  ...
+  GrokImportError: The factory method for the 'wrongmulti' directive should
+  return a key-value pair.
+
+  >>> class wrongmulti2(Directive):
+  ...     scope = CLASS
+  ...     store = DICT
+  ...     def factory(self, value):
+  ...         return value, value, value
+
+  >>> class Baz(object):
+  ...   wrongmulti2(u"Once")
+  Traceback (most recent call last):
+  ...
+  GrokImportError: The factory method for the 'wrongmulti2' directive should
+  return a key-value pair.
+
+Like with MULTIPLE store, values set by directives using the DICT store are
+combined::
+
+  >>> class multi(Directive):
+  ...     scope = CLASS
+  ...     store = DICT
+  ...     def factory(self, value, andanother):
+  ...         return value, andanother
+  ...
+  >>> class Frepple(object):
+  ...   multi(1, 'AAA')
+  ...   multi(2, 'BBB')
+  ...
+  >>> class Fropple(Frepple):
+  ...   multi(1, 'CCC')
+  ...   multi(3, 'DDD')
+  ...   multi(4, 'EEE')
+
+  >>> d = multi.bind().get(Fropple)
+  >>> print sorted(d.items())
+  [(1, 'CCC'), (2, 'BBB'), (3, 'DDD'), (4, 'EEE')]
+
+Using MULTIPLE and DICT can also work on a module level, even though
+inheritance has no meaning there::
+
+  >>> from martian import MODULE
+  >>> class multi(MultipleTimesDirective):
+  ...     scope = MODULE
+  ...
+  >>> multi.__module__ = 'somethingelse'
+  >>> class module_with_directive(FakeModule):
+  ...     fake_module = True
+  ...
+  ...     multi('One')
+  ...     multi('Two')
+  ...
+  >>> module_with_directive = fake_import(module_with_directive)
+  >>> print multi.bind().get(module=module_with_directive)
+  ['One', 'Two']
+
+  >>> from martian import MODULE
+  >>> class multi(Directive):
+  ...     scope = MODULE
+  ...     store = DICT
+  ...     def factory(self, value, andanother):
+  ...         return value, andanother
+  ...
+  >>> multi.__module__ = 'somethingelse'
+  >>> class module_with_directive(FakeModule):
+  ...     fake_module = True
+  ...
+  ...     multi(1, 'One')
+  ...     multi(2, 'Two')
+  ...
+  >>> module_with_directive = fake_import(module_with_directive)
+  >>> d = multi.bind().get(module=module_with_directive)
+  >>> print sorted(d.items())
+  [(1, 'One'), (2, 'Two')]
+
+Calculated defaults
+-------------------
+
+Often instead of just supplying the system with a default, we want to
+calculate the default in some way. We define the ``name`` directive,
+which if not present, will calculate its value from the name of class,
+lower-cased. Instead of passing a default value, we pass a function as the
+default argument::
+
+  >>> class name(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...
+  >>> def default_name_lowercase(component, module, **data):
+  ...     return component.__name__.lower()
+  ...
+  >>> bound_name = name.bind(get_default=default_name_lowercase)
+
+  >>> class Foo(object):
+  ...   name('bar')
+
+  >>> bound_name.get(Foo)
+  'bar'
+
+  >>> class Foo(object):
+  ...   pass
+  >>> bound_name.get(Foo)
+  'foo'
+
+A marker directive
+------------------
+
+Another type of directive is a marker directive. This directive takes
+no arguments at all, but when used it marks the context::
+
+  >>> from martian import MarkerDirective
+  >>> class mark(MarkerDirective):
+  ...     scope = CLASS
+
+  >>> class Foo(object):
+  ...     mark()
+
+Class ``Foo`` is now marked::
+
+  >>> mark.bind().get(Foo)
+  True
+
+When we have a class that isn't marked, we get the default value, ``False``::
+
+  >>> class Bar(object):
+  ...    pass
+  >>> mark.bind().get(Bar)
+  False
+
+If we pass in an argument, we get an error::
+
+  >>> class Bar(object):
+  ...   mark("An argument")
+  Traceback (most recent call last):
+    ...
+  TypeError: mark takes no arguments (1 given)
+
+
+Validation
+----------
+
+A directive can be supplied with a validation method. The validation method
+checks whether the value passed in is allowed. It should raise
+``GrokImportError`` if the value cannot be validated, together with a
+description of why not.
+
+First we define our own validation function. A validation function
+takes two arguments:
+
+* the name of the directive we're validating for
+
+* the value we need to validate
+
+The name can be used to format the exception properly.
+
+We'll define a validation method that only expects integer numbers::
+
+  >>> from martian.error import GrokImportError
+  >>> class number(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...     def validate(self, value):
+  ...         if type(value) is not int:
+  ...             raise GrokImportError("The '%s' directive can only be called with an integer." %
+  ...                                   self.name)
+
+  >>> class Foo(object):
+  ...    number(3)
+
+  >>> class Foo(object):
+  ...    number("This shouldn't work")
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'number' directive can only be called with an integer.
+
+Some built-in validation functions
+----------------------------------
+
+Let's look at some built-in validation functions.
+
+The ``validateText`` function determines whether a string
+is unicode or plain ascii::
+
+  >>> from martian import validateText
+  >>> class title(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...     default = u''
+  ...     validate = validateText
+
+When we pass ascii text into the directive, there is no error::
+
+  >>> class Foo(object):
+  ...    title('Some ascii text')
+
+We can also pass in a unicode string without error::
+
+  >>> class Foo(object):
+  ...    title(u'Some unicode text')
+
+Let's now try it with something that's not text at all, such as a number.
+This fails::
+
+  >>> class Foo(object):
+  ...    title(123)
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'title' directive can only be called with unicode or ASCII.
+
+It's not allowed to call the direct with a non-ascii encoded string::
+
+  >>> class Foo(object):
+  ...   title(u'è'.encode('latin-1'))
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'title' directive can only be called with unicode or ASCII.
+
+ >>> class Foo(object):
+ ...   title(u'è'.encode('UTF-8'))
+ Traceback (most recent call last):
+   ...
+ GrokImportError: The 'title' directive can only be called with unicode or ASCII.
+
+The ``validateInterfaceOrClass`` function only accepts class or
+interface objects::
+
+  >>> from martian import validateInterfaceOrClass
+  >>> class klass(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...     validate = validateInterfaceOrClass
+
+It works with interfaces and classes::
+
+  >>> class Bar(object):
+  ...    pass
+  >>> class Foo(object):
+  ...    klass(Bar)
+
+  >>> from zope.interface import Interface
+  >>> class IBar(Interface):
+  ...    pass
+  >>> class Foo(object):
+  ...    klass(IBar)
+
+It won't work with other things::
+
+  >>> class Foo(object):
+  ...   klass(Bar())
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'klass' directive can only be called with a class or an interface.
+
+  >>> class Foo(object):
+  ...   klass(1)
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'klass' directive can only be called with a class or an interface.
+
+The ``validateInterface`` validator only accepts an interface::
+
+  >>> from martian import validateInterface
+  >>> class iface(Directive):
+  ...     scope = CLASS
+  ...     store = ONCE
+  ...     validate = validateInterface
+
+Let's try it::
+
+  >>> class Foo(object):
+  ...    iface(IBar)
+
+It won't work with classes or other things::
+
+  >>> class Foo(object):
+  ...   iface(Bar)
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'iface' directive can only be called with an interface.
+
+  >>> class Foo(object):
+  ...   iface(1)
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'iface' directive can only be called with an interface.
+
+The ``validateClass`` validator only accepts a class::
+
+  >>> from martian import validateClass
+  >>> class klass(Directive):
+  ...    scope = CLASS 
+  ...    store = ONCE
+  ...    validate = validateClass
+
+  >>> class Foo(object):
+  ...    klass(Bar)
+
+But it won't work with an interface or other things::
+
+  >>> class Foo(object):
+  ...    klass(IBar)
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'klass' directive can only be called with a class.
+
+  >>> class Foo(object):
+  ...    klass(Bar())
+  Traceback (most recent call last):
+    ...
+  GrokImportError: The 'klass' directive can only be called with a class.
+
+Declaring base classes
+----------------------
+
+There's a special directive called ``martian.baseclass`` which lets
+you declare that a certain class is the base class for a series of
+other components.  This property should not be inherited by those
+components.  Consider the following base class:
+
+  >>> import martian
+  >>> class MyBase(object):
+  ...     martian.baseclass()
+
+As you would expect, the directive will correctly identify this class as a
+baseclass:
+
+  >>> martian.baseclass.bind().get(MyBase)
+  True
+
+But, if we create a subclass of this base class, the subclass won't inherit
+that property, unlike with a regular directive:
+
+  >>> class SubClass(MyBase):
+  ...     pass
+  ...
+  >>> martian.baseclass.bind().get(SubClass)
+  False
+
+Naturally, the directive will also report a false answer if the class doesn't
+inherit from a base class at all and hasn't been marked with the directive:
+
+  >>> class NoBase(object):
+  ...     pass
+  ...
+  >>> martian.baseclass.bind().get(NoBase)
+  False
