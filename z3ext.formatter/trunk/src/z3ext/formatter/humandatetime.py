@@ -22,7 +22,7 @@ from zope.i18n import translate
 from zope.component import getUtility
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet, _
+from interfaces import _, IFormatter, IFormatterFactory, IFormatterConfiglet
 
 
 class HumanDatetimeFormatter(object):
@@ -49,14 +49,20 @@ class HumanDatetimeFormatter(object):
         self.request = request
 
     def format(self, value):
+        configlet = getUtility(IFormatterConfiglet)
+
+        tz = timezone(configlet.timezone)
+
         if value.tzinfo is None:
-            value = utc.localize(datetime)
+            value = utc.localize(value)
+
         now = datetime.now(utc)
         delta = now - value.astimezone(utc)
         key = 'past'
         if delta < timedelta():
             delta = - delta + timedelta(seconds=1) #due to python implementation
             key = 'future'
+
         offset = (value.tzinfo.utcoffset(value).seconds/600)*10
         value = FixedOffset(offset).normalize(value)
 
@@ -64,27 +70,31 @@ class HumanDatetimeFormatter(object):
             delta.days/365, delta.days/30, delta.days/7,
             delta.seconds/3600, delta.seconds/60)
         formatted = None
+
         if years > 0:
             formatted = translate(self.messages[key]['year'], 'z3ext.formatter',
-                             mapping={'value': years})
+                                  mapping={'value': years})
         elif months > 0:
             formatted = translate(self.messages[key]['month'],'z3ext.formatter',
-                             mapping={'value': months})
+                                  mapping={'value': months})
         elif weeks > 0:
             formatted = translate(self.messages[key]['week'], 'z3ext.formatter',
-                             mapping={'value': weeks})
+                                  mapping={'value': weeks})
         elif delta.days > 0:
             formatted = translate(self.messages[key]['day'], 'z3ext.formatter',
-                             mapping={'value': delta.days})
+                                  mapping={'value': delta.days})
         elif hours > 0:
             formatted = translate(self.messages[key]['hour'], 'z3ext.formatter',
-                             mapping={'value': hours})
+                                  mapping={'value': hours})
         elif minutes > 0:
-            formatted = translate(self.messages[key]['minute'], 'z3ext.formatter',
-                             mapping={'value': minutes})
+            formatted = translate(
+                self.messages[key]['minute'], 'z3ext.formatter',
+                mapping={'value': minutes})
         else:
-            formatted = translate(self.messages[key]['second'], 'z3ext.formatter',
-                         mapping={'value': delta.seconds})
+            formatted = translate(
+                self.messages[key]['second'], 'z3ext.formatter',
+                mapping={'value': delta.seconds})
+
         return """<span class="z3ext-formatter-humandatetime" value="%s">%s</span>""" \
                 % (value.strftime('%Y %B %d %H:%M:%S %z'), formatted)
 
