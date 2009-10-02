@@ -120,7 +120,7 @@ def mergelogs(l1, l2, out):
         else:
             index = 1
         session, timetime, message = records[index]
-        marshal.dump(('%s%s' % (index, session), timetime, message), fo)
+        marshal.dump(('%d%s' % (index, session), timetime, message), fo)
         try:
             records[index] = marshal.load(files[index])
         except EOFError:
@@ -128,7 +128,8 @@ def mergelogs(l1, l2, out):
 
     index = not index
     while 1:
-        marshal.dump(records[index], fo)
+        session, timetime, message = records[index]
+        marshal.dump(('%d%s' % (index, session), timetime, message), fo)
         try:
             records[index] = marshal.load(files[index])
         except EOFError:
@@ -165,6 +166,12 @@ class Log(object):
             msgid, async, op, args = cPickle.loads(message)
 
             yield session, timetime, msgid, async, op, args
+
+    def __len__(self):
+        n = 0
+        for x in self:
+            n += 1
+        return n
 
     def sessions(self):
         sessions = {}
