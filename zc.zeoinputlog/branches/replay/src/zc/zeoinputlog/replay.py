@@ -48,6 +48,7 @@ time how long it takes to play the input log.
 
 
 import cPickle
+import logging
 import marshal
 import os
 import sys
@@ -64,6 +65,7 @@ import ZODB.POSException
 import ZODB.TimeStamp
 import ZODB.utils
 
+logging.basicConfig()
 
 def time_stamp(timetime):
     return repr(ZODB.TimeStamp.TimeStamp(
@@ -325,7 +327,7 @@ class Handler:
             self._process()
 
     def _process(self):
-        while not self.queueing:
+        while self.queue and not self.queueing:
             async, op, args = self.queue.pop(0)
 
             self.msgid += 1
