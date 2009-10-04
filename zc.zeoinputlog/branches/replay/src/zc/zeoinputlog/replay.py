@@ -183,9 +183,11 @@ class Log(object):
                 stats = sessions[session] = dict(
                     start_timetime=timetime,
                     ops={},
+                    size=0,
                     )
             stats['end_timetime'] = timetime
-            stats['opd'][op] = stats['opd'].get(op, 0) + 1
+            stats['ops'][op] = stats['ops'].get(op, 0) + 1
+            stats['size'] += 1
 
         return sorted(sessions.itervalues(), key=lambda v: v['start_timetime'])
 
