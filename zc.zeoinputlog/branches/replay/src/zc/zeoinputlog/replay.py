@@ -177,19 +177,17 @@ class Log(object):
 
     def sessions(self):
         sessions = {}
-        f = open(self.fname)
-        while 1:
-            try:
-                session, timetime, message = marshal.load(f)
-            except EOFError:
-                break
+        for session, timetime, msgid, async, op, args in self:
+            stats = sessions.get(session)
+            if stats is None:
+                stats = sessions[session] = dict(
+                    start_timetime=timetime,
+                    ops={},
+                    )
+            stats['end_timetime'] = timetime
+            stats['opd'][op] = stats['opd'].get(op, 0) + 1
 
-            start_stop = sessions.get(session)
-            if not start_stop:
-                start_stop = sessions[session] = [timetime, timetime]
-            start_stop[1] = timetime
-
-        return sorted(sessions.itervalues())
+        return sorted(sessions.itervalues(), key=lambda v: v['start_timetime'])
 
 class Transactions(object):
 
