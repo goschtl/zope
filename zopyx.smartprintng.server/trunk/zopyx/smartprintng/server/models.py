@@ -72,11 +72,11 @@ class Server(object):
             if age > self.keep_files_for:
                 shutil.rmtree(destdir)
 
-        for dir in os.listdir(self.spool_directory):
-            destdir = os.path.join(self.spool_directory, dir)
-            age = time.time() - os.stat(destdir)[ST_CTIME]
+        for name in os.listdir(self.spool_directory):
+            fullname = os.path.join(self.spool_directory, name)
+            age = time.time() - os.stat(fullname)[ST_CTIME]
             if age > self.keep_files_for:
-                shutil.rmtree(destdir)
+                shutil.rmtree(fullname)
 
     def _inject_base_tag(self, html_filename):
         """ All input HTML files contain relative urls (relative
