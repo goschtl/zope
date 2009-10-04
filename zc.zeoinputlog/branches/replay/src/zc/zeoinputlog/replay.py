@@ -189,7 +189,26 @@ class Log(object):
             stats['ops'][op] = stats['ops'].get(op, 0) + 1
             stats['size'] += 1
 
-        return sorted(sessions.itervalues(), key=lambda v: v['start_timetime'])
+        return sessions
+
+    def splitsessions(self, sessions, outname):
+        # Split the given sessions my splitting roughly half the calls
+        # calls into a new session containing only loadEx calls
+        sessions = set("0%s" % session for session in sessions)
+        sizes = {}
+        out = open(outname, 'wb')
+        for session, timetime, msgid, async, op, args in self:
+            session = "0%s" % session
+            if (session in sessions
+                and op == 'loadEx'
+                and sizes.get(session, 0) > sizes.get('1'+session[1:], 0)
+                ):
+                session = '1'+session[1:]
+            sizes[session] = sizes.get(session, 0) + 1
+            marshal.dump(
+                (session, timetime, cPickle.dumps((msgid, async, op, args), 1)
+                 ),
+                out)
 
 class Transactions(object):
 
