@@ -210,6 +210,23 @@ class Log(object):
                  ),
                 out)
 
+    def splitsendblobs(self, sessions, outname):
+        # Split the given sessions my splitting roughly half the
+        # sendBlob calls calls into a new session.
+        sessions = set("0%s" % session for session in sessions)
+        sizes = {}
+        out = open(outname, 'wb')
+        for session, timetime, msgid, async, op, args in self:
+            session = "0%s" % session
+            if session in sessions and op == 'sendBlob':
+                if sizes.get(session, 0) > sizes.get('1'+session[1:], 0):
+                    session = '1'+session[1:]
+                sizes[session] = sizes.get(session, 0) + 1
+            marshal.dump(
+                (session, timetime, cPickle.dumps((msgid, async, op, args), 1)
+                 ),
+                out)
+
 class Transactions(object):
 
 
