@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.zodbobjecteventsmp', '0'
 
-install_requires = ['setuptools']
+install_requires = ['setuptools', 'ZODB3']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
