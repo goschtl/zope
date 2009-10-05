@@ -21,8 +21,8 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope import interface, component
 from zope.annotation.interfaces import IAnnotations
-from zope.container.contained import Contained
 from zope.location import Location
+from zope.location.interfaces import IContained
 from zope.security.interfaces import IPrincipal
 from zope.site.next import queryNextUtility
    
@@ -30,14 +30,17 @@ from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
    
 # TODO: register utility as adapter for IAnnotations on utility activation.
    
-class PrincipalAnnotationUtility(Persistent, Contained):
+class PrincipalAnnotationUtility(Persistent):
     """Stores `IAnnotations` for `IPrinicipals`.
     
     The utility ID is 'PrincipalAnnotation'.
     """
    
-    interface.implements(IPrincipalAnnotationUtility)
-   
+    interface.implements(IPrincipalAnnotationUtility, IContained)
+
+    __parent__ = None
+    __name__ = None
+
     def __init__(self):
         self.annotations = OOBTree()
 
