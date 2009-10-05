@@ -144,5 +144,4 @@ class NoGCFileStorageTests(FileStorageTests):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(NoGCFileStorageTests, "check"))
-    suite.addTest(doctest.DocFileSuite('mru.txt'))
     return suite
