@@ -19,6 +19,7 @@ $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 import subprocess
 
 import cStringIO
+import errno
 import gc
 import Queue
 import re
@@ -481,7 +482,7 @@ class AbstractSubprocessResult(object):
 
 class DeferredSubprocessResult(AbstractSubprocessResult):
     """Keeps stdout around for later processing,"""
-    
+
     def write(self, out):
         if not _is_dots(out):
             self.stdout.append(out)
@@ -496,7 +497,7 @@ class ImmediateSubprocessResult(AbstractSubprocessResult):
         sys.stdout.flush()
 
 
-_is_dots = re.compile(r'\.+\n').match
+_is_dots = re.compile(r'\.+(\r\n?|\n)').match # Windows sneaks in a \r\n.
 class KeepaliveSubprocessResult(AbstractSubprocessResult):
     "Keeps stdout for later processing; sends marks to queue to show activity."
 
@@ -506,7 +507,7 @@ class KeepaliveSubprocessResult(AbstractSubprocessResult):
         self._done = value
         assert value, 'Internal error: unexpectedly setting done to False'
         self.queue.put((self.layer_name, ' LAYER FINISHED'))
-    done = property(lambda self: self._done, _set_done) 
+    done = property(lambda self: self._done, _set_done)
 
     def write(self, out):
         if _is_dots(out):

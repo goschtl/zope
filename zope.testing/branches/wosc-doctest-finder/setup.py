@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# This package is developed by the Zope Toolkit project, documented here:
+# http://docs.zope.org/zopetoolkit
+# When developing and releasing this package, please follow the documented
+# Zope Toolkit policies as described by this documentation.
+##############################################################################
 """Setup for zope.testing package
 
 $Id$
@@ -80,7 +85,7 @@ open('documentation.txt', 'w').write(long_description)
 
 setup(
     name='zope.testing',
-    version = '3.8.2dev',
+    version = '3.8.4dev',
     url='http://pypi.python.org/pypi/zope.testing',
     license='ZPL 2.1',
     description='Zope testing framework, including the testrunner script.',
