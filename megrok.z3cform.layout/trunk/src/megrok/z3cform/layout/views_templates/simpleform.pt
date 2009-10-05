@@ -73,12 +73,12 @@
       </tal:block>
     </div>
     
-    <div id="actionsView"  tal:condition="view/actions">
+    <div id="actionsView"  tal:condition="view/actions|nothing">
       <span class="actionButtons">
 	<input tal:repeat="action view/actions/values"
 	       tal:replace="structure action/render"
 	       />
       </span>
     </div>
-    </fieldset>
+  </fieldset>
 </form>
