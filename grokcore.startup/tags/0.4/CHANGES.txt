@@ -1,0 +1,35 @@
+Changes
+*******
+
+0.4 (2009-10-06)
+================
+
+- Fix documentation bugs.
+
+0.3 (2009-10-02)
+================
+
+* Add a ``debug_application_factory`` function that allows for the
+  ``exempt-exceptions`` configuration option. The value for this option
+  should be a comma seperated list of dotted names for each of the exceptions
+  that should not be re-raised during debugging.
+
+  This for one allow the IUnauthorized exception to still be handled by zope
+  and thus have the normal authentication mechanisms still work.
+
+* Bring versions.cfg in line with current grok versions.cfg.
+
+0.2 (2009-02-21)
+================
+
+* Made main functions available package wide.
+
+0.1 (2009-01-15)
+================
+
+* Added support for local ``zope_conf`` parameter.
+  Fix bug https://bugs.launchpad.net/grok/+bug/320644
+
+* Created ``grokcore.startup`` in January 2009 by factoring paster
+  related application code out of grokcore templates.
+
