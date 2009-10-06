@@ -87,6 +87,7 @@ def main():
 
     projects = svnls(base)
     cleaned = []
+    cleaned_bpf = []
     for project in projects.splitlines():
         if project.endswith('/'):
             project = project[:-1]
@@ -99,7 +100,7 @@ def main():
 
                 try:
                     svnls("%strunk/%s/buildout.cfg" % (base, subproject))
-                    cleaned.append("trunk/"+subproject)
+                    cleaned_bpf.append(subproject)
                 except OSError:
                     pass
 
@@ -112,6 +113,8 @@ def main():
 
     open(os.path.join(home, 'project-list.cfg'), 'wb').write(
         '\n'.join(cleaned) )
+    open(os.path.join(home, 'project-list-bpf.cfg'), 'wb').write(
+        '\n'.join(cleaned_bpf) )
 
     if sys.platform == 'win32':
         #there is no make usually on win32 and reconfig is also not supported

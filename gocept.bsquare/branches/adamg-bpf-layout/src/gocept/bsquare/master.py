@@ -8,7 +8,7 @@ from twisted.python import log
 from buildbot import locks
 
 from buildbot.changes.svnpoller import SVNPoller, split_file_branches
-from buildbot.steps.source import SVN
+from buildbot.steps import source
 from buildbot.steps.shell import Compile
 from buildbot.process.factory import BuildFactory
 
@@ -20,8 +20,15 @@ from gocept.bsquare import status
 
 is_win32 = sys.platform == 'win32'
 
-def split_file_pbf(path):
-    #PROJECT/BRANCHNAME/FILEPATH repositories
+class SVN(source.SVN):
+    def startVC(self, branch, revision, patch):
+        log.msg('startVC %s %s %s' % (branch, revision, patch))
+        if branch.startswith('trunk/'):
+            branch = 'trunk'
+        return source.SVN.startVC(self, branch, revision, patch)
+
+def split_file(path):
+    log.msg('split_file %s' % (path))
     pieces = path.split("/")
     if len(pieces) < 2:
         return None
@@ -30,40 +37,17 @@ def split_file_pbf(path):
         return None
     return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
 
-
-def split_file_bpf(path):
-    #BRANCHNAME/PROJECT/FILEPATH repositories
-    pieces = path.split("/")
-    if len(pieces) < 2:
-        return None
-    project, branch = pieces[1], pieces[0]
-    if branch != "trunk":
-        return None
-    return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
-
-def split_file_i(path):
-    #intelligent
-    log.msg("split_file_i: %s" % path)
-    pieces = path.split("/")
-    if len(pieces) < 2:
-        return None
-    project, branch = pieces[0], pieces[1]
-    #if project in ('trunk','branches','tags'):
-        #this is a BPF
-        #project, branch = branch, project
-    #if branch != "trunk":
-        #return None
-    rv = ("%s/%s" % (project, branch), "/".join(pieces[2:]))
-    log.msg("split_file_i: %s" % repr(rv))
-    return rv
-
-
-def make_factory(svn_url, passOnNoTest=True):
+def make_factory(svn_url, passOnNoTest=True, subfolder=''):
     f = BuildFactory()
-    log.msg("make_factory svn_url: %s" % svn_url)
-    f.addStep(SVN(baseURL=svn_url, mode='clobber',defaultBranch=''))
+    f.addStep(SVN(baseURL=svn_url, mode='clobber'))
+    if subfolder:
+        subfolder = os.path.join('build', subfolder)
+    else:
+        subfolder = 'build'
+
     f.addStep(Compile(name='bootstrap',
-                command='buildout bootstrap .',
+                command='buildout bootstrap',
+                workdir=subfolder,
                 description=['bootstrapping'],
                 descriptionDone=['bootstrap']))
     if is_win32:
@@ -72,6 +56,7 @@ def make_factory(svn_url, passOnNoTest=True):
         command = 'bin/buildout'
     f.addStep(Compile(name="buildout",
                 command=command,
+                workdir=subfolder,
                 description=['building'],
                 descriptionDone=['build']))
 
@@ -89,18 +74,19 @@ def make_factory(svn_url, passOnNoTest=True):
 
     f.addStep(Compile(name="test",
                 command=command,
+                workdir=subfolder,
                 description=['testing'],
                 descriptionDone=['tests']))
 
     f.treeStableTimer = 300
     return f
 
-def make_factory_strict(svn_url):
+def make_factory_strict(svn_url, subfolder=''):
     """Same as make_factory, but will fail when no bin/test exists
     That's somehow a must be solution, because bin/buildout does NOT
     return an exitstatus on an error
     """
-    return make_factory(svn_url, passOnNoTest=False)
+    return make_factory(svn_url, passOnNoTest=False, subfolder=subfolder)
 
 def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
@@ -138,7 +124,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
     c['slavePortnum'] = 8989
     if poller is None:
         c['change_source'] = SVNPoller(svn_url,
-                                       split_file=split_file_i,
+                                       split_file=split_file,
                                        svnuser=svnuser,
                                        svnpasswd=svnpasswd,
                                        pollinterval=pollinterval,
@@ -150,19 +136,12 @@ def configure(svn_url, http_port=8010, allowForce=False,
 
     slow_lock = locks.SlaveLock("cpu", maxCount=maxConcurrent)
 
+    #'normal' pbf layouted projects
+
     projects = open("project-list.cfg", "rb").readlines()
     projects = [x.strip() for x in projects]
 
     for project in projects:
-        realsvn_url = svn_url
-        if '/' in project:
-            parts = project.split('/')
-            realsvn_url = svn_url+project+'/'
-            project = parts[-1]
-            branch = "trunk/%s" % project
-        else:
-            branch = "%s/trunk" % project
-
         if isinstance(make_factory, dict):
             f = makefactory.get(project,
                                 makefactory.get('__default__', make_factory))
@@ -179,11 +158,40 @@ def configure(svn_url, http_port=8010, allowForce=False,
         del f
 
         c['schedulers'].append(Scheduler(
-            project, branch, pollinterval+10, [project]))
+            project, "%s/trunk" % project, pollinterval+10, [project]))
         if nightlyhour is not None:
             c['schedulers'].append(Nightly(
                 "%s nightly" % project, [project], hour=[nightlyhour],
-                branch=branch))
+                branch="%s/trunk" % project))
+
+    #bpf layouted projects, there are tiny changes compared to above
+
+    projects = open("project-list-bpf.cfg", "rb").readlines()
+    projects = [x.strip() for x in projects]
+
+    for project in projects:
+        if isinstance(make_factory, dict):
+            f = makefactory.get(project,
+                                makefactory.get('__default__', make_factory))
+            f = f(svn_url, subfolder=project)
+        else:
+            f = makefactory(svn_url, subfolder=project)
+
+        c['builders'].append({
+            'name': project,
+            'slavename': 'local',
+            'builddir': project,
+            'factory': f,
+            'locks': [slow_lock],
+        })
+        del f
+
+        c['schedulers'].append(Scheduler(
+            project, "trunk/%s" % project, pollinterval+10, [project]))
+        if nightlyhour is not None:
+            c['schedulers'].append(Nightly(
+                "%s nightly" % project, [project], hour=[nightlyhour],
+                branch="trunk/%s" % project))
 
     # Status display(s)
     c['status'] = []
