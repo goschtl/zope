@@ -5,7 +5,11 @@
   >>> changes = set_fields_data(Fields(IPerson), person, {'name': u'james'})
   >>> changes
   {<InterfaceClass megrok.z3cform.base.tests.test_utils.IPerson>: ['name']}
- 
+  >>> attributes = notify_changes(person, changes)
+  An IObjectModifiedEvent was sent for a person with the following changes:
+  name
+  >>> attributes
+  [<zope.lifecycleevent.Attributes object at ...>]
   
 """
 import grokcore.component as grok

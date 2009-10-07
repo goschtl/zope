@@ -11,4 +11,4 @@ from z3c.form.interfaces import DISPLAY_MODE, INPUT_MODE
 from components import *
 from directives import *
 from interfaces import IGrokForm, ICancelButton
-from utils import apply_data_event, changes_notification, set_fields_data
+from utils import apply_data_event, notify_changes, set_fields_data
