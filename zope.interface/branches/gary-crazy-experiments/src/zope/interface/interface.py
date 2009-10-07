@@ -197,7 +197,7 @@ class InterfaceBasePy(object):
             adapter = hook(self, obj)
             if adapter is not None:
                 return adapter
-    
+
 InterfaceBase = InterfaceBasePy
 
 adapter_hooks = []
@@ -449,8 +449,10 @@ class InterfaceMetaclass(type, Element, InterfaceBase, Specification):
         if attrs is None:
             attrs = {}
 
-        if not bases: # (I.e., this is the root "interface.")
-            del attrs['__metaclass__'] # Interfaces don't want "real" attrs.
+        if not bases: # (That is, this is the root "interface" instance, or a
+                      # test fixture.)
+            # Interfaces don't want "real" attrs.
+            attrs.pop('__metaclass__', None)
 
         if __module__ is None:
             __module__ = attrs.get('__module__')
@@ -707,8 +709,7 @@ class InterfaceMetaclass(type, Element, InterfaceBase, Specification):
         return c > 0
 
 
-class Interface:
-    __metaclass__ = InterfaceMetaclass
+Interface = InterfaceMetaclass("Interface", __module__ = 'zope.interface')
 
 
 class Attribute(Element):

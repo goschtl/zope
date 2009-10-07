@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.interface import Interface, invariant
-from zope.interface.interface import Attribute
+from zope.interface.interface import Attribute, InterfaceMetaclass
 from zope.interface.exceptions import Invalid
 
 class mytest(Interface):
@@ -112,11 +112,11 @@ foo_instance = Foo()
 class Blah(object):
     pass
 
-new = Interface.__class__
-FunInterface = new('FunInterface')
-BarInterface = new('BarInterface', [FunInterface])
-BobInterface = new('BobInterface')
-BazInterface = new('BazInterface', [BobInterface, BarInterface])
+FunInterface = InterfaceMetaclass('FunInterface')
+BarInterface = InterfaceMetaclass('BarInterface', [FunInterface])
+BobInterface = InterfaceMetaclass('BobInterface')
+BazInterface = InterfaceMetaclass('BazInterface',
+                                  [BobInterface, BarInterface])
 
 # fixtures for invariant tests
 def ifFooThenBar(obj):
@@ -130,8 +130,8 @@ def BarGreaterThanFoo(obj):
     foo = getattr(obj, 'foo', None)
     bar = getattr(obj, 'bar', None)
     if foo is not None and isinstance(foo, type(bar)):
-        # type checking should be handled elsewhere (like, say, 
-        # schema); these invariants should be intra-interface 
+        # type checking should be handled elsewhere (like, say,
+        # schema); these invariants should be intra-interface
         # constraints.  This is a hacky way to do it, maybe, but you
         # get the idea
         if not bar > foo:

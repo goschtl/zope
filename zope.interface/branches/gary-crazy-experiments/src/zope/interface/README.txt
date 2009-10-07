@@ -32,14 +32,14 @@ Interfaces are defined using Python class statements::
   ...    def bar(q, r=None):
   ...        """bar blah blah"""
 
-In the example above, we've created an interface, `IFoo`.  We
-subclassed `zope.interface.Interface`, which is an ancestor interface for
-all interfaces, much as `object` is an ancestor of all new-style
-classes [#create]_.   The interface is not a class, it's an Interface,
-an instance of `InterfaceClass`::
+In the example above, we've created an interface, `IFoo`.  We subclassed
+`zope.interface.Interface`, which is an ancestor interface for all
+interfaces, much as `object` is an ancestor of all new-style classes
+[#create]_.   The interface is not a standard Python class, but an
+Interface, an instance of `InterfaceMetaclass`::
 
   >>> type(IFoo)
-  <class 'zope.interface.interface.InterfaceClass'>
+  <class 'zope.interface.interface.InterfaceMetaclass'>
 
 We can ask for the interface's documentation::
 
@@ -105,13 +105,13 @@ You can iterate over interfaces to get the names they define::
   >>> names
   ['bar', 'x']
 
-Remember that interfaces aren't classes. You can't access attribute
-definitions as attributes of interfaces::
+Remember that interfaces do not provide the API they describe. You can't
+access attribute definitions as attributes of interfaces::
 
   >>> IFoo.x
   Traceback (most recent call last):
     File "<stdin>", line 1, in ?
-  AttributeError: 'InterfaceClass' object has no attribute 'x'
+  AttributeError: type object 'IFoo' has no attribute 'x'
 
 Methods provide access to the method signature::
 
@@ -193,7 +193,7 @@ Of course, `Foo` doesn't provide `IFoo`, it implements it::
 We can also ask what interfaces are implemented by an object::
 
   >>> list(zope.interface.implementedBy(Foo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 It's an error to ask for interfaces implemented by a non-callable
 object::
@@ -211,7 +211,7 @@ object::
 Similarly, we can ask what interfaces are provided by an object::
 
   >>> list(zope.interface.providedBy(foo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
   >>> list(zope.interface.providedBy(Foo))
   []
 
@@ -226,7 +226,7 @@ classes).  We do this using a Python-2.4-style decorator named
   >>> yfoo = zope.interface.implementer(IFoo)(yfoo)
 
   >>> list(zope.interface.implementedBy(yfoo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 Note that the implementer decorator may modify it's argument. Callers
 should not assume that a new object is created.
@@ -267,7 +267,7 @@ interface on the class::
 And then, we'll see that Foo provides some interfaces::
 
   >>> list(zope.interface.providedBy(Foo))
-  [<InterfaceClass __main__.IFooFactory>]
+  [<InterfaceMetaclass __main__.IFooFactory>]
   >>> IFooFactory.providedBy(Foo)
   True
 
@@ -289,7 +289,7 @@ declaration from within a class statement::
   ...         return "Foo(%s)" % self.x
 
   >>> list(zope.interface.providedBy(Foo2))
-  [<InterfaceClass __main__.IFooFactory>]
+  [<InterfaceMetaclass __main__.IFooFactory>]
   >>> IFooFactory.providedBy(Foo2)
   True
 
@@ -328,12 +328,12 @@ then the new interface is included in the provided interfaces::
   >>> ISpecial.providedBy(foo)
   True
   >>> list(zope.interface.providedBy(foo))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
 We can find out what interfaces are directly provided by an object::
 
   >>> list(zope.interface.directlyProvidedBy(foo))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
   >>> newfoo = Foo()
   >>> list(zope.interface.directlyProvidedBy(newfoo))
@@ -351,10 +351,10 @@ Normally, declarations are inherited::
   ...         return "I'm special because %s" % self.reason
 
   >>> list(zope.interface.implementedBy(SpecialFoo))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
   >>> list(zope.interface.providedBy(SpecialFoo()))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
 Sometimes, you don't want to inherit declarations.  In that case, you
 can use `implementsOnly`, instead of `implements`::
@@ -366,10 +366,10 @@ can use `implementsOnly`, instead of `implements`::
   ...         return "I'm special because %s" % self.reason
 
   >>> list(zope.interface.implementedBy(Special))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
   >>> list(zope.interface.providedBy(Special()))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
 External declarations
 ---------------------
@@ -385,7 +385,7 @@ be used for this purpose::
 
   >>> zope.interface.classImplements(C, IFoo)
   >>> list(zope.interface.implementedBy(C))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 We can use `classImplementsOnly` to exclude inherited interfaces::
 
@@ -394,7 +394,7 @@ We can use `classImplementsOnly` to exclude inherited interfaces::
 
   >>> zope.interface.classImplementsOnly(C, ISpecial)
   >>> list(zope.interface.implementedBy(C))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
 
 
@@ -426,7 +426,7 @@ The declaration here is almost the same as
 interfaces in the resulting declaration is different::
 
   >>> list(zope.interface.implementedBy(Special2))
-  [<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.IFoo>, <InterfaceMetaclass __main__.ISpecial>]
 
 
 Interface Inheritance
@@ -443,7 +443,7 @@ the other interfaces as base interfaces::
   ...         """eek blah blah"""
 
   >>> IBlat.__bases__
-  (<InterfaceClass zope.interface.Interface>,)
+  (<InterfaceMetaclass zope.interface.Interface>,)
 
   >>> class IBaz(IFoo, IBlat):
   ...     """Baz blah"""
@@ -452,7 +452,7 @@ the other interfaces as base interfaces::
   ...
 
   >>> IBaz.__bases__
-  (<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.IBlat>)
+  (<InterfaceMetaclass __main__.IFoo>, <InterfaceMetaclass __main__.IBlat>)
 
   >>> names = list(IBaz)
   >>> names.sort()
@@ -552,7 +552,7 @@ interfaces that they declare::
 
   >>> baz_implements = zope.interface.implementedBy(Baz)
   >>> baz_implements.__bases__
-  (<InterfaceClass __main__.IBaz>,)
+  (<InterfaceMetaclass __main__.IBaz>,)
 
   >>> baz_implements.extends(IFoo)
   True
@@ -567,10 +567,10 @@ that lists the specification and all of it's ancestors::
 
   >>> baz_implements.__sro__
   (<implementedBy __main__.Baz>,
-   <InterfaceClass __main__.IBaz>,
-   <InterfaceClass __main__.IFoo>,
-   <InterfaceClass __main__.IBlat>,
-   <InterfaceClass zope.interface.Interface>)
+   <InterfaceMetaclass __main__.IBaz>,
+   <InterfaceMetaclass __main__.IFoo>,
+   <InterfaceMetaclass __main__.IBlat>,
+   <InterfaceMetaclass zope.interface.Interface>)
 
 
 Tagged Values
@@ -601,7 +601,7 @@ attribute definitions are created::
   ...     __call__.return_type = IBaz
 
   >>> IBazFactory['__call__'].getTaggedValue('return_type')
-  <InterfaceClass __main__.IBaz>
+  <InterfaceMetaclass __main__.IBaz>
 
 Tagged values can also be defined from within an interface definition::
 
@@ -688,7 +688,7 @@ If an object cannot be adapted, then a TypeError is raised::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  TypeError: ('Could not adapt', 0, <InterfaceMetaclass __main__.I>)
 
 
 
@@ -731,7 +731,7 @@ Adapter hooks (see __adapt__) will also be used, if present::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  TypeError: ('Could not adapt', 0, <InterfaceMetaclass __main__.I>)
 
 __adapt__
 ---------

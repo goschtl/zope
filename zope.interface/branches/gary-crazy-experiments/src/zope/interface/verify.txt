@@ -57,7 +57,7 @@ If either attribute is missing, verification will fail:
 
 >>> verifyObject(IFoo, Foo())
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IFoo>
+BrokenImplementation: An object has failed to implement interface <InterfaceMetaclass __builtin__.IFoo>
     The y attribute was not provided.
 
 >>> class Foo(object):
@@ -67,7 +67,7 @@ BrokenImplementation: An object has failed to implement interface <InterfaceClas
 
 >>> verifyObject(IFoo, Foo())
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IFoo>
+BrokenImplementation: An object has failed to implement interface <InterfaceMetaclass __builtin__.IFoo>
     The x attribute was not provided.
 
 If an attribute is implemented as a property that raises an AttributeError
@@ -84,7 +84,7 @@ when trying to get its value, the attribute is considered missing:
 
 >>> verifyObject(IFoo, Foo())
 Traceback (most recent call last):
-BrokenImplementation: An object has failed to implement interface <InterfaceClass __builtin__.IFoo>
+BrokenImplementation: An object has failed to implement interface <InterfaceMetaclass __builtin__.IFoo>
     The x attribute was not provided.
 
 Any other exception raised by a property will propagate to the caller of

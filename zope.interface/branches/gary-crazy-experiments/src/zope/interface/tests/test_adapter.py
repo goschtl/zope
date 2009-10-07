@@ -94,17 +94,17 @@ def test_multi_adapter_lookupAll_get_best_matches():
 def test_multi_adapter_w_default():
     """
     >>> registry = AdapterRegistry()
-    
+
     >>> registry.register([None, None], IB1, 'bob', 'A0')
 
     >>> registry.lookup((IF1, IR1), IB0, 'bob')
     'A0'
-    
+
     >>> registry.register([None, IR0], IB1, 'bob', 'A1')
 
     >>> registry.lookup((IF1, IR1), IB0, 'bob')
     'A1'
-    
+
     >>> registry.lookup((IF1, IR1), IB0, 'bruce')
 
     >>> registry.register([None, IR1], IB1, 'bob', 'A2')
@@ -192,7 +192,7 @@ def test_adapter_hook_with_factory_producing_None():
     """
     >>> registry = AdapterRegistry()
     >>> default = object()
-    
+
     >>> class Object1(object):
     ...     zope.interface.implements(IF0)
     >>> class Object2(object):
@@ -255,7 +255,7 @@ def test_adapter_registry_update_upon_interface_bases_change():
     ...
     TypeError: ('Could not adapt',
                 <zope.interface.tests.test_adapter.X object at ...>,
-                <InterfaceClass zope.interface.tests.test_adapter.IY>)
+                <InterfaceMetaclass zope.interface.tests.test_adapter.IY>)
 
     But after we declare an interface on the class `X`, it should pass:
 

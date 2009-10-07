@@ -38,10 +38,10 @@
 класса `zope.interface.Interface`, который является родительским интерфейсом
 для всех интерфейсов, как `object` - это родительский класс для всех новых
 классов [#create]_. Данный интерфейс не является классом, а является
-Интерфейсом, экземпляром `InterfaceClass`::
+Интерфейсом, экземпляром `InterfaceMetaclass`::
 
   >>> type(IFoo)
-  <class 'zope.interface.interface.InterfaceClass'>
+  <class 'zope.interface.interface.InterfaceMetaclass'>
 
 Мы можем запросить у интерфейса его документацию::
 
@@ -116,7 +116,7 @@
   >>> IFoo.x
   Traceback (most recent call last):
     File "<stdin>", line 1, in ?
-  AttributeError: 'InterfaceClass' object has no attribute 'x'
+  AttributeError: type object 'IFoo' has no attribute 'x'
 
 Методы также предоставляют доступ к сигнатуре метода::
 
@@ -193,7 +193,7 @@ API для объявления интерфейсов.
 Мы можем также узнать какие интерфейсы реализуются объектами::
 
   >>> list(zope.interface.implementedBy(Foo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 Это ошибка спрашивать про интерфейсы реализуемые не вызываемым объектом::
 
@@ -210,7 +210,7 @@ API для объявления интерфейсов.
 Также можно узнать какие интерфейсы предоставляются объектами::
 
   >>> list(zope.interface.providedBy(foo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
   >>> list(zope.interface.providedBy(Foo))
   []
 
@@ -225,7 +225,7 @@ API для объявления интерфейсов.
   >>> yfoo = zope.interface.implementer(IFoo)(yfoo)
 
   >>> list(zope.interface.implementedBy(yfoo))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 Надо заметить, что декоратор implementer может модифицировать свои аргументы.
 Вызывающая сторона не должна предполагать, что всегда будет создаваться
@@ -267,7 +267,7 @@ API для объявления интерфейсов.
 Теперь мы видим, что Foo уже предоставляет интерфейсы::
 
   >>> list(zope.interface.providedBy(Foo))
-  [<InterfaceClass __main__.IFooFactory>]
+  [<InterfaceMetaclass __main__.IFooFactory>]
   >>> IFooFactory.providedBy(Foo)
   True
 
@@ -289,7 +289,7 @@ API для объявления интерфейсов.
   ...         return "Foo(%s)" % self.x
 
   >>> list(zope.interface.providedBy(Foo2))
-  [<InterfaceClass __main__.IFooFactory>]
+  [<InterfaceMetaclass __main__.IFooFactory>]
   >>> IFooFactory.providedBy(Foo2)
   True
 
@@ -328,13 +328,13 @@ API для объявления интерфейсов.
   >>> ISpecial.providedBy(foo)
   True
   >>> list(zope.interface.providedBy(foo))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
 Мы также можем определить, что интерфейсы напрямую предоставляются
 объектами::
 
   >>> list(zope.interface.directlyProvidedBy(foo))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
   >>> newfoo = Foo()
   >>> list(zope.interface.directlyProvidedBy(newfoo))
@@ -352,10 +352,10 @@ API для объявления интерфейсов.
   ...         return "I'm special because %s" % self.reason
 
   >>> list(zope.interface.implementedBy(SpecialFoo))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
   >>> list(zope.interface.providedBy(SpecialFoo()))
-  [<InterfaceClass __main__.ISpecial>, <InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.ISpecial>, <InterfaceMetaclass __main__.IFoo>]
 
 Иногда мы не хотим наследовать объявления. В этом случае мы можем
 использовать `implementsOnly` вместо `implements`::
@@ -367,10 +367,10 @@ API для объявления интерфейсов.
   ...         return "I'm special because %s" % self.reason
 
   >>> list(zope.interface.implementedBy(Special))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
   >>> list(zope.interface.providedBy(Special()))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
 Внешние объявления
 ------------------
@@ -385,7 +385,7 @@ API для объявления интерфейсов.
 
   >>> zope.interface.classImplements(C, IFoo)
   >>> list(zope.interface.implementedBy(C))
-  [<InterfaceClass __main__.IFoo>]
+  [<InterfaceMetaclass __main__.IFoo>]
 
 Мы можем использовать `classImplementsOnly` для исключения наследуемых
 интерфейсов::
@@ -395,7 +395,7 @@ API для объявления интерфейсов.
 
   >>> zope.interface.classImplementsOnly(C, ISpecial)
   >>> list(zope.interface.implementedBy(C))
-  [<InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.ISpecial>]
 
 Объекты объявлений
 ------------------
@@ -425,7 +425,7 @@ API для объявления интерфейсов.
 интерфейсов в итоговом объявления::
 
   >>> list(zope.interface.implementedBy(Special2))
-  [<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.ISpecial>]
+  [<InterfaceMetaclass __main__.IFoo>, <InterfaceMetaclass __main__.ISpecial>]
 
 Наследование интерфейсов
 ========================
@@ -441,7 +441,7 @@ API для объявления интерфейсов.
   ...         """eek blah blah"""
 
   >>> IBlat.__bases__
-  (<InterfaceClass zope.interface.Interface>,)
+  (<InterfaceMetaclass zope.interface.Interface>,)
 
   >>> class IBaz(IFoo, IBlat):
   ...     """Baz blah"""
@@ -450,7 +450,7 @@ API для объявления интерфейсов.
   ...
 
   >>> IBaz.__bases__
-  (<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.IBlat>)
+  (<InterfaceMetaclass __main__.IFoo>, <InterfaceMetaclass __main__.IBlat>)
 
   >>> names = list(IBaz)
   >>> names.sort()
@@ -550,7 +550,7 @@ IBase::
 
   >>> baz_implements = zope.interface.implementedBy(Baz)
   >>> baz_implements.__bases__
-  (<InterfaceClass __main__.IBaz>,)
+  (<InterfaceMetaclass __main__.IBaz>,)
 
   >>> baz_implements.extends(IFoo)
   True
@@ -565,10 +565,10 @@ IBase::
 
   >>> baz_implements.__sro__
   (<implementedBy __main__.Baz>,
-   <InterfaceClass __main__.IBaz>,
-   <InterfaceClass __main__.IFoo>,
-   <InterfaceClass __main__.IBlat>,
-   <InterfaceClass zope.interface.Interface>)
+   <InterfaceMetaclass __main__.IBaz>,
+   <InterfaceMetaclass __main__.IFoo>,
+   <InterfaceMetaclass __main__.IBlat>,
+   <InterfaceMetaclass zope.interface.Interface>)
 
 Помеченные значения
 ===================
@@ -598,7 +598,7 @@ IBase::
   ...     __call__.return_type = IBaz
 
   >>> IBazFactory['__call__'].getTaggedValue('return_type')
-  <InterfaceClass __main__.IBaz>
+  <InterfaceMetaclass __main__.IBaz>
 
 Помеченные значения также могут быть определены внутри определения
 интерфейса::
@@ -683,7 +683,7 @@ IBase::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  TypeError: ('Could not adapt', 0, <InterfaceMetaclass __main__.I>)
 
 только если альтернативное значение не передано как второй аргумент::
 
@@ -725,7 +725,7 @@ IBase::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  TypeError: ('Could not adapt', 0, <InterfaceMetaclass __main__.I>)
 
 
 __adapt__
