@@ -398,7 +398,7 @@ def print_times(last_times, times, label):
     print 'Time per op (milliseconds)', label
     times = times.copy()
     for op in sorted(times):
-        n, t = handlers.times[op]
+        n, t = times[op]
         last = last_times.get(op)
         if last:
             n -= last[0]
