@@ -7,6 +7,8 @@ CHANGES
 
 - Use zope.container instead of zope.app.container.
 
+- Use zope.browsermenu instead of zope.app.publisher.
+
 3.4.0 (2007-11-03)
 ------------------
 

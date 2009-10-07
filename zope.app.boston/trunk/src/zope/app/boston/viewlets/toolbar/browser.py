@@ -19,7 +19,7 @@ $Id$
 from zope.interface import implements
 
 from zope.app.boston.viewlets.toolbar.interfaces import IToolBarViewlet
-from zope.app.publisher.browser.menu import getMenu
+from zope.browsermenu.menu import getMenu
 
 
 class ToolBarViewletManager(object):
