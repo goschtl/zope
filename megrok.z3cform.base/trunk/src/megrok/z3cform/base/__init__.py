@@ -8,8 +8,7 @@ from z3c.form.interfaces import IFieldWidget, IFormLayer
 from z3c.form.interfaces import DISPLAY_MODE, INPUT_MODE
 
 # Public interface
-from utils import apply_data_event
+from components import *
+from directives import *
 from interfaces import IGrokForm, ICancelButton
-from directives import field, cancellable
-from components import Form, AddForm, EditForm, DisplayForm, WidgetTemplate
-from components import PageForm, PageAddForm, PageEditForm, PageDisplayForm
+from utils import apply_data_event, changes_notification, set_fields_data

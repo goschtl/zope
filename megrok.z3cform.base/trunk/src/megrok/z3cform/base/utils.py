@@ -1,17 +1,53 @@
 # -*- coding: utf-8 -*-
 
 from zope.event import notify
-from z3c.form.form import applyChanges
+from z3c.form import interfaces
+from zope.event import notify
+from zope.schema import IObject
 from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 
-def apply_data_event(form, context, data):
-    """ Updates the object with the data and sends an IObjectModifiedEvent
+def set_fields_data(fields_manager, content, data):
+    """Applies the values to the fields, if a change has been made and
+    if the field is present in the given fields manager. It returns a
+    dictionnary describing the changes applied with the name of the field
+    and the interface from where it's from.
     """
-    changes = applyChanges(form, context, data)
+    changes = {}
+    for name, field in fields_manager.items():
+
+        if name not in data or data[name] is interfaces.NOT_CHANGED:
+            continue
+ 
+        dm = zope.component.getMultiAdapter(
+            (content, field.field), interfaces.IDataManager)
+ 
+        if dm.get() != data[name] or IObject.providedBy(field.field):
+            dm.set(data[name])
+            changes.setdefault(dm.field.interface, []).append(name)
+            
+    return changes
+
+
+def changes_notification(content, changes):
+    """Builds a list of descriptions, made of Attributes objects, defining
+    the changes made on the content and the related interface.
+    """
     if changes:
         descriptions = []
         for interface, names in changes.items():
             descriptions.append(Attributes(interface, *names))
-        notify(ObjectModifiedEvent(context, *descriptions))
+            notify(ObjectModifiedEvent(content, *descriptions))
+        return description
+    return None
+
+
+def apply_data_event(fields, content, data):
+    """ Updates the object with the data and sends an IObjectModifiedEvent
+    """
+    changes = set_fields_data(fields, content, data)
+    changes and changes_notification(content, changes)
     return changes
+
+
+__all__ = ("set_fields_data", "changes_notification", "apply_data_event")
