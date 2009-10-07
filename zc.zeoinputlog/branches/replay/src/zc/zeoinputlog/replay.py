@@ -270,7 +270,9 @@ class Handler:
     closed = 0
     queueing = True
 
-    def __init__(self, session, addr, handlers):
+    def __init__(self, addr, session=None, handlers=None):
+        if handlers is None:
+            handlers = Handlers()
         self.handlers = handlers
         self.session = session
         self.addr = addr
@@ -424,7 +426,7 @@ def main(args=None):
     nhandlers = 0
     for session, timetime, msgid, async, op, args in log:
         if session not in sessions:
-            handler = Handler(nhandlers, addr, handlers)
+            handler = Handler(addr, nhandlers, handlers)
             sessions[session] = handler
             nhandlers += 1
 
