@@ -394,6 +394,18 @@ def parse_addr(addr):
     addr = addr.split(':')
     return addr[0], int(addr[1])
 
+def print_times(last_times, times, label):
+    print 'Time per op (milliseconds)', label
+    times = times.copy()
+    for op in sorted(times):
+        n, t = handlers.times[op]
+        last = last_times.get(op)
+        if last:
+            n -= last[0]
+            t -= last[1]
+        print "%20s %10d %10.3f" % (op, n, t*1000/n)
+    return times
+
 def main(args=None):
     """Usage: script address log source
 
@@ -445,8 +457,15 @@ def main(args=None):
     firsttt = lasttt = log.start()
     work = lastwork = 0
     speed = speed1 = None
+    last_times = {}
     for t in Transactions(source):
+
+        if nt and (nt%1000 == 0):
+            last_times = print_times(last_times, handlers.times,
+                                     "after %s transactions" % nt)
+
         nt += 1
+
         tt = ZODB.TimeStamp.TimeStamp(t.id).timeTime()
         pending = handlers.calls - handlers.replies - handlers.abandoned
         now = time.time()
@@ -495,7 +514,8 @@ def main(args=None):
         n, t = handlers.times[op]
         print 'err', op, n, t/n
 
-    for op in sorted(handlers.times):
-        n, t = handlers.times[op]
-        print op, n, t/n
+    print_times(last_times, handlers.times,
+                "after %s transactions" % nt)
+
+    print_times({}, handlers.times, "overall")
 
