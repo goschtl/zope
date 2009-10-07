@@ -3,7 +3,8 @@
 from zope.event import notify
 from z3c.form import interfaces
 from zope.event import notify
-from zope.schema import IObject
+from zope.component import getMultiAdapter
+from zope.schema.interfaces import IObject
 from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 
@@ -18,9 +19,8 @@ def set_fields_data(fields_manager, content, data):
 
         if name not in data or data[name] is interfaces.NOT_CHANGED:
             continue
- 
-        dm = zope.component.getMultiAdapter(
-            (content, field.field), interfaces.IDataManager)
+
+        dm = getMultiAdapter((content, field.field), interfaces.IDataManager)
  
         if dm.get() != data[name] or IObject.providedBy(field.field):
             dm.set(data[name])
