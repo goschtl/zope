@@ -464,10 +464,15 @@ def main(args=None):
             last_times = print_times(last_times, handlers.times,
                                      "after %s transactions" % nt)
 
+        sys.stdout.flush()
+        pending = handlers.calls - handlers.replies - handlers.abandoned
+        while pending > 10000:
+            time.sleep(.01)
+            pending = handlers.calls - handlers.replies - handlers.abandoned
+
         nt += 1
 
         tt = ZODB.TimeStamp.TimeStamp(t.id).timeTime()
-        pending = handlers.calls - handlers.replies - handlers.abandoned
         now = time.time()
         if now > start:
             speed = (tt-firsttt) / (now-start)
