@@ -31,7 +31,8 @@ The class of our Object:
 Now we create an Edit Form for the Person
 -----------------------------------------
 
-   >>> from megrok.z3cform.base import EditForm, Fields, cancellable
+   >>> from megrok.z3cform.base import EditForm, Fields
+   >>> from megrok.z3cform.base.directives import cancellable
    >>> from grokcore.component.testing import grok_component
    >>> from zope.component import getMultiAdapter
    >>> from zope.publisher.browser import TestRequest

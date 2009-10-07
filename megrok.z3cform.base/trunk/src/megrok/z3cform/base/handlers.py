@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""
-z3c.form allows to define buttons as multi adapters, in order to have
-fully customizable forms.
-"""
 import grokcore.component as grok
 
 from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 from zope.traversing.browser import AbsoluteURL
 
-from megrok.z3cform.base import button, IGrokForm
-from megrok.z3cform.base import cancellable, ICancelButton 
+from megrok.z3cform.base.directives import cancellable
+from megrok.z3cform.base import button, IGrokForm, ICancelButton
 
 _ = MessageFactory("megrok.z3cform")
 
