@@ -36,7 +36,10 @@ SVN=svn://svn.zope.org/repos/main/grok
 #  release: version/release name used in the docs
 #  svnfolder: relative to svn://svn.zope.org/repos/main/grok
 #  buildfolder: folder id for the built docs
-builddocs 1.0b1dev trunk dev
+builddocs 1.1dev trunk 1.1dev
+builddocs 1.0 tags/1.0 1.0
+builddocs 1.0b2 tags/1.0b2 1.0b2
+builddocs 1.0b1 tags/1.0b1 1.0b1
 builddocs 1.0a4 tags/1.0a4 1.0a4
 builddocs 0.14.1 tags/0.14.1 0.14.1
 builddocs 0.13.1 tags/0.13.1 0.13.1
