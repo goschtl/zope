@@ -4,9 +4,15 @@
 ##########################################################################
 
 import os
+import multiprocessing
 from repoze.bfg.router import make_app
 import mail_util
 from views import have_authentication
+
+POOL_SIZE = 3
+
+POOL = multiprocessing.Pool(processes=4)
+
 
 def app(global_config, **kw):
     """ This function returns a repoze.bfg.router.Router object.  It
@@ -27,6 +33,7 @@ def app(global_config, **kw):
         LOG.info('Using email configuration at %s' % mail_config)
         LOG.info(config)
     LOG.info('SmartPrintNG server started')
+    LOG.info('Process pool size: %d' % POOL_SIZE)
     LOG.info('Temp directory: %s' % root.temp_directory)
     LOG.info('Spool directory: %s' % root.spool_directory)
     LOG.info('Available converters: %s' % ', '.join(zopyx.convert2.registry.availableConverters()))
