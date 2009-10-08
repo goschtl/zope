@@ -19,7 +19,6 @@ from z3c.hashedresource import hash, interfaces, testing
 import os
 import unittest
 import zope.app.publisher.browser.directoryresource
-import zope.app.publisher.browser.tests
 import zope.app.publisher.testing
 import zope.app.testing.functional
 
