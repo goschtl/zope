@@ -19,6 +19,8 @@ from logger import LOG
 import mail_util
 from zopyx.convert2.convert import Converter
 
+from pool import POOL
+
 
 class Server(object):
     """ SmartPrintNG Server Core Implementation """
@@ -155,7 +157,7 @@ class Server(object):
         """ Process html-file + images within a ZIP archive """
 
         self.countRequest()
-        zip_out, output_filename = self._processZIP(zip_archive, converter_name)
+        zip_out, output_filename = POOL.apply_async(self._processZIP, (zip_archive, converter_name))
         encoded_result = base64.encodestring(file(zip_out, 'rb').read())
         shutil.rmtree(os.path.dirname(zip_out))
         return encoded_result
@@ -165,7 +167,7 @@ class Server(object):
 
         self.countRequest()
 
-        zip_out, output_filename = self._processZIP(zip_archive, converter_name)
+        zip_out, output_filename = POOL.apply_async(self._processZIP, (zip_archive, converter_name))
         mail_util.send_email(sender, recipient, subject, body, [output_filename])
         shutil.rmtree(os.path.dirname(zip_out))
         return True
