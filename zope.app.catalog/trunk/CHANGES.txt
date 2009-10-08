@@ -5,7 +5,8 @@ CHANGES
 3.8.1 (unreleased)
 ------------------
 
-- ...
+- Removed unneeded dependencies on zope.app.publisher and zope.app.form, moved
+  zope.app.intid to the test dependencies.
 
 3.8.0 (2009-02-01)
 ------------------
