@@ -25,6 +25,7 @@ class Server(object):
 
     def __init__(self):
         self.num_requests = 0
+        self.concurrent_requests = 0
         self.start_time = datetime.now()
         self.delivery_max_age = 1800   # deliver files only younger than xx seconds
         self.cleanup_after = 3600
@@ -44,6 +45,12 @@ class Server(object):
     def countRequest(self):
         self._lock.acquire()
         self.num_requests += 1
+        self._lock.release()
+
+
+    def concurrentRequest(self, num):
+        self._lock.acquire()
+        self.concurrent_requests += num
         self._lock.release()
 
     @property
