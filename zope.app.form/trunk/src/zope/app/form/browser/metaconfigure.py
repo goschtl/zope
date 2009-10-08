@@ -28,7 +28,7 @@ from zope.browser.interfaces import IAdding
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.publisher.browser.menumeta import menuItemDirective
+from zope.browsermenu.metaconfigure import menuItemDirective
 
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser.i18n import _

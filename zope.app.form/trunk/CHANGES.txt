@@ -2,12 +2,14 @@
 CHANGES
 =======
 
-3.8.2 (unreleased)
+3.9.0 (unreleased)
 ==================
 
 - Internationalized 'Invalid value' used with ConversionError
-- Added dependency on transaction.
-- Moved dependency on ZODB3 to the test extra.
+- Added dependency on transaction and test dependency on zope.app.component.
+- Moved dependencies on ZODB3 and zope.location to the test extra.
+- Reduced the dependency on zope.app.publisher to a dependency on
+  zope.browsermenu plus a test dependency on zope.browserpage.
 
 3.8.1 (2009-07-23)
 ==================

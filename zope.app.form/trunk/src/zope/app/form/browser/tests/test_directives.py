@@ -30,14 +30,10 @@ from zope.security.proxy import ProxyFactory
 
 import zope.app.component
 import zope.app.form.browser
-import zope.app.publisher.browser
+import zope.browsermenu
 from zope.app.form.browser import TextWidget
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.tests import utils
-
-tests_path = os.path.join(
-    os.path.dirname(zope.app.publisher.browser.__file__),
-    'tests')
 
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
@@ -80,7 +76,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         super(Test, self).setUp()
         XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.form.browser)()
-        XMLConfig('meta.zcml', zope.app.publisher.browser)()
+        XMLConfig('meta.zcml', zope.browsermenu)()
 
         from zope.app.testing import ztapi
         from zope.traversing.adapters import DefaultTraversable
