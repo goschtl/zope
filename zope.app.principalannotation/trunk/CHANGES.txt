@@ -2,11 +2,14 @@
 CHANGES
 =======
 
-3.6.2 (unreleased)
+3.7.0 (unreleased)
 ------------------
 
 - Depend on new ``zope.processlifetime`` interfaces instead of using
   BBB imports from ``zope.app.appsetup``.
+
+- Removed unneeded dependency on zope.app.publisher, added the missing one on
+  transaction.
 
 
 3.6.1 (2009-03-31)
