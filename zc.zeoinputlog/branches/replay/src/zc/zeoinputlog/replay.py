@@ -403,7 +403,9 @@ def print_times(last_times, times, label):
         if last:
             n -= last[0]
             t -= last[1]
-        print "%20s %10d %10.3f" % (op, n, t*1000/n)
+        if n:
+            print "%20s %10d %10.3f" % (op, n, t*1000/n)
+
     return times
 
 def main(args=None):
@@ -422,11 +424,13 @@ def main(args=None):
           A marshalled extract of file-storage records for the period of the
           input log.
 
+    $Id$
     """
     if args is None:
         args = sys.argv[1:]
 
-    [addr, log, source] = args
+    print args
+    [addr, log, source] = args[:3]
     addr = parse_addr(addr)
 
     log = Log(log)
@@ -460,15 +464,15 @@ def main(args=None):
     last_times = {}
     for t in Transactions(source):
 
-        if nt and (nt%1000 == 0):
-            last_times = print_times(last_times, handlers.times,
-                                     "after %s transactions" % nt)
-
         sys.stdout.flush()
         pending = handlers.calls - handlers.replies - handlers.abandoned
         while pending > 10000:
             time.sleep(.01)
             pending = handlers.calls - handlers.replies - handlers.abandoned
+
+        if nt and (nt%1000 == 0):
+            last_times = print_times(last_times, handlers.times,
+                                     "after %s transactions" % nt)
 
         nt += 1
 
@@ -481,7 +485,8 @@ def main(args=None):
         lastnow = now
         lasttt = tt
         work = nt + nr + handlers.calls + handlers.async
-        print '=== top', time.ctime(), ZODB.TimeStamp.TimeStamp(time_stamp(tt))
+        print '=== top', time.ctime(), nt, ZODB.TimeStamp.TimeStamp(
+            time_stamp(tt))
         print '       ', handlers.connected, handlers.calls, handlers.replies,
         print handlers.errors, handlers.async, pending, speed, speed1
         while logrecord[1] < tt:
