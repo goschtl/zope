@@ -33,7 +33,7 @@ def split_file(path):
     if len(pieces) < 2:
         return None
     project, branch = pieces[0], pieces[1]
-    if branch != "trunk":
+    if branch != "trunk" and project != "trunk":
         return None
     return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
 
