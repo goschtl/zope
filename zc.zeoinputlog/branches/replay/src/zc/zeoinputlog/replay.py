@@ -424,11 +424,11 @@ def main(args=None):
           A marshalled extract of file-storage records for the period of the
           input log.
 
-    $Id$
     """
     if args is None:
         args = sys.argv[1:]
 
+    print "$Id$"
     print args
     [addr, log, source] = args[:3]
     addr = parse_addr(addr)
