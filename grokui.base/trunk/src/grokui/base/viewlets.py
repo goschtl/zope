@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import grok
-
 from zope.component import getUtility
 from zope.app.folder.interfaces import IRootFolder
-from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.app.publisher.interfaces.browser import IBrowserMenu
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-
 from z3c.flashmessage.interfaces import IMessageReceiver
+from grokui.base.interfaces import IAdminPanel
 from grokui.base.contentproviders import AdministrationHeader
 from grokui.base.contentproviders import AdministrationFooter
 
-grok.context(IRootFolder)
 grok.templatedir("templates")
+
+grok.view(IAdminPanel)
+grok.context(IRootFolder)
 grok.viewletmanager(AdministrationHeader)
 
 
@@ -38,8 +38,8 @@ class MenuViewlet(grok.Viewlet):
     grok.name("grokui.menu")
 
     def update(self):
-        self.contexturl = absoluteURL(self.context, self.request)
         menu = getUtility(IBrowserMenu, 'grokui_admin_menu')
+        self.rooturl = self.view.url(self.context)
         self.actions = menu.getMenuItems(self.context, self.request)
 
 
