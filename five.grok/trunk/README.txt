@@ -85,7 +85,7 @@ your buildout::
   grokcore.view = 1.12.2
   grokcore.viewlet = 1.3
   five.localsitemanager = 1.1
-  martian = 0.11
+  martian = 0.11.1
   zope.app.publisher = 3.5.1
   zope.app.zcmlfiles = 3.4.3
   zope.component = 3.4.0

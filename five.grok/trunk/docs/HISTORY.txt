@@ -4,6 +4,9 @@ Changelog
 1.1 (unreleased)
 ----------------
 
+- Update to martian 0.11.1.
+  [vincentfretin]
+
 - Update to grokcore.annotation 1.1 and grokcore.site 1.1.
   [vincentfretin]
 
