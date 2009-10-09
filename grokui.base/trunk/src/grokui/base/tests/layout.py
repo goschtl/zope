@@ -42,7 +42,7 @@ entry in the navigation bar:
     ...
     <ul id="grokui-menu-entries">
       <li>
-        <a href="http://localhost/caveview"
+        <a href="http://localhost/++grokui++/caveview"
            title="cave management">cave management</a>
       </li>
     </ul>
