@@ -7,7 +7,9 @@ addLmsMain_form =  PageTemplateFile('addLmsMain_form', globals())
 
 def addLmsMain(dispatcher, id):
     """Add LMS"""
-    dispatcher._setObject(id, LmsMain(id))
+    lms = LmsMain(id)
+    lms.manage_addFolder('books')
+    dispatcher._setObject(id, lms)
     return "LMS Installed: %s" % id
 
 
@@ -31,5 +33,5 @@ class LmsMain(Folder):
         book.barcode = barcode
         book.title = title
         book.author = author
-        self._setObject(barcode, book)
+        self.books._setObject(barcode, book)
         return "Book added: %s" % barcode
