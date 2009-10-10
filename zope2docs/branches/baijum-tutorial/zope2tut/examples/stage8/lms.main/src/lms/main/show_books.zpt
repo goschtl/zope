@@ -6,7 +6,7 @@
 
 <h1>Show Books</h1>
 
-<ol tal:repeat="item context/objectValues">
+<ol tal:repeat="item context/books/objectValues">
   <td tal:content="item/barcode">Barcode</td>.
   <td tal:content="item/title">Title</td>
   (<td tal:content="item/author">Author</td>)
