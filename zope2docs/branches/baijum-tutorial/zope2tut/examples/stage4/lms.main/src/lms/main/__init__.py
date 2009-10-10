@@ -1,8 +1,8 @@
 from OFS.Folder import Folder
 
-def addLmsMain(context, id="lms"):
+def addLmsMain(dispatcher, id="lms"):
     """Add LMS"""
-    context._setObject(id, LmsMain(id))
+    dispatcher._setObject(id, LmsMain(id))
     return "LMS Installed: %s" % id
 
 class LmsMain(Folder):
