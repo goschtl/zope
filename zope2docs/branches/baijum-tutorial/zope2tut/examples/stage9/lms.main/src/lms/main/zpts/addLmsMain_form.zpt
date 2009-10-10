@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Add LMS</title>
+</head>
+<body>
+
+  <form action="addLmsMain" method="POST">
+    LMS Id:
+    <input type="text" name="id" /> <br />
+    <input type="submit" value="Add LMS" />
+  </form>
+
+</body>
+</html>

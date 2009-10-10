@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Welcome to LMS!</title>
+</head>
+<body>
+
+<h1>Welcome to LMS!</h1>
+
+<a href="add_book">Add Book</a> <br />
+
+<a href="show_books">Show Books</a>
+
+</body>
+</html>
