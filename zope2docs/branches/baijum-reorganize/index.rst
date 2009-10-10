@@ -6,7 +6,7 @@ Zope 2 related documentation and articles
    :maxdepth: 1
 
    zope2book/index
-   zdgbook/source/index
+   zdgbook/index
 
 Release information
 ===================
