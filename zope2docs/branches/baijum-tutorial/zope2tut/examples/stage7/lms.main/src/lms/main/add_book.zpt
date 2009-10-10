@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>Welcome to LMS!</title>
+</head>
+<body>
+
+<h1>Add Book</h1>
+
+  <form action="insert_book" method="POST">
+    Barcode:
+    <input type="text" name="barcode" /> <br />
+    Book Title:
+    <input type="text" name="title" /> <br />
+    Book Author:
+    <input type="text" name="author" /> <br />
+    <input type="submit" value="Add Book" />
+  </form>
+
+</body>
+</html>

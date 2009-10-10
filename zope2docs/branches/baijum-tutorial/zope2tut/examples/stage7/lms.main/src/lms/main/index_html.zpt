@@ -6,5 +6,7 @@
 
 <h1>Welcome to LMS!</h1>
 
+<a href="add_book">Add Book</a>
+
 </body>
 </html>
