@@ -1,0 +1,39 @@
+Tutorial Scope
+==============
+
+Part 1
+------
+
+1. Python Installation
+
+2. Zope Installation
+
+   1. Sidenote: Buildout & Eggs
+
+3. Creating a Zope Project
+
+Part 2
+------
+
+1. Persistence (ZODB)
+
+2. Zope Management Interface
+
+Part 3
+------
+
+1. Creating Views
+
+Part 4
+------
+
+1. Forms
+
+Part 5
+------
+
+1. Authentication
+
+   - Form based authentiocation
+
+2. Authorization
