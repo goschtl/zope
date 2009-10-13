@@ -402,6 +402,49 @@ This example creates /etc/cron.d/foo-cron
     >>> open('/etc/cron.d/bar-cron').read()
     '30 23 * * *\tjim\techo hello world!\n'
 
+The crontab recipe gets its  user from the buildout's deployment by default,
+but it doesn't have to.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo cron
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... name = bar
+    ... user = jim
+    ...
+    ... [cron]
+    ... recipe = zc.recipe.deployment:crontab
+    ... times = 30 23 * * *
+    ... user = bob
+    ... command = echo hello world!
+    ... deployment = foo
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling cron.
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing '/etc/foo'
+    zc.recipe.deployment: Removing '/var/log/foo'.
+    zc.recipe.deployment: Removing '/var/run/foo'.
+    Installing foo.
+    zc.recipe.deployment: 
+        Creating '/etc/bar',
+        mode 755, user 'root', group 'root'
+    zc.recipe.deployment: 
+        Creating '/var/log/bar',
+        mode 755, user 'jim', group 'jim'
+    zc.recipe.deployment: 
+        Creating '/var/run/bar',
+        mode 750, user 'jim', group 'jim'
+    Installing cron.
+
+    >>> open('/etc/cron.d/bar-cron').read()
+    '30 23 * * *\tbob\techo hello world!\n'
+
 
 .. cleanup
 
