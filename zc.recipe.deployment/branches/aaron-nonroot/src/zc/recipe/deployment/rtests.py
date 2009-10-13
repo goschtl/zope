@@ -64,7 +64,18 @@ def test_suite():
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
                 (re.compile('\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
-                (re.compile(user), 'USER'),
+
+                # The ordering of these regexps is important.  If they are in a
+                # different order, they will break on systems where the user
+                # and group are the same (default of linux)
+
+                (re.compile("user '%s'" % user), "user 'USER'"),
+                (re.compile("group '%s'" % group), "group 'GROUP'"),
+                (re.compile("%s %s" % (user, group)), "USER GROUP"),
+                (re.compile(user), "USER"),
+
+                # The order doesn't matter after this point
+
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
 ##                zc.buildout.testing.normalize_path,
         

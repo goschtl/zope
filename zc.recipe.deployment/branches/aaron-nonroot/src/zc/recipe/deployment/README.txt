@@ -19,22 +19,22 @@ Let's add a deployment to a sample buildout:
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
 
 
 Note that we are providing a prefix and an etc-user here.  These options
@@ -45,13 +45,13 @@ PREFIX/var/run have been created:
 
     >>> import os
     >>> print ls(os.path.join(sample_buildout, 'etc/foo'))
-    drwxr-xr-x USER USER PREFIX/etc/foo
+    drwxr-xr-x USER GROUP PREFIX/etc/foo
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/foo')) 
-    drwxr-xr-x USER USER PREFIX/var/log/foo
+    drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
     >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
-    drwxr-x--- USER USER PREFIX/var/run/foo
+    drwxr-x--- USER GROUP PREFIX/var/run/foo
 
 By looking at .installed.cfg, we can see the options available for use
 by other recipes:
@@ -101,22 +101,22 @@ To see that, we'll put a file in each of the directories created:
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
 
     >>> write(os.path.join(sample_buildout, 'etc/foo/x'), '')
     >>> write(os.path.join(sample_buildout, 'var/log/foo/x'), '')
@@ -138,10 +138,10 @@ And then uninstall:
     False
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
-    drwxr-xr-x USER USER PREFIX/var/log/foo
+    drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
     >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
-    drwxr-x--- USER USER PREFIX/var/run/foo
+    drwxr-x--- USER GROUP PREFIX/var/run/foo
 
 Here we see that the var and run directories are kept. The etc
 directory is discarded because only buildout recipes should write to
@@ -154,22 +154,22 @@ are removed:
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Updating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Updating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
 
     >>> os.remove(os.path.join(sample_buildout, 'var/log/foo/x'))
     >>> os.remove(os.path.join(sample_buildout, 'var/run/foo/x'))
@@ -215,32 +215,32 @@ name can be specified explicitly:
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/bar',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/log/bar',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/run/bar',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
 
 
     >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
-    drwxr-xr-x USER USER PREFIX/etc/bar
+    drwxr-xr-x USER GROUP PREFIX/etc/bar
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/bar'))
-    drwxr-xr-x USER USER PREFIX/var/log/bar
+    drwxr-xr-x USER GROUP PREFIX/var/log/bar
 
     >>> print ls(os.path.join(sample_buildout, 'var/run/bar'))
-    drwxr-x--- USER USER PREFIX/var/run/bar
+    drwxr-x--- USER GROUP PREFIX/var/run/bar
 
     >>> cat('.installed.cfg') # doctest: +ELLIPSIS
     [buildout]
@@ -306,22 +306,22 @@ Let's add a configuration file to our buildout:
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     Installing x.cfg.
 
 By default, the configuration is installed as a part:
@@ -478,22 +478,22 @@ This example creates PREFIX/etc/cron.d/foo-cron
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/bar',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/log/bar',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/var/run/bar',
-        mode 750, user 'USER', group 'USER'
+        mode 750, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+        mode 755, user 'USER', group 'GROUP'
     Installing cron.
 
     >>> open(os.path.join(sample_buildout, 'etc/cron.d/bar-cron')).read()
