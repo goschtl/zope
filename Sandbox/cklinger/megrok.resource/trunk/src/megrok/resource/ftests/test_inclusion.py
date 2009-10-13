@@ -22,6 +22,7 @@ If we create a Library we should get an fully registerd ResourceDirectory.
   >>> print browser.contents
   /* Simple JS */ 
 
+
 Inclusion
 ---------
 
@@ -38,8 +39,9 @@ Now let's look if we can include the a.js File in a
     </body>
   </html>  
 
+
 AdvanceInclusion
-================
+----------------
 
   >>> browser.open('http://localhost/app/advanced')
   >>> print browser.contents
@@ -52,6 +54,12 @@ AdvanceInclusion
     <script type="text/javascript" src="http://localhost/app/@@/styles/b.js"></script></body>
   </html>    
 
+
+Include All Inclusions
+----------------------
+
+  >>> browser.open('http://localhost/app/all')
+  >>> print browser.contents
 """
 import grok
 
@@ -65,6 +73,7 @@ class Styles(Library):
     grok.name('styles')
     
     inclusion(name='JS', file='a.js')
+    inclusion(name='JSBottom', file='b.js', bottom=True)
     inclusion(name='JSBottom', file='b.js', bottom=True)
 
 
@@ -80,6 +89,14 @@ class Advanced(grok.View):
     include(Styles, 'JSBottom')
     bottom()
     template = grok.PageTemplateFile('templates/myview.pt')
+
+
+class All(grok.View):
+    grok.context(Interface)
+    template = grok.PageTemplateFile('templates/myview.pt')
+    include(Styles)
+
+
 
 
 ###TestSetup
