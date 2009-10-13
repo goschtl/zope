@@ -23,4 +23,5 @@ class LibraryGrokker(martian.ClassGrokker):
         for name, file, depends, bottom in inclusion:
             RI = ResourceInclusion(class_, file, depends=depends, bottom=bottom)
             setattr(class_, name, RI)
+            class_.libs.append(name)
         return True    

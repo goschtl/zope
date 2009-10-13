@@ -64,7 +64,7 @@ Include All Inclusions
 import grok
 
 from zope.interface import Interface
-from megrok.resource import Library, include, inclusion, bottom
+from megrok.resource import Library, include, inclusion, bottom, includeall
 from hurry.resource import ResourceInclusion
 
 
@@ -94,7 +94,7 @@ class Advanced(grok.View):
 class All(grok.View):
     grok.context(Interface)
     template = grok.PageTemplateFile('templates/myview.pt')
-    include(Styles)
+    includeall(Styles)
 
 
 

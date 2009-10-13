@@ -9,10 +9,9 @@ from grokcore.view.components import DirectoryResource
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from hurry.zoperesource.zopesupport import getRequest
 
+
 class Library(DirectoryResource):
-    
-    def __init__(self):
-        pass
+    libs = []    
 
 
 @grok.adapter(Library)
