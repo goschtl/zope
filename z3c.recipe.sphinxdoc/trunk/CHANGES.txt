@@ -5,7 +5,7 @@ CHANGES
 0.0.9 (unreleased)
 ------------------
 
-- ...
+- Bug: fix layout directory if layout is overriden by user
 
 0.0.8 (2009-05-01)
 ------------------
