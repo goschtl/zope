@@ -107,8 +107,8 @@ class ZopeOrgSetup(object):
                 installed.append(join(templatesDir, 'layout.html'))
             elif self.options['layout.html']:
                 f = self.openfile(self.options['layout.html'])
-                open(join(staticDir,'layout.html'), 'w').write(f.read())
-                installed.append(join(staticDir, 'layout.html'))
+                open(join(templatesDir,'layout.html'), 'w').write(f.read())
+                installed.append(join(templatesDir, 'layout.html'))
 
             metadata = dict(message_from_string('\n'.join(
                 doc._get_metadata('PKG-INFO'))).items())
