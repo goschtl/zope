@@ -9,19 +9,41 @@ from grokcore.view.components import DirectoryResource
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from hurry.zoperesource.zopesupport import getRequest
 
+from megrok.resource.directive import inclusion
+from zope.traversing.browser.absoluteurl import AbsoluteURL
+
+
+
+def inclusions(cls):
+    keys = []
+    values = []
+    resources = inclusion.bind().get(cls)
+    for name, file, depends, bottom in resources:
+        keys.append(name)
+        values.append(
+            ResourceInclusion(cls, file, depends=depends, bottom=bottom)
+            )
+    return keys, values
+
 
 class Library(DirectoryResource):
-    libs = []    
+    grok.baseclass()
+    
+    _ri_keys = None
+    _resources = None
 
-    @property
-    def name(self):
-        return grok.name.bind().get(self) 
+    @classmethod
+    def get_resources(cls, name=None):
+        if cls._resources == None:
+            cls._ri_keys, values = inclusions(cls)
+            cls._resources = dict(zip(cls._ri_keys, values))
+        if name is not None:
+            return [cls._resources[name],]
+        return [cls._resources[name] for name in cls._ri_keys]
 
 
 @grok.adapter(Library)
 @grok.implementer(ILibraryUrl)
 def library_url(library):
     request = getRequest()
-    return str(component.getMultiAdapter((getSite(), request),
-                                         IAbsoluteURL)) + '/@@/' + library.name
-        
+    return "%s/@@/%s" % (AbsoluteURL(getSite(), request), library.name)

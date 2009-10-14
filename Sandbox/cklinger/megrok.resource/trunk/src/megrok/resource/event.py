@@ -13,12 +13,10 @@ def handle(view, event):
     for lib, name, bottom in includes:
         if bottom:
             with_bottom=True
-        if not name:
-            for l in lib.libs:
-                inn = getattr(lib, l)
-                inn.need()
-        else:
-            inn = getattr(lib, name)
-            inn.need()
+
+        resources = lib.get_resources(name=name)
+        for resource in resources:
+            resource.need()
+
     if with_bottom:
         hurry.resource.bottom()
