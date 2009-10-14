@@ -21,14 +21,5 @@ class include(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
     
-    def factory(self, value, name):
-        return (value, name)
-
-class bottom(martian.MarkerDirective):
-    store = martian.ONCE
-    scope = martian.CLASS
-
-    
-class includeall(martian.Directive):
-    store = martian.ONCE
-    scope = martian.CLASS
+    def factory(self, value, name=None, bottom=False):
+        return (value, name, bottom)

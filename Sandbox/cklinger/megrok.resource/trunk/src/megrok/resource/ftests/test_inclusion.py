@@ -60,11 +60,21 @@ Include All Inclusions
 
   >>> browser.open('http://localhost/app/all')
   >>> print browser.contents
+  <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/app/@@/styles/b.css" />
+  <script type="text/javascript" src="http://localhost/app/@@/styles/a.js"></script>
+  <script type="text/javascript" src="http://localhost/app/@@/styles/b.js"></script>
+   </head>
+    <body>
+       <h1> HI GROK </h1>
+    </body>
+  </html> 
 """
 import grok
 
 from zope.interface import Interface
-from megrok.resource import Library, include, inclusion, bottom, includeall
+from megrok.resource import Library, include, inclusion
 from hurry.resource import ResourceInclusion
 
 
@@ -74,7 +84,7 @@ class Styles(Library):
     
     inclusion(name='JS', file='a.js')
     inclusion(name='JSBottom', file='b.js', bottom=True)
-    inclusion(name='JSBottom', file='b.js', bottom=True)
+    inclusion(name='CSS', file='b.css', bottom=True)
 
 
 class Simple(grok.View):
@@ -86,15 +96,14 @@ class Simple(grok.View):
 class Advanced(grok.View):
     grok.context(Interface)
     include(Styles, 'JS')
-    include(Styles, 'JSBottom')
-    bottom()
+    include(Styles, 'JSBottom', bottom=True)
     template = grok.PageTemplateFile('templates/myview.pt')
 
 
 class All(grok.View):
     grok.context(Interface)
     template = grok.PageTemplateFile('templates/myview.pt')
-    includeall(Styles)
+    include(Styles)
 
 
 

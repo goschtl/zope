@@ -3,20 +3,22 @@ import hurry.resource
 
 from zope.app.publication.interfaces import IBeforeTraverseEvent
 from zope.security.proxy import removeSecurityProxy
-from megrok.resource import include, bottom, includeall
+from megrok.resource import include
 
 @grok.subscribe(grok.View, IBeforeTraverseEvent)
 def handle(view, event):
+    with_bottom = False
     view = removeSecurityProxy(view)
-    all = includeall.bind().get(view)
     includes = include.bind().get(view)
-    #import pdb; pdb.set_trace() 
-    if all:
-        for name in all.libs:
-
-    for lib, name in includes:
-        inn = getattr(lib, name)
-        inn.need()
-    bottom = bottom.bind().get(view)
-    if botom:
+    for lib, name, bottom in includes:
+        if bottom:
+            with_bottom=True
+        if not name:
+            for l in lib.libs:
+                inn = getattr(lib, l)
+                inn.need()
+        else:
+            inn = getattr(lib, name)
+            inn.need()
+    if with_bottom:
         hurry.resource.bottom()
