@@ -19,7 +19,8 @@ class LibraryGrokker(martian.ClassGrokker):
 
 
     def execute(self, class_, config, name, inclusion, layer, permission, **kw):
-        setattr(class_, 'name', name)
+        #setattr(class_, 'name', name)
+        class_.name = name
         for name, file, depends, bottom in inclusion:
             RI = ResourceInclusion(class_, file, depends=depends, bottom=bottom)
             setattr(class_, name, RI)

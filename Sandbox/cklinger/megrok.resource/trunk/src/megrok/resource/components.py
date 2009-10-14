@@ -13,6 +13,10 @@ from hurry.zoperesource.zopesupport import getRequest
 class Library(DirectoryResource):
     libs = []    
 
+    @property
+    def name(self):
+        return grok.name.bind().get(self) 
+
 
 @grok.adapter(Library)
 @grok.implementer(ILibraryUrl)
