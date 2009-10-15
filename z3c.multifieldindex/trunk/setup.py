@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup(
     name='z3c.multifieldindex',
-    version='3.4.0dev',
+    version='3.4.1dev',
     url='http://pypi.python.org/pypi/z3c.multifieldindex',
     license='ZPL 2.1',
     description='Multi-field index for zope catalog',
