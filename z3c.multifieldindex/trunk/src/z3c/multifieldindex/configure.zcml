@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <subscriber handler=".index.multiFieldIndexAdded" />
+
+  <adapter factory=".subindex.DefaultIndexFactory" />
+  <adapter factory=".subindex.TextIndexFactory" />
+  <adapter factory=".subindex.CollectionIndexFactory" />
+
+</configure>
