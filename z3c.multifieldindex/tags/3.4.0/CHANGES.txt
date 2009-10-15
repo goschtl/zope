@@ -1,0 +1,8 @@
+=======
+CHANGES
+=======
+
+3.4.0 (15-10-2009)
+------------------
+
+- Initial release (using Zope 3.4 dependencies).
