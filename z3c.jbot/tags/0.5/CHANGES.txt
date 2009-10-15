@@ -1,0 +1,36 @@
+Changes
+=======
+
+0.5 (2009-10-16)
+----------------
+
+- Added support for CMF skin objects.
+
+0.4 (2009-10-15)
+----------------
+
+- Added Chameleon-support.
+
+- Reimplemented override logic; the total usage cost is now reduced to
+  an insignificant amount. Meanwhile, only templates that are defined
+  as class-attributes (e.g. on views, viewlets and portlets) can be
+  overriden.
+
+0.3 (2009-09-26)
+----------------
+
+- Improved test coverage.
+
+- Refactored code, improving performance.
+
+- Fixed issue with multiple layers.
+
+0.2 (2008-07-14)
+----------------
+
+- Added layer support.
+
+0.1 (2007-11-27)
+----------------
+
+- Initial public release.
