@@ -1,0 +1,106 @@
+Shuffling tests
+===============
+
+By default, every time you launch the testrunner, it will run every tests in a
+specific order. However, if you want to be sure that your setup/teardown
+functions are correctly written, and that tests aren't depending on the result
+or effect of another test, you might want to launch those tests in another,
+completely different order.
+
+The ``--shuffle`` option allows to create a shuffled list of tests.
+
+
+    >>> import os.path, sys
+    >>> directory_with_tests = os.path.join(this_directory, 'testrunner-ex')
+    >>> defaults = [
+    ...     '--path', directory_with_tests,
+    ...     '--tests-pattern', '^sampletestsf?$',
+    ...     ]
+
+    >>> from zope.testing import testrunner
+    >>> default_argv = 'test -u -m sample1 -t test_y0 --list-tests '
+
+Launching shuffled tests
+------------------------
+
+By default, tests are shuffled differently each time you launch tests using the
+``--shuffle`` option:
+
+    >>> argv = (default_argv + '--shuffle').split()
+    >>> testrunner.run_internal(defaults, argv)
+    Tests were shuffled using seed number ...
+    Listing zope.testing.testrunner.layer.UnitTests tests:
+    ...
+    False
+
+Note that the runner prints out a new information, which is the seed number used
+to generate the shuffled list of tests. Using this seed number allows to repeat
+again and again the same randomly shuffled list of tests.
+
+Specifying a seed number to control tests shuffling
+---------------------------------------------------
+
+Along with the ``--shuffle`` option comes the ``--shuffle-seed`` option, which
+takes a seed number as argument. If you spot a specific shuffled list of tests
+which is failing, you can retrieve the seed number used to generate this list,
+and replay it again: you have the guarantee that, specifying a seed number, the
+random list of tests will always be the same.
+
+For example, using the seed number 0 will give us the following, stable, list of
+tests:
+
+    >>> argv = (default_argv + '--shuffle --shuffle-seed 0').split()
+    >>> testrunner.run_internal(defaults, argv)
+    Tests were shuffled using seed number 0
+    Listing zope.testing.testrunner.layer.UnitTests tests:
+      test_y0 (sample1.sampletestsf.TestA)
+      test_y0 (sample1.sampletests.test_one)
+      test_y0 (sample1.sampletests.test1.TestA)
+      test_y0 (sample1.sampletestsf)
+      test_y0 (sample1.sampletests.test_one.TestA)
+      test_y0 (sample1.sample13.sampletests)
+      test_y0 (sample1.sample13.sampletests.TestA)
+      test_y0 (sample1.sample11.sampletests)
+      test_y0 (sample1.sample11.sampletests.TestA)
+      test_y0 (sample1.sampletests.test1)
+    False
+
+Whereas using the seed number 42 will give us the following, different but
+stable, list of tests:
+
+    >>> argv = (default_argv + '--shuffle --shuffle-seed 42').split()
+    >>> testrunner.run_internal(defaults, argv)
+    Tests were shuffled using seed number 42
+    Listing zope.testing.testrunner.layer.UnitTests tests:
+      test_y0 (sample1.sample13.sampletests.TestA)
+      test_y0 (sample1.sample13.sampletests)
+      test_y0 (sample1.sampletests.test1)
+      test_y0 (sample1.sampletests.test1.TestA)
+      test_y0 (sample1.sample11.sampletests.TestA)
+      test_y0 (sample1.sampletestsf)
+      test_y0 (sample1.sampletests.test_one)
+      test_y0 (sample1.sample11.sampletests)
+      test_y0 (sample1.sampletestsf.TestA)
+      test_y0 (sample1.sampletests.test_one.TestA)
+    False
+
+Selecting a seed number without ``--shuffle``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Note that the ``--shuffle-seed`` option must be used along with ``--shuffle``
+option, or tests will not be re-ordered:
+
+    >>> argv = (default_argv + '--shuffle-seed 42').split()
+    >>> testrunner.run_internal(defaults, argv)
+    Listing zope.testing.testrunner.layer.UnitTests tests:
+      test_y0 (sample1.sampletestsf.TestA)
+      test_y0 (sample1.sampletestsf)
+      test_y0 (sample1.sample11.sampletests.TestA)
+      test_y0 (sample1.sample11.sampletests)
+      test_y0 (sample1.sample13.sampletests.TestA)
+      test_y0 (sample1.sample13.sampletests)
+      test_y0 (sample1.sampletests.test1.TestA)
+      test_y0 (sample1.sampletests.test1)
+      test_y0 (sample1.sampletests.test_one.TestA)
+      test_y0 (sample1.sampletests.test_one)
+    False

@@ -9,6 +9,9 @@ zope.testing Changelog
 
 - Cleaned up unused imports reported by pyflakes.
 
+- Added two new options to generate randomly ordered list of tests and to
+  select a specific order of tests.
+
 3.8.3 (2009-09-21)
 ==================
 
