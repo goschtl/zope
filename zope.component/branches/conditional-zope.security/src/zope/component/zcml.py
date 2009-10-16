@@ -28,71 +28,21 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.i18nmessageid import MessageFactory
 
 try:
-    from zope.proxy import ProxyBase, getProxiedObject
-    from zope.security.adapter import LocatingTrustedAdapterFactory, \
-        LocatingUntrustedAdapterFactory, TrustedAdapterFactory
-    from zope.security.checker import InterfaceChecker, CheckerPublic, Checker
-    from zope.security.proxy import Proxy
+    from zope.component.security import _checker, proxify, protectedFactory, \
+        securityAdapterFactory
     from zope.security.zcml import Permission
 except ImportError:
     SECURITY_SUPPORT = False
     from zope.schema import TextLine as Permission
 else:
     SECURITY_SUPPORT = True
-    class PermissionProxy(ProxyBase):
-
-        __slots__ = ('__Security_checker__', )
-
-        def __providedBy__(self):
-            return zope.interface.providedBy(getProxiedObject(self))
-        __providedBy__ = property(__providedBy__)
-
-    def proxify(ob, checker):
-        """Try to get the object proxied with the `checker`, but not too soon
-
-        We really don't want to proxy the object unless we need to.
-        """
-
-        ob = PermissionProxy(ob)
-        ob.__Security_checker__ = checker
-        return ob
-
-    def _protectedFactory(original_factory, checker):
-        # This has to be named 'factory', aparently, so as not to confuse
-        # apidoc :(
-        def factory(*args):
-            ob = original_factory(*args)
-            try:
-                ob.__Security_checker__ = checker
-            except AttributeError:
-                ob = Proxy(ob, checker)
-
-            return ob
-        factory.factory = original_factory
-        return factory
-
-    def _checker(_context, permission, allowed_interface, allowed_attributes):
-        if (not allowed_attributes) and (not allowed_interface):
-            allowed_attributes = ["__call__"]
-
-        if permission == PublicPermission:
-            permission = CheckerPublic
-
-        require={}
-        if allowed_attributes:
-            for name in allowed_attributes:
-                require[name] = permission
-        if allowed_interface:
-            for i in allowed_interface:
-                for name in i.names(all=True):
-                    require[name] = permission
-
-        checker = Checker(require)
-        return checker
 
 _ = MessageFactory('zope')
 
-PublicPermission = 'zope.Public'
+def check_security_support():
+    if not SECURITY_SUPPORT:
+        raise ConfigurationError("security proxied components are not "
+            "supported because zope.security is not available")
 
 def handler(methodName, *args, **kwargs):
     method = getattr(zope.component.getGlobalSiteManager(), methodName)
@@ -239,29 +189,13 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
         factory = _rolledUpFactory(factories)
 
     if permission is not None:
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
-        if permission == PublicPermission:
-            permission = CheckerPublic
-        checker = InterfaceChecker(provides, permission)
-        factory = _protectedFactory(factory, checker)
+        check_security_support()
+        factory = protectedFactory(factory, provides, permission)
 
     # invoke custom adapter factories
-    if locate or (permission is not None and permission is not CheckerPublic):
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
-        if trusted:
-            factory = LocatingTrustedAdapterFactory(factory)
-        else:
-            factory = LocatingUntrustedAdapterFactory(factory)
-    else:
-        if trusted:
-            if not SECURITY_SUPPORT:
-                raise ConfigurationError("security proxied components are not "
-                    "supported because zope.security is not available")
-            factory = TrustedAdapterFactory(factory)
+    if locate or permission is not None or trusted:
+        check_security_support()
+        factory = securityAdapterFactory(factory, permission, locate, trusted)
 
     _context.action(
         discriminator = ('adapter', for_, provides, name),
@@ -372,31 +306,15 @@ def subscriber(_context, for_=None, factory=None, handler=None, provides=None,
                             "determine what the factory (or handler) adapts.")
 
     if permission is not None:
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
-        if permission == PublicPermission:
-            permission = CheckerPublic
-        checker = InterfaceChecker(provides, permission)
-        factory = _protectedFactory(factory, checker)
+        check_security_support()
+        factory = protectedFactory(factory, provides, permission)
 
     for_ = tuple(for_)
 
     # invoke custom adapter factories
-    if locate or (permission is not None and permission is not CheckerPublic):
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
-        if trusted:
-            factory = LocatingTrustedAdapterFactory(factory)
-        else:
-            factory = LocatingUntrustedAdapterFactory(factory)
-    else:
-        if trusted:
-            if not SECURITY_SUPPORT:
-                raise ConfigurationError("security proxied components are not "
-                    "supported because zope.security is not available")
-            factory = TrustedAdapterFactory(factory)
+    if locate or permission is not None or trusted:
+        check_security_support()
+        factory = securityAdapterFactory(factory, permission, locate, trusted)
 
     if handler is not None:
         _context.action(
@@ -461,13 +379,8 @@ def utility(_context, provides=None, component=None, factory=None,
             raise TypeError("Missing 'provides' attribute")
 
     if permission is not None:
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
-        if permission == PublicPermission:
-            permission = CheckerPublic
-        checker = InterfaceChecker(provides, permission)
-        component = proxify(component, checker)
+        check_security_support()
+        component = proxify(component, provides=provides, permission=permission)
 
     _context.action(
         discriminator = ('utility', provides, name),
@@ -619,9 +532,7 @@ def view(_context, factory, type, name, for_, layer=None,
         raise ConfigurationError("No view factory specified.")
 
     if permission is not None:
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
+        check_security_support()
 
         checker = _checker(_context, permission,
                            allowed_interface, allowed_attributes)
@@ -734,9 +645,7 @@ def resource(_context, factory, type, name, layer=None,
             )
 
     if permission is not None:
-        if not SECURITY_SUPPORT:
-            raise ConfigurationError("security proxied components are not "
-                "supported because zope.security is not available")
+        check_security_support()
 
         checker = _checker(_context, permission,
                            allowed_interface, allowed_attributes)
