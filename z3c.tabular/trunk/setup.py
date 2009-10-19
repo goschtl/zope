@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.tabular',
-    version='0.5.1',
+    version='0.5.2dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Table with form support based on z3c.form and z3c.table for Zope3",
