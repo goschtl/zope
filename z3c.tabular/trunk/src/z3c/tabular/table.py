@@ -30,20 +30,6 @@ from z3c.tabular import interfaces
 
 _ = zope.i18nmessageid.MessageFactory('z3c')
 
-
-# conditions
-def hasContent(form):
-    return form.hasContent
-
-
-def canCancel(form):
-    return form.supportsCancel
-
-
-def canDelete(form):
-    return form.supportsDelete
-
-
 # simple template rendering aware table base class
 class TemplateTable(table.Table):
     """Template aware teble."""
@@ -60,7 +46,7 @@ class TemplateTable(table.Table):
 # simple form aware table base class
 class TableBase(TemplateTable):
     """Generic table class with form action support used as form mixin base.
-    
+
     This table base class allows you to mixin custom forms as base.
     """
 
@@ -78,10 +64,10 @@ class TableBase(TemplateTable):
     cssClassEven = u'even'
     cssClassOdd = u'odd'
     cssClassSelected = u'selected'
-    
+
     batchSize = 25
     startBatchingAt = 25
-    
+
     # customize this part
     allowCancel = True
 
@@ -111,7 +97,8 @@ class TableBase(TemplateTable):
         # third update action which we have probably different conditions for
         self.updateActions()
 
-    @button.buttonAndHandler(_('Cancel'), name='cancel', condition=canCancel)
+    @button.buttonAndHandler(_('Cancel'), name='cancel',
+                             condition=lambda form:form.supportsCancel)
     def handleCancel(self, action):
         self.nextURL = self.request.getURL()
 
@@ -145,7 +132,7 @@ class DeleteFormTable(FormTable):
     deleteErrorMessage = _('Could not delete the selected items')
     deleteNoItemsMessage = _('No items selected for delete')
     deleteSuccessMessage = _('Data successfully deleted')
-    
+
     # customize this part
     allowCancel = True
     allowDelete = True
@@ -170,14 +157,15 @@ class DeleteFormTable(FormTable):
             # update the table rows before we start with rendering
             self.updateAfterActionExecution()
             if self.status is None:
-                # probably execute delete or updateAfterAction already set a 
+                # probably execute delete or updateAfterAction already set a
                 # status
                 self.status = self.deleteSuccessMessage
         except KeyError:
             self.status = self.deleteErrorMessage
             transaction.doom()
 
-    @button.buttonAndHandler(_('Delete'), name='delete', condition=canDelete)
+    @button.buttonAndHandler(_('Delete'), name='delete',
+                             condition=lambda form:form.supportsDelete)
     def handleDelete(self, action):
         self.doDelete(action)
 
@@ -195,23 +183,30 @@ class SubFormTable(DeleteFormTable):
 
     # internal defaults
     subForm = None
+    supportsEdit = False
 
     # error messages
     subFormNoItemMessage = _('No item selected for edit')
     subFormToManyItemsMessage = _('Only one item could be selected for edit')
     subFormNotFoundMessage = _('No edit form found for selected item')
-    
+
     # customize this part
-    # use subFormClass or use subFormName. If you set both it will end in 
+    # use subFormClass or use subFormName. If you set both it will end in
     # using subFormClass. See updateSubForm for details.
     subFormClass = None
     subFormName = u''
+    allowEdit = True
 
     def update(self):
         # 1. setup widgets
         super(SubFormTable, self).update()
         # 2. setup form after we set probably a selectedItem
         self.updateSubForm()
+
+    def setupConditions(self):
+        super(SubFormTable, self).setupConditions()
+        if self.allowEdit:
+            self.supportsEdit = self.hasContent
 
     @property
     def selectedItem(self):
@@ -250,9 +245,11 @@ class SubFormTable(DeleteFormTable):
         self.subForm.update()
 
     @button.buttonAndHandler(u'Edit')
-    def handleSubForm(self, action):
+    def handleSubForm(self, action,
+                      condition=lambda form:form.supportsEdit):
         self.doSubForm(action)
 
-    @button.buttonAndHandler(_('Cancel'), name='cancel', condition=canCancel)
+    @button.buttonAndHandler(_('Cancel'), name='cancel',
+                             condition=lambda form:form.supportsCancel)
     def handleCancel(self, action):
         self.nextURL = self.request.getURL()
