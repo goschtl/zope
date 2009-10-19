@@ -55,6 +55,7 @@ setup (
             'z3c.testing',
             'zope.publisher',
             'zope.testing',
+            'z3c.form [test]',
             ],
         ),
     install_requires = [

@@ -2,7 +2,7 @@
 Form Table
 ==========
 
-The goal of this package is to offer a modular table rendering library which 
+The goal of this package is to offer a modular table rendering library which
 includes built in support for update forms. This will allow us to adapt items
 rendered as table row items to forms. This could prevent to use traversable
 exposed forms for such items. But this is just one of the benefits. See more
@@ -17,7 +17,7 @@ We need to setup the form defaults first:
   >>> from z3c.form.testing import setupFormDefaults
   >>> setupFormDefaults()
 
-And load the formui confguration, which will make sure that all macros get 
+And load the formui confguration, which will make sure that all macros get
 registered correctly.
 
   >>> from zope.configuration import xmlconfig
@@ -63,7 +63,7 @@ and create a sample content object which we use as container item:
   >>> import zope.schema
   >>> class IContent(zope.interface.Interface):
   ...     """Content interface."""
-  ...  
+  ...
   ...     title = zope.schema.TextLine(title=u'Title')
   ...     number = zope.schema.Int(title=u'Number')
 
@@ -99,9 +99,9 @@ Now we can define our ``FormTable`` including the SelectedItemColumn:
   >>> from z3c.table import column
   >>> import z3c.tabular.table
   >>> class ContentFormTable(z3c.tabular.table.SubFormTable):
-  ... 
+  ...
   ...     subFormClass = ContentEditForm
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.SelectedItemColumn,
@@ -116,7 +116,7 @@ And support the div form layer for our request:
   >>> request = TestRequest()
   >>> alsoProvides(request, IDivFormLayer)
 
-Now we can render our table. As you can see the ``SelectedItemColumn`` renders 
+Now we can render our table. As you can see the ``SelectedItemColumn`` renders
 a link which knows hot to select the item:
 
   >>> contentSubFormTable = ContentFormTable(container, request)
@@ -127,33 +127,29 @@ a link which knows hot to select the item:
         enctype="multipart/form-data" class="edit-form"
         name="subFormTable" id="subFormTable">
     <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
       <div>
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
           <td valign="top">
             <div>
               <table class="contents">
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
-      </tr>
-      <tr class="odd">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
-      </tr>
-      <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
-      </tr>
-    </tbody>
-  </table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="even">
+                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+                  </tr>
+                  <tr class="odd">
+                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+                  </tr>
+                  <tr class="even">
+                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </td>
           <td valign="top">
@@ -164,20 +160,24 @@ a link which knows hot to select the item:
     </div>
     <div>
       <div class="buttons">
-        <input type="submit" id="subFormTable-buttons-delete"
+  <input id="subFormTable-buttons-delete"
          name="subFormTable.buttons.delete"
-         class="submit-widget button-field" value="Delete" />
-        <input type="submit" id="subFormTable-buttons-edit"
+         class="submit-widget button-field" value="Delete"
+         type="submit" />
+  <input id="subFormTable-buttons-edit"
          name="subFormTable.buttons.edit"
-         class="submit-widget button-field" value="Edit" />
-        <input type="submit" id="subFormTable-buttons-cancel"
+         class="submit-widget button-field" value="Edit"
+         type="submit" />
+  <input id="subFormTable-buttons-cancel"
          name="subFormTable.buttons.cancel"
-         class="submit-widget button-field" value="Cancel" />
+         class="submit-widget button-field" value="Cancel"
+         type="submit" />
       </div>
     </div>
   </form>
 
-Now we are ready to select an item by click on the link. We simlate this by 
+
+Now we are ready to select an item by click on the link. We simlate this by
 set the relevant data in the request:
 
   >>> selectRequest = TestRequest(form={
@@ -187,62 +187,58 @@ set the relevant data in the request:
   >>> selectedItemTable.__name__ = 'view.html'
   >>> selectedItemTable.update()
   >>> print selectedItemTable.render()
-  <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="subFormTable" id="subFormTable">
-    <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
-      <div>
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <td valign="top">
-            <div>
-              <table class="contents">
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
-      </tr>
-      <tr class="selected odd">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
-      </tr>
-      <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
-      </tr>
-    </tbody>
-  </table>
-            </div>
-          </td>
-          <td valign="top">
-            <div class="tableForm">
-              <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="form" id="form">
-    <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
-      <div>
-            <div id="form-widgets-title-row" class="row">
+    <form action="http://127.0.0.1" method="post"
+          enctype="multipart/form-data" class="edit-form"
+          name="subFormTable" id="subFormTable">
+      <div class="viewspace">
+        <div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td valign="top">
+              <div>
+                <table class="contents">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="even">
+                      <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+                    </tr>
+                    <tr class="selected odd">
+                      <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+                    </tr>
+                    <tr class="even">
+                      <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+            <td valign="top">
+              <div class="tableForm">
+    <form action="http://127.0.0.1" method="post"
+          enctype="multipart/form-data" class="edit-form"
+          name="form" id="form">
+      <div class="viewspace">
+          <div class="required-info">
+             <span class="required">*</span>
+             &ndash; required
+          </div>
+          <div>
+              <div id="form-widgets-title-row" class="row">
                 <div class="label">
                   <label for="form-widgets-title">
                     <span>Title</span>
                     <span class="required">*</span>
                   </label>
                 </div>
-                <div class="widget"><input type="text" id="form-widgets-title"
-         name="form.widgets.title"
-         class="text-widget required textline-field"
-         value="Second" />
-  </div>
+                <div class="widget">
+                <input id="form-widgets-title" name="form.widgets.title"
+                       class="text-widget required textline-field"
+                       value="Second" type="text" />
+              </div>
             </div>
             <div id="form-widgets-number-row" class="row">
                 <div class="label">
@@ -251,38 +247,43 @@ set the relevant data in the request:
                     <span class="required">*</span>
                   </label>
                 </div>
-                <div class="widget"><input type="text" id="form-widgets-number"
-         name="form.widgets.number"
-         class="text-widget required int-field" value="2" />
-  </div>
+                <div class="widget">
+                <input id="form-widgets-number"
+                       name="form.widgets.number"
+                       class="text-widget required int-field" value="2"
+                       type="text" />
             </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="buttons">
-        <input type="submit" id="form-buttons-apply"
-         name="form.buttons.apply"
-         class="submit-widget button-field" value="Apply" />
+      <div>
+        <div class="buttons">
+          <input id="form-buttons-apply" name="form.buttons.apply"
+                 class="submit-widget button-field" value="Apply"
+                 type="submit" />
+        </div>
       </div>
-    </div>
-  </form>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
-    </div>
-    <div>
-      <div class="buttons">
-        <input type="submit" id="subFormTable-buttons-delete"
-         name="subFormTable.buttons.delete"
-         class="submit-widget button-field" value="Delete" />
-        <input type="submit" id="subFormTable-buttons-edit"
-         name="subFormTable.buttons.edit"
-         class="submit-widget button-field" value="Edit" />
-        <input type="submit" id="subFormTable-buttons-cancel"
-         name="subFormTable.buttons.cancel"
-         class="submit-widget button-field" value="Cancel" />
+    </form>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
-    </div>
-  </form>
+      </div>
+      <div>
+        <div class="buttons">
+          <input id="subFormTable-buttons-delete"
+                 name="subFormTable.buttons.delete"
+                 class="submit-widget button-field" value="Delete"
+                 type="submit" />
+          <input id="subFormTable-buttons-edit"
+                 name="subFormTable.buttons.edit"
+                 class="submit-widget button-field" value="Edit"
+                 type="submit" />
+          <input id="subFormTable-buttons-cancel"
+                 name="subFormTable.buttons.cancel"
+                 class="submit-widget button-field" value="Cancel"
+                 type="submit" />
+        </div>
+      </div>
+    </form>
