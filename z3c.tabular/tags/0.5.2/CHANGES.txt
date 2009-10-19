@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+0.5.2 (2009-10-19)
+------------------
+
+- Fix my bug introduced in 0.5.1
+
+0.5.1 (2009-10-19)
+------------------
+
+- Added ``allowEdit`` property to ``SubFormTable``
+
+
+0.5.0 (2009-02-22)
+------------------
+
+- Initial Release
