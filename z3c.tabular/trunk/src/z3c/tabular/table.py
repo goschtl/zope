@@ -225,6 +225,8 @@ class SubFormTable(DeleteFormTable):
                 self.request), name=self.subFormName)
 
     def updateSubForm(self):
+        if not self.supportsEdit:
+            return
         selectedItem = self.selectedItem
         if selectedItem is None:
             return
@@ -244,9 +246,9 @@ class SubFormTable(DeleteFormTable):
         self.subForm.ignoreRequest = True
         self.subForm.update()
 
-    @button.buttonAndHandler(u'Edit')
-    def handleSubForm(self, action,
-                      condition=lambda form:form.supportsEdit):
+    @button.buttonAndHandler(u'Edit', condition=lambda form:form.supportsEdit)
+    def handleSubForm(self, action):
+        self.updateSubForm()
         self.doSubForm(action)
 
     @button.buttonAndHandler(_('Cancel'), name='cancel',

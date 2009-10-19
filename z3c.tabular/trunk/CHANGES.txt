@@ -5,7 +5,7 @@ CHANGES
 0.5.2dev (unrleased)
 --------------------
 
-- ...
+- Fix my bug introduced in 0.5.1
 
 0.5.1 (2009-10-19)
 ------------------
