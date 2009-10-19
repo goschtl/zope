@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.bsddbstorage', '0'
 
-install_requires = ['setuptools']
+install_requires = ['setuptools', 'bsddb3']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
