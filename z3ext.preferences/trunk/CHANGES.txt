@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.5.1 (2009-10-20)
+------------------
+
+- Remove principal annotations with principal
+
+
 1.5.0 (2009-08-13)
 ------------------
 

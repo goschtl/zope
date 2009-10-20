@@ -18,8 +18,12 @@ $Id$
 from BTrees.OOBTree import OOBTree
 
 from zope import interface, component
+from zope.component import getUtility
+from zope.security.proxy import removeSecurityProxy
 from zope.security.interfaces import IPrincipal
 from zope.annotation.interfaces import IAnnotations
+from zope.app.principalannotation import PrincipalAnnotationUtility
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 from interfaces import ANNOTATION_KEY, IDataStorage, IPreferenceGroup
 
@@ -61,3 +65,14 @@ class DataStorage(object):
     def __delattr__(self, attr):
         if attr in self.__btree__:
             del self.__btree__[attr]
+
+
+def principalRemovingHandler(event):
+    pid = event.principal.id
+    util = getUtility(IPrincipalAnnotationUtility)
+
+    if isinstance(util, PrincipalAnnotationUtility):
+        util = removeSecurityProxy(util)
+
+        if pid in util.annotations:
+            del util.annotations[pid]
