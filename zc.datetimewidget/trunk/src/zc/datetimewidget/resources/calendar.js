@@ -472,8 +472,8 @@ Calendar.calDragIt = function (ev) {
 	var posX;
 	var posY;
 	if (Calendar.is_ie) {
-		posY = window.event.clientY + document.body.scrollTop;
-		posX = window.event.clientX + document.body.scrollLeft;
+		posY = window.event.clientY;
+		posX = window.event.clientX;
 	} else {
 		posX = ev.pageX;
 		posY = ev.pageY;
@@ -1400,8 +1400,8 @@ Calendar.prototype.showAtElement = function (el, opts) {
 		var br = Calendar.getAbsolutePos(cp);
 		document.body.removeChild(cp);
 		if (Calendar.is_ie) {
-			br.y += document.body.scrollTop;
-			br.x += document.body.scrollLeft;
+			br.y += document.body.scrollTop || document.documentElement.scrollTop;
+			br.x += document.body.scrollLeft || document.documentElement.scrollLeft;
 		} else {
 			br.y += window.scrollY;
 			br.x += window.scrollX;
@@ -1564,8 +1564,8 @@ Calendar.prototype._dragStart = function (ev) {
 	var posX;
 	var posY;
 	if (Calendar.is_ie) {
-		posY = window.event.clientY + document.body.scrollTop;
-		posX = window.event.clientX + document.body.scrollLeft;
+		posY = window.event.clientY;
+		posX = window.event.clientX;
 	} else {
 		posY = ev.clientY + window.scrollY;
 		posX = ev.clientX + window.scrollX;

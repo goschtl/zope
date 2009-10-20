@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-0.6.4 (unreleased)
+0.6.4 (2009-10-20)
 ------------------
 
-- Nothing changed yet.
+- Make Calendar pop-up and drag behavior more consistent across
+  browser modes in IE.
 
 
 0.6.3 (2009-08-24)
