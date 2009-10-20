@@ -1,0 +1,97 @@
+=========================
+Datetime and Date Widgets
+=========================
+
+There are two types of widgets provided by this package, a date widget
+and a datetime widget.
+
+Date Widget
+-----------
+
+The date widget only handles datetime.date objects, which are not
+timezone aware. We use the demo package here to have a content class.
+
+    >>> from zope import component
+    >>> from datetime import datetime, date
+    >>> from zc.datetimewidget import datetimewidget
+    >>> from zc.datetimewidget.demo.content import DemoContent
+    >>> from zc.datetimewidget.demo.interfaces import IDemoContent
+    >>> from zope.publisher.browser import TestRequest, BrowserLanguages
+    >>> component.provideAdapter(BrowserLanguages)
+    >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='en-US')
+    >>> field = IDemoContent['startDate']
+    >>> widget = datetimewidget.DateWidget(field,request)
+    >>> widget._toFormValue(None)
+    u''
+
+Now let us convert a real date.
+
+    >>> d = date(2006,5,1)
+    >>> formValue = widget._toFormValue(d)
+    >>> formValue
+    '2006-05-01'
+
+    >>> parsedValue = widget._toFieldValue(formValue)
+    >>> parsedValue
+    datetime.date(2006, 5, 1)
+
+The widget handles the same date notations as zope's default datewidget.
+
+    >>> widget._toFieldValue('2006/12/31')
+    datetime.date(2006, 12, 31)
+
+Datetime Widget
+---------------
+
+Datetimes are always stored timezone aware, and by default the utc
+timezone is used.
+
+In order to handle timezones correctly the zope instance has to
+provide an adapter from IBrowserRequest to ITZInfo. It is up to the
+instance what kind of implementation it uses. For this test, we just
+use the implementation of the demo.timezone module which always
+returns Europe/Vienna as timezone.
+
+The field's missing value results in an empty string.
+
+    >>> import pytz
+    >>> from zc.datetimewidget.demo import timezone
+    >>> component.provideAdapter(timezone.tzinfo)
+    >>> tz = pytz.timezone('Europe/Vienna')
+    >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='en-US')
+    >>> field = IDemoContent['startDatetime']
+    >>> widget = datetimewidget.DatetimeWidget(field,request)
+
+    >>> widget._toFormValue(None)
+    u''
+
+Now let us convert a real datetime.
+
+    >>> dt = datetime(2006,5,1,12,tzinfo=pytz.utc)
+    >>> formValue = widget._toFormValue(dt)
+    >>> formValue
+    '2006-05-01 14:00:00'
+    >>> parsedValue = widget._toFieldValue(formValue)
+    >>> parsedValue
+    datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
+
+
+The datetime might also be an naive one (without time zone) but it
+gets saved with UTC timezone information.
+
+    >>> naive_dt = datetime(2006,5,1,12)
+    >>> formValue = widget._toFormValue(naive_dt)
+    >>> formValue
+    '2006-05-01 12:00:00'
+    >>> parsedValue = widget._toFieldValue(formValue)
+    >>> parsedValue
+    datetime.datetime(2006, 5, 1, 10, 0, tzinfo=<UTC>)
+
+
+While the widget tries to parse dates in the form '%Y-%m-%d %H:%M:%S'
+first, it will fall through to the locale-specific parsing of the core
+datetimewidget.
+
+    >>> widget._toFieldValue('May 1, 2006 2:00:00 PM')
+    datetime.datetime(2006, 5, 1, 12, 0, tzinfo=<UTC>)
+

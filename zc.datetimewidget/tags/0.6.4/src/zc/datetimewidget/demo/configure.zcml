@@ -1,0 +1,30 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+ <!-- adapter for tzinfo -->
+ <adapter factory=".timezone.tzinfo"/>
+ 
+ <class class=".content.DemoContent">
+        <require permission="zope.View"
+                 interface=".interfaces.IDemoContent"/>
+        <require permission="zope.ManageContent"
+                 set_schema=".interfaces.IDemoContent"/>
+ </class>
+
+
+ <browser:editform
+  schema=".interfaces.IDemoContent"
+  label="Edit"
+  name="edit.html"
+  menu="zmi_views" title="Edit"
+  permission="zope.ManageContent"/>
+
+ <browser:addMenuItem
+  title="Datetimewidget Demo"
+  class=".content.DemoContent"
+  permission="zope.ManageContent"
+  />
+ 
+        
+</configure>
