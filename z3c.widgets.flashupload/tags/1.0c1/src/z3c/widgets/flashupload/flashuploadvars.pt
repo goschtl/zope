@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<var xmlns:i18n = "http://xml.zope.org/namespaces/i18n"
+     xmlns:tal = "http://xml.zope.org/namespaces/tal"
+     i18n:domain="z3c.widgets.flashupload">
+    <var name="file_progress" i18n:translate="">File Progress</var>
+    <var name="overall_progress" i18n:translate="">Overall Progress</var>
+    <var name="error" i18n:translate="">Error on uploading files</var>
+    <var name="uploadcomplete" i18n:translate="">all files uploaded</var>
+    <var name="uploadpartial" i18n:translate="">files uploaded</var>
+    <var name="notuploaded" i18n:translate="">files were not uploaded because they're too big</var>
+    <var name="maxfilesize" i18n:translate="">maximum file size is</var>
+    <tal:block
+        tal:condition="view/allowedFileTypes"
+        tal:repeat="allowedType view/allowedFileTypes">
+      <var name="allowedFileType" tal:content="allowedType">jpg</var>
+    </tal:block>
+</var>

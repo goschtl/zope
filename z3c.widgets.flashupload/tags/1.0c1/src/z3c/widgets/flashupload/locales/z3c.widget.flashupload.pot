@@ -1,0 +1,62 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Revision: 71392\n"
+"POT-Creation-Date: Fri Jan  5 08:46:38 2007\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:5
+msgid "File Progress"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:6
+msgid "Overall Progress"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:7
+msgid "Error on uploading files"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:8
+msgid "all files uploaded"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:9
+msgid "files uploaded"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:10
+msgid "files were not uploaded because they're too big"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:11
+msgid "maximum file size is"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/noflashupload.pt:1
+#. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
+msgid "flash-detection-error"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/uploadform.pt:7
+msgid "Browse"
+msgstr ""
+

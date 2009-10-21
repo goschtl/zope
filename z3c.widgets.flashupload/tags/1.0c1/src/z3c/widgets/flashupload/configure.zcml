@@ -1,0 +1,58 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n:domain="z3c.widgets.flashupload">
+  
+  <!-- target for flash upload client -->
+    <browser:page
+        for="zope.app.container.interfaces.IContainer"
+        name="uploadfile"
+        class=".upload.UploadFile"
+        permission="zope.Public"
+        />
+    
+    <configure zcml:condition="have zc.resourcelibrary">
+      <resourceLibrary name="z3c.widgets.flashupload"
+                   require="z3c.javascript.jquery
+                            z3c.javascript.swfobject">
+       <directory source="resources" include="upload.js"/>
+     </resourceLibrary>
+    </configure>
+
+
+    <browser:resource
+        name="upload.swf"
+        file="resources/upload.swf"
+        />
+    
+	<!-- Flashdetection View  -->
+	<browser:page
+	    for="*"
+	    name="noflashupload.html"
+	    template="noflashupload.pt"
+	    permission="zope.Public"
+	    />
+
+    <!-- ticket view -->
+    
+    <browser:page
+        for=".interfaces.IUploadFileView"
+        name="ticket"
+        class=".ticket.TicketView"
+        permission="zope.ManageContent"
+        />
+    
+    <browser:page
+        for=".interfaces.IFlashUploadForm"
+        name="flashuploadvars.xml"
+        class=".upload.FlashUploadVars"
+        template="flashuploadvars.pt"
+        permission="zope.Public"
+        />
+    
+    <i18n:registerTranslations directory="locales" />
+    
+</configure>

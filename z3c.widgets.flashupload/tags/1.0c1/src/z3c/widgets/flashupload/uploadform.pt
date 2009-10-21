@@ -1,0 +1,27 @@
+<html metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="z3c.widgets.flashupload">    
+
+ <metal:block fill-slot="body">
+  <metal:block define-macro="swf">
+    
+   <input type="button" id="flash.start.browsing" value="Browse"
+          i18n:attributes="value"
+          onClick="JavaScript:z3cFlashUploadStartBrowsing()" />
+   
+   <script type="text/javascript" tal:content="string:
+        var swf_upload_url='${context/++resource++upload.swf}';
+        var swf_upload_target_path='${context/@@absolute_url/url:quote}/uploadfile';
+        var swf_upload_site_url='${view/siteUrl}';
+        var swf_upload_config_url = '${view/configUrl}';
+        ">   
+   </script>
+   
+   <div id="flashuploadtarget">
+        <!-- inside this div, the flash upload swf will be injected
+             resize this div depending to your needs - the swf will
+             take use of the full size of this div -->
+   </div>
+    
+  </metal:block>
+ </metal:block>
+</html>

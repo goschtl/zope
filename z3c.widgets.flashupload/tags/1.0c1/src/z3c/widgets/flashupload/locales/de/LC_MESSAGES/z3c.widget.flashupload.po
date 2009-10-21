@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-09-05 01:23+0100\n"
+"Last-Translator: Bernd Rössl <bernd.roessl@lovelysystems.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:5
+msgid "File Progress"
+msgstr "Datei Fortschritt"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:6
+msgid "Overall Progress"
+msgstr "Gesamt Fortschritt"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:7
+msgid "Error on uploading files"
+msgstr "Beim Upload ist ein Fehler passiert"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:8
+msgid "all files uploaded"
+msgstr "Alle Dateien wurden hinaufgeladen."
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:9
+msgid "files uploaded"
+msgstr "Dateien wurden hinaufgeladen."
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:10
+msgid "files were not uploaded because they're too big"
+msgstr "Dateien wurden nicht hinaufgeladen, weil sie zu gross sind"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:11
+msgid "maximum file size is"
+msgstr "maximale Dateigrösse ist"
+
+#. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
+#: lib/python/z3c.widgets/flashupload/noflashupload.pt:1
+msgid "flash-detection-error"
+msgstr "Es konnte kein Flash Player festgestellt werden. Bitte installieren Sie den aktuellen Flash Player, den Sie <a href=\"http://www.adobe.com/go/getflashplayer\">hier</a> gratis erhalten."
+
+#: lib/python/z3c.widgets/flashupload/uploadform.pt:7
+msgid "Browse"
+msgstr "Durchsuchen"
+

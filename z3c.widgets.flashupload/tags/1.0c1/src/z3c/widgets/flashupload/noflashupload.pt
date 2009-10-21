@@ -1,0 +1,3 @@
+<div i18n:domain="z3c.widgets.flashupload" class="flash-detection-error" i18n:translate="flash-detection-error">
+	Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href="http://www.adobe.com/go/getflashplayer">here</a> for free.
+</div>

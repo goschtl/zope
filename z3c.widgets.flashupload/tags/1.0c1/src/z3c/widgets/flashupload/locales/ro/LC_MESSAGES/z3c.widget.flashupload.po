@@ -1,0 +1,61 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Flash Upload\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-01-29 11:47+0200\n"
+"Last-Translator: Zoltan Szabo <zoltan.szabo@informmedia.ro>\n"
+"Language-Team: Informmedia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:5
+msgid "File Progress"
+msgstr "Progres fişier"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:6
+msgid "Overall Progress"
+msgstr "Progres general"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:7
+msgid "Error on uploading files"
+msgstr "Eroare la incărcarea fişierelor"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:8
+msgid "all files uploaded"
+msgstr "toate fişierele incărcate"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:9
+msgid "files uploaded"
+msgstr "fişiere incărcate"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:10
+msgid "files were not uploaded because they're too big"
+msgstr "fişierele nu au fost incărcate pentru că sunt prea mari"
+
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:11
+msgid "maximum file size is"
+msgstr "mărimea maximă este"
+
+#. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
+#: lib/python/z3c.widgets/flashupload/noflashupload.pt:1
+msgid "flash-detection-error"
+msgstr ""
+
+#: lib/python/z3c.widgets/flashupload/uploadform.pt:7
+msgid "Browse"
+msgstr "Caută"
+
