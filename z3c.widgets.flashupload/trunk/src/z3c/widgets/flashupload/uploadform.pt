@@ -1,5 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/page"
-      i18n:domain="z3c.widget.flashupload">    
+      i18n:domain="z3c.widgets.flashupload">    
 
  <metal:block fill-slot="body">
   <metal:block define-macro="swf">

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <var xmlns:i18n = "http://xml.zope.org/namespaces/i18n"
      xmlns:tal = "http://xml.zope.org/namespaces/tal"
-     i18n:domain="z3c.widget.flashupload">
+     i18n:domain="z3c.widgets.flashupload">
     <var name="file_progress" i18n:translate="">File Progress</var>
     <var name="overall_progress" i18n:translate="">Overall Progress</var>
     <var name="error" i18n:translate="">Error on uploading files</var>

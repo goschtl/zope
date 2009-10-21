@@ -23,40 +23,40 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:5
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:5
 msgid "File Progress"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:6
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:6
 msgid "Overall Progress"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:7
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:7
 msgid "Error on uploading files"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:8
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:8
 msgid "all files uploaded"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:9
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:9
 msgid "files uploaded"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:10
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:10
 msgid "files were not uploaded because they're too big"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:11
+#: lib/python/z3c.widgets/flashupload/flashuploadvars.pt:11
 msgid "maximum file size is"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/noflashupload.pt:1
+#: lib/python/z3c.widgets/flashupload/noflashupload.pt:1
 #. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
 msgid "flash-detection-error"
 msgstr ""
 
-#: lib/python/z3c/widget/flashupload/uploadform.pt:7
+#: lib/python/z3c.widgets/flashupload/uploadform.pt:7
 msgid "Browse"
 msgstr ""
 

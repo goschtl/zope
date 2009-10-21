@@ -4,7 +4,7 @@ FLASH UPLOAD WIDGET
 
 the flashupload vars page configures the flash frontend
 
-    >>> from z3c.widget.flashupload import upload
+    >>> from z3c.widgets.flashupload import upload
     >>> from zope.testing.doctestunit import DocTestSuite
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.app.pagetemplate import ViewPageTemplateFile

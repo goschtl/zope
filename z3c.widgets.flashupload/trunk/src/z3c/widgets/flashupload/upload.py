@@ -11,9 +11,9 @@ from zope.app.container.constraints import checkObject
 from zope import event
 from zope.app.component.interfaces import ISite
 
-from z3c.widget.flashupload.interfaces import (IFlashUploadForm,
-                                               IUploadFileView,
-                                               FlashUploadedEvent)
+from z3c.widgets.flashupload.interfaces import (IFlashUploadForm,
+                                                IUploadFileView,
+                                                FlashUploadedEvent)
 
 try:
     from zc import resourcelibrary
@@ -96,6 +96,6 @@ class UploadForm(BrowserView):
 
     def __call__(self, *args, **kw):
         if haveResourceLibrary:
-            resourcelibrary.need('z3c.widget.flashupload')
+            resourcelibrary.need('z3c.widgets.flashupload')
         return self.template(*args, **kw)
 

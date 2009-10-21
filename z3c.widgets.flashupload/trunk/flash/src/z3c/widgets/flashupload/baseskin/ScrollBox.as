@@ -6,7 +6,7 @@
 */
 
 
-class z3c.widget.flashupload.baseskin.ScrollBox extends MovieClip
+class z3c.widgets.flashupload.baseskin.ScrollBox extends MovieClip
 {
     private var headline_txt:TextField;
     private var list_txt:TextField;

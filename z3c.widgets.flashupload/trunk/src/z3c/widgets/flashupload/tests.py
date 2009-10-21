@@ -13,7 +13,7 @@ def test_suite():
 
     return unittest.TestSuite(
         (
-        DocTestSuite('z3c.widget.flashupload.ticket',
+        DocTestSuite('z3c.widgets.flashupload.ticket',
                      setUp=setUp,tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
