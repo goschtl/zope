@@ -1,0 +1,45 @@
+<table class="sequencewidgettable">
+  <thead tal:define="mainwidget view/mainWidget">
+    <th>
+      &nbsp;
+    </th>
+    <metal:block tal:repeat="widget mainwidget/subwidgets">
+      <th tal:content="widget/label">
+        Label
+      </th>
+    </metal:block>
+  </thead>
+  <tbody>
+    <metal:block tal:repeat="mainwidget view/widgets">
+    <tr tal:define="oddrow repeat/mainwidget/odd"
+        tal:attributes="class python:oddrow and 'even' or 'odd'">
+      <td>
+        <input type="checkbox"
+               tal:attributes="
+                   name string:${view/name}.remove_${repeat/mainwidget/index}"
+               tal:condition="view/need_delete" />
+      </td>
+      <td tal:repeat="widget mainwidget/subwidgets">
+        <span tal:define="error widget/error"
+            tal:replace="structure error" tal:condition="error" />
+        <div class="field" tal:content="structure widget">
+            <input type="text" style="width:100%"/>
+          </div>
+      </td>
+    </tr>
+    </metal:block>
+    <tr>
+    <td colspan="2">
+      <input type="submit" value="Remove selected items"
+             tal:condition="view/need_delete"
+             tal:attributes="name string:${view/name}.remove"
+             i18n:attributes="value remove-selected-items" />
+      <input type="submit" value="Add foo"
+             tal:condition="view/need_add"
+             tal:attributes="name string:${view/name}.add;
+                             value view/addButtonLabel" />
+    </td>
+  </tr>
+  </tbody>
+</table>
+<input tal:replace="structure view/marker" />

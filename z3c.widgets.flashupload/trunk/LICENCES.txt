@@ -1,0 +1,13 @@
+========
+LICENSES
+========
+
+TinyMCE
+=======
+
+The TinyMCE javascript library is releaased under the "GNU LIBRARY
+GENERAL PUBLIC LICENSE". See:
+``./src/z3c/widget/tiny/timy_mce/license.txt``. It is included in this
+package in unmodified form.
+
+
