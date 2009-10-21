@@ -19,7 +19,14 @@ __docformat__ = 'restructuredtext'
 
 import threading
 import zope.component
-import zope.security
+
+try:
+    import zope.security.proxy
+except ImportError:
+    SECURITY_SUPPORT = False
+else:
+    SECURITY_SUPPORT = True
+
 
 class read_property(object):
     def __init__(self, func):
@@ -56,7 +63,9 @@ def setSite(site=None):
         # once site managers do less.  There's probably no good reason why
         # they can't be proxied.  Well, except maybe for performance.
 
-        site = zope.security.proxy.removeSecurityProxy(site)
+        if SECURITY_SUPPORT:
+            site = zope.security.proxy.removeSecurityProxy(site)
+        # The getSiteManager method is defined by IPossibleSite.
         sm = site.getSiteManager()
 
     siteinfo.site = site
@@ -87,7 +96,9 @@ def getSiteManager(context=None):
     # they can't be proxied.  Well, except maybe for performance.
     sm = zope.component.interfaces.IComponentLookup(
         context, zope.component.getGlobalSiteManager())
-    return zope.security.proxy.removeSecurityProxy(sm)
+    if SECURITY_SUPPORT:
+        sm = zope.security.proxy.removeSecurityProxy(sm)
+    return sm
 
 
 def adapter_hook(interface, object, name='', default=None):
