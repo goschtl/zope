@@ -1,3 +1,0 @@
-(<span tal:replace="structure view/widgets/first" />)&nbsp;
-<span tal:replace="structure view/widgets/second" />&nbsp;&mdash;&nbsp;
-<span tal:replace="structure view/widgets/third" />
