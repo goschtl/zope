@@ -4,6 +4,9 @@ CHANGES
 3.8.0 (unreleased)
 ==================
 
+- Moved the IPossibleSite and ISite interfaces here from zope.location as they
+ are dealing with zope.component's concept of a site, but not with location.
+
 - Moved the zope.site.hooks functionality to zope.component.hooks as it isn't
   actually dealing with zope.site's concept of a site.
 
