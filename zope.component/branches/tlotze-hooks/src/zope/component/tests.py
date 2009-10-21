@@ -1670,6 +1670,8 @@ def test_suite():
         doctest.DocFileSuite('registry.txt', checker=checker,
                              setUp=setUpRegistryTests,
                              tearDown=tearDownRegistryTests),
+        doctest.DocFileSuite('hooks.txt',checker=checker,
+                             setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('event.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('zcml.txt',checker=checker,
