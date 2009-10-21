@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0 - unreleased
-----------------
+1.0c1 - 2009-10-21
+------------------
 
 - Split off from the z3c.widget package.

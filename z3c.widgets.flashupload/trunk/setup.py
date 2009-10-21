@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.widgets.flashupload',
-      version='1.0',
+      version='1.0c1',
       author = "Zope Community",
       author_email = "zope-dev@zope.org",
       description = "Zope Flash Upload Widget",
