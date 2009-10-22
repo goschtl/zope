@@ -43,3 +43,23 @@ After this, the newly set site is considered the currently active one:
 True
 >>> getSiteManager() is site1.registry
 True
+
+If we set another site, that one will be considered current:
+
+>>> site2 = Site()
+>>> site2.registry is not site1.registry
+True
+>>> setSite(site2)
+
+>>> getSite() is site2
+True
+>>> getSiteManager() is site2.registry
+True
+
+Finally we can unset the site and the global component registry is used again:
+
+>>> setSite()
+>>> print getSite()
+None
+>>> getSiteManager()
+<BaseGlobalComponents base>
