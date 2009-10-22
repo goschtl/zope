@@ -127,7 +127,7 @@ class DeleteTable(DeleteFormTable):
 
 class CheckBox(CheckBoxColumn):
     grok.name('checkBox')
-    grok.adapts(None, None, DeleteTable)
+    grok.context(Container)
     weight = 0
 
     def getItemKey(self, item):
@@ -136,7 +136,7 @@ class CheckBox(CheckBoxColumn):
 
 class Name(NameColumn):
     grok.name('MyName') 
-    grok.adapts(None, None, DeleteTable)
+    grok.context(Container)
     weight = 99 
 
 

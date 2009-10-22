@@ -112,7 +112,7 @@ import grokcore.component as grok
 from megrok.z3ctable.ftests import Container, Content
 from megrok.z3cform.tabular import FormTable
 from megrok.z3cform.base import button 
-from megrok.z3ctable import CheckBoxColumn, NameColumn
+from megrok.z3ctable import CheckBoxColumn, NameColumn, table
 
 class MyFormTable(FormTable):
     grok.context(Container)
@@ -124,7 +124,8 @@ class MyFormTable(FormTable):
 
 class Name(NameColumn):
     grok.name('checkBox')
-    grok.adapts(None, None, MyFormTable)
+    grok.context(Container)
+    table(MyFormTable)
     weight = 0
 
 #
@@ -136,7 +137,8 @@ class ContentsTableWithTemplate(FormTable):
 
 class MyId(NameColumn):
     grok.name('myid')
-    grok.adapts(None, None, ContentsTableWithTemplate)
+    grok.context(Container)
+    table(ContentsTableWithTemplate)
     weight = 0
 
 

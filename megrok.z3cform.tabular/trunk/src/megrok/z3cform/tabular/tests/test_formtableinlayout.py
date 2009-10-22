@@ -114,7 +114,7 @@ import grokcore.component as grok
 from megrok.z3ctable.ftests import Container, Content
 from megrok.z3cform.tabular import FormTablePage, DeleteFormTablePage
 from megrok.z3cform.base import button 
-from megrok.z3ctable import CheckBoxColumn, NameColumn
+from megrok.z3ctable import CheckBoxColumn, NameColumn, table
 from zope.component import Interface
 from megrok import layout
 
@@ -134,7 +134,8 @@ class TableInLayout(FormTablePage):
 
 class Uid(NameColumn):
     grok.name('uid') 
-    grok.adapts(None, None, FormTablePage)
+    table(FormTablePage)
+    grok.context(Container)
     weight = 1
 
 #
@@ -145,7 +146,8 @@ class FormTablePageWithTemplate(DeleteFormTablePage):
 
 class Name(NameColumn):
     grok.name('Name') 
-    grok.adapts(None, None, FormTablePageWithTemplate)
+    table(FormTablePageWithTemplate)
+    grok.context(Container)
     weight = 1
 
 
