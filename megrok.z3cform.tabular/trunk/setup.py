@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 version = '0.1'
-readme = open(join('src', 'megrok', 'z3cform', 'tabular', 'README.txt')).read()
+readme = open(os.path.join('src', 'megrok', 'z3cform', 'tabular', 'README.txt')).read()
 
 setup(name='megrok.z3cform.tabular',
       version=version,
