@@ -22,11 +22,18 @@ class Recipe(object):
         self.name = name
         self.options = options
         self.egg = Egg(buildout, options['recipe'], options)
+        self.egglist = self.options.get('egg', '').split()
+
         exclude = self.options.get('exclude', '')
         re_exclude = self.options.get('re-exclude', '')
+        dead_ends = self.options.get('dead-ends', '')
+        re_dead_ends = self.options.get('re-dead-ends', '')
+
         self.exclude = set(exclude.split())
         self.re_exclude = set(re_exclude.split())
-        self.strict_egg = self.options.get('strict-egg', '').lower() in ('1', 'true', 'yes')
+        self.dead_ends = set(dead_ends.split())
+        self.re_dead_ends = set(re_dead_ends.split())
+
         self.output = self.options.get(
             'output', os.path.join(
                 self.buildout['buildout']['parts-directory'], self.name))
@@ -59,9 +66,9 @@ class Recipe(object):
                 match(name, compiled_patterns)
             return matched_names
 
-        if self.strict_egg:
-            # strict_egg is set, return only specified eggs in the recipe
-            packages = reqs
+        if self.egglist:
+            # if eggs are present in the recipe, use them
+            packages = self.egglist
         else:
             # Install an interpreter to find eggs
             packages = set([dist.project_name for dist in ws.by_key.values()])
@@ -88,6 +95,10 @@ class Recipe(object):
                 path=self.output,
                 variants=variants,
                 extras=self.extras,
+                exclude = self.exclude,
+                re_exclude = self.re_exclude,
+                dead_ends = self.dead_ends,
+                re_dead_ends = self.re_dead_ends
                 ),
         )
 
