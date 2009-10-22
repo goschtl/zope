@@ -20,7 +20,7 @@ Now setup some items:
 
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> delete_view = getMultiAdapter((cont, TestRequest()), name=u"deletetable") 
+  >>> delete_view = getMultiAdapter((cont, TestRequest()), name=u"deletetable")
   >>> print delete_view()
   <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
@@ -109,10 +109,12 @@ Now call the table with the testbrowser
 """
 
 import grokcore.component as grok
-from megrok.z3ctable.ftests import Container, Content
+
+from megrok.z3cform.base import button
 from megrok.z3cform.tabular import DeleteFormTable
-from megrok.z3cform.base import button 
 from megrok.z3ctable import CheckBoxColumn, NameColumn
+from megrok.z3ctable.ftests import Container, Content
+
 
 class DeleteTable(DeleteFormTable):
     grok.context(Container)
@@ -125,6 +127,7 @@ class DeleteTable(DeleteFormTable):
     def render(self):
         return self.renderFormTable()
 
+
 class CheckBox(CheckBoxColumn):
     grok.name('checkBox')
     grok.context(Container)
@@ -135,9 +138,9 @@ class CheckBox(CheckBoxColumn):
 
 
 class Name(NameColumn):
-    grok.name('MyName') 
+    grok.name('MyName')
     grok.context(Container)
-    weight = 99 
+    weight = 99
 
 
 def test_suite():
@@ -147,4 +150,3 @@ def test_suite():
           optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite
-

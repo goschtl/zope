@@ -13,6 +13,7 @@ Such modifcations are for example:
 
 ´megrok.z3cform.tabular´ is based on these existing megrok packages
 
+ - megrok.layout
  - megrok.z3ctable
  - megrok.z3cform.base
  - megrok.z3cform.ui
@@ -60,11 +61,11 @@ can create a tabular view for this container:
    >>> class FormTableView(FormTable):
    ...     grok.context(Container)
    ...     extends(FormTable)
-
-   ...     @button.buttonAndHandler(u'Modify')
-   ...     def handleApply(self, action):
+   ...
+   ...     @button.buttonAndHandler(u'ChangeWorkflowState')
+   ...     def handleChangeWorkflowState(self, action):
    ...         print 'success'
-
+   ...
    ...     def render(self):
    ...         return self.renderFormTable()
 
@@ -89,7 +90,10 @@ can create a tabular view for this container:
    >>> grok.testing.grok_component('name', Name)
    True
 
-Ok now we can call the ´FormTableView´ on the container
+Ok now we can call the ´FormTableView´ on the container. We
+should see a table with three rows and two columns.
+There is a default ´Cancel´ button and our custom
+´ChangeWorkflowState´button.
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -140,7 +144,15 @@ Ok now we can call the ´FormTableView´ on the container
          name="formTable.buttons.cancel"
          class="submit-widget button-field" value="Cancel"
          type="submit" />
+  <input id="formTable-buttons-changeworkflowstate"
+         name="formTable.buttons.changeworkflowstate"
+         class="submit-widget button-field"
+         value="ChangeWorkflowState" type="submit" />
       </div>
     </div>
   </form>
 
+This package works nicely with megrok.layout. There are some additional
+BaseClasses available. Please take a look on the tests.
+
+Enjoy...

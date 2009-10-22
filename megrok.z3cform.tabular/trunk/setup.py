@@ -2,11 +2,12 @@ from setuptools import setup, find_packages
 import os
 
 version = '0.1'
+readme = open(join('src', 'megrok', 'z3cform', 'tabular', 'README.txt')).read()
 
 setup(name='megrok.z3cform.tabular',
       version=version,
       description="grok add on for createing an Wizard",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=readme + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[

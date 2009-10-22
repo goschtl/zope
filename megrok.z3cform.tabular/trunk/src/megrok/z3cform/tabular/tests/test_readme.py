@@ -13,4 +13,3 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(readme)
     return suite
-

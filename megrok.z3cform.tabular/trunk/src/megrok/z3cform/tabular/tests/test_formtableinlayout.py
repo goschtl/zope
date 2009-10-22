@@ -23,7 +23,7 @@ Call the Table with getMultiAdapter
 
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> table_in_layout = getMultiAdapter((cont, TestRequest()), name=u"tableinlayout") 
+  >>> table_in_layout = getMultiAdapter((cont, TestRequest()), name=u"tableinlayout")
   >>> print table_in_layout()
   <html><form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
@@ -64,8 +64,8 @@ Call the Table with getMultiAdapter
     </div>
   </form>
   </html>
-  >>> delete_table_in_layout = getMultiAdapter((cont, TestRequest()), name=u"formtablepagewithtemplate") 
-  >>> print delete_table_in_layout() 
+  >>> delete_table_in_layout = getMultiAdapter((cont, TestRequest()), name=u"formtablepagewithtemplate")
+  >>> print delete_table_in_layout()
   <html><div id="content">
     <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
@@ -107,16 +107,17 @@ Call the Table with getMultiAdapter
   </form>
   </div>
   </html>
-  
 """
 
 import grokcore.component as grok
-from megrok.z3ctable.ftests import Container, Content
-from megrok.z3cform.tabular import FormTablePage, DeleteFormTablePage
-from megrok.z3cform.base import button 
-from megrok.z3ctable import CheckBoxColumn, NameColumn, table
-from zope.component import Interface
+
 from megrok import layout
+from megrok.z3cform.base import button
+from megrok.z3cform.tabular import FormTablePage, DeleteFormTablePage
+from megrok.z3ctable import CheckBoxColumn, NameColumn, table
+from megrok.z3ctable.ftests import Container, Content
+from zope.component import Interface
+
 
 class Layout(layout.Layout):
     grok.context(Interface)
@@ -133,19 +134,18 @@ class TableInLayout(FormTablePage):
 
 
 class Uid(NameColumn):
-    grok.name('uid') 
+    grok.name('uid')
     table(FormTablePage)
     grok.context(Container)
     weight = 1
 
-#
 
 class FormTablePageWithTemplate(DeleteFormTablePage):
     grok.context(Container)
 
 
 class Name(NameColumn):
-    grok.name('Name') 
+    grok.name('Name')
     table(FormTablePageWithTemplate)
     grok.context(Container)
     weight = 1
@@ -158,4 +158,3 @@ def test_suite():
           optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite
-

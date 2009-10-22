@@ -20,7 +20,7 @@ Now setup some items:
 
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> table_view = getMultiAdapter((cont, TestRequest()), name=u"myformtable") 
+  >>> table_view = getMultiAdapter((cont, TestRequest()), name=u"myformtable")
   >>> print table_view()
   <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
@@ -103,24 +103,25 @@ Now setup some items:
       </div>
     </div>
   </form>
-   </body> 
+   </body>
   </html>
-
 """
 
 import grokcore.component as grok
-from megrok.z3ctable.ftests import Container, Content
+
+from megrok.z3cform.base import button
 from megrok.z3cform.tabular import FormTable
-from megrok.z3cform.base import button 
 from megrok.z3ctable import CheckBoxColumn, NameColumn, table
+from megrok.z3ctable.ftests import Container, Content
+
 
 class MyFormTable(FormTable):
     grok.context(Container)
-
     status = None
 
     def render(self):
         return self.renderFormTable()
+
 
 class Name(NameColumn):
     grok.name('checkBox')
@@ -128,12 +129,11 @@ class Name(NameColumn):
     table(MyFormTable)
     weight = 0
 
-#
 
 class ContentsTableWithTemplate(FormTable):
     grok.context(Container)
-
     status = None
+
 
 class MyId(NameColumn):
     grok.name('myid')
@@ -149,4 +149,3 @@ def test_suite():
           optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite
-

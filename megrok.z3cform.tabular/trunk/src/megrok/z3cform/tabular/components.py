@@ -1,15 +1,15 @@
 import grokcore.component as grok
 import grokcore.view as view
-import z3c.tabular.table
-from z3c.template.template import getPageTemplate
-from grokcore.view.interfaces import ITemplate as IGrokTemplate
 import megrok.layout
+import z3c.tabular.table
+
+from grokcore.view.interfaces import ITemplate as IGrokTemplate
+from z3c.template.template import getPageTemplate
+
 
 class BaseTable(view.View):
     grok.baseclass()
-
     status = None # The Tabular stuff checks if the status is None
-
     template = None
 
     def render(self):
@@ -17,9 +17,7 @@ class BaseTable(view.View):
         return template(self)
 
     render.base_method = True
-
     renderFormTable = render
-
 
 
 class FormTable(BaseTable, z3c.tabular.table.FormTable):
@@ -44,7 +42,6 @@ class FormTablePage(megrok.layout.Page, z3c.tabular.table.FormTable):
     """ A Form Table Class which get renderd inside a Layout
     """
     grok.baseclass()
-
     template = None
 
     def update(self):
@@ -55,11 +52,14 @@ class FormTablePage(megrok.layout.Page, z3c.tabular.table.FormTable):
         template = getPageTemplate()
         return template(self)
 
-    render.base_method = True    
+    render.base_method = True
     renderFormTable = render
 
 
-class DeleteFormTablePage(megrok.layout.Page, z3c.tabular.table.DeleteFormTable):    
+class DeleteFormTablePage(megrok.layout.Page,
+                          z3c.tabular.table.DeleteFormTable):
+    """ A Form Table with has support for removing objects form a folder
+    """
     grok.baseclass()
 
     template = None
@@ -72,5 +72,5 @@ class DeleteFormTablePage(megrok.layout.Page, z3c.tabular.table.DeleteFormTable)
         template = getPageTemplate()
         return template(self)
 
-    render.base_method = True    
+    render.base_method = True
     renderFormTable = render
