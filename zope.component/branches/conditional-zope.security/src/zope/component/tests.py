@@ -1682,6 +1682,9 @@ def test_suite():
     zcml_conditional = doctest.DocFileSuite('zcml_conditional.txt', checker=checker)
     zcml_conditional.layer = ConditionalSecurityLayer()
 
+    hooks_conditional = doctest.DocFileSuite('hooks.txt', checker=checker)
+    hooks_conditional.layer = ConditionalSecurityLayer()
+
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
         unittest.makeSuite(HookableTests),
@@ -1697,11 +1700,14 @@ def test_suite():
         doctest.DocFileSuite('registry.txt', checker=checker,
                              setUp=setUpRegistryTests,
                              tearDown=tearDownRegistryTests),
+        doctest.DocFileSuite('hooks.txt',checker=checker,
+                             setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('event.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('zcml.txt', checker=checker,
                              setUp=setUp, tearDown=tearDown),
         zcml_conditional,
+        hooks_conditional,
         unittest.makeSuite(StandaloneTests),
         unittest.makeSuite(ResourceViewTests),
         ))
