@@ -22,7 +22,8 @@ class Recipe(object):
         self.name = name
         self.options = options
         self.egg = Egg(buildout, options['recipe'], options)
-        self.egglist = self.options.get('egg', '').split()
+        self.eggs = self.options.get('eggs', '').split()
+        self.strict = self.options.get('strict', '').lower() in ('1', 'true', 'yes')
 
         exclude = self.options.get('exclude', '')
         re_exclude = self.options.get('re-exclude', '')
@@ -66,9 +67,10 @@ class Recipe(object):
                 match(name, compiled_patterns)
             return matched_names
 
-        if self.egglist:
-            # if eggs are present in the recipe, use them
-            packages = self.egglist
+        if self.strict:
+            # use only eggs in the list
+            packages = self.eggs
+
         else:
             # Install an interpreter to find eggs
             packages = set([dist.project_name for dist in ws.by_key.values()])
