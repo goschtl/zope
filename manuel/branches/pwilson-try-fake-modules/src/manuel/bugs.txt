@@ -1,0 +1,31 @@
+Fixed Bugs
+==========
+
+Here are demonstrations of various bugs that have been fixed in Manuel.  If you
+encounter a bug in a previous version of Manuel, check here in the newest
+version to see if your bug has been addressed.
+
+This document is likely only interesting to people using creating their own
+plug-ins.
+
+
+Start and End Coinciding
+------------------------
+
+If a line of text matches both a "start" and "end" regular expression, no
+exception should be raised.
+
+    >>> source = """\
+    ... Blah, blah.
+    ... 
+    ... xxx
+    ... some text
+    ... xxx
+    ...
+    ... """
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import re
+    >>> start = end = re.compile(r'^xxx$', re.MULTILINE)
+    >>> document.find_regions(start, end)
+    [<manuel.Region object at ...]
