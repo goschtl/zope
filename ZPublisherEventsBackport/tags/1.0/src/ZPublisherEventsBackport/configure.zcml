@@ -1,0 +1,3 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+    <!-- Stub so configure phase may trigger patch -->
+</configure>
