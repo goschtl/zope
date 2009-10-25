@@ -81,3 +81,25 @@ the ``--foo`` option by default to all generated test runners, you can set
 
 Every options prefixed by ``runner-`` will be automatically passed to the
 generated test runners.
+
+
+Passing Extra paths to the test runners
+=======================================
+
+If you want to add some paths to the generated test runners, you can do it with
+the extra-paths option in the part. This might be interesting if you want to test packages
+that depends on zope2 < 2.12:
+
+>>> write('buildout.cfg', """
+... [buildout]
+... parts = compattest
+...
+... [compattest]
+... recipe = z3c.recipe.compattest
+... include = z3c.recipe.compattest
+... extra-paths = zope2location/lib/python
+... """)
+>>> ignore = system(buildout)
+>>> cat('bin', 'compattest-z3c.recipe.compattest')
+#!...python...
+...zope2location/lib/python...

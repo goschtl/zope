@@ -26,6 +26,7 @@ class Recipe(object):
 
         self.include = string2list(self.options.get('include', ''), [])
         self.exclude = string2list(self.options.get('exclude', ''), [])
+        self.extra_paths = self.options.get('extra-paths', '')
         self.wanted_packages = self._wanted_packages()
 
         self.script = self.options.get('script', self.name)
@@ -55,6 +56,8 @@ class Recipe(object):
 
             options = self.testrunner_options.copy()
             options['eggs'] = package + extras
+            if self.extra_paths:
+                options['extra-paths'] = self.extra_paths
 
             recipe = zc.recipe.testrunner.TestRunner(
                 self.buildout, '%s-%s' % (self.name, package), options)
