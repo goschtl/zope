@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
-version = '0.6dev'
+version = '0.6'
 
 setup(name='cmf.pt',
       version=version,
       description="Bridge to use Chameleon with Zope 2 and CMF.",
       long_description=open("README.txt").read() + open("CHANGES.txt").read(),
       classifiers=[
+        "Framework :: Plone",
         "Framework :: Zope2",
         "Programming Language :: Python",
         "Topic :: Text Processing :: Markup :: HTML",
@@ -27,4 +28,8 @@ setup(name='cmf.pt',
           'z3c.pt>=1.0b7',
           'five.pt',
       ],
+      entry_points="""
+      [z3c.autoinclude.plugin]
+      target = plone
+      """,
       )
