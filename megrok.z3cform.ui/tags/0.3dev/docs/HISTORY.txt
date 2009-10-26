@@ -1,0 +1,19 @@
+Changelog
+=========
+
+0.3 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
+0.2 (2009-10-26)
+----------------
+
+- Added a Readme.
+
+
+0.1 (2009-10-26)
+----------------
+
+* Initial release
