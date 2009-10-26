@@ -96,7 +96,7 @@ class HumanDatetimeFormatter(object):
                 mapping={'value': delta.seconds})
 
         return """<span class="z3ext-formatter-humandatetime" value="%s">%s</span>""" \
-                % (value.strftime('%Y %B %d %H:%M:%S %z'), formatted)
+                % (value.strftime('%B %d, %Y %H:%M:%S %z'), formatted)
 
 
 class HumanDatetimeFormatterFactory(object):
