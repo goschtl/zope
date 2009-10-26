@@ -11,7 +11,7 @@ Such modifcations are for example:
  - delete 
  - change workflow state
 
-´megrok.z3cform.tabular´ is based on these existing megrok packages
+megrok.z3cform.tabular is based on these existing megrok packages:
 
  - megrok.layout
  - megrok.z3ctable
@@ -22,7 +22,7 @@ Such modifcations are for example:
 Example
 -------
 
-First we have to setup a container with some objects...
+First we have to setup a container with some objects.
 
    >>> from zope.app.testing.functional import getRootFolder
    >>> root = getRootFolder()
