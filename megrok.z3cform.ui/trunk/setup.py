@@ -1,11 +1,12 @@
 from setuptools import setup, find_packages
 import os
+readme = open(os.path.join('src', 'megrok', 'z3cform', 'ui', 'README.txt')).read()
 
-version = '0.2dev'
+version = '0.2'
 setup(name='megrok.z3cform.ui',
       version=version,
       description="Installation Helper for z3c.formui",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=readme + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
