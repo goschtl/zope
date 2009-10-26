@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.2 (2009-10-26)
+----------------
+
+- Change the description of the project. 
+
+
 0.1 (2009-10-26)
 ----------------
 

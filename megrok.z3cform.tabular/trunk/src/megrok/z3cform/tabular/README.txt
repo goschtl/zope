@@ -90,10 +90,10 @@ can create a tabular view for this container:
    >>> grok.testing.grok_component('name', Name)
    True
 
-Ok now we can call the ´FormTableView´ on the container. We
+Ok now we can call the FormTableView on the container. We
 should see a table with three rows and two columns.
-There is a default ´Cancel´ button and our custom
-´ChangeWorkflowState´button.
+There is a default Cancel button and our custom
+ChangeWorkflowState button.
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
