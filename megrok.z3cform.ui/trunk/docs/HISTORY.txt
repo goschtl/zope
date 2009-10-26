@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.3 (unreleased)
+0.5 (2009-10-26)
 ----------------
 
-- Nothing changed yet.
+- Adding a nice version number.
 
 
 0.2 (2009-10-26)

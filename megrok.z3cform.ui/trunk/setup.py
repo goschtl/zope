@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 readme = open(os.path.join('src', 'megrok', 'z3cform', 'ui', 'README.txt')).read()
 
-version = '0.3dev'
+version = '0.5'
 setup(name='megrok.z3cform.ui',
       version=version,
       description="Installation Helper for z3c.formui",
