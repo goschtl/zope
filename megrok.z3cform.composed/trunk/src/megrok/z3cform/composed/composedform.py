@@ -12,6 +12,7 @@ class ComposedForm(PageForm):
     """A more generic form which can be composed of many others.
     """
     grok.baseclass()
+    subforms = []
 
     def updateSubForms(self):
         subforms = map(lambda x: x[1], component.getAdapters(

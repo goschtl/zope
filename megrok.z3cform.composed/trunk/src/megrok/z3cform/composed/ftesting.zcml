@@ -1,0 +1,16 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:grok="http://namespaces.zope.org/grok">
+
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zope.app.zcmlfiles" />
+
+  <include package="megrok.layout" />
+
+  <include package="megrok.z3cform.composed" />
+  <include package="megrok.z3cform.composed" file="meta.zcml" />
+  
+  <!-- Layer manipulation -->
+  <include package="megrok.z3cform.base" file="default_form_layer.zcml"/>
+
+</configure>
