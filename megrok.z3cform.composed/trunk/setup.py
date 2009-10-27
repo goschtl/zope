@@ -43,7 +43,7 @@ setup(name=name,
       classifiers = [
           'Development Status :: 4 - Beta',
           'Environment :: Web Environment',
-          'Framework :: Grok',
+          'Framework :: Zope3',
           'Intended Audience :: Other Audience',
           'License :: OSI Approved :: GNU General Public License (GPL)',
           'Operating System :: OS Independent',
