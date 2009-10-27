@@ -14,6 +14,7 @@
 
 import pdb
 import sys
+import zc.monitor
 
 class FakeStdout(object):
     def __init__(self, connection):
@@ -29,13 +30,25 @@ class FakeStdout(object):
 debugger = fakeout = None
 
 
-def command(lines, *args):
+def command(connection, *args):
     global debugger
     global fakeout
+
+    if args and args[0] == 'debug':
+        connection.write('the "debug" command is not supported\n')
+
+    if args and args[0] == 'quit':
+        debugger = fakeout = None
+        return zc.monitor.QUIT_MARKER
+
+    # if we haven't set up a debugger yet, do so
     if debugger is None:
-        fakeout = FakeStdout(lines.connection)
+        fakeout = FakeStdout(connection.connection)
         debugger = pdb.Pdb(stdin=None, stdout=fakeout)
         debugger.reset()
         debugger.setup(sys._getframe().f_back, None)
 
     debugger.onecmd(' '.join(args))
+
+    connection.write(debugger.prompt)
+    return zc.monitor.MORE_MARKER
