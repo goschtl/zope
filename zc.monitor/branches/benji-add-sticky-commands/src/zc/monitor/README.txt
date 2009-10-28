@@ -3,14 +3,7 @@ Monitor Server
 ==============
 
 The monitor server is a server that provides a command-line interface to
-request various bits of information.  The server is zc.ngi based, so we can use
-the zc.ngi testing infrastructure to demonstrate it.
-
-    >>> import zc.ngi.testing
-    >>> import zc.monitor
-
-    >>> connection = zc.ngi.testing.TextConnection()
-    >>> server = zc.monitor.Server(connection)
+request various bits of information.
 
 The server supports an extensible set of commands.  It looks up
 commands as named zc.monitor.interfaces.IMonitorPlugin "utilities", as defined
@@ -31,13 +24,13 @@ and register it:
     >>> zope.component.provideUtility(
     ...   hello, zc.monitor.interfaces.IMonitorPlugin, 'hello')
 
-Now we can give the hello command to the server:
+Now we can give the hello command to the server [#setup]_:
 
     >>> connection.test_input('hello\n')
     Hi world, nice to meet ya!
     -> CLOSE
 
-We can pass a name:
+We can pass a name [#setup]_:
 
     >>> connection.test_input('hello Jim\n')
     Hi Jim, nice to meet ya!
@@ -54,7 +47,7 @@ them so we can see what they do:
     ...     zc.monitor.interfaces.IMonitorPlugin, 'quit')
 
 The first is the help command.  Giving help without input, gives a
-list of available commands:
+list of available commands [#setup]_:
 
     >>> connection.test_input('help\n')
     Supported commands:
@@ -64,7 +57,18 @@ list of available commands:
       quit -- Quit the monitor
     -> CLOSE
 
-We can get detailed help by specifying a command name:
+We can get detailed help by specifying a command name [#setup]_:
+
+    >>> connection.test_input('help hello\n')
+    Help for hello:
+    <BLANKLINE>
+    Say hello
+    <BLANKLINE>
+        Provide a name if you're not the world.
+    <BLANKLINE>
+    -> CLOSE
+
+We can get even get help on the help command itself [#setup]_:
 
     >>> connection.test_input('help help\n')
     Help for help:
@@ -76,20 +80,11 @@ We can get detailed help by specifying a command name:
     <BLANKLINE>
     -> CLOSE
 
-    >>> connection.test_input('help hello\n')
-    Help for hello:
-    <BLANKLINE>
-    Say hello
-    <BLANKLINE>
-        Provide a name if you're not the world.
-    <BLANKLINE>
-    -> CLOSE
-
 The ``interactive`` command switches the monitor into interactive mode.  As
 seen above, the monitor usually responds to a single command and then closes
 the connection.  In "interactive mode", the connection is not closed until
 the ``quit`` command is used.  This can be useful when accessing the monitor
-via telnet for diagnostics.
+via telnet for diagnostics. [#setup]_
 
     >>> connection.test_input('interactive\n')
     Interactive mode on.  Use "quit" To exit.
@@ -134,16 +129,14 @@ Now we will use ``quit`` to close the connection.
     -> CLOSE
 
 Finally, it's worth noting that exceptions will generate a
-traceback on the connection.
+traceback on the connection. [#setup]_
 
-XXX For some reason the below doesn't work.
-
-FAIL    >>> connection.test_input('hello Jim 42\n') # doctest: +ELLIPSIS
-FAIL    Traceback (most recent call last):
-FAIL    ...
-FAIL    TypeError: hello() takes at most 2 arguments (3 given)
-FAIL    <BLANKLINE>
-FAIL    -> CLOSE
+    >>> connection.test_input('hello Jim 42\n') # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    TypeError: hello() takes at most 2 arguments (3 given)
+    <BLANKLINE>
+    -> CLOSE
 
 .. Edge cases
 
@@ -177,10 +170,8 @@ If we register this command...
     >>> zope.component.provideUtility(calc,
     ...     zc.monitor.interfaces.IMonitorPlugin, 'calc')
 
-...we can invoke it and we get a prompt.
+...we can invoke it and we get a prompt. [#setup]_
 
-    >>> connection = zc.ngi.testing.TextConnection()
-    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('calc\n')
     .
 
@@ -198,3 +189,13 @@ Once we're done we can tell the calculator to let us go.
 
     >>> connection.test_input('quit\n')
     -> CLOSE
+
+
+.. [#setup] The server is zc.ngi based, so we can use the zc.ngi testing
+    infrastructure to demonstrate it.
+
+    >>> import zc.ngi.testing
+    >>> import zc.monitor
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)

@@ -17,5 +17,5 @@ from zope.testing import doctest
 def test_suite():
     return doctest.DocFileSuite(
         'README.txt',
-        optionflags=doctest.NORMALIZE_WHITESPACE,
+        optionflags=doctest.NORMALIZE_WHITESPACE | doctest.INTERPRET_FOOTNOTES,
         )
