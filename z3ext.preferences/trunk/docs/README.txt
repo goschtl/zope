@@ -82,44 +82,44 @@ ZCML directive
 The ``z3ext:preferenceGroup`` ZCML directive has more arguments that can be
 used to make a more special preference group. Let's describe them all:
 
- * id - The unique identifier of a preference group. Group hierarchy is organized
-   using dots in the ids (see above).
+* id - The unique identifier of a preference group. Group hierarchy is organized
+  using dots in the ids (see above).
 
- * for - An interface of principal objects that will have this preference group.
-   This allows preferences to be available only specific principal types.
+* for - An interface of principal objects that will have this preference group.
+  This allows preferences to be available only specific principal types.
 
- * schema - Preference schema interface. By default, storable properties will be
-   created only for fields defined in this schema. It makes sense to use an
-   empty interface as the schema, in case you want the preference group to be
-   registered and provide custom data storage mechanism and browser views.
+* schema - Preference schema interface. By default, storable properties will be
+  created only for fields defined in this schema. It makes sense to use an
+  empty interface as the schema, in case you want the preference group to be
+  registered and provide custom data storage mechanism and browser views.
 
- * title - Human-friendly translatable title of the preference group to be used
-   in menus and headings. 
+* title - Human-friendly translatable title of the preference group to be used
+  in menus and headings. 
 
- * description - Human friendly translatable description of the preference group
-   to be used in UI.
+* description - Human friendly translatable description of the preference group
+  to be used in UI.
 
- * class - A mixin class for the preference group. The ZCML directive creates
-   a new class using ``z3ext.preferences.preference.PreferenceGroup`` as base
-   and mixing in custom class if given. It can be used to override behaviour
-   or implement some custom methods.
+* class - A mixin class for the preference group. The ZCML directive creates
+  a new class using ``z3ext.preferences.preference.PreferenceGroup`` as base
+  and mixing in custom class if given. It can be used to override behaviour
+  or implement some custom methods.
 
- * provides - A list of additional interfaces that the preference group will
-   provide. Can be used to mark the preference group with marker interfaces,
-   for example to give access to special browser views.
+* provides - A list of additional interfaces that the preference group will
+  provide. Can be used to mark the preference group with marker interfaces,
+  for example to give access to special browser views.
 
- * accesspermission - An id of permission that will be used for accessing fields
-   defined in schema for reading.
+* accesspermission - An id of permission that will be used for accessing fields
+  defined in schema for reading.
 
- * permission - An id of permission that will be used for writing into fields
-   defined in schema.
+* permission - An id of permission that will be used for writing into fields
+  defined in schema.
 
- * tests - A list of global functions that will be used for testing whether the
-   preference group is available. These functions should recieve one argument - 
-   the actual preference group.
+* tests - A list of global functions that will be used for testing whether the
+  preference group is available. These functions should recieve one argument - 
+  the actual preference group.
 
- * order - An order hint. The sub-groups will be sorted using this value, so
-   you can control the order of preference groups for UI.
+* order - An order hint. The sub-groups will be sorted using this value, so
+  you can control the order of preference groups for UI.
 
 If you need more control over attribute access permissions for the preference
 group, you can use "require" and "allow" sub-directives with the same sematics
@@ -166,7 +166,3 @@ pair to the ``z3ext.preferences.interfaces.IDataStorage`` interface.
 The default adapter regitered uses principal annotation mechanism to store
 per-principal data (see ``z3ext.preferences.storage``), however you can provide
 your own adapter for specific types of principals and/or preference groups.
-
-
-
-* custom data storage adapters
