@@ -42,6 +42,11 @@ class ZCMLLayer:
     zcml = os.path.join(_HERE, 'ftesting.zcml')
 zcml_layer(ZCMLLayer)
     
+class ZCMLExtraLayer:
+    zcml_features = ('extra',)
+    zcml = os.path.join(_HERE, 'ftesting.zcml')
+zcml_layer(ZCMLExtraLayer)
+
 class FunctionalLayer(ZCMLLayer):
     @classmethod
     def make_application(cls):
@@ -51,9 +56,12 @@ wsgi_intercept_layer(FunctionalLayer)
 def test_suite():
     ftests = unittest.TestSuite([doctest.DocFileSuite('README.txt')])
     ftests.layer = FunctionalLayer
+    extra_tests = unittest.TestSuite([doctest.DocFileSuite('zcml_features.txt')])
+    extra_tests.layer = ZCMLExtraLayer
     if have_testbrowser:
         ftests.addTest(doctest.DocFileSuite('testbrowser.txt'))
     return unittest.TestSuite([
-        ftests,
+            ftests,
+            extra_tests,
             doctest.DocTestSuite('van.testing.layer'),
             ])

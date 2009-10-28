@@ -58,3 +58,14 @@ zope.testing bug?):
     >>> class ExampleNullLayer(ZCMLLayer):
     ...     pass
     >>> null_layer(ExampleNullLayer)
+
+This test runs in the layer van.testing.tests.ZCMLLayer, so we can get the
+"test" utility but not the test_extra utility (see zcml_features.txt for an
+example of a zcml layer with features):
+        
+    >>> from zope.interface import Interface
+    >>> from zope.component import queryUtility
+    >>> queryUtility(Interface, name="test", default='None')
+    'MARKER'
+    >>> queryUtility(Interface, name="test_extra", default='None')
+    'None'

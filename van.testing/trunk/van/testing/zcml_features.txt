@@ -1,0 +1,14 @@
+The zcml_layer can understand a "zcml_features" attribute, this attribute is set on the Layer that this test is in:
+
+    >>> from van.testing.tests import ZCMLExtraLayer
+    >>> ZCMLExtraLayer.zcml_features
+    ('extra',)
+
+Ths means our zcml was loaded with the "extra" extra and we can get the test_extra utility:
+
+    >>> from zope.interface import Interface
+    >>> from zope.component import queryUtility
+    >>> queryUtility(Interface, name="test", default='None')
+    'MARKER'
+    >>> queryUtility(Interface, name="test_extra", default='None')
+    'MARKER'

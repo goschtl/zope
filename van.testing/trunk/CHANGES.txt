@@ -1,7 +1,13 @@
 Changes
 =======
 
-3.0.0 (unknown)
+3.0.0 (2009-10-28)
+------------------
+
+- Add an option to have a zcml_features attribute on a zcml layer indicating
+  the features to load when loading the zcml.
+
+2.0.1 (2009-04-07)
 ------------------
 
 - Allow users to specify the domain and port of the wsgi_intercept_layer by

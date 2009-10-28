@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.configuration import xmlconfig
+from zope.configuration import config, xmlconfig
 from zope.testing.cleanup import cleanUp
 import wsgi_intercept
 
@@ -69,14 +69,20 @@ def null_layer(layer):
 def zcml_layer(layer):
     """Sets up a class as a ZCMLLayer.
 
-    The class can have 2 attributes:
+    The class can have 3 attributes:
         zcml: The site zcml file to load.
+        zcml_features: A tuple of strings indicating the features to load.
         allow_teardown: Whether to allow teardown of this layer.
                         Default: True
     """
 
     def setUp(cls):
-        context = xmlconfig.file(cls.zcml)
+        features = getattr(cls, 'zcml_features', ())
+        context = config.ConfigurationMachine()
+        xmlconfig.registerCommonDirectives(context)
+        for feature in features:
+            context.provideFeature(feature)
+        context = xmlconfig.file(cls.zcml, context=context)
     layer.setUp = classmethod(setUp)
 
     def tearDown(cls):
