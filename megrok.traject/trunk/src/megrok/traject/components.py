@@ -35,12 +35,19 @@ class TrajectTraverser(grok.Traverser):
     def traverse(self, name):
         stack = self.request.getTraversalStack()
         stack.append(name)
-        unconsumed, obj = traject.consume_stack(
+        unconsumed, consumed, obj = traject.consume_stack(
             self.context, stack, DefaultModel)
-        # if we haven't consumed *anything* we can't traverse, fall back
+        # if we haven't gone anywhere, we can't traverse; fall back
         if obj is self.context:
             return None
         self.request.setTraversalStack(unconsumed)
+        # remove the first consumed element, as it will actually be placed
+        # in _traversed_names already
+        consumed = consumed[1:]
+        # we need to mess around with _traversed_names otherwise
+        # the request.getURL and base URL generation breaks
+        self.request._traversed_names.extend(consumed)
+
         return obj
 
 class DefaultModel(grok.Model):
