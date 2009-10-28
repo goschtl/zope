@@ -83,11 +83,11 @@ single system. Traject:
   their parent and name, allowing model-based security declarations
   and easy URL construction for models.
 
-Some potential drawbacks of Traject are::
+Some potential drawbacks of Traject are:
 
 * Traject expects a certain regularity in its patterns. It doesn't
   allow certain complex URL patterns where several variables are part
-  of a single step (i.e ``foo/<bar_id>-<baz_id``). Only a single
+  of a single step (i.e ``foo/<bar_id>-<baz_id>``). Only a single
   variable is allowed per URL segment.
 
 * Traject needs to constructs or retrieve models for *each stage* in
