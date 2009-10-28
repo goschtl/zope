@@ -33,7 +33,7 @@ setup(name = 'z3ext.preferences',
         'Detailed Documentation\n' +
         '======================\n'
         + '\n\n' +
-        read('src', 'z3ext', 'preferences', 'README.txt')
+        read('src', 'z3ext', 'preferences', 'tests', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),

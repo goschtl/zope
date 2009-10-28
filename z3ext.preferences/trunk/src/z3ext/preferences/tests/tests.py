@@ -91,7 +91,7 @@ def test_suite():
     return unittest.TestSuite((
             testbrowser,
             doctest.DocFileSuite(
-                '../README.txt',
+                'README.txt',
                 setUp=setUp, tearDown=tearDown,
                 globs={'pprint': doctestunit.pprint},
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
