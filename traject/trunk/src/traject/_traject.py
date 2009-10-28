@@ -223,7 +223,7 @@ class Patterns(object):
             if gen_name == ':':
                 name = name[1:]
                 name = variables.pop(name)  
-            model.__name__ = name
+            model.__name__ = unicode(name)
     
             # no more parents we can find, so we're at the root
             if not gen_pattern:

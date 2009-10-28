@@ -849,6 +849,15 @@ class InverseTestCase(unittest.TestCase):
         patterns.locate(root, employee, default)
         self.assertEquals([u'employee 1 2', u'employees 1'],
                           _calls)
+    def test_inverse_non_unicode_name(self):
+        patterns = self.get_identity_patterns()
+
+        root = Root()
+        employee = identityEmployee(1, 2)
+        patterns.locate(root, employee, default)
+
+        self.assertEquals(u'2', employee.__name__)
+        
     # test behavior of interfaces and overrides with inverse
 
 
