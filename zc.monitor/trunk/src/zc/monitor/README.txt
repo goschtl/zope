@@ -39,6 +39,8 @@ Now we can give the hello command to the server:
 
 We can pass a name:
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('hello Jim\n')
     Hi Jim, nice to meet ya!
     -> CLOSE
@@ -56,6 +58,8 @@ them so we can see what they do:
 The first is the help command.  Giving help without input, gives a
 list of available commands:
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('help\n')
     Supported commands:
       hello -- Say hello
@@ -66,6 +70,8 @@ list of available commands:
 
 We can get detailed help by specifying a command name:
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('help help\n')
     Help for help:
     <BLANKLINE>
@@ -76,6 +82,8 @@ We can get detailed help by specifying a command name:
     <BLANKLINE>
     -> CLOSE
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('help hello\n')
     Help for hello:
     <BLANKLINE>
@@ -91,6 +99,8 @@ the connection.  In "interactive mode", the connection is not closed until
 the ``quit`` command is used.  This can be useful when accessing the monitor
 via telnet for diagnostics.
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('interactive\n')
     Interactive mode on.  Use "quit" To exit.
     >>> connection.test_input('help interactive\n')
@@ -136,6 +146,8 @@ Now we will use ``quit`` to close the connection.
 Finally, it's worth noting that exceptions will generate a
 traceback on the connection.
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('hello Jim 42\n') # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
