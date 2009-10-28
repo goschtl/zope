@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    package="van.testing"
+    >
+
+  <include package="zope.component" file="meta.zcml"/>
+
+  <!-- Test declaration so we can see if it was registered -->
+  <utility
+      name="test"
+      component=".tests.MARKER"
+      provides="zope.interface.Interface"
+      />
+
+  <utility zcml:condition="have extra"
+      name="test_extra"
+      component=".tests.MARKER"
+      provides="zope.interface.Interface"
+      />
+
+</configure>

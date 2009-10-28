@@ -1,0 +1,29 @@
+Using zope.testbrowser
+======================
+
+We can use the zope.testbrowser from wsgi_intercept:
+
+    >>> from wsgi_intercept.zope_testbrowser import WSGI_Browser as Browser
+    >>> browser = Browser()
+
+    >>> browser.open("http://localhost/")
+
+As we expect with the normal testbrowser, headers are sorted with the status first:
+
+    >>> print browser.headers
+    Status: 200 OK
+    Content-length: 586
+    Content-type: text/plain
+    X-Powered-By: WSGI
+    <BLANKLINE>
+
+XXX: the <BLANKLINE> above is a deviation from what happens with the testing
+     testbrowser, how to fix?
+
+Regression: Handle Errors header does not appear in wsgi environ
+----------------------------------------------------------------
+
+    >>> browser.handleErrors = False
+    >>> browser.open("http://localhost/")
+    >>> 'HTTP_X_ZOPE_HANDLE_ERRORS' in browser.contents.upper()
+    False

@@ -1,0 +1,33 @@
+Changes
+=======
+
+3.0.0 (2009-10-28)
+------------------
+
+- Add an option to have a zcml_features attribute on a zcml layer indicating
+  the features to load when loading the zcml.
+
+2.0.1 (2009-04-07)
+------------------
+
+- Allow users to specify the domain and port of the wsgi_intercept_layer by
+  adding those attributes to the class.
+- Fix testbrowser support a bit so that it performs more like
+  zope.testbrowser.testing.Browser.
+- Remove support for local component registrys (zope.site). This brings in the
+  whole ZODB as zope.site's tests currently depend on it.
+
+2.0.0 (2009-04-01)
+------------------
+
+- Remove dependencies by using zope.configuration.xmlconfig to setup zcml
+  rather than zope.app.appsetup.  This leaves out some security configuration
+  but the win from less dependencies is massive. In my tests, no tests had any
+  issues with this.
+- Add a wsgi_intercept layer and a functional_layer that combines both zcml
+  and wsgi_intercept layer.
+
+1.0.0 (2008-11-21)
+------------------
+
+- Initial Release
