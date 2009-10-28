@@ -76,13 +76,97 @@ The browser UI for editing principal preferences are available as view named
 Advanced usage
 --------------
 
-Things to describe:
+ZCML directive
+~~~~~~~~~~~~~~
 
-* all zcml directive arguments
-* security settings for preference groups
-* availability testing
-* custom preference groups classes
-* custom browser views for preference groups (including empty schema preference
-  group hint). 
+The ``z3ext:preferenceGroup`` ZCML directive has more arguments that can be
+used to make a more special preference group. Let's describe them all:
+
+ * id - The unique identifier of a preference group. Group hierarchy is organized
+   using dots in the ids (see above).
+
+ * for - An interface of principal objects that will have this preference group.
+   This allows preferences to be available only specific principal types.
+
+ * schema - Preference schema interface. By default, storable properties will be
+   created only for fields defined in this schema. It makes sense to use an
+   empty interface as the schema, in case you want the preference group to be
+   registered and provide custom data storage mechanism and browser views.
+
+ * title - Human-friendly translatable title of the preference group to be used
+   in menus and headings. 
+
+ * description - Human friendly translatable description of the preference group
+   to be used in UI.
+
+ * class - A mixin class for the preference group. The ZCML directive creates
+   a new class using ``z3ext.preferences.preference.PreferenceGroup`` as base
+   and mixing in custom class if given. It can be used to override behaviour
+   or implement some custom methods.
+
+ * provides - A list of additional interfaces that the preference group will
+   provide. Can be used to mark the preference group with marker interfaces,
+   for example to give access to special browser views.
+
+ * accesspermission - An id of permission that will be used for accessing fields
+   defined in schema for reading.
+
+ * permission - An id of permission that will be used for writing into fields
+   defined in schema.
+
+ * tests - A list of global functions that will be used for testing whether the
+   preference group is available. These functions should recieve one argument - 
+   the actual preference group.
+
+ * order - An order hint. The sub-groups will be sorted using this value, so
+   you can control the order of preference groups for UI.
+
+If you need more control over attribute access permissions for the preference
+group, you can use "require" and "allow" sub-directives with the same sematics
+as with standard zope "class" directive.
+
+
+Availability testing
+~~~~~~~~~~~~~~~~~~~~
+
+The preference group objects have the ``isAvailable`` method, as described in
+the IPreferenceGroup interface. It does checking whether the preference group is
+available in current conditions, so it can be hidden in UI for example.
+
+You can override this method in custom preference group class, but default
+implementation is fine in most cases. The default implementation of this method
+does check if the parent group available and then performs checking using "test"
+functions (see "tests" argument of the ZCML directive) and if either of them
+returns False value, the preference group won't be available.
+
+
+Custom browser views
+~~~~~~~~~~~~~~~~~~~~
+
+The default browser UI for a preference group is an edit form for fields defined
+in the group's schema, but you can override the view, simply registering own view
+for the preference group schema interface.
+
+This fact can be used if you want to create more complex preference group that,
+for example, does not contain any fields, but provides some other methods of
+changing principal-related data, or if you just want to place a special form
+in the user preferences tree in the UI. 
+
+
+Preference data storage
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The default preference group implementation (the ``z3ext.preferences.preference.PreferenceGroup``
+class) has the ``data`` property that is a per-principal persistent object where
+values of preference group fields are stored as simple attributes.
+
+That object is available via adapter lookup from (principal, preferencegroup)
+pair to the ``z3ext.preferences.interfaces.IDataStorage`` interface.
+
+The default adapter regitered uses principal annotation mechanism to store
+per-principal data (see ``z3ext.preferences.storage``), however you can provide
+your own adapter for specific types of principals and/or preference groups.
+
+
+
 * custom data storage adapters
- 
