@@ -29,26 +29,34 @@ class FakeStdout(object):
 
 debugger = fakeout = None
 
+def reset(connection):
+    global debugger
+    global fakeout
+
+    fakeout = FakeStdout(connection.connection)
+    debugger = pdb.Pdb(stdin=None, stdout=fakeout)
+    debugger.reset()
+    debugger.setup(sys._getframe(), None)
+
 
 def command(connection, *args):
     global debugger
     global fakeout
 
-    if args and args[0] == 'debug':
-        connection.write('the "debug" command is not supported\n')
-
-    if args and args[0] == 'quit':
-        debugger = fakeout = None
-        return zc.monitor.QUIT_MARKER
-
     # if we haven't set up a debugger yet, do so
     if debugger is None:
-        fakeout = FakeStdout(connection.connection)
-        debugger = pdb.Pdb(stdin=None, stdout=fakeout)
-        debugger.reset()
-        debugger.setup(sys._getframe().f_back, None)
+        reset(connection)
 
-    debugger.onecmd(' '.join(args))
+    # if the user wants us to rebuild the debugger, do it
+    if args and args[0] == 'reset':
+        reset(connection)
+    elif args and args[0] == 'debug':
+        connection.write('the "debug" command is not supported\n')
+    elif args and args[0] == 'quit':
+        debugger = fakeout = None
+        return zc.monitor.QUIT_MARKER
+    else:
+        debugger.onecmd(' '.join(args))
 
     connection.write(debugger.prompt)
     return zc.monitor.MORE_MARKER
