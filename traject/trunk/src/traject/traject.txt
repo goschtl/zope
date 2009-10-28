@@ -290,12 +290,15 @@ path according to the patterns registered until no longer
 possible. The rest of the the steps are not followed.
 
 The method consume will consume steps as far as possible, return the
-steps that weren't consumed yet, and the object it managed to find::
+steps that weren't consumed yet, those steps that were consumed, and
+the object it managed to find::
 
-  >>> unconsumed, last_obj = patterns.consume(root, 
+  >>> unconsumed, consumed, last_obj = patterns.consume(root, 
   ...       'departments/1/some_view', Default)
   >>> unconsumed
   ['some_view']
+  >>> consumed
+  ['departments', '1']
   >>> isinstance(last_obj, Default)
   True
   >>> last_obj.__name__
@@ -310,9 +313,11 @@ The method ``consume_stack`` does the same with a stack::
 
   >>> l = ['departments', '1', 'some_view']
   >>> l.reverse()
-  >>> unconsumed, last_obj = patterns.consume_stack(root, l, Default)
+  >>> unconsumed, consumed, last_obj = patterns.consume_stack(root, l, Default)
   >>> unconsumed
   ['some_view']
+  >>> consumed
+  ['departments', '1']
   >>> isinstance(last_obj, Default)
   True
   >>> last_obj.__name__

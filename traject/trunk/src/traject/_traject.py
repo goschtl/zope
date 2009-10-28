@@ -138,7 +138,7 @@ class Patterns(object):
         return self.resolve_stack(root, names, default_factory)
 
     def resolve_stack(self, root, stack, default_factory):
-        unconsumed, obj = self.consume_stack(root, stack, default_factory)
+        unconsumed, consumed, obj = self.consume_stack(root, stack, default_factory)
         if unconsumed:
             raise ResolutionError(
                 "Could not resolve path: %s" % '/'.join(reversed(stack)))
@@ -155,6 +155,7 @@ class Patterns(object):
         provided = (providedBy(root),)
         obj = root
         pattern = ()
+        consumed = []
         while stack:
             name = stack.pop()
             step_pattern = pattern + (name,)
@@ -182,7 +183,7 @@ class Patterns(object):
                 else:
                     # cannot find step or variable, so cannot resolve
                     stack.append(name)
-                    return stack, obj
+                    return stack, consumed, obj
             # now see about constructing the object
             factory = self._registry.lookup(provided, IFactory, pattern_str)
             if factory is None:
@@ -192,10 +193,11 @@ class Patterns(object):
             if obj is None:
                 stack.append(name)
                 # we cannot resolve to a factory that returns None
-                return stack, parent
+                return stack, consumed, parent
+            consumed.append(name)
             obj.__name__ = name
             obj.__parent__ = parent
-        return stack, obj
+        return stack, consumed, obj
 
     def locate(self, root, model, default):
         if hasattr(model, '__parent__') and model.__parent__ is not None:

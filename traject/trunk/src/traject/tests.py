@@ -141,10 +141,12 @@ class PatternsTestCase(unittest.TestCase):
         l = ['a', 'B', 'c', 'D']
         l.reverse()
 
-        unconsumed, obj = patterns.consume_stack(root, l, default)
+        unconsumed, consumed, obj = patterns.consume_stack(root, l, default)
 
         # have nothing left unconsumed
         self.assertEquals([], unconsumed)
+        # everything was consumed
+        self.assertEquals(['a', 'B', 'c', 'D'], consumed)
         
         # we see that the parents and names are correct
         self.assertEquals('D', obj.__name__)
@@ -188,10 +190,11 @@ class PatternsTestCase(unittest.TestCase):
         l = ['a', 'B', 'c']
         l.reverse()
         
-        unconsumed, obj = patterns.consume_stack(root, l, default)
+        unconsumed, consumed, obj = patterns.consume_stack(root, l, default)
 
         self.assertEquals([], unconsumed)
-    
+        self.assertEquals(['a', 'B', 'c'], consumed)
+        
         # we get a bunch of default objects
         self.assertEquals('c', obj.__name__)
         self.assert_(isinstance(obj, Default))
@@ -229,11 +232,12 @@ class PatternsTestCase(unittest.TestCase):
         l = ['b', 'c', 'd']
         l.reverse()
         
-        unconsumed, obj = patterns.consume_stack(root, l, default)
+        unconsumed, consumed, obj = patterns.consume_stack(root, l, default)
 
         self.assert_(obj is root)
         self.assertEquals(['d', 'c', 'b'], unconsumed)
-
+        self.assertEquals([], consumed)
+        
     def test_wrong_arguments(self):
         patterns = traject.Patterns()
         class Obj(object):
@@ -283,8 +287,11 @@ class PatternsTestCase(unittest.TestCase):
         patterns.register(Root, 'models/:id', factory)
         root = Root()
 
-        unconsumed, obj = patterns.consume(root, 'models/not_an_int', default)
+        unconsumed, consumed, obj = patterns.consume(root,
+                                                     'models/not_an_int',
+                                                     default)
         self.assertEquals(['not_an_int'], unconsumed)
+        self.assertEquals(['models'], consumed)
         self.assertEquals('models', obj.__name__)
         self.assert_(obj.__parent__ is root)
         
@@ -311,12 +318,13 @@ class PatternsTestCase(unittest.TestCase):
         patterns = self.get_multi_patterns()
         root = Root()
 
-        unconsumed, obj = patterns.consume(
+        unconsumed, consumed, obj = patterns.consume(
             root, u'departments/1/employees/10/index',
             default)
 
         self.assertEquals(['index'], unconsumed)
-        
+        self.assertEquals(['departments', '1', 'employees', '10'],
+                          consumed)
         self.assert_(isinstance(obj, Employee))
         self.assertEquals(u'1', obj.department_id)
         self.assertEquals(u'10', obj.employee_id)
@@ -334,10 +342,11 @@ class PatternsTestCase(unittest.TestCase):
         patterns = self.get_multi_patterns()
         root = Root()
     
-        unconsumed, obj = patterns.consume(
+        unconsumed, consumed, obj = patterns.consume(
             root, u'departments/1/index', default)
 
         self.assertEquals(['index'], unconsumed)
+        self.assertEquals(['departments', '1'], consumed)
         
         self.assert_(isinstance(obj, Department))
         self.assertEquals(u'1', obj.department_id)
