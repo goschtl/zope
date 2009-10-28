@@ -2,6 +2,11 @@
 Change History
 ==============
 
+0.2.0 (2009-10-28)
+------------------
+
+- Add the "MORE" mode so commands can co-opt user interaction
+
 0.1.2 (2008-09-15)
 ------------------
 

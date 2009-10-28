@@ -20,10 +20,10 @@ To see this, we'll create a hello plugin:
 
     >>> def hello(connection, name='world'):
     ...     """Say hello
-    ...     
+    ...
     ...     Provide a name if you're not the world.
     ...     """
-    ...     connection.write("Hi %s, nice to meet ya!\n" % name) 
+    ...     connection.write("Hi %s, nice to meet ya!\n" % name)
 
 and register it:
 
@@ -160,3 +160,51 @@ traceback on the connection.
    Closing the connection:
 
    >>> connection.test_close('test')
+
+
+Command loops
+-------------
+
+Using the "MORE" mode, commands can signal that they want to claim all future
+user input.  We'll implement a silly example to demonstrate how it works.
+
+Here's a command that implements a calculator.
+
+    >>> PROMPT = '.'
+    >>> def calc(connection, *args):
+    ...     if args and args[0] == 'quit':
+    ...         return zc.monitor.QUIT_MARKER
+    ...
+    ...     if args:
+    ...         connection.write(str(eval(''.join(args))))
+    ...         connection.write('\n')
+    ...
+    ...     connection.write(PROMPT)
+    ...     return zc.monitor.MORE_MARKER
+
+If we register this command...
+
+    >>> zope.component.provideUtility(calc,
+    ...     zc.monitor.interfaces.IMonitorPlugin, 'calc')
+
+...we can invoke it and we get a prompt.
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+    >>> connection.test_input('calc\n')
+    .
+
+If we then give it more input we get the result plus another prompt.
+
+    >>> connection.test_input('2+2\n')
+    4
+    .
+
+    >>> connection.test_input('4*2\n')
+    8
+    .
+
+Once we're done we can tell the calculator to let us go.
+
+    >>> connection.test_input('quit\n')
+    -> CLOSE
