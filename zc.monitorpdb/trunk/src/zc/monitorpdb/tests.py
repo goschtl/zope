@@ -11,32 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import datetime
-import unittest
-from zope.testing import doctest, setupstack
 
-def setUp(test):
+from zope.testing import doctest
+import re
+import zope.testing.renormalizing
 
-    class FauxDateTime:
+checker = zope.testing.renormalizing.RENormalizing([
+    (re.compile(r'^\s*\d+', re.MULTILINE), r'NN'),
+    (re.compile(r'.py\(\d+\)', re.MULTILINE), r'.py(NN)'),
+    ])
 
-        now = datetime.datetime(2008, 9, 5, 21, 10, 13)
-
-        @classmethod
-        def utcnow(self):
-            self.now += datetime.timedelta(seconds=1)
-            return self.now
-
-    datetime_orig = datetime.datetime
-    def restore():
-        datetime.datetime = datetime_orig
-
-    setupstack.register(test, restore)
-
-    datetime.datetime = FauxDateTime
 
 def test_suite():
     return doctest.DocFileSuite(
         'README.txt',
-        setUp=setUp,
-        tearDown=setupstack.tearDown,
+        checker=checker,
         optionflags=doctest.NORMALIZE_WHITESPACE)

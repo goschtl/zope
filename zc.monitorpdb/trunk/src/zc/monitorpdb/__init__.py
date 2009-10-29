@@ -20,9 +20,6 @@ class FakeStdout(object):
     def __init__(self, connection):
         self.connection = connection
 
-    def flush(self):
-        pass
-
     def write(self, *args):
         return self.connection.write(*args)
 
