@@ -1,0 +1,42 @@
+Change History
+**************
+
+0.3.1 (2009-10-29)
+==================
+
+Fixed a conflict-resolution bug (probably a class of bugs) involving
+events existing but unchanged in old and new states and not existing
+in committed state due to conflict resolution.
+
+
+0.3.0 (2008-05-10)
+==================
+
+Made the computation of length lazy.
+
+Removed evolution helper function and test, as they are no-longer needed.
+
+
+0.2.0 (2008-05-09)
+==================
+
+Added some processing state information as attributes of the queue object:
+
+``ICatalogQueue.__len__()``
+  Return the number of pending cataloging events.
+
+``ICatalogQueue.lastProcessedTime``
+  Time of the last successful processing.
+
+``ICatalogQueue.totalProcessed``
+  Total number of cataloging events processed.
+
+A new function, ``zc.catalogqueue.queue.addLengthSupport()``, has been added
+to help evolve instances created with ``zc.catalogqueue`` version 0.1.  Old
+instances must be evolved to be used with the new version.
+
+
+0.1.0 (2008-04-16)
+==================
+
+Initial release
