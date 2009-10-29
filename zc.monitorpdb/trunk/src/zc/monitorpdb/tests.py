@@ -35,9 +35,8 @@ def setUp(test):
     datetime.datetime = FauxDateTime
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt',
-            setUp=setUp, tearDown=setupstack.tearDown),
-        ))
-
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp,
+        tearDown=setupstack.tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE)
