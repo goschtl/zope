@@ -81,7 +81,9 @@ The SmartPrintNG server exposes several methods through XMLRPC::
         """
 
     def authenticate(username, password):
-        """ Log into the server. Returns an auth_token """
+        """ Log into the server. Returns an auth_token. authenticate()
+            must be called before calling any of the methods above.
+        """
 
     def ping():
         """ says 'pong' - or something similar """
