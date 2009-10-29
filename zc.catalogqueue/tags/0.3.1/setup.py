@@ -12,7 +12,7 @@
 #
 ##############################################################################
 name = 'zc.catalogqueue'
-version = '0.4dev'
+version = '0.3.1'
 
 import os
 from setuptools import setup, find_packages
