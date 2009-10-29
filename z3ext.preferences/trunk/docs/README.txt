@@ -80,7 +80,7 @@ ZCML directive
 ~~~~~~~~~~~~~~
 
 The ``z3ext:preferenceGroup`` ZCML directive has more arguments that can be
-used to make a more special preference group. Let's describe them all:
+used to make a more specific preference group. Let's describe them all:
 
 * id - The unique identifier of a preference group. Group hierarchy is organized
   using dots in the ids (see above).
