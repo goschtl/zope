@@ -195,3 +195,25 @@ When an object can't be found, a warning is logged:
       Couldn't find object for 0
 
     >>> handler.uninstall()
+
+Edgecase
+========
+
+If a "old" state has two 'ADDED' events, and the committed state processes the
+queue, and the "new" state modifies one of the objects marked for addition, the
+code marks the other for removal.
+
+    >>> from zc.catalogqueue.CatalogEventQueue import (
+    ...     CatalogEventQueue, ADDED, REMOVED, CHANGED, CHANGED_ADDED)
+    >>> cq = CatalogEventQueue()
+
+    >>> def resolve(old, committed, new):
+    ...     return sorted(cq._p_resolveConflict(
+    ...        {'_conflict_policy': 0, '_data': old},
+    ...        {'_conflict_policy': 0, '_data': committed},
+    ...        {'_conflict_policy': 0, '_data': new}
+    ...        )['_data'].items())
+
+    >>> resolve({1: (1, ADDED), 2: (1, ADDED)}, {},
+    ...         {1: (1, ADDED), 2: (3, REMOVED), 3: (1, ADDED)})
+    [(2, (3, 0)), (3, (1, 1))]

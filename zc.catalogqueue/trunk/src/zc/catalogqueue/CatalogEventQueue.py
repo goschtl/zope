@@ -215,7 +215,9 @@ class CatalogEventQueue(Persistent):
                         new = (0, antiEvent(old[1]))
                     elif new[1] is ADDED:
                         if policy == SAFE_POLICY:
-                            logger.error('Queue conflict on %s: ADDED on existing item' % uid)
+                            logger.error(
+                                'Queue conflict on %s: ADDED on existing item'
+                                % uid)
                             raise ConflictError
                         else:
                             if current and current[1] == REMOVED:
@@ -253,6 +255,11 @@ class CatalogEventQueue(Persistent):
                     continue
 
                 committed_data[uid] = new
+            else:
+                # Both old and new have this event so new didn't touch it.
+                # remove it from old so we don't treat it as undone below.
+                del oldstate_data[uid]
+
 
         # Now handle remaining events in old that weren't in new.
         # These *must* be undone events!
