@@ -125,6 +125,30 @@ If you need more control over attribute access permissions for the preference
 group, you can use "require" and "allow" sub-directives with the same sematics
 as with standard zope "class" directive.
 
+Full example::
+
+  <z3ext:preferenceGroup
+    id="profile"
+    for=".interfaces.IProfileAwarePrincipal"
+    schema=".interfaces.IProfile"
+    title="Profile"
+    description="Personal profile information such as full name, age, etc."
+    class=".profile.Profile"
+    provides=".interfaces.ISomeMarker"
+    accesspermission="zope.View"
+    permission="z3ext.ModifyPreference"
+    tests=".profile.isProfileAvailable"
+    order="1"
+    >
+
+    <allow attribute="fullName" />
+
+    <require
+      permission="yourproject.ChangePassword"
+      attributes="setPassword"
+      />
+
+  </z3ext:preferenceGroup>
 
 Availability testing
 ~~~~~~~~~~~~~~~~~~~~
@@ -166,3 +190,23 @@ pair to the ``z3ext.preferences.interfaces.IDataStorage`` interface.
 The default adapter regitered uses principal annotation mechanism to store
 per-principal data (see ``z3ext.preferences.storage``), however you can provide
 your own adapter for specific types of principals and/or preference groups.
+
+Here's a simple example of a custom data storage for a special type of
+principals and special type of preference group - profiles (we used them
+in the full ZCML directive example)::
+
+  class DataStorage(Persistent):
+     implements(IDataStorage)
+
+  @implementer(IDataStorage)
+  @adapter(IProfileAwarePrincipal, IProfile)
+  def getDataStorage(principal, preference):
+      store = root['profiles'] # some mapping where preferences can be stored
+      data = store.get(principal.id)
+      if data is None:
+          data = store[principal.id] = DataStorage()
+      return data
+
+Register it just like any other adapter::
+
+  <adapter factory=".getDataStorage" />
