@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2002-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 $Id$
@@ -59,7 +59,7 @@ class CatalogEventQueue(Persistent):
 
     CHANGED_ADDED -- Add object was added and subsequently changed.
                      This event is a consequence of the queue implementation.
-                     
+
     Note that, although we only keep track of the most recent
     event. there are rules for how the most recent event can be
     updated:
@@ -84,7 +84,7 @@ class CatalogEventQueue(Persistent):
 
     If we undo a transaction, we generate an anti-event. The anti
     event of ADDED id REMOVED, of REMOVED is ADDED, and of CHANGED is
-    CHANGED. 
+    CHANGED.
 
     Note that these rules represent heuristics that attempt to provide
     efficient and sensible behavior for most cases. They are not "correct" in
@@ -111,7 +111,7 @@ class CatalogEventQueue(Persistent):
       remove events.
 
     - Queue processing transactions always remove events.
-    
+
     """
 
     _conflict_policy = SAFE_POLICY
@@ -127,7 +127,7 @@ class CatalogEventQueue(Persistent):
 
     def __len__(self):
         return len(self._data)
-        
+
     def update(self, uid, etype):
         assert etype in EVENT_TYPES
         data = self._data
@@ -145,7 +145,7 @@ class CatalogEventQueue(Persistent):
             if ((current is ADDED or current is CHANGED_ADDED)
                 and etype is CHANGED):
                 etype = CHANGED_ADDED
-                
+
         else:
             delta = 1
             generation = 0
@@ -202,7 +202,7 @@ class CatalogEventQueue(Persistent):
             # Decide if this is a change
             old = oldstate_data.get(uid)
             current = committed_data.get(uid)
-            
+
             if new != old:
                 # something changed
 
@@ -211,7 +211,7 @@ class CatalogEventQueue(Persistent):
                     if new[0] < old[0]:
                         # This was an undo, so give the event the undo
                         # time and convert to an anti event of the old
-                        # (undone) event. 
+                        # (undone) event.
                         new = (0, antiEvent(old[1]))
                     elif new[1] is ADDED:
                         if policy == SAFE_POLICY:
@@ -222,7 +222,7 @@ class CatalogEventQueue(Persistent):
                                 new = current
                             else:
                                 new = (current[0]+1, CHANGED_ADDED)
-                            
+
 
                     # remove this event from old, so that we don't
                     # mess with it later.
@@ -258,7 +258,7 @@ class CatalogEventQueue(Persistent):
         # These *must* be undone events!
         for uid, old in oldstate_data.items():
             new = (0, antiEvent(old[1]))
-            
+
             # See above
             current = committed_data.get(uid)
             if current is not None:
