@@ -72,10 +72,16 @@
     <z3ext:resourceinclude
        name="humandatetime.js"
        type="javascript"
-       library="z3ext-formatter"
+       library="z3ext"
        require="jquery-plugins"
-       file="resources/humandatetime.js"
-       />
+       file="resources/humandatetime.js" />
+
+    <z3ext:resourceinclude
+       name="fancydatetime.js"
+       type="javascript"
+       library="z3ext"
+       require="jquery-plugins"
+       file="resources/fancydatetime.js" />
 
   </configure>
 

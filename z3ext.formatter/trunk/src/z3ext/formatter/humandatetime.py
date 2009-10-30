@@ -37,13 +37,13 @@ class HumanDatetimeFormatter(object):
                          'second': u'${value} second(s) ago',
                          },
                 'future': {'year': u'in ${value} year(s)',
-                         'month': u'in ${value} month(s)',
-                         'week': u'in ${value} week(s)',
-                         'day': u'in ${value} day(s)',
-                         'hour': u'in ${value} hour(s)',
-                         'minute': u'in ${value} minute(s)',
-                         'second': u'in ${value} second(s)',
-                         }}
+                           'month': u'in ${value} month(s)',
+                           'week': u'in ${value} week(s)',
+                           'day': u'in ${value} day(s)',
+                           'hour': u'in ${value} hour(s)',
+                           'minute': u'in ${value} minute(s)',
+                           'second': u'in ${value} second(s)',
+                           }}
 
     def __init__(self, request, *args):
         self.request = request

@@ -1,4 +1,4 @@
-var past_dictionary = {
+var formatter_past_dictionary = {
     '%s year(s) ago'  : '%s year(s) ago',
     '%s month(s) ago'  : '%s month(s) ago',
     '%s week(s) ago': '%s week(s) ago',
@@ -8,26 +8,26 @@ var past_dictionary = {
     '%s second(s) ago' : '%s second(s) ago'
 };
 
-var future_dictionary = {
-        '%s year(s) ago'  : '%s year(s) ago',
-        '%s month(s) ago'  : '%s month(s) ago',
-        '%s week(s) ago': '%s week(s) ago',
-        '%s day(s) ago' : '%s day(s) ago',
-        '%s hour(s) ago' : '%s hour(s) ago',
-        '%s minute(s) ago' : '%s minute(s) ago',
-        '%s second(s) ago' : '%s second(s) ago'
-    };
+var formatter_future_dictionary = {
+    '%s year(s) ago'  : '%s year(s) ago',
+    '%s month(s) ago'  : '%s month(s) ago',
+    '%s week(s) ago': '%s week(s) ago',
+    '%s day(s) ago' : '%s day(s) ago',
+    '%s hour(s) ago' : '%s hour(s) ago',
+    '%s minute(s) ago' : '%s minute(s) ago',
+    '%s second(s) ago' : '%s second(s) ago'
+};
 
-function setFormatter(el)
+function setHumandatetimeFormatter(el)
 {
     var time = new Date();
     time.setTime(Date.parse(el.attr('value')));
     var new_time = new Date();
     delta = new_time-time;
-    $.i18n.setDictionary(past_dictionary);
+    $.i18n.setDictionary(formatter_past_dictionary);
     if (delta < 0) {
         delta = Math.abs(delta);
-        $.i18n.setDictionary(future_dictionary)
+        $.i18n.setDictionary(formatter_future_dictionary)
     }
     years = Math.floor(delta/(365*24*60*60*1000.0));
     months = Math.floor(delta/(30*24*60*60*1000.0));
@@ -62,7 +62,7 @@ $(document).ready(function() {
     {
         var el = $(elems[i]);
         if (!el.attr('processed')) {
-            setFormatter(el);
+            setHumandatetimeFormatter(el);
         }
     }
 });

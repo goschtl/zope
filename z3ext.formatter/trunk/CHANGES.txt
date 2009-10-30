@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-1.4.1 (Unreleased)
+1.4.1 (2009-10-30)
 ------------------
 
-- Add `humandatetime` formatter js implementation
+- Added 'fancyDatetime' formatter js implementation
+
+- Added `humandatetime` formatter js implementation
 
 
 1.4.0 (2009-08-11)
