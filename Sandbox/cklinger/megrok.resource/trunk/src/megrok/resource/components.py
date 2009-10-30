@@ -34,6 +34,9 @@ class Library(DirectoryResource):
 
     @classmethod
     def get_resources(cls, name=None):
+        """ cls._resources is a dict with the name of the inclusion as key
+            and the instance of a ResourceInclusion as value
+        """    
         if cls._resources == None:
             cls._ri_keys, values = inclusions(cls)
             cls._resources = dict(zip(cls._ri_keys, values))
@@ -41,6 +44,9 @@ class Library(DirectoryResource):
             return [cls._resources[name],]
         return [cls._resources[name] for name in cls._ri_keys]
 
+    @classmethod
+    def get(cls, value):
+        return cls.get_resources(value)[0]
 
 @grok.adapter(Library)
 @grok.implementer(ILibraryUrl)
