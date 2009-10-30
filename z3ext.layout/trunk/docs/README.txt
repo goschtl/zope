@@ -65,6 +65,16 @@ When accessed, this pagelet will be rendered using default unnamed layout, or
 if layout can not be found, it will be rendered without any layout. We'll
 talk about layouts a bit later.
 
+The template variables available in pagelet's templates are the same as with
+standard zope view templates (using ``ViewPageTemplateFile`` class from the
+``zope.app.pagetemplate`` package):
+
+* ``context`` - the context object
+* ``request`` - the request object
+* ``view`` - the view object that uses this template
+* ``template`` - the template object (for accessing macros for example)
+* ``nothing`` - the None object
+
 
 Providing a template and a class
 ++++++++++++++++++++++++++++++++
@@ -314,10 +324,30 @@ sub-sub-layouts and so on.
   or content object, adding your own page elements or changing existing ones.
 
 
+Layout template variables
++++++++++++++++++++++++++
+
+In addition to standard view template variables (context, request, view,
+template, nothing), layout templates has additional variables:
+
+* ``layout`` - the layout object which is similar to "view objects", but used for
+  layouts. The custom view objects are described in the "Advanced usage" part
+  of this document.
+
+* ``mainview`` - the original pagelet that is requested the layout. In case of
+  nested layouts, the "view" variable points to a sub-layout, so if you want to
+  access the real pagelet, use this variable.
+
+* ``maincontext`` - ???
+
+* ``layoutcontext`` - ???
+
 Advanced usage
 --------------
 
 TODO:
 
+* describe location-aware layout querying
+* describe "pagelet" publisher and tal expression
 * full description of ZCML directives: pagelet, layout, pageletType
 * additional/custom layout logic (specifying mixin class for layouts).
