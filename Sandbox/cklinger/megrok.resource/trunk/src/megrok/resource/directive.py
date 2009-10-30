@@ -2,8 +2,10 @@ import martian
 from martian import util
 from martian.error import GrokImportError
 
+
 def default_list(factory, module=None, **data):
     return []
+
 
 def default_library_name(factory, module=None, **data):
     return factory.__name__.lower()

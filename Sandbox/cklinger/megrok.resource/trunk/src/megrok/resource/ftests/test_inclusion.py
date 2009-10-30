@@ -7,8 +7,20 @@ Setup
 -----
 
   >>> from zope.app.testing.functional import getRootFolder
+  >>> from zope.app.container import btree
+  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.app.component.hooks import setSite
+
   >>> root = getRootFolder()
-  >>> root['app'] = grok.Application()
+  >>> root['app'] = Application()
+
+Our application has to be a Site to access the right url for the inclusions
+
+  >>> root['app'].setSiteManager(LocalSiteManager(root['app']))
+  >>> setSite(root['app'])
+  >>> root['app']
+  <megrok.resource.ftests.test_inclusion.Application object at ...>
+
 
 ResourceDirectory
 -----------------
@@ -71,15 +83,26 @@ Include All Inclusions
     </body>
   </html> 
 """
-import grok
+
+
+import grokcore.component as grok
+import grokcore.view as view
 
 from zope.interface import Interface
 from megrok.resource import Library, include, inclusion
 from hurry.resource import ResourceInclusion
 
+from zope.app.container import btree
+
+from zope.app.component.site import SiteManagerContainer
+
+#class Application(btree.BTreeContainer):
+class Application(SiteManagerContainer):
+    """ Sample Application """
+
 
 class Styles(Library):
-    grok.path('css')
+    view.path('css')
     grok.name('styles')
     
     inclusion(name='JS', file='a.js')
@@ -87,22 +110,22 @@ class Styles(Library):
     inclusion(name='CSS', file='b.css', bottom=True)
 
 
-class Simple(grok.View):
+class Simple(view.View):
     grok.context(Interface)
     include(Styles, 'JS')
-    template = grok.PageTemplateFile('templates/myview.pt')
+    template = view.PageTemplateFile('templates/myview.pt')
 
 
-class Advanced(grok.View):
+class Advanced(view.View):
     grok.context(Interface)
     include(Styles, 'JS')
     include(Styles, 'JSBottom', bottom=True)
-    template = grok.PageTemplateFile('templates/myview.pt')
+    template = view.PageTemplateFile('templates/myview.pt')
 
 
-class All(grok.View):
+class All(view.View):
     grok.context(Interface)
-    template = grok.PageTemplateFile('templates/myview.pt')
+    template = view.PageTemplateFile('templates/myview.pt')
     include(Styles)
 
 

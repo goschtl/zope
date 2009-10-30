@@ -25,7 +25,8 @@ setup(name='megrok.resource',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'grok',
+          'grokcore.component',
+          'grokcore.view',
 	  'hurry.zoperesource',
           # -*- Extra requirements: -*-
       ],
