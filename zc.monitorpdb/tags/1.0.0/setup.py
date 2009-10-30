@@ -23,7 +23,7 @@ def read(name):
 
 setuptools.setup(
     name = 'zc.monitorpdb',
-    version = '0',
+    version = '1.0.0',
     author = 'Benji York',
     author_email = 'benji@zope.com',
     description = 'zc.monitor plugin to debug running processes',
