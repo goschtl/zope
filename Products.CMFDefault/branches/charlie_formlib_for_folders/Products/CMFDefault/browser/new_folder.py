@@ -23,7 +23,8 @@ from Products.CMFDefault.exceptions import zExceptions_Unauthorized
 from Products.CMFDefault.permissions import ListFolderContents
 from Products.CMFDefault.permissions import ManageProperties
 from Products.CMFDefault.utils import Message as _
-from Products.CMFDefault.formlib.form import ContentEditFormBase
+from Products.CMFDefault.formlib.form import _EditFormMixin
+from Products.Five.formlib.formbase import PageForm
 
 from utils import ViewBase
 from utils import decode
@@ -250,7 +251,7 @@ class BatchViewBase(ViewBase):
         return self.request.form.get('SearchableText')       
 
 
-class ContentsView(BatchViewBase, ContentEditFormBase):
+class ContentsView(BatchViewBase, _EditFormMixin, PageForm):
     """Folder contents view"""
     
     template = ViewPageTemplateFile('templates/contents.pt')
