@@ -280,6 +280,7 @@ class Handler:
         self.queue = []
         self.messages = {}
         self.times = handlers.times
+        self.active = handlers.active
         self.errtimes = handlers.errtimes
         self.lock = threading.Lock()
         zc.ngi.async.connect(addr, self)
@@ -342,6 +343,7 @@ class Handler:
             #    (v[0], v[2]) for v in self.messages.values()
             #    ], elapsed
             self.handlers.replies += 1
+            self.active.remove(self.session)
             if (isinstance(ret, tuple)
                 and len(ret) == 2
                 and isinstance(ret[1], Exception)
@@ -376,6 +378,7 @@ class Handler:
                 #    (v[0], v[2]) for v in self.messages.values()]
                 self.messages[self.msgid] = op, args, time.time()
                 self.queueing = True
+                self.active.add(self.session)
 
             self.connection.write(cPickle.dumps((self.msgid, async, op, args)))
 
@@ -389,6 +392,7 @@ class Handlers:
     def __init__(self):
         self.errtimes = {}
         self.times = {}
+        self.active = set()
 
 def parse_addr(addr):
     addr = addr.split(':')
@@ -485,9 +489,10 @@ def main(args=None):
         lastnow = now
         lasttt = tt
         work = nt + nr + handlers.calls + handlers.async
-        print '=== top', time.ctime(), nt, ZODB.TimeStamp.TimeStamp(
-            time_stamp(tt))
-        print '       ', handlers.connected, handlers.calls, handlers.replies,
+        print nt, time.strftime('%H:%M:%S', time.localtime(time.time())),
+        print ZODB.TimeStamp.TimeStamp(time_stamp(tt)),
+        print handlers.connected, len(handlers.active), handlers.calls,
+        print handlers.replies,
         print handlers.errors, handlers.async, pending, speed, speed1
         while logrecord[1] < tt:
             ni += 1

@@ -21,6 +21,8 @@ install_requires = [
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
+[console_scripts]
+replay = zc.zeoinputlog.replay:main
 """
 
 from setuptools import setup
