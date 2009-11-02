@@ -5,7 +5,7 @@ long_description = (open("README.txt").read()
                     open("CHANGES.txt").read())
 
 setup(name='megrok.menu',
-      version='0.3',
+      version='0.4dev',
       description="Grok extension to configure browser menus",
       long_description=long_description,
       classifiers=['Programming Language :: Python',

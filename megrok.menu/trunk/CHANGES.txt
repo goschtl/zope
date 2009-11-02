@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.4 (unreleased)
+----------------
+* ...
+
+
 0.3 (2009-11-02)
 ----------------
 * Added the support of the grokcore.viewlet 'order' directive to
