@@ -40,6 +40,7 @@ class Recipe(object):
                 self.buildout['buildout']['parts-directory'], self.name))
         extras = self.options.get('extras', 'false')
         self.extras = extras.lower() in ('1', 'true', 'yes')
+        self.formats = self.options.get('formats', 'svg').split()
 
     def install(self):
         options = self.options
@@ -50,6 +51,7 @@ class Recipe(object):
 
         variants = options.get('variants', 'base tred scc')
         variants = [v.strip() for v in variants.split()]
+
 
         def matcher(names, patterns):
             names = set(names)
@@ -96,6 +98,7 @@ class Recipe(object):
                 name=self.name,
                 path=self.output,
                 variants=variants,
+                formats=self.formats,
                 extras=self.extras,
                 exclude = self.exclude,
                 re_exclude = self.re_exclude,
