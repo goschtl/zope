@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-# XXX Do we really want to check in?
 # What happens if we run the fix script but no changes are there? (E.g. due to
 # a re-run? IN this case we should also  not commit (check output of svn
 # stat?)
@@ -40,12 +39,10 @@ __EOT__
 function fix_one() {
     local url="$1"
     local tag="$2"
-    local workdir="${PROJECT}-${tag}-copyrightfix"
+    local workdir="${PROJECT}-copyrightfix/${tag}"
     echo
     echo "Fixing ${url}"
-    if [[ -a ${workdir} ]]; then
-        echo "Working directory already exists, skipping checkout."
-    else
+    if [[ ! -a ${workdir} ]]; then
         svn -q co ${url} ${workdir}
     fi
     ${FIXSCRIPT} --owner "Zope Foundation and Contributors." ${workdir}
@@ -55,8 +52,14 @@ function fix_one() {
         egrep --color=never -niIr "Copyright \(c\).*Zope Corporation" ${workdir}
         return
     fi
-    svn -q commit ${workdir} \
-        -m "Updating copyright header after transfer of ownership to the Zope Foundation"
+    local changes=$(svn stat ${workdir}|egrep "^M"|wc -l)
+    if [[ $changes -gt 0 ]]; then
+        echo "Changes applied successfully, committing..."
+        svn -q commit ${workdir} \
+            -m "Updating copyright header after transfer of ownership to the Zope Foundation"
+    else
+        echo "No changes needed."
+    fi
     rm -rf ${workdir}
 }
 
@@ -91,3 +94,8 @@ fix_one "${BASEURL}/trunk" "trunk"
 for branch in $(choose_branches); do
     fix_one "${BASEURL}/branches/${branch}" "${branch}"
 done
+
+workingdirs=$(ls ${PROJECT}-copyrightfix)
+if [[ -z $workingdirs ]]; then
+    rm -r ${PROJECT}-copyrightfix
+fi
