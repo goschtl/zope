@@ -83,16 +83,18 @@ Let's now render the page. Note the output doesn't contain the layout template:
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
         <div class="z-form-help"></div>
-        <div><input type="text" id="form-widgets-name"
-                    name="form.widgets.name"
-                    class="text-widget required textline-field" value="" />
+        <div>
+           <input id="form-widgets-name" name="form.widgets.name"
+                  class="text-widget required textline-field"
+                  value="" type="text" />
         </div>
       </div> <div class="z-form-field">
         <label for="form-widgets-age" title="The person's age.">Age</label>
         <div class="z-form-help">The person's age.</div>
-        <div><input type="text" id="form-widgets-age"
-                    name="form.widgets.age" class="text-widget int-field"
-                    value="20" />
+        <div>
+           <input id="form-widgets-age" name="form.widgets.age"
+                  class="text-widget int-field" value="20"
+                  type="text" />
         </div>
       </div>
     </div>
@@ -105,18 +107,16 @@ Let's now render the page. Note the output doesn't contain the layout template:
           Short Name is part of the item's web address.
         </div>
         <div>
-          <input type="text" name="add_input_name"
-                 id="add_input_name" />
+          <input type="text" name="add_input_name" id="add_input_name" />
         </div>
       </div>
       <span>
-        <input type="submit" id="form-buttons-add"
-           name="form.buttons.add"
-           class="z-form-addbutton button-field" value="Add" />
-        <input type="submit" id="form-buttons-cancel"
-           name="form.buttons.cancel"
-           class="z-form-cancelbutton button-field"
-           value="Cancel" />
+        <input id="form-buttons-add" name="form.buttons.add"
+           class="z-form-addbutton button-field" value="Add"
+           type="submit" />
+        <input id="form-buttons-cancel" name="form.buttons.cancel"
+           class="z-form-cancelbutton button-field" value="Cancel"
+           type="submit" />
       </span>
     </div>
   </form></div>
@@ -134,13 +134,14 @@ We have different renderer for hidden widgets
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
         <div class="z-form-help"></div>
-        <div><input type="text" id="form-widgets-name"
-             name="form.widgets.name"
-             class="text-widget required textline-field" value="" />
+        <div>
+          <input id="form-widgets-name" name="form.widgets.name"
+             class="text-widget required textline-field"
+             value="" type="text" />
         </div>
-      </div> <label style="display: none;" for="form-widgets-age" title="The person's age.">Age</label><input type="hidden" id="form-widgets-age"
-             name="form.widgets.age" class="hidden-widget"
-             value="20" />
+      </div> <label style="display: none;" for="form-widgets-age" title="The person's age.">Age</label>
+         <input id="form-widgets-age" name="form.widgets.age"
+             value="20" class="hidden-widget" type="hidden" />
       </div>
       <div class="z-form-controls">
         <hr />
@@ -155,13 +156,12 @@ We have different renderer for hidden widgets
           </div>
        </div>
       <span>
-        <input type="submit" id="form-buttons-add"
-           name="form.buttons.add"
-           class="z-form-addbutton button-field" value="Add" />
-        <input type="submit" id="form-buttons-cancel"
-           name="form.buttons.cancel"
+        <input id="form-buttons-add" name="form.buttons.add"
+           class="z-form-addbutton button-field" value="Add"
+           type="submit" />
+        <input id="form-buttons-cancel" name="form.buttons.cancel"
            class="z-form-cancelbutton button-field"
-           value="Cancel" />
+           value="Cancel" type="submit" />
       </span>
     </div>
     </form></div>

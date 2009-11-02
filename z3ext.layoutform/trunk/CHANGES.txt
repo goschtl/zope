@@ -5,6 +5,8 @@ CHANGES
 1.6.1 (Unreleased)
 ------------------
 
+- Update tests for z3c.form 2.2
+
 
 1.6.0 (2009-08-11)
 ------------------
