@@ -17,6 +17,7 @@ $Id:$
 """
 
 import os
+import sys
 import string
 import shutil
 import zc.buildout
@@ -137,6 +138,10 @@ class ServiceSetup:
         return serviceName
 
     def install(self):
+        if sys.platform != 'win32':
+            print "winservice: Not a windows platform, doing nothing"
+            return []
+
         options = self.options
 
         # setup service name
