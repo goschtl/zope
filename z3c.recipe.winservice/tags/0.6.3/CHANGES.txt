@@ -1,0 +1,49 @@
+=======
+CHANGES
+=======
+
+Version 0.6.3 (2009-11-02)
+--------------------------
+
+- do nothing on a non windows platform instead of failing
+
+Version 0.6.2 (2009-05-13)
+--------------------------
+
+- Set current dir for CreateProcess to INSTANCE_HOME otherwise pkg_resources will
+  be pissed (in a combination with paster)
+
+Version 0.6.1 (2009-05-12)
+--------------------------
+
+- kill off pythonw.exe - it just causes problems when something is
+  written to stdout
+
+- Use python.exe in debug mode -- it will display/log exceptions
+
+
+Version 0.6.0 (2009-05-10)
+--------------------------
+
+- Added debug option to log exceptions for totally misbehaving scripts
+
+- Slight changes to service manager
+
+- virtualenv creates no pythonw.exe -- fallback to python.exe
+
+- tested on winXP pro workstation:
+  - from service manager:
+    - service start: OK
+    - service stop: OK
+    - service restart: OK
+  - net
+    - net start: OK
+    - net stop: OK
+  - from instance:
+    - ``ZMI restart``: OK (restarts)
+    - task manager kill ``python.exe``: OK (starts again)
+
+Version 0.5.0 (2008-04-12)
+--------------------------
+
+- Initial Release
