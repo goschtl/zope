@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-Version 0.7.0 (unreleased)
+Version 0.6.3 (2009-11-02)
 --------------------------
 
-- ...
+- do nothing on a non windows platform instead of failing
 
 Version 0.6.2 (2009-05-13)
 --------------------------
