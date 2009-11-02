@@ -1,10 +1,15 @@
 function setFancydatetimeFormatter(el)
 {
-    var time = new Date();
-    var value = el.attr('value');
-    time.setTime(Date.parse(value));
-    var new_time = new Date();
-    delta = new_time-time;
+    var date = new Date();
+    date.setTime(Date.parse(el.text()));
+    date.setHours(0);
+    date.setMinutes(0);
+
+    var now = new Date();
+    now.setHours(23);
+    now.setMinutes(59);
+
+    delta = now-date;
     if (delta < 0) {
         delta = Math.abs(delta);
     }
@@ -12,12 +17,10 @@ function setFancydatetimeFormatter(el)
     months = Math.floor(delta/(30*24*60*60*1000.0));
     weeks = Math.floor(delta/(7*24*60*60*1000.0));
     days = Math.floor(delta/(24*60*60*1000.0));
-    hours = Math.floor(delta/(60*60*1000.0));
-    minutes = Math.floor(delta/(60*1000.0));
 
     var res;
 
-    if (!years && !months && !weeks && days == 1) {
+    if (!years & !months & !weeks & days == 1) {
         res = 'Yesterday at ' + el.attr('time');
 
     } else if (!years & !months & !weeks & days == 0) {

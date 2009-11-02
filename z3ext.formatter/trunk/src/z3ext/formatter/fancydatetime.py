@@ -52,43 +52,11 @@ class FancyDatetimeFormatter(object):
 
         value = value.astimezone(tz)
 
-        d1 = datetime.now(utc).date()
-        d2 = value.astimezone(utc).date()
-
-        delta = d1 - d2
-
         fdate = unicode(value.strftime(str(getattr(configlet,'date_'+self.tp))))
         ftime = unicode(value.strftime(str(getattr(configlet,'time_'+self.tp))))
-
-        if delta.days == 0:
-            format = str(getattr(configlet, 'time_'+self.tp))
-
-            formattedvalue = translate(
-                u'Today at ${value}', 'z3ext.formatter',
-                mapping={'value': value.strftime(format)})
-            return u'<span class="z3ext-formatter-fancydatetime" date="%s" time="%s" value="%s">%s</span>' \
-                % (fdate, ftime, value.strftime('%B %d, %Y %H:%M:%S %z'),
-                   formattedvalue)
-
-        if delta.days == 1:
-            format = str(getattr(configlet, 'time_'+self.tp))
-
-            formattedvalue = translate(
-                u'Yesterday at ${value}', 'z3ext.formatter',
-                mapping={'value': value.strftime(format)})
-
-            return u'<span class="z3ext-formatter-fancydatetime" date="%s" time="%s" value="%s">%s</span>' \
-                % (fdate, ftime, value.strftime('%B %d, %Y %H:%M:%S %z'),
-                   formattedvalue)
-
-        format = '%s %s'%(
-            getattr(configlet, 'date_'+self.tp),
-            getattr(configlet, 'time_'+self.tp))
-
-        formatted = unicode(value.strftime(str(format)))
-
-        return u'<span class="z3ext-formatter-fancydatetime" date="%s" time="%s" value="%s">%s</span>' \
-            % (fdate, ftime, value.strftime('%B %d, %Y %H:%M:%S %z'), formatted)
+ 
+        return u'<span class="z3ext-formatter-fancydatetime" date="%s" time="%s">%s</span>' \
+            % (fdate, ftime, value.strftime('%B %d, %Y %H:%M:%S %z'))
 
 
 
