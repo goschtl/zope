@@ -20,7 +20,7 @@ import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
-from zope.app.component.interfaces import IPossibleSite
+from zope.location.interfaces import IPossibleSite
 from zope import interface, component
 
 from grokcore.component.interfaces import IContext
@@ -34,21 +34,21 @@ from grokcore.site.components import BaseSite
 import grokcore.view
 import grokcore.security
 
-from five.grok.interfaces import IFiveGrokView
-
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
-    as BaseViewPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
 from Products.Five.viewlet.manager import ViewletManagerBase as \
     ZopeTwoBaseViewletManager
+from zope.pagetemplate.pagetemplate import PageTemplate as ZopePageTemplate
+
 from Products.PageTemplates.Expressions import SecureModuleImporter
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
 
 import Acquisition
+from AccessControl import getSecurityManager
+from Acquisition import aq_get
 
 
 class Model(SimpleItem):
@@ -65,93 +65,66 @@ class Container(Folder):
     interface.implements(IAttributeAnnotatable, IContext)
 
 
-class Site(BaseSite):
-    interface.implements(IAttributeAnnotatable, IContext, IPossibleSite)
+class Site(Model, BaseSite):
+    interface.implements(IPossibleSite)
 
 
 class LocalUtility(SimpleItem):
     pass
 
 
-class View(grokcore.view.View, Acquisition.Explicit):
+class View(grokcore.view.View):
+    martian.baseclass()
 
-    interface.implements(IFiveGrokView)
-
-    def __init__(self, *args):
-        super(View, self).__init__(*args)
-        if not (self.static is None):
-            # static should be wrapper correctly with acquisition,
-            # otherwise you will not be able to compute URL for
-            # resources.
-            self.static = self.static.__of__(self)
-
-    # We let getPhysicalPath to be acquired. This make static URL's
-    # work, and prevent us to inherit from Acquisition.Implicit
-    getPhysicalPath = Acquisition.Acquired
-
-
-# TODO: This should probably move to Products.Five.browser
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
     def pt_getEngine(self):
         return getEngine()
 
-    def pt_getContext(self):
-        try:
-            root = self.getPhysicalRoot()
-        except AttributeError:
-            try:
-                root = self.context.getPhysicalRoot()
-            except AttributeError:
-                root = None
+    def pt_getContext(self, instance, request=None, **kw):
+        namespace = super(ViewAwareZopePageTemplate, self).pt_getContext(**kw)
+        namespace['request'] = request
+        namespace['view'] = instance
+        namespace['context'] = context = instance.context
+        namespace['views'] = ViewMapper(context, request)
 
-        view = self._getContext()
-        here = Acquisition.aq_inner(self.context)
+        # get the root
+        obj = context
+        root = None
+        meth = aq_get(obj, 'getPhysicalRoot', None)
+        if meth is not None:
+            root = meth()
 
-        request = getattr(root, 'REQUEST', None)
-        c = {'template': self,
-             'here': here,
-             'context': here,
-             'container': here,
-             'nothing': None,
-             'options': {},
-             'root': root,
-             'request': request,
-             'modules': SecureModuleImporter,
-             }
-        if view is not None:
-            c['view'] = view
-            c['views'] = ViewMapper(here, request)
+        namespace.update(here=obj,
+                         # philiKON thinks container should be the view,
+                         # but BBB is more important than aesthetics.
+                         container=obj,
+                         root=root,
+                         modules=SecureModuleImporter,
+                         traverse_subpath=[],  # BBB, never really worked
+                         user = getSecurityManager().getUser())
+        return namespace
 
-        if hasattr(self, 'pt_grokContext'):
-            c.update(self.pt_grokContext)
-
-        return c
-
-
-class ViewPageTemplateFile(BaseViewPageTemplateFile):
-
-    def pt_getContext(self):
-        c = super(ViewPageTemplateFile, self).pt_getContext()
-        if hasattr(self, 'pt_grokContext'):
-            c.update(self.pt_grokContext)
-
-        return c
 
 class ZopeTwoPageTemplate(PageTemplate):
 
     def setFromString(self, string):
-        self._template = ViewAwareZopePageTemplate(id=None, text=string)
+        zpt = ViewAwareZopePageTemplate()
+        if martian.util.not_unicode_or_ascii(string):
+            raise ValueError("Invalid page template. Page templates must be "
+                             "unicode or ASCII.")
+        zpt.write(string)
+        self._template = zpt
 
     def setFromFilename(self, filename, _prefix=None):
         self._template = ViewPageTemplateFile(filename, _prefix)
 
     def render(self, view):
         namespace = self.getNamespace(view)
-        template = self._template.__of__(view)
-        template.pt_grokContext = namespace
-        return template()
+        template = self._template
+        namespace.update(template.pt_getContext(view, view.request))
+        return template.pt_render(namespace)
 
 
 class ZopeTwoPageTemplateFile(ZopeTwoPageTemplate):
@@ -198,18 +171,13 @@ class GrokForm(BaseGrokForm):
     def __init__(self, *args):
         super(GrokForm, self).__init__(*args)
         self.__name__ = self.__view_name__
-        # super seems not to work correctly since this is needed again.
-        self.static = component.queryAdapter(
-            self.request, interface.Interface,
-            name = self.module_info.package_dotted_name)
-        if not (self.static is None):
-            self.static = self.static.__of__(self)
 
 
 class Form(GrokForm, formbase.PageForm, View):
 
     martian.baseclass()
     template = default_form_template
+
 
 class AddForm(GrokForm, formbase.AddForm, View):
 
@@ -240,15 +208,6 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
 
     martian.baseclass()
 
-    def __init__(self, context, request, view):
-        super(ViewletManager, self).__init__(context, request, view)
-        if not (self.static is None):
-            # XXX See View
-            self.static = self.static.__of__(self)
-
-    # XXX See View
-    getPhysicalPath = Acquisition.Acquired
-
     def filter(self, viewlets):
         # XXX Need Zope 2 filter
         return ZopeTwoBaseViewletManager.filter(self, viewlets)
@@ -257,16 +216,3 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
         # XXX Need Zope 2 __getitem__
         return ZopeTwoBaseViewletManager.__getitem__(self, key)
 
-
-class Viewlet(BaseViewlet, Acquisition.Explicit):
-
-    martian.baseclass()
-
-    def __init__(self, context, request, view, manager):
-        super(Viewlet, self).__init__(context, request, view, manager)
-        if not (self.static is None):
-            # XXX See View
-            self.static = self.static.__of__(self)
-
-    # XXX See View
-    getPhysicalPath = Acquisition.Acquired

@@ -2,18 +2,14 @@
   >>> from five.grok.ftests.site.local_site import *
   >>> universe = getRootFolder()
 
-  >>> universe._setObject("earth", World(id="earth"))
-  'earth'
-  >>> from zope.app.component import interfaces
+  >>> universe["earth"] = World(id="earth")
+  >>> from zope.location import interfaces
   >>> from zope.interface.verify import verifyObject
   >>> verifyObject(interfaces.ISite, universe.earth)
   True
 
-  >>> from zope.app.component.site import setSite
+  >>> from zope.site.hooks import setSite
   >>> setSite(universe.earth)
-
-  >>> universe.earth.getSiteManager()
-  <PersistentComponents ...>
 
   >>> from zope import component
   >>> manager = component.getUtility(IEnergyManager)

@@ -16,7 +16,7 @@ from zope.traversing.browser import absoluteurl
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from five.grok.interfaces import IFiveGrokView
+from grokcore.view.interfaces import IGrokView
 
 from Acquisition import aq_parent, aq_inner
 
@@ -26,7 +26,7 @@ from grokcore import component as grok
 
 class ViewAbsoluteURL(absoluteurl.AbsoluteURL, grok.MultiAdapter):
 
-    grok.adapts(IFiveGrokView, IBrowserRequest)
+    grok.adapts(IGrokView, IBrowserRequest)
     grok.provides(IAbsoluteURL)
 
     def _obj(self):

@@ -27,7 +27,7 @@ from grokcore.view.meta.directoryresource import _get_resource_path
 from martian.error import GrokError
 
 from Products.Five.security import protectClass, protectName
-from Globals import InitializeClass as initializeClass
+from App.class_init import InitializeClass as initializeClass
 
 import os.path
 
@@ -84,41 +84,41 @@ def _register_resource(config, resource_path, name, layer):
     return True
 
 
-class DirectoryResourceGrokker(martian.ClassGrokker):
-    martian.component(components.ZopeTwoDirectoryResource)
+# class DirectoryResourceGrokker(martian.ClassGrokker):
+#     martian.component(components.ZopeTwoDirectoryResource)
 
-    martian.directive(grokcore.view.name, default=None)
-    martian.directive(grokcore.view.path)
-    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+#     martian.directive(grokcore.view.name, default=None)
+#     martian.directive(grokcore.view.path)
+#     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
 
-    def grok(self, name, factory, module_info, **kw):
-        # Need to store the module info object on the directory resource
-        # class so that it can look up the actual directory.
-        factory.module_info = module_info
-        return super(DirectoryResourceGrokker, self).grok(
-            name, factory, module_info, **kw)
+#     def grok(self, name, factory, module_info, **kw):
+#         # Need to store the module info object on the directory resource
+#         # class so that it can look up the actual directory.
+#         factory.module_info = module_info
+#         return super(DirectoryResourceGrokker, self).grok(
+#             name, factory, module_info, **kw)
 
-    def execute(self, factory, config, name, path, layer, **kw):
-        resource_path = _get_resource_path(factory.module_info, path)
-        name = name or factory.module_info.dotted_name
-        return _register_resource(config, resource_path, name, layer)
+#     def execute(self, factory, config, name, path, layer, **kw):
+#         resource_path = _get_resource_path(factory.module_info, path)
+#         name = name or factory.module_info.dotted_name
+#         return _register_resource(config, resource_path, name, layer)
 
 
-class StaticResourcesGrokker(martian.GlobalGrokker):
+# class StaticResourcesGrokker(martian.GlobalGrokker):
 
-    def grok(self, name, module, module_info, config, **kw):
-        # we're only interested in static resources if this module
-        # happens to be a package
-        if not module_info.isPackage():
-            return False
-        resource_path = _get_resource_path(module_info, 'static')
+#     def grok(self, name, module, module_info, config, **kw):
+#         # we're only interested in static resources if this module
+#         # happens to be a package
+#         if not module_info.isPackage():
+#             return False
+#         resource_path = _get_resource_path(module_info, 'static')
 
-        if not os.path.exists(resource_path):
-            return False
+#         if not os.path.exists(resource_path):
+#             return False
 
-        name = module_info.dotted_name
-        layer = IDefaultBrowserLayer
-        return _register_resource(config, resource_path, name, layer)
+#         name = module_info.dotted_name
+#         layer = IDefaultBrowserLayer
+#         return _register_resource(config, resource_path, name, layer)
 
 
 class ViewletSecurityGrokker(martian.ClassGrokker):
@@ -151,26 +151,3 @@ class ViewletSecurityGrokker(martian.ClassGrokker):
 
         return True
 
-@grokcore.component.provider(grokcore.site.interfaces.IUtilityInstaller)
-def setupUtility(site, utility, provides, name=u'',
-                 name_in_container=None, public=False, setup=None):
-    """Set up a utility in a site in Zope2. It's different than Zope3,
-    because before Zope 2.12, setting up an object using [] doesn't
-    work. See the original implementation for more details.
-    """
-    site_manager = site.getSiteManager()
-
-    if not public:
-        container = site_manager
-    else:
-        container = site
-
-    if name_in_container is None:
-        name_in_container = INameChooser(container).chooseName(
-            utility.__class__.__name__, utility)
-    container._setObject(name_in_container, utility)
-
-    if setup is not None:
-        setup(utility)
-
-    site_manager.registerUtility(utility, provided=provides, name=name)

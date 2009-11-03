@@ -57,26 +57,9 @@ to load the following ZCML::
 Note
 ~~~~
 
-``five.grok`` have some dependencies on Zope 3 eggs. With Zope 2, you
-can fake those dependencies in buildout with the help of
-``plone.recipe.zope2instance``.
-
-The minium required configuration to install Zope would be::
-
-  [zope2]
-  recipe = plone.recipe.zope2install
-  url = http://www.zope.org/Products/Zope/2.10.9/Zope-2.10.9-final.tgz
-  skip-fake-eggs =
-     zope.app.publisher
-     zope.component
-     zope.i18n
-     zope.interface
-     zope.testing
-
 And for this release we recommend to pin down the following version in
 your buildout::
 
-  five.grok = 1.0  
   grokcore.annotation = 1.1
   grokcore.component = 1.7
   grokcore.formlib = 1.4
@@ -84,18 +67,11 @@ your buildout::
   grokcore.site = 1.1
   grokcore.view = 1.12.2
   grokcore.viewlet = 1.3
-  five.localsitemanager = 1.1
+  five.localsitemanager = 2.0.1
   martian = 0.11.1
-  zope.app.publisher = 3.5.1
-  zope.app.zcmlfiles = 3.4.3
-  zope.component = 3.4.0
-  zope.i18n = 3.4.0
-  zope.interface = 3.4.1
-  zope.schema = 3.4.0
-  zope.securitypolicy = 3.4.1
-  zope.testing = 3.7.6
 
-Zope 2.10 is required as bare minimum.
+Zope 2.12 is required. If you whish to use a previous version of Zope
+2, look at the version 1.0 of five.grok.
 
 
 More information

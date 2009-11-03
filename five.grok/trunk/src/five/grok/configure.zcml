@@ -5,6 +5,8 @@
     xmlns:grok="http://namespaces.zope.org/grok"
     i18n_domain="five.grok">
 
+  <include package="Products.Five" />
+
   <include package="five.grok" file="meta.zcml" />
 
   <include package="five.localsitemanager" />
@@ -15,7 +17,7 @@
   <grok:grok package=".subscribers" />
   <grok:grok package=".absoluteurl" />
 
-  <utility component=".meta.setupUtility" />
+  <utility component="grokcore.site.meta.setupUtility" />
 
   <browser:defaultView
       for="grokcore.component.interfaces.IContext"

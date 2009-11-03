@@ -10,6 +10,7 @@ from Testing.ZopeTestCase import FunctionalDocTestSuite
 from Testing.ZopeTestCase import installProduct
 installProduct('PageTemplates')
 
+import Zope2 ; Zope2.startup()
 
 def http_call(method, path, data=None, **kw):
     """Function to help make RESTful calls.

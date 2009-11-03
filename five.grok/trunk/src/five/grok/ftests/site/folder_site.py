@@ -5,7 +5,7 @@
   >>> universe._setObject("earth", World(id="earth"))
   'earth'
 
-  >>> from zope.app.component.site import setSite
+  >>> from zope.site.hooks import setSite
   >>> setSite(universe.earth)
 
   >>> universe.earth.objectIds()
