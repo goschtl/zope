@@ -1,14 +1,21 @@
 import os
 
-GENERATE = "./bin/%(scriptname)s %(extras)s-d %(package)s -i setuptools > %(output)s"
+GENERATE = "./bin/%(scriptname)s %(exclude)s %(re_exclude)s %(dead_ends)s %(re_dead_ends)s %(extras)s-d %(package)s -i setuptools > %(output)s"
 TRED = "tred %(input)s > %(output)s"
-GRAPH = "dot -Tsvg %(input)s > %(output)s"
+GRAPH = "dot -T%(format)s %(input)s > %(output)s"
 SCCMAP = "sccmap %(input)s > %(output)s"
-SCCGRAPH = "dot -Tsvg %(input)s -O"
+SCCGRAPH = "dot -T%(format)s %(input)s -O"
 
 
 def execute(template, **kwargs):
     os.system(template % kwargs)
+
+
+def build_option(option, pattern):
+    result = ''
+    for i in pattern:
+        result += '%s %s ' % (option, i)
+    return result
 
 
 def main(args):
@@ -18,7 +25,12 @@ def main(args):
     path = args.get('path')
     scriptname = name + '-eggdeps'
     variants = args.get('variants', ['base', 'tred', 'scc'])
+    formats = args.get('formats', ['svg'])
     extras = args.get('extras')
+    exclude = build_option('-i', args.get('exclude'))
+    re_exclude = build_option('-I', args.get('re_exclude'))
+    dead_ends = build_option('-e', args.get('dead_ends'))
+    re_dead_ends = build_option('-E', args.get('re_dead_ends'))
 
     for package in packages:
         name = package
@@ -39,25 +51,35 @@ def main(args):
             extras=extras,
             scriptname=scriptname,
             package=package,
+            exclude=exclude,
+            re_exclude=re_exclude,
+            dead_ends=dead_ends,
+            re_dead_ends=re_dead_ends,
             output=specfile + '.dot')
 
-        execute(GRAPH,
-            input=specfile + '.dot',
-            output=specfile + '.svg')
+        for format in formats:
+            execute(GRAPH,
+                format=format,
+                input=specfile + '.dot',
+                output=specfile + '.%s' % format)
 
         if 'tred' in variants:
             execute(TRED,
                 input=specfile + '.dot',
                 output=specfile + '-tred.dot')
 
-            execute(GRAPH,
-                input=specfile + '-tred.dot',
-                output=specfile + '-tred.svg')
+            for format in formats:
+                execute(GRAPH,
+                    format=format,
+                    input=specfile + '-tred.dot',
+                    output=specfile + '-tred.%s' % format)
 
         if 'scc' in variants:
             execute(SCCMAP,
                 input=specfile + '.dot',
                 output=specfile + '-sccmap')
 
-            execute(SCCGRAPH,
-                input=specfile + '-sccmap')
+            for format in formats:
+                execute(SCCGRAPH,
+                    format=format,
+                    input=specfile + '-sccmap')
