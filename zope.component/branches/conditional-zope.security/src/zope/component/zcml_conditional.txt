@@ -1,6 +1,14 @@
 ZCML directives without zope.security support
 =============================================
 
+This tests run without zope.security available:
+
+  >>> from zope.component.zcml import check_security_support
+  >>> check_security_support()
+  Traceback (most recent call last):
+  ...
+  ConfigurationError: security proxied components are not supported because zope.security is not available
+
 Components may be registered using the registration API exposed by
 ``zope.component`` (provideAdapter, provideUtility, etc.).  They may
 also be registered using configuration files.  The common way to do
