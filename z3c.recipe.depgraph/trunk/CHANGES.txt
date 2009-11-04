@@ -1,6 +1,9 @@
 Changelog
 =========
 
+0.5 (unreleased)
+----------------
+
 0.4 (2009-10-04)
 ----------------
 - Added additional ``formats`` option, to control in which fileformats the output
