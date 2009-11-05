@@ -27,10 +27,15 @@ import ZODB.FileStorage.fspack
 import ZODB.fsIndex
 import ZODB.TimeStamp
 
+def packer(storage, referencesf, stop, gc):
+    return FileStoragePacker(storage, stop).pack()
+
 class FileStoragePacker(FileStorageFormatter):
 
-    def __init__(self, path, stop, la, lr, cla, clr, current_size):
-        self._name = path
+    def __init__(self, storage, stop):
+        self.storage = storage
+        self._name = path = storage._file.name
+
         # We open our own handle on the storage so that much of pack can
         # proceed in parallel.  It's important to close this file at every
         # return point, else on Windows the caller won't be able to rename
@@ -39,15 +44,21 @@ class FileStoragePacker(FileStorageFormatter):
 
         self._stop = stop
         self.locked = 0
-        self.file_end = current_size
 
         # The packer needs to acquire the parent's commit lock
         # during the copying stage, so the two sets of lock acquire
         # and release methods are passed to the constructor.
-        self._lock_acquire = la
-        self._lock_release = lr
-        self._commit_lock_acquire = cla
-        self._commit_lock_release = clr
+        self._lock_acquire = storage._lock_acquire
+        self._lock_release = storage._lock_release
+        self._commit_lock_acquire = storage._commit_lock_acquire
+        self._commit_lock_release = storage._commit_lock_release
+
+        self._lock_acquire()
+        try:
+            storage._file.seek(0, 2)
+            self.file_end = storage._file.tell()
+        finally:
+            self._lock_release()
 
         self.ltid = z64
 
@@ -59,6 +70,7 @@ class FileStoragePacker(FileStorageFormatter):
             stop = self._stop,
             size = self.file_end,
             syspath = sys.path,
+            blob_dir = self.storage.blob_dir,
             ))
         for name in 'error', 'log':
             name = self._name+'.pack'+name
@@ -70,7 +82,6 @@ class FileStoragePacker(FileStorageFormatter):
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             close_fds=True,
             )
-
 
         proc.stdin.close()
         out = proc.stdout.read()
@@ -91,7 +102,7 @@ class FileStoragePacker(FileStorageFormatter):
         os.remove(packindex_path)
         os.remove(self._name+".packscript")
 
-        output = OptionalSeekFile(self._name + ".pack", "r+b")
+        output = open(self._name + ".pack", "r+b")
         output.seek(0, 2)
         assert output.tell() == opos
         self.copyRest(self.file_end, output, index)
@@ -100,16 +111,7 @@ class FileStoragePacker(FileStorageFormatter):
         pos = output.tell()
         output.close()
 
-        # Grrrrr. The caller wants these attrs
-        self.index = index
-        self.vindex = {}
-        self.tindex = {}
-        self.tvindex = {}
-        self.oid2tid = {}
-        self.toid2tid = {}
-        self.toid2tid_delete = {}
-
-        return pos
+        return pos, index
 
     def copyRest(self, input_pos, output, index):
         # Copy data records written since packing started.
@@ -128,7 +130,7 @@ class FileStoragePacker(FileStorageFormatter):
         # trailing 0 argument, and then on every platform except
         # native Windows it was observed that we could read stale
         # data from the tail end of the file.
-        self._file = OptionalSeekFile(self._name, "rb", 0)
+        self._file = open(self._name, "rb", 0)
         try:
             try:
                 while 1:
@@ -151,7 +153,7 @@ class FileStoragePacker(FileStorageFormatter):
     def _copyNewTrans(self, input_pos, output, index,
                       acquire=None, release=None):
         tindex = {}
-        copier = PackCopier(output, index, {}, tindex, {})
+        copier = PackCopier(output, index, tindex)
         th = self._read_txn_header(input_pos)
         if release is not None:
             release()
@@ -174,10 +176,7 @@ class FileStoragePacker(FileStorageFormatter):
                 if h.back:
                     prev_txn = self.getTxnFromData(h.oid, h.back)
 
-            if h.version:
-                self.fail(pos, "Versions are not supported.")
-
-            copier.copy(h.oid, h.tid, data, '', prev_txn,
+            copier.copy(h.oid, h.tid, data, prev_txn,
                         output_tpos, output.tell())
 
             input_pos += h.recordlen()
@@ -206,10 +205,6 @@ class FileStoragePacker(FileStorageFormatter):
             return None
         data, tid = self._loadBackTxn(oid, back, 0)
         return data
-
-# sys.modules['ZODB.FileStorage.FileStorage'
-#             ].FileStoragePacker = FileStoragePacker
-# ZODB.FileStorage.FileStorage.supportsVersions = lambda self: False
 
 class PackCopier(ZODB.FileStorage.fspack.PackCopier):
 
@@ -247,7 +242,8 @@ handler.setFormatter(logging.Formatter(
 logging.getLogger().addHandler(handler)
 
 try:
-    packer = zc.FileStorage.PackProcess(%(path)r, %(stop)r, %(size)r)
+    packer = zc.FileStorage.PackProcess(%(path)r, %(stop)r, %(size)r,
+                                        %(blob_dir)r)
     packer.pack()
 except Exception, v:
     logging.exception('packing')
@@ -262,18 +258,20 @@ except Exception, v:
 
 class PackProcess(FileStoragePacker):
 
-    def __init__(self, path, stop, current_size):
+    def __init__(self, path, stop, current_size, blob_dir):
         self._name = path
         # We open our own handle on the storage so that much of pack can
         # proceed in parallel.  It's important to close this file at every
         # return point, else on Windows the caller won't be able to rename
         # or remove the storage file.
 
-        # We set the buffer quite high (32MB) to try to reduce seeks
-        # when the storage is disk is doing other io
+        if blob_dir:
+            self.pack_blobs = True
+            self.blob_removed = open(os.path.join(blob_dir, '.removed'), 'w')
+        else:
+            self.pack_blobs = False
 
-
-        self._file = OptionalSeekFile(path, "rb")
+        self._file = open(path, "rb")
 
         self._name = path
         self._stop = stop
@@ -290,37 +288,19 @@ class PackProcess(FileStoragePacker):
         self._freecache(pos)
         return FileStoragePacker._read_txn_header(self, pos, tid)
 
-    def _log_memory(self): # only on linux, oh well
-        status_path = "/proc/%s/status" % os.getpid()
-        if not os.path.exists(status_path):
-            return
-        try:
-            f = open(status_path)
-        except IOError:
-            return
-
-        for line in f:
-            for name in ('Peak', 'Size', 'RSS'):
-                if line.startswith('Vm'+name):
-                    logging.info(line.strip())
-
-
     def pack(self):
         packed, index, packpos = self.buildPackIndex(self._stop, self.file_end)
         logging.info('initial scan %s objects at %s', len(index), packpos)
-        self._log_memory()
         if packed:
             # nothing to do
             logging.info('done, nothing to do')
             self._file.close()
             return
 
-        self._log_memory()
         logging.info('copy to pack time')
-        output = OptionalSeekFile(self._name + ".pack", "w+b")
-        output._freecache = _freefunc(output)
+        output = open(self._name + ".pack", "w+b")
+        self._freecache = _freefunc(output)
         index, new_pos = self.copyToPacktime(packpos, index, output)
-        self._log_memory()
         if new_pos == packpos:
             # pack didn't free any data.  there's no point in continuing.
             self._file.close()
@@ -331,7 +311,6 @@ class PackProcess(FileStoragePacker):
 
         logging.info('copy from pack time')
         self.copyFromPacktime(packpos, self.file_end, output, index)
-        self._log_memory()
 
         # Save the index so the parent process can use it as a starting point.
         f = open(self._name + ".packindex", 'wb')
@@ -363,9 +342,12 @@ class PackProcess(FileStoragePacker):
             while pos < end:
                 dh = self._read_data_header(pos)
                 self.checkData(th, tpos, dh, pos)
-                if dh.version:
-                    self.fail(pos, "Versions are not supported")
-                index[dh.oid] = pos
+                if dh.plen or dh.back:
+                    index[dh.oid] = pos
+                else:
+                    # deleted
+                    if dh.oid in index:
+                        del index[dh.oid]
                 pos += dh.recordlen()
 
             tlen = self._read_num(pos)
@@ -382,6 +364,8 @@ class PackProcess(FileStoragePacker):
         self._file.seek(0)
         output.write(self._file.read(self._metadata_size))
         new_index = ZODB.fsIndex.fsIndex()
+        pack_blobs = self.pack_blobs
+        is_blob_record = ZODB.blob.is_blob_record
 
         while pos < packpos:
             th = self._read_txn_header(pos)
@@ -392,6 +376,35 @@ class PackProcess(FileStoragePacker):
                 h = self._read_data_header(pos)
                 if index.get(h.oid) != pos:
                     pos += h.recordlen()
+                    if pack_blobs:
+                        if h.plen:
+                            data = self._file.read(h.plen)
+                        else:
+                            data = self.fetchDataViaBackpointer(h.oid, h.back)
+                        if data and is_blob_record(data):
+                            # We need to remove the blob record. Maybe we
+                            # need to remove oid.
+
+                            # But first, we need to make sure the
+                            # record we're looking at isn't a dup of
+                            # the current record. There's a bug in ZEO
+                            # blob support that causes duplicate data
+                            # records.
+                            rpos = index.get(h.oid)
+                            is_dup = (rpos and
+                                      self._read_data_header(rpos).tid == h.tid)
+                            if not is_dup:
+                                # Note that we delete the revision.
+                                # If rpos was None, then we could
+                                # remove the oid.  What if somehow,
+                                # another blob update happened after
+                                # the deletion. This shouldn't happen,
+                                # but we can leave it to the cleanup
+                                # code to take care of removing the
+                                # directory for us.
+                                self.blob_removed.write(
+                                    (h.oid+h.tid).encode('hex')+'\n')
+
                     continue
 
                 pos += h.recordlen()
@@ -437,17 +450,29 @@ class PackProcess(FileStoragePacker):
                     output.write(tlen)
                     output.seek(new_pos)
 
-                output._freecache(new_pos)
+                self._freecache(new_pos)
 
 
             pos += 8
 
         return new_index, new_pos
 
+    def fetchDataViaBackpointer(self, oid, back):
+        """Return the data for oid via backpointer back
+
+        If `back` is 0 or ultimately resolves to 0, return None.
+        In this case, the transaction undoes the object
+        creation.
+        """
+        if back == 0:
+            return None
+        data, tid = self._loadBackTxn(oid, back, 0)
+        return data
+
     def copyFromPacktime(self, input_pos, file_end, output, index):
         while input_pos < file_end:
             input_pos = self._copyNewTrans(input_pos, output, index)
-            output._freecache(output.tell())
+            self._freecache(output.tell())
         return input_pos
 
 
