@@ -82,16 +82,19 @@ class PageletForm(form.Form, PageletBaseForm):
     noChangesMessage = _('No changes were applied.')
     formErrorsMessage = _(u'Please fix indicated errors.')
 
-    def extractData(self):
-        data, errors = super(PageletForm, self).extractData()
+    def extractData(self, setErrors=True):
+        data, errors = super(PageletForm, self).extractData(setErrors=setErrors)
         for form in self.groups:
-            formData, formErrors = form.extractData()
+            formData, formErrors = form.extractData(setErrors=setErrors)
             data.update(formData)
             if formErrors:
                 errors += formErrors
 
         for form in self.subforms:
-            formData, formErrors = form.extractData()
+            try:
+                formData, formErrors = form.extractData(setErrors=setErrors)
+            except:
+                raise 'Error', (form,)
             if formErrors:
                 errors += formErrors
 
