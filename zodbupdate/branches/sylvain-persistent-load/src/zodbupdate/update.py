@@ -25,6 +25,8 @@ import zodbupdate.serialize
 
 logger = logging.getLogger('zodbupdate')
 
+TRANSACTION_COUNT = 100000
+
 
 class Updater(object):
     """Update class references for all current objects in a storage."""
@@ -34,10 +36,24 @@ class Updater(object):
         self.storage = storage
         self.update = zodbupdate.serialize.ObjectRenamer(renames or {})
 
-    def __call__(self):
+    def _new_transaction(self):
         t = transaction.Transaction()
         self.storage.tpc_begin(t)
         t.note('Updated factory references using `zodbupdate`.')
+        return t
+
+    def _commit_transaction(self, t, changed):
+        if self.dry or not changed:
+            logger.info('Dry run selected or no changes, aborting transaction.')
+            self.storage.tpc_abort(t)
+        else:
+            logger.info('Committing changes.')
+            self.storage.tpc_vote(t)
+            self.storage.tpc_finish(t)
+
+    def __call__(self):
+        count = 0
+        t = self._new_transaction()
 
         for oid, serial, current in self.records:
             new = self.update.rename(current)
@@ -45,14 +61,15 @@ class Updater(object):
                 continue
             logger.debug('Updated %s' % ZODB.utils.oid_repr(oid))
             self.storage.store(oid, serial, new.getvalue(), '', t)
+            count += 1
 
-        if self.dry:
-            logger.info('Dry run selected, aborting transaction.')
-            self.storage.tpc_abort(t)
-        else:
-            logger.info('Committing changes.')
-            self.storage.tpc_vote(t)
-            self.storage.tpc_finish(t)
+            if count > TRANSACTION_COUNT:
+                count = 0
+                self._commit_transaction(t, True)
+                t = self._new_transaction()
+
+        self._commit_transaction(t, count != 0)
+
 
     @property
     def records(self):

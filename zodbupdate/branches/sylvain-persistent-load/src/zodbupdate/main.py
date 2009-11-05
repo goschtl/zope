@@ -91,4 +91,5 @@ def main():
         logging.debug('An error occured', exc_info=True)
         logging.error('Stopped processing, due to: %s' % e)
         raise SystemExit()
+    storage.close()
 
