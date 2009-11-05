@@ -19,7 +19,6 @@ class ObjectRenamer:
     """
 
     def __init__(self, changes):
-        self.__cache = dict()
         self.__changes = dict()
         for old, new in changes.iteritems():
             self.__changes[tuple(old.split(' '))] = tuple(new.split(' '))
@@ -38,6 +37,7 @@ class ObjectRenamer:
                 klass = self.__changes[klass]
                 self.__changed = True
             return ZODBReference((oid, klass))
+        # TODO multidatabase ['m'], (database, oid, klass)
         return ZODBReference(reference)
 
     def __unpickler(self, pickle):
@@ -57,16 +57,25 @@ class ObjectRenamer:
         pickler.clear_memo()
         return pickler
 
+    def __update_class_meta(self, class_meta):
+        if isinstance(class_meta, tuple):
+            klass, args = class_meta
+            if isinstance(klass, tuple):
+                if klass in self.__changes:
+                    self.__changed = True
+                    return self.__changes[klass], args
+        return class_meta
+
     def rename(self, input_file):
         self.__changed = False
-        self.__cache.clear()
 
         unpickler = self.__unpickler(input_file)
         class_meta = unpickler.load()
         data = unpickler.load()
 
+        class_meta = self.__update_class_meta(class_meta)
+
         if not self.__changed:
-            input_file.seek(0)
             return None
 
         output_file = cStringIO.StringIO()
@@ -75,5 +84,4 @@ class ObjectRenamer:
         pickler.dump(data)
 
         output_file.truncate()
-        output_file.seek(0)
         return output_file
