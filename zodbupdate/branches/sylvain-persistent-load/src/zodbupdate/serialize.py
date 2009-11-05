@@ -18,7 +18,7 @@ class ObjectRenamer:
     information at that point as well.
     """
 
-    def __init__(self, storage, changes):
+    def __init__(self, changes):
         self.__cache = dict()
         self.__changes = dict()
         for old, new in changes.iteritems():
@@ -30,9 +30,6 @@ class ObjectRenamer:
             names = self.__changes[names]
             self.__changed = True
         return find_global(*names)
-
-    def __factory(self, nothing, modulename, globalname):
-        return self.__find_global(modulename, globalname)
 
     def __persistent_load(self, reference):
         if isinstance(reference, tuple):

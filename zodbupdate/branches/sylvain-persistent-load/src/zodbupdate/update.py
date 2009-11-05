@@ -32,7 +32,7 @@ class Updater(object):
     def __init__(self, storage, dry=False, renames=None):
         self.dry = dry
         self.storage = storage
-        self.update = zodbupdate.serialize.ObjectRenamer(storage, renames or {})
+        self.update = zodbupdate.serialize.ObjectRenamer(renames or {})
 
     def __call__(self):
         t = transaction.Transaction()
