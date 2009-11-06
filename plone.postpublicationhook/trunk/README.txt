@@ -1,3 +1,17 @@
+Note
+====
+
+This package is provided for backwards compatibility. New code should use the
+publication events introduced in Zope 2.12 directly.
+
+For Zope 2.10, a backport of the publication events is available in
+`ZPublisherEventsBackport`_. This is required for this package and may be added
+to your buildout directly, or by specifying the 'Zope2.10' extra::
+
+    eggs =
+        Plone
+        plone.postpublicationhook [Zope2.10]
+
 Introduction
 ============
 
@@ -38,6 +52,34 @@ To use this code you need to register it in zcml::
 
     <subscriber handler=".events.LogRequest" />
 
+Using ZPublisher events directly
+================================
+
+The IPubBeforeCommit event is equivalent to the IAfterPublicationEvent,
+however it is not an ObjectEvent so there are a few changes::
+
+    from zope.component import adapter
+    from ZPublisher.interfaces import IPubBeforeCommit
+    import logging
+
+    logger = logging.getLogger("LogRequest")
+
+    @adapter(IPubBeforeCommit)
+    def LogRequest(event):
+        request = event.request
+        object = request['PUBLISHED']
+        if getattr(object, "getPhysicalPath", None) is None:
+            path="Unknown path"
+        else:
+            path="/".join(object.getPhysicalPath()
+
+        logger.info("Request for object %s" % path)
+
+
+Register it in zcml the same way::
+
+    <subscriber handler=".events.LogRequest" />
 
 .. _zope.event: http://pypi.python.org/pypi/zope.event
 .. _zope.component: http://pypi.python.org/pypi/zope.component
+.. ZPublisherEventsBackport: http://pypi.python.org/pypi/ZPublisherEventsBackport

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0rc2 - Unreleased
+-------------------------
+
+* Backport ZPublisher publication events from Zope 2.12
+  [lrowe]
+
 1.0rc1 - October 15, 2008
 -------------------------
 

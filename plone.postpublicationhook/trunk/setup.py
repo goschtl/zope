@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os.path
 
-version = '1.0'
+version = '1.1'
 
 setup(name='plone.postpublicationhook',
       version=version,
@@ -31,5 +31,8 @@ setup(name='plone.postpublicationhook',
           'zope.interface',
           'zope.security',
       ],
+      extras_require={
+          'Zope2.10': ['ZPublisherEventsBackport'],
+      },
       )
 
