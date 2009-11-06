@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.0rc2 - Unreleased
+1.1 - Unreleased
 -------------------------
 
-* Backport ZPublisher publication events from Zope 2.12
+* Refactor to use ZPublisher publication events (available in Zope 1.10 with
+  ZPublisherEventsBackport.)
   [lrowe]
 
 1.0rc1 - October 15, 2008
