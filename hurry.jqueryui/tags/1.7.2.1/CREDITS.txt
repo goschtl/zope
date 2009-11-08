@@ -1,4 +1,0 @@
-Credit due where credit is due
-******************************
-
-This is a clone of hurry.jquery, just for JQuery UI.
