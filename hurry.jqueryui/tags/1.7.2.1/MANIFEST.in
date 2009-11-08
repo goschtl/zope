@@ -1,0 +1,4 @@
+recursive-include src/hurry/jqueryui/jqueryui-build *
+recursive-include src/hurry/jqueryui/jqueryui-themes *
+include src/hurry/jqueryui/_themes.py
+

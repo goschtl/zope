@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+1.7.2.1 (2009-11-08) (jQuery UI version 1.7.2)
+==============================================
+
+* Initial public release, using jQueryUI-1.7.2
