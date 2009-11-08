@@ -16,11 +16,15 @@ How to use?
 You can import jQuery UI from ``hurry.jqueryui`` and ``.need`` it
 where you want these resources to be included on a page::
 
-  from hurry.jquery import jquery
+  from hurry.jqueryui import jqueryui
 
   .. in your page or widget rendering code, somewhere ..
 
-  jquery.need()
+  jqueryui.need()
+
+You can also use JQuery UI themes:
+
+  from hurry.jqueryui import smoothness
 
 This requires integration between your web framework and
 ``hurry.resource``, and making sure that the original resources
