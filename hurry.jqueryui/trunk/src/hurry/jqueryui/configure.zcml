@@ -5,5 +5,7 @@
   <browser:resourceDirectory
     name="jqueryui"
     directory="jqueryui-build" />
-
+  <browser:resourceDirectory
+    name="jqueryui_themes"
+    directory="jqueryui-themes" />
 </configure>

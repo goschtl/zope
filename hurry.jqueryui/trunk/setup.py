@@ -43,5 +43,6 @@ setup(
     },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],
+        'prepare': ['py'],
         },
     )

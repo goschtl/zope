@@ -29,3 +29,17 @@ Render the inclusion::
   >>> print needed.render()
   <script type="text/javascript" src="http://localhost/static/jquery/jquery-1.3.2.min.js"></script>
   <script type="text/javascript" src="http://localhost/static/jqueryui/jquery-ui.min.js"></script>
+
+Let's also try a theme::
+
+  >>> from hurry.jqueryui import base
+  >>> needed = NeededInclusions()
+  >>> needed.need(base)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/jqueryui_themes/base/jquery-ui.css" />
+ 
+  >>> needed.mode('minified') 
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/jqueryui_themes/base/jquery-ui.css" />
+
+
