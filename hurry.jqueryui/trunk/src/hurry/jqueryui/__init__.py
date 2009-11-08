@@ -1,6 +1,9 @@
 from hurry.resource import Library, ResourceInclusion
 from hurry.jquery import jquery
-from hurry.jqueryui._themes import *
+try:
+    from hurry.jqueryui._themes import *
+except ImportError:
+    pass
 
 jqueryui = Library('jqueryui')
 
