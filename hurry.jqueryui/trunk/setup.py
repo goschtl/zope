@@ -18,7 +18,7 @@ long_description = (
 
 setup(
     name='hurry.jqueryui',
-    version=JQUERYUI_VERSION + '.1' + 'dev',
+    version=JQUERYUI_VERSION + '.2 + 'dev',
     description="hurry.resource style resources for jQuery UI.",
     long_description = long_description,
     classifiers=[],
