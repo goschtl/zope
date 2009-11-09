@@ -19,13 +19,15 @@ import warnings
 
 from zope import component
 from zope import interface
-from zope.publisher.browser import BrowserPage
-from zope.publisher.publish import mapply
+from zope.browserresource import directory
+from zope.browserresource.file import FileResourceFactory
+from zope.browserresource.interfaces import IResourceFactoryFactory
 from zope.pagetemplate import pagetemplate, pagetemplatefile
-from zope.app.pagetemplate.engine import TrustedAppPT
-from zope.app.publisher.browser import directoryresource
-from zope.app.publisher.browser.pagetemplateresource import \
-    PageTemplateResourceFactory
+from zope.pagetemplate.engine import TrustedAppPT
+from zope.ptresource.ptresource import PageTemplateResourceFactory 
+from zope.publisher.browser import BrowserPage
+from zope.publisher.interfaces import NotFound
+from zope.publisher.publish import mapply
 
 import martian.util
 from grokcore.view import interfaces, util
@@ -238,6 +240,7 @@ class PageTemplate(GrokTemplate):
         namespace.update(template.pt_getContext())
         return template.pt_render(namespace)
 
+
 class PageTemplateFile(PageTemplate):
     # For BBB
     def __init__(self, filename, _prefix=None):
@@ -248,22 +251,46 @@ class PageTemplateFile(PageTemplate):
         self.setFromFilename(filename, _prefix)
 
 
-class DirectoryResource(directoryresource.DirectoryResource):
-    # We subclass this, because we want to override factories for
-    # .pt and .html file types, not creating pagetemplate resources.
-    resource_factories = {}
-    for type, factory in (directoryresource.DirectoryResource.
-                          resource_factories.items()):
-        if factory is PageTemplateResourceFactory:
-            continue
-        resource_factories[type] = factory
+_marker = object()
 
-    # Hook for our own DirectoryResourceFactory. Can only be set *after*
-    # having defined the DirectoryResourceFactory class.
-    directory_factory = None
+class DirectoryResource(directory.DirectoryResource):
+    forbidden_names = ('.svn', )
+    
+    def get(self, name, default=_marker):
+
+        for pat in self.forbidden_names:
+            if fnmatch.fnmatch(name, pat):
+                if default is _marker:
+                    raise NotFound(None, name)
+                else:
+                    return default
+        
+        path = self.context.path
+        filename = os.path.join(path, name)
+        isfile = os.path.isfile(filename)
+        isdir = os.path.isdir(filename)
+
+        if not (isfile or isdir):
+            if default is _marker:
+                raise NotFound(None, name)
+            return default
+
+        if isfile:
+            ext = os.path.splitext(os.path.normcase(name))[1][1:]
+            factory = component.queryUtility(IResourceFactoryFactory, ext,
+                                             self.default_factory)
+            if factory is PageTemplateResourceFactory:
+                factory = self.default_factory
+        else:
+            factory = self.directory_factory
+
+        rname = self.__name__ + '/' + name
+        resource = factory(filename, self.context.checker, rname)(self.request)
+        resource.__parent__ = self
+        return resource
 
 
-class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
+class DirectoryResourceFactory(directory.DirectoryResourceFactory):
     # We need this to allow hooking up our own DirectoryResource class.
     factoryClass = DirectoryResource
 

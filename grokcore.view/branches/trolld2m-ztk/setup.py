@@ -10,9 +10,29 @@ long_description = (
     read('CHANGES.txt')
     )
 
+install_requires = [
+    'setuptools',
+    'martian >= 0.10',
+    'grokcore.component >= 1.5',
+    'grokcore.security >= 1.2',
+    'zope.schema',
+    'zope.security',
+    'zope.traversing',
+    'zope.browserresource >= 3.9.0',
+    'zope.ptresource >= 3.9.0',
+    ]
+
+tests_require = install_requires + [
+    'zope.testbrowser',
+    'zope.securitypolicy',
+    'zope.app.container',
+    'zope.app.zcmlfiles',
+    'zope.app.authentication',
+    ]
+
 setup(
     name='grokcore.view',
-    version = '1.12.2',
+    version = '1.13dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -26,27 +46,12 @@ setup(
                  'Programming Language :: Python',
                  'Framework :: Zope3',
                  ],
-
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['grokcore'],
     include_package_data = True,
     zip_safe=False,
-    install_requires=['setuptools',
-                      'martian >= 0.10',
-                      'grokcore.component >= 1.5',
-                      'grokcore.security >= 1.2',
-                      'zope.schema',
-                      'zope.security',
-                      'zope.traversing',
-                      'zope.app.publisher >= 3.5',
-                      'zope.app.pagetemplate',
-                      # for ftests:
-                      # TODO move these to extra_requires?
-                      'zope.testbrowser',
-                      'zope.securitypolicy',
-                      'zope.app.container',
-                      'zope.app.zcmlfiles',
-                      'zope.app.authentication',
-                      ],
+    tests_require = tests_require,
+    install_requires = install_requires,
+    extras_require = {'test': tests_require},
 )
