@@ -13,14 +13,12 @@
 ##############################################################################
 """Online storage recovery."""
 
+import ZODB.POSException
+import ZODB.utils
+import gocept.zeoraid.storage
 import logging
 import tempfile
-
 import transaction
-import ZODB.utils
-import ZODB.POSException
-
-import gocept.zeoraid.storage
 
 logger = logging.getLogger('gocept.zeoraid.recovery')
 
@@ -152,6 +150,6 @@ class Recovery(object):
             self.target.tpc_vote(txn_info)
             self.target.tpc_finish(txn_info)
 
-            yield ('recover', txn_info.tid)
+            yield ('recover', ZODB.utils.tid_repr(txn_info.tid))
 
         yield ('recovered',)
