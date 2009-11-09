@@ -545,7 +545,12 @@ class RAIDStorage(object):
 
     def tpc_transaction(self):
         """The current transaction being committed."""
-        return self._transaction
+        # XXX Awful hack against ZEO: always return None so the transaction
+        # waiting list of ZEO is never triggered but rather we allow everybody
+        # to block in here. We need to resolve this via a discussion on
+        # zodb-dev.
+        # return self._transaction
+        return
 
     def getTid(self, oid):
         """The last transaction to change an object."""
