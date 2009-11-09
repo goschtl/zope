@@ -38,7 +38,7 @@ setup(
                       'grokcore.security >= 1.2',
                       'zope.schema',
                       'zope.security',
-                      'zope.browserresource >= 3.10',
+                      'zope.browserresource >= 3.9.0',
                       'zope.ptresource >= 3.9.0',
                       'zope.traversing',
                       # for ftests:
