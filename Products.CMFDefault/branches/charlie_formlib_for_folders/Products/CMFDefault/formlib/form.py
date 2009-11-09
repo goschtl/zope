@@ -22,10 +22,10 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.formlib.formbase import PageAddForm
 from Products.Five.formlib.formbase import PageDisplayForm
 from Products.Five.formlib.formbase import PageForm
-from zope.app.container.interfaces import INameChooser
 from zope.component import adapts
 from zope.component import getUtility
 from zope.component.interfaces import IFactory
+from zope.container.interfaces import INameChooser
 from zope.datetime import parseDatetimetz
 from zope.formlib import form
 from zope.formlib.interfaces import IPageForm
