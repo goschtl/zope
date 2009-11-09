@@ -17,7 +17,7 @@ using a variable named `viewname_pt`:
     <li><zope.publisher.browser.TestRequest instance URL=http://127.0.0.1></li>
     <li><grokcore.view.tests.view.inline.CavePainting object at 0x...></li>
     <li><grokcore.view.tests.view.inline.Mammoth object at 0x...></li>
-    <li><zope.app.pagetemplate.engine.TraversableModuleImporter object at 0x...></li>
+    <li><zope.pagetemplate.engine.TraversableModuleImporter object at 0x...></li>
   </ul>
   </body>
   </html>
