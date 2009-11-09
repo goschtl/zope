@@ -16,6 +16,7 @@
 import sys
 import os
 import warnings
+import fnmatch
 
 from zope import component
 from zope import interface
