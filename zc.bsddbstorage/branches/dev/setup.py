@@ -13,7 +13,7 @@
 ##############################################################################
 name, version = 'zc.bsddbstorage', '0'
 
-install_requires = ['setuptools', 'bsddb3']
+install_requires = ['setuptools', 'bsddb3', 'ZODB3']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
