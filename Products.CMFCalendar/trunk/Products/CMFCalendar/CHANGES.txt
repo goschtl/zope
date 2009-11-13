@@ -4,6 +4,9 @@ Products.CMFCalendar Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Got rid of redundant icon related type info properties.
+  (https://bugs.launchpad.net/zope-cmf/+bug/397795)
+
 - moved the Zope dependency to version 2.12.0b3dev
 
 - Cleaned up / normalized imports:
