@@ -5,7 +5,28 @@ Change History
 1.0b4 (unreleased)
 ------------------
 
-- ...
+- Always format TIDs in recovery status.
+
+- Remove use of custom exceptions: RAIDErrors were pickled and send to the
+  client which didn't have ZEORaid installed causing unpickling errors.
+
+- Fix issue when storing blogs in shared mode: tpc_vote returned the serials
+  of the first store twice causing spurious RAID inconsistency errors.
+
+- Close degraded storages when registering them as degraded in __init__ by
+  calling the appropriate degradation method.
+
+- Make recovery more robust against storages that fail to open (a storage
+  failing to open caused the ZEORaid server recovery to hang).
+
+- Hack for processing ZEO server's waiting list which doesn't expect storages
+  to be used by someone else in the same process (covered with test). This
+  caused clients to stochastically hang indefinitely when committing while a
+  recovery was in progress.
+
+- Refactor some sloppy tests.
+
+- Some code cleanups.
 
 1.0b3 (2009-07-19)
 ------------------

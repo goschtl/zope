@@ -32,6 +32,13 @@ import ZODB.POSException
 import gocept.zeoraid.recovery
 
 
+class Opener(object):
+
+    def __init__(self, name, open):
+        self.name = name
+        self.open = open
+
+
 def compare(test, source, target):
     recovery = gocept.zeoraid.recovery.Recovery(
         source, target, lambda target: None)
@@ -170,8 +177,14 @@ class OnlineRecovery(unittest.TestCase):
 
     def setUp(self):
         self.temp_paths = []
-        self.source = ZODB.FileStorage.FileStorage(tempfile.mktemp())
-        self.target = ZODB.FileStorage.FileStorage(tempfile.mktemp())
+        source_path = tempfile.mktemp()
+        target_path = tempfile.mktemp()
+        self.source_opener = Opener(
+            'source', lambda: ZODB.FileStorage.FileStorage(source_path))
+        self.target_opener = Opener(
+            'target', lambda: ZODB.FileStorage.FileStorage(target_path))
+        self.source = self.source_opener.open()
+        self.target = self.target_opener.open()
         self.recovery = gocept.zeoraid.recovery.Recovery(
             self.source, self.target, lambda target: None)
 
@@ -190,17 +203,9 @@ class OnlineRecovery(unittest.TestCase):
         else:
             blob_dir = None
 
-        class Opener(object):
-            def __init__(self, name, storage):
-                self.name = name
-                self.storage = storage
-
-            def open(self):
-                return self.storage
-
         return gocept.zeoraid.storage.RAIDStorage(
             'raid',
-            [Opener('source', self.source), Opener('target', self.target)],
+            [self.source_opener, self.target_opener],
             blob_dir=blob_dir, shared_blob_dir=self.shared)
 
     def test_verify_both_empty(self):
@@ -343,6 +348,8 @@ class OnlineRecovery(unittest.TestCase):
     def test_recover_raid_storage(self):
         self.store([self.source, self.target])
         self.store([self.source])
+        self.source.close()
+        self.target.close()
         raid = self.setup_raid()
         self.assertEquals('degraded', raid.raid_status())
         raid.raid_recover('target')
@@ -352,6 +359,9 @@ class OnlineRecovery(unittest.TestCase):
                 break
         else:
             self.fail('Timeout while RAID recovers.')
+        raid.close()
+        self.source = self.source_opener.open()
+        self.target = self.target_opener.open()
         self.compare(self.source, self.target)
 
 
@@ -365,12 +375,19 @@ class OnlineBlobStorageRecovery(OnlineRecovery):
         else:
             target_blob_dir = tempfile.mkdtemp()
             self.temp_paths.append(target_blob_dir)
-        self.source = ZODB.blob.BlobStorage(
-            source_blob_dir,
-            ZODB.FileStorage.FileStorage(tempfile.mktemp()))
-        self.target = ZODB.blob.BlobStorage(
-            target_blob_dir,
-            ZODB.FileStorage.FileStorage(tempfile.mktemp()))
+
+        source_path = tempfile.mktemp()
+        target_path = tempfile.mktemp()
+
+        self.source_opener = Opener('source', lambda:
+            ZODB.blob.BlobStorage(source_blob_dir,
+                ZODB.FileStorage.FileStorage(source_path)))
+        self.target_opener = Opener('target', lambda:
+            ZODB.blob.BlobStorage(target_blob_dir,
+                ZODB.FileStorage.FileStorage(target_path)))
+
+        self.source = self.source_opener.open()
+        self.target = self.target_opener.open()
         self.recovery = gocept.zeoraid.recovery.Recovery(
             self.source, self.target, lambda target: None)
 

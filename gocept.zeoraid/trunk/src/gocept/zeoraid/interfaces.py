@@ -13,18 +13,20 @@
 ##############################################################################
 """Interface descriptions"""
 
-
+import ZEO.ClientStorage
 import zope.interface
 
-import ZEO.ClientStorage
+
+def RAIDError(message):
+    e = RuntimeError(message)
+    e.created_by_zeoraid = True
+    return e
 
 
-class RAIDError(Exception):
-    pass
-
-
-class RAIDClosedError(RAIDError, ZEO.ClientStorage.ClientStorageError):
-    pass
+def RAIDClosedError(message):
+    e = ZEO.ClientStorage.ClientStorageError(message)
+    e.created_by_zeoraid = True
+    return e
 
 
 class IRAIDStorage(zope.interface.Interface):

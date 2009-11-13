@@ -13,45 +13,30 @@
 ##############################################################################
 """Test harness for gocept.zeoraid."""
 
-import random
-import unittest
-import tempfile
-import os
-import time
-import shutil
-import stat
-import threading
-import sys
-
-import zc.lockfile
-import zope.interface.verify
-
-import persistent.dict
-import transaction
-
-from ZODB.tests import StorageTestBase, BasicStorage, \
-             TransactionalUndoStorage, PackableStorage, \
-             Synchronization, ConflictResolution, HistoryStorage, \
-             Corruption, RevisionStorage, PersistentStorage, \
-             MTStorage, ReadOnlyStorage, RecoveryStorage
-
+from ZEO.tests import forker, ThreadTests
+from ZEO.tests.testZEO import get_port
+from ZODB.tests import RevisionStorage, PersistentStorage
+from ZODB.tests import MTStorage, ReadOnlyStorage, RecoveryStorage
+from ZODB.tests import StorageTestBase, BasicStorage
+from ZODB.tests import Synchronization, ConflictResolution, HistoryStorage
+from ZODB.tests import TransactionalUndoStorage, PackableStorage
+from gocept.zeoraid.tests.loggingstorage import LoggingStorage
+import ZEO.runzeo
+import ZODB.config
+import ZODB.interfaces
 import gocept.zeoraid.storage
 import gocept.zeoraid.tests.test_recovery
-from gocept.zeoraid.tests.loggingstorage import LoggingStorage
-
-from ZEO.ClientStorage import ClientStorage
-from ZEO.tests import forker, CommitLockTests, ThreadTests
-from ZEO.tests.testZEO import get_port
-import ZEO.runzeo
-
-import ZODB.interfaces
-import ZEO.interfaces
-import ZODB.config
-
-# Uncomment this to get helpful logging from the ZEO servers on the console
-#import logging
-#logging.getLogger().addHandler(logging.StreamHandler())
-#logging.getLogger().setLevel(0)
+import os
+import random
+import shutil
+import stat
+import tempfile
+import threading
+import time
+import transaction
+import unittest
+import zc.lockfile
+import zope.interface.verify
 
 
 def fail(obj, name):
@@ -62,22 +47,11 @@ def fail(obj, name):
     setattr(obj, name, failing_method)
 
 
-class ZEOOpener(object):
-
-    def __init__(self, name, addr, **kwargs):
-        self.name = name
-        self.addr = addr
-        self.kwargs = kwargs or {}
-
-    def open(self):
-        return ClientStorage(self.addr, **self.kwargs)
-
-
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
 
     def open(self, **kwargs):
-        self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
-                                                           self._storages, **kwargs)
+        self._storage = gocept.zeoraid.storage.RAIDStorage(
+            'teststorage', self._storages, **kwargs)
 
     def setUp(self):
         self._server_storage_files = []
@@ -87,13 +61,13 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
         for i in xrange(5):
             port = get_port()
             zconf = forker.ZEOConfig(('', port))
-            zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
-                                                                  zconf, port)
+            zport, adminaddr, pid, path = forker.start_zeo_server(
+                self.getConfig(), zconf, port)
             self._pids.append(pid)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(str(i), zport, storage='1',
-                                            min_disconnect_poll=0.5, wait=1,
-                                            wait_timeout=60))
+            self._storages.append(gocept.zeoraid.testing.ZEOOpener(
+                str(i), zport, storage='1',
+                min_disconnect_poll=0.5, wait=1, wait_timeout=60))
         self.open()
 
     def getConfig(self):
@@ -114,6 +88,7 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
         for file in self._server_storage_files:
             if os.path.exists(file):
                 os.unlink(file)
+
 
 class ReplicationStorageTests(BasicStorage.BasicStorage,
         TransactionalUndoStorage.TransactionalUndoStorage,
@@ -174,11 +149,10 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
             blob_dir = tempfile.mkdtemp()
             self.temp_paths.append(blob_dir)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(str(i), zport, storage='1',
-                                            cache_size=12,
-                                            blob_dir=blob_dir,
-                                            min_disconnect_poll=0.5, wait=1,
-                                            wait_timeout=60))
+            self._storages.append(gocept.zeoraid.testing.ZEOOpener(
+                str(i), zport, storage='1', cache_size=12,
+                blob_dir=blob_dir, min_disconnect_poll=0.5, wait=1,
+                wait_timeout=60))
         blob_dir = tempfile.mkdtemp()
         self.temp_paths.append(blob_dir)
         self._storage = gocept.zeoraid.storage.RAIDStorage(
@@ -218,12 +192,10 @@ class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
                 zconf, port)
             self._pids.append(pid)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(str(i), zport, storage='1',
-                                            cache_size=12,
-                                            blob_dir=blob_dir,
-                                            shared_blob_dir=True,
-                                            min_disconnect_poll=0.5, wait=1,
-                                            wait_timeout=60))
+            self._storages.append(gocept.zeoraid.testing.ZEOOpener(
+                str(i), zport, storage='1', cache_size=12, blob_dir=blob_dir,
+                shared_blob_dir=True, min_disconnect_poll=0.5, wait=1,
+                wait_timeout=60))
         self._storage = gocept.zeoraid.storage.RAIDStorage(
             'teststorage', self._storages, blob_dir=blob_dir,
             shared_blob_dir=True)
@@ -328,8 +300,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(1, len(self._storage.history(oid, '')))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.history, oid, '')
+        self.assertRaises(RuntimeError, self._storage.history, oid, '')
 
     def test_history_degrading(self):
         oid = self._storage.new_oid()
@@ -344,8 +315,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('history')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.history, oid, '')
+        self.assertRaises(RuntimeError, self._storage.history, oid, '')
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_lastTransaction(self):
@@ -363,8 +333,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(None, self._storage.lastTransaction())
         self._disable_storage(0)
         self.assertEquals('failed', self._storage.raid_status())
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.lastTransaction)
+        self.assertRaises(RuntimeError, self._storage.lastTransaction)
 
     def test_len_degrading(self):
         # Brrrr. ClientStorage doesn't seem to implement __len__ correctly.
@@ -400,8 +369,9 @@ class FailingStorageTestBase(object):
 
         self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x01')
         data_record, serial = self._storage.load(oid)
-        self.assertEquals('((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}q\x04U\x05valueq\x05K\x07s.',
-                          data_record)
+        self.assertEquals(
+            '((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}'
+            'q\x04U\x05valueq\x05K\x07s.', data_record)
         self.assertEquals(self._storage.lastTransaction(), serial)
         self.assertEquals((data_record, serial), self._backend(0).load(oid))
         self.assertEquals((data_record, serial), self._backend(1).load(oid))
@@ -417,8 +387,7 @@ class FailingStorageTestBase(object):
         self.assertEquals((data_record, serial), self._backend(0).load(oid))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.load, oid)
+        self.assertRaises(RuntimeError, self._storage.load, oid)
 
     def test_load_can_be_failed(self):
         # ClientStorage does not directly call `load` but
@@ -438,15 +407,15 @@ class FailingStorageTestBase(object):
         self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x01')
         self._backend(0).fail('load')
         data_record, serial = self._storage.load(oid)
-        self.assertEquals('((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}q\x04U\x05valueq\x05K\x07s.',
-                          data_record)
+        self.assertEquals(
+            '((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}'
+            'q\x04U\x05valueq\x05K\x07s.', data_record)
         self.assertEquals(self._storage.lastTransaction(), serial)
         self.assertEquals((data_record, serial), self._backend(0).load(oid))
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('load')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.load, oid)
+        self.assertRaises(RuntimeError, self._storage.load, oid)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_loadBefore_degrading1(self):
@@ -480,8 +449,7 @@ class FailingStorageTestBase(object):
                           self._backend(0).loadBefore(oid, revid2))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.loadBefore, oid, revid2)
+        self.assertRaises(RuntimeError, self._storage.loadBefore, oid, revid2)
 
     def test_loadBefore_degrading2(self):
         oid = self._storage.new_oid()
@@ -502,8 +470,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('loadBefore')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.loadBefore, oid, revid2)
+        self.assertRaises(RuntimeError, self._storage.loadBefore, oid, revid2)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_loadSerial_degrading1(self):
@@ -539,8 +506,7 @@ class FailingStorageTestBase(object):
                           self._backend(0).loadSerial(oid, revid))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.loadSerial, oid, revid)
+        self.assertRaises(RuntimeError, self._storage.loadSerial, oid, revid)
 
     def test_loadSerial_degrading2(self):
         oid = self._storage.new_oid()
@@ -563,8 +529,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('loadSerial')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.loadSerial, oid, revid)
+        self.assertRaises(RuntimeError, self._storage.loadSerial, oid, revid)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_new_oid_degrading1(self):
@@ -572,8 +537,7 @@ class FailingStorageTestBase(object):
         self._disable_storage(0)
         self.assertEquals(8, len(self._storage.new_oid()))
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.new_oid)
+        self.assertRaises(RuntimeError, self._storage.new_oid)
 
     def test_new_oid_degrading2(self):
         self.assertEquals(8, len(self._storage.new_oid()))
@@ -586,8 +550,7 @@ class FailingStorageTestBase(object):
 
         self._backend(0)._oids = None
         self._backend(0).fail('new_oid')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.new_oid)
+        self.assertRaises(RuntimeError, self._storage.new_oid)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_new_oid_unsynchronised_degrading(self):
@@ -629,7 +592,7 @@ class FailingStorageTestBase(object):
         self._dostore(oid=oid, revid=revid3, data=4)
         self.assertEquals(256, self._storage.getSize())
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.pack,
                           time.time(), ZODB.serialize.referencesf)
 
@@ -654,7 +617,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(256, self._storage.getSize())
 
         self._backend(0).fail('pack')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.pack,
                           time.time(), ZODB.serialize.referencesf)
         self.assertEquals('failed', self._storage.raid_status())
@@ -669,7 +632,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('store')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._dostoreNP,
                           oid=oid, revid=revid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
@@ -684,9 +647,7 @@ class FailingStorageTestBase(object):
 
         oid = self._storage.new_oid()
         self._backend(0).fail('tpc_begin')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._dostoreNP,
-                          oid=oid, data='bar')
+        self.assertRaises(RuntimeError, self._dostoreNP, oid=oid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_tpc_vote_degrading(self):
@@ -699,9 +660,7 @@ class FailingStorageTestBase(object):
 
         oid = self._storage.new_oid()
         self._backend(0).fail('tpc_vote')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._dostoreNP,
-                          oid=oid, data='bar')
+        self.assertRaises(RuntimeError, self._dostoreNP, oid=oid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_tpc_finish_degrading(self):
@@ -714,9 +673,7 @@ class FailingStorageTestBase(object):
 
         oid = self._storage.new_oid()
         self._backend(0).fail('tpc_finish')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._dostoreNP,
-                          oid=oid, data='bar')
+        self.assertRaises(RuntimeError, self._dostoreNP, oid=oid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_tpc_abort_not_degrading(self):
@@ -788,7 +745,7 @@ class FailingStorageTestBase(object):
         self._storage.tpc_begin(t)
         self._disable_storage(0)
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.storeBlob,
                           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
 
@@ -824,7 +781,7 @@ class FailingStorageTestBase(object):
         # when tpc_vote ist called.
         self._storage.storeBlob(
             oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.tpc_vote, t)
 
     def test_storeBlob_degrading3(self):
@@ -856,7 +813,7 @@ class FailingStorageTestBase(object):
             raise Exception()
         self._backend(0).storeBlob = fail
         self._backend(1).storeBlob = fail
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.storeBlob,
                           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
 
@@ -885,7 +842,7 @@ class FailingStorageTestBase(object):
         os.remove(stored_file_name)
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.loadBlob, oid, last_transaction)
 
     def test_loadBlob_degrading2(self):
@@ -918,7 +875,7 @@ class FailingStorageTestBase(object):
         os.unlink(b0_filename)
 
         self._backend(0).fail('loadBlob')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.loadBlob, oid, last_transaction)
         self.assertEquals('failed', self._storage.raid_status())
 
@@ -977,6 +934,7 @@ class FailingStorageTestBase(object):
     def test_supportsUndo_required(self):
         class Opener(object):
             name = 'foo'
+
             def open(self):
                 return ZODB.MappingStorage.MappingStorage()
 
@@ -1010,9 +968,7 @@ class FailingStorageTestBase(object):
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undo,
-                          info[2]['id'], t)
+        self.assertRaises(RuntimeError, self._storage.undo, info[2]['id'], t)
 
     def test_undo_degrading2(self):
         oid = self._storage.new_oid()
@@ -1038,9 +994,7 @@ class FailingStorageTestBase(object):
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
         self._backend(0).fail('undo')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undo,
-                          info[2]['id'], t)
+        self.assertRaises(RuntimeError, self._storage.undo, info[2]['id'], t)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_undoLog_degrading1(self):
@@ -1056,8 +1010,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(2, len(info))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undoLog)
+        self.assertRaises(RuntimeError, self._storage.undoLog)
 
     def test_undoLog_degrading2(self):
         oid = self._storage.new_oid()
@@ -1073,8 +1026,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(2, len(info))
 
         self._backend(0).fail('undoLog')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undoLog)
+        self.assertRaises(RuntimeError, self._storage.undoLog)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_undoInfo_degrading1(self):
@@ -1090,8 +1042,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(2, len(info))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undoInfo)
+        self.assertRaises(RuntimeError, self._storage.undoInfo)
 
     def test_undoInfo_degrading2(self):
         oid = self._storage.new_oid()
@@ -1107,8 +1058,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(2, len(info))
 
         self._backend(0).fail('undoInfo')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.undoInfo)
+        self.assertRaises(RuntimeError, self._storage.undoInfo)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_record_iternext(self):
@@ -1138,8 +1088,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('0', data)
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.record_iternext, next)
+        self.assertRaises(RuntimeError, self._storage.record_iternext, next)
 
     def test_record_iternext_degrading2(self):
         for x in range(5):
@@ -1152,8 +1101,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('record_iternext')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.record_iternext, next)
+        self.assertRaises(RuntimeError, self._storage.record_iternext, next)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_gettid_degrading1(self):
@@ -1165,8 +1113,7 @@ class FailingStorageTestBase(object):
         self.assertEquals(revid, tid)
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.getTid, oid)
+        self.assertRaises(RuntimeError, self._storage.getTid, oid)
 
     def test_gettid_degrading2(self):
         oid = self._storage.new_oid()
@@ -1178,8 +1125,7 @@ class FailingStorageTestBase(object):
         self.assertEquals('degraded', self._storage.raid_status())
 
         self._backend(0).fail('getTid')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.getTid, oid)
+        self.assertRaises(RuntimeError, self._storage.getTid, oid)
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_tpc_transaction_finishing(self):
@@ -1395,7 +1341,7 @@ class FailingStorageSharedBlobTests(FailingStorageTestBase,
         self._storage.tpc_begin(t)
         fail(self._backend(0), 'storeBlob')
         fail(self._backend(1), 'storeBlob')
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+        self.assertRaises(RuntimeError,
                           self._storage.storeBlob,
                           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
 
@@ -1512,9 +1458,9 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                                                               zconf, port)
         self._pids.append(pid)
         self._servers.append(adminaddr)
-        self._storages.append(ZEOOpener('5', zport, storage='1',
-                                        min_disconnect_poll=0.5, wait=1,
-                                        wait_timeout=60))
+        self._storages.append(gocept.zeoraid.testing.ZEOOpener(
+            '5', zport, storage='1', min_disconnect_poll=0.5, wait=1,
+            wait_timeout=60))
 
         # configure the RAID to use the new backend
         self.update_config()

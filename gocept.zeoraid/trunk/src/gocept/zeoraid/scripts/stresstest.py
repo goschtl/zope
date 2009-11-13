@@ -5,7 +5,6 @@ from ZODB import DB
 import ZODB.POSException
 import ZEO.zrpc.error
 import ZEO.Exceptions
-import ZODB.utils
 import logging
 logging.getLogger().addHandler(logging.StreamHandler())
 logging.getLogger().setLevel(0)

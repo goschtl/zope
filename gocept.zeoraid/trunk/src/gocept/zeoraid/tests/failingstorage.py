@@ -13,12 +13,9 @@
 ##############################################################################
 """Unit test support."""
 
-import tempfile
-
-import ZODB.utils
-import ZODB.config
 import ZODB.FileStorage
-
+import ZODB.config
+import tempfile
 import zope.proxy
 
 

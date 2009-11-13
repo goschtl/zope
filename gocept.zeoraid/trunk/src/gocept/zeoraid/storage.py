@@ -13,31 +13,28 @@
 ##############################################################################
 """ZEORaid storage implementation."""
 
-import threading
-import time
-import logging
-import tempfile
-import os
-import os.path
-import shutil
-import random
-
-import zc.lockfile
-import zope.interface
-
+from ZEO.runzeo import ZEOOptions
 import ZEO.ClientStorage
 import ZEO.interfaces
 import ZODB.POSException
+import ZODB.blob
 import ZODB.interfaces
 import ZODB.utils
-import persistent.TimeStamp
-import transaction
-import transaction.interfaces
-import ZODB.blob
-from ZEO.runzeo import ZEOOptions
-
 import gocept.zeoraid.interfaces
 import gocept.zeoraid.recovery
+import logging
+import os
+import os.path
+import persistent.TimeStamp
+import random
+import shutil
+import tempfile
+import threading
+import time
+import transaction
+import transaction.interfaces
+import zc.lockfile
+import zope.interface
 
 logger = logging.getLogger('gocept.zeoraid')
 
@@ -45,7 +42,8 @@ logger = logging.getLogger('gocept.zeoraid')
 def ensure_open_storage(method):
     def check_open(self, *args, **kw):
         if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
+            raise gocept.zeoraid.interfaces.RAIDClosedError(
+                "Storage has been closed.")
         return method(self, *args, **kw)
     return check_open
 
@@ -168,8 +166,9 @@ class RAIDStorage(object):
 
         # Set up list of degraded storages
         self.storages_degraded = []
-        for degraded_storages in tids.values():
-            self.storages_degraded.extend(degraded_storages)
+        # Degrade all remaining (non-optimal) storages
+        for name in reduce(lambda x,y:x+y, tids.values(), []):
+            self._degrade_storage(name)
 
         # No storage is recovering initially
         self.storage_recovering = None
@@ -186,8 +185,9 @@ class RAIDStorage(object):
         try:
             try:
                 self._apply_all_storages('close', expect_connected=False)
-            except gocept.zeoraid.interfaces.RAIDError:
-                pass
+            except Exception, e:
+                if not zeoraid_exception(e):
+                    raise e
         finally:
             self.closed = True
             del self.storages_optimal[:]
@@ -205,8 +205,10 @@ class RAIDStorage(object):
         """An approximate size of the database, in bytes."""
         try:
             return self._apply_single_storage('getSize')[0]
-        except gocept.zeoraid.interfaces.RAIDError:
-            return 0
+        except Exception, e:
+            if zeoraid_exception(e):
+                return 0
+            raise e
 
     def history(self, oid, version='', size=1):
         """Return a sequence of history information dictionaries."""
@@ -227,8 +229,10 @@ class RAIDStorage(object):
         """The approximate number of objects in the storage."""
         try:
             return self._apply_single_storage('__len__')[0]
-        except gocept.zeoraid.interfaces.RAIDError:
-            return 0
+        except RuntimeError, e:
+            if zeoraid_exception(e):
+                return 0
+            raise e
 
     def load(self, oid, version=''):
         """Load data for an object id and version."""
@@ -304,8 +308,8 @@ class RAIDStorage(object):
             raise ZODB.POSException.StorageTransactionError(self, transaction)
         self._write_lock.acquire()
         try:
-            self._apply_all_storages('store',
-                                     (oid, oldserial, data, version, transaction))
+            self._apply_all_storages(
+                'store', (oid, oldserial, data, version, transaction))
             return self._tid
         finally:
             self._write_lock.release()
@@ -324,6 +328,7 @@ class RAIDStorage(object):
                 self._commit_lock.release()
         finally:
             self._write_lock.release()
+        self._process_zeo_waiting()
 
     @ensure_writable
     def tpc_begin(self, transaction, tid=None, status=' '):
@@ -357,6 +362,7 @@ class RAIDStorage(object):
     def tpc_finish(self, transaction, callback=None):
         """Finish the transaction, making any transaction changes permanent.
         """
+        result = None
         self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
@@ -371,13 +377,15 @@ class RAIDStorage(object):
                     # ClientStorage contradict each other and the documentation
                     # is non-existent. We trust ClientStorage here.
                     callback(self._tid)
-                return self._tid
+                result = self._tid
             finally:
                 self._transaction = None
                 self._tpc_cleanup()
                 self._commit_lock.release()
         finally:
             self._write_lock.release()
+        self._process_zeo_waiting()
+        return result
 
     def tpc_vote(self, transaction):
         """Provide a storage with an opportunity to veto a transaction."""
@@ -385,7 +393,8 @@ class RAIDStorage(object):
         try:
             if transaction is not self._transaction:
                 return
-            self._apply_all_storages('tpc_vote', (transaction,))
+            self._apply_all_storages(
+                'tpc_vote', (transaction,), filter_results=unique_serials)
         finally:
             self._write_lock.release()
 
@@ -545,19 +554,15 @@ class RAIDStorage(object):
 
     def tpc_transaction(self):
         """The current transaction being committed."""
-        # XXX Awful hack against ZEO: always return None so the transaction
-        # waiting list of ZEO is never triggered but rather we allow everybody
-        # to block in here. We need to resolve this via a discussion on
-        # zodb-dev.
-        # return self._transaction
-        return
+        return self._transaction
 
     def getTid(self, oid):
         """The last transaction to change an object."""
         return self._apply_single_storage('getTid', (oid,))[0]
 
     def getExtensionMethods(self):
-        # This method isn't officially part of the interface but it is supported.
+        # This method isn't officially part of the interface but
+        # it is supported.
         methods = dict.fromkeys(
             ['raid_recover', 'raid_status', 'raid_disable', 'raid_details',
             'raid_reload'])
@@ -705,7 +710,7 @@ class RAIDStorage(object):
     @ensure_open_storage
     def _apply_all_storages(self, method_name, args=(), kw={},
                             expect_connected=True, exclude=(),
-                            ignore_noop=False):
+                            ignore_noop=False, filter_results=lambda x: x):
         """Calls the given method on all optimal backend storages in order.
 
         `args` can be given as an n-tuple with the positional arguments that
@@ -765,8 +770,10 @@ class RAIDStorage(object):
             # must be consistent anyway.
             pass
         elif results:
+            results = dict((storage, filter_results(result))
+                           for storage, result in results.items())
             ref = results.values()[0]
-            for test in results.values():
+            for test in results.values()[1:]:
                 if test != ref:
                     consistent = False
                     break
@@ -790,10 +797,15 @@ class RAIDStorage(object):
     def _recover_impl(self, name):
         self.storages_degraded.remove(name)
         self.storage_recovering = name
-        storage = self.openers[name].open()
-        self.storages[name] = storage
+        try:
+            target = self.openers[name].open()
+        except Exception:
+            self.storage_recovering = None
+            self.storages_degraded.append(name)
+            raise
+        self.storages[name] = target
         recovery = gocept.zeoraid.recovery.Recovery(
-            self, storage, self._finalize_recovery,
+            self, target, self._finalize_recovery,
             recover_blobs=(self.blob_fshelper and not self.shared_blob_dir))
         for msg in recovery():
             self.recovery_status = msg
@@ -851,6 +863,35 @@ class RAIDStorage(object):
             except OSError:
                 pass
 
+    def _process_zeo_waiting(self):
+        if not hasattr(self, '_waiting'):
+            return
+        # XXX This is a hack because ZEO's StorageServer stores private data
+        # on us and doesn't expect us to lock/unlock ourselves without it
+        # noticing. Due to that it can happen that transactions get blocked
+        # but never restarted. We have to implement the restart dance
+        # ourselves here. We hope that ZODB will grow a mechanism to do this
+        # cleanly in the future.
+        #
+        # Restart any client waiting for the storage lock.
+        while self._waiting:
+            delay, zeo_storage = self._waiting.pop(0)
+            try:
+                zeo_storage._restart(delay)
+            except:
+                zeo_storage.log(
+                    "Unexpected error handling waiting transaction",
+                    level=logging.WARNING, exc_info=True)
+                zeo_storage.connection.close()
+                continue
+
+            if self._waiting:
+                n = len(self._waiting)
+                zeo_storage.log("Blocked transaction restarted.  "
+                         "Clients waiting: %d" % n)
+            else:
+                zeo_storage.log("Blocked transaction restarted.")
+
 
 def optimistic_copy(source, target):
     """Try creating a hard link to source at target. Fall back to copying the
@@ -867,3 +908,33 @@ def optimistic_copy(source, target):
         finally:
             file1.close()
             file2.close()
+
+
+def unique_serials(serials):
+    """Filter a sequence of oid/serial pairs and remove late duplicates."""
+    if serials is None:
+        return
+    # I keep both a list and a set: the list ensures order, the set ensures
+    # containment test performance.
+    seen = set()
+    result = []
+    for pair in serials:
+        if pair in result:
+            continue
+        result.append(pair)
+        seen.add(pair)
+    return result
+
+
+def zeoraid_exception(e):
+    """Determine whether the given exception is a RAID error.
+
+    Unfortunately creating custom exceptions breaks ZEO clients as the
+    exceptions might get pickled but ZEORaid code isn't installed on the
+    clients.
+
+    We thus default to raising simple exceptions that we annotate with a
+    special attribute.
+
+    """
+    return bool(getattr(e, 'created_by_zeoraid', False))
