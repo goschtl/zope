@@ -48,8 +48,8 @@ and disabling and recovering storages at runtime.
 Development
 ===========
 
-A mailing list is available at `zeoraid@lists.gocept.com`. Send an email with
-the subject `subscribe` to this address to join the list.
+Discussion via mailing list happens on `zodb-dev@zope.org`. For subscriptions
+visit http://mail.zope.org/.
 
 A bug tracker is available at launchpad:
 https://bugs.launchpad.net/gocept.zeoraid/
