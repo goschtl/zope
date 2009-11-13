@@ -1,6 +1,18 @@
 Changes
 =======
 
+1.13 (unreleased)
+-----------------
+
+- Some imports have been modified, to avoid deprecation warnings,
+  while using ZTK 1.0dev. [trollfot]
+
+- Added support for ZTK 1.0dev. This was possible by changing
+  slightly the DirectoryResource implementation. The DirectoryResource
+  now uses `zope.browserresource` where DirectoryResourceFactory's factories
+  are no longer a class-level dict entry but utilities. [trollfot]
+
+
 1.12.2 (2009-09-17)
 -------------------
 
