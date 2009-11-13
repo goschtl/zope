@@ -1,4 +1,3 @@
-import logging
 import sys
 from ZPublisher.Publish import call_object
 from ZPublisher.Publish import missing_name
@@ -14,8 +13,7 @@ from zope.security.management import newInteraction, endInteraction
 from zope.event import notify
 
 from pubevents import PubStart, PubSuccess, PubFailure, \
-     PubBeforeCommit, PubAfterTraversal
-
+     PubBeforeCommit, PubAfterTraversal, PubBeforeAbort
 
 def publish(request, module_name, after_list, debug=0,
             # Optimize:
@@ -126,9 +124,12 @@ def publish(request, module_name, after_list, debug=0,
                     retry = True
             finally:
                 # Note: 'abort's can fail. Nevertheless, we want end request handling
-                try: 
-                    if transactions_manager:
-                        transactions_manager.abort()
+                try:                     
+                    try:
+                        notify(PubBeforeAbort(request, exc_info, retry))
+                    finally:                    
+                        if transactions_manager:
+                            transactions_manager.abort()
                 finally:
                     endInteraction()
                     notify(PubFailure(request, exc_info, retry))
@@ -148,10 +149,13 @@ def publish(request, module_name, after_list, debug=0,
 
         else:
             # Note: 'abort's can fail. Nevertheless, we want end request handling
-            try:
-                if transactions_manager:
-                    transactions_manager.abort()
+            try:                     
+                try:
+                    notify(PubBeforeAbort(request, exc_info, False))
+                finally:
+                    if transactions_manager:
+                        transactions_manager.abort()
             finally:
                 endInteraction()
-                notify(PubFailure(request, exc_info, False))
+                notify(PubFailure(request, exc_info, retry))
             raise
