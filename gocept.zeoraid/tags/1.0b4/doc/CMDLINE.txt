@@ -1,0 +1,35 @@
+==============================================
+Using the ZEORaid controller command-line tool
+==============================================
+
+Usage: controller.py [options] <command> [command_options]
+
+Options:
+
+    -p port -- port to connect to (default is 8100)
+
+    -h host -- host to connect to (default is 127.0.0.1)
+
+    -S name -- storage name (default is '1')
+
+Commands:
+
+    status -- Print short status information
+
+    details -- Print detailed status information
+
+    recover <storage> -- Start recovery for a storage
+
+    disable <storage> -- Disable a storage
+
+    reload </path/to/zeo.conf> -- Reload a specified zeo.conf file
+
+recover
+-------
+Multiple recoveries can't happen in parallel (see KNOWNBUGS.txt for more info).
+
+reload
+------
+The reload command takes a zeo.conf file and compares the names of the storages described there and the names of the storages currently loaded to see if any storage needs to be added and/or removed. A new storage is added in the degraded state, so you need to manually 'recover' it, while a removed storage is 'disabled', not really removed. 
+
+Example: Let suppose we have a ZEORaid server connected with three storages called '1', '2' and '3' in the optimal state. Now we call 'reload' on a modified zeo.conf file that have the storages '1', '3', '4' and '5' - the storage '2' is disabled and the storages '4' and '5' are added as degraded storages. We now must 'recover' them, one at a time, before using them.
