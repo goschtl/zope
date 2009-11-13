@@ -1,6 +1,10 @@
 Products.CMFCalendar Changelog
 ==============================
 
+2.2.0-beta (unreleased)
+-----------------------
+
+
 2.2.0-alpha (2009-11-13)
 ------------------------
 
@@ -52,7 +56,7 @@ Products.CMFCalendar Changelog
 
 
 2.1.2-beta (2008-08-26)
-------------------
+-----------------------
 
 - completed devolution from monolithic CMF package into its component
   products that are distributed as eggs from PyPI.
