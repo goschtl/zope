@@ -1,0 +1,70 @@
+==============================================
+Using the ZEORaid controller command-line tool
+==============================================
+
+Usage: controller.py [options] <command> [command_options]
+
+Options:
+
+    -p port -- port to connect to (default is 8100)
+
+    -h host -- host to connect to (default is 127.0.0.1)
+
+    -S name -- storage name (default is '1')
+
+Commands:
+
+    status -- Print short status information
+
+    details -- Print detailed status information
+
+    recover <storage> -- Start recovery for a storage
+
+    disable <storage> -- Disable a storage
+
+    reload -- Reload this RAID storage's configuration from the server's
+              zeo.conf.
+
+Defaults
+--------
+
+The defaults can be provided in a modified version by using the
+gocept.zeoraid:server recipe for generating a ZEO server with RAID
+configuration and installing a console script with matching defaults.
+
+The defaults listed above are used when the console script is installed
+without the buildout recipe.
+
+
+recover
+-------
+
+Multiple recoveries can't happen in parallel (see KNOWNBUGS.txt for more
+information).
+
+
+reload
+------
+
+The reload command re-reads the ZEO server's configuration file and for the
+RAID storage given checks the list of back-end storages for additions and
+removals.
+
+New back-ends are added to the RAID in `degraded` state and have to be
+manually recovered.
+
+Back-ends that are missing from the new configuration are closed and removed
+from the RAID confiuration.
+
+Example:
+
+Suppose we have a ZEORaid server connected to three back-ends named '1', '2'
+and '3'. All of them are currently in the `optimal` state.
+
+Now we modify the ZEO server's configuration file so that it lists back-ends
+'1', '3', '4', and '5': storage '2' is removed and storages '4' and '5' are
+added.
+
+When calling `reload` storage '2' will become disabled and storages '4' and
+'5' are shown as degraded. We have to run 'reload' for each of them to get
+back to `optimal`.
