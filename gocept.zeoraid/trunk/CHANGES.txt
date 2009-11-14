@@ -5,6 +5,18 @@ Change History
 1.0b5 (unreleased)
 ------------------
 
+- General improvements on reloading: make code more readable and avoid crashing
+  when configuration file doesn't parse.
+
+- Restructured output of the controller's `details` command.
+
+- Fix #464339: Storages were not added on reload.
+
+- Fix #330008: Reload now refuses to apply a configuration change if it would
+  cause all optimal storages to disappear.
+
+- Fix #316285: Reload failed removing degraded back-ends.
+
 - Add a note to the deployment documentation that strongly advises people to
   use a deployment recipe for setting up their ZEO servers to avoid buildout
   killing volatile files.

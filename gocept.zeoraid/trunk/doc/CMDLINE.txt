@@ -53,8 +53,8 @@ removals.
 New back-ends are added to the RAID in `degraded` state and have to be
 manually recovered.
 
-Back-ends that are missing from the new configuration are `disabled` but
-remain in the RAID.
+Back-ends that are missing from the new configuration are closed and removed
+from the RAID confiuration.
 
 Example:
 

@@ -41,6 +41,7 @@ import zope.interface.verify
 
 def fail(obj, name):
     old_method = getattr(obj, name)
+
     def failing_method(*args, **kw):
         setattr(obj, name, old_method)
         raise Exception()
@@ -790,6 +791,7 @@ class FailingStorageTestBase(object):
         open(blob_file_name, 'w').write('I am a happy blob.')
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
+
         def fail(*args, **kw):
             raise Exception()
         self._backend(0).storeBlob = fail
@@ -809,6 +811,7 @@ class FailingStorageTestBase(object):
         open(blob_file_name, 'w').write('I am a happy blob.')
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
+
         def fail(*args, **kw):
             raise Exception()
         self._backend(0).storeBlob = fail
@@ -932,6 +935,7 @@ class FailingStorageTestBase(object):
         storage.close()
 
     def test_supportsUndo_required(self):
+
         class Opener(object):
             name = 'foo'
 
@@ -1182,6 +1186,7 @@ class FailingStorageTestBase(object):
 
     def test_timeoutBackend(self):
         self._storage.timeout = 2
+
         def slow_tpc_begin(*args):
             time.sleep(4)
         self._backend(0).tpc_begin = slow_tpc_begin
@@ -1198,6 +1203,7 @@ class FailingStorageTests(FailingStorageTestBase,
 
     def test_blob_cache_cannot_link(self):
         called_broken = []
+
         def broken_link(foo, bar):
             called_broken.append(True)
             raise OSError
@@ -1215,6 +1221,7 @@ class FailingStorageTests(FailingStorageTestBase,
 
     def test_blob_cache_locking(self):
         return_value = []
+
         def try_loadBlob():
             return_value.append(self._storage.loadBlob(oid, tid))
 
@@ -1490,25 +1497,114 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
 
         s5.close()
 
-    def test_reload_remove(self):
-        storage = self._storages.pop(3).open()
+    def test_recover_same_storage(self):
+        # This is a somewhat convoluted example for accidentally connecting a
+        # new storage to the same ZEO server that is already used and trying
+        # to recover. This will almost recover but will cause the newly
+        # connected storage to be disconnected again because OIDs can't be
+        # synchronized.
+        removed_storage = self._storages.pop(3)
 
         # configure the RAID to no longer use the removed backend
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals('optimal', self._storage.raid_status())
+        self.assertEquals([['1', '0', '2', '4'], None, [], ''],
+                          self._storage.raid_details())
+
+        # Re-insert the storage
+        self._storages.append(removed_storage)
+        self.update_config()
+        self._storage.raid_reload()
+        self.assertEquals([['1', '0', '2', '4'], None, ['3'], ''],
+                          self._storage.raid_details())
+
+        self._storage.raid_recover('3')
+
+        while self._storage.raid_status() != 'degraded':
+            time.sleep(0.1)
+        # This is unobvious: Storage 4 fails because the _apply_all call for
+        # new_oid causes storage 4 to give an inconsistent result thus being
+        # dropped from the pool of good storages. Storage 3 however meets the
+        # OID target then thus being picked up.
+        self.assertEquals([['1', '0', '2', '3'], None, ['4'], ('recovered',)],
+                          self._storage.raid_details())
+
+    def test_reload_remove_readd(self):
+        removed_storage = self._storages.pop()
+
+        # configure the RAID to no longer use the removed backend
+        self.update_config()
+        self._storage.raid_reload()
+        self.assertEquals([['1', '0', '3', '2'], None, [], ''],
+                          self._storage.raid_details())
 
         # ensure that we can still write to the RAID
         oid = self._storage.new_oid()
         self._dostore(oid=oid)
 
         # ensure that the transaction did not arrive at the removed backend
-        self.assertRaises(ZODB.POSException.POSKeyError, storage.load, oid)
+        s = removed_storage.open()
+        self.assertRaises(ZODB.POSException.POSKeyError, s.load, oid)
+        s.close()
 
-        storage.close()
+        # Re-insert the storage
+        self._storages.append(removed_storage)
+        self.update_config()
+        self._storage.raid_reload()
+        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
+                          self._storage.raid_details())
+
+        self._storage.raid_recover('4')
+
+        while self._storage.raid_status() != 'optimal':
+            time.sleep(0.1)
+
+        self.assertEquals(
+            [['1', '0', '3', '2', '4'], None, [], ('recovered',)],
+            self._storage.raid_details())
+
+        # Now, after recovery, the OID should be visible
+        s = removed_storage.open()
+        s.load(oid)
+        s.close()
+
+    def test_reload_remove_disabled(self):
+        removed_storage = self._storages.pop()
+        self._storage.raid_disable(removed_storage.name)
+
+        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
+                          self._storage.raid_details())
+
+        # configure the RAID to no longer use the removed backend
+        self.update_config()
+
+        self._storage.raid_reload()
+        self.assertEquals([['1', '0', '3', '2'], None, [], ''],
+                          self._storage.raid_details())
+
+    def test_reload_broken_config(self):
+        self.update_config()
+        f = open(self.zeo_configfile, 'w')
+        f.write('fdashkjfhdaskkf')
+        f.close()
+
+        self.assertRaises(RuntimeError, self._storage.raid_reload)
+        self.assertEquals([['1', '0', '3', '2', '4'], None, [], ''],
+                          self._storage.raid_details())
+
+    def test_reload_no_remaining_storages(self):
+        remove = self._storages[:-1]
+        self._storages = self._storages[-1:]
+        self._storage.raid_disable(self._storages[0].name)
+
+        self.update_config()
+        self.assertRaises(RuntimeError, self._storage.raid_reload)
+        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
+                          self._storage.raid_details())
 
 
 def test_suite():
+
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))

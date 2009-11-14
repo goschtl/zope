@@ -40,6 +40,7 @@ logger = logging.getLogger('gocept.zeoraid')
 
 
 def ensure_open_storage(method):
+
     def check_open(self, *args, **kw):
         if self.closed:
             raise gocept.zeoraid.interfaces.RAIDClosedError(
@@ -49,6 +50,7 @@ def ensure_open_storage(method):
 
 
 def ensure_writable(method):
+
     def check_writable(self, *args, **kw):
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
@@ -167,7 +169,7 @@ class RAIDStorage(object):
         # Set up list of degraded storages
         self.storages_degraded = []
         # Degrade all remaining (non-optimal) storages
-        for name in reduce(lambda x,y:x+y, tids.values(), []):
+        for name in reduce(lambda x, y: x + y, tids.values(), []):
             self._degrade_storage(name)
 
         # No storage is recovering initially
@@ -252,22 +254,26 @@ class RAIDStorage(object):
         """Allocate a new object id."""
         self._write_lock.acquire()
         try:
-            oids = []
-            for storage in self.storages_optimal[:]:
-                reliable, oid = self.__apply_storage(storage, 'new_oid')
-                if reliable:
-                    oids.append((oid, storage))
-            if not oids:
-                raise gocept.zeoraid.interfaces.RAIDError(
-                    "RAID storage is failed.")
-
-            min_oid = sorted(oids)[0][0]
-            for oid, storage in oids:
-                if oid > min_oid:
-                    self._degrade_storage(storage)
-            return min_oid
+            return self._new_oid()
         finally:
             self._write_lock.release()
+
+    def _new_oid(self):
+        # Not write-lock protected implementation of new_oid
+        oids = []
+        for storage in self.storages_optimal[:]:
+            reliable, oid = self.__apply_storage(storage, 'new_oid')
+            if reliable:
+                oids.append((oid, storage))
+        if not oids:
+            raise gocept.zeoraid.interfaces.RAIDError(
+                "RAID storage is failed.")
+
+        min_oid = sorted(oids)[0][0]
+        for oid, storage in oids:
+            if oid > min_oid:
+                self._degrade_storage(storage)
+        return min_oid
 
     @ensure_writable
     def pack(self, t, referencesf):
@@ -607,7 +613,13 @@ class RAIDStorage(object):
                 'Cannot reload config without running inside ZEO.')
 
         options = ZEOOptions()
-        options.realize(['-C', self.zeo.options.configfile])
+        try:
+            options.realize(['-C', self.zeo.options.configfile])
+        except Exception, e:
+            raise RuntimeError(
+                'Could not reload configuration file: '
+                'please check your configuration.')
+
         for candidate in options.storages:
             if candidate.name == self.__name__:
                 storage = candidate
@@ -615,17 +627,32 @@ class RAIDStorage(object):
         else:
             raise RuntimeError(
                 'No storage section found for RAID %s.' % self.__name__)
-        new_storages = dict((opt.name, opt)
-                            for opt in storage.config.storages)
-        new_names = set(new_storages)
-        old_names = set(self.openers)
+        configured_storages = dict(
+            (opt.name, opt) for opt in storage.config.storages)
 
-        for name in old_names - new_names:
-            self._close_storage(name)
+        configured_names = set(configured_storages.keys())
+        current_names = set(self.openers.keys())
 
-        for name in new_names - old_names:
-            self.openers[name] = new_storages[name]
+        added = configured_names - current_names
+        removed = current_names - configured_names
+
+        # Check whether we would remove all optimal storages. If that's so,
+        # then we do not perform the reconfiguration.
+        remaining_optimal = set(self.storages_optimal) - removed
+        if not remaining_optimal:
+            raise RuntimeError(
+                'Cannot perform reconfiguration: '
+                'all optimal storages would be removed.')
+
+        for name in added:
+            self.openers[name] = configured_storages[name]
             self.storages_degraded.append(name)
+
+        for name in removed:
+            self._close_storage(name)
+            del self.openers[name]
+            if name in self.storages_degraded:
+                self.storages_degraded.remove(name)
 
     # internal
 
@@ -638,11 +665,12 @@ class RAIDStorage(object):
     def _close_storage(self, name):
         if name in self.storages_optimal:
             self.storages_optimal.remove(name)
-        storage = self.storages.pop(name)
-        t = threading.Thread(target=storage.close)
-        self._threads.add(t)
-        t.setDaemon(True)
-        t.start()
+        if name in self.storages:
+            storage = self.storages.pop(name)
+            t = threading.Thread(target=storage.close)
+            self._threads.add(t)
+            t.setDaemon(True)
+            t.start()
 
     def _degrade_storage(self, name, fail=True):
         self._close_storage(name)
@@ -726,6 +754,7 @@ class RAIDStorage(object):
         else:
             # Provide a fallback if `args` is given as a simple tuple.
             static_arguments = args
+
             def dummy_generator():
                 while True:
                     yield static_arguments
@@ -814,32 +843,36 @@ class RAIDStorage(object):
     def _finalize_recovery(self, storage):
         self._write_lock.acquire()
         try:
+            # Synchronize OIDs: check which one is further down giving out
+            # OIDs. Due to ZEO allocation massively at once this might also be
+            # the recovering storage. Give it exactly one try to catch up. If
+            # we miss the target, we simply degrade the recovering storage
+            # again.
+            max_optimal = self._new_oid()
+            max_recovering = self.storages[self.storage_recovering].new_oid()
+            if max_optimal != max_recovering:
+                if max_optimal > max_recovering:
+                    target = max_optimal
+                    catch_up = self.storages[self.storage_recovering].new_oid
+                else:
+                    target = max_recovering
+                    catch_up = self._new_oid
+
+                oid = None
+                while oid < target:
+                    oid = catch_up()
+
+                if oid != target:
+                    logging.warn(
+                        'Degrading recovering storage %r due to '
+                        'new OID mismatch' % self.storage_recovering)
+                    self._degrade_storage(self.storage_recovering)
+                    return
+
             self.storages_optimal.append(self.storage_recovering)
-            self._synchronise_oids()
             self.storage_recovering = None
         finally:
             self._write_lock.release()
-
-    def _synchronise_oids(self):
-        # Try allocating the same OID from all storages. This is done by
-        # determining the maximum and making all other storages increase
-        # their OID until they hit the maximum. While any storage yields
-        # an OID above the maximum, we try again with that value.
-        max_oid = None
-        lagging = self.storages_optimal[:]
-        while lagging:
-            storage = lagging.pop()
-            while True:
-                reliable, oid = self.__apply_storage(storage, 'new_oid')
-                if not reliable:
-                    break
-                if oid < max_oid:
-                    continue
-                if oid > max_oid:
-                    max_oid = oid
-                    lagging = [s for s in self.storages_optimal
-                               if s != storage]
-                break
 
     def _new_tid(self, old_tid):
         """Generates a new TID."""
