@@ -5,7 +5,14 @@ Change History
 1.0b5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add a note to the deployment documentation that strongly advises people to
+  use a deployment recipe for setting up their ZEO servers to avoid buildout
+  killing volatile files.
+
+- Fix #463763: Make the controller script not wait endlessly for a ZEORaid
+  server to come up but fail immediately.
+
+- Make the controller script use exit codes that are Nagios-compatible.
 
 
 1.0b4 (2009-11-13)

@@ -12,11 +12,11 @@
 #
 ##############################################################################
 
-import re
-import zc.buildout.testing
-
-import unittest
 from zope.testing import doctest, renormalizing
+import gocept.zeoraid.scripts.controller
+import re
+import unittest
+import zc.buildout.testing
 
 
 def setUp(test):
@@ -49,11 +49,20 @@ checker = renormalizing.RENormalizing([
     ])
 
 
+class TestController(unittest.TestCase):
+
+    def test_disconnected_fails(self):
+        self.assertRaises(RuntimeError,
+            gocept.zeoraid.scripts.controller.RAIDManager,
+            '127.0.0.10', '4000', '1')
+
+
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
+    suite = unittest.TestSuite()
+    suite.addTest(doctest.DocFileSuite(
             'recipe.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=checker,
-            optionflags=doctest.REPORT_NDIFF | doctest.ELLIPSIS),
-        ))
+            optionflags=doctest.REPORT_NDIFF | doctest.ELLIPSIS))
+    suite.addTest(unittest.makeSuite(TestController))
+    return suite

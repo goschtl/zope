@@ -38,8 +38,22 @@ Commands:
 """
 
 import ZEO.ClientStorage
-import logging
 import optparse
+import sys
+import logging
+
+logging.getLogger().setLevel(100)
+
+NAGIOS_OK = 0
+NAGIOS_WARNING = 1
+NAGIOS_CRITICAL = 2
+NAGIOS_UNKNOWN = 3
+
+STATUS_TO_NAGIOS = dict(
+    optimal=NAGIOS_OK,
+    failed=NAGIOS_CRITICAL,
+    degraded=NAGIOS_CRITICAL,
+    recovering=NAGIOS_WARNING)
 
 
 class RAIDManager(object):
@@ -50,10 +64,18 @@ class RAIDManager(object):
         self.storage = storage
 
         self.raid = ZEO.ClientStorage.ClientStorage(
-            (self.host, self.port), storage=self.storage, wait=1, read_only=1)
+            (self.host, self.port), storage=self.storage, read_only=1,
+            wait=False)
+        if not self.raid.is_connected():
+            self.raid.close()
+            raise RuntimeError(
+                'Could not connect to ZEO server at %s:%s' %
+                (self.host, self.port))
 
     def cmd_status(self):
-        print self.raid.raid_status()
+        status = self.raid.raid_status()
+        print status
+        return STATUS_TO_NAGIOS[status]
 
     def cmd_details(self):
         ok, recovering, failed, recovery_status = self.raid.raid_details()
@@ -63,15 +85,19 @@ class RAIDManager(object):
         print "\toptimal\t\t", ok
         print "\trecovering\t", recovering, recovery_status
         print "\tfailed\t\t", failed
+        return STATUS_TO_NAGIOS[self.cmd_status()]
 
     def cmd_recover(self, storage):
         print self.raid.raid_recover(storage)
+        return NAGIOS_OK
 
     def cmd_disable(self, storage):
         print self.raid.raid_disable(storage)
+        return NAGIOS_OK
 
     def cmd_reload(self):
         self.raid.raid_reload()
+        return NAGIOS_OK
 
 
 def main(host="127.0.0.1", port=8100, storage="1"):
@@ -95,11 +121,14 @@ def main(host="127.0.0.1", port=8100, storage="1"):
 
     command, subargs = args[0], args[1:]
 
-    logging.getLogger().addHandler(logging.StreamHandler())
-    m = RAIDManager(options.host, options.port, options.storage)
-    command = getattr(m, 'cmd_%s' % command)
-    command(*subargs)
-
+    try:
+        m = RAIDManager(options.host, options.port, options.storage)
+        command = getattr(m, 'cmd_%s' % command)
+        result = command(*subargs)
+    except Exception, e:
+        print str(e)
+        result = NAGIOS_CRITICAL
+    sys.exit(result)
 
 if __name__ == '__main__':
     main()
