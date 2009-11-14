@@ -20,3 +20,10 @@ Due to this you are free to pack storages any way you want:
 We do *recommend* to pack them shortly after each other to avoid application
 errors WRT historical data. (Those won't be database errors but your
 application will fail to undo or retrieve historical data reliably.)
+
+
+Monitoring
+==========
+
+The controller script that comes with ZEORaid returns Nagios-compatible exit
+codes and thus the status command can be used directly as a Nagios command.

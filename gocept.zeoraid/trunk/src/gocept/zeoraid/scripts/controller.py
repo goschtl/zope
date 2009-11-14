@@ -105,7 +105,9 @@ def main(host="127.0.0.1", port=8100, storage="1"):
     description = (
         "Connect to a RAIDStorage on a ZEO server and perform "
         "maintenance tasks. Available commands: status, details, "
-        "recover <STORAGE>, disable <STORAGE>, reload </PATH/TO/ZEO.CONF>")
+        "recover <STORAGE>, disable <STORAGE>, reload </PATH/TO/ZEO.CONF>. "
+        "Returns a Nagios-compatible exit code depending on success, "
+        "failure or RAID status.")
 
     parser = optparse.OptionParser(usage=usage, description=description)
     parser.add_option("-S", "--storage", default=storage,
