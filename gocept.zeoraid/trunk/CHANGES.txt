@@ -2,7 +2,7 @@
 Change History
 ==============
 
-1.0b5 (unreleased)
+1.0b5 (2009-11-14)
 ------------------
 
 - General improvements on reloading: make code more readable and avoid crashing
