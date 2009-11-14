@@ -15,7 +15,7 @@ Variant 1: Classical deployment
   the actual FileStorages.
 
 - On the ZEORAID server, install the `gocept.zeoraid` package using
-  `distutils` or `setuptool` so that the ZEO server can access it.
+  `distutils` or `setuptools` so that the ZEO server can access it.
 
 - Configure your `zeo.conf` file for ZEORAID by defining a storage like this::
 
@@ -53,6 +53,11 @@ configuring general ZEO servers using `zc.buildout`.
 
 - When running `buildout`, each configured `raidstorage` will get a
   RAID management generated to control the specific raid storage.
+
+- For production environments *ALWAYS* use a deployment recipe
+  (zc.recipe.deployment, gocept.recipe.deploymentsandbox) that stores your
+  dynamic data (like PID and log files) in a safe place so buildouts don't
+  disrupt operation.
 
 Any maintenance (log rotration, packing, ...) can be done as you do for any
 other ZEO server using `zc.zodbrecipes:server`.
