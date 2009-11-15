@@ -75,10 +75,15 @@ class BSDDBStorage(
 
 
         self.env = db.DBEnv()
-        self.env.open(envpath,
-                      db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_MPOOL |
-                      db.DB_INIT_TXN | db.DB_RECOVER | db.DB_THREAD |
-                      db.DB_CREATE | db.DB_AUTO_COMMIT)
+        self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1) # XXX should be optional
+        flags = (db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_MPOOL |
+                 db.DB_INIT_TXN | db.DB_THREAD)
+        if not read_only:
+            # Running recovery basically breaks any other processes
+            # that have the env open, so we only do recover for the "main"
+            # non-read-only process.
+            flags |=  db.DB_RECOVER | db.DB_CREATE
+        self.env.open(envpath, flags)
 
         # data: {oid -> [tid+data]}
         self.data = db.DB(self.env)
@@ -234,6 +239,8 @@ class BSDDBStorage(
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
             with self.cursor(self.data, txn) as cursor:
                 kr = cursor.get(oid, serial, flags=db.DB_GET_BOTH_RANGE)
+                if kr is None:
+                    kr = cursor.get(oid, flags=db.DB_SET)
                 if kr:
                     k, record = kr
                     if k == oid and record[:8] == serial:
@@ -255,7 +262,8 @@ class BSDDBStorage(
         pack_tid = timetime2tid(pack_time)
         while self._pack1(pack_tid):
             pass
-        self._remove_empty_notlast_blob_directories(self.blob_dir)
+        if self.blob_dir:
+            self._remove_empty_notlast_blob_directories(self.blob_dir)
 
     def _pack1(self, pack_tid):
         # Pack one transaction. Get the next transaction we haven't yet
@@ -276,7 +284,7 @@ class BSDDBStorage(
                 tid, oid = kv
                 ntid = n64(tid)
 
-                # Iterate ober the oids for this tid and pack each one.
+                # Iterate over the oids for this tid and pack each one.
                 # Note that we treat the tid we're looking at as the
                 # pack time. That is, as we look at each transaction,
                 # we pack to that time.  This way, we can pack
@@ -287,8 +295,14 @@ class BSDDBStorage(
                     # the pack time. (we use negative tids, so >=)
                     # This is the current record as of the pack time
                     with self.cursor(self.data, txn) as data:
-                        doid, record = data.get(oid, ntid,
-                                              flags=db.DB_GET_BOTH_RANGE)
+                        kr = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
+                        if not kr:
+                            kr = data.get(oid, flags=db.DB_SET)
+                            if kr[1][:8] < ntid:
+                                # the one record found is after the pack time
+                                continue
+
+                        doid, record = kr
                         assert doid == oid
                         ndtid = record[:8]
                         assert ndtid >= ntid
@@ -328,7 +342,7 @@ class BSDDBStorage(
                             self._pack_remove_oid_tid(dtid, oid, txn)
 
                     # continue iterating over the oids for this tid
-                    kv = self.transaction_oids.get(tid, flags=db.DB_NEXT_DUP)
+                    kv = transaction_oids.get(tid, flags=db.DB_NEXT_DUP)
                     if kv is None:
                         break
                     assert kv[0] == tid
@@ -344,8 +358,10 @@ class BSDDBStorage(
 
     def _pack_remove_oid_tid(self, tid, oid, txn):
         with self.cursor(self.transaction_oids, txn) as transaction_oids:
-            toid, ttid = transaction_oids.get(oid, tid,
-                                              flags=db.DB_GET_BOTH_RANGE)
+            kr = transaction_oids.get(tid, oid, flags=db.DB_GET_BOTH_RANGE)
+            if not kr:
+                kr = transaction_oids.get(tid, flags=db.DB_SET)
+            ttid, toid = kr
             if toid != oid or ttid != tid:
                 raise AssertionError("Bad oid+tid lookup",
                                      oid, tid, toid, ttid)
@@ -537,7 +553,8 @@ def timetime2tid(timetime):
 def DB(path, blob_dir=None, pack=3*86400,
        read_only=False, create=False,
        **kw):
-    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, read_only), **kw)
+    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only),
+                   **kw)
 
 class Records(object):
 
@@ -560,7 +577,10 @@ class Records(object):
                 ttid, oid = kv
                 assert ttid == tid
                 with self.storage.cursor(self.storage.data, self._txn) as data:
-                    doid, rec = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
+                    kr = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
+                    if kr is None:
+                        kr = data.get(oid, flags=db.DB_SET)
+                    doid, rec = kr
                     assert doid == oid
                     dntid = rec[:8]
                     assert dntid == ntid
