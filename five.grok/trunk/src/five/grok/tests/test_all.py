@@ -11,6 +11,7 @@ import five.grok
 from five.grok.tests.doctest import doctestToPython
 import os
 
+from Testing.ZopeTestCase.layer import ZopeLite as ZopeLiteLayer
 
 def setUp(test=None):
     testing.setUp(test)
@@ -73,14 +74,18 @@ def suiteFromPackage(name):
 
 
 def test_suite():
-    return unittest.TestSuite([
-
-        # Unit tests for your API
-        doctestunit.DocFileSuite(
+    
+    readmeSuite = doctestunit.DocFileSuite(
             'README.txt', package='five.grok',
             setUp=setUpWithGrokDoctest, tearDown=tearDownWithGrokDoctest,
             optionflags=doctest.ELLIPSIS+
-                        doctest.NORMALIZE_WHITESPACE),
+                        doctest.NORMALIZE_WHITESPACE)
+    readmeSuite.layer = ZopeLiteLayer
+    
+    return unittest.TestSuite([
+
+        # Unit tests for your API
+        readmeSuite,
 
         doctestunit.DocTestSuite(
             module='five.grok.tests.adapters',

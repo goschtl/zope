@@ -70,7 +70,7 @@ your buildout::
   five.localsitemanager = 2.0.1
   martian = 0.11.1
 
-Zope 2.12 is required. If you whish to use a previous version of Zope
+Zope 2.12 is required. If you wish to use a previous version of Zope
 2, look at the version 1.0 of five.grok.
 
 
