@@ -12,22 +12,27 @@ long_description = (
 
 install_requires = [
     'setuptools',
-    'martian >= 0.10',
     'grokcore.component >= 1.5',
     'grokcore.security >= 1.2',
+    'martian >= 0.10',
+    'zope.browserresource >= 3.9.0',
+    'zope.component',
+    'zope.interface',
+    'zope.pagetemplate',
+    'zope.ptresource >= 3.9.0',
+    'zope.publisher',
     'zope.schema',
     'zope.security',
     'zope.traversing',
-    'zope.browserresource >= 3.9.0',
-    'zope.ptresource >= 3.9.0',
     ]
 
 tests_require = install_requires + [
-    'zope.testbrowser',
-    'zope.securitypolicy',
-    'zope.app.container',
-    'zope.app.zcmlfiles',
     'zope.app.authentication',
+    'zope.app.zcmlfiles',
+    'zope.container',
+    'zope.securitypolicy',
+    'zope.site',
+    'zope.testbrowser',
     ]
 
 setup(
