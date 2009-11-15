@@ -8,8 +8,9 @@
   >>> verifyObject(interfaces.ISite, universe.earth)
   True
 
-  >>> from zope.site.hooks import setSite
+  >>> from zope.site.hooks import setSite, setHooks
   >>> setSite(universe.earth)
+  >>> setHooks()
 
   >>> from zope import component
   >>> manager = component.getUtility(IEnergyManager)
