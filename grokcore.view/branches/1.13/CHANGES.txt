@@ -4,6 +4,9 @@ Changes
 1.13 (unreleased)
 -----------------
 
+- Use zope.container instead of deprecated zope.app.container, use zope.site
+  instead of zope.app.folder.
+
 - Some imports have been modified, to avoid deprecation warnings,
   while using ZTK 1.0dev. [trollfot]
 
