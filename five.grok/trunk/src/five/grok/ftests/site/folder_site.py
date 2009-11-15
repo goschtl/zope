@@ -5,8 +5,9 @@
   >>> universe._setObject("earth", World(id="earth"))
   'earth'
 
-  >>> from zope.site.hooks import setSite
+  >>> from zope.site.hooks import setSite, setHooks
   >>> setSite(universe.earth)
+  >>> setHooks()
 
   >>> universe.earth.objectIds()
   ['energy']
