@@ -24,7 +24,12 @@ if cmd == '':
     cmd = 'fetch'
 
 script_name = os.path.basename(sys.argv[0])
-_, graph, server_index = script_name.split('_')
+try:
+	_, graph, server_index, storage = script_name.split('_')
+except ValueError:
+	#bbb default storage 1
+	_, graph, server_index = script_name.split('_')
+	storage = '1'
 
 HOST = os.environ['MUNIN_ZEO_HOST_%s' % server_index]
 PORT = os.environ['MUNIN_ZEO_PORT_%s' % server_index]
@@ -35,25 +40,34 @@ class GraphBase(object):
     def _prepare_fetch(self):
         tn = telnetlib.Telnet(HOST, PORT)
         result = tn.read_all()
-        result = tn.splitlines()
+        result = result.splitlines()
         self.data = {}
 
         # First line is a server signature
-        line = result.pop()
+        line = result.pop(0)
         assert line.startswith('ZEO monitor server version 3.')
         # Second line is a date
-        line = result.pop()
+        line = result.pop(0)
         # Third line is empty
-        line = result.pop()
+        line = result.pop(0)
         assert line == ''
-        # Fourth line is storage-signature
-        line = result.pop()
-        assert line == 'Storage: 1'
+        # now different storage signatures follow
+        # skip all of them until we reach the one we're interested in
+        while result and line != 'Storage: %s' % storage:
+        	line = result.pop(0)
+       
+      	if not result:
+      		#the storage has not been found
+      		return
+      	
         for line in result:
             if line.startswith('Server started'):
                 continue
             if line == '':
                 continue
+            if line.startswith('Storage:'):
+            	#skip other storages
+            	break
             key, value = line.split(':')
             self.data[key.lower()] = float(value)
 
@@ -72,7 +86,7 @@ class SimpleGraph(GraphBase):
         print "%s.value %s" % (self.name, self.data[self.key])
 
     def config(self):
-        print "graph_title %s (Zope %s)" % (self.title, server_index)
+        print "graph_title %s (Zope %s %s)" % (self.title, server_index, storage)
         print "graph_vlabel %s" % (self.name)
         print "graph_category Zope"
         print "graph_info %s of Zope %s " % (self.title, server_index)
@@ -111,6 +125,15 @@ class verifying(SimpleGraph):
     key = 'clients verifying'
     name = 'verifying'
     title = 'Clients verifying'
+
+class loadstores(SimpleMultiGraph):
+
+    title = 'Loads Stores'
+    vlabel = 'num objects'
+    keys = ['loads',
+            'stores']
+    names = ['object_loads',
+             'object_stores']
 
 
 graph = locals()[graph]()

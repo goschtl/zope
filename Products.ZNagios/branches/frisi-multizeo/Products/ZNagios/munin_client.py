@@ -117,10 +117,22 @@ class cachetotals(SimpleGraph):
     name = 'cache_size'
     title = 'Total cache size'
 
+class dbsize(SimpleGraph):
+    """Database Size in MB.
+    """
+
+    def do_fetch(self):
+        print "%s.value %.2f" % (self.name, self.data[self.key]/1048576)
+
+    key = 'db-bytes'
+    name = 'database_size'
+    title = 'Size of main Database'
+
+
 class cacheconnections(GraphBase):
 
     def do_fetch(self):
-        i = 0 
+        i = 0
         while True:
             active = self.data.get('db-cache-conn%s-active-objects' % i)
             if active is None:
@@ -142,8 +154,8 @@ class cacheconnections(GraphBase):
         print "active3.label Connection 4: Active objects"
         print "total0.label Connection 1: Total objects"
         print "total1.label Connection 2: Total objects"
-        print "total2.label Connection 2: Total objects"
-        print "total3.label Connection 3: Total objects"
+        print "total2.label Connection 3: Total objects"
+        print "total3.label Connection 4: Total objects"
 
 graph = locals()[graph]()
 getattr(graph, cmd)()

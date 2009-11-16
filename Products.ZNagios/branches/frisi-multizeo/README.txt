@@ -15,7 +15,52 @@ Nagios data
 Munin data
 ----------
 
-XXX
+graphs provided by zeo_munin.py
+```````````````````````````````
+
+clients
+  nr of zeo clients connected to zeo server
+
+verifying
+  XXX help document
+
+loadstores
+  nr of object loads and stores of the database
+
+
+graphs provided by munin_client.py
+``````````````````````````````````
+
+uptime
+  uptime of the zope instance in seconds
+
+  XXX shouldn't we change this to days? (much more readable, `varnish_ plugin`_ does this too)
+
+  .. _`varnish_ plugin`: http://varnish.projects.linpro.no/browser/trunk/varnish-tools/munin/varnish_
+
+refcount
+  XXX help document
+
+errors
+  total number of errors, conflicts and unresolved conflicts
+  that occured since last startup
+
+activity
+  nr of object loads, stores and
+  number of database connections
+
+  XXX connections is 0 for me all the time?
+
+cacheconnections
+  number of active and total objects for each connection
+
+cachetotals
+  number of active objects of all connections
+  (see cacheconnections above)
+
+dbsize
+  size of the database in megabyte
+
 
 Configure Nagios
 ----------------
@@ -46,6 +91,66 @@ Then you can make use of the check_zope command for services::
               check_command           check_zope!thezopehost!8080!1000000000!500000!admin:password
   }
 
+Configure Munin
+---------------
+
+Symlink Plugins
+```````````````
+
+Create symlinks in ``/etc/munin/plugins/``
+
+plugins using munin_client.py are named like::
+
+  /etc/munin/plugins/zope_<graph>_<server-index>
+
+  eg:
+  /etc/munin/plugins/zope_uptime_instance1
+  /etc/munin/plugins/zope_uptime_instance2
+
+plugins using zeo_munin.py are named like::
+
+  /etc/munin/plugins/zeo_<graph>_<server-index>[_<storage>]
+
+graph
+  see `Munin data`_ for a list of available graphs
+
+server-index
+  host and port are looked up in the configuration
+  MUNIN_ZEO_HOST|PORT_<server-index>
+
+storage
+  name of the storage, optional, defaults to 1
+
+
+examples::
+
+  /etc/munin/plugins/zeo_clients_ZEO1
+  /etc/munin/plugins/zeo_clients_ZEO1_1
+  /etc/munin/plugins/zeo_loadstores_ZEO1_temp
+
+
+
+Configure Plugins
+`````````````````
+
+Add a configuration file to ``vim /etc/munin/plugin-conf.d/zope``
+to tell the plugins how to connect to zeo server/clients::
+
+  [zope_*]
+  user root
+  env.MUNIN_ZOPE_HOST_instance1 http://localhost:8401/Control_Panel/munin
+  env.MUNIN_ZOPE_AUTHENTICATE_instance1 admin:admin
+  env.MUNIN_ZOPE_HOST_instance2 http://localhost:8402/Control_Panel/munin
+  env.MUNIN_ZOPE_AUTHENTICATE_instance2 admin:admin
+
+  [zeo_*]
+  user root
+  env.MUNIN_ZEO_HOST_ZEO1 localhost
+  env.MUNIN_ZEO_PORT_ZEO1 8502
+
+
+
+
 Credits
 -------
 
@@ -57,3 +162,4 @@ Thanks for contributing ideas and code to:
 - Martijn Pieters (Pareto)
 - Florian Schulze (independent)
 - Hanno Schlichting (Jarn)
+- Harald Friessnegger (Webmeisterei)
