@@ -23,7 +23,7 @@ from grokcore.formlib import *
 from five.grok.components import Model, Container, Site, LocalUtility
 from five.grok.components import Form, AddForm
 from five.grok.components import EditForm, DisplayForm
-from five.grok.components import ViewletManager
+from five.grok.components import View, ViewletManager
 from five.grok.formlib import AutoFields
 
 # backwards compatibility. Probably not needed by many, but just in case.
@@ -35,7 +35,7 @@ from five.grok.components import ZopeTwoPageTemplate as PageTemplate
 from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile
 
 # Override DirectoryResource to use Zope 2 one
-#from five.grok.components import ZopeTwoDirectoryResource as DirectoryResource
+from five.grok.components import ZopeTwoDirectoryResource as DirectoryResource
 
 # Only export public API
 from five.grok.interfaces import IFiveGrokAPI

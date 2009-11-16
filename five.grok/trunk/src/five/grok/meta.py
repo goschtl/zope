@@ -84,41 +84,41 @@ def _register_resource(config, resource_path, name, layer):
     return True
 
 
-# class DirectoryResourceGrokker(martian.ClassGrokker):
-#     martian.component(components.ZopeTwoDirectoryResource)
+class DirectoryResourceGrokker(martian.ClassGrokker):
+    martian.component(components.ZopeTwoDirectoryResource)
 
-#     martian.directive(grokcore.view.name, default=None)
-#     martian.directive(grokcore.view.path)
-#     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.view.name, default=None)
+    martian.directive(grokcore.view.path)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
 
-#     def grok(self, name, factory, module_info, **kw):
-#         # Need to store the module info object on the directory resource
-#         # class so that it can look up the actual directory.
-#         factory.module_info = module_info
-#         return super(DirectoryResourceGrokker, self).grok(
-#             name, factory, module_info, **kw)
+    def grok(self, name, factory, module_info, **kw):
+        # Need to store the module info object on the directory resource
+        # class so that it can look up the actual directory.
+        factory.module_info = module_info
+        return super(DirectoryResourceGrokker, self).grok(
+            name, factory, module_info, **kw)
 
-#     def execute(self, factory, config, name, path, layer, **kw):
-#         resource_path = _get_resource_path(factory.module_info, path)
-#         name = name or factory.module_info.dotted_name
-#         return _register_resource(config, resource_path, name, layer)
+    def execute(self, factory, config, name, path, layer, **kw):
+        resource_path = _get_resource_path(factory.module_info, path)
+        name = name or factory.module_info.dotted_name
+        return _register_resource(config, resource_path, name, layer)
 
 
-# class StaticResourcesGrokker(martian.GlobalGrokker):
+class StaticResourcesGrokker(martian.GlobalGrokker):
 
-#     def grok(self, name, module, module_info, config, **kw):
-#         # we're only interested in static resources if this module
-#         # happens to be a package
-#         if not module_info.isPackage():
-#             return False
-#         resource_path = _get_resource_path(module_info, 'static')
+    def grok(self, name, module, module_info, config, **kw):
+        # we're only interested in static resources if this module
+        # happens to be a package
+        if not module_info.isPackage():
+            return False
+        resource_path = _get_resource_path(module_info, 'static')
 
-#         if not os.path.exists(resource_path):
-#             return False
+        if not os.path.exists(resource_path):
+            return False
 
-#         name = module_info.dotted_name
-#         layer = IDefaultBrowserLayer
-#         return _register_resource(config, resource_path, name, layer)
+        name = module_info.dotted_name
+        layer = IDefaultBrowserLayer
+        return _register_resource(config, resource_path, name, layer)
 
 
 class ViewletSecurityGrokker(martian.ClassGrokker):

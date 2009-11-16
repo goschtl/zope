@@ -76,6 +76,11 @@ class LocalUtility(SimpleItem):
 class View(grokcore.view.View):
     martian.baseclass()
 
+    def __init__(self, context, request):
+        super(View, self).__init__(context, request)
+        if self.static is not None:
+            # Set parent so that we have an acquisition chain
+            self.static.__parent__ = context
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
