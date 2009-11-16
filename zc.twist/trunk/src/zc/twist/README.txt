@@ -714,14 +714,11 @@ Footnotes
 
     >>> print res.getTraceback() # doctest: +ELLIPSIS
     Traceback (most recent call last):
-      File ".../zc/twist/__init__.py", line ..., in __call__
-        get_connection(db, reactor=self.getReactor()).addCallback(
+      File ".../zc/twist/__init__.py", line ..., in __call__...
       File ".../twisted/internet/defer.py", line ..., in addCallback...
     --- <exception caught here> ---
-      File ".../zc/twist/__init__.py", line ..., in _call
-        res = call(*args, **kwargs)
-      File "<doctest README.txt[...]>", line ..., in __call__
-        self.count += amount
+      File ".../zc/twist/__init__.py", line ..., in _call...
+      File "<doctest README.txt[...]>", line ..., in __call__...
     exceptions.TypeError: unsupported operand type(s) for +=: 'int' and 'str'
     <BLANKLINE>
 

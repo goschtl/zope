@@ -64,7 +64,7 @@ methodwrapper = Extension(
 
 setup(
     name='zc.twist',
-    version='1.4dev',
+    version='1.3.1',
     packages=find_packages('src'),
     url='http://pypi.python.org/pypi/zc.twist',
     package_dir={'':'src'},
