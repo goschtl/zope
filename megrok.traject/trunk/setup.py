@@ -1,18 +1,25 @@
 import os
 from setuptools import setup, find_packages
 
-version = '0.1dev'
-
 def read(*filenames):
     return open(os.path.join(os.path.dirname(__file__), *filenames)).read()
 
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
 setup(name='megrok.traject',
-      version=version,
+      version='0.9dev',
       description="Traject integration for Grok applications",
-      
+      long_description=long_description,
       # Use classifiers that are already listed at:
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=['Development Status :: 5 - Production/Stable',
+      classifiers=['Development Status :: 4 - Beta',
                    'Environment :: Web Environment',
                    'Framework :: Zope3',
                    'Intended Audience :: Developers',

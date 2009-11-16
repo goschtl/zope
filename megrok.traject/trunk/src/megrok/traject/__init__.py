@@ -15,4 +15,4 @@
 """megrok.traject - URL routing for Grok
 """
 from megrok.traject.components import Traject
-
+from traject import locate
