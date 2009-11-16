@@ -35,6 +35,19 @@ def n64(tid):
 # XXX Still need checkpoint and deadlock detection strategies.
 # Maybe initial config file when creating env.
 
+def retry_on_deadlock(f):
+
+    def func(*args, **kw):
+        while 1:
+            try:
+                result = f(*args, **kw)
+            except db.DBLockDeadlockError:
+                pass
+            else:
+                return result
+
+    return func
+
 class BSDDBStorage(
     ZODB.blob.BlobStorageMixin,
     ZODB.ConflictResolution.ConflictResolvingStorage,
@@ -77,6 +90,7 @@ class BSDDBStorage(
         self.blob_dir = blob_dir
 
         self.env = db.DBEnv()
+        self.env.set_lk_detect(db.DB_LOCK_MINWRITE)
         self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1) # XXX should be optional
         flags = (db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_MPOOL |
                  db.DB_INIT_TXN | db.DB_THREAD)
@@ -278,6 +292,7 @@ class BSDDBStorage(
 
                 raise ZODB.POSException.POSKeyError(oid, serial)
 
+    @retry_on_deadlock
     def new_oid(self):
         with self.txn() as txn:
             oid = p64(u64(self.misc.get('oid', z64, txn))+1)
