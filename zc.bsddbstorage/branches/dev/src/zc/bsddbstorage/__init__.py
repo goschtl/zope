@@ -32,6 +32,9 @@ import zope.interface
 def n64(tid):
     return p64(868082074056920076L-u64(tid))
 
+# XXX Still need checkpoint and deadlock detection strategies.
+# Maybe initial config file when creating env.
+
 class BSDDBStorage(
     ZODB.blob.BlobStorageMixin,
     ZODB.ConflictResolution.ConflictResolvingStorage,
@@ -41,7 +44,7 @@ class BSDDBStorage(
         ZODB.interfaces.IStorage,
         ZODB.interfaces.IStorageRestoreable,
         ZODB.interfaces.IStorageIteration,
-#         ZODB.interfaces.IStorageCurrentRecordIteration,
+# XXX?         ZODB.interfaces.IStorageCurrentRecordIteration,
         ZODB.interfaces.IExternalGC,
         )
 
@@ -67,12 +70,11 @@ class BSDDBStorage(
         if blob_dir:
             blob_dir = os.path.abspath(blob_dir)
             self._blob_init(blob_dir)
-            zope.interface.alsoProvides(self,
-                                        ZODB.interfaces.IBlobStorageRestoreable)
+            zope.interface.alsoProvides(
+                self, ZODB.interfaces.IBlobStorageRestoreable)
         else:
-            self.blob_dir = None
             self._blob_init_no_blobs()
-
+        self.blob_dir = blob_dir
 
         self.env = db.DBEnv()
         self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1) # XXX should be optional
@@ -119,11 +121,17 @@ class BSDDBStorage(
                        )
 
         t = time.time()
-        t = self._ts = ZODB.TimeStamp.TimeStamp(*(time.gmtime(t)[:5] + (t%60,)))
+        t = self._ts = ZODB.TimeStamp.TimeStamp(
+            *(time.gmtime(t)[:5] + (t%60,)))
         self._tid = repr(t)
         self._transaction = None
 
         self._commit_lock = threading.Lock()
+        _lock = threading.Lock()
+
+        # BlobStorageMixin requires these. I'm getting annoyed. :)
+        self._lock_acquire = _lock.acquire
+        self._lock_release = _lock.release
 
         # The current lock is used to make sure we consistently order
         # information about current data for objects.  In particular,
@@ -198,7 +206,11 @@ class BSDDBStorage(
                 return cursor.get(db.DB_LAST)[0]
 
     def __len__(self):
-        return self.data.stat(db.DB_FAST_STAT)['nkeys']
+        # XXX this is probably very expensive, but we need this for the
+        # tests. :(  Need to check this out with a big db to decode what the
+        # cost is.  Usually, accuracy isn't that important.
+        return self.data.stat()['nkeys']
+        #return self.data.stat(db.DB_FAST_STAT)['nkeys']
 
     def load(self, oid, version=''):
         with self._current_lock.read():
@@ -214,23 +226,27 @@ class BSDDBStorage(
                     raise ZODB.POSException.POSKeyError(oid)
 
     def loadBefore(self, oid, tid):
+        ntid = p64(868082074056920076L-(u64(tid)-1))
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
             with self.cursor(self.data, txn) as cursor:
-                kr = cursor.get(oid, db.DB_SET)
+                # Step 1, find the record
+                kr = cursor.get(oid, ntid, db.DB_GET_BOTH_RANGE)
                 if kr is None:
-                    raise ZODB.POSException.POSKeyError(oid)
+                    kr = cursor.get(oid, db.DB_SET)
+                    if kr is None:
+                        raise ZODB.POSException.POSKeyError(oid)
                 record = kr[1]
-                if kr[0] != oid or len(record) == 8:
-                    raise ZODB.POSException.POSKeyError(oid)
-                nexttid = None
                 rtid = n64(record[:8])
-                while rtid >= tid:
-                    krecord = cursor.get(oid, flags=db.DB_NEXT_DUP)
-                    if krecord is None:
-                        return None
-                    nexttid = rtid
-                    record = krecord[1]
-                    rtid = n64(record[:8])
+                if kr[0] != oid or rtid >= tid or len(record) == 8:
+                    raise ZODB.POSException.POSKeyError(oid)
+
+                # Now, get the next tid:
+                kr = cursor.get(oid, ntid, db.DB_PREV_DUP, dlen=8, doff=0)
+                if kr is None:
+                    nexttid = None
+                else:
+                    assert kr[0] == oid
+                    nexttid = n64(kr[1])
 
                 return record[8:], rtid, nexttid
 
@@ -392,7 +408,7 @@ class BSDDBStorage(
         # fact that oids are allocates sequentially
         paths = filter(os.path.isdir,
                        [os.path.join(dir, name)
-                        for name in sorted(os.listdor(dir))
+                        for name in sorted(os.listdir(dir))
                         if name.lower().startswith('0x')])
         if not paths:
             return
@@ -450,14 +466,15 @@ class BSDDBStorage(
         if transaction is not self._transaction:
             raise ZODB.POSException.StorageTransactionError(self, transaction)
         committed_tid = self.data.get(oid, dlen=8, doff=0)
-        if committed_tid is not None and committed_tid != oldserial:
+        if committed_tid is not None and n64(committed_tid) != oldserial:
             raise ZODB.POSException.ConflictError(
-                oid=oid, serials=(committed_tid, oldserial))
+                oid=oid, serials=(n64(committed_tid), oldserial))
 
         marshal.dump((oid, n64(self._tid)), self._log_file)
 
     def tpc_abort(self, transaction):
-        self._txn.abort()
+        if self._txn is not None:
+            self._txn.abort()
         self._txn = self._transaction = None
         self._blob_tpc_abort()
         self._commit_lock.release()
