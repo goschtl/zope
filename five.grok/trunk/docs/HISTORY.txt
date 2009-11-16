@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1 (unreleased)
+1.1 (2009-11-16)
 ----------------
 
 - Update code and tests to work with Zope 2.12. People using Zope 2.10
