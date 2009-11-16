@@ -1,0 +1,444 @@
+Traject
+*******
+
+Introduction
+============
+
+In web application construction there are two main ways to publish
+objects to the web: routing and traversal. Both are a form of URL
+dispatch: in the end, a function or method is called as the result of
+a pattern in the URL. Both use very different methods to do so,
+however.
+
+In *routing* a mapping is made from URL patterns to controllers (or
+views) that are called to generate the rendered web page. The URL
+pattern is also used to pull parameter information from the URLs which
+can then be passed on.
+
+Take for instance the URL ``departments/10/employees/17``. A URL
+pattern could exist that maps all ``departments/*/employees/*``
+patterns to a particular callable. In addition, the routing system can
+be used to declare that the parameters `10`` and ``17`` should be
+taken from this URL and passed along as arguments to the
+controller. The programmer then programs the controller to retrieve
+correct models from the database using this information. After this
+the controller uses the information in these models to construct the
+contents of the view, for instance by rendering it with a HTML
+template.
+
+In *traversal*, there is no explicit mapping of URLs to controllers or
+views. Instead a model structure is traversed step by step, guided by
+the URL.  By analogy one can in Python traverse through nested
+dictionaries (``d['a']['b']['c']``), or attributes (``d.a.b.c``). In
+the end, a *view* is looked up for the final model that can be
+called. The view could be a special attribute on the model. More
+sophisticated systems can be used to separate the view from the model.
+
+The URL ``departments/10/employees/17`` would be resolved to a view
+because there is a ``departments`` container model that contains
+``department`` model objects.  In turn from a ``department`` model one
+can traverse to the ``employees`` container, which in turn allows
+traversal to individual employees, such as employee 17. In the end a
+view is looked up for employee 17, and called.
+
+Routing is often used in combination with a relational database,
+typically exposed to objects by means of an object relation mapper.
+Traversal tends to be more convenient with in-memory object structures
+or object databases.
+
+Routing has advantages:
+
+* it is a good way for exposing relational content that doesn't have
+  natural nesting.
+
+* the pattern registry gives the developer an explicit overview of the
+  URL patterns in an application.
+
+* the approach is familiar as it is used by many frameworks.
+
+Traversal has advantages as well:
+
+* it is a good way for exposing object content that has arbitrary
+  nesting.
+
+* model-driven: objects come equipped with their views. This allows
+  the developer to compose an application from models, supporting a
+  declarative approach.
+
+* location-aware: a nested object structure can easily be made
+  location aware. Each model can know about its parent and its name in
+  the URL. This allows for easy construction of URLs for arbitrary
+  models. In addition, permissions can be declared based on this
+  structure.
+
+Traject tries to combine the properties of routing and traversal in a
+single system. Traject:
+
+* looks like a routing system and has the familiarity of the routing
+  approach.
+
+* works well for exposing relational models.
+
+* lets the developer explicitly declare URL mappings.
+
+* supports arbitrary nesting, as URL mappings can be nested and the
+  system is also easily combined with normal traversal.
+
+* is model-driven. Routing is to models, not to views or controllers.
+
+* is location-aware. Models are in a nested structure and are aware of
+  their parent and name, allowing model-based security declarations
+  and easy URL construction for models.
+
+Some potential drawbacks of Traject are:
+
+* Traject expects a certain regularity in its patterns. It doesn't
+  allow certain complex URL patterns where several variables are part
+  of a single step (i.e ``foo/<bar_id>-<baz_id>``). Only a single
+  variable is allowed per URL segment.
+
+* Traject needs to constructs or retrieve models for *each stage* in
+  the route in order to construct a nested structure. This can mean
+  more queries to the database per request. In practice this is often
+  mitigated by the fact that the parent models in the structure are
+  typically needed by the view logic anyway.
+
+* In Traject each model instance should have one and only one location
+  in the URL structure. This allows not only URLs to be resolved to
+  models, but also URLs to be generated for models. If you want the
+  same model to be accessible through multiple URLs, you might have
+  some difficulty.
+
+URL patterns
+============
+
+Let's consider an URL pattern string that is a series of steps
+separated by slashes::
+
+  >>> pattern_str = 'foo/bar/baz'
+
+We can decompose it into its component steps using the ``parse``
+function::
+
+  >>> import traject
+  >>> traject.parse(pattern_str)
+  ('foo', 'bar', 'baz')
+
+Steps may also be variables. A variable is a step that is prefixed by
+the colon (``:``)::
+
+  >>> traject.parse('foo/:a/baz')
+  ('foo', ':a', 'baz')
+
+More than one variable step is allowed in a pattern::
+
+  >>> traject.parse('foo/:a/baz/:b')
+  ('foo', ':a', 'baz', ':b')
+
+The variable names in a pattern need to be unique::
+
+  >>> traject.parse('foo/:a/baz/:a')
+  Traceback (innermost last):
+    ...
+  ParseError: URL pattern contains multiple variables with name: a
+
+Registering patterns
+====================
+
+In Traject, the resolution of a URL path results in a model. This
+model can then in turn have views registered for it that allow this
+model to be displayed. How the view lookup works is up to the web
+framework itself.
+
+You tell Traject which model is returned for which path by registering
+a factory function per URL pattern. This factory function should
+create or retrieve the model object.
+
+The factory function receives parameters for each of the matched
+variables in whichever pattern matched - the signature of the factory
+function should include all the variables in the patterns that are
+matched.
+
+Let's look at an example.
+
+This is the URL pattern we want to recognize::
+
+  >>> pattern_str = u'departments/:department_id/employees/:employee_id'
+
+We can see two parameters in this URL pattern: `department_id`` and
+``customer_id``.
+
+We now define a model as it might be stored in a database::
+
+  >>> class Employee(object):
+  ...   def __init__(self, department_id, employee_id):
+  ...     self.department_id = department_id
+  ...     self.employee_id = employee_id
+  ...   def __repr__(self):
+  ...     return '<Employee %s %s>' % (self.department_id, self.employee_id)
+
+We define the factory function for this URL pattern so that an
+instance of this model is returned. The parameters in this case would
+be ``department_id`` and ``employee_id``::
+
+  >>> def factory(department_id, employee_id): 
+  ...   return Employee(department_id, employee_id)
+
+The factory function in this case just creates a ``Employee`` object
+on the fly. In the context of a relation database it could instead
+perform a database query based on the parameters supplied.
+
+In order to register this factory function, we need a registry of
+patterns, so we'll create one::
+
+  >>> patterns = traject.Patterns()
+
+Patterns need to be registered for particular classes or
+(``zope.interface``) interfaces. This is so that multiple pattern
+registries can be supported, each associated with a particular root
+object. In this case we'll register the patterns for a class
+``Root``::
+
+  >>> class Root(object):
+  ...    pass
+
+We can now register the URL pattern and the factory::
+
+  >>> patterns.register(Root, pattern_str, factory)
+
+Resolving a path
+================
+
+We are ready to resolve paths. A path is part of a URL such as
+``foo/bar/baz``. It looks very much like a pattern, but all the
+variables will have been filled in.
+
+The models retrieved by resolving paths will be *located*. Ultimately
+their ancestor will be a particular root model from which all paths
+are resolved. The root model itself is not resolved by a pattern: it
+is the root from which all patterns are resolved.
+
+We create a root model first::
+
+  >>> root = Root()
+
+When a path is resolved, a complete chain of ancestors from model to
+root is also created. It may be that no particular factory function
+was registered for a particular path. In our current registry such
+patterns indeed exist: ``departments``, ``departments/:department_id``
+and ``departments/:department_id/employees`` all have no factory
+registered.
+
+These steps will have a *default* model registered for them instead.
+When resolving the pattern we need to supply a special default factory
+which will generate the default models when needed.
+
+Let's make a default factory here. The factory function needs to be
+able to deal with arbitrary keyword arguments as any number of
+parameters might be supplied::
+
+  >>> class Default(object):
+  ...     def __init__(self, **kw):
+  ...         pass
+
+Now that we have a Default factory, we can try to resolve a path::
+  
+  >>> obj = patterns.resolve(root, u'departments/1/employees/2', Default)
+  >>> obj
+  <Employee 1 2>
+
+An alternative ``resolve_stack`` method allows us to resolve a stack
+of names instead (where the first name to resolve is on the top of the
+stack)::
+
+  >>> l = [u'departments', u'1', u'employees', u'2']
+  >>> l.reverse()
+  >>> patterns.resolve_stack(root, l, Default)
+  <Employee 1 2>
+ 
+Locations
+=========
+
+Traject supports the notion of locations. After we find a model, the
+model receive two special attributes::
+
+*  ``__name__``: the name we addressed this object with in the path.
+
+* ``__parent__``: the parent of the model. This is an model that
+  matches the parent path (the path without the last step).
+
+The parent will in turn have a parent as well, all the way up to the
+ultimate ancestor, the root.
+
+We can look at the object we retrieved before to demonstrate the
+ancestor chain::
+
+  >>> obj.__name__
+  u'2'
+  >>> isinstance(obj, Employee)
+  True
+  >>> p1 = obj.__parent__
+  >>> p1.__name__ 
+  u'employees'
+  >>> isinstance(p1, Default)
+  True
+  >>> p2 = p1.__parent__
+  >>> p2.__name__
+  u'1'
+  >>> isinstance(p2, Default)
+  True
+  >>> p3 = p2.__parent__
+  >>> p3.__name__
+  u'departments'
+  >>> isinstance(p3, Default)
+  True
+  >>> p3.__parent__ is root
+  True
+
+Default objects have been created for each step along the way, up
+until the root.
+
+Consuming a path
+================
+
+In a mixed traject/traversal environment, for instance where view
+lookup is done by traversal, it can be useful to be able to resolve a
+path according to the patterns registered until no longer
+possible. The rest of the the steps are not followed, and are assumed
+to be consumed in some other way using the traversal system.
+
+The ``consume`` method will consume steps as far as possible, return
+the steps that weren't consumed yet, those steps that were consumed,
+and the object it managed to find::
+
+  >>> unconsumed, consumed, last_obj = patterns.consume(root, 
+  ...       'departments/1/some_view', Default)
+
+``departments/1/some_view`` cannot be consumed fully by the pattern
+``departments/:department_id/employees/:employee_id``, as
+``some_view`` does not match the expected ``employees``.
+
+We can see which parts of the path could not be consumed::
+
+  >>> unconsumed
+  ['some_view']
+
+And which parts of the path were consumed as part of a pattern::
+
+  >>> consumed
+  ['departments', '1']
+
+The last object we managed to consume stands for ``1``::
+
+  >>> isinstance(last_obj, Default)
+  True
+  >>> last_obj.__name__
+  '1'
+  >>> p1 = last_obj.__parent__ 
+  >>> p1.__name__
+  'departments'
+  >>> p1.__parent__ is root
+  True
+
+The method ``consume_stack`` does the same with a stack::
+
+  >>> l = ['departments', '1', 'some_view']
+  >>> l.reverse()
+  >>> unconsumed, consumed, last_obj = patterns.consume_stack(root, l, Default)
+  >>> unconsumed
+  ['some_view']
+  >>> consumed
+  ['departments', '1']
+  >>> isinstance(last_obj, Default)
+  True
+  >>> last_obj.__name__
+  '1'
+  >>> p1 = last_obj.__parent__ 
+  >>> p1.__name__
+  'departments'
+  >>> p1.__parent__ is root
+  True
+
+Giving a model its location
+===========================
+
+Models are automatically given their location after traversal. There
+is however another case where giving an object a location can be
+useful. We may for instance retrieve an object from a query and then
+wish to construct a URL to it, or check whether it has
+location-dependent permissions. Traject therefore also offers
+functionality to reconstruct an object's location.
+
+In order to do this, we need to register a special function per model
+class that is the inverse of the factory. Given a model instance, it
+needs to return the arguments used in the pattern. Thus, for the
+following pattern::
+
+  >>> pattern_str = u'departments/:department_id/employees/:employee_id'
+
+and a given model, we would need to reconstruct the arguments
+``department_id`` and ``employee_id`` from that model.
+
+This is a function that does this for ``Employee``::
+
+  >>> def employee_arguments(obj):
+  ...     return {'employee_id': obj.employee_id, 
+  ...             'department_id': obj.department_id} 
+
+
+When we register it, we also need to supply the class for which it can
+reconstruct the arguments, in this case, ``Employee``::
+
+  >>> patterns.register_inverse(Root, Employee, pattern_str, employee_arguments)
+
+Let's construct some employee now::
+
+  >>> m = Employee(u'13', u'27')
+
+It has no location (no ``__name__`` or ``__parent__``)::
+
+  >>> m.__name__
+  Traceback (most recent call last):
+    ...
+  AttributeError: ...
+
+  >>> m.__parent__
+  Traceback (most recent call last):
+    ...
+  AttributeError: ...
+
+We can now use the ``locate`` method to locate it::
+
+  >>> patterns.locate(root, m, Default)
+
+The model will now have ``__name__`` and ``__parent__`` attributes::
+
+  >>> m.__name__
+  u'27'
+  >>> p1 = m.__parent__
+  >>> p1.__name__
+  u'employees'
+  >>> p2 = p1.__parent__
+  >>> p2.__name__
+  u'13'
+  >>> p3 = p2.__parent__
+  >>> p3.__name__
+  u'departments'
+  >>> p3.__parent__ is root
+  True
+
+A global patterns registry
+==========================
+
+Since the patterns registry is clever enough to distinguish between
+roots, in many scenarios only a single, global ``Patterns`` registry
+is needed. Top-level functions have been made available in the
+``traject`` namespace to manipulate and use this patterns registry::
+
+  traject.register
+  traject.register_inverse
+  traject.resolve
+  traject.resolve_stack
+  traject.consume
+  traject.consume_stack
+  traject.locate
