@@ -105,7 +105,7 @@ class BSDDBStorage(
                                           db.DB_MULTIVERSION),
                                    )
 
-        # transactions: {tid ->transaction_pickle}
+        # transactions: {tid ->status+transaction_pickle}
         self.transactions = db.DB(self.env)
         self.transactions.open('transactions', dbtype=db.DB_BTREE,
                                flags=(db.DB_CREATE | db.DB_THREAD |
@@ -164,8 +164,14 @@ class BSDDBStorage(
 
     def _history_entry(self, record, txn):
         tid = n64(record[:8])
-        transaction = cPickle.loads(self.transactions.get(tid, txn=txn))
-        transaction.update(size=len(record-8))
+        transaction = cPickle.loads(
+            self.transactions.get(tid, txn=txn), doff=1)
+        transaction.update(
+            size = len(record-8),
+            tid = tid,
+            serial = tid,
+            time = ZODB.TimeStamp.TimeStamp(tid).timeTime(),
+            )
 
     def history(self, oid, size=1):
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
@@ -189,12 +195,15 @@ class BSDDBStorage(
         return self._read_only
 
     def iterator(self, start=z64, stop=None):
+        return StorageIterator(self._iterator(start, stop))
+
+    def _iterator(self, start, stop):
         with self.txn(db.DB_READ_COMMITTED) as txn:
             with self.cursor(self.transactions, txn) as transactions:
                 kv = transactions.get(start, flags=db.DB_SET_RANGE)
                 while kv:
                     tid, ext = kv
-                    yield Records(self, txn, tid, ext)
+                    yield Records(self, txn, tid, ext[0], ext[1:])
                     kv = transactions.get(tid, flags=db.DB_NEXT)
 
 #     def record_iternext(next=None):
@@ -203,7 +212,10 @@ class BSDDBStorage(
     def lastTransaction(self):
         with self.txn() as txn:
             with self.cursor(self.transactions, txn) as cursor:
-                return cursor.get(db.DB_LAST)[0]
+                kv = cursor.get(db.DB_LAST)
+                if kv is None:
+                    return None
+                return kv[0]
 
     def __len__(self):
         # XXX this is probably very expensive, but we need this for the
@@ -291,14 +303,24 @@ class BSDDBStorage(
             tid = p64(u64(self.misc.get('pack', z64, txn=txn))+1)
             if tid > pack_tid:
                 return None
-            with self.cursor(self.transaction_oids, txn) as transaction_oids:
-                # Find the smallest tid >= the one we picked
-                kv = transaction_oids.get(tid, flags=db.DB_SET_RANGE)
+
+            with self.cursor(self.transactions, txn) as transactions:
+                kv = transactions.get(
+                    tid, flags=db.DB_SET_RANGE, doff=0, dlen=0)
                 if kv is None:
                     return None
+                tid = kv[0]
 
-                tid, oid = kv
-                ntid = n64(tid)
+                # Set the status flag to indicate that the transaction
+                # was packed.
+                transactions.put(tid, 'p', db.DB_CURRENT, doff=0, dlen=1)
+
+            ntid = n64(tid)
+            
+            with self.cursor(self.transaction_oids, txn) as transaction_oids:
+                # Find the smallest tid >= the one we picked
+                ttid, oid = transaction_oids.get(tid, flags=db.DB_SET_RANGE)
+                assert ttid == tid
 
                 # Iterate over the oids for this tid and pack each one.
                 # Note that we treat the tid we're looking at as the
@@ -491,7 +513,7 @@ class BSDDBStorage(
         self._transaction = transaction
 
         ext = transaction._extension.copy()
-        ext['user'] = transaction.user
+        ext['user_name'] = transaction.user
         ext['description'] = transaction.description
         ext = cPickle.dumps(ext, 1)
 
@@ -523,7 +545,7 @@ class BSDDBStorage(
         self._txn = txn = self.env.txn_begin()
         self._log_file.seek(0)
         tid, ext = marshal.load(self._log_file)
-        self.transactions.put(tid, ext, txn=txn)
+        self.transactions.put(tid, ' '+ext, txn=txn)
         for oid, record in marhal_iterate(self._log_file):
             self.data.put(oid, record, txn=txn)
             self.transaction_oids.put(tid, oid, txn=txn)
@@ -573,18 +595,42 @@ def DB(path, blob_dir=None, pack=3*86400,
     return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only),
                    **kw)
 
+class StorageIterator(object):
+
+    def __init__(self, it):
+        self.it = it
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        try:
+            return self.it.next()
+        except StopIteration:
+            raise ZODB.interfaces.StorageStopIteration
+            
 class Records(object):
 
-    def __init__(self, storage, txn, tid, ext):
+    def __init__(self, storage, txn, tid, status, ext):
         self.storage = storage
         self._txn = txn
         self.tid = tid
         ext = cPickle.loads(ext)
-        self.user = ext.pop('user', '')
+        self.user = ext.pop('user_name', '')
         self.description = ext.pop('description', '')
+        self.status = status
         self.extension = ext
 
+    @apply
+    def _extension():
+        def set(self, ext):
+            self.extension = ext
+        return property((lambda self: self.extension), set)
+
     def __iter__(self):
+        return StorageIterator(self._iter())
+        
+    def _iter(self):
         tid = self.tid
         ntid = n64(tid)
         with self.storage.cursor(self.storage.transaction_oids, self._txn
