@@ -1,0 +1,62 @@
+1.3.1 (2009-11-15)
+------------------
+
+* Added missing import of twisted.python.failure.
+
+* Use db.pool with ZODB >= 3.9 and db._pools with ZODB < 3.9.
+  The tests now pass with ZODB 3.9.
+
+* Tests pass in Python 2.6.
+
+1.3 (2008-06-19)
+----------------
+
+* Handle ZEO.Exceptions.ClientDisconnected errors: retry forever, with a
+  backoff, defaulting to a max backoff of 60 seconds.
+
+* Make number of times that ConflictErrors are retried configurable.
+
+1.2 (2008-04-09)
+----------------
+
+* New subclass of twisted.python.failure.Failure begins with only reprs,
+  and it pickles to exclude the stack, exclude the global vars in the frames,
+  and truncate the reprs of the local vars in the frames.  The goal is to
+  keep the pickle size of Failures down to a manageable size.  ``sanitize``
+  now uses this class.
+
+1.1 (2008-03-27)
+----------------
+
+* Now depends on twisted 8.0.1 or higher, which is newly setuptools
+  compatible.  The twisted build is a little frightening, at least with
+  Py2.4, with multiple warnings and errors, but works.  The dependency
+  change is the reason for the bump to 1.1; this release has no new
+  features.
+
+* setup.py uses os.path
+
+* C extension uses older comment style and has less cruft.
+
+1.0.1 (2008-03-14)
+------------------
+
+* Bugfix: if you passed a slot method like a BTree.__setitem__, bad things
+  would happen.
+
+1.0.0 (2008-03-13)
+------------------
+
+* Add ability to specify an alternate reactor
+
+* Use bootstrap external
+
+0.1.1 (?)
+---------
+
+* use zc.twisted, not twisted in setup.py, until twisted is setuptools-friendly
+
+0.1 (?)
+-------
+
+* Initial release-ish
