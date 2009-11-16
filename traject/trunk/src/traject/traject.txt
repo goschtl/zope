@@ -1,8 +1,8 @@
 Traject
-=======
+*******
 
 Introduction
-------------
+============
 
 In web application construction there are two main ways to publish
 objects to the web: routing and traversal. Both are a form of URL
@@ -110,7 +110,7 @@ Some potential drawbacks of Traject are:
   some difficulty.
 
 URL patterns
-------------
+============
 
 Let's consider an URL pattern string that is a series of steps
 separated by slashes::
@@ -143,7 +143,7 @@ The variable names in a pattern need to be unique::
   ParseError: URL pattern contains multiple variables with name: a
 
 Registering patterns
---------------------
+====================
 
 In Traject, the resolution of a URL path results in a model. This
 model can then in turn have views registered for it that allow this
@@ -207,7 +207,7 @@ We can now register the URL pattern and the factory::
   >>> patterns.register(Root, pattern_str, factory)
 
 Resolving a path
-----------------
+================
 
 We are ready to resolve paths. A path is part of a URL such as
 ``foo/bar/baz``. It looks very much like a pattern, but all the
@@ -257,7 +257,7 @@ stack)::
   <Employee 1 2>
  
 Locations
----------
+=========
 
 Traject supports the notion of locations. After we find a model, the
 model receive two special attributes::
@@ -299,7 +299,7 @@ Default objects have been created for each step along the way, up
 until the root.
 
 Consuming a path
-----------------
+================
 
 In a mixed traject/traversal environment, for instance where view
 lookup is done by traversal, it can be useful to be able to resolve a
@@ -360,7 +360,7 @@ The method ``consume_stack`` does the same with a stack::
   True
 
 Giving a model its location
----------------------------
+===========================
 
 Models are automatically given their location after traversal. There
 is however another case where giving an object a location can be
@@ -428,7 +428,7 @@ The model will now have ``__name__`` and ``__parent__`` attributes::
   True
 
 A global patterns registry
---------------------------
+==========================
 
 Since the patterns registry is clever enough to distinguish between
 roots, in many scenarios only a single, global ``Patterns`` registry
