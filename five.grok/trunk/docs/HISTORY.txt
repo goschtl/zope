@@ -4,14 +4,18 @@ Changelog
 1.1 (unreleased)
 ----------------
 
-- Update to martian 0.11.1.
+- Update code and tests to work with Zope 2.12. People using Zope 2.10
+  and 2.11 should keep using five.grok 1.0.
+  [thefunny42 and optilude]
+
+- Update to martian 0.11.1, `grokcore.annotation`_ 1.1 and
+  `grokcore.site`_ 1.1, `grokcore.view`_ to 1.12.2.
   [vincentfretin]
 
-- Update to grokcore.annotation 1.1 and grokcore.site 1.1.
-  [vincentfretin]
+- Local utility implements IAttributeAnnotatable, IContext like in
+  `grokcore.site`_.
+  [thefunny42]
 
-- Pin grokcore.view to 1.12.2.
-  [vincentfretin]
 
 1.0 (2009-09-17)
 ----------------
@@ -24,7 +28,6 @@ Changelog
 
 - Reverted the CodeView base class, see grokcore.view changelog for
   more details.
-
   ``CodeView`` is still available as a backwards compatibility alias
   for ``View``. Please update all references to ``CodeView`` to
   ``View``.

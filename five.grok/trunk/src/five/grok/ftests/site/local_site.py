@@ -21,6 +21,14 @@
   >>> verifyObject(IEnergyManager, manager)
   True
 
+  >>> from grokcore.component.interfaces import IContext
+  >>> IContext.providedBy(manager)
+  True
+
+  >>> from zope.annotation.interfaces import IAttributeAnnotatable
+  >>> IAttributeAnnotatable.providedBy(manager)
+  True
+
 """
 
 from zope.interface import Interface
@@ -52,4 +60,6 @@ class EnergyManager(grok.LocalUtility):
 class World(grok.Model, grok.Site):
 
     grok.local_utility(EnergyManager, IEnergyManager)
+
+
 

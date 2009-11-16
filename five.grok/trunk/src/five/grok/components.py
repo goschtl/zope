@@ -70,7 +70,7 @@ class Site(Model, BaseSite):
 
 
 class LocalUtility(SimpleItem):
-    pass
+    interface.implements(IAttributeAnnotatable, IContext)
 
 
 class View(grokcore.view.View):
@@ -81,6 +81,7 @@ class View(grokcore.view.View):
         if self.static is not None:
             # Set parent so that we have an acquisition chain
             self.static.__parent__ = context
+
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
@@ -168,6 +169,7 @@ class ZopeTwoDirectoryResourceFactory(resource.DirectoryResourceFactory):
         resource = ZopeTwoDirectoryResource(self.__rsrc, request)
         resource.__name__ = self.__name # We need to add name
         return resource
+
 
 # forms from formlib
 
