@@ -4,6 +4,7 @@ Products.CMFActionIcons Changelog
 2.1.3 (unreleased)
 ------------------
 
+- Restore contents of metadata.xml file.
 
 2.1.3-beta (2009-11-17)
 -----------------------
