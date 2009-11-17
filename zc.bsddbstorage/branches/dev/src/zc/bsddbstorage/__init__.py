@@ -350,6 +350,8 @@ class BSDDBStorage(
                 if kv is None:
                     return None
                 tid = kv[0]
+                if tid > pack_tid:
+                    return None
 
                 # Set the status flag to indicate that the transaction
                 # was packed.
