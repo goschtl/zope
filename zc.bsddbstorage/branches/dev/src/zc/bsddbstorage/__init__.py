@@ -32,7 +32,7 @@ import zope.interface
 def n64(tid):
     return p64(868082074056920076L-u64(tid))
 
-# XXX Still need checkpoint and deadlock detection strategies.
+# XXX Still need checkpoint strategy.
 # Maybe initial config file when creating env.
 
 def retry_on_deadlock(f):
@@ -61,8 +61,13 @@ class BSDDBStorage(
         ZODB.interfaces.IExternalGC,
         )
 
-    def __init__(self, envpath, blob_dir=None, pack=3*86400,
-                 create=False, read_only=False):
+    def __init__(self, envpath, blob_dir=None,
+                 pack = 3*86400,
+                 create = False,
+                 read_only = False,
+                 detect_locks = True,
+                 remove_logs = True,
+                 ):
         self.__name__ = envpath
         envpath = os.path.abspath(envpath)
         if create:
@@ -90,8 +95,10 @@ class BSDDBStorage(
         self.blob_dir = blob_dir
 
         self.env = db.DBEnv()
-        self.env.set_lk_detect(db.DB_LOCK_MINWRITE)
-        self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1) # XXX should be optional
+        if detect_locks:
+            self.env.set_lk_detect(db.DB_LOCK_MINWRITE)
+        if remove_logs:
+            self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1)
         flags = (db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_MPOOL |
                  db.DB_INIT_TXN | db.DB_THREAD)
         if not read_only:
@@ -138,7 +145,7 @@ class BSDDBStorage(
         t = self._ts = ZODB.TimeStamp.TimeStamp(
             *(time.gmtime(t)[:5] + (t%60,)))
         self._tid = repr(t)
-        self._transaction = None
+        self._transaction = self._txn = None
 
         self._commit_lock = threading.Lock()
         _lock = threading.Lock()
@@ -178,14 +185,14 @@ class BSDDBStorage(
 
     def _history_entry(self, record, txn):
         tid = n64(record[:8])
-        transaction = cPickle.loads(
-            self.transactions.get(tid, txn=txn), doff=1)
+        transaction = cPickle.loads(self.transactions.get(tid, txn=txn)[1:])
         transaction.update(
-            size = len(record-8),
+            size = len(record)-8,
             tid = tid,
             serial = tid,
             time = ZODB.TimeStamp.TimeStamp(tid).timeTime(),
             )
+        return transaction
 
     def history(self, oid, size=1):
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
@@ -208,7 +215,7 @@ class BSDDBStorage(
     def isReadOnly(self):
         return self._read_only
 
-    def iterator(self, start=z64, stop=None):
+    def iterator(self, start=z64, stop='\f'*8):
         return StorageIterator(self._iterator(start, stop))
 
     def _iterator(self, start, stop):
@@ -217,6 +224,8 @@ class BSDDBStorage(
                 kv = transactions.get(start, flags=db.DB_SET_RANGE)
                 while kv:
                     tid, ext = kv
+                    if tid > stop:
+                        break
                     yield Records(self, txn, tid, ext[0], ext[1:])
                     kv = transactions.get(tid, flags=db.DB_NEXT)
 
@@ -261,10 +270,15 @@ class BSDDBStorage(
                     kr = cursor.get(oid, db.DB_SET)
                     if kr is None:
                         raise ZODB.POSException.POSKeyError(oid)
+
                 record = kr[1]
                 rtid = n64(record[:8])
-                if kr[0] != oid or rtid >= tid or len(record) == 8:
+                assert kr[0] == oid
+                if len(record) == 8: # The object was deleted
                     raise ZODB.POSException.POSKeyError(oid)
+
+                if rtid >= tid:
+                    return None
 
                 # Now, get the next tid:
                 kr = cursor.get(oid, ntid, db.DB_PREV_DUP, dlen=8, doff=0)
@@ -292,14 +306,14 @@ class BSDDBStorage(
 
                 raise ZODB.POSException.POSKeyError(oid, serial)
 
-    @retry_on_deadlock
     def new_oid(self):
         with self.txn() as txn:
-            oid = p64(u64(self.misc.get('oid', z64, txn))+1)
+            oid = p64(u64(self.misc.get('oid', z64, txn, db.DB_RMW))+1)
             self.misc.put('oid', oid, txn)
             return oid
 
-    def pack(self, pack_time=None, referencesf=None):
+    def pack(self, pack_time=None, referencesf=None, gc=False):
+        assert not gc, "BSDDBStorage doesn't do garbage collection."
         if pack_time is None:
             pack_time = time.time()-self._pack
         pack_tid = timetime2tid(pack_time)
@@ -509,28 +523,19 @@ class BSDDBStorage(
 
         marshal.dump((oid, n64(self._tid)), self._log_file)
 
-    def tpc_abort(self, transaction):
-        if self._txn is not None:
-            self._txn.abort()
-        self._txn = self._transaction = None
-        self._blob_tpc_abort()
-        self._commit_lock.release()
-
     def tpc_begin(self, transaction, tid=None, status=' '):
         if self._read_only:
             raise ZODB.POSException.ReadOnlyError()
 
+        if self._transaction is transaction:
+            return
         self._commit_lock.acquire()
-        if self._transaction is not None and transaction != self._transaction:
-            self._commit_lock.release()
-            raise ZODB.POSException.StorageTransactionError(self, transaction)
-
         self._transaction = transaction
 
         ext = transaction._extension.copy()
         ext['user_name'] = transaction.user
         ext['description'] = transaction.description
-        ext = cPickle.dumps(ext, 1)
+        ext = status+cPickle.dumps(ext, 1)
 
         if tid is None:
             now = time.time()
@@ -547,12 +552,26 @@ class BSDDBStorage(
         os.close(fd)
         marshal.dump((tid, ext), self._log_file)
 
+    def tpc_abort(self, transaction):
+        if transaction is not self._transaction:
+            return
+        try:
+            if self._txn is not None:
+                self._txn.abort()
+            self._blob_tpc_abort()
+            self._transaction = self._txn = None
+        finally:
+            self._commit_lock.release()
+
     def tpc_finish(self, transaction, func = lambda tid: None):
+        if transaction is not self._transaction:
+            return
+
         with self._current_lock.write():
-            self._txn.commit()
             func(self._tid)
-            self._txn = self._transaction = None
+            self._txn.commit()
             self._blob_tpc_finish()
+            self._transaction = self._txn = None
             self._commit_lock.release()
 
     _transaction_id_suffix = 'x' * (db.DB_GID_SIZE - 8)
@@ -560,7 +579,7 @@ class BSDDBStorage(
         self._txn = txn = self.env.txn_begin()
         self._log_file.seek(0)
         tid, ext = marshal.load(self._log_file)
-        self.transactions.put(tid, ' '+ext, txn=txn)
+        self.transactions.put(tid, ext, txn=txn)
         for oid, record in marhal_iterate(self._log_file):
             self.data.put(oid, record, txn=txn)
             self.transaction_oids.put(tid, oid, txn=txn)
@@ -606,8 +625,11 @@ def timetime2tid(timetime):
 
 def DB(path, blob_dir=None, pack=3*86400,
        read_only=False, create=False,
+       detect_locks = True,
+       remove_logs = True,
        **kw):
-    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only),
+    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only,
+                                detect_locks, remove_logs),
                    **kw)
 
 class StorageIterator(object):

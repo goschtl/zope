@@ -43,12 +43,21 @@ class BSDDBStorageTests(
     ZODB.tests.ReadOnlyStorage.ReadOnlyStorage
     ):
 
+    def __disabled(self):
+        "disabled"
+
+    checkLoadBeforeUndo = __disabled
+    checkUndoZombie = __disabled
+    checkPackWithMultiDatabaseReferences = __disabled
+    checkLoadBeforeUndo = __disabled
+    checkWriteMethods = __disabled
+
     def open(self, **kwargs):
         self._storage = zc.bsddbstorage.BSDDBStorage(
             'storage', **kwargs)
 
     def setUp(self):
-        StorageTestBase.StorageTestBase.setUp(self)
+        ZODB.tests.StorageTestBase.StorageTestBase.setUp(self)
         self.open(create=1)
 
 def test_suite():
@@ -63,6 +72,7 @@ def test_suite():
         zc.bsddbstorage.BSDDBStorage(name, blob_dir=blob_dir),
         test_blob_storage_recovery=True,
         test_packing=True,
+        test_undo=False,
         ))
     suite.addTest(ZODB.tests.PackableStorage.IExternalGC_suite(
         lambda : zc.bsddbstorage.BSDDBStorage(
