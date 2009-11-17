@@ -219,15 +219,25 @@ class BSDDBStorage(
         return StorageIterator(self._iterator(start, stop))
 
     def _iterator(self, start, stop):
-        with self.txn(db.DB_READ_COMMITTED) as txn:
-            with self.cursor(self.transactions, txn) as transactions:
-                kv = transactions.get(start, flags=db.DB_SET_RANGE)
-                while kv:
-                    tid, ext = kv
-                    if tid > stop:
-                        break
-                    yield Records(self, txn, tid, ext[0], ext[1:])
-                    kv = transactions.get(tid, flags=db.DB_NEXT)
+        while 1:
+            with self.txn(db.DB_TXN_SNAPSHOT) as txn:
+                with self.cursor(self.transactions, txn) as transactions:
+                    n = 0
+                    kv = transactions.get(start, flags=db.DB_SET_RANGE)
+                    while 1:
+                        if not kv:
+                            return
+                        tid, ext = kv
+                        if tid > stop:
+                            return
+                        yield Records(self, tid, ext[0], ext[1:])
+                        kv = transactions.get(tid, flags=db.DB_NEXT)
+                        n += 1
+                        if n >= 1000:
+                            # bail on this trans to avoid using too many
+                            # resources.
+                            start = p64(u64(tid)+1)
+                            break
 
 #     def record_iternext(next=None):
 #         pass # XXX
@@ -649,9 +659,8 @@ class StorageIterator(object):
             
 class Records(object):
 
-    def __init__(self, storage, txn, tid, status, ext):
+    def __init__(self, storage, tid, status, ext):
         self.storage = storage
-        self._txn = txn
         self.tid = tid
         ext = cPickle.loads(ext)
         self.user = ext.pop('user_name', '')
@@ -671,22 +680,24 @@ class Records(object):
     def _iter(self):
         tid = self.tid
         ntid = n64(tid)
-        with self.storage.cursor(self.storage.transaction_oids, self._txn
-                                 ) as transaction_oids:
-            kv = transaction_oids.get(tid, flags=db.DB_SET)
-            while kv:
-                ttid, oid = kv
-                assert ttid == tid
-                with self.storage.cursor(self.storage.data, self._txn) as data:
-                    kr = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
-                    if kr is None:
-                        kr = data.get(oid, flags=db.DB_SET)
-                    doid, rec = kr
-                    assert doid == oid
-                    dntid = rec[:8]
-                    assert dntid == ntid
-                    yield Record(oid, tid, rec[8:])
-                kv = transaction_oids.get(tid, flags=db.DB_NEXT_DUP)
+        with self.storage.txn(db.DB_TXN_SNAPSHOT) as txn:
+            with self.storage.cursor(self.storage.transaction_oids, txn
+                                     ) as transaction_oids:
+                kv = transaction_oids.get(tid, flags=db.DB_SET)
+                while kv:
+                    ttid, oid = kv
+                    assert ttid == tid
+                    with self.storage.cursor(self.storage.data, txn
+                                             ) as data:
+                        kr = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
+                        if kr is None:
+                            kr = data.get(oid, flags=db.DB_SET)
+                        doid, rec = kr
+                        assert doid == oid
+                        dntid = rec[:8]
+                        assert dntid == ntid
+                        yield Record(oid, tid, rec[8:])
+                    kv = transaction_oids.get(tid, flags=db.DB_NEXT_DUP)
 
 class Record:
     def __init__(self, oid, tid, data):
