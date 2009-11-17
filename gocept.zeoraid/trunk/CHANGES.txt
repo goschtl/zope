@@ -5,7 +5,7 @@ Change History
 1.0b6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #465834: Allow starting up with degraded storages.
 
 
 1.0b5 (2009-11-14)

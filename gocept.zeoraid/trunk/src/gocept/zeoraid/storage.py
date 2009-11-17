@@ -121,6 +121,9 @@ class RAIDStorage(object):
         self.zeo = zeo
         self.storages = {}
         self._threads = set()
+        self.storages_optimal = []
+        self.storages_degraded = []
+
         # Temporary files and directories that should be removed at the end of
         # the two-phase commit. The list must only be modified while holding
         # the commit lock.
@@ -166,8 +169,6 @@ class RAIDStorage(object):
         # Set up list of optimal storages
         self.storages_optimal = tids.pop(max(tids))
 
-        # Set up list of degraded storages
-        self.storages_degraded = []
         # Degrade all remaining (non-optimal) storages
         for name in reduce(lambda x, y: x + y, tids.values(), []):
             self._degrade_storage(name)
@@ -658,9 +659,16 @@ class RAIDStorage(object):
 
     def _open_storage(self, name):
         assert name not in self.storages, "Storage %s already opened" % name
-        storage = self.openers[name].open()
-        assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
-        self.storages[name] = storage
+        try:
+            storage = self.openers[name].open()
+            assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
+            storage.load('\x00' * 8)
+            self.storages[name] = storage
+        except Exception, e:
+            logger.critical('Could not open storage %s' % name, exc_info=True)
+            # We were trying to open a storage. Even if we fail we can't be
+            # more broke than before, so don't ever fail due to this.
+            self._degrade_storage(name, fail=False)
 
     def _close_storage(self, name):
         if name in self.storages_optimal:

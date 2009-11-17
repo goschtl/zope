@@ -27,3 +27,18 @@ Monitoring
 
 The controller script that comes with ZEORaid returns Nagios-compatible exit
 codes and thus the status command can be used directly as a Nagios command.
+
+
+Starting with degraded storages
+===============================
+
+ZEORaid can start with degraded storages, as long as one functioning storage
+is available.
+
+When starting with a degraded storage, make sure that the initialisation code
+of that storage does not block until the storage becomes available. 
+
+For example, ZEO client's ClientStorage will by default block until the ZEO
+server becomes available. In case you want to start without the ZEO server
+being available, you need to configure the option `wait false` into your
+corresponding. zeoclient section.
