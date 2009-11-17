@@ -322,6 +322,7 @@ class BSDDBStorage(
         if self.blob_dir:
             self._remove_empty_notlast_blob_directories(self.blob_dir)
 
+    @retry_on_deadlock
     def _pack1(self, pack_tid):
         # Pack one transaction. Get the next transaction we haven't yet
         # packed and stop if it is > pack_tid.
