@@ -4,6 +4,24 @@ Products.CMFActionIcons Changelog
 2.1.3-beta (unreleased)
 -----------------------
 
+- backported all trunk changes as of November 2009 to the 2.1 branch, 
+  except for the (unnecessary) Zope 2.12 requirement. The 2.1 branch 
+  will be the "final" release branch for CMFActionIcons.
+
+- Cleaned up / normalized imports:
+
+  o Don't import from Globals;  instead, use real locations.
+
+  o Make other imports use the actual source module, rather than an
+    intermediate (e.g., prefer importing 'ClassSecurityInfo' from
+    'AccessControl.SecurityInfo' rather than from 'AccessControl').
+
+  o Avoid relative imports, which will break in later versions of Python.
+
+- profiles: Removed obsolete local import and export step registrations.
+
+- setup handler: Registered steps globally.
+
 
 2.1.2 (2008-09-13)
 ------------------
@@ -12,7 +30,7 @@ Products.CMFActionIcons Changelog
 
 
 2.1.2-beta (2008-08-26)
------------------------
+------------------
 
 - completed devolution from monolithic CMF package into its component
   products that are distributed as eggs from PyPI.

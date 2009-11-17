@@ -17,11 +17,11 @@ Define tool for mapping CMF actions onto icons.
 $Id$
 """
 
-from Products.CMFCore.utils import ToolInit
-
-import ActionIconsTool
-
 def initialize(context):
+
+    from Products.CMFCore.utils import ToolInit
+
+    import ActionIconsTool
 
     ToolInit( meta_type='CMF Action Icons Tool'
             , tools=( ActionIconsTool.ActionIconsTool, )
