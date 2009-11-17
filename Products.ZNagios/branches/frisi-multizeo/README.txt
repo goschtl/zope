@@ -32,18 +32,13 @@ graphs provided by munin_client.py
 ``````````````````````````````````
 
 uptime
-  uptime of the zope instance in seconds
-
-  XXX shouldn't we change this to days? (much more readable, `varnish_ plugin`_ does this too)
-
-  .. _`varnish_ plugin`: http://varnish.projects.linpro.no/browser/trunk/varnish-tools/munin/varnish_
+  uptime of the zope instance in days (1 hour is 0.041)
 
 refcount
   XXX help document
 
 errors
   total number of errors, conflicts and unresolved conflicts
-  that occured since last startup
 
 activity
   nr of object loads, stores and

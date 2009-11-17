@@ -86,6 +86,11 @@ class SimpleMultiGraph(GraphBase):
 
 
 class uptime(SimpleGraph):
+    """uptime in days"""
+
+    def do_fetch(self):
+        #value is provided in seconds, convert it to days
+        print "%s.value %.3f" % (self.name, self.data[self.key]/86400)
 
     key = name = 'uptime'
     title = 'Uptime'
