@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.1.1 (2009-11-18)
+------------------
+
+- Renamed a conflicting 'zmi_views' menu entry. There were two
+  entries entitled 'Manage'. The CSVExportView became 'CSV Export'.
+  [trollfot]
+
+
 1.1.0 (2009-11-18)
 ------------------
 

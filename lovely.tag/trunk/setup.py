@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup (
     name='lovely.tag',
-    version='1.2.0dev',
+    version='1.1.1',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "A tagging engine for Zope 3",
