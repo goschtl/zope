@@ -67,8 +67,7 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
             self._pids.append(pid)
             self._servers.append(adminaddr)
             self._storages.append(gocept.zeoraid.testing.ZEOOpener(
-                str(i), zport, storage='1',
-                min_disconnect_poll=0.5, wait=1, wait_timeout=60))
+                str(i), zport, storage='1', wait=False))
         self.open()
 
     def getConfig(self):
@@ -942,7 +941,7 @@ class FailingStorageTestBase(object):
             def open(self):
                 return ZODB.MappingStorage.MappingStorage()
 
-        self.assertRaises(AssertionError,
+        self.assertRaises(RuntimeError,
                           gocept.zeoraid.storage.RAIDStorage,
                           'name', [Opener()])
 
@@ -1362,6 +1361,17 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
         # to exclude IServeable which has a method that is described as
         # optional in the doc string.
         pass
+
+    def check_startup_missing_zeo_does_not_block(self):
+        forker.shutdown_zeo_server(self._servers[0])
+        self._storage.close()
+        self.open()
+        self.assertEquals('degraded', self._storage.raid_status())
+        # We should still be able to write
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid, data='0', already_pickled=True)
+        # Remove closed ZEO server to allow correct shutdown.
+        del self._servers[0]
 
 
 def raise_exception():

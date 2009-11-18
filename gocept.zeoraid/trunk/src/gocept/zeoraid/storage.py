@@ -663,12 +663,15 @@ class RAIDStorage(object):
             storage = self.openers[name].open()
             assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
             storage.load('\x00' * 8)
-            self.storages[name] = storage
+        except ZODB.POSException.POSKeyError, e:
+            pass
         except Exception, e:
             logger.critical('Could not open storage %s' % name, exc_info=True)
             # We were trying to open a storage. Even if we fail we can't be
             # more broke than before, so don't ever fail due to this.
             self._degrade_storage(name, fail=False)
+            return
+        self.storages[name] = storage
 
     def _close_storage(self, name):
         if name in self.storages_optimal:
