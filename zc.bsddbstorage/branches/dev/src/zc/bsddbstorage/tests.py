@@ -11,12 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.testing import doctest
+from zope.testing import doctest, setupstack
 import cPickle
 import cStringIO
 import time
 import unittest
 import zc.bsddbstorage
+import ZEO.tests.testZEO
 import ZODB.tests.BasicStorage
 import ZODB.tests.ConflictResolution
 import ZODB.tests.HistoryStorage
@@ -31,29 +32,16 @@ import ZODB.tests.StorageTestBase
 import ZODB.tests.Synchronization
 import ZODB.tests.testblob
 
-class BSDDBStorageTests(
-    ZODB.tests.StorageTestBase.StorageTestBase,
-    ZODB.tests.BasicStorage.BasicStorage,
-    ZODB.tests.RevisionStorage.RevisionStorage,
-    ZODB.tests.PackableStorage.PackableStorageWithOptionalGC,
-    ZODB.tests.Synchronization.SynchronizedStorage,
-    ZODB.tests.ConflictResolution.ConflictResolvingStorage,
-    ZODB.tests.HistoryStorage.HistoryStorage,
-    ZODB.tests.IteratorStorage.IteratorStorage,
-    ZODB.tests.IteratorStorage.ExtendedIteratorStorage,
-    ZODB.tests.PersistentStorage.PersistentStorage,
-    ZODB.tests.MTStorage.MTStorage,
-    ZODB.tests.ReadOnlyStorage.ReadOnlyStorage
-    ):
+def DISABLED(self):
+    "disabled"
 
-    def __disabled(self):
-        "disabled"
+class Overrides:
 
-    checkLoadBeforeUndo = __disabled
-    checkUndoZombie = __disabled
-    checkPackWithMultiDatabaseReferences = __disabled
-    checkLoadBeforeUndo = __disabled
-    checkWriteMethods = __disabled
+    checkLoadBeforeUndo = DISABLED
+    checkUndoZombie = DISABLED
+    checkPackWithMultiDatabaseReferences = DISABLED
+    checkLoadBeforeUndo = DISABLED
+    checkWriteMethods = DISABLED
 
     # Dang it, we really need to factor the pack tests for gc or no gc
     def checkPackAllRevisions(self):
@@ -107,27 +95,87 @@ class BSDDBStorageTests(
         # Commented because No GC:
         # raises(KeyError, self._storage.loadSerial, oid, revid3)
 
+class BSDDBStorageTests(
+    Overrides,
+    ZODB.tests.StorageTestBase.StorageTestBase,
+    ZODB.tests.BasicStorage.BasicStorage,
+    ZODB.tests.RevisionStorage.RevisionStorage,
+    ZODB.tests.PackableStorage.PackableStorageWithOptionalGC,
+    ZODB.tests.Synchronization.SynchronizedStorage,
+    ZODB.tests.ConflictResolution.ConflictResolvingStorage,
+    ZODB.tests.HistoryStorage.HistoryStorage,
+    ZODB.tests.IteratorStorage.IteratorStorage,
+    ZODB.tests.IteratorStorage.ExtendedIteratorStorage,
+    ZODB.tests.PersistentStorage.PersistentStorage,
+    ZODB.tests.MTStorage.MTStorage,
+    ZODB.tests.ReadOnlyStorage.ReadOnlyStorage
+    ):
+
+
     def open(self, **kwargs):
         self._storage = zc.bsddbstorage.BSDDBStorage(
-            'storage', **kwargs)
+            'storage', checkpoint=1, **kwargs)
 
     def setUp(self):
         ZODB.tests.StorageTestBase.StorageTestBase.setUp(self)
         self.open(create=1)
 
+class BSDDBStorageZEOTests(
+    Overrides,
+    ZEO.tests.testZEO.FullGenericTests,
+    ):
+
+    def getConfig(self):
+        return """\
+        %import zc.bsddbstorage
+        <bsddbstorage>
+          path data
+          checkpoint 1
+        </bsddbstorage>
+        """
+
+    checkCommitLockUndoAbort = DISABLED
+    checkCommitLockUndoClose = DISABLED
+    checkCommitLockUndoFinish = DISABLED
+    checkCreationUndoneGetTid = DISABLED
+    checkNotUndoable = DISABLED
+    checkPackAfterUndoDeletion = DISABLED
+    checkPackAfterUndoManyTimes = DISABLED
+    checkSimpleTransactionalUndo = DISABLED
+    checkTransactionalUndoIterator = DISABLED
+    checkTwoObjectUndo = DISABLED
+    checkTwoObjectUndoAgain = DISABLED
+    checkTwoObjectUndoAtOnce = DISABLED
+    checkUndoConflictResolution = DISABLED
+    checkUndoCreationBranch1 = DISABLED
+    checkUndoCreationBranch2 = DISABLED
+    checkUndoInvalidation = DISABLED
+    checkUndoUnresolvable = DISABLED
+    checkIndicesInUndoInfo = DISABLED
+    checkIndicesInUndoLog = DISABLED
+    checkPackUndoLog = DISABLED
+    checkTransactionalUndoAfterPack = DISABLED
+    checkTransactionalUndoAfterPackWithObjectUnlinkFromRoot = DISABLED
+    checkUndoLogMetadata = DISABLED
+    checkPackUnlinkedFromRoot = DISABLED
+
 def test_suite():
     suite = unittest.TestSuite()
     for klass in [
-        BSDDBStorageTests,
+        BSDDBStorageTests, BSDDBStorageZEOTests,
         ]:
         suite.addTest(unittest.makeSuite(klass, "check"))
     suite.addTest(ZODB.tests.testblob.storage_reusable_suite(
         'BlobBSDDBStorage',
         lambda name, blob_dir:
-        zc.bsddbstorage.BSDDBStorage(name, blob_dir=blob_dir),
+        zc.bsddbstorage.BSDDBStorage(name, blob_dir=blob_dir, checkpoint=1),
         test_blob_storage_recovery=True,
-        test_packing=True,
+        test_packing=False,
         test_undo=False,
+        ))
+    suite.addTest(doctest.DocFileSuite(
+        "blob_packing.txt",
+        setUp=setupstack.setUpDirectory, tearDown=setupstack.tearDown,
         ))
     suite.addTest(ZODB.tests.PackableStorage.IExternalGC_suite(
         lambda : zc.bsddbstorage.BSDDBStorage(

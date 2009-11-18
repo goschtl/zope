@@ -15,6 +15,7 @@
 from bsddb3 import db
 from ZODB.utils import p64, u64, z64
 import cPickle
+import logging
 import marshal
 import os
 import tempfile
@@ -48,6 +49,15 @@ def retry_on_deadlock(f):
 
     return func
 
+def DB(path, blob_dir=None, pack=3*86400,
+       read_only=False, create=False,
+       detect_deadlocks = True,
+       remove_logs = True,
+       **kw):
+    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only,
+                                detect_deadlocks, remove_logs),
+                   **kw)
+
 class BSDDBStorage(
     ZODB.blob.BlobStorageMixin,
     ZODB.ConflictResolution.ConflictResolvingStorage,
@@ -65,8 +75,10 @@ class BSDDBStorage(
                  pack = 3*86400,
                  create = False,
                  read_only = False,
-                 detect_locks = True,
+                 detect_deadlocks = True,
                  remove_logs = True,
+                 checkpoint = 60,
+                 autopack = 0,
                  ):
         self.__name__ = envpath
         envpath = os.path.abspath(envpath)
@@ -95,7 +107,7 @@ class BSDDBStorage(
         self.blob_dir = blob_dir
 
         self.env = db.DBEnv()
-        if detect_locks:
+        if detect_deadlocks:
             self.env.set_lk_detect(db.DB_LOCK_MINWRITE)
         if remove_logs:
             self.env.log_set_config(db.DB_LOG_AUTO_REMOVE, 1)
@@ -161,7 +173,16 @@ class BSDDBStorage(
         # - another thread updates data via tpc_finish and sends invalidations
         # - The first thread's load returns the old data after the
         #   invalidations have been processed.
-        self._current_lock = RWLock() 
+        self._current_lock = RWLock()
+
+        if checkpoint > 0:
+            self.finish_checkpointing = interval_thread(
+                self.env.txn_checkpoint, checkpoint)
+        if autopack > 0:
+            event = threading.Event()
+            self.finish_packing = interval_thread(
+                (lambda : self.pack(should_stop=event.is_set)),
+                autopack, event)
 
     def txn(self, flags=0):
         return TransactionContext(self.env.txn_begin(flags=flags))
@@ -170,12 +191,18 @@ class BSDDBStorage(
         return CursorContext(database.cursor(txn, flags))
 
     def close(self):
+        self.finish_packing()
+        self.finish_checkpointing()
         self.data.close()
         self.transaction_oids.close()
         self.transactions.close()
         self.env.close()
         if not self._read_only:
             self._lock_file.close()
+
+    def finish_checkpointing(self):
+        pass
+    finish_packing = finish_checkpointing
 
     def getName(self):
         return self.__name__
@@ -243,7 +270,7 @@ class BSDDBStorage(
 #         pass # XXX
 
     def lastTransaction(self):
-        with self.txn() as txn:
+        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
             with self.cursor(self.transactions, txn) as cursor:
                 kv = cursor.get(db.DB_LAST)
                 if kv is None:
@@ -252,14 +279,14 @@ class BSDDBStorage(
 
     def __len__(self):
         # XXX this is probably very expensive, but we need this for the
-        # tests. :(  Need to check this out with a big db to decode what the
+        # tests. :(  Need to check this out with a big db to decide what the
         # cost is.  Usually, accuracy isn't that important.
         return self.data.stat()['nkeys']
         #return self.data.stat(db.DB_FAST_STAT)['nkeys']
 
     def load(self, oid, version=''):
         with self._current_lock.read():
-            with self.txn() as txn:
+            with self.txn(db.DB_TXN_SNAPSHOT) as txn:
                 with self.cursor(self.data, txn) as cursor:
                     kv = cursor.get(oid, db.DB_SET)
                     if kv:
@@ -269,7 +296,7 @@ class BSDDBStorage(
                             return data, n64(record[:8])
 
                     raise ZODB.POSException.POSKeyError(oid)
-
+    
     def loadBefore(self, oid, tid):
         ntid = p64(868082074056920076L-(u64(tid)-1))
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
@@ -322,12 +349,13 @@ class BSDDBStorage(
             self.misc.put('oid', oid, txn)
             return oid
 
-    def pack(self, pack_time=None, referencesf=None, gc=False):
+    def pack(self, pack_time=None, referencesf=None, gc=False,
+             should_stop=lambda : 0):
         assert not gc, "BSDDBStorage doesn't do garbage collection."
         if pack_time is None:
             pack_time = time.time()-self._pack
         pack_tid = timetime2tid(pack_time)
-        while self._pack1(pack_tid):
+        while self._pack1(pack_tid) and not should_stop():
             pass
         if self.blob_dir:
             self._remove_empty_notlast_blob_directories(self.blob_dir)
@@ -542,6 +570,7 @@ class BSDDBStorage(
 
         if self._transaction is transaction:
             return
+
         self._commit_lock.acquire()
         self._transaction = transaction
 
@@ -560,21 +589,24 @@ class BSDDBStorage(
             self._ts = ZODB.TimeStamp.TimeStamp(tid)
             self._tid = tid
 
-        fd, path = tempfile.mkstemp('bsddb')
-        self._log_file = open(path, 'r+b')
+        fd, self._log_path = tempfile.mkstemp('bsddb')
+        self._log_file = open(self._log_path, 'r+b')
         os.close(fd)
         marshal.dump((tid, ext), self._log_file)
+
+    def _tpc_cleanup(self):
+        self._transaction = self._txn = None
+        self._log_file.close()
+        os.remove(self._log_path)
+        self._commit_lock.release()
 
     def tpc_abort(self, transaction):
         if transaction is not self._transaction:
             return
-        try:
-            if self._txn is not None:
-                self._txn.abort()
-            self._blob_tpc_abort()
-            self._transaction = self._txn = None
-        finally:
-            self._commit_lock.release()
+        if self._txn is not None:
+            self._txn.abort()
+        self._blob_tpc_abort()
+        self._tpc_cleanup()
 
     def tpc_finish(self, transaction, func = lambda tid: None):
         if transaction is not self._transaction:
@@ -584,9 +616,8 @@ class BSDDBStorage(
             func(self._tid)
             self._txn.commit()
             self._blob_tpc_finish()
-            self._transaction = self._txn = None
-            self._commit_lock.release()
-
+            self._tpc_cleanup()
+            
     _transaction_id_suffix = 'x' * (db.DB_GID_SIZE - 8)
     def tpc_vote(self, transaction):
         self._txn = txn = self.env.txn_begin()
@@ -597,6 +628,32 @@ class BSDDBStorage(
             self.data.put(oid, record, txn=txn)
             self.transaction_oids.put(tid, oid, txn=txn)
         txn.prepare(self._tid+self._transaction_id_suffix)
+
+    ##############################################################
+    # ZEO support
+    
+    def getTid(self, oid):
+        """The last transaction to change an object
+
+        Return the transaction id of the last transaction that committed a
+        change to an object with the given object id.
+        
+        """
+        with self._current_lock.read():
+            with self.txn(db.DB_TXN_SNAPSHOT) as txn:
+                kv = self.data.get(oid, doff=0, dlen=8)
+                if not kv or len(kv[1]) == 8:
+                    raise ZODB.POSException.POSKeyError(oid)
+                return kv[1]
+
+
+    def tpc_transaction(self):
+        return self._transaction
+
+    #
+    ##############################################################
+
+Storage = BSDDBStorage # easier to type alias :)
 
 def marhal_iterate(f):
     while 1:
@@ -635,15 +692,6 @@ def timetime2tid(timetime):
         *time.gmtime(timetime)[:5]
         +(time.gmtime(timetime)[5]+divmod(timetime,1)[1],)
         ))
-
-def DB(path, blob_dir=None, pack=3*86400,
-       read_only=False, create=False,
-       detect_locks = True,
-       remove_logs = True,
-       **kw):
-    return ZODB.DB(BSDDBStorage(path, blob_dir, pack, create, read_only,
-                                detect_locks, remove_logs),
-                   **kw)
 
 class StorageIterator(object):
 
@@ -798,3 +846,34 @@ class ReadLockContext(object):
     def __exit__(self, *args):
         self.lock.release_read()
         
+def interval_thread(func, interval, event=None):
+
+    if event is None:
+        event = threading.Event()
+    name = __name__+'.%s' % func.__name__
+    logger = logging.getLogger(name)
+
+    def run(func):
+        status = None
+        while not event.is_set():
+            try:
+                func()
+            except Exception:
+                if status != 'failed':
+                    logger.critical("failed", exc_info=sys.exc_info)
+                    status = 'failed'
+            else:
+                if status == 'failed':
+                    logger.info("succeeded")
+                    status = None
+            event.wait(interval)
+            
+    thread = threading.Thread(target=run, args=(func, ), name=name)
+    thread.setDaemon(True)
+    thread.start()
+
+    def join(*args):
+        event.set()
+        thread.join(*args)
+
+    return join

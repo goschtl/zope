@@ -1,0 +1,69 @@
+Configuring zc.bsddbstorage.BSDDBStorage
+----------------------------------------
+
+There are 2 ways to configure and instantiate the BSDDBStorage:
+
+- Python
+
+- ZConfig
+
+Berkeley database, on which BSDDBStorage is built, allows many
+settings to be provided in a DB_CONFIG file in the database directory.
+
+To create a BSDDBStorage from Python, call the constructor
+``zc.bsddbstorage.BSDDBStorage`` passing a database directory name, an
+optional blob directory name and one of the following options:
+
+pack
+   The default number of seconds in the past to pack the database
+   to. This defaults to 3 days, 3*86400.
+
+create
+   Create a database, even if one already exists. This defaults to
+   False.
+
+read_only
+   Disallow write transactions.  The storage can still be read and
+   even packed. This defaults to False.
+
+detect_deadlocks
+   Check for deadlocks whenever a thread would block trying to get a
+   Berkeley Database lock.  This defaults to True. If False, then an
+   external tool, such as the Berkeley DB db_deadlock utility should
+   be used to periodically check for locks.
+
+remove_logs
+   Automatically remove log files when they are no-longer needed.
+   This defaults to True. Set this to False to make backups using the
+   Berkeley DB db_archive utility.
+
+checkpoint
+   Specify  the interval,  in seconds,  at which  database checkpoints
+   will be periodically taken.  This defaults to 60 seconds.  Set to 0
+   to use an external  checkpoint utility, such as Berkeley Database's
+   db_checkpoint utility.
+
+autopack
+   Sepecify the interval, in seconds, at which the database will be
+   automatically packed.  This defaults to 0, which
+   indicates no automatic packing.
+
+You can also create a storage using ZConfig.  To do so, you need to
+%import zc.bsddbstorage and use the bsddbstorage tag with options
+corresponding to the options above (with '-'s substituted for '_'s)
+plus:
+
+path
+   The (required) path of the database directory
+
+blob-dir
+   The (optional) path of the blob directory.
+
+Here's an example::
+
+   %import zc.bsddbstorage
+
+   <bsddbstorage>
+      path /my/data
+      autopack 300
+   </bsddbstorage>

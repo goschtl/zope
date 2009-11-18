@@ -1,0 +1,80 @@
+<component>
+  <description>
+     Definitions for BSDDBStorage storages.
+  </description>
+
+  <sectiontype name="bsddbstorage" datatype="zc.bsddbstorage.zconfig.Storage"
+               implements="ZODB.storage">
+
+    <key name="path" datatype="existing-dirpath" required="no">
+      <description>
+         The name of a Berkeley Database environment directory.
+      </description>
+    </key>
+
+    <key name="blob-dir" datatype="existing-dirpath" required="no">
+      <description>
+         If Blobs are supported, then this is the name of the
+         directory in which they should be stored.
+      </description>
+    </key>
+
+    <key name="pack" datatype="integer" required="no" default="259200">
+      <description>
+         The default number of seconds in the past to pack the database
+         to. This defaults to 3 days, 3*86400.
+      </description>
+    </key>
+
+    <key name="create" datatype="boolean" required="no" default="false">
+      <description>
+         Create a database, even if one already exists. This defaults to
+         False.
+      </description>
+    </key>
+
+    <key name="read-only" datatype="boolean" required="no" default="false">
+      <description>
+         Disallow write transactions.  The storage can still be read and
+         even packed. This defaults to False.
+      </description>
+    </key>
+
+    <key name="detect-deadlocks" datatype="boolean" required="no"
+         default="true">
+      <description>
+         Check for deadlocks whenever a thread would block trying to get a
+         Berkeley Database lock.  This defaults to True. If False, then an
+         external tool, such as the Berkeley DB db_deadlock utility should
+         be used to periodically check for locks.
+      </description>
+    </key>
+
+    <key name="remove-logs" datatype="boolean" required="no" default="true">
+      <description>
+         Automatically remove log files when they are no-longer needed.
+         This defaults to True. Set this to False to make backups using the
+         Berkeley DB db_archive utility.
+      </description>
+    </key>
+
+    <key name="checkpoint" datatype="integer" required="no" default="60">
+      <description>
+         Specify the interval, in seconds, at which database
+         checkpoints will be periodically taken.  This defaults to 60
+         seconds.  Set to 0 to use an external checkpoint utility,
+         such as Berkeley Database's db_checkpoint utility.
+      </description>
+    </key>
+
+    <key name="autopack" datatype="integer" required="no" default="0">
+      <description>
+         Sepecify the interval, in seconds, at which the database will be
+         automatically packed.  This defaults to 0, which
+         indicates no automatic packing.
+      </description>
+    </key>
+
+  </sectiontype>
+
+</component>
