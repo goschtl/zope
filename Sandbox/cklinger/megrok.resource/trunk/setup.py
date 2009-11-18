@@ -3,8 +3,6 @@ import os
 
 version = '0.1'
 
-
-
 setup(name='megrok.resource',
       version=version,
       description="Grok Resources based on hurry.resource",
@@ -30,6 +28,8 @@ setup(name='megrok.resource',
           'grokcore.component',
           'grokcore.view',
 	  'hurry.zoperesource',
+          'zope.app.zcmlfiles',
+          'z3c.hashedresource',
           # -*- Extra requirements: -*-
       ],
       extras_require={'test': ['hurry.jquery',],},
