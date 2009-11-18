@@ -1,0 +1,20 @@
+<div metal:use-macro="view/base_template/macros/main" >
+  <div metal:fill-slot="extra_info"
+       tal:condition="view/hasTimeValues">
+    <h1>Result of last search</h1>
+    <div>look up for tags :
+        <span tal:repeat="tag view/tags"
+              tal:omit-tag="">
+            <span tal:replace="tag" />,
+        </span>
+    </div>
+    <div>Total CPU time used : <span tal:content="view/totaltime" /> </div>
+    <div>CPU time used per lookup : <span tal:content="view/time" /> </div>
+    <div>items found per lookup : <span tal:replace="view/numitemsfound" /> </div>
+    <div tal:repeat="item view/itemsfound">
+        <span tal:replace="item/url" />,
+    </div>
+    <hr/>
+   </div>
+</div>
+
