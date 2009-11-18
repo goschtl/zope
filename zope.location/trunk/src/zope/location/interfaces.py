@@ -20,6 +20,9 @@ __docformat__ = 'restructuredtext'
 import zope.interface
 import zope.schema
 
+# BBB
+from zope.component.interfaces import IPossibleSite, ISite
+
 
 class ILocation(zope.interface.Interface):
     """Objects that can be located in a hierachy.
@@ -121,22 +124,3 @@ class IRoot(zope.interface.Interface):
 
 class LocationError(KeyError, LookupError):
     """There is no object for a given location."""
-
-
-class IPossibleSite(zope.interface.Interface):
-    """An object that could be a site.
-    """
-
-    def setSiteManager(sitemanager):
-        """Sets the site manager for this object.
-        """
-
-    def getSiteManager():
-        """Returns the site manager contained in this object.
-
-        If there isn't a site manager, raise a component lookup.
-        """
-
-
-class ISite(IPossibleSite):
-    """Marker interface to indicate that we have a site"""

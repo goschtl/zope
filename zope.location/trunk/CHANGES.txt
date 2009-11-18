@@ -5,8 +5,8 @@ CHANGES
 3.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Moved the IPossibleSite and ISite interfaces to zope.component as they are
+  dealing with zope.component's concept of a site, but not with location.
 
 3.7.0 (2009-09-29)
 ------------------
