@@ -2,7 +2,7 @@ from os.path import join
 from setuptools import setup, find_packages
 
 name = 'megrok.z3cform.base'
-version = '0.1'
+version = '0.2'
 readme = open(join('src', 'megrok', 'z3cform', 'base', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
@@ -17,15 +17,15 @@ install_requires = [
     'megrok.pagetemplate >= 0.3',
     ]
 
-test_requires = install_requires + ['grok == 1.0',]
+test_requires = install_requires + ['grok >= 1.0',]
 
 setup(name=name,
       version=version,
       description="megrok extension for z3cform",
       long_description = readme + '\n\n' + history,
       keywords='Grok Form',
-      author='Christian Klinger',
-      author_email='cklinger@novareto.de',
+      author='Souheil Chelfouh',
+      author_email='trollfot@gmail.com',
       url='',
       license='GPL',
       packages=find_packages('src', exclude=['ez_setup']),

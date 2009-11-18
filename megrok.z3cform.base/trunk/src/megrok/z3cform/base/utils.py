@@ -37,7 +37,7 @@ def notify_changes(content, changes):
         descriptions = []
         for interface, names in changes.items():
             descriptions.append(Attributes(interface, *names))
-            notify(ObjectModifiedEvent(content, *descriptions))
+        notify(ObjectModifiedEvent(content, *descriptions))
         return descriptions
     return None
 
