@@ -18,9 +18,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.component
+import zope.component.interfaces
 import zope.interface
 from zope.location.interfaces import ILocationInfo
-from zope.location.interfaces import ILocation, IRoot, ISite
+from zope.location.interfaces import ILocation, IRoot
 from zope.location.location import Location
 
 
@@ -262,7 +263,8 @@ class LocationPhysicallyLocatable(object):
         >>> LocationPhysicallyLocatable(o1).getNearestSite() is root
         True
         
-        >>> zope.interface.directlyProvides(o1, ISite)
+        >>> zope.interface.directlyProvides(
+        ...     o1, zope.component.interfaces.ISite)
         >>> LocationPhysicallyLocatable(o1).getNearestSite() is o1
         True
         
@@ -272,10 +274,10 @@ class LocationPhysicallyLocatable(object):
         True
         
         """
-        if ISite.providedBy(self.context):
+        if zope.component.interfaces.ISite.providedBy(self.context):
             return self.context
         for parent in self.getParents():
-            if ISite.providedBy(parent):
+            if zope.component.interfaces.ISite.providedBy(parent):
                 return parent
         return self.getRoot()
 
