@@ -35,7 +35,7 @@ Our application has to be a Site to access the right url for the inclusions
   >>> root['myapp'].setSiteManager(LocalSiteManager(root['myapp']))
   >>> setSite(root['myapp'])
   >>> root['myapp']
-  <Application object at ...>
+  <megrok.resource.ftests.Application object at ...>
 
 Let's start with a Library. A Library is in the context of megrok.resource
 a ResourceDirectory which holds a kind of different ResourceInclusions
@@ -45,10 +45,10 @@ a ResourceDirectory which holds a kind of different ResourceInclusions
   >>> import grokcore.component as grok 
 
   >>> class MyStylesA(Library):
-  ...    view.path('ftests/css')
+  ...    view.path('css')
   ...    grok.name('mystyles')
   ...
   ...    inclusion(name='myjs', file='a.js')  
 
   >>> grok.testing.grok_component('MyStylesA', MyStylesA)
-
+  True
