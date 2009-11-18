@@ -45,7 +45,7 @@ a ResourceDirectory which holds a kind of different ResourceInclusions
   >>> import grokcore.component as grok 
 
   >>> class MyStylesA(Library):
-  ...    view.path('cssttt')
+  ...    view.path('ftests/css')
   ...    grok.name('mystyles')
   ...
   ...    inclusion(name='myjs', file='a.js')  
