@@ -1,0 +1,16 @@
+Changelog
+=========
+
+0.2 (2009-11-18)
+----------------
+
+* Corrected a bug where the ObjectModifiedEvent was trigged more than
+  once during edition. [trollfot]
+
+* Upgrading to be compatible with grok 1.1. [trollfot]
+
+
+0.1 (2009-10-20)
+----------------
+
+* Initial release
