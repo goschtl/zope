@@ -1,0 +1,67 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:i18n="http://namespaces.zope.org/i18n"
+           i18n_domain="lovely.mediaportal">
+
+ <browser:page
+  for="*"
+  permission="zope.Public"
+  class=".tag.TaggingView"
+  name="tagCloud"
+  attribute="cloud"
+  />
+
+ <browser:page
+  for="*"
+  permission="zope.Public"
+  class=".tag.TaggingView"
+  name="linkedTagCloud"
+  attribute="linkedcloud"
+  />
+
+ <browser:page
+  for="*"
+  permission="zope.Public"
+  class=".tag.RelatedView"
+  name="relatedTagCloud"
+  attribute="cloud"
+  />
+
+ <browser:page
+  for="*"
+  permission="zope.Public"
+  class=".tag.RelatedView"
+  name="linkedRelatedTagCloud"
+  attribute="linkedcloud"
+  />
+
+
+ <!-- XXX fix permission lovely.tag.UpdateTag -->
+ <browser:page
+  for="lovely.tag.interfaces.ITaggable"
+  permission="zope.Public"
+  class=".tag.UserTagForm"
+  name="editTags.html"
+  />
+
+ <browser:page
+     menu="zmi_views"
+     title="Manage"
+     for="lovely.tag.interfaces.ITaggingEngine"
+     permission="lovely.tag.ManageEngine"
+     class=".engine.ManageView"
+     name="manage.html"
+     />
+
+ <browser:page
+     menu="zmi_views"
+     title="Manage"
+     for="lovely.tag.interfaces.ITaggingEngine"
+     permission="lovely.tag.ManageEngine"
+     class=".engine.CSVExportView"
+     name="tags.csv"
+     />
+
+ 
+ 
+</configure>

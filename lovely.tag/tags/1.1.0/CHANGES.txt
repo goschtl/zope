@@ -1,0 +1,37 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2009-11-18)
+------------------
+
+- Fixed an important error on the tag update handling : tags were
+  registered more than once if an update was made for the same user,
+  item and tag. The issue came from the set comparison method, that
+  uses the hash and not a classical cmp method. We had to introduce a
+  comparison basis we called "brain" in order to get the expected
+  behavior. A test was added to emphasis this behavior. [trollfot]
+
+
+1.0.0 (2009-07-24)
+------------------
+
+- Fixed tests to conform to latest packages.
+
+- Cleanup release boilerplate.
+
+
+0.3.0b2 (2007-07-18)
+--------------------
+
+- in case of a not matching query lovely.tag will not longer return
+  None but an empty IFTreeSet. (this is caused because zope.app.catalog
+  will ignore None which results in a boolean or operation)
+
+
+0.3.0b1 (2007-06-13)
+--------------------
+
+- use iobtree for tag persistence instead of persistent list and intid
+  util, should be much faster now with big numbers of tags. (this is a
+  new database generation)
