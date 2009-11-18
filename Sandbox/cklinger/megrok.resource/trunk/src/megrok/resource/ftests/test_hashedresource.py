@@ -18,51 +18,48 @@ Setup
 Inclusion with z3c.hashedresource
 ---------------------------------
 
+First we get the hash for the HashedStyle Library to compare it
+with the inclusion we get in the page.
+
+   >>> from zope.component import getAdapter
+   >>> from zope.publisher.browser import TestRequest
+   >>> library = getAdapter(TestRequest(), name='hashedstyles')
+   >>> library
+   <grokcore.view.components.DirectoryResource object at ...>
+
+   >>> from z3c.hashedresource.interfaces import IResourceContentsHash
+   >>> hash = IResourceContentsHash(library)
+   
+
 Here we proof if we get the resource "a.js" in the context
 of a hashedresource.
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
-  >>> browser.open('http://localhost/application/withhash')
+  >>> ajs = 'http://localhost/++noop++%s/@@/hashedstyles/a.js' % hash
+  >>> browser.open(ajs)
   >>> print browser.contents
-  <html>
-    <head>
-       <script type="text/javascript"
-       src="http://localhost/@@/hasedstyles/++noop++05d3614435a4164676867ad1f1320cd2/@@/hasedstyles/a.js"></script>
-   </head>
-    <body>
-       <h1> HI GROK </h1>
-    </body>
-  </html>  
+  /* Simple JS */
 """
-
 
 import grokcore.component as grok
 import grokcore.view as view
 
-from zope.interface import Interface
-from megrok.resource import Library, include, inclusion, hashed
-from hurry.resource import ResourceInclusion
-
 from zope.app.container import btree
-
+from zope.interface import Interface
+from hurry.resource import ResourceInclusion
 from zope.app.component.site import SiteManagerContainer
+from megrok.resource import Library, include, inclusion, hashed
 
-#class Application(btree.BTreeContainer):
+
 class Application(SiteManagerContainer):
     """ Sample Application """
 
 class HashedStyles(Library):
     view.path('css')
-    grok.name('hasedstyles')
+    grok.name('hashedstyles')
     hashed() 
     inclusion(name='JS', file='a.js')
-
-
-class WithHash(view.View):
-    grok.context(Interface)
-    include(HashedStyles, 'JS')
-    template = view.PageTemplateFile('templates/myview.pt')
 
 
 ###TestSetup

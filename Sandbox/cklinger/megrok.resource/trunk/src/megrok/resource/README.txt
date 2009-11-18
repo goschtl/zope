@@ -28,7 +28,7 @@ Setup
   ...     pass
 
   >>> root = getRootFolder()
-  >>> root['myapp'] = Application()
+  >>> root['myapp'] = myapp = Application()
 
 Our application has to be a Site to access the right url for the inclusions
 
@@ -37,6 +37,10 @@ Our application has to be a Site to access the right url for the inclusions
   >>> root['myapp']
   <megrok.resource.ftests.Application object at ...>
 
+
+Inclusions & Library
+--------------------
+
 Let's start with a Library. A Library is in the context of megrok.resource
 a ResourceDirectory which holds a kind of different ResourceInclusions
 
@@ -44,11 +48,34 @@ a ResourceDirectory which holds a kind of different ResourceInclusions
   >>> import grokcore.view as view 
   >>> import grokcore.component as grok 
 
-  >>> class MyStylesA(Library):
+  >>> class MyStyles(Library):
   ...    view.path('css')
   ...    grok.name('mystyles')
   ...
   ...    inclusion(name='myjs', file='a.js')  
 
-  >>> grok.testing.grok_component('MyStylesA', MyStylesA)
+  >>> grok.testing.grok_component('MyStyles', MyStyles)
   True
+
+
+View & Include
+--------------
+
+To include a resource we need in the most cases a view.
+
+  >>> class MyView(view.View):
+  ...     grok.context(Application)
+  ...     view.template('templates/myview.pt')
+  ...     include(MyStyles, 'myjs')
+
+  >>> grok.testing.grok_component('MyView', MyView)
+  True
+
+
+  >>> from zope.component import getMultiAdapter
+  >>> from zope.publisher.browser import TestRequest
+
+  >>> myview = getMultiAdapter((myapp, TestRequest()), name=u'myview')
+  >>> myview
+  <megrok.resource.ftests.MyView object at ...>
+

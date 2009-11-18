@@ -11,7 +11,6 @@ from megrok.resource import Library, hashed
 from zope.interface import Interface
 
 
-#@grok.adapter(Library)
 @grok.adapter(Interface)
 @grok.implementer(ILibraryUrl)
 def library_url(library):
@@ -26,11 +25,3 @@ def library_url(library):
         url = '%s/++noop++%s/@@/%s' % (url, hash, library.name)
 
     return url
-
-#@grok.adapter(Interface)
-#@grok.implementer(ILibraryUrl)
-#def library_url(library):
-#    request = getRequest()
-#    return str(component.getMultiAdapter((getSite(), request),
-#                                         IAbsoluteURL)) + '/@@/' + library.name
-        
