@@ -4,6 +4,23 @@ Changelog
 0.4 - unreleased
 ----------------
 
+- uptime is given in days now, instead of seconds which is much more readable.
+  `fetch` still returns seconds for backward compatibility,
+  but `config` tells to compute the value (``uptime.cdef uptime,86400,/``)
+  [fRiSi]
+
+- `zeo_munin.py` can handle multiple Databases now
+  [fRiSi]
+
+- Documented munin data and configuration in README
+  [fRiSi]
+
+- Corrected labels in `Per connection caches` graph
+  [fRiSi]
+
+- Added `dbsize` graph to `munin_client.py`
+  [fRiSi]
+
 
 0.3 - 2009-02-25
 ----------------
