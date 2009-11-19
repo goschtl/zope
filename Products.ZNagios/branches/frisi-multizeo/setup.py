@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.4dev'
+version = '0.4'
 
 setup(name='Products.ZNagios',
       version=version,
@@ -13,6 +13,7 @@ setup(name='Products.ZNagios',
         "Framework :: Zope2",
         "License :: OSI Approved :: Zope Public License",
         "Programming Language :: Python",
+        "Topic :: System :: Monitoring",
       ],
       keywords='Zope Nagios Munin',
       author="Zope Corporation and contributors",

@@ -41,10 +41,8 @@ errors
   total number of errors, conflicts and unresolved conflicts
 
 activity
-  nr of object loads, stores and
-  number of database connections
-
-  XXX connections is 0 for me all the time?
+  total number of object loads, stores and
+  total number of database connections
 
 cacheconnections
   number of active and total objects for each connection

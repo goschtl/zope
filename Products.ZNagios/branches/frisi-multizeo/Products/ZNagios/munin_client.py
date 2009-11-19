@@ -130,12 +130,12 @@ class dbsize(SimpleGraph):
     """Database Size in MB.
     """
 
-    def do_fetch(self):
-        print "%s.value %.2f" % (self.name, self.data[self.key]/1048576)
-
     key = 'db-bytes'
     name = 'database_size'
     title = 'Size of main Database'
+    vlabel = 'MB'
+    cdef = '%s,1048576,/'
+
 
 
 class cacheconnections(GraphBase):

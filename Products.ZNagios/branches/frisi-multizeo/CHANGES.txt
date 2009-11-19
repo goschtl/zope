@@ -4,10 +4,9 @@ Changelog
 0.4 - unreleased
 ----------------
 
-- uptime is given in days now, instead of seconds which is much more readable
-  `varnish_ plugin`_ does this too
-
-  .. _`varnish_ plugin`: http://varnish.projects.linpro.no/browser/trunk/varnish-tools/munin/varnish_
+- uptime is given in days now, instead of seconds which is much more readable.
+  `fetch` still returns seconds for backward compatibility,
+  but `config` tells to compute the value (``uptime.cdef uptime,86400,/``)
   [fRiSi]
 
 - `zeo_munin.py` can handle multiple Databases now
