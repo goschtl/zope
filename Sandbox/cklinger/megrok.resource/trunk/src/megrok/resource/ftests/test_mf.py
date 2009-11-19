@@ -46,7 +46,7 @@ First we have to get the hash to look for the resource in the testbrowser.
    >>> from z3c.hashedresource.interfaces import IResourceContentsHash
    >>> hash = IResourceContentsHash(library)
    
-   >>> ajs = 'http://localhost/++noop++%s/@@/mylibrary/a.js' % hash
+   >>> ajs = 'http://localhost/@@/++noop++%s/mylibrary/a.js' % hash
    >>> browser.open(ajs)
    >>> print browser.contents
    /* Simple JS */
@@ -68,7 +68,7 @@ First we have to get the hash to look for the resource in the testbrowser.
 
 """
 
-stag = '<script type="text/javascript" src="http://localhost/simpleapp/++noop++%s/@@/mylibrary/a.js"></script>'
+stag = '<script type="text/javascript" src="http://localhost/simpleapp/@@/++noop++%s/mylibrary/a.js"></script>'
 
 import grokcore.component as grok
 import grokcore.view as view
@@ -87,6 +87,7 @@ class MyLibrary(resource.Library):
     resource.name('mylibrary')
     
 myjs = ResourceInclusion(MyLibrary, 'a.js')    
+
 
 class SimpleView(view.View):
     grok.context(Interface)
