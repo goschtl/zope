@@ -2,6 +2,7 @@
 Operational notes
 =================
 
+
 Packing
 =======
 
@@ -42,3 +43,22 @@ For example, ZEO client's ClientStorage will by default block until the ZEO
 server becomes available. In case you want to start without the ZEO server
 being available, you need to configure the option `wait false` into your
 corresponding. zeoclient section.
+
+
+Recovery in Multi-ZEORaid setups
+================================
+
+If multiple ZEORaid servers are used in parallel and a storage has failed then
+recovery needs some extra steps:
+
+- Stop all ZEORaid servers except one
+
+- Recover the failed storage on the remaining ZEORaid server
+
+- Restart the redundant ZEORaid servers
+
+Note: Not following these steps won't cause a core meltdown, however, without
+following those steps you will not be able to successfully recover a failed
+storage under load. There is a feature wish recorded in launchpad that will
+implement a behaviour which will allow to keep the redundant ZEORaid servers
+running.
