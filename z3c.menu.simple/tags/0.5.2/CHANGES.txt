@@ -1,0 +1,20 @@
+=======
+CHANGES
+=======
+
+0.5.2 (2009-11-19)
+------------------
+
+- Remove zope.app.zapi dependency
+
+
+0.5.1 (2008-01-25)
+------------------
+
+- Bug: Updated meta-data and documentation.
+
+
+0.5.0 (2008-01-21)
+------------------
+
+- Initial Release
