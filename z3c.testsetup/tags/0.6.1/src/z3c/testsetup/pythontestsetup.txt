@@ -1,0 +1,291 @@
+====================
+Python UnitTestSetup
+====================
+
+Setups for 'normal' Python unit tests.
+
+While other kinds of test setups in this package are doctest setups,
+the setups handled here are setups of regular Python unit tests
+modules, i.e. modules, that contain definitions of regular
+`unittest.TestCase` classes.
+
+Because those setups do the main setup stuff themselves, there is not
+much to tell about them.
+
+There are also real 'oneliners' possible, that wrap around the classes
+described here and register different kinds of doctests and 'normal'
+Python tests all in a row. See 'README.txt' to learn more about that.
+
+The work is done mainly in two stages:
+
+1) A given package is searched for appropriate modules, based on the
+   settings of instance attributes.
+
+2) The tests contained in the found modules are added to one
+   `unittest.TestSuite`, which can be passed to a testrunner.
+
+
+Setting up a simple test suite
+------------------------------
+
+We want to register the tests contained in the local ``cave``
+package. This can be simply archieved by doing::
+
+   >>> from z3c.testsetup import UnitTestSetup
+   >>> setup = UnitTestSetup('z3c.testsetup.tests.cave')
+   >>> setup
+   <z3c.testsetup.testing.UnitTestSetup object at 0x...>
+
+Apparently the package to handle was passed as a string in 'dotted
+name' notation. We could also pass the package itself, if it was
+loaded before::
+
+   >>> from z3c.testsetup.tests import cave
+   >>> setup = UnitTestSetup(cave)
+   >>> setup
+   <z3c.testsetup.testing.UnitTestSetup object at 0x...>
+
+
+This setup is ready for use::
+
+   >>> suite = setup.getTestSuite()
+   >>> suite
+   <unittest.TestSuite tests=[...]>
+
+To sum it up, writing a test setup for a project now can be that
+short::
+
+   import z3c.testsetup
+   def test_suite():
+       setup = z3c.testsetup.UnitTestSetup('z3c.testsetup.tests.cave')
+       return setup.getTestSuite()
+
+This will find all modules in the given package that provide a certain
+signature (see below), register the contained tests cases and run them
+as part of a `unittest.TestSuite`.
+
+Note: in many test setups you will find a code fragment like the
+      following at the end of file::
+
+        if __name__ == '__main__':
+            unittest.main(default='test_suite')
+
+      This is not neccessary for usual testrunner setups. A testrunner
+      will look for appropriate filenames (modules) and if those
+      modules provide a callable ``test_suite`` (usually a function)
+      this callable will be called to deliver a test suite.
+
+
+UnitTestSetup default values
+----------------------------
+
+Understanding the defaults is important, because the default values
+are driving the whole process of finding and registering the test.
+
+Which files are found by default?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Basically, all modules are accepted that
+
+1) reside inside the package passed to the constructor. This includes
+   subpackages.
+
+2) are *not* located inside a 'hidden' directory (i.e. a directory
+   that contains no `__init__.py` file). Also subpackages of 'hidden'
+   directories are skipped.
+
+3) contain a ReStructured Text meta-marker in the module docstring,
+   that declares the module as a unittest module explicitly::
+
+       :unittest:
+
+   This means: there *must* be a line like the above one in the
+   docstring of an accepted module. The term might be preceeded or
+   followed by whitspace characters (spaces, tabs) or a restructured
+   text comment marker (leading ``.. ``).
+
+   The docstring of a module is written at the module header like
+   this:: 
+
+      """
+         This module smashes problems.
+
+         :unittest:
+
+      """
+      [normal Python code...]
+
+   .. note:: The ``:Test-Layer: python`` marker is deprecated.
+
+      In former releases of `z3c.testsetup` the mentioned marker was
+      used to mark unittests. This changed with version 0.3 and the
+      old marker is now deprecated (while still supported for some
+      limited time).
+
+
+Only files, that meet all three conditions are searched for tests.
+You can modify this behaviour of course, which will be explained below
+in detail.
+
+
+What options are set by default?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Because normal Python tests do the setup of tests themselves, there is
+not much to configure. Tests are just picked up and have to provide
+their own setup and teardown methods.
+
+For the finding of tests, however, two options can be set:
+
+- ``regexp_list`` is a list of regular expressions, that must be
+  matched by at least one line of a potential test module each.
+
+- ``pfilter_func`` is a function that uses ``regexp_list`` to filter
+  accepted files. You can do your own filtering by passing a different
+  function here. By default the instance method ``isTestModule`` is
+  used, that expects a module as parameter and return True or False
+  depending on whether the terms in ``regexp_list`` could all be found
+  or not.
+
+
+Customizing python test setup:
+------------------------------
+
+You can modify the behaviour of ``z3c.testsetup.UnitTestSetup`` such,
+that a different set of modules is registered. Customizing of each
+test setup is not supported by now. This means, you can say **which**
+modules are registered, but not **how** they are registered. This is
+not the case for doctest setups.
+
+The customization can be done by setting the appropriate attributes or
+functions of a ``UnitTestSetup`` instance, or by passing appropriate
+values to the constructor. Both methods will be shown below.
+
+
+``regexp_list``: customizing the module search:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The searching for appropriate test modules is basically done by the
+two methods ``getModules`` and ``isTestModule``. The latter does
+additional checking. Namely it checks for the existance of the above
+mentioned ReStructured Text meta-marker::
+
+    `:unittest:`
+
+The old ":TestLayer: python" marker is determined by a list of regular
+expressions, which is also available as an object attribute::
+
+    >>> setup.regexp_list
+    ['^\\.{0,2}\\s*:(T|t)est-(L|l)ayer:\\s*(python)\\s*']
+
+This is the default value of Python unit test setups.
+
+There is one module in the `cave` subpackage, which provides that
+marker. We can get the list of modules using `getModules()``::
+
+    >>> module_list = setup.getModules()
+    >>> module_list
+    [<module 'z3c.testsetup.tests.cave.file1' from ...>]
+
+    >>> len(module_list)
+    1
+
+The ``isTestModule()`` method of our setup object did the filtering
+here::
+
+    >>> from martian.scan import module_info_from_module
+    >>> setup.isTestModule(module_info_from_module(module_list[0]))
+    True
+
+The module ``notatest2`` of the ``cave`` package does not contain a
+Python test marker::
+
+    >>> from z3c.testsetup.tests.cave import notatest2
+    >>> setup.isTestModule(module_info_from_module(notatest2))
+    False
+
+The ``regexp_list`` attribute of a ``UnitTestSetup`` contains a list
+of regular expressions, of which each one must at least match one line
+of the docstring of a module to be accepted. If you want to include
+modules with different marker-strings, just change this attribute. The
+value will influence behaviour of the `isTestModule()``,
+``getModules()`` and ``getTestSuite()`` methods.
+
+Let's see, how this works. The notatest2 module contains a string::
+
+  :Test-Layer: False
+
+and we want its tests to be registered::
+
+    >>> setup.regexp_list = ['^\\s*:(T|t)est-(L|l)ayer:\\s*(F|false)\\s*']
+    >>> setup._regexs = None # Zap internal regex cache
+
+Now we fetch the module list again::
+
+    >>> module_list = setup.getModules()
+    >>> module_list
+    [<module 'z3c.testsetup.tests.cave.notatest2' from ...>]
+
+    >>> len(module_list)
+    1
+
+This time, the ``file1`` module was skipped. Finally let's make sure,
+that the new setting is considered when getting a test suite::
+
+    >>> suite = setup.getTestSuite()
+    >>> get_basenames_from_suite(suite)
+    ['notatest2.py']
+
+Note, that the terms in ``regexp_list`` must match **all**. Therefore,
+if you want to match one of several possible markers, then you need
+one regular expression that matches each of the possible terms but no
+others.
+
+The same effect can be archieved by passing the ``regexp_list``
+keyword parameter to the constructor::
+
+    >>> custom_setup = UnitTestSetup(cave,
+    ...  regexp_list= ['^\\s*:(T|t)est-(L|l)ayer:\\s*(F|false)\\s*'])
+    >>> suite = custom_setup.getTestSuite()
+    >>> get_basenames_from_suite(suite)
+    ['notatest2.py']
+
+
+``pfilter_func``: Modifying the filter function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Another method to change the set of found modules is to pass another
+filter function. By default all modules are taken into account, that
+provide a matching docstring. But you might look for other things in a
+module. That's what the ``pfilter_func`` parameter is for::
+
+    >>> setup.pfilter_func
+    <bound method UnitTestSetup.isTestModule of ...>
+
+As we see, the ``isTestModule`` method is used. You can pass another
+method that takes a module info as only parameter and returns ``True``
+or ``False``. A module info can be created by using
+``module_info_from_dotted_name`` and ``module_info_from_module``
+functions in the ``martian.scan`` module. Let's create such a
+function::
+
+    >>> import os
+    >>> def custom_filter(mod_info):
+    ...     modname = mod_info.dotted_name.split('.')[-1]
+    ...     if modname.startswith('notatest'):
+    ...         return True
+    ...     return False
+
+This functions accepts all modules, whose filename starts with
+'notatest'. Now, we setup a new test setup and see the result::
+
+    >>> custom_setup = UnitTestSetup(cave,
+    ...    pfilter_func = custom_filter)
+    >>> suite = custom_setup.getTestSuite()
+    >>> get_basenames_from_suite(suite)
+    ['notatest2.py']
+
+If you need more complex checks here, you can derive your customized
+test setup class and overwrite ``isModule()``.
+
+
