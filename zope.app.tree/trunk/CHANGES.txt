@@ -5,7 +5,8 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- ...
+- Import ISite from zope.component after it was moved there from
+  zope.location.
 
 3.6.0 (2009-02-01)
 ------------------

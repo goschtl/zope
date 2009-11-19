@@ -18,11 +18,11 @@ $Id$
 
 import unittest
 import zope.component
+import zope.component.interfaces
 from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
 from zope.interface import alsoProvides
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location.interfaces import ISite
 from zope.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import ztapi
 
@@ -78,7 +78,7 @@ class CookieTreeViewTest(StatefulTreeViewTest):
     def test_cookie_tree_site_tree(self):
         request = self.makeRequestWithVar()
         alsoProvides(self.items['a'], IContainmentRoot)
-        alsoProvides(self.items['c'], ISite)
+        alsoProvides(self.items['c'], zope.component.interfaces.ISite)
         view = getMultiAdapter((self.items['f'], request),
                                name='cookie_tree')
         cookie_tree = view.siteTree()

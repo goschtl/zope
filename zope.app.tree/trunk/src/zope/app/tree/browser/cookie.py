@@ -18,12 +18,14 @@ $Id$
 import zope.traversing.api
 from zope.traversing.interfaces import IContainmentRoot
 from zope.component.interfaces import IComponentLookup
-from zope.location.interfaces import ISite
 
 from zope.container.interfaces import IContainer
 
 from zope.app.tree.filters import OnlyInterfacesFilter
 from zope.app.tree.browser import StatefulTreeView
+
+import zope.component.interfaces
+
 
 class CookieTreeView(StatefulTreeView):
     """A stateful tree view using cookies to remember the tree state"""
@@ -55,7 +57,7 @@ class CookieTreeView(StatefulTreeView):
         """
         parent = self.context
         for parent in zope.traversing.api.getParents(self.context):
-            if ISite.providedBy(parent):
+            if zope.component.interfaces.ISite.providedBy(parent):
                 break
         return self.folderTree(parent)
 

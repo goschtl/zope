@@ -22,15 +22,17 @@ $Id$
 """
 from zope.interface import Interface, implements
 from zope.component import adapts
-from zope.component.interfaces import ComponentLookupError
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
-from zope.location.interfaces import ILocation, ISite
+from zope.location.interfaces import ILocation
 from zope.traversing.api import getParents
 
 from zope.container.interfaces import IReadContainer
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects
+
+import zope.component.interfaces
+
 
 class StubUniqueId(object):
     implements(IUniqueId)
@@ -101,7 +103,7 @@ class ContainerSiteChildObjects(ContainerChildObjects):
     """Adapter for read containers which are sites as well. The site
     manager will be treated as just another child object.
     """
-    adapts(ISite)
+    adapts(zope.component.interfaces.ISite)
 
     def hasChildren(self):
         if super(ContainerSiteChildObjects, self).hasChildren():
@@ -139,7 +141,7 @@ class ContainerSiteChildObjects(ContainerChildObjects):
                 return True
             else:
                 return False
-        except ComponentLookupError:
+        except zope.component.interfaces.ComponentLookupError:
             return False
         except TypeError:
             # we can't check unproxied objects, but unproxied objects

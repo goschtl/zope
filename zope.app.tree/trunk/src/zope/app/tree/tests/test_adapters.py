@@ -22,7 +22,7 @@ from zope.component.interfaces import ComponentLookupError
 from zope.security.checker import defineChecker
 from zope.security.checker import NamesChecker
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location.interfaces import ILocation, ISite
+from zope.location.interfaces import ILocation
 import zope.traversing.testing
 
 from zope.container.interfaces import IReadContainer
@@ -37,11 +37,14 @@ from zope.app.tree.utils import TreeStateEncoder
 from zope.app.tree.adapters import StubUniqueId, StubChildObjects, \
      LocationUniqueId, ContainerChildObjects, ContainerSiteChildObjects
 
+import zope.component.interfaces
+
+
 class SampleContent(object):
     pass
 
 class SampleSite(SampleContainer):
-    implements(ISite)
+    implements(zope.component.interfaces.ISite)
 
     def setSiteManager(self, sm):
         self._sm = sm
@@ -68,7 +71,8 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         ztapi.provideAdapter(None, IChildObjects, StubChildObjects)
         ztapi.provideAdapter(ILocation, IUniqueId, LocationUniqueId)
         ztapi.provideAdapter(IReadContainer, IChildObjects, ContainerChildObjects)
-        ztapi.provideAdapter(ISite, IChildObjects, ContainerSiteChildObjects)
+        ztapi.provideAdapter(zope.component.interfaces.ISite,
+                             IChildObjects, ContainerSiteChildObjects)
         ztapi.provideUtility(ITreeStateEncoder, TreeStateEncoder())
         self.makeObjects()
 
