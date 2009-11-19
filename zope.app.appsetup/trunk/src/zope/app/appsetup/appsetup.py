@@ -21,7 +21,7 @@ import ZODB.ActivityMonitor
 import ZODB.interfaces
 import zope.interface
 import zope.component
-import zope.site.hooks
+import zope.component.hooks
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
 import zope.processlifetime
@@ -101,7 +101,7 @@ def config(file, features=(), execute=True):
     newInteraction(SystemConfigurationParticipation())
 
     # Hook up custom component architecture calls
-    zope.site.hooks.setHooks()
+    zope.component.hooks.setHooks()
 
     # Load server-independent site config
     context = config.ConfigurationMachine()

@@ -75,7 +75,6 @@ setup(
                       'zope.error',
                       'zope.event',
                       'zope.interface',
-                      'zope.location',
                       'zope.processlifetime',
                       'zope.session',
                       'zope.site',

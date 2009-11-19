@@ -24,13 +24,13 @@ __docformat__ = 'restructuredtext'
 import logging
 import transaction
 import warnings
+import zope.component.interfaces
 import zope.event
 import zope.lifecycleevent
 import zope.processlifetime
 
 from zope.app.publication.zopepublication import ZopePublication
 from zope.container.interfaces import INameChooser
-from zope.location.interfaces import ISite
 from zope.security.management import getSecurityPolicy
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.site import site
@@ -164,7 +164,7 @@ def bootStrapSubscriber(event):
         root_folder = rootFolder()
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(root_folder))
         root[ZopePublication.root_name] = root_folder
-        if not ISite.providedBy(root_folder):
+        if not zope.component.interfaces.ISite.providedBy(root_folder):
             site_manager = site.LocalSiteManager(root_folder)
             root_folder.setSiteManager(site_manager)
 
