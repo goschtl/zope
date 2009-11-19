@@ -8,6 +8,9 @@ CHANGES
 - Removed unneeded dependencies on zope.app.publisher and zope.app.form, moved
   zope.app.intid to the test dependencies.
 
+- Import hooks functionality from zope.component after it was moved there from
+  zope.site. This lifts the test dependency on zope.site.
+
 3.8.0 (2009-02-01)
 ------------------
 

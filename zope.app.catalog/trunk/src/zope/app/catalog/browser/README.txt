@@ -354,7 +354,7 @@ it.  The catalog is really meant to be used from Python:
 We'll make our root folder the site (this would normally be done by
 the publisher):
 
-  >>> from zope.site.hooks import setSite
+  >>> from zope.component.hooks import setSite
   >>> setSite(root)
 
 Now, we'll get the catalog:

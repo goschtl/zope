@@ -55,7 +55,6 @@ setup(name = 'zope.app.catalog',
       extras_require = dict(
           test=['zope.testing',
                 'zope.component',
-                'zope.site',
                 'zope.app.intid',
                 'zope.app.securitypolicy',
                 'zope.app.testing',
