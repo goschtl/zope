@@ -43,7 +43,7 @@ This section is only relevant to release managers of ``hurry.jquery``.
 When releasing ``hurry.jquery``, an extra step should be taken. Follow the
 regular package `release instructions`_, but before egg generation (``python
 setup.py register sdist upload``) first execute ``bin/jqueryprepare <version
-number>``, where version number is the version of the YUI release, such as
+number>``, where version number is the version of the jQuery release, such as
 ``1.3.2``. This will download the jQuery library of that version and place it
 in the egg.
 
