@@ -642,10 +642,10 @@ class BSDDBStorage(
         """
         with self._current_lock.read():
             with self.txn(db.DB_TXN_SNAPSHOT) as txn:
-                kv = self.data.get(oid, doff=0, dlen=8)
-                if not kv or len(kv[1]) == 8:
+                rec = self.data.get(oid, doff=0, dlen=9)
+                if not rec or len(rec) == 8:
                     raise ZODB.POSException.POSKeyError(oid)
-                return kv[1]
+                return n64(rec[:8])
 
 
     def tpc_transaction(self):
