@@ -6,7 +6,7 @@ import grokcore.view as view
 
 from zope.app.publication.interfaces import IBeforeTraverseEvent
 from zope.security.proxy import removeSecurityProxy
-from megrok.resource import include
+from megrok.resource import include, need
 from hurry.resource import ResourceInclusion
 
 
@@ -14,17 +14,6 @@ from hurry.resource import ResourceInclusion
 def handle_inclusion(view, event):
     with_bottom = False
     view = removeSecurityProxy(view)
-    includes = include.bind().get(view)
-    for lib, name, bottom in includes:
-        if bottom:
-            with_bottom=True
-
-        if isinstance(lib, ResourceInclusion):
-            lib.need()
-        else:
-            resources = lib.get_resources(name=name)
-            for resource in resources:
-                resource.need()
-
-    if with_bottom:
-        hurry.resource.bottom()
+    needs = need.bind().get(view)
+    for lib in needs:
+        lib.need()

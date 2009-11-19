@@ -11,7 +11,7 @@ def default_library_name(factory, module=None, **data):
     return factory.__name__.lower()
 
 
-class hashed(martian.MarkerDirective):
+class not_hashed(martian.MarkerDirective):
     scope = martian.CLASS_OR_MODULE
 
 
@@ -29,3 +29,7 @@ class include(martian.Directive):
     
     def factory(self, value, name=None, bottom=False):
         return (value, name, bottom)
+
+class need(martian.Directive):
+    scope = martian.CLASS
+    store = martian.MULTIPLE

@@ -7,10 +7,9 @@
     <include package="grokcore.component" file="meta.zcml" />
     <include package="hurry.zoperesource" />
     <include package="z3c.hashedresource" />
-    <include package="z3c.hashedresource" />
     <grok:grok package=".event" />
+    <grok:grok package=".components" />
     <grok:grok package=".meta" />
-    <grok:grok package=".utils" />
 
 </configure>
 

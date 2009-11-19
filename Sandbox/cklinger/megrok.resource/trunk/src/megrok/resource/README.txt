@@ -65,7 +65,6 @@ To include a resource we need in the most cases a view.
 
   >>> class MyView(view.View):
   ...     grok.context(Application)
-  ...     view.template('templates/myview.pt')
   ...     include(MyStyles, 'myjs')
 
   >>> grok.testing.grok_component('MyView', MyView)
@@ -79,3 +78,4 @@ To include a resource we need in the most cases a view.
   >>> myview
   <megrok.resource.ftests.MyView object at ...>
 
+  >>> myview()
