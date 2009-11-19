@@ -242,8 +242,9 @@ class BSDDBStorage(
     def isReadOnly(self):
         return self._read_only
 
-    def iterator(self, start=z64, stop='\f'*8):
-        return StorageIterator(self._iterator(start, stop))
+    def iterator(self, start=None, stop=None):
+        return StorageIterator(self._iterator(start or z64,
+                                              stop or '\f\f\f\f\f\f\f\f'))
 
     def _iterator(self, start, stop):
         while 1:
