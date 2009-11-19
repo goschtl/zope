@@ -53,16 +53,21 @@ class SimpleGraph(GraphBase):
     title = ''
     name = ''
     key = ''
+    vlabel = ''  #label for y-axis, use name if vlabel is not specified
+    cdef = ''   #rpn-expression used to compute the value (eg `%s,86400,/') to devide the value by 86400
+
 
     def do_fetch(self):
         print "%s.value %s" % (self.name, self.data[self.key])
 
     def config(self):
         print "graph_title %s (Zope %s)" % (self.title, server_index)
-        print "graph_vlabel %s" % (self.name)
+        print "graph_vlabel %s" % (self.vlabel or self.name)
         print "graph_category Zope"
         print "graph_info %s of Zope %s " % (self.title, server_index)
         print "%s.label %s" % (self.name, self.name)
+        if self.cdef:
+            print "%s.cdef " % self.name + self.cdef % self.name
 
 
 class SimpleMultiGraph(GraphBase):
@@ -88,12 +93,11 @@ class SimpleMultiGraph(GraphBase):
 class uptime(SimpleGraph):
     """uptime in days"""
 
-    def do_fetch(self):
-        #value is provided in seconds, convert it to days
-        print "%s.value %.3f" % (self.name, self.data[self.key]/86400)
 
     key = name = 'uptime'
     title = 'Uptime'
+    vlabel = 'days'
+    cdef = '%s,86400,/'
 
 
 class refcount(SimpleGraph):
