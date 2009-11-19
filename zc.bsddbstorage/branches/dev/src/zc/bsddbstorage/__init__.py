@@ -281,7 +281,8 @@ class BSDDBStorage(
         # XXX this is probably very expensive, but we need this for the
         # tests. :(  Need to check this out with a big db to decide what the
         # cost is.  Usually, accuracy isn't that important.
-        return self.data.stat()['nkeys']
+        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
+            return self.data.stat(txn=txn)['nkeys']
         #return self.data.stat(db.DB_FAST_STAT)['nkeys']
 
     def load(self, oid, version=''):
@@ -296,7 +297,7 @@ class BSDDBStorage(
                             return data, n64(record[:8])
 
                     raise ZODB.POSException.POSKeyError(oid)
-    
+
     def loadBefore(self, oid, tid):
         ntid = p64(868082074056920076L-(u64(tid)-1))
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
@@ -386,7 +387,7 @@ class BSDDBStorage(
                 transactions.put(tid, 'p', db.DB_CURRENT, doff=0, dlen=1)
 
             ntid = n64(tid)
-            
+
             with self.cursor(self.transaction_oids, txn) as transaction_oids:
                 # Find the smallest tid >= the one we picked
                 ttid, oid = transaction_oids.get(tid, flags=db.DB_SET_RANGE)
@@ -617,27 +618,27 @@ class BSDDBStorage(
             self._txn.commit()
             self._blob_tpc_finish()
             self._tpc_cleanup()
-            
+
     _transaction_id_suffix = 'x' * (db.DB_GID_SIZE - 8)
     def tpc_vote(self, transaction):
         self._txn = txn = self.env.txn_begin()
         self._log_file.seek(0)
         tid, ext = marshal.load(self._log_file)
         self.transactions.put(tid, ext, txn=txn)
-        for oid, record in marhal_iterate(self._log_file):
+        for oid, record in marshal_iterate(self._log_file):
             self.data.put(oid, record, txn=txn)
             self.transaction_oids.put(tid, oid, txn=txn)
         txn.prepare(self._tid+self._transaction_id_suffix)
 
     ##############################################################
     # ZEO support
-    
+
     def getTid(self, oid):
         """The last transaction to change an object
 
         Return the transaction id of the last transaction that committed a
         change to an object with the given object id.
-        
+
         """
         with self._current_lock.read():
             with self.txn(db.DB_TXN_SNAPSHOT) as txn:
@@ -655,7 +656,7 @@ class BSDDBStorage(
 
 Storage = BSDDBStorage # easier to type alias :)
 
-def marhal_iterate(f):
+def marshal_iterate(f):
     while 1:
         try:
             yield marshal.load(f)
@@ -706,7 +707,7 @@ class StorageIterator(object):
             return self.it.next()
         except StopIteration:
             raise ZODB.interfaces.StorageStopIteration
-            
+
 class Records(object):
 
     def __init__(self, storage, tid, status, ext):
@@ -726,7 +727,7 @@ class Records(object):
 
     def __iter__(self):
         return StorageIterator(self._iter())
-        
+
     def _iter(self):
         tid = self.tid
         ntid = n64(tid)
@@ -845,7 +846,7 @@ class ReadLockContext(object):
 
     def __exit__(self, *args):
         self.lock.release_read()
-        
+
 def interval_thread(func, interval, event=None):
 
     if event is None:
@@ -867,7 +868,7 @@ def interval_thread(func, interval, event=None):
                     logger.info("succeeded")
                     status = None
             event.wait(interval)
-            
+
     thread = threading.Thread(target=run, args=(func, ), name=name)
     thread.setDaemon(True)
     thread.start()
