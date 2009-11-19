@@ -20,6 +20,8 @@ from unittest import TestCase, main, makeSuite
 import transaction
 
 import zope.component
+import zope.component.hooks
+import zope.component.interfaces
 from zope.interface import implements
 from zope.testing.cleanup import CleanUp
 from zope.component import getUtility
@@ -31,13 +33,12 @@ from zope.principalregistry.principalregistry import PrincipalRegistry
 from zope.security.interfaces import IPrincipal
 
 from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
-from zope.location.interfaces import ISite
 from zope.site import queryNextUtility
-from zope.site.hooks import setSite, setHooks
 from zope.site.site import SiteManagerAdapter
 
 from zope.app.undo import ZODBUndoManager
 from zope.app.undo.interfaces import UndoError
+
 
 testdata = [
     dict(id='1', user_name='/ jim', time=time(), description='des 1',
@@ -94,7 +95,7 @@ class StubDB(object):
 
 
 class StubSite(Location):
-    implements(ISite)
+    implements(zope.component.interfaces.ISite)
 
     def __init__(self):
         self._sm = Components(bases=(zope.component.getGlobalSiteManager(),))
@@ -137,8 +138,8 @@ class Test(PlacelessSetup, TestCase):
 
         # make a local authentication utility in an active site
         site = StubSite()
-        setSite(site)
-        setHooks()
+        zope.component.hooks.setSite(site)
+        zope.component.hooks.setHooks()
         localPrincipalRegistry = LocalPrincipalRegistry()
         localPrincipalRegistry.definePrincipal('local.marco', 'Marco Mariani',
                                                login=u'marco')

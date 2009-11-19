@@ -9,6 +9,13 @@ CHANGES
 
 - Remove zcml slug file and zpkg stuff.
 
+- Import hooks functionality from zope.component after it was moved there from
+  zope.site.
+
+- Import ISite from zope.component after it was moved there from
+  zope.location.
+
+
 3.5.0 (2009-02-01)
 ------------------
 
