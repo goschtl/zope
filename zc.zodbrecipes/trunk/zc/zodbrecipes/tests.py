@@ -32,6 +32,10 @@ def setUp(test):
     zc.buildout.testing.install('ZODB3', test)
     zc.buildout.testing.install('zope.proxy', test)
     zc.buildout.testing.install('zope.interface', test)
+    zc.buildout.testing.install('zope.exceptions', test)
+    zc.buildout.testing.install('zope.event', test)
+    zc.buildout.testing.install('zc.lockfile', test)
+    zc.buildout.testing.install('transaction', test)
 
 
 checker = renormalizing.RENormalizing([
