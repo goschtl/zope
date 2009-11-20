@@ -49,7 +49,7 @@ class StorageServer:
                 )
 
         options['scripts'] = ''
-        options['eggs'] = options.get('eggs', 'zdaemon\nsetuptools')
+        options['eggs'] = options.get('eggs','') + '\nzdaemon\nsetuptools'
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
         options['runzeo'] = os.path.join(

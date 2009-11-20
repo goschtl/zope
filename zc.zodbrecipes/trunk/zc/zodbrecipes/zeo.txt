@@ -247,6 +247,68 @@ And we get a control script generated in our bin directory:
 This is a zdaemon script.  We can use this to control the ZEO server
 process.
 
+Specifying additional eggs
+==========================
+
+You can specify additional eggs to be installed for use by the 
+zdaemon script:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... eggs = zope.event
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... ''')
+
+    >>> print system(buildout),
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/bin/server'.
+
+We can see the zope.event egg present in the control script 
+generated in our bin directory:
+
+    >>> cat('bin', 'server')
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '/sample-buildout/eggs/zope.event-2.0-py2.4.egg',
+      '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
+      '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
+      ]
+    <BLANKLINE>
+    import zdaemon.zdctl
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zdaemon.zdctl.main([
+            '-C', '/sample-buildout/parts/server/zdaemon.conf',
+            ]+sys.argv[1:]
+            )
+
+NB: This is a zdaemon script. If your ZEO server needs additional eggs, such as
+    to provide additional storage types or log handlers, they should appear in
+    [zodb] section in the above example, NOT the [server] section!
+
 Unix Deployment support
 =======================
 
@@ -690,4 +752,3 @@ text and the message from the error:
     <BLANKLINE>
     <bad
     <BLANKLINE>
-
