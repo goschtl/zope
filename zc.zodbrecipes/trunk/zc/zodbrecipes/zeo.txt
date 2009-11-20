@@ -420,7 +420,10 @@ and the configuration files will be in the etc directory:
     -  server-zdaemon.conf
     -  server-zeo.conf
 
-In additional we'll get a logrotate configuration file:
+Log rotation
+============
+
+If a deployment is used, we'll also get a logrotate configuration file:
 
     >>> cat('rotate', 'demo-server')
     /sample-buildout/log/server-zeo.log {
@@ -456,6 +459,101 @@ Note that different file names are used.  Since a deployment may be
 (and usually is) shared by multiple parts, files are prefixed with
 their part names.  Also note that the deployment user is set in the
 zdaemon configuration.
+
+If you want to manage your own log rotation, you can place "logrotate = false" 
+in your deployment section to prevent the logrotate config being generated:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ...
+    ... [demo]
+    ... logrotate = false
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> print system(buildout),
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/rc/demo-server'.
+
+The logrotate config is not there, but the rc script still is:
+
+    >>> ls('rotate')
+    >>> ls('rc')
+    -  demo-server
+
+If it's more convenient, this can be placed in the [server] section instead:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ... logrotate = false
+    ...
+    ... [demo]
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> print system(buildout),
+    Updating zodb.
+    Updating server.
+
+The logrotate config is not there, but the rc script still is:
+
+    >>> ls('rotate')
+    >>> ls('rc')
+    -  demo-server
 
 Packing cron job
 ================

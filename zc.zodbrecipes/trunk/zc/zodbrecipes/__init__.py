@@ -35,9 +35,14 @@ class StorageServer:
             options['run-directory'] = buildout[deployment]['run-directory']
             options['log-directory'] = buildout[deployment]['log-directory']
             options['etc-directory'] = buildout[deployment]['etc-directory']
-            options['logrotate'] = os.path.join(
-                buildout[deployment]['logrotate-directory'],
-                options['deployment-name'] + '-' + self.name)
+            logrotate = options.get('logrotate',
+                                    buildout[deployment].get('logrotate',''))
+            if logrotate.lower()=='false':
+                options['logrotate'] = ''
+            else:
+                options['logrotate'] = os.path.join(
+                    buildout[deployment]['logrotate-directory'],
+                    options['deployment-name'] + '-' + self.name)
             options['crontab-directory'] = buildout[
                 deployment]['crontab-directory']
             options['user'] = buildout[deployment]['user']
@@ -90,16 +95,20 @@ class StorageServer:
                                        self.name+'-zdaemon.sock')
             rc = options['deployment-name'] + '-' + self.name
 
+            options.created(
+                zeo_conf_path,
+                zdaemon_conf_path,
+                os.path.join(options['rc-directory'], rc),
+                )
+            
             logrotate = options['logrotate']
-            open(logrotate, 'w').write(logrotate_template % dict(
-                logfile=event_log_path,
-                rc=os.path.join(options['rc-directory'], rc),
-                conf=zdaemon_conf_path,
-                ))
-
-            options.created(zeo_conf_path, zdaemon_conf_path, logrotate,
-                            os.path.join(options['rc-directory'], rc),
-                            )
+            if logrotate:
+                open(logrotate, 'w').write(logrotate_template % dict(
+                    logfile=event_log_path,
+                    rc=os.path.join(options['rc-directory'], rc),
+                    conf=zdaemon_conf_path,
+                    ))
+                options.created(logrotate)
 
             pack = options.get('pack')
             if pack:
