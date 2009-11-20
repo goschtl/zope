@@ -297,15 +297,6 @@ def event_log(path, *data):
         'eventlog', '', None,
         [ZConfig.schemaless.Section('logfile', '', dict(path=[path]))])
 
-event_log_template = """
-<eventlog>
-  <logfile>
-    path %s
-    formatter zope.exceptions.log.Formatter
-  </logfile>
-</eventlog>
-"""
-
 logrotate_template = """%(logfile)s {
   rotate 5
   weekly
