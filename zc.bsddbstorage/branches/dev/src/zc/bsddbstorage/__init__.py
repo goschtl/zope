@@ -127,7 +127,12 @@ class BSDDBStorage(
                        flags=(db.DB_CREATE | db.DB_THREAD | db.DB_AUTO_COMMIT |
                               db.DB_MULTIVERSION),
                        )
+
         self.datapath = os.path.abspath(os.path.join(envpath, 'data'))
+
+        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
+            self._len = self.data.stat(txn=txn)['nkeys']
+        self._len_lock = threading.Lock()
 
         # transaction_oids: {tid->[oids]}
         self.transaction_oids = db.DB(self.env)
@@ -278,13 +283,12 @@ class BSDDBStorage(
                     return None
                 return kv[0]
 
+    def _inc_len(self, v):
+        with self._len_lock:
+            self._len += v
+
     def __len__(self):
-        # XXX this is probably very expensive, but we need this for the
-        # tests. :(  Need to check this out with a big db to decide what the
-        # cost is.  Usually, accuracy isn't that important.
-        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
-            return self.data.stat(txn=txn)['nkeys']
-        #return self.data.stat(db.DB_FAST_STAT)['nkeys']
+        return self._len
 
     def load(self, oid, version=''):
         with self._current_lock.read():
@@ -368,6 +372,7 @@ class BSDDBStorage(
         # packed and stop if it is > pack_tid.
         # This is done as a transaction.
         removed_blobs = []
+        removed_oids = 0
         with self.txn(db.DB_TXN_SNAPSHOT) as txn:
             # Pick a tid just past the last one we packed:
             tid = p64(u64(self.misc.get('pack', z64, txn=txn))+1)
@@ -422,6 +427,7 @@ class BSDDBStorage(
                             # delete the oid
                             data.delete()
                             deleted_oid = True
+                            removed_oids += 1
                         else:
                             deleted_oid = False
 
@@ -459,6 +465,8 @@ class BSDDBStorage(
                     oid = kv[1]
 
             self.misc.put('pack', tid, txn=txn)
+
+        self._inc_len(-removed_oids)
 
         if removed_blobs:
             self._remove_blob_files_tagged_for_removal_during_pack(
@@ -533,7 +541,9 @@ class BSDDBStorage(
 
         result = self._tid
         committed_tid = self.data.get(oid, dlen=8, doff=0)
-        if committed_tid is not None:
+        if committed_tid is None:
+            self._new_obs += 1
+        else:
             committed_tid = n64(committed_tid)
             if committed_tid != oldserial:
                 rdata = self.tryToResolveConflict(oid, committed_tid,
@@ -595,6 +605,7 @@ class BSDDBStorage(
         self._log_file = open(self._log_path, 'r+b')
         os.close(fd)
         marshal.dump((tid, ext), self._log_file)
+        self._new_obs = 0
 
     def _tpc_cleanup(self):
         self._transaction = self._txn = None
@@ -617,6 +628,7 @@ class BSDDBStorage(
         with self._current_lock.write():
             func(self._tid)
             self._txn.commit()
+            self._inc_len(self._new_obs)
             self._blob_tpc_finish()
             self._tpc_cleanup()
 

@@ -45,8 +45,6 @@ class Overrides:
 
     # Dang it, we really need to factor the pack tests for gc or no gc
     def checkPackAllRevisions(self):
-
-
         def pdumps(obj):
             s = cStringIO.StringIO()
             p = cPickle.Pickler(s)
@@ -54,7 +52,6 @@ class Overrides:
             p.dump(None)
             return s.getvalue()
 
-        
         self._initroot()
         eq = self.assertEqual
         raises = self.assertRaises
