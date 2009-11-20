@@ -18,6 +18,8 @@ import zc.buildout
 import ZConfig.schemaless
 import cStringIO
 
+from ZConfig import ConfigurationSyntaxError
+
 logger = logging.getLogger('zc.zodbrecipes')
 
 class StorageServer:
@@ -128,142 +130,137 @@ class StorageServer:
                 os.mkdir(run_directory)
             pack = pack_path = None
 
+        zeo_conf = options.get('zeo.conf', '')+'\n'
         try:
-            zeo_conf = options.get('zeo.conf', '')+'\n'
             zeo_conf = ZConfig.schemaless.loadConfigFile(
                 cStringIO.StringIO(zeo_conf))
+        except ConfigurationSyntaxError,e:
+            raise zc.buildout.UserError(
+                '%s in:\n%s' % (e,zeo_conf)
+                )
 
-            zeo_section = [s for s in zeo_conf.sections if s.type == 'zeo']
-            if not zeo_section:
-                raise zc.buildout.UserError('No zeo section was defined.')
-            if len(zeo_section) > 1:
-                raise zc.buildout.UserError('Too many zeo sections.')
-            zeo_section = zeo_section[0]
-            if not 'address' in zeo_section:
-                raise zc.buildout.UserError('No ZEO address was specified.')
+        zeo_section = [s for s in zeo_conf.sections if s.type == 'zeo']
+        if not zeo_section:
+            raise zc.buildout.UserError('No zeo section was defined.')
+        if len(zeo_section) > 1:
+            raise zc.buildout.UserError('Too many zeo sections.')
+        zeo_section = zeo_section[0]
+        if not 'address' in zeo_section:
+            raise zc.buildout.UserError('No ZEO address was specified.')
 
-            storages = [s.name for s in zeo_conf.sections
-                        if s.type not in ('zeo', 'eventlog', 'runner')
-                        ]
+        storages = [s.name for s in zeo_conf.sections
+                    if s.type not in ('zeo', 'eventlog', 'runner')
+                    ]
 
-            if not storages:
-                raise zc.buildout.UserError('No storages were defined.')
+        if not storages:
+            raise zc.buildout.UserError('No storages were defined.')
 
-            if not [s for s in zeo_conf.sections if s.type == 'eventlog']:
-                zeo_conf.sections.append(event_log('STDOUT'))
+        if not [s for s in zeo_conf.sections if s.type == 'eventlog']:
+            zeo_conf.sections.append(event_log('STDOUT'))
 
-            zdaemon_conf = options.get('zdaemon.conf', '')+'\n'
-            zdaemon_conf = ZConfig.schemaless.loadConfigFile(
-                cStringIO.StringIO(zdaemon_conf))
+        zdaemon_conf = options.get('zdaemon.conf', '')+'\n'
+        zdaemon_conf = ZConfig.schemaless.loadConfigFile(
+            cStringIO.StringIO(zdaemon_conf))
 
-            defaults = {
-                'program': "%s -C %s" % (options['runzeo'], zeo_conf_path),
-                'daemon': 'on',
-                'transcript': event_log_path,
-                'socket-name': socket_path,
-                'directory' : run_directory,
-                }
-            if deployment:
-                defaults['user'] = options['user']
-            runner = [s for s in zdaemon_conf.sections
-                      if s.type == 'runner']
-            if runner:
-                runner = runner[0]
-            else:
-                runner = ZConfig.schemaless.Section('runner')
-                zdaemon_conf.sections.insert(0, runner)
-            for name, value in defaults.items():
-                if name not in runner:
-                    runner[name] = [value]
+        defaults = {
+            'program': "%s -C %s" % (options['runzeo'], zeo_conf_path),
+            'daemon': 'on',
+            'transcript': event_log_path,
+            'socket-name': socket_path,
+            'directory' : run_directory,
+            }
+        if deployment:
+            defaults['user'] = options['user']
+        runner = [s for s in zdaemon_conf.sections
+                  if s.type == 'runner']
+        if runner:
+            runner = runner[0]
+        else:
+            runner = ZConfig.schemaless.Section('runner')
+            zdaemon_conf.sections.insert(0, runner)
+        for name, value in defaults.items():
+            if name not in runner:
+                runner[name] = [value]
 
-            if not [s for s in zdaemon_conf.sections
-                    if s.type == 'eventlog']:
-                zdaemon_conf.sections.append(event_log(event_log_path))
+        if not [s for s in zdaemon_conf.sections
+                if s.type == 'eventlog']:
+            zdaemon_conf.sections.append(event_log(event_log_path))
 
-            zdaemon_conf = str(zdaemon_conf)
+        zdaemon_conf = str(zdaemon_conf)
 
+        self.egg.install()
+        requirements, ws = self.egg.working_set()
+
+        open(zeo_conf_path, 'w').write(str(zeo_conf))
+        open(zdaemon_conf_path, 'w').write(str(zdaemon_conf))
+
+        if options.get('shell-script') == 'true':
+            if not os.path.exists(options['zdaemon']):
+                logger.warn(no_zdaemon % options['zdaemon'])
+
+            contents = "%(zdaemon)s -C '%(conf)s' $*" % dict(
+                zdaemon = options['zdaemon'],
+                conf = zdaemon_conf_path,
+                )
+            if options.get('user'):
+                contents = 'su %(user)s -c \\\n  "%(contents)s"' % dict(
+                    user = options['user'],
+                    contents = contents,
+                    )
+            contents = "#!/bin/sh\n%s\n" % contents
+
+            dest = os.path.join(options['rc-directory'], rc)
+            if not (os.path.exists(dest) and open(dest).read() == contents):
+                open(dest, 'w').write(contents)
+                os.chmod(dest, 0755)
+                logger.info("Generated shell script %r.", dest)
+
+        else:
             self.egg.install()
             requirements, ws = self.egg.working_set()
+            zc.buildout.easy_install.scripts(
+                [(rc, 'zdaemon.zdctl', 'main')],
+                ws, options['executable'], options['rc-directory'],
+                arguments = ('['
+                             '\n        %r, %r,'
+                             '\n        ]+sys.argv[1:]'
+                             '\n        '
+                             % ('-C', zdaemon_conf_path,
+                                )
+                             ),
+                )
 
-            open(zeo_conf_path, 'w').write(str(zeo_conf))
-            open(zdaemon_conf_path, 'w').write(str(zdaemon_conf))
-
-            if options.get('shell-script') == 'true':
-                if not os.path.exists(options['zdaemon']):
-                    logger.warn(no_zdaemon % options['zdaemon'])
-
-                contents = "%(zdaemon)s -C '%(conf)s' $*" % dict(
-                    zdaemon = options['zdaemon'],
-                    conf = zdaemon_conf_path,
-                    )
-                if options.get('user'):
-                    contents = 'su %(user)s -c \\\n  "%(contents)s"' % dict(
-                        user = options['user'],
-                        contents = contents,
-                        )
-                contents = "#!/bin/sh\n%s\n" % contents
-
-                dest = os.path.join(options['rc-directory'], rc)
-                if not (os.path.exists(dest) and open(dest).read() == contents):
-                    open(dest, 'w').write(contents)
-                    os.chmod(dest, 0755)
-                    logger.info("Generated shell script %r.", dest)
-                    
+        if pack:
+            address, = zeo_section['address']
+            if ':' in address:
+                host, port = address.split(':')
+                address = '-h %s -p %s' % (host, port)
             else:
-                self.egg.install()
-                requirements, ws = self.egg.working_set()
-                zc.buildout.easy_install.scripts(
-                    [(rc, 'zdaemon.zdctl', 'main')],
-                    ws, options['executable'], options['rc-directory'],
-                    arguments = ('['
-                                 '\n        %r, %r,'
-                                 '\n        ]+sys.argv[1:]'
-                                 '\n        '
-                                 % ('-C', zdaemon_conf_path,
-                                    )
-                                 ),
-                    )
-
-            if pack:
-                address, = zeo_section['address']
-                if ':' in address:
-                    host, port = address.split(':')
-                    address = '-h %s -p %s' % (host, port)
+                try:
+                    port = int(address)
+                except:
+                    address = '-U '+address
                 else:
-                    try:
-                        port = int(address)
-                    except:
-                        address = '-U '+address
-                    else:
-                        address = '-p '+address
-                f = open(pack_path, 'w')
-                if len(pack) == 7:
-                    assert '@' in pack[6]
-                    f.write("MAILTO=%s\n" % pack.pop())
-                    
-                if len(pack) == 6:
-                    days = pack.pop()
-                else:
-                    days = 1
+                    address = '-p '+address
+            f = open(pack_path, 'w')
+            if len(pack) == 7:
+                assert '@' in pack[6]
+                f.write("MAILTO=%s\n" % pack.pop())
 
-                for storage in storages:
-                    f.write("%s %s %s %s -S %s -d %s\n" % (
-                            ' '.join(pack), options['user'],
-                            options['zeopack'], address, storage, days,
-                            ))
-                f.close()
-                options.created(pack_path)
+            if len(pack) == 6:
+                days = pack.pop()
+            else:
+                days = 1
 
-            return options.created()
+            for storage in storages:
+                f.write("%s %s %s %s -S %s -d %s\n" % (
+                        ' '.join(pack), options['user'],
+                        options['zeopack'], address, storage, days,
+                        ))
+            f.close()
+            options.created(pack_path)
 
-        except:
-            for f in creating:
-                if os.path.isdir(f):
-                    shutil.rmtree(f)
-                elif os.path.exists(f):
-                    os.remove(f)
-            raise
-
+        return options.created()
 
     update = install
 

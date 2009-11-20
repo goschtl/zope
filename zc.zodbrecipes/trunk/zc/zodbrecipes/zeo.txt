@@ -636,3 +636,58 @@ parts. These names determine names of files generated.
 
     >>> ls(rc)
     -  Demo-Server
+
+Feedback when you make mistakes
+===============================
+
+If you make a mistake in your zeo.conf, some errors will result in a
+simple, informative message being returned:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    nothing useful
+    ... ''')
+
+    >>> print system(buildout+' -q'),
+    Couldn't clean up '/sample-buildout/bin/server'.
+    While:
+      Installing server.
+    Error: No zeo section was defined.
+
+If your zeo.conf has a syntax error, you'll get shown the problematic
+text and the message from the error:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <bad
+    ... ''')
+
+    >>> print system(buildout+' -q'),
+    Couldn't clean up '/sample-buildout/bin/server'.
+    While:
+      Installing server.
+    Error: malformed section start (line 2) in:
+    <BLANKLINE>
+    <bad
+    <BLANKLINE>
+
