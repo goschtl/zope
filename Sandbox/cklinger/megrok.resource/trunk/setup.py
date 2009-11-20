@@ -30,7 +30,6 @@ setup(name='megrok.resource',
 	  'hurry.zoperesource',
           'zope.app.zcmlfiles',
           'z3c.hashedresource',
-          # -*- Extra requirements: -*-
       ],
       extras_require={'test': ['hurry.jquery',],},
       entry_points="""

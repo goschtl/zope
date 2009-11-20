@@ -1,18 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import martian
-from martian import util
-from martian.error import GrokImportError
 
 
-def default_list(factory, module=None, **data):
-    return []
-
-
-def default_library_name(factory, module=None, **data):
-    return factory.__name__.lower()
-
-
-class not_hashed(martian.MarkerDirective):
+class use_hash(martian.Directive):
     scope = martian.CLASS_OR_MODULE
+    store = martian.ONCE
+    default = True
+
+    def factory(self, value):
+        return bool(value)
 
 
 class inclusion(martian.Directive):
@@ -29,6 +26,7 @@ class include(martian.Directive):
     
     def factory(self, value, name=None, bottom=False):
         return (value, name, bottom)
+
 
 class need(martian.Directive):
     scope = martian.CLASS

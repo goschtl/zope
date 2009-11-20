@@ -92,9 +92,9 @@ myjs = ResourceInclusion(MyLibrary, 'a.js')
 class SimpleView(view.View):
     grok.context(Interface)
     resource.need(myjs)
-    resource.not_hashed()
-    template = view.PageTemplateFile('templates/myview.pt')
+    resource.use_hash(False)
 
+    template = view.PageTemplateFile('templates/myview.pt')
 
 
 ###TestSetup
