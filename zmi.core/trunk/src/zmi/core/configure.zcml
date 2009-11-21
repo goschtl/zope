@@ -2,12 +2,21 @@
   <include package=".applicationcontrol" />
   <include package=".authentication" />
   <include package=".broken" />
+  <include package=".cache" />
+  <include package=".catalog" />
   <include package=".component" />
   <include package=".container" />
   <include package=".error" />
   <include package=".exception" />
+  <include package=".file" />
   <include package=".folder" />
   <include package=".i18n" />
+  <include package=".i18nfile" />
   <include package=".intid" />
+  <include package=".onlinehelp" />
   <include package=".principalannotation" />
+  <include package=".securitypolicy" />
+  <include package=".sqlscript" />
+  <include package=".tree" />
+  <include package=".undo" />
 </configure>
