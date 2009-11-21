@@ -17,6 +17,7 @@
   <include package=".onlinehelp" />
   <include package=".preference" />
   <include package=".principalannotation" />
+  <include package=".security" />
   <include package=".securitypolicy" />
   <include package=".session" />
   <include package=".sqlscript" />
