@@ -6,6 +6,7 @@
   <include package=".catalog" />
   <include package=".component" />
   <include package=".container" />
+  <include package=".dtmlpage" />
   <include package=".error" />
   <include package=".exception" />
   <include package=".file" />
