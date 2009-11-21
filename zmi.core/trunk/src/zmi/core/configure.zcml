@@ -15,6 +15,7 @@
   <include package=".i18nfile" />
   <include package=".intid" />
   <include package=".onlinehelp" />
+  <include package=".preference" />
   <include package=".principalannotation" />
   <include package=".securitypolicy" />
   <include package=".session" />
