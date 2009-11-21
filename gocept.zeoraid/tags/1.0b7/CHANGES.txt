@@ -1,0 +1,134 @@
+
+Change History
+==============
+
+1.0b7 (2009-11-21)
+------------------
+
+- #484921: Log reason why a backend is degraded. We also display that reason
+  in the detailed status of the controller client now. If an exception occured
+  then we also log the traceback now.
+
+- Refactored protocol for displaying detailed status information of backend
+  storages to be simpler, less error prone and easier to change in the future.
+
+- Fix little bug in status detail which would fail if the recovery status
+  missed the transaction information bit.
+
+- Improve documentation about issues with recovery in a multi-ZEORaid setup
+
+
+1.0b6 (2009-11-18)
+------------------
+
+- #465834: Allow starting up with degraded storages.
+
+
+1.0b5 (2009-11-14)
+------------------
+
+- General improvements on reloading: make code more readable and avoid crashing
+  when configuration file doesn't parse.
+
+- Restructured output of the controller's `details` command.
+
+- Fix #464339: Storages were not added on reload.
+
+- Fix #330008: Reload now refuses to apply a configuration change if it would
+  cause all optimal storages to disappear.
+
+- Fix #316285: Reload failed removing degraded back-ends.
+
+- Add a note to the deployment documentation that strongly advises people to
+  use a deployment recipe for setting up their ZEO servers to avoid buildout
+  killing volatile files.
+
+- Fix #463763: Make the controller script not wait endlessly for a ZEORaid
+  server to come up but fail immediately.
+
+- Make the controller script use exit codes that are Nagios-compatible.
+
+
+1.0b4 (2009-11-13)
+------------------
+
+- Always format TIDs in recovery status.
+
+- Remove use of custom exceptions: RAIDErrors were pickled and send to the
+  client which didn't have ZEORaid installed causing unpickling errors.
+
+- Fix issue when storing blogs in shared mode: tpc_vote returned the serials
+  of the first store twice causing spurious RAID inconsistency errors.
+
+- Close degraded storages when registering them as degraded in __init__ by
+  calling the appropriate degradation method.
+
+- Make recovery more robust against storages that fail to open (a storage
+  failing to open caused the ZEORaid server recovery to hang).
+
+- Hack for processing ZEO server's waiting list which doesn't expect storages
+  to be used by someone else in the same process (covered with test). This
+  caused clients to stochastically hang indefinitely when committing while a
+  recovery was in progress.
+
+- Refactor some sloppy tests.
+
+- Some code cleanups.
+
+1.0b3 (2009-07-19)
+------------------
+
+- Fix another recovery issue by using the correct previous Tid of a data
+  record.
+
+  Improve logging during recovery.
+
+- Show current recovery process in the management `details` command.
+
+- Fix recipe test to not mention the removed ZODB external anymore.
+
+- Don't require the ZEO configuration file to be named again, determine
+  automatically.
+
+1.0b2 (2009-07-02)
+------------------
+
+- Fixed recovery issue that left `lastTid` in the wrong state for
+  ClientStorages by using `store` instead of `restore`.
+
+- Improved tests at various points.
+
+- Added capability to reload ZEO configuration online.
+  (Thanks to Dirceu Pereira Tiegs)
+
+- Documentation improvements.
+
+- Changed the recipe's name pattern for management client scripts to
+  <partname>-<storagename>-manage.
+
+- Fixed accidentally commented out assertion that only allows storages with
+  undo support to be used in ZEORaid.
+
+1.0b1 (2008-04-30)
+------------------
+
+- Finished management utility as setuptools `console_script`.
+
+- Added deployment documentation.
+
+- Added buildout recipe for installing ZEO servers with ZEORaid egg and the
+  management utility.
+
+- Added and documented blob support.
+
+- Fixed online recovery.
+
+- Added read-only flag to ZConfig schema.
+
+- Better test coverage.
+
+
+1.0a1 (2008-02-26)
+------------------
+
+Initial release.
