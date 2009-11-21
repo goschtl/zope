@@ -20,4 +20,5 @@
   <include package=".sqlscript" />
   <include package=".tree" />
   <include package=".undo" />
+  <include package=".zptpage" />
 </configure>
