@@ -123,6 +123,7 @@ class RAIDStorage(object):
         self._threads = set()
         self.storages_optimal = []
         self.storages_degraded = []
+        self.degrade_reasons = {}
 
         # Temporary files and directories that should be removed at the end of
         # the two-phase commit. The list must only be modified while holding
@@ -171,11 +172,11 @@ class RAIDStorage(object):
 
         # Degrade all remaining (non-optimal) storages
         for name in reduce(lambda x, y: x + y, tids.values(), []):
-            self._degrade_storage(name)
+            self._degrade_storage(name, reason='missing transactions')
 
         # No storage is recovering initially
         self.storage_recovering = None
-        self.recovery_status = ''
+        self.recovery_status = None
 
     # IStorage
 
@@ -273,7 +274,7 @@ class RAIDStorage(object):
         min_oid = sorted(oids)[0][0]
         for oid, storage in oids:
             if oid > min_oid:
-                self._degrade_storage(storage)
+                self._degrade_storage(storage, reason='inconsistent OIDs')
         return min_oid
 
     @ensure_writable
@@ -589,12 +590,25 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def raid_details(self):
-        return [self.storages_optimal, self.storage_recovering,
-                self.storages_degraded, self.recovery_status]
+        storages = {}
+        for storage in self.storages_optimal:
+            storages[storage] = 'optimal'
+        for storage in self.storages_degraded:
+            storages[storage] = 'failed: %s' % (
+                self.degrade_reasons.get(storage, 'n/a'))
+        if self.storage_recovering:
+            msg = 'recovering: '
+            if self.recovery_status:
+                msg += '%s transaction %s' % self.recovery_status
+            else:
+                msg += '???'
+            storages[self.storage_recovering] = msg
+        return storages
 
     @ensure_open_storage
     def raid_disable(self, name):
-        self._degrade_storage(name, fail=False)
+        self._degrade_storage(
+            name, reason='disabled by controller', fail=False)
         return 'disabled %r' % (name,)
 
     @ensure_open_storage
@@ -648,12 +662,15 @@ class RAIDStorage(object):
         for name in added:
             self.openers[name] = configured_storages[name]
             self.storages_degraded.append(name)
+            self.degrade_reasons[name] = 'added by controller'
 
         for name in removed:
             self._close_storage(name)
             del self.openers[name]
             if name in self.storages_degraded:
                 self.storages_degraded.remove(name)
+            if name in self.degrade_reasons:
+                del self.degrade_reasons[name]
 
     # internal
 
@@ -666,10 +683,12 @@ class RAIDStorage(object):
         except ZODB.POSException.POSKeyError, e:
             pass
         except Exception, e:
-            logger.critical('Could not open storage %s' % name, exc_info=True)
+            logger.exception('Could not open storage %s' % name)
             # We were trying to open a storage. Even if we fail we can't be
             # more broke than before, so don't ever fail due to this.
-            self._degrade_storage(name, fail=False)
+            self._degrade_storage(
+                name, reason='an error occured opening the storage',
+                fail=False)
             return
         self.storages[name] = storage
 
@@ -683,9 +702,11 @@ class RAIDStorage(object):
             t.setDaemon(True)
             t.start()
 
-    def _degrade_storage(self, name, fail=True):
+    def _degrade_storage(self, name, reason, fail=True):
         self._close_storage(name)
         self.storages_degraded.append(name)
+        self.degrade_reasons[name] = reason
+        logger.critical('Storage %s degraded. Reason: %s' % (name, reason))
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 
@@ -709,6 +730,8 @@ class RAIDStorage(object):
         except ZODB.POSException.StorageError:
             # Handle StorageErrors first, otherwise they would be swallowed
             # when POSErrors are handled.
+            logger.exception('Error calling %r' % method_name)
+            reason = 'an error occured calling %r' % method_name
             reliable = False
         except (ZODB.POSException.POSError,
                 transaction.interfaces.TransactionError), e:
@@ -716,14 +739,17 @@ class RAIDStorage(object):
             # indicate storage failure.
             raise
         except Exception:
+            logger.exception('Error calling %r' % method_name)
+            reason = 'an error occured calling %r' % method_name
             reliable = False
 
         if (isinstance(storage, ZEO.ClientStorage.ClientStorage) and
             expect_connected and not storage.is_connected()):
             reliable = False
+            reason = 'storage is not connected'
 
         if not reliable:
-            self._degrade_storage(storage_name)
+            self._degrade_storage(storage_name, reason=reason)
         return (reliable, result)
 
     @ensure_open_storage
@@ -793,7 +819,10 @@ class RAIDStorage(object):
             thread.join(self.timeout)
             if thread.isAlive():
                 # Storage timed out.
-                self._degrade_storage(thread.storage_name)
+                self._degrade_storage(
+                    thread.storage_name,
+                    reason='no response within %s seconds' %
+                        self.timeout)
                 self._threads.add(thread)
                 continue
             if thread.exception:
@@ -836,12 +865,16 @@ class RAIDStorage(object):
 
     def _recover_impl(self, name):
         self.storages_degraded.remove(name)
+        del self.degrade_reasons[name]
         self.storage_recovering = name
         try:
             target = self.openers[name].open()
         except Exception:
+            logger.exception('Error opening storage %s' % name)
             self.storage_recovering = None
             self.storages_degraded.append(name)
+            self.degrade_reasons[name] = (
+                'an error occured opening the storage')
             raise
         self.storages[name] = target
         recovery = gocept.zeoraid.recovery.Recovery(
@@ -874,10 +907,9 @@ class RAIDStorage(object):
                     oid = catch_up()
 
                 if oid != target:
-                    logging.warn(
-                        'Degrading recovering storage %r due to '
-                        'new OID mismatch' % self.storage_recovering)
-                    self._degrade_storage(self.storage_recovering)
+                    self._degrade_storage(
+                        self.storage_recovering,
+                        reason='failed matching OIDs')
                     return
 
             self.storages_optimal.append(self.storage_recovering)

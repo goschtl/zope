@@ -88,19 +88,17 @@ class ZEOServedTests(StorageTestBase.StorageTestBase):
             wait_timeout=60).open()
         self._storages.append(raid)
 
-        self.assertEquals([['1'], None, ['2'], ''], raid.raid_details())
+        self.assertEquals({'1': 'optimal',
+                           '2': 'failed: missing transactions'},
+                          raid.raid_details())
         self.assertEquals('degraded', raid.raid_status())
 
         raid.raid_recover('2')
 
         # Wait until the storage starts to recover
-        status = ''
-        while  status != 'recover':
-            status = raid.raid_details()[-1]
-            if isinstance(status, tuple):
-                status = status[0]
-            else:
-                status = ''
+        status = {'2': ''}
+        while 'recover ' not in status['2']:
+            status = raid.raid_details()
             time.sleep(0.5)
 
         # Now, hammer the storage with more transactions with a high chance of

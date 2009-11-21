@@ -97,7 +97,7 @@ class Recovery(object):
 
             yield ('verify', ZODB.utils.tid_repr(source_txn.tid))
 
-        yield ('verified',)
+        yield ('verified', '')
 
         # Recover from that point on until the target storage has all
         # transactions that exist in the source storage at the time of
@@ -152,4 +152,4 @@ class Recovery(object):
 
             yield ('recover', ZODB.utils.tid_repr(txn_info.tid))
 
-        yield ('recovered',)
+        yield ('recovered', '')

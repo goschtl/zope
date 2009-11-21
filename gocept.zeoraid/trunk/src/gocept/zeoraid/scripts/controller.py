@@ -80,24 +80,15 @@ class RAIDManager(object):
     def cmd_details(self):
         col1 = 25
 
-        ok, recovering, failed, recovery_status = self.raid.raid_details()
+        storages = self.raid.raid_details()
         print " %s| Status" % ('%s:%s' % (self.host, self.port)).ljust(col1)
         print " %s+-------------------" % ('-' * col1)
         print " %s| %s" % (('RAID %s' % self.storage).ljust(col1),
                            self.raid.raid_status().ljust(col1))
         print " %s+-------------------" % ('-' * col1)
 
-        storages = {}
-        for storage in ok:
-            storages[storage] = 'optimal'
-        for storage in failed:
-            storages[storage] = 'failed'
-        if recovering:
-            storages[recovering] = ('recovering: %s transaction %s' %
-                                    recovery_status)
-
-        for id in sorted(storages):
-            print ' %s| %s' % (str(id).ljust(col1), storages[id])
+        for storage in sorted(storages):
+            print ' %s| %s' % (str(storage).ljust(col1), storages[storage])
 
         return STATUS_TO_NAGIOS[self.raid.raid_status()]
 

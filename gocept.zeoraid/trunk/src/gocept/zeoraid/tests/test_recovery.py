@@ -43,7 +43,7 @@ def compare(test, source, target):
     recovery = gocept.zeoraid.recovery.Recovery(
         source, target, lambda target: None)
     protocol = list(recovery())
-    test.assertEquals([('verified',), ('recovered',)], protocol[-2:])
+    test.assertEquals([('verified', ''), ('recovered', '')], protocol[-2:])
     for source_txn, target_txn in itertools.izip(source.iterator(),
                                                  target.iterator()):
         # We need not compare the transaction metadata because that has
@@ -209,7 +209,7 @@ class OnlineRecovery(unittest.TestCase):
             blob_dir=blob_dir, shared_blob_dir=self.shared)
 
     def test_verify_both_empty(self):
-        self.assertEquals([('verified',), ('recovered',)],
+        self.assertEquals([('verified', ''), ('recovered', '')],
                           list(self.recovery()))
 
     def test_verify_empty_target(self):

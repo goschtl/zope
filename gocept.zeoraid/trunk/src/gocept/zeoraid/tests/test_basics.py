@@ -1518,14 +1518,17 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         # configure the RAID to no longer use the removed backend
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals([['1', '0', '2', '4'], None, [], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '2': 'optimal',
+                           '4': 'optimal'},
                           self._storage.raid_details())
 
         # Re-insert the storage
         self._storages.append(removed_storage)
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals([['1', '0', '2', '4'], None, ['3'], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal',
+                           '3': 'failed: added by controller', '2': 'optimal',
+                           '4': 'optimal'},
                           self._storage.raid_details())
 
         self._storage.raid_recover('3')
@@ -1536,7 +1539,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         # new_oid causes storage 4 to give an inconsistent result thus being
         # dropped from the pool of good storages. Storage 3 however meets the
         # OID target then thus being picked up.
-        self.assertEquals([['1', '0', '2', '3'], None, ['4'], ('recovered',)],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal', '4': 'failed: inconsistent OIDs'},
                           self._storage.raid_details())
 
     def test_reload_remove_readd(self):
@@ -1545,7 +1549,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         # configure the RAID to no longer use the removed backend
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals([['1', '0', '3', '2'], None, [], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal'},
                           self._storage.raid_details())
 
         # ensure that we can still write to the RAID
@@ -1561,7 +1566,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         self._storages.append(removed_storage)
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal', '4': 'failed: added by controller'},
                           self._storage.raid_details())
 
         self._storage.raid_recover('4')
@@ -1570,7 +1576,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
             time.sleep(0.1)
 
         self.assertEquals(
-            [['1', '0', '3', '2', '4'], None, [], ('recovered',)],
+            {'1': 'optimal', '0': 'optimal', '3': 'optimal', '2': 'optimal',
+             '4': 'optimal'},
             self._storage.raid_details())
 
         # Now, after recovery, the OID should be visible
@@ -1582,14 +1589,17 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         removed_storage = self._storages.pop()
         self._storage.raid_disable(removed_storage.name)
 
-        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
-                          self._storage.raid_details())
+        self.assertEquals(
+            {'1': 'optimal', '0': 'optimal', '3': 'optimal', '2': 'optimal',
+             '4': 'failed: disabled by controller'},
+            self._storage.raid_details())
 
         # configure the RAID to no longer use the removed backend
         self.update_config()
 
         self._storage.raid_reload()
-        self.assertEquals([['1', '0', '3', '2'], None, [], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal'},
                           self._storage.raid_details())
 
     def test_reload_broken_config(self):
@@ -1599,7 +1609,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         f.close()
 
         self.assertRaises(RuntimeError, self._storage.raid_reload)
-        self.assertEquals([['1', '0', '3', '2', '4'], None, [], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal', '4': 'optimal'},
                           self._storage.raid_details())
 
     def test_reload_no_remaining_storages(self):
@@ -1609,7 +1620,9 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
 
         self.update_config()
         self.assertRaises(RuntimeError, self._storage.raid_reload)
-        self.assertEquals([['1', '0', '3', '2'], None, ['4'], ''],
+        self.assertEquals({'1': 'optimal', '0': 'optimal', '3': 'optimal',
+                           '2': 'optimal',
+                           '4': 'failed: disabled by controller'},
                           self._storage.raid_details())
 
 

@@ -5,7 +5,17 @@ Change History
 1.0b7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #484921: Log reason why a backend is degraded. We also display that reason
+  in the detailed status of the controller client now. If an exception occured
+  then we also log the traceback now.
+
+- Refactored protocol for displaying detailed status information of backend
+  storages to be simpler, less error prone and easier to change in the future.
+
+- Fix little bug in status detail which would fail if the recovery status
+  missed the transaction information bit.
+
+- Improve documentation about issues with recovery in a multi-ZEORaid setup
 
 
 1.0b6 (2009-11-18)
