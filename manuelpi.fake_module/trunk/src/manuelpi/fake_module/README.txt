@@ -5,7 +5,7 @@ Intro and Motivation
 for creating modules within a doctest. The module, once defined, is then
 usable by supporting doctest statements.
 
-This functionality is useful for packages that you might describe is
+This functionality is useful for packages that you might describe as
 being 'meta'; they operate on modules. Thus, being able to define
 and then process modules within the same doctest using a clean and 
 uncluttered syntax delivers is extremely beneficial. 
