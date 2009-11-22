@@ -75,7 +75,7 @@ We can create permissions map for class or interface
   ...        name="myPermissions1">
   ...
   ...     <grant permission="my.p1" role="r1 r2 r3" />
-  ...     <deny permission="my.p2" role="r1 r3" />
+  ...     <deny permission="my.p2" role="r2" />
   ...     <denyAll permission="my.p3" />
   ...   </permissions>
   ... </configure>""", context)
@@ -85,9 +85,75 @@ We can create permissions map for class or interface
   >>> perms = component.getAdapter(content, \
   ...     interfaces.IPermissionsMap, 'myPermissions1')
 
+  >>> print perms.getPermissionsForRole('r1')
+  [('my.p1', PermissionSetting: Allow), ('my.p3', PermissionSetting: Deny)]
+
+We can define permissionsmap with same name and for multple times
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns="http://namespaces.zope.org/zope">
+  ...   <permissions for="z3ext.permissionsmap.tests.TestContent1"
+  ...        name="myPermissions1">
+  ...     <deny permission="my.p2" role="r1" />
+  ...   </permissions>
+  ... </configure>""", context)
+
+  >>> print perms.getPermissionsForRole('r1')
+  [('my.p1', PermissionSetting: Allow), ('my.p3', PermissionSetting: Deny), ('my.p2', PermissionSetting: Deny)]
+
   >>> verifyObject(interfaces.IDefaultPermissionsMap, perms)
   True
 
+We can create permissionsmap without name, but in this case '__default_class__'
+name will be used.
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns="http://namespaces.zope.org/zope">
+  ...   <permissions for="z3ext.permissionsmap.tests.TestContent1">
+  ...     <grant permission="my.p1" role="r1 r2 r3" />
+  ...     <deny permission="my.p2" role="r1 r3" />
+  ...     <grantAll permission="my.p3" />
+  ...   </permissions>
+  ... </configure>""", context)
+
+  >>> perms = component.getAdapter(content, \
+  ...     interfaces.IPermissionsMap, '__default_class__')
+
+  >>> verifyObject(interfaces.IDefaultPermissionsMap, perms)
+  True
+
+  >>> perms.getRolesForPermission('my.p3')
+  [(u'r1', PermissionSetting: Allow), (u'r2', PermissionSetting: Allow), (u'r3', PermissionSetting: Allow)]
+
+DenyAll is higher than GrantAll
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns="http://namespaces.zope.org/zope">
+  ...   <permissions for="z3ext.permissionsmap.tests.TestContent1"
+  ...        name="myPermissions1">
+  ...     <denyAll permission="my.p3" />
+  ...     <grantAll permission="my.p3" />
+  ...   </permissions>
+  ... </configure>""", context)
+
+  >>> perms = component.getAdapter(
+  ...     content, interfaces.IPermissionsMap, 'myPermissions1')
+
+  >>> perms.getRolesForPermission('my.p3')
+  [(u'r1', PermissionSetting: Deny), (u'r2', PermissionSetting: Deny), (u'r3', PermissionSetting: Deny)]
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns="http://namespaces.zope.org/zope">
+  ...
+  ...   <permissions>
+  ...     <grant permission="my.p1" role="r1 r2 r3" />
+  ...     <deny permission="my.p2" role="r1 r3" />
+  ...     <denyAll permission="my.p3" />
+  ...   </permissions>
+  ... </configure>""", context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...
 
 We can assign permissions map to any annotatable content
 

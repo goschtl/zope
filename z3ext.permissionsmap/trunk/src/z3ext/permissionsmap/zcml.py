@@ -21,6 +21,7 @@ from zope.component import getUtility, queryUtility, getUtilitiesFor
 from zope import schema, interface, component
 from zope.security.zcml import Permission
 from zope.configuration.fields import Tokens, GlobalObject
+from zope.configuration.exceptions import ConfigurationError
 from zope.securitypolicy.interfaces import IRole
 
 from interfaces import IPermissionsMap
@@ -34,7 +35,7 @@ class IPermissionsMapDirective(interface.Interface):
     name = schema.TextLine(
         title=u"Name",
         description=u"Permissions map identifier.",
-        required=True)
+        required=False)
 
     for_ = GlobalObject(
         title=u"For",
@@ -147,12 +148,12 @@ def permissionsHandler(name, for_, title, description):
     if for_ is not None:
         global classPermissions
 
-        perms = classPermissions.get(for_)
+        perms = classPermissions.get((for_, name))
         if perms is not None:
             return
 
         perms = PermissionsMap(name, title, description)
-        classPermissions[for_] = perms
+        classPermissions[(for_, name)] = perms
         interface.alsoProvides(perms, IDefaultPermissionsMap)
 
         # register map as adapter for for_
@@ -173,7 +174,7 @@ def directiveHandler(name, method, permissions, roles, for_=None, check=False):
     sm = globalregistry.globalSiteManager
 
     if for_ is not None:
-        permissionmap = classPermissions[for_]
+        permissionmap = classPermissions[(for_, name)]
     else:
         permissionmap = sm.getUtility(IPermissionsMap, name)
 
@@ -189,7 +190,7 @@ def directiveHandlerAll(name, method, permissions, attr, for_=None):
     sm = globalregistry.globalSiteManager
 
     if for_ is not None:
-        permissionmap = classPermissions[for_]
+        permissionmap = classPermissions[(for_, name)]
     else:
         permissionmap = sm.getUtility(IPermissionsMap, name)
 
@@ -206,8 +207,16 @@ def directiveHandlerAll(name, method, permissions, attr, for_=None):
 
 class permissionsMapDirective(object):
 
-    def __init__(self, _context, name, for_=None,
+    def __init__(self, _context, name=None, for_=None,
                  title='', description='', override=True):
+
+        if for_ is None and not name:
+            raise ConfigurationError(
+                "'for' or 'name' should be provided for permissionsmap declaration")
+
+        if not name:
+            name = '__default_class__'
+
         self.for_ = for_
         self.name = name
         self.override = override

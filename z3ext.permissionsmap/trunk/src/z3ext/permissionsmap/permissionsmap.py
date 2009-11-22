@@ -54,7 +54,7 @@ class PermissionsMap(PersistentSecurityMap, RolePermissionManager):
         if settings:
             settings.update(
                 [(pid, setting) for pid, setting in \
-                     super(PermissionsMap, self).getPermissionsForRole(role_id)])
+                     super(PermissionsMap,self).getPermissionsForRole(role_id)])
 
             return settings.items()
 
@@ -75,7 +75,8 @@ class PermissionsMap(PersistentSecurityMap, RolePermissionManager):
 
             settings.update(
                 [(rid, setting) for rid, setting in \
-                     super(PermissionsMap, self).getRolesForPermission(permission_id)])
+                     super(PermissionsMap, self).getRolesForPermission(
+                        permission_id)])
 
             return settings.items()
         else:
