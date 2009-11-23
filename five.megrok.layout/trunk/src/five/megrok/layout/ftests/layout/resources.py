@@ -5,7 +5,7 @@
   >>> from zope.publisher.browser import TestRequest
 
   >>> request = TestRequest()
-  >>> mongo = Dummy()
+  >>> mongo = Dummy('mongo')
   >>> mylayout = getMultiAdapter((request, mongo), ILayout)
   >>> mylayout.static
   <five.grok.components.ZopeTwoDirectoryResource object at ...>
@@ -17,7 +17,7 @@ from five import grok
 from five.megrok.layout import Layout
 
 
-class Dummy(grok.Context):
+class Dummy(grok.Model):
     pass
 
 
