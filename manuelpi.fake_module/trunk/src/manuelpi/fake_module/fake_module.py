@@ -5,7 +5,7 @@ import new
 import textwrap
 
 FAKE_MODULE_START = re.compile(
-        r'^\.\.\s*module-block::?\s*(?P<module_name>[a-zA-Z_]*)',
+        r'^\.\.\s*module-block::?\s*(?P<module_name>[a-zA-Z_]+)',
         re.MULTILINE)
 FAKE_MODULE_END = re.compile(r'(\n\Z|\n(?=\S))')
 MODULE_NS = "manueltest.fake"

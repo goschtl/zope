@@ -3,12 +3,12 @@ Intro and Motivation
 
 `manuelpi.fake_module` is a plugin for `Manuel`_ that supports syntax 
 for creating modules within a doctest. The module, once defined, is then
-usable by supporting doctest statements.
+usable by subsequent doctest statements.
 
 This functionality is useful for packages that you might describe as
 being 'meta'; they operate on modules. Thus, being able to define
 and then process modules within the same doctest using a clean and 
-uncluttered syntax delivers is extremely beneficial. 
+uncluttered syntax is extremely beneficial. 
 
 One such package to benefit from this sort of facility is `Martian`_, 
 which scans modules for configuration directives, registering them as
@@ -19,6 +19,7 @@ it goes.
 
 Usage
 =====
+
 The special REStructure Text directive::
 
 '.. module-block:: <MODULE_NAME>' 
@@ -28,7 +29,7 @@ the rest of the doctest. We then define the module's body at a single
 indentation level after this directive. What follows is an example of a 
 full doctest::
 
-We create a new module with a main function to perform this task::
+ We create a new module with a main function to perform this task::
 
  .. module-block:: test_module 
 
@@ -52,7 +53,7 @@ We create a new module with a main function to perform this task::
 
 The above doctest creates a new module `test_module` and then exercises
 the objects within it. Notice how the module becomes immediately available
-to the doctet after definition. 
+to the doctet after its definition. 
 
 To use `manualpi.fake_module` in your application, set up your tests as
 described in the Manuel documentation and import the `Manuel` class from
