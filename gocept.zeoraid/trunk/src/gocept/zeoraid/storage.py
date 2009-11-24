@@ -676,6 +676,7 @@ class RAIDStorage(object):
 
     def _open_storage(self, name):
         assert name not in self.storages, "Storage %s already opened" % name
+        storage = None
         try:
             storage = self.openers[name].open()
             assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
@@ -689,6 +690,11 @@ class RAIDStorage(object):
             self._degrade_storage(
                 name, reason='an error occured opening the storage',
                 fail=False)
+            if storage is not None:
+                try:
+                    storage.close()
+                except:
+                    pass
             return
         self.storages[name] = storage
 
@@ -706,7 +712,8 @@ class RAIDStorage(object):
         self._close_storage(name)
         self.storages_degraded.append(name)
         self.degrade_reasons[name] = reason
-        logger.critical('Storage %s degraded. Reason: %s' % (name, reason))
+        logger.critical('RAID %r degraded due failure of back-end %r. '
+                        'Reason: %s' % (self.__name__, name, reason))
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 

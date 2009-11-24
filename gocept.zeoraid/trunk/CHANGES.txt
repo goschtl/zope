@@ -5,7 +5,13 @@ Change History
 1.0b8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #484921: Further enhance logging output by also displaying the name of the
+  RAID storage involved.
+
+- Try forcing storages to close when they seemed to have failed opening. This
+  is especially relevant for asynchronously connecting ZEO clients which
+  otherwise continue to keep connecting but would never get picked up by
+  ZEORaid.
 
 
 1.0b7 (2009-11-21)
