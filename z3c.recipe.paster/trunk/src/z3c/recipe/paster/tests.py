@@ -70,6 +70,7 @@ def setUp(test):
     zc.buildout.testing.install('zope.size', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.traversing', test)
+    zc.buildout.testing.install('zope.contenttype', test)
     zc.buildout.testing.install_develop('z3c.recipe.paster', test)
 
 
