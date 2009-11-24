@@ -1,0 +1,14 @@
+Changelog
+=========
+
+1.1 (2009-11-24)
+----------------
+
+- Add Zope 2 security grokkers for Page and Form.
+- Add more tests.
+
+1.0 (2009-09-17)
+----------------
+
+- Initial release
+

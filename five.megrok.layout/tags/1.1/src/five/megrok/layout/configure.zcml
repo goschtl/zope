@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain="five.megrok.layout">
+
+  <include package="five.megrok.layout" file="meta.zcml" />
+
+  <include package="five.grok" />
+  <include package="megrok.layout" />
+
+</configure>

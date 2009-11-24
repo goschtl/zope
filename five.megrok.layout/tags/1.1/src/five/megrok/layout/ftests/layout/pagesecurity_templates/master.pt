@@ -1,0 +1,5 @@
+<html>
+  <body>
+    <div class="layout"><tal:page tal:content="structure view/content" /></div>
+  </body>
+</html>
