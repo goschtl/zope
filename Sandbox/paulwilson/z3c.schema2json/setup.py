@@ -29,8 +29,16 @@ setup(name='z3c.schema2json',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'setuptools',
         'grokcore.component',
+        'setuptools',
+        'simplejson',
+        'zope.datetime',
+        'zope.interface',
+        'zope.location',
+        'zope.schema',
+        'zope.component',
+        'zc.sourcefactory',
+        'zope.app.testing',
       ],
       entry_points="""
       # -*- Entry points: -*-
