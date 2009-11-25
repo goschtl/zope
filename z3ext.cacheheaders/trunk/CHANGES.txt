@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-1.1.2 (Unreleased)
+1.2.0 (2009-11-24)
 ------------------
+
+- Added AfterExceptionCallEvent event
 
 
 1.1.1 (2009-08-28)

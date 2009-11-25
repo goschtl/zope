@@ -33,6 +33,20 @@ class AfterCallEvent(object):
         self.request = request
 
 
+class IAfterExceptionCallEvent(IObjectEvent):
+    """ after call event """
+
+    request = interface.Attribute('Request')
+
+
+class AfterExceptionCallEvent(object):
+    interface.implements(IAfterExceptionCallEvent)
+
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
 class IModificationInfo(interface.Interface):
 
     def modified():
