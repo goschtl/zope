@@ -1,0 +1,138 @@
+=======
+CHANGES
+=======
+
+3.4.3 - (2009/11/26)
+--------------------
+
+- Backported a fix made by Gary Poster to the 3.4 branch:
+  Fix for LP bug 181833 (from Gustavo Niemeyer). Before "visiting" a
+  sub-object, a check should be made to ensure the object is still valid.
+  Because garbage collection may involve loops, if you garbage collect an
+  object, it is possible that the actions done on this object may modify the
+  state of other objects. This may cause another round of garbage collection,
+  eventually generating a segfault (see LP bug). The Py_VISIT macro does the
+  necessary checks, so it is used instead of the previous code.
+
+
+3.4.2 - (2009/03/23)
+--------------------
+
+- Added dependency 'zope.thread' to setup.py, without the tests were
+  failing.
+
+- Backported a fix made by Albertas Agejevas to the 3.4 branch. He
+  fixed a bug in DecoratedSecurityCheckerDescriptor which made
+  security-wrapping location proxied exception instances throw
+  exceptions on Python 2.5.  See
+  https://bugs.launchpad.net/zope3/+bug/251848
+
+
+3.4.1 - 2008/07/27
+------------------
+
+- Made C code compatible with Python 2.5 on 64bit architectures.
+
+
+3.4.0 - 2007/10/02
+------------------
+
+- Updated meta-data.
+
+
+3.4.0b5 - 2007/08/15
+--------------------
+
+- Bug: Fixed a circular import in the C implementation.
+
+
+3.4.0b4 - 2007/08/14
+--------------------
+
+- Bug: ``zope.security.management.system_user`` had an ugly/brittle id.
+
+
+3.4.0b3 - 2007/08/14
+--------------------
+
+- ``zope.security`` now works on Python 2.5
+
+- Bug: ``zope.security.management.system_user`` wasn't a valid principal
+  (didn't provide IPrincipal).
+
+- Bug: Fixed inclusion of doctest to use the doctest module from
+  ``zope.testing``. Now tests can be run multiple times without
+  breaking. (#98250)
+
+
+3.4.0b2 - 2007/06/15
+--------------------
+
+- Bug: Removed stack extraction in newInteraction. When using eggs this is an
+  extremly expensive function. The publisher is now more than 10 times faster
+  when using eggs and about twice as fast with a zope trunk checkout.
+
+
+3.4.0b1
+-------
+
+- Temporarily fixed the hidden (and accidental) dependency on zope.testing to
+  become optional.
+
+Note: The releases between 3.2.0 and 3.4.0b1 where not tracked as an
+individual package and have been documented in the Zope 3 changelog.
+
+
+3.2.0 - 2006/01/05
+------------------
+
+- Corresponds to the verison of the zope.security package shipped as part of
+  the Zope 3.2.0 release.
+
+- Removed deprecated helper functions, 'proxy.trustedRemoveSecurityProxy' and
+  'proxy.getProxiedObject'.
+
+- Made handling of 'management.{end,restore}Interaction' more careful w.r.t.
+  edge cases.
+
+- Made behavior of 'canWrite' consistent with 'canAccess':  if 'canAccess'
+  does not raise 'ForbiddenAttribute', then neither will 'canWrite'.  See:
+  http://www.zope.org/Collectors/Zope3-dev/506
+
+- Code style / documentation / test fixes.
+
+
+3.1.0 - 2005/10/03
+------------------
+
+- Added support for use of the new Python 2.4 datatypes, 'set' and
+  'frozenset', within checked code.
+
+- C security proxy acquired a dependency on the 'proxy.h' header from the
+  'zope.proxy' package.
+
+- XXX: the spelling of the '#include' is bizarre!  It seems to be related to
+  'zpkg'-based builds, and should likely be revisited.  For the moment, I have
+  linked in the 'zope.proxy' package into our own 'include' directory.  See
+  the subversion checkin: http://svn.zope.org/Zope3/?rev=37882&view=rev
+
+- Updated checker to avoid re-proxying objects which have and explicit
+  '__Security_checker__' assigned.
+
+- Corresponds to the verison of the zope.security package shipped as part of
+  the Zope 3.1.0 release.
+
+- Clarified contract of 'IChecker' to indicate that its 'check*' methods may
+  raise only 'Forbidden' or 'Unauthorized' exceptions.
+
+- Added interfaces, ('IPrincipal', 'IGroupAwarePrincipal', 'IGroup', and
+  'IPermission') specifying contracts of components in the security framework.
+
+- Code style / documentation / test fixes.
+
+
+3.0.0 - 2004/11/07
+------------------
+
+- Corresponds to the version of the zope.security package shipped as part of
+  the Zope X3.0.0 release.
