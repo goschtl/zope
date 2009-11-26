@@ -5,7 +5,8 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed testing.py. There is no functional tests and
+  ftesting.zcml now.
 
 
 3.5.1 (2009-02-14)
