@@ -4,7 +4,8 @@ Changes
 1.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Factor out generally useful methods and properties for view-ish
+  components into components.ViewSupport mixin.
 
 
 1.13a1 (2009-11-15)

@@ -34,7 +34,45 @@ import martian.util
 from grokcore.view import interfaces, util
 
 
-class View(BrowserPage):
+class ViewSupport(object):
+    """Mixin class providing methods and properties generally
+    useful for view-ish components.
+    """
+    @property
+    def response(self):
+        return self.request.response
+    
+    @property
+    def body(self):
+        return request.bodyStream.getCacheStream().read()
+
+    def redirect(self, url):
+        return self.request.response.redirect(url)
+
+    def url(self, obj=None, name=None, data=None):
+        """Return string for the URL based on the obj and name.
+
+        The data argument is used to form a CGI query string.
+        """
+        if isinstance(obj, basestring):
+            if name is not None:
+                raise TypeError(
+                    'url() takes either obj argument, obj, string arguments, '
+                    'or string argument')
+            name = obj
+            obj = None
+
+        if name is None and obj is None:
+            # create URL to view itself
+            obj = self
+        elif name is not None and obj is None:
+            # create URL to view on context
+            obj = self.context
+            
+        return util.url(self.request, obj, name, data)
+
+
+class View(ViewSupport, BrowserPage):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
@@ -49,10 +87,6 @@ class View(BrowserPage):
                 )
         else:
             self.static = None
-
-    @property
-    def response(self):
-        return self.request.response
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -93,38 +127,7 @@ class View(BrowserPage):
                       "View %r, macro %s" % (self, key),
                       DeprecationWarning, 1)
         return value
-
-
-    def url(self, obj=None, name=None, data=None):
-        """Return string for the URL based on the obj and name. The data
-        argument is used to form a CGI query string.
-        """
-        if isinstance(obj, basestring):
-            if name is not None:
-                raise TypeError(
-                    'url() takes either obj argument, obj, string arguments, '
-                    'or string argument')
-            name = obj
-            obj = None
-
-        if name is None and obj is None:
-            # create URL to view itself
-            obj = self
-        elif name is not None and obj is None:
-            # create URL to view on context
-            obj = self.context
-
-        if data is None:
-            data = {}
-        else:
-            if not isinstance(data, dict):
-                raise TypeError('url() data argument must be a dict.')
-
-        return util.url(self.request, obj, name, data=data)
-
-    def redirect(self, url):
-        return self.request.response.redirect(url)
-
+    
     def update(self, **kwargs):
         pass
 

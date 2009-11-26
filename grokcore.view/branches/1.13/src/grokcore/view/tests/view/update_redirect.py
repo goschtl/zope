@@ -11,9 +11,9 @@ is not executed subsequently.
   >>> view = getMultiAdapter((manfred, request), name='cavepainting')
   >>> print view()
   None
-  >>> print request.response.getStatus()
+  >>> print view.response.getStatus()
   302
-  >>> print request.response.getHeader('Location')
+  >>> print view.response.getHeader('Location')
   somewhere-else
 
 """
@@ -24,7 +24,7 @@ class Mammoth(grok.Context):
 
 class CavePainting(grok.View):
     def update(self):
-        self.request.response.redirect('somewhere-else')
+        self.redirect('somewhere-else')
 
 
 cavepainting = grok.PageTemplate("""\

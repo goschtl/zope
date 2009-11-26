@@ -18,16 +18,23 @@ from zope.component import getMultiAdapter
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
 
-def url(request, obj, name=None, data={}):
+def url(request, obj, name=None, data=None):
     url = getMultiAdapter((obj, request), IAbsoluteURL)()
     if name is not None:
         url += '/' + urllib.quote(name.encode('utf-8'), SAFE_URL_CHARACTERS)
-    if data:
-        for k,v in data.items():
-            if isinstance(v, unicode):
-                data[k] = v.encode('utf-8')
-            if isinstance(v, (list, set, tuple)):
-                data[k] = [isinstance(item, unicode) and item.encode('utf-8')
+        
+    if data is None:
+        return url
+    
+    if not isinstance(data, dict):
+        raise TypeError('url() data argument must be a dict.')
+        
+    for k,v in data.items():
+        if isinstance(v, unicode):
+            data[k] = v.encode('utf-8')
+        if isinstance(v, (list, set, tuple)):
+            data[k] = [
+                isinstance(item, unicode) and item.encode('utf-8')
                 or item for item in v]
-        url += '?' + urllib.urlencode(data, doseq=True)
-    return url
+            
+    return url + '?' + urllib.urlencode(data, doseq=True)
