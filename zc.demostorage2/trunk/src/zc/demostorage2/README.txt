@@ -39,9 +39,11 @@ Configuration
 The section below shows how to create zc.demostorage2 storages from
 Python. If you're using ZConfig, you need to:
 
-- import zc.demostroage2
+- import zc.demostorage2
 
-- include a demostroage2 section
+- include a demostorage2 section
+  (must contain two storages, one with the name 'base'
+  and one with the name 'changes').
 
 Here's an example that shows how to configure demo storage and how to
 use the configuration from python:
