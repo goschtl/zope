@@ -44,7 +44,7 @@ class ViewSupport(object):
     
     @property
     def body(self):
-        return request.bodyStream.getCacheStream().read()
+        return self.request.bodyStream.getCacheStream().read()
 
     def redirect(self, url):
         return self.request.response.redirect(url)
