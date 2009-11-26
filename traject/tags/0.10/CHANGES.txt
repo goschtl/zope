@@ -1,0 +1,21 @@
+CHANGES
+*******
+
+0.10 (2009-11-26)
+=================
+
+- Add converter functionality for path segments. This makes it
+  possible to ensure that a path segment is of a certain type, such as
+  an integer, using ``a/:id:int``.
+
+  Converters ``unicode``, ``str``, ``int``, ```unicodelist``,
+  `strlist`` and ``intlist`` are known. ``unicode`` is the default
+  converter used if no converter was specified. New converters can be
+  registered using ``register_converter``. If a converter raises a
+  ValueError, the path cannot be resolved.
+
+0.9 (2009-11-16)
+================
+
+- Initial public release.
+

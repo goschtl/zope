@@ -1,0 +1,105 @@
+Problems:
+
+* how do we turn this into traversal? The classes of the objects
+  traversed to need to have traversers registered for them just in
+  time? Alternatively write a traversal mechanic that delivers the
+  object while eating as much of the path as possible, taking the last
+  bit as the view?
+
+* how do we know traversing ends? actually each step of the traversal
+  returns a model. The traverser registered for each model checks for
+  the view itself.
+
+* when the route traverser is in place, it will determine traversal
+  based on what is traversed already and the next step in the
+  traversal. This means that this traversal can be universal for the
+  entire route traversing process. Each route traversing object can be
+  provided with an interface that this traverser adapts to, during 
+  traversal. This can be done just in time.
+
+* URL parameters -> object: given parameters, return object inverse:
+  object -> URL parameters: given object, give back URL parameters
+  this allows us to reconstruct the parent trail, though there is a
+  cost involved, and how do we make sure that every object has a
+  __parent__ and __name__ when returned from session.query()?
+
+* MapperExtension with reconstruct_instance could set __parent__ and 
+  such.
+
+* how to handle collections/relations? If we have the default
+  collection, how do we attach views? If so, can we safely put in
+  __parent__ and friends? If so, when? Or do we require the web app to
+  return a proxy-like object that does have views?
+
+* collection.on_link can be used to set parent.
+
+* is it possible to transparently install other collection proxies into
+  the mapper or something?
+
+* the performance of doing a resolve for each query result isn't very high,
+  better do something that smartly detects a __parent__ on its parent and
+  bails out early if so.
+
+* we could install a special function locatedquery which is a wrapped
+  session.query that retrieves objects from the database that are
+  wrapped.  It could take care of relation objects too (and so could
+  traversal), but what about the objects in relations and such? And so on?
+  We don't want to thrawl through everythign to wrap 'm.
+  Nicer would be a mapper extension that puts this in automatically,
+  but that might be tricky to implement...
+
+* we need a lot of tests for failures: wrong parameters, what if the
+  query raises an exception, what if the argument reconstruction
+  returns the wrong parameters, what if the query returns None, etc.
+
+* We need to figure out whether we can hijack traversal in some
+  structured way to allow multi-step traversal, or smoothly extend
+  resolve so it can work with the traversal process? using the
+  traversal stack mechanism on the request, perhaps?
+
+* reconstruct: build the object *without* parents, then see whether
+  it already *has* parents, and if so, be done. Otherwise, construct
+  parent, walking up path. Finally, connect to root.
+
+* factory function now receives parent. That's fine for resolving
+  routes, but when trying to efficiently reconstruct a parent chain
+  it's in the way: we'd need a parent in order to reconstruct a
+  parent!
+
+* can a factory return None? What happens?
+
+* can an inverse return None? what happens?
+
+class EmployeePattern(traject.Traject):
+    grok.context(AppRoot)
+    traject.pattern('departments/:department_id/employees/:employee_id')
+    traject.model(model.Employee)
+
+    def factory(department_id, employee_id):
+        return session.query(model.Employee).first()
+
+    def arguments(employee):
+        return dict(department_id=employee.department.id, 
+                    employee_id=employee.id)
+
+
+@traject.pattern(AppRoot, 'departments/:department_id/employees/:employee_id')
+def factory(department_id, employee_id):
+     ...
+
+@traject.inverse(AppRoot, model.Employee, 'departments/:department_id..')
+def arguments(employee):
+    ...
+
+
+ 
+class ModelRoute(megrok.traject.Traject):
+    grok.context(Model)
+    traject.pattern('foo/:bar/clusters/:baz')
+
+    def factory(bar, baz):
+        return session.query(...).first()
+
+    def arguments(obj):
+        return {'bar': obj.zorgverzekeraar.id, 'baz': obj.id}
+
