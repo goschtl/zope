@@ -186,7 +186,9 @@ be ``department_id`` and ``employee_id``::
 
 The factory function in this case just creates a ``Employee`` object
 on the fly. In the context of a relation database it could instead
-perform a database query based on the parameters supplied.
+perform a database query based on the parameters supplied. If the
+factory returns ``None``, this is interpreted as the system being
+unable to match the URL: the object cannot be found.
 
 In order to register this factory function, we need a registry of
 patterns, so we'll create one::
@@ -246,6 +248,10 @@ Now that we have a Default factory, we can try to resolve a path::
   >>> obj = patterns.resolve(root, u'departments/1/employees/2', Default)
   >>> obj
   <Employee 1 2>
+  >>> obj.department_id
+  u'1'
+  >>> obj.employee_id
+  u'2'
 
 An alternative ``resolve_stack`` method allows us to resolve a stack
 of names instead (where the first name to resolve is on the top of the
@@ -255,7 +261,61 @@ stack)::
   >>> l.reverse()
   >>> patterns.resolve_stack(root, l, Default)
   <Employee 1 2>
+
+Converters
+==========
+
+It is possible to specify converters in patterns. A converter is a
+function that converts a value to a desired value, and raises a
+ValueError if this is not possible. The build-in ``int`` in Python is
+an example of a converter.
  
+A converter is specified in a pattern with an extra colon and then a
+converter identifier (``int`` in this case)::
+
+  >>> pattern_str = u'individuals/:individual_id:int'
+
+Traject comes with a number of built-in converters:
+
+* ``unicode``: the default converter. Tries to convert the input to
+  a unicode value. If no converter is specified, it will use this.
+
+* ``str``: tries to convert the input to a string.
+
+* ``int``: tries to convert the input to an integer.
+
+* ``unicodelist``: tries to convert the input to a list of unicode
+  strings. The input is split on the ``;`` character.
+
+* ``strlist``: tries to convert the input to a list of strings. The
+  input is split on the ``;`` character.
+
+* ``intlist``: tries to convert the input to a list of integers. The
+  input is split on the ``;`` character.
+
+We now register the pattern::
+
+  >>> class Individual(object):
+  ...   def __init__(self, individual_id):
+  ...     self.individual_id = individual_id
+  ...   def __repr__(self):
+  ...     return '<Individual %s>' % self.individual_id
+  >>> patterns.register(Root, pattern_str, Individual)
+
+  >>> indiv = patterns.resolve(root, u'individuals/1', Default)
+
+We see that the value has indeed been converted to an integer::
+
+  >>> indiv.individual_id
+  1
+
+New converters can be registered using the ``register_converter``
+method. This method takes two arguments: the converter name, and the
+converter function. The converter function should take a single
+argument and convert it to the desired value. If conversion fails, a
+``ValueError`` should be raised. The Python ``int`` function is an
+example of a valid converter.
+
 Locations
 =========
 
@@ -437,6 +497,7 @@ is needed. Top-level functions have been made available in the
 
   traject.register
   traject.register_inverse
+  traject.register_converter
   traject.resolve
   traject.resolve_stack
   traject.consume

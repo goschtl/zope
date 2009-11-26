@@ -96,7 +96,26 @@ class Patterns(object):
     def __init__(self):
         self._registry = AdapterRegistry()
         self._inverse_registry = AdapterRegistry()
+        self._converters = {
+            'unicode': convert_unicode,
+            'str': convert_str,
+            'int': int,
+            'unicodelist': convert_unicodelist,
+            'strlist': convert_strlist,
+            'intlist': convert_intlist,
+            }
+
+    def register_converter(self, converter_name, converter_func):
+        """Register a converter function for a converter name.
+
+        Type names are the optional bit in a pattern, behind
+        a second colon (i.e. :foo_id:int).
         
+        "A converter function must raise ValueError if it cannot
+        convert to the desired format.
+        """
+        self._converters[converter_name] = converter_func
+
     def register(self, class_or_interface, pattern_str, factory):
         interface = _get_interface(class_or_interface)
         pattern = parse(pattern_str)
@@ -105,6 +124,13 @@ class Patterns(object):
             name = component_name(p)
             if name[-1] == ':':
                 value = p[-1][1:]
+                if ':' in value:
+                    dummy, converter_name = value.split(':')
+                    if converter_name not in self._converters:
+                        raise RegistrationError(
+                            "Could not register %s because no converter "
+                            "can be found for variable %s" %
+                            ('/'.join(pattern), value))
                 prev_value = self._registry.registered(
                     (interface,), IStep, name)
                 if prev_value == value:
@@ -178,8 +204,20 @@ class Patterns(object):
                     # if so, we matched the variable pattern
                     pattern = variable_pattern
                     pattern_str = variable_pattern_str
+                    # we parse the variable to see whether the name
+                    # fits what we expect
+                    if ':' in variable:
+                        variable, converter_name = variable.split(':')
+                    else:
+                        converter_name = 'unicode'
+                    converter = self._converters[converter_name]
+                    try:
+                        converted = converter(name)
+                    except ValueError:
+                        stack.append(name)
+                        return stack, consumed, obj
                     # the variable name is registered
-                    variables[str(variable)] = name
+                    variables[str(variable)] = converted
                 else:
                     # cannot find step or variable, so cannot resolve
                     stack.append(name)
@@ -244,12 +282,34 @@ class Patterns(object):
                 # we're done, as parent as a parent itself
                 return
 
+def convert_unicodelist(s):
+    return [convert_unicode(v) for v in s.split(';')]
+    
+def convert_strlist(s):
+    return [convert_str(v) for v in s.split(';')]
+
+def convert_intlist(s):
+    return [int(v) for v in s.split(';')]
+
+def convert_unicode(s):
+    try:
+        return unicode(s)
+    except UnicodeError:
+        raise ValueError
+
+def convert_str(s):
+    try:
+        return str(s)
+    except UnicodeError:
+        raise ValueError
+
 def normalize(pattern_str):
     if pattern_str.startswith('/'):
         return pattern_str[1:]
     return pattern_str
 
 _patterns = Patterns()
+register_converter = _patterns.register_converter
 register = _patterns.register
 register_inverse = _patterns.register_inverse
 resolve = _patterns.resolve

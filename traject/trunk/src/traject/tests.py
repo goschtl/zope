@@ -529,6 +529,21 @@ class PatternsTestCase(unittest.TestCase):
             patterns.register,
             Root, 'departments/:other_id/employees/:employee_id', Employee)
 
+    def test_conflicting_converters(self):
+        patterns = traject.Patterns()
+        patterns.register(
+            Root, 'departments/:department_id',
+            Department)
+        self.assertRaises(
+            traject.RegistrationError,
+            patterns.register,
+            Root, 'departments/:department_id:int', Department)
+        self.assertRaises(
+            traject.RegistrationError,
+            patterns.register,
+            Root, 'departments/:department_id:int/employees/:employee_id',
+            Employee)
+        
     def test_override_variable_names(self):
         patterns = traject.Patterns()
         patterns.register(
@@ -622,7 +637,95 @@ class PatternsTestCase(unittest.TestCase):
         self.assert_(isinstance(obj, Obj))
         self.assertEquals('B', obj.b)
         self.assertEquals('D', obj.d)
-    
+
+    def test_match_int(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:int', Obj)
+        root = Root()
+        obj = patterns.resolve(root, 'a/1', default)
+        self.assertEquals(1, obj.v)
+
+    def test_mismatch_int(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:int', Obj)
+        root = Root()
+        self.assertRaises(traject.ResolutionError,
+                          patterns.resolve, root, 'a/b', default)
+
+    def test_match_strlist(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:strlist', Obj)
+        root = Root()
+        obj = patterns.resolve(root, 'a/a;b;c', default)
+        self.assertEquals(['a', 'b', 'c'], obj.v)
+        obj = patterns.resolve(root, 'a/b', default)
+        self.assertEquals(['b'], obj.v)
+
+    def test_match_intlist(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:intlist', Obj)
+        root = Root()
+        obj = patterns.resolve(root, 'a/1;2;3', default)
+        self.assertEquals([1, 2, 3], obj.v)
+        obj = patterns.resolve(root, 'a/1', default)
+        self.assertEquals([1], obj.v)
+
+    def test_mismatch_intlist(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:intlist', Obj)
+        root = Root()
+        self.assertRaises(traject.ResolutionError,
+                          patterns.resolve, root, 'a/a;b', default)
+
+    def test_consume_mismatch_int(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:int', Obj)
+        root = Root()
+        unconsumed, consumed, obj = patterns.consume(root,
+                                                     'a/not_an_int',
+                                                     default)
+        self.assertEquals(['not_an_int'], unconsumed)
+        self.assertEquals(['a'], consumed)
+        self.assertEquals('a', obj.__name__)
+        self.assert_(obj.__parent__ is root)
+
+    def test_unknown_converter(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        self.assertRaises(traject.RegistrationError,
+                          patterns.register, Root, 'a/:v:foo', Obj)
+
+    def test_new_converter(self):
+        patterns = traject.Patterns()
+        patterns.register_converter('float', float)
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:float', Obj)
+                
+        root = Root()
+        obj = patterns.resolve(root, 'a/1.1', default)
+        self.assertEquals(1.1, obj.v)
 
     # XXX need a test for trailing slash?
 
@@ -858,6 +961,7 @@ class InverseTestCase(unittest.TestCase):
         patterns.locate(root, employee, default)
         self.assertEquals([u'employee 1 2', u'employees 1'],
                           _calls)
+
     def test_inverse_non_unicode_name(self):
         patterns = self.get_identity_patterns()
 
