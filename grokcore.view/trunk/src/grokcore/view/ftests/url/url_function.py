@@ -61,6 +61,41 @@ It works properly in the face of non-ascii characters in URLs:
   >>> expected = unicode('http://127.0.0.1/herd/árgh', 'UTF-8')
   >>> urllib.unquote(u).decode('utf-8') == expected
   True
+
+The url() function supports a data argument which is converted to a
+CGI type query string. If any of the values are of type unicode it's
+converted to a string assuming the encoding is UTF-8:
+
+  >>> url(request, herd, '@@sample_view', data=dict(age=28))
+  'http://127.0.0.1/herd/@@sample_view?age=28'
+  
+  >>> url(request, herd, data=dict(age=28))
+  'http://127.0.0.1/herd?age=28'
+  
+There is no problem putting one of the 'reserved' arguments inside the data
+argument or explicitely supplying 'None':
+
+  >>> url(request, herd, None, data=dict(name="Peter"))
+  'http://127.0.0.1/herd?name=Peter'
+
+Since order in dictionairies is arbitrary we'll test the presence of multiple
+keywords by using find()
+
+  >>> withquery = url(request, herd, 'sample_view', data=dict(a=1, b=2, c=3))
+  >>> withquery.find('a=1') > -1
+  True
+  
+  >>> withquery.find('b=2') > -1
+  True
+  
+  >>> withquery.find('c=3') > -1
+  True
+
+  >>> url(request, herd, 'bar', data='baz')
+  Traceback (most recent call last):
+    ...
+  TypeError: url() data argument must be a dict.
+
 """
 import grokcore.view as grok
 from grokcore.view import url
