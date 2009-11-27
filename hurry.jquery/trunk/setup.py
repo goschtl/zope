@@ -43,6 +43,10 @@ setup(
         'zest.releaser.prereleaser.middle': [
             'prepare = hurry.jquery.prepare:entrypoint',
             ],
+        # ALSO grab jquery in the separate tag checkout...
+        'zest.releaser.releaser.middle': [
+            'prepare = hurry.jquery.prepare:entrypoint',
+            ],
         },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],
