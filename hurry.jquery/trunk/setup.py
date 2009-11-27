@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 JQUERY_VERSION = '1.3.2'
-version = '1.3.2.1dev'
+version = '1.3.2.2dev'
 # Name version after JQUERY_VERSION + .suffix
 
 
