@@ -56,4 +56,5 @@ def entrypoint(data):
     # We could grab data['new_version'] and omit the .1 suffix from it to get
     # the jquery version.  Could do away with a bit of version number
     # duplication.
+    # And grab the tagdir or workingdir as base, perhaps.
     prepare_jquery()
