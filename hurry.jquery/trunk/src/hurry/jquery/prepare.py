@@ -1,13 +1,15 @@
 import os
 import shutil
-import sys
 import urllib2
 import urlparse
+
 from hurry.resource import generate_code, ResourceInclusion, Library
 
 BASEURL = "http://jqueryjs.googlecode.com/files/"
-MINIFIED = "jquery-1.3.2.min.js"
-FULL = "jquery-1.3.2.js"
+VERSION = '1.3.2'
+MINIFIED = "jquery-%s.min.js" % VERSION
+FULL = "jquery-%s.js" % VERSION
+
 
 def main():
     package_dir = os.path.dirname(__file__)

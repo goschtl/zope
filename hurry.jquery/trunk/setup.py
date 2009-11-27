@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
+import os
 
 JQUERY_VERSION = '1.3.2'
+version = '1.3.2.1dev'
+# Name version after JQUERY_VERSION + .suffix
 
-import sys, os
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -13,14 +15,13 @@ long_description = (
     read('CHANGES.txt')
     + '\n' +
     'Download\n'
-    '********\n'
-    )
+    '********\n')
 
 setup(
     name='hurry.jquery',
-    version=JQUERY_VERSION + '.1' + 'dev',
+    version=version,
     description="hurry.resource style resources for jQuery.",
-    long_description = long_description,
+    long_description=long_description,
     classifiers=[],
     keywords='',
     author='Jan-Wijbrand Kolman',
@@ -35,11 +36,11 @@ setup(
         'setuptools',
         'hurry.resource > 0.2',
         ],
-    entry_points= {
+    entry_points={
         'console_scripts': [
             'jqueryprepare = hurry.jquery.prepare:main',
-            ]
-    },
+            ],
+        },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],
         },
