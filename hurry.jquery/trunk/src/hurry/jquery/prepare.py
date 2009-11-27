@@ -10,12 +10,6 @@ MINIFIED = "jquery-1.3.2.min.js"
 FULL = "jquery-1.3.2.js"
 
 def main():
-    try:
-        version = sys.argv[1]
-    except IndexError:
-        print "Usage: jqueryprepare <jQuery version>"
-        return
-
     package_dir = os.path.dirname(__file__)
     jquery_dest_path = os.path.join(package_dir, 'jquery-build')
 
