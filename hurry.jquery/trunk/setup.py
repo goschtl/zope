@@ -40,6 +40,9 @@ setup(
         'console_scripts': [
             'jqueryprepare = hurry.jquery.prepare:main',
             ],
+        'zest.releaser.prereleaser.middle': [
+            'prepare = hurry.jquery.prepare:entrypoint',
+            ],
         },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],

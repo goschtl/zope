@@ -11,7 +11,7 @@ MINIFIED = "jquery-%s.min.js" % VERSION
 FULL = "jquery-%s.js" % VERSION
 
 
-def main():
+def prepare_jquery():
     package_dir = os.path.dirname(__file__)
     jquery_dest_path = os.path.join(package_dir, 'jquery-build')
 
@@ -44,3 +44,16 @@ def main():
     module = open(py_path, 'w')
     module.write(code)
     module.close()
+
+
+def main():
+    # Commandline tool
+    prepare_jquery()
+
+
+def entrypoint(data):
+    """Entry point for zest.releaser's prerelease script"""
+    # We could grab data['new_version'] and omit the .1 suffix from it to get
+    # the jquery version.  Could do away with a bit of version number
+    # duplication.
+    prepare_jquery()
