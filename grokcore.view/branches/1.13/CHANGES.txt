@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.13 (unreleased)
------------------
+1.13a2 (2009-11-27)
+-------------------
 
 - Factor out generally useful methods and properties for view-ish
   components into components.ViewSupport mixin.

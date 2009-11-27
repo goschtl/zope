@@ -37,7 +37,7 @@ tests_require = install_requires + [
 
 setup(
     name='grokcore.view',
-    version = '1.13dev',
+    version = '1.13a2',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
