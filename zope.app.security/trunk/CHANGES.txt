@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.7.3 (unreleased)
+------------------
+
+- provide a clean zope setup and move zope.app.testing to a test dependency
+
+- removed unused dependencies like ZODB3 etc. from install_requires
+
 3.7.2 (2009-09-10)
 ------------------
 
