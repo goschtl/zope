@@ -18,11 +18,11 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
+import zope.i18nmessageid
 import zope.schema
 from zope.schema.interfaces import IVocabularyTokenized
-from zope.session.interfaces import ISession
-from zope.i18n.interfaces import INegotiator
-from z3c.i18n import MessageFactory as _
+
+_ = zope.i18nmessageid.MessageFactory('z3c')
 
 
 language_policies = ['server', 'session', 'browser', 

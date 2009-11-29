@@ -17,10 +17,10 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.component
+from zope.component.interfaces import ISite
 from zope.i18n.interfaces import INegotiator
 from zope.app.generations.utility import findObjectsProviding
-from zope.app.zopeappgenerations import getRootFolder
-from zope.app.component.interfaces import ISite
+from zope.app.generations.utility import getRootFolder
 
 from z3c.language.negotiator import interfaces
 

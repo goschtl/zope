@@ -82,8 +82,6 @@ def test_suite():
         unittest.makeSuite(NegotiatorBaseTest),
         unittest.makeSuite(NegotiatorTest),
         DocFileSuite('README.txt',
-            setUp=testing.doctestSetUp,
-            tearDown=testing.doctestTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
 

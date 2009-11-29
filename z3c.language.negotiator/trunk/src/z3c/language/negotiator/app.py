@@ -20,12 +20,10 @@ __docformat__ = 'restructuredtext'
 import persistent
 import zope.interface
 
+from zope.container import contained
 from zope.schema.fieldproperty import FieldProperty
-from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import INegotiator
 from zope.i18n.negotiator import negotiator
-
-from zope.app.container import contained
 
 from z3c.language.session.interfaces import ILanguageSession
 

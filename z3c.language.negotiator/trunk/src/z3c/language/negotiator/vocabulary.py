@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import zope.interface
 import zope.component
-from zope.schema.interfaces import IVocabularyFactory
+from zope.i18n.interfaces import INegotiator
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -35,7 +35,7 @@ class OfferedLanguagesVocabulary(SimpleVocabulary):
         terms = []
         
         # collect offered languages
-        negotiator = zope.component.getUtility(interfaces.INegotiator)
+        negotiator = zope.component.getUtility(INegotiator)
         languages = negotiator.offeredLanguages
 
         for lang in languages:

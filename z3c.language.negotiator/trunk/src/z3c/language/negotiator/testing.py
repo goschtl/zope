@@ -19,20 +19,11 @@ __docformat__ = 'restructuredtext'
 
 import zope.interface
 import zope.component
-from zope.schema import vocabulary
 from zope.i18n.interfaces import IUserPreferredLanguages
-from zope.publisher.interfaces import IRequest
-from zope.session.interfaces import IClientId
-from zope.session.interfaces import IClientIdManager
-from zope.session.interfaces import ISessionDataContainer
-from zope.session.http import CookieClientIdManager
-from zope.session import session
+from zope.i18n.interfaces import INegotiator
 
-from z3c import testing
+import z3c.testing
 from z3c.language.session.interfaces import ILanguageSession
-from z3c.language.session.app import LanguageSession
-from z3c.language.negotiator import interfaces
-from z3c.language.negotiator.vocabulary import OfferedLanguagesVocabulary
 
 
 ###############################################################################
@@ -40,12 +31,6 @@ from z3c.language.negotiator.vocabulary import OfferedLanguagesVocabulary
 # Test component
 #
 ###############################################################################
-
-class TestClientId(object):
-    zope.interface.implements(IClientId)
-    def __new__(cls, request):
-        return 'dummyclientidfortesting'
-
 
 class LanguageSessionStub(object):
     
@@ -71,44 +56,12 @@ class EnvStub(object):
 
 ###############################################################################
 #
-# placeful setup
-#
-###############################################################################
-
-from zope.app.testing import setup
-
-def doctestSetUp(test):
-    site = setup.placefulSetUp(site=True)
-    test.globs['rootFolder'] = site
-
-    # session setup
-    zope.component.provideAdapter(TestClientId, (IRequest,), IClientId)
-    zope.component.provideAdapter(LanguageSession, (IRequest,), 
-        ILanguageSession)
-    zope.component.provideUtility(CookieClientIdManager(), IClientIdManager)
-    rsdc = session.RAMSessionDataContainer()
-    zope.component.provideUtility(rsdc, ISessionDataContainer, '')
-
-    # register vocabularies
-    vocabulary.setVocabularyRegistry(None)
-    vocabulary._clear()
-    vr = vocabulary.getVocabularyRegistry()
-    
-    vr.register('Offered Languages', OfferedLanguagesVocabulary)
-
-def doctestTearDown(test):
-    setup.placefulTearDown()
-    vocabulary._clear()
-
-
-###############################################################################
-#
 # Public base tests
 #
 ###############################################################################
 
-class BaseTestINegotiator(testing.InterfaceBaseTest):
+class BaseTestINegotiator(z3c.testing.InterfaceBaseTest):
     """Resuable INegotiator base test."""
 
     def getTestInterface(self):
-        return interfaces.INegotiator
+        return INegotiator

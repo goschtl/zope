@@ -42,18 +42,12 @@ If we set a policy with a wrong value, we will get a ValueError:
   ...
   ValueError: ('Not a valid policy name.', u'wrong')
 
-Let's add the negotiator to the site root:
-
-  >>> rootFolder['negotiator'] = negotiator
-
-And register the negotiator as a utility:
+Register the negotiator as a global utility:
 
   >>> import zope.component
-  >>> sitemanager = zope.component.getSiteManager(rootFolder)
-  >>> sitemanager.registerUtility(negotiator, INegotiator)
+  >>> zope.component.provideUtility(negotiator, INegotiator)
 
-After register the negotiator as a utility, we can use the vocabulary and see
-what offered languages are available:
+Now we can use the vocabulary and see what offered languages are available:
 
   >>> from z3c.language.negotiator import vocabulary
   >>> vocab = vocabulary.OfferedLanguagesVocabulary(None)

@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.language.negotiator',
-    version='1.0.2dev',
+    version='1.1.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Zope3 i18n language negotiator.",
@@ -56,26 +56,22 @@ setup (
     namespace_packages = ['z3c', 'z3c.language'],
     extras_require = dict(
         test = [
-            'zope.app.testing',
-            'zope.testing',
             'z3c.testing',
             'z3c.coverage',
+            'zope.testing',
             ],
         ),
     install_requires = [
         'setuptools',
-        'z3c.i18n',
         'z3c.language.session',
-        'zope.app.component',
-        'zope.app.container',
         'zope.app.generations',
-        'zope.app.zopeappgenerations',
         'zope.component',
+        'zope.container',
         'zope.i18n',
+        'zope.i18nmessageid',
         'zope.interface',
         'zope.publisher',
         'zope.schema',
-        'zope.session',
         ],
     zip_safe = False,
     )
