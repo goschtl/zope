@@ -32,16 +32,17 @@ def dump_threads():
 
            #reqinfo += '\n\t ' + co.co_name + '\t ' + co.co_filename
 
-            if (co.co_name == 'publish' and
-               co.co_filename.endswith('publisher/publish.py')):
-                request = f.f_locals.get('request')
-                if request is not None:
-                    reqinfo += (request.get('REQUEST_METHOD', '') + ' ' +
-                               request.get('PATH_INFO', ''))
-                    qs = request.get('QUERY_STRING')
-                    if qs:
-                        reqinfo += '?'+qs
-                break
+            if co.co_name == 'publish':
+                if co.co_filename.endswith('/publisher/publish.py') or \
+                   co.co_filename.endswith('/ZPublisher/Publish.py'):
+                    request = f.f_locals.get('request')
+                    if request is not None:
+                        reqinfo += (request.get('REQUEST_METHOD', '') + ' ' +
+                                   request.get('PATH_INFO', ''))
+                        qs = request.get('QUERY_STRING')
+                        if qs:
+                            reqinfo += '?'+qs
+                    break
             f = f.f_back
         if reqinfo:
             reqinfo = " (%s)" % reqinfo
