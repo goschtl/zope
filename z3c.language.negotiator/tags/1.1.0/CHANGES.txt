@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2009-11-29)
+------------------
+
+- adjust dependencies, reflect changes in zope packages
+
+- clanup tests, remove unused tests and skip using zope.app.testing
+
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Corrected meta data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Removed the two vocabularies
+  ``AvailableTranslationDomainLanguagesVocabulary`` and
+  ``AvailableTranslationDomainLanguagesVocabularyForZ3C`` which depend on the
+  ``zope.app.i18n`` implementation. Note these vocabularies are not persistent
+  and if you will need it, let's implement this in another package. This
+  allows us to skip all dependencies to ``zope.app.i18n``.
+
+- Restructure: Moved ``zope.language.negotiator`` to it's namespace package.

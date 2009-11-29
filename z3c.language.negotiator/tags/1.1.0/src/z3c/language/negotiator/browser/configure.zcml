@@ -1,0 +1,25 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.language">
+
+  <!-- negotiator views -->
+  <page
+      for="*"
+      name="offered_languages"
+      permission="zope.Public"
+      class=".views.NegotiatorView"
+      attribute="getOfferedLanguages"
+      />
+
+  <page
+      for="*"
+      name="hasOfferedLanguages"
+      permission="zope.Public"
+      class=".views.NegotiatorView"
+      attribute="hasOfferedLanguages"
+      />
+
+  <include file="zmi.zcml" />
+
+</configure>
