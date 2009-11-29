@@ -5,7 +5,7 @@ version = '0.2'
 setup(name='z3c.deadlockdebugger',
       version=version,
       description="A thread debugger.",
-      long_description=open("README.txt").read() + open("CHANGES.txt").read(),
+      long_description=open("README.txt").read() + "\n" + open("CHANGES.txt").read(),
       classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",
