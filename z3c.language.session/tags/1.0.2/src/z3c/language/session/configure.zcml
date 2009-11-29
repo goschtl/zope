@@ -1,0 +1,16 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.language">
+
+  <include package=".generations" />
+
+  <adapter
+      for="zope.publisher.interfaces.IRequest"
+      provides=".ILanguageSession"
+      factory=".app.LanguageSession"
+      permission="zope.Public"
+      />
+
+  <include package=".browser" />
+
+</configure>

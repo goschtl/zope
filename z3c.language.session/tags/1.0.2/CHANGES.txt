@@ -1,0 +1,20 @@
+=======
+CHANGES
+=======
+
+1.0.2 (2009-11-29)
+------------------
+
+- removed unused imports, cleanup
+
+
+1.0.1 (2008-05-13)
+------------------
+
+- prevent create a SessionData object during getLanguage call
+
+
+1.0.0 (2007-01-21)
+------------------
+
+- Initial Release
