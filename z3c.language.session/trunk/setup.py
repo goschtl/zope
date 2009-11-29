@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.language.session',
-    version='1.0.2dev',
+    version='1.0.2',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope3 i18n language session.",
@@ -44,25 +44,24 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.language.session',
+    url = 'http://pypi.python.org/pypi/z3c.language.session',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c', 'z3c.language'],
     extras_require = dict(
         test = [
-            'zope.app.testing',
             'zope.testing',
             'z3c.coverage',
             ],
         ),
     install_requires = [
         'setuptools',
-        'zope.session',
+        'zope.app.generations',
         'zope.component',
         'zope.interface',
         'zope.publisher',
-        'z3c.i18n',
+        'zope.session',
         ],
     dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,

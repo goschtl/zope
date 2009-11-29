@@ -18,10 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
-from zope.schema.interfaces import IVocabularyTokenized
 from zope.session.interfaces import ISession
-
-from z3c.i18n import MessageFactory as _
 
 sessionPkgDataId = 'z3c.language.session.SessionDataContainer'
 
