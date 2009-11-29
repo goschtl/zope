@@ -1,0 +1,17 @@
+Changelog
+=========
+
+0.2 (2009-11-28)
+----------------
+
+- Added conditional import of BrowserView for compatibility with Zope 2.9.
+  [davisagli]
+
+- Added ability to report request path from the Zope 3 publisher.
+  [Tiberiu Ichim, malthe]
+
+0.1 (2008-02-14)
+----------------
+
+- Initial release.
+  [malthe]
