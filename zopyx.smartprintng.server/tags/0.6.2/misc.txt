@@ -1,0 +1,9 @@
+Logging in repoze.bfg
+
+A "hidden feature" of PasteDeploy (the package which defines the .ini format 
+for a BFG <package>.ini file) is that you can just inject something in the .ini 
+format found at e.g. http://www.red-dove.com/python_logging.html#config into 
+the BFG app .ini file (literally just paste it in to the BFG app .ini file) and 
+PasteDeploy will configure the logging module.  Then you can use the logging 
+API to log to the loggers you've defined in the BFG config file.
+
