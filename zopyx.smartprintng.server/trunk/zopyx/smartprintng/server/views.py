@@ -33,7 +33,7 @@ static_view = static('templates/static')
 # HTTP views
 ##################
 
-@bfg_view(for_=Server, request_type='GET', permission='read')
+@bfg_view(for_=Server, request_method='GET', permission='read')
 class index(object):
     """ The default view providing some system information """
 
@@ -51,7 +51,7 @@ class index(object):
                                            version=version,
                                            project='zopyx.smartprintng.server')
 
-@bfg_view(for_=Server, request_type='GET', permission='read', name='selftest')
+@bfg_view(for_=Server, request_method='GET', permission='read', name='selftest')
 class selftest(object):
     """ Server selftest """
 
