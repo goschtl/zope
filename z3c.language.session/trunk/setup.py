@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.language.session',
-    version='1.0.2',
+    version='1.0.3dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope3 i18n language session.",
