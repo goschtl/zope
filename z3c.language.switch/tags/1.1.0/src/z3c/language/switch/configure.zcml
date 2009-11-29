@@ -1,0 +1,30 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.language">
+
+  <include package=".generations" />
+
+  <interface interface="z3c.language.switch.IAvailableLanguagesVocabulary" />
+  <interface interface="z3c.language.switch.II18nLanguageSwitch" />
+  <interface interface="z3c.language.switch.II18n" />
+  <interface interface="z3c.language.switch.IReadI18n" />
+  <interface interface="z3c.language.switch.IWriteI18n" />
+
+
+  <!-- session language adapter -->
+  <class class=".adapters.I18nLanguageSwitch">
+    <require
+        permission="zope.View"
+        interface=".II18nLanguageSwitch"
+        />
+  </class>
+
+  <!-- i18n vocabularies -->
+  <utility
+      name="available languages"
+      component=".vocabulary.AvailableLanguagesVocabulary"
+      />
+
+  <include package=".browser" />
+
+</configure>
