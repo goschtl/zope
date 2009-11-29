@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.6.2 (2009/11/29)
+------------------
+* compatibility with BFG 1.2
+
 0.6.1 (2009/10/04)
 ------------------
 * fixed bug in code for cleaning up the spool_directory
