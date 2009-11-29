@@ -197,7 +197,7 @@ class I18n(persistent.Persistent, object):
     def queryAttribute(self, name, language=None, default=None):
         try:
             return self.getAttribute(name, language)
-        except KeyError:
+        except (KeyError, AttributeError):
             return default
 
     # z3c.langauge.switch.IReadI18n

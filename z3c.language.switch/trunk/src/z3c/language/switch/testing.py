@@ -17,10 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import unittest
 import zope.interface
+import zope.component.testing
 from zope.interface.verify import verifyClass
-from zope.app.testing import placelesssetup
 
 from z3c.language.switch import IReadI18n
 from z3c.language.switch import IWriteI18n
@@ -297,7 +296,7 @@ class BaseTestI18nLanguageSwitch(InterfaceBaseTest):
             return iface(obj)
 
     def setUp(self):
-        placelesssetup.setUp()
+        zope.component.testing.setUp()
         factory = self.getTestClass()
         iface = self.getTestInterface()
         required = self.getAdaptedClass()
@@ -305,7 +304,7 @@ class BaseTestI18nLanguageSwitch(InterfaceBaseTest):
         zope.component.provideAdapter(factory, (required,), iface)
 
     def tearDown(self):
-        placelesssetup.tearDown()
+        zope.component.testing.tearDown()
 
     def test_getLanguage(self):
         obj = self.makeTestObject()

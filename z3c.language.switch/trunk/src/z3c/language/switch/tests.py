@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import doctest
 import unittest
 
 from zope.testing import doctestunit

@@ -20,8 +20,6 @@ __docformat__ = 'restructuredtext'
 import zope.interface
 from zope.schema.interfaces import IVocabularyTokenized
 
-from z3c.i18n import MessageFactory as _
-
 
 class IReadI18n(zope.interface.Interface):
     """Let the language switch to the desired language.

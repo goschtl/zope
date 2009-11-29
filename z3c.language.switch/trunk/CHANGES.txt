@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+1.1.0 (2009-11-29)
+------------------
+
+- adjust dependencies, reflect changes in zope packages
+
 1.0.2 (2008-05-21)
 ------------------
 
