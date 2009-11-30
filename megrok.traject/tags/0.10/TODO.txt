@@ -1,0 +1,7 @@
+TODO
+====
+
+* decorators traject.factory and traject.arguments don't do anything
+  right now. Should we support them at all?
+
+* the traject.pattern decorator doesn't work on explicit trajects.

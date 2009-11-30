@@ -1,0 +1,15 @@
+CHANGES.txt
+***********
+
+0.10 (2009-11-30)
+=================
+
+- Support ``traject.Model``, a more compact way to define trajects if
+  the model is under the control of the developer.
+
+0.9 (2009-11-16)
+================
+
+- Initial public release.
+
+
