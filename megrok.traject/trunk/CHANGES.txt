@@ -1,7 +1,7 @@
 CHANGES.txt
 ***********
 
-0.10 (unreleased)
+0.10 (2009-11-30)
 =================
 
 - Support ``traject.Model``, a more compact way to define trajects if
