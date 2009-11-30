@@ -2,10 +2,17 @@
 CHANGES
 =======
 
-1.5.1 (unreleased)
+1.6.0 (2009-11-30)
 ------------------
 
-- Nothing changed yet.
+- change view for zope.publisher.interfaces.ITraversalException from system
+  error pagelet to not found pagelet
+
+- move authentication viewlets to z3c.authviewlet.
+
+- cleanup dependencies, reflect changes in zope packages
+
+- cleanup test dependencies
 
 
 1.5.0 (2009-05-28)

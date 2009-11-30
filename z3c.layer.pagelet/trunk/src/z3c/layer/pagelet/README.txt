@@ -24,13 +24,19 @@ registred if you use this layer.
 
 This layer is *NOT* derived from ``IDefaultBrowserLayer`` layer. Therefore it
 provides only a minimal set of the most important public views such as
-``@@absolute_url``.  The following packages are accounted:
+``@@absolute_url`` which get registered in zope packages for the IHTTPRequest
+and IBrowserRequest.  Next to this views, this package will only provide error
+views and traversers which are normaly regsitered in the following zope
+packages:
 
 - ``zope.app.http.exception``
 - ``zope.app.publication``
-- ``zope.app.publisher.browser``
-- ``zope.app.traversing``
-- ``zope.app.traversing.browser``
+- ``zope.browserresource``
+- ``zope.traversing``
+
+Note, this package does not depend on all the packages described above. We only
+need to depend on the same interfaces where this package will define views and
+traversers for.
 
 
 Testing

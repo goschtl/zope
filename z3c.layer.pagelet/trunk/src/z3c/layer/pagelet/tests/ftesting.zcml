@@ -14,18 +14,15 @@
   <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
   <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
-  <exclude package="zope.app.i18n.browser" />
-  <exclude package="zope.dublincore.browser" />
 
   <!-- meta configure -->
-  <include package="zope.i18n" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
-  <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.principalregistry" file="meta.zcml" />
+  <include package="zope.publisher" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="zope.viewlet" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
 
   <!-- 3rd party meta configure -->
@@ -40,9 +37,7 @@
   <include package="zope.app.appsetup" />
   <include package="zope.site" />
   <include package="zope.container" />
-  <include package="zope.app.i18n" />
   <include package="zope.app.publication" />
-  <include package="zope.app.publisher.browser" />
   <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.component" />
@@ -50,8 +45,6 @@
   <include package="zope.location" />
   <include package="zope.publisher" />
   <include package="zope.traversing" />
-  <include package="zope.traversing.browser" />
-  <include package="zope.viewlet" />
   <include package="zope.session" />
   <include package="zope.security" file="permissions.zcml" />
 
@@ -122,41 +115,6 @@
         class=".ContainerContentsPage"
         />
 
-    <!-- definitions for login-logout tests -->
-    <!-- use special template for default.html view -->
-    <z3c:layout
-        for=".LoginLogoutPage"
-        layer="z3c.layer.pagelet.IPageletBrowserLayer"
-        template="login-logout-template.pt"
-        />
-
-    <z3c:pagelet
-        for="zope.container.interfaces.IContainer"
-        name="default.html"
-        permission="zope.View"
-        class=".LoginLogoutPage"
-        layer="z3c.layer.pagelet.IPageletBrowserLayer"
-        />
-
-    <browser:defaultView
-       name="default.html"
-       for="zope.container.interfaces.IContainer"
-       layer="z3c.layer.pagelet.IPageletBrowserLayer"
-       />
-
-    <!-- use tempate with head slot for logout pagelets -->
-    <z3c:layout
-        for="..browser.auth.LogoutRedirectPagelet"
-        layer="z3c.layer.pagelet.IPageletBrowserLayer"
-        template="login-logout-template.pt"
-        />
-
-    <z3c:layout
-        for="..browser.auth.LogoutSuccessPagelet"
-        layer="z3c.layer.pagelet.IPageletBrowserLayer"
-        template="login-logout-template.pt"
-        />
-
   </configure>
 
 
@@ -171,19 +129,19 @@
       title="Unauthenticated User" />
 
   <unauthenticatedGroup
-    id="zope.Anybody"
-    title="Unauthenticated Users"
-    />
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
 
   <authenticatedGroup
-    id="zope.Authenticated"
-    title="Authenticated Users"
-    />
+      id="zope.Authenticated"
+      title="Authenticated Users"
+      />
 
   <everybodyGroup
-    id="zope.Everybody"
-    title="All Users"
-    />
+      id="zope.Everybody"
+      title="All Users"
+      />
 
   <!-- default users -->
   <role

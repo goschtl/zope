@@ -9,9 +9,8 @@
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       />
   
-  <include file="zope.app.http.exception.zcml" />
   <include file="zope.app.publication.zcml" />
-  <include file="zope.app.publisher.browser.zcml" />
+  <include file="zope.browserresource.zcml" />
   <include file="zope.traversing.zcml" />
   <include file="zope.traversing.browser.zcml" />
 

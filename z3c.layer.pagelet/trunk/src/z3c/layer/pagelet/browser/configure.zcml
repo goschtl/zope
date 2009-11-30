@@ -12,6 +12,12 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <z3c:template
+      for=".SystemErrorPagelet"
+      template="systemerror.pt"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
   <defaultView
       name="index.html"
       for="zope.interface.common.interfaces.IException"
@@ -21,7 +27,7 @@
   <z3c:pagelet
       name="index.html"
       for="zope.publisher.interfaces.ITraversalException"
-      class=".SystemErrorPagelet"
+      class=".NotFoundPagelet"
       permission="zope.Public"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
@@ -29,12 +35,6 @@
   <defaultView
       name="index.html"
       for="zope.publisher.interfaces.ITraversalException"
-      layer="z3c.layer.pagelet.IPageletBrowserLayer"
-      />
-
-  <z3c:template
-      for=".SystemErrorPagelet"
-      template="systemerror.pt"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
@@ -46,15 +46,15 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
-  <defaultView
-      name="index.html"
-      for="zope.security.interfaces.IUnauthorized"
-      layer="z3c.layer.pagelet.IPageletBrowserLayer"
-      />
-
   <z3c:template
       for=".UnauthorizedPagelet"
       template="unauthorized.pt"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <defaultView
+      name="index.html"
+      for="zope.security.interfaces.IUnauthorized"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
@@ -66,15 +66,15 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
-  <defaultView
-      name="index.html"
-      for="zope.exceptions.interfaces.IUserError"
-      layer="z3c.layer.pagelet.IPageletBrowserLayer"
-      />
-
   <z3c:template
       for=".UserErrorPagelet"
       template="user.pt"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <defaultView
+      name="index.html"
+      for="zope.exceptions.interfaces.IUserError"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
@@ -86,18 +86,16 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
-  <defaultView
-      name="index.html"
-      for="zope.publisher.interfaces.INotFound"
-      layer="z3c.layer.pagelet.IPageletBrowserLayer"
-      />
-
   <z3c:template
       for=".NotFoundPagelet"
       template="notfound.pt"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
-  <include file="zope.authentication.zcml" />
+  <defaultView
+      name="index.html"
+      for="zope.publisher.interfaces.INotFound"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
 
 </configure>

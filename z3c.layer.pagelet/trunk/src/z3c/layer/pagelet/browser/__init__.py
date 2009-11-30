@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007-2009 Zope Foundation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,18 +15,19 @@
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
+import zope.interface
+import zope.component
 import z3c.pagelet.browser
 import z3c.template.interfaces
 import zope.authentication.interfaces
-import zope.browser.interfaces
-import zope.component
-import zope.interface
+
+from z3c.layer.pagelet import interfaces
 
 
 class SystemErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
     """SystemError pagelet."""
 
-    zope.interface.implements(zope.browser.interfaces.ISystemErrorView)
+    zope.interface.implements(interfaces.ISystemErrorPagelet)
 
     def isSystemError(self):
         return True
@@ -34,6 +35,8 @@ class SystemErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
 
 class UnauthorizedPagelet(z3c.pagelet.browser.BrowserPagelet):
     """Unauthorized pagelet."""
+
+    zope.interface.implements(interfaces.IUnauthorizedPagelet)
 
     def render(self):
         # Set the error status to 403 (Forbidden) in the case when we don't
@@ -60,9 +63,16 @@ class UnauthorizedPagelet(z3c.pagelet.browser.BrowserPagelet):
 class UserErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
     """UserError pagelet."""
 
+    zope.interface.implements(interfaces.IUserErrorPagelet)
+
+    def title(self):
+        return self.context.__class__.__name__
+
 
 class NotFoundPagelet(z3c.pagelet.browser.BrowserPagelet):
     """NotFound pagelet."""
+
+    zope.interface.implements(interfaces.INotFoundPagelet)
 
     def render(self):
         self.request.response.setStatus(404)

@@ -19,11 +19,10 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.5.1dev'
 
 setup(
     name='z3c.layer.pagelet',
-    version=version,
+    version='1.6.0',
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Pagelet layer setup for Zope3",
@@ -33,8 +32,6 @@ setup(
         '.. contents::'
         + '\n\n' +
         read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
-        + '\n\n' +
-        read('src', 'z3c', 'layer', 'pagelet', 'login.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -58,24 +55,26 @@ setup(
     extras_require = dict(
         test = [
             'zope.testbrowser',
-            'zope.securitypolicy',
-            'zope.app.testing',
-            'zope.app.i18n',
-            'zope.configuration>=3.5.0',
-            'zope.component',
             'zope.app.authentication',
+            'zope.app.testing',
+            'zope.browserresource',
+            'zope.exceptions',
             'zope.principalregistry',
+            'zope.publisher',
+            'zope.security',
+            'zope.securitypolicy',
+            'zope.testing',
             ],
         ),
     install_requires = [
         'setuptools',
         'z3c.pagelet',
-        'zope.app.publisher',
+        'z3c.template',
         'zope.authentication',
         'zope.browser>=1.2',
-        'zope.configuration',
-        'zope.traversing',
-        'zope.viewlet',
+        'zope.component',
+        'zope.interface',
+        'zope.publisher',
         ],
     zip_safe = False,
 )

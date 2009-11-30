@@ -38,6 +38,5 @@ def create_suite(*args, **kw):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(create_suite('../README.txt', checker=checker))
-    suite.addTest(create_suite('../login.txt', checker=checker))
     suite.addTest(create_suite('bugfixes.txt'))
     return suite
