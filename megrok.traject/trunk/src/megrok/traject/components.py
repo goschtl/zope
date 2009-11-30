@@ -16,6 +16,7 @@
 
 import grok
 import traject
+from grokcore.component import Context
 
 class Traject(object):
     grok.baseclass()
@@ -53,3 +54,6 @@ class TrajectTraverser(grok.Traverser):
 class DefaultModel(grok.Model):
     def __init__(self, **kw):
         self.kw = kw
+
+class Model(Context):
+    pass
