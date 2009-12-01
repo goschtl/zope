@@ -4,7 +4,7 @@ Changes
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Use zope.container instead of zope.app.container (in tests).
 
 
 1.4 (2009-09-17)

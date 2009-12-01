@@ -30,8 +30,8 @@ the object has been modified:
 import grokcore.formlib as grok
 from zope import schema, interface
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-from zope.app.container.btree import BTreeContainer
-from zope.app.container.interfaces import IContainer
+from zope.container.btree import BTreeContainer
+from zope.container.interfaces import IContainer
 
 class Zoo(grok.testing.Model, BTreeContainer):
     grok.testing.protect_get(grok.Public, *IContainer)

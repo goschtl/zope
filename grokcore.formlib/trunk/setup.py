@@ -39,7 +39,9 @@ setup(
                       'grokcore.view >= 1.12',
                       'zope.formlib',
                       # for tests:
+                      'zope.container',
                       'zope.testing',
+                      'zope.testbrowser',
                       'zope.lifecycleevent',
                       'zope.securitypolicy',
                       'zope.app.zcmlfiles',
