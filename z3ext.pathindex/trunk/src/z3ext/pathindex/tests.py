@@ -24,17 +24,17 @@ from zope.component import provideAdapter, getSiteManager, provideUtility
 from zope.app.testing import setup
 from zope.traversing import testing
 from zope.location.interfaces import ILocation
-from zope.app.container.sample import SampleContainer
+from zope.container.sample import SampleContainer
 
 from persistent import Persistent
 from persistent.interfaces import IPersistent
 from transaction import commit
 from ZODB.interfaces import IConnection
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
-from zope.app.keyreference.persistent import KeyReferenceToPersistent
-from zope.app.keyreference.persistent import connectionOfPersistent
-from zope.app.keyreference.interfaces import IKeyReference
+from zope.intid import IntIds
+from zope.intid.interfaces import IIntIds
+from zope.keyreference.persistent import KeyReferenceToPersistent
+from zope.keyreference.persistent import connectionOfPersistent
+from zope.keyreference.interfaces import IKeyReference
 
 
 class ConnectionStub(object):

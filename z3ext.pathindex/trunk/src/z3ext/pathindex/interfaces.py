@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.catalog.interfaces import ICatalogIndex
+from zope.catalog.interfaces import ICatalogIndex
 
 
 class IPathIndex(ICatalogIndex):

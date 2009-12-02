@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.0.3dev'
+version='0'
 
 
 setup(name = 'z3ext.pathindex',
@@ -47,7 +47,7 @@ setup(name = 'z3ext.pathindex',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-      url='http://z3ext.net/',
+      url='http://pypi.python.org/pypi/z3ext.pathindex/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
@@ -56,17 +56,16 @@ setup(name = 'z3ext.pathindex',
                           'zope.component',
                           'zope.interface',
                           'zope.traversing',
-                          'zope.app.intid',
-                          'zope.app.catalog',
+                          'zope.intid',
+                          'zope.catalog',
                           'zc.catalog',
                           ],
      extras_require = dict(test=['ZODB3',
                                  'zope.app.testing',
                                  'zope.testing',
-                                 'zope.app.keyreference',
-                                 'zope.app.container',
+                                 'zope.keyreference',
+                                 'zope.container',
                                  'zope.location',
-                                 'zope.event',
                                  ]),
       include_package_data = True,
       zip_safe = False

@@ -19,7 +19,7 @@ from zope import interface
 from zope.component import getUtility
 from zope.proxy import removeAllProxies
 from zope.traversing.api import getParents
-from zope.app.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIds
 from zc.catalog.index import SetIndex, parseQuery
 
 from interfaces import IPathIndex
