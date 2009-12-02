@@ -10,7 +10,7 @@ We need load zcml file
   >>> from zope.configuration import xmlconfig
   >>> context = xmlconfig.file('meta.zcml', z3ext.layout)
 
-  >>> import os, tempfile
+  >>> import os, tempfile, shutil
   >>> from zope import interface, component
   >>> from z3ext.layout import tests, interfaces
   >>> from z3ext.layout.pagelet import BrowserPagelet
@@ -35,22 +35,34 @@ Let's define 'portal' layout
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:layout
   ...     name="portal"
-  ...     for="zope.app.component.interfaces.ISite"
+  ...     for="zope.component.interfaces.ISite"
   ...     template="%s" />
   ... </configure>"""%layoutportal, context)
 
-Here another layout.
+Here another layout. But layout template registered separatly.
 
   >>> layoutworkspace = os.path.join(temp_dir, 'layoutworkspace.pt')
   >>> open(layoutworkspace, 'w').write('''
-  ... <div id="workspace" tal:content="structure view/render"></div>''')
+  ... <div id="workspace" tal:content="structure context/view/render"></div>''')
+
+  >>> from z3ext.layout.interfaces import ILayout
+
+  >>> class IWorkspaceLayout(ILayout):
+  ...     pass
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:layout
   ...     name="workspace"
-  ...     layout="portal"
-  ...     for="zope.app.component.interfaces.ISite"
+  ...     layout="portal" 
+  ...     for="zope.component.interfaces.ISite"
+  ...     provides="z3ext.layout.TESTS.IWorkspaceLayout" />
+  ...   <z3ext:pageletType
+  ...     name="layout"
+  ...     interface="z3ext.layout.interfaces.ILayoutView" />
+  ...   <z3ext:pagelet
+  ...     type="layout"
+  ...     for="z3ext.layout.TESTS.IWorkspaceLayout"
   ...     template="%s" />
   ... </configure>"""%layoutworkspace, context)
 
@@ -89,7 +101,7 @@ use 'workspace' layout as parent.
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:layout
   ...     layout="workspace"
-  ...     for="zope.app.component.interfaces.ISite"
+  ...     for="zope.component.interfaces.ISite"
   ...     template="%s" />
   ... </configure>"""%layoutcontent, context)
 
@@ -99,6 +111,22 @@ use 'workspace' layout as parent.
         <div id="portal"><div id="workspace"><div id="content">root</div></div></div>
      </body>
   </html>
+
+We can use 'queryLayout' to get layout for view
+
+  >>> from z3ext.layout.pagelet import queryLayout
+
+  >>> layout = queryLayout(view, request, name='workspace')
+  >>> layout
+  <z3ext.layout.zcml.Layout<workspace> object at ...>
+
+  >>> print layout()
+  <html>
+    <body>
+       <div id="portal"><div id="workspace">root</div></div>
+    </body>
+  </html>
+  
 
 All 3 our layout rendered. view rendered inside nameless layout then in
 -> 'workspace' layout -> 'portal' layout
@@ -278,3 +306,5 @@ And same for folder1_1_1
       </table></div>
     </body>
   </html>
+
+  >>> shutil.rmtree(temp_dir)

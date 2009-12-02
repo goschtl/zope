@@ -103,10 +103,4 @@ class Layout(browser.BrowserPage):
             if layout is not None:
                 return layout(view=view, *args, **kw)
 
-        layout = queryLayout(
-            self.view, self.context, self.request, name=self.layout)
-
-        if layout is not None:
-            return layout(*args, **kw)
-
         raise LayoutNotFound(self.layout)

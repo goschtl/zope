@@ -30,12 +30,11 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.app.component.metadirectives import IBasicViewInformation
+from zope.component.zcml import IBasicViewInformation
 
 from z3c.pt.pagetemplate import ViewPageTemplateFile
 
-from interfaces import IPagelet, IPageletType
-from interfaces import ILayout, ILayoutCreatedEvent
+from interfaces import IPagelet, IPageletType, ILayout, ILayoutCreatedEvent
 
 from pagelet import BrowserPagelet
 from layout import Layout, LayoutTemplateFile
@@ -347,7 +346,7 @@ def pageletDirective(
             try:
                 iface = _context.resolve(tp)
             except Exception, err:
-                pass
+                raise ConfigurationError("Can't resolve pagelet type: '%s'"%tp)
 
         if iface is not None:
             provides.append(iface)
@@ -375,7 +374,8 @@ def pageletDirective(
     if name:
         inProvides = False
         for iface in provides:
-            if IPagelet.isOrExtends(iface) and not IPageletType.providedBy(iface):
+            if IPagelet.isOrExtends(iface) and \
+                    not IPageletType.providedBy(iface):
                 inProvides = True
 
         if not inProvides:
@@ -442,10 +442,7 @@ def registerTypedPagelets(required, newClass, type, name, _context):
     for tp in type:
         iface = queryUtility(IPageletType, tp)
         if iface is None:
-            try:
-                iface = _context.resolve(tp)
-            except Exception, err:
-                pass
+            iface = _context.resolve(tp)
 
         handler('registerAdapter', newClass, required, iface,name,_context.info)
 

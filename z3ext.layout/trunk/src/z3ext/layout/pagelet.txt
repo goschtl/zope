@@ -244,6 +244,27 @@ If pagelet is typed, type schema also checked
   ...
   ZopeXMLConfigurationError:...ConfigurationError: ("Can't convert value", 'date')
 
+If 'provides' is IPageletType type interface, then pagelet also
+registered as default adapter for this interface
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       for="*"
+  ...       name="typedpagelet.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       provides="z3ext.layout.TESTS.INewPagelet3" />
+  ... </configure>
+  ... """, context)
+
+  >>> pagelet1 = component.getMultiAdapter(
+  ...     (object(), TestRequest()), IPagelet, name='typedpagelet.html')
+
+  >>> pagelet2 = component.getMultiAdapter(
+  ...     (object(), TestRequest()), INewPagelet3)
+
+  >>> pagelet1.__class__ is pagelet2.__class__
+  True
 
 We can create pagelet without specific class
 
@@ -297,6 +318,22 @@ We can create pagelet with template:
 
   >>> pagelet.template
   <z3c.pt.pagetemplate.BoundViewPageTemplateFile '...'>
+
+  >>> print pagelet()
+  <div>My pagelet</div>
+
+  >>> print pagelet.updateAndRender()
+  <div>My pagelet</div>
+
+if pagelet redirected during update or not available, then call
+returns empty string
+
+  >>> pagelet.redirect('.')
+  >>> pagelet()
+  u''
+
+  >>> pagelet.updateAndRender()
+  u''
 
 We can create pagelet with additional context
 
@@ -593,6 +630,18 @@ We can use interface as pagelet 'type'
   ...   <z3ext:pagelet
   ...       for="*"
   ...       template="%s"
+  ...       type="z3ext.layout.TESTS.IUnknown"
+  ...       permission="zope.Public" />
+  ... </configure>"""%template6, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError:...ConfigurationError: Can't resolve pagelet type: 'z3ext.layout.TESTS.IUnknown'
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       for="*"
+  ...       template="%s"
   ...       type="z3ext.layout.TESTS.IMyPagelet6"
   ...       permission="zope.Public" />
   ... </configure>"""%template6, context)
@@ -600,7 +649,6 @@ We can use interface as pagelet 'type'
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
   >>> print pagelet.publishTraverse(request, 'myPagelet6')
   <div>My pagelet6</div>
-
 
 we can call named pagelets
 
@@ -1003,3 +1051,38 @@ Pagelet with extra context
       </div>
     </body>
   </html>
+
+
+pagelet with unknown layouts
+
+  >>> from zope.publisher.browser import TestRequest
+
+  >>> class MyView(BrowserPagelet):
+  ...     
+  ...     layoutname = 'unknown'
+  ...     
+  ...     def render(self):
+  ...       return self.context.__name__
+
+  >>> view = MyView(root, TestRequest())
+
+if layout unnkown just render view
+
+  >>> print view()
+  root
+
+if parent layout is unknown then raise exception
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="content"
+  ...     layout="unknown"
+  ...     for="zope.component.interfaces.ISite" />
+  ... </configure>""", context)
+
+  >>> MyView.layoutname = 'content'
+  >>> print view()
+  Traceback (most recent call last):
+  ...
+  LayoutNotFound: unknown

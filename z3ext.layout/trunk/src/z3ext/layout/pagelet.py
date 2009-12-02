@@ -18,11 +18,11 @@ $Id$
 import logging, sys
 from zope import interface, component
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
-from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.publisher.browser import BrowserPage
+from zope.publisher.defaultview import queryDefaultViewName
 from zope.tales.expressions import SimpleModuleImporter
-from zope.app.publisher.browser import queryDefaultViewName
 
 from interfaces import ILayout, IPagelet, IPageletType, IPageletContext
 
@@ -83,6 +83,7 @@ def queryPagelet(context, request, name, modules=SimpleModuleImporter()):
 @component.adapter(interface.Interface, interface.Interface)
 def queryDefaultView(context, request):
     name = queryDefaultViewName(context, request, None)
+
     if name:
         view = queryMultiAdapter((context, request), name=name)
         if IPagelet.providedBy(view):

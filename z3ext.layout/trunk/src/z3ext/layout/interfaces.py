@@ -30,6 +30,8 @@ class IPagelet(interface.Interface):
 
     contexts = interface.Attribute('Additional contexts')
 
+    layoutname = interface.Attribute('Layout name')
+
     isRedirected = interface.Attribute('is redirected')
 
     def redirect(url=''):

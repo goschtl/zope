@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='2.2.3dev'
+version='0'
 
 
 setup(name='z3ext.layout',
@@ -62,15 +62,13 @@ setup(name='z3ext.layout',
                           'zope.configuration',
                           'zope.pagetemplate',
                           'zope.tales',
-                          'zope.app.component',
-                          'zope.app.publisher',
                           'zope.app.pagetemplate',
                           'z3c.pt',
                           ],
-      extras_require = dict(test=['zope.app.container',
+      extras_require = dict(test=['zope.site',
+                                  'zope.container',
                                   'zope.app.testing',
                                   'zope.testing',
                                   ]),
       include_package_data = True,
-      zip_safe = False
-      )
+      zip_safe = False)

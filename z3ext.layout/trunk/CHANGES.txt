@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-2.2.3 (Unreleased)
+2.3.0 (Unreleased)
 ------------------
+
+- ZTK support
 
 
 2.2.2 (2009-09-14)
