@@ -851,6 +851,9 @@ class RAIDStorage(object):
             ref = results.values()[0]
             for test in results.values()[1:]:
                 if test != ref:
+                    logger.debug(
+                        'Got inconsistent results for method %s: %r' %
+                        (method_name, results))
                     consistent = False
                     break
         if not consistent:
@@ -887,9 +890,17 @@ class RAIDStorage(object):
         recovery = gocept.zeoraid.recovery.Recovery(
             self, target, self._finalize_recovery,
             recover_blobs=(self.blob_fshelper and not self.shared_blob_dir))
-        for msg in recovery():
-            self.recovery_status = msg
-            logger.debug(str(msg))
+        try:
+            for msg in recovery():
+                self.recovery_status = msg
+                logger.debug(str(msg))
+        except Exception:
+            logger.exception('Error recovering storage %s' % name)
+            self.storage_recovering = None
+            self.storages_degraded.append(name)
+            self.degrade_reasons[name] = (
+                'an error occured recovering the storage')
+            raise
 
     def _finalize_recovery(self, storage):
         self._write_lock.acquire()

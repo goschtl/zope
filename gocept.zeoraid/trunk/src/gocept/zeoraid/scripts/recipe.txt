@@ -13,7 +13,7 @@ configuration data.
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
-    ... parts = zodb zeoraid
+    ... parts = zodb zeoraid zeoraid2
     ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
@@ -23,7 +23,22 @@ configuration data.
     ... recipe = gocept.zeoraid:server
     ... zeo.conf = 
     ...    <zeo>
-    ...       address 8100
+    ...       address 5555
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %import gocept.zeoraid
+    ...    <raidstorage 1>
+    ...       <zeoclient 1>
+    ...           address 8101
+    ...       </zeoclient>
+    ...    </raidstorage>
+    ...
+    ... [zeoraid2]
+    ... recipe = gocept.zeoraid:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 111.111.111.111:4444
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
@@ -52,6 +67,9 @@ Here we specified a minimal ZEORAID configuration. When we run the buildout:
     Installing zeoraid.
     Generated script '/sample-buildout/bin/zeoraid'.
     Generated script '/sample-buildout/bin/zeoraid-1-manage'.
+    Installing zeoraid2.
+    Generated script '/sample-buildout/bin/zeoraid2'.
+    Generated script '/sample-buildout/bin/zeoraid2-1-manage'.
 
 We get 2 things.  We get a directory in parts containing ZEO and
 zdaemon configuration files:
@@ -66,7 +84,7 @@ Let's look at the configuration files:
     %import gocept.zeoraid
     <BLANKLINE>
     <zeo>
-      address 8100
+      address 5555
       monitor-address 8101
       transaction-timeout 300
     </zeo>
@@ -102,6 +120,8 @@ Let's look at the scripts that were generated in our bin directory:
     -  zeopasswd
     -  zeoraid
     -  zeoraid-1-manage
+    -  zeoraid2
+    -  zeoraid2-1-manage
 
 
 We have an additional RAID control script:
@@ -131,7 +151,34 @@ We have an additional RAID control script:
     import gocept.zeoraid.scripts.controller
     <BLANKLINE>
     if __name__ == '__main__':
-        gocept.zeoraid.scripts.controller.main(port=8100, host="127.0.0.1", storage="1")
+        gocept.zeoraid.scripts.controller.main(port=5555, host="127.0.0.1", storage="1")
+
+    >>> cat('bin', 'zeoraid2-1-manage')
+    #!/.../python
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '.../src',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
+      ]
+    <BLANKLINE>
+    import gocept.zeoraid.scripts.controller
+    <BLANKLINE>
+    if __name__ == '__main__':
+        gocept.zeoraid.scripts.controller.main(port=4444, host="111.111.111.111", storage="1")
 
 
 This is a console script with customized defaults.  We can use this to control
@@ -185,6 +232,7 @@ buildout:
     ... ''' % globals())
 
     >>> print system(buildout),
+    Uninstalling zeoraid2.
     Uninstalling zeoraid.
     Updating zodb.
     Installing zeoraid.

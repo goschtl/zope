@@ -1183,6 +1183,32 @@ class FailingStorageTestBase(object):
         self._dostore()
         self.assertEquals('optimal', self._storage.raid_status())
 
+    def test_recover_failing(self):
+        self._dostore()
+        self._dostore()
+        self._dostore()
+        self._disable_storage(0)
+        self.assertEquals('degraded', self._storage.raid_status())
+        # Store something regularly
+        self._dostore()
+        self._dostore()
+        # Store something in the wrong storage which will cause recovery to
+        # fail
+        other = self._storage.openers['1'].open()
+        raid = self._storage
+        self._storage = other
+        self._dostore()
+        self._dostore()
+        self._storage.close()
+        self._storage = raid
+
+        self.assertRaises(
+            ValueError,
+            self._storage._recover_impl, self._storage.storages_degraded[0])
+        self.assertEquals(
+            {'1': 'failed: an error occured recovering the storage',
+             '0': 'optimal'}, self._storage.raid_details())
+
     def test_timeoutBackend(self):
         self._storage.timeout = 2
 

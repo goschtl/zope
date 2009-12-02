@@ -66,7 +66,7 @@ class ZEORAIDServer(object):
         if len(address) == 2:
             host, port = address
         elif len(address) == 1:
-            host, port = '127.0.0.1', 8100
+            host, port = '127.0.0.1', int(address[0])
         else:
             raise zc.buildout.UserError(
                 'Invalid ZEO address %r was specified.' %

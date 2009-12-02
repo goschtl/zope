@@ -5,6 +5,15 @@ Change History
 1.0b8 (unreleased)
 ------------------
 
+- #484437: Recipe handles address in zeo.conf incorrectly. When giving the ZEO
+  address on the server only as a port that port would be ignored resulting in
+  127.0.0.1:8100 to be assumed for the management scripts.
+
+- #486217: Incomplete recoveries did not get cleared. Now the status output
+  correctly displays 'degraded' after failed recoveries and the detailed
+  status informs that the storage was degraded due to a failed recovery.
+  Exception details are logged accordingly.
+
 - #484921: Further enhance logging output by also displaying the name of the
   RAID storage involved.
 
