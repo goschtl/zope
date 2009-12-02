@@ -22,11 +22,11 @@ from zope import interface, component
 from zope.app.testing import setup, functional
 from zope.copypastemove import ObjectCopier
 from zope.component.event import objectEventNotify
+from zope.component.interfaces import ISite
 from zope.location.interfaces import ILocation
-from zope.app.component.site import changeSiteConfigurationAfterMove
-from zope.app.component.interfaces import ISite
-from zope.app.container.interfaces import IObjectMovedEvent
-from zope.app.container.contained import dispatchToSublocations
+from zope.site.site import changeSiteConfigurationAfterMove
+from zope.lifecycleevent.interfaces import IObjectMovedEvent
+from zope.container.contained import dispatchToSublocations
 
 from z3ext.controlpanel.configlet import Configlet
 from z3ext.controlpanel.testing import setUpControlPanel

@@ -17,8 +17,8 @@ $Id$
 """
 from zope import component, interface
 from zope.app.testing import setup
+from zope.site.hooks import getSite, setSite
 from zope.annotation.attribute import AttributeAnnotations
-from zope.app.component.hooks import getSite, setSite
 
 from z3ext.controlpanel import storage, root, interfaces
 

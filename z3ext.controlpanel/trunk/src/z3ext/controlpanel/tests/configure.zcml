@@ -38,4 +38,10 @@
      tests=".interfaces.notAvailable"
      permission="zope.Public" />
 
+  <z3ext:pagelet
+     name="index.html"
+     for=".interfaces.IConfiglet2"
+     class="z3ext.controlpanel.browser.wizard.ConfigletEditWizard"
+     permission="z3ext.Configure" />
+
 </configure>

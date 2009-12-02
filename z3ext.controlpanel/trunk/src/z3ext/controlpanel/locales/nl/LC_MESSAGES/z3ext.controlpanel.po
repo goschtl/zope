@@ -1,4 +1,4 @@
-###############################################################################
+# ##############################################################################
 #
 # Copyright (c) 2003-2004 Zope Foundation and Contributors.
 # All Rights Reserved.
@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Wed Oct 22 13:17:55 2008\n"
+"POT-Creation-Date: Tue Dec  1 21:47:22 2009\n"
 "PO-Revision-Date: 2008-10-14 17:25+0100\n"
 "Last-Translator: F. Kooman <fkooman@tuxed.net>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -27,37 +27,69 @@ msgstr ""
 msgid "There are no configlets in this category."
 msgstr ""
 
-#: src/z3ext/controlpanel/browser/configure.zcml:24
+#: src/z3ext/controlpanel/browser/configure.zcml:23
 msgid "View"
 msgstr "Bekijk"
+
+#: src/z3ext/controlpanel/browser/wizard.py:51
+msgid "Configure"
+msgstr ""
+
+#: src/z3ext/controlpanel/browser/wizard.py:52
+#, fuzzy
+msgid "Configure configlet"
+msgstr "Configure bedieningspaneel configlets."
+
+#: src/z3ext/controlpanel/browser/wizard.py:67
+msgid "Next"
+msgstr ""
+
+#: src/z3ext/controlpanel/browser/wizard.py:74
+msgid "Save"
+msgstr ""
 
 #: src/z3ext/controlpanel/configlettype.py:193
 msgid "Field is readonly"
 msgstr ""
 
-#: src/z3ext/controlpanel/configure.zcml:42
+#: src/z3ext/controlpanel/configure.zcml:40
 msgid "This area allows you to configure system."
 msgstr "In dit gebied kunt u het systeem configureren."
 
-#: src/z3ext/controlpanel/configure.zcml:42
+#: src/z3ext/controlpanel/configure.zcml:40
 msgid "System configuration"
 msgstr "Systeemconfiguratie"
 
-#: src/z3ext/controlpanel/configure.zcml:50
+#: src/z3ext/controlpanel/configure.zcml:48
 msgid "User interface configuration"
 msgstr "Uiterlijk configuratie"
 
-#: src/z3ext/controlpanel/configure.zcml:50
+#: src/z3ext/controlpanel/configure.zcml:48
 msgid "This area allows you to configure portal look&feel."
 msgstr "Configureren uiterlijk van uw website "
 
-#: src/z3ext/controlpanel/configure.zcml:9
+#: src/z3ext/controlpanel/configure.zcml:56
+msgid "Content types"
+msgstr ""
+
+#: src/z3ext/controlpanel/configure.zcml:56
+#, fuzzy
+msgid "This area allows you to configure portal content types."
+msgstr "Configureren uiterlijk van uw website "
+
+#: src/z3ext/controlpanel/configure.zcml:64
+msgid "Principals management"
+msgstr ""
+
+#: src/z3ext/controlpanel/configure.zcml:64
+msgid "Portal principals management panel."
+msgstr ""
+
+#: src/z3ext/controlpanel/configure.zcml:7
 msgid "Configure control panel's configlets."
 msgstr "Configure bedieningspaneel configlets."
 
-#: src/z3ext/controlpanel/root.py:36
-#: src/z3ext/controlpanel/browser/configure.zcml:53
-#: src/z3ext/controlpanel/browser/configure.zcml:60
+#: src/z3ext/controlpanel/root.py:34
+#: src/z3ext/controlpanel/browser/configure.zcml:52
 msgid "System settings"
 msgstr "Systeeminstellingen"
-

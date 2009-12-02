@@ -19,9 +19,9 @@ from zope import interface, component, event
 from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
 from zope.lifecycleevent import ObjectCreatedEvent
-from zope.app.container.btree import BTreeContainer
-from zope.app.component.hooks import getSite
-from zope.app.component.interfaces import ILocalSiteManager
+from zope.site.hooks import getSite
+from zope.site.interfaces import ILocalSiteManager
+from zope.container.btree import BTreeContainer
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from interfaces import IConfiglet, IConfigletData, IRootConfiglet

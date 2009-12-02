@@ -22,6 +22,9 @@ from z3ext.controlpanel.interfaces import IConfiglet, IRootConfiglet
 
 class Navigation(ViewletManagerBase):
 
+    data = ()
+    isRoot = True
+
     def update(self):
         super(Navigation, self).update()
 
@@ -36,8 +39,6 @@ class Navigation(ViewletManagerBase):
         if context is not None:
             self.context = context
         else:
-            self.data = []
-            self.isRoot = True
             return
 
         self.isRoot = IRootConfiglet.providedBy(context)

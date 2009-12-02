@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.5.1dev'
+version='0'
 
 
 setup(name = 'z3ext.controlpanel',
@@ -67,25 +67,23 @@ setup(name = 'z3ext.controlpanel',
                           'zope.cachedescriptors',
                           'zope.lifecycleevent',
                           'zope.configuration',
-                          'zope.app.publisher',
-                          'zope.app.component',
-                          'zope.app.security',
-                          'zope.app.container',
+                          'zope.site',
+                          'zope.container',
                           'z3c.traverser',
                           'z3ext.layout',
                           'z3ext.layoutform',
                           'z3ext.resourcepackage',
                           ],
       extras_require = dict(test=['zope.securitypolicy',
-                                  'zope.app.security',
                                   'zope.app.testing',
                                   'zope.app.zcmlfiles',
-                                  'zope.app.folder',
-                                  'zope.traversing',
                                   'zope.testing',
                                   'zope.testbrowser',
-                                  'z3ext.autoinclude',
+                                  'z3c.breadcrumb',
+                                  'z3ext.wizard',
                                   'z3ext.security',
+                                  'z3ext.autoinclude',
+                                  'z3ext.ui.breadcrumbs',
                                   ]),
       include_package_data = True,
       zip_safe = False

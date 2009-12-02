@@ -29,11 +29,10 @@ from zope.schema.interfaces import IField
 from zope.security import checkPermission
 from zope.security.zcml import Permission
 from zope.security.checker import Checker, CheckerPublic
+from zope.security.protectclass import protectName, protectSetAttribute
 
 from zope.configuration import fields
 from zope.configuration.exceptions import ConfigurationError
-
-from zope.app.security.protectclass import protectName, protectSetAttribute
 
 from configlet import Configlet
 from configlettype import ConfigletType
