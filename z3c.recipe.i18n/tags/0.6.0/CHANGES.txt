@@ -1,0 +1,63 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2009-12-02)
+------------------
+
+- Feature: Added new 'headerTemplate' option that allows to specify the path
+  of a customized pot header template.
+
+- Feature: Added new 'extraPahts` option that is included in the PYTHONPATH.
+  This allows for instance the use with Zope 2.11.
+
+- Makers are now called with additional keyword arguments.
+
+- Fixed dependencies: The 'extract' extra of zope.app.locales is required.
+
+0.5.4 (2009-06-08)
+------------------
+
+- Fix bug where zcml_strings collect the same path more then once because it
+  follows the configuration zcml for each package.
+
+- Fix bug where i18ncompile miscalculated domains containing ".", everything
+  after the "." was ignored.
+
+- The ``excludeDefaultDomain`` option actually works now.
+
+0.5.3 (2009-03-12)
+------------------
+
+- Fix bug where i18nmerge miscalculated domains containing ".", everything
+  after the "." was ignored.
+
+
+0.5.2 (2009-03-10)
+------------------
+
+- Feature: Generate ``*.po`` file based on ``*.pot`` file if non exists in
+  i18nmerge script
+
+- Feature: Implemented i18ncompile script which uses ``msgfmt -o moPath poPath``
+
+
+0.5.1 (2009-02-22)
+------------------
+
+- fix tests
+
+- Updated docs to render nicely when fed to docutils. [ulif]
+
+- Added `zip_safe` flag in `setup.py` to avoid meaningless warnings
+  when used with buildout. [ulif]
+
+
+0.5.0 (2009-09-09)
+------------------
+
+- Implemented environment section argument support for i18nextract.py script. 
+  This is a name of a section which defines a set of environment variables that 
+  should be exported before starting the extraction.
+
+- Initial Release
