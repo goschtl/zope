@@ -37,9 +37,14 @@ def split_file(path):
         return None
     return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
 
-def make_factory(svn_url, passOnNoTest=True, subfolder=''):
+def make_factory(svn_url, passOnNoTest=True, subfolder='',
+                 svnuser = None, svnpasswd = None):
     f = BuildFactory()
-    f.addStep(SVN(baseURL=svn_url, mode='clobber'))
+    if svnuser:
+        f.addStep(SVN(baseURL=svn_url, mode='clobber',
+                      username=svnuser, password=svnpasswd))
+    else:
+        f.addStep(SVN(baseURL=svn_url, mode='clobber'))
     if subfolder:
         subfolder = os.path.join('build', subfolder)
     else:
@@ -81,12 +86,14 @@ def make_factory(svn_url, passOnNoTest=True, subfolder=''):
     f.treeStableTimer = 300
     return f
 
-def make_factory_strict(svn_url, subfolder=''):
+def make_factory_strict(svn_url, subfolder='',
+                        svnuser = None, svnpasswd = None):
     """Same as make_factory, but will fail when no bin/test exists
     That's somehow a must be solution, because bin/buildout does NOT
     return an exitstatus on an error
     """
-    return make_factory(svn_url, passOnNoTest=False, subfolder=subfolder)
+    return make_factory(svn_url, passOnNoTest=False, subfolder=subfolder,
+                        svnuser = None, svnpasswd = None)
 
 def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
@@ -145,9 +152,9 @@ def configure(svn_url, http_port=8010, allowForce=False,
         if isinstance(make_factory, dict):
             f = makefactory.get(project,
                                 makefactory.get('__default__', make_factory))
-            f = f(svn_url)
+            f = f(svn_url, svnuser=svnuser, svnpasswd=svnpasswd)
         else:
-            f = makefactory(svn_url)
+            f = makefactory(svn_url, svnuser=svnuser, svnpasswd=svnpasswd)
         c['builders'].append({
             'name': project,
             'slavename': 'local',
@@ -173,9 +180,11 @@ def configure(svn_url, http_port=8010, allowForce=False,
         if isinstance(make_factory, dict):
             f = makefactory.get(project,
                                 makefactory.get('__default__', make_factory))
-            f = f(svn_url, subfolder=project)
+            f = f(svn_url, subfolder=project,
+                  svnuser=svnuser, svnpasswd=svnpasswd)
         else:
-            f = makefactory(svn_url, subfolder=project)
+            f = makefactory(svn_url, subfolder=project,
+                            svnuser=svnuser, svnpasswd=svnpasswd)
 
         c['builders'].append({
             'name': project,
