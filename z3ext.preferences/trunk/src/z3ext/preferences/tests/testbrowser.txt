@@ -7,6 +7,7 @@ Personal preferences
   >>> from zope.security.management import newInteraction, endInteraction
   >>> from zope.app.security.interfaces import IAuthentication
   >>> from zope.securitypolicy.interfaces import IPrincipalRoleMap
+  >>> from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
   >>> from z3ext.preferences.tests.interfaces import IPrefs1
 
   >>> root = getRootFolder()
@@ -134,18 +135,21 @@ Browser
       <div class="z-form-field">
       <label for="category-widgets-category" title="">Category</label>
       <div class="z-form-help"></div>
-      <div><input type="text" id="category-widgets-category"
+      <div>
+        <input id="category-widgets-category"
            name="category.widgets.category"
-           class="text-widget textline-field" value="" />
+           class="text-widget textline-field" value=""
+           type="text" />
       </div>
     </div>
     </div>
       <div class="z-form-controls">
       <span>
         <hr />
-        <input type="submit" id="category-buttons-save"
+        <input id="category-buttons-save"
            name="category.buttons.save"
-           class="z-form-savebutton button-field" value="Save" />
+           class="z-form-savebutton button-field" value="Save"
+           type="submit" />
       </span>
     </div>
     </form></div><div class="z-form">
@@ -165,3 +169,21 @@ Browser
   Traceback (most recent call last):
   ...
   NotFound: Object: ... name: u'unknown'
+
+
+If we remove principal all principal data should be removed also
+
+  >>> setSite(root)
+  >>> util = component.getUtility(IPrincipalAnnotationUtility)
+
+  >>> util.hasAnnotations(principal)
+  True
+
+  >>> from z3ext.authentication.interfaces import PrincipalRemovingEvent
+
+  >>> event.notify(PrincipalRemovingEvent(principal))
+
+  >>> util.hasAnnotations(principal)
+  False
+
+  >>> setSite(None)

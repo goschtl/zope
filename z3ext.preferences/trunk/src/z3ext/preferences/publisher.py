@@ -30,11 +30,7 @@ class PreferenceTraverserPlugin(object):
 
     def publishTraverse(self, request, name):
         """See zope.publisher.interfaces.IPublishTraverse"""
-        try:
-            subob = self.context.get(name, None)
-        except:
-            subob = None
-
+        subob = self.context.get(name, None)
         if subob is None:
             raise NotFound(self.context, name, request)
 

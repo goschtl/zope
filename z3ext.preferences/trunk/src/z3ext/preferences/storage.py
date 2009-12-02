@@ -22,8 +22,8 @@ from zope.component import getUtility
 from zope.security.proxy import removeSecurityProxy
 from zope.security.interfaces import IPrincipal
 from zope.annotation.interfaces import IAnnotations
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.principalannotation.utility import PrincipalAnnotationUtility
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 from interfaces import ANNOTATION_KEY, IDataStorage, IPreferenceGroup
 
@@ -34,7 +34,7 @@ def getDefaultStorage(principal, preference):
     ann = IAnnotations(principal)
 
     # If no preferences exist, create the root preferences object.
-    if  ann.get(ANNOTATION_KEY) is None:
+    if ann.get(ANNOTATION_KEY) is None:
         ann[ANNOTATION_KEY] = OOBTree()
     prefs = ann[ANNOTATION_KEY]
 

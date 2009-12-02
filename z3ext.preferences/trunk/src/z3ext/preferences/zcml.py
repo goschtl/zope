@@ -18,23 +18,20 @@ $Id$
 from zope import interface
 from zope.schema import Int
 from zope.component import getUtility, queryUtility, getGlobalSiteManager
+from zope.component.zcml import utility, adapter
+from zope.component.interface import provideInterface
 from zope.schema.interfaces import IField
 from zope.location.interfaces import ILocation
+from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.security.zcml import Permission
 from zope.security.checker import Checker, CheckerPublic
 from zope.security.interfaces import IPrincipal
-
-from zope.interface.common.mapping import IEnumerableMapping
-
-from zope.component.zcml import utility, adapter
-from zope.component.interface import provideInterface
+from zope.security.protectclass import \
+    protectName, protectSetAttribute, protectLikeUnto
 
 from zope.configuration import fields
 from zope.configuration.exceptions import ConfigurationError
-
-from zope.app.security.protectclass import \
-    protectName, protectSetAttribute, protectLikeUnto
 
 from preference import PreferenceGroup
 from interfaces import IPreferenceGroup

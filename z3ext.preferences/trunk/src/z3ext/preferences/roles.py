@@ -16,7 +16,7 @@
 $Id$
 """
 from zope import interface, component
-from zope.app.security.settings import Allow, Unset
+from zope.securitypolicy.settings import Allow, Unset
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
 
 from interfaces import IBound

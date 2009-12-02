@@ -23,9 +23,10 @@ from zope.testing import doctestunit
 from zope.app.testing import setup, functional
 
 from zope.app.rotterdam import Rotterdam
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.principalannotation.utility import PrincipalAnnotationUtility
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 from z3ext.layoutform.interfaces import ILayoutFormLayer
+from z3ext.preferences.storage import principalRemovingHandler
 
 
 class IDefaultSkin(ILayoutFormLayer, Rotterdam):

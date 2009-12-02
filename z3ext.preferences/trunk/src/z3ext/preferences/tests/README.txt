@@ -16,7 +16,7 @@ We also have to do some additional setup beforehand:
   >>> from zope.app.testing import setup
 
   >>> import zope.app.component.hooks
-  >>> zope.app.component.hooks.setHooks()
+  >>> zope.component.hooks.setHooks()
   >>> setup.setUpTraversal()
   >>> setup.setUpSiteManagerLookup()
 

@@ -30,7 +30,4 @@ class PreferenceGroupBreadcrumb(GenericBreadcrumb):
 
     @property
     def name(self):
-        name = self.context.__title__ or self.context.__id__
-        if not name:
-            name = _(u'Preferences')
-        return name
+        return self.context.__title__ or self.context.__id__

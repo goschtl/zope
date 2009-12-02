@@ -16,8 +16,8 @@
 $Id$
 """
 from zope import interface
-from zope.app.component.hooks import getSite
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.site.hooks import getSite
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from preference import PreferenceGroup
 from interfaces import _, IBound, IRootPreferences, IPreferenceCategory

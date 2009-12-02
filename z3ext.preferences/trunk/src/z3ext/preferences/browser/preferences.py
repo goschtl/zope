@@ -17,9 +17,9 @@ $Id$
 """
 from zope import interface, component
 from zope.component import getUtility
-from zope.app.component.interfaces import ISite
+from zope.component.interfaces import ISite
 from zope.security.interfaces import Unauthorized
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from z3ext.preferences.interfaces import IPreferenceGroup
 
