@@ -63,7 +63,7 @@
 	       >field description</div>
 	  <div class="field-error"
 	       tal:condition="widget/error">
-	    <span tal:replace="structure content">error</span>
+	    <span tal:replace="structure widget/error/render">error</span>
 	  </div>
 	  <div class="widget"
 	       tal:content="structure widget/render">
