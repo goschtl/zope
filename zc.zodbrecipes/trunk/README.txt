@@ -9,6 +9,26 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.6.0 (2009-12-03)
+==================
+
+New Features
+------------
+
+- Generation of a logrotate configuration can now be disabled by
+  providing a logrotate option with a value of "false".
+
+- Added documentation of the eggs option and why it generally
+  shouldn't be used.
+
+- Improved error handling.
+
+Bugs Fixed
+----------
+
+- The eggs option, when used, wasn't handled properly.
+
+
 0.5.0 (2008-11-03)
 ==================
 
