@@ -28,6 +28,7 @@ setup(name = name,
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'grokcore.view',
           'megrok.z3cform.base',
           'megrok.pagetemplate',
       ],
