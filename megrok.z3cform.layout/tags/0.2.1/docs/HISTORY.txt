@@ -1,0 +1,21 @@
+Changelog
+=========
+
+0.2.1 (2009-12-03)
+------------------
+
+* Fix : now errors render correctly inside the field.
+
+
+0.2 (2009-12-03)
+----------------
+
+* Updated template so it doesn't show hidden fields' label.
+
+* Added missing dependency.
+
+
+0.1 (2009-11-02)
+----------------
+
+* Initial release
