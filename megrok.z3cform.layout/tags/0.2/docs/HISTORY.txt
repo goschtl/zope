@@ -1,0 +1,15 @@
+Changelog
+=========
+
+0.2 (2009-12-03)
+----------------
+
+* Updated template so it doesn't show hidden fields' label.
+
+* Added missing dependency.
+
+
+0.1 (2009-11-02)
+----------------
+
+* Initial release
