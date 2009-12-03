@@ -42,11 +42,11 @@
     
     <div id="edition-fields">
       <tal:block tal:repeat="widget view/widgets/values">
-	<div tal:define="description widget/description|nothing;
-			 error widget/error;
-			 error_class python:error and 'errored-field' or ''"
+	<div tal:define="error_class python:widget.error and 
+			                    'errored-field' or '';"
 	     tal:attributes="class string:field ${error_class}">
-	  <label tal:attributes="for widget/id">
+	  <label tal:attributes="for widget/id"
+		 tal:condition="python: widget.mode != 'hidden'">
 	    <span i18n:translate=""
 		  tal:content="widget/label">label</span>
 	    <span class="fieldRequired" title="Required"
@@ -58,12 +58,12 @@
 	  </label>
 	  <div class="formHelp"
 	       i18n:translate=""
-	       tal:content="description"
-	       tal:condition="description"
+	       tal:content="widget/description"
+	       tal:condition="widget/description|nothing"
 	       >field description</div>
 	  <div class="field-error"
 	       tal:condition="widget/error">
-	    <span tal:replace="structure widget/error/render">error</span>
+	    <span tal:replace="structure content">error</span>
 	  </div>
 	  <div class="widget"
 	       tal:content="structure widget/render">
