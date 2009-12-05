@@ -457,20 +457,11 @@ def classImplements(cls, *interfaces):
 
     if spec.inherit is not None:
 
-        try:
-            for c in spec.inherit.__bases__:
-                b = implementedBy(c)
-                if b not in seen:
-                    seen[b] = 1
-                    bases.append(b)
-        except:
-            import pdb;pdb.set_trace()
-            for c in spec.inherit.__bases__:
-                b = implementedBy(c)
-                if b not in seen:
-                    seen[b] = 1
-                    bases.append(b)
-            
+        for c in spec.inherit.__bases__:
+            b = implementedBy(c)
+            if b not in seen:
+                seen[b] = 1
+                bases.append(b)            
 
     spec.__bases__ = tuple(bases)
 
@@ -497,17 +488,6 @@ class implementer:
         except AttributeError:
             raise TypeError("Can't declare implements", ob)
         return ob
-        #if isinstance(ob, (FunctionType, MethodType)):
-            #spec = Implements(*self.interfaces)
-            #try:
-                #ob.__implemented__ = spec
-            #except AttributeError:
-                #raise TypeError("Can't declare implements", ob)
-            #return ob
-        #else:
-            ## Assume it's a class:
-            #classImplements(ob, *self.interfaces)
-            #return ob            
 
 class implementer_only:
 

@@ -43,10 +43,12 @@ class B(Odd): __implemented__ = I2
 # from zope.interface import classProvides
 
 class A(Odd):
-    implements(I1)
+    pass
+classImplements(A, I1)
 
 class C(A, B):
-    implements(I31)
+    pass
+classImplements(C, I31)
 
 
 class Test(unittest.TestCase):
@@ -67,10 +69,12 @@ class Test(unittest.TestCase):
         self.failIf(providedBy(c).extends(I5))
 
         class COnly(A, B):
-            implementsOnly(I31)
+            pass
+        classImplementsOnly(COnly, I31)
 
         class D(COnly):
-            implements(I5)
+            pass
+        classImplements(D, I5)
 
         classImplements(D, I5)
 
@@ -89,7 +93,8 @@ class Test(unittest.TestCase):
 
         class COnly(A, B): __implemented__ = I31
         class D(COnly):
-            implements(I5)
+            pass
+        classImplements(D, I5)
 
         classImplements(D, I5)
         c = D()
@@ -141,13 +146,16 @@ class Test(unittest.TestCase):
         class IB(Interface): pass
         class IC(Interface): pass
         class A(Odd):
-            implements(IA1, IA2)
+            pass
+        classImplements(A, IA1, IA2)
 
         class B(Odd):
-            implements(IB)
+            pass
+        classImplements(B, IB)
 
         class C(A, B):
-            implements(IC)
+            pass
+        classImplements(C, IC)
 
 
         ob = C()
@@ -184,10 +192,12 @@ class Test(unittest.TestCase):
         class I2(I1): pass
 
         class C1(Odd):
-          implements(I2)
+            pass
+        classImplements(C1, I2)
 
         class C2(C1):
-          implements(I3)
+            pass
+        classImplements(C2, I3)
 
         self.assertEqual([i.getName() for i in implementedBy(C2)],
                          ['I3', 'I2'])
