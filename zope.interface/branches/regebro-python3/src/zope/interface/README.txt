@@ -231,10 +231,24 @@ classes).  We do this using a Python-2.4-style decorator named
 Note that the implementer decorator may modify it's argument. Callers
 should not assume that a new object is created.
 
+Using implementer also works on callable objects. This is used by
+zope.formlib, as an example.
+
+  >>> class yfactory:
+  ...     def __call__(self, y):
+  ...         foo = Foo()
+  ...         foo.y = y
+  ...         return foo
+  >>> yfoo = yfactory()
+  >>> yfoo = zope.interface.implementer(IFoo)(yfoo)
+
+  >>> list(zope.interface.implementedBy(yfoo))
+  [<InterfaceClass __main__.IFoo>]
+
 XXX: Double check and update these version numbers:
 
-In zope.interface 3.5.1 and lower, the implementor decorator can not
-be used for classes, but in 3.5.2 and higher it can:
+In zope.interface 3.5.2 and lower, the implementor decorator can not
+be used for classes, but in 3.6.0 and higher it can:
 
   >>> Foo = zope.interface.implementer(IFoo)(Foo)
   >>> list(zope.interface.providedBy(Foo()))
