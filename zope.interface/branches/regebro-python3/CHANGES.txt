@@ -5,7 +5,13 @@ CHANGES
 3.6.0 (unreleased)
 ==================
 
-...
+- Added support for Python 3.1. Contributors:
+    Lennart Regebro
+    Martin v Löwis
+    Thomas Lotze
+    Wolfgang Schnerring
+    
+- Python 2.3 is no longer supported.
 
 
 ==================
