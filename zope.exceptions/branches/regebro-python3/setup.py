@@ -26,14 +26,6 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-try: # Python 3 versions. Will get into Distribute in the future.
-    from build_py3 import build_py_2to3 as build_py
-    from build_py3 import test_2to3 as test
-
-except (ImportError, SyntaxError):
-    from setuptools.command.build_py import build_py
-    from setuptools.command.test import test
-    
 setup(name='zope.exceptions',
       version = '3.6.0dev',
       author='Zope Corporation and Contributors',
@@ -66,10 +58,12 @@ setup(name='zope.exceptions',
       install_requires=['setuptools',
                         'zope.interface',
                        ],
+      # This is a temporary solution, so unreleased python 3 versions of
+      # zope.interfaces can be located in the base directory for development
+      # and testing of zope.exceptions.
+      dependency_links=['.'],
+      test_suite = 'zope.exceptions.tests',
       include_package_data = True,
       zip_safe = False,
-      test_suite = 'zope.exceptions.tests',
-      cmdclass = {'build_py': build_py,
-                  'test': test,
-                  },
+      use_2to3 = True,
       )
