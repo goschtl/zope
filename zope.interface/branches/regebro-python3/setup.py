@@ -88,7 +88,8 @@ long_description=(
 try: # Zope 3 setuptools versions
     from build_ext_3 import optional_build_ext
     # This is Python 3. Setuptools is now required, and so is zope.fixers.
-    extra['install_requires'] = ['setuptools', 'zope.fixers' ],
+    extra['install_requires'] = ['setuptools']
+    extra['setup_requires'] = ['zope.fixers']
     extra['use_2to3'] = True
     extra['convert_2to3_doctests'] = [
         'src/zope/interface/README.ru.txt',
