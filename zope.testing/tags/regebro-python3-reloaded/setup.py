@@ -50,6 +50,41 @@ if sys.version_info >= (3,):
     extra['install_requires'] = ['setuptools',
                                  'zope.exceptions >= 3.6.0dev',
                                  'zope.interface >= 3.6.0']
+    extra['convert_2to3_doctests'] = [
+        'src/zope/testing/doctests.txt',
+        'src/zope/testing/formparser.txt',
+        'src/zope/testing/module.txt',
+        'src/zope/testing/setupstack.txt',
+        'src/zope/testing/testrunner/testrunner-arguments.txt',
+        'src/zope/testing/testrunner/testrunner-coverage-win32.txt',
+        'src/zope/testing/testrunner/testrunner-coverage.txt',
+        'src/zope/testing/testrunner/testrunner-debugging-layer-setup.test',
+        'src/zope/testing/testrunner/testrunner-debugging.txt',
+        'src/zope/testing/testrunner/testrunner-discovery',
+        'src/zope/testing/testrunner/testrunner-edge-cases.txt',
+        'src/zope/testing/testrunner/testrunner-errors.txt',
+        'src/zope/testing/testrunner/testrunner-gc.txt',
+        'src/zope/testing/testrunner/testrunner-knit.txt',
+        'src/zope/testing/testrunner/testrunner-layers-api.txt',
+        'src/zope/testing/testrunner/testrunner-layers-buff.txt',
+        'src/zope/testing/testrunner/testrunner-layers-ntd.txt',
+        'src/zope/testing/testrunner/testrunner-layers.txt',
+        'src/zope/testing/testrunner/testrunner-leaks-err.txt',
+        'src/zope/testing/testrunner/testrunner-leaks.txt',
+        'src/zope/testing/testrunner/testrunner-profiling-cprofiler.txt',
+        'src/zope/testing/testrunner/testrunner-profiling.txt',
+        'src/zope/testing/testrunner/testrunner-progress.txt',
+        'src/zope/testing/testrunner/testrunner-repeat.txt',
+        'src/zope/testing/testrunner/testrunner-simple.txt',
+        'src/zope/testing/testrunner/testrunner-tb-format.txt',
+        'src/zope/testing/testrunner/testrunner-test-selection.txt',
+        'src/zope/testing/testrunner/testrunner-verbose.txt',
+        'src/zope/testing/testrunner/testrunner-wo-source.txt',
+        'src/zope/testing/testrunner/testrunner.txt',
+        'src/zope/testing/testrunner/testrunner-ex/sampletests.txt',
+        'src/zope/testing/testrunner/testrunner-ex/sampletestsl.txt',
+        'src/zope/testing/testrunner/testrunner-ex/unicode.txt',
+        ]
     extra['dependency_links'] = ['.']
 
 from setuptools.command.test import test
@@ -147,7 +182,12 @@ setup(
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
 
-    packages=["zope", "zope.testing", "zope.testing.testrunner"],
+    packages=["zope", "zope.testing", "zope.testing.testrunner",
+              "zope.testing.testrunner.testrunner-ex",
+              "zope.testing.testrunner.testrunner-ex-251759",
+              "zope.testing.testrunner.testrunner-ex-pp-lib",
+              "zope.testing.testrunner.testrunner-ex-pp-products",
+              ],
     package_dir = {'': 'src'},
 
     classifiers=[

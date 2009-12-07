@@ -374,12 +374,18 @@ def tigetnum(attr, default=None):
         # avoid reimporting a broken module in python 2.3
         sys.modules['curses'] = None
     else:
+        # If sys.stdout is not a real file object (e.g. in unit tests that 
+        # use various wrappers), you get an error, different depending on
+        # Python version:
+        if sys.version_info >= (3,):
+            import io
+            wrapped_stdout_error = io.UnsupportedOperation
+        else:
+            wrapped_stdout_error = TypeError
         try:
             curses.setupterm()
-        except (curses.error, TypeError):
+        except (curses.error, wrapped_stdout_error):
             # You get curses.error when $TERM is set to an unknown name
-            # You get TypeError when sys.stdout is not a real file object
-            # (e.g. in unit tests that use various wrappers).
             pass
         else:
             return curses.tigetnum(attr)
