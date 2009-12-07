@@ -45,6 +45,46 @@ if sys.version_info >= (3,):
     extra['setup_requires'] = ['zope.fixers']
     extra['use_2to3_fixers'] = ['zope.fixers']    
 
+from setuptools.command.test import test
+
+class custom_test(test):
+    # The zope.testing tests MUST be run using it's own testrunner. This is
+    # because it's subprocess testing will call the script it was run with. We
+    # therefore create a script to run the testrunner, and call that.
+    def run(self):
+        if self.distribution.install_requires:
+            self.distribution.fetch_build_eggs(self.distribution.install_requires)
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+        self.with_project_on_sys_path(self.run_tests)
+
+    def run_tests(self):
+        template = """
+import sys
+sys.path = %s
+
+import os
+os.chdir('%s')
+
+import zope.testing.testrunner
+if __name__ == '__main__':
+    zope.testing.testrunner.run([
+        '--test-path', '%s',
+        ])
+        """
+        import tempfile
+        fd, filename = tempfile.mkstemp(prefix='temprunner', text=True)
+        scriptfile = open(filename, 'w')
+        script = template % (sys.path, os.path.abspath(os.curdir), os.path.abspath('src'))
+        scriptfile.write(script)
+        scriptfile.close()
+ 
+        import subprocess
+        process = subprocess.Popen([sys.executable, filename])
+        process.wait()
+        os.unlink(filename)
+    
+    
 chapters = '\n'.join([
     open(os.path.join('src', 'zope', 'testing', 'testrunner', name)).read()
     for name in (
@@ -116,5 +156,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Testing",
         ],
-    test_suite='zope.testing.tests',
+    cmdclass = {'test': custom_test},
     **extra)
