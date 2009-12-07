@@ -1769,10 +1769,11 @@ class DebugRunner(DocTestRunner):
          >>> runner = DebugRunner(verbose=False)
          >>> test = DocTestParser().get_doctest('>>> raise KeyError\n42',
          ...                                    {}, 'foo', 'foo.py', 0)
+         >>> failure = None
          >>> try:
          ...     runner.run(test)
-         ... except UnexpectedException, failure:
-         ...     pass
+         ... except UnexpectedException, e:
+         ...     failure = e
 
          >>> failure.test is test
          True
@@ -1797,10 +1798,11 @@ class DebugRunner(DocTestRunner):
          ...      2
          ...      ''', {}, 'foo', 'foo.py', 0)
 
+         >>> failure = None
          >>> try:
          ...    runner.run(test)
-         ... except DocTestFailure, failure:
-         ...    pass
+         ... except DocTestFailure, e:
+         ...    failure = None
 
        DocTestFailure objects provide access to the test:
 
@@ -2373,10 +2375,11 @@ class DocTestCase(unittest.TestCase):
              >>> test = DocTestParser().get_doctest('>>> raise KeyError\n42',
              ...                {}, 'foo', 'foo.py', 0)
              >>> case = DocTestCase(test)
+             >>> failure = None
              >>> try:
              ...     case.debug()
-             ... except UnexpectedException, failure:
-             ...     pass
+             ... except UnexpectedException, e:
+             ...     failure = e
 
            The UnexpectedException contains the test, the example, and
            the original exception:
@@ -2402,10 +2405,11 @@ class DocTestCase(unittest.TestCase):
              ...      ''', {}, 'foo', 'foo.py', 0)
              >>> case = DocTestCase(test)
 
+             >>> failure = None
              >>> try:
              ...    case.debug()
-             ... except DocTestFailure, failure:
-             ...    pass
+             ... except DocTestFailure, e:
+             ...    failure = e
 
            DocTestFailure objects provide access to the test:
 
