@@ -122,7 +122,7 @@ if __name__ == '__main__':
         scriptfile.close()
  
         import subprocess
-        process = subprocess.Popen([sys.executable, filename, '-c'])
+        process = subprocess.Popen([sys.executable, filename])
         process.wait()
         os.unlink(filename)
     
