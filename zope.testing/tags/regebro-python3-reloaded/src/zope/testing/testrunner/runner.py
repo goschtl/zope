@@ -23,7 +23,9 @@ import errno
 import gc
 import Queue
 import re
+import os
 import sys
+import tempfile
 import threading
 import time
 import traceback
@@ -380,6 +382,26 @@ class SetUpLayerFailure(unittest.TestCase):
     def runTest(self):
         "Layer set up failure."
 
+def make_testrunner_script(filename):
+    #!/opt/python24/bin/python
+
+    template = """
+import sys
+sys.path = %s
+
+import os
+os.chdir('%s')
+
+import zope.testing.testrunner
+if __name__ == '__main__':
+    zope.testing.testrunner.run([
+        '--test-path', '%s',
+        ])
+"""
+    scriptfile = open(filename, 'w')
+    script = template % (sys.path, os.path.abspath(os.curdir), sys.path[0])
+    scriptfile.write(script)
+    scriptfile.close()
 
 def spawn_layer_in_subprocess(result, script_parts, options, features,
                               layer_name, layer, failures, errors,
@@ -387,16 +409,18 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
     output = options.output
 
     try:
+        fd, temprunner = tempfile.mkstemp(prefix='temprunner', text=True)
+        make_testrunner_script(temprunner)
+        
         # BBB
         if script_parts is None:
             script_parts = sys.argv[0:1]
-        args = [sys.executable]
-        args.extend(script_parts)
+        args = [sys.executable, temprunner]
         args.extend(['--resume-layer', layer_name, str(resume_number)])
         for d in options.testrunner_defaults:
             args.extend(['--default', d])
 
-        args.extend(options.original_testrunner_args[1:])
+        args.extend(options.original_testrunner_args[2:])
 
         # this is because of a bug in Python (http://www.python.org/sf/900092)
         if (options.profile == 'hotshot'
@@ -461,6 +485,7 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
             errors.append((erriter.next().strip(), None))
 
     finally:
+        os.unlink(temprunner)
         result.done = True
 
 

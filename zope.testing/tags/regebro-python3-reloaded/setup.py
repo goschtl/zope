@@ -38,6 +38,13 @@ except ImportError, e:
     from distutils.core import setup
     extra = {}
 
+import sys
+if sys.version_info >= (3,):
+    # Python 3 support:
+    extra['use_2to3'] = True
+    extra['setup_requires'] = ['zope.fixers']
+    extra['use_2to3_fixers'] = ['zope.fixers']    
+
 chapters = '\n'.join([
     open(os.path.join('src', 'zope', 'testing', 'testrunner', name)).read()
     for name in (
@@ -109,5 +116,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Testing",
         ],
-
+    test_suite='zope.testing.tests',
     **extra)

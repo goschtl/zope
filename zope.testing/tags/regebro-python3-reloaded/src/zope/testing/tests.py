@@ -39,3 +39,9 @@ def test_suite():
         doctest.DocFileSuite('setupstack.txt'),
         doctest.DocTestSuite(doctest, optionflags=doctest.INTERPRET_FOOTNOTES),
         ))
+
+def additional_tests(): # For setuptools testrunner
+    from zope.testing.testrunner import tests
+    res = test_suite()
+    res.addTests(tests.test_suite())
+    return res
