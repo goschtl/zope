@@ -34,7 +34,7 @@ try:
         include_package_data = True,
         zip_safe = False,
         )
-except ImportError, e:
+except ImportError:
     from distutils.core import setup
     extra = {}
 
@@ -43,7 +43,14 @@ if sys.version_info >= (3,):
     # Python 3 support:
     extra['use_2to3'] = True
     extra['setup_requires'] = ['zope.fixers']
-    extra['use_2to3_fixers'] = ['zope.fixers']    
+    extra['use_2to3_fixers'] = ['zope.fixers']
+    # These are only needed until zope.interface and zope.exceptions are
+    # released with Python 3 support. Copy the pre-releases into the local
+    # directory before you run setup.py under Python 3:
+    extra['install_requires'] = ['setuptools',
+                                 'zope.exceptions >= 3.6.0dev',
+                                 'zope.interface >= 3.6.0']
+    extra['dependency_links'] = ['.']
 
 from setuptools.command.test import test
 
@@ -140,7 +147,7 @@ setup(
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
 
-    packages=["zope", "zope.testing"],
+    packages=["zope", "zope.testing", "zope.testing.testrunner"],
     package_dir = {'': 'src'},
 
     classifiers=[

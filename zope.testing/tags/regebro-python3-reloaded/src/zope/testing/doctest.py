@@ -522,10 +522,26 @@ class DocTest:
 
     # This lets us sort tests by name:
     def __cmp__(self, other):
+        cmp = lambda a, b: (a > b) - (a < b)
         if not isinstance(other, DocTest):
             return -1
         return cmp((self.name, self.filename, self.lineno, id(self)),
                    (other.name, other.filename, other.lineno, id(other)))
+
+    def __eq__(self, other):
+        return self.__cmp__(other) == 0
+    
+    def __neq__(self, other):
+        return self.__cmp__(other) != 0
+
+    def __lt__(self, other):
+        return self.__cmp__(other) < 0
+    
+    def __lte__(self, other):
+        return self.__cmp__(other) <= 0
+
+    def __gte__(self, other):
+        return self.__cmp__(other) >= 0
 
 ######################################################################
 ## 3. DocTestParser
@@ -2316,7 +2332,7 @@ class DocTestCase(unittest.TestCase):
         runner = DocTestRunner(optionflags=optionflags,
                                checker=self._dt_checker, verbose=False)
         def write(value):
-            if isinstance(value, unicode):
+            if not isinstance(value, str):
                 value = value.encode('utf8')
             new.write(value)
 
