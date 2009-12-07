@@ -18,14 +18,13 @@ $Id$
 
 import re
 import unittest
-from zope.testing import doctest, renormalizing
+import doctest, renormalizing
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.testing.loggingsupport'),
         doctest.DocTestSuite('zope.testing.renormalizing'),
         doctest.DocTestSuite('zope.testing.server'),
-        doctest.DocFileSuite('doctest.txt'),
         doctest.DocFileSuite('formparser.txt'),
         doctest.DocFileSuite(
             'module.txt',
@@ -37,7 +36,6 @@ def test_suite():
                 (re.compile('No module named zope.testing.unlikelymodulename'),
                  'No module named unlikelymodulename')])),
         doctest.DocFileSuite('setupstack.txt'),
-        doctest.DocTestSuite(doctest, optionflags=doctest.INTERPRET_FOOTNOTES),
         ))
 
 def additional_tests(): # For setuptools testrunner

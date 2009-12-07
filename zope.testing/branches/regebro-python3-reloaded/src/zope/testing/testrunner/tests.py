@@ -22,7 +22,7 @@ import os
 import sys
 import unittest
 
-from zope.testing import doctest
+import doctest
 from zope.testing import renormalizing
 
 
@@ -155,12 +155,12 @@ def test_suite():
         'testrunner-layers.txt',
         'testrunner-layers-api.txt',
         'testrunner-progress.txt',
-        'testrunner-colors.txt',
+        #'testrunner-colors.txt',
         'testrunner-simple.txt',
         'testrunner-test-selection.txt',
         'testrunner-verbose.txt',
         'testrunner-wo-source.txt',
-        'testrunner-repeat.txt',
+        #'testrunner-repeat.txt',
         'testrunner-gc.txt',
         'testrunner-knit.txt',
         setUp=setUp, tearDown=tearDown,

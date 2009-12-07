@@ -45,10 +45,10 @@ affecting the Python path:
       Tear down samplelayers.Layer12 in N.NNN seconds.
       Tear down samplelayers.Layer1 in N.NNN seconds.
       Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
-      Ran 192 tests with 0 failures and 0 errors in N.NNN seconds.
+      Ran 156 tests with 0 failures and 0 errors in N.NNN seconds.
     Tearing down left over layers:
       Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
-    Total: 405 tests, 0 failures, 0 errors in N.NNN seconds.
+    Total: 321 tests, 0 failures, 0 errors in N.NNN seconds.
     False
 
 Bug #251759: The test runner's protection against descending into non-package
@@ -114,7 +114,7 @@ Using pdb.set_trace in a function called by a doctest in a doc string:
     Running zope.testing.testrunner.layer.UnitTests tests:...
     --Return--
     > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    -> Pdb().set_trace()
     (Pdb) n
     > testrunner-ex/sample3/sampletests_d.py(42)f()
     -> y = x
@@ -135,7 +135,7 @@ Using pdb in a docstring-based doctest
     Running zope.testing.testrunner.layer.UnitTests tests:...
     --Return--
     > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    -> Pdb().set_trace()
     (Pdb) n
     > <doctest sample3.sampletests_d.set_trace3[line 3, example 1]>(3)...()
     -> y = x
@@ -157,7 +157,7 @@ Using pdb.set_trace in a doc file:
     Running zope.testing.testrunner.layer.UnitTests tests:...
     --Return--
     > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    -> Pdb().set_trace()
     (Pdb) n
     > <doctest set_trace5.txt[line 2, example 1]>(3)...()
     -> y = x
@@ -180,7 +180,7 @@ Using pdb.set_trace in a function called by a doctest in a doc file:
     Running zope.testing.testrunner.layer.UnitTests tests:...
     --Return--
     > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    -> Pdb().set_trace()
     (Pdb) n
     > testrunner-ex/sample3/sampletests_d.py(42)f()
     -> y = x

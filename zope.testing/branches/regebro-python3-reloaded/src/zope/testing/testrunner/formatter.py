@@ -20,7 +20,7 @@ import sys
 import re
 import traceback
 
-from zope.testing import doctest
+import doctest
 
 
 doctest_template = """
@@ -328,9 +328,7 @@ class OutputFormatter(object):
     def format_traceback(self, exc_info):
         """Format the traceback."""
         v = exc_info[1]
-        if isinstance(v, doctest.DocTestFailureException):
-            tb = v.args[0]
-        elif isinstance(v, doctest.DocTestFailure):
+        if isinstance(v, doctest.DocTestFailure):
             tb = doctest_template % (
                 v.test.filename,
                 v.test.lineno + v.example.lineno + 1,
@@ -566,9 +564,7 @@ class ColorfulOutputFormatter(OutputFormatter):
         print
         print self.colorize('error', msg)
         v = exc_info[1]
-        if isinstance(v, doctest.DocTestFailureException):
-            self.print_doctest_failure(v.args[0])
-        elif isinstance(v, doctest.DocTestFailure):
+        if isinstance(v, doctest.DocTestFailure):
             # I don't think these are ever used... -- mgedmin
             tb = self.format_traceback(exc_info)
             print tb
