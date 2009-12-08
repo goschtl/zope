@@ -33,15 +33,18 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'martian',
                       'ZODB3',
+                      'grokcore.component',
+                      'martian',
                       'zope.annotation',
-                      'zope.component',
-                      'zope.interface',
                       'zope.app.component',
                       'zope.app.container',
-                      'grokcore.component',
-                      # for ftests:
+                      'zope.interface',
+                      # for tests only, can be moved to [test] extras
+                      'zope.app.testing',
                       'zope.app.zcmlfiles',
+                      'zope.component',
+                      'zope.configuration',
+                      'zope.testing',
                       ],
 )
