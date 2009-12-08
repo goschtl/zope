@@ -1,0 +1,38 @@
+Changelog of z3c.dependencychecker
+==================================
+
+0.3 (2009-12-08)
+----------------
+
+- Sorted "unneeded requirements" reports and filtered out duplicates.
+
+- Reporting separately on dependencies that should be moved from the regular
+  to the test dependencies.
+
+
+0.2 (2009-12-08)
+----------------
+
+- Added tests.  Initial quick test puts coverage at 86%.
+
+- Fixed bug in test requirement detection.
+
+- Added documentation.
+
+- Moved source code to zope's svn repository.
+
+
+0.1 (2009-12-02)
+----------------
+
+- Also reporting on unneeded imports.
+
+- Added note on re-running buildout after a setup.py change.
+
+- Added zcml lookup to detect even more missing imports.
+
+- Added reporting on missing regular and test imports.
+
+- Grabbing existing requirements from egginfo directory.
+
+- Copied over Martijn Faassen's zope importchecker script.

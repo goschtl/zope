@@ -1,0 +1,8 @@
+setuptools
+zest.releaser
+unneeded.req
+needed.by.test
+
+[test]
+z3c.testsetup>=0.3
+zope.testing
