@@ -24,7 +24,11 @@ functional test.
 
 $Id$
 """
-import urllib2
+try:
+    # A bug in Python 3.1's fixer doesn't handle this conversion:
+    from urllib2 import urlparse
+except:
+    from urllib import parse as urlparse
 import webbrowser
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 import sys
@@ -80,10 +84,10 @@ def addPortToURL(url, port):
         'http://localhost:555/index.html'
 
     """
-    (scheme, netloc, url, query, fragment) = urllib2.urlparse.urlsplit(url)
+    (scheme, netloc, url, query, fragment) = urlparse.urlsplit(url)
     netloc = netloc.split(':')[0]
     netloc = "%s:%s" % (netloc, port)
-    url = urllib2.urlparse.urlunsplit((scheme, netloc, url, query, fragment))
+    url = urlparse.urlunsplit((scheme, netloc, url, query, fragment))
     return url
 
 

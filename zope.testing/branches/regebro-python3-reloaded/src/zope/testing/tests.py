@@ -18,7 +18,8 @@ $Id$
 
 import re
 import unittest
-import doctest, renormalizing
+import doctest
+import renormalizing
 
 def test_suite():
     return unittest.TestSuite((
