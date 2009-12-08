@@ -16,6 +16,7 @@ import doctest
 
 def eek(self):
     """
+    doctest: +REPORT_NDIFF
     >>> x = y
 
     >>> x
