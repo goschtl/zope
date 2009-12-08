@@ -130,8 +130,6 @@ class BSDDBStorage(
 
         self.datapath = os.path.abspath(os.path.join(envpath, 'data'))
 
-        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
-            self._len = self.data.stat(txn=txn)['nkeys']
         self._len_lock = threading.Lock()
 
         # transaction_oids: {tid->[oids]}
@@ -157,6 +155,7 @@ class BSDDBStorage(
                        flags=(db.DB_CREATE | db.DB_THREAD | db.DB_AUTO_COMMIT |
                               db.DB_MULTIVERSION),
                        )
+        self._len = int(self.misc.get('len', '0'))
 
         t = time.time()
         t = self._ts = ZODB.TimeStamp.TimeStamp(
@@ -284,6 +283,13 @@ class BSDDBStorage(
                 return kv[0]
 
     def _inc_len(self, v):
+        if not v:
+            return
+
+        with self.txn() as txn:
+            l = long(self.misc.get('len', '0', txn, db.DB_RMW)) + v
+            self.misc.put('len', str(l), txn)
+
         with self._len_lock:
             self._len += v
 
@@ -628,9 +634,10 @@ class BSDDBStorage(
         with self._current_lock.write():
             func(self._tid)
             self._txn.commit()
-            self._inc_len(self._new_obs)
             self._blob_tpc_finish()
             self._tpc_cleanup()
+
+        self._inc_len(self._new_obs)
 
     _transaction_id_suffix = 'x' * (db.DB_GID_SIZE - 8)
     def tpc_vote(self, transaction):
