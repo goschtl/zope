@@ -1,7 +1,7 @@
 megrok.login changes
 ********************
 
-0.2 (unreleased)
+0.2 (2009-12-09)
 ================
 
 * Changed utility setup to reflect changes in Grok API: eventually use
