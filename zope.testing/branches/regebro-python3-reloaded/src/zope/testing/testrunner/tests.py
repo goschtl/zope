@@ -160,7 +160,7 @@ def test_suite():
         'testrunner-test-selection.txt',
         'testrunner-verbose.txt',
         'testrunner-wo-source.txt',
-        #'testrunner-repeat.txt',
+        'testrunner-repeat.txt',
         'testrunner-gc.txt',
         'testrunner-knit.txt',
         setUp=setUp, tearDown=tearDown,
