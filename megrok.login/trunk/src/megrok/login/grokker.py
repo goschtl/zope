@@ -33,9 +33,17 @@ class ApplicationGrokker(martian.ClassGrokker):
         return True
 
 def authenticationSubscriber(site, event):
-    grok.meta.setupUtility(site, PluggableAuthentication(), IAuthentication,
-                           setup=setupPAU,
-                           name_in_container='megrok_login_pau')
+    try:
+        # Conditional import. Newer versions of grok do not provide
+        # `setupUtility` any more...
+        from grok.meta import setupUtility
+    except ImportError:
+        from grokcore.site.interfaces import IUtilityInstaller
+        setupUtility = component.getUtility(IUtilityInstaller)
+    setupUtility(site, PluggableAuthentication(), IAuthentication,
+                 setup=setupPAU,
+                 name_in_container='megrok_login_pau')
+        
 
 
 def setupPAU(pau):
