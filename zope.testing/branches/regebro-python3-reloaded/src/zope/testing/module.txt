@@ -8,8 +8,12 @@ desirable. Let's demonstrate the behavior::
   >>> class Foo(object):
   ...    pass
 
-  >>> Foo.__module__
-  '__builtin__'
+  >>> 'builtin' in Foo.__module__
+  True
+
+(The test above looks like that, because the module is called '__builtin__'
+in Python 2, but 'builtins' in Python 3. Hence that weird test to make it
+work in both).
 
 By using ``zope.testing.module.setUp`` this can be
 controlled. Normally you set up your tests with it, but in this case
@@ -48,8 +52,8 @@ We should now be back to the original situation::
 
   >>> class Foo(object):
   ...    pass
-  >>> Foo.__module__
-  '__builtin__'
+  >>> 'builtin' in Foo.__module__
+  True
 
 Importing
 ---------
