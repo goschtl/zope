@@ -4,7 +4,10 @@ Changes
 1.1 (2009-09-18)
 ----------------
 
-* A local utility implements now IAttributeAnnotatable.
+* Updated dependencies (added missing ones and added separate test
+  dependencies).
+
+* A local utility now implements IAttributeAnnotatable.
 
 * Update code documentation from Grok itself.
 
