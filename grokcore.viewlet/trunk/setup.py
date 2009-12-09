@@ -10,6 +10,16 @@ long_description = (
     read('CHANGES.txt')
     )
 
+tests_require = [
+    'zope.app.authentication',
+    'zope.app.testing',
+    'zope.app.zcmlfiles',
+    'zope.configuration',
+    'zope.contentprovider',
+    'zope.securitypolicy',
+    'zope.testing',
+    ]
+
 setup(
     name='grokcore.viewlet',
     version = '1.4dev',
@@ -42,13 +52,7 @@ setup(
                       'zope.interface',
                       'zope.publisher',
                       'zope.security',
-                      # for tests:
-                      'zope.app.authentication',
-                      'zope.app.testing',
-                      'zope.app.zcmlfiles',
-                      'zope.configuration',
-                      'zope.contentprovider',
-                      'zope.securitypolicy',
-                      'zope.testing',
                       ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
 )
