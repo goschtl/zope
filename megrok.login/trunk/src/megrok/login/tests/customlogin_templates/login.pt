@@ -4,7 +4,7 @@
   </head>
   <body>
     <h1>Custom Login Page</h1>
-    <form method="post">
+    <form method="post" action="login">
       <div>
 	<label for="login">Username</label>
 	<input type="text" name="login" id="login" />
