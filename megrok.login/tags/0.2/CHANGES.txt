@@ -1,0 +1,19 @@
+megrok.login changes
+********************
+
+0.2 (2009-12-09)
+================
+
+* Changed utility setup to reflect changes in Grok API: eventually use
+  `IUtilitySetup` instead of `grokcore.meta.setupUtility`. Thanks go to
+  Simon Jagoe.
+
+* Changed the test configuration to handle the new grok.View permission.
+
+* Added the versions.cfg file from grok. 
+
+
+0.1 (2008-12-26)
+================
+
+(initial version)
