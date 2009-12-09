@@ -7,7 +7,7 @@ Changes
 - Use zope.container instead of zope.app.container (in tests and in the
   configure.zcml).
 
-- Fixed up missing dependencies. 
+- Fixed up missing dependencies and splitted regular and test dependencies.
 
 
 1.4 (2009-09-17)

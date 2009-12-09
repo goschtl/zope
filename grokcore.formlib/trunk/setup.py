@@ -10,6 +10,16 @@ long_description = (
     read('CHANGES.txt')
     )
 
+tests_require = [
+    'zope.app.testing',
+    'zope.app.zcmlfiles',
+    'zope.component',
+    'zope.configuration',
+    'zope.securitypolicy',
+    'zope.testbrowser',
+    'zope.testing',
+    ]
+
 setup(
     name='grokcore.formlib',
     version = '1.5dev',
@@ -45,13 +55,7 @@ setup(
                       'zope.lifecycleevent',
                       'zope.publisher',
                       'zope.schema',
-                      # for tests:
-                      'zope.app.testing',
-                      'zope.app.zcmlfiles',
-                      'zope.component',
-                      'zope.configuration',
-                      'zope.securitypolicy',
-                      'zope.testbrowser',
-                      'zope.testing',
                       ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
 )
