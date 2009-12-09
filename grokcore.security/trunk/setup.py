@@ -10,6 +10,11 @@ long_description = (
     read('CHANGES.txt')
     )
 
+tests_require = [
+    'zope.configuration',
+    'zope.testing',
+    ]
+
 setup(
     name='grokcore.security',
     version = '1.4dev',
@@ -37,8 +42,7 @@ setup(
                       'zope.component',
                       'zope.interface',
                       'zope.security',
-                      # For tests only, could be moved to [test] extras.
-                      'zope.configuration',
-                      'zope.testing',
                       ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
 )
