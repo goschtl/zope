@@ -2,7 +2,7 @@
 megrok.login
 ************
 
-Setting up login pages for your webapp made easy.
+Setting up login pages for your web app made easy.
 
 With `megrok.login` you can setup simple session based login pages
 for your ``grok.Application`` and other ``grok.Site`` instances. This
@@ -126,7 +126,7 @@ See ``tests/customlogin.py`` for details.
 Normally, ``megrok.login`` installs two authenticator plugins for your
 site:
 
- * a normal ``PrincipalFolder``, that can containn principals (users)
+ * a normal ``PrincipalFolder``, that can contain principals (users)
    but is empty in the beginning.
 
  * a fallback authenticator, that authenticates against the principals
