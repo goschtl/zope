@@ -21,18 +21,22 @@ install_requires = [
     'zope.pagetemplate',
     'zope.ptresource >= 3.9.0',
     'zope.publisher',
-    'zope.schema',
     'zope.security',
     'zope.traversing',
     ]
 
-tests_require = install_requires + [
+tests_require = [
     'zope.app.authentication',
+    'zope.app.basicskin',
+    'zope.app.rotterdam',
+    'zope.app.testing',
     'zope.app.zcmlfiles',
+    'zope.configuration',
     'zope.container',
     'zope.securitypolicy',
     'zope.site',
     'zope.testbrowser',
+    'zope.testing',
     ]
 
 setup(
@@ -58,5 +62,6 @@ setup(
     zip_safe=False,
     tests_require = tests_require,
     install_requires = install_requires,
+    tests_require=tests_require,
     extras_require = {'test': tests_require},
 )
