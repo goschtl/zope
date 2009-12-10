@@ -458,6 +458,7 @@ parser.set_defaults(
     slow_test_threshold=10,
     processes=1,
     verbose=0,
+    repeat=1,
     )
 
 
