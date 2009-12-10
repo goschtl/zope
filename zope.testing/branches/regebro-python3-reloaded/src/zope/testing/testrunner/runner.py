@@ -366,7 +366,7 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
     except zope.testing.testrunner.interfaces.EndRun:
         raise
     except Exception:
-        f = cStringIO.StringIO()
+        f = cStringIO.StringIO()        
         traceback.print_exc(file=f)
         output.error(f.getvalue())
         errors.append((SetUpLayerFailure(), sys.exc_info()))
@@ -491,6 +491,11 @@ class ImmediateSubprocessResult(AbstractSubprocessResult):
     """Sends complete output to queue."""
 
     def write(self, out):
+        if not isinstance(out, str):
+            # In Python 3, a Popen process stdout uses bytes,
+            # While normal stdout uses strings. So we need to convert
+            # from bytes to strings here.
+            out = out.decode()
         sys.stdout.write(out)
         # Help keep-alive monitors (human or automated) keep up-to-date.
         sys.stdout.flush()
