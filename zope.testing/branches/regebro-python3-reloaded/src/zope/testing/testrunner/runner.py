@@ -461,7 +461,7 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
             # Doing erriter.next().strip() confuses the 2to3 fixer, so
             # we need to do it on a separate line:
             next_fail = erriter.next()
-            failures.append((next_fail.next().strip(), None))
+            failures.append((next_fail.strip(), None))
         while nerr > 0:
             nerr -= 1
             # Doing erriter.next().strip() confuses the 2to3 fixer, so
