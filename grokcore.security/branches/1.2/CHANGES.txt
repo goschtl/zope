@@ -6,6 +6,8 @@ Changes
 
 * Use zope.security instead of zope.app.security.
 
+* Ported setup.py dependency fixes from trunk.
+
 1.2 (2009-09-14)
 ----------------
 

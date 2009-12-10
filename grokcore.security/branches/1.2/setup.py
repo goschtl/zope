@@ -10,6 +10,11 @@ long_description = (
     read('CHANGES.txt')
     )
 
+tests_require = [
+    'zope.configuration',
+    'zope.testing',
+    ]
+
 setup(
     name='grokcore.security',
     version = '1.2',
@@ -32,12 +37,12 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'martian >= 0.10',
                       'grokcore.component >= 1.5.1',
-                      'zope.interface',
+                      'martian >= 0.10',
                       'zope.component',
+                      'zope.interface',
                       'zope.security',
-                      'zope.configuration',
-                      'zope.testing',
                       ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
 )
