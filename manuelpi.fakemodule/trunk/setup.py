@@ -7,12 +7,12 @@ def read(*rnames):
 long_description = (
     read('README.txt')
     + '\n' +
-    read('src', 'manuelpi', 'fake_module', 'README.txt')
+    read('src', 'manuelpi', 'fakemodule', 'README.txt')
     + '\n' +
     read('CHANGES.txt')
     )
 
-name='manuelpi.fake_module'
+name='manuelpi.fakemodule'
 
 setup(
     name=name,
