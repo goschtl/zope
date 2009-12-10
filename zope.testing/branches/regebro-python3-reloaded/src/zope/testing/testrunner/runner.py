@@ -441,7 +441,10 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
                 break
 
         # Now stderr should be ready to read the whole thing.
-        erriter = iter(child.stderr.read().splitlines())
+        err = child.stderr.read()
+        if not isinstance(err, str):
+            err = err.decode()
+        erriter = iter(err.splitlines())
         nfail = nerr = 0
         for line in erriter:
             try:
@@ -455,10 +458,16 @@ def spawn_layer_in_subprocess(result, script_parts, options, features,
 
         while nfail > 0:
             nfail -= 1
-            failures.append((erriter.next().strip(), None))
+            # Doing erriter.next().strip() confuses the 2to3 fixer, so
+            # we need to do it on a separate line:
+            next_fail = erriter.next()
+            failures.append((next_fail.next().strip(), None))
         while nerr > 0:
             nerr -= 1
-            errors.append((erriter.next().strip(), None))
+            # Doing erriter.next().strip() confuses the 2to3 fixer, so
+            # we need to do it on a separate line:
+            next_err = erriter.next()
+            errors.append((next_err.strip(), None))
 
     finally:
         result.done = True

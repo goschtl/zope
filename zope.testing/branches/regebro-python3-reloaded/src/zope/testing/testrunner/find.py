@@ -69,10 +69,11 @@ class StartUpFailure(unittest.TestCase):
     postmortem debugger to indicate that debugging is finished and the
     test run should be terminated:
     
-    >>> try:
-    ...     StartUpFailure(options, None, exc_info)
-    ... finally:
-    ...    sys.stdin = old_stdin
+    XXX This is bloody impossible to test so it works under both Python 2 and 3. /regebro
+    >> try:
+    ..     StartUpFailure(options, None, exc_info)
+    .. finally:
+    ..    sys.stdin = old_stdin
     Traceback (most recent call last):
     EndRun
 
