@@ -1,1 +1,1 @@
-from manuelpi.fake_module.fake_module import Manuel
+from manuelpi.fakemodule.fakemodule import Manuel

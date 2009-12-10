@@ -2,7 +2,7 @@ import manuel.testing
 import manuel.doctest
 import manuel.ignore
 import manuel.capture
-import manuelpi.fake_module
+import manuelpi.fakemodule
 import re
 import unittest
 
@@ -15,12 +15,12 @@ def test_suite():
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
 
-    tests = ['README.txt', 'fake_module.txt']
+    tests = ['README.txt', 'fakemodule.txt']
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.capture.Manuel()
-    m += manuelpi.fake_module.Manuel()
+    m += manuelpi.fakemodule.Manuel()
     return manuel.testing.TestSuite(m, *tests)
 
 if __name__ == '__main__':

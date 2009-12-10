@@ -1,13 +1,13 @@
 Details
 =======
 
-The `fake_module` plugin defines a `module-block` directive that takes
+The `fakemodule` plugin defines a `module-block` directive that takes
 a single Python identifier as an argument. One or more lines of Python
 code indented will then form the body of the module, which is later 
 referenced by its identifier:
 
    >>> import manuel
-   >>> import manuelpi.fake_module
+   >>> import manuelpi.fakemodule
 
 The following string shows what this might look like::
 
@@ -29,7 +29,7 @@ The following string shows what this might look like::
 .. -> source
 ::
    >>> doc = manuel.Document(source)
-   >>> from manuelpi.fake_module.fake_module import find_fakes
+   >>> from manuelpi.fakemodule.fakemodule import find_fakes
    >>> find_fakes(doc)
 
 Let's extract the module name and its source:
@@ -94,7 +94,7 @@ Again, we extract the various parsed regions:
 We can use `execute_into_module` to execute these regions into a 
 glob dictionary of our own:
 
-  >>> from manuelpi.fake_module.fake_module import execute_into_module
+  >>> from manuelpi.fakemodule.fakemodule import execute_into_module
   >>> glob = {}
   >>> for region in doc:
   ...     if region.parsed:
@@ -116,7 +116,7 @@ definitions:
   ['Bar', '__builtins__', '__doc__', '__file__', '__name__']
 
 We would also want to ensure that we can import the module correctly 
-too. The fake_module system also adds the modules under their own 
+too. The `fakemodule` system also adds the modules under their own 
 namespace `manueltest.fake`, as you can see from the previous tests:
 
   >>> import manueltest.fake.some_module
@@ -185,7 +185,7 @@ We can confirm this be checking if there is any instance of
 
   >>> doc = manuel.Document(source)
   >>> find_fakes(doc)
-  >>> from manuelpi.fake_module.fake_module import FakeModuleSnippet
+  >>> from manuelpi.fakemodule.fakemodule import FakeModuleSnippet
   >>> any([isinstance(x.parsed, FakeModuleSnippet) for x in doc])
   False
 

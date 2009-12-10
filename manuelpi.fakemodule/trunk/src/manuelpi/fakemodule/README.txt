@@ -1,7 +1,7 @@
 Intro and Motivation
 ====================
 
-`manuelpi.fake_module` is a plugin for `Manuel`_ that supports syntax 
+`manuelpi.fakemodule` is a plugin for `Manuel`_ that supports syntax 
 for creating modules within a doctest. The module, once defined, is then
 usable by subsequent doctest statements.
 
@@ -55,11 +55,11 @@ The above doctest creates a new module `test_module` and then exercises
 the objects within it. Notice how the module becomes immediately available
 to the doctet after its definition. 
 
-To use `manualpi.fake_module` in your application, set up your tests as
+To use `manualpi.fakemodule` in your application, set up your tests as
 described in the Manuel documentation and import the `Manuel` class from
-`manuelpi.fake_module`::
+`manuelpi.fakemodule`::
 
   ...
-  import manuelpi.fake_module
+  import manuelpi.fakemodule
   ...
-  m += manuelpi.fake_module.Manuel()
+  m += manuelpi.fakemodule.Manuel()
