@@ -19,9 +19,10 @@ __docformat__ = "reStructuredText"
 import persistent
 import zope.interface
 from zope.schema import fieldproperty
-from zope.app.container import contained
+from zope.container import contained
 
 from lovely.rating import IRatingDefinition
+
 
 class RatingDefinition(contained.Contained, persistent.Persistent):
     zope.interface.implements(IRatingDefinition)

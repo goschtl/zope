@@ -27,7 +27,7 @@ import zope.event
 
 from BTrees import OOBTree
 
-from zope.app.container import contained
+from zope.container import contained
 
 from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
 

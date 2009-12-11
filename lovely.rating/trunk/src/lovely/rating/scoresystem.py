@@ -38,4 +38,3 @@ class SimpleScoreSystem(object):
 
     def __reduce__(self):
         return self.__name__
-

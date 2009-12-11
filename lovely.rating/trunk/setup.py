@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='lovely.rating',
-      version='0.3.2',
+      version='0',
       author = "Lovelysystems",
       author_email = "office@lovelysystems.com",
       description = "A rating engine for zope 3",
@@ -19,7 +19,7 @@ setup(name='lovely.rating',
       install_requires = ['setuptools',
                           'ZODB3',
                           'pytz',
-                          'zope.app.container',
+                          'zope.container',
                           'zope.app.generations',
                           'zope.app.zopeappgenerations',
                           'zope.component',

@@ -2,6 +2,12 @@
  Changes for lovely.rating package
 ===================================
 
+0.4.0 (Unreleased)
+------------------
+
+- Use zope.container instead of zope.app.container
+
+
 2007/09/10 0.3.2
 ================
 

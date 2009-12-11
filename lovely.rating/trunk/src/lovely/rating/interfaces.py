@@ -220,4 +220,3 @@ class IRatingRemovedEvent(IRatingEvent):
 class RatingRemovedEvent(RatingEvent):
     """A rating was removed from an object"""
     zope.interface.implements(IRatingRemovedEvent)
-

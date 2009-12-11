@@ -12,4 +12,3 @@ def evolve(context):
                 if rating._timestamp.tzinfo is None:
                     rating._timestamp = rating._timestamp.replace(
                         tzinfo=UTC)
-                    

@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import datetime
 import persistent
 import zope.interface
-from zope.app.container import contained
+from zope.container import contained
 
 from lovely.rating import IRating
 from pytz import UTC
@@ -46,4 +46,3 @@ class Rating(contained.Contained, persistent.Persistent):
             return cmp(super(Rating, self), other)
         return cmp((self.id, self.value, self.user),
                    (other.id, other.value, other.user))
-

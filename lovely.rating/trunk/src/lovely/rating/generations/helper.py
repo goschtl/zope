@@ -36,4 +36,3 @@ def evolveToSimpleScoreSystem(context):
         new = SimpleScoreSystem(
                 old.__name__, old.title, old.description, old.scores)
         definition.scoreSystem = new
-
