@@ -5,7 +5,10 @@ CHANGES
 0.12 (unreleased)
 =================
 
-- Nothing changed yet.
+- Added ``include-dependencies`` option that automatically includes the
+  dependencies of the specified packages.  Very handy to get an automatically
+  updated list of those packages that are most useful to test: all our
+  dependencies.
 
 
 0.11 (2009-09-30)
