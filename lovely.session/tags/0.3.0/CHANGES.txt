@@ -1,0 +1,58 @@
+=======
+CHANGES
+=======
+
+0.3.0 (12-11-2009)
+------------------
+
+- Use zope.container instead of zope.app.container
+
+- Removed unused dependencies
+
+
+0.2.2 (2009-08-14)
+------------------
+
+- Add 'lastAccessTime' class attribute (fix old instances)
+
+
+0.2.1 (2009-08-14)
+------------------
+
+- Correctly implemented timeout behavior of session data.
+
+- Remove duplicate extras_require (python2.4 compatibility)
+
+
+0.2.0 (2008-09-25)
+------------------
+
+- Made the DataManager savepoint aware.
+
+
+0.1.4 (2008-07-31)
+------------------
+
+- Fixed ZCML to avoid deprecation warnings, since the session API was moved to
+  ``zope.session``. *Sigh*
+
+
+0.1.3 (2008-07-31)
+------------------
+
+- Fixed `setup.py` to be on par with the latest layout.
+
+- Fixed deprecation warnings, since the session API was moved to
+  ``zope.session``.
+
+
+0.1.2 (2007-08-13)
+------------------
+
+- Move source to svn.zope.org.
+
+
+0.1.1 (2007-08-13)
+------------------
+
+- Fixed dependency on `lovely.memcached`.

@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <class class=".memcached.MemCachedSessionDataContainer">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require
+        permission="zope.Public"
+        interface="zope.session.interfaces.ISessionDataContainer"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        set_schema="zope.session.interfaces.ISessionDataContainer"
+        />
+
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IMemCachedSessionDataContainer"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        set_schema=".interfaces.IMemCachedSessionDataContainer"
+        />
+  </class>
+
+  <browser:addMenuItem
+      title="Sessiondata in memcache"
+      description="Session data memcache"
+      class=".memcached.MemCachedSessionDataContainer"
+      permission="zope.ManageServices"
+      />
+
+  <browser:editform
+      schema=".interfaces.IMemCachedSessionDataContainer"
+      label="Configure"
+      name="configure.html"
+      menu="zmi_views" title="Configure"
+      permission="zope.ManageServices"
+      />
+
+</configure>
+
