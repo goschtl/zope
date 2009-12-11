@@ -15,6 +15,8 @@ No further configuration is required, but you can set the following options:
 
 - ``include``: list of packages to include (whitespace-separated)
   (default: empty)
+- ``include-dependencies``: list of packages to include *including* their
+  direct dependencies.  (default: empty)
 - ``exclude``: packages matching any regex in this list will be excluded
   (default: empty)
 - ``script``: the name of the runner script (defaults to the part name)
@@ -55,6 +57,32 @@ picked up:
 >>> cat('bin', 'compattest-z3c.recipe.compattest')
 #!...python...
 ...zope.dottedname...
+
+If we use ``include-dependencies`` instead of just ``include``, our direct
+dependencies are also picked up, for instance zc.buildout:
+
+>>> write('buildout.cfg', """
+... [buildout]
+... parts = compattest
+...
+... [compattest]
+... recipe = z3c.recipe.compattest
+... include-dependencies = z3c.recipe.compattest
+... """)
+>>> print 'start', system(buildout)
+start ...
+Generated script '/sample-buildout/bin/compattest-zc.buildout'.
+...
+Generated script '/sample-buildout/bin/compattest'.
+
+All our direct dependencies have a test script now:
+
+>>> ls('bin')
+- buildout
+- compattest
+- compattest-z3c.recipe.compattest
+- compattest-zc.buildout
+- compattest-zc.recipe.testrunner
 
 
 Passing options to the test runners

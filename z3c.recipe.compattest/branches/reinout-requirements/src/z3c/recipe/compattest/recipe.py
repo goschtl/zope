@@ -25,6 +25,8 @@ class Recipe(object):
             options['max_jobs'] = '1'
 
         self.include = string2list(self.options.get('include', ''), [])
+        self.include_dependencies = string2list(
+            self.options.get('include-dependencies', ''), [])
         self.exclude = string2list(self.options.get('exclude', ''), [])
         self.extra_paths = self.options.get('extra-paths', '')
         self.wanted_packages = self._wanted_packages()
@@ -77,8 +79,25 @@ class Recipe(object):
             bindir, arguments='%s, %s' % (self.options['max_jobs'],
                                           ', '.join(runners)))
 
+    def _find_dependencies(self):
+        result = []
+        if not self.include_dependencies:
+            return result
+        for package in self.include_dependencies:
+            result.append(package)
+            ws = self._working_set(package)
+            dist = ws.find(pkg_resources.Requirement.parse(package))
+            for requirement in dist.requires():
+                dist = ws.find(requirement)
+                if not dist:
+                    continue
+                result.append(dist.project_name)
+        return result
+
+
     def _wanted_packages(self):
-        projects = self.include
+        projects = self.include + self._find_dependencies()
+        projects = set(projects) # Filter out duplicates.
         for project in projects:
             for regex in self.exclude:
                 if re.compile(regex).search(project):
