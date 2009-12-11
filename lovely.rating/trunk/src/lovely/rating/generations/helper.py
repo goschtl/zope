@@ -16,7 +16,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.zopeappgenerations import getRootFolder
+from zope.app.generations.utility import getRootFolder
 from zope.app.generations.utility import findObjectsProviding
 
 from lovely.rating.interfaces import IRatingDefinition

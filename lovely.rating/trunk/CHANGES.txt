@@ -2,7 +2,14 @@
  Changes for lovely.rating package
 ===================================
 
-0.4.0 (Unreleased)
+
+0.4.1 (12-12-2009)
+------------------
+
+- Remove zope.app.zopeappgenerations dependency
+
+
+0.4.0 (12-11-2009)
 ------------------
 
 - Use zope.container instead of zope.app.container
