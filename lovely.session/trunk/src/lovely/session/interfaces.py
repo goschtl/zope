@@ -26,4 +26,3 @@ class IMemCachedSessionDataContainer(interface.Interface):
     cacheName = schema.TextLine(title=u'Cachename',
                                 required=False,
                                 default=u'')
-

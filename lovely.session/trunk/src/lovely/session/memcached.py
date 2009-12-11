@@ -31,7 +31,7 @@ from zope import component
 
 from zope.schema.fieldproperty import FieldProperty
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.session.interfaces import (
     ISessionDataContainer,
     ISessionData,
@@ -90,7 +90,7 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
         now = int(time.time())
         if self.lastAccessTime + self.resolution < now:
             self.lastAccessTime = now
-            
+
         return dm.data
 
     def __setitem__(self, key, value):

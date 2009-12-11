@@ -2,8 +2,12 @@
 CHANGES
 =======
 
-0.2.3 (Unreleased)
+0.3.0 (Unreleased)
 ------------------
+
+- Use zope.container instead of zope.app.container
+
+- Removed unused dependencies
 
 
 0.2.2 (2009-08-14)
