@@ -492,6 +492,8 @@ class DeferredSubprocessResult(AbstractSubprocessResult):
     """Keeps stdout around for later processing,"""
 
     def write(self, out):
+        if not isinstance(out, str): # It's binary, which means it's Python 3
+            out = out.decode()
         if not _is_dots(out):
             self.stdout.append(out)
 
@@ -523,6 +525,8 @@ class KeepaliveSubprocessResult(AbstractSubprocessResult):
     done = property(lambda self: self._done, _set_done)
 
     def write(self, out):
+        if not isinstance(out, str): # It's binary, which means it's Python 3
+            out = out.decode()
         if _is_dots(out):
             self.queue.put((self.layer_name, out.strip()))
         else:

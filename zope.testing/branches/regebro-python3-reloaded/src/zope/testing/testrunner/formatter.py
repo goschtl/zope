@@ -380,12 +380,12 @@ def tigetnum(attr, default=None):
         # Python version:
         if sys.version_info >= (3,):
             import io
-            wrapped_stdout_error = io.UnsupportedOperation
+            expected_exceptions = (curses.error, TypeError, io.UnsupportedOperation)
         else:
-            wrapped_stdout_error = TypeError
+            expected_exceptions = (curses.error, TypeError)
         try:
             curses.setupterm()
-        except (curses.error, wrapped_stdout_error):
+        except expected_exceptions:
             # You get curses.error when $TERM is set to an unknown name
             pass
         else:
