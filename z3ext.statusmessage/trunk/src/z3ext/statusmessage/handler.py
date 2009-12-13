@@ -16,6 +16,7 @@
 $Id$
 """
 from zope import component
+from zope.publisher.interfaces.browser import IBrowserRequest
 from z3ext.cacheheaders.interfaces import IAfterCallEvent
 
 from interfaces import IStatusMessage
@@ -24,18 +25,19 @@ from interfaces import IStatusMessage
 @component.adapter(IAfterCallEvent)
 def afterCallHandler(event):
     request = event.request
-    response = request.response
+    if IBrowserRequest.providedBy(request):
+        response = request.response
 
-    status = response.getStatus()
-    if status not in (302, 303):
-        service = IStatusMessage(request, None)
-        if service is not None:
-            messages = service.clear()
+        status = response.getStatus()
+        if status not in (302, 303):
+            service = IStatusMessage(request, None)
+            if service is not None:
+                messages = service.clear()
 
-            if messages:
-                msg = u'\n'.join(messages)
-                msg = msg.encode('utf-8', 'ignore')
+                if messages:
+                    msg = u'\n'.join(messages)
+                    msg = msg.encode('utf-8', 'ignore')
 
-                body = response.consumeBody()
-                body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
-                response.setResult(body)
+                    body = response.consumeBody()
+                    body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
+                    response.setResult(body)
