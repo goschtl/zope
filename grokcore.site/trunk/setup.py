@@ -49,6 +49,8 @@ setup(
                       'zope.container',
                       'zope.interface',
                       'zope.lifecycleevent',
+                      'zope.site',
+                      'zope.location',
                       ],
     tests_require=tests_require,
     extras_require={'test': tests_require},

@@ -18,7 +18,7 @@ from persistent import Persistent
 
 from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.component.site import SiteManagerContainer
+from zope.site.site import SiteManagerContainer
 from zope.container.contained import Contained
 
 
