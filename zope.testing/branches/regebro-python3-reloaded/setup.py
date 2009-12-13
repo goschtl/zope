@@ -48,8 +48,8 @@ if sys.version_info >= (3,):
     # released with Python 3 support. Copy the pre-releases into the local
     # directory before you run setup.py under Python 3:
     extra['install_requires'] = ['setuptools',
-                                 'zope.exceptions >= 3.6.0dev',
-                                 'zope.interface >= 3.6.0']
+                                 'zope.exceptions >= 3.6.0py3',
+                                 'zope.interface >= 3.6.0py3']
     extra['convert_2to3_doctests'] = [
         'src/zope/testing/doctests.txt',
         'src/zope/testing/formparser.txt',

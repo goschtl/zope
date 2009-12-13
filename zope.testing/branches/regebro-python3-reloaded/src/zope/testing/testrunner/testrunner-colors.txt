@@ -200,12 +200,13 @@ colors:
     ----------------------------------------------------------------------
     {normal}File testrunner-ex/pledge.py{normal}", line {boldred}26{normal}, in {boldcyan}pledge.pledge{normal}
     Failed example:
-    {cyan}    print pledge_template % ('and earthling', 'planet'),{normal}
+    {cyan}    test_print(){normal}
     Expected:
     {green}    I give my pledge, as an earthling,{normal}
     {green}    to save, and faithfully, to defend from waste,{normal}
     {green}    the natural resources of my planet.{normal}
     {green}    It's soils, minerals, forests, waters, and wildlife.{normal}
+     <BLANKLINE>
     Got:
     {red}    I give my pledge, as and earthling,{normal}
     {red}    to save, and faithfully, to defend from waste,{normal}
@@ -232,7 +233,7 @@ apart:
     ----------------------------------------------------------------------
     {normal}File testrunner-ex/pledge.py{normal}", line {boldred}26{normal}, in {boldcyan}pledge.pledge{normal}
     Failed example:
-    {cyan}    print pledge_template % ('and earthling', 'planet'),{normal}
+    {cyan}    test_print(){normal}
     Differences (ndiff with -expected +actual):
     {green}    - I give my pledge, as an earthling,{normal}
     {red}    + I give my pledge, as and earthling,{normal}

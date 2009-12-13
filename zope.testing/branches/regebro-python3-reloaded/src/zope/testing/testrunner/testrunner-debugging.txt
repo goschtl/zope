@@ -65,12 +65,11 @@ option:
     ...
     Error in test test_post_mortem1 (sample3.sampletests_d.TestSomething)
     Traceback (most recent call last):
-      File "testrunner-ex/sample3/sampletests_d.py",
-              line 34, in test_post_mortem1
+      File "testrunner-ex/sample3/sampletests_d.py", line 34, in test_post_mortem1
         raise ValueError
     ValueError
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
     > testrunner-ex/sample3/sampletests_d.py(34)test_post_mortem1()
     -> raise ValueError
