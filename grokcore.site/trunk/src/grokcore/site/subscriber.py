@@ -12,10 +12,10 @@
 #
 ##############################################################################
 
-import grokcore.component
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.app.component.site import LocalSiteManager
-from zope.app.container.interfaces import IObjectAddedEvent
 
+import grokcore.component
 from grokcore.site.components import Site
 
 @grokcore.component.subscribe(Site, IObjectAddedEvent)

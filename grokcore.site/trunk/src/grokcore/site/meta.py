@@ -14,8 +14,8 @@
 
 from zope import component
 
-from zope.app.container.interfaces import IContainer, IObjectAddedEvent
-from zope.app.container.interfaces import INameChooser
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.container.interfaces import IContainer,  INameChooser
 
 import martian
 from martian.error import GrokError
