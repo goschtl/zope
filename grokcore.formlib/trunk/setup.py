@@ -22,7 +22,7 @@ tests_require = [
 
 setup(
     name='grokcore.formlib',
-    version = '1.5dev',
+    version = '1.5',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',

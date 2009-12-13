@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5 (unreleased)
+1.5 (2009-12-13)
 ----------------
 
 - Use zope.container instead of zope.app.container (in tests and in the
