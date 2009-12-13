@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.13 (unreleased)
+1.13 (2009-12-13)
 -----------------
 
 - Added missing dependencies in setup.py (copied from trunk).
