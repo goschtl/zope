@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.12 (unreleased)
+0.12 (2009-12-14)
 =================
 
 - Added ``include-dependencies`` option that automatically includes the
