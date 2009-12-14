@@ -689,8 +689,31 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         #print '>', self, other, c > 0, c
         return c > 0
 
+    def adapt(self, *obj, **options):
+        default = options.pop('default', _marker)
+        for hook in component_hooks:
+            adapter = hook(self, obj, **options)
+            if adapter is not None:
+                return adapter
+        if default is not _marker:
+            return default
+        raise TypeError('Could not adapt', obj, self, options)
+
+    def utility(self, **options):
+        default = options.pop('default', _marker)
+        for hook in component_hooks:
+            utility = hook(self, (), **options)
+            if utility is not None:
+                return utility
+        if default is not _marker:
+            return default
+        raise TypeError('Could not find utility', self, options)
+
 
 Interface = InterfaceClass("Interface", __module__ = 'zope.interface')
+
+component_hooks = []
+
 
 class Attribute(Element):
     """Attribute descriptions
