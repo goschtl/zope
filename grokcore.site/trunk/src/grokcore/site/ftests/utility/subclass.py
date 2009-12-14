@@ -5,7 +5,7 @@ Subclassed sites inherit all local utilities of their base classes:
   >>> getRootFolder()["cave"] = cave
 
   >>> from zope import component
-  >>> from zope.app.component.hooks import getSite, setSite
+  >>> from zope.site.hooks import getSite, setSite
 
   >>> setSite(cave)
   >>> fireplace = component.getUtility(IFireplace)

@@ -13,7 +13,7 @@
 ##############################################################################
 
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
-from zope.app.component.site import LocalSiteManager
+from zope.site import LocalSiteManager
 
 import grokcore.component
 from grokcore.site.components import Site

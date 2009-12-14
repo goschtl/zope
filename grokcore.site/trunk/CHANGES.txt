@@ -4,7 +4,7 @@ Changes
 1.2 (unreleased)
 ----------------
 
-* ...
+* Migrated imports from zope.app.component to zope.site.
 
 1.1 (2009-09-18)
 ----------------
