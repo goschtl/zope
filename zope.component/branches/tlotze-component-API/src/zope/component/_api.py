@@ -161,6 +161,22 @@ import zope.interface.interface
 zope.interface.interface.adapter_hooks.append(adapter_hook)
 #############################################################################
 
+@hookable
+def component_hook(interface, objects,
+                   name='', default=None, context=None, **ignored):
+    try:
+        sitemanager = getSiteManager(context)
+    except ComponentLookupError:
+        # Oh blast, no site manager. This should *never* happen!
+        return None
+    if objects:
+        return sitemanager.queryMultiAdapter(
+            objects, interface, name, default)
+    else:
+        return sitemanager.queryUtility(interface, name, default)
+
+zope.interface.interface.component_hooks.append(component_hook)
+
 
 # Utility API
 

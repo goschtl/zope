@@ -35,7 +35,8 @@ We can register an instance this class using `provideUtility` [1]_:
 
 In this example we registered the utility as providing the `IGreeter`
 interface with a name of 'bob'. We can look the interface up with
-either `queryUtility` or `getUtility`:
+either `queryUtility` or `getUtility` as well as calling the `utility` method
+of the provided interface:
 
     >>> component.queryUtility(IGreeter, 'robert').greet()
     Hello bob
@@ -43,7 +44,11 @@ either `queryUtility` or `getUtility`:
     >>> component.getUtility(IGreeter, 'robert').greet()
     Hello bob
 
-`queryUtility` and `getUtility` differ in how failed lookups are handled:
+    >>> IGreeter.utility(name='robert').greet()
+    Hello bob
+
+`queryUtility`, `getUtility` and `Interface.utility` differ in how failed
+lookups are handled:
 
     >>> component.queryUtility(IGreeter, 'ted')
     >>> component.queryUtility(IGreeter, 'ted', 42)
@@ -53,6 +58,11 @@ either `queryUtility` or `getUtility`:
     Traceback (most recent call last):
     ...
     ComponentLookupError: (<InterfaceClass ...IGreeter>, 'ted')
+    >>> IGreeter.utility(name='ted', default=42)
+    42
+    >>> IGreeter.utility(name='ted')
+    Traceback (most recent call last):
+    TypeError: ('Could not find utility', <InterfaceClass __builtin__.IGreeter>, {'name': 'ted'})
 
 If a component provides only one interface, as in the example above,
 then we can omit the provided interface from the call to `provideUtility`:
@@ -67,6 +77,8 @@ The name defaults to an empty string:
     >>> world = Greeter()
     >>> component.provideUtility(world)
     >>> component.queryUtility(IGreeter).greet()
+    Hello world
+    >>> IGreeter.utility().greet()
     Hello world
 
 Adapters
@@ -146,7 +158,7 @@ The arguments can also be provided as keyword arguments:
     ...     factory=TedPersonGreeter, adapts=[IPerson],
     ...     provides=IGreeter, name='ted')
 
-For named adapters, use `queryAdapter`, or `getAdapter`:
+For named adapters, use `queryAdapter`, `getAdapter` or `Interface.adapt`:
 
     >>> component.queryAdapter(Person("Sally"), IGreeter, 'bob').greet()
     Hello Sally my name is Bob
@@ -154,8 +166,11 @@ For named adapters, use `queryAdapter`, or `getAdapter`:
     >>> component.getAdapter(Person("Sally"), IGreeter, 'ted').greet()
     Hello Sally my name is Ted
 
+    >>> IGreeter.adapt(Person("Sally"), name='ted').greet()
+    Hello Sally my name is Ted
+
 If an adapter can't be found, `queryAdapter` returns a default value
-and `getAdapter` raises an error:
+and both `getAdapter` and `Interface.adapt` raise an error:
 
     >>> component.queryAdapter(Person("Sally"), IGreeter, 'frank')
     >>> component.queryAdapter(Person("Sally"), IGreeter, 'frank', 42)
@@ -165,6 +180,12 @@ and `getAdapter` raises an error:
     Traceback (most recent call last):
     ...
     ComponentLookupError: (...Person...>, <...IGreeter>, 'frank')
+    >>> IGreeter.adapt(Person("Sally"), name='frank', default=42)
+    42
+    >>> IGreeter.adapt(Person("Sally"), name='frank')
+    ... # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    TypeError: ('Could not adapt', (<__builtin__.Person instance at 0x...>,), <InterfaceClass __builtin__.IGreeter>, {'name': 'frank'})
 
 Adapters can adapt multiple objects:
 
@@ -183,11 +204,14 @@ Adapters can adapt multiple objects:
 
     >>> component.provideAdapter(TwoPersonGreeter)
 
-To look up a multi-adapter, use either `queryMultiAdapter` or
-`getMultiAdapter`:
+To look up a multi-adapter, use either `queryMultiAdapter`, `getMultiAdapter`
+or `Interface.adapt`:
 
     >>> component.queryMultiAdapter((Person("Sally"), Person("Bob")),
     ...                                  IGreeter).greet()
+    Hello Sally
+    my name is Bob
+    >>> IGreeter.adapt(Person("Sally"), Person("Bob")).greet()
     Hello Sally
     my name is Bob
 
