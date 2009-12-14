@@ -1,6 +1,14 @@
 zope.testing Changelog
 **********************
 
+3.9.0 (unreleased)
+==================
+
+- Removed the custom doctest.py. This also means dropping Python 2.3 support.
+
+- Python 3 support, thanks to Lennart Regebro and Wolfgang Schnerring.
+
+
 3.8.4 (unreleased)
 ==================
 
