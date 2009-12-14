@@ -71,7 +71,7 @@ Failed test
 A failed test run highlights the failures in red:
 
     >>> sys.argv = 'test -c --tests-pattern ^sampletests(f|_e|_f)?$ '.split()
-    >>> testrunner.run_internal(defaults)
+    >>> testrunner.run_internal(defaults) #doctest: +ELLIPSIS
     {normal}Running samplelayers.Layer1 tests:{normal}
       Set up samplelayers.Layer1 in {green}0.000{normal} seconds.
     {normal}  Ran {green}9{normal} tests with {green}0{normal} failures and {green}0{normal} errors in {green}0.001{normal} seconds.{normal}
@@ -117,7 +117,7 @@ A failed test run highlights the failures in red:
     Exception raised:
     {red}    Traceback (most recent call last):{normal}
     {red}      File ".../doctest.py", line 1356, in __run{normal}
-    {red}        compileflags, 1) in test.globs{normal}
+    {red}        compileflags, 1)... test.globs...{normal}
     {red}      File "<doctest sample2.sampletests_e.eek[0]>", line 1, in ?{normal}
     {red}        f(){normal}
     {red}      File "testrunner-ex/sample2/sampletests_e.py", line 19, in f{normal}
@@ -155,7 +155,7 @@ A failed test run highlights the failures in red:
     Exception raised:
     {red}    Traceback (most recent call last):{normal}
     {red}      File ".../doctest.py", line 1356, in __run{normal}
-    {red}        compileflags, 1) in test.globs{normal}
+    {red}        compileflags, 1)... test.globs...{normal}
     {red}      File "<doctest e.txt[1]>", line 1, in ?{normal}
     {red}        f(){normal}
     {red}      File "<doctest e.txt[0]>", line 2, in f{normal}
