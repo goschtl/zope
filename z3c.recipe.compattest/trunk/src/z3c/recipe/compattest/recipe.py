@@ -97,7 +97,7 @@ class Recipe(object):
 
     def _wanted_packages(self):
         projects = self.include + self._find_dependencies()
-        projects = set(projects) # Filter out duplicates.
+        projects = list(set(projects)) # Filter out duplicates.
         for project in projects:
             for regex in self.exclude:
                 if re.compile(regex).search(project):

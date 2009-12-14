@@ -8,6 +8,13 @@ normalize_script = (
     re.compile('(\n?)-  ([a-zA-Z0-9_.-]+)-script.py\n-  \\2.exe\n'),
     '\\1-  \\2\n')
 
+# Distribute does not result in a setuptools compattest binary, so filter that
+# out.
+normalize_setuptools = (
+    re.compile('- compattest-setuptools\n'),
+    '')
+
+
 def DocFileSuite(*args, **kw):
     def setUp(test):
         zc.buildout.testing.buildoutSetUp(test)
@@ -30,8 +37,9 @@ def DocFileSuite(*args, **kw):
     kw['optionflags'] = (doctest.ELLIPSIS
                          | doctest.NORMALIZE_WHITESPACE)
     kw['checker'] = renormalizing.RENormalizing([
-               zc.buildout.testing.normalize_path,
-               normalize_script,
-               ])
+        zc.buildout.testing.normalize_path,
+        normalize_script,
+        normalize_setuptools,
+        ])
 
     return doctest.DocFileSuite(*args, **kw)

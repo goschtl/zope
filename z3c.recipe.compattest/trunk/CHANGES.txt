@@ -5,7 +5,8 @@ CHANGES
 0.13 (unreleased)
 =================
 
-- Nothing changed yet.
+- Fixed bug in using exclude introduced in 0.12 (including test to make sure
+  it doesn't happen again).
 
 
 0.12 (2009-12-14)

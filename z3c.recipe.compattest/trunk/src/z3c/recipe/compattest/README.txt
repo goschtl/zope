@@ -85,6 +85,32 @@ All our direct dependencies have a test script now:
 - compattest-zc.buildout
 - compattest-zc.recipe.testrunner
 
+And if you want to exclude one of the automatically included dependencies, use
+the ``exclude`` option:
+
+>>> write('buildout.cfg', """
+... [buildout]
+... parts = compattest
+...
+... [compattest]
+... recipe = z3c.recipe.compattest
+... include-dependencies = z3c.recipe.compattest
+... exclude = zc.buildout
+... """)
+>>> print 'start', system(buildout)
+start ...
+Generated script '/sample-buildout/bin/compattest'.
+
+``bin/compattest-zc.buildout`` is now missing:
+
+>>> ls('bin')
+- buildout
+- compattest
+- compattest-setuptools
+- compattest-z3c.recipe.compattest
+- compattest-zc.recipe.testrunner
+
+
 
 Passing options to the test runners
 ===================================
