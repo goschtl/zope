@@ -4,7 +4,7 @@ Changes
 1.14 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed duplicate 'tests_require' from setup.py that prevented installation.
 
 
 1.13 (2009-12-13)
