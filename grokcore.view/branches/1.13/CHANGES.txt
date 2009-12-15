@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.14 (unreleased)
------------------
+1.13.1 (2009-12-15)
+-------------------
 
 - Removed duplicate 'tests_require' from setup.py that prevented installation.
 
