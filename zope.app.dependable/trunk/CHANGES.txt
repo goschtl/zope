@@ -5,6 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
+- Added missing zcml namespace to the configure file.
 
 3.5.0 (2009-12-15)
 ------------------
