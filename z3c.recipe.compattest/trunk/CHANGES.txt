@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-0.13 (unreleased)
-=================
+0.12.1 (2009-12-15)
+===================
 
 - Fixed bug in using exclude introduced in 0.12 (including test to make sure
   it doesn't happen again).
