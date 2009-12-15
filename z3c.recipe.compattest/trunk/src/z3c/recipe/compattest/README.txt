@@ -80,7 +80,6 @@ All our direct dependencies have a test script now:
 >>> ls('bin')
 - buildout
 - compattest
-- compattest-setuptools
 - compattest-z3c.recipe.compattest
 - compattest-zc.buildout
 - compattest-zc.recipe.testrunner
@@ -106,7 +105,6 @@ Generated script '/sample-buildout/bin/compattest'.
 >>> ls('bin')
 - buildout
 - compattest
-- compattest-setuptools
 - compattest-z3c.recipe.compattest
 - compattest-zc.recipe.testrunner
 
