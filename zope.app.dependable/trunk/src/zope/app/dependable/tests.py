@@ -16,11 +16,31 @@
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
+
 from zope.annotation.attribute import AttributeAnnotations
 from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.interface import implements
+from zope.lifecycleevent import ObjectRemovedEvent
+from zope.traversing.interfaces import IPhysicallyLocatable
+
+from zope.app.dependable.dependency import CheckDependency
+from zope.app.dependable.interfaces import IDependable, DependencyError
+
 
 class C(object):
     pass
+
+
+class DummyObject(object):
+
+    implements(IDependable, IPhysicallyLocatable)
+
+    def dependents(self):
+        return ['dependency1', 'dependency2']
+
+    def getPath(self):
+        return '/dummy-object'
+
 
 class Test(PlacelessSetup, TestCase):
 
@@ -66,6 +86,13 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(obj.dependents(), ("/a/bar",))
         obj.removeDependent("bar")
         self.assertEqual(obj.dependents(), ())
+
+    def testCheckDependency(self):
+        obj = DummyObject()
+        parent = object()
+        event = ObjectRemovedEvent(obj, parent, 'oldName')
+        self.assertRaises(DependencyError, CheckDependency, event)
+
 
 def test_suite():
     return TestSuite((

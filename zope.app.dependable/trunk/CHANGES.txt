@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Moved CheckDependency event handler and its tests into this package from
+  its former place in zope.container.
+
 3.4.0 (2007-10-23)
 ------------------
 
