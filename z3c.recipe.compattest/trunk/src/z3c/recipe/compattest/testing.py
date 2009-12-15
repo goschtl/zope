@@ -11,7 +11,7 @@ normalize_script = (
 # Distribute does not result in a setuptools compattest binary, so filter that
 # out.
 normalize_setuptools = (
-    re.compile('- compattest-setuptools'),
+    re.compile('-  compattest-setuptools'),
     '')
 
 
