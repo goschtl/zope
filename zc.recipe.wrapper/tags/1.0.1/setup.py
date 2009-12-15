@@ -80,7 +80,7 @@ default = zc.recipe.wrapper:Wrapper
 
 setuptools.setup(
     name="zc.recipe.wrapper",
-    version="1.0.1dev",
+    version="1.0.1",
     description="Recipe that creates shell wrapper scripts",
     long_description=text(
         'CHANGES.txt',
