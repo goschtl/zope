@@ -1,0 +1,240 @@
+Details
+=======
+
+The `fakemodule` plugin defines a `module-block` directive that takes
+a single Python identifier as an argument. One or more lines of Python
+code indented will then form the body of the module, which is later 
+referenced by its identifier:
+
+   >>> import manuel
+   >>> import manuelpi.fakemodule
+
+The following string shows what this might look like::
+
+   This is a module doc-test:
+   
+   .. module-block:: test_module
+
+         import pprint
+
+         a = manuel
+         
+         class Something:
+            pass
+         
+         def my_function(): pass
+         
+         a = 1 + 2
+   
+   As you can see, it does nothing much!!
+
+.. -> source
+::
+   >>> doc = manuel.Document(source)
+   >>> from manuelpi.fakemodule.fakemodule import find_fakes
+   >>> find_fakes(doc)
+
+Let's extract the module name and its source:
+
+   >>> for region in doc:
+   ...    if region.parsed:
+   ...       print region.parsed.module_name
+   ...       print region.source
+   test_module
+   .. module-block:: test_module
+        import pprint
+   <BLANKLINE>
+        a = manuel
+   <BLANKLINE>
+        class Something:
+           pass
+   <BLANKLINE>
+        def my_function(): pass
+   <BLANKLINE>
+        a = 1 + 2
+   <BLANKLINE>
+   <BLANKLINE>
+
+The code can correctly parse multiple modules:
+
+   Our system has a few modules:
+  
+   .. module-block:: some_module
+        class Foo:
+           pass
+  
+   and:
+   
+   .. module-block:: an_other_module
+        class Bar:
+            pass
+   
+   fin
+
+.. -> source
+
+   >>> doc = manuel.Document(source)
+   >>> find_fakes(doc)
+   
+Again, we extract the various parsed regions:
+
+   >>> for region in doc:
+   ...     if region.parsed:
+   ...         print region.parsed.module_name
+   ...         print region.source
+   some_module
+   .. module-block:: some_module
+        class Foo:
+           pass
+   <BLANKLINE>
+   <BLANKLINE>
+   an_other_module
+   .. module-block:: an_other_module
+        class Bar:
+            pass
+   <BLANKLINE>
+   <BLANKLINE>
+
+We can use `execute_into_module` to execute these regions into a 
+glob dictionary of our own:
+
+  >>> from manuelpi.fakemodule.fakemodule import execute_into_module
+  >>> glob = {}
+  >>> for region in doc:
+  ...     if region.parsed:
+  ...         execute_into_module(region, doc, glob)
+
+Let's check that our glob contains the modules with their names:
+
+  >>> for module in glob.values(): 
+  ...     print module.__name__, ":", type(module)
+  manueltest.fake.some_module : <type 'module'>
+  manueltest.fake.an_other_module : <type 'module'>
+
+and also confirm that the modules contain their respective class
+definitions:
+
+  >>> for module in glob.values():
+  ...     print dir(module)
+  ['Foo', '__builtins__', '__doc__', '__file__', '__name__']
+  ['Bar', '__builtins__', '__doc__', '__file__', '__name__']
+
+We would also want to ensure that we can import the module correctly 
+too. The `fakemodule` system also adds the modules under their own 
+namespace `manueltest.fake`, as you can see from the previous tests:
+
+  >>> import manueltest.fake.some_module
+  >>> import manueltest.fake.an_other_module
+  >>> manueltest.fake.some_module.Foo
+  <class manueltest.fake.some_module.Foo at ...>
+  >>> manueltest.fake.an_other_module.Bar
+  <class manueltest.fake.an_other_module.Bar at ...>
+
+Note: There is no checking done to ensure that the module definition
+hasn't overridden any previous modules defined in the doctest. 
+
+Now that we can see objects in our modules, we need to ensure that
+they are fully 'module-aware'. In other words, are they aware that
+they are existing in a module? Let's create a new module with
+classes and functions to test this:
+
+  .. module-block:: cls_n_func
+       class Baz:
+         def __init__(self):
+             pass
+
+       def faz_func(): pass
+
+.. -> source
+
+We will now go through the usual steps to create the module in our
+own glob:
+
+  >>> doc = manuel.Document(source)
+  >>> find_fakes(doc)
+  >>> glob = {}
+  >>> for region in doc:
+  ...    if region.parsed:
+  ...        execute_into_module(region, doc, glob)
+
+The class must be aware that it exists within the `manuelfake.test.
+cls_n_func` module:
+
+  >>> print glob['cls_n_func'].Baz.__module__
+  manueltest.fake.cls_n_func
+
+In addition, functions must also be aware of their module:
+
+  >>> print glob['cls_n_func'].faz_func.__module__
+  manueltest.fake.cls_n_func
+
+Test Continuity
+===============
+
+We also would like to define objects in a doctest and have the
+module use them too. For example, we might want to define a class
+and have a module use it directly::
+
+    >>> class Parent:
+    ...     pass
+
+Let's now create a module that creates instances of this object::
+
+.. module-block:: enclosing_ns_available
+
+    dad = Parent()
+
+Now lets use `dad`::
+    
+    >>> print enclosing_ns_available.dad
+    <....Parent instance at ...>
+    >>> print enclosing_ns_available.dad.__module__
+    manueltest.fake.enclosing_ns_available
+
+However, we would also like to have module globals equally available
+to local scopes. Consider the case that a class relies upon some 
+module level utility function::
+
+.. module-block:: module_globals
+
+    foobar = True
+
+    def utility_func():
+        return foobar
+
+    class DelegatingClass(object):
+        def __init__(self):
+            self.v = utility_func()
+
+The class should be able to use the utlilty function properly:
+
+    >>> dc = module_globals.DelegatingClass()
+    >>> dc.v
+    True
+
+Invalid Modules
+===============
+
+The module name must be a valid Python identifier. If, say, it
+begins with a number, the module block will not be matched as a
+module definition and will be simply ignored as a comment::
+
+  What follows is an invalid module definition...
+
+  .. module-block:: 123invalid_module_name
+    def foo(): pass
+
+  It is not legal to precede Python identifiers with numbers.
+
+.. -> source
+
+We can confirm this be checking if there is any instance of 
+`FakeModuleSnippet` in the document's parsed regions:
+
+  >>> doc = manuel.Document(source)
+  >>> find_fakes(doc)
+  >>> from manuelpi.fakemodule.fakemodule import FakeModuleSnippet
+  >>> any([isinstance(x.parsed, FakeModuleSnippet) for x in doc])
+  False
+
+There are none - therefore the module definition has been ignored.
