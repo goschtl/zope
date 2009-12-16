@@ -10,7 +10,7 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.browser import BrowserRequest, BrowserResponse, isHTML
 from zope.app.publication.interfaces import IBrowserRequestFactory
 
-from hurry.resource import NeededInclusions, Library
+from hurry.resource import NeededInclusions, Library, render_topbottom_into_html
 from hurry.resource.interfaces import ICurrentNeededInclusions, ILibraryUrl
 
 class CurrentNeededInclusions(grok.GlobalUtility):
@@ -60,15 +60,7 @@ class Response(BrowserResponse):
         if content_type and content_type.split(';', 1)[0].lower() in (
             'text/html', 'text/xml'):
             # act on HTML and XML content only!
-
-            needed = component.getUtility(ICurrentNeededInclusions)()
-
-            top, bottom = needed.render_topbottom()
-            
-            if top:
-                body = body.replace('<head>', '<head>\n    %s\n' % top, 1)
-            if bottom:
-                body = body.replace('</body>', '%s</body>' % bottom, 1)
+            body = render_topbottom_into_html(body)
 
         return super(Response, self)._implicitResult(body)
 

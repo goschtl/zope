@@ -6,6 +6,9 @@ CHANGES
 
 * Updated required packages.
 
+* Use a newer version of hurry.resource which can insert the snippets
+  into HTML itself.
+
 0.3 (2008-12-05)
 ================
 

@@ -31,7 +31,7 @@ setup(
     install_requires=[
         'setuptools',
         'grokcore.component',
-        'hurry.resource > 0.2',
+        'hurry.resource >= 0.4',
         'z3c.autoinclude',
         'zope.app.component',
         'zope.app.publication',
