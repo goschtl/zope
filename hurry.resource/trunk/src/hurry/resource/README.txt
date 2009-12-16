@@ -409,7 +409,7 @@ return its default resource instead::
 conventions for modes:
 
   * default - the original source text, non-minified, and without any
-   special extra debugging functionality.
+    special extra debugging functionality.
 
   * debug - an optional version of the source text that offers more
     debugging support, such as logging.
