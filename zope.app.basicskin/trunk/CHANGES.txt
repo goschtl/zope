@@ -5,6 +5,8 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
+- Avoid zope.app.component testing dependency.
+
 - Removed BBB import for IBasicSkin.
 
 3.4.1 (2009-08-15)

@@ -16,12 +16,12 @@
 $Id$
 """
 import unittest
+from zope.component.testing import PlacelessSetup
 from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
 
 from zope.app.basicskin.standardmacros import Macros
-from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi
 
 class ViewWithMacros(object):
@@ -67,10 +67,10 @@ def createMacrosInstance(pages):
         macro_pages = pages
     return T(C(), TestRequest())
 
-class Test(PlacefulSetup, unittest.TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
+        PlacelessSetup.setUp(self)
         ztapi.browserView(I, 'page1', page1)
         ztapi.browserView(I, 'collides_with_page1', collides_with_page1)
         ztapi.browserView(I, 'works_with_page1',  works_with_page1)
@@ -100,7 +100,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         macros = createMacrosInstance(('page1', 'collides_with_page1'))
         self.assertEqual(macros['afoo'], 'page1_foo')
         self.assertEqual(macros['abar'], 'page1_bar')
-        
+
 
 def test_suite():
     loader = unittest.TestLoader()
