@@ -39,6 +39,6 @@ def find_files(dirname="."):
         return []
     # The process finished successfully, so let's use the result. Only select
     # those files that really belong to the passed in directory.
-    return [path.replace(dirname, '.')
+    return [path.replace(dirname+os.path.sep, '')
             for path in stdout.splitlines()
             if path.startswith(dirname)]

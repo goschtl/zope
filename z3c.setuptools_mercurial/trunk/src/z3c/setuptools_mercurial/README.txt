@@ -55,9 +55,13 @@ Let's now add soem directories and files and the finder should be happy.
   >>> cmd('hg add ' + os.path.join(repos, 'dir1', 'dir11', 'data1.txt'))
 
   >>> finder.find_files(repos)
-  ['./data.txt',
-   './dir1/data1.txt',
-   './dir1/dir11/data1.txt']
+  ['data.txt',
+   'dir1/data1.txt',
+   'dir1/dir11/data1.txt']
 
 Note that the result of the finder is always a list of relative locations
 based on the input directory.
+
+  >>> finder.find_files(os.path.join(repos, 'dir1'))
+  ['data1.txt',
+   'dir11/data1.txt']
