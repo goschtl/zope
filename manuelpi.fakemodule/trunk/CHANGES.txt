@@ -4,4 +4,10 @@ CHANGES
 0.1b1 (2009-12-16)
 ==================
 
+* Modules defined within doctests now have automatic
+  access to objects defined in previous doctest statements.
+
+0.1a1 (2009-11-21)
+==================
+
 * Initial Public Release
