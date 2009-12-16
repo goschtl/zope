@@ -16,7 +16,7 @@ name='manuelpi.fakemodule'
 
 setup(
     name=name,
-    version='0.1a',
+    version = '0.1b1',
     url='http://www.python.org/pypi/'+name,
     license='ZPL 2.1',
     description='Module support in doctests',
