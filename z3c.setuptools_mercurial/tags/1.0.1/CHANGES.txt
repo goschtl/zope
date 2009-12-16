@@ -1,0 +1,18 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2009-12-16)
+------------------
+
+- Feature: Add a test for getting the file list within a sub-directory of the
+  repository.
+
+- Bug: It turns out that setuptools does not like "./<path>" notation but only
+  "<path>". Fixed the problem.
+
+
+1.0.0 (2009-12-15)
+------------------
+
+- Initial release.
