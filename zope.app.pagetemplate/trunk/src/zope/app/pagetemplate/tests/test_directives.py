@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.component.testing import PlacelessSetup
 
 template = """<configure 
    xmlns='http://namespaces.zope.org/zope'

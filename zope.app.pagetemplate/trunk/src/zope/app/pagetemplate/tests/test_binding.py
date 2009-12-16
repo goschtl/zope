@@ -17,17 +17,26 @@ $Id$
 """
 import unittest
 
-from zope.app.pagetemplate.tests.testpackage.content \
-     import Content, PTComponent
+from zope.component import provideAdapter
+from zope.component.testing import PlacelessSetup
+from zope.container.interfaces import ISimpleReadContainer
+from zope.container.traversal import ContainerTraversable
+from zope.traversing.interfaces import ITraversable
 
-from zope.app.testing import setup, placelesssetup
+from zope.app.pagetemplate.tests.testpackage.content import Content
+from zope.app.pagetemplate.tests.testpackage.content import PTComponent
+
+def setUpTraversal():
+    from zope.traversing.testing import setUp
+    setUp()
+    provideAdapter(ContainerTraversable, (ISimpleReadContainer,), ITraversable)
 
 
-class BindingTestCase(placelesssetup.PlacelessSetup, unittest.TestCase):
+class BindingTestCase(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(BindingTestCase, self).setUp()
-        setup.setUpTraversal()
+        setUpTraversal()
 
     def test_binding(self):
         from zope.publisher.browser import TestRequest
