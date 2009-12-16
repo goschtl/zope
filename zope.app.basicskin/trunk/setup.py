@@ -18,7 +18,7 @@
 ##############################################################################
 """Setup for zope.app.basicskin package
 """
-version = '0'
+version = '3.5.0dev'
 
 import os
 from setuptools import setup, find_packages
@@ -29,8 +29,8 @@ def read(*rnames):
 setup(name='zope.app.basicskin',
       version = version,
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      description='Zope 3 ZMI Basic Skin',
+      author_email='zope-dev@zope.org',
+      description='Zope ZMI Basic Skin',
       long_description=(
           read('README.txt')
           + '\n\n' +
@@ -47,7 +47,7 @@ setup(name='zope.app.basicskin',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.basicskin',
+      url='http://pypi.python.org/pypi/zope.app.basicskin',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Removed BBB import for IBasicSkin.
+
 3.4.1 (2009-08-15)
 ------------------
 
