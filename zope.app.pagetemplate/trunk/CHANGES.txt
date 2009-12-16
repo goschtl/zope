@@ -5,6 +5,9 @@ Changes
 3.8.0 (unreleased)
 ------------------
 
+- Correct testing dependency to point to zope.securitypolicy instead of its
+  zope.app variant. The app version is no longer required since 3.4.1.
+
 - Removed the ``inline-evaluation`` extra referring to zope.app.interpreter.
   There's no code or ZCML left pointing to that package.
 
