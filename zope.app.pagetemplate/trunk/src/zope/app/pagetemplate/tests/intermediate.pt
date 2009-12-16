@@ -1,5 +1,5 @@
-<html metal:define-macro='intermediate'
-      metal:extend-macro='context/@@outer/main'>
+<html metal:define-macro="intermediate"
+      metal:extend-macro="python:outer.macros['main']">
 <body>
 hello
 <div metal:fill-slot="body">

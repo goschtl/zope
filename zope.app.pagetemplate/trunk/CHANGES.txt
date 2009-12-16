@@ -5,6 +5,9 @@ Changes
 3.8.0 (unreleased)
 ------------------
 
+- Refactored nested macro test from a functional test into a unit test. This
+  allowed to remove the last outside zope.app dependencies.
+
 - Fixed undeclared testing dependency on zope.app.component.
 
 - Copy trivial NoTraverser class from zope.app.publication to avoid a ZCML

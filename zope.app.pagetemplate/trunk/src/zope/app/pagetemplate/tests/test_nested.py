@@ -2,17 +2,62 @@
 """
 __docformat__ = "reStructuredText"
 
-import os
-from zope.app.testing.functional import ZCMLLayer
+import unittest
 
-PageTemplateLayer = ZCMLLayer(
-    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
-    __name__, 'PageTemplateLayer', allow_teardown=True)
+from zope.component.testing import PlacelessSetup
+from zope.publisher.browser import TestRequest
 
-import zope.app.testing.functional
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
+class Context(object):
+    pass
+
+
+class View(object):
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+
+EXPECTED = u"""\
+<html>
+<head>
+<title>Example: outer</title>
+</head>
+<body>
+hello
+<div>
+<div>
+inner body slot content
+</div>
+intermediate body slot stuff
+</div>
+</body>
+</html>
+"""
+
+
+class Test(PlacelessSetup, unittest.TestCase):
+
+    def testMacroExtension(self):
+        # This test demonstrates how macro extension allows a macro to extend
+        # and re-offer a slot for a client template to fill.
+        outer = ViewPageTemplateFile('outer.pt')
+        intermediate = ViewPageTemplateFile('intermediate.pt')
+        inner = ViewPageTemplateFile('inner.pt')
+
+        context = Context()
+        request = TestRequest()
+        view = View(context, request)
+        self.failUnless('outer body slot' in outer(view))
+
+        namespace = inner.pt_getContext(view, request)
+        namespace['outer'] = outer
+        namespace['intermediate'] = intermediate
+        result = inner.pt_render(namespace)
+        self.assertEquals(result, EXPECTED)
+
 
 def test_suite():
-    suite = zope.app.testing.functional.FunctionalDocFileSuite(
-        "test_nested.txt")
-    suite.layer = PageTemplateLayer
-    return suite
+    loader=unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Test)

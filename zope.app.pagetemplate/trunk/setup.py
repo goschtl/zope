@@ -34,8 +34,6 @@ setup(name='zope.app.pagetemplate',
       long_description=(
         read('README.txt')
         + '\n\n.. contents::\n\n' +
-        read('src', 'zope', 'app', 'pagetemplate', 'tests', 'test_nested.txt')
-        + '\n\n' +
         read('src', 'zope', 'app', 'pagetemplate', 'namedtemplate.txt')
         + '\n\n' +
         read('CHANGES.txt')
@@ -56,7 +54,6 @@ setup(name='zope.app.pagetemplate',
           'zope.component [hook]',
           'zope.configuration',
           'zope.dublincore',
-          'zope.i18n',
           'zope.i18nmessageid',
           'zope.interface',
           'zope.pagetemplate>=3.5.0',
@@ -68,11 +65,7 @@ setup(name='zope.app.pagetemplate',
           'zope.traversing',
           ],
       extras_require={
-          "test": ['zope.container',
-                   'zope.securitypolicy',
-                   'zope.app.testing',
-                   'zope.app.zcmlfiles',
-                  ],
+          "test": ['zope.container'],
           },
       zip_safe=False,
       )

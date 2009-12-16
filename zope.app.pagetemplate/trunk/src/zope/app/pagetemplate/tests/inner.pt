@@ -1,4 +1,4 @@
-<html metal:use-macro='context/@@intermediate/intermediate'>
+<html metal:use-macro="python:intermediate.macros['intermediate']">
 <body>
 hello
 <div metal:fill-slot="body">
