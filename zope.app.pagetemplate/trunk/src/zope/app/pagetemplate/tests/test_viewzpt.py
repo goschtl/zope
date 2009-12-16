@@ -17,9 +17,9 @@ $Id$
 """
 import unittest
 
+from zope.component import getGlobalSiteManager
 from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
-from zope.app.testing import ztapi
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -66,7 +66,9 @@ class TestViewZPT(PlacelessSetup, unittest.TestCase):
 
         from zope.publisher.interfaces import IRequest
 
-        ztapi.provideView(I1, IRequest, Interface, the_view_name, ViewMaker)
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(
+            ViewMaker, (I1, IRequest), Interface, the_view_name, event=False)
 
         class MyRequest(object):
             implements(IRequest)
