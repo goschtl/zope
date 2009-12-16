@@ -18,7 +18,7 @@
 ##############################################################################
 """Setup for zope.app.basicskin package
 """
-version = '3.5.0dev'
+version = '3.5.0'
 
 import os
 from setuptools import setup, find_packages

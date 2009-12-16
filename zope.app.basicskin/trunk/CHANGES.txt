@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2009-12-16)
 ------------------
 
 - Avoid extraneous testing dependencies and remove test extra.
