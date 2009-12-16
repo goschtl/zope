@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.8.0 (unreleased)
+3.8.0 (2009-12-16)
 ------------------
 
 - Refactored nested macro test from a functional test into a unit test. This
