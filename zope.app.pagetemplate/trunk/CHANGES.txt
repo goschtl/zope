@@ -5,6 +5,9 @@ Changes
 3.8.0 (unreleased)
 ------------------
 
+- Copy trivial NoTraverser class from zope.app.publication to avoid a ZCML
+  dependency on that package.
+
 - Correct testing dependency to point to zope.securitypolicy instead of its
   zope.app variant. The app version is no longer required since 3.4.1.
 
