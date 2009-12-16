@@ -16,6 +16,8 @@ The following string shows what this might look like::
    .. module-block:: test_module
 
          import pprint
+
+         a = manuel
          
          class Something:
             pass
@@ -41,6 +43,8 @@ Let's extract the module name and its source:
    test_module
    .. module-block:: test_module
         import pprint
+   <BLANKLINE>
+        a = manuel
    <BLANKLINE>
         class Something:
            pass
@@ -163,6 +167,50 @@ In addition, functions must also be aware of their module:
 
   >>> print glob['cls_n_func'].faz_func.__module__
   manueltest.fake.cls_n_func
+
+Test Continuity
+===============
+
+We also would like to define objects in a doctest and have the
+module use them too. For example, we might want to define a class
+and have a module use it directly::
+
+    >>> class Parent:
+    ...     pass
+
+Let's now create a module that creates instances of this object::
+
+.. module-block:: enclosing_ns_available
+
+    dad = Parent()
+
+Now lets use `dad`::
+    
+    >>> print enclosing_ns_available.dad
+    <....Parent instance at ...>
+    >>> print enclosing_ns_available.dad.__module__
+    manueltest.fake.enclosing_ns_available
+
+However, we would also like to have module globals equally available
+to local scopes. Consider the case that a class relies upon some 
+module level utility function::
+
+.. module-block:: module_globals
+
+    foobar = True
+
+    def utility_func():
+        return foobar
+
+    class DelegatingClass(object):
+        def __init__(self):
+            self.v = utility_func()
+
+The class should be able to use the utlilty function properly:
+
+    >>> dc = module_globals.DelegatingClass()
+    >>> dc.v
+    True
 
 Invalid Modules
 ===============
