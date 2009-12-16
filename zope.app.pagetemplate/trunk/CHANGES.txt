@@ -1,6 +1,12 @@
-=========
- Changes
-=========
+=======
+Changes
+=======
+
+3.8.0 (unreleased)
+------------------
+
+- Removed the ``inline-evaluation`` extra referring to zope.app.interpreter.
+  There's no code or ZCML left pointing to that package.
 
 3.7.1 (2009-05-27)
 ------------------

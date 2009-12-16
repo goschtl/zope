@@ -22,7 +22,7 @@ import os.path
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.7.1'
+version = '3.8.0'
 
 
 setup(name='zope.app.pagetemplate',
@@ -68,9 +68,6 @@ setup(name='zope.app.pagetemplate',
           'zope.traversing',
           ],
       extras_require={
-          "inline-evaluation": ['zope.app.interpreter'],
-          # The tests appear not to need zope.app.interpreter; there
-          # should be tests for that, though.  :-(
           "test": ['zope.container',
                    'zope.app.testing',
                    'zope.app.securitypolicy',
