@@ -4,6 +4,19 @@ CHANGES
 0.4 (unreleased)
 ================
 
+* Expose a ``GroupInclusion`` that only exists to depend on other
+  inclusions. This way it becomes possible to expose a set of
+  different resources together without there being a central resource
+  that depends on them. The GroupInclusion itself is therefore not
+  rendered.
+
+* Create ``render_into_html`` and ``render_topbottom_into_html``
+  functionality, which insert the rendered inclusions into HTML.
+
+* Expose ``render``, ``render_into_html``, ``render_topbottom`` and
+  ``render_topbottom_into_html`` as top-level functions in
+  ``hurry.resource``.
+
 * Fix NameError when trying to render an inclusion with unknown extension.
 
 * Document inclusion renderers mechanism in the README.txt.

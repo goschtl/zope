@@ -77,6 +77,32 @@ Let's now see what resources are needed by this inclusion::
 
 As you can see, ``css`` resources are sorted before ``js`` resources.
 
+Grouping resources
+==================
+
+It is also possible to define a group that doesn't get rendered
+itself, but groups other resources together that should be rendered::
+
+  >>> from hurry.resource import GroupInclusion
+  >>> group = GroupInclusion([x1, x2])
+
+When we need a group, we'll get all inclusions referenced in it::
+
+  >>> needed = NeededInclusions()
+  >>> needed.need(group)
+  >>> group.inclusions()
+  [<ResourceInclusion 'a.js' in library 'foo'>, 
+   <ResourceInclusion 'b.css' in library 'foo'>]
+
+A group can also be depended on; it won't show up in the list of
+inclusions directly::
+
+  >>> more_stuff = ResourceInclusion(foo, 'more_stuff.js', depends=[group])
+  >>> more_stuff.inclusions()
+  [<ResourceInclusion 'a.js' in library 'foo'>, 
+   <ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'more_stuff.js' in library 'foo'>]
+
 A convenience spelling
 ======================
 
@@ -713,6 +739,52 @@ for instance)::
   <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
 
+Let's set this a currently needed inclusions::
+  
+  >>> request.needed = needed
+
+There is a function available as well for rendering the resources for
+the currently needed inclusion::
+
+  >>> from hurry import resource
+  >>> print resource.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
+Inserting resources in HTML
+===========================
+
+When you have the HTML it can be convenient to have a way to insert
+resources directly into some HTML. 
+
+The insertion system assumes a HTML text that has a ``<head>`` tag in it::
+
+  >>> html = "<html><head>something more</head></html>"
+
+To insert the resources directly in HTML we can use ``render_into_html``
+on ``needed``::
+
+  >>> print needed.render_into_html(html)
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  something more</head></html>
+
+The top-level convenience function does this for the currently needed
+resources::
+
+  >>> print resource.render_into_html(html)
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  something more</head></html>
+
+See below for a way to insert into HTML when bottom fragments are
+involved.
+
 Top and bottom fragments
 ========================
 
@@ -797,6 +869,17 @@ We now see the resource ``y2`` show up in the bottom fragment::
   >>> print bottom
   <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script>
 
+There's also a convenience function for the currently needed inclusion::
+
+  >>> request.needed = needed
+  >>> top, bottom = resource.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  >>> print bottom
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script>
+
 When we force bottom rendering of Javascript, there is no effect of
 making a resource bottom-safe: all ``.js`` resources will be rendered
 at the bottom anyway::
@@ -824,6 +907,35 @@ bottom-safety however; it could be the user simply never enables
 the user will want to write Javascript code that isn't safe to be
 included at the bottom of the page and still be able to depend on
 Javascript code that is.
+
+Inserting top and bottom resources in HTML
+==========================================
+
+You can also insert top and bottom fragments into HTML. This assumes a
+HTML text that has a ``<head>`` tag in it as well as a ``</body>``
+tag::
+
+  >>> html = "<html><head>rest of head</head><body>rest of body</body></html>"
+
+To insert the resources directly in HTML we can use
+``render_topbottom_into_html`` on ``needed``::
+
+  >>> print needed.render_topbottom_into_html(html)
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script></body></html>
+
+There's also a function available to do this for the currently needed
+resources::
+
+  >>> print resource.render_topbottom_into_html(html)
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script></body></html>
 
 bottom convenience
 ==================

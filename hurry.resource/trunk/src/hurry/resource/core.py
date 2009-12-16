@@ -122,12 +122,35 @@ class ResourceInclusion(object):
         result.append(self)
         return result
 
+class GroupInclusion(object):
+    """An inclusion used to group resources together.
+
+    It doesn't define a resource itself.
+    """
+    implements(interfaces.IInclusion)
+
+    def __init__(self, depends):
+        self.depends = depends
+
+    def need(self):
+        needed = component.getUtility(
+            interfaces.ICurrentNeededInclusions)()
+        needed.need(self)
+
+    def inclusions(self):
+        """Get all inclusions needed by this inclusion.
+        """
+        result = []
+        for depend in self.depends:
+            result.extend(depend.inclusions())
+        return result
+
 def normalize_inclusions(library, inclusions):
     return [normalize_inclusion(library, inclusion)
             for inclusion in inclusions]
 
 def normalize_inclusion(library, inclusion):
-    if isinstance(inclusion, ResourceInclusion):
+    if interfaces.IInclusion.providedBy(inclusion):
         return inclusion
     assert isinstance(inclusion, basestring)
     return ResourceInclusion(library, inclusion)
@@ -180,7 +203,11 @@ class NeededInclusions(object):
 
     def render(self):
         return render_inclusions(self.inclusions())
-    
+
+    def render_into_html(self, html):
+        to_insert = self.render()
+        return html.replace('<head>', '<head>\n    %s\n' % to_insert, 1)
+        
     def render_topbottom(self):
         inclusions = self.inclusions()
 
@@ -208,6 +235,14 @@ class NeededInclusions(object):
         return (render_inclusions(top_inclusions, library_urls),
                 render_inclusions(bottom_inclusions, library_urls))
 
+    def render_topbottom_into_html(self, html):
+        top, bottom = self.render_topbottom()
+        if top:
+            html = html.replace('<head>', '<head>\n    %s\n' % top, 1)
+        if bottom:
+            html = html.replace('</body>', '%s</body>' % bottom, 1)
+        return html
+
 def mode(mode):
     """Set the mode for the currently needed resources.
     """
@@ -227,11 +262,31 @@ def rollup(disable=False):
         interfaces.ICurrentNeededInclusions)()
     needed.rollup(disable)
 
+def render():
+    needed = component.getUtility(
+        interfaces.ICurrentNeededInclusions)()
+    return needed.render()
+
+def render_into_html(html):
+    needed = component.getUtility(
+        interfaces.ICurrentNeededInclusions)()
+    return needed.render_into_html(html)
+
+def render_topbottom():
+    needed = component.getUtility(
+        interfaces.ICurrentNeededInclusions)()
+    return needed.render_topbottom()
+
+def render_topbottom_into_html(html):
+    needed = component.getUtility(
+        interfaces.ICurrentNeededInclusions)()
+    return needed.render_topbottom_into_html(html)
+
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]
 
 def remove_duplicates(inclusions):
-    """Given a set of inclusions, consolidate them so each nly occurs once.
+    """Given a set of inclusions, consolidate them so each only occurs once.
     """
     seen = set()
     result = []

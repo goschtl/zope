@@ -9,7 +9,25 @@ class ILibrary(Interface):
     """
     name = Attribute("The unique name of the library")
 
-class IResourceInclusion(Interface):
+class IInclusion(Interface):
+    """Base to all inclusions.
+    """
+    depends = Attribute("A list of inclusions that this "
+                        "resource depends on")
+    
+    def need():
+        """Express need directly for the current INeededInclusions.
+
+        This is a convenience method to help express inclusions more
+        easily, just do myinclusion.need() to have it be included in
+        the HTML that is currently being rendered.
+        """
+
+    def inclusions():
+        """Get all inclusions needed by this inclusion.
+        """
+
+class IResourceInclusion(IInclusion):
     """Resource inclusion
 
     A resource inclusion specifies how to include a single resource in a
@@ -18,8 +36,6 @@ class IResourceInclusion(Interface):
     library = Attribute("The resource library this resource is in")
     relpath = Attribute("The relative path of the resource "
                         "within the resource library")
-    depends = Attribute("A list of ResourceInclusions that this "
-                        "resource depends on")
     rollups = Attribute("A list of potential rollup ResourceInclusions "
                         "that this resource is part of")
     bottom = Attribute("A flag. When set to True, this resource "
@@ -45,21 +61,9 @@ class IResourceInclusion(Interface):
         If we cannot find a particular mode for a resource, the
         original resource inclusion is returned.
         """
-        
+
     def key():
         """Returns a unique, hashable identifier for the resource inclusion.
-        """
-
-    def need():
-        """Express need directly for the current INeededInclusions.
-
-        This is a convenience method to help express inclusions more
-        easily, just do myinclusion.need() to have it be included in
-        the HTML that is currently being rendered.
-        """
-
-    def inclusions():
-        """Get all inclusions needed by this inclusion, including itself.
         """
 
 class INeededInclusions(Interface):
@@ -136,7 +140,17 @@ class INeededInclusions(Interface):
         ``force_bottom`` settings are ignored; everything is always
         rendered on top.
         """
-        
+
+    def render_into_html(html):
+        """Render all resource inclusions into HTML.
+
+        The HTML supplied needs to a <head> tag available. The
+        inclusions HTML snippet will be rendered just after this.
+
+        ``force_bottom`` settings are ignored; everything is always
+        rendered on top.
+        """
+
     def render_topbottom():
         """Render all resource inclusions into top and bottom snippet.
 
@@ -162,7 +176,17 @@ class INeededInclusions(Interface):
         
         Returns top and bottom HTML fragments.
         """
-        
+
+    def render_topbottom_into_html(html):
+        """Render all resource inclusions into HTML (top and bottom).
+
+        The HTML supplied needs to a <head> tag available. The
+        top inclusions HTML snippet will be rendered just after this.
+
+        The HTML supplied also needs to have a </body> tag available.
+        bottom inclusions HTML snippet will be rendered just before this.
+        """
+
 class ICurrentNeededInclusions(Interface):
     def __call__():
         """Return the current needed inclusions object.
