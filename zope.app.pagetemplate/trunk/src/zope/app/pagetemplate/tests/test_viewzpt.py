@@ -17,11 +17,11 @@ $Id$
 """
 import unittest
 
-from zope.app.testing import ztapi
+from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
+from zope.app.testing import ztapi
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.component.testing import PlacefulSetup
 
 
 class I1(Interface):
@@ -38,7 +38,7 @@ class InstanceWithoutContext(object):
     pass
 
 
-class TestViewZPT(PlacefulSetup, unittest.TestCase):
+class TestViewZPT(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(TestViewZPT, self).setUp()
