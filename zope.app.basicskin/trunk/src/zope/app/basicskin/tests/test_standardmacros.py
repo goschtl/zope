@@ -16,13 +16,16 @@
 $Id$
 """
 import unittest
+
+from zope.component import getGlobalSiteManager
 from zope.component.testing import PlacelessSetup
 from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from zope.app.basicskin.standardmacros import Macros
-from zope.app.testing import ztapi
+
 
 class ViewWithMacros(object):
     implements(IBrowserView)
@@ -57,7 +60,7 @@ class works_with_page1(ViewWithMacros):
              'tree':'works_with_page1_tree'}
 
 def createMacrosInstance(pages):
-    
+
     class T(Macros):
         aliases = {'afoo': 'foo', 'abar': 'bar'}
 
@@ -67,13 +70,20 @@ def createMacrosInstance(pages):
         macro_pages = pages
     return T(C(), TestRequest())
 
+
+def browserView(for_, name, factory):
+    gsm = getGlobalSiteManager()
+    for_ = (for_, ) + (IDefaultBrowserLayer,)
+    gsm.registerAdapter(factory, for_, Interface, name, event=False)
+
+
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        ztapi.browserView(I, 'page1', page1)
-        ztapi.browserView(I, 'collides_with_page1', collides_with_page1)
-        ztapi.browserView(I, 'works_with_page1',  works_with_page1)
+        browserView(I, 'page1', page1)
+        browserView(I, 'collides_with_page1', collides_with_page1)
+        browserView(I, 'works_with_page1',  works_with_page1)
 
     def testSinglePage(self):
         macros = createMacrosInstance(('page1',))
