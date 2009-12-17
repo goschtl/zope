@@ -60,3 +60,6 @@ from zope.component._declaration import adapts
 
 moduleProvides(IComponentArchitecture, IComponentRegistrationConvenience)
 __all__ = tuple(IComponentArchitecture)
+
+from zope.component._api import patch_Interface
+patch_Interface()

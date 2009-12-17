@@ -236,3 +236,37 @@ def getFactoriesFor(interface, context=None):
                 if iface.isOrExtends(interface):
                     yield name, factory
                     break
+
+
+# Patch zope.interface.Interface
+
+_marker = object()
+
+def adapt(iface, name=u'', default=_marker, context=None, *objects):
+    if not objects:
+        raise TypeError('You need to adapt at least one object.')
+    if len(objects) == 1:
+        if default is _marker:
+            return getAdapter(objects[0], iface, name=name, context=context)
+        else:
+            return queryAdapter(objects[0], iface,
+                                name=name, default=default, context=context)
+    else:
+        if default is _marker:
+            return getMultiAdapter(objects, iface, name=name, context=context)
+        else:
+            return queryMultiAdapter(
+                objects, iface, name=name, default=default, context=context)
+
+
+def utility(iface, name=u'', default=_marker, context=None):
+    if default is _marker:
+        return getUtility(iface, name=name, context=context)
+    else:
+        return queryUtility(
+            iface, name=name, default=default, context=context)
+
+
+def patch_Interface():
+    Interface.adapt = adapt
+    Interface.utility = utility
