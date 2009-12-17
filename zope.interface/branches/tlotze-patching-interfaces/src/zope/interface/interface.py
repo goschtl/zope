@@ -426,7 +426,14 @@ class Specification(SpecificationBase):
             return attr
 
 class InterfaceClass(Element, InterfaceBase, Specification):
-    """Prototype (scarecrow) Interfaces Implementation."""
+    """Prototype (scarecrow) Interfaces Implementation.
+
+    Note that code outside zope.interface may add methods to interfaces in
+    order to provide easy access to functionality that uses interfaces. One
+    example of this is zope.component which adds the `adapt` and `utility`
+    methods.
+
+    """
 
     # We can't say this yet because we don't have enough
     # infrastructure in place.

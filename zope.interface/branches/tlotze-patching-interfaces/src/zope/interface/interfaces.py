@@ -198,7 +198,7 @@ class IInterface(ISpecification, IElement):
         def meth2():
             '''Documentation for meth2'''
 
-    You use interfaces in two ways:
+    You use interfaces in at least two ways:
 
     o You assert that your object implement the interfaces.
 
@@ -225,6 +225,15 @@ class IInterface(ISpecification, IElement):
 
     o You query interface meta-data. See the IInterface methods and
       attributes for details.
+
+    In addition, packages other than zope.interface may implement different
+    uses of interfaces. In particular, they may add new methods to interfaces
+    that allow easy access to their functionality.
+
+    As an example, zope.component implements the Zope Component Architecture
+    which is about registering and looking up adapters and utilities by the
+    interface they provide. It adds two methods named `adapt` and `utility` to
+    interfaces.
 
     """
 
