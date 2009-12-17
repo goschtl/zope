@@ -13,7 +13,7 @@ EXIT=""
 usage() {
     cat <<__EOT__
 Usage: $0 <projectname>
-Set the copyright owner for a zope.org project to the Zope Foundation by
+Update the copyright owner for a zope.org project to the Zope Foundation by
 updating the trunk and the two most recent release branches.
 
 Checks out the branches that are recommended to update and commits
@@ -45,20 +45,18 @@ function fix_one() {
     if [[ ! -a ${workdir} ]]; then
         svn -q co ${url} ${workdir}
     fi
-    ${FIXSCRIPT} --owner "Zope Foundation and Contributors." ${workdir}
-    local remaining=$(egrep -niIr "Copyright \(c\).*Zope Corporation" ${workdir} | wc -l)
-    if [[ ${remaining} != 0 ]]; then
-        echo "ERROR: ${remaining} unfixed copyright line(s) remaining for ${url}"
-        egrep --color=never -niIr "Copyright \(c\).*Zope Corporation" ${workdir}
-        return
-    fi
+    ${FIXSCRIPT} --year $(date +%Y) --owner "Zope Foundation and Contributors." ${workdir}
+    sed "s/^\(.*\)author=['|\"].*['|\"]\(.*\)$/\1author='Zope Foundation and Contributors'\2/" <${workdir}/setup.py >${workdir}/setup.py.tmp
+    mv ${workdir}/setup.py.tmp ${workdir}/setup.py
+    egrep -A 1 -niIr "Copyright \(c\)" ${workdir}
+    echo "Please check the copyright headers above and press [RETURN] to commit"
+    read
     local changes=$(svn stat ${workdir}|egrep "^M"|wc -l)
     if [[ $changes -gt 0 ]]; then
-        echo "Changes applied successfully, committing..."
-        svn -q commit ${workdir} \
+        svn commit ${workdir} \
             -m "Updating copyright header after transfer of ownership to the Zope Foundation"
     else
-        echo "No changes needed."
+        echo "Nothing to commit."
     fi
     rm -rf ${workdir}
 }
