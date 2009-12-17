@@ -102,8 +102,8 @@ necessary meta-configuration:
 
    >>> from zope.configuration import xmlconfig
 
-   >>> import zope.app.component
-   >>> context = xmlconfig.file('meta.zcml', zope.app.component)
+   >>> import zope.component
+   >>> context = xmlconfig.file('meta.zcml', zope.component)
 
    >>> import zope.app.form.browser
    >>> context = xmlconfig.file('meta.zcml', zope.app.form.browser, context)

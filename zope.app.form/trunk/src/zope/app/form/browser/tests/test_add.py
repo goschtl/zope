@@ -19,19 +19,19 @@ import unittest
 
 from zope.browser.interfaces import IAdding
 from zope.component import getMultiAdapter
+from zope.component.eventtesting import getEvents
 from zope.component.interfaces import IFactory
 from zope.component.interfaces import IComponentLookup
 from zope.component.factory import Factory
 from zope.interface import Interface, implements
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.schema import TextLine, accessors
 from zope.security.checker import CheckerPublic
-from zope.component.eventtesting import getEvents
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
+from zope.site.site import SiteManagerAdapter
 
-from zope.app.component.site import SiteManagerAdapter
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.add import AddViewFactory, AddView

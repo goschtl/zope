@@ -15,20 +15,17 @@
 
 $Id$
 """
-import os
 import unittest
 from cStringIO import StringIO
 
 from zope import component
-from zope.component.interfaces import ComponentLookupError
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.traversing.interfaces import TraversalError
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, Int
-from zope.security.proxy import ProxyFactory
 
-import zope.app.component
+import zope.component
 import zope.app.form.browser
 import zope.browsermenu
 from zope.app.form.browser import TextWidget
@@ -74,11 +71,10 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        XMLConfig('meta.zcml', zope.app.component)()
+        XMLConfig('meta.zcml', zope.component)()
         XMLConfig('meta.zcml', zope.app.form.browser)()
         XMLConfig('meta.zcml', zope.browsermenu)()
 
-        from zope.app.testing import ztapi
         from zope.traversing.adapters import DefaultTraversable
         from zope.traversing.interfaces import ITraversable
 

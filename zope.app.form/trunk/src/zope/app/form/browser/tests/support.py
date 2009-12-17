@@ -66,7 +66,7 @@ def defineSecurity(class_, schema):
     schema = schema.__identifier__
     xmlconfig.string("""
         <configure xmlns="http://namespaces.zope.org/zope">
-          <include package="zope.app.component" file="meta.zcml" />
+          <include package="zope.security" file="meta.zcml" />
           <class class="%s">
             <require
               permission="zope.Public"
@@ -83,7 +83,7 @@ def defineWidgetView(field_interface, widget_class, view_type):
     view_type = '%s.%s' % (view_type.__module__, view_type.__name__)
     xmlconfig.string("""
         <configure xmlns="http://namespaces.zope.org/zope">
-          <include package="zope.app.component" file="meta.zcml" />
+          <include package="zope.component" file="meta.zcml" />
           <view
             for="%s"
             type="zope.publisher.interfaces.browser.IBrowserRequest"
