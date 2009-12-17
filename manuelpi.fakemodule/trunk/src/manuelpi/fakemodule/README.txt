@@ -53,7 +53,7 @@ full doctest::
 
 The above doctest creates a new module `test_module` and then exercises
 the objects within it. Notice how the module becomes immediately available
-to the doctet after its definition. 
+to the doctest after its definition. 
 
 To use `manualpi.fakemodule` in your application, set up your tests as
 described in the Manuel documentation and import the `Manuel` class from
