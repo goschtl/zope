@@ -16,27 +16,27 @@
 $Id$
 """
 import unittest
-from zope.testing import doctest
+from zope.component.testing import PlacelessSetup
+from zope.configuration.xmlconfig import XMLConfig
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
-import zope.security.checker
 from zope.app.form.browser import ObjectWidget
-from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.browser.tests import support
-from zope.app.form.testing import AppFormLayer
 
 class ITestContact(Interface):
     name = TextLine()
     email = TextLine()
-    
+
 class TestContact(object):
     implements(ITestContact)
 
-class Test(BrowserTestCase, support.VerifyResults):
-    
+class Test(PlacelessSetup, unittest.TestCase, support.VerifyResults):
+
     def setUp(self):
-        BrowserTestCase.setUp(self)
+        PlacelessSetup.setUp(self)
+        import zope.app.form
+        XMLConfig('ftesting.zcml', zope.app.form)()
         self.field = Object(ITestContact, __name__=u'foo')
 
     def test_new(self):
@@ -68,12 +68,8 @@ class Test(BrowserTestCase, support.VerifyResults):
 
 def test_suite():
     suite = unittest.TestSuite()
-    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
-
-
-
