@@ -5,6 +5,7 @@
     i18n_domain="formtest">
 
   <browser:addform
+     for="zope.site.interfaces.IFolder"
      schema=".test_functional_i18n.IFieldContent"
      content_factory=".test_functional_i18n.FieldContent"
      name="addfieldcontent.html"

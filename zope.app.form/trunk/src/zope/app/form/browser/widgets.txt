@@ -155,15 +155,13 @@ Tying all this together is the ``configure.zcml``::
         name="index.html"
         template="results.zpt"
         permission="zope.View"
-        menu="zmi_views" title="View"
         />
 
     <browser:pages
         for=".interfaces.IPoll"
         class=".browser.PollVoteView"
         permission="zope.ManageContent">
-        <browser:page name="vote.html" template="vote.zpt"
-            menu="zmi_views" title="Vote" />
+        <browser:page name="vote.html" template="vote.zpt" />
         <browser:page name="choose" attribute="choose" />
     </browser:pages>
 
@@ -189,7 +187,6 @@ Tying all this together is the ``configure.zcml``::
         class=".browser.PollEditView"
         label="Change a Poll"
         name="edit.html"
-        menu="zmi_views" title="Edit"
         permission="zope.ManageContent" />
 
     </configure>

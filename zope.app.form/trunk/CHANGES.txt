@@ -5,6 +5,8 @@ CHANGES
 3.11.0 (unreleased)
 ===================
 
+- Removed the zope.app.container and zope.app.publisher testing dependencies.
+
 - Refactored code to remove zope.app.component dependency.
 
 - Made the tests independent of zope.app.locales.
