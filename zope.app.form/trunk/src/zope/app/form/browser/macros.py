@@ -25,11 +25,15 @@ from zope.publisher.browser import BrowserView
 class FormMacros(BrowserView):
     implements(IItemMapping)
 
-    macro_pages = ('widget_macros', 'addform_macros')
+    macro_pages = (
+        'view_macros',
+        'widget_macros',
+        'addform_macros',
+        )
     aliases = {
         'view': 'page',
         'dialog': 'page',
-        'addingdialog': 'page'
+        'addingdialog': 'page',
         }
 
     def __getitem__(self, key):

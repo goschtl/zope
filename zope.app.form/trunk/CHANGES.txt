@@ -5,6 +5,9 @@ CHANGES
 3.11.0 (unreleased)
 ===================
 
+- Define dummy standard_macros for test purposes. This reduces the test
+  dependencies by zope.app.basicskin and zope.browserresource.
+
 - Removed the zope.app.container and zope.app.publisher testing dependencies.
 
 - Refactored code to remove zope.app.component dependency.
