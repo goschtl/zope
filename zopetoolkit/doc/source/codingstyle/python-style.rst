@@ -29,7 +29,7 @@ Here is the template::
 
   ##############################################################################
   #
-  # Copyright (c) 2009 Zope Corporation and Contributors.
+  # Copyright (c) 2009 Zope Foundation and Contributors.
   # All Rights Reserved.
   #
   # This software is subject to the provisions of the Zope Public License,
