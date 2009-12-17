@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.10.0 (unreleased)
+3.10.0 (2009-12-17)
 ===================
 
 - Avoid the ``zope.app.basicskin`` dependency, by defining our own FormMacros.
