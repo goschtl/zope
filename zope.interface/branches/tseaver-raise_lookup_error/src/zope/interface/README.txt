@@ -688,7 +688,7 @@ If an object cannot be adapted, then a TypeError is raised::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  LookupError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
 
 
 
@@ -731,7 +731,7 @@ Adapter hooks (see __adapt__) will also be used, if present::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  LookupError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
 
 __adapt__
 ---------

@@ -623,7 +623,7 @@ static struct PyMethodDef ib_methods[] = {
             elif alternate is not _marker:
                 return alternate
             else:
-                raise TypeError("Could not adapt", obj, self)
+                raise LookupError("Could not adapt", obj, self)
 */
 static PyObject *
 ib_call(PyObject *self, PyObject *args, PyObject *kwargs)
@@ -663,7 +663,7 @@ ib_call(PyObject *self, PyObject *args, PyObject *kwargs)
   adapter = Py_BuildValue("sOO", "Could not adapt", obj, self);
   if (adapter != NULL)
     {
-      PyErr_SetObject(PyExc_TypeError, adapter);
+      PyErr_SetObject(PyExc_LookupError, adapter);
       Py_DECREF(adapter);
     }
   return NULL;

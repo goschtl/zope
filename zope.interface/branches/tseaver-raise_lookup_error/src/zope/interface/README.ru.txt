@@ -683,7 +683,7 @@ IBase::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  LookupError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
 
 только если альтернативное значение не передано как второй аргумент::
 
@@ -725,7 +725,7 @@ IBase::
   >>> I(0)
   Traceback (most recent call last):
   ...
-  TypeError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
+  LookupError: ('Could not adapt', 0, <InterfaceClass __main__.I>)
 
 
 __adapt__

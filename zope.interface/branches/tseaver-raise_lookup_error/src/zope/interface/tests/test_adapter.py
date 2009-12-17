@@ -253,7 +253,7 @@ def test_adapter_registry_update_upon_interface_bases_change():
     >>> IY(X()) #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     Traceback (most recent call last):
     ...
-    TypeError: ('Could not adapt',
+    LookupError: ('Could not adapt',
                 <zope.interface.tests.test_adapter.X object at ...>,
                 <InterfaceClass zope.interface.tests.test_adapter.IY>)
 

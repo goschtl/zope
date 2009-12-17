@@ -186,7 +186,7 @@ class InterfaceBasePy(object):
         elif alternate is not _marker:
             return alternate
         else:
-            raise TypeError("Could not adapt", obj, self)
+            raise LookupError("Could not adapt", obj, self)
 
     def __adapt__(self, obj):
         """Adapt an object to the reciever

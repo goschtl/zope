@@ -140,6 +140,8 @@ class ISpecification(Interface):
         """
 
 
+_marker = []
+
 class IInterface(ISpecification, IElement):
     """Interface objects
 
@@ -297,7 +299,20 @@ class IInterface(ISpecification, IElement):
         interface directly and indirectly by base interfaces.
         """
 
+    def __call__(context, default=_marker, name=''):
+        """ Adapt context to this interface.
+
+        o If 'default' is passed, and no adapter is found, return 'default'.
+
+        o If 'default' is not passed, and no adapter is found, raise
+          a LookupError.
+
+        o If 'name' is passed, look up the corresponding named adapter.
+        """
+
     __module__ = Attribute("""The name of the module defining the interface""")
+
+del _marker # only to make API signature valid
 
 class IDeclaration(ISpecification):
     """Interface declaration
