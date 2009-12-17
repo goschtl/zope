@@ -5,6 +5,8 @@ CHANGES
 3.11.0 (unreleased)
 ===================
 
+- Made the tests independent of zope.app.locales.
+
 - Reduce zope.app test dependencies by avoiding zope.app.securitypolicy and
   zope.app.zcmlfiles.
 

@@ -1,7 +1,6 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:i18n="http://namespaces.zope.org/i18n"
   i18n_domain="zope"
   package="zope.app.form"
   >
@@ -28,10 +27,6 @@
   <include package="zope.app.appsetup" />
   <include package="zope.app.basicskin" />
   <include package="zope.app.publication" />
-
-  <configure package="zope.app.locales">
-    <i18n:registerTranslations directory="." />
-  </configure>
 
   <securityPolicy
       component="zope.security.simplepolicies.PermissiveSecurityPolicy" />
