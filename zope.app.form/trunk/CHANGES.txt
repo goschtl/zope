@@ -5,6 +5,8 @@ CHANGES
 3.11.0 (unreleased)
 ===================
 
+- Reduce zope.app test dependencies by avoiding zope.app.securitypolicy and
+  zope.app.zcmlfiles.
 
 3.10.0 (2009-12-17)
 ===================

@@ -1,58 +1,62 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="zope"
-   package="zope.app.form"
-   >
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="zope"
+  package="zope.app.form"
+  >
 
-  <!-- This file is the equivalent of site.zcml and it is -->
-  <!-- used for functional testing setup -->
-
+  <include package="zope.browsermenu" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
+  <include package="zope.browserresource" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.i18n" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
+  <include package="zope.app.container.browser" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
 
-  <include package="zope.app.zcmlfiles" />
-  <include package="zope.app.form.browser.tests" file="i18n.zcml" />
+  <include package="zc.sourcefactory" />
+  <include package="zope.browsermenu" />
+  <include package="zope.container" />
+  <include package="zope.i18n" />
+  <include package="zope.principalregistry" />
+  <include package="zope.publisher" />
+  <include package="zope.security" />
+  <include package="zope.site" />
+  <include package="zope.traversing" />
 
-  <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="zope.app.authentication" />
-  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.basicskin" />
+  <include package="zope.app.publication" />
+
+  <configure package="zope.app.locales">
+    <i18n:registerTranslations directory="." />
+  </configure>
 
   <securityPolicy
-      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.security.simplepolicies.PermissiveSecurityPolicy" />
 
-  <role id="zope.Anonymous" title="Everybody"
-                 description="All users have this role implicitly" />
-  <role id="zope.Manager" title="Site Manager" />
+  <browser:menu
+      id="zmi_actions"
+      title="Views"
+      description="Menu for displaying alternate representations of an object"
+      />
 
-  <!-- Replace the following directive if you don't want public access -->
-  <grant permission="zope.View"
-                  role="zope.Anonymous" />
+  <browser:menu
+      id="zmi_views"
+      title="Views"
+      description="Menu for displaying alternate representations of an object"
+      />
 
-  <grantAll role="zope.Manager" />
+  <browser:containerViews
+      for="zope.site.interfaces.IFolder"
+      contents="zope.ManageContent"
+      index="zope.View"
+      add="zope.ManageContent"
+      />
 
-  <include package="zope.app.securitypolicy.browser.tests" file="functional.zcml" />
-
-  <!-- Principals -->
-
-  <unauthenticatedPrincipal
-      id="zope.anybody"
-      title="Unauthenticated User" />
-
-  <!-- Principal that tests generally run as -->
-  <principal
-      id="zope.mgr"
-      title="Manager"
-      login="mgr"
-      password="mgrpw" />
-
-  <!-- Bootstrap principal used to make local grant to the principal above -->
-  <principal
-      id="zope.globalmgr"
-      title="Manager"
-      login="globalmgr"
-      password="globalmgrpw" />
-
-    <grant role="zope.Manager" principal="zope.globalmgr" />
-
-    <include package="zc.sourcefactory" />
+  <include package="zope.app.form.browser" file="meta.zcml" />
+  <include package="zope.app.form.browser" />
+  <include package="zope.app.form.browser.tests" file="i18n.zcml" />
 
 </configure>
