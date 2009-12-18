@@ -1,0 +1,14 @@
+Changes
+=======
+
+0.2 (2009-12-18)
+----------------
+
+- Make Zope 2 test server reachable from the outside.
+- Implemented getTitle/assertTitle/waitForTitle/etc.
+
+
+0.1 (2009-11-08)
+----------------
+
+- first release
