@@ -10,6 +10,21 @@ long_description = (
     read('CHANGES.txt')
     )
 
+install_requires = [
+    'setuptools',
+    'grokcore.component >= 2.0',
+    'grokcore.security >= 1.3',
+    'martian >= 0.12',
+    'zope.app.pagetemplate',
+    'zope.app.publisher >= 3.5',
+    'zope.component',
+    'zope.interface',
+    'zope.pagetemplate',
+    'zope.publisher',
+    'zope.security',
+    'zope.traversing',
+    ]
+
 tests_require = [
     'zope.app.authentication',
     'zope.app.basicskin',
@@ -45,19 +60,7 @@ setup(
     namespace_packages=['grokcore'],
     include_package_data = True,
     zip_safe=False,
-    install_requires=['setuptools',
-                      'grokcore.component >= 2.0',
-                      'grokcore.security >= 1.3',
-                      'martian >= 0.12',
-                      'zope.app.pagetemplate',
-                      'zope.app.publisher >= 3.5',
-                      'zope.component',
-                      'zope.interface',
-                      'zope.pagetemplate',
-                      'zope.publisher',
-                      'zope.security',
-                      'zope.traversing',
-                      ],
+    install_requires=install_requires,
     tests_require=tests_require,
     extras_require={'test': tests_require},
 )
