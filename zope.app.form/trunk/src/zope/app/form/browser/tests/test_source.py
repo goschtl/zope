@@ -15,13 +15,13 @@
 
 $Id$
 """
-from zope.app.testing import placelesssetup
+from zope.component import testing
 
 def test_suite():
     from zope.testing import doctest
     return doctest.DocFileSuite(
         '../source.txt',
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown)
+        setUp=testing.setUp, tearDown=testing.tearDown)
 
 if __name__ == '__main__':
     import unittest

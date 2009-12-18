@@ -23,7 +23,7 @@ from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.testing import setup
+from zope.component import testing
 # import all widgets (in this case, importing * is ok, since we
 # absolutely know what we're importing)
 from zope.app.form.browser import *
@@ -53,7 +53,7 @@ sample = SampleObject()
 vocab = SampleVocabulary([])
 
 def setUp(test):
-    setup.placelessSetUp()
+    testing.setUp()
     context = xmlconfig.file("tests/registerWidgets.zcml",
                              zope.app.form.browser)
 
@@ -218,7 +218,7 @@ class Tests(object):
     """
 
 def test_suite():    
-    return DocTestSuite(setUp=setUp, tearDown=setup.placelessTearDown)
+    return DocTestSuite(setUp=setUp, tearDown=testing.tearDown)
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

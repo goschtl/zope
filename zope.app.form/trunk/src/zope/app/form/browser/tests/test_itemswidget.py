@@ -17,12 +17,12 @@ $Id$
 """
 import unittest
 
+from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
-from zope.schema import Choice, List, Set, TextLine, FrozenSet
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
+from zope.schema import Choice, List, Set, FrozenSet
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
-from zope.app.form.interfaces import ConversionError
 import zope.app.form.browser.itemswidgets
 from zope.app.form.browser.itemswidgets import ItemsWidgetBase
 from zope.app.form.browser.itemswidgets import ItemDisplayWidget
@@ -37,7 +37,6 @@ from zope.app.form.browser.itemswidgets import MultiSelectWidget
 from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.tests.support import VerifyResults
-from zope.app.testing.placelesssetup import PlacelessSetup
 
 vocab = SimpleVocabulary(
     [SimpleTerm(value, token, title) for value, token, title in (

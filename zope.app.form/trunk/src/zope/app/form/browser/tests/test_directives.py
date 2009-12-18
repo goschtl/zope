@@ -19,17 +19,14 @@ import unittest
 from cStringIO import StringIO
 
 from zope import component
+from zope.component.testing import PlacelessSetup
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.traversing.interfaces import TraversalError
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, Int
 
-import zope.component
-import zope.app.form.browser
-import zope.browsermenu
 from zope.app.form.browser import TextWidget
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.tests import utils
 
 template = """<configure
@@ -71,8 +68,11 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
+        import zope.component
         XMLConfig('meta.zcml', zope.component)()
+        import zope.app.form.browser
         XMLConfig('meta.zcml', zope.app.form.browser)()
+        import zope.browsermenu
         XMLConfig('meta.zcml', zope.browsermenu)()
 
         from zope.traversing.adapters import DefaultTraversable

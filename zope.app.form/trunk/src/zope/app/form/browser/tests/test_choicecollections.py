@@ -16,13 +16,13 @@
 $Id$
 """
 import unittest
+from zope.component.testing import PlacelessSetup
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import IList, IChoice, IIterableVocabulary
 from zope.schema import Choice, List
 
 from zope.app.testing import ztapi
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.browser import CollectionDisplayWidget
 from zope.app.form.browser import CollectionInputWidget

@@ -18,6 +18,7 @@ $Id$
 import datetime
 import unittest
 from zope.testing import doctest
+from zope.component.testing import setUp, tearDown
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 from zope.publisher.browser import TestRequest
@@ -40,7 +41,6 @@ from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
 from zope.app.form.browser import URIDisplayWidget
 
-from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.tests.test_browserwidget \
      import SimpleInputWidgetTest

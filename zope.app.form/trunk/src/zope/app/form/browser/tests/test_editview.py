@@ -17,16 +17,15 @@ $Id$
 """
 import unittest
 
+from zope.component.eventtesting import getEvents, clearEvents
+from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
+from zope.location.interfaces import ILocation
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
-from zope.component.interfaces import ComponentLookupError
-from zope.component.eventtesting import getEvents, clearEvents
-from zope.location.interfaces import ILocation
 
 from zope.app.testing import ztapi
-from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser.editview import EditView

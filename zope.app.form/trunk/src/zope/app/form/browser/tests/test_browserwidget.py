@@ -15,24 +15,17 @@
 
 $Id$
 """
-import os
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
-
-from zope.app.form.browser.widget import SimpleInputWidget
-from zope.app.form.interfaces import ConversionError
-from zope.app.form.interfaces import WidgetInputError, MissingInputError
-from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.i18n.interfaces import ITranslationDomain
-from zope.i18n.interfaces import INegotiator
-from zope.i18n.negotiator import negotiator
-from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
-from zope.i18n.translationdomain import TranslationDomain
 from zope.publisher.browser import TestRequest
 from zope.schema import Text, Int
+from zope.testing.doctestunit import DocTestSuite
+
+from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.tests import support
-import zope.app.form.browser.tests
+from zope.app.form.interfaces import ConversionError
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
 
 
 class BrowserWidgetTest(PlacelessSetup,

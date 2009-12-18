@@ -27,7 +27,7 @@ from zope.browser.interfaces import IAdding
 import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
 from zope.app.form.tests import utils
-import zope.app.testing.placelesssetup
+import zope.component.testing
 
 __docformat__ = "reStructuredText"
 
@@ -60,7 +60,7 @@ class Adding(object):
         self.content = content
 
 
-class WidgetDirectiveTestCase(zope.app.testing.placelesssetup.PlacelessSetup,
+class WidgetDirectiveTestCase(zope.component.testing.PlacelessSetup,
                               unittest.TestCase):
 
     def setUp(self):

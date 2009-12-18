@@ -17,16 +17,17 @@ $Id$
 """
 import unittest
 import sys
-from zope.testing import doctest
-
-from zope.app.testing import ztapi, setup
+from zope.component import testing
 from zope.interface import Interface, implements
-from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
+from zope.schema.interfaces import ITextLine
+from zope.testing import doctest
+
+from zope.app.testing import ztapi
+
 from zope.app.form.interfaces import IInputWidget, MissingInputError
 from zope.app.form.browser import TextWidget, ObjectWidget
-from zope.interface.verify import verifyClass
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
@@ -49,7 +50,8 @@ class ObjectWidgetInputErrorView(object):
 
 class ObjectWidgetTest(BrowserWidgetTest):
     """Documents and tests the object widget.
-        
+
+        >>> from zope.interface.verify import verifyClass
         >>> verifyClass(IInputWidget, ObjectWidget)
         True
     """
@@ -134,14 +136,10 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ObjectWidgetTest),
         doctest.DocFileSuite('../objectwidget.txt',
-                             setUp=setup.placelessSetUp,
-                             tearDown=setup.placelessTearDown),
+                             setUp=testing.setUp,
+                             tearDown=testing.tearDown),
         doctest.DocTestSuite(),
         ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
-
-# vim: set filetype=python ts=4 sw=4 et si
-
-

@@ -15,17 +15,14 @@
 
 $Id$
 """
-from unittest import TestSuite, main, makeSuite
+from unittest import TestSuite, main
+
+from zope.component.testing import setUp, tearDown
+from zope.publisher.browser import TestRequest
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.interface.verify import verifyClass, verifyObject
-from zope.publisher.browser import TestRequest
-from zope.schema import Text
-
 from zope.app.form import Widget
-from zope.app.form import CustomWidgetFactory
-from zope.app.form.interfaces import IWidget
-from zope.app.testing.placelesssetup import setUp, tearDown
+
 
 class TestContext(object):
     __name__ = 'Test'
@@ -43,9 +40,12 @@ class TestWidget(object):
 
     Widget implements IWidget:
 
+        >>> from zope.interface.verify import verifyClass
+        >>> from zope.app.form.interfaces import IWidget
         >>> verifyClass(IWidget, Widget)
         True
         >>> widget = Widget(context, request)
+        >>> from zope.interface.verify import verifyObject
         >>> verifyObject(IWidget, widget)
         True
 
@@ -162,6 +162,7 @@ class TestCustomWidgetFactory(object):
 
     Test regular widget:
 
+        >>> from zope.app.form import CustomWidgetFactory
         >>> factory = CustomWidgetFactory(FooWidget, bar='baz')
         >>> widget = factory(context, request)
         >>> isinstance(widget, FooWidget)

@@ -19,13 +19,15 @@ $Id$
 from zope.testing import doctest
 import zope.security.checker
 from zope.interface import Interface, implements
+from zope.component import testing
 from zope.component.interfaces import ComponentLookupError
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.schema import Field, Int, accessors
 from zope.schema.interfaces import IField, IInt
 
-from zope.app.testing import ztapi, placelesssetup
+from zope.app.testing import ztapi
+
 from zope.app.form import Widget
 from zope.app.form.interfaces import IWidget, IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError, InputErrors, WidgetsError
@@ -107,13 +109,13 @@ extended_checker = utils.DummyChecker(
 
 def setUp():
     """Setup for tests."""
-    placelesssetup.setUp()
+    testing.setUp()
     ztapi.browserView(IFoo, '', FooWidget, providing=IFooWidget)
     ztapi.browserView(IBar, '', BarWidget, providing=IBarWidget)
-    
+
 def tearDown():
-    placelesssetup.tearDown()
-    
+    testing.tearDown()
+
 def assertRaises(exceptionType, callable, *args):
     try:
         callable(*args)
@@ -1138,6 +1140,3 @@ class TestGetWidgetsData(object):
             
 def test_suite():
     return doctest.DocTestSuite()
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')

@@ -38,11 +38,20 @@ from zope.app.form.browser.add import AddViewFactory, AddView
 from zope.app.form.browser.metaconfigure import AddFormDirective
 from zope.app.form.browser.submit import Update
 from zope.app.testing import ztapi
-from zope.app.testing.placelesssetup import PlacelessSetup
 
 # Foo needs to be imported as globals() are checked
 from zope.app.form.browser.tests.test_editview import IFoo, IBar, Foo
 from zope.app.form.browser.tests.test_editview import FooBarAdapter
+
+from zope.component.testing import PlacelessSetup as CAPlacelessSetup
+from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+
+class PlacelessSetup(CAPlacelessSetup, EventPlacelessSetup):
+
+    def setUp(self, doctesttest=None):
+        CAPlacelessSetup.setUp(self)
+        EventPlacelessSetup.setUp(self)
+
 
 class Context(object):
 

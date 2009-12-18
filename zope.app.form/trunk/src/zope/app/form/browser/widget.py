@@ -538,14 +538,14 @@ def renderElement(tag, **kw):
 
 
 def setUp():
-    import zope.app.testing.placelesssetup
+    import zope.component.testing
     global setUp
-    setUp = zope.app.testing.placelesssetup.setUp
+    setUp = zope.component.testing.setUp
     setUp()
 
 
 def tearDown():
-    import zope.app.testing.placelesssetup
+    import zope.component.testing
     global tearDown
-    tearDown = zope.app.testing.placelesssetup.tearDown
+    tearDown = zope.component.testing.tearDown
     tearDown()

@@ -5,6 +5,8 @@ CHANGES
 3.11.0 (unreleased)
 ===================
 
+- Use zope.component.testing in favor of zope.app.testing where possible.
+
 - Define dummy standard_macros for test purposes. This reduces the test
   dependencies by zope.app.basicskin and zope.browserresource.
 

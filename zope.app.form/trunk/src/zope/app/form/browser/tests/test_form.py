@@ -13,26 +13,28 @@
 ##############################################################################
 """Tests for the ZCML Documentation Module
 
-$Id: tests.py 29269 2005-02-23 22:22:48Z srichter $
+$Id$
 """
-import os
 import unittest
-from zope.testing import doctest, doctestunit
-from zope.app.testing import placelesssetup, ztapi
 
 from zope.schema.interfaces import ITextLine
+from zope.testing import doctest, doctestunit
+from zope.component import testing
+
+from zope.app.testing import ztapi
+
 from zope.app.form.browser import TextWidget
 from zope.app.form.interfaces import IInputWidget
 
 def setUp(test):
-    placelesssetup.setUp()
+    testing.setUp()
     ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('../form.txt',
-                             setUp=setUp, tearDown=placelesssetup.tearDown,
+                             setUp=setUp, tearDown=testing.tearDown,
                              globs={'pprint': doctestunit.pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
