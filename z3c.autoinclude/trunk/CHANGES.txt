@@ -1,8 +1,19 @@
 Changes
 =======
 
-0.3 (unreleased)
+0.3.2 (unreleased)
 ------------------
+
+* Let `subpackageDottedNames` always return a sorted list of package names as
+  `os.listdir` doesn't on some platforms.
+
+0.3.1 (2009-05-04)
+------------------
+
+* z3c.autoinclude no longer (spuriously) depends on PasteScript.
+
+0.3 (2009-03-03)
+----------------
 
 * Allow virtual namespace packages like 'plone' to be specified for the package. I think this
   may need more thought for the dependency case.
