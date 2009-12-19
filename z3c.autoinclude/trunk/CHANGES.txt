@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.2 (unreleased)
+0.3.2 (2009-12-19)
 ------------------
 
 * Let `subpackageDottedNames` always return a sorted list of package names as
