@@ -6,7 +6,7 @@ from hurry.resource.interfaces import IInclusion
 
 def validateInclusion(directive, value):
     if not IInclusion.providedBy(value):
-        raise martian.error.GrokImportError(
+        raise ValueError(
             "You can only include IInclusions components.")
 
 

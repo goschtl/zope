@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from grokcore.component import baseclass
-from grokcore.view import View
-from zope.interface import Interface, Attribute, classImplements
+from zope.interface import Interface, Attribute
 
 
 class IResourcesIncluder(Interface):
     """A publishable component that can include resources.
     """
-
-classImplements(View, IResourcesIncluder)
 
 
 class ILibrary(Interface):
