@@ -22,12 +22,12 @@ def test_bbb_imports():
     """
     Let's check that permission vocabularies that were moved to
     zope.security are still importable from original place.
-    
+
       >>> import zope.publisher.principallogging as new
       >>> import zope.app.security.principallogging as old
       >>> old.PrincipalLogging is new.PrincipalLogging
       True
-    
+
     """
 
 def test_suite():

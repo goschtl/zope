@@ -22,10 +22,10 @@ def test_bbb_imports():
     """
     Let's check that principal registry that was moved to
     zope.principalregistry is still importable from original places.
-    
+
       >>> import zope.app.security.principalregistry as old
       >>> import zope.principalregistry.principalregistry as new
-      
+
       >>> old.DuplicateLogin is new.DuplicateLogin
       True
       >>> old.DuplicateId is new.DuplicateId
@@ -69,7 +69,7 @@ def test_bbb_imports():
 
       >>> import zope.app.security.metaconfigure as old
       >>> import zope.principalregistry.metaconfigure as new
-      
+
       >>> old.principal is new.principal
       True
       >>> old.unauthenticatedPrincipal is new.unauthenticatedPrincipal

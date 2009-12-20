@@ -21,13 +21,13 @@ from zope.testing import doctest
 def test_bbb_imports():
     """
     Let's check if original imports still work:
-    
+
       >>> import zope.app.security.ftpauth as old
       >>> import zope.publisher.ftp as new
-      
+
       >>> old.FTPAuth is new.FTPAuth
       True
-    
+
     """
 
 def test_suite():

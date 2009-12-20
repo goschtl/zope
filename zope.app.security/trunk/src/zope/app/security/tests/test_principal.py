@@ -24,7 +24,7 @@ def test_bbb_imports():
       >>> import zope.app.security.principal as old
       >>> old.checkPrincipal is new.checkPrincipal
       True
-    
+
     """
 
 def test_suite():

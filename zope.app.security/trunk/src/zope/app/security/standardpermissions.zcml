@@ -23,11 +23,4 @@
       title="[manage-principal-permission] Manage Principals"
       />
 
-  <permission
-      id="zope.ManageApplication"
-      title="[manage-application-permission] Manage Application"
-      description="Manage the Zope Application, such as Restart/Shutdown or
-                   packing the ZODB."
-      />
-
 </configure>

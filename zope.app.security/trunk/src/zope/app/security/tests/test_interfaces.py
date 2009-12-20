@@ -25,7 +25,7 @@ def test_bbb_imports():
 
       >>> import zope.app.security.interfaces as old
       >>> import zope.authentication.interfaces as new
-      
+
       >>> old.PrincipalLookupError is new.PrincipalLookupError
       True
       >>> old.IUnauthenticatedPrincipal is new.IUnauthenticatedPrincipal
@@ -48,7 +48,7 @@ def test_bbb_imports():
       True
       >>> old.ILogoutSupported is new.ILogoutSupported
       True
-      
+
       >>> import zope.security.interfaces as new
 
       >>> old.IPrincipal is new.IPrincipal
@@ -57,7 +57,7 @@ def test_bbb_imports():
       True
       >>> old.IGroup is new.IGroup
       True
-    
+
     """
 
 def test_suite():

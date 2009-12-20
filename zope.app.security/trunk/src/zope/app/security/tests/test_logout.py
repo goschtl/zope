@@ -20,16 +20,16 @@ from zope.testing import doctest
 def test_bbb_imports():
     """
     Let's check if original imports still work:
-    
+
       >>> import zope.app.security as old
       >>> import zope.authentication.logout as new
-      
+
       >>> old.NoLogout is new.NoLogout
       True
 
       >>> old.LogoutSupported is new.LogoutSupported
       True
-    
+
     """
 
 def test_suite():

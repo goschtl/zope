@@ -21,13 +21,13 @@ from zope.testing import doctest
 def test_bbb_imports():
     """
     Let's check if original imports still work:
-    
+
       >>> import zope.app.security.basicauthadapter as old
       >>> import zope.publisher.http as new
-      
+
       >>> old.BasicAuthAdapter is new.BasicAuthAdapter
       True
-    
+
     """
 
 def test_suite():

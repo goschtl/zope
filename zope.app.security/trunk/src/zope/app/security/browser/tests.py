@@ -23,12 +23,12 @@ def test_bbb_imports():
     """
       >>> import zope.app.security.browser.principalterms as old
       >>> import zope.authentication.principal as new
-      
+
       >>> old.PrincipalTerms is new.PrincipalTerms
       True
       >>> old.Term is new.PrincipalTerm
       True
-    
+
     """
 
 def test_suite():

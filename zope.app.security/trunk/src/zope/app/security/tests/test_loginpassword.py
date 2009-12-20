@@ -22,12 +22,12 @@ def test_bbb_imports():
     """
     Let's check that permission vocabularies that were moved to
     zope.security are still importable from original place.
-    
+
       >>> import zope.authentication.loginpassword as new
       >>> import zope.app.security.loginpassword as old
       >>> old.LoginPassword is new.LoginPassword
       True
-    
+
     """
 
 def test_suite():

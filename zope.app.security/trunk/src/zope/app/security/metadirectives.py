@@ -24,4 +24,4 @@ from zope.principalregistry.metadirectives import (
         IDefineUnauthenticatedGroupDirective,
         IDefineAuthenticatedGroupDirective,
         IDefineEverybodyGroupDirective,
-    ) 
+    )

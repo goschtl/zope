@@ -22,7 +22,7 @@ def test_bbb_imports():
     """
     Let's check that permission vocabularies that were moved to
     zope.security are still importable from original place.
-    
+
       >>> import zope.security.permission as new
       >>> import zope.app.security.vocabulary as old
       >>> old.PermissionsVocabulary is new.PermissionsVocabulary
@@ -33,7 +33,7 @@ def test_bbb_imports():
       >>> import zope.authentication.principal as new
       >>> old.PrincipalSource is new.PrincipalSource
       True
-    
+
     """
 
 def test_suite():
