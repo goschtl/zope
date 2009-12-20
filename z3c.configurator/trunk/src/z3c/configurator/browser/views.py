@@ -3,9 +3,9 @@ from zope import schema
 
 from zope import formlib
 from zope.formlib import form
+from zope.app.pagetemplate import namedtemplate
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.cachedescriptors.property import Lazy
-from z3c.configurator import interfaces 
+from z3c.configurator import interfaces
 from z3c.configurator.i18n import _
 from z3c.configurator import configurator
 
@@ -26,6 +26,7 @@ class SelectPlugins(form.PageForm):
         configurator.configure(self.context, names=[pluginName])
         self.status = _('Configuration applied')
 
+
 class IGenerateSchema(interface.Interface):
     """Schema for the minimal generator parameters"""
 
@@ -43,7 +44,7 @@ class ConfigureForm(form.PageForm):
     base_template = form.EditForm.template
     template = ViewPageTemplateFile('configure.pt')
     subforms = []
-    
+
     form_fields = form.Fields(
         schema.List(__name__=u'pluginNames',
                     title=u'Plugin Names',
@@ -52,10 +53,10 @@ class ConfigureForm(form.PageForm):
         title=_(u'Plugin Name'),
         vocabulary="Configurator Plugin Names")
         ))
-    
+
     workDone = False
 
-    @Lazy
+    @property
     def _pluginNames(self):
         names = self.request.form.get(self.prefix + '.pluginNames')
         if names and not type(names) is type([]):
@@ -87,7 +88,7 @@ class ConfigureForm(form.PageForm):
         self.setUpWidgets(ignore_request=False)
         result = self.template()
         return result
-    
+
     def _pluginsSelected(self, action):
         return not not self.request.form.get(self.prefix + '.pluginNames')
 
@@ -102,7 +103,7 @@ class ConfigureForm(form.PageForm):
                                          subform.prefix,
                                          formData)
             configuratorData[subform.prefix] = formData
-        
+
         configurator.configure(self.context,
                                configuratorData,
                                names=self._pluginNames,
@@ -113,7 +114,7 @@ class ConfigureForm(form.PageForm):
 class PluginSchemaForm(form.AddForm):
     """An editor for a single schema based plugin"""
     interface.implements(formlib.interfaces.ISubPageForm)
-    template = formlib.namedtemplate.NamedTemplate('default')
+    template = namedtemplate.NamedTemplate('default')
     actions = []
 
     def __init__(self, context, request, plugin=None,
@@ -122,4 +123,3 @@ class PluginSchemaForm(form.AddForm):
         self.schema = schema
         self.prefix = prefix
         super(PluginSchemaForm, self).__init__(context, request)
-

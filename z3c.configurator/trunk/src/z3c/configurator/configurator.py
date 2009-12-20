@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -48,7 +48,7 @@ def requiredPlugins(component, names=[]):
         # get all names we have available
         names = getAdapterFactories(component,
                                     specific=True).keys()
-        
+
     # we need this in order to get dependencies from plugins which are
     # not available in the unconfigured component because the provided
     # interfaces may change during execution

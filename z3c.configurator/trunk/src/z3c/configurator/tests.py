@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -18,9 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 __docformat__ = 'restructuredtext'
 
-import unittest
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import unittest, doctest
 from zope.app.testing import setup
 
 def setUp(test):
@@ -32,9 +30,9 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        doctest.DocFileSuite('README.txt',
+                             setUp=setUp, tearDown=tearDown,
+                             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -42,6 +42,7 @@ class IConfigurationPlugin(zope.interface.Interface):
         to the configuration plugin. When some required data field is missing,
         then raise a ``DataMissingError`` error.
         """
+
 
 class ISchemaConfigurationPlugin(IConfigurationPlugin):
     """A configuration plugin that provides a data schema."""

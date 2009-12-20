@@ -15,7 +15,7 @@ class SetTitle(configurator.SchemaConfigurationPluginBase):
     """makes an object implement IFoo"""
     component.adapts(IAttributeAnnotatable)
     schema = ISingleArg
-    
+
     def __call__(self, data):
         dc = IZopeDublinCore(self.context)
         dc.title = data.get('arg')
@@ -24,9 +24,7 @@ class SetDescription(configurator.SchemaConfigurationPluginBase):
 
     component.adapts(IAttributeAnnotatable)
     schema = ISingleArg
-    
+
     def __call__(self, data):
         dc = IZopeDublinCore(self.context)
         dc.description = data.get('arg')
-        
-

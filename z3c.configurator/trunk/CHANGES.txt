@@ -2,13 +2,19 @@
 CHANGES
 =======
 
-Version 1.1.3 (unreleased)
+Version 1.2.0 (12-19-2009)
 --------------------------
 
--
+- Made registration of browser views conditional
+
+- Move packages required for testing to 'test' extras
+
+- Remove old zpkg-related SETUP.cfg file.
+
+- Copyright "Zope Foundation and Contributors"
 
 
-Version 1.1.2 (2009-01-04)
+Version 1.1.2 (01-04-2009)
 --------------------------
 
 - Added possibility to apply only specific named plugins in configure.
