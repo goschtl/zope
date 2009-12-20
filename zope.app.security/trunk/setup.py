@@ -17,7 +17,7 @@
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
 
-version = '0'
+version = '3.7.5dev'
 
 import os
 from setuptools import setup, find_packages
@@ -26,8 +26,8 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.security',
-      version = '3.7.4dev',
-      author='Zope Corporation and Contributors',
+      version = version,
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='ZMI Views For Zope3 Security Components',
       long_description=(
