@@ -1,0 +1,35 @@
+Changes
+=======
+
+1.2 (2009-12-20)
+----------------
+
+* Migrated imports from zope.app.component to zope.site.
+
+1.1 (2009-09-18)
+----------------
+
+* Updated dependencies (added missing ones and added separate test
+  dependencies).
+
+* A local utility now implements IAttributeAnnotatable.
+
+* Update code documentation from Grok itself.
+
+* Use 1.0b2 versions.cfg in Grok's release info instead of a local
+  copy; a local copy for all grokcore packages is just too hard to
+  maintain.
+
+
+1.0.1 (2009-06-30)
+------------------
+
+* Reupload to pypi with a correct version of Python which doesn't have
+  a distutils bug.
+
+1.0 (2009-06-29)
+----------------
+
+* Created ``grokcore.site`` by factoring local site based components,
+  grokkers and directives out of Grok.
+
