@@ -10,5 +10,6 @@ from megrok.resource import include, IResourcesIncluder
 def handle_inclusion(view, event):
     view = removeSecurityProxy(view)
     needs = include.bind().get(view)
-    for resource in needs:
-        resource.need()
+    if needs:
+        for resource in needs:
+            resource.need()
