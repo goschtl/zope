@@ -3,10 +3,8 @@
 import megrok.resource
 import grokcore.component as grok
 
-from zope.interface import Interface
-from zope.interface import directlyProvides
 from zope.component import getAdapter
-from zope.app.component.hooks import getSite
+from zope.site.hooks import getSite
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from hurry.resource.interfaces import ILibraryUrl

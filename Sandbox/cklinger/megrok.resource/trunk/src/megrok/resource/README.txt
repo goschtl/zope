@@ -10,7 +10,7 @@ megrok.resource is a combination of these packages:
  - hurry.resource
  - hurry.zoperesource
  - grokcore.view.ResourceDirectory
- - z3c.hashedresource (if our zope.app.publisher >= 3.8.2)
+ - z3c.hashedresource
 
 
 How does it work:
@@ -20,22 +20,17 @@ Setup
 -----
 
   >>> from zope.app.testing.functional import getRootFolder
-  >>> from zope.app.component.site import SiteManagerContainer 
-  >>> from zope.app.component.site import LocalSiteManager
-  >>> from zope.app.component.hooks import setSite
-
-  >>> class Application(SiteManagerContainer):
-  ...     pass
+  >>> from zope.site import SiteManagerContainer 
+  >>> from zope.site import LocalSiteManager
+  >>> from zope.site.hooks import setSite
 
   >>> root = getRootFolder()
-  >>> root['myapp'] = myapp = Application()
+  >>> root['myapp'] = myapp = SiteManagerContainer()
 
 Our application has to be a Site to access the right url for the inclusions
 
   >>> root['myapp'].setSiteManager(LocalSiteManager(root['myapp']))
   >>> setSite(root['myapp'])
-  >>> root['myapp']
-  <megrok.resource.ftests.Application object at ...>
 
 
 Inclusions & Library
@@ -44,38 +39,83 @@ Inclusions & Library
 Let's start with a Library. A Library is in the context of megrok.resource
 a ResourceDirectory which holds a kind of different ResourceInclusions
 
-  >>> from megrok.resource import Library, inclusion, include
+  >>> from megrok.resource import Library, ResourceInclusion, include
   >>> import grokcore.view as view 
   >>> import grokcore.component as grok 
 
-  >>> class MyStyles(Library):
-  ...    view.path('css')
-  ...    grok.name('mystyles')
-  ...
-  ...    inclusion(name='myjs', file='a.js')  
+  >>> class SomeCSS(Library):
+  ...    view.path('ftests/css')
+  ...    view.name('somecss')
 
-  >>> grok.testing.grok_component('MyStyles', MyStyles)
+  >>> grok.testing.grok_component('somecss', SomeCSS)
   True
+
+  >>> from megrok.resource import ILibrary
+  >>> ILibrary.providedBy(SomeCSS)
+  True
+
+  >>> from zope.component import getAdapter
+  >>> from zope.publisher.browser import TestRequest
+  >>> library = getAdapter(TestRequest(), name='somecss')
+  >>> library
+  <grokcore.view.components.DirectoryResource object at ...>
 
 
 View & Include
 --------------
 
+  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.component import getMultiAdapter
+
+  >>> browser = Browser()
+  >>> browser.handleErrors = False 
+
+  >>> css_a = ResourceInclusion(SomeCSS, 'a.css')
+  >>> css_b = ResourceInclusion(SomeCSS, 'b.css')
+
 To include a resource we need in the most cases a view.
 
   >>> class MyView(view.View):
-  ...     grok.context(Application)
-  ...     include(MyStyles, 'myjs')
+  ...   grok.context(SiteManagerContainer)
+  ...   include(css_a)
+  ...
+  ...   def render(self):
+  ...	  return u"<html><head></head></html>"
 
   >>> grok.testing.grok_component('MyView', MyView)
   True
 
+  >>> browser.open('http://localhost/@@myview')
+  >>> print browser.contents
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/@@/++noop++.../somecss/a.css" />
+  </head></html>
 
-  >>> from zope.component import getMultiAdapter
-  >>> from zope.publisher.browser import TestRequest
+  >>> class AnotherView(view.View):
+  ...   grok.context(SiteManagerContainer)
+  ...   include(css_a)
+  ...   include(css_b)
+  ...
+  ...   def render(self):
+  ...	  return u"<html><head></head></html>"
 
-  >>> myview = getMultiAdapter((myapp, TestRequest()), name=u'myview')
-  >>> myview
-  <megrok.resource.ftests.MyView object at ...>
+  >>> grok.testing.grok_component('AnotherView', AnotherView)
+  True
 
-  >>> myview()
+  >>> browser.open('http://localhost/@@anotherview')
+  >>> print browser.contents
+  <html><head>
+    <link rel="stylesheet" type="text/css" href="http://localhost/@@/++noop++.../somecss/a.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/@@/++noop++.../somecss/b.css" />
+  </head></html>
+
+
+  >>> from megrok.resource import use_hash
+  >>> use_hash.set(SomeCSS, False)
+  
+  >>> browser.open('http://localhost/@@anotherview')
+  >>> print browser.contents
+  <html><head>
+    <link rel="stylesheet" type="text/css" href="http://localhost/@@/somecss/a.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/@@/somecss/b.css" />
+  </head></html>

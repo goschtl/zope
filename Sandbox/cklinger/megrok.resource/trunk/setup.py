@@ -8,7 +8,6 @@ setup(name='megrok.resource',
       description="Grok Resources based on hurry.resource",
       long_description=open("README.txt").read() + "\n" +
                        open("HISTORY.txt").read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -27,6 +26,7 @@ setup(name='megrok.resource',
           'setuptools',
           'grokcore.component',
           'grokcore.view',
+          'hurry.resource >= 0.4.1',
 	  'hurry.zoperesource',
           'zope.app.zcmlfiles',
           'z3c.hashedresource',

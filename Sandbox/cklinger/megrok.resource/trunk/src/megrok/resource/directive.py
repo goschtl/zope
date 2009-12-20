@@ -12,22 +12,9 @@ class use_hash(martian.Directive):
         return bool(value)
 
 
-class inclusion(martian.Directive):
-    scope = martian.CLASS
-    store = martian.MULTIPLE
-
-    def factory(self, name, file, depends=[], bottom=False):
-        return (name, file, depends, bottom)
-
-
 class include(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
     
-    def factory(self, value, name=None, bottom=False):
-        return (value, name, bottom)
-
-
-class need(martian.Directive):
-    scope = martian.CLASS
-    store = martian.MULTIPLE
+    def factory(self, resource):
+        return resource

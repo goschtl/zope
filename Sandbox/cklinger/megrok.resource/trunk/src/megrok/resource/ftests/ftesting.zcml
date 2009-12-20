@@ -1,22 +1,17 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:grok="http://namespaces.zope.org/grok"
-    i18n_domain="zope"
-    >
+    i18n_domain="zope">
 
+  <include package="grokcore.view" file="meta.zcml" />
   <include package="zope.app.zcmlfiles" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
-
-  <!-- Load minimal support of grokcore.view, views + templates  -->
-  <include package="grokcore.view" file="meta.zcml" />
   <include package="grokcore.view" />
-
   <include package="megrok.resource" />
-  <grok:grok package="megrok.resource.ftests" />   
-
+ 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
