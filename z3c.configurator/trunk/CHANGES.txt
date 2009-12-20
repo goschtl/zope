@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 1.2.0 (12-19-2009)
+Version 1.2.0 (2009-12-19)
 --------------------------
 
 - Made registration of browser views conditional
@@ -14,7 +14,7 @@ Version 1.2.0 (12-19-2009)
 - Copyright "Zope Foundation and Contributors"
 
 
-Version 1.1.2 (01-04-2009)
+Version 1.1.2 (2009-01-04)
 --------------------------
 
 - Added possibility to apply only specific named plugins in configure.
