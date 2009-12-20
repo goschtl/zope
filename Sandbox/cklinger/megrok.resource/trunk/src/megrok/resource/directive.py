@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import martian
-from martian.error import GrokImportError
 from hurry.resource.interfaces import IInclusion
 
 
 def validateInclusion(directive, value):
     if not IInclusion.providedBy(value):
-        raise GrokImportError(
+        raise martian.error.GrokImportError(
             "You can only include IInclusions components.")
 
 
