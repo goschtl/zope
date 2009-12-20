@@ -110,6 +110,8 @@ To include a resource we need in the most cases a view.
   </head></html>
 
 
+No hash:
+
   >>> from megrok.resource import use_hash
   >>> use_hash.set(SomeCSS, False)
   
@@ -119,3 +121,18 @@ To include a resource we need in the most cases a view.
     <link rel="stylesheet" type="text/css" href="http://localhost/@@/somecss/a.css" />
     <link rel="stylesheet" type="text/css" href="http://localhost/@@/somecss/b.css" />
   </head></html>
+
+
+Failing validation:
+
+  >>> toto = object()
+
+  >>> class FailingView(view.View):
+  ...   grok.context(SiteManagerContainer)
+  ...   include(toto)
+  ...
+  ...   def render(self):
+  ...	  return u""
+  Traceback (most recent call last):
+  ...
+  GrokImportError: You can only include IInclusions components.

@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import martian
+from martian.error import GrokImportError
+from hurry.resource.interfaces import IInclusion
+
+
+def validateInclusion(directive, value):
+    if not IInclusion.providedBy(value):
+        raise GrokImportError(
+            "You can only include IInclusions components.")
 
 
 class use_hash(martian.Directive):
@@ -15,6 +23,4 @@ class use_hash(martian.Directive):
 class include(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
-    
-    def factory(self, resource):
-        return resource
+    validate = validateInclusion
