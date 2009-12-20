@@ -1,0 +1,16 @@
+<configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   zcml:condition="installed zope.formlib"
+   i18n_domain="z3c.configurator">
+
+  <page
+      for="*"
+      permission="z3c.configurator.ManageConfigurations"
+      name="configurators.html"
+      title="Configurators"
+      class=".views.ConfigureForm"
+      menu="zmi_views"/>
+  
+</configure>
