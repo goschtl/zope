@@ -22,7 +22,7 @@ class Recipe(object):
         self.name = name
         self.options = options
         self.egg = Egg(buildout, options['recipe'], options)
-        self.eggs = self.options.get('eggs', '').split()
+        self.eggs = self.options.get('eggs', '').split('\n')
         self.strict = self.options.get('strict', '').lower() in ('1', 'true', 'yes')
 
         exclude = self.options.get('exclude', '')

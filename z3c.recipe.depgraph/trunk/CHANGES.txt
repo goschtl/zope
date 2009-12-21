@@ -3,6 +3,7 @@ Changelog
 
 0.5 (unreleased)
 ----------------
+- Do not break if the ``eggs`` option in the buildout file contains extras.
 
 0.4 (2009-10-04)
 ----------------

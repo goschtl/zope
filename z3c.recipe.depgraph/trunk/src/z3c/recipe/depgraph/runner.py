@@ -1,6 +1,6 @@
 import os
 
-GENERATE = "./bin/%(scriptname)s %(exclude)s %(re_exclude)s %(dead_ends)s %(re_dead_ends)s %(extras)s-d %(package)s -i setuptools > %(output)s"
+GENERATE = "./bin/%(scriptname)s %(exclude)s %(re_exclude)s %(dead_ends)s %(re_dead_ends)s %(extras)s-d \"%(package)s\" -i setuptools > %(output)s"
 TRED = "tred %(input)s > %(output)s"
 GRAPH = "dot -T%(format)s %(input)s > %(output)s"
 SCCMAP = "sccmap %(input)s > %(output)s"
@@ -33,7 +33,7 @@ def main(args):
     re_dead_ends = build_option('-E', args.get('re_dead_ends'))
 
     for package in packages:
-        name = package
+        name = package.split('[', 1)[0].strip()
         if name in package_map:
             name = package_map[name]
         deeppath = os.path.join(path, name.replace('.', os.sep))
