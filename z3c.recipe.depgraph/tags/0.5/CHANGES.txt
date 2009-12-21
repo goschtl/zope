@@ -1,0 +1,41 @@
+Changelog
+=========
+
+0.5 (2009-12-21)
+----------------
+
+- Do not break if the ``eggs`` option in the buildout file contains extras.
+
+0.4 (2009-10-04)
+----------------
+
+- Added additional ``formats`` option, to control in which file formats the
+  output is generated.
+
+- Added additional ``re-exclude``, ``dead-ends`` and ``re-dead-ends`` options,
+  to control used eggs more precisely.
+
+- Added additional ``strict`` option, if you want graphs only for eggs in eggs
+  option.
+
+0.3 (2009-07-23)
+----------------
+
+- Allow to pass in a ``package-map`` manually, mapping distribution names
+  to different package names.
+
+- Added additional ``extras`` option, to control wether or not extra
+  dependencies (like test requirements) should be included.
+
+- Corrected distribution name discovery to preserve case.
+
+0.2 (2009-05-24)
+----------------
+
+- Do not use ``-d`` option for degenerate nodes for sccmap, as this
+  creates way too much extra information.
+
+0.1 (2009-04-26)
+----------------
+
+- Initial implementation.
