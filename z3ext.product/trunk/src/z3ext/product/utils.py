@@ -20,9 +20,9 @@ from zope.component import queryUtility
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.component.hooks import getSite
-from zope.app.component.site import SiteManagementFolder
-from zope.app.component.interfaces import ISite
+from zope.site.hooks import getSite
+from zope.site.site import SiteManagementFolder
+from zope.component.interfaces import ISite
 
 from z3ext.product.interfaces import _, IProduct
 

@@ -23,12 +23,4 @@
      class=".view.InstallerView"
      permission="z3ext.ManageProducts"  />
 
-  <browser:menuItem
-     for=".interfaces.IProductInstaller"
-     menu="zmi_views"
-     title="Products management"
-     action="@@index.html"
-     permission="z3ext.ManageProducts"
-     order="1" />
-
 </configure>

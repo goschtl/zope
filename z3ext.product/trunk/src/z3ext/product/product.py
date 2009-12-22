@@ -20,8 +20,8 @@ from BTrees.OOBTree import OOBTree
 from zope import interface, event
 from zope.component import getSiteManager
 from zope.component import getUtility, queryUtility, getUtilitiesFor
-from zope.app.component.hooks import getSite
-from zope.app.component.interfaces import ILocalSiteManager
+from zope.site.hooks import getSite
+from zope.site.interfaces import ILocalSiteManager
 from zope.lifecycleevent import ObjectModifiedEvent
 
 from z3c.configurator import configure
