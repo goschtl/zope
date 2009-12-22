@@ -18,14 +18,11 @@ $Id$
 from zope import interface
 from zope.component import getAdapters
 from zope.security.proxy import removeSecurityProxy
-from zope.app.security.settings import Allow
-
+from zope.securitypolicy.settings import Allow
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.interfaces import IPrincipalPermissionMap
-
 from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
-
 from zope.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.securitypolicy.zopepolicy import globalRolesForPrincipal
 from zope.securitypolicy.zopepolicy import globalRolesForPermission

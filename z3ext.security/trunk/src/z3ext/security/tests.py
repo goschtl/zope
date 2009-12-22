@@ -18,8 +18,8 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import unittest, doctest
-from zope import interface, schema
-from zope.app.testing import setup, ztapi
+from zope import interface, schema, component
+from zope.component.testing import tearDown
 from zope.security.management import endInteraction
 from zope.securitypolicy.tests import test_zopepolicy
 from z3ext.security.grantinfo import ExtendedGrantInfo
@@ -28,11 +28,8 @@ from z3ext.security.interfaces import IExtendedGrantInfo
 
 def setUp(test):
     test_zopepolicy.setUp(test)
-    ztapi.provideAdapter(
-        interface.Interface, IExtendedGrantInfo, ExtendedGrantInfo)
-
-def tearDown(test):
-    setup.placelessTearDown()
+    component.provideAdapter(
+        ExtendedGrantInfo, (interface.Interface,), IExtendedGrantInfo)
 
 
 def test_suite():
@@ -45,7 +42,6 @@ def test_suite():
                 'zcml.txt', setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             doctest.DocTestSuite(
-                'z3ext.security.vocabulary',
-                setUp=setup.placelessSetUp, tearDown=setup.placelessTearDown,
+                'z3ext.security.vocabulary', setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             ))

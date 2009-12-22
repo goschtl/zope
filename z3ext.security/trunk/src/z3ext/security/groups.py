@@ -19,7 +19,7 @@ from zope import interface
 from zope.component import getUtility
 from zope.security.proxy import removeSecurityProxy
 from zope.security.interfaces import IPrincipal, IGroup, IGroupAwarePrincipal
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
 
 from interfaces import IPrincipalGroups
 

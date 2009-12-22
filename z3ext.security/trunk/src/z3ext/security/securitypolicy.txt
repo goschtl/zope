@@ -79,7 +79,7 @@ Let's use 'ob' object attribute to define owner of object:
 
 Now we need custom IPrincipalRoleMap:
 
-   >>> from zope.app.security.settings import Allow, Deny
+   >>> from zope.securitypolicy.settings import Allow, Deny
 
    >>> class OwnerRolesMap(object):
    ...   zope.interface.implements(interfaces.IPrincipalRoleMap)

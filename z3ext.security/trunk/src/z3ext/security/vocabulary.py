@@ -23,15 +23,6 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from interfaces import IPublicRole, IPublicPermission
 
 
-class Vocabulary(SimpleVocabulary):
-
-    def getTerm(self, value):
-        try:
-            return self.by_value[value]
-        except KeyError:
-            return self.by_value[self.by_value.keys()[0]]
-
-
 class RolesVocabulary(object):
     """
     >>> from zope import interface, component
@@ -64,7 +55,7 @@ class RolesVocabulary(object):
             term.description = getattr(role, 'description', u'')
             roles.append((role.title, term))
         roles.sort()
-        return Vocabulary([term for title, term in roles])
+        return SimpleVocabulary([term for title, term in roles])
 
 
 class PermissionsVocabulary(object):
@@ -96,4 +87,4 @@ class PermissionsVocabulary(object):
         for name, perm in getUtilitiesFor(IPublicPermission):
             perms.append((perm.title, SimpleTerm(perm.id, perm.id, perm.title)))
         perms.sort()
-        return Vocabulary([term for title, term in perms])
+        return SimpleVocabulary([term for title, term in perms])

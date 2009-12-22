@@ -18,7 +18,7 @@ $Id$
 from zope.component import getUtility
 from zope.security.proxy import removeSecurityProxy
 from zope.security.management import queryInteraction
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
 
 from interfaces import IZ3extSecurityPolicy
 

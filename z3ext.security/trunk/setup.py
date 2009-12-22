@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.3.1dev'
+version = '0'
 
 
 setup(name='z3ext.security',
@@ -51,7 +51,7 @@ setup(name='z3ext.security',
         'Framework :: Zope3'],
       author='Nikolay Kim',
       author_email='fafhrd91@gmail.com',
-      url='http://z3ext.net/',
+      url='http://http://pypi.python.org/pypi/z3ext.security/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
@@ -61,11 +61,8 @@ setup(name='z3ext.security',
                           'zope.interface',
                           'zope.security',
                           'zope.securitypolicy',
-                          'zope.app.security',
+                          'zope.authentication',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
-                                  ]),
       include_package_data = True,
       zip_safe = False
       )

@@ -13,13 +13,6 @@
     <allow interface=".interfaces.IExtendedGrantInfo" />
   </class>
 
-  <!-- add security declaration for anonymous -->
-  <class class="zope.app.security.principalregistry.UnauthenticatedPrincipal">
-    <require
-       permission="zope.Public"
-       interface="zope.security.interfaces.IPrincipal" />
-  </class>
-
   <!-- Public Roles/Permissions vocabulary -->
   <utility
      name="z3ext.roles"
