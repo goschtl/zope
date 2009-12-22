@@ -19,12 +19,11 @@ import os, unittest, doctest
 from zope.app.testing import setup
 
 from zope import interface, component
-from zope.component import provideAdapter
+from zope.component import testing, provideAdapter
 from zope.session.interfaces import ISession, ISessionDataContainer
 from zope.session.session import RAMSessionDataContainer
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.testing.functional import ZCMLLayer
-from zope.app.testing.functional import FunctionalDocFileSuite
+from zope.app.testing.functional import ZCMLLayer, FunctionalDocFileSuite
 from zope.traversing.testing import setUp as setUpTraversing
 from z3ext.statusmessage import message
 
@@ -51,7 +50,7 @@ def getSession(request):
 
 
 def setUp(test):
-    setup.placelessSetUp()
+    testing.setUp()
     setUpTraversing()
     component.provideAdapter(getSession)
     component.provideAdapter(message.StatusMessage, name='statusMessage')
@@ -60,7 +59,7 @@ def setUp(test):
 
 def tearDown(test):
     session.__init__()
-    setup.placelessTearDown()
+    testing.tearDown()
 
 
 def test_suite():
@@ -73,6 +72,10 @@ def test_suite():
             testbrowser,
             doctest.DocFileSuite(
                 '../README.txt',
+                setUp=setUp, tearDown=tearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+            doctest.DocTestSuite(
+                'z3ext.statusmessage.null',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             ))

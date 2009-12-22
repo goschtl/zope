@@ -17,7 +17,7 @@ $Id$
 """
 import cgi
 from zope import interface, component
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.i18n import translate
 from zope.contentprovider.interfaces import IContentProvider
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -35,14 +35,11 @@ class Message(object):
 class InformationMessage(Message):
 
     cssClass = 'statusMessage'
-    index = ViewPageTemplateFile('message.pt')
-
-    @property
-    def context(self):
-        return self
 
     def render(self, message):
-        return self.index(message=message)
+        return '<div class="%s">%s</div>'%(
+            self.cssClass,
+            cgi.escape(translate(message, context=self.request), True))
 
 
 class WarningMessage(InformationMessage):
@@ -65,8 +62,7 @@ class ErrorMessage(InformationMessage):
 
 class StatusMessage(object):
     interface.implements(IContentProvider)
-    component.adapts(
-        interface.Interface, IBrowserRequest, interface.Interface)
+    component.adapts(interface.Interface, IBrowserRequest, interface.Interface)
 
     def __init__(self, context, request, view):
         self.context, self.request, self.view = context, request, view

@@ -1,1 +1,0 @@
-<div tal:attributes="class view/cssClass" tal:content="options/message"></div>

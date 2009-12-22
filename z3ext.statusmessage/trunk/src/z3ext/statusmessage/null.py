@@ -21,6 +21,35 @@ from interfaces import IMessage, IStatusMessage
 
 
 class NullMessageService(object):
+    """
+    >>> from zope.interface.verify import verifyClass
+
+    >>> verifyClass(IStatusMessage, NullMessageService)
+    True
+
+   >>> from zope.publisher.browser import TestRequest
+    >>> from z3ext.statusmessage import message
+
+    >>> service = NullMessageService(TestRequest())
+    >>> component.provideAdapter(message.InformationMessage, name='info')
+
+    >>> service.add('Test message')
+
+    >>> bool(service)
+    True
+
+    >>> for msg in service.messages():
+    ...     print msg
+    <div class="statusMessage">Test message</div>
+
+    >>> for msg in service.clear():
+    ...     print msg
+    <div class="statusMessage">Test message</div>
+
+    >>> bool(service)
+    False
+
+    """
     interface.implements(IStatusMessage)
 
     def __init__(self, request):
@@ -32,7 +61,10 @@ class NullMessageService(object):
         self._messages.append(message.render(text))
 
     def clear(self):
+        messages = self._messages
         self._messages = []
+
+        return messages
 
     def messages(self):
         return tuple(self._messages)

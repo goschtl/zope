@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.4.1dev'
+version = '0'
 
 
 setup(name='z3ext.statusmessage',
@@ -47,7 +47,7 @@ setup(name='z3ext.statusmessage',
         'Framework :: Zope3'],
       author='Nikolay Kim',
       author_email='fafhrd91@gmail.com',
-      url='http://z3ext.net/',
+      url='http://pypi.python.org/pypi/z3ext.statusmessage/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
@@ -58,15 +58,17 @@ setup(name='z3ext.statusmessage',
                           'zope.session',
                           'zope.publisher',
                           'zope.contentprovider',
-                          'zope.app.component',
-                          'zope.app.publication',
                           'z3ext.cacheheaders',
                           ],
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
                                   'zope.testbrowser',
-                                  'zope.app.zcmlfiles',
+                                  'zope.browserpage',
+                                  'zope.browserresource',
+                                  'zope.principalregistry',
+                                  'zope.app.pagetemplate',
                                   'zope.securitypolicy',
+                                  'z3ext.autoinclude',
                                   ]),
       include_package_data = True,
       zip_safe = False

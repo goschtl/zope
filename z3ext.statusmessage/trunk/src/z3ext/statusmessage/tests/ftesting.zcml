@@ -3,24 +3,10 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
-  <!-- This file is the equivalent of site.zcml and it is -->
-  <!-- used for functional testing setup -->
+  <exclude package="zope.dublincore.browser" />
 
-  <include package="zope.component" file="meta.zcml" />
-  <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.security" file="meta.zcml" />
-  <include package="zope.app.pagetemplate" file="meta.zcml" />
-
-  <include package="zope.securitypolicy" />
-  <include package="zope.contentprovider" />
-  <include package="zope.app.security" />
-  <include package="zope.app.zcmlfiles" />
-  <include package="zope.app.authentication" />
-  <include package="zope.session" />
-
-  <include package="z3ext.cacheheaders" />
-  <include package="z3ext.statusmessage" />
+  <include package="z3ext.autoinclude" file="meta.zcml" />
+  <includeAllDependencies package="z3ext.statusmessage" extras="test" />
 
   <browser:page
      for="*"

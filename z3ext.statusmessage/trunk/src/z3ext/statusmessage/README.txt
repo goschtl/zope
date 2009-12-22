@@ -110,3 +110,33 @@ clear() method return all messages and clear service.
 
    >>> bool(service)
    False
+
+
+just tests
+
+   >>> sm = component.getSiteManager()
+
+   >>> class MessageWithError(message.Message):
+   ...     def render(self, msg):
+   ...         raise ValueError
+
+   >>> component.provideAdapter(MessageWithError, name='msgWithError')
+
+   >>> service.add('Test message', 'msgWithError')
+   >>> service.messages()
+   ()
+
+   >>> from zope.session.interfaces import ISession, ISessionDataContainer
+
+   >>> container = sm.getUtility(ISessionDataContainer)
+   >>> _t = sm.unregisterUtility(container, ISessionDataContainer)
+
+   >>> interfaces.IStatusMessage(request)
+   <z3ext.statusmessage.null.NullMessageService ...>
+
+   >>> from zope.publisher.interfaces.browser import IBrowserRequest
+   >>> from z3ext.statusmessage.tests.tests import getSession
+   >>> _t = sm.unregisterAdapter(getSession, (IBrowserRequest,), ISession)
+
+   >>> interfaces.IStatusMessage(request)
+   <z3ext.statusmessage.null.NullMessageService ...>
