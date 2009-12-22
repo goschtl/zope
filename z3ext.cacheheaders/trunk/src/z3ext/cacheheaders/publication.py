@@ -80,7 +80,7 @@ class BrowserPublication(browser.BrowserPublication):
             notify(AfterExceptionCallEvent(orig.im_self, request))
         else:
             notify(AfterExceptionCallEvent(orig, request))
-        
+
 
 class BrowserFactory(object):
     interface.implements(IRequestPublicationFactory)

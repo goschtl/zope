@@ -162,3 +162,42 @@ Additional feature, calculating duration of call.
 
   >>> response.getHeader('X-Generated-Time')
   '... sec'
+
+  >>> from zope.component.eventtesting import getEvents
+
+  >>> ev = getEvents()[-1]
+  >>> interfaces.IAfterCallEvent.providedBy(ev)
+  True
+
+  >>> ev.object is ob
+  True
+
+  >>> pub.afterCall(request, ob.__call__)
+  >>> interfaces.IAfterCallEvent.providedBy(ev)
+  True
+  >>> ev.object is ob
+  True
+
+  >>> import sys
+  >>> from zope.publisher.interfaces import NotFound
+  >>> try:
+  ...     raise NotFound(request)
+  ... except:
+  ...     exc = sys.exc_info()
+
+  >>> pub.handleException(ob, request, exc)
+
+  >>> ev = getEvents()[-1]
+  >>> interfaces.IAfterExceptionCallEvent.providedBy(ev)
+  True
+  >>> ev.object is ob
+  True
+
+  >>> pub.handleException(ob.__call__, request, exc)
+
+  >>> ev = getEvents()[-1]
+  >>> interfaces.IAfterExceptionCallEvent.providedBy(ev)
+  True
+  >>> ev.object is ob
+  True
+

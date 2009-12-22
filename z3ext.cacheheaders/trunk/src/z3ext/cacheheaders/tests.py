@@ -19,17 +19,19 @@ __docformat__ = "reStructuredText"
 
 import doctest, unittest
 from zope import component
-from zope.traversing import testing
-from zope.app.testing import placelesssetup
+from zope.component import testing, eventtesting
+from zope.traversing.testing import setUp as traversalSetUp
 from zope.traversing.interfaces import ITraversable
-from zope.app.security import principalregistry
+from zope.principalregistry import principalregistry
 from zope.security.management import endInteraction
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import IFallbackUnauthenticatedPrincipal
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IFallbackUnauthenticatedPrincipal
+
 
 def setUp(test):
-    placelesssetup.setUp()
     testing.setUp()
+    eventtesting.setUp()
+    traversalSetUp()
 
     endInteraction()
 
@@ -39,13 +41,15 @@ def setUp(test):
     component.provideUtility(
         principalregistry.principalRegistry, IAuthentication)
 
+
 def tearDown(test):
-    placelesssetup.tearDown()
+    testing.tearDown()
+
 
 def test_suite():
     return unittest.TestSuite((
             doctest.DocFileSuite(
-                'README.txt',
+                'tests.txt',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
          ))

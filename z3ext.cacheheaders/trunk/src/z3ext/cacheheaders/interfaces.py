@@ -25,18 +25,18 @@ class IAfterCallEvent(IObjectEvent):
     request = interface.Attribute('Request')
 
 
+class IAfterExceptionCallEvent(IObjectEvent):
+    """ after call event """
+
+    request = interface.Attribute('Request')
+
+
 class AfterCallEvent(object):
     interface.implements(IAfterCallEvent)
 
     def __init__(self, object, request):
         self.object = object
         self.request = request
-
-
-class IAfterExceptionCallEvent(IObjectEvent):
-    """ after call event """
-
-    request = interface.Attribute('Request')
 
 
 class AfterExceptionCallEvent(object):
