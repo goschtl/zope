@@ -2,11 +2,10 @@
 CHANGES
 =======
 
-3.7.2 (unreleased)
+3.8.0 (2009-12-22)
 ------------------
 
-- Nothing changed yet.
-
+- Adjusted to testing output caused by new zope.schema.
 
 3.7.1 (2009-11-18)
 ------------------
