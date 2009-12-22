@@ -134,7 +134,6 @@ Browser
     <h1 class="z-form-label">Category</h1><div class="z-form-fieldset">
       <div class="z-form-field">
       <label for="category-widgets-category" title="">Category</label>
-      <div class="z-form-help"></div>
       <div>
         <input id="category-widgets-category"
            name="category.widgets.category"
@@ -153,8 +152,10 @@ Browser
       </span>
     </div>
     </form></div><div class="z-form">
-      <h2><a href="http://localhost/preferences/category/prefs1/">Preferences 1</a></h2><div class="discreet"></div><br />
-      <h2><a href="http://localhost/preferences/category/prefs2/">Preferences 2</a></h2><div class="discreet"></div><br />
+      <h2><a href="http://localhost/preferences/category/prefs1/">Preferences 1</a></h2><div class="discreet"></div>
+      <br />
+      <h2><a href="http://localhost/preferences/category/prefs2/">Preferences 2</a></h2><div class="discreet"></div>
+      <br />
     </div></div></div>
   ...
   </html>

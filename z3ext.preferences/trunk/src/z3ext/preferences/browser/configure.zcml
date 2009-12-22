@@ -38,13 +38,6 @@
      name="index.html"
      for="..interfaces.IPreferenceGroup" />
 
-  <browser:menuItem
-     action="index.html"
-     for="..interfaces.IPreferenceGroup"
-     menu="zmi_views"
-     title="View"
-     permission="zope.Public" />
-
   <!-- root preferences view -->
   <z3ext:pagelet
      for="..interfaces.IRootPreferences"
