@@ -14,10 +14,12 @@
 from zope.testing import doctest, setupstack
 import cPickle
 import cStringIO
+import os
 import time
 import unittest
 import zc.bsddbstorage
 import ZEO.tests.testZEO
+import ZODB.blob
 import ZODB.tests.BasicStorage
 import ZODB.tests.ConflictResolution
 import ZODB.tests.HistoryStorage
@@ -31,6 +33,7 @@ import ZODB.tests.RevisionStorage
 import ZODB.tests.StorageTestBase
 import ZODB.tests.Synchronization
 import ZODB.tests.testblob
+import ZODB.tests.util
 
 def DISABLED(self):
     "disabled"
@@ -166,6 +169,87 @@ class BSDDBStorageZEOTests(
     # don't know if that is a bad thing.
     checkIteratorGCSpanTransactions = DISABLED
 
+def truncate():
+    """Database truncation
+
+Sometimes, it's useful to be able to truncate a database at a
+particular time/tid.  You might do this to undo a bunch of trailing
+activity or when doing benchmark to prepare to replay transactions.
+
+    >>> import transaction
+    >>> db = zc.bsddbstorage.DB('test', 'blobs')
+    >>> conn = db.open()
+    >>> conn.root.x = 0
+    >>> conn.root.blob = ZODB.blob.Blob()
+    >>> conn.root.blobs = conn.root().__class__()
+    >>> for i in range(10):
+    ...     conn.root.x += 1
+    ...     conn.root.blob.open('w').write(str(conn.root.x))
+    ...     conn.root.blobs[conn.root.x] = ZODB.blob.Blob('data')
+    ...     transaction.commit()
+    >>> time.sleep(.01)
+    >>> tt10 = time.time()
+    >>> time.sleep(.01)
+    >>> for i in range(10):
+    ...     conn.root.x += 1
+    ...     conn.root.blob.open('w').write(str(conn.root.x))
+    ...     conn.root.blobs[conn.root.x] = ZODB.blob.Blob('data')
+    ...     transaction.commit()
+    >>> tid20 = db.storage.lastTransaction()
+    >>> for i in range(10):
+    ...     conn.root.x += 1
+    ...     conn.root.blob.open('w').write(str(conn.root.x))
+    ...     conn.root.blobs[conn.root.x] = ZODB.blob.Blob('data')
+    ...     transaction.commit()
+    >>> conn.root.x, conn.root.blob.open().read(), len(conn.root.blobs)
+    (30, '30', 30)
+
+    >>> def count_blob_files(dir):
+    ...     n = 0
+    ...     for base, dirs, files in os.walk(os.path.join(dir, '0x00')):
+    ...         for file in files:
+    ...             if file.endswith('.blob'):
+    ...                 n += 1
+    ...     return n
+
+    >>> count_blob_files('blobs')
+    60
+
+We can truncate using either a tid or a time.time.  We can't truncate a
+storage while it's open:
+
+    >>> zc.bsddbstorage.truncate(tid20, 'test', 'blobs') # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    LockError: Couldn't lock ...
+
+    >>> db.close()
+
+First, we'll truncate using a tid:
+
+    >>> zc.bsddbstorage.truncate(tid20, 'test', 'blobs')
+    >>> db = zc.bsddbstorage.DB('test', 'blobs')
+    >>> conn = db.open()
+    >>> conn.root.x, conn.root.blob.open().read(), len(conn.root.blobs)
+    (20, '20', 20)
+    >>> count_blob_files('blobs')
+    40
+    >>> db.close()
+
+
+We can also use a time.time:
+
+    >>> zc.bsddbstorage.truncate(tt10, 'test', 'blobs')
+    >>> db = zc.bsddbstorage.DB('test', 'blobs')
+    >>> conn = db.open()
+    >>> conn.root.x, conn.root.blob.open().read(), len(conn.root.blobs)
+    (10, '10', 10)
+    >>> count_blob_files('blobs')
+    20
+    >>> db.close()
+    """
+
+
 def test_suite():
     suite = unittest.TestSuite()
     for klass in [
@@ -187,4 +271,8 @@ def test_suite():
     suite.addTest(ZODB.tests.PackableStorage.IExternalGC_suite(
         lambda : zc.bsddbstorage.BSDDBStorage(
             'data', blob_dir='blobs')))
+    suite.addTest(
+        doctest.DocTestSuite(
+            setUp=ZODB.tests.util.setUp, tearDown=ZODB.tests.util.tearDown)
+        )
     return suite

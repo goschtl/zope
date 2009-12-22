@@ -645,6 +645,69 @@ class BSDDBStorage(
     #
     ##############################################################
 
+
+    @retry_on_deadlock
+    def _kill1(self, truncate_tid):
+        # Pack one transaction. Get the next transaction we haven't yet
+        # packed and stop if it is > pack_tid.
+        # This is done as a transaction.
+        removed_blobs = []
+        removed_oids = 0
+        with self.txn(db.DB_TXN_SNAPSHOT) as txn:
+            with self.cursor(self.transactions, txn) as transactions:
+                kv = transactions.get(flags=db.DB_LAST)
+                if kv is None:
+                    return None
+                tid = kv[0]
+                if tid <= truncate_tid:
+                    return None
+
+                ntid = n64(tid)
+                oids = cPickle.loads(kv[1])[-1]
+                with self.cursor(self.data, txn) as data:
+                    for oid in oids:
+                        kr = data.get(oid, ntid, flags=db.DB_GET_BOTH_RANGE)
+                        if not kr:
+                            kr = data.get(oid, flags=db.DB_SET)
+
+                        doid, record = kr
+                        assert doid == oid
+                        assert record[:8] == ntid
+                        data.delete()
+                        deleted_oid = data.get(oid, flags=db.DB_SET) is None
+                        if deleted_oid:
+                            removed_oids += 1
+                        if (self.blob_dir and
+                            ZODB.blob.is_blob_record(record[8:])
+                            ):
+                            if deleted_oid:
+                                if ((not removed_blobs) or
+                                    (removed_blobs[-1] != oid)):
+                                    removed_blobs.append(oid)
+                            else:
+                                removed_blobs.append(oid+tid)
+
+                transactions.delete()
+
+        self._inc_len(-removed_oids)
+
+        if removed_blobs:
+            self._remove_blob_files_tagged_for_removal_during_pack(
+                removed_blobs)
+
+        return tid
+
+def truncate(tid, *args, **kw):
+    if isinstance(tid, str):
+        u64(tid) # rough sanity check
+    else:
+        tid = timetime2tid(tid)
+    kw['checkpoint'] = 0
+    s = Storage(*args, **kw)
+    while s._kill1(tid):
+        pass
+    s.close()
+
 Storage = BSDDBStorage # easier to type alias :)
 
 class TransactionContext(object):
