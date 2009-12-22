@@ -10,6 +10,7 @@
     The Error
   </div>
   <div class="z-form-help" 
+       tal:condition="context/field/description"
        tal:content="structure context/field/description"></div>
   <div tal:content="structure context/render">
     <input type="text" style="width:100%" />

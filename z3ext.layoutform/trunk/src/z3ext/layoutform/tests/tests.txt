@@ -45,10 +45,10 @@ z3c.form ui
 
 
   >>> from z3c.form import field
-  >>> from z3ext.layoutform import PageletAddForm
+  >>> from z3ext.layoutform import Fields, PageletAddForm
   >>> class PersonAddForm(PageletAddForm):
   ...
-  ...     fields = field.Fields(IPerson)
+  ...     fields = Fields(IPerson)
   ...
   ...     def create(self, data):
   ...         return Person(**data)
@@ -82,7 +82,6 @@ Let's now render the page. Note the output doesn't contain the layout template:
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
-        <div class="z-form-help"></div>
         <div>
            <input id="form-widgets-name" name="form.widgets.name"
                   class="text-widget required textline-field"
@@ -133,7 +132,6 @@ We have different renderer for hidden widgets
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
-        <div class="z-form-help"></div>
         <div>
           <input id="form-widgets-name" name="form.widgets.name"
              class="text-widget required textline-field"

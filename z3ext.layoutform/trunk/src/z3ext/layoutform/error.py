@@ -16,8 +16,8 @@
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface
-from zope.app.pagetemplate import ViewPageTemplateFile
 from z3ext.statusmessage.message import Message
+from z3c.pt.pagetemplate import ViewPageTemplateFile
 from z3c.form.interfaces import IErrorViewSnippet
 
 

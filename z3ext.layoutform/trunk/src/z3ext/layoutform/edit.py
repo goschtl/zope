@@ -15,12 +15,7 @@
 
 $Id$
 """
-from zope import interface, event
-from zope.traversing.browser import absoluteURL
-from zope.app.container.interfaces import IAdding
-from zope.app.container.interfaces import IWriteContainer
-from zope.app.container.interfaces import IContainerNamesContainer
-
+from zope import interface
 from z3c.form import form, button
 from z3ext.statusmessage.interfaces import IStatusMessage
 
@@ -42,15 +37,7 @@ class PageletEditForm(PageletForm, form.EditForm):
             if changes:
                 IStatusMessage(self.request).add(self.successMessage)
             else:
-                changed = False
-                for subform in self.subforms:
-                    if subform.changesApplied:
-                        IStatusMessage(self.request).add(self.successMessage)
-                        self.changed = True
-                        break
-
-                if not changed:
-                    IStatusMessage(self.request).add(self.noChangesMessage)
+                IStatusMessage(self.request).add(self.noChangesMessage)
 
             nextURL = self.nextURL()
             if nextURL:

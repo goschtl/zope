@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.8.0 (Unreleased)
+------------------
+
+- ZTK support
+
+- Applay all changes in parent form's applyChanges method
+
+
 1.7.0 (2009-11-04)
 ------------------
 

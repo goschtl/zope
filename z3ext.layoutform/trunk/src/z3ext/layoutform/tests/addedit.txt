@@ -12,6 +12,7 @@ Add form
   >>> from z3ext.layoutform import Fields
   >>> from z3ext.layoutform.add import PageletAddForm
   >>> from z3ext.layoutform.edit import PageletEditForm
+  >>> from z3ext.layoutform import subform, interfaces
 
   >>> root = getRootFolder()
 
@@ -34,11 +35,13 @@ Add form
   >>> interface.classImplements(Person, IPerson)
 
   >>> required = {'name': CheckerPublic,
-  ...             'age': CheckerPublic}
+  ...             'age': CheckerPublic,
+  ...             'info': CheckerPublic}
   >>> defineChecker(Person, Checker(required))
 
   >>> protectSetAttribute(Person, 'name', CheckerPublic)
   >>> protectSetAttribute(Person, 'age', CheckerPublic)
+  >>> protectSetAttribute(Person, 'info', CheckerPublic)
 
 implmenent and register person add form
 
@@ -72,7 +75,7 @@ implmenent and register person add form
   >>> actor.open('http://localhost/addperson.html')
   >>> actor.getControl('Cancel').click()
   >>> actor.url
-  'http://localhost/@@contents.html'
+  'http://localhost/'
 
   >>> actor.open('http://localhost/addperson.html')
   >>> actor.getControl('Add').click()
@@ -90,6 +93,10 @@ implmenent and register person add form
   >>> class EditPersonForm(PageletEditForm):
   ...
   ...     fields = Fields(IPerson)
+  ...     
+  ...     def nextURL(self):
+  ...         assert super(EditPersonForm, self).nextURL() == ''
+  ...         return './edit.html'
 
   >>> required = {'__call__': CheckerPublic,
   ...             'browserDefault': CheckerPublic,
@@ -102,14 +109,81 @@ implmenent and register person add form
 
   >>> actor.open('http://localhost/person/edit.html')
 
-  >>> actor.getControl('Name').value = 'Nikolay Kim'
+  >>> actor.getControl('Name').value = ''
   >>> actor.getControl('Age').value = ''
   >>> actor.getControl('Save').click()
+
+  >>> print actor.contents
+  <html>
+  ...
+  ...Please fix indicated errors...
+  ...
+  <div class="z-form-fieldset">
+    <div class="z-form-field error">
+    <label for="form-widgets-name" title="">Name</label>
+    <span class="z-form-fieldRequired">&nbsp;</span>
+    <div class="error">Required input is missing.</div>
+    <div>
+       <input id="form-widgets-name" name="form.widgets.name"
+              class="text-widget required textline-field"
+              value="" type="text" />
+    </div>
+  </div>
+  ...
+  </html>
 
   >>> actor.getControl('Name').value = 'Nikolay Kim'
   >>> actor.getControl('Age').value = '25'
   >>> actor.getControl('Save').click()
 
+  >>> 'Data successfully updated.' in actor.contents
+  True
+
   >>> root['person'].name, root['person'].age
   (u'Nikolay Kim', 25)
 
+
+  >>> class IPersonInfo(interface.Interface):
+  ...
+  ...     info = schema.Datetime(
+  ...         title=u'Information',
+  ...         required=False)
+
+  >>> interface.classImplements(Person, IPersonInfo)
+
+  >>> class PersonInfo(subform.PageletEditSubForm):
+  ...     interface.implements(interfaces.IPageletSubform)
+  ...
+  ...     weight = 10
+  ...     fields = Fields(IPersonInfo)
+
+  >>> component.getSiteManager().registerAdapter(
+  ...     PersonInfo, (interface.Interface,EditPersonForm,interface.Interface),
+  ...     interfaces.IPageletSubform, name='info')
+
+  >>> from pytz import utc
+  >>> from datetime import datetime
+  >>> root['person'].info = datetime.now(utc)
+
+  >>> actor.open('http://localhost/person/edit.html')
+
+  >>> actor.getControl('Information').value = "09/12/01 10:00"
+  >>> actor.getControl('Save').click()
+
+  >>> 'Data successfully updated.' in actor.contents
+  True
+
+  >>> del root['person'].info
+
+  >>> actor.getControl('Information').value = "09/12/01 10:00"
+  >>> actor.getControl('Save').click()
+
+  >>> 'Data successfully updated.' in actor.contents
+  True
+
+  >>> actor.getControl('Save').click()
+  >>> 'No changes were applied.' in actor.contents
+  True
+
+  >>> root['person'].name, root['person'].age, root['person'].info
+  (u'Nikolay Kim', 25, datetime.datetime(...))

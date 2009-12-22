@@ -16,14 +16,14 @@
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope.component import getMultiAdapter
-from z3c.form.interfaces import IDataManager
+from z3c.form.interfaces import NOT_CHANGED, IDataManager
 
 
 def applyChanges(form, content, data):
     changes = {}
     for name, field in form.fields.items():
         # If the field is not in the data, then go on to the next one
-        if name not in data:
+        if name not in data or data[name] is NOT_CHANGED:
             continue
 
         # Get the datamanager and get the original value

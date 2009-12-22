@@ -95,8 +95,6 @@ class IPageletEditForm(IPageletForm):
 class IPageletEditSubForm(IPageletBaseForm):
     """ Sub form mixin for pagelet implementation."""
 
-    changesApplied = interface.Attribute('Changes applied')
-
     def executeActions(form):
         """Execute form actions."""
 

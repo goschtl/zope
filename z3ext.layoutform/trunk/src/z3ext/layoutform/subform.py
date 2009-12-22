@@ -20,14 +20,14 @@ from zope.component import queryMultiAdapter
 from zope.traversing.browser import absoluteURL
 from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
-from z3c.form import subform, button
+from z3c.form import subform
 from z3c.form.interfaces import ISubForm, IActionHandler
 
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 from utils import applyChanges
 from form import PageletBaseForm
-from interfaces import _, IPageletEditSubForm, IPageletSubform, ISaveAction
+from interfaces import _, IPageletEditSubForm, IPageletSubform
 
 
 class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
@@ -35,7 +35,6 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
 
     label = u''
     description = u''
-    changesApplied = False
 
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
@@ -45,21 +44,6 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
 
     def applyChanges(self, data):
         return applyChanges(self, self.getContent(), data)
-
-    @button.handler(ISaveAction)
-    def handleApply(self, action):
-        data, errors = self.extractData()
-
-        if not errors:
-            changes = self.applyChanges(data)
-            if changes:
-                descriptions = []
-                for interface, names in changes.items():
-                    descriptions.append(Attributes(interface, *names))
-
-                self.changesApplied = True
-                event.notify(
-                    ObjectModifiedEvent(self.getContent(), *descriptions))
 
     def executeActions(self, form):
         request = self.request

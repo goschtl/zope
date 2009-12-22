@@ -15,9 +15,10 @@
 
 $Id$
 """
-from zope import interface
+from zope import interface, event
 from zope.component import getAdapters
 from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 from zope.pagetemplate.interfaces import IPageTemplate
 
 from z3c.form import form, util
@@ -30,6 +31,8 @@ from interfaces import _
 from interfaces import IFormWrapper, IForms
 from interfaces import IPageletForm, IPageletSubform
 from interfaces import IPageletDisplayForm, IPageletFormView
+
+from utils import applyChanges
 
 
 class Views(util.SelectionManager):
@@ -91,14 +94,36 @@ class PageletForm(form.Form, PageletBaseForm):
                 errors += formErrors
 
         for form in self.subforms:
-            try:
-                formData, formErrors = form.extractData(setErrors=setErrors)
-            except:
-                raise 'Error', (form,)
+            formData, formErrors = form.extractData(setErrors=setErrors)
+            data.update(formData)
             if formErrors:
                 errors += formErrors
 
         return data, errors
+
+    def applyChanges(self, data):
+        content = self.getContent()
+
+        changes = applyChanges(self, content, data)
+
+        for form in self.subforms:
+            data, errors = form.extractData(setErrors=False)
+            for iface, names in form.applyChanges(data).items():
+                changes[iface] = changes.get(iface, []) + names
+
+        for group in self.groups:
+            data, errors = group.extractData(setErrors=False)
+            for iface, names in group.applyChanges(data).items():
+                changes[iface] = changes.get(iface, []) + names
+
+        if changes:
+            descriptions = []
+            for iface, names in changes.items():
+                descriptions.append(Attributes(iface, *names))
+
+            event.notify(ObjectModifiedEvent(content, *descriptions))
+
+        return changes
 
     def _loadSubforms(self):
         return [(name, form) for name, form in

@@ -1,5 +1,6 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
    xmlns:z3ext="http://namespaces.zope.org/z3ext">
 
   <include file="buttons.zcml" />
@@ -163,15 +164,15 @@
      library="z3ext" type="stylesheet"
      file="styles.css" filetype="zrt" />
   
-  <z3ext:resource
+  <browser:resource
      file="required.gif"
      name="z3ext-layoutform-required.gif" />
   
-  <z3ext:resource
+  <browser:resource
      file="linkOpaque.gif"
      name="z3ext-layoutform-linkOpaque.gif" />
 
-  <z3ext:resource
+  <browser:resource
      file="linkTransparent.gif"
      name="z3ext-layoutform-linkTransparent.gif" />
 

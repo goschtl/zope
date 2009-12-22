@@ -17,9 +17,9 @@ $Id$
 """
 from zope import interface
 from zope.traversing.browser import absoluteURL
-from zope.app.container.interfaces import IAdding
-from zope.app.container.interfaces import IWriteContainer
-from zope.app.container.interfaces import IContainerNamesContainer
+from zope.browser.interfaces import IAdding
+from zope.container.interfaces import IWriteContainer
+from zope.container.interfaces import IContainerNamesContainer
 
 from z3c.form import form, button
 from z3ext.statusmessage.interfaces import IStatusMessage
@@ -75,7 +75,7 @@ class PageletAddForm(PageletForm, form.AddForm):
         else:
             url = absoluteURL(self._addedObject, self.request)
 
-        return '%s/@@SelectedManagementView.html'%url
+        return '%s/'%url
 
     def cancelURL(self):
         context = self.context
@@ -85,7 +85,7 @@ class PageletAddForm(PageletForm, form.AddForm):
         else:
             url = absoluteURL(context, self.request)
 
-        return '%s/@@SelectedManagementView.html'%url
+        return '%s/'%url
 
     def nameAllowed(self):
         """Return whether names can be input by the user."""

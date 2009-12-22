@@ -58,7 +58,6 @@ Let's now render the page. Note the output doesn't contain the layout template:
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
-        <div class="z-form-help"></div>
         <div>
            <input id="form-widgets-name" name="form.widgets.name"
               class="text-widget required textline-field"
@@ -130,7 +129,6 @@ Group
       <div class="z-form-field">
         <label for="form-widgets-name" title="">Name</label>
         <span class="z-form-fieldRequired">&nbsp;</span>
-        <div class="z-form-help"></div>
         <div>
           <input id="form-widgets-name" name="form.widgets.name"
             class="text-widget required textline-field"
@@ -149,7 +147,6 @@ Group
         <div class="z-form-fieldset">
           <div class="z-form-field">
             <label for="form-widgets-education" title="">Education</label>
-            <div class="z-form-help"></div>
             <div>
                <input id="form-widgets-education"
                  name="form.widgets.education"
@@ -204,7 +201,6 @@ Subform
   <div class="z-form z-form-standard">...
   ...
   <label for="form-widgets-info" title="">Information</label>
-  <div class="z-form-help"></div>
   <div>
     <textarea id="form-widgets-info" name="form.widgets.info"
               class="textarea-widget text-field" rows="5"></textarea>
@@ -243,7 +239,6 @@ Subform
      <label for="form-widgets-name" title="">Name</label>
      <span class="z-form-fieldRequired">&nbsp;</span>
      <div class="error">Required input is missing.</div>
-     <div class="z-form-help"></div>
      <div>
         <input id="form-widgets-name" name="form.widgets.name"
            class="text-widget required textline-field"
@@ -263,8 +258,10 @@ Subform
   >>> form = PersonForm(root, request)
   >>> form.update()
   >>> form.extractData()
-  ({'age': 50, 'education': u'University', 'name': u'Nikolay'}, ())
+  ({'info': u'info', 'age': 50, 'education': u'University', 'name': u'Nikolay'}, ())
 
+  >>> list(form.groups)[0].extractData()
+  ({'education': u'University'}, ())
 
   >>> class IItem(interface.Interface):
   ...

@@ -15,11 +15,10 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-import unittest, os
+import unittest, doctest, os
 from persistent import Persistent
-from zope.testing import doctest
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.testing.functional import ZCMLLayer, FunctionalDocFileSuite
-from zope.app.rotterdam import Rotterdam
 from z3ext.layoutform.interfaces import ILayoutFormLayer
 
 
@@ -28,7 +27,7 @@ layoutformLayer = ZCMLLayer(
     __name__, 'layoutformLayer', allow_teardown=True)
 
 
-class IDefaultSkin(ILayoutFormLayer, Rotterdam):
+class IDefaultSkin(ILayoutFormLayer, IDefaultBrowserLayer):
     """ skin """
 
 
