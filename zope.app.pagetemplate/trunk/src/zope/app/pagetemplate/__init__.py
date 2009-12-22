@@ -17,4 +17,4 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile

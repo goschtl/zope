@@ -10,7 +10,7 @@ Named templates provide templates that are registered as named view
 adapters.   To define a named template, use the `NamedTemplateImplementation`
 constructor:
 
-    >>> from zope.app.pagetemplate import ViewPageTemplateFile
+    >>> from zope.browserpage import ViewPageTemplateFile
     >>> from zope.app.pagetemplate.namedtemplate import (
     ...     NamedTemplateImplementation)
     >>> sample = ViewPageTemplateFile('tests/namedtemplate.pt')

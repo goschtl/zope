@@ -2,9 +2,11 @@
 Changes
 =======
 
-3.8.1 (unreleased)
+3.9.0 (unreleased)
 ------------------
 
+- Moved viewpagetemplatefile, simpleviewclass and metaconfigure.registerType
+  into the zope.browserpage package, reversing the dependency.
 
 3.8.0 (2009-12-16)
 ------------------

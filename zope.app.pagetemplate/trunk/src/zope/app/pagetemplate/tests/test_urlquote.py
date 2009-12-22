@@ -22,7 +22,7 @@ $Id$
 
 import unittest
 
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctest import DocTestSuite
 from zope.app.pagetemplate.urlquote import URLQuote
 
 

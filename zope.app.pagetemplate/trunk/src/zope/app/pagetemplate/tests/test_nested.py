@@ -7,7 +7,7 @@ import unittest
 from zope.component.testing import PlacelessSetup
 from zope.publisher.browser import TestRequest
 
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 
 class Context(object):
     pass

@@ -19,12 +19,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.configuration.fields import GlobalObject
+from zope.browserpage.metaconfigure import registerType
 from zope.interface import Interface
-from zope.pagetemplate.engine import Engine
-from zope.pagetemplate.engine import _Engine
-from zope.pagetemplate.engine import TrustedEngine
-from zope.pagetemplate.engine import _TrustedEngine
 from zope.schema import TextLine
+
+# BBB
+from zope.browserpage.metaconfigure import clear
+
 
 class IExpressionTypeDirective(Interface):
     """Register a new TALES expression type"""
@@ -49,22 +50,3 @@ def expressiontype(_context, name, handler):
         callable = registerType,
         args = (name, handler)
         )
-
-def registerType(name, handler):
-    Engine.registerType(name, handler)
-    TrustedEngine.registerType(name, handler)
-
-
-def clear():
-    Engine.__init__()
-    _Engine(Engine)
-    TrustedEngine.__init__()
-    _TrustedEngine(TrustedEngine)
-
-
-try:
-    from zope.testing.cleanup import addCleanUp
-except ImportError:
-    pass
-else:
-    addCleanUp(clear)

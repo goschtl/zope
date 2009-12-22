@@ -16,7 +16,7 @@
 $Id$
 """
 from datetime import datetime
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctest import DocTestSuite
 from zope.interface import implements
 from zope.size.interfaces import ISized
 from zope.traversing.interfaces import IPhysicallyLocatable
@@ -104,6 +104,3 @@ def created():
 
 def test_suite():
     return DocTestSuite()
-
-if __name__ == '__main__':
-    unittest.main()

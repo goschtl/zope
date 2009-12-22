@@ -10,7 +10,7 @@ server.  In particular, it provides:
   result is the rendered template, e.g.::
 
     from zope.publisher import BrowserPage
-    from zope.app.pagetemplate import ViewPageTemplateFile
+    from zope.browserpage import ViewPageTemplateFile
 
     class HelloWorldPage(BrowserPage):
         __call__ = ViewPageTemplateFile('helloworld.pt')
