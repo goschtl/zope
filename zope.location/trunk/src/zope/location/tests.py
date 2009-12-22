@@ -18,12 +18,11 @@ $Id$
 
 import unittest
 import zope.testing.doctest
-from zope.testing.doctestunit import DocTestSuite
 
 
 def test_suite():
     return unittest.TestSuite((
         zope.testing.doctest.DocFileSuite('location.txt'),
-        DocTestSuite('zope.location.traversing'),
-        DocTestSuite('zope.location.pickling'),
+        zope.testing.doctest.DocTestSuite('zope.location.traversing'),
+        zope.testing.doctest.DocTestSuite('zope.location.pickling'),
         ))
