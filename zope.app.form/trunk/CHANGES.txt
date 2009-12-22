@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.11.1 (unreleased)
+3.11.1 (2009-12-22)
 ===================
 
 - Prefer zope.testing.doctest over doctestunit and adjust test output to newer
