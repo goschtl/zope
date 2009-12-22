@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.3.1dev'
+version = '0'
 
 
 setup(name='z3ext.resource',
@@ -47,28 +47,14 @@ setup(name='z3ext.resource',
         'Framework :: Zope3'],
       author='Nikolay Kim',
       author_email='fafhrd91@gmail.com',
-      url='http://z3ext.net/',
+      url='http://pypi.python.org/pypi/z3ext.resource/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
       namespace_packages=['z3ext'],
       install_requires = ['setuptools',
-                          'zope.schema',
-                          'zope.component',
-                          'zope.interface',
-                          'zope.configuration',
-                          'zope.publisher',
-                          'zope.security',
-                          'zope.app.publisher',
-                          'z3c.zrtresource',
-                          'z3ext.cacheheaders',
-                          'z3ext.cssregistry',
+                          'z3ext.resourcepackage',
                           ],
-      extras_require = dict(test=['zope.traversing',
-                                  'zope.app.testing',
-                                  'zope.testing',
-                                  'zope.testbrowser',
-                                  ]),
       include_package_data = True,
       zip_safe = False
       )
