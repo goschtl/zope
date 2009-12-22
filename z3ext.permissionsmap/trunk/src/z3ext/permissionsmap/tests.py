@@ -19,8 +19,8 @@ __docformat__ = "reStructuredText"
 
 import unittest, doctest
 from zope import interface
+from zope.component import testing, eventtesting
 from zope.component import provideAdapter, provideUtility
-from zope.app.testing import setup
 
 from zope.securitypolicy.role import Role
 from zope.security.permission import Permission
@@ -53,7 +53,8 @@ class TestContent2(object):
 
 
 def setUp(test):
-    setup.placelessSetUp()
+    testing.setUp()
+    eventtesting.setUp()
 
     provideUtility(r1, name='r1')
     provideUtility(r2, name='r2')
@@ -70,7 +71,7 @@ def setUp(test):
                    (interface.Interface,), name='z3ext.permissionsmap')
 
 def tearDown(test):
-    setup.placelessTearDown()
+    testing.tearDown()
 
 
 def test_suite():
