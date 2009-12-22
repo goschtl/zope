@@ -20,7 +20,7 @@ from zope.component.testing import PlacelessSetup
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import Text, Int
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctest import DocTestSuite
 
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.tests import support

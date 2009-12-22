@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.schema.interfaces import ITextLine
-from zope.testing import doctest, doctestunit
+from zope.testing import doctest, doctest
 from zope.component import testing
 
 from zope.app.testing import ztapi
@@ -35,7 +35,6 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('../form.txt',
                              setUp=setUp, tearDown=testing.tearDown,
-                             globs={'pprint': doctestunit.pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 

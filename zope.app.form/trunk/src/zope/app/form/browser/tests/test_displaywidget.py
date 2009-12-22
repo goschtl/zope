@@ -13,14 +13,14 @@
 ##############################################################################
 """Generic Text Widgets tests
 
-$Id: test_widgetdocs.py 27082 2004-08-12 20:03:58Z srichter $
+$Id$
 """
 import unittest
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import DoesNotImplement
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctest import DocTestSuite
 
 from zope.app.form.browser.widget import DisplayWidget, UnicodeDisplayWidget
 

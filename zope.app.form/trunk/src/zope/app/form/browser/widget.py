@@ -233,7 +233,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> field.required = True
         >>> widget.getInputValue()
         Traceback (most recent call last):
-        WidgetInputError: ('foo', u'Foo', RequiredMissing())
+        WidgetInputError: ('foo', u'Foo', RequiredMissing('foo'))
 
     However, if the field is not required, the empty string will be converted
     by the widget into the field's `missing_value` and read as a legal field
