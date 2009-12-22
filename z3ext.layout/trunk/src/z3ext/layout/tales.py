@@ -16,8 +16,10 @@
 $Id: tales.py 2720 2008-08-25 11:15:10Z fafhrd91 $
 """
 import logging, sys
-from zope.tales.expressions import StringExpr, SimpleModuleImporter
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
+from zope.error.interfaces import IErrorReportingUtility
+from zope.pagetemplate.engine import Engine, TrustedEngine
+from zope.tales.expressions import StringExpr, SimpleModuleImporter
 
 from pagelet import queryPagelet
 from interfaces import IPagelet, IPageletType, IPageletContext
@@ -30,9 +32,10 @@ class PageletExpression(object):
             pagelet = queryPagelet(context, request, name)
             if pagelet is not None:
                 return pagelet.updateAndRender()
-        except Exception, err:
-            log = logging.getLogger('z3ext.layout')
-            log.exception(err)
+        except:
+            errUtility = queryUtility(IErrorReportingUtility)
+            if errUtility is not None:
+                errUtility.raising(sys.exc_info(), request)
 
         return u''
 
@@ -47,3 +50,7 @@ class TALESPageletExpression(StringExpr, PageletExpression):
         view = econtext.vars['view']
 
         return self.render(context, request, view, name)
+
+
+Engine.registerType("pagelet", TALESPageletExpression)
+TrustedEngine.registerType("pagelet", TALESPageletExpression)

@@ -1,4 +1,2 @@
-<div id="z-portal">
-  <tal:block tal:content="structure provider:statusMessage" />
-  <tal:block tal:content="structure view/render" />
-</div>
+<div id="z-portal"
+  tal:content="structure view/render"></div>

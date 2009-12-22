@@ -1,0 +1,4 @@
+<html>
+  <body tal:content="structure view/render">
+  </body>
+</html>

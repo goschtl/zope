@@ -5,7 +5,13 @@ CHANGES
 2.3.0 (Unreleased)
 ------------------
 
-- ZTK support
+- Use ``zope.site`` intead of ``zope.app.component``
+
+- Use ``zope.browserpage`` intead of ``zope.app.publisher``
+
+- Make ``zope.app.pagetemplate`` optional
+
+- Use ``ErrorReportingUtility`` for exception logging
 
 
 2.2.2 (2009-09-14)

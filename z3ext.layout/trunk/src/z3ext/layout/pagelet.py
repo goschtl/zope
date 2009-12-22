@@ -15,7 +15,7 @@
 
 $Id$
 """
-import logging, sys
+import sys
 from zope import interface, component
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 from zope.publisher.interfaces import NotFound
@@ -23,6 +23,7 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.browser import BrowserPage
 from zope.publisher.defaultview import queryDefaultViewName
 from zope.tales.expressions import SimpleModuleImporter
+from zope.error.interfaces import IErrorReportingUtility
 
 from interfaces import ILayout, IPagelet, IPageletType, IPageletContext
 
@@ -184,9 +185,10 @@ class PageletPublisher(object):
         if view is not None:
             try:
                 return view.updateAndRender()
-            except Exception, err:
-                log = logging.getLogger('z3ext.layout')
-                log.exception(err)
+            except:
+                errUtility = queryUtility(IErrorReportingUtility)
+                if errUtility is not None:
+                    errUtility.raising(sys.exc_info(), self.request)
 
         raise KeyError(name)
 
@@ -204,7 +206,8 @@ class PageletObjectPublisher(PageletPublisher):
                 view.update()
                 return view
             except Exception, err:
-                log = logging.getLogger('z3ext.layout')
-                log.exception(err)
+                errUtility = queryUtility(IErrorReportingUtility)
+                if errUtility is not None:
+                    errUtility.raising(sys.exc_info(), self.request)
 
         raise KeyError(name)

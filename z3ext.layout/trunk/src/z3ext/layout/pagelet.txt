@@ -795,12 +795,10 @@ Let's now create a view using a page template:
 Also we should register tales expression
 
   >>> from z3ext.layout import tales
-  >>> from zope.app.pagetemplate.metaconfigure import registerType
-  >>> registerType('pagelet', tales.TALESPageletExpression)
 
 Finally we look up the view and render it.
 
-  >>> from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+  >>> from z3ext.layout.tests import SimpleViewClass
 
   >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
   >>> component.provideAdapter(
@@ -821,6 +819,35 @@ Finally we look up the view and render it.
       </div>
     </body>
   </html>
+
+  >>> view.index
+  <z3c.pt.pagetemplate.BoundViewPageTemplateFile ...>
+
+'pagelet' expression works for chameleon and for pagetemplate
+
+  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html', pt=False)
+  >>> component.provideAdapter(
+  ...     FrontPage,
+  ...     (interface.Interface, interface.Interface), interface.Interface,
+  ...     name='main.html')
+
+  >>> view = component.getMultiAdapter((object(), request), name='main.html')
+  >>> print view()
+  <html>
+    <body>
+      <h1>My Web Page</h1>
+      <div class="left-column">
+        <div>My pagelet</div>
+      </div>
+      <div class="main">
+        Content here
+      </div>
+    </body>
+  </html>
+
+  >>> view.index
+  <BoundPageTemplateFile of ...>
+
 
 Or we can use typed pagelet interface
 
@@ -935,7 +962,7 @@ Pagelets with errors
 
   >>> class PageletWithError(object):
   ...     def render(self):
-  ...         raise Exception('Error')
+  ...         raise Exception('Pagelet Error')
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
@@ -978,6 +1005,21 @@ Pagelets with errors
         </div>
       </body>
     </html>
+
+  >>> from zope.error.interfaces import IErrorReportingUtility
+  >>> error = component.getUtility(IErrorReportingUtility)
+  >>> print error.getLogEntries()[0]['tb_html']
+  <p>Traceback (most recent call last):
+  <ul>
+    <li>  Module z3ext.layout.tales, line 34, in render<br />
+        return pagelet.updateAndRender()</li>
+    <li>  Module z3ext.layout.pagelet, line 131, in updateAndRender<br />
+        return self.render()</li>
+    <li>  Module z3ext.layout.TESTS, line 3, in render<br />
+        raise Exception('Pagelet Error')</li>
+  </ul>Exception: Pagelet Error&lt;br /&gt;
+  </p><br />
+  
 
 Pagelet with extra context
 

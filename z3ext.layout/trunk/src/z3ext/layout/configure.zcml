@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
-   xmlns:tales="http://namespaces.zope.org/tales"
+   xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.layout">
 
   <z3ext:pageletType
@@ -20,11 +20,6 @@
   <utility
      name="pagelet"
      factory=".expressions.PageletTranslator" />
-
-  <!-- pagelet: tales expression -->
-  <tales:expressiontype
-     name="pagelet"
-     handler=".tales.TALESPageletExpression" />
 
   <!-- @@pagelet view -->
   <adapter
@@ -44,7 +39,7 @@
   <!-- default layouts -->
   <z3ext:layout
      layout="viewspace"
-     for="zope.app.component.site.SiteManagerContainer"
+     for="zope.site.site.SiteManagerContainer"
      description="Default layout, registered for IDefaultBrowserLayer."
      template="layoutcontent.pt" />
 
@@ -54,7 +49,7 @@
      layout="workspace"
      uid="default.viewspace"
      description="Default viewpsace layout, registered for IDefaultBrowserLayer."
-     for="zope.app.component.site.SiteManagerContainer"
+     for="zope.site.site.SiteManagerContainer"
      template="layoutviewspace.pt" />
 
   <z3ext:layout
@@ -63,17 +58,33 @@
      title="Workspace"
      uid="default.workspace"
      description="Default workspace layout, registered for IDefaultBrowserLayer."
-     for="zope.app.component.site.SiteManagerContainer"
+     for="zope.site.site.SiteManagerContainer"
      template="layoutworkspace.pt" />
 
   <z3ext:layout
      name="portal"
-     title="Portal"
+     layout="page"
      uid="default.portal"
+     for="zope.site.site.SiteManagerContainer"
+     title="Portal"
      description="Default portal layout, registered for IDefaultBrowserLayer"
-     for="zope.app.component.site.SiteManagerContainer"
-     class=".layoutportal.DefaultLayoutPortal"
      template="layoutportal.pt" />
+
+  <z3ext:layout
+     name="page"
+     title="Page"
+     uid="default.page"
+     for="zope.site.site.SiteManagerContainer"
+     description="Page layout. It contains html headers, html body, etc."
+     template="layoutpage.pt" />
+
+  <!-- default view -->
+  <browser:defaultView name="index.html" />
+
+  <z3ext:pagelet
+     for="*"
+     name="index.html"
+     template="index.pt" />
 
   <!-- Registering documentation with API doc -->
   <configure
