@@ -22,7 +22,7 @@ import os.path
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.9.0dev'
+version = '3.9.0'
 
 
 setup(name='zope.app.pagetemplate',
@@ -51,7 +51,7 @@ setup(name='zope.app.pagetemplate',
       include_package_data=True,
       install_requires=[
           'setuptools',
-          'zope.browserpage>=3.10.0',
+          'zope.browserpage>=3.10.1',
           'zope.component [hook]',
           'zope.configuration',
           'zope.dublincore',
