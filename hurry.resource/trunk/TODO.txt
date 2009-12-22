@@ -12,3 +12,14 @@ TODO
 * For performance reasons it would be nice if we could somehow support
   auto-rollup for resources. See also Malthe's ``repoze.squeeze``.
 
+* We have a usecase where a rolled up version exists with a minified
+  mode available while for the individual resources no minified mode
+  is available. It would be nice if we could support this.
+
+* Some CSS only functions correctly if the following doctype is in the
+  page::
+
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+  We could extend the insertion logic to put this in automatically if
+  a CSS resource declares it needs this.
