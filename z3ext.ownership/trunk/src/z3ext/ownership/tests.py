@@ -17,10 +17,11 @@ $Id$
 """
 import unittest, doctest
 from zope import interface, component
-from zope.app.testing import placelesssetup
 from zope.annotation.attribute import AttributeAnnotations
 
 import zope.security.management
+from zope.component import eventtesting
+from zope.component.testing import tearDown
 from zope.security.interfaces import IPrincipal
 from z3ext.security import tests as sectests
 from z3ext.security.securitypolicy import SecurityPolicy
@@ -48,6 +49,7 @@ class Participation:
 
 def setUp(test):
     sectests.setUp(test)
+    eventtesting.setUp()
     zope.security.management.setSecurityPolicy(SecurityPolicy)
 
     sm = component.getSiteManager()
@@ -63,6 +65,6 @@ def test_suite():
     return unittest.TestSuite((
             doctest.DocFileSuite(
                 'README.txt',
-                setUp=setUp, tearDown=placelesssetup.tearDown,
+                setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             ))

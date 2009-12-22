@@ -13,7 +13,7 @@ We need setup security interaction and principals
   >>> from z3ext.ownership.interfaces import IOwnership
   >>> from z3ext.ownership.interfaces import IOwnerAware, IOwnerGroupAware
 
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
  
   >>> principal1 = tests.Principal('bob')
   >>> principal2 = tests.Principal('meg')
@@ -211,6 +211,8 @@ just tests
   PermissionSetting: Allow
   >>> map.getSetting('content.Owner', 'meg')
   PermissionSetting: Deny
+  >>> map.getPrincipalsAndRoles()
+  ()
 
 
 Group owner
@@ -251,3 +253,5 @@ just tests
   PermissionSetting: Allow
   >>> map.getSetting('content.GroupOwner', 'meg')
   PermissionSetting: Deny
+  >>> map.getPrincipalsAndRoles()
+  ()

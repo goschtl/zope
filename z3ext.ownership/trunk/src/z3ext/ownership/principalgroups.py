@@ -17,7 +17,7 @@ $Id$
 """
 from zope import interface, component
 from zope.component import queryUtility
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from z3ext.security.interfaces import IPrincipalGroups
 from z3ext.ownership.interfaces import IOwnerAware, IOwnership
