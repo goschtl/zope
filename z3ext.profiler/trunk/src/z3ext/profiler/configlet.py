@@ -15,7 +15,7 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-from zope.app.component.hooks import getSite
+from zope.site.hooks import getSite
 from zope.traversing.interfaces import IContainmentRoot
 
 
