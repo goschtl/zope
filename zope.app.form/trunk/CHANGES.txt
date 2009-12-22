@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.12.1 (unreleased)
+3.12.1 (2009-12-22)
 ===================
 
 - Added missing zope.datetime dependency.
