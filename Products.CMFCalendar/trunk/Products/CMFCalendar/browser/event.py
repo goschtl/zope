@@ -15,6 +15,8 @@
 $Id$
 """
 
+import time
+
 from zope.app.form.browser import DatetimeI18nWidget
 from zope.component import adapts
 from zope.component import getUtility
@@ -30,19 +32,17 @@ from zope.schema import URI
 from zope.schema.interfaces import IVocabularyFactory
 
 from Products.CMFCore.interfaces import IMetadataTool
+from Products.CMFDefault.browser.utils import decode, ViewBase
 from Products.CMFDefault.formlib.form import ContentEditFormBase
 from Products.CMFDefault.formlib.form import DisplayFormBase
 from Products.CMFDefault.formlib.schema import EmailLine
 from Products.CMFDefault.formlib.schema import ProxyFieldProperty
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFDefault.formlib.vocabulary import SimpleVocabulary
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 from Products.CMFCalendar.interfaces import IMutableEvent
 from Products.CMFCalendar.utils import Message as _
-
-from zope.app.pagetemplate import ViewPageTemplateFile
-from Products.CMFDefault.browser.utils import decode, ViewBase
-import time
 
 class EventTypeVocabulary(object):
 
