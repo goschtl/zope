@@ -27,7 +27,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.form',
-      version = '3.11.2dev',
+      version = '3.12.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='The Original Zope 3 Form Framework',
@@ -79,8 +79,8 @@ setup(name='zope.app.form',
       install_requires=[
           "setuptools",
           "transaction",
-          "zope.app.pagetemplate",
-          "zope.browser >= 1.1",
+          "zope.browser>=1.1",
+          "zope.browserpage>=3.10.1",
           "zope.browsermenu",
           "zope.component",
           "zope.configuration",

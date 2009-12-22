@@ -25,8 +25,8 @@ from zope.schema import getFieldNamesInOrder
 from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app.form.utility import setUpDisplayWidgets
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.browserpage import ViewPageTemplateFile
+from zope.browserpage.simpleviewclass import SimpleViewClass
 
 class DisplayView(BrowserView):
     """Simple display-view base class.

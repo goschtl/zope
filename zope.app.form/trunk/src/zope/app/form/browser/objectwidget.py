@@ -25,7 +25,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 
@@ -104,7 +104,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
         """Render the object as hidden fields."""
         result = []
         for name in self.names:
-            result.append(getSubwidget(name).hidden())
+            result.append(self.getSubwidget(name).hidden())
         return "".join(result)
 
     def error(self):

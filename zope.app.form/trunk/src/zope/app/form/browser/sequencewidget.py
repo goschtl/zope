@@ -28,7 +28,7 @@ from zope.app.form import InputWidget
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 
 
 class SequenceWidget(BrowserWidget, InputWidget):

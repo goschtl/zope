@@ -161,7 +161,7 @@ and try to look up the view again:
 
   >>> queryMultiAdapter(
   ...     (Anything(), TestRequest()), name='name.html') #doctest:+ELLIPSIS
-  <zope.app.pagetemplate.simpleviewclass.SimpleViewClass from edit.pt ...>
+  <zope.browserpage.simpleviewclass.SimpleViewClass from edit.pt ...>
 
 
 Now, if I do not specify my own template, and my class does not overwrite the

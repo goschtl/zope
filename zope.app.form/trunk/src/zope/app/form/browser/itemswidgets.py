@@ -28,7 +28,7 @@ from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.form.browser.i18n import _
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 
 
 # For choices, we want to make the widget a view of the field and vocabulary.
