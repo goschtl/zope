@@ -51,11 +51,4 @@
     <allow attributes="__call__" />
  </class>
 
-  <!-- TALES namespace allows view/template:default etc -->
-  <adapter
-      for="*"
-      factory=".namedtemplate.NamedTemplatePathAdapter"
-      name="template"
-      />
-
 </configure>

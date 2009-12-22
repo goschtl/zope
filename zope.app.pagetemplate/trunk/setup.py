@@ -22,7 +22,7 @@ import os.path
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.9.1dev'
+version = '3.10.0dev'
 
 
 setup(name='zope.app.pagetemplate',
@@ -34,8 +34,6 @@ setup(name='zope.app.pagetemplate',
       long_description=(
         read('README.txt')
         + '\n\n.. contents::\n\n' +
-        read('src', 'zope', 'app', 'pagetemplate', 'namedtemplate.txt')
-        + '\n\n' +
         read('CHANGES.txt')
         ),
       license='ZPL 2.1',
@@ -51,7 +49,7 @@ setup(name='zope.app.pagetemplate',
       include_package_data=True,
       install_requires=[
           'setuptools',
-          'zope.browserpage>=3.10.1',
+          'zope.browserpage>=3.11.0',
           'zope.component [hook]',
           'zope.configuration',
           'zope.dublincore',

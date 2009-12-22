@@ -2,9 +2,10 @@
 Changes
 =======
 
-3.9.1 (unreleased)
+3.10.0 (unreleased)
 ------------------
 
+- Moved named template implementation to zope.browserpage.
 
 3.9.0 (2009-12-22)
 ------------------
