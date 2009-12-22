@@ -20,13 +20,6 @@
      name="index.html"
      for="..interfaces.IConfiglet" />
 
-  <browser:menuItem
-     for="..interfaces.IConfiglet"
-     title="View"
-     menu="zmi_views"
-     action="index.html"
-     permission="zope.Public" />
-
   <z3ext:pagelet
      name="index.html"
      for="..interfaces.IConfiglet"
@@ -47,19 +40,6 @@
      template="navigation.pt"
      class=".navigation.Navigation"
      permission="zope.Public" />
-
-  <!-- for ILocalSiteManager -->
-  <browser:menuItem
-     for="zope.app.component.interfaces.ISite"
-     menu="zmi_actions"
-     title="System settings"
-     action="settings/"
-     permission="z3ext.Configure" />
-
-  <browser:containerViews
-     for="..interfaces.IConfigletDataStorage"
-     index="z3ext.Configure"
-     contents="z3ext.Configure" />
 
   <!-- configlet breadcrumb -->
   <adapter 

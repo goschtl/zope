@@ -28,13 +28,7 @@ Let's demonstrate how we can access controlpanel.
 
 We should have 'System settings' link in ISite actions menu
 
-  >>> browser.open("http://localhost/@@contents.html")
-  >>> print browser.contents
-  <!DOCTYPE html PUBLIC...
-  ...<li><a href="settings/">System settings</a></li>...
-  <BLANKLINE>
-
-  >>> browser.getLink('System settings').click()
+  >>> browser.open("http://localhost/settings/")
   >>> print browser.contents
   <html>
   ...System settings...

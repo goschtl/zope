@@ -16,11 +16,11 @@
 $Id$
 """
 from zope import schema, interface
-from zope.app.rotterdam import Rotterdam
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from z3ext.layoutform.interfaces import ILayoutFormLayer
 
 
-class IDefaultSkin(ILayoutFormLayer, Rotterdam):
+class IDefaultSkin(ILayoutFormLayer, IDefaultBrowserLayer):
     """ my skin """
 
 
