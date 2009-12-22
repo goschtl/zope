@@ -8,7 +8,7 @@ and `z3c.hashedresource` into Grok applications.
 Setup
 =====
 
-Let's import and init the necessary work environment.
+Let's import and init the necessary work environment::
 
   >>> import grokcore.component as grok
   >>> from zope.testbrowser.testing import Browser
@@ -58,7 +58,7 @@ Simple resources
 ----------------
 
 Resources can be declared as part of their library, with their
-dependencies.
+dependencies::
 
   >>> css_a = resource.ResourceInclusion(SomeCSS, 'a.css')
   >>> css_b = resource.ResourceInclusion(SomeCSS, 'b.css')
@@ -67,12 +67,38 @@ Grouping resources
 ------------------
 
 Sometimes, resources need to be grouped logically. They can be
-declared in a group inclusion:
+declared in a group inclusion::
 
   >>> css_group = resource.GroupInclusion([css_a, css_b])
   >>> css_group.inclusions()
   [<ResourceInclusion 'a.css' in library 'somecss'>,
    <ResourceInclusion 'b.css' in library 'somecss'>]
+
+Library resource
+----------------
+
+Sometimes, it can be too cumbersome to declare the resources and the
+library separatly. When the resource is not destined to be re-used, it
+can be tempting to register everything with a single declaration. The
+ResourceLibrary component is what you need in these situations.
+
+A Resource library is a mix between a library and a group
+inclusion. You need to define the usual path and name and then, the
+linked resources::
+
+  >>> class EasyResources(resource.ResourceLibrary):
+  ...    resource.path('ftests/css')
+  ...    resource.resource('a.css')
+  ...    resource.resource('b.css')
+
+  >>> grok.testing.grok_component('someresources', EasyResources)
+  True
+
+Once the component has been grokked, the resources are available::
+
+  >>> EasyResources.inclusions()
+  [<ResourceInclusion 'a.css' in library 'easyresources'>,
+   <ResourceInclusion 'b.css' in library 'easyresources'>]
 
 
 Including resources in components
@@ -105,7 +131,7 @@ using the `include` directive::
   True
 
 If we try to render the view, we notice that the HTML header is
-empty. The resources are not included.
+empty. The resources are not included::
 
   >>> browser.open('http://localhost/@@myview')
   >>> print browser.contents
@@ -142,6 +168,26 @@ included::
   <html><head>
     <link... href="http://localhost/@@/++noop++.../somecss/a.css" />
     <link... href="http://localhost/@@/++noop++.../somecss/b.css" />
+  </head></html>
+
+A ResourceLibrary component can be included just like a normal resource::
+
+  >>> class YetAnotherView(view.View):
+  ...   grok.context(Interface)
+  ...   grok.implements(resource.IResourcesIncluder)
+  ...   resource.include(EasyResources)
+  ...
+  ...   def render(self):
+  ...	  return u"<html><head></head></html>"
+
+  >>> grok.testing.grok_component('yav', YetAnotherView)
+  True
+
+  >>> browser.open('http://localhost/@@yetanotherview')
+  >>> print browser.contents
+  <html><head>
+    <link... href="http://localhost/@@/++noop++.../easyresources/a.css" />
+    <link... href="http://localhost/@@/++noop++.../easyresources/b.css" />
   </head></html>
 
 

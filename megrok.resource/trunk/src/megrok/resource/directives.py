@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import martian
+from hurry.resource import ResourceInclusion
 from hurry.resource.interfaces import IInclusion
 
 
@@ -23,3 +24,11 @@ class include(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
     validate = validateInclusion
+
+
+class resource(martian.Directive):
+    scope = martian.CLASS
+    store = martian.MULTIPLE
+
+    def factory(self, relpath, depends=None, bottom=False):
+        return (relpath, depends, bottom)
