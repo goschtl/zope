@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.5.1dev'
+version = '0'
 
 
 setup(name='z3ext.cssregistry',
@@ -47,7 +47,7 @@ setup(name='z3ext.cssregistry',
         'Framework :: Zope3'],
       author='Nikolay Kim',
       author_email='fafhrd91@gmail.com',
-      url='http://z3ext.net/',
+      url='http://pypi.python.org/pypi/z3ext.cssregistry/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
@@ -61,8 +61,7 @@ setup(name='z3ext.cssregistry',
                           'zope.configuration',
                           'z3c.zrtresource',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
+      extras_require = dict(test=['zope.testing',
                                   'zope.publisher',
                                   'zope.traversing',
                                   ]),

@@ -19,20 +19,20 @@ __docformat__ = "reStructuredText"
 
 import unittest, doctest
 from zope import interface, schema
-from zope.component import provideAdapter
-from zope.app.testing import setup
+from zope.component import provideAdapter, testing
+from zope.traversing.testing import setUp as traversingSetUp
 from zope.traversing.namespace import view
 from zope.traversing.interfaces import ITraversable
 
 
 def setUp(test):
-    setup.placelessSetUp()
-    setup.setUpTraversal()
+    testing.setUp()
+    traversingSetUp()
     provideAdapter(view, (None, None), ITraversable, name="view")
 
 
 def tearDown(test):
-    setup.placelessTearDown()
+    testing.tearDown()
 
 
 def test_suite():
