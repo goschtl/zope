@@ -22,7 +22,7 @@ import os.path
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.10.0dev'
+version = '3.10.0'
 
 
 setup(name='zope.app.pagetemplate',
