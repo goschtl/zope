@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.1dev'
+version = '0'
 
 
 setup(name='z3ext.skintool',
@@ -47,7 +47,7 @@ setup(name='z3ext.skintool',
         'Framework :: Zope3'],
       author='Nikolay Kim',
       author_email='fafhrd91@gmail.com',
-      url='http://z3ext.net/',
+      url='http://pypi.python.org/pypi/z3ext.skintool/',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'':'src'},
@@ -60,19 +60,21 @@ setup(name='z3ext.skintool',
                           'zope.security',
                           'zope.configuration',
                           'zope.lifecycleevent',
-                          'zope.app.intid',
-                          'zope.app.component',
-                          'zope.app.publication',
+                          'zope.intid',
                           'zope.i18nmessageid',
                           'zope.i18n',
+                          'zope.site',
+                          'zope.container',
+                          'zope.app.generations',
+                          'z3ext.layoutform',
                           'z3ext.controlpanel',
                           'z3ext.widget.radio',
                           'z3ext.widget.checkbox',
                           ],
       extras_require = dict(test=['zope.app.testing',
-                                  'zope.app.zcmlfiles',
                                   'zope.testing',
                                   'zope.testbrowser',
+                                  'zope.principalregistry',
                                   'z3ext.autoinclude',
                                   'z3ext.security',
                                   ]),

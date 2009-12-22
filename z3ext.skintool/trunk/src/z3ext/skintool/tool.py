@@ -24,8 +24,8 @@ from zope.security.proxy import removeSecurityProxy
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.publisher.interfaces.browser import \
      IDefaultSkin, IBrowserRequest, IDefaultBrowserLayer
-from zope.app.component.hooks import getSite
-from zope.app.intid.interfaces import IIntIds
+from zope.site.hooks import getSite
+from zope.intid.interfaces import IIntIds
 
 from z3ext.layoutform import Fields, PageletEditSubForm
 from z3ext.controlpanel.browser.configlet import Configlet

@@ -19,19 +19,20 @@ from zope import component
 from zope.proxy import removeAllProxies
 from zope.component import getUtility
 from zope.interface import directlyProvides
-from zope.app.intid.interfaces import IIntIds
-from zope.app.component.interfaces import ISite
-from zope.app.publication.interfaces import IBeforeTraverseEvent
+from zope.intid.interfaces import IIntIds
+from zope.component.interfaces import ISite
+from zope.traversing.interfaces import IBeforeTraverseEvent
 
 from tool import cache
 from interfaces import ISkinTool, ISkinable, INoSkinSwitching
 
 
 @component.adapter(ISite, IBeforeTraverseEvent)
-def threadServiceSubscriber(site, event,
-                            ISkinable = ISkinable,
-                            removeAllProxies=removeAllProxies,
-                            directlyProvides=directlyProvides):
+def threadServiceSubscriber(
+    site, event,
+    ISkinable = ISkinable,
+    removeAllProxies=removeAllProxies,
+    directlyProvides=directlyProvides):
 
     if INoSkinSwitching.providedBy(event.request):
         return

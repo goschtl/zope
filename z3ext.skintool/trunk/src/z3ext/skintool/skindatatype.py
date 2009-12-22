@@ -18,7 +18,7 @@ $Id$
 import sys
 from zope.schema import getFields
 from persistent import Persistent
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 from interfaces import _
 from z3ext.controlpanel.storage import ConfigletData

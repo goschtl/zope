@@ -4,6 +4,9 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <exclude package="zope.dublincore.browser" />
+  <exclude package="zope.app.generations.browser" />
+
   <include package="z3ext.autoinclude" file="meta.zcml" />
   <includeAllDependencies package="z3ext.skintool" extras="test" />
 

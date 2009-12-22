@@ -21,16 +21,16 @@ from zope import component
 from zope.component import testing
 from zope.testing import doctestunit
 from zope.app.testing import setup, functional
-from zope.app.intid.interfaces import IIntIds
-from zope.app.intid import IntIds
-from zope.app.rotterdam import Rotterdam
+from zope.intid.interfaces import IIntIds
+from zope.intid import IntIds
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
+from z3ext.skintool.tool import SkinTool
 from z3ext.controlpanel.testing import setUpControlPanel
 from z3ext.layoutform.interfaces import ILayoutFormLayer
-from z3ext.skintool.tool import SkinTool
 
 
-class IDefaultSkin(ILayoutFormLayer, Rotterdam):
+class IDefaultSkin(ILayoutFormLayer, IDefaultBrowserLayer):
     """ skin """
 
 
