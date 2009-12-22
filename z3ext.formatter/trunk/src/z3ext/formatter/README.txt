@@ -5,15 +5,6 @@ z3ext.formatter
 This package adds extensible tales expression for various formatters.
 You can change formatter setting per site basis (z3ext.controlpanel).
 
-For configure default settings, add following code to zope.conf
-
-<product-config z3ext.formatter>
-  timezone UTC
-</product-config>
-
-Values for timezoneFormat are:
-    1: No timezone
-
 We need register controlpanel configlet
 
   >>> from zope.configuration import xmlconfig
@@ -28,30 +19,14 @@ We need register controlpanel configlet
   ...     description="Configure portal formatters."/>
   ... </configure>""")
 
-We'll try emulate <product-config z3ext.formatter>
-
-  >>> from zope.app.appsetup import product
-  >>> product._configs['z3ext.formatter'] = {
-  ...   'timezone': u'UTC', 'timezoneFormat': '2', 'principalTimezone': 'true'}
-
-Let's check this
-
-   >>> product.getProductConfiguration('z3ext.formatter')
-   {'timezone': u'UTC', 'timezoneFormat': '2', 'principalTimezone': 'true'}
-
-
-Usually initFormatter() function is colled during IDatabaseOpenedEvent event,
-we simply call it directly:
-
-   >>> from z3ext.formatter.config import initFormatter
-   >>> initFormatter(None)
-
 Now we can get IFormatterConfiglet utility
 
    >>> from zope.component import getUtility
    >>> from z3ext.formatter.interfaces import IFormatterConfiglet
 
    >>> configlet = getUtility(IFormatterConfiglet)
+   >>> configlet.timezone = u'UTC'
+   >>> configlet.timezoneFormat = 2
 
 Setup request
 
@@ -191,6 +166,19 @@ Default timezone is UTC
    </html>
 
 
+Unknow value
+
+   >>> print fpage.render(request, now=u'Unknwon string')
+   <html>
+     <body>
+       Unknwon string
+       Unknwon string
+       Unknwon string
+       Unknwon string
+     </body>
+   </html>
+
+
 Date formatter
 --------------
 
@@ -212,6 +200,14 @@ Date formatter
      <body>
        Jan 01, 2007
        01/01/07
+     </body>
+   </html>
+
+   >>> print datepage.render(request, today=u'Unknown string')
+   <html>
+     <body>
+       Unknown string
+       Unknown string
      </body>
    </html>
 
@@ -272,6 +268,14 @@ Time formatter
      <body>
        10:34:03 AM
        10:34 AM
+     </body>
+   </html>
+
+   >>> print datepage.render(request, time=u'Unknown string')
+   <html>
+     <body>
+       Unknown string
+       Unknown string
      </body>
    </html>
 
@@ -531,3 +535,4 @@ Tomorrow's datetime
         <span class="z3ext-formatter-humandatetime" value="...">in 1 year(s)</span>
       </body>
     </html>
+

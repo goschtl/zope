@@ -6,9 +6,6 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.formatter">
 
-  <!-- zope.conf configuration -->
-  <subscriber handler=".config.initFormatter" />
-
   <!-- formatter: chameleon expression -->
   <utility
      name="formatter"
@@ -41,49 +38,33 @@
      factory=".vocabulary.Timezones" />
 
   <!-- formatter configlet -->
-  <configure
-     xmlns:zcml="http://namespaces.zope.org/zcml"
-     xmlns:browser="http://namespaces.zope.org/browser"
-     zcml:condition="installed z3ext.controlpanel">
+  <z3ext:configlet
+     name="system.formatter"
+     schema=".interfaces.IFormatterConfiglet"
+     title="Portal formatters"
+     description="Configure portal formatters.">
+    <allow interface=".interfaces.IFormatterConfiglet" />
+  </z3ext:configlet>
 
-    <include package="z3ext.controlpanel" file="meta.zcml" />
-    <include package="z3ext.controlpanel" />
+  <browser:icon
+     name="zmi_icon"
+     for=".interfaces.IFormatterConfiglet"
+     file="preferences-formatter.png" />
 
-    <z3ext:configlet
-       name="system.formatter"
-       schema=".interfaces.IFormatterConfiglet"
-       title="Portal formatters"
-       description="Configure portal formatters.">
-      <allow interface=".interfaces.IFormatterConfiglet" />
-    </z3ext:configlet>
+  <!-- ecmascripts -->
+  <z3ext:resourceinclude
+     name="humandatetime.js"
+     type="javascript"
+     library="z3ext"
+     require="jquery-plugins"
+     file="resources/humandatetime.js" />
 
-    <browser:icon
-       name="zmi_icon"
-       for=".interfaces.IFormatterConfiglet"
-       file="preferences-formatter.png" />
-  </configure>
-
-  <configure
-     xmlns:zcml="http://namespaces.zope.org/zcml"
-     xmlns:browser="http://namespaces.zope.org/browser"
-     zcml:condition="installed z3ext.resourcepackage">
-
-    <!-- ecmascripts -->
-    <z3ext:resourceinclude
-       name="humandatetime.js"
-       type="javascript"
-       library="z3ext"
-       require="jquery-plugins"
-       file="resources/humandatetime.js" />
-
-    <z3ext:resourceinclude
-       name="fancydatetime.js"
-       type="javascript"
-       library="z3ext"
-       require="jquery-plugins"
-       file="resources/fancydatetime.js" />
-
-  </configure>
+  <z3ext:resourceinclude
+     name="fancydatetime.js"
+     type="javascript"
+     library="z3ext"
+     require="jquery-plugins"
+     file="resources/fancydatetime.js" />
 
   <!-- Registering documentation with API doc -->
   <configure

@@ -54,7 +54,7 @@ class FancyDatetimeFormatter(object):
 
         fdate = unicode(value.strftime(str(getattr(configlet,'date_'+self.tp))))
         ftime = unicode(value.strftime(str(getattr(configlet,'time_'+self.tp))))
- 
+
         return u'<span class="z3ext-formatter-fancydatetime" date="%s" time="%s">%s</span>' \
             % (fdate, ftime, value.strftime('%B %d, %Y %H:%M:%S %z'))
 
