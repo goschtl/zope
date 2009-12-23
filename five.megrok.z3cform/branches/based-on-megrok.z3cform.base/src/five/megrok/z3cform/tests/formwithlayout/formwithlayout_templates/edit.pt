@@ -4,10 +4,10 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 <body>
 
-  <h1 tal:content="view/label">View Title</h1>
+  <h1 tal:content="view/form/label">View Title</h1>
 
   <div id="layout-contents">
-    <span tal:replace="structure view/contents" />
+    <span tal:replace="structure view/form/render" />
   </div>
 
 </body>

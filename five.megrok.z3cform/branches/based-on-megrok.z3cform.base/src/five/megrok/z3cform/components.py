@@ -54,3 +54,27 @@ class DisplayForm(GrokForm, form.DisplayForm):
 
     def update(self):
         form.Form.update(self)
+
+import five.grok
+import z3c.form
+from Acquisition import aq_inner
+
+
+class FormView(five.grok.View):
+
+    request_layer = z3c.form.interfaces.IFormLayer
+
+    def __init__(self, context, request):
+        super(FormView, self).__init__(context, request)
+        self.form = self.formClass(
+            aq_inner(self.context), self.request)
+        self.form.__name__ = self.__name__
+
+    def update(self):
+        """On update, we switch on the zope3 request, needed to work with
+        our z3c form. We update here the wrapped form.
+
+        Override this method if you have more than one form.
+        """
+        z2.switch_on(self, request_layer=self.request_layer)
+        self.form.update()

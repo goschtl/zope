@@ -1,2 +1,1 @@
-from components import Form, AddForm, EditForm, DisplayForm
-from directive import formview
+from components import Form, AddForm, EditForm, DisplayForm, FormView

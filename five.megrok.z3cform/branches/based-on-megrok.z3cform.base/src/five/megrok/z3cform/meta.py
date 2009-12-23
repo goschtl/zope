@@ -1,13 +1,25 @@
 # -*- coding: utf-8 -*-
-from five.grok.meta import ViewSecurityGrokker
-from megrok.z3cform.base.components import GrokForm
 import martian
-import grokcore.security
-from plone.z3cform.layout import wrap_form, FormWrapper
-from grokcore.view.meta.views import ViewGrokker, default_view_name
+import z3c.form
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from five.megrok.z3cform.directive import formview
-import Acquisition
+
+import grokcore.security
+from grokcore.view.meta.views import ViewGrokker, default_view_name
+
+from megrok.z3cform.base.components import GrokForm
+
+from five.grok.meta import ViewSecurityGrokker
+from five.megrok.z3cform.components import FormView
+
+
+def wrap_form_in_view(formClass, view_class=FormView, **kwargs):
+    assert z3c.form.interfaces.IForm.implementedBy(formClass)
+    # generated class must have the same name as the form
+    # to allow template grokking
+    viewClass = type(formClass.__name__, (view_class,), kwargs)
+    viewClass.formClass = formClass
+    viewClass.module_info = formClass.module_info
+    return viewClass
 
 
 class FiveGrokFormGrokker(ViewSecurityGrokker, ViewGrokker):
@@ -17,19 +29,11 @@ class FiveGrokFormGrokker(ViewSecurityGrokker, ViewGrokker):
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
     martian.directive(grokcore.security.require, name='permission')
-    martian.directive(formview, default=None, name='formwrapper')
 
-    def execute(self, factory, config, context, layer, name, permission,
-                formwrapper, **kw):
-        if formwrapper is None:
-            formwrapper = FormWrapper
-        factory.__view_name__ = name
-        newfactory = wrap_form(factory, formwrapper)
-        newfactory.module_info = factory.module_info
-        factory = newfactory
-        factory.getPhysicalPath = Acquisition.Acquired
-        factory.render = factory.__call__
-
-        ViewSecurityGrokker.execute(self, factory, config, permission, **kw)
-        ViewGrokker.execute(self, factory, config, context, layer, name, **kw)
+    def execute(self, form, config, context, layer, name, permission, **kw):
+        # needed by megrok.z3cform.base
+        form.__view_name__ = name
+        wrappedForm = wrap_form_in_view(form)
+        ViewSecurityGrokker.execute(self, wrappedForm, config, permission, **kw)
+        ViewGrokker.execute(self, wrappedForm, config, context, layer, name, **kw)
         return True
