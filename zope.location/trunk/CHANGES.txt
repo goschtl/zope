@@ -2,9 +2,14 @@
 CHANGES
 =======
 
-3.8.1 (unreleased)
+3.8.1 (2009-12-23)
 ------------------
 
+- Removed dependency on zope.copy: the LocationCopyHook adapter is registered
+  only if zope.copy is available.
+
+- Use the standard Python doctest module instead of zope.testing.doctest, which
+  has been deprecated.
 
 3.8.0 (2009-12-22)
 ------------------

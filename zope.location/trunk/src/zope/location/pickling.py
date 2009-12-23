@@ -18,11 +18,15 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.component import adapts
-from zope.copy.interfaces import ICopyHook, ResumeCopy
 from zope.interface import implements
-
 from zope.location.interfaces import ILocation
 from zope.location.location import inside
+
+try:
+    from zope.copy.interfaces import ICopyHook, ResumeCopy
+except ImportError:
+    raise NotImplementedError("zope.location.pickling is not supported "
+        "because zope.copy is not available")
 
 
 class LocationCopyHook(object):

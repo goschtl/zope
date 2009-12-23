@@ -16,13 +16,13 @@
 $Id$
 """
 
+import doctest
 import unittest
-import zope.testing.doctest
 
 
 def test_suite():
     return unittest.TestSuite((
-        zope.testing.doctest.DocFileSuite('location.txt'),
-        zope.testing.doctest.DocTestSuite('zope.location.traversing'),
-        zope.testing.doctest.DocTestSuite('zope.location.pickling'),
-        ))
+        doctest.DocFileSuite('location.txt'),
+        doctest.DocTestSuite('zope.location.traversing'),
+        doctest.DocTestSuite('zope.location.pickling'),
+    ))
