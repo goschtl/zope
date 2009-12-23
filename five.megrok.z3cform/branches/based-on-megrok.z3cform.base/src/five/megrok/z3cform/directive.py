@@ -2,7 +2,7 @@
 import martian
 
 
-class wrapper(martian.Directive):
+class formview(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateClass

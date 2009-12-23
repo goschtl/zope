@@ -70,7 +70,7 @@
 """
 import os
 from five import grok
-from five.megrok import z3cform
+from five import megrok
 from plone.z3cform.layout import FormWrapper
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from z3c.form import field
@@ -105,8 +105,8 @@ class MyCoolFormWrapper(FormWrapper):
     index = ViewPageTemplateFile(path('layout.pt'), _prefix='')
 
 
-class Edit(z3cform.EditForm):
-    fields = field.Fields(IMammoth)
+class Edit(megrok.z3cform.EditForm):
     grok.context(IMammoth)
-    z3cform.wrapper(MyCoolFormWrapper)
-    wrap = True
+    megrok.z3cform.formview(MyCoolFormWrapper)
+
+    fields = field.Fields(IMammoth)
