@@ -124,34 +124,33 @@ using the `include` directive::
   ...   grok.context(Interface)
   ...   resource.include(css_a)
   ...
-  ...   def render(self):
-  ...	  return u"<html><head></head></html>"
-
-  >>> grok.testing.grok_component('MyView', MyView)
-  True
-
-If we try to render the view, we notice that the HTML header is
-empty. The resources are not included::
-
-  >>> browser.open('http://localhost/@@myview')
-  >>> print browser.contents
-  <html><head></head></html>
+  ...   def render(self): return ""
 
 For the resources to be automatically included during the traversal,
 we need to inform the publishing machinery that our component (the
-view), is a IResourcesIncluder::
+view), is a IResourcesIncluder. This is done automatically, when using
+the "include" directive::
 
-  >>> from zope.interface import classImplements
-  >>> classImplements(MyView, resource.IResourcesIncluder)
+  >>> resource.IResourcesIncluder.implementedBy(MyView)
+  True
 
-Now, when we render the view, the resources should be automatically
-added to the HTML result::
+Of course, this should not remove the existing interfaces
+implementations::
 
-  >>> browser.open('http://localhost/@@myview')
-  >>> print browser.contents
-  <html><head>
-      <link... href="http://localhost/@@/++noop++.../somecss/a.css" />
-  </head></html>
+  >>> from zope.interface import Interface
+  >>> class IMySuperIface(Interface): pass
+
+  >>> class MyView(view.View):
+  ...   grok.context(Interface)
+  ...   grok.implements(IMySuperIface)
+  ...   resource.include(css_a)
+  ...
+  ...   def render(self): return "<html><head></head></html>"
+
+  >>> resource.IResourcesIncluder.implementedBy(MyView)
+  True
+  >>> IMySuperIface.implementedBy(MyView)
+  True
 
 The `include` directive can be stacked, if several resources are to be
 included::
@@ -174,7 +173,6 @@ A ResourceLibrary component can be included just like a normal resource::
 
   >>> class YetAnotherView(view.View):
   ...   grok.context(Interface)
-  ...   grok.implements(resource.IResourcesIncluder)
   ...   resource.include(EasyResources)
   ...
   ...   def render(self):

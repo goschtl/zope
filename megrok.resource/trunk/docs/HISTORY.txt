@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.3 (2009-12-23)
+----------------
+
+* The IResourcesIncluder interface is now automatically implemented
+  by the class while using the `include` directive. This makes the
+  whole system a lot more natural.
+
+* The interfaces have been moved to a dedicated module. If you used
+  to import from `components`, please, correct your code.
+
 0.2 (2009-12-22)
 ----------------
 

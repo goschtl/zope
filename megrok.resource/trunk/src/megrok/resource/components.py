@@ -3,21 +3,10 @@
 from grokcore.component import baseclass
 from grokcore.view import DirectoryResource
 from zope.component import getUtility
-from zope.interface import Interface, Attribute
 from hurry.resource import ResourceInclusion, GroupInclusion
 from hurry.resource.interfaces import ICurrentNeededInclusions
 from megrok.resource.directives import resource
-
-
-class IResourcesIncluder(Interface):
-    """A publishable component that can include resources.
-    """
-
-
-class ILibrary(Interface):
-    """A library, including resources.
-    """
-    name = Attribute("The name of the library needed for URL computations")
+from megrok.resource.interfaces import ILibrary
 
     
 class Library(DirectoryResource):

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 from os.path import join
 
-version = '0.2'
+version = '0.3'
 HISTORY = open(join("docs", "HISTORY.txt")).read()
 README = open(join("src", "megrok", "resource", "README.txt")).read()
 

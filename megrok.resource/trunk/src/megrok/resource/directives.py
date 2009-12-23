@@ -3,6 +3,9 @@
 import martian
 from hurry.resource import ResourceInclusion
 from hurry.resource.interfaces import IInclusion
+from megrok.resource.interfaces import IResourcesIncluder
+from zope.interface import classImplements
+from zope.interface.declarations import addClassAdvisor, _implements_advice
 
 
 def validateInclusion(directive, value):
@@ -24,6 +27,17 @@ class include(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
     validate = validateInclusion
+
+    def factory(self, resource):
+        addClassAdvisor(_resources_advice, depth=3)
+        return resource
+
+
+def _resources_advice(cls):
+    if include.bind().get(cls):
+        if not IResourcesIncluder.implementedBy(cls):
+            classImplements(cls, IResourcesIncluder)
+    return cls
 
 
 class resource(martian.Directive):
