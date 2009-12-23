@@ -1,5 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           zcml:xmlns="http://namespaces.zope.org/zcml">
+           xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <adapter factory=".location.LocationProxy" />
   <adapter zcml:condition="installed zope.copy"
