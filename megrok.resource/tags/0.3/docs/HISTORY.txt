@@ -1,0 +1,30 @@
+Changelog
+=========
+
+0.3 (2009-12-23)
+----------------
+
+* The IResourcesIncluder interface is now automatically implemented
+  by the class while using the `include` directive. This makes the
+  whole system a lot more natural.
+
+* The interfaces have been moved to a dedicated module. If you used
+  to import from `components`, please, correct your code.
+
+0.2 (2009-12-22)
+----------------
+
+* Added a ResourceLibrary component that is a mix between a Library
+  and a GroupInclusion. It allows to declare both the Library and the
+  Resources in a single class but impacts the re-usability.
+
+* Library now directly inherits from grokcore.view.DirectoryResource,
+  to inherit the `get` method behavior. This inheritance was avoided
+  to prevent grokkers clash (grokcore.view.DirectoryResource grokker
+  doesn't have a fallback for the `name` directive.). Our grokker has
+  now the priority and explicitly set the `name` directive value.
+
+0.1 (2009-12-21)
+----------------
+
+* Initial release

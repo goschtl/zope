@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain="zope">
+
+  <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.view" file="meta.zcml" />
+  <include package="hurry.zoperesource" />
+  <include package="z3c.hashedresource" />
+  
+  <grok:grok package=".event" />
+  <grok:grok package=".traversal" />
+  <grok:grok package=".meta" />
+  
+</configure>
