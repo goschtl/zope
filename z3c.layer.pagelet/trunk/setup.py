@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name='z3c.layer.pagelet',
-    version='1.6.1dev',
+    version = '1.6.1',
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Pagelet layer setup for Zope3",
@@ -57,7 +57,6 @@ setup(
             'zope.testbrowser',
             'zope.app.authentication',
             'zope.app.testing',
-            'zope.browserresource',
             'zope.exceptions',
             'zope.principalregistry',
             'zope.publisher',
@@ -72,6 +71,7 @@ setup(
         'z3c.template',
         'zope.authentication',
         'zope.browser>=1.2',
+        'zope.browserresource',
         'zope.component',
         'zope.interface',
         'zope.publisher',

@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-1.6.1 (unreleased)
+1.6.1 (2009-12-23)
 ------------------
 
-- ...
+- Moved `zope.browserresource` from test dependencies to install
+  dependencies as it is needed in the ZCML configuration.
 
 
 1.6.0 (2009-11-30)
