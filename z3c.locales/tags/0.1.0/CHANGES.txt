@@ -1,0 +1,16 @@
+=======
+Changes
+=======
+
+
+0.1.0 (2009-12-24)
+------------------
+
+- Currently contains German translations for:
+
+  - z3c.authviewlet
+  - z3c.contents
+  - z3c.layer.pagelet
+  - z3c.table
+
+- Initial release.
