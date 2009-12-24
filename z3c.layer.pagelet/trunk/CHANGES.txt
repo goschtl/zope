@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.6.2 (unreleased)
+1.7.0 (2009-12-24)
 ------------------
 
 - Added i18n domains to templates, so they can be translated. (Done
