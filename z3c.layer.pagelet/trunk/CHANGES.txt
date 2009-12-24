@@ -5,7 +5,8 @@ CHANGES
 1.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added i18n domains to templates, so they can be translated. (Done
+  using `z3c.locales`.)
 
 
 1.6.1 (2009-12-23)
