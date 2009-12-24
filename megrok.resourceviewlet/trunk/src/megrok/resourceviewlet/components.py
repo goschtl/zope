@@ -1,0 +1,83 @@
+# -*- coding: utf-8 -*-
+
+import grokcore.component as grok
+
+from hurry.resource import IInclusion
+from grokcore.viewlet.component import ViewletManager, Viewlet
+from grokcore.viewlet.interfaces import IViewletManager
+
+from zope.schema import List, Object
+from zope.schema.fieldproperty import FieldProperty
+from zope.interface import Interface
+from zope.viewlet.interfaces import IViewlet
+from zope.viewlet.manager import ViewletManagerBase
+
+
+class IResourceViewlet(IViewlet):
+    """A viewlet which sole purpose is to include resources.
+    """
+    resources = List(
+        title = u"Resources to be included",
+        required = True,
+        value_type = Object(
+            schema = IInclusion,
+            )
+        )
+    
+    def render(self):
+        """Calling this method will 'need' the resources.
+        The return value will *not* be taken in consideration.
+        """
+
+
+class InclusionViewletManager(ViewletManager):
+    """A manager which sole purpose is to render ResourceViewlets.
+    """
+    grok.baseclass()
+
+    def __init__(self, context, request, view):
+        self.context = context
+        self.request = request
+        self.view = view
+
+    def sort(self, viewlets):
+        return viewlets
+
+    def default_namespace(self):
+        raise NotImplementedError(
+            "No template can be associated to this component")
+
+    def namespace(self):
+        raise NotImplementedError(
+            "No template can be associated to this component")
+
+    def render(self):
+        for viewlet in self.viewlets:
+            if IResourceViewlet.providedBy(viewlet):
+                viewlet.render()
+
+
+class ResourceViewlet(Viewlet):
+    """A viewlet including resources.
+    """
+    grok.baseclass()
+    grok.implements(IResourceViewlet)
+    resources = FieldProperty(IResourceViewlet['resources'])
+
+    def __init__(self, context, request, view, manager):
+        pass
+
+    def default_namespace(self):
+        raise NotImplementedError(
+            "No template can be associated to this component")
+
+    def namespace(self):
+        raise NotImplementedError(
+            "No template can be associated to this component")
+
+    def update(self):
+        pass
+
+    def render(self):
+        for resource in resources:
+            resource.need()
