@@ -2,9 +2,8 @@
 
 import os.path
 import unittest
-from zope.app.testing import functional
 from zope.testing import doctest, module
-from zope.publisher.browser import TestRequest
+from zope.app.testing import functional
 from zope.app.testing.functional import ZCMLLayer
 
 ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')

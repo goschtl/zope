@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import grokcore.component as grok
+import grokcore.viewlet as grok
 
 from grokcore.viewlet.components import ViewletManager, Viewlet
-from grokcore.viewlet.interfaces import IViewletManager
 from hurry.resource.interfaces import IInclusion
-
-from zope.interface import Interface
 from zope.schema import List, Object
 from zope.schema.fieldproperty import FieldProperty
 from zope.viewlet.interfaces import IViewlet
@@ -17,20 +14,17 @@ class IResourceViewlet(IViewlet):
     """A viewlet which sole purpose is to include resources.
     """
     resources = List(
-        title = u"Resources to be included",
-        required = True,
-        value_type = Object(
-            schema = IInclusion,
-            )
-        )
-    
+        title=u"Resources to be included",
+        required=True,
+        value_type=Object(schema=IInclusion))
+
     def render(self):
-        """Calling this method will 'need' the resources.
+        """Calling this method will include the resources.
         The return value will *not* be taken in consideration.
         """
 
 
-class InclusionViewletManager(ViewletManager):
+class ResourcesManager(ViewletManager):
     """A manager which sole purpose is to render ResourceViewlets.
     """
     grok.baseclass()
@@ -63,6 +57,8 @@ class ResourceViewlet(Viewlet):
     """
     grok.baseclass()
     grok.implements(IResourceViewlet)
+    grok.viewletmanager(ResourcesManager)
+
     resources = FieldProperty(IResourceViewlet['resources'])
 
     def __init__(self, context, request, view, manager):

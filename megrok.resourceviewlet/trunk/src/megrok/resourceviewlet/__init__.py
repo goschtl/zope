@@ -1,2 +1,1 @@
-from megrok.resourceviewlet.components import (
-    IResourceViewlet, InclusionViewletManager, ResourceViewlet)
+from megrok.resourceviewlet.components import ResourcesManager, ResourceViewlet

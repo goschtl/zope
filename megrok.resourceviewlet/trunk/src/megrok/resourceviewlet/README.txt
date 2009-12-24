@@ -2,7 +2,9 @@
 megrok.resourceviewlet
 ======================
 
-`megrok.resourceviewlet`
+`megrok.resourceviewlet` is a package meant to include resources
+using layer, context and view discriminations (site-wide resources
+like javascripts or CSS or content-centric resources).
 
 Setup
 =====
@@ -20,6 +22,8 @@ Let's import and init the necessary work environment::
 Library
 =======
 
+We first declare a resource. We'll include it in our page::
+
   >>> from megrok import resource
   >>> class SomeResource(resource.ResourceLibrary):
   ...     resource.path('ftests/resources')
@@ -32,12 +36,13 @@ Library
 Components
 ==========
 
-View
-----
+To demonstrate our resource viewlet, we first need a page to
+render. This page contains a content provider named 'resources'::
 
   >>> from zope.interface import Interface
 
   >>> class Index(view.View):
+  ...   view.require("zope.Public")
   ...   view.context(Interface)
   ...
   ...   template = view.PageTemplate("""<html><head>
@@ -51,12 +56,15 @@ View
 Manager
 -------
 
-  >>> from megrok.resourceviewlet import InclusionViewletManager
+We now register a content provider named 'resources'. It will be a
+ResourcesManager. An ResourcesManager is a component
+dedicated in rendering ResourceViewlets::
 
-  >>> class Resources(InclusionViewletManager):
+  >>> from megrok.resourceviewlet import ResourcesManager
+
+  >>> class Resources(ResourcesManager):
   ...   viewlet.context(Interface)
-  ...   viewlet.view(Index)
-
+ 
   >>> grok.testing.grok_component('resources', Resources)
   True
 
@@ -64,19 +72,29 @@ Manager
 Viewlet
 -------
 
+Now, we register a ResourceViewlet, including our resource. The
+declaration is very straightforward::
+
   >>> from megrok.resourceviewlet import ResourceViewlet
 
   >>> class SomeViewlet(ResourceViewlet):
-  ...   viewlet.viewletmanager(Resources)
   ...   viewlet.context(Interface)
   ...   resources = [SomeResource]
 
   >>> grok.testing.grok_component('viewlet', SomeViewlet)
   True
 
+By default, a ResourceViewlet is registered for an instance of
+ResourcesManager. Most of the time, a page contains only one of
+these content providers. If it's not the case, make sure to provide
+your own `viewletmanager` directive value.
+
 
 Rendering
----------
+=========
+
+Rendering our page should render the ResourcesManager and
+therefore, include our resource::
 
   >>> browser.open('http://localhost/@@index')
   >>> print browser.contents
@@ -85,3 +103,5 @@ Rendering
       type="text/javascript"
       src="http://localhost/@@/++noop++.../someresource/thing.js"></script>
   </head></html>
+
+It works ! Enjoy.
