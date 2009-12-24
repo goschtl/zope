@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.12.1 (unreleased)
+3.13.0 (2009-12-24)
 -------------------
 
 - Import hooks functionality from zope.component after it was moved there from
