@@ -13,7 +13,7 @@ FunctionalLayer = ZCMLLayer(
 
 
 def setUp(test):
-    module.setUp(test, 'megrok.resourceviewlet.tests')
+    module.setUp(test, 'megrok.resourceviewlet.ftests')
 
 def tearDown(test):
     module.tearDown(test)
@@ -21,7 +21,7 @@ def tearDown(test):
 def test_suite():
     suite = unittest.TestSuite()      
     readme = functional.FunctionalDocFileSuite(
-        'README.txt', setUp=setUp, tearDown=tearDown)
+        '../README.txt', setUp=setUp, tearDown=tearDown)
     readme.layer = FunctionalLayer
     suite.addTest(readme)
     return suite

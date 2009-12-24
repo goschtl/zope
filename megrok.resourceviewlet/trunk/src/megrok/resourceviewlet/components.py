@@ -2,13 +2,13 @@
 
 import grokcore.component as grok
 
-from hurry.resource import IInclusion
-from grokcore.viewlet.component import ViewletManager, Viewlet
+from grokcore.viewlet.components import ViewletManager, Viewlet
 from grokcore.viewlet.interfaces import IViewletManager
+from hurry.resource.interfaces import IInclusion
 
+from zope.interface import Interface
 from zope.schema import List, Object
 from zope.schema.fieldproperty import FieldProperty
-from zope.interface import Interface
 from zope.viewlet.interfaces import IViewlet
 from zope.viewlet.manager import ViewletManagerBase
 
@@ -36,6 +36,7 @@ class InclusionViewletManager(ViewletManager):
     grok.baseclass()
 
     def __init__(self, context, request, view):
+        ViewletManagerBase.__init__(self, context, request, view)
         self.context = context
         self.request = request
         self.view = view
@@ -79,5 +80,5 @@ class ResourceViewlet(Viewlet):
         pass
 
     def render(self):
-        for resource in resources:
+        for resource in self.resources:
             resource.need()
