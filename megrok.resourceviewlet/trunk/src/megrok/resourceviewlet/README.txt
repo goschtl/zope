@@ -3,8 +3,8 @@ megrok.resourceviewlet
 ======================
 
 `megrok.resourceviewlet` is a package meant to include resources
-using layer, context and view discriminations (site-wide resources
-like javascripts or CSS or content-centric resources).
+using layer, context and view discriminations.
+
 
 Setup
 =====
