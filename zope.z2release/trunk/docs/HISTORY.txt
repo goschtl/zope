@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.1.5 - 2009/12/25
+------------------
+
+* sanity check for download_url
+
+* better parameter check
+
 0.1.4 - 2009/08/06
 ------------------
 
