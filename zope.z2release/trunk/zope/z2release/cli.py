@@ -42,6 +42,8 @@ def write_index(package, version, dirname):
         # download_url metadata
         rel_data = server.release_data(package, version)
         download_url = rel_data['download_url']
+        if download_url == 'UNKNOWN':
+            raise RuntimeError('Incorrect download_url for package %s' % package)
         filename = os.path.basename(urlparse.urlparse(download_url)[2])
         link = '<a href="%s">%s</a>' % (download_url, filename)
         print >>fp, link
