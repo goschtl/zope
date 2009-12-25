@@ -5,12 +5,17 @@ __docformat__ = "reStructuredText"
 
 import ZConfig
 import os.path
-import zope.testing.cleanup
 
 _configs = {}
 _schema = None
 
-zope.testing.cleanup.addCleanUp(_configs.clear)
+try:
+    import zope.testing.cleanup
+except ImportError:
+    pass
+else:
+    zope.testing.cleanup.addCleanUp(_configs.clear)
+        
 
 
 def getProductConfiguration(name):

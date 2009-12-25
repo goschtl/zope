@@ -243,6 +243,9 @@ def reset():
     global __config_context
     __config_context = None
 
-from zope.testing.cleanup import addCleanUp
-addCleanUp(reset)
-del addCleanUp
+try:
+    import zope.testing.cleanup
+except ImportError:
+    pass
+else:
+    zope.testing.cleanup.addCleanUp(reset)

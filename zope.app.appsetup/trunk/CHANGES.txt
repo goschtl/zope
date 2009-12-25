@@ -4,7 +4,7 @@ Changelog
 3.13.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- make zope.testing an optional (test) dependency
 
 
 3.13.0 (2009-12-24)
@@ -17,6 +17,7 @@ Changelog
   zope.location. This lifts the dependency on zope.location.
 
 - Added missing install dependency on `zope.testing`.
+
 
 3.12.0 (2009-06-20)
 -------------------
