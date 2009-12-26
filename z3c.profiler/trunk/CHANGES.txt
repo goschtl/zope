@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.8.1 (unreleased)
+0.8.1 (2009-12-26)
 ------------------
 
 - Fixed processing profile data for display in web UI, so the data is
