@@ -1,0 +1,15 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3c">
+
+  <!-- Profiler skin -->
+  <interface
+      interface="z3c.profiler.skin.IProfilerBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Profiler"
+      />
+
+  <include package=".browser" />
+
+</configure>

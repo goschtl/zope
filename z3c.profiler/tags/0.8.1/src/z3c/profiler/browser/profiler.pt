@@ -1,0 +1,256 @@
+<div tal:define="stats view/listStats">
+  <form method="post" action="./doProfile"
+        tal:attributes="action view/action">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td valign="top">
+          <h4>Start Profiler</h4>
+        </td>
+        <td valign="top">
+          <h4>Report Settings</h4>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <div>
+            <div>
+              <input type="text" size="2" name="calls:int"
+                     tal:attributes="value request/calls|string:2" />
+              <input type="submit" class="button" name="profiler.install" value="Enable"
+                     tal:attributes="name view/profilerButton/name;
+					                 value view/profilerButton/value" />
+              <input type="submit" class="button" name="profiler.reload" value="Show Profile"
+                      tal:condition="view/showProfileButton" />
+            </div>
+          </div>
+        </td>
+        <td valign="top">
+          <div tal:condition="stats">
+            <table>
+              <tr>
+                <td>
+                  Select request:
+                </td>
+                <td>
+                  <select name="stats" tal:define="default request/stats|nothing">
+                    <option tal:repeat="stat stats"
+                            tal:attributes="value stat/uri;
+                                            selected python:stat['uri'] == default"
+                            tal:content="string:${stat/uri} (${stat/calls} calls)"></option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Number of records:
+                </td>
+                <td>
+                  <input type="text" name="limit:int" class="textType" 
+                         tal:attributes="value request/limit|string:500" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Mode:
+                </td>
+                <td>
+                  <select name="mode"
+                          tal:define="default request/mode|string:stats">
+                    <option tal:repeat="item python:('stats', 'callees', 'callers')"
+                            tal:content="item" 
+                            tal:attributes="value item; selected python:item == default">
+                    </option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Sort on:
+                </td>
+                <td>
+                  <select name="sorton"
+                          tal:define="default request/sorton|string:time">
+                    <option tal:repeat="item python:(
+                                        ('time', 'internal time'),
+				                        ('cumulative', 'cumulative time'),
+				                        ('calls', 'call count'),
+				                        ('pcalls', 'primitive call count'),
+				                        ('name', 'function name'),
+				                        ('file', 'file name'),
+				                        ('module', 'module name'),
+				                        ('line', 'line number'),
+				                        ('nfl', 'name/file/line'),
+				                        ('stdname', 'standard name'))"
+                            tal:attributes="value python:item[0]; 
+                                            selected python:item[0] == default"
+                            tal:content="python:item[1]"></option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Strip dirs:
+                </td>
+                <td>
+                  <input type="checkbox" name="stripdirs:bool" class="checkboxWidget"
+                         tal:attributes="checked request/stripdirs|nothing" />
+                </td>
+              </tr>
+            </table>
+            <br />
+            <input type="submit" class="button" name="view_stats" value="Update" />
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div tal:define="data view/statsData">
+      <tal:block condition="data">
+        <div class="title">Stats</div>
+        <div class="description"
+              tal:repeat="line data/summary"
+              tal:content="line">
+          summary
+        </div>
+        <table class="output" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tal:block repeat="row data/rows">
+            <tr tal:condition="row/thead">
+              <th class="smallColumn" tal:content="row/ncalls">
+                ncalls
+              </th>
+              <th class="smallColumn" tal:content="row/tottime">
+                tottime
+              </th>
+              <th class="smallColumn" tal:content="row/totpercall">
+                totpercall
+              </th>
+              <th class="smallColumn" tal:content="row/cumtime">
+                cumtime
+              </th>
+              <th class="smallColumn" tal:content="row/percall">
+                percall
+              </th>
+              <th class="path" tal:content="row/fn">
+                fn
+              </th>
+            </tr>
+            <tr tal:condition="not:row/thead">
+              <td class="smallColumn" tal:content="row/ncalls">
+                ncalls
+              </td>
+              <td class="smallColumn" tal:content="row/tottime">
+                tottime
+              </td>
+              <td class="smallColumn" tal:content="row/totpercall">
+                totpercall
+              </td>
+              <td class="smallColumn" tal:content="row/cumtime">
+                cumtime
+              </td>
+              <td class="smallColumn" tal:content="row/percall">
+                percall
+              </td>
+              <td class="path" tal:content="row/fn">
+                fn
+              </td>
+            </tr>
+          </tal:block>
+        </table>
+        <div class="title">Bad formated profile data</div>
+        <div class="description"
+              tal:repeat="line data/errors"
+              tal:content="line">
+          error
+        </div>
+      </tal:block>
+    </div>
+    <div tal:define="data view/callesData">
+      <tal:block condition="data">
+        <div class="title">Stats by Callers</div>
+        <div class="description"
+              tal:repeat="line data/summary"
+              tal:content="line">
+          summary
+        </div>
+        <table class="output" border="0" cellspacing="0" cellpadding="0" tal:define="rows data/rows">
+            <tr>
+              <th>
+                Function
+              </th>
+              <th>
+                called...
+              </th>
+              <th>
+                time
+              </th>
+            </tr>
+          <tal:block repeat="row rows">
+            <tr>
+              <td tal:content="row/fn">
+                ncalls
+              </td>
+              <td tal:content="row/caller">
+                fn
+              </td>
+              <td tal:content="row/time">
+                time
+              </td>
+            </tr>
+          </tal:block>
+        </table>
+        <div class="title">Bad formated line or missing time data</div>
+        <div class="description"
+              tal:repeat="line data/errors"
+              tal:content="line">
+          error
+        </div>
+      </tal:block>
+    </div>
+    <div tal:define="data view/callersData">
+      <tal:block condition="data">
+        <div class="title">Stats by Callees</div>
+        <div class="description"
+              tal:repeat="line data/summary"
+              tal:content="line">
+          summary
+        </div>
+        <table class="output" border="0" cellspacing="0" cellpadding="0" tal:define="rows data/rows">
+            <tr>
+              <th width="45%">
+                Function
+              </th>
+              <th width="45%">
+                was called by... 
+              </th>
+              <th width="10%">
+                time
+              </th>
+            </tr>
+          <tal:block repeat="row rows">
+            <tr>
+              <td tal:content="row/fn">
+                ncalls
+              </td>
+              <td tal:content="row/caller">
+                fn
+              </td>
+              <td tal:content="row/time">
+                time
+              </td>
+            </tr>
+          </tal:block>
+        </table>
+        <div class="title">Bad formated line or missing time data</div>
+        <div class="description"
+              tal:repeat="line data/errors"
+              tal:content="line">
+          error
+        </div>
+      </tal:block>
+    </div>
+    <pre tal:condition="view/printOutput"
+         tal:content="view/printOutput"></pre>
+    <div tal:condition="not:stats">
+      No data available.
+    </div>
+  </form>
+</div>

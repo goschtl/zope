@@ -1,0 +1,65 @@
+=======
+Changes
+=======
+
+0.8.1 (2009-12-26)
+------------------
+
+- Fixed processing profile data for display in web UI, so the data is
+  now displayed on the web page. Kept the previous behavior to print
+  unprocessed profile data on `stdout`.
+
+- Removed unused dependency on ``z3c.i18n``.
+
+- Removed not necessary and undeclared test depenency on
+  ``zope.app.authentication``.
+
+- Removed zpkg and ZCML install slugs.
+
+
+0.8.0 (2009-06-19)
+------------------
+
+- Removed no longer necessary dependencies on ``zope.app.zapi``,
+  ``zope.app.container``, ``zope.app.component``, ``zope.app.security``.
+
+- Removed dependency on ``z3c.layer.minimal``, as it is not used.
+
+- Removed no longer necessary test dependencies on ``zope.app.folder``,
+  ``zope.app.session``, ``zope.app.schema``.
+
+
+0.7.1 (2009-04-05)
+------------------
+
+- Removed unnecessary dependencies on ``zope.app.twisted`` and
+  ``zope.app.zopeappgenerations``.
+
+
+0.7.0 (2009-03-14)
+------------------
+
+- Use current ``zope.configuration`` instead of deprecated
+  ``zc.configuration`` to get ``exclude`` directive.
+
+
+0.6.0 (2009-02-19)
+------------------
+
+- No longer uses deprecated ``z3c.layer``.
+
+- Fixed dependencies and tests.
+
+
+0.5.1 (2008-01-24)
+------------------
+
+- Bug: Fixed meta-data.
+
+- Bug: Fixed deprecation warning about the Zope Security Policy.
+
+
+0.5.0 (2008-01-21)
+------------------
+
+- Initial Release

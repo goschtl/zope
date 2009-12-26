@@ -1,0 +1,99 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="demo">
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
+
+  <!-- exclude will prevent from include -->
+  <exclude package="zope.dublincore.browser" />
+  <exclude package="zope.app.generations.browser" />
+
+
+  <!-- meta configure -->
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.app.publisher" file="meta.zcml" />
+  <include package="zope.i18n" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.principalregistry" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+
+
+  <!-- load 3rd party meta configuration -->
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.zrtresource" file="meta.zcml" />
+
+
+  <!-- bootstrap Database -->
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.generations" />
+
+  <!-- zope server -->
+  <include package="zope.app.server" />
+
+  <!-- zope packages -->
+  <include package="zope.password" />
+  <include package="zope.annotation" />
+  <include package="zope.component" />
+  <include package="zope.container" />
+  <include package="zope.contentprovider" />
+  <include package="zope.dublincore" />
+  <include package="zope.error" />
+  <include package="zope.location" />
+  <include package="zope.publisher" />
+  <include package="zope.securitypolicy" />
+  <include package="zope.session" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.site" />
+  <include package="zope.componentvocabulary" />
+  <include package="zope.security" />
+  <include package="zope.authentication" />
+  <include package="zope.principalregistry" />
+  <include package="zope.session" />
+
+  <!-- zope app package configuration -->
+  <include package="zope.app.generations" file="subscriber.zcml" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.publisher" />
+  <include package="zope.app.publisher.browser" />
+
+  <include package="z3c.layer.pagelet" />
+  <include package="z3c.macro" />
+  <include package="z3c.pagelet" />
+  <include package="z3c.profiler" />
+
+
+  <browser:defaultView name="index.html" />
+  <browser:defaultSkin name="Profiler" />
+
+  <!-- needs cleanup in zope package configuration -->
+  <!-- Setup charset negotiation -->
+  <adapter
+      factory="zope.publisher.http.HTTPCharsets"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IUserPreferredCharsets"
+      />
+
+  <!-- Setup charset negotiation -->
+  <adapter
+      factory="zope.app.publisher.browser.ModifiableBrowserLanguages"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
+      />
+
+  <class class="zope.publisher.http.HTTPRequest">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+ </configure>
