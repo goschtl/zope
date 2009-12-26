@@ -24,9 +24,6 @@ setup(name='five.formlib',
       package_dir = {'': 'src'},
       namespace_packages=['five',],
       include_package_data = True,
-      extras_require=dict(
-          test=[]
-          ),
       install_requires=[
         'setuptools',
         'transaction',
