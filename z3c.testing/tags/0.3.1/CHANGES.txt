@@ -1,0 +1,37 @@
+=======
+CHANGES
+=======
+
+0.3.1 (2009-12-26)
+------------------
+
+- Removed install dependency on ``zope.app.security``.
+
+- Removed test dependency on ``zope.app.securitypolicy``.
+
+- Removed test dependency on ``zope.app.zcmlfiles``.
+
+
+0.3.0 (2009-02-01)
+------------------
+
+- Using ``zope.container`` instead of ``zope.app.container``
+
+- Using ``zope.site`` instead of ``zope.app.component``
+
+0.2.0 (2007-10-31)
+------------------
+
+- Fixed package data.
+
+- Moved functional tests to tests.
+
+- Removed deprecation warning.
+
+0.1.1b1 (2007-06-21)
+--------------------
+
+- Make ``z3c`` a namespace.
+
+- Prevent ``ConnectionStateError`` in layer after ``appsetup`` is run
+  in layer.
