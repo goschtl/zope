@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="z3c">
+<head>
+<title>Profiler</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="pragma" content="no-cache" />
+<link rel="stylesheet" href="profiler.css" type="text/css" media="screen"
+      tal:attributes="href context/++resource++profiler.css" />
+<link rel="icon" type="image/png"
+      tal:attributes="href context/++resource++favicon.png" />
+</head>
+<body>
+<div id="layoutWrapper">
+  <div id="headerContainer">
+    <img id="logo" src="logo.gif" width="234" height="50" alt="logo"
+             tal:attributes="src context/++resource++img/logo.gif" />
+  </div
+  ><div id="menuContainer" tal:content="structure provider:IMenuProvider">
+    <ul>
+      <li>
+        <a href="#" class="selected">Profiler</a>
+      </li>
+      <li>
+        <a href="#">Credits</a>
+      </li>
+    </ul>
+  </div>
+  <div id="contentContainer">
+  <div id="content">
+    <tal:block content="structure provider:pagelet">
+      content
+    </tal:block>
+  </div>
+  </div>
+</div>
+</body>
+</html>
