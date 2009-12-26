@@ -93,4 +93,19 @@
 
   <i18n:registerTranslations directory="locales"/>
 
+
+  <browser:page
+    name="add_content"
+    for="*"
+    class=".view.AddContentForm"
+    permission="zope2.Public"
+  />
+
+  <browser:page
+    name="edit_content"
+    for=".content.IContent"
+    class=".view.EditContentForm"
+    permission="zope2.Public"
+  />
+
 </configure>

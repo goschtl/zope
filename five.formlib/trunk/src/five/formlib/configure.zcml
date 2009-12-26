@@ -11,4 +11,21 @@
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       />
 
+  <configure package="zope.formlib">
+
+    <adapter
+        factory=".form.render_submit_button"
+        name="render"
+        />
+
+    <!-- Error view for 'Invalid' -->
+    <adapter
+        for="zope.interface.Invalid
+             zope.publisher.interfaces.browser.IBrowserRequest"
+        factory=".errors.InvalidErrorView"
+        permission="zope.Public"
+        />
+
+  </configure>
+
 </configure>
