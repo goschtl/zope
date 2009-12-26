@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.8.2dev'
+version = '0.9.0'
 
 setup (
     name='z3c.profiler',
@@ -68,10 +68,10 @@ setup (
         'setuptools',
         'zope.configuration >= 3.5.0',
         'zope.app.pagetemplate',
-        'zope.app.publisher',
+        'zope.browserpage',
         'zope.app.server',
         'zope.contentprovider',
-        'zope.component >= 3.6.0',
+        'zope.component >= 3.8.0',
         'zope.i18n',
         'zope.i18nmessageid',
         'zope.interface',
@@ -87,6 +87,7 @@ setup (
         'z3c.zrtresource',
         'z3c.layer.pagelet',
         'zope.principalregistry',
+        'zope.componentvocabulary',
         ],
     zip_safe = False,
 )
