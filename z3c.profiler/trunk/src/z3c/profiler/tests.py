@@ -34,7 +34,3 @@ def test_suite():
     suite.layer = testing.TestLayer
     append(suite)
     return unittest.TestSuite(suites)
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
