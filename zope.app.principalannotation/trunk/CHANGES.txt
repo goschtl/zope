@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.7.0 (2009-12-26)
 ------------------
 
 - Depend on new ``zope.processlifetime`` interfaces instead of using
