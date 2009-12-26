@@ -2,6 +2,17 @@
 CHANGES
 =======
 
+0.1.2 (unreleased)
+------------------
+
+- Fixed documentation.
+
+- Removed not needed test depenencies on `zope.testing` and
+  `zope.app.testing`.
+
+- Removed ZCML install slug.
+
+
 0.1.1 (2007-11-01)
 ------------------
 

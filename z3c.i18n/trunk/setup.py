@@ -54,7 +54,7 @@ setup(name='z3c.i18n',
       package_dir = {'': 'src'},
       namespace_packages=['z3c'],
       extras_require = {
-          'test': ['zope.testing', 'zope.app.testing'],
+          'test': [],
           },
       install_requires = [
           'setuptools',
