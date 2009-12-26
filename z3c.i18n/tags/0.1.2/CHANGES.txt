@@ -1,0 +1,28 @@
+=======
+CHANGES
+=======
+
+0.1.2 (2009-12-26)
+------------------
+
+- Fixed documentation.
+
+- Removed not needed test depenencies on `zope.testing` and
+  `zope.app.testing`.
+
+- Removed ZCML install slug.
+
+
+0.1.1 (2007-11-01)
+------------------
+
+- Improve package meta-data.
+
+0.1.0 (2007-03-22)
+------------------
+
+- Initial release.
+
+    * Listing of all terretories.
+
+    * List and translations of all languages.
