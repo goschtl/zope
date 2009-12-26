@@ -41,7 +41,7 @@ Let's set up a testbrowser:
 
 Let's 'manually' create a Content instance and add it to the folder:
 
-  >>> from Products.Five.formlib.tests import content
+  >>> from five.formlib.tests import content
   >>> folder = self.folder.ftf
   >>> obj = content.Content('content_1', 'Title', [])
   >>> folder._setObject('content_1', obj)
