@@ -65,8 +65,6 @@ def test_get_widgets_for_schema_fields():
 def test_suite():
     return unittest.TestSuite([
         DocTestSuite(),
-        FunctionalDocFileSuite('forms.txt',
-                               package="five.formlib.tests",),
-        FunctionalDocFileSuite(
-            'formlib.txt', package='five.formlib.tests'),
+        FunctionalDocFileSuite('forms.txt', package="five.formlib.tests",),
+        FunctionalDocFileSuite('formlib.txt', package='five.formlib.tests'),
     ])

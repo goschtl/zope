@@ -12,8 +12,10 @@ We need to configure all of Five for the functional test:
   >>> from Products.Five import zcml
   >>> import Products.Five
   >>> zcml.load_config('meta.zcml', Products.Five)
+  >>> import five.formlib
   >>> import five.formlib.tests
   >>> zcml.load_config('configure.zcml', package=Products.Five)
+  >>> zcml.load_config('configure.zcml', package=five.formlib)
   >>> zcml.load_config('configure.zcml', package=five.formlib.tests)
 
 Finally, we need to setup a traversable folder.  Otherwise, Five won't
@@ -471,7 +473,7 @@ Object widget:
 A little more complex is the ``ObjectWidget``.  Here we simply test
 that the edit form works:
 
-  >>> from Products.Five.form.tests.schemacontent import \
+  >>> from five.formlib.tests.schemacontent import \
   ...     manage_addComplexSchemaContent
   >>> n = manage_addComplexSchemaContent(self.folder.ftf, 'objecttest')
 
