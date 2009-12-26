@@ -20,9 +20,11 @@ import unittest
 import BTrees
 from persistent import Persistent
 from persistent.interfaces import IPersistent
-from zope.app.testing import setup, ztapi
+from zope.app.testing import setup
 from ZODB.interfaces import IConnection
 from zope.component import getSiteManager
+from zope.component import provideAdapter
+from zope.component import provideHandler
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.keyreference.persistent import KeyReferenceToPersistent
@@ -56,9 +58,9 @@ class ReferenceSetupMixin(object):
     """Registers adapters ILocation->IConnection and IPersistent->IReference"""
     def setUp(self):
         self.root = setup.placefulSetUp(site=True)
-        ztapi.provideAdapter(IPersistent, IConnection, connectionOfPersistent)
-        ztapi.provideAdapter(IPersistent, IKeyReference,
-                             KeyReferenceToPersistent)
+        provideAdapter(connectionOfPersistent, (IPersistent, ), IConnection)
+        provideAdapter(
+            KeyReferenceToPersistent, (IPersistent, ), IKeyReference)
 
     def tearDown(self):
         setup.placefulTearDown()
@@ -178,8 +180,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
-        from zope.site.folder import Folder, rootFolder
-        from zope.component import provideHandler
+        from zope.site.folder import Folder
 
         ReferenceSetupMixin.setUp(self)
 
@@ -214,8 +215,8 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         def appendObjectEvent(obj, event):
             objevents.append((obj, event))
 
-        ztapi.subscribe([IIntIdRemovedEvent], None, events.append)
-        ztapi.subscribe([IFolder, IIntIdRemovedEvent], None, appendObjectEvent)
+        provideHandler(events.append, [IIntIdRemovedEvent])
+        provideHandler(appendObjectEvent, [IFolder, IIntIdRemovedEvent])
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
@@ -248,8 +249,8 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         def appendObjectEvent(obj, event):
             objevents.append((obj, event))
 
-        ztapi.subscribe([IIntIdAddedEvent], None, events.append)
-        ztapi.subscribe([IFolder, IIntIdAddedEvent], None, appendObjectEvent)
+        provideHandler(events.append, [IIntIdAddedEvent])
+        provideHandler(appendObjectEvent, [IFolder, IIntIdAddedEvent])
 
         # This should register the object in all utilities, not just the
         # nearest one.

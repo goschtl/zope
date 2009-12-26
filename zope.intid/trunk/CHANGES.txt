@@ -5,7 +5,7 @@ CHANGES
 3.7.2 (unreleased)
 ------------------
 
-- No changes yet
+- Use the zope.component API in favor of ztapi.
 
 3.7.1 (2009-05-18)
 ------------------
