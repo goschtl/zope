@@ -1,11 +1,20 @@
 =======
-CHANGES
+Changes
 =======
 
 0.8.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed processing profile data for display in web UI, so the data is
+  now displayed on the web page. Kept the previous behavior to print
+  unprocessed profile data on `stdout`.
+
+- Removed unused dependency on ``z3c.i18n``.
+
+- Removed not necessary and undeclared test depenency on
+  ``zope.app.authentication``.
+
+- Removed zpkg and ZCML install slugs.
 
 
 0.8.0 (2009-06-19)

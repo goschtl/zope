@@ -81,7 +81,6 @@ setup (
         'zope.testing',
         'zope.traversing',
         'zope.viewlet',
-        'z3c.i18n',
         'z3c.macro',
         'z3c.pagelet',
         'z3c.template',

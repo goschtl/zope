@@ -30,16 +30,16 @@ from z3c.profiler.wsgi import uninstallProfiler
 
 class ProfilerPagelet(browser.BrowserPagelet):
     """Profiler page.
-    
-    It whould be so easy with z3c.form, but I decided to depend on 
+
+    It whould be so easy with z3c.form, but I decided to depend on
     less packages as possible and not using z3c.form and other packages.
     Forgive me the z3c.pagelet usage but it's so nice to do layout things
     without METAL macros ;-)
 
     Note: I didn't internationalize the profiler, should we?
 
-    The stats output is horrible for formatting in html, but let's try to 
-    support a nice table instead of the ugly print out whihc needs a 
+    The stats output is horrible for formatting in html, but let's try to
+    support a nice table instead of the ugly print out whihc needs a
     monitor with at least 3000px width.
     """
 
@@ -116,13 +116,13 @@ class ProfilerPagelet(browser.BrowserPagelet):
         mode = self.request.get('mode', 'stats')
         limit = int(self.request.get('limit', 500))
 
-        stdout = sys.stdout
-        sys.stdout = output
+        stats_stream = stats.stream
+        stats.stream = output
 
         try:
             getattr(stats, 'print_%s'%mode)(limit)
         finally:
-            sys.stdout = stdout
+            stats.stream = stats_stream
 
         output.seek(0)
         data = output
@@ -137,6 +137,7 @@ class ProfilerPagelet(browser.BrowserPagelet):
 
         if mode == 'stats':
             for i, line in enumerate(lines):
+                print line,
                 try:
                     ncalls, tottime, totpercall, cumtime, percall, fn = line.split()
                     d = {}
@@ -166,7 +167,9 @@ class ProfilerPagelet(browser.BrowserPagelet):
             for i, line in enumerate(lines):
                 try:
                     d = {}
-                    if '...' in line:
+                    print line,
+                    if ('...' in line or
+                        'Ordered by:' in line):
                         # skip header line
                         continue
                     varius = line.split()
@@ -177,14 +180,23 @@ class ProfilerPagelet(browser.BrowserPagelet):
                         d['caller'] = varius[0]
                         d['time'] = ''
                     elif len(varius) == 2:
-                        d['fn'] = ''
-                        d['caller'] = varius[0]
-                        d['time'] = varius[1]
+                        if varius[1] in ['->', '<-']:
+                            d['fn'] = varius[0]
+                            d['caller'] = ''
+                            d['time'] = ''
+                        else:
+                            d['fn'] = ''
+                            d['caller'] = varius[0]
+                            d['time'] = varius[1]
                     elif len(varius) == 3:
                         d['fn'] = varius[0]
                         d['caller'] = varius[1]
                         d['time'] = varius[2]
-                    if len(varius) >3:
+                    elif len(varius) == 4:
+                        d['fn'] = varius[0]
+                        d['caller'] = varius[2]
+                        d['time'] = varius[3]
+                    elif len(varius) > 4:
                         continue
                     append(d)
                 except ValueError, e:
