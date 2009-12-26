@@ -17,8 +17,8 @@ $Id$
 """
 from zope.formlib import form
 
-from Products.Five.formlib.formbase import AddForm, EditForm
-from Products.Five.formlib.tests.content import IContent, Content
+from five.formlib.formbase import AddForm, EditForm
+from five.formlib.tests.content import IContent, Content
 
 class AddContentForm(AddForm):
     """AddForm for creating and adding IContent objects
