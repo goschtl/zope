@@ -4,4 +4,5 @@ Changelog
 1.0 - unreleased
 ----------------
 
-* Initial version
+* The code was extracted from the Zope2 distribution. This distribution
+  contains the code from both the Products.Five formlib and form sub-packages.
