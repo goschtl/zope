@@ -37,7 +37,7 @@ package in your ``setup.py``.
 .. _Grok: http://grok.zope.org
 
 Preparing hurry.slimbox before release
-=====================================
+======================================
 
 This section is only relevant to release managers of ``hurry.slimbox``.
 
