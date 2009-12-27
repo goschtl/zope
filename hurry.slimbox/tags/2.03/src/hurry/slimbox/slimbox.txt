@@ -1,0 +1,30 @@
+"""
+hurry.slimbox basic tests
+========================
+
+Here are some basic tests for hurry.slimbox.
+
+Let's set up a way to render URLs; typically the framework has already
+done this::
+
+  >>> def get_library_url(library):
+  ...    return 'http://localhost/static/%s' % (library.name)
+  >>> from hurry.resource import Library
+  >>> from hurry.resource.interfaces import ILibraryUrl
+  >>> from zope import component
+  >>> # register the ILibraryUrl adaptation for the tests.
+  >>> component.provideAdapter(
+  ...     factory=get_library_url, adapts=(Library,), provides=ILibraryUrl)
+
+Render the inclusion::
+
+  >>> from hurry.resource import NeededInclusions
+  >>> from hurry.slimbox import slimbox
+  >>> needed = NeededInclusions()
+  >>> needed.need(slimbox)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/SlimboxLibrary/css/slimbox2.css" />
+  <script type="text/javascript" src="http://localhost/static/jquery/jquery-1.3.2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/SlimboxLibrary/js/slimbox2.js"></script>
+
+"""
