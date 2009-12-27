@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 SLIMBOX_VERSION = '2.03'
-version = '0.1'
+version = '2.03'
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -21,7 +21,7 @@ setup(
     description="hurry.resource style resources for Slimbox.",
     long_description=long_description,
     classifiers=[],
-    keywords='',
+    keywords='jQuery Slimbox Zope3 Popup',
     author='Souheil Chelfouh',
     author_email='trollfot@gmail.com',
     license='ZPL 2.1',
