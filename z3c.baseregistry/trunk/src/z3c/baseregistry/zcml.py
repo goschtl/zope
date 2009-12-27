@@ -21,15 +21,14 @@ import zope.component.globalregistry
 import zope.configuration.config
 import zope.configuration.fields
 from zope.configuration.exceptions import ConfigurationError
-from zope.i18nmessageid import ZopeMessageFactory as _
 
 
 class IRegisterInDirective(zope.interface.Interface):
     """Use the specified registry for registering the contained components."""
 
     registry = zope.configuration.fields.GlobalObject(
-        title=_("Registry"),
-        description=_("Python path to the registry to use."),
+        title=u"Registry",
+        description=u"Python path to the registry to use.",
         required=True)
 
 
@@ -113,4 +112,3 @@ class RegisterIn(zope.configuration.config.GroupingContextDecorator):
             callable=resetOriginalRegistry,
             args=(self,)
             )
-

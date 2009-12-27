@@ -463,7 +463,7 @@ benefit.
   ... ''', context=context)
   Traceback (most recent call last):
   ...
-  ZopeXMLConfigurationError: File "<string>", line 5.4
+  ZopeXMLConfigurationError: File "<string>", line 5...
     ConfigurationError: Nested ``registerIn`` directives are not permitted.
 
 

@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name = "z3c.baseregistry",
-    version = "1.1.1dev",
+    version = "1.2.0dev",
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Manage IComponents instances using Python code and ZCML.",
@@ -58,17 +58,21 @@ setup (
         test=[
             'zope.app.testing',
             'zope.testing',
+            'zope.formlib',
             ],
+        zmi=[
+            'zope.formlib',
+            'zope.app.zcmlfiles',
+            ]
         ),
     install_requires = [
         'setuptools',
         'zope.component',
         'zope.configuration',
-        'zope.formlib',
         'zope.i18nmessageid',
         'zope.interface',
         'zope.schema',
         'zope.site',
         ],
     zip_safe = False,
-)
+    )

@@ -19,7 +19,6 @@ __docformat__ = "reStructuredText"
 import doctest
 import unittest
 from zope.app.testing import placelesssetup, setup
-from zope.testing.doctestunit import DocFileSuite
 
 def setUp(test):
     placelesssetup.setUp(test)
@@ -30,11 +29,12 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('../README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
+            doctest.DocFileSuite(
+                '../README.txt',
+                setUp=setUp, tearDown=tearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                ),
+            ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
