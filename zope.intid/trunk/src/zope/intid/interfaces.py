@@ -98,7 +98,7 @@ class IIntIdAddedEvent(IIntIdEvent):
     The event gets sent when an object is registered in a
     unique id utility.
     """
-    
+
     idmap = Attribute("The dictionary that holds an (utility -> id) mapping of created ids")
 
 

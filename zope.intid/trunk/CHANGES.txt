@@ -7,6 +7,9 @@ CHANGES
 
 - Use the zope.component API in favor of ztapi.
 
+- Removed ``zope.app.testing`` dependency
+
+
 3.7.1 (2009-05-18)
 ------------------
 

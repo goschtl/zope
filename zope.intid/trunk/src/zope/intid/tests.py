@@ -20,21 +20,53 @@ import unittest
 import BTrees
 from persistent import Persistent
 from persistent.interfaces import IPersistent
-from zope.app.testing import setup
 from ZODB.interfaces import IConnection
 from zope.component import getSiteManager
 from zope.component import provideAdapter
 from zope.component import provideHandler
-from zope.interface import implements
+from zope.component import testing, eventtesting
+from zope.component.interfaces import ISite, IComponentLookup
+from zope.interface import implements, Interface
 from zope.interface.verify import verifyObject
 from zope.keyreference.persistent import KeyReferenceToPersistent
 from zope.keyreference.persistent import connectionOfPersistent
 from zope.keyreference.interfaces import IKeyReference
 from zope.location.interfaces import ILocation
-from zope.site.hooks import setSite
+from zope.site.hooks import setSite, setHooks, resetHooks
+from zope.site.folder import rootFolder
+from zope.site.site import SiteManagerAdapter, LocalSiteManager
+from zope.traversing import api
+from zope.traversing.testing import setUp as traversingSetUp
+from zope.traversing.interfaces import ITraversable
+from zope.container.traversal import ContainerTraversable
+from zope.container.interfaces import ISimpleReadContainer
 
 from zope.intid import IntIds, intIdEventNotify
 from zope.intid.interfaces import IIntIds
+
+
+# Local Utility Addition
+def addUtility(sitemanager, name, iface, utility, suffix=''):
+    """Add a utility to a site manager
+
+    This helper function is useful for tests that need to set up utilities.
+    """
+    folder_name = (name or (iface.__name__ + 'Utility')) + suffix
+    default = sitemanager['default']
+    default[folder_name] = utility
+    utility = default[folder_name]
+    sitemanager.registerUtility(utility, iface, name)
+    return utility
+
+
+# setup siteManager
+def createSiteManager(folder, setsite=False):
+    if not ISite.providedBy(folder):
+        folder.setSiteManager(LocalSiteManager(folder))
+    if setsite:
+        setSite(folder)
+    return api.traverse(folder, "++etc++site")
+
 
 class P(Persistent):
     implements(ILocation)
@@ -56,14 +88,27 @@ class ConnectionStub(object):
 
 class ReferenceSetupMixin(object):
     """Registers adapters ILocation->IConnection and IPersistent->IReference"""
+
     def setUp(self):
-        self.root = setup.placefulSetUp(site=True)
+        testing.setUp()
+        eventtesting.setUp()
+        traversingSetUp()
+        setHooks()
+        provideAdapter(ContainerTraversable,
+                       (ISimpleReadContainer,), ITraversable)
+        provideAdapter(SiteManagerAdapter, (Interface,), IComponentLookup)
+
+        self.root = rootFolder()
+        createSiteManager(self.root, setsite=True)
+
         provideAdapter(connectionOfPersistent, (IPersistent, ), IConnection)
         provideAdapter(
             KeyReferenceToPersistent, (IPersistent, ), IKeyReference)
 
     def tearDown(self):
-        setup.placefulTearDown()
+        resetHooks()
+        setSite()
+        testing.tearDown()
 
 
 class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
@@ -130,7 +175,6 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         obj = P()
         obj._p_jar = ConnectionStub()
 
-
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
         self.assertEquals(list(u), [])
@@ -185,15 +229,15 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         ReferenceSetupMixin.setUp(self)
 
         sm = getSiteManager(self.root)
-        self.utility = setup.addUtility(sm, '1', IIntIds, IntIds())
+        self.utility = addUtility(sm, '1', IIntIds, IntIds())
 
         self.root['folder1'] = Folder()
         self.root._p_jar = ConnectionStub()
         self.root['folder1']['folder1_1'] = self.folder1_1 = Folder()
         self.root['folder1']['folder1_1']['folder1_1_1'] = Folder()
 
-        sm1_1 = setup.createSiteManager(self.folder1_1)
-        self.utility1 = setup.addUtility(sm1_1, '2', IIntIds, IntIds())
+        sm1_1 = createSiteManager(self.folder1_1)
+        self.utility1 = addUtility(sm1_1, '2', IIntIds, IntIds())
         provideHandler(intIdEventNotify)
 
     def test_removeIntIdSubscriber(self):
