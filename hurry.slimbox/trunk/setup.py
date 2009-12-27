@@ -33,7 +33,7 @@ setup(
     install_requires=[
         'setuptools',
         'hurry.jquery',
-        'hurry.resource > 0.2',
+        'hurry.resource > 0.4.1',
         ],
     entry_points={
         'console_scripts': [
