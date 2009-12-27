@@ -10,10 +10,7 @@ def read(*rnames):
 long_description = (
     read('README.txt')
     + '\n' +
-    read('CHANGES.txt')
-    + '\n' +
-    'Download\n'
-    '********\n')
+    read('CHANGES.txt'))
 
 setup(
     name='hurry.slimbox',
@@ -33,7 +30,7 @@ setup(
     install_requires=[
         'setuptools',
         'hurry.jquery',
-        'hurry.resource > 0.4.1',
+        'hurry.resource >= 0.4.1',
         ],
     entry_points={
         'console_scripts': [
