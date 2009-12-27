@@ -232,7 +232,7 @@ The view class doesn't implement the needed interface::
   >>> resource.IResourcesIncluder.implementedBy(DummyView)
   False
 
-Now, we can use the remove inclusion function, to enable resources::
+Now, we can use the remote inclusion function, to enable resources::
 
   >>> resource.component_includes(DummyView, css_group)
   >>> resource.IResourcesIncluder.implementedBy(DummyView)
