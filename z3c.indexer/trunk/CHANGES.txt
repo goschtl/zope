@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-0.6.0dev (unreleased)
----------------------
+0.6.1 (unreleased)
+------------------
 
-- ...
+- Feature: implemented TextIndex with family64 BTree support which makes it
+  possible to use long as index ids. Added tests for the new TextIndex64.
+
 
 0.6.0 (2009-02-22)
 ------------------
@@ -32,6 +34,7 @@ CHANGES
 
 - Use new lightweight and ZMI-less versions of packages: zope.keyreference,
   zope.intid, zope.site, zope.container and zope.catalog (for tests).
+
 
 0.5.1 (2008-12-11)
 ------------------

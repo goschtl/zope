@@ -17,8 +17,9 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import unittest
+import doctest
+import BTrees
 import zope.component
-from zope.testing import doctest
 from zope.intid import IntIds
 from zope.intid.interfaces import IIntIds
 from zope.keyreference.interfaces import IKeyReference
@@ -58,6 +59,46 @@ class TestTextIndex(z3c.testing.InterfaceBaseTest):
 
     def getTestClass(self):
         return index.TextIndex
+
+
+class TestTextIndex64(z3c.testing.InterfaceBaseTest):
+
+    def getTestInterface(self):
+        return interfaces.ITextIndex64
+
+    def getTestClass(self):
+        return index.TextIndex64
+
+    def test_long_key(self):
+        idx = self.makeTestObject()
+
+        # test int as id
+        intID = int(42)
+        idx.index_doc(intID, u'foo')
+        self.assertEqual(idx.documentCount(), 1)
+        # test query
+        self.assertEqual(len(idx.apply(u'foo')), 1)
+        self.assertEqual(len(idx.apply(u'bar')), 0)
+        # test btree type
+        self.assertEqual(type(idx.apply(u'foo')), BTrees.LFBTree.LFBucket)
+        self.assertEqual(type(idx.apply(u'bar')), BTrees.LFBTree.LFBucket)
+        # test unindex with long as id
+        idx.unindex_doc(intID)
+        self.assertEqual(idx.documentCount(), 0)
+
+        # test long as id
+        longID = int(123456789123456789)
+        idx.index_doc(longID, u'foofoo')
+        self.assertEqual(idx.documentCount(), 1)
+        # test query
+        self.assertEqual(len(idx.apply(u'foofoo')), 1)
+        self.assertEqual(len(idx.apply(u'barbar')), 0)
+        # test btree type
+        self.assertEqual(type(idx.apply(u'foofoo')), BTrees.LFBTree.LFBucket)
+        self.assertEqual(type(idx.apply(u'barbar')), BTrees.LFBTree.LFBucket)
+        # test unindex with long as id
+        idx.unindex_doc(longID)
+        self.assertEqual(idx.documentCount(), 0)
 
 
 class TestFieldIndex(z3c.testing.InterfaceBaseTest):
@@ -268,6 +309,7 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         unittest.makeSuite(TestTextIndex),
+        unittest.makeSuite(TestTextIndex64),
         unittest.makeSuite(TestFieldIndex),
         unittest.makeSuite(TestValueIndex),
         unittest.makeSuite(TestSetIndex),

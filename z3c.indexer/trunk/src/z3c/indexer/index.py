@@ -16,14 +16,19 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+import BTrees
 from BTrees.IFBTree import IFBTree
 from BTrees.IFBTree import union
 from BTrees.IFBTree import difference
 
 import zope.interface
-from zope.index.field import index as fieldindex
-from zope.index.text import textindex
 from zope.container import contained
+from zope.index.field import index as fieldindex
+from zope.index.text import lexicon as lex
+from zope.index.text import textindex
+from BTrees.Length import Length
+from zope.index.text import okapiindex
+
 from zc.catalog import index as zcindex
 from z3c.indexer import interfaces
 
@@ -46,6 +51,44 @@ class TextIndex(IndexMixin, textindex.TextIndex, contained.Contained):
     zope.interface.implements(interfaces.ITextIndex)
 
 
+class Lexicon64(lex.Lexicon):
+    """Lexicon with long key support used by p01.oid."""
+
+    def __init__(self, *pipeline):
+        family64 = BTrees.family64
+        #self._wids = OIBTree()  # word -> wid
+        self._wids = family64.OI.BTree()
+        #self._words = IOBTree() # wid -> word
+        self._words = family64.IO.BTree()
+        # wid 0 is reserved for words that aren't in the lexicon (OOV -- out
+        # of vocabulary).  This can happen, e.g., if a query contains a word
+        # we never saw before, and that isn't a known stopword (or otherwise
+        # filtered out).  Returning a special wid value for OOV words is a
+        # way to let clients know when an OOV word appears.
+        self.wordCount = Length()
+        self._pipeline = pipeline
+
+    
+class TextIndex64(TextIndex):
+    """TextIndex with long key support used by p01.oid."""
+
+    zope.interface.implements(interfaces.ITextIndex64)
+
+    def __init__(self, lexicon=None, index=None):
+        """Provisional constructor.
+
+        This creates the lexicon and index if not passed in.
+        """
+        family64 = BTrees.family64
+        if lexicon is None:
+            lexicon = Lexicon64(lex.Splitter(), lex.CaseNormalizer(),
+                lex.StopWordRemover())
+        if index is None:
+            index = okapiindex.OkapiIndex(lexicon, family64)
+        self.lexicon = lexicon
+        self.index = index
+
+
 class FieldIndex(IndexMixin, fieldindex.FieldIndex,
     contained.Contained):
     """Field index based on zope.index.field.index.TextIndex
@@ -61,7 +104,7 @@ class FieldIndex(IndexMixin, fieldindex.FieldIndex,
     def applyNotEq(self, not_value):
         all = self.apply((None, None))
         r = self.apply((not_value, not_value))
-        return difference(all, r)
+        return self.family.IF.difference(all, r)
 
     def applyBetween(self, min_value, max_value, exclude_min=False,
         exclude_max=False):
@@ -84,11 +127,11 @@ class FieldIndex(IndexMixin, fieldindex.FieldIndex,
 
         if not results:
             # no applicable terms at all
-            return IFBTree()
+            return self.family.IF.BTree()
 
         result = results.pop(0)
         for res in results:
-            result = union(result, res)
+            result = self.family.IF.union(result, res)
         return result
 
 

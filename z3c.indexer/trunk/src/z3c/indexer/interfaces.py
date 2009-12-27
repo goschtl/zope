@@ -144,6 +144,10 @@ class ITextIndex(IIndex, IInjection, IIndexSearch, IStatistics):
         """Apply text query."""
 
 
+class ITextIndex64(ITextIndex):
+    """ITextIndex with family 64 BTree support."""
+
+
 class IFieldIndex(IIndex):
     """Value index."""
 
