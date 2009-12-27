@@ -1,0 +1,25 @@
+Changes
+-------
+
+0.7.0 (2009-12-27)
+~~~~~~~~~~~~~~~~~~
+
+- Moved files in `z3c.authviewlet.browser` to `z3c.authviewlet` as
+  we only have browser code in this package.
+
+- Broke dependency on `zope.app.publisher` by defining our own
+  ``ILogin`` interface.
+
+
+0.6.0 (2009-12-24)
+~~~~~~~~~~~~~~~~~~
+
+- Added `i18n domains` to allow translation (done in `z3c.locales` package).
+
+0.5.0 (2009-11-30)
+~~~~~~~~~~~~~~~~~~
+
+- Moved authentication viewlet implementation from `z3c.layer.pagelet`
+  to this package.
+
+- Initial release.
