@@ -4,6 +4,6 @@
 
   <browser:resourceDirectory
       name="SlimboxLibrary"
-      directory="slimbox-download" />
+      directory="slimbox-build" />
 
 </configure>

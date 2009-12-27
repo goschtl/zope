@@ -8,21 +8,6 @@ BASEURL = "http://slimbox.googlecode.com/files/"
 VERSION = '2.03'
 FULL = 'slimbox-%s.zip' % VERSION
 
-CODE = """from hurry.resource import Library, ResourceInclusion, GroupInclusion
-from hurry.jquery import jquery
-
-SlimboxLibrary = Library('SlimboxLibrary')
-
-slimbox_css = ResourceInclusion(
-    SlimboxLibrary, 'slimbox-%(version)s/css/slimbox2.css')
-
-slimbox_js = ResourceInclusion(
-    SlimboxLibrary, 'slimbox-%(version)s/js/slimbox2.js', depends=[jquery])
-
-slimbox = GroupInclusion([slimbox_css, slimbox_js])
-"""
-
-
 def unzip_file_into_dir(file, dir):
     zfobj = zipfile.ZipFile(file)
     for name in zfobj.namelist():
@@ -35,14 +20,12 @@ def unzip_file_into_dir(file, dir):
 
 
 def prepare_slimbox():
-    package_dir = os.path.dirname(__file__)
-    slimbox_dest_path = os.path.join(package_dir, 'slimbox-download')
+    slimbox_dest_path = os.path.dirname(__file__)
+    library_path = os.path.join(slimbox_dest_path, "slimbox-build")
 
-    # remove previous slimbox library build
-    print 'recursivly removing "%s"' % slimbox_dest_path
-    shutil.rmtree(slimbox_dest_path, ignore_errors=True)
-    print 'create new "%s"' % slimbox_dest_path
-    os.mkdir(slimbox_dest_path)
+    # remove previous slimbox library
+    print 'recursivly removing "%s"' % library_path
+    shutil.rmtree(library_path, ignore_errors=True)
 
     for filename in [FULL]:
         url = urlparse.urljoin(BASEURL, FULL)
@@ -59,10 +42,9 @@ def prepare_slimbox():
         unzip_file_into_dir(dest_filename, slimbox_dest_path)
         os.remove(dest_filename)
 
-    py_path = os.path.join(package_dir, '_lib.py')
-    module = open(py_path, 'w')
-    module.write(CODE % {'version': VERSION})
-    module.close()
+        download_path = os.path.join(slimbox_dest_path, "slimbox-" + VERSION)
+        shutil.move(download_path, library_path)
+
 
 def main():
     prepare_slimbox()
