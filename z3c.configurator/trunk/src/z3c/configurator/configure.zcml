@@ -11,7 +11,5 @@
      component=".vocabulary.pluginNamesVocabulary"
      provides="zope.schema.interfaces.IVocabularyFactory"
      name="Configurator Plugin Names"/>
-  
-  <include package=".browser"/>
 
 </configure>

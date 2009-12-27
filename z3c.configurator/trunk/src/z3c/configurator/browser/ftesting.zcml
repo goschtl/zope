@@ -45,6 +45,7 @@
   <include package="zope.app.form.browser" />
   <include package="zope.formlib" />
   <include package="z3c.configurator"/>
+  <include package="z3c.configurator.browser" />
 
   <adapter
      name="z3c.configurator.testing.settitle"

@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-Version 1.2.1 (Unreleased)
+Version 1.2.1 (2009-12-27)
 --------------------------
 
-- ...
+- Moved browser dependencies to 'zmi' extras
 
 
 Version 1.2.0 (2009-12-19)

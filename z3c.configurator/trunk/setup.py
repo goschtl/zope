@@ -65,6 +65,10 @@ setup(
             'zope.app.testing',
             'zope.app.zcmlfiles',
             ],
+        zmi = [
+            'zope.browserpage',
+            'zope.formlib',
+            ],
         ),
     install_requires = [
         'setuptools',

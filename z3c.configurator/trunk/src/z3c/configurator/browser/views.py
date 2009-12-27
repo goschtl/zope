@@ -3,8 +3,8 @@ from zope import schema
 
 from zope import formlib
 from zope.formlib import form
-from zope.app.pagetemplate import namedtemplate
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.browserpage import namedtemplate
+from zope.browserpage import ViewPageTemplateFile
 from z3c.configurator import interfaces
 from z3c.configurator.i18n import _
 from z3c.configurator import configurator

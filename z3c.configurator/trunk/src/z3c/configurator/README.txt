@@ -117,13 +117,14 @@ The value must exist and be valid:
   >>> configurator.configure(something, {'foo': u'my value'})
   Traceback (most recent call last):
   ...
-  RequiredMissing
+  RequiredMissing: bar
 
   >>> something = Something()
   >>> configurator.configure(something, {'foo': u'my value', 'bar': 1})
   Traceback (most recent call last):
   ...
-  WrongType: (1, <type 'unicode'>)
+  WrongType: (1, <type 'unicode'>, 'bar')
+
 
 Data Namespaces
 ---------------
