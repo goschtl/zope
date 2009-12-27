@@ -1,2 +1,1 @@
-recursive-include src/hurry/slimbox/slimbox-download *
-include src/hurry/slimbox/_lib.py
+recursive-include src/hurry/slimbox/slimbox-build *
