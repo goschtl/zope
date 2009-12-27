@@ -1,0 +1,25 @@
+=======
+CHANGES
+=======
+
+1.2.0 (2009-12-27)
+------------------
+
+- Moved browser dependencies to 'zmi' extras
+
+
+1.1.0 (2009-03-19)
+------------------
+
+- Fix base registry management form failure in case, when a site has its
+  parent's local site manager (that isn't registered as utility) in its
+  __bases__.
+
+- Use zope.site instead of zope.app.component.
+
+- Drop unused dependencies on zope.app.i18n and zope.app.pagetemplate.
+
+1.0.0 (2008-01-24)
+------------------
+
+- Initial Release
