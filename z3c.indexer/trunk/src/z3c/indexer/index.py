@@ -17,10 +17,6 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import BTrees
-from BTrees.IFBTree import IFBTree
-from BTrees.IFBTree import union
-from BTrees.IFBTree import difference
-
 import zope.interface
 from zope.container import contained
 from zope.index.field import index as fieldindex

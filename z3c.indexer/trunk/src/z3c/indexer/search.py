@@ -165,7 +165,7 @@ class SearchQuery(object):
         """Exclude search results. (difference)
 
         The result will only contain intids which exist in the existing
-        result but do not exist in the result from te given query.
+        result but do not exist in the result from the given query.
 
         This is faster if the existing result is small. But note, it get
         processed in a chain, results added after this query get added again.
