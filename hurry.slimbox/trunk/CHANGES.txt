@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+0.1 (2009-12-27)
+================
+
+* Initial public release, using Slimbox 2.03.
