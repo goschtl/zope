@@ -2,19 +2,12 @@
 CHANGES
 =======
 
-3.7.3 (unreleased)
-------------------
-
-- ...
-
-
 3.7.2 (2009-12-27)
 ------------------
 
 - Use the zope.component API in favor of ztapi.
 
-- Removed ``zope.app.testing`` dependency
-
+- Removed ``zope.app.testing`` dependency.
 
 3.7.1 (2009-05-18)
 ------------------
