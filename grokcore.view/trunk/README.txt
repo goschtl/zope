@@ -29,16 +29,17 @@ A browser page is implemented by subclassing the
 ``grokcore.view.View`` baseclass.  At a minimum, a browser page must
 have
 
-1. an associated template (for a render() method, use CodeView)
+1. an associated template (or implement the ``render`` method for direct
+   control)
 
 2. a context that it's registered for as a view
 
 3. a name (which is, if not specified explicitly, the class's name in
    lower case characters).
 
-A browser page that does not use a template but just outputs some computed
-data should subclass ``grokcore.view.CodeView``.  At a minimum, such a view
-must have
+A browser page that does not use a template but just outputs some
+computed data also subclasses the ``grokcore.view.View`` baseclass.
+At a minimum, such a view must have
 
 1. a render() method
 
@@ -47,14 +48,13 @@ must have
 3. a name (which is, if not specified explicitly, the class's name in
    lower case characters).
 
-
 For example, the following class defines a view that's registered for
-all objects and simply prints "Hello World!".  This is done with a CodeView::
+all objects and simply prints "Hello World!"::
 
   import grokcore.view
   import zope.interface
 
-  class Hello(grokcore.view.CodeView):
+  class Hello(grokcore.view.View):
       grokcore.view.context(zope.interface.Interface)
 
       def render(self):
@@ -194,14 +194,8 @@ Base classes
     directive to specify the name of the template file that should be
     associated with the view as well as the ``layer`` directive to
     specify which layer it should be on if not the default layer.
-
-``CodeView``
-    Base class for browser pages.  Use the ``context`` directive to specify
-    the view's context.  Use the ``name`` directive to set the view's name; if
-    not used, the view's name will be the class's name in lower case
-    characters.  The ``layer`` directive specifies which layer it should be on
-    if not the default layer.
-
+    Implement the ``render`` method to forgo looking up a template
+    and show the result of calling the render method instead.
 
 View API
 --------
@@ -253,13 +247,10 @@ Method for developers to implement:
     ``view`` variable from the template.  The method can take
     arbitrary keyword parameters which are filled from request values.
 
-
-The CodeView class can have abovementioned ``update()`` method and
-additionally *has* to implement ``render()``
-
 ``render(**kw)`` 
     Return either an encoded 8-bit string or a unicode string.  The method can
     take arbitrary keyword parameters which are filled from request values.
+    If not implemented, a template is looked up in the template dir instead.
 
 
 Directives
@@ -275,7 +266,7 @@ Directives
     Class-level directive that specifies the name a template file
     that's associated with a view class, *without* the file extension.
     If not used, it defaults to the class's name in lower case
-    characters.  Only used for View, not CodeView.
+    characters.
 
 ``layer(layer_interface)``
     Class-level directive that defines which layer the view is
@@ -320,12 +311,3 @@ In addition, the ``grokcore.view`` package exposes the
 .. _grokcore.security: http://pypi.python.org/pypi/grokcore.security
 .. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
 
-
-Upgrade notice
-==============
-
-In grokcore.view 1.8, grokcore.view.View was splitted into View (that only
-works with templates) and CodeView (that only accepts a ``render()`` method).
-
-So views that have a render method must subclass from CodeView instead of
-View.  That should be the only change needed.
