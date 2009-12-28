@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 2.2.0 (unreleased)
---------------------------
+2.1.1 (2009-12-28)
+------------------
 
 - Bugfix: Fixed `wizard` example so it works together with current
   `z3c.form` version.
