@@ -5,12 +5,13 @@ CHANGES
 Version 2.2.0 (unreleased)
 --------------------------
 
-- ...
+- Bugfix: Fixed `wizard` example so it works together with current
+  `z3c.form` version.
 
 Version 2.1.0 (2009-07-23)
 --------------------------
 
-- Feature: Updated tests and code to latest pacakge versions.
+- Feature: Updated tests and code to latest package versions.
 
 Version 2.0.0 (2009-06-14)
 --------------------------

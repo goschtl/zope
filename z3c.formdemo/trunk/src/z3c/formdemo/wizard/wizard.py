@@ -153,6 +153,7 @@ class Wizard(layout.FormLayoutSupport, form.Form):
         self.updateActions()
         self.step.update()
         self.actions.execute()
+        super(Wizard, self).update()
 
     def finish(self):
         return NotImplementedError
@@ -189,5 +190,8 @@ class Wizard(layout.FormLayoutSupport, form.Form):
     @button.handler(IWizardButtons['finish'])
     def handleFinish(self, action):
         session = ISession(self.request)[self.sessionKey]
-        del session['step']
+        try:
+            del session['step']
+        except KeyError:
+            pass
         self.finish()
