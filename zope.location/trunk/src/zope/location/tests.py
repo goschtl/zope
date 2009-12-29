@@ -24,5 +24,4 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('location.txt'),
         doctest.DocTestSuite('zope.location.traversing'),
-        doctest.DocTestSuite('zope.location.pickling'),
     ))

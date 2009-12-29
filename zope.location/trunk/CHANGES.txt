@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-3.8.3 (unreleased)
+3.9.0 (unreleased)
 ------------------
 
-- ...
+- Moved LocationCopyHook related tests to zope.copy and remove a test
+  dependency on that package.
 
 3.8.2 (2009-12-23)
 ------------------
