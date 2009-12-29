@@ -1,9 +1,17 @@
+import sys
 from xmlrpclib import Server
 
 def main():
 
+    prefix = ''
+    if len(sys.argv) > 1:
+        prefix = sys.argv[1]
+
     server = Server('http://pypi.python.org/pypi')
     packages = server.list_packages()
+    if prefix:
+        packages = [p for p in packages if p.startswith(prefix)]
+
     num_packages = len(packages)
 
     for i, package in enumerate(packages):
@@ -15,6 +23,8 @@ def main():
             print '  ', version
             urls = server.release_urls(package, version)
 
+            import pdb; pdb.set_trace() 
+
             # PyPI hosted packages
             if urls:
                 for url in urls:
@@ -24,7 +34,7 @@ def main():
             else:
                 metadata = server.release_data(package, version)
                 download_url = metadata['download_url']
-                if download_url is 'UNKNOWN':
+                if download_url == 'UNKNOWN':
                     print 'CRAP: %s==%s - no release files, no valid download_url' % (package, version)
 
 
