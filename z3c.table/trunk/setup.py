@@ -72,6 +72,7 @@ setup (
         'zope.contentprovider',
         'zope.dublincore',
         'zope.i18nmessageid',
+        'zope.i18n',
         'zope.interface',
         'zope.location',
         'zope.schema',

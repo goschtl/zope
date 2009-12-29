@@ -17,10 +17,9 @@ $Id$
 __docformat__ = "reStructuredText"
 
 from urllib import urlencode
-
-import zope.interface
-
 from z3c.table import interfaces
+import zope.i18n
+import zope.interface
 
 
 class ColumnHeader(object):
@@ -94,6 +93,7 @@ class SortingColumnHeader(ColumnHeader):
                      '%s-sortOrder' % prefix: sortOrder})
         queryString = '?%s' % (urlencode(args))
 
-        return '<a href="%s" title="Sort">%s</a>' % (queryString, 
-                                                self.column.header)
+        return '<a href="%s" title="Sort">%s</a>' % (
+            queryString,
+            zope.i18n.translate(self.column.header, context=self.request))
 

@@ -17,16 +17,15 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 from urllib import urlencode
-
-import zope.interface
-import zope.location
-import zope.i18nmessageid
+from z3c.table import interfaces
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security.interfaces import Unauthorized
 from zope.traversing import api
 from zope.traversing.browser import absoluteURL
-
-from z3c.table import interfaces
+import zope.i18n
+import zope.i18nmessageid
+import zope.interface
+import zope.location
 
 _ = zope.i18nmessageid.MessageFactory('z3c')
 
@@ -110,7 +109,7 @@ class Column(zope.location.Location):
         if header:
             header.update()
             return header.render()
-        return self.header
+        return zope.i18n.translate(self.header, context=self.request)
 
     def renderCell(self, item):
         """Cell content."""
@@ -227,7 +226,7 @@ class CheckBoxColumn(Column):
         if item in self.selectedItems:
             selected='checked="checked"'
         return u'<input type="checkbox" class="%s" name="%s" value="%s" %s />' \
-            %('checkbox-widget', self.getItemKey(item), self.getItemValue(item), 
+            %('checkbox-widget', self.getItemKey(item), self.getItemValue(item),
             selected)
 
 

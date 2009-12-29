@@ -11,19 +11,20 @@ Version 0.6.2dev (unreleased)
 - Fixed tests, so they no longer use ``zope.app.container`` (which was
   even not declared as test dependency).
 
+- Head cell contents are now translated.
 
 Version 0.6.1 (2009-02-22)
 --------------------------
 
-- be smart to not IPhysicallyLocatable objects if we lookup the __name__ value
-  in columns.
+- Be smart to not ``IPhysicallyLocatable`` objects if we lookup the
+  ``__name__`` value in columns.
 
 
 Version 0.6.0 (2008-11-12)
 --------------------------
 
-- Bugfix: Allow to switch the sort order on the header link. This was blocked to
-  descending after the first click
+- Bugfix: Allow to switch the sort order on the header link. This was
+  blocked to descending after the first click
 
 - Bugfix: CheckBoxColumn, ensure that we allways use a list for compare
   selected items. It was possible that if only one item get selected
