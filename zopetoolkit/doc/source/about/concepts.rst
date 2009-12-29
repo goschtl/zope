@@ -20,8 +20,7 @@ Repoze
     expand on Zope technology.
 
 Plone
-    a CMS based on Zope 2 and the CMF that is a major consumer of Zope Toolkit
-    technology.
+    a CMS based on Zope 2 and the CMF.
 
 Zope Toolkit
     the collection of Zope Toolkit core libraries. Shouldn't include the ZMI

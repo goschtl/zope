@@ -4,7 +4,7 @@ History of the Zope Toolkit
 The Zope Toolkit started as "Zope 3". Zope 3 was the intended
 successor to the Zope 2 platform. It didn't work out that way. Zope 3
 can be used, but Zope 2 is still alive and well, and in fact started
-to use large parts of the Zope 3 codebase. We also have the Grok
+to use some parts of the Zope 3 codebase. We also have the Grok
 project came along that reused Zope 3 to build a related but separate
 web framework.
 
