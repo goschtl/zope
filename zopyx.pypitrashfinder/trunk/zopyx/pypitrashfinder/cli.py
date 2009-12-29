@@ -22,18 +22,27 @@ def main():
         for version in versions:
             print '  ', version
             urls = server.release_urls(package, version)
+            metadata = server.release_data(package, version)
 
             # PyPI hosted packages
             if urls:
                 for url in urls:
                     print '    ', url['url']
-
             # externally hosted packages
             else:
-                metadata = server.release_data(package, version)
                 download_url = metadata['download_url']
                 if download_url == 'UNKNOWN':
                     print 'CRAP: %s==%s - no release files, no valid download_url' % (package, version)
+
+            if metadata['description'] < 40:
+                    print 'CRAP: %s==%s - description < 40 chars' % (package, version)
+            if metadata['summary'] < 10:
+                    print 'CRAP: %s==%s - summary < 10 chars' % (package, version)
+            if not metadata['author_email'] and not metadata['maintainer_email']:
+                    print 'CRAP: %s==%s - no author and no maintainer email given' % (package, version)
+            if not metadata['author'] and not metadata['maintainer']:
+                    print 'CRAP: %s==%s - no author and no maintainer name given' % (package, version)
+
 
 
 
