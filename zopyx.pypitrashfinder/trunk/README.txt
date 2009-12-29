@@ -15,7 +15,7 @@ Installation
 Usage
 -----
    
-   pypi-trashfinder <package-prefix)
+   pypi-trashfinder <package-prefix>
 
 e.g.
 
