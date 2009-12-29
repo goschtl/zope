@@ -1,0 +1,384 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Unknown\n"
+"POT-Creation-Date: Tue Dec 29 12:14:38 2009\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: z3c/authviewlet/auth.py:112
+#. Default: "Logout"
+msgid "[Logout]"
+msgstr ""
+
+#: z3c/authviewlet/auth.py:94
+#. Default: "Login"
+msgid "[Login]"
+msgstr ""
+
+#: z3c/authviewlet/login_failed.pt:2
+msgid "Login Failed!"
+msgstr ""
+
+#: z3c/authviewlet/login_failed.pt:5
+msgid "You cancelled the login procedure."
+msgstr ""
+
+#: z3c/authviewlet/login_failed.pt:7
+msgid "Click here to return."
+msgstr ""
+
+#: z3c/authviewlet/login_success.pt:2
+msgid "Login successful!"
+msgstr ""
+
+#: z3c/authviewlet/login_success.pt:5
+msgid "You are now logged in as ${UserTitle}."
+msgstr ""
+
+#: z3c/authviewlet/login_success.pt:8
+#: z3c/authviewlet/logout.pt:7
+msgid "Back to the main page."
+msgstr ""
+
+#: z3c/authviewlet/logout.pt:2
+msgid "Logout successful!"
+msgstr ""
+
+#: z3c/authviewlet/logout.pt:4
+msgid "You are now logged out."
+msgstr ""
+
+#: z3c/authviewlet/redirect.pt:2
+msgid "You are being redirected!"
+msgstr ""
+
+#: z3c/authviewlet/redirect.pt:5
+msgid "If you see this screen for more than 5 seconds, click here."
+msgstr ""
+
+#: z3c/authviewlet/session_cred_loginform.pt:18
+msgid "User Name"
+msgstr ""
+
+#: z3c/authviewlet/session_cred_loginform.pt:25
+msgid "Password"
+msgstr ""
+
+#: z3c/authviewlet/session_cred_loginform.pt:3
+msgid "Please provide Login Information"
+msgstr ""
+
+#: z3c/authviewlet/session_cred_loginform.pt:32
+#. Default: "Log in"
+msgid "login-button"
+msgstr ""
+
+#: z3c/authviewlet/session_cred_loginform.pt:7
+msgid "You are not authorized to perform this action. However, you may login as a different user who is authorized."
+msgstr ""
+
+#: z3c/contents/browser.py:143
+msgid "No items selected for cut"
+msgstr ""
+
+#: z3c/contents/browser.py:144
+msgid "Items selected for cut"
+msgstr ""
+
+#: z3c/contents/browser.py:146
+msgid "Items choosen for copy"
+msgstr ""
+
+#: z3c/contents/browser.py:147
+msgid "No items selected for copy"
+msgstr ""
+
+#: z3c/contents/browser.py:148
+msgid "Data successfully copied"
+msgstr ""
+
+#: z3c/contents/browser.py:150
+msgid "Could not delete the selected items"
+msgstr ""
+
+#: z3c/contents/browser.py:151
+msgid "No items selected for delete"
+msgstr ""
+
+#: z3c/contents/browser.py:152
+msgid "Data successfully deleted"
+msgstr ""
+
+#: z3c/contents/browser.py:154
+msgid "Data successfully pasted"
+msgstr ""
+
+#: z3c/contents/browser.py:156
+msgid "Could not rename all selected items"
+msgstr ""
+
+#: z3c/contents/browser.py:157
+msgid "Duplicated item name"
+msgstr ""
+
+#: z3c/contents/browser.py:158
+msgid "Item not found"
+msgstr ""
+
+#: z3c/contents/browser.py:249
+msgid "Copy"
+msgstr ""
+
+#: z3c/contents/browser.py:264
+#. Default: ""
+msgid "Object '${name}' (${name}) cannot be copied"
+msgstr ""
+
+#: z3c/contents/browser.py:268
+#. Default: ""
+msgid "Object '${name}' cannot be copied"
+msgstr ""
+
+#: z3c/contents/browser.py:279
+msgid "Cut"
+msgstr ""
+
+#: z3c/contents/browser.py:294
+#. Default: ""
+msgid "Object '${name}' (${name}) cannot be moved"
+msgstr ""
+
+#: z3c/contents/browser.py:298
+#. Default: ""
+msgid "Object '${name}' cannot be moved"
+msgstr ""
+
+#: z3c/contents/browser.py:309
+msgid "Paste"
+msgstr ""
+
+#: z3c/contents/browser.py:351
+msgid "The given name(s) %s is / are already being used"
+msgstr ""
+
+#: z3c/contents/browser.py:359
+msgid "Delete"
+msgstr ""
+
+#: z3c/contents/browser.py:379
+msgid "Rename"
+msgstr ""
+
+#: z3c/contents/browser.py:403
+msgid "No name given"
+msgstr ""
+
+#: z3c/contents/browser.py:405
+msgid "No new name given"
+msgstr ""
+
+#: z3c/contents/browser.py:58
+#: z3c/contents/browser.py:62
+msgid "Search"
+msgstr ""
+
+#: z3c/contents/browser.py:59
+msgid "Search term"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/notfound.pt:13
+#. Default: "Make sure that the Web site address is spelled correctly."
+msgid "page-not-found-spell"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/notfound.pt:17
+#. Default: "Go back and try another URL."
+msgid "page-not-found-try-again"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/notfound.pt:4
+#. Default: "The page you are trying to access is not available"
+msgid "page-not-found"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/notfound.pt:8
+#. Default: "Please try the following:"
+msgid "page-not-found-try"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/systemerror.pt:4
+#. Default: "A system error occurred"
+msgid "sys-error"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/systemerror.pt:6
+#. Default: "Please contact the administrator."
+msgid "sys-error-contact"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/systemerror.pt:7
+#. Default: "Go back and try another URL."
+msgid "sys-error-try-again"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/unauthorized.pt:4
+#. Default: "Unauthorized"
+msgid "unauthorized"
+msgstr ""
+
+#: z3c/layer/pagelet/browser/unauthorized.pt:6
+#. Default: "You are not authorized."
+msgid "unauthorized-msg"
+msgstr ""
+
+#: z3c/table/column.py:141
+#: z3c/table/column.py:314
+msgid "Name"
+msgstr ""
+
+#: z3c/table/column.py:150
+#: z3c/table/column.py:190
+msgid "X"
+msgstr ""
+
+#: z3c/table/column.py:276
+msgid "Created"
+msgstr ""
+
+#: z3c/table/column.py:295
+msgid "Modified"
+msgstr ""
+
+#: z3c/table/interfaces.py:105
+msgid "Batch start index"
+msgstr ""
+
+#: z3c/table/interfaces.py:106
+msgid "Index the batch starts with"
+msgstr ""
+
+#: z3c/table/interfaces.py:110
+msgid "Batch size"
+msgstr ""
+
+#: z3c/table/interfaces.py:111
+msgid "The batch size"
+msgstr ""
+
+#: z3c/table/interfaces.py:115
+msgid "Batch start size"
+msgstr ""
+
+#: z3c/table/interfaces.py:116
+msgid "The minimal size the batch starts to get used"
+msgstr ""
+
+#: z3c/table/interfaces.py:204
+msgid "Id"
+msgstr ""
+
+#: z3c/table/interfaces.py:205
+msgid "The column id"
+msgstr ""
+
+#: z3c/table/interfaces.py:210
+msgid "Colspan"
+msgstr ""
+
+#: z3c/table/interfaces.py:211
+msgid "The colspan value"
+msgstr ""
+
+#: z3c/table/interfaces.py:215
+msgid "Weight"
+msgstr ""
+
+#: z3c/table/interfaces.py:216
+msgid "The column weight"
+msgstr ""
+
+#: z3c/table/interfaces.py:220
+msgid "Header name"
+msgstr ""
+
+#: z3c/table/interfaces.py:221
+msgid "The header name"
+msgstr ""
+
+#: z3c/table/interfaces.py:38
+#: z3c/table/interfaces.py:39
+msgid "Column counter"
+msgstr ""
+
+#: z3c/table/interfaces.py:55
+msgid "Prefix"
+msgstr ""
+
+#: z3c/table/interfaces.py:56
+msgid "The prefix of the table used to uniquely identify it."
+msgstr ""
+
+#: z3c/table/interfaces.py:84
+#: z3c/table/interfaces.py:85
+msgid "Sort on table index"
+msgstr ""
+
+#: z3c/table/interfaces.py:89
+msgid "Sort order"
+msgstr ""
+
+#: z3c/table/interfaces.py:90
+msgid "Row sort order"
+msgstr ""
+
+#: z3c/table/interfaces.py:97
+#: z3c/table/interfaces.py:98
+msgid "Reverse sort order name"
+msgstr ""
+
+#: z3c/wizard/interfaces.py:42
+msgid "Back"
+msgstr ""
+
+#: z3c/wizard/interfaces.py:47
+msgid "Next"
+msgstr ""
+
+#: z3c/wizard/interfaces.py:52
+msgid "Complete"
+msgstr ""
+
+#: z3c/wizard/step.py:210
+msgid "Apply"
+msgstr ""
+
+#: z3c/wizard/step.py:82
+msgid "There were some errors."
+msgstr ""
+
+#: z3c/wizard/step.py:83
+msgid "Data successfully updated."
+msgstr ""
+
+#: z3c/wizard/step.py:84
+msgid "No changes were applied."
+msgstr ""
+
