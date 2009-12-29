@@ -5,7 +5,9 @@ CHANGES
 0.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added translation for ``LinkColumn.linkContent``.
+
+- Added ``I18nGetAttrColumn`` which translates its content.
 
 
 0.7.0 (2009-12-29)

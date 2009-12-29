@@ -245,6 +245,13 @@ class GetAttrColumn(Column):
         return self.getValue(item)
 
 
+class I18nGetAttrColumn(GetAttrColumn):
+    """GetAttrColumn which translates its content."""
+
+    def renderCell(self):
+        return zope.i18n.translate(self.getValue(item))
+
+
 class FormatterColumn(Column):
     """Formatter column."""
 
@@ -333,7 +340,9 @@ class LinkColumn(Column):
 
     def getLinkContent(self, item):
         """Setup link content."""
-        return self.linkContent or getName(item)
+        if self.linkContent:
+            return zope.i18n.translate(self.linkContent, context=self.request)
+        return getName(item)
 
     def renderCell(self, item):
         # setup a tag
