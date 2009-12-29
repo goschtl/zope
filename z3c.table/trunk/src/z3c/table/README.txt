@@ -41,7 +41,7 @@ Sample data setup
 
 Let's create a sample container which we can use as our iterable context:
 
-  >>> from zope.app.container import btree
+  >>> from zope.container import btree
   >>> class Container(btree.BTreeContainer):
   ...     """Sample container."""
   ...     __name__ = u'container'
@@ -758,7 +758,6 @@ We need to configure our batch provider for the next step first. See the
 section ``BatchProvider`` below for more infos about batch rendering:
 
   >>> from zope.configuration.xmlconfig import XMLConfig
-  >>> import zope.app.component
   >>> import z3c.table
   >>> XMLConfig('meta.zcml', zope.component)()
   >>> XMLConfig('configure.zcml', z3c.table)()
@@ -1742,11 +1741,11 @@ Try to render an empty table adapting an empty mapping:
   >>> simpleTable.render()
   u''
 
-Since we have registered 3 adapters for IColumn on None (IOW on an empty mapping), 
+Since we have registered 3 adapters for IColumn on None (IOW on an empty mapping),
 initializing rows definitions for the empty table will initiliaze the columns attribute list
 
   >>> simpleTable.columns
-  
+
   >>> simpleTable.initColumns()
   >>> simpleTable.columns
   [<CorrectColspanColumn u'colspanColumn'>, <NameColumn u'secondColumn'>, <TitleColumn u'firstColumn'>]

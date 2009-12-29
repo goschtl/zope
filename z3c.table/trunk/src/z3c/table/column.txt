@@ -3,7 +3,7 @@ Table Columns
 =============
 
 Let's show the different columns we offer by default. But first take a look at
-the README.txt which explains the Table and Column concepts. 
+the README.txt which explains the Table and Column concepts.
 
 
 Sample data setup
@@ -11,7 +11,7 @@ Sample data setup
 
 Let's create a sample container that we can use as our iterable context:
 
-  >>> from zope.app.container import btree
+  >>> from zope.container import btree
   >>> class Container(btree.BTreeContainer):
   ...     """Sample container."""
   >>> container = Container()
@@ -37,13 +37,13 @@ Let's also create a simple number sortable column:
 
   >>> from z3c.table import column
   >>> class NumberColumn(column.Column):
-  ... 
+  ...
   ...     header = u'Number'
   ...     weight = 20
-  ... 
+  ...
   ...     def getSortKey(self, item):
   ...         return item.number
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return 'number: %s' % item.number
 
@@ -55,7 +55,7 @@ Let's define a table using the NameColumn:
 
   >>> from z3c.table import table
   >>> class NameTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.NameColumn, u'name',
@@ -110,7 +110,7 @@ RadioColumn
 Let's define a table using the RadioColumn:
 
   >>> class RadioTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.RadioColumn, u'radioColumn',
@@ -201,7 +201,7 @@ CheckBoxColumn
 Let's define a table using the RadioColumn:
 
   >>> class CheckBoxTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.CheckBoxColumn, u'checkBoxColumn',
@@ -248,7 +248,7 @@ Now create, update and render our table:
     </tbody>
   </table>
 
-And again you can set force to render the checkbox input field as selected with 
+And again you can set force to render the checkbox input field as selected with
 a given request value:
 
   >>> checkBoxRequest = TestRequest(form={'table-checkBoxColumn-0-selectedItems':
@@ -376,14 +376,14 @@ CreatedColumn
 Let's define a table using the CreatedColumn:
 
   >>> class CreatedColumnTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.CreatedColumn, u'createdColumn',
   ...                              weight=1),
   ...             ]
 
-Now create, update and render our table. Note, we use a Dublin Core stub 
+Now create, update and render our table. Note, we use a Dublin Core stub
 adapter which only returns ``01/01/01 01:01`` as created date:
 
   >>> request = TestRequest()
@@ -422,14 +422,14 @@ ModifiedColumn
 Let's define a table using the CreatedColumn:
 
   >>> class ModifiedColumnTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.ModifiedColumn,
   ...                              u'modifiedColumn', weight=1),
   ...             ]
 
-Now create, update and render our table. Note, we use a Dublin Core stub 
+Now create, update and render our table. Note, we use a Dublin Core stub
 adapter which only returns ``02/02/02 02:02`` as modified date:
 
   >>> request = TestRequest()
@@ -465,21 +465,21 @@ adapter which only returns ``02/02/02 02:02`` as modified date:
 GetAttrColumn
 -------------
 
-The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and 
-in ``ModifiedColumn``. Not all code get used if everything is fine. So let's 
+The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and
+in ``ModifiedColumn``. Not all code get used if everything is fine. So let's
 test the column itself and force some usecase:
 
 
   >>> class GetTitleColumn(column.GetAttrColumn):
-  ... 
+  ...
   ...     attrName = 'title'
   ...     defaultValue = u'missing'
 
   >>> class GetAttrColumnTable(table.Table):
-  ... 
+  ...
   ...     attrName = 'title'
   ...     defaultValue = u'missing'
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, GetTitleColumn, u'title'),
@@ -520,15 +520,15 @@ If we use a non-existing Attribute, we do not raise an AttributeError, we will
 get the default value defined from the ``GetAttrColumnTable``:
 
   >>> class UndefinedAttributeColumn(column.GetAttrColumn):
-  ... 
+  ...
   ...     attrName = 'undefined'
   ...     defaultValue = u'missing'
 
   >>> class GetAttrColumnTable(table.Table):
-  ... 
+  ...
   ...     attrName = 'title'
   ...     defaultValue = u'missing'
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, UndefinedAttributeColumn, u'missing'),
@@ -569,7 +569,7 @@ A missing ``attrName`` in ``GetAttrColumn`` would also end in return the
 ``defaultValue``:
 
   >>> class BadAttributeColumn(column.GetAttrColumn):
-  ... 
+  ...
   ...     defaultValue = u'missing'
 
   >>> firstItem = container[u'first']
@@ -584,7 +584,7 @@ raises such an error if we access the title:
 
   >>> from zope.security.interfaces import Unauthorized
   >>> class ProtectedItem(object):
-  ... 
+  ...
   ...     @property
   ...     def forbidden(self):
   ...         raise Unauthorized, 'forbidden'
@@ -600,7 +600,7 @@ Setup and test the item:
 Now define a column:
 
   >>> class ForbiddenAttributeColumn(column.GetAttrColumn):
-  ... 
+  ...
   ...     attrName = 'forbidden'
   ...     defaultValue = u'missing'
 
@@ -615,18 +615,18 @@ And test the attribute access:
 GetAttrFormatterColumn
 ----------------------
 
-The ``GetAttrFormatterColumn`` column is a get attr column which is able to 
+The ``GetAttrFormatterColumn`` column is a get attr column which is able to
 format the value. Let's use the Dublin Core adapter for our sample:
 
   >>> from zope.dublincore.interfaces import IZopeDublinCore
   >>> class GetCreatedColumn(column.GetAttrFormatterColumn):
-  ... 
+  ...
   ...     def getValue(self, item):
   ...         dc = IZopeDublinCore(item, None)
   ...         return dc.created
 
   >>> class GetAttrFormatterColumnTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, GetCreatedColumn, u'created'),
@@ -668,17 +668,17 @@ Render and update the table:
 We can also change the formatter settings in such a column:
 
   >>> class LongCreatedColumn(column.GetAttrFormatterColumn):
-  ... 
+  ...
   ...     formatterCategory = u'dateTime'
   ...     formatterLength = u'long'
   ...     formatterCalendar = u'gregorian'
-  ... 
+  ...
   ...     def getValue(self, item):
   ...         dc = IZopeDublinCore(item, None)
   ...         return dc.created
 
   >>> class LongFormatterColumnTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, LongCreatedColumn, u'created'),
@@ -729,7 +729,7 @@ columns which can point to a page with the item as context:
   ...     linkCSS = 'myClass'
 
   >>> class MyLinkTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, MyLinkColumns, u'link',
@@ -782,11 +782,11 @@ Now create, update and render our table:
 ContentsLinkColumn
 ------------------
 
-There are some predefined link columns available. This one will generate a 
+There are some predefined link columns available. This one will generate a
 ``contents.html`` link for each item:
 
   >>> class ContentsLinkTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.ContentsLinkColumn, u'link',
@@ -838,7 +838,7 @@ IndexLinkColumn
 This one will generate a ``index.html`` link for each item:
 
   >>> class IndexLinkTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.IndexLinkColumn, u'link',
@@ -890,7 +890,7 @@ EditLinkColumn
 And this one will generate a ``edit.html`` link for each item:
 
   >>> class EditLinkTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, column.EditLinkColumn, u'link',
