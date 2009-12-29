@@ -3,7 +3,7 @@ import os
 
 version = '0.1.0'
 
-setup(name='zopyx.findtrashonpypi',
+setup(name='zopyx.trashfinder',
       version=version,
       description="Find package trash on PyPI",
       long_description=open("README.txt").read() + "\n" +
@@ -15,7 +15,7 @@ setup(name='zopyx.findtrashonpypi',
       keywords='Trash Crap PyPI',
       author='Andreas Jung',
       author_email='info@zopyx.com',
-      url='',
+      url='http://pypi.python.org/pypi/zopyx.trashfinder',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['zopyx'],
