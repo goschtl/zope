@@ -23,8 +23,6 @@ def main():
             print '  ', version
             urls = server.release_urls(package, version)
 
-            import pdb; pdb.set_trace() 
-
             # PyPI hosted packages
             if urls:
                 for url in urls:
