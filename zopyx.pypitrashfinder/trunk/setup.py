@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '0.1.0'
 
 setup(name='zopyx.findtrashonpypi',
       version=version,
@@ -12,7 +12,7 @@ setup(name='zopyx.findtrashonpypi',
       classifiers=[
         "Programming Language :: Python",
         ],
-      keywords='',
+      keywords='Trash Crap PyPI',
       author='Andreas Jung',
       author_email='info@zopyx.com',
       url='',
@@ -25,7 +25,7 @@ setup(name='zopyx.findtrashonpypi',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points=dict(console_scripts=(
+        'pypi-trashfinder=zopyx.pypitrashfinder.cli:main',
+        )),
       )
