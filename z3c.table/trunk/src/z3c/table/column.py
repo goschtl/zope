@@ -248,8 +248,8 @@ class GetAttrColumn(Column):
 class I18nGetAttrColumn(GetAttrColumn):
     """GetAttrColumn which translates its content."""
 
-    def renderCell(self):
-        return zope.i18n.translate(self.getValue(item))
+    def renderCell(self, item):
+        return zope.i18n.translate(self.getValue(item), context=self.request)
 
 
 class FormatterColumn(Column):
