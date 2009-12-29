@@ -23,15 +23,12 @@ def read(*rnames):
 
 setup (
     name='z3c.table',
-    version='0.6.2dev',
+    version = '0.7.0',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Modular table rendering implementation for Zope3",
     long_description=(
         read('README.txt')
-        + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
         + '\n\n' +
         read('src', 'z3c', 'table', 'README.txt')
         + '\n\n' +

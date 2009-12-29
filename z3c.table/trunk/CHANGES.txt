@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.6.2dev (unreleased)
------------------------------
+0.7.0 (2009-12-29)
+------------------
 
 - Allow to initialze the column definitions without requiring an
   entire table update.
@@ -13,15 +13,15 @@ Version 0.6.2dev (unreleased)
 
 - Head cell contents are now translated.
 
-Version 0.6.1 (2009-02-22)
---------------------------
+0.6.1 (2009-02-22)
+------------------
 
 - Be smart to not ``IPhysicallyLocatable`` objects if we lookup the
   ``__name__`` value in columns.
 
 
-Version 0.6.0 (2008-11-12)
---------------------------
+0.6.0 (2008-11-12)
+------------------
 
 - Bugfix: Allow to switch the sort order on the header link. This was
   blocked to descending after the first click
@@ -50,7 +50,7 @@ Version 0.6.0 (2008-11-12)
   list. Use always the first selectedItems form the tables selectedItems
 
 
-Version 0.5.0 (2008-04-13)
---------------------------
+0.5.0 (2008-04-13)
+------------------
 
-- Initial Release
+- Initial Release.
