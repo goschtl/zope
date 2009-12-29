@@ -5,7 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Include tests of the LocationCopyHook from zope.location.
 
 3.5.0 (2009-02-09)
 ------------------

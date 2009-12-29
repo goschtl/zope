@@ -26,6 +26,10 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocFileSuite('pickling.txt',
+            setUp=setUp,
+            tearDown=tearDown,
+            optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE),
         doctest.DocFileSuite('README.txt',
             setUp=setUp,
             tearDown=tearDown,
