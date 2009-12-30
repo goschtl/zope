@@ -40,10 +40,6 @@ setup(name='zope.app.form',
           + '\n\n' +
           read('src', 'zope', 'app', 'form', 'browser', 'widgets.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'objectwidget.txt')
-          + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'source.txt')
-          + '\n\n' +
           read('src', 'zope', 'app', 'form', 'browser', 'i18n.txt')
           + '\n\n' +
           read('CHANGES.txt')

@@ -2,6 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
+  <include package="zope.formlib" file="configure.zcml" />
+
   <!-- Form Macros -->
 
   <browser:page
@@ -26,15 +28,6 @@
       template="add.pt"
       />
 
-  <!-- Views for Widget Errors -->
-
-  <adapter
-      for="zope.formlib.interfaces.IWidgetInputError
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.IWidgetInputErrorView"
-      factory="zope.app.form.browser.exception.WidgetInputErrorView"
-      permission="zope.Public"
-      />
 
   <!-- Core display widgets -->
 
