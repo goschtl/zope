@@ -50,7 +50,7 @@ class IconRegistry(grok.GlobalUtility):
         if mimetype in self.allowed:
             self.__registry__[name] = icon
         else:
-            print "skipping %s (%s) [WRONG MIMETYPE]" % (path, icon.mimetype)
+            print "skipping %s (%s) [WRONG MIMETYPE]" % (path, mimetype)
 
     def populate(self, path):
         if not os.path.isdir(path):
@@ -63,6 +63,7 @@ class IconRegistry(grok.GlobalUtility):
                 ipath = os.path.join(root, name)
                 iname = os.path.splitext(name)[0]
                 self.add(iname, ipath)
+            dirs.remove('.svn')
 
     def registered(self, name):
         return name in self.__registry__

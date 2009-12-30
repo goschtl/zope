@@ -2,13 +2,17 @@
 
 import grokcore.component as grok
 
+from megrok.icon import IIconRegistry
 from zope.component import queryUtility
 from zope.interface import Interface
+from zope.location.interfaces import ILocation
+from zope.location.location import locate, LocationProxy
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.traversing.interfaces import ITraversable, TraversalError
 from zope.security.proxy import removeSecurityProxy
-from megrok.icon import IIconRegistry
+from zope.site.hooks import getSite
+from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.interfaces import ITraversable, TraversalError
 
 
 class IconTraverser(grok.MultiAdapter):
@@ -43,3 +47,13 @@ class IconRegistryTraverser(grok.MultiAdapter):
         if icon is not None:
             return removeSecurityProxy(icon(self.request))
         raise NotFound(self.context, name, request)
+
+
+@grok.adapter(IIconRegistry)
+@grok.implementer(ILocation)
+def locate_registry(registry):
+    site = getSite()
+    name = '++icon++' + grok.name.bind().get(registry)
+    locatable = LocationProxy(registry)
+    locate(locatable, site, name=name)
+    return locatable
