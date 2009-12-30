@@ -9,7 +9,7 @@ and a reasonable description.
 Installation
 ------------
 
-   easy_install zopyx.pypitrashfinder
+   easy_install zopyx.trashfinder
 
 
 Usage
