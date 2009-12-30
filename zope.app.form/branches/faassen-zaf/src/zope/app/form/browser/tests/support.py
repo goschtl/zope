@@ -17,23 +17,7 @@ $Id$
 """
 import re
 from zope.configuration import xmlconfig
-
-class VerifyResults(object):
-    """Mix-in for test classes with helpers for checking string data."""
-
-    def verifyResult(self, result, check_list, inorder=False):
-        start = 0
-        for check in check_list:
-            pos = result.find(check, start)
-            self.assert_(pos >= 0,
-                         "%r not found in %r" % (check, result[start:]))
-            if inorder:
-                start = pos + len(check)
-
-    def verifyResultMissing(self, result, check_list):
-        for check in check_list:
-            self.assert_(result.find(check) < 0,
-                         "%r unexpectedly found in %r" % (check, result))
+from zope.formlib.tests.support import VerifyResults
 
 def registerEditForm(schema, widgets={}):
     """Registers an edit form for the specified schema.

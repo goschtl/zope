@@ -22,7 +22,7 @@ from zope.datetime import parseDatetimetz
 from zope.schema import Date
 from zope.interface.verify import verifyClass
 
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.formlib.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import DateWidget
 from zope.app.form.browser import DateI18nWidget

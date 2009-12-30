@@ -23,7 +23,7 @@ from zope.schema import Choice, List
 
 from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import MultiCheckBoxWidget
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.formlib.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.interface.verify import verifyClass
 
 class MultiCheckBoxWidgetTest(SimpleInputWidgetTest):

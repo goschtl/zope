@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.formlib.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import FloatWidget
 from zope.formlib.interfaces import ConversionError, WidgetInputError

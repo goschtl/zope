@@ -41,9 +41,8 @@ from zope.app.form.browser import DateDisplayWidget
 from zope.app.form.browser import DatetimeDisplayWidget
 from zope.app.form.browser import URIDisplayWidget
 
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
-from zope.app.form.browser.tests.test_browserwidget \
-     import SimpleInputWidgetTest
+from zope.formlib.tests.test_browserwidget import BrowserWidgetTest
+from zope.formlib.tests.test_browserwidget import SimpleInputWidgetTest
 
 class TextWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the text widget.

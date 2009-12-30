@@ -35,7 +35,7 @@ from zope.formlib.widget import CustomWidgetFactory
 from zope.app.form.browser.exception import WidgetInputErrorView
 
 from zope.app.form.browser.tests.support import VerifyResults
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.formlib.tests.test_browserwidget import BrowserWidgetTest
 
 
 class SequenceWidgetTestHelper(object):

@@ -24,7 +24,7 @@ from zope.schema import Bool
 from zope.interface.verify import verifyClass
 
 from zope.formlib.interfaces import MissingInputError
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.formlib.tests.test_browserwidget import SimpleInputWidgetTest
 
 
 class CheckBoxWidgetTest(SimpleInputWidgetTest):

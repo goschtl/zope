@@ -28,7 +28,7 @@ from zope.app.testing import ztapi
 
 from zope.formlib.interfaces import IInputWidget, MissingInputError
 from zope.app.form.browser import TextWidget, ObjectWidget
-from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.formlib.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class ITestContact(Interface):
