@@ -26,29 +26,29 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.form',
+setup(name='zope.formlibwidget',
       version = '3.12.2dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='The Original Zope 3 Form Framework',
+      description='Widgets for zope.formlib',
       long_description=(
           read('README.txt')
           + '\n\n' +
           'Detailed documentation:\n'
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'README.txt')
+          read('src', 'zope', 'formlibwidget', 'browser', 'README.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'widgets.txt')
+          read('src', 'zope', 'formlibwidget', 'browser', 'widgets.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'objectwidget.txt')
+          read('src', 'zope', 'formlibwidget', 'browser', 'objectwidget.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'source.txt')
+          read('src', 'zope', 'formlibwidget', 'browser', 'source.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'form', 'browser', 'i18n.txt')
+          read('src', 'zope', 'formlibwidget', 'browser', 'i18n.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords = "zope3 form widget zcml",
+      keywords = "zope3 form widget formlib",
       classifiers = [
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -59,11 +59,11 @@ setup(name='zope.app.form',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://pypi.python.org/pypi/zope.app.form',
+      url='http://pypi.python.org/pypi/zope.formlibwidget',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
-      namespace_packages=['zope', 'zope.app'],
+      namespace_packages=['zope'],
       extras_require={'test': [
             'ZODB3',
             'zc.sourcefactory',
