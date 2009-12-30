@@ -34,26 +34,21 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope import component
 from zope import security
 from zope.security.proxy import Proxy
 from zope.proxy import isProxy
 from zope.interface.interfaces import IMethod
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
-from zope.schema import getFieldsInOrder
-from zope.formlib.interfaces import IWidget
 from zope.formlib.interfaces import WidgetsError, MissingInputError
 from zope.formlib.interfaces import InputErrors
 from zope.formlib.interfaces import IInputWidget, IDisplayWidget
-from zope.formlib.interfaces import IWidgetFactory
 from zope.formlib.utility import (
     setUpWidget,
     setUpWidgets,
     applyWidgetsChanges,
     _fieldlist,
     no_value,
-    _widgetHasStickyValue,
-    applyWidgetsChanges)
+    _widgetHasStickyValue)
     
 def setUpEditWidgets(view, schema, source=None, prefix=None,
                      ignoreStickyValues=False, names=None, context=None,
@@ -90,7 +85,7 @@ def setUpEditWidgets(view, schema, source=None, prefix=None,
             value = field.get(source)
         except ForbiddenAttribute:
             raise
-        except AttributeError, v:
+        except AttributeError:
             value = no_value
         except Unauthorized:
             if degradeDisplay:
@@ -157,7 +152,7 @@ def setUpDisplayWidgets(view, schema, source=None, prefix=None,
             value = field.get(source)
         except ForbiddenAttribute:
             raise
-        except AttributeError, v:
+        except AttributeError:
             value = no_value
         except Unauthorized:
             if degradeDisplay:
