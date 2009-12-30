@@ -41,7 +41,7 @@ class TestWidget(object):
     Widget implements IWidget:
 
         >>> from zope.interface.verify import verifyClass
-        >>> from zope.app.form.interfaces import IWidget
+        >>> from zope.formlib.interfaces import IWidget
         >>> verifyClass(IWidget, Widget)
         True
         >>> widget = Widget(context, request)
@@ -106,7 +106,7 @@ class TestInputWidget(object):
     that provides a getInputValue method:
 
         >>> from zope.app.form import InputWidget
-        >>> from zope.app.form.interfaces import WidgetInputError
+        >>> from zope.formlib.interfaces import WidgetInputError
         >>> class TestInputWidget(InputWidget):
         ...     def getInputValue(self):
         ...         if self.context.required:

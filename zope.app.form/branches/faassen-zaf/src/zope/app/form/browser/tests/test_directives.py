@@ -88,7 +88,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
+              provides="zope.formlib.interfaces.IInputWidget"
               factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
@@ -114,7 +114,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
+              provides="zope.formlib.interfaces.IInputWidget"
               factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
@@ -141,7 +141,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
+              provides="zope.formlib.interfaces.IInputWidget"
               factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
@@ -169,7 +169,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.IField"
-              provides="zope.app.form.interfaces.IDisplayWidget"
+              provides="zope.formlib.interfaces.IDisplayWidget"
               factory="zope.app.form.browser.DisplayWidget"
               permission="zope.Public"
               />
@@ -195,7 +195,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
+              provides="zope.formlib.interfaces.IInputWidget"
               factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
@@ -233,7 +233,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
-              provides="zope.app.form.interfaces.IInputWidget"
+              provides="zope.formlib.interfaces.IInputWidget"
               factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
@@ -270,7 +270,7 @@ class Test(PlacelessSetup, unittest.TestCase):
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.IField"
-              provides="zope.app.form.interfaces.IDisplayWidget"
+              provides="zope.formlib.interfaces.IDisplayWidget"
               factory="zope.app.form.browser.DisplayWidget"
               permission="zope.Public"
               />

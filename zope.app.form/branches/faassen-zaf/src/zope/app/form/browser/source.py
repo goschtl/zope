@@ -27,10 +27,10 @@ import zope.schema.interfaces
 from zope.schema.interfaces import \
     ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
 
-import zope.app.form.interfaces
+import zope.formlib.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
-from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.formlib.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form.browser import \
@@ -41,7 +41,7 @@ import zope.app.form.browser.itemswidgets
 
 class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
 
-    implements(zope.app.form.interfaces.IDisplayWidget)
+    implements(zope.formlib.interfaces.IDisplayWidget)
 
     def __init__(self, field, source, request):
         super(SourceDisplayWidget, self).__init__(field, request)
@@ -117,7 +117,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
     _error = None
 
-    implements(zope.app.form.interfaces.IInputWidget)
+    implements(zope.formlib.interfaces.IInputWidget)
 
     def __init__(self, field, source, request):
         super(SourceInputWidget, self).__init__(field, request)
@@ -298,7 +298,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         if token is None:
             if field.required:
                 # TODO This code path is untested.
-                raise zope.app.form.interfaces.MissingInputError(
+                raise zope.formlib.interfaces.MissingInputError(
                     field.__name__, self.label,
                     )
             return field.missing_value

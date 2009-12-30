@@ -38,7 +38,7 @@ def test_implemented_interfaces():
     But unlike most other widgets in this package, the display widget is *not*
     an `IInputWidget`.
 
-    >>> from zope.app.form.interfaces import IInputWidget
+    >>> from zope.formlib.interfaces import IInputWidget
     >>> try:
     ...     verifyClass(IInputWidget, DisplayWidget)    
     ... except DoesNotImplement:

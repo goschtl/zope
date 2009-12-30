@@ -28,7 +28,7 @@ from zope.component import testing
 # absolutely know what we're importing)
 from zope.app.form.browser import *
 
-from zope.app.form.interfaces import IDisplayWidget, IInputWidget
+from zope.formlib.interfaces import IDisplayWidget, IInputWidget
 import zope.app.form.browser
 
 import zope.schema as fields

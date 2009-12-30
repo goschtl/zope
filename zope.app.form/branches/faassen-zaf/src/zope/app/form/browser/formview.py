@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import transaction
 
-from zope.app.form.interfaces import WidgetsError, IInputWidget
+from zope.formlib.interfaces import WidgetsError, IInputWidget
 
 from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.app.form.browser.editview import EditView

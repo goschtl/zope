@@ -29,7 +29,7 @@
   <!-- Views for Widget Errors -->
 
   <adapter
-      for="zope.app.form.interfaces.IWidgetInputError
+      for="zope.formlib.interfaces.IWidgetInputError
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.IWidgetInputErrorView"
       factory="zope.app.form.browser.exception.WidgetInputErrorView"
@@ -41,7 +41,7 @@
   <adapter
       for="zope.schema.interfaces.IField
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".DisplayWidget"
       permission="zope.Public"
       />
@@ -49,7 +49,7 @@
   <adapter
       for="zope.schema.interfaces.IBool
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".boolwidgets.BooleanDisplayWidget"
       permission="zope.Public"
       />
@@ -57,7 +57,7 @@
   <adapter
       for="zope.schema.interfaces.IBytes
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".textwidgets.BytesDisplayWidget"
       permission="zope.Public"
       />
@@ -65,7 +65,7 @@
   <adapter
       for="zope.schema.interfaces.IBytesLine
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".DisplayWidget"
       permission="zope.Public"
       />
@@ -73,7 +73,7 @@
   <adapter
       for="zope.schema.interfaces.IASCII
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".textwidgets.ASCIIDisplayWidget"
       permission="zope.Public"
       />
@@ -81,7 +81,7 @@
   <adapter
       for="zope.schema.interfaces.IASCIILine
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".DisplayWidget"
       permission="zope.Public"
       />
@@ -89,7 +89,7 @@
   <adapter
       for="zope.schema.interfaces.IURI
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".textwidgets.URIDisplayWidget"
       permission="zope.Public"
       />
@@ -97,7 +97,7 @@
   <adapter
       for="zope.schema.interfaces.IDate
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".DateDisplayWidget"
       permission="zope.Public"
       />
@@ -105,7 +105,7 @@
   <adapter
       for="zope.schema.interfaces.IDatetime
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".DatetimeDisplayWidget"
       permission="zope.Public"
       />
@@ -179,7 +179,7 @@
   <adapter
       for="zope.schema.interfaces.IInt
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".UnicodeDisplayWidget"
       permission="zope.Public"
       />
@@ -195,7 +195,7 @@
   <adapter
       for="zope.schema.interfaces.IFloat
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".UnicodeDisplayWidget"
       permission="zope.Public"
       />
@@ -211,7 +211,7 @@
   <adapter
       for="zope.schema.interfaces.IDecimal
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".UnicodeDisplayWidget"
       permission="zope.Public"
       />
@@ -254,7 +254,7 @@
   <adapter
       for="zope.schema.interfaces.IChoice
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceDisplayWidget"
       permission="zope.Public"
       />
@@ -271,7 +271,7 @@
   <adapter
       for="zope.schema.interfaces.ICollection
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".CollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -294,7 +294,7 @@
   <adapter
       for="zope.schema.interfaces.ISequence
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".CollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -333,7 +333,7 @@
       for="zope.schema.interfaces.ISequence
            zope.schema.interfaces.IField
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".SequenceDisplayWidget"
       permission="zope.Public"
       />
@@ -350,7 +350,7 @@
       for="zope.schema.interfaces.IList
            zope.schema.interfaces.IChoice
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceCollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -369,7 +369,7 @@
       for="zope.schema.interfaces.ITuple
            zope.schema.interfaces.IChoice
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceCollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -388,7 +388,7 @@
       for="zope.schema.interfaces.ISet
            zope.schema.interfaces.IChoice
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceCollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -407,7 +407,7 @@
       for="zope.schema.interfaces.IFrozenSet
            zope.schema.interfaces.IChoice
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceCollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -427,7 +427,7 @@
       for="zope.schema.interfaces.IChoice
            zope.schema.interfaces.IBaseVocabulary
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ItemDisplayWidget"
       permission="zope.Public"
       />
@@ -504,7 +504,7 @@
       for="zope.schema.interfaces.ISet
            zope.schema.interfaces.IBaseVocabulary
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".SetDisplayWidget"
       permission="zope.Public"
       />
@@ -513,7 +513,7 @@
       for="zope.schema.interfaces.IFrozenSet
            zope.schema.interfaces.IBaseVocabulary
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".SetDisplayWidget"
       permission="zope.Public"
       />
@@ -531,7 +531,7 @@
       for="zope.schema.interfaces.IList
            zope.schema.interfaces.IBaseVocabulary
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".SetDisplayWidget"
       permission="zope.Public"
       />
@@ -541,7 +541,7 @@
       for="zope.schema.interfaces.IChoice
            zope.schema.interfaces.ISource
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".source.SourceDisplayWidget"
       permission="zope.Public"
       />
@@ -558,7 +558,7 @@
       for="zope.schema.interfaces.ISequence
            zope.schema.interfaces.ISource
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".source.SourceSequenceDisplayWidget"
       permission="zope.Public"
       />
@@ -567,7 +567,7 @@
       for="zope.schema.interfaces.IAbstractSet
            zope.schema.interfaces.ISource
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".source.SourceSequenceDisplayWidget"
       permission="zope.Public"
       />

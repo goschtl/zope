@@ -265,7 +265,7 @@ We have no input yet::
 
   >>> try:
   ...     widget.getInputValue()
-  ... except zope.app.form.interfaces.MissingInputError:
+  ... except zope.formlib.interfaces.MissingInputError:
   ...     print 'no input'
   no input
 
@@ -331,7 +331,7 @@ We have no input yet::
 
   >>> try:
   ...     widget.getInputValue()
-  ... except zope.app.form.interfaces.MissingInputError:
+  ... except zope.formlib.interfaces.MissingInputError:
   ...     print 'no input'
   no input
 
@@ -382,7 +382,7 @@ For list ordering support, use SourceOrderedMultiSelectWidget::
 The widget is too complicated to show in complete rendered form here.
 Insted, we'll inspect the properties of the widget::
 
-  >>> from zope.app.form.interfaces import MissingInputError
+  >>> from zope.formlib.interfaces import MissingInputError
   >>> try:
   ...     widget.getInputValue()
   ... except MissingInputError:
@@ -438,7 +438,7 @@ For set-valued fields, use SourceMultiSelectSetWidget::
 
   >>> try:
   ...     widget.getInputValue()
-  ... except zope.app.form.interfaces.MissingInputError:
+  ... except zope.formlib.interfaces.MissingInputError:
   ...     print 'no input'
   no input
 

@@ -24,7 +24,7 @@ from zope.component import testing
 from zope.app.testing import ztapi
 
 from zope.app.form.browser import TextWidget
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 
 def setUp(test):
     testing.setUp()

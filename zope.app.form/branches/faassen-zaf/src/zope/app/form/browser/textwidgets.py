@@ -24,7 +24,7 @@ from zope.datetime import parseDatetimetz
 from zope.datetime import DateTimeError
 from zope.i18n.format import DateTimeParseError
 
-from zope.app.form.interfaces import IInputWidget, ConversionError
+from zope.formlib.interfaces import IInputWidget, ConversionError
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.interfaces import ITextBrowserWidget
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
@@ -297,7 +297,7 @@ class TextAreaWidget(SimpleInputWidget):
     >>> from zope.schema import Text
     >>> field = Text(__name__='description', title=u'Description')
 
-    >>> from zope.app.form.interfaces import ConversionError
+    >>> from zope.formlib.interfaces import ConversionError
     >>> class TestTextAreaWidget(TextAreaWidget):
     ...     def _toFieldValue(self, input):
     ...         if 'foo' in input:

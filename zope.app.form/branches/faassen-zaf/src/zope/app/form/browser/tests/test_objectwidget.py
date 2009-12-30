@@ -26,7 +26,7 @@ from zope.testing import doctest
 
 from zope.app.testing import ztapi
 
-from zope.app.form.interfaces import IInputWidget, MissingInputError
+from zope.formlib.interfaces import IInputWidget, MissingInputError
 from zope.app.form.browser import TextWidget, ObjectWidget
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
@@ -105,9 +105,9 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.assertRaises(MissingInputError, widget.getInputValue)
         error_html = widget.error()
         if sys.version_info < (2, 5):
-            self.failUnless("email: <zope.app.form.interfaces.Mis" 
+            self.failUnless("email: <zope.formlib.interfaces.Mis" 
                              in error_html)
-            self.failUnless("name: <zope.app.form.interfaces.Miss"
+            self.failUnless("name: <zope.formlib.interfaces.Miss"
                              in error_html)
         else:
             self.failUnless("email: MissingInputError(u'field.foo.email', u'', None)"

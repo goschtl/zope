@@ -30,7 +30,7 @@ from zope.app.testing import ztapi
 from zope.app.form.browser import TextWidget
 from zope.app.form.browser.editview import EditView
 from zope.app.form.browser.submit import Update
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 from zope.app.form.tests import utils
 
 class I(Interface):

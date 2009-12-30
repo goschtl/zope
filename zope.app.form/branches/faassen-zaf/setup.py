@@ -78,6 +78,7 @@ setup(name='zope.app.form',
       install_requires=[
           "setuptools",
           "transaction",
+          "zope.formlib",
           "zope.browser>=1.1",
           "zope.browserpage>=3.10.1",
           "zope.browsermenu",

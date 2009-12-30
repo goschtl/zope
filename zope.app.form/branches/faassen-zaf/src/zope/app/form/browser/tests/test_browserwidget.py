@@ -24,8 +24,8 @@ from zope.testing.doctest import DocTestSuite
 
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.tests import support
-from zope.app.form.interfaces import ConversionError
-from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.formlib.interfaces import ConversionError
+from zope.formlib.interfaces import WidgetInputError, MissingInputError
 
 
 class BrowserWidgetTest(PlacelessSetup,

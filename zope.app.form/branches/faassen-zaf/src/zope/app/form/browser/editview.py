@@ -32,7 +32,7 @@ from zope.lifecycleevent import Attributes
 
 from zope.browserpage import ViewPageTemplateFile
 from zope.browserpage.simpleviewclass import SimpleViewClass
-from zope.app.form.interfaces import WidgetsError
+from zope.formlib.interfaces import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.submit import Update

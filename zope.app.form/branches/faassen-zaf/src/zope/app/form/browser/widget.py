@@ -25,9 +25,9 @@ from zope.schema.interfaces import ValidationError
 from zope.publisher.browser import BrowserView
 
 from zope.app.form import Widget, InputWidget
-from zope.app.form.interfaces import ConversionError
-from zope.app.form.interfaces import InputErrors
-from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.formlib.interfaces import ConversionError
+from zope.formlib.interfaces import InputErrors
+from zope.formlib.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.browser.interfaces import ISimpleInputWidget
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
@@ -76,7 +76,7 @@ class BrowserWidget(Widget, BrowserView):
     view that is registered as providing `IWidgetInputErrorView`. To
     illustrate, we can create and register a simple error display view:
 
-        >>> from zope.app.form.interfaces import IWidgetInputError
+        >>> from zope.formlib.interfaces import IWidgetInputError
         >>> class SnippetErrorView:
         ...     implements(IWidgetInputErrorView)
         ...     def __init__(self, context, request):
@@ -250,7 +250,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> from zope.schema import Float
         >>> field = Float(__name__='price', title=u'Price')
 
-        >>> from zope.app.form.interfaces import ConversionError
+        >>> from zope.formlib.interfaces import ConversionError
         >>> class FloatWidget(SimpleInputWidget):
         ...     def _toFieldValue(self, input):
         ...         try:

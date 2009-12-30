@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import Choice, List
 
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import MultiCheckBoxWidget
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 from zope.interface.verify import verifyClass

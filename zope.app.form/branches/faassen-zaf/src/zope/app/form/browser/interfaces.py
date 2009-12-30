@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.schema import TextLine, Bool
-from zope.app.form.interfaces import IWidget, IInputWidget
+from zope.formlib.interfaces import IWidget, IInputWidget
 
 # BBB: ITerms are also used by z3c.form and possibly other form
 # frameworks, so it was moved to zope.browser.interfaces and it's

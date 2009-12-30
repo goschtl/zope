@@ -41,11 +41,11 @@ from zope.proxy import isProxy
 from zope.interface.interfaces import IMethod
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.schema import getFieldsInOrder
-from zope.app.form.interfaces import IWidget
-from zope.app.form.interfaces import WidgetsError, MissingInputError
-from zope.app.form.interfaces import InputErrors
-from zope.app.form.interfaces import IInputWidget, IDisplayWidget
-from zope.app.form.interfaces import IWidgetFactory
+from zope.formlib.interfaces import IWidget
+from zope.formlib.interfaces import WidgetsError, MissingInputError
+from zope.formlib.interfaces import InputErrors
+from zope.formlib.interfaces import IInputWidget, IDisplayWidget
+from zope.formlib.interfaces import IWidgetFactory
 
 # A marker that indicates 'no value' for any of the utility functions that
 # accept a 'value' argument.

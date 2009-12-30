@@ -25,7 +25,7 @@ from zope.app.form.browser.widget import DisplayWidget
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.itemswidgets import RadioWidget
 from zope.app.form.browser.itemswidgets import SelectWidget, DropdownWidget
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 
 
 class CheckBoxWidget(SimpleInputWidget):

@@ -18,9 +18,9 @@ $Id$
 import unittest
 from zope.testing import doctest
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import FloatWidget
-from zope.app.form.interfaces import ConversionError, WidgetInputError
+from zope.formlib.interfaces import ConversionError, WidgetInputError
 from zope.interface.verify import verifyClass
 
 from zope.schema import Float

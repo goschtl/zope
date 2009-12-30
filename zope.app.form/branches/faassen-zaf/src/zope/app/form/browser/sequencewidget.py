@@ -22,8 +22,8 @@ from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import ValidationError
 
-from zope.app.form.interfaces import IDisplayWidget, IInputWidget
-from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.formlib.interfaces import IDisplayWidget, IInputWidget
+from zope.formlib.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.widget import BrowserWidget

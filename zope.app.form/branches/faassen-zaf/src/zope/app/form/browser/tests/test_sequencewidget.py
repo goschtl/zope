@@ -27,9 +27,9 @@ from zope.app.form.browser import TextWidget, ObjectWidget, DisplayWidget
 from zope.app.form.browser import TupleSequenceWidget, ListSequenceWidget
 from zope.app.form.browser import SequenceDisplayWidget
 from zope.app.form.browser import SequenceWidget
-from zope.app.form.interfaces import IDisplayWidget
-from zope.app.form.interfaces import IInputWidget, MissingInputError
-from zope.app.form.interfaces import IWidgetInputError, WidgetInputError
+from zope.formlib.interfaces import IDisplayWidget
+from zope.formlib.interfaces import IInputWidget, MissingInputError
+from zope.formlib.interfaces import IWidgetInputError, WidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser.exception import WidgetInputErrorView

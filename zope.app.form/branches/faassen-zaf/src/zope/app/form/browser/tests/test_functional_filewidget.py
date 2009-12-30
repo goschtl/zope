@@ -30,7 +30,7 @@ from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.textwidgets import FileWidget
 from zope.app.form.browser.tests.support import *
 from zope.app.testing.functional import BrowserTestCase
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 
 class IFileField(IField):
     """Field for representing a file that can be edited by FileWidget."""

@@ -25,7 +25,7 @@ import zope.schema
 from zope.browser.interfaces import IAdding
 
 import zope.app.form.browser.interfaces
-import zope.app.form.interfaces
+import zope.formlib.interfaces
 from zope.app.form.tests import utils
 import zope.component.testing
 
@@ -75,17 +75,17 @@ class WidgetDirectiveTestCase(zope.component.testing.PlacelessSetup,
 
     def test_addform_widget_without_class(self):
         w = self.get_widget("add.html", Adding())
-        self.assert_(zope.app.form.interfaces.IInputWidget.providedBy(w))
+        self.assert_(zope.formlib.interfaces.IInputWidget.providedBy(w))
         self.assertEqual(w.extraAttr, "42")
 
     def test_editform_widget_without_class(self):
         w = self.get_widget("edit.html", Content())
-        self.assert_(zope.app.form.interfaces.IInputWidget.providedBy(w))
+        self.assert_(zope.formlib.interfaces.IInputWidget.providedBy(w))
         self.assertEqual(w.extraAttr, "84")
 
     def test_subeditform_widget_without_class(self):
         w = self.get_widget("subedit.html", Content())
-        self.assert_(zope.app.form.interfaces.IInputWidget.providedBy(w))
+        self.assert_(zope.formlib.interfaces.IInputWidget.providedBy(w))
         self.assertEqual(w.extraAttr, "168")
 
 

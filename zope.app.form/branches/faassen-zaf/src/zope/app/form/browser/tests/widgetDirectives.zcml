@@ -8,7 +8,7 @@
   <zope:view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ITextLine"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory="zope.app.form.browser.TextWidget"
       permission="zope.Public"
       />

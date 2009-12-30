@@ -23,7 +23,7 @@ from zope.schema.interfaces import IList, IChoice, IIterableVocabulary
 from zope.schema import Choice, List
 
 from zope.app.testing import ztapi
-from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.formlib.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.browser import CollectionDisplayWidget
 from zope.app.form.browser import CollectionInputWidget
 from zope.app.form.browser import ChoiceCollectionDisplayWidget

@@ -17,13 +17,13 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import CheckBoxWidget
 from zope.publisher.browser import TestRequest
 from zope.schema import Bool
 from zope.interface.verify import verifyClass
 
-from zope.app.form.interfaces import MissingInputError
+from zope.formlib.interfaces import MissingInputError
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 

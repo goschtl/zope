@@ -22,7 +22,7 @@ from cgi import escape
 from zope.interface import implements
 from zope.i18n import translate
 
-from zope.app.form.interfaces import IWidgetInputError
+from zope.formlib.interfaces import IWidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class WidgetInputErrorView(object):
@@ -37,7 +37,7 @@ class WidgetInputErrorView(object):
     def snippet(self):
         """Convert a widget input error to an html snippet
 
-        >>> from zope.app.form.interfaces import WidgetInputError
+        >>> from zope.formlib.interfaces import WidgetInputError
         >>> class TooSmallError(object):
         ...     def doc(self):
         ...         return "Foo input < 1"
@@ -50,7 +50,7 @@ class WidgetInputErrorView(object):
         `doc()`. Therefore, other implementations of the interface should also
         work.
 
-        >>> from zope.app.form.interfaces import ConversionError
+        >>> from zope.formlib.interfaces import ConversionError
         >>> err = ConversionError('Could not convert to float.')
         >>> view = WidgetInputErrorView(err, None)
         >>> view.snippet()

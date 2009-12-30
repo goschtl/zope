@@ -13,7 +13,7 @@ which is a subclass of BrowserWidget in widget.py.  It is registered as an
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ITextLine"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".TextWidget"
       permission="zope.Public"
       />
@@ -113,7 +113,7 @@ above, so the developer can use the already implemented widgets listed below::
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBag
            zope.schema.interfaces.IChoice"
-      provides="zope.app.form.interfaces.IDisplayWidget"
+      provides="zope.formlib.interfaces.IDisplayWidget"
       factory=".ChoiceCollectionDisplayWidget"
       permission="zope.Public"
       />
@@ -122,7 +122,7 @@ above, so the developer can use the already implemented widgets listed below::
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBag
            zope.schema.interfaces.IChoice"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".ChoiceCollectionInputWidget"
       permission="zope.Public"
       />
@@ -135,7 +135,7 @@ register.  This might look something like this, assuming there's a
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBag
            zope.schema.interfaces.IField"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".BagSequenceWidget"
       permission="zope.Public"
       />
@@ -148,7 +148,7 @@ any appropriate vocabulary and `BagWidget` is some appropriate widget::
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IBag
            zope.schema.interfaces.IIterableVocabulary"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".BagWidget"
       permission="zope.Public"
       />

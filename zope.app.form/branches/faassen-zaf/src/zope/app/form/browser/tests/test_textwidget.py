@@ -24,7 +24,7 @@ from zope.schema import TextLine
 from zope.publisher.browser import TestRequest
 
 from zope.schema import Password
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 
 from zope.app.form.browser import TextWidget
 

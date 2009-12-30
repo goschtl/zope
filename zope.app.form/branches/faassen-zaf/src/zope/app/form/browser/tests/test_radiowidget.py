@@ -22,7 +22,7 @@ from zope.interface.verify import verifyClass
 from zope.publisher.browser import TestRequest
 from zope.schema import Choice
 
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
