@@ -17,8 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# the implementation has moved to zope.formlib.itemswidgets
-
+# BBB the implementation has moved to zope.formlib.itemswidgets
 from zope.formlib.itemswidgets import (
     ChoiceDisplayWidget,
     ChoiceInputWidget,

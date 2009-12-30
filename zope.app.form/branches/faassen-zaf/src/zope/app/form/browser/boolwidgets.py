@@ -15,8 +15,7 @@
 
 $Id$
 """
-# implementation moved to zope.formlib.boolwidgets
-
+# BBB implementation moved to zope.formlib.boolwidgets
 from zope.formlib.boolwidgets import (
     CheckBoxWidget,
     BooleanRadioWidget,

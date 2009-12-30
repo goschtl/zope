@@ -15,7 +15,7 @@
 
 $Id$
 """
-# implementation moved to zope.formlib.textwidgets
+# BBB implementation moved to zope.formlib.textwidgets
 from zope.formlib.textwidgets import (
     escape,
     TextWidget,

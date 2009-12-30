@@ -16,7 +16,7 @@
 $Id$
 """
 # implementation moved to zope.formlib.objectwidget
-
+# BBB
 from zope.formlib.objectwidget import (
     ObjectWidgetView,
     ObjectWidget)

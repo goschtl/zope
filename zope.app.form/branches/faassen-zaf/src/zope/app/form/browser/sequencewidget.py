@@ -15,7 +15,7 @@
 
 $Id$
 """
-# implementation moved to zope.formlib.sequencewidget
+# BBB implementation moved to zope.formlib.sequencewidget
 from zope.formlib.sequencewidget import (
     SequenceWidget,
     TupleSequenceWidget,
