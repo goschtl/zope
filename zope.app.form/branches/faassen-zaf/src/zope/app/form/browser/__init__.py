@@ -17,64 +17,67 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+# the implementation of widgets has moved to zope.formlib.widgets
+# import directly from there instead.
+
 from zope.formlib.widget import BrowserWidget, DisplayWidget
 from zope.formlib.widget import UnicodeDisplayWidget
 
-from zope.app.form.browser.textwidgets import TextWidget, BytesWidget
-from zope.app.form.browser.textwidgets import TextAreaWidget, BytesAreaWidget
-from zope.app.form.browser.textwidgets import PasswordWidget, FileWidget
-from zope.app.form.browser.textwidgets import ASCIIWidget, ASCIIAreaWidget
-from zope.app.form.browser.textwidgets import IntWidget, FloatWidget
-from zope.app.form.browser.textwidgets import DecimalWidget
-from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
-from zope.app.form.browser.textwidgets import DatetimeI18nWidget
-from zope.app.form.browser.textwidgets import DateI18nWidget
-from zope.app.form.browser.textwidgets import DatetimeDisplayWidget
-from zope.app.form.browser.textwidgets import DateDisplayWidget
-from zope.app.form.browser.textwidgets import BytesDisplayWidget
-from zope.app.form.browser.textwidgets import ASCIIDisplayWidget
-from zope.app.form.browser.textwidgets import URIDisplayWidget
+from zope.formlib.widgets import TextWidget, BytesWidget
+from zope.formlib.widgets import TextAreaWidget, BytesAreaWidget
+from zope.formlib.widgets import PasswordWidget, FileWidget
+from zope.formlib.widgets import ASCIIWidget, ASCIIAreaWidget
+from zope.formlib.widgets import IntWidget, FloatWidget
+from zope.formlib.widgets import DecimalWidget
+from zope.formlib.widgets import DatetimeWidget, DateWidget
+from zope.formlib.widgets import DatetimeI18nWidget
+from zope.formlib.widgets import DateI18nWidget
+from zope.formlib.widgets import DatetimeDisplayWidget
+from zope.formlib.widgets import DateDisplayWidget
+from zope.formlib.widgets import BytesDisplayWidget
+from zope.formlib.widgets import ASCIIDisplayWidget
+from zope.formlib.widgets import URIDisplayWidget
 
 # Widgets for boolean fields
-from zope.app.form.browser.boolwidgets import CheckBoxWidget
-from zope.app.form.browser.boolwidgets import BooleanRadioWidget
-from zope.app.form.browser.boolwidgets import BooleanSelectWidget
-from zope.app.form.browser.boolwidgets import BooleanDropdownWidget
+from zope.formlib.widgets import CheckBoxWidget
+from zope.formlib.widgets import BooleanRadioWidget
+from zope.formlib.widgets import BooleanSelectWidget
+from zope.formlib.widgets import BooleanDropdownWidget
 
 # Choice and Sequence Display Widgets
-from zope.app.form.browser.itemswidgets import ItemDisplayWidget
-from zope.app.form.browser.itemswidgets import ItemsMultiDisplayWidget
-from zope.app.form.browser.itemswidgets import SetDisplayWidget
-from zope.app.form.browser.itemswidgets import ListDisplayWidget
+from zope.formlib.widgets import ItemDisplayWidget
+from zope.formlib.widgets import ItemsMultiDisplayWidget
+from zope.formlib.widgets import SetDisplayWidget
+from zope.formlib.widgets import ListDisplayWidget
 
 # Widgets for fields with vocabularies.
 # Note that these are only dispatchers for the widgets below.
-from zope.app.form.browser.itemswidgets import ChoiceDisplayWidget
-from zope.app.form.browser.itemswidgets import ChoiceInputWidget
-from zope.app.form.browser.itemswidgets import CollectionDisplayWidget
-from zope.app.form.browser.itemswidgets import CollectionInputWidget
-from zope.app.form.browser.itemswidgets import ChoiceCollectionDisplayWidget
-from zope.app.form.browser.itemswidgets import ChoiceCollectionInputWidget
+from zope.formlib.widgets import ChoiceDisplayWidget
+from zope.formlib.widgets import ChoiceInputWidget
+from zope.formlib.widgets import CollectionDisplayWidget
+from zope.formlib.widgets import CollectionInputWidget
+from zope.formlib.widgets import ChoiceCollectionDisplayWidget
+from zope.formlib.widgets import ChoiceCollectionInputWidget
 
 # Widgets that let you choose a single item from a list
 # These widgets are multi-views on (field, vocabulary)
-from zope.app.form.browser.itemswidgets import SelectWidget
-from zope.app.form.browser.itemswidgets import DropdownWidget
-from zope.app.form.browser.itemswidgets import RadioWidget
+from zope.formlib.widgets import SelectWidget
+from zope.formlib.widgets import DropdownWidget
+from zope.formlib.widgets import RadioWidget
 
 # Widgets that let you choose several items from a list
 # These widgets are multi-views on (field, vocabulary)
-from zope.app.form.browser.itemswidgets import MultiSelectWidget
-from zope.app.form.browser.itemswidgets import MultiSelectSetWidget
-from zope.app.form.browser.itemswidgets import MultiSelectFrozenSetWidget
-from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
-from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
+from zope.formlib.widgets import MultiSelectWidget
+from zope.formlib.widgets import MultiSelectSetWidget
+from zope.formlib.widgets import MultiSelectFrozenSetWidget
+from zope.formlib.widgets import MultiCheckBoxWidget
+from zope.formlib.widgets import OrderedMultiSelectWidget
 
 # Widgets that let you enter several items in a sequence
 # These widgets are multi-views on (sequence type, value type)
-from zope.app.form.browser.sequencewidget import SequenceWidget
-from zope.app.form.browser.sequencewidget import TupleSequenceWidget
-from zope.app.form.browser.sequencewidget import ListSequenceWidget
-from zope.app.form.browser.sequencewidget import SequenceDisplayWidget
+from zope.formlib.widgets import SequenceWidget
+from zope.formlib.widgets import TupleSequenceWidget
+from zope.formlib.widgets import ListSequenceWidget
+from zope.formlib.widgets import SequenceDisplayWidget
 
-from zope.app.form.browser.objectwidget import ObjectWidget
+from zope.formlib.widgets import ObjectWidget

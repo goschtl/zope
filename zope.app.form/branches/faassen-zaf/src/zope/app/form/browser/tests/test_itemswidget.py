@@ -331,14 +331,14 @@ class DropdownWidgetTest(SelectWidgetTest):
              u'<option value="token3">Three</option>'])
         try:
             # test BBB starting with 3.6.0
-            zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION = False
+            zope.formlib.itemswidgets.EXPLICIT_EMPTY_SELECTION = False
             self.assertEqual(
                 widget.renderItems(widget._toFormValue(widget.context.missing_value)),
                 [u'<option value="token1">One</option>',
                  u'<option value="token2">Two</option>',
                  u'<option value="token3">Three</option>'])
         finally:
-            zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION = True
+            zope.formlib.itemswidgets.EXPLICIT_EMPTY_SELECTION = True
 
 
 class RadioWidgetTest(ItemsEditWidgetBaseTest):
