@@ -28,7 +28,7 @@ from zope.browser.interfaces import ITerms
 
 from zope.formlib.interfaces import (
     IBrowserWidget, ISimpleInputWidget, ITextBrowserWidget,
-    IWidgetInputErrorView)
+    IWidgetInputErrorView, ISourceQueryView)
 
 class IFormCollaborationView(Interface):
     """Views that collaborate to create a single form.
@@ -114,22 +114,3 @@ class IAddFormCustomization(Interface):
         i.e. it delegates to the `IAdding` view.
         """
 
-class ISourceQueryView(Interface):
-    """View support for querying non-iterable sources
-    """
-
-    def render(name):
-        """Return a rendering of the search form elements
-
-        The query view should use `name` as the prefix for its widgets.
-        """
-
-    def results(name):
-        """Return the results of the query
-
-        The query view should use `name` as the prefix for its widgets.
-
-        The value returned is an iterable.
-
-        None may be returned to indicate that there are no results.
-        """
