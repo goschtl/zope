@@ -28,7 +28,7 @@ from zope.schema.interfaces import \
     ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
 
 import zope.formlib.interfaces
-import zope.app.form.browser.widget
+import zope.formlib.widget
 import zope.app.form.browser.interfaces
 from zope.formlib.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.i18n import _
@@ -39,7 +39,7 @@ from zope.app.form.browser import \
 import zope.app.form.browser.itemswidgets
 
 
-class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
+class SourceDisplayWidget(zope.formlib.widget.DisplayWidget):
 
     implements(zope.formlib.interfaces.IDisplayWidget)
 

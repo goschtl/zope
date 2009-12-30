@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import TextLine
 from zope.testing.doctest import DocTestSuite
 
-from zope.app.form.browser.widget import DisplayWidget, UnicodeDisplayWidget
+from zope.formlib.widget import DisplayWidget, UnicodeDisplayWidget
 
 
 def test_implemented_interfaces():

@@ -26,8 +26,8 @@ from zope.formlib.interfaces import IDisplayWidget, IInputWidget
 from zope.formlib.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.i18n import _
-from zope.app.form.browser.widget import BrowserWidget
-from zope.app.form.browser.widget import DisplayWidget, renderElement
+from zope.formlib.widget import BrowserWidget
+from zope.formlib.widget import DisplayWidget, renderElement
 from zope.browserpage import ViewPageTemplateFile
 
 

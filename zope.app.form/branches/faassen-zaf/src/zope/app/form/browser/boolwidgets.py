@@ -20,8 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 
-from zope.app.form.browser.widget import SimpleInputWidget, renderElement
-from zope.app.form.browser.widget import DisplayWidget
+from zope.formlib.widget import SimpleInputWidget, renderElement
+from zope.formlib.widget import DisplayWidget
 from zope.app.form.browser.i18n import _
 from zope.app.form.browser.itemswidgets import RadioWidget
 from zope.app.form.browser.itemswidgets import SelectWidget, DropdownWidget

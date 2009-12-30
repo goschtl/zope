@@ -17,8 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.form.browser.widget import BrowserWidget, DisplayWidget
-from zope.app.form.browser.widget import UnicodeDisplayWidget
+from zope.formlib.widget import BrowserWidget, DisplayWidget
+from zope.formlib.widget import UnicodeDisplayWidget
 
 from zope.app.form.browser.textwidgets import TextWidget, BytesWidget
 from zope.app.form.browser.textwidgets import TextAreaWidget, BytesAreaWidget

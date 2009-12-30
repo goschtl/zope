@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Text, Int
 from zope.testing.doctest import DocTestSuite
 
-from zope.app.form.browser.widget import SimpleInputWidget
+from zope.formlib.widget import SimpleInputWidget
 from zope.app.form.browser.tests import support
 from zope.formlib.interfaces import ConversionError
 from zope.formlib.interfaces import WidgetInputError, MissingInputError
@@ -207,7 +207,7 @@ class Test(BrowserWidgetTest):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
-    suite.addTest(DocTestSuite("zope.app.form.browser.widget"))
+    suite.addTest(DocTestSuite("zope.formlib.widget"))
     return suite
 
 if __name__ == '__main__':

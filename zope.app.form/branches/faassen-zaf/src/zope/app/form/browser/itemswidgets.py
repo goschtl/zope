@@ -24,7 +24,7 @@ from zope.i18n import translate
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
-from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.formlib.widget import SimpleInputWidget, renderElement
 from zope.formlib.interfaces import IInputWidget, IDisplayWidget
 from zope.formlib.interfaces import ConversionError
 from zope.app.form.browser.i18n import _
