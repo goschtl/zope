@@ -23,7 +23,7 @@ from five.formlib.tests.content import IContent, Content
 class AddContentForm(AddForm):
     """AddForm for creating and adding IContent objects
     """
-    
+
     form_fields = form.Fields(IContent)
 
     def createAndAdd(self, data):
@@ -35,6 +35,6 @@ class AddContentForm(AddForm):
 class EditContentForm(EditForm):
     """EditForm for editing IContent objects
     """
-    
+
     form_fields = form.Fields(IContent)
-    
+
