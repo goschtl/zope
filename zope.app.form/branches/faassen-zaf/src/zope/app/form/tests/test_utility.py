@@ -524,9 +524,9 @@ class TestSetUpWidgets(object):
             ...     print "ignoreStickyValues: %s" % ignoreStickyValues
             ...     print "context: %s" % context
             ...     print '---'
-            >>> import zope.app.form.utility
-            >>> setUpWidgetsSave = zope.app.form.utility.setUpWidget
-            >>> zope.app.form.utility.setUpWidget = setUpWidget
+            >>> import zope.formlib.utility
+            >>> setUpWidgetsSave = zope.formlib.utility.setUpWidget
+            >>> zope.formlib.utility.setUpWidget = setUpWidget
             
         When we call setUpWidgets, we should see that setUpWidget is called 
         for each field in the specified schema:
@@ -553,7 +553,7 @@ class TestSetUpWidgets(object):
             ignoreStickyValues: True
             context: Alt Context
             ---
-            >>> zope.app.form.utility.setUpWidget = setUpWidgetsSave
+            >>> zope.formlib.utility.setUpWidget = setUpWidgetsSave
      
         >>> tearDown()
         """
