@@ -27,8 +27,11 @@ from zope.browsermenu.metaconfigure import menuItemDirective
 from zope.app.form.browser.metaconfigure import BaseFormDirective
 from zope.browser.interfaces import IAdding
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-from AccessControl.security import protectClass
+# BBB Zope 2.12
+try:
+    from AccessControl.security import protectClass
+except ImportError:
+    from Products.Five.security import protectClass
 
 from five.formlib import EditView, AddView
 from Products.Five.metaclass import makeClass
