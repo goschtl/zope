@@ -30,7 +30,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.browsermenu.metaconfigure import menuItemDirective
 
-from zope.app.form import CustomWidgetFactory
+from zope.formlib.widget import CustomWidgetFactory
 from zope.app.form.browser.i18n import _
 from zope.formlib.interfaces import IInputWidget, IDisplayWidget
 from zope.formlib.interfaces import IWidgetFactory

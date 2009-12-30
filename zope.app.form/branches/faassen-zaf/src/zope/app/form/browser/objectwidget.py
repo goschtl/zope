@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
 
 from zope.formlib.interfaces import IInputWidget
-from zope.app.form import InputWidget
+from zope.formlib.widget import InputWidget
 from zope.formlib.widget import BrowserWidget
 from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.browserpage import ViewPageTemplateFile

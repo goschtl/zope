@@ -28,7 +28,7 @@ from zope.schema.interfaces import IField, IInt
 
 from zope.app.testing import ztapi
 
-from zope.app.form import Widget
+from zope.formlib.widget import Widget
 from zope.formlib.interfaces import IWidget, IInputWidget, IDisplayWidget
 from zope.formlib.interfaces import ConversionError, InputErrors, WidgetsError
 from zope.formlib.interfaces import IWidgetFactory

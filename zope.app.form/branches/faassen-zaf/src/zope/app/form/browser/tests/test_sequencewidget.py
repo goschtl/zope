@@ -31,7 +31,7 @@ from zope.formlib.interfaces import IDisplayWidget
 from zope.formlib.interfaces import IInputWidget, MissingInputError
 from zope.formlib.interfaces import IWidgetInputError, WidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
-from zope.app.form import CustomWidgetFactory
+from zope.formlib.widget import CustomWidgetFactory
 from zope.app.form.browser.exception import WidgetInputErrorView
 
 from zope.app.form.browser.tests.support import VerifyResults

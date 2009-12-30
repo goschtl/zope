@@ -26,52 +26,9 @@ from zope.formlib.interfaces import IWidget, IInputWidget
 # preferred to import from there now.
 from zope.browser.interfaces import ITerms
 
-
-class IBrowserWidget(IWidget):
-    """A widget for use in a web browser UI."""
-
-    def __call__():
-        """Render the widget."""
-
-    def hidden():
-        """Render the widget as a hidden field."""
-
-    def error():
-        """Render the validation error for the widget, or return
-        an empty string if no error"""
-
-
-class ISimpleInputWidget(IBrowserWidget, IInputWidget):
-    """A widget that uses a single HTML element to collect user input."""
-
-    tag = TextLine(
-        title=u'Tag',
-        description=u'The widget HTML element.')
-
-    type = TextLine(
-        title=u'Type',
-        description=u'The element type attribute',
-        required=False)
-
-    cssClass = TextLine(
-        title=u'CSS Class',
-        description=u'The element class attribute.',
-        required=False)
-
-    extra = TextLine(
-        title=u'Extra',
-        description=u'The element extra attribute.',
-        required=False)
-
-
-class ITextBrowserWidget(ISimpleInputWidget):
-
-    convert_missing_value = Bool(
-        title=u'Translate Input Value',
-        description=
-            u'If True, an empty string is converted to field.missing_value.',
-        default=True)
-
+from zope.formlib.interfaces import (
+    IBrowserWidget, ISimpleInputWidget, ITextBrowserWidget,
+    IWidgetInputErrorView)
 
 class IFormCollaborationView(Interface):
     """Views that collaborate to create a single form.
@@ -156,13 +113,6 @@ class IAddFormCustomization(Interface):
         The default implementation returns `self.context.nextURL()`,
         i.e. it delegates to the `IAdding` view.
         """
-
-class IWidgetInputErrorView(Interface):
-    """Display an input error as a snippet of text."""
-
-    def snippet():
-        """Convert a widget input error to an html snippet."""
-
 
 class ISourceQueryView(Interface):
     """View support for querying non-iterable sources

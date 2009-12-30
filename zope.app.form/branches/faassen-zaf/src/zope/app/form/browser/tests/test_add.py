@@ -32,7 +32,7 @@ from zope.schema import TextLine, accessors
 from zope.security.checker import CheckerPublic
 from zope.site.site import SiteManagerAdapter
 
-from zope.app.form import CustomWidgetFactory
+from zope.formlib.widget import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.add import AddViewFactory, AddView
 from zope.app.form.browser.metaconfigure import AddFormDirective

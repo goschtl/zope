@@ -21,7 +21,7 @@ from zope.component.testing import setUp, tearDown
 from zope.publisher.browser import TestRequest
 from zope.testing.doctest import DocTestSuite
 
-from zope.app.form import Widget
+from zope.formlib.widget import Widget
 
 
 class TestContext(object):
@@ -105,7 +105,7 @@ class TestInputWidget(object):
     To test the default methods, we must create a basic input widget
     that provides a getInputValue method:
 
-        >>> from zope.app.form import InputWidget
+        >>> from zope.formlib.widget import InputWidget
         >>> from zope.formlib.interfaces import WidgetInputError
         >>> class TestInputWidget(InputWidget):
         ...     def getInputValue(self):
@@ -162,7 +162,7 @@ class TestCustomWidgetFactory(object):
 
     Test regular widget:
 
-        >>> from zope.app.form import CustomWidgetFactory
+        >>> from zope.formlib.widget import CustomWidgetFactory
         >>> factory = CustomWidgetFactory(FooWidget, bar='baz')
         >>> widget = factory(context, request)
         >>> isinstance(widget, FooWidget)
