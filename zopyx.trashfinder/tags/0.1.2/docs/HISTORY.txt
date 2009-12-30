@@ -1,0 +1,12 @@
+Changelog
+=========
+
+0.1.2 (2009/12/29)
+-------------------
+
+- added some sanity checks on egg releases files vs. source releases
+
+0.1.0 (2009/12/29)
+-------------------
+
+- Initial release
