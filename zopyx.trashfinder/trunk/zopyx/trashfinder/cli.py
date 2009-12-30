@@ -26,8 +26,22 @@ def main():
 
             # PyPI hosted packages
             if urls:
+                have_eggs = False
+                have_sdist = False
                 for url in urls:
-                    print '    ', url['url']
+                    url = url['url']
+                    print '    ', url
+                    if url.endswith('.bz2') or url.endswith('.zip') or url.endswith('gz'):
+                        have_sdist = True
+                    if url.endswith('egg'):
+                        have_eggs = True
+
+                if have_eggs and not have_sdist:
+                    print 'CRAP: %s has only egg release files but no sdist release file' % package
+
+                if have_eggs and have_sdist:
+                    print 'CRAP(possible): %s has egg *and* sdist release file' % package
+
             # externally hosted packages
             else:
                 download_url = metadata['download_url']
@@ -42,9 +56,6 @@ def main():
                     print 'CRAP: %s==%s - no author and no maintainer email given' % (package, version)
             if not metadata['author'] and not metadata['maintainer']:
                     print 'CRAP: %s==%s - no author and no maintainer name given' % (package, version)
-
-
-
 
 
 if __name__ == '__main__':
