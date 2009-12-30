@@ -1,0 +1,55 @@
+# -*- coding: utf-8 -*-
+
+from setuptools import setup, find_packages
+from os.path import join
+
+name = 'megrok.icon'
+version = '0.1'
+readme = open(join('src', 'megrok', 'icon', "README.txt")).read()
+history = open(join('docs', 'HISTORY.txt')).read()
+
+
+install_requires = [
+    'martian',
+    'setuptools',
+    'grokcore.view',
+    'grokcore.component',
+    'zc.dict',
+    ]
+
+tests_require = [
+    'zope.testbrowser',
+    'zope.app.testing',
+    'zope.browserresource',
+    'zope.configuration',
+    'zope.app.zcmlfiles',
+    ]
+
+setup(name = name,
+      version = version,
+      description = 'Icon registration utility',
+      long_description = readme + '\n\n' + history,
+      keywords = 'Grok Zope3 CMS Dolmen Icon',
+      author = 'Souheil Chelfouh',
+      author_email = 'trollfot@gmail.com',
+      url = '',
+      license = 'GPL',
+      packages=find_packages('src', exclude=['ez_setup']),
+      package_dir={'': 'src'},
+      namespace_packages = ['megrok'],
+      include_package_data = True,
+      platforms = 'Any',
+      zip_safe = False,
+      tests_require = tests_require,
+      install_requires = install_requires,
+      extras_require = {'test': tests_require},
+      classifiers = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Framework :: Zope3',
+        'Intended Audience :: Other Audience',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        ],
+      )
