@@ -126,11 +126,12 @@ for which the terms create message ids:
   ...    title=u"Kinds of coffee beans",
   ...    source=Coffees())
   >>> request = TestRequest()
-  >>> widget = zope.app.form.browser.source.SourceDisplayWidget(
+  >>> import zope.formlib.source
+  >>> widget = zope.formlib.source.SourceDisplayWidget(
   ...     coffee, coffee.source, request)
   >>> print widget()
   Nothing
-  >>> from zope.app.form.browser.interfaces import IBrowserWidget
+  >>> from zope.formlib.interfaces import IBrowserWidget
   >>> IBrowserWidget.providedBy(widget)
   True
   >>> widget.setRenderedValue('arabica')
