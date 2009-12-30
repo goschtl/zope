@@ -23,20 +23,28 @@ from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
 
-from zope.browsermenu.metaconfigure import menuItemDirective
+# BBB Zope 2.12
+try:
+    from zope.browsermenu.metaconfigure import menuItemDirective
+except ImportError:
+    from zope.app.publisher.browser.menumeta import menuItemDirective
+
 from zope.app.form.browser.metaconfigure import BaseFormDirective
 from zope.browser.interfaces import IAdding
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
 # BBB Zope 2.12
 try:
     from AccessControl.security import protectClass
 except ImportError:
     from Products.Five.security import protectClass
 
-from five.formlib import EditView, AddView
 from Products.Five.metaclass import makeClass
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.browser.metaconfigure import makeClassForTemplate
+
+from five.formlib import EditView, AddView
+
 
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,

@@ -4,6 +4,7 @@ Changelog
 1.0.2 - unreleased
 ------------------
 
+* Deal with backwards compatibility for the menuItemDirective.
 
 1.0.1 - 2009-12-29
 ------------------
