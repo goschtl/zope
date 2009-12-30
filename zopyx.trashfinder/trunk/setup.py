@@ -26,6 +26,6 @@ setup(name='zopyx.trashfinder',
           # -*- Extra requirements: -*-
       ],
       entry_points=dict(console_scripts=(
-        'pypi-trashfinder=zopyx.pypitrashfinder.cli:main',
+        'pypi-trashfinder=zopyx.trashfinder.cli:main',
         )),
       )
