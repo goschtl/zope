@@ -16,9 +16,9 @@
 $Id$
 """
 import unittest
+import doctest
 
 from zope.schema.interfaces import ITextLine
-from zope.testing import doctest, doctest
 from zope.component import testing
 
 from zope.app.testing import ztapi

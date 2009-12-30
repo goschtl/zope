@@ -18,8 +18,9 @@ $Id$
 
 import re
 import unittest
+import doctest
 from persistent import Persistent
-from zope.testing import renormalizing, doctest
+from zope.testing import renormalizing
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Text, Int, List
 from zope.i18nmessageid import MessageFactory

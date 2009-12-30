@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.testing import doctest
+import doctest
 import zope.security.checker
 from zope.interface import Interface, implements
 from zope.component import testing
