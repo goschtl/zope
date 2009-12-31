@@ -68,6 +68,7 @@ setup(name = 'z3hello',
                           'zope.app.pagetemplate',
                           'zope.app.schema',
                           'zope.app.container',
+                          'zope.app.debug',
                          ],
 
       include_package_data = True,
