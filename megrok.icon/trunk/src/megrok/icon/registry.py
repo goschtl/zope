@@ -31,10 +31,9 @@ class Icon(object):
 class IconRegistry(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(IIconRegistry)
-    
+
+    __allowed__ = ALLOWED
     __registry__ = FieldProperty(IIconRegistry['__registry__'])
-    initial_icons = []
-    allowed = ALLOWED
 
     def _generate_registry(self):
         registry = Dict()
@@ -48,7 +47,7 @@ class IconRegistry(grok.GlobalUtility):
             return False
         icon = Icon(name, path)
         mimetype, enc = mimetypes.guess_type(path)
-        if mimetype in self.allowed:
+        if mimetype in self.__allowed__:
             self.__registry__[name] = icon
         else:
             print "skipping %s (%s) [WRONG MIMETYPE]" % (path, mimetype)
