@@ -2,62 +2,126 @@
 megrok.icon
 ===========
 
-  >>> from megrok.icon import IconRegistry, IIconRegistry
-  >>> from grokcore.view import path, name 
+Registry
+========
 
-  >>> class TestIcons(IconRegistry):
-  ...   name('tests')
-  ...   path('tests/icons')
+Manual registration
+-------------------
 
-  >>> grok_component('icons', TestIcons)
+  >>> from megrok.icon import IconsRegistry, getIconsRegistriesMap
+  >>> registries = getIconsRegistriesMap()
+  >>> registry = registries.register('tests', IconsRegistry)
+
+Manual population
+-----------------
+
+  >>> from megrok.icon import populate_icons_registry
+  >>> populate_icons_registry('tests', 'tests/icons')
+
+An error is raised if the registry we try to populate does not exist::
+
+  >>> populate_icons_registry('non-existing', 'tests/icons')
+  Traceback (most recent call last):
+  ...
+  IconsRegistryError: unknown icon registry: 'non-existing'
+
+
+Manual fetching
+---------------
+
+Icon getter
+~~~~~~~~~~~
+
+  >>> registry.get('emblem-photos')
+  '...tests/icons/emblem-photos.png'
+
+Resource getter
+~~~~~~~~~~~~~~~
+
+  >>> print registry.resource('emblem-photos')
+  <zope.browserresource.file.FileResourceFactory object at ...>
+
+  
+Automated registration and population
+-------------------------------------
+
+  >>> from megrok.icon import name, path
+
+  >>> class ContentIcons(IconsRegistry):
+  ...   name("common")
+  ...   path("tests/more")
+
+  >>> grok_component('content', ContentIcons)
   True
 
-  >>> from zope.component import getUtility
-  >>> registry = getUtility(IIconRegistry, name='tests')
+  >>> common_icons = registries.get('common')
+  >>> common_icons
+  <megrok.icon.tests.ContentIcons object at ...>
 
-  >>> print registry.get('emblem-photos')
-  <megrok.icon.registry.Icon object at ...>
+  >>> common_icons.get("an_icon")
+  '...tests/more/an_icon.png'
 
-  >>> print registry.get('not-here')
-  None
 
-  >>> resource = registry.resource('emblem-photos')
-  >>> print resource
-  <zope.browserresource.file.FileResourceFactory object at ...>
+Resource
+========
+
+Rendering
+---------
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest(REQUEST_METHOD='GET')
-  >>> icon = resource(request)
-  >>> print icon
+
+  >>> factory = common_icons.resource("an_icon")
+  >>> print factory
+  <zope.browserresource.file.FileResourceFactory object at ...>
+
+  >>> resource = factory(request)
+  >>> resource
   <zope.browserresource.file.FileResource object at ...>
 
-  >>> view, ignore = icon.browserDefault(request)
+  >>> view, ignore = resource.browserDefault(request)
   >>> view()
   '\x89PNG...'
+
+
+Browser access
+--------------
 
   >>> from zope.testbrowser.testing import Browser
 
   >>> browser = Browser()
   >>> browser.handleErrors = False 
 
-  >>> browser.open('http://localhost/++icon++')
-  Traceback (most recent call last):
-  NotFound: Object: <zope.site.folder.Folder object at ...>,
-  name: u'++icon++'
-
-  >>> browser.open('http://localhost/++icon++i-dont-exist')
-  Traceback (most recent call last):
-  NotFound: Object: <zope.site.folder.Folder object at ...>,
-  name: u'i-dont-exist'
-
-  >>> browser.open('http://localhost/++icon++tests/emblem-photos')
+  >>> browser.open('http://localhost/++icon++common/an_icon')
   >>> browser.contents
   '\x89PNG...'
 
-  >>> browser.open('http://localhost/++icon++tests/i-dont-exist')
+Errors handling
+~~~~~~~~~~~~~~~
+
+  >>> browser.open('http://localhost/++icon++')
   Traceback (most recent call last):
-  NotFound: Object: <megrok.icon.tests.TestIcons object at ...>,
-  name: u'i-dont-exist'
+  ...
+  NotFound: Object: <zope.site.folder.Folder object at ...>,
+  name: u'++icon++'
+
+  >>> browser.open('http://localhost/++icon++not-here')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <zope.site.folder.Folder object at ...>,
+  name: u'not-here'
+
+  >>> browser.open('http://localhost/++icon++common')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <megrok.icon.tests.ContentIcons object at ...>,
+  name: u'index.html'
+
+  >>> browser.open('http://localhost/++icon++common/unknown')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <megrok.icon.tests.ContentIcons object at ...>,
+  name: u'unknown'
 
 
 Defining an icon for a component
@@ -76,76 +140,56 @@ Using the ``icon`` directive
   >>> from megrok.icon import icon, get_component_icon_url
 
   >>> class MyContent(object):
-  ...   icon(name="emblem-web", registry=TestIcons)
+  ...   icon(name="an_icon", registry='common')
 
   >>> get_component_icon_url(MyContent, request)
-  'http://127.0.0.1/++icon++tests/emblem-web'
+  'http://127.0.0.1/++icon++common/an_icon'
 
   >>> inst = MyContent()
   >>> get_component_icon_url(inst, request)
-  'http://127.0.0.1/++icon++tests/emblem-web'
+  'http://127.0.0.1/++icon++common/an_icon'
 
-  >>> class AnotherContent(object):
-  ...   icon(name="none", registry=object)
-  Traceback (most recent call last):
-  ValueError: The specified registry is not a valid IIconRegistry.
 
-  >>> class YetAnotherContent(object):
-  ...   icon(name="an-icon", registry=TestIcons)
+Registration order
+------------------
 
-  >>> print get_component_icon_url(YetAnotherContent, request)
+  >>> class SomeContent(object):
+  ...   icon(name="mycontent", registry='my-icons',
+  ...        path="tests/icons/emblem-default.png")
+  
+  >>> iconurl = get_component_icon_url(SomeContent, request)
+  >>> print iconurl
+  http://127.0.0.1/++icon++my-icons/mycontent
+
+  >>> reg = registries.get('my-icons')
+  >>> reg
+  <megrok.icon.registry.IconsRegistry object at ...>
+
+  >>> print reg.get('an_icon')
   None
 
+  >>> browser.open(iconurl)
+  >>> browser.contents
+  '\x89PNG...'
 
-Implicit registration
----------------------
+  >>> class SomeIcons(IconsRegistry):
+  ...   name("my-icons")
+  ...   path("tests/more")
 
-It can be handy to register an icon and link it to a component, in a
-single declaration. The `icon` directive provides a simple way to do
-that. The keyword argument `path` indicated that the given icon needs
-to be registered in the given registry.
-
-Let's create a new registry::
-
-  >>> class ContentIcons(IconRegistry):
-  ...   name('content-icons')
-
-The directive `icon` can then be used for an implicit registration::
-
-  >>> class MyDocument(object):
-  ...   icon(name="some-icon", registry=ContentIcons,
-  ...        path="tests/more/an_icon.png")  
-
-When the directive is read and interpreted, the icon registry is not
-yet registered in the component registry. Therefore, it's impossible
-to directly add the icon. A temporary registry is used :
-ICONS_BASES. ICONS_BASES is a simple dictionnary that uses the icon
-registry class as a key and a list of tuples (icon name, icon path),
-as a value.
-
-This registry is consumed when the utility is instanciated
-therefore, it's done when it's registered in the zca::
-
-  >>> from megrok.icon import ICONS_BASES
-  >>> ICONS_BASES
-  {<class 'megrok.icon.tests.ContentIcons'>: [('some-icon', '.../tests/more/an_icon.png')]}
-
-We register the registry as an utility::
-
-  >>> grok_component('content-icons', ContentIcons)
+  >>> grok_component('someicons', SomeIcons)
   True
 
-The temporary registry is consumed::
+  >>> reg = registries.get('my-icons')
+  >>> reg
+  <megrok.icon.tests.SomeIcons object at ...>
 
-  >>> ICONS_BASES
-  {}
+  >>> reg.get('an_icon')
+  '...tests/more/an_icon.png'
 
-The icon is now available through the registry:: 
+  >>> iconurl = get_component_icon_url(SomeContent, request)
+  >>> iconurl
+  'http://127.0.0.1/++icon++my-icons/mycontent'
 
-  >>> icon_url = get_component_icon_url(MyDocument, request)
-  >>> icon_url
-  'http://127.0.0.1/++icon++content-icons/some-icon'
-
-  >>> browser.open(icon_url)
+  >>> browser.open(iconurl)
   >>> browser.contents
   '\x89PNG...'

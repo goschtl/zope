@@ -1,34 +1,39 @@
 # -*- coding: utf-8 -*-
+
 import os
 import martian
 from sys import modules
-from megrok.icon import ICONS_BASES, IIconRegistry
-
-def validateIcon(directive, name, registry, path=None):
-    if not IIconRegistry.implementedBy(registry):
-        raise ValueError(
-            "The specified registry is not a valid IIconRegistry.")
+from megrok.icon import (
+    getIconsRegistriesMap, IconsRegistry, ITemporaryIconsRegistry)
+from zope.interface import directlyProvides
 
 
-def feed_base(registry, name, path):
-    base = ICONS_BASES.get(registry)
-    if base is None:
-        base = ICONS_BASES[registry] = []
-    base.append((name, path))
-    
+def icon_absolute_path(frame, path):
+    if not os.path.isfile(path):
+        pyfile = modules[frame.f_locals['__module__']].__file__
+        path = os.path.join(os.path.dirname(pyfile), path)
+        if not os.path.isfile(path):
+            raise ValueError, '%r is not a valid file' % path
+    return path
+
 
 class icon(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
-    validate = validateIcon
 
-    def factory(self, name, registry, path=None):
+    def factory(self, name, registry="common", path=None):
+        mapping = getIconsRegistriesMap()
         if path is not None:
-            if not os.path.isfile(path):
-                pyfile = modules[self.frame.f_locals['__module__']].__file__
-                path = os.path.join(os.path.dirname(pyfile), path)
-                if not os.path.isfile(path):
-                    raise ValueError, '%r is not a valid file' % path
-            feed_base(registry, name, path)
+            if not mapping.exists(registry):
+                reg = mapping.register(registry, IconsRegistry)
+                directlyProvides(reg, ITemporaryIconsRegistry)
+            else:
+                reg = mapping.get(registry)
                 
+            reg.add(name, icon_absolute_path(self.frame, path))
+        else:
+            reg = mapping.get(registry)
+            if not reg.registered(name):
+                raise ValueError, 'Icon %r does not exist' % name
+
         return (name, registry)

@@ -12,9 +12,17 @@ ch.setFormatter(formatter)
 log = logging.getLogger('iconregistry')
 log.addHandler(ch)
 
-ICONS_BASES = {}
+from grokcore.view import path, name
 
-from megrok.icon.interfaces import IIcon, IIconRegistry, IIconRegistryStorage
+from megrok.icon.interfaces import (
+    IIconsRegistry, IIconsRegistryStorage, ITemporaryIconsRegistry)
+
+from megrok.icon.registry import IconsRegistry, CHECKER
+
+from megrok.icon.registries_map import _icons_registries_map
+from megrok.icon.registries_map import (
+    getIconsRegistriesMap, setIconsRegistriesMap, queryIconsRegistry)
+
 from megrok.icon.directive import icon
-from megrok.icon.registry import Icon, IconRegistry
-from megrok.icon.utils import get_icon_url, get_component_icon_url
+from megrok.icon.utils import (
+    get_icon_url, get_component_icon_url, populate_icons_registry)

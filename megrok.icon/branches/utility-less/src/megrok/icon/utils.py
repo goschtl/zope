@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import grokcore.component as grok
 
-from megrok.icon import IIconRegistry
-from megrok.icon.directive import icon
+import megrok.icon
+from megrok.icon import getIconsRegistriesMap, queryIconsRegistry
 from zope.component import queryUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
 
@@ -14,10 +15,27 @@ def get_icon_url(registry, request, name):
     
 
 def get_component_icon_url(component, request):
-    name, factory = icon.bind().get(component)
-    registry_name = grok.name.bind().get(factory)
-    registry = queryUtility(IIconRegistry, name=registry_name)
+    icon, reg_name = megrok.icon.icon.bind().get(component)
+    mapping = getIconsRegistriesMap()
+    registry = queryIconsRegistry(reg_name)
+
     if registry is not None:
-        if registry.registered(name):
-            return get_icon_url(registry, request, name)
+        if registry.registered(icon):
+            return get_icon_url(registry, request, icon)
     return None
+
+
+def populate_icons_registry(name, path):
+    registry = getIconsRegistriesMap().get(name)
+    
+    if not os.path.isdir(path):
+        path = os.path.join(os.path.dirname(__file__), path)
+        if not os.path.isdir(path):
+            raise NotImplementedError
+        
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            ipath = os.path.join(root, name)
+            iname = os.path.splitext(name)[0]
+            registry.add(iname, ipath)
+        dirs.remove('.svn')

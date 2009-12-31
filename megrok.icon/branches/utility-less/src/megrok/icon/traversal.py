@@ -2,7 +2,8 @@
 
 import grokcore.component as grok
 
-from megrok.icon import IIconRegistry
+from megrok.icon import IIconsRegistry, queryIconsRegistry
+
 from zope.component import queryUtility
 from zope.interface import Interface
 from zope.location.interfaces import ILocation
@@ -23,10 +24,11 @@ class IconTraverser(grok.MultiAdapter):
         self.context = context
         self.request = request
 
-    def traverse(self, name, icon=[]):
+    def traverse(self, name, icon):
         if not name:
             raise TraversalError('Icon registry name is missing.')
-        registry = queryUtility(IIconRegistry, name=name)
+
+        registry = queryIconsRegistry(name)
         if registry is not None:
             return registry
         raise NotFound(self.context, name, self.request)
@@ -34,7 +36,7 @@ class IconTraverser(grok.MultiAdapter):
 
 class IconRegistryTraverser(grok.MultiAdapter):
     grok.provides(IPublishTraverse)
-    grok.adapts(IIconRegistry, IHTTPRequest)
+    grok.adapts(IIconsRegistry, IHTTPRequest)
 
     def __init__(self, context, request):
         self.context = context
@@ -48,11 +50,10 @@ class IconRegistryTraverser(grok.MultiAdapter):
         raise NotFound(self.context, name, request)
 
 
-@grok.adapter(IIconRegistry)
+@grok.adapter(IIconsRegistry)
 @grok.implementer(ILocation)
 def locate_registry(registry):
     site = getSite()
-    name = '++icon++' + grok.name.bind().get(registry)
     locatable = LocationProxy(registry)
-    locate(locatable, site, name=name)
+    locate(locatable, site, name='++icon++' + registry.name)
     return locatable

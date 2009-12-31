@@ -20,13 +20,17 @@ class IIcon(Interface):
         required=True)
 
 
-class IIconRegistryStorage(Interface):
+class ITemporaryIconsRegistry(Interface):
+    pass
+
+
+class IIconsRegistryStorage(Interface):
     """The icon registry container.
     """
     contains(IIcon)
 
 
-class IIconRegistry(Interface):
+class IIconsRegistry(Interface):
     """The icon registry.
     """
     def add(name, path):
@@ -44,6 +48,11 @@ class IIconRegistry(Interface):
         required=True)
 
     registry = schema.Object(
-        schema=IIconRegistryStorage,
+        schema=IIconsRegistryStorage,
         title=u"Icon resource registry",
+        required=True)
+
+    subregistries = schema.Dict(
+        title=u"Sub registries",
+        default={},
         required=True)
