@@ -4,7 +4,7 @@ import os
 import mimetypes
 from os.path import join, getsize
 from grokcore import view, component as grok
-from megrok.icon import IIcon, IIconRegistry, IIconRegistryStorage
+from megrok.icon import ICONS_BASES, IIcon, IIconRegistry, IIconRegistryStorage
 from zc.dict import Dict
 from zope.interface import directlyProvides
 from zope.schema.fieldproperty import FieldProperty
@@ -33,6 +33,7 @@ class IconRegistry(grok.GlobalUtility):
     grok.implements(IIconRegistry)
     
     __registry__ = FieldProperty(IIconRegistry['__registry__'])
+    initial_icons = []
     allowed = ALLOWED
 
     def _generate_registry(self):
@@ -51,6 +52,10 @@ class IconRegistry(grok.GlobalUtility):
             self.__registry__[name] = icon
         else:
             print "skipping %s (%s) [WRONG MIMETYPE]" % (path, mimetype)
+
+    def consume(self, icons):
+        for name, path in icons:
+            self.add(name, path)
 
     def populate(self, path):
         if not os.path.isdir(path):
@@ -79,5 +84,9 @@ class IconRegistry(grok.GlobalUtility):
 
     def __init__(self):
         self.__registry__ = self._generate_registry()
+        name = view.name.bind().get(self)
         path = view.path.bind().get(self)
         if path: self.populate(path)
+        if self.__class__ in ICONS_BASES:
+            self.consume(ICONS_BASES.get(self.__class__))
+            del ICONS_BASES[self.__class__]

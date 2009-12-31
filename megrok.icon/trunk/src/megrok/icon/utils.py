@@ -15,7 +15,8 @@ def get_icon_url(registry, request, name):
     
 
 def get_component_icon_url(component, request):
-    name, registry_name = icon.bind().get(component)
+    name, factory = icon.bind().get(component)
+    registry_name = grok.name.bind().get(factory)
     registry = queryUtility(IIconRegistry, name=registry_name)
     if registry is not None:
         if registry.registered(name):

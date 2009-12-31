@@ -12,7 +12,9 @@ ch.setFormatter(formatter)
 log = logging.getLogger('iconregistry')
 log.addHandler(ch)
 
-from megrok.icon.directive import icon 
+ICONS_BASES = {}
+
 from megrok.icon.interfaces import IIcon, IIconRegistry, IIconRegistryStorage
+from megrok.icon.directive import icon
 from megrok.icon.registry import Icon, IconRegistry
 from megrok.icon.utils import get_icon_url, get_component_icon_url
