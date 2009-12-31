@@ -17,7 +17,8 @@ $Id$
 """
 import re
 from zope.configuration import xmlconfig
-from zope.formlib.tests.support import VerifyResults
+from zope.formlib.tests.support import (VerifyResults,
+                                        patternExists)
 
 def registerEditForm(schema, widgets={}):
     """Registers an edit form for the specified schema.
@@ -77,10 +78,6 @@ def defineWidgetView(field_interface, widget_class, view_type):
             />
         </configure>
         """ % (field_interface, widget_class, view_type))
-
-
-def patternExists(pattern, source, flags=0):
-    return re.search(pattern, source, flags) is not None
 
 
 def validationErrorExists(field, error_msg, source):
