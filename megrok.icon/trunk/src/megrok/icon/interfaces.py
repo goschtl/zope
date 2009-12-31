@@ -19,10 +19,6 @@ class IIcon(Interface):
         title=u"Path of the resource",
         required=True)
 
-    size = schema.Int(
-        title=u"Size in octet",
-        required=False)
-
 
 class IIconRegistryStorage(Interface):
     """The icon registry container.

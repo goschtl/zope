@@ -5,7 +5,6 @@ import grokcore.component as grok
 from megrok.icon import IIconRegistry
 from megrok.icon.directive import icon
 from zope.component import queryUtility
-from zope.location.interfaces import ILocation
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 

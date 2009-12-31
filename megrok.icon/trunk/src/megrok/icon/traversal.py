@@ -11,7 +11,6 @@ from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.security.proxy import removeSecurityProxy
 from zope.site.hooks import getSite
-from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.interfaces import ITraversable, TraversalError
 
 
