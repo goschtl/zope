@@ -12,7 +12,7 @@ from zope.security.checker import NamesChecker
 from zope.browserresource.file import FileResourceFactory
 from zope.publisher.interfaces.browser import IBrowserPage
 
-ALLOWED = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+
 
 CHECKER = NamesChecker(list(IBrowserPage))
 
@@ -32,8 +32,8 @@ class IconRegistry(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(IIconRegistry)
 
-    __allowed__ = ALLOWED
-    __registry__ = FieldProperty(IIconRegistry['__registry__'])
+    allowed = FieldProperty(IIconRegistry['allowed'])
+    registry = FieldProperty(IIconRegistry['registry'])
 
     def _generate_registry(self):
         registry = Dict()
@@ -47,8 +47,8 @@ class IconRegistry(grok.GlobalUtility):
             return False
         icon = Icon(name, path)
         mimetype, enc = mimetypes.guess_type(path)
-        if mimetype in self.__allowed__:
-            self.__registry__[name] = icon
+        if mimetype in self.allowed:
+            self.registry[name] = icon
         else:
             print "skipping %s (%s) [WRONG MIMETYPE]" % (path, mimetype)
 
@@ -70,10 +70,10 @@ class IconRegistry(grok.GlobalUtility):
             dirs.remove('.svn')
 
     def registered(self, name):
-        return name in self.__registry__
+        return name in self.registry
 
     def get(self, name):
-        return self.__registry__.get(name)
+        return self.registry.get(name)
 
     def resource(self, name):
         icon = self.get(name)
@@ -82,7 +82,7 @@ class IconRegistry(grok.GlobalUtility):
         return FileResourceFactory(icon.path, CHECKER, icon.name)
 
     def __init__(self):
-        self.__registry__ = self._generate_registry()
+        self.registry = self._generate_registry()
         name = view.name.bind().get(self)
         path = view.path.bind().get(self)
         if path: self.populate(path)

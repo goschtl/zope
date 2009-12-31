@@ -97,25 +97,50 @@ Using the ``icon`` directive
   None
 
 
-Implicity registration
-----------------------
+Implicit registration
+---------------------
+
+It can be handy to register an icon and link it to a component, in a
+single declaration. The `icon` directive provides a simple way to do
+that. The keyword argument `path` indicated that the given icon needs
+to be registered in the given registry.
+
+Let's create a new registry::
 
   >>> class ContentIcons(IconRegistry):
   ...   name('content-icons')
+
+The directive `icon` can then be used for an implicit registration::
 
   >>> class MyDocument(object):
   ...   icon(name="some-icon", registry=ContentIcons,
   ...        path="tests/more/an_icon.png")  
 
+When the directive is read and interpreted, the icon registry is not
+yet registered in the component registry. Therefore, it's impossible
+to directly add the icon. A temporary registry is used :
+ICONS_BASES. ICONS_BASES is a simple dictionnary that uses the icon
+registry class as a key and a list of tuples (icon name, icon path),
+as a value.
+
+This registry is consumed when the utility is instanciated
+therefore, it's done when it's registered in the zca::
+
   >>> from megrok.icon import ICONS_BASES
   >>> ICONS_BASES
   {<class 'megrok.icon.tests.ContentIcons'>: [('some-icon', '.../tests/more/an_icon.png')]}
 
+We register the registry as an utility::
+
   >>> grok_component('content-icons', ContentIcons)
   True
 
+The temporary registry is consumed::
+
   >>> ICONS_BASES
   {}
+
+The icon is now available through the registry:: 
 
   >>> icon_url = get_component_icon_url(MyDocument, request)
   >>> icon_url

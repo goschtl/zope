@@ -4,6 +4,8 @@ from zope import schema
 from zope.interface import Interface
 from zope.container.constraints import contains
 
+ALLOWED = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
+
 
 class IIcon(Interface):
     """An icon resource.
@@ -40,6 +42,12 @@ class IIconRegistry(Interface):
         with the given name.
         """
 
-    __registry__ = schema.Object(
+    allowed = schema.List(
+        title=u"Mimetypes allowed for icon files.",
+        default=ALLOWED,
+        required=True)
+
+    registry = schema.Object(
         schema=IIconRegistryStorage,
-        title=u"Icon resource registry")
+        title=u"Icon resource registry",
+        required=True)
