@@ -5,8 +5,6 @@ import mimetypes
 from grokcore import view, component as grok
 from megrok.icon import log, ICONS_BASES
 from megrok.icon.interfaces import IIcon, IIconRegistry, IIconRegistryStorage
-from zc.dict import Dict
-from zope.interface import directlyProvides
 from zope.schema.fieldproperty import FieldProperty
 from zope.security.checker import NamesChecker
 from zope.browserresource.file import FileResourceFactory
@@ -25,6 +23,10 @@ class Icon(object):
         self.path = path
 
 
+class IconStorage(dict):
+    grok.implements(IIconRegistryStorage)
+
+
 class IconRegistry(grok.GlobalUtility):
     grok.baseclass()
     grok.implements(IIconRegistry)
@@ -33,8 +35,7 @@ class IconRegistry(grok.GlobalUtility):
     registry = FieldProperty(IIconRegistry['registry'])
 
     def _generate_registry(self):
-        registry = Dict()
-        directlyProvides(registry, IIconRegistryStorage)
+        registry = IconStorage()
         return registry
 
     def add(self, name, path):

@@ -10,18 +10,26 @@ history = open(join('docs', 'HISTORY.txt')).read()
 
 
 install_requires = [
+    'grokcore.component',
+    'grokcore.view',
     'martian',
     'setuptools',
-    'grokcore.view',
-    'grokcore.component',
-    'zc.dict',
+    'zope.browserresource',
+    'zope.component',
+    'zope.container',
+    'zope.interface',
+    'zope.location',
+    'zope.publisher',
+    'zope.schema',
+    'zope.security',
+    'zope.site',
+    'zope.traversing',
     ]
 
 tests_require = [
+    'zope.testing',
     'zope.testbrowser',
     'zope.app.testing',
-    'zope.browserresource',
-    'zope.configuration',
     'zope.app.zcmlfiles',
     ]
 

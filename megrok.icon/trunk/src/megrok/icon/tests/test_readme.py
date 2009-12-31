@@ -1,6 +1,6 @@
 import os.path
 import unittest
-from zope.testing import doctest, module
+from zope.testing import module
 from zope.app.testing import functional
 from grokcore.component.testing import grok_component
 
