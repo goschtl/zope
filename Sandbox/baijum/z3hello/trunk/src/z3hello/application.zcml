@@ -4,9 +4,7 @@
 
   <include package="zope.app.component" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
-  <include package="zope.security" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
-  <include package="zope.securitypolicy" file="meta.zcml"/>
 
   <include package="zope.app.security" />
   <include package="zope.app.publication" />
