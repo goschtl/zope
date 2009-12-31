@@ -109,7 +109,7 @@ Implicity registration
 
   >>> from megrok.icon import ICONS_BASES
   >>> ICONS_BASES
-  {<class 'megrok.icon.tests.ContentIcons'>: [('some-icon', '/home/trollfot/work/sandbox/megrok.icon/trunk/src/megrok/icon/tests/../tests/more/an_icon.png')]}
+  {<class 'megrok.icon.tests.ContentIcons'>: [('some-icon', '.../tests/more/an_icon.png')]}
 
   >>> grok_component('content-icons', ContentIcons)
   True
