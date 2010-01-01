@@ -5,7 +5,11 @@ Five Changes
 HEAD
 ====
 
+Five 1.5.9 (2009-01-01)
+=======================
+
 * Forward-ported viewlet manager directive fix (see c69896).
+* fixed retrieval of the If-Modified-Since header in browser/resource.py
 
 Five 1.5.8 (2008-07-13)
 =======================
