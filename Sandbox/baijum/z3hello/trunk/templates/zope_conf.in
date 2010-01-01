@@ -1,5 +1,5 @@
 # Identify the component configuration used to define the site:
-site-definition site.zcml
+site-definition ${config:site_zcml}
 
 <zodb>
   # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
@@ -8,9 +8,9 @@ site-definition site.zcml
   # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
   # the blob-dir parameter right in in filestorage, just after path.
   <blobstorage>
-    blob-dir var/blobs
+    blob-dir ${config:blob}
     <filestorage>
-      path var/Data.fs
+      path ${config:filestorage}/Data.fs
     </filestorage>
   </blobstorage>
 
@@ -31,7 +31,7 @@ site-definition site.zcml
   # the tokens STDOUT or STDERR.
 
   <logfile>
-    path log/z3.log
+    path ${config:log}/z3.log
     formatter zope.exceptions.log.Formatter
   </logfile>
 
