@@ -1,0 +1,13 @@
+z3hello
+=======
+
+:doctest:
+:functional-zcml-layer: ftesting.zcml
+
+Open browser and test::
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.open('http://localhost/@@hello')
+  >>> browser.contents
+  'Hello'
