@@ -39,6 +39,5 @@ setup(
     zip_safe=False,
     install_requires=["PasteScript>=1.7.3"],
     entry_points={
-    "console_scripts": ["bluebream = bluebream.script:main"],
     "paste.paster_create_template": ["bluebream = bluebream.template:BlueBream"]},
     )
