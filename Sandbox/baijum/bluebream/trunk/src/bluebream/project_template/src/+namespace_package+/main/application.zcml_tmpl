@@ -1,0 +1,7 @@
+<configure
+   i18n_domain="${namespace_package}.main"
+   xmlns="http://namespaces.zope.org/zope">
+
+  <include package="${namespace_package}.main" />
+
+</configure>
