@@ -20,11 +20,11 @@ def read(*rnames):
 
 setup(
     name="bluebream",
-    version="0.1dev",
+    version="0.1.1dev",
     author="Baiju M",
     author_email="baiju.m.mail@gmail.com",
-    url="https://launchpad.net/grokproject",
-    download_url="http://pypi.python.org/pypi/grokproject",
+    url="https://launchpad.net/bluebream",
+    download_url="http://pypi.python.org/pypi/bluebream",
     description="Script to setup a Zope project directory.",
     long_description=(
         read('README.txt') 
