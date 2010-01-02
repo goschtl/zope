@@ -160,9 +160,8 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def test_deliver_existing_filename(self):
         from zopyx.smartprintng.server.views import deliver
-        from views import spool_directory
-        file(os.path.join(spool_directory, 'foo.pdf'), 'wb').write('foo')
         context = Server()
+        file(os.path.join(context.spool_directory, 'foo.pdf'), 'wb').write('foo')
         request = testing.DummyRequest(params=dict(filename='foo.pdf'))
         result = deliver(context, request)
         self.assertEqual(result.status, '200 OK')
@@ -171,9 +170,8 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def test_deliver_existing_filename_with_prefix(self):
         from zopyx.smartprintng.server.views import deliver
-        from views import spool_directory
-        file(os.path.join(spool_directory, 'foo.pdf'), 'wb').write('foo')
         context = Server()
+        file(os.path.join(context.spool_directory, 'foo.pdf'), 'wb').write('foo')
         request = testing.DummyRequest(params=dict(filename='foo.pdf', prefix='bar'))
         result = deliver(context, request)
         self.assertEqual(result.status, '200 OK')
