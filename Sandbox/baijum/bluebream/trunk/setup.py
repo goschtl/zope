@@ -38,6 +38,7 @@ setup(
     package_dir={"": "src"},
     zip_safe=False,
     install_requires=["PasteScript>=1.7.3"],
+    extras_require={"test": ["zc.buildout"]},
     entry_points={
     "paste.paster_create_template": ["bluebream = bluebream.template:BlueBream"]},
     )
