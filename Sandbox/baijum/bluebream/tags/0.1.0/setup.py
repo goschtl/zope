@@ -20,7 +20,7 @@ def read(*rnames):
 
 setup(
     name="bluebream",
-    version="0.1dev",
+    version="0.1.0",
     author="Baiju M",
     author_email="baiju.m.mail@gmail.com",
     url="https://launchpad.net/grokproject",
