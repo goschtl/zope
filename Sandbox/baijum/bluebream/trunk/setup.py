@@ -37,6 +37,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     zip_safe=False,
+    include_package_data=True,
     install_requires=["PasteScript>=1.7.3"],
     extras_require={"test": ["zc.buildout"]},
     entry_points={
