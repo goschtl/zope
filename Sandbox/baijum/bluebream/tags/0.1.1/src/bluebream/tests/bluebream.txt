@@ -1,0 +1,59 @@
+BlueBream
+=========
+
+>>> from paste.script import command
+>>> project = 'sample'
+>>> commands = command.get_commands()
+>>> cmd = commands['create'].load()
+>>> runner = cmd('create')
+>>> option_args = []
+>>> extra_args = ["namespace_package=testname"]
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A Zope project
+<BLANKLINE>
+Variables:
+  egg:                sample
+  namespace_package:  testname
+  package:            sample
+  project:            sample
+Creating template bluebream
+Creating directory ./sample
+  Copying bootstrap.py to ./sample/bootstrap.py
+  Copying buildout.cfg_tmpl to ./sample/buildout.cfg
+  Copying debug.ini_tmpl to ./sample/debug.ini
+  Copying deploy.ini_tmpl to ./sample/deploy.ini
+  Recursing into etc
+    Creating ./sample/etc/
+    Copying site.zcml_tmpl to ./sample/etc/site.zcml
+  Copying setup.py_tmpl to ./sample/setup.py
+  Recursing into src
+    Creating ./sample/src/
+    Recursing into +namespace_package+
+      Creating ./sample/src/testname/
+      Copying __init__.py to ./sample/src/testname/__init__.py
+      Recursing into main
+        Creating ./sample/src/testname/main/
+        Copying __init__.py to ./sample/src/testname/main/__init__.py
+        Copying application.zcml_tmpl to ./sample/src/testname/main/application.zcml
+        Copying configure.zcml_tmpl to ./sample/src/testname/main/configure.zcml
+        Copying securitypolicy.zcml_tmpl to ./sample/src/testname/main/securitypolicy.zcml
+        Copying startup.py to ./sample/src/testname/main/startup.py
+        Copying views.py to ./sample/src/testname/main/views.py
+    Recursing into +package+.egg-info
+      Creating ./sample/src/sample.egg-info/
+  Recursing into templates
+    Creating ./sample/templates/
+    Copying zope_conf.in to ./sample/templates/zope_conf.in
+  Recursing into var
+    Creating ./sample/var/
+    Recursing into blob
+      Creating ./sample/var/blob/
+      Recursing into tmp
+        Creating ./sample/var/blob/tmp/
+    Recursing into filestorage
+      Creating ./sample/var/filestorage/
+    Recursing into log
+      Creating ./sample/var/log/
+  Copying versions.cfg to ./sample/versions.cfg
+Running python setup.py egg_info

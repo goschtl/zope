@@ -1,0 +1,12 @@
+<configure
+   i18n_domain="${namespace_package}.main"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <page
+     for="*"
+     name="hello"
+     permission="zope.Public"
+     class=".views.HelloView"
+     />
+
+</configure>
