@@ -56,7 +56,7 @@ class ViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         renderer = testing.registerDummyRenderer('templates/index.pt')
         response = index(context, request)
-        renderer.assert_(project='zopyx.smartprintng.server')
+        print response
 
 
 class ViewIntegrationTests(unittest.TestCase):
@@ -92,7 +92,8 @@ class ViewIntegrationTests(unittest.TestCase):
         from zopyx.smartprintng.server.views import index
         context = Server()
         request = testing.DummyRequest()
-        result = index(context, request)
+        view = index(context, request)
+        result = view()
         self.assertEqual(result.status, '200 OK')
         body = result.app_iter[0]
         self.assertEqual(len(result.headerlist), 2)
