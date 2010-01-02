@@ -4,7 +4,6 @@ import grokcore.component as grok
 
 from megrok.icon import IIconsRegistry, queryIconsRegistry
 
-from zope.component import queryUtility
 from zope.interface import Interface
 from zope.location.interfaces import ILocation
 from zope.location.location import locate, LocationProxy
@@ -41,7 +40,7 @@ class IconRegistryTraverser(grok.MultiAdapter):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-    
+
     def publishTraverse(self, request, name):
         registry = removeSecurityProxy(self.context)
         icon = registry.resource(name)

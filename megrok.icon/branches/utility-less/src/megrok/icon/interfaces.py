@@ -33,6 +33,7 @@ class IIconsRegistryStorage(Interface):
 class IIconsRegistry(Interface):
     """The icon registry.
     """
+
     def add(name, path):
         """Adds an icon to the registry.
         """

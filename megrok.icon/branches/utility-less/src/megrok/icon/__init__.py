@@ -19,7 +19,6 @@ from megrok.icon.interfaces import (
 
 from megrok.icon.registry import IconsRegistry, CHECKER
 
-from megrok.icon.registries_map import _icons_registries_map
 from megrok.icon.registries_map import (
     getIconsRegistriesMap,
     setIconsRegistriesMap,

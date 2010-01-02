@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from megrok.icon import IconsRegistry
-from zope.browserresource.file import FileResourceFactory
-
 _icons_registries_map = None
 
+
 class IconsRegistryError(LookupError):
+
     def __init__(self, name):
         self.name = name
         Exception.__init__(self, str(self))

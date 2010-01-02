@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
 import mimetypes
-from grokcore import view, component as grok
+from grokcore import component as grok
 from megrok.icon import log
-from megrok.icon.interfaces import IIcon, IIconsRegistry, IIconsRegistryStorage
+from megrok.icon.interfaces import IIconsRegistry, IIconsRegistryStorage
 from zope.schema.fieldproperty import FieldProperty
 from zope.security.checker import NamesChecker
 from zope.browserresource.file import FileResourceFactory
@@ -24,7 +23,7 @@ class IconsRegistry(object):
     allowed = FieldProperty(IIconsRegistry['allowed'])
     registry = FieldProperty(IIconsRegistry['registry'])
     subregistries = FieldProperty(IIconsRegistry['subregistries'])
-    
+
     def add(self, name, path):
         if name in self:
             log.warning(
@@ -52,4 +51,3 @@ class IconsRegistry(object):
     def __init__(self, name):
         self.name = name
         self.registry = IconsStorage()
-        
