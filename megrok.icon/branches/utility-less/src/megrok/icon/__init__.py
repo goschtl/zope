@@ -21,7 +21,10 @@ from megrok.icon.registry import IconsRegistry, CHECKER
 
 from megrok.icon.registries_map import _icons_registries_map
 from megrok.icon.registries_map import (
-    getIconsRegistriesMap, setIconsRegistriesMap, queryIconsRegistry)
+    getIconsRegistriesMap,
+    setIconsRegistriesMap,
+    getIconsRegistry,
+    queryIconsRegistry)
 
 from megrok.icon.directive import icon
 from megrok.icon.utils import (

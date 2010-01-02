@@ -37,7 +37,7 @@ class IconsRegistriesMap(object):
     def register(self, name, factory):
         return self._map.setdefault(name, factory(name))
 
-    def exists(self, name):
+    def __contains__(self, name):
         return name in self._map
 
 
@@ -52,9 +52,14 @@ def setIconsRegistriesMap(registries_map):
     _icons_registries_map = registries_map
 
 
-def clearIconsRegistriesMap():
+def _clearIconsRegistriesMap():
     global _icons_registries_map
     _icons_registries_map = None
+
+
+def getIconsRegistry(name):
+    mapping = getIconsRegistriesMap()
+    return mapping.get(name)
 
 
 def queryIconsRegistry(name):
@@ -63,3 +68,13 @@ def queryIconsRegistry(name):
         return mapping.get(name)
     except IconsRegistryError:
         return None
+
+
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    # don't have that part of Zope
+    pass
+else:
+    addCleanUp(_clearIconsRegistriesMap)
+    del addCleanUp

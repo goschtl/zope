@@ -4,7 +4,7 @@ import os
 import grokcore.component as grok
 
 import megrok.icon
-from megrok.icon import getIconsRegistriesMap, queryIconsRegistry
+from megrok.icon import getIconsRegistry, queryIconsRegistry
 from zope.component import queryUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
 
@@ -16,17 +16,16 @@ def get_icon_url(registry, request, name):
 
 def get_component_icon_url(component, request):
     icon, reg_name = megrok.icon.icon.bind().get(component)
-    mapping = getIconsRegistriesMap()
     registry = queryIconsRegistry(reg_name)
 
     if registry is not None:
-        if registry.registered(icon):
+        if icon in registry:
             return get_icon_url(registry, request, icon)
     return None
 
 
 def populate_icons_registry(name, path):
-    registry = getIconsRegistriesMap().get(name)
+    registry = getIconsRegistry(name)
     
     if not os.path.isdir(path):
         path = os.path.join(os.path.dirname(__file__), path)

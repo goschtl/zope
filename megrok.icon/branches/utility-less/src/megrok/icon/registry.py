@@ -26,7 +26,7 @@ class IconsRegistry(object):
     subregistries = FieldProperty(IIconsRegistry['subregistries'])
     
     def add(self, name, path):
-        if self.registered(name):
+        if name in self:
             log.warning(
                 "Skipping %s (%r): already in registry" % (name, path))
             return False
@@ -37,7 +37,7 @@ class IconsRegistry(object):
         else:
             print "skipping %s (%s) [WRONG MIMETYPE]" % (path, mimetype)
 
-    def registered(self, name):
+    def __contains__(self, name):
         return name in self.registry
 
     def get(self, name):

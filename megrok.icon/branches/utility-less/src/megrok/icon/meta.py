@@ -21,7 +21,7 @@ class IconsRegistryGrokker(martian.ClassGrokker):
     def execute(self, factory, config, name, path, **kw):
 
         mapping = getIconsRegistriesMap()
-        if mapping.exists(name):
+        if name in mapping:
             registry = mapping.get(name)
             if ITemporaryIconsRegistry.providedBy(registry):
                 mapping.replace(name, factory)

@@ -24,7 +24,7 @@ class icon(martian.Directive):
     def factory(self, name, registry="common", path=None):
         mapping = getIconsRegistriesMap()
         if path is not None:
-            if not mapping.exists(registry):
+            if not registry in mapping:
                 reg = mapping.register(registry, IconsRegistry)
                 directlyProvides(reg, ITemporaryIconsRegistry)
             else:
@@ -33,7 +33,7 @@ class icon(martian.Directive):
             reg.add(name, icon_absolute_path(self.frame, path))
         else:
             reg = mapping.get(registry)
-            if not reg.registered(name):
+            if not name in reg:
                 raise ValueError, 'Icon %r does not exist' % name
 
         return (name, registry)
