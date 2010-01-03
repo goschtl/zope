@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(name=${repr(project)},
-      version='${repr(version)|0.1}',
+      version=${repr(version)|empty},
       description='${description|nothing}',
       long_description="""\
 ${long_description|nothing}""",
