@@ -1,0 +1,21 @@
+Changelog
+*********
+
+0.1.2 (2010-01-03)
+------------------
+
+- Added functional testing support for project
+- Sphinx based documentation infrastruture improvements
+- LP #502529: Update wizard to ask all package meta to
+  be updated in setup.py
+
+0.1.1 (2010-01-02)
+------------------
+
+- Fix missing package data. The 0.1.0 releases was broken.
+- Improve documentation.
+
+0.1.0 (2010-01-02)
+------------------
+
+- Initial release.
