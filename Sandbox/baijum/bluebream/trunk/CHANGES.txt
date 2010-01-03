@@ -6,6 +6,8 @@ Changelog
 
 - Added functional testing support for project
 - Sphinx based documentation infrastruture improvements
+- LP #502529: Update wizard to ask all package meta to
+  be updated in setup.py
 
 0.1.1 (2010-01-02)
 ------------------
