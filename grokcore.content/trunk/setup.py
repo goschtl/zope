@@ -8,9 +8,17 @@ long_description = "%s\n%s\n" % (read('README.txt'), read('CHANGES.txt'))
 
 install_requires = [
     'setuptools',
+    'ZODB3',
     'grokcore.component >= 1.5, < 2.0',
-    'zope.annotation'
+    'zope.annotation',
+    'zope.container',
+    'zope.interface'
     ],
+
+tests_require = [
+    'zope.testing',
+    'zope.component'
+    ]
 
 setup(
     name='grokcore.content',
@@ -22,7 +30,9 @@ setup(
     description='Base content types for Grok',
     long_description=long_description,
     license='ZPL',
-    install_requires = install_requires
+    install_requires = install_requires,
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['grokcore'],
