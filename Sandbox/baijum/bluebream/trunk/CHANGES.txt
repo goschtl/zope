@@ -4,6 +4,9 @@ Changelog
 0.1.2 (unreleased)
 ------------------
 
+- Added functional testing support for project
+- Sphinx based documentation infrastruture improvements
+
 0.1.1 (2010-01-02)
 ------------------
 
