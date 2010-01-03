@@ -35,10 +35,10 @@ Now change the order::
   ['ankle', 'shin', 'knee', 'thigh']
 
   >>> list(bones.items())
-  [('ankle', <grokcore.content.tests.container.orderedcontainer.Bone object at ...>),
-  ('shin', <grokcore.content.tests.container.orderedcontainer.Bone object at ...>),
-  ('knee', <grokcore.content.tests.container.orderedcontainer.Bone object at ...>),
-  ('thigh', <grokcore.content.tests.container.orderedcontainer.Bone object at ...>)]
+  [('ankle', <grokcore.content.tests.test_orderedcontainer.Bone object at ...>),
+  ('shin', <grokcore.content.tests.test_orderedcontainer.Bone object at ...>),
+  ('knee', <grokcore.content.tests.test_orderedcontainer.Bone object at ...>),
+  ('thigh', <grokcore.content.tests.test_orderedcontainer.Bone object at ...>)]
 
   >>> [bone.name for bone in bones.values()]
   ['Ankle Joint', 'Shin Bone', 'Knee Cap', 'Thigh Bone']
@@ -75,3 +75,11 @@ class OrderedBones(OrderedContainer):
 class Bone(Model):
     def __init__(self, name):
         self.name = name
+
+
+def test_suite():
+    from zope.testing import doctest
+    suite = doctest.DocTestSuite(
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
+        )
+    return suite

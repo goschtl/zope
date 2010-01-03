@@ -39,3 +39,17 @@ class Bone(Model):
 @subscribe(OrderedBones, IContainerModifiedEvent)
 def container_changed(object, event):
     print 'Container has changed!'
+
+
+def test_suite():
+    import zope.component.eventtesting
+    from zope.testing import doctest, cleanup
+
+    def cleanUp(test):
+        cleanup.cleanUp()
+    
+    suite = doctest.DocTestSuite(
+        setUp=zope.component.eventtesting.setUp, tearDown=cleanUp,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
+        )
+    return suite

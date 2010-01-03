@@ -24,7 +24,7 @@ this doesn't happen again:
     None
     >>> bag['skull'] = skull
     >>> skull.__parent__
-    <grokcore.content.tests.container.container.BoneBag object at 0x...>
+    <grokcore.content.tests.test_container.BoneBag object at 0x...>
     >>> skull.__name__
     u'skull'
 
@@ -37,3 +37,12 @@ class BoneBag(Container):
     
 class Bone(Model):
     pass
+
+
+
+def test_suite():
+    from zope.testing import doctest
+    suite = doctest.DocTestSuite(
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
+        )
+    return suite
