@@ -1,10 +1,30 @@
 BlueBream
 *********
 
+Introduction
+------------
+
 BlueBream makes it easy to setup a new project using Zope packages.
 BlueBream generate a project directory from a template called
 ``bluebream``.  The template is created using `PasteScript
 <http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
+
+Features
+--------
+
+1. Generated project package includes ZTK with few additional
+   packages which was part of "Zope 3".
+
+2. Runnable Buildout
+
+3. Functional testing enabled by default using z3c.testsetup
+
+4. Use PasteDeploy
+
+5. Create a namespace package by default.
+
+Installation
+------------
 
 To create a new project, first you need to install BlueBream::
 
@@ -16,7 +36,7 @@ To create a new project, first you need to install BlueBream::
   the installation and bootstrapping process.
 
 Once BlueBream is installed, run ``paster`` command to create the
-project directory.  The ``create`` subcommand provided by ``paster``
+project directory.  The ``create`` sub-command provided by ``paster``
 will show a wizard to create the project directory.
 
 ::
@@ -28,8 +48,33 @@ project name will be used as the egg name.
 
 The project name can be give given as a command line argument::
 
-  $ paster create -t bluebream sample
+  $ paster create -t bluebream sampleproject
 
 The name of namespace package also can be given from the command line::
 
-  $ paster create -t bluebream sample namespace_package=mycompany
+  $ paster create -t bluebream sampleproject namespace_package=mycompany
+
+Usage
+-----
+
+The generated package include Buildout's bootstrap.py script and
+configuration file.  First you need to bootstrap the buildout::
+
+  $ cd sampleproject
+  $ python2.6 bootstrap.py
+
+After bootstrap, run the buildout::
+
+  $ ./bin/buidout
+
+To run test cases::
+
+  $ ./bin/test
+
+To run the server::
+
+  $ ./bin/paster serve debug.ini
+
+For testing purpose, you can access the "hello" view registered here:
+http://localhost:8080/@hello
+
