@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import persistent
+
+from grokcore.content import interfaces
 from persistent.list import PersistentList
-from grokcore.component.interfaces import IContext
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.container.btree import BTreeContainer
-from zope.container.interfaces import IContainer, IOrderedContainer
 from zope.container.contained import Contained, notifyContainerModified
 from zope.interface import implements
 
@@ -28,7 +28,7 @@ class Model(Contained, persistent.Persistent):
     automatically be made the `grok.context()` of each of the views.
 
     """
-    implements(IAttributeAnnotatable, IContext)
+    implements(IAttributeAnnotatable, interfaces.IContext)
 
 
 class Container(BTreeContainer):
@@ -49,7 +49,7 @@ class Container(BTreeContainer):
     or 'address') under which that item has been stored.
 
     """
-    implements(IAttributeAnnotatable, IContainer)
+    implements(IAttributeAnnotatable, interfaces.IContainer)
 
 
 class OrderedContainer(Container):
@@ -62,7 +62,7 @@ class OrderedContainer(Container):
     way of changing the order is to call the `updateOrder()` method.
 
     """
-    implements(IOrderedContainer)
+    implements(interfaces.IOrderedContainer)
 
     def __init__(self):
         super(OrderedContainer, self).__init__()
