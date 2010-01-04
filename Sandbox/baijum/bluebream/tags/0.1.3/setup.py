@@ -20,7 +20,7 @@ def read(*rnames):
 
 setup(
     name="bluebream",
-    version="0.1.3dev",
+    version="0.1.3",
     author="Baiju M",
     author_email="baiju.m.mail@gmail.com",
     url="https://launchpad.net/bluebream",
