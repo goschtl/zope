@@ -6,6 +6,8 @@ CHANGES
 
 - Require zope.browserpage which now contains ``namedtemplate``.
 
+- Require zope.login as a test dependency.
+
 - Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
 
