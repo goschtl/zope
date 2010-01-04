@@ -2,7 +2,7 @@
 
 REM Command file for Sphinx documentation
 
-set SPHINXBUILD=../bin/sphinx-build
+set SPHINXBUILD=../../bin/sphinx-build
 set BUILDDIR=build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% source
 if NOT "%PAPER%" == "" (
