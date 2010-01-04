@@ -19,8 +19,8 @@
   <include package="zope.app.preference" />
   <include package="zope.app.renderer"/>
   <include package="zope.app.authentication" />
-
   <include package="zope.app.securitypolicy" />
+  <include package="zope.login" />
 
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
