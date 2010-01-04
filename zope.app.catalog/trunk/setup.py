@@ -60,6 +60,7 @@ setup(name = 'zope.app.catalog',
                 'zope.app.testing',
                 'zope.app.zcmlfiles',
                 'zope.app.zptpage',
+                'zope.login',
                 ]),
       install_requires = [
           'setuptools',
