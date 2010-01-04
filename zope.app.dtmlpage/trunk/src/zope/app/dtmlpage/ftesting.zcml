@@ -11,12 +11,11 @@
   <include package="zope.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.zcmlfiles" />
-
   <include package="zope.app.preference" />
   <include package="zope.app.authentication" />
   <include package="zope.app.dtmlpage" />
-
   <include package="zope.app.securitypolicy" />
+  <include package="zope.login" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
