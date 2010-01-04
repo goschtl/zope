@@ -17,4 +17,4 @@ $Id$
 """
 
 # BBB
-from zope.publisher.http import BasicAuthAdapter
+from zope.login.http import BasicAuthAdapter
