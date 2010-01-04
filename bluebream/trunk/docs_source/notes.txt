@@ -1,3 +1,11 @@
+Notes for developers
+--------------------
+
+To upload documentation::
+
+  ./bin/sphinxbuilder
+  ./bin/buildout setup . upload_sphinx
+
 Roadmap
 -------
 
