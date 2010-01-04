@@ -4,6 +4,8 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Require zope.browserpage which now contains ``namedtemplate``.
+
 - Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
 

@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope import component, interface
-import zope.app.pagetemplate.namedtemplate
+import zope.browserpage.namedtemplate
 from zope.publisher.browser import TestRequest
 from zope.authentication.interfaces import IAuthentication
 from zope.security.interfaces import IPrincipal
@@ -51,7 +51,7 @@ class DummyTemplate(object):
         self.context = context
 
     component.adapts(Unauthorized)
-    interface.implements(zope.app.pagetemplate.namedtemplate.INamedTemplate)
+    interface.implements(zope.browserpage.namedtemplate.INamedTemplate)
 
     def __call__(self):
         return 'You are not authorized'

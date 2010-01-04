@@ -19,9 +19,9 @@ __docformat__ = 'restructuredtext'
 
 from zope.authentication.interfaces import IAuthentication
 from zope.publisher.browser import BrowserPage
-from zope.app.pagetemplate import namedtemplate
+from zope.browserpage import namedtemplate
 from zope.component import getUtility
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 
 class Unauthorized(BrowserPage):
 
