@@ -1,0 +1,22 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2010-01-05)
+------------------
+
+- Use zope.container instead of zope.app.container.
+
+- Use zope.browsermenu instead of zope.app.publisher.
+
+- Use zope.publisher 3.12 and new zope.login to make tests work.
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+3.4.0b1
+-------
+
+- Fixed invalid HTML in wiget_macros.
