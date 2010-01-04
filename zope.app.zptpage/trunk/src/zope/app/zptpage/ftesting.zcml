@@ -13,6 +13,7 @@
   <include package="zope.app.authentication" />
   <include package="zope.formlib" />
   <include package="zope.app.zptpage"/>
+  <include package="zope.login" />
 
   <include package="zope.app.securitypolicy" />
 
