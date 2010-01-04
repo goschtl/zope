@@ -1,10 +1,15 @@
 Welcome to BlueBream's documentation!
 =====================================
 
-Contents:
-
 .. toctree::
+   :numbered:
    :maxdepth: 2
+
+   introduction
+   gettingstarted
+   tutorial
+   reference
+   faq
 
 Indices and tables
 ==================
