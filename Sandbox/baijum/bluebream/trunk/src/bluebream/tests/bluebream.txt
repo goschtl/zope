@@ -72,11 +72,14 @@ Creating directory ./sample
     Creating ./sample/var/
     Recursing into blob
       Creating ./sample/var/blob/
+      Copying README.txt to ./sample/var/blob/README.txt
       Recursing into tmp
         Creating ./sample/var/blob/tmp/
     Recursing into filestorage
       Creating ./sample/var/filestorage/
+      Copying README.txt to ./sample/var/filestorage/README.txt
     Recursing into log
       Creating ./sample/var/log/
+      Copying README.txt to ./sample/var/log/README.txt
   Copying versions.cfg to ./sample/versions.cfg
 Running python setup.py egg_info
