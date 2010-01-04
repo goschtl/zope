@@ -27,7 +27,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.boston',
-      version = '3.5.0dev',
+      version = '3.5.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Boston -- A Zope 3 ZMI Skin',
@@ -74,7 +74,7 @@ setup(name='zope.app.boston',
                           'zope.container',
                           'zope.i18nmessageid',
                           'zope.interface',
-                          'zope.publisher',
+                          'zope.publisher>=3.12',
                           'zope.viewlet',
                           ],
       include_package_data = True,
