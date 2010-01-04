@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for z3c.viewlet package
+"""Setup for z3c.optionstorage package
 
 $Id$
 """
@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.optionstorage',
-      version = '1.1.0',
+      version = '1.0.5',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Optional Storages -- Persistent, Managable Vocabularies',
@@ -51,12 +51,12 @@ setup(name='z3c.optionstorage',
       install_requires = ['setuptools',
                           'ZODB3',
                           'zope.annotation',
+                          'zope.component',
                           'zope.configuration',
                           'zope.deprecation',
                           'zope.i18n',
                           'zope.interface',
                           'zope.proxy',
-                          'zope.app.schema',
                           'zope.schema',
                           'zope.security',
                           'zope.app.pagetemplate',

@@ -12,9 +12,12 @@
 #
 ##############################################################################
 from z3c.optionstorage.vocabulary import OptionStorageVocabulary
-from zope.app.schema.metaconfigure import vocabulary
+from zope.component.zcml import utility
+from zope.schema.interfaces import IVocabularyFactory
+
 
 def optionStorageVocabulary(_context, name):
     def factory(object, name=name):
         return OptionStorageVocabulary(object, name=name)
-    vocabulary(_context, name, factory)
+    directlyProvides(factory, IVocabularyFactory)
+    utility(_context, IVocabularyFactory, factory, name=name)
