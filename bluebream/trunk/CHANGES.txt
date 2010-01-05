@@ -1,8 +1,11 @@
 Changelog
 *********
 
-0.1.4 (unreleased)
+0.1.4 (2010-01-04)
 ------------------
+
+- LP #503301: Work around fix for "empty directory" problem.
+- Change author as "BlueBream" team and email to zope-dev list.
 
 0.1.3 (2010-01-04)
 ------------------
