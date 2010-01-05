@@ -22,7 +22,7 @@ class BlueBream(templates.Template):
     summary = "A Zope project"
     vars = [
         var('namespace_package', 'Namespace package name'),
-        var('version', 'Version (like 0.1)'),
+        var('version', 'Version (like 0.1)', default='0.1'),
         var('description', 'One-line description of the package'),
         var('long_description', 'Multi-line description (in reST)'),
         var('keywords', 'Space-separated keywords/tags'),
