@@ -105,3 +105,6 @@ To run the server::
 
 There is a view named ``hello`` registered by default. which can be
 accessed here: http://localhost:8080/@@hello
+
+You can continue reading about BlueBream from the `documentation site
+<http://packages.python.org/bluebream>`_.
