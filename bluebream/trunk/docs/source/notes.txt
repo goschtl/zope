@@ -25,6 +25,9 @@ Technical Decisions
 
    - project template
 
+   May be documentation and compatibility test suite could be
+   separated out to separate locations/packages later.
+
 - BlueBream 1.0 should provide an upgradation path from Zope 3.4 ZTK
 
 Notes for developers
