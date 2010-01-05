@@ -21,13 +21,13 @@ def read(*rnames):
 setup(
     name="bluebream",
     version="0.1.4dev",
-    author="Baiju M",
-    author_email="baiju.m.mail@gmail.com",
+    author="BlueBream Team",
+    author_email="zope-dev@zope.org",
     url="https://launchpad.net/bluebream",
     download_url="http://pypi.python.org/pypi/bluebream",
     description="Script to setup a Zope project directory.",
     long_description=(
-        read('README.txt') 
+        read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         + '\n\n' +
@@ -42,5 +42,6 @@ setup(
     install_requires=["PasteScript>=1.7.3"],
     extras_require={"test": ["zc.buildout"]},
     entry_points={
-    "paste.paster_create_template": ["bluebream = bluebream.template:BlueBream"]},
+    "paste.paster_create_template":
+        ["bluebream = bluebream.template:BlueBream"]},
     )
