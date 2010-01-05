@@ -65,7 +65,7 @@ def main():
 
     if options.file and options.config:
         raise SystemExit(
-            'Exactly one of --file or --config must be given.')
+            u'Exactly one of --file or --config must be given.')
 
     if options.file:
         storage = ZODB.FileStorage.FileStorage(options.file)
@@ -73,13 +73,13 @@ def main():
         storage = ZODB.config.storageFromURL(options.config)
     else:
         raise SystemExit(
-            'Exactly one of --file or --config must be given.')
+            u'Exactly one of --file or --config must be given.')
 
     rename_rules = {}
     for entry_point in pkg_resources.iter_entry_points('zodbupdate'):
         rules = entry_point.load()
         rename_rules.update(rules)
-        logging.info('Loaded %s rules from %s:%s' %
+        logging.info(u'Loaded %s rules from %s:%s' %
                       (len(rules), entry_point.module_name, entry_point.name))
 
     updater = zodbupdate.update.Updater(
@@ -88,8 +88,12 @@ def main():
     try:
         updater()
     except Exception, e:
-        logging.debug('An error occured', exc_info=True)
-        logging.error('Stopped processing, due to: %s' % e)
+        logging.debug(u'An error occured', exc_info=True)
+        logging.error(u'Stopped processing, due to: %s' % e)
         raise SystemExit()
+    implicit_renames = updater.processor.get_found_implicit_rules()
+    if implicit_renames:
+        print 'Found new rules:'
+        print pprint.pformat(implicit_renames)
     storage.close()
 

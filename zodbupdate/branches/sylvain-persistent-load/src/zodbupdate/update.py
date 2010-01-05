@@ -36,7 +36,7 @@ class Updater(object):
     def __init__(self, storage, dry=False, renames=None):
         self.dry = dry
         self.storage = storage
-        self.update = zodbupdate.serialize.ObjectRenamer(renames or {})
+        self.processor = zodbupdate.serialize.ObjectRenamer(renames or {})
 
     def __new_transaction(self):
         t = transaction.Transaction()
@@ -58,7 +58,7 @@ class Updater(object):
         t = self.__new_transaction()
 
         for oid, serial, current in self.records:
-            new = self.update.rename(current)
+            new = self.processor.rename(current)
             if new is None:
                 continue
 
@@ -85,7 +85,7 @@ class Updater(object):
                 data, tid = self.storage.load(oid, "")
             except ZODB.POSException.POSKeyError, e:
                 logger.error(
-                    u'Error: Jumping record %s, '
+                    u'Warning: Jumping record %s, '
                     u'referencing missing key in database: %s' %
                     (ZODB.utils.oid_repr(oid), str(e)))
             else:

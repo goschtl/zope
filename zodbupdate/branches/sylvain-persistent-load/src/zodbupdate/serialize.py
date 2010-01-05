@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2009 Zope Corporation and Contributors.
+# Copyright (c) 2009-2010 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,9 +12,13 @@
 #
 ##############################################################################
 
-from ZODB.broken import find_global
+from ZODB.broken import find_global, Broken
 import cPickle
 import cStringIO
+import logging
+import types
+
+logger = logging.getLogger('zodbupdate')
 
 
 class ZODBReference:
@@ -37,21 +41,45 @@ class ObjectRenamer:
     """
 
     def __init__(self, changes):
+        self.__added = dict()
         self.__changes = dict()
         for old, new in changes.iteritems():
             self.__changes[tuple(old.split(' '))] = tuple(new.split(' '))
         self.__changed = False
 
-    def __find_global(self, *names):
+    def __update_symb(self, symb_info):
+        """This method look in a klass or symbol have been renamed or
+        not. If the symbol have not been renamed explicitly, it's
+        loaded and its location is checked to see if it have moved as
+        well.
+        """
+        if symb_info in self.__changes:
+            self.__changed = True
+            return self.__changes[symb_info]
+        else:
+            symb = find_global(*symb_info)
+            if isinstance(symb, types.ClassType) and issubclass(symb, Broken):
+                logger.warning(u'Warning: Missing factory for %s' %
+                               u' '.join(symb_info))
+            elif hasattr(symb, '__name__') and hasattr(symb, '__module__'):
+                new_symb_info = (symb.__module__, symb.__name__)
+                if new_symb_info != symb_info:
+                    logger.info(
+                        u'New implicit rule detected %s to %s' %
+                        (u' '.join(symb_info), u' '.join(new_symb_info)))
+                    self.__changes[symb_info] = new_symb_info
+                    self.__added[symb_info] = new_symb_info
+                    self.__changed = True
+                    return new_symb_info
+        return symb_info
+
+    def __find_global(self, *klass_info):
         """Find a class with the given name, looking for a renaming
         rule first.
 
         Using ZODB find_global let us manage missing classes.
         """
-        if names in self.__changes:
-            names = self.__changes[names]
-            self.__changed = True
-        return find_global(*names)
+        return find_global(*self.__update_symb(klass_info))
 
     def __persistent_load(self, reference):
         """Load a persistent reference. The reference might changed
@@ -60,11 +88,10 @@ class ObjectRenamer:
         by the reference.
         """
         if isinstance(reference, tuple):
-            oid, klass = reference
-            if klass in self.__changes:
-                klass = self.__changes[klass]
-                self.__changed = True
-            return ZODBReference((oid, klass))
+            oid, klass_info = reference
+            if isinstance(klass_info, tuple):
+                klass_info = self.__update_symb(klass_info)
+            return ZODBReference((oid, klass_info))
         # TODO multidatabase ['m'], (database, oid, klass)
         return ZODBReference(reference)
 
@@ -98,11 +125,9 @@ class ObjectRenamer:
         about a renamed class.
         """
         if isinstance(class_meta, tuple):
-            klass, args = class_meta
-            if isinstance(klass, tuple):
-                if klass in self.__changes:
-                    self.__changed = True
-                    return self.__changes[klass], args
+            klass_info, args = class_meta
+            if isinstance(klass_info, tuple):
+                return self.__update_symb(klass_info), args
         return class_meta
 
     def rename(self, input_file):
@@ -129,3 +154,9 @@ class ObjectRenamer:
 
         output_file.truncate()
         return output_file
+
+    def get_found_implicit_rules(self):
+        result = {}
+        for old, new in self.__added.items():
+            result[' '.join(old)] = ' '.join(new)
+        return result
