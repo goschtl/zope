@@ -116,8 +116,8 @@ definitions:
 
   >>> for module in glob.values():
   ...     print dir(module)
-  ['Foo', '__builtins__', '__doc__', '__file__', '__name__']
-  ['Bar', '__builtins__', '__doc__', '__file__', '__name__']
+  ['Foo', '__builtins__', '__doc__', '__exception__', '__file__', '__name__']
+  ['Bar', '__builtins__', '__doc__', '__exception__', '__file__', '__name__']
 
 We would also want to ensure that we can import the module correctly 
 too. The `fakemodule` system also adds the modules under their own 
@@ -212,8 +212,8 @@ The class should be able to use the utlilty function properly:
     >>> dc.v
     True
 
-Invalid Modules
-===============
+Invalid Module Names
+====================
 
 The module name must be a valid Python identifier. If, say, it
 begins with a number, the module block will not be matched as a
@@ -238,3 +238,32 @@ We can confirm this be checking if there is any instance of
   False
 
 There are none - therefore the module definition has been ignored.
+
+Handling Exceptions
+===================
+
+There are certain scenarios where you would like to illustrate that
+a problem occurs within a module, and test that such a problem raises
+an exception. An example might be where you have a construct that can
+only occur at class scope, and would like to illustrate that an exception
+is generated in the case that this occurs at module scope. To support
+this usecase, we create all module objects with a special attribute 
+`__exception__' that stores `None` if was created successfully, or
+otherwise the exception instance of the exception that was raised. To 
+illustrate, we create a module that raises an obvious exception::
+
+.. module-block:: zerodiv
+
+    inf = 10 / 0
+
+We can now interrogate the module object that is available to us in sub-
+sequent tests::
+
+  >>> zerodiv.__exception__ is None
+  False
+  >>> print zerodiv.__exception__
+  integer division or modulo by zero
+  >>> print zerodiv.__exception__.__class__.__name__
+  ZeroDivisionError
+
+.

@@ -5,10 +5,11 @@ import new
 import textwrap
 
 FAKE_MODULE_START = re.compile(
-        r'^\.\.\s*module-block::?\s*(?P<module_name>[a-zA-Z_]+)',
+        r'^\.\.\s*module-block::?\s*(?P<module_name>[a-zA-Z_]+\S*)',
         re.MULTILINE)
 FAKE_MODULE_END = re.compile(r'(\n\Z|\n(?=\S))')
-MODULE_NAMESPACE = "manueltest.fake"
+MODULE_NAME = "manueltest"
+MODULE_NAMESPACE = MODULE_NAME + ".fake"
 
 # To store our fake module's lines
 class FakeModuleSnippet(object):
@@ -43,9 +44,9 @@ def execute_into_module(region, document, doc_globs):
 
     # Make the module also available through normal import
     if not MODULE_NAMESPACE in sys.modules:
-        sys.modules['manueltest'] = new.module('manueltest')
-        sys.modules['manueltest.fake'] = new.module('manueltest.fake')
-        sys.modules['manueltest'].fake = sys.modules['manueltest.fake']
+        sys.modules[MODULE_NAME] = new.module(MODULE_NAME)
+        sys.modules[MODULE_NAMESPACE] = new.module(MODULE_NAMESPACE)
+        sys.modules[MODULE_NAME].fake = sys.modules[MODULE_NAMESPACE]
 
     # We want to be able to resolve items that are in the surrounding
     # doctest globs. To acheive this, we force all doctest globals into
@@ -53,7 +54,11 @@ def execute_into_module(region, document, doc_globs):
     import __builtin__
     __builtin__.__dict__.update(doc_globs)
 
-    exec region.parsed.code in module.__dict__
+    try:
+        exec region.parsed.code in module.__dict__
+        module.__exception__ = None
+    except Exception, e:
+        module.__exception__ = e
 
     # When we exec code within the dictionary namespace as
     # above, the __module__ attributes of the objects created are set
