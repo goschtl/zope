@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-y (unreleased)
---------------
+3.6.0 (unreleased)
+------------------
 
 - Nothing changed yet.
 
