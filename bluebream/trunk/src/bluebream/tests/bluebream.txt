@@ -65,6 +65,7 @@ Creating directory ./sample
         Copying views.py to ./sample/src/test_name/main/views.py
     Recursing into +package+.egg-info
       Creating ./sample/src/sample.egg-info/
+      Copying PKG-INFO to ./sample/src/sample.egg-info/PKG-INFO
   Recursing into templates
     Creating ./sample/templates/
     Copying zope_conf.in to ./sample/templates/zope_conf.in
