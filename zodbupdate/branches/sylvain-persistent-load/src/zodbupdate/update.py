@@ -13,9 +13,11 @@
 ##############################################################################
 
 from ZODB.DB import DB
-import cStringIO
+from struct import pack, unpack
+import ZODB.POSException
 import ZODB.broken
 import ZODB.utils
+import cStringIO
 import logging
 import pickle
 import pickletools
@@ -74,10 +76,26 @@ class Updater(object):
 
     @property
     def records(self):
-        next = None
+        index = self.storage._index
+        next_oid = None
+
         while True:
-            oid, tid, data, next = self.storage.record_iternext(next)
-            yield oid, tid, cStringIO.StringIO(data)
-            if next is None:
+            oid = index.minKey(next_oid)
+            try:
+                data, tid = self.storage.load(oid, "")
+            except ZODB.POSException.POSKeyError, e:
+                logger.error(
+                    u'Error: Jumping record %s, '
+                    u'referencing missing key in database: %s' %
+                    (ZODB.utils.oid_repr(oid), str(e)))
+            else:
+                yield  oid, tid, cStringIO.StringIO(data)
+
+            oid_as_long, = unpack(">Q", oid)
+            next_oid = pack(">Q", oid_as_long + 1)
+            try:
+                next_oid = index.minKey(next_oid)
+            except ValueError:
+                # No more records
                 break
 
