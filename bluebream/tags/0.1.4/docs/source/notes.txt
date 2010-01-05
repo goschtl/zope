@@ -1,0 +1,53 @@
+Technical Decisions
+-------------------
+
+- BlueBream should be called as a "web framework".
+
+- The only public API exposed by "bluebream - the package"
+  is an entry point::
+
+    "paste.paster_create_template":
+        ["bluebream = bluebream.template:BlueBream"]
+
+  The implementation of "bluebream" template is defined in
+  "bluebream.template.BlueBream".  The template implementation
+  location could be changed if required later.  This leaves us an
+  option to change "bluebream" as a namespace package if required.
+
+- All the framework code will be using "zope" or "zope.app" namespace
+  packages.
+
+- "bluebream" the package mainly consists
+
+   - documentation
+
+   - compatibility test suite
+
+   - project template
+
+   May be documentation and compatibility test suite could be
+   separated out to separate locations/packages later.
+
+- BlueBream 1.0 should provide an upgradation path from Zope 3.4 ZTK
+
+Notes for developers
+--------------------
+
+To upload documentation::
+
+  ./bin/sphinxbuilder
+  ./bin/buildout setup . upload_sphinx
+
+Roadmap
+-------
+
+- Make the documentation better
+
+- Study each package in detail and help to improve its documentation
+
+- Understand how each package works together
+
+- Create a tutorial which explain creating a simple application with
+  all basic requirements
+
+- Write in detail about ZODB and how persistence works
