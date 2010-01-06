@@ -24,6 +24,12 @@ class MapKey(object):
         return "<MapKey: %r>" % self.key
 
 class Map(dict):
+
+    # sometimes we want to look up things exactly in the underlying
+    # dictionary
+    exact_getitem = dict.__getitem__
+    exact_get = dict.get
+    
     def __getitem__(self, key):
         for mapkey in key._parent_mapkeys:
             try:
@@ -32,4 +38,40 @@ class Map(dict):
                 pass
         raise KeyError(key)
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+class MultiMap(object):
+    def __init__(self):
+        self._by_arity = {}
+        
+    def __setitem__(self, key, value):
+        arity = len(key)
+        key = (arity,) + tuple(key)
+        map = self._by_arity
+        for k in key[:-1]:
+           submap = map.get(k)
+           if submap is None:
+               submap = map[k] = Map()
+           map = submap
+        map[key[-1]] = value
+                    
+    def __delitem__(self, key, value):
+        arity = len(key)
+        key = (arity,) + tuple(key)
+        map = self._by_arity
+        for k in key[:-1]:
+            map = dict(map)[k]
+        del map[key[-1]]
+    
+    def __getitem__(self, key, value):
+        arity = len(key)
+        key = (arity,) + tuple(key)
+        map = self._by_arity
+        for k in key[:-1]:
+            map = map[k]
+        return map[key[-1]]
 

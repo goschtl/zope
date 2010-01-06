@@ -1,6 +1,9 @@
 A mapping with acyclic directed graph key
 =========================================
 
+Map
+---
+
 A normal mapping (dictionary) in Python has keys that are completely
 independent from each other. If you look up a particular key, either that
 key is present in the mapping or not at all.
@@ -72,6 +75,9 @@ Neither can we find ``a``, as ``b`` is not an ancestor of ``a``::
     ...
   KeyError: <MapKey: 'a'>
 
+Looking up ancestors
+~~~~~~~~~~~~~~~~~~~~
+
 Now for the special behavor. Since ``d`` does have ``b`` as an
 ancestor, we can look it up, finding the value for B::
 
@@ -89,6 +95,11 @@ method resolution order for classes)::
   >>> map[d]
   u'Value for B'
 
+We can also use ``.get``::
+
+  >>> map.get(d)
+  u'Value for B'
+
 When we take out the value for ``b`` we get the value for ``c`` when we
 look up ``d``::
   
@@ -102,6 +113,63 @@ value of its ancestor ``c``::
   >>> map[d] = u'Value for D'
   >>> map[d]
   u'Value for D'
+
+We remove ``d`` again so that we find the value for c again when we
+look up ``d``::
+
+  >>> del map[d]
+  >>> map[d]
+  u'Value for C'
+
+Sometimes it is useful to look up the key as if the map *is* a real
+dictionary, without the ancestor lookup behavior to kick in. We have
+two methods for this, the equivalent of the normal ``dictionary[]``
+(__getitem__) lookup, and the equivalent of the normal
+``dictionary.get`` lookup, named ``exact_getitem`` and ``exact_get``::
+
+  >>> map.exact_getitem(d)
+  Traceback (most recent call last):
+   ...
+  KeyError: <MapKey: 'd'>
+
+  >>> print map.exact_get(d)
+  None
+
+  >>> map.exact_getitem(c)
+  u'Value for C'
+ 
+  >>> map.exact_get(c)
+  u'Value for C'
+
+
+MultiMap
+--------
+
+A MultiMap is a map that takes sequences of MapKey objects as its
+key. We call such a sequence of MapKeys a MultiMapKey.
+
+When looking up a MultiMapKey in a MultiMap, it is compared
+component-wise to the MultiMapKeys registered in the MultiMap.  Each
+of the components of a MultiMapKey found must be either equal to or a
+parent of the corresponding component of the MultiMapKey being looked
+up.  If more than one MultiMapKey could be found by a lookup, the one
+whose first component matches most specifically wins, the other
+components being considered as subordinate comparison criteria, in
+order.
+
+We define gamma, which has parent beta, which has parent alpha::
+
+  >>> alpha = MapKey('alpha')
+  >>> beta = MapKey('beta', [alpha])
+  >>> gamma = MapKey('gamma', [beta])
+
+We define three, which has parent two, which has parent one::
+
+  >>> one = MapKey('one')
+  >>> two = MapKey('two', [one])
+  >>> three = MapKey('three', [two])
+
+Now we create a MultiMap
 
 next: multi lookup. What is the behavior of zope.interface? Do earlier
 entries in the lookup list always weigh more heavily than the second
