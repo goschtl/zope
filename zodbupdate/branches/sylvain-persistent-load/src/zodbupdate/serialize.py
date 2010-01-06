@@ -21,6 +21,10 @@ import types
 logger = logging.getLogger('zodbupdate')
 
 
+def isbroken(symb):
+    return isinstance(symb, types.TypeType) and Broken in symb.__mro__
+
+
 class ZODBReference:
     """Class to remenber reference we don't want to touch.
     """
@@ -58,7 +62,7 @@ class ObjectRenamer:
             return self.__changes[symb_info]
         else:
             symb = find_global(*symb_info)
-            if isinstance(symb, types.ClassType) and issubclass(symb, Broken):
+            if isbroken(symb):
                 logger.warning(u'Warning: Missing factory for %s' %
                                u' '.join(symb_info))
             elif hasattr(symb, '__name__') and hasattr(symb, '__module__'):
@@ -125,9 +129,14 @@ class ObjectRenamer:
         about a renamed class.
         """
         if isinstance(class_meta, tuple):
-            klass_info, args = class_meta
-            if isinstance(klass_info, tuple):
-                return self.__update_symb(klass_info), args
+            symb, args = class_meta
+            if isbroken(symb):
+                symb_info = (symb.__module__, symb.__name__)
+                logger.warning(u'Warning: Missing factory for %s' %
+                               u' '.join(symb_info))
+                return (symb_info, args)
+            elif isinstance(symb, tuple):
+                return self.__update_symb(symb), args
         return class_meta
 
     def rename(self, input_file):
@@ -149,8 +158,13 @@ class ObjectRenamer:
 
         output_file = cStringIO.StringIO()
         pickler = self.__pickler(output_file)
-        pickler.dump(class_meta)
-        pickler.dump(data)
+        try:
+            pickler.dump(class_meta)
+            pickler.dump(data)
+        except cPickle.PicklingError:
+            # Could not pickle that record, likely due to a broken
+            # class ignore it.
+            return None
 
         output_file.truncate()
         return output_file
