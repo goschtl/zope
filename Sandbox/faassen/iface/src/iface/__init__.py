@@ -1,2 +1,2 @@
-from iface.mapping import Map, MapKey
+from iface.mapping import Map, MultiMap, MapKey
 

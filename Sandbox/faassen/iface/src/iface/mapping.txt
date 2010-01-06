@@ -169,7 +169,45 @@ We define three, which has parent two, which has parent one::
   >>> two = MapKey('two', [one])
   >>> three = MapKey('three', [two])
 
-Now we create a MultiMap
+Now we create a MultiMap and register a few values by MultiMapKeys::
+
+  >>> from iface import MultiMap
+  >>> multimap = MultiMap()
+
+  >>> multimap[(alpha, three)] = u'Value for alpha, three'
+  >>> multimap[(beta, two)] = u'Value for beta, two'
+
+When looking up any of these two MultiMapKeys, we'll get back the respective
+values::
+
+  >>> multimap[(alpha, three)]
+  u'Value for alpha, three'
+  >>> multimap[(beta, two)]
+  u'Value for beta, two'
+
+We'll also be able to look up MultiMapKeys that are more specific than
+anything registered in at least one component. When a look-up could find two
+less specific MultiMapKeys, the one with the more specific first component is
+preferred::
+
+  >>> multimap[(gamma, two)]
+  u'Value for beta, two'
+  >>> multimap[(beta, three)]
+  u'Value for beta, two'
+  >>> multimap[(gamma, three)]
+  u'Value for beta, two'
+
+However, we cannot look up MultiMapKeys that are less specific than anything
+registered in at least one component::
+
+  >>> multimap[(alpha, one)]
+  Traceback (most recent call last):
+    ...
+  KeyError: <MapKey: 'one'>
+  >>> multimap[(alpha, two)]
+  Traceback (most recent call last):
+    ...
+  KeyError: <MapKey: 'two'>
 
 next: multi lookup. What is the behavior of zope.interface? Do earlier
 entries in the lookup list always weigh more heavily than the second

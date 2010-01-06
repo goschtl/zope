@@ -53,21 +53,21 @@ class MultiMap(object):
         key = (arity,) + tuple(key)
         map = self._by_arity
         for k in key[:-1]:
-           submap = map.get(k)
+           submap = dict(map).get(k)
            if submap is None:
                submap = map[k] = Map()
            map = submap
         map[key[-1]] = value
-                    
-    def __delitem__(self, key, value):
+
+    def __delitem__(self, key):
         arity = len(key)
         key = (arity,) + tuple(key)
         map = self._by_arity
         for k in key[:-1]:
             map = dict(map)[k]
         del map[key[-1]]
-    
-    def __getitem__(self, key, value):
+
+    def __getitem__(self, key):
         arity = len(key)
         key = (arity,) + tuple(key)
         map = self._by_arity
