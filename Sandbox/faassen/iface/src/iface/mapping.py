@@ -9,9 +9,10 @@ class MapKey(object):
                                 tuple(parent._mro_helper for
                                       parent in parents),
                                 {'mapkey': self})
-        # we then store the mro without the last entry, which is
-        # always object
-        self._mro = self._mro_helper.__mro__[:-1]
+        # we then store the map keys for the mro (without the last
+        # entry, which is always object)
+        self._parent_mapkeys = [
+            base.mapkey for base in self._mro_helper.__mro__[:-1]]
 
     def __hash__(self):
         return hash(self.key)
@@ -21,11 +22,9 @@ class MapKey(object):
 
 class Map(dict):
     def __getitem__(self, key):
-        for base in key._mro:
-            if base is object:
-                break
+        for mapkey in key._parent_mapkeys:
             try:
-                return super(Map, self).__getitem__(base.mapkey)
+                return super(Map, self).__getitem__(mapkey)
             except KeyError:
                 pass
         raise KeyError(key)
