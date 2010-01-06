@@ -2,12 +2,23 @@
 CHANGES
 =======
 
-1.1.1 (2008/01/26)
+1.2.0 (2010-01-06)
+------------------
+
+- Use psycopg2 instead of psycopg
+
+- Move ``zope.app.form`` dependency to 'zcml' extras
+
+- Added missing dependencies
+
+
+1.1.1 (2008-01-26)
 ------------------
 
 - Bug: Some classes were incorrectly looked up.
 
-1.1.0 (2008/01/26)
+
+1.1.0 (2008-01-26)
 ------------------
 
 - Feature: Produced a real egg.

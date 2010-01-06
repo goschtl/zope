@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -24,10 +24,11 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+
 setup(name='zope.psycopgda',
       version = '1.2.0dev',
-      author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author='Zope Foundation and Contributors',
+      author_email='zope-dev@zope.org',
       description='Psycopg Database Adapter for Zope 3',
       long_description=(
           read('README.txt')
@@ -52,15 +53,17 @@ setup(name='zope.psycopgda',
       namespace_packages=['zope'],
       extras_require = dict(
           test=['zope.testing',
-                ]),
+                ],
+          zcml=['zope.app.form']),
       install_requires = [
-          # Versions 1.x is not a proper egg.
-          #'psycopgda',
+          # Versions 2.x is not a proper egg.
+          #'psycopg2',
           'setuptools',
           'zope.component',
           'zope.interface',
           'zope.rdb',
-          'zope.app.form',
+          'zope.datetime',
+          'zope.publisher',
           ],
       include_package_data = True,
       zip_safe = False,

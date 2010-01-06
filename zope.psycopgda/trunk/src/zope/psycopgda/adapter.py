@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002-2006 Zope Corporation and Contributors.
+# Copyright (c) 2002-2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,7 +16,8 @@
 $Id$
 """
 import datetime
-import psycopg
+import psycopg2
+import psycopg2.extensions
 import re
 import sys
 import zope.interface
@@ -285,13 +286,15 @@ def _get_string_conv(encoding):
     return _conv_string
 
 # User-defined types
-DATE = psycopg.new_type((DATE_OID,), "ZDATE", _conv_date)
-TIME = psycopg.new_type((TIME_OID,), "ZTIME", _conv_time)
-TIMETZ = psycopg.new_type((TIMETZ_OID,), "ZTIMETZ", _conv_timetz)
-TIMESTAMP = psycopg.new_type((TIMESTAMP_OID,), "ZTIMESTAMP", _conv_timestamp)
-TIMESTAMPTZ = psycopg.new_type((TIMESTAMPTZ_OID,), "ZTIMESTAMPTZ",
-                                _conv_timestamptz)
-INTERVAL = psycopg.new_type((INTERVAL_OID,), "ZINTERVAL", _conv_interval)
+DATE = psycopg2.extensions.new_type((DATE_OID,), "ZDATE", _conv_date)
+TIME = psycopg2.extensions.new_type((TIME_OID,), "ZTIME", _conv_time)
+TIMETZ = psycopg2.extensions.new_type((TIMETZ_OID,), "ZTIMETZ", _conv_timetz)
+TIMESTAMP = psycopg2.extensions.new_type(
+    (TIMESTAMP_OID,), "ZTIMESTAMP", _conv_timestamp)
+TIMESTAMPTZ = psycopg2.extensions.new_type(
+    (TIMESTAMPTZ_OID,), "ZTIMESTAMPTZ", _conv_timestamptz)
+INTERVAL = psycopg2.extensions.new_type(
+    (INTERVAL_OID,), "ZINTERVAL", _conv_interval)
 
 
 dsn2option_mapping = {'host': 'host',
@@ -302,15 +305,18 @@ dsn2option_mapping = {'host': 'host',
 
 def registerTypes(encoding):
     """Register type conversions for psycopg"""
-    psycopg.register_type(DATE)
-    psycopg.register_type(TIME)
-    psycopg.register_type(TIMETZ)
-    psycopg.register_type(TIMESTAMP)
-    psycopg.register_type(TIMESTAMPTZ)
-    psycopg.register_type(INTERVAL)
-    STRING = psycopg.new_type((CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
-                              "ZSTRING", _get_string_conv(encoding))
-    psycopg.register_type(STRING)
+    psycopg2.extensions.register_type(DATE)
+    psycopg2.extensions.register_type(TIME)
+    psycopg2.extensions.register_type(TIMETZ)
+    psycopg2.extensions.register_type(TIMESTAMP)
+    psycopg2.extensions.register_type(TIMESTAMPTZ)
+    psycopg2.extensions.register_type(INTERVAL)
+    STRING = psycopg.extensions.new_type(
+        (CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
+        "ZSTRING", _get_string_conv(encoding))
+    psycopg2.extensions.register_type(STRING)
+    psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
+
 
 class PsycopgAdapter(zope.rdb.ZopeDatabaseAdapter):
     """A PsycoPG adapter for Zope3.
@@ -348,15 +354,25 @@ class PsycopgAdapter(zope.rdb.ZopeDatabaseAdapter):
             if conn_info[dsnname]:
                 conn_list.append('%s=%s' % (optname, conn_info[dsnname]))
         conn_str = ' '.join(conn_list)
-        connection = psycopg.connect(conn_str)
+        connection = psycopg2.connect(conn_str)
 
         # Ensure we are in SERIALIZABLE transaction isolation level.
         # This is the default under psycopg1, but changed to READ COMMITTED
         # under psycopg2. This should become an option if anyone wants
         # different isolation levels.
-        connection.set_isolation_level(3)
+        connection.set_isolation_level(
+            psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE)
 
         return connection
+
+    def disconnect(self):
+        if self.isConnected():
+            try:
+                self._v_connection.close()
+            except psycopg2.InterfaceError:
+                pass
+
+            self._v_connection = None
 
 
 def _handle_psycopg_exception(error):
@@ -365,18 +381,7 @@ def _handle_psycopg_exception(error):
     If we have a serialization exception or a deadlock, we should retry the
     transaction by raising a Retry exception. Otherwise, we reraise.
     """
-    if not error.args:
-        raise
-    msg = error.args[0]
-    # These messages are from PostgreSQL 8.0. They may change between
-    # PostgreSQL releases - if so, the different messages should be added
-    # rather than the existing ones changed so this logic works with
-    # different versions.
-    if msg.startswith(
-            'ERROR:  could not serialize access due to concurrent update'
-            ):
-        raise Retry(sys.exc_info())
-    if msg.startswith('ERROR:  deadlock detected'):
+    if isinstance(error, psycopg2.extensions.TransactionRollbackError):
         raise Retry(sys.exc_info())
     raise
 
@@ -405,7 +410,7 @@ class PsycopgCursor(zope.rdb.ZopeCursor):
         """See IZopeCursor"""
         try:
             return zope.rdb.ZopeCursor.execute(self, operation, parameters)
-        except psycopg.Error, error:
+        except psycopg2.Error, error:
             _handle_psycopg_exception(error)
 
     def executemany(operation, seq_of_parameters=None):

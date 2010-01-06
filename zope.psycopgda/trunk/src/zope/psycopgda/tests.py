@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002-2004 Zope Corporation and Contributors.
+# Copyright (c) 2002-2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,7 +16,7 @@
 $Id$
 """
 import datetime
-import psycopg
+import psycopg2
 import zope.psycopgda.adapter as adapter
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.psycopgda.adapter import _conv_date, _conv_time, _conv_timestamp
@@ -59,10 +59,10 @@ class PsycopgStub(object):
 
     __shared_state = {}     # 'Borg' design pattern
 
-    DATE = psycopg.DATE
-    TIME = psycopg.TIME
-    DATETIME = psycopg.DATETIME
-    INTERVAL = psycopg.INTERVAL
+    DATE = psycopg2.DATE
+    TIME = psycopg2.TIME
+    DATETIME = psycopg2.DATETIME
+    INTERVAL = psycopg2.INTERVAL
 
     def __init__(self):
         self.__dict__ = self.__shared_state
@@ -179,11 +179,11 @@ class TestPsycopgTypeConversion(TestCase):
 class TestPsycopgAdapter(TestCase):
 
     def setUp(self):
-        self.real_psycopg = adapter.psycopg
-        adapter.psycopg = self.psycopg_stub = PsycopgStub()
+        self.real_psycopg = adapter.psycopg2
+        adapter.psycopg2 = self.psycopg_stub = PsycopgStub()
 
     def tearDown(self):
-        adapter.psycopg = self.real_psycopg
+        adapter.psycopg2 = self.real_psycopg
 
     def test_connection_factory(self):
         a = adapter.PsycopgAdapter(
