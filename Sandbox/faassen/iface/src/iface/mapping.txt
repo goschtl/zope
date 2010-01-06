@@ -34,12 +34,22 @@ Now we create a mapping::
   >>> map[a] = u'Value for A'
   >>> map[a]
   u'Value for A'
+
+If we recreate the MapKey (with the same parents, in this case none),
+we can still look up the same value::
+
+  >>> a_new = MapKey('a')
+  >>> map[a_new]
+  u'Value for A'
+
+Once we delete the entry we cannot look it up anymore::
+
   >>> del map[a]
   >>> map[a]
   Traceback (most recent call last):
     ...
   KeyError: <MapKey: 'a'>
- 
+  
 We now register something for ``b``::
 
   >>> map[b] = u'Value for B'

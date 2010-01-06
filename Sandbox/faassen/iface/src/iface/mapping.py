@@ -17,6 +17,9 @@ class MapKey(object):
     def __hash__(self):
         return hash(self.key)
 
+    def __eq__(self, other):
+        return self.key == other.key
+
     def __repr__(self):
         return "<MapKey: %r>" % self.key
 
