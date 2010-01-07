@@ -4,6 +4,8 @@ Changelog
 0.1.7 (unreleased)
 ------------------
 
+- Update version: zope.tales = 3.5.0
+
 0.1.6 (2010-01-07)
 ------------------
 
