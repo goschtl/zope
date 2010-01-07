@@ -7,13 +7,14 @@ BlueBream
 Introduction
 ------------
 
-BlueBream makes it easy to setup a new project using Zope packages.
-BlueBream generate a project directory from a template called
-``bluebream``.  The template is created using `PasteScript
-<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
-Deatailed documentation about BlueBream is available here:
-`http://packages.python.org/bluebream
-<http://packages.python.org/bluebream>`_
+`BlueBream <http://packages.python.org/bluebream>`_ makes it easy to
+setup a new project using Zope packages.  BlueBream generate a
+project directory from a template called ``bluebream``.  The template
+is created using `PasteScript
+<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.  The
+source code is managed at `Zope reposistory
+<http://svn.zope.org/bluebream>`_.  The bugs and issues are tracked
+at `launchpad <http://launchpad.net/bluebream>`_.
 
 .. raw:: html
 
