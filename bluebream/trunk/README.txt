@@ -133,7 +133,7 @@ Resources
 - The bugs and issues are tracked at `launchpad
   <https://launchpad.net/bluebream>`_.
 
-- The is also `Wiki <http://wiki.zope.org/bluebream>`_
+- There is also a `Wiki <http://wiki.zope.org/bluebream>`_ available.
 
 - `PyPI page <http://pypi.python.org/pypi/bluebream>`_
 
