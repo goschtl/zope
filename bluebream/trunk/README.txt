@@ -11,10 +11,7 @@ Introduction
 setup a new project using Zope packages.  BlueBream generate a
 project directory from a template called ``bluebream``.  The template
 is created using `PasteScript
-<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.  The
-source code is managed at `Zope reposistory
-<http://svn.zope.org/bluebream>`_.  The bugs and issues are tracked
-at `launchpad <http://launchpad.net/bluebream>`_.
+<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
 
 .. raw:: html
 
@@ -119,3 +116,29 @@ folder. which can be accessed here: http://localhost:8080/@@index
 
 You can continue reading about BlueBream from the `documentation site
 <http://packages.python.org/bluebream>`_.
+
+Resources
+---------
+
+- The source code is managed at `Zope reposistory
+  <http://svn.zope.org/bluebream>`_.  You can checkout the trunk code
+  like this (Anonymous access)::
+
+    svn co svn://svn.zope.org/repos/main/bluebream/trunk bluebream
+
+  You can also `become a contributor after signing a contributor
+  agreement
+  <http://docs.zope.org/developer/becoming-a-contributor.html>`_.
+
+- The bugs and issues are tracked at `launchpad
+  <https://launchpad.net/bluebream>`_.
+
+- The is also `Wiki <http://wiki.zope.org/bluebream>`_
+
+- `PyPI page <http://pypi.python.org/pypi/bluebream>`_
+
+- `Documentation <http://packages.python.org/bluebream>`_
+
+- `Mailing list <https://mail.zope.org/mailman/listinfo/zope3-users>`_
+
+- IRC Channel: `#bluebream <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_ at irc.freenode.net
