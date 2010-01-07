@@ -208,6 +208,26 @@ registered in at least one component::
   Traceback (most recent call last):
     ...
   KeyError: <MapKey: 'two'>
+  >>> multimap[(beta, one)]
+  Traceback (most recent call last):
+    ...
+  KeyError: <MapKey: 'one'>
+
+After we provide a value for the least specific combination now, all of the
+latter look-ups will succeed by falling back to that value::
+
+  >>> multimap[(alpha, one)] = u'Value for alpha, one'
+
+  >>> multimap[(alpha, one)]
+  u'Value for alpha, one'
+  >>> multimap[(alpha, two)]
+  u'Value for alpha, one'
+  >>> multimap[(beta, one)]
+  u'Value for alpha, one'
+
+Note that in the case of looking up ``beta, one``, the look-up algorithm
+resorts to considering registered keys starting with the less specific
+``alpha`` in order to satisfy the requirement of the second component.
 
 next: multi lookup. What is the behavior of zope.interface? Do earlier
 entries in the lookup list always weigh more heavily than the second

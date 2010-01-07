@@ -49,7 +49,7 @@ class MultiMap(object):
         self._by_arity = {}
         
     def __setitem__(self, key, value):
-        arity = len(key)
+        arity = MapKey(len(key))
         key = (arity,) + tuple(key)
         map = self._by_arity
         for k in key[:-1]:
@@ -60,7 +60,7 @@ class MultiMap(object):
         map[key[-1]] = value
 
     def __delitem__(self, key):
-        arity = len(key)
+        arity = MapKey(len(key))
         key = (arity,) + tuple(key)
         map = self._by_arity
         for k in key[:-1]:
@@ -68,10 +68,16 @@ class MultiMap(object):
         del map[key[-1]]
 
     def __getitem__(self, key):
-        arity = len(key)
-        key = (arity,) + tuple(key)
+        arity = MapKey(len(key))
         map = self._by_arity
-        for k in key[:-1]:
-            map = map[k]
-        return map[key[-1]]
+        return self._getitem_recursive(map, arity, *key)
 
+    def _getitem_recursive(self, map, k, *key):
+        if not key:
+            return map[k]
+        for parent in k._parent_mapkeys:
+            try:
+                return self._getitem_recursive(map[parent], *key)
+            except KeyError, e:
+                pass
+        raise e
