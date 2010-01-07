@@ -8,7 +8,7 @@ Introduction
 ------------
 
 `BlueBream <http://packages.python.org/bluebream>`_ makes it easy to
-setup a new project using Zope packages.  BlueBream generate a
+setup a new project using Zope packages.  BlueBream generates a
 project directory from a template called ``bluebream``.  The template
 is created using `PasteScript
 <http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
