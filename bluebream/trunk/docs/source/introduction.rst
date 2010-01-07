@@ -41,7 +41,7 @@ common gateway interface (CGI) programming, despite not knowing very
 much about the subject. CGI programming is a commonly-used web
 development model that allows developers to construct dynamic
 websites. On his way to the class, Jim studied all the existing
-documentation on CGI. On the way back, Jim considered what he didn’t
+documentation on CGI. On the way back, Jim considered what he didn't
 like about traditional, CGI-based programming environments. From
 these initial musings, the core of Zope was written while flying back
 from the CGI class.
