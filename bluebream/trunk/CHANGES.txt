@@ -1,11 +1,12 @@
 Changelog
 *********
 
-0.1.5 (unreleased)
+0.1.5 (2010-01-07)
 ------------------
 
 - LP #503388: Value of "namespace_package" should not be
   empty string. 
+- Updated description, added promotional video.
 
 0.1.4 (2010-01-04)
 ------------------
