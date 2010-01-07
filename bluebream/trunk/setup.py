@@ -34,6 +34,16 @@ setup(
         'Download\n'
         '********'),
     license="Zope Public License",
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Framework :: Zope3',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: WSGI',
+        ],
     packages=find_packages("src"),
     package_dir={"": "src"},
     zip_safe=False,

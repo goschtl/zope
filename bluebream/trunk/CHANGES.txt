@@ -5,6 +5,8 @@ Changelog
 ------------------
 
 - LP #502819: Main page after a fresh installation
+- Removed ``hello`` view from template.
+- LP #502941: Add trove classifiers.
 
 0.1.5 (2010-01-07)
 ------------------
