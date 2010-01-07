@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.1.6 (unreleased)
+0.1.6 (2010-01-07)
 ------------------
 
 - LP #502819: Main page after a fresh installation
