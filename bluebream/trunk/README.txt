@@ -17,7 +17,13 @@ Deatailed documentation about BlueBream is available here:
 
 .. raw:: html
 
-  <object width="480" height="295"><param name="movie" value="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="295"></embed></object>
+  <object width="480" height="295"><param name="movie"
+  value="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&">
+  </param> <param name="allowFullScreen" value="true"></param><param
+  name="allowscriptaccess" value="always"></param><embed
+  src="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&"
+  type="application/x-shockwave-flash" allowscriptaccess="always"
+  allowfullscreen="true" width="480" height="295"></embed></object>
 
 Features
 --------
@@ -107,8 +113,8 @@ To run the server::
 
   $ ./bin/paster serve debug.ini
 
-There is a view named ``hello`` registered by default. which can be
-accessed here: http://localhost:8080/@@hello
+There is a view named ``index`` registered by default for root
+folder. which can be accessed here: http://localhost:8080/@@index
 
 You can continue reading about BlueBream from the `documentation site
 <http://packages.python.org/bluebream>`_.

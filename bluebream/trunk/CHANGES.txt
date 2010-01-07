@@ -4,6 +4,8 @@ Changelog
 0.1.6 (unreleased)
 ------------------
 
+- LP #502819: Main page after a fresh installation
+
 0.1.5 (2010-01-07)
 ------------------
 

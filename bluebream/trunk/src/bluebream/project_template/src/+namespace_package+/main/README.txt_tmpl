@@ -7,6 +7,6 @@ Open browser and test::
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
-  >>> browser.open('http://localhost/@@hello')
-  >>> browser.contents
-  'Hello'
+  >>> browser.open('http://localhost/@@index')
+  >>> 'Welcome to BlueBream' in browser.contents
+  True
