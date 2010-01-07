@@ -25,7 +25,7 @@ setup(
     author_email="zope-dev@zope.org",
     url="http://packages.python.org/bluebream",
     download_url="http://pypi.python.org/pypi/bluebream",
-    description="Script to setup a Zope project directory.",
+    description="The Zope Web Framework",
     long_description=(
         read('README.txt')
         + '\n\n' +
