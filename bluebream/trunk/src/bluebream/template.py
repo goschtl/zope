@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
+import sys
 from paste.script import templates
 from paste.script.templates import var
 
@@ -20,6 +20,7 @@ class BlueBream(templates.Template):
 
     _template_dir = 'project_template'
     summary = "A Zope project"
+
     vars = [
         var('namespace_package', 'Namespace package name'),
         var('version', 'Version (like 0.1)', default='0.1'),
@@ -35,3 +36,19 @@ class BlueBream(templates.Template):
             default=False),
         ]
 
+    def check_vars(self, vars, cmd):
+
+        if vars['package'] in ('bluebream', 'bream', 'zope'):
+            print
+            print "Error: The chosen project name results in an invalid " \
+                "package name: %s." % vars['package']
+            print "Please choose a different project name."
+            sys.exit(1)
+
+        for var in self.vars:
+            if var.name == 'namespace_package':
+                var.default = vars['package']
+
+        vars = templates.Template.check_vars(self, vars, cmd)
+
+        return vars

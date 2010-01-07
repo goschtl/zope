@@ -4,6 +4,9 @@ Changelog
 0.1.5 (unreleased)
 ------------------
 
+- LP #503388: Value of "namespace_package" should not be
+  empty string. 
+
 0.1.4 (2010-01-04)
 ------------------
 
