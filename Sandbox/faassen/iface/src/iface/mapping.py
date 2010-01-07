@@ -50,22 +50,24 @@ class MultiMap(object):
         
     def __setitem__(self, key, value):
         arity = MapKey(len(key))
-        key = (arity,) + tuple(key)
+        key = [arity] + list(key)
+        last_key = key.pop()
         map = self._by_arity
-        for k in key[:-1]:
+        for k in key:
            submap = dict(map).get(k)
            if submap is None:
                submap = map[k] = Map()
            map = submap
-        map[key[-1]] = value
+        map[last_key] = value
 
     def __delitem__(self, key):
         arity = MapKey(len(key))
-        key = (arity,) + tuple(key)
+        key = [arity] + list(key)
+        last_key = key.pop()
         map = self._by_arity
-        for k in key[:-1]:
+        for k in key:
             map = dict(map)[k]
-        del map[key[-1]]
+        del map[last_key]
 
     def __getitem__(self, key):
         arity = MapKey(len(key))
