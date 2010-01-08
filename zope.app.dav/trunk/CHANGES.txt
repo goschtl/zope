@@ -5,6 +5,7 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
+- Fix tests using a newer zope.publisher that requires zope.login.
 
 3.5.1 (2009-09-15)
 ------------------
