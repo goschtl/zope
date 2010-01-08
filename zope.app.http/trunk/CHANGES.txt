@@ -9,6 +9,8 @@ CHANGES
 
 - Made the dependency on zope.app.publisher explicit
 
+- Fix tests using a newer zope.publisher that requires zope.login.
+
 3.6.0 (2009-05-23)
 ------------------
 

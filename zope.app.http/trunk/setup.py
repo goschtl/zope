@@ -60,7 +60,7 @@ setup(name='zope.app.http',
                 'zope.login',]),
       install_requires=['setuptools',
                         'zope.interface',
-                        'zope.publisher>=3.8.0',
+                        'zope.publisher>=3.12',
                         'zope.container',
                         'zope.filerepresentation',
                         'zope.app.publisher',  # for browser:defaultView
