@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+3.5.1 (2010-01-08)
+------------------
+
+- Use ``zope.pagetemplate`` instead of ``zope.app.pagetemplate``.
+
+- Fix tests using a newer zope.publisher that requires zope.login.
+
+3.5.0 (2009-01-31)
+------------------
+
+- Use ``zope.container`` instead of ``zope.app.container``.
+
+- Use ``zope.site`` instead of ``zope.app.folder``. Add missing
+  dependency on ``zope.site``.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+3.4.0 (2007-10-03)
+------------------
+
+- Initial public release as an individual package.
+
