@@ -81,7 +81,7 @@ bootstrap.py.  First you need to bootstrap the buildout itself::
 
 After bootstrap, run the buildout::
 
-  $ ./bin/buidout
+  $ ./bin/buildout
 
 To run test cases::
 
@@ -91,8 +91,7 @@ To run the server::
 
   $ ./bin/paster serve debug.ini
 
-There is a view named ``hello`` registered by default. which can be
-accessed here: http://localhost:8080/@@hello
+The server can be accessed at http://localhost:8080/ now.
 
 Package directory structure
 ---------------------------
