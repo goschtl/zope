@@ -26,5 +26,6 @@ from zope.formlib.widget import (
     UnicodeDisplayWidget,
     renderTag,
     renderElement,
+    escape,
     setUp,
     tearDown)
