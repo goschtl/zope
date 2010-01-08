@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.8.1 (unreleased)
+3.8.1 (2010-01-08)
 ------------------
 
 - Removed unneeded dependencies on zope.app.publisher and zope.app.form, moved
