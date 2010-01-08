@@ -10,6 +10,8 @@ CHANGES
 
 - Update package's description and mailing list address.
 
+- Fix tests using a newer zope.publisher that requires zope.login.
+
 3.5.1 (2009-01-27)
 ------------------
 
