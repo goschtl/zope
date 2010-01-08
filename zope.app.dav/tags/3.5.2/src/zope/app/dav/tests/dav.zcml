@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:dav="http://namespaces.zope.org/dav">
+
+  <include package="zope.app.dav" file="meta.zcml"/>
+
+  <dav:provideInterface 
+      for="http://www.zope3.org/dav-schema"
+      interface=".test_directives.ISchema" />
+ 
+</configure>
