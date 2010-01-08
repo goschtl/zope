@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-4.0 (unreleased)
+4.0 (2010-01-08)
 ================
 
 - The widget implementations have been moved to zope.formlib. This
