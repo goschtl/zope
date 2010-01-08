@@ -7,6 +7,8 @@ CHANGES
 
 - Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
+- Use zope.login and zope.publisher 3.12 to fix tests.
+
 3.4.1 (2007-10-31)
 ------------------
 
