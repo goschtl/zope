@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.7.4 (2009-12-19)
+3.7.5 (2010-01-08)
 ------------------
 
 - Move 'zope.ManageApplication' permission to zope.app.applicationcontrol
