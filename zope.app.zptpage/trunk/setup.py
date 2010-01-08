@@ -64,7 +64,7 @@ setup(
                       'zope.index',
                       'zope.interface',
                       'zope.pagetemplate',
-                      'zope.publisher',
+                      'zope.publisher >= 3.12',
                       'zope.schema',
                       'zope.security',
                       'zope.site',

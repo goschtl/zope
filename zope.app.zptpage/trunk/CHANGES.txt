@@ -7,6 +7,8 @@ CHANGES
 
 - Use ``zope.pagetemplate`` instead of ``zope.app.pagetemplate``.
 
+- Fix tests using a newer zope.publisher that requires zope.login.
+
 3.5.0 (2009-01-31)
 ------------------
 
