@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-4.1 (unreleased)
-================
+4.0.1 (2010-01-08)
+==================
 
-- Nothing changed yet.
+- Import 'escape' for backwards compatibility as packages turn out to be
+  importing this too, even though it's actually from the Python standard
+  library.
+
+- Widget documentation is now on PyPI too.
 
 
 4.0 (2010-01-08)
