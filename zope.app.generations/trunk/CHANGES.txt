@@ -10,6 +10,8 @@ CHANGES
 
 - Fix ftesting.zcml due to ``zope.securitypolicy`` update.
 
+- Fix tests using a newer zope.publisher that requires zope.login.
+
 3.5.0 (2009-04-05)
 ------------------
 
