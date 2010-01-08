@@ -7,6 +7,8 @@ CHANGES
 
 - Move 'zope.ManageApplication' permission to zope.app.applicationcontrol
 
+- Fix tests using a newer zope.publisher that requires zope.login.
+
 3.7.3 (2009-11-29)
 ------------------
 
