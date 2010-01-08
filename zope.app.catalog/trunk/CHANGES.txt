@@ -11,6 +11,8 @@ CHANGES
 - Import hooks functionality from zope.component after it was moved there from
   zope.site. This lifts the test dependency on zope.site.
 
+- Use new zope.publisher that requires zope.login.
+
 3.8.0 (2009-02-01)
 ------------------
 

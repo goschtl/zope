@@ -61,6 +61,7 @@ setup(name = 'zope.app.catalog',
                 'zope.app.zcmlfiles',
                 'zope.app.zptpage',
                 'zope.login',
+                'zope.publisher >= 3.12',
                 ]),
       install_requires = [
           'setuptools',
