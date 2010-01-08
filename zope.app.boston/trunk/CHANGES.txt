@@ -2,11 +2,10 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix test bug (in combination with a newer zope.app.securitypolicy).
 
 3.5.0 (2010-01-05)
 ------------------
