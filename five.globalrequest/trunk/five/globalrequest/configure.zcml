@@ -4,7 +4,7 @@
 
     <subscriber
         for="ZPublisher.interfaces.IPubStart"
-        handler=".hooks.set"
+        handler=".hooks.set_"
         />
     
     <subscriber
