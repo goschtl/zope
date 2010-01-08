@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2010-01-08)
 ------------------
 
 - Require zope.browserpage which now contains ``namedtemplate``.
