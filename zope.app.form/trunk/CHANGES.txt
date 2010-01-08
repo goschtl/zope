@@ -2,9 +2,12 @@
 CHANGES
 =======
 
-3.12.2 (unreleased)
-===================
+4.0 (unreleased)
+================
 
+- The widget implementations have been moved to zope.formlib. This
+  makes this package depend on zope.formlib. The dependency of zope.formlib
+  on this package has been broken.
 
 3.12.1 (2009-12-22)
 ===================
