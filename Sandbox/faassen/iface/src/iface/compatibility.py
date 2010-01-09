@@ -15,6 +15,8 @@ class CompatibilityAdapterRegistry(object):
 
     def lookup(self, required, provided, name='', default=None):
         required = map(ZopeInterfaceMapKey, required)
-        return self._map[required]
-    
+        try:
+            return self._map[required]
+        except KeyError:
+            return None
     
