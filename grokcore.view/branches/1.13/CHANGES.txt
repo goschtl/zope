@@ -4,7 +4,10 @@ Changes
 1.14 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Require zope.login.
+
+- Require newer versions of zope.app.exception and zope.app.pagetemplate
+  addressing launchpad issue 499633.
 
 
 1.13.1 (2009-12-15)
