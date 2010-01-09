@@ -30,7 +30,7 @@ Technical Decisions
 
 - BlueBream 1.0 should provide an upgradation path from Zope 3.4 ZTK
 
-- BlueBream can be called as "Bream" for short.
+- BlueBream can be called as Bream and BB for short.
 
 Notes for developers
 --------------------
