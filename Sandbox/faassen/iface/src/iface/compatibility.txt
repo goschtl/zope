@@ -1,0 +1,26 @@
+Compatibility with zope.interface
+=================================
+
+The goal of iface to be behavior-compatible with zope.interface and
+zope.component. We also intend to eventually provide support for
+zope.interface. We test the backwards compatibility here. The idea is
+that this test is run twice, once with the AdapterRegistry from
+zope.interface, and once with the compatible
+CompatibilityAdapterRegistry provided by iface.
+
+  >>> from zope.interface import Interface
+  >>> class IA(Interface):
+  ...     pass
+  >>> class IB(IA):
+  ...     pass
+  >>> class IC(IA):
+  ...     pass
+  >>> class ID(IB, IC):
+  ...      pass
+  >>> class ILookup(Interface):
+  ...      "A simple interface to look up"
+
+  >>> reg = AdapterRegistry()
+  >>> reg.register((IA,), ILookup, '', u'Value for A')
+  >>> reg.lookup((IA,), ILookup)
+  u'Value for A'
