@@ -8,8 +8,8 @@ Welcome to BlueBream's documentation!
    introduction
    gettingstarted
    tutorial
-   reference
    faq
+   reference
 
 Indices and tables
 ==================
