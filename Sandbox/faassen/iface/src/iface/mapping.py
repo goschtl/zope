@@ -74,6 +74,8 @@ class MultiMap(object):
         map = self._by_arity
         return self._getitem_recursive(map, arity, *key)
 
+    # XXX missing exact_getitem, exact_get
+
     def _getitem_recursive(self, map, k, *key):
         if not key:
             return map[k]
