@@ -36,6 +36,8 @@ setup(name='iface',
       include_package_data=True,
       zip_safe=False,
       install_requires=['setuptools',
+                        'zope.interface',
+                        'zope.component',
                         ],
       entry_points="""
       # Add entry points here
