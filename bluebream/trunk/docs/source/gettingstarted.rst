@@ -96,15 +96,17 @@ The server can be accessed at http://localhost:8080/ now.
 Package directory structure
 ---------------------------
 
-::
+The default directory structure created by the "bluebream" paster
+template will looks like this::
 
   myproject/
-  |-- bootstrap.py                   
-  |-- buildout.cfg        
+  |-- bootstrap.py
+  |-- buildout.cfg
   |-- debug.ini
   |-- deploy.ini
   |-- etc/
-  |   `-- site.zcml
+  |   |-- site.zcml
+  |   `-- zope.conf
   |-- setup.py
   |-- src/
   |   |-- mynamespace.egg-info/
@@ -112,7 +114,7 @@ Package directory structure
   |       |-- __init__.py
   |       `-- main/
   |           |-- application.zcml
-  |           |-- configure.zcml          
+  |           |-- configure.zcml
   |           |-- ftesting.zcml
   |           |-- __init__.py
   |           |-- README.txt
@@ -121,5 +123,89 @@ Package directory structure
   |           |-- tests.py
   |           `-- views.py
   |-- templates/
+  |   `-- zope_conf.in
   |-- var/
   `-- versions.cfg
+  
+The name of toplevel directory will be always what you gave as
+project name in the wizard.  The name of egg also will be same as
+that of package name by default.  But if you want, you can change it
+to something else from "setup.py".  Here are the details about other
+files inside the project.
+
++-------------------------------------------+--------------------------------------------------+
+| Directories & Files                       | Purpose                                          |
++===========================================+==================================================+
+| bootstrap.py                              | Bootstrap script for Buildout                    |
++-------------------------------------------+--------------------------------------------------+
+| buildout.cfg                              | The buildout configuration                       |
++-------------------------------------------+--------------------------------------------------+
+| debug.ini                                 | The PasteDeploy configuration for development    |
++-------------------------------------------+--------------------------------------------------+
+| deploy.ini                                | The PasteDeploy configuration for deployment     |
++-------------------------------------------+--------------------------------------------------+
+| etc/                                      | A location to add configuration files            |
++-------------------------------------------+--------------------------------------------------+
+| etc/site.zcml                             | The main ZCML file                               |
++-------------------------------------------+--------------------------------------------------+
+| etc/zope.conf                             | The main Zope configuration file (generated      |
+|                                           | from template)                                   |
++-------------------------------------------+--------------------------------------------------+
+| setup.py                                  | Project meta-data for creating distribution      |
++-------------------------------------------+--------------------------------------------------+
+| src/                                      | All source code will be residing inside this     |
+|                                           | directory                                        |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace.egg-info/                 | This is where all distribution related info      |
+|                                           | residing                                         |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/                          | The namespace package                            |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/__init__.py               | This file with default content would be enough   |
+|                                           | to make this a namespace package.                |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/                     | This is the main package which contains your     |
+|                                           | application code.                                |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/application.zcml     | Boiler plate ZCML to include other application   |
+|                                           | specific ZCMLs.  Now only the main package is    |
+|                                           | included, you can add other ZCMLs from here.     |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/configure.zcml       | You can customize this ZCML which is included    |
+|                                           | from application.zcml                            |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/ftesting.zcml        | ZCML for functional testing                      |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/__init__.py          | The main package                                 |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/README.txt           | main packages's readme                           |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/securitypolicy.zcml  | security policy declarations which is included   |
+|                                           | from site.zcml                                   |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/startup.py           | This script is called by WSGI server to start    |
+|                                           | the application. (Mostly boiler plate)           |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/tests.py             | Boiler plate to register tests.                  |
++-------------------------------------------+--------------------------------------------------+
+| src/mynamespace/main/views.py             | An example view.                                 |
++-------------------------------------------+--------------------------------------------------+
+| templates/                                | Buildout specific templates used by              |
+|                                           | "collective.recipe.template"                     |
++-------------------------------------------+--------------------------------------------------+
+| templates/zope_conf.in                    | Zope conf template, modify this file for any     |
+|                                           | change in zope.conf                              |
++-------------------------------------------+--------------------------------------------------+
+| var/                                      | A place holder directory for storing all ZODB    |
+|                                           | files, log files etc.                            |
++-------------------------------------------+--------------------------------------------------+
+| versions.cfg                              | All versions of files can be pinned down here.   |
++-------------------------------------------+--------------------------------------------------+
+
+The next section will explain how to create a hello world view.
+
+Hello World
+-----------
+
+Conclusion
+----------
