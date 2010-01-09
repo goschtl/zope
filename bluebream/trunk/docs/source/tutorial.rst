@@ -4,13 +4,16 @@ Tutorial
 Introduction
 ------------
 
-The `Getting Started <gettingstarted.html>`_ chapater also 
+In the `Getting Started <gettingstarted.html>`_ chapater you learned
+how to install BlueBream and create a new project using the
+``bluebream`` project template.  In this chapter we will explore
+creating a simple ticket collector application.
 
 Starting new project
 --------------------
 
-LMS: Your first BlueBream application
--------------------------------------
+Ticket Collector: Your first BlueBream application
+--------------------------------------------------
 
 Creating the application object
 -------------------------------
@@ -29,4 +32,3 @@ Conclusion
   discussion thread.</a></noscript><a href="http://disqus.com"
   class="dsq-brlink">blog comments powered by <span
   class="logo-disqus">Disqus</span></a>
-
