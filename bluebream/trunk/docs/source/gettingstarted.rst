@@ -8,7 +8,13 @@ This chapter walks through the process involved in creating a new
 project using BlueBream.  The Preparations section gives you an idea
 about what are the preparation you need to make to proceed with the
 further steps.  The Installation section gives an overview of
-installing a BlueBream.
+installing a BlueBream.  "Creating a sample project" section explains
+creating an example project using ``bluebream`` project template.
+The next section shows how to build the application.  Basic usage
+section explains the basic usage of project.  The "Package directory
+structure" shows the directory structure and decribe each directories
+and files purpose.  "Hello World" sections shows how to create a
+hello page.
 
 Preparations
 ------------
@@ -86,7 +92,7 @@ Building the application
 ------------------------
 
 The generated package include a buildout configuration file and
-bootstrap.py.  First you need to bootstrap the buildout itself::
+``bootstrap.py``.  First you need to bootstrap the buildout itself::
 
   $ cd sampleproject
   $ python2.6 bootstrap.py
@@ -227,3 +233,5 @@ file named ``myhello.py`` at ``src/mynamespace/main/myhello.py``
 
 Conclusion
 ----------
+
+This chapter introdued BlueBream
