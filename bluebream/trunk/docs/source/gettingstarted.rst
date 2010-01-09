@@ -228,10 +228,37 @@ The next section will explain how to create a hello world view.
 Hello World
 -----------
 
-To create a page which displays "Hello World", first create a view
-file named ``myhello.py`` at ``src/mynamespace/main/myhello.py``
+To create a page which displays "Hello World", you need to create a
+view and then register it using ``browser:page`` ZCML directive.  Add
+a Python file named ``myhello.py`` at
+``src/mynamespace/main/myhello.py``::
+
+  $ touch src/mynamespace/main/myhello.py
+
+You can define your browser view inside this module.  All browser
+views should implement
+``zope.publisher.interfaces.browser.IBrowserView`` interface.
+
+The content of this file could be like this::
+
+  from zope.publisher.browser import BrowserView
+
+  class HelloView(BrowserView):
+
+      def __call__(self):
+          return "Hello"
 
 Conclusion
 ----------
 
-This chapter introdued BlueBream
+This chapter exaplained about getting started with application
+development using BlueBream.
+
+.. raw:: html
+
+  <div id="disqus_thread"></div><script type="text/javascript"
+  src="http://disqus.com/forums/bluebream/embed.js"></script><noscript><a
+  href="http://disqus.com/forums/bluebream/?url=ref">View the
+  discussion thread.</a></noscript><a href="http://disqus.com"
+  class="dsq-brlink">blog comments powered by <span
+  class="logo-disqus">Disqus</span></a>
