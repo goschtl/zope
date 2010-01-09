@@ -237,7 +237,10 @@ a Python file named ``myhello.py`` at
 
 You can define your browser view inside this module.  All browser
 views should implement
-``zope.publisher.interfaces.browser.IBrowserView`` interface.
+``zope.publisher.interfaces.browser.IBrowserView`` interface.  An
+easy way to do this would be to inherit from
+``zope.publisher.browser.BrowserView`` which is already implementing
+the ``IBrowserView`` interface.
 
 The content of this file could be like this::
 
@@ -247,6 +250,23 @@ The content of this file could be like this::
 
       def __call__(self):
           return "Hello"
+
+Now you can register this view for a particular interface.  So that
+it will be available as a browser view for any object which implement
+this.  At this point you can register this for root folder which is
+implementing ``zope.site.interfaces.IRootFolder`` interface.
+
+So the registration could be like this::
+
+  <page
+     for="zope.site.interfaces.IRootFolder"
+     name="hello"
+     permission="zope.Public"
+     class=".myhello.HelloView"
+     />
+
+You can add this to: ``src/mynamespace/main/configure.zcml``.
+Run the application and visit: http://localhost:8080/@@hello
 
 Conclusion
 ----------
