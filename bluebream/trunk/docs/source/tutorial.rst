@@ -9,11 +9,25 @@ how to install BlueBream and create a new project using the
 ``bluebream`` project template.  In this chapter we will explore
 creating a simple ticket collector application.
 
+Befire proceeding, we will see the user stories:
+
+ 1. Individual small ticket collector for each project.  Many
+    collectors can be added to one running zope.
+
+ 2. Any number of tickets can be added to one collector.
+
+ 3. Each ticket will be added with a description and one initial
+    comment.
+
+ 4. Additional comments can be added to tickets.
+
+
 Starting new project
 --------------------
 
 Ticket Collector: Your first BlueBream application
 --------------------------------------------------
+
 
 Creating the application object
 -------------------------------
