@@ -18,6 +18,7 @@ install_requires = [
     'zope.browserresource >= 3.9.0',
     'zope.component',
     'zope.interface',
+    'zope.login',
     'zope.pagetemplate',
     'zope.ptresource >= 3.9.0',
     'zope.publisher',
