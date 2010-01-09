@@ -1,7 +1,9 @@
 Technical Decisions
 -------------------
 
-- BlueBream should be called as a "web framework".
+- BlueBream is a "web framework".
+
+- BlueBream can be called as Bream or BB for short.
 
 - The only public API exposed by "bluebream - the package"
   is an entry point::
@@ -15,9 +17,10 @@ Technical Decisions
   option to change "bluebream" as a namespace package if required.
 
 - All the framework code will be using "zope" or "zope.app" namespace
-  packages.
+  packages.  Although "bream" could be considerd as a namespace
+  package in future.
 
-- "bluebream" the package mainly consists
+- "bluebream" the project consists
 
    - documentation
 
@@ -30,7 +33,6 @@ Technical Decisions
 
 - BlueBream 1.0 should provide an upgradation path from Zope 3.4 ZTK
 
-- BlueBream can be called as Bream and BB for short.
 
 Notes for developers
 --------------------
