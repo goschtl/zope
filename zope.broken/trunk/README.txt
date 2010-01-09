@@ -1,12 +1,11 @@
-==================
-zope.broken README
-==================
+Overview
+========
 
-This package defines a marker interface, ``zope.broken.IBroken``, used
-to identify objects which cannot be correctly loaded from the ZODB,
-typically because the class named in their pickle is not importable.
+This package is obsolete and its functionality has been merged into the ZODB3
+distribution itself. If you use version 3.10 or later of ZODB3, please change
+your imports of the IBroken interface to a direct::
 
-The package exists as a dependency inversion, preventing packages which
-need to use this interface (e.g., ``zope.container``) from inheriting
-the dependencies of ``zope.app.broken`` (where the interface used to be
-defined).
+  from ZODB.interfaces import IBroken
+
+You can use this package with older versions of the ZODB3, which didn't have
+the IBroken interface yet.

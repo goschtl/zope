@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""zope.app.broken interfaces.
+"""zope.broken interfaces.
 
 $Id: interfaces.py 72735 2007-02-21 05:02:33Z baijum $
 """
@@ -20,6 +20,9 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 
-class IBroken(zope.interface.Interface):
-    """Marker interface for broken objects
-    """
+try:
+    from ZODB.interfaces import IBroken
+except ImportError:
+    class IBroken(zope.interface.Interface):
+        """Marker interface for broken objects
+        """

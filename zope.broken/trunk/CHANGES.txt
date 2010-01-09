@@ -1,6 +1,12 @@
-=====================
-zope.broken Changelog
-=====================
+Changelog
+=========
+
+3.6.0 (unreleased)
+------------------
+
+- The IBroken interface has been merged into the ZODB3 distribution. Import
+  the interface from there, while providing a copy for backwards compatibility
+  with older versions of the ZODB3.
 
 3.5.0 (2009-02-04)
 ------------------
