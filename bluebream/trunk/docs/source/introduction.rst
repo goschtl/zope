@@ -4,7 +4,7 @@ Introduction
 Overview
 --------
 
-BlueBream is web framework written in Python programming language.
+BlueBream is a web framework written in Python programming language.
 BlueBream is a thin layer on top of Zope Tool Kit (ZTK).  Normally,
 BlueBream applications are developed using a Python based build
 system called Buildout.  BlueBream is built on top of a component

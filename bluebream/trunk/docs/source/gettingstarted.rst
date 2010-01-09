@@ -1,6 +1,15 @@
 Getting Started
 ===============
 
+Introduction
+------------
+
+This chapter walks through the process involved in creating a new
+project using BlueBream.  The Preparations section gives you an idea
+about what are the preparation you need to make to proceed with the
+further steps.  The Installation section gives an overview of
+installing a BlueBream.
+
 Preparations
 ------------
 
@@ -23,6 +32,9 @@ command will be available.  You can install BlueBream using
 ``easy_install`` command like this::
 
   $ easy_install bluebream
+
+Creating a sample project
+-------------------------
 
 The ``bluebream`` package provides a template based project creation
 script based on `PasteScript
@@ -70,8 +82,8 @@ The other variables which can be given from command line are:
 - zip_safe: ``True``, if the package can be distributed as a .zip
   file othewise ``False``.
 
-Basic usage
------------
+Building the application
+------------------------
 
 The generated package include a buildout configuration file and
 bootstrap.py.  First you need to bootstrap the buildout itself::
@@ -82,6 +94,9 @@ bootstrap.py.  First you need to bootstrap the buildout itself::
 After bootstrap, run the buildout::
 
   $ ./bin/buildout
+
+Basic usage
+-----------
 
 To run test cases::
 
@@ -206,6 +221,9 @@ The next section will explain how to create a hello world view.
 
 Hello World
 -----------
+
+To create a page which displays "Hello World", first create a view
+file named ``myhello.py`` at ``src/mynamespace/main/myhello.py``
 
 Conclusion
 ----------
