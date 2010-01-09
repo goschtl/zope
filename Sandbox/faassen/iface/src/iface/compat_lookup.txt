@@ -1,0 +1,70 @@
+Lookup Compatibility with zope.interface
+========================================
+
+Let's explore lookup scenarios now::
+
+  >>> from zope.interface import Interface
+  >>> class IFrom(Interface):
+  ...     pass
+  >>> class IBase(Interface):
+  ...     pass
+  >>> class ILookup(IBase):
+  ...     pass
+  >>> class ISub(ILookup):
+  ...     pass
+  >>> reg = AdapterRegistry()
+  >>> reg.register((IFrom,), ILookup, '', u'Value for ILookup')
+
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ILookup'
+  >>> reg.lookup((IFrom,), IBase)
+  u'Value for ILookup'
+  >>> print reg.lookup((IFrom,), ISub)
+  None
+
+We also register something for ``ISub`` now::
+
+  >>> reg.register((IFrom,), ISub, '', u'Value for ISub')
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ILookup'
+  >>> reg.lookup((IFrom,), ISub)
+  u'Value for ISub'
+  >>> reg.lookup((IFrom,), IBase)
+  u'Value for ILookup'
+
+Ambiguity::
+
+  >>> reg = AdapterRegistry()
+  >>> class ISub2(ILookup):
+  ...    pass
+  >>> reg.register((IFrom,), ISub, '', u'Value for ISub')
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ISub'
+  >>> reg.register((IFrom,), ISub2, '', u'Value for ISub2')
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ISub2'
+
+The specific lookups work normally::
+
+  >>> reg.lookup((IFrom,), ISub)
+  u'Value for ISub'
+  >>> reg.lookup((IFrom,), ISub2)
+  u'Value for ISub2'
+
+The order of registration appears to count::
+
+  >>> reg = AdapterRegistry()
+  >>> reg.register((IFrom,), ISub2, '', u'Value for ISub2')
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ISub2'
+  >>> reg.register((IFrom,), ISub, '', u'Value for ISub')
+  >>> reg.lookup((IFrom,), ILookup)
+  u'Value for ISub'
+
+The specific lookups still work normally::
+
+  >>> reg.lookup((IFrom,), ISub)
+  u'Value for ISub'
+  >>> reg.lookup((IFrom,), ISub2)
+  u'Value for ISub2'
+

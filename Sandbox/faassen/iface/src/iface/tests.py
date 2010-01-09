@@ -19,7 +19,15 @@ def test_suite():
             doctest.DocFileSuite(
                 'compatibility.txt',
                 optionflags=optionflags,
-                globs=dict(AdapterRegistry=CompatibilityAdapterRegistry)),            
+                globs=dict(AdapterRegistry=CompatibilityAdapterRegistry)),
+            doctest.DocFileSuite(
+                'compat_lookup.txt',
+                optionflags=optionflags,
+                globs=dict(AdapterRegistry=AdapterRegistry)),
+            # doctest.DocFileSuite(
+            #     'compat_lookup.txt',
+            #     optionflags=optionflags,
+            #     globs=dict(AdapterRegistry=CompatibilityAdapterRegistry)),
             ])
             
     return suite
