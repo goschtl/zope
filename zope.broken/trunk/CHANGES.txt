@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.6.0 (unreleased)
+3.6.0 (2010-01-09)
 ------------------
 
 - The IBroken interface has been merged into the ZODB3 distribution. Import
