@@ -148,6 +148,28 @@ directories and the ``bin/buildout`` script as mentioned::
 - The ``develop-eggs`` directory is where buildout save links to all
   locally develping Python eggs.
 
+Now you are ready to run the ``bin/buildout`` to build the
+application.  It will show something like this::
+
+  jack@computer:/projects/ticketcollector$ ./bin/buildout 
+  Develop: '/projects/ticketcollector/.'
+  Installing app.
+  Generated script '/projects/ticketcollector/bin/paster'.
+  Generated interpreter '/projects/ticketcollector/bin/python'.
+  Installing zope_conf.
+  Installing test.
+  Generated script '/projects/ticketcollector/bin/test'.
+
+In the above example, all eggs are already available in the eggs
+folder, otherwise it will download and install eggs.  The buildout
+also created three more scripts inside ``bin`` directory.
+
+- The ``paster`` command can be used to run webserver.
+
+- The ``python`` command provides a custom Python interpreter with
+  all eggs included in path.
+
+- The ``test`` command can be used to run the test runner.  
 
 Creating the application object
 -------------------------------
