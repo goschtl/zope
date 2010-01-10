@@ -8,7 +8,7 @@ from zope.publisher.browser import applySkin
 from zope.publisher.interfaces import browser
 from zope.app.folder.interfaces import IRootFolder
 from zope.traversing.interfaces import ITraversable
-
+from zope.location import LocationProxy
 
 class GrokUILayer(grok.IDefaultBrowserLayer):
     """A basic layer for all Grok UI components.
@@ -22,17 +22,21 @@ class GrokUISkin(GrokUILayer, browser.IBrowserSkinType):
     grok.skin('GrokUISkin')
 
 
+class IGrokuiRealm(Interface):
+    def getRoot(self):
+        """returns the root folder"""
+
+
 class GrokUINamespace(grok.MultiAdapter):
     grok.name('grokui')
     grok.provides(ITraversable)
-    grok.implements(browser.IBrowserSkinType)
+    grok.implements(IGrokuiRealm)
     grok.adapts(IRootFolder, browser.IBrowserRequest)
 
     def __init__(self, context, request):
-        self.context = context
+        self.root = context
         self.request = request
         applySkin(self.request, GrokUISkin)
-        self.request.shiftNameToApplication()
 
     def traverse(self, name, ignore):
-        return self.context
+        return LocationProxy(self, self.root, "++grokui++")

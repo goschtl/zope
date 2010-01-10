@@ -6,6 +6,7 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.app.publisher.interfaces.browser import IBrowserMenu
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from z3c.flashmessage.interfaces import IMessageReceiver
+from grokui.base import IGrokuiRealm
 from grokui.base.interfaces import IAdminPanel
 from grokui.base.contentproviders import AdministrationHeader
 from grokui.base.contentproviders import AdministrationFooter
@@ -13,7 +14,7 @@ from grokui.base.contentproviders import AdministrationFooter
 grok.templatedir("templates")
 
 grok.view(IAdminPanel)
-grok.context(IRootFolder)
+grok.context(IGrokuiRealm)
 grok.viewletmanager(AdministrationHeader)
 
 
