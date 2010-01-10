@@ -1,5 +1,5 @@
 <configure
-   i18n_domain="testp.main"
+   i18n_domain="${namespace_package}.${main_package}"
    xmlns="http://namespaces.zope.org/browser">
 
   <!-- The following two registrations (defaultView & page) are _not_

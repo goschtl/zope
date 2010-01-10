@@ -55,6 +55,6 @@ ${long_description|nothing}""",
                         ],
       entry_points = """
       [paste.app_factory]
-      main = ${namespace_package}.main.startup:application_factory
+      main = ${namespace_package}.${main_package}.startup:application_factory
       """,
       )

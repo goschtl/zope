@@ -23,6 +23,9 @@ class BlueBream(templates.Template):
 
     vars = [
         var('namespace_package', 'Namespace package name'),
+        var('main_package',
+            'Main package name (under the namespace)',
+            default='main'),
         var('version', 'Version (like 0.1)', default='0.1'),
         var('description', 'One-line description of the package'),
         var('long_description', 'Multi-line description (in reST)'),

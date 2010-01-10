@@ -23,8 +23,8 @@
   <include package="zope.app.publication" />
   <include package="zope.principalregistry" />
 
-  <include package="${namespace_package}.main" file="securitypolicy.zcml" />
-  <include package="${namespace_package}.main" file="application.zcml" />
+  <include package="${namespace_package}.${main_package}" file="securitypolicy.zcml" />
+  <include package="${namespace_package}.${main_package}" file="application.zcml" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy

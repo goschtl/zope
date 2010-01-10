@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - Update version: zope.tales = 3.5.0
+- LP #505362: Fix. Main package name is hard-coded as 'main'
 
 0.1.6 (2010-01-07)
 ------------------
