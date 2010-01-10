@@ -9,6 +9,7 @@ Welcome to BlueBream's documentation!
    gettingstarted
    tutorial
    faq
+   howto/index
    reference
 
 Indices and tables
