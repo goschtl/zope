@@ -1,13 +1,14 @@
 <configure
    i18n_domain="${namespace_package}.${main_package}"
-   xmlns="http://namespaces.zope.org/browser">
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- The following registration (page) is _not_ required for
        functioning your application.  This registration is given to
        provide a default page when you access root folder from web
        like: http://localhost:8080/ -->
 
-  <page
+  <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="index"
      permission="zope.Public"
