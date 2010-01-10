@@ -18,7 +18,7 @@ eggs = ${project}
        Paste
        PasteScript
        PasteDeploy
-interpreter = python
+interpreter = ${interpreter}
 
 [zope_conf]
 recipe = collective.recipe.template

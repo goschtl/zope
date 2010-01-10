@@ -7,6 +7,8 @@ Changelog
 - Update version: zope.tales = 3.5.0
 - LP #505362: Fix. Main package name is hard-coded as 'main'
 - Change 'defaultView' registration location and interface
+- LP #505413: Name of default custom Python interpreter
+  should be able to customize
 
 0.1.6 (2010-01-07)
 ------------------

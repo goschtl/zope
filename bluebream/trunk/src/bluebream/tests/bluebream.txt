@@ -10,6 +10,7 @@ BlueBream
 >>> extra_args = [
 ...            "namespace_package=test_name",
 ...            "main_package=test_main",
+...            "interpreter=testpy",
 ...            "version=0.1",
 ...            "description=test_description",
 ...            "long_description=test_long_description",
@@ -29,6 +30,7 @@ Variables:
   author_email:       test_author_email
   description:        test_description
   egg:                sample
+  interpreter:        testpy
   keywords:           test_keyword
   license_name:       Test Public License
   long_description:   test_long_description
@@ -65,8 +67,6 @@ Creating directory ./sample
         Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests.py
         Copying views.py to ./sample/src/test_name/test_main/views.py
       Copying __init__.py to ./sample/src/test_name/__init__.py
-      Recursing into main
-        Creating ./sample/src/test_name/main/
     Recursing into +package+.egg-info
       Creating ./sample/src/sample.egg-info/
       Copying PKG-INFO to ./sample/src/sample.egg-info/PKG-INFO
