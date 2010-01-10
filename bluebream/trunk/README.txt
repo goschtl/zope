@@ -139,6 +139,8 @@ Resources
 
 - `Documentation <http://packages.python.org/bluebream>`_
 
+- `Twitter <http://twitter.com/bluebream>`_
+
 - `Mailing list <https://mail.zope.org/mailman/listinfo/zope3-users>`_
 
 - IRC Channel: `#bluebream <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_ at irc.freenode.net
