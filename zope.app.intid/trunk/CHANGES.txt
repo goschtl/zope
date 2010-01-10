@@ -10,6 +10,8 @@ CHANGES
 - Removed unneeded dependency on zope.app.publisher, added the missing one on
   zope.security.
 
+- Added test dependency on zope.login.
+
 3.7.0 (2009-02-01)
 ------------------
 
