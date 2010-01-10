@@ -68,3 +68,25 @@ The specific lookups still work normally::
   >>> reg.lookup((IFrom,), ISub2)
   u'Value for ISub2'
 
+Interaction of required with provided. Does more precise required win, or
+more precise provided?
+
+  >>> reg = AdapterRegistry()
+  >>> class IFromSub(IFrom):
+  ...     pass
+  >>> reg.register((IFrom,), ILookup, u'', u'IFrom -> ILookup')
+  >>> reg.register((IFromSub,), ILookup, u'', u'IFromSub -> ILookup')
+  >>> reg.register((IFrom,), ISub, u'', u'IFrom -> ISub')
+
+  >>> reg.lookup((IFrom,), ILookup)
+  u'IFrom -> ILookup'
+
+  >>> reg.lookup((IFromSub,), ILookup)
+  u'IFromSub -> ILookup'
+
+  >>> reg.lookup((IFrom,), ISub)
+  u'IFrom -> ISub'
+
+  >>> reg.lookup((IFromSub,), ISub)
+  u'IFrom -> ISub'
+
