@@ -37,22 +37,24 @@ the project name as ``ticketcollector`` and namespace package as
   $ paster create -t bluebream
   Selected and implied templates:
     bluebream#bluebream  A Zope project
-  
-  Enter project name: ticketcollector 
+
+  Enter project name: ticketcollector
   Variables:
     egg:      ticketcollector
     package:  ticketcollector
     project:  ticketcollector
   Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter version (Version (like 0.1)) ['0.1']: 
+  Enter main_package (Main package name (under the namespace)) ['main']:
+  Enter interpreter (Name of custom Python interpreter) ['breampy']:
+  Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
-  Enter keywords (Space-separated keywords/tags) ['']: 
-  Enter author (Author name) ['']: Jack
-  Enter author_email (Author email) ['']: jack@example.com
-  Enter url (URL of homepage) ['']: 
-  Enter license_name (License name) ['']: GPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
+  Enter keywords (Space-separated keywords/tags) ['']:
+  Enter author (Author name) ['']: Baiju M
+  Enter author_email (Author email) ['']: baiju@muthukadan.net
+  Enter url (URL of homepage) ['']:
+  Enter license_name (License name) ['']: ZPL
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
   Creating template bluebream
   Creating directory ./ticketcollector
     Copying bootstrap.py to ./ticketcollector/bootstrap.py
@@ -67,8 +69,7 @@ the project name as ``ticketcollector`` and namespace package as
       Creating ./ticketcollector/src/
       Recursing into +namespace_package+
         Creating ./ticketcollector/src/tc/
-        Copying __init__.py to ./ticketcollector/src/tc/__init__.py
-        Recursing into main
+        Recursing into +main_package+
           Creating ./ticketcollector/src/tc/main/
           Copying README.txt_tmpl to ./ticketcollector/src/tc/main/README.txt
           Copying __init__.py to ./ticketcollector/src/tc/main/__init__.py
@@ -79,6 +80,7 @@ the project name as ``ticketcollector`` and namespace package as
           Copying startup.py to ./ticketcollector/src/tc/main/startup.py
           Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests.py
           Copying views.py to ./ticketcollector/src/tc/main/views.py
+        Copying __init__.py to ./ticketcollector/src/tc/__init__.py
       Recursing into +package+.egg-info
         Creating ./ticketcollector/src/ticketcollector.egg-info/
         Copying PKG-INFO to ./ticketcollector/src/ticketcollector.egg-info/PKG-INFO
@@ -115,13 +117,20 @@ directories and files::
   buildout.cfg  deploy.ini  setup.py  templates/  versions.cfg
 
 Once the project directory layout is ready, you can add it to your
-version controlling system.  After that, you need to bootstrap
-Buildout and run ``buildout`` command to build the application.  The
-purpose of Buildout is to automate all the process involved in
-bulding an Python application/package from scratch.  The only basic
-requirement for Buildout is a Python installation.  Buildout provides
-a bootstrapping script to to initialize Buildout.  This bootstrap
-script named ``bootstrap.py`` will do these things:
+version controlling system::
+
+  jack@computer:/projects/ticketcollector$ bzr init
+  Created a standalone tree (format: 2a)
+
+You need **not** to add ``src/ticketcollector.egg-info`` directory as
+it is generted by setuptools.  After adding code to version
+controlling system, you need to bootstrap the Buildout and run
+``buildout`` command to build the application.  The purpose of
+Buildout is to automate all the process involved in bulding an Python
+application/package from scratch.  The only basic requirement for
+Buildout is a Python installation.  Buildout provides a bootstrapping
+script to to initialize Buildout.  This bootstrap script named
+``bootstrap.py`` will do these things:
 
 - Download and install ``setuptools`` package from PyPI
 
@@ -142,7 +151,7 @@ directories and the ``bin/buildout`` script as mentioned earlier::
   Generated script '/projects/ticketcollector/bin/buildout'.
 
 - The ``bin`` directory is where buildout install all the executable
-  scripts. 
+  scripts.
 
 - The ``eggs`` directory is where buildout install Python eggs
 
@@ -156,11 +165,11 @@ directories and the ``bin/buildout`` script as mentioned earlier::
 Now you are ready to run the ``bin/buildout`` to build the
 application.  It will show something like this::
 
-  jack@computer:/projects/ticketcollector$ ./bin/buildout 
+  jack@computer:/projects/ticketcollector$ ./bin/buildout
   Develop: '/projects/ticketcollector/.'
   Installing app.
   Generated script '/projects/ticketcollector/bin/paster'.
-  Generated interpreter '/projects/ticketcollector/bin/python'.
+  Generated interpreter '/projects/ticketcollector/bin/breampy'.
   Installing zope_conf.
   Installing test.
   Generated script '/projects/ticketcollector/bin/test'.
@@ -171,13 +180,26 @@ also created three more scripts inside ``bin`` directory.
 
 - The ``paster`` command can be used to run webserver.
 
-- The ``python`` command provides a custom Python interpreter with
+- The ``breampy`` command provides a custom Python interpreter with
   all eggs included in path.
 
-- The ``test`` command can be used to run the test runner.  
+- The ``test`` command can be used to run the test runner.
 
 Creating the application object
 -------------------------------
+
+You can create a file named ``src/tc/main/interfaces.py`` to add
+interfaces::
+
+  class ICollector(IContainer):
+        """Collector - the main application container object."""
+
+        description = Text(
+            title=u"Description",
+            description=u"A description of the collector.",
+            default=u"",
+            required=False)
+
 
 Creating the main page
 ----------------------
