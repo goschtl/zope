@@ -25,6 +25,86 @@ Befire proceeding, we will see the user stories:
 Starting new project
 --------------------
 
+In this section, we will create the directory layout for ticket
+collector application.  I assume you have already installed
+``bluebream`` using ``easy_install bluebream`` command as mentioned
+in the previous chapter.  We are going to use the project name as
+``ticketcollector`` and namespace package as ``tc``. Let's create the
+project directory layout for ``ticketcollector``::
+
+  $ paster create -t bluebream
+  Selected and implied templates:
+    bluebream#bluebream  A Zope project
+  
+  Enter project name: ticketcollector 
+  Variables:
+    egg:      ticketcollector
+    package:  ticketcollector
+    project:  ticketcollector
+  Enter namespace_package (Namespace package name) ['ticketcollector']: tc
+  Enter version (Version (like 0.1)) ['0.1']: 
+  Enter description (One-line description of the package) ['']: Ticket Collector
+  Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
+  Enter keywords (Space-separated keywords/tags) ['']: 
+  Enter author (Author name) ['']: Jack
+  Enter author_email (Author email) ['']: jack@example.com
+  Enter url (URL of homepage) ['']: 
+  Enter license_name (License name) ['']: GPL
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
+  Creating template bluebream
+  Creating directory ./ticketcollector
+    Copying bootstrap.py to ./ticketcollector/bootstrap.py
+    Copying buildout.cfg_tmpl to ./ticketcollector/buildout.cfg
+    Copying debug.ini_tmpl to ./ticketcollector/debug.ini
+    Copying deploy.ini_tmpl to ./ticketcollector/deploy.ini
+    Recursing into etc
+      Creating ./ticketcollector/etc/
+      Copying site.zcml_tmpl to ./ticketcollector/etc/site.zcml
+    Copying setup.py_tmpl to ./ticketcollector/setup.py
+    Recursing into src
+      Creating ./ticketcollector/src/
+      Recursing into +namespace_package+
+        Creating ./ticketcollector/src/tc/
+        Copying __init__.py to ./ticketcollector/src/tc/__init__.py
+        Recursing into main
+          Creating ./ticketcollector/src/tc/main/
+          Copying README.txt_tmpl to ./ticketcollector/src/tc/main/README.txt
+          Copying __init__.py to ./ticketcollector/src/tc/main/__init__.py
+          Copying application.zcml_tmpl to ./ticketcollector/src/tc/main/application.zcml
+          Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
+          Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/ftesting.zcml
+          Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
+          Copying startup.py to ./ticketcollector/src/tc/main/startup.py
+          Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests.py
+          Copying views.py to ./ticketcollector/src/tc/main/views.py
+      Recursing into +package+.egg-info
+        Creating ./ticketcollector/src/ticketcollector.egg-info/
+        Copying PKG-INFO to ./ticketcollector/src/ticketcollector.egg-info/PKG-INFO
+    Recursing into templates
+      Creating ./ticketcollector/templates/
+      Copying zope_conf.in to ./ticketcollector/templates/zope_conf.in
+    Recursing into var
+      Creating ./ticketcollector/var/
+      Recursing into blob
+        Creating ./ticketcollector/var/blob/
+        Copying README.txt to ./ticketcollector/var/blob/README.txt
+        Recursing into tmp
+          Creating ./ticketcollector/var/blob/tmp/
+      Recursing into filestorage
+        Creating ./ticketcollector/var/filestorage/
+        Copying README.txt to ./ticketcollector/var/filestorage/README.txt
+      Recursing into log
+        Creating ./ticketcollector/var/log/
+        Copying README.txt to ./ticketcollector/var/log/README.txt
+    Copying versions.cfg to ./ticketcollector/versions.cfg
+  Running /opt/baiju/py26/bin/python2.6 setup.py egg_info
+
+As you can see above, we have provided most of the project details
+and some are simply skipped.  You can change the values provided here
+later, if you desired later.  But changing the package name or
+namespace package name may not be as simple as changing the
+description as it is referred from many places.
+  
 Ticket Collector: Your first BlueBream application
 --------------------------------------------------
 
