@@ -36,6 +36,11 @@ Technical Decisions
 - Any "shell command" which developer need to repeat later should not
   be automated by the project template.
 
+- Running ``bootstrap.py`` and ``buildout`` inside project should not
+  be added to project template creation for the previous reason.  A
+  suporting reason why it should not be added is to make adding
+  sources to version controlling system should not be difficult.
+
 Notes for developers
 --------------------
 
