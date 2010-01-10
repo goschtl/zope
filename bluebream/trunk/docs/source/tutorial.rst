@@ -1,18 +1,19 @@
 Tutorial
 ========
 
+
 Introduction
 ------------
 
 In the `Getting Started <gettingstarted.html>`_ chapater you learned
 how to install BlueBream and create a new project using the
-``bluebream`` project template.  In this chapter we will explore
+``bluebream`` project template.  In this chapter, we will explore
 creating a simple ticket collector application.
 
 Befire proceeding, we will see the user stories:
 
  1. Individual small ticket collector for each project.  Many
-    collectors can be added to one running zope.
+    collectors can be added to one running BlueBream.
 
  2. Any number of tickets can be added to one collector.
 
@@ -28,9 +29,10 @@ Starting new project
 In this section, we will create the directory layout for ticket
 collector application.  I assume you have already installed
 ``bluebream`` using ``easy_install bluebream`` command as mentioned
-in the previous chapter.  We are going to use the project name as
-``ticketcollector`` and namespace package as ``tc``. Let's create the
-project directory layout for ``ticketcollector``::
+in the `Getting Started <gettingstarted.html>`_.  We are going to use
+the project name as ``ticketcollector`` and namespace package as
+``tc``. Let's create the project directory layout for
+``ticketcollector``::
 
   $ paster create -t bluebream
   Selected and implied templates:
@@ -119,15 +121,18 @@ purpose of Buildout is to automate all the process involved in
 bulding an Python application/package from scratch.  The only basic
 requirement for Buildout is a Python installation.  Buildout provides
 a bootstrapping script to to initialize Buildout.  This bootstrap
-script named "bootstrap.py" will do these things:
+script named ``bootstrap.py`` will do these things:
 
 - Download and install ``setuptools`` package from PyPI
+
 - Download and install ``zc.buildout`` package fron PyPI
+
 - Create directory struture eg:- bin/ eggs/ parts/ develop-eggs/
+
 - Create a script inside ``bin`` directory named ``buildout``
 
 When you run the ``bootstrap.py``, you can see that it creates few
-directories and the ``bin/buildout`` script as mentioned::
+directories and the ``bin/buildout`` script as mentioned earlier::
 
   jack@computer:/projects/ticketcollector$ python2.6 bootstrap.py
   Creating directory '/projects/ticketcollector/bin'.
