@@ -191,14 +191,30 @@ Creating the application object
 You can create a file named ``src/tc/main/interfaces.py`` to add
 interfaces::
 
+  from zope.container.interfaces import IContainer
+  from zope.schema import Text
+
   class ICollector(IContainer):
-        """Collector - the main application container object."""
+        """The main application container object."""
 
         description = Text(
             title=u"Description",
             description=u"A description of the collector.",
             default=u"",
             required=False)
+
+Then implement the interface in ``src/tc/main/ticketcollector.py``::
+
+  from zope.interface import implements
+  from zope.container.btree import BTreeContainer
+
+  from tc.main.interfaces import ICollector
+
+  class Collector(BTreeContainer):
+      """A simple implementation of a collector using B-Tree
+      Container."""
+
+      implements(ICollector)
 
 
 Creating the main page

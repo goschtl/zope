@@ -7,11 +7,13 @@ BlueBream
 Introduction
 ------------
 
-`BlueBream <http://packages.python.org/bluebream>`_ makes it easy to
-setup a new project using Zope packages.  BlueBream generates a
-project directory from a template called ``bluebream``.  The template
-is created using `PasteScript
-<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
+`BlueBream <http://packages.python.org/bluebream>`_ is a web
+framework written in Python programming language.  BlueBream is the
+new name for "Zope 3".  This package makes it easy to setup a new
+project using BlueBream.  It generates a project directory from a
+template called ``bluebream``.  The template is created using
+`PasteScript <http://pythonpaste.org/script/developer.html>`_ by Ian
+Bicking.
 
 .. raw:: html
 
