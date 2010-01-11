@@ -198,7 +198,7 @@ preferred::
   u'Value for beta, two'
 
 However, we cannot look up MultiMapKeys that are less specific than anything
-registered in at least one component::
+registered in any component::
 
   >>> multimap[(alpha, one)]
   Traceback (most recent call last):
@@ -225,11 +225,6 @@ latter look-ups will succeed by falling back to that value::
   >>> multimap[(beta, one)]
   u'Value for alpha, one'
 
-Note that in the case of looking up ``beta, one``, the look-up algorithm
-resorts to considering registered keys starting with the less specific
-``alpha`` in order to satisfy the requirement of the second component.
-
-next: multi lookup. What is the behavior of zope.interface? Do earlier
-entries in the lookup list always weigh more heavily than the second
-one? We need backtracking in case we don't find anything for the next
-entry. That's not exactly efficient.
+Note that when looking up ``beta, one``, the look-up algorithm resorts to
+considering registered keys starting with the less specific ``alpha`` as first
+component in order to satisfy the requirement of the second component.
