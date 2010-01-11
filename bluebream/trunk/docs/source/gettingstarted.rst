@@ -111,26 +111,26 @@ The name of namespace package also can be given from the command line::
 
 The other variables which can be given from command line are:
 
-- interpreter: Name of custom Python interpreter
+- ``interpreter`` -- Name of custom Python interpreter
 
-- version: Version (like 0.1)
+- ``version`` -- Version (like 0.1)
 
-- description: One-line description of the package
+- ``description`` -- One-line description of the package
 
-- long_description: Multi-line description (in reST)
+- ``long_description`` -- Multi-line description (in reST)
 
-- keywords: Space-separated keywords/tags
+- ``keywords`` -- Space-separated keywords/tags
 
-- author: Author name
+- ``author`` -- Author name
 
-- author_email: Author email
+- ``author_email`` -- Author email
 
-- url: URL of homepage
+- ``url`` -- URL of homepage
 
-- license_name: License name
+- ``license_name`` -- License name
 
-- zip_safe: ``True``, if the package can be distributed as a .zip
-  file othewise ``False``.
+- ``zip_safe`` -- ``True``, if the package can be distributed as a
+  .zip file othewise ``False``.
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
