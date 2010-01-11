@@ -163,7 +163,43 @@ directories and the ``bin/buildout`` script as mentioned earlier::
   locally develping Python eggs.
 
 Now you are ready to run the ``bin/buildout`` to build the
-application.  It will show something like this::
+application.  Before running the buildout, let's see the content of
+``buildout.cfg``::
+
+  [config]
+  site_zcml = ${buildout:directory}/etc/site.zcml
+  blob = ${buildout:directory}/var/blob
+  filestorage = ${buildout:directory}/var/filestorage
+  log = ${buildout:directory}/var/log
+
+  [buildout]
+  develop = .
+  extends = versions.cfg
+  parts = app
+          zope_conf
+          test 
+
+  [app]
+  recipe = zc.recipe.egg
+  eggs = ticketcollector
+         z3c.evalexception>=2.0
+         Paste
+         PasteScript
+         PasteDeploy
+  interpreter = breampy
+
+  [zope_conf]
+  recipe = collective.recipe.template
+  input = templates/zope_conf.in
+  output = etc/zope.conf
+
+  [test]
+  recipe = zc.recipe.testrunner
+  eggs = ticketcollector
+
+.. FIXME: Need to explain the configuration here.
+
+When you run buildout, it will show something like this::
 
   jack@computer:/projects/ticketcollector$ ./bin/buildout
   Develop: '/projects/ticketcollector/.'

@@ -4,40 +4,74 @@ Getting Started
 Introduction
 ------------
 
-This chapter walks through the process involved in creating a new
-project using BlueBream.  The Preparations section gives you an idea
-about what are the preparation you need to make to proceed with the
-further steps.  The Installation section gives an overview of
-installing a BlueBream.  "Creating a sample project" section explains
-creating an example project using ``bluebream`` project template.
-The next section shows how to build the application.  Basic usage
-section explains the basic usage of project.  The "Package directory
-structure" shows the directory structure and decribe each directories
-and files purpose.  "Hello World" sections shows how to create a
-hello page.
+This chapter narrate the process of creating a new web application
+project using BlueBream.  Also it gives few excercises to familiarize
+the basic concepts in BlueBream.  We suggest you to try out all the
+commands and excercises given here.  Before proceeding, here is an
+overview of the sections.
+
+- **Preparations:** -- Prerequisites and preparations you need to
+  make to start a new web application project using BlueBream.
+
+- **Installation:** -- An overview of installing BlueBream.
+
+- **Creating a sample project:** -- Explains creating an example
+  project using ``bluebream`` project template.
+
+- **Building the application:** -- Shows how to build the application
+  using Buildout.
+
+- **Basic usage section:** -- Explains the basic usage of BlueBream
+  commands.
+
+- **Package directory structure:** -- Shows the directory structure
+  and decribe the purpose of each directories and files.
+
+- **Hello World:** -- Shows how to create a hello world page.
 
 Preparations
 ------------
 
 This book assume that you have already installed `Python 2.6
 <http://www.python.org>`_ and `setuptools
-<http://pypi.python.org/pypi/setuptools>`_/`distribute
-<http://pypi.python.org/pypi/setuptools>`_ package.  It is
-reccommended to use a custom built Python for working with BlueBream.
-You will be required to install a C compiler (gcc) in your system.
-Access to `PyPI <http://pypi.python.org>`_ is required to perform the
-installation and bootstrapping process.
+<http://pypi.python.org/pypi/setuptools>`_.  As an alternative to
+setuptools, you can install `distribute
+<http://pypi.python.org/pypi/setuptools>`_.  If setuptools or
+distribute is installed you will get an ``easy_install`` command
+which you can use to install ``bluebream`` distribution.
+
+You can also install BlueBream inside an isolated Python enironment
+created by `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
+Although, *virtualenv* is not necessary as we are going to use
+`Buildout <http://www.buildout.org>`_ for repeatable, isolated
+working environment.  Buildout is a declarative, configuration driven
+build system reccommended by BlueBream.
+
+It is reccommended to use a custom built Python for working with
+BlueBream.  You will be required to install a C compiler (gcc) in
+your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
+required to perform installation of ``bluebream`` distribution.
+Internet is required for bootstrapping the Buildout and building the
+application.
 
 Installation
 ------------
 
 If you have installed `setuptools
-<http://pypi.python.org/pypi/setuptools>`_/`distribute
+<http://pypi.python.org/pypi/setuptools>`_ or `distribute
 <http://pypi.python.org/pypi/setuptools>`_ an ``easy_install``
-command will be available.  You can install BlueBream using
+command will be available.  Then, you can install BlueBream using
 ``easy_install`` command like this::
 
   $ easy_install bluebream
+
+As mentioned earlier, Internet access to `PyPI
+<http://pypi.python.org>`_ is required to perform installation of
+``bluebream`` distribution.  If you use any proxy, make sure it
+works.  The ``easy_install`` will look for the enviroment variable
+named ``http_proxy`` in GNU/Linux platforms.  You can set it like this::
+
+ $ set http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
 
 Creating a sample project
 -------------------------
@@ -69,6 +103,8 @@ The name of namespace package also can be given from the command line::
 
 The other variables which can be given from command line are:
 
+- interpreter: Name of custom Python interpreter
+
 - version: Version (like 0.1)
 
 - description: One-line description of the package
@@ -87,6 +123,10 @@ The other variables which can be given from command line are:
 
 - zip_safe: ``True``, if the package can be distributed as a .zip
   file othewise ``False``.
+
+If you are in a hurry, you can simply press *Enter/Return* key and
+change the values later.  But it would be a good idea, if you provide
+good name for your project.
 
 Building the application
 ------------------------
