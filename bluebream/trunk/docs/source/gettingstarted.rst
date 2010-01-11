@@ -27,7 +27,7 @@ overview of the sections.
 - **Package directory structure:** -- Shows the directory structure
   and decribe the purpose of each directories and files.
 
-At the end two hello world examples are also given.
+At the end, few hello world examples are also given.
 
 Preparations
 ------------
@@ -274,7 +274,8 @@ Files &  Purpose
 - ``versions.cfg`` -- All versions of files can be pinned down here.
 
 
-The next two sections will explain how to create hello world view.
+The next few sections will explain how to create hello world
+applications.
 
 Example 1: Hello World without page template
 --------------------------------------------
@@ -394,12 +395,98 @@ this view will be available for all content objects.
 Restart your application, then visit the following URL:
 http://127.0.0.1:8080/@@hello2
 
+Example 3: A dynamic hello world
+--------------------------------
+
+.. based on: http://wiki.zope.org/zope3/ADynamicHelloWorld
+
+Python class
+~~~~~~~~~~~~
+
+In the ``src/mynamespace/main/hello.py`` file, add few lines of
+Python code like this::
+
+  class Hello(object):
+
+      def getText(self):
+        name = self.request.get('name')
+        if name:
+          return "Hello %s !" % name
+        else:
+          return "Hello ! What's your name ?"
+
+This class defines a browser view in charge of displaying some
+content.
+
+Page template
+~~~~~~~~~~~~~
+
+We now need a page template to render the page content in html. So
+let's add a ``hello.pt`` in the ``src/mynamespace/main`` directory::
+
+  <html>
+    <head>
+      <title>hello world page</title>
+    </head>
+    <body>
+      <div tal:content="view/getText">
+        fake content
+      </div>
+    </body>
+  </html>
+
+The ``tal:content`` directive tells zope to replace the fake content
+of the tag with the output of the getText method of the view
+class.
+
+ZCML registration
+~~~~~~~~~~~~~~~~~
+
+The next step is to associate the view class, the template and the
+page name.  This is done with a simple XML configuration language
+(ZCML).  Edit the existing file called ``configure.zcml`` and add the
+following content before the final ``</configure>``::
+
+  <browser:page name="hello.html"
+      for="*"
+      class=".hello.Hello"
+      template="hello.pt"
+      permission="zope.Public" />
+
+This declaration means: there is a web page called ``hello.html``,
+available for any content, managed by the view class ``Hello``,
+rendered by the template ``hello.pt``, and this page is public.
+
+Since we are using the browser XML namespace, we need to declare it
+in the configure directive.  Modify the first lines of the
+configure.zcml file so it looks like this (You can skip this step if
+the browser namespace is already there from the static hello world
+view)::
+
+  <configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+Restart your application, then visit the following URL:
+http://127.0.0.1:8080/@@hello.html
+
+You should then see the following text in your browser::
+
+  Hello ! What's your name ?
+
+You can pass a parameter to the Hello view class, by visiting the
+following URL: http://127.0.0.1:8080/@@hello.html?name=World
+
+You should then see the following text::
+
+  Hello World !
+
 Conclusion
 ----------
 
 This chapter exaplained about getting started with application
-development using BlueBream.  Also introduced a simple ``Hello
-World`` application.
+development using BlueBream.  Also introduced few simple ``Hello
+World`` example applications.
 
 .. raw:: html
 
