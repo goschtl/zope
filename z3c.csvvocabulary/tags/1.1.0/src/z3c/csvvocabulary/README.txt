@@ -81,15 +81,15 @@ By default the vocabulary expects the csv file to be latin1 encoded.
 
   >>> csvfile = os.path.join(path, 'testing', 'data', 'utf-8.csv')
   >>> wrongEncoding = z3c.csvvocabulary.CSVVocabulary(csvfile)
-  >>> print wrongEncoding.getTerm('ae').title.default
-  Ã¤
+  >>> wrongEncoding.getTerm('ae').title.default
+  u'\xc3\xa4'
 
 If you csv file has a different encoding you can specify it explicitly:
 
   >>> utf8Encoded = z3c.csvvocabulary.CSVVocabulary(csvfile, encoding='utf-8')
   >>> term = utf8Encoded.getTerm('ae')
-  >>> print term.title.default
-  ä
+  >>> term.title.default
+  u'\xe4'
 
 
 CSV Message String Extraction
