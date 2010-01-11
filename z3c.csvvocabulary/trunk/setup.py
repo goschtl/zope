@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.csvvocabulary',
-    version='1.0.0',
+    version='1.1.0',
     author = "Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A package to create vocabularies based on CSV files.",
