@@ -27,7 +27,7 @@ overview of the sections.
 - **Package directory structure:** -- Shows the directory structure
   and decribe the purpose of each directories and files.
 
-- **Hello World:** -- Shows how to create a hello world page.
+At the end two hello world examples are also given.
 
 Preparations
 ------------
@@ -274,10 +274,10 @@ Files &  Purpose
 - ``versions.cfg`` -- All versions of files can be pinned down here.
 
 
-The next section will explain how to create a hello world view.
+The next two sections will explain how to create hello world view.
 
-Hello World
------------
+Example 1: Hello World without page template
+--------------------------------------------
 
 To create a page which displays ``Hello World!``, you need to create
 a view and then register it using ``browser:page`` ZCML directive.
@@ -310,14 +310,22 @@ implementing ``zope.site.interfaces.IRootFolder`` interface.
 
 So the registration could be like this::
 
-  <page
+  <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="hello"
      permission="zope.Public"
      class=".myhello.HelloView"
      />
 
-You can add configuration to:
+Since we are using the ``browser`` XML namespace, we need to
+advertise it in the ``configure`` directive::
+
+  <configure
+     xmlns="http://namespaces.zope.org/zope"
+     xmlns:browser="http://namespaces.zope.org/browser">
+
+
+You can add this configuration to:
 ``src/mynamespace/main/configure.zcml``.  Now you can access the view
 by visiting this URL: http://localhost:8080/@@hello
 
@@ -333,6 +341,58 @@ by visiting this URL: http://localhost:8080/@@hello
    Note that even the ``@@`` is not necessary if container ``foo``
    has no element named ``bar`` - it only serves to disambiguate
    between views of an object and things contained within the object.
+
+Example 2: Hello World with page template
+-----------------------------------------
+
+In this example, we will use a hello world using a page template. 
+
+Create a page template
+~~~~~~~~~~~~~~~~~~~~~~
+
+First you need to create a page template file inside your pacakge.
+You can save it as ``src/mynamespace/main/helloworld.pt``, with the
+following content::
+
+  <html>
+    <head>
+      <title>Hello World!</title>
+    </head>
+    <body>
+      <div>
+        Hello World!
+      </div>
+    </body>
+  </html>
+
+Register the page
+~~~~~~~~~~~~~~~~~
+
+Update ``configure.zcml`` to add this new page registration.
+
+::
+
+  <browser:page
+    name="hello2"
+    for="*"
+    template="helloworld.pt"
+    permission="zope.Public" />
+
+This declaration means: there is a web page called `hello2`,
+available for any content, rendered by the template helloworld.pt,
+and this page is public.  This kind of XML configuration is very
+common in BlueBream and you will need it for every page or component.
+If you feel extremely uncomfortable with XML, you should try `Grok
+<http://grok.zope.org>`_, which adds a layer on top of ZTK, replacing
+declarative configuration with conventions and declarations in
+Python.
+
+In the above example, instead of using
+``zope.site.interfaces.IRootFolder`` interface, we used ``*``.  So,
+this view will be available for all content objects.
+
+Restart your application, then visit the following URL:
+http://127.0.0.1:8080/@@hello2
 
 Conclusion
 ----------
