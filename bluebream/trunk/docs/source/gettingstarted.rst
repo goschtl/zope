@@ -484,9 +484,11 @@ You should then see the following text::
 Conclusion
 ----------
 
-This chapter exaplained about getting started with application
-development using BlueBream.  Also introduced few simple ``Hello
-World`` example applications.
+This chapter walked through the process of getting started with web
+application development with BlueBream.  Also introduced few simple
+``Hello World`` example applications.  The `tutorial
+<tutorial.html>`_ chapter will go through a bigger application to
+introduce more concepts.
 
 .. raw:: html
 

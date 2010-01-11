@@ -8,7 +8,8 @@ Introduction
 In the `Getting Started <gettingstarted.html>`_ chapater you learned
 how to install BlueBream and create a new project using the
 ``bluebream`` project template.  In this chapter, we will explore
-creating a simple ticket collector application.
+creating a simple ticket collector application.  This will help you
+to familiarize more concepts in BlueBream.
 
 Befire proceeding, we will see the user stories:
 
