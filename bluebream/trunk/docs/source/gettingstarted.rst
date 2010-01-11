@@ -202,74 +202,77 @@ that of package name by default.  But if you want, you can change it
 to something else from ``setup.py``.  Here are the details about
 other files inside the project.
 
-+-------------------------------------------+--------------------------------------------------+
-| Directories & Files                       | Purpose                                          |
-+===========================================+==================================================+
-| bootstrap.py                              | Bootstrap script for Buildout                    |
-+-------------------------------------------+--------------------------------------------------+
-| buildout.cfg                              | The buildout configuration                       |
-+-------------------------------------------+--------------------------------------------------+
-| debug.ini                                 | The PasteDeploy configuration for development    |
-+-------------------------------------------+--------------------------------------------------+
-| deploy.ini                                | The PasteDeploy configuration for deployment     |
-+-------------------------------------------+--------------------------------------------------+
-| etc/                                      | A location to add configuration files            |
-+-------------------------------------------+--------------------------------------------------+
-| etc/site.zcml                             | The main ZCML file                               |
-+-------------------------------------------+--------------------------------------------------+
-| etc/zope.conf                             | The main Zope configuration file (generated      |
-|                                           | from template)                                   |
-+-------------------------------------------+--------------------------------------------------+
-| setup.py                                  | Project meta-data for creating distribution      |
-+-------------------------------------------+--------------------------------------------------+
-| src/                                      | All source code will be residing inside this     |
-|                                           | directory                                        |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace.egg-info/                 | This is where all distribution related info      |
-|                                           | residing                                         |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/                          | The namespace package                            |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/__init__.py               | This file with default content would be enough   |
-|                                           | to make this a namespace package.                |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/                     | This is the main package which contains your     |
-|                                           | application code.                                |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/application.zcml     | Boiler plate ZCML to include other application   |
-|                                           | specific ZCMLs.  Now only the main package is    |
-|                                           | included, you can add other ZCMLs from here.     |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/configure.zcml       | You can customize this ZCML which is included    |
-|                                           | from application.zcml                            |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/ftesting.zcml        | ZCML for functional testing                      |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/__init__.py          | The main package                                 |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/README.txt           | main packages's readme                           |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/securitypolicy.zcml  | security policy declarations which is included   |
-|                                           | from site.zcml                                   |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/startup.py           | This script is called by WSGI server to start    |
-|                                           | the application. (Mostly boiler plate)           |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/tests.py             | Boiler plate to register tests.                  |
-+-------------------------------------------+--------------------------------------------------+
-| src/mynamespace/main/views.py             | An example view.                                 |
-+-------------------------------------------+--------------------------------------------------+
-| templates/                                | Buildout specific templates used by              |
-|                                           | "collective.recipe.template"                     |
-+-------------------------------------------+--------------------------------------------------+
-| templates/zope_conf.in                    | Zope conf template, modify this file for any     |
-|                                           | change in zope.conf                              |
-+-------------------------------------------+--------------------------------------------------+
-| var/                                      | A place holder directory for storing all ZODB    |
-|                                           | files, log files etc.                            |
-+-------------------------------------------+--------------------------------------------------+
-| versions.cfg                              | All versions of files can be pinned down here.   |
-+-------------------------------------------+--------------------------------------------------+
+Files &  Purpose
+~~~~~~~~~~~~~~~~
+
+- ``bootstrap.py`` --  Bootstrap script for Buildout
+
+- ``buildout.cfg`` -- The buildout configuration                      
+
+- ``debug.ini`` -- The PasteDeploy configuration for development
+
+- ``deploy.ini`` -- The PasteDeploy configuration for deployment
+
+- ``etc/`` -- A location to add configuration files            
+
+- ``etc/site.zcml`` -- The main ZCML file                               
+
+- ``etc/zope.conf`` -- The main Zope configuration file (generated
+  from template)
+
+- ``setup.py`` -- Project meta-data for creating distribution 
+
+- ``src/`` -- All source code will be residing inside this directory
+
+- ``src/mynamespace.egg-info/`` -- This is where all distribution
+  related info residing
+
+- ``src/mynamespace/`` -- The namespace package                            
+
+- ``src/mynamespace/__init__.py`` -- This file with default content
+  would be enough to make this a namespace package.
+
+- ``src/mynamespace/main/`` -- This is the main package which
+  contains your application code.
+
+- ``src/mynamespace/main/application.zcml`` -- Boiler plate ZCML to
+  include other application specific ZCMLs.  Now only the main
+  package is included, you can add other ZCMLs from here.
+
+- ``src/mynamespace/main/configure.zcml`` -- You can customize this
+  ZCML which is included from application.zcml
+
+
+- ``src/mynamespace/main/ftesting.zcml`` -- ZCML for functional
+  testing
+
+- ``src/mynamespace/main/__init__.py`` -- The main package
+
+- ``src/mynamespace/main/README.txt`` -- main packages's readme
+
+- ``src/mynamespace/main/securitypolicy.zcml`` -- security policy
+  declarations which is included from site.zcml
+
+- ``src/mynamespace/main/startup.py`` This script is called by WSGI
+  server to start the application. (Mostly boiler plate code)
+
+- ``src/mynamespace/main/tests.py`` -- Boiler plate to register
+  tests.
+
+- ``src/mynamespace/main/views.py`` -- An example view.
+
+
+- ``templates/`` -- Buildout specific templates used by
+  "collective.recipe.template"
+
+- ``templates/zope_conf.in`` -- Zope conf template, modify this file
+  for any change in zope.conf
+
+- ``var/`` -- A place holder directory for storing all ZODB files,
+  log files etc.
+
+- ``versions.cfg`` -- All versions of files can be pinned down here.
+
 
 The next section will explain how to create a hello world view.
 
@@ -314,28 +317,29 @@ So the registration could be like this::
      class=".myhello.HelloView"
      />
 
-You can add this to: ``src/mynamespace/main/configure.zcml``.  Now
-you can access the view by visiting this URL:
-http://localhost:8080/@@hello
+You can add configuration to:
+``src/mynamespace/main/configure.zcml``.  Now you can access the view
+by visiting this URL: http://localhost:8080/@@hello
 
-.. note:: The @@ symbol for view
+.. note:: The ``@@`` symbol for view
 
-   @@ is a shortcut for ++view++.
+   ``@@`` is a shortcut for ``++view++``.
    (Mnemonically, it kinda looks like a pair of goggle-eyes)
 
-   To specify that you want to traverse to a view named "bar" of
-   content object "foo", you could (compactly) say .../foo/@@bar
-   instead of .../foo/++view++bar.
+   To specify that you want to traverse to a view named ``bar`` of
+   content object ``foo``, you could (compactly) say ``.../foo/@@bar``
+   instead of ``.../foo/++view++bar``.
 
-   Note that even the '@@' is not necessary if container "foo" has no
-   element named "bar" - it only serves to disambiguate between views
-   of an object and things contained within the object.
+   Note that even the ``@@`` is not necessary if container ``foo``
+   has no element named ``bar`` - it only serves to disambiguate
+   between views of an object and things contained within the object.
 
 Conclusion
 ----------
 
 This chapter exaplained about getting started with application
-development using BlueBream.
+development using BlueBream.  Also introduced a simple ``Hello
+World`` application.
 
 .. raw:: html
 
