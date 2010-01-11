@@ -1,0 +1,14 @@
+==============
+Change History
+==============
+
+1.1.0 (2010/01/11)
+------------------
+
+* enocding of csv file can now be specified ``CSVVocabulary(csvfile, encoding='utf-8')``
+  [fRiSi]
+
+1.0.0
+-----
+
+* initial release
