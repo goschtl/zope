@@ -73,6 +73,14 @@ named ``http_proxy`` in GNU/Linux platforms.  You can set it like this::
 
  $ set http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
 
+Apart from ``bluebream`` distribution, easy_install will download and
+install its dependencies.  The dependencies are:
+
+- `Sphinx-PyPI-upload <http://pypi.python.org/pypi/Sphinx-PyPI-upload>`_
+- `PasteScript <http://pypi.python.org/pypi/PasteScript>`_
+- `PasteDeploy <http://pypi.python.org/pypi/PasteDeploy>`_
+- `Paste <http://pypi.python.org/pypi/Paste>`_
+
 Creating a sample project
 -------------------------
 
@@ -157,8 +165,8 @@ The server can be accessed at http://localhost:8080/ now.
 Package directory structure
 ---------------------------
 
-The default directory structure created by the "bluebream" paster
-template will looks like this::
+The default directory structure created by the ``bluebream`` paster
+project template will look like this::
 
   myproject/
   |-- bootstrap.py
@@ -191,8 +199,8 @@ template will looks like this::
 The name of toplevel directory will be always what you gave as
 project name in the wizard.  The name of egg also will be same as
 that of package name by default.  But if you want, you can change it
-to something else from "setup.py".  Here are the details about other
-files inside the project.
+to something else from ``setup.py``.  Here are the details about
+other files inside the project.
 
 +-------------------------------------------+--------------------------------------------------+
 | Directories & Files                       | Purpose                                          |
@@ -268,9 +276,10 @@ The next section will explain how to create a hello world view.
 Hello World
 -----------
 
-To create a page which displays "Hello World", you need to create a
-view and then register it using ``browser:page`` ZCML directive.  Add
-a Python file named ``myhello.py`` at
+To create a page which displays ``Hello World!``, you need to create
+a view and then register it using ``browser:page`` ZCML directive.
+
+First you need to create a Python file named ``myhello.py`` at
 ``src/mynamespace/main/myhello.py``::
 
   $ touch src/mynamespace/main/myhello.py
@@ -289,7 +298,7 @@ The content of this file could be like this::
   class HelloView(BrowserView):
 
       def __call__(self):
-          return "Hello"
+          return "Hello World!"
 
 Now you can register this view for a particular interface.  So that
 it will be available as a browser view for any object which implement
@@ -305,8 +314,22 @@ So the registration could be like this::
      class=".myhello.HelloView"
      />
 
-You can add this to: ``src/mynamespace/main/configure.zcml``.
-Run the application and visit: http://localhost:8080/@@hello
+You can add this to: ``src/mynamespace/main/configure.zcml``.  Now
+you can access the view by visiting this URL:
+http://localhost:8080/@@hello
+
+.. note:: The @@ symbol for view
+
+   @@ is a shortcut for ++view++.
+   (Mnemonically, it kinda looks like a pair of goggle-eyes)
+
+   To specify that you want to traverse to a view named "bar" of
+   content object "foo", you could (compactly) say .../foo/@@bar
+   instead of .../foo/++view++bar.
+
+   Note that even the '@@' is not necessary if container "foo" has no
+   element named "bar" - it only serves to disambiguate between views
+   of an object and things contained within the object.
 
 Conclusion
 ----------
