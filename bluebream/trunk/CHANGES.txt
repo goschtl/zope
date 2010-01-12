@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.1.8 (unreleased)
+0.1.8 (2010-01-12)
 ------------------
 
 - Use `zope` ZCML namespace as default in configure.zcml
