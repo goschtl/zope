@@ -262,8 +262,8 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004538.html
     "philikon.widget".
 
 
-Are !ContainerTypesConstraint & !ItemTypePrecondition deprecated?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Are ContainerTypesConstraint & ItemTypePrecondition deprecated ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These two are not deprecated, but ``contains`` and ``containers``
 functions are recommended.
@@ -429,8 +429,8 @@ file (``site.zcml``) as the adapter registration is available there::
 User Interface
 --------------
 
-How do I create a !ZServer instance (instead of the default twisted instance) ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I create a ZServer instance (instead of the default twisted instance) ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
 
@@ -852,11 +852,11 @@ or::
 
   zope.traversing.browser.absoluteURL
 
-How do I sort !BTreeContainer objects?
+How do I sort BTreeContainer objects ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Q: Is there a way to sort the objects returned by values() from a
-    zope.app.container.btree.!BTreeContainer instance?
+    zope.app.container.btree.BTreeContainer instance?
 
 Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2006-09-25.log.html
 
@@ -925,10 +925,10 @@ You can do so with a little zcml::
         <implements interface=".interfaces.IBloggable" />
     </class>
 
-How do I get !IRequest object in event handler ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I get IRequest object in event handler ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:Q: How I can get !IRequest in my event handler (I have only context)? 
+:Q: How I can get IRequest in my event handler (I have only context)? 
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006051.html
 
@@ -1017,8 +1017,8 @@ problems with events, ie: their order is not well defined.
 Configuration and Setup
 -----------------------
 
-How do I create a !ZServer instance (instead of the default twisted instance) ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I create a ZServer instance (instead of the default twisted instance) ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
 
@@ -1272,7 +1272,7 @@ eg:-
   True
 
 
-Why do I see !ForbiddenAttribute exceptions/errors?
+Why do I see ForbiddenAttribute exceptions/errors ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004027.html
