@@ -3,6 +3,8 @@ FAQ
 
 This FAQ is originated from: http://wiki.zope.org/zope3/FAQ
 
+.. contents::
+
 General
 -------
 
@@ -402,6 +404,27 @@ Logout is available from 3.3 onwards, but it is disabled by default.
 To enable add this line to ``$instance/etc/overrides.zcml``::
 
   <adapter factory="zope.app.security.LogoutSupported" />
+
+Why I am getting ILoginPassword adaptation error when accessing login.html ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Ref: https://mail.zope.org/pipermail/zope3-users/2010-January/008745.html
+
+:Q: I am getting an error like this when accessing ``login.html`` view.
+
+::
+
+  .../eggs/zope.principalregistry-3.7.0-py2.5.egg/zope/principalregistry/principalregistry.py", 
+  line 82, in unauthorized
+     a = ILoginPassword(request)
+  TypeError: ('Could not adapt', <zope.publisher.browser.BrowserRequest 
+  instance URL=http://localhost:9060/@@login.html>, <InterfaceClass 
+  zope.authentication.interfaces.ILoginPassword>)
+
+You need to inlcude ``zope.login`` package in your ZCML configuration
+file (``site.zcml``) as the adapter registration is available there::
+
+   <include package="zope.login" />
 
 User Interface
 --------------
