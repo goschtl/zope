@@ -5,6 +5,8 @@ Changelog
 ------------------
 
 - Use `zope` ZCML namespace as default in configure.zcml
+- Documentation improvements
+- Create a sample application by default
 
 0.1.7 (2010-01-10)
 ------------------

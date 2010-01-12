@@ -1,4 +1,22 @@
 from zope.publisher.browser import BrowserView
+from zope.container.interfaces import INameChooser
+from zope.formlib import form
+
+from interfaces import ISampleApplication
+from app import SampleApplication
+
+class AddSampleApplication(form.AddForm):
+
+    form_fields = form.Fields(ISampleApplication)
+
+    def createAndAdd(self, data):
+        name = data['name']
+        description = data.get('description')
+        namechooser = INameChooser(self.context)
+        app = SampleApplication()
+        name = namechooser.chooseName(name, app)
+        self.context[name] = app
+
 
 class RootDefaultView(BrowserView):
 

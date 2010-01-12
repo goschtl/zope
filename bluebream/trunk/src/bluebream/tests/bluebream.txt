@@ -59,9 +59,11 @@ Creating directory ./sample
         Creating ./sample/src/test_name/test_main/
         Copying README.txt_tmpl to ./sample/src/test_name/test_main/README.txt
         Copying __init__.py to ./sample/src/test_name/test_main/__init__.py
+        Copying app.py to ./sample/src/test_name/test_main/app.py
         Copying application.zcml_tmpl to ./sample/src/test_name/test_main/application.zcml
         Copying configure.zcml_tmpl to ./sample/src/test_name/test_main/configure.zcml
         Copying ftesting.zcml_tmpl to ./sample/src/test_name/test_main/ftesting.zcml
+        Copying interfaces.py to ./sample/src/test_name/test_main/interfaces.py
         Copying securitypolicy.zcml_tmpl to ./sample/src/test_name/test_main/securitypolicy.zcml
         Copying startup.py to ./sample/src/test_name/test_main/startup.py
         Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests.py

@@ -15,4 +15,25 @@
      class=".views.RootDefaultView"
      />
 
+  <class class=".app.SampleApplication">
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <implements
+       interface="zope.container.interfaces.IContentContainer" 
+       />
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.ISampleApplication"
+       set_schema=".interfaces.ISampleApplication"
+       />
+  </class>
+
+  <browser:page
+     for="zope.site.interfaces.IRootFolder"
+     name="add"
+     permission="zope.Public"
+     class=".views.AddSampleApplication"
+     />
+
 </configure>
