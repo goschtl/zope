@@ -90,6 +90,55 @@ also widely used.
 
 Very recently Zope 3 project is renamed to BlueBream.
 
+Organization of the book
+------------------------
+
+This book has divided into multiple chapters.  Summary of each
+chapter is given below.
+
+Introduction
+~~~~~~~~~~~~
+
+This chapter introduce BlueBream with an overview and brief history.
+Then walks through the organization of the book.  Finally, finish
+with a thanks section.
+
+Getting Started
+~~~~~~~~~~~~~~~
+
+This chapter narrate the process of creating a new web application
+project using BlueBream.  Also it gives few excercises to familiarize
+the basic concepts in BlueBream.
+
+Tutorial
+~~~~~~~~
+
+This tutorial chapter explain creating a simple ticket collector
+application.  This will help you to familiarize more concepts in
+BlueBream.
+
+FAQ
+~~~
+
+These are FAQs collected from mailing lists, blogs and other online
+resources.
+
+HOWTOs
+~~~~~~
+
+Small documents focusing on specific topics.
+
+Reference
+~~~~~~~~~
+
+A complete reference to BlueBream.
+
+Thanks
+------
+
+Thanks to all contributors of BlueBream (old Zope 3) for developing
+it.  Thanks to all those who contributed to this documentation.
+
 .. raw:: html
 
   <div id="disqus_thread"></div><script type="text/javascript"
