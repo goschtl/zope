@@ -32,7 +32,7 @@
   <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="add"
-     permission="zope.Public"
+     permission="zope.ManageContent"
      class=".views.AddSampleApplication"
      />
 

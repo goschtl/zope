@@ -40,6 +40,7 @@ class RootDefaultView(BrowserView):
 <li><a href="https://mail.zope.org/mailman/listinfo/zope3-users">Mailing list</a></li>
 <li><a href="http://webchat.freenode.net/?randomnick=1&channels=bluebream">IRC Channel: #bluebream at irc.freenode.net</a></li>
 </ul>
+<a href="@@login.html">Login</a>
 <br/>
 <a href="@@add">Add Sample application</a>
 </body></html>
