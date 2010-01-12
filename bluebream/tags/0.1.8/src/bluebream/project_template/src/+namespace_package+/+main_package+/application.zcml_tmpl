@@ -1,0 +1,20 @@
+<configure
+   i18n_domain="${namespace_package}.${main_package}"
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- The following registration (defaultView) register 'index' as
+       the default view for a container.  The name of default view
+       can be chaged to a different value, for example, 'index.html'.
+       More details about defaultView registration is available here:
+       http://packages.python.org/bluebream/howto/defaultview.html
+       -->
+
+  <browser:defaultView
+     name="index"
+     for="zope.container.interfaces.IContainer"
+     />
+
+  <include package="${namespace_package}.${main_package}" />
+
+</configure>

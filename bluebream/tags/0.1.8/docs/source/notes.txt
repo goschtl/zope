@@ -1,0 +1,64 @@
+Technical Decisions
+-------------------
+
+- BlueBream is a "web framework".
+
+- Shortening BlueBream as Bream or BB is acceptable.
+
+- The only public API exposed by "bluebream - the package"
+  is an entry point::
+
+    "paste.paster_create_template":
+        ["bluebream = bluebream.template:BlueBream"]
+
+  The implementation of "bluebream" template is defined in
+  "bluebream.template.BlueBream".  The template implementation
+  location could be changed if required later.  This leaves us an
+  option to change "bluebream" as a namespace package if desired.
+
+- All the framework code will be using "zope" or "zope.app" namespace
+  packages.  Although "bream" could be considered as a namespace
+  package in future.
+
+- "bluebream" the project consists of
+
+   - documentation
+
+   - compatibility test suite
+
+   - project template
+
+   May be documentation and compatibility test suite could be
+   separated out to separate locations/packages later.
+
+- BlueBream 1.0 should provide an up-gradation path from Zope 3.4 KGS
+
+- Any "shell command" need to be repeated should not be automated by
+  the project template.
+
+- Running ``bootstrap.py`` and ``buildout`` inside project should not
+  be added to project template creation for the previous reason.
+  Another supporting reason is the easiness of adding sources to
+  version controlling system.
+
+Notes for developers
+--------------------
+
+To upload documentation::
+
+  ./bin/sphinxbuilder
+  ./bin/buildout setup . upload_sphinx
+
+Road map
+--------
+
+- Make the documentation better
+
+- Study each package in detail and help to improve its documentation
+
+- Understand how each package works together
+
+- Create a tutorial which explain creating a simple application with
+  all basic requirements
+
+- Write in detail about ZODB and how persistence works
