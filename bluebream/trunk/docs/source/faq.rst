@@ -40,9 +40,6 @@ BlueBream has:
 
   - WSGI-compatible object publisher (zope.publisher)
 
-  - WSGI-enabled web server (zope.server) and twisted.web2 for server
-    backend
-
   - Object database (ZODB) for transparently persisting objects; comes
     with load-balancing support (ZEO).
 
