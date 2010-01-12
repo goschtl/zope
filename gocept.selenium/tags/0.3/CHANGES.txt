@@ -1,0 +1,27 @@
+Changes
+=======
+
+0.3 (2010-01-12)
+----------------
+
+- Extracted 'host' and 'port' as class attributes of gocept.selenium.ztk.Layer
+  so subclasses can override them; stopped hardcoding 8087 as the server port.
+
+
+0.2.1 (2009-12-18)
+------------------
+
+- Fix incomplete sdist release on PyPI.
+
+
+0.2 (2009-12-18)
+----------------
+
+- Make Zope 2 test server reachable from the outside.
+- Implemented getTitle/assertTitle/waitForTitle/etc.
+
+
+0.1 (2009-11-08)
+----------------
+
+- first release
