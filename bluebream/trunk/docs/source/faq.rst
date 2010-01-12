@@ -347,23 +347,6 @@ file (``site.zcml``) as the adapter registration is available there::
 User Interface
 --------------
 
-How do I create a ZServer instance (instead of the default twisted instance) ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
-
->>> Is there a non-twisted main.py or does zope.app.twisted.main get used
->>> for all BlueBream instances?
->>
->> zope.app.server.main
->
-> How do you switch between the two?
-
-::
-
-  mkzopeinstance creates a twisted instance (default)
-  mkzopeinstance --zserver creates a zope.server instance
-
 How do I disable the url selection of the skin?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -923,22 +906,6 @@ problems with events, ie: their order is not well defined.
 Configuration and Setup
 -----------------------
 
-How do I create a ZServer instance (instead of the default twisted instance) ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
-
->>> Is there a non-twisted main.py or does zope.app.twisted.main get used
->>> for all BlueBream instances?
->>
->> zope.app.server.main
->
-> How do you switch between the two?
-
-::
-
-  mkzopeinstance creates a twisted instance (default)
-  mkzopeinstance --zserver creates a zope.server instance
 
 How do I disable the url selection of the skin?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1067,14 +1034,6 @@ Then you can use it in your TAL templates just like this::
   <div tal:content="provider latestNews" />
 
 Also, you may want to pass some parameters via TAL. For info on how to do this, read documentation in the zope.contentprovider. If you want to bind some content provider to some skin, change IDefaultBrowserLayer to your skin interface.
-
-How do I use the BlueBream WSGI application object ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://blog.d2m.at/2006/09/23/zope3-and-wsgi-integration/
-
-for an example of integrating the Zope3 WSGI application with a standard WSGI
-server
 
 
 How do I serve out static content in zope3?
