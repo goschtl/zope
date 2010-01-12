@@ -4,26 +4,46 @@ Introduction
 Overview
 --------
 
-BlueBream is a web framework written in Python programming language.
-BlueBream is a thin layer on top of Zope Tool Kit (ZTK).  Normally,
-BlueBream applications are developed using a Python based build
-system called Buildout.  BlueBream use the Zope component
-architecture (ZCA) for "separation of concerns" and to create
-reusable components (zope.component).  BlueBream has an object
-publisher (zope.publisher), web server (zope.server), transactional
-object database (ZODB), an XML based configuration language for
-registering components (ZCML), flexible security architecture with
-pluggable security policies (zope.security), unit and functional
-testing frameworks (zope.testing, zope.testbrowser), XHTML-compliant
-templating language (zope.pagetemplate), schema engine and automatic
-form generation machinery (zope.schema, z3c.form) and many other
-packages.
-
-Previously BlueBream was known as "Zope 3".  The development of this
-project started in 2002.  BlueBream is a ZPL (BSD like, GPL
-compatible license) licensed free/open source software.  It was
+**BlueBream** is a web framework written in Python programming
+language.  BlueBream is a free/open source software, licensed under
+Zope Public License (BSD like, GPL compatible license) owned by
+:term:`Zope Foundation`.  BlueBream was known as **Zope 3** in the
+past.  The development of BlueBream started in 2002.  BlueBream was
 developed by the Zope community with the leadership of Jim Fulton.  A
-brief history is given in the next section.
+brief history is given in the next section.  There are many
+attractive features which make BlueBream unique among Python web
+frameworks.
+
+- BlueBream is built on top of :term:`Zope Tool Kit` (ZTK).  In fact,
+  ZTK is derived from BlueBream.
+
+- BlueBream use and recommend to use :term:`Buildout` -- a build
+  system written in Python.
+
+- BlueBream support WSGI and use Paste (PasteScript & PasteDeploy).
+
+- BlueBream use :term:`Zope Component Architecture` (ZCA) for
+  `separation of concerns` and to create highly cohesive reusable
+  components (zope.component).
+
+- BlueBream has an object publisher (zope.publisher)
+
+- BlueBream has transactional object database (ZODB)
+
+- BlueBream has an XML based configuration language for registering
+  components (ZCML)
+
+- BlueBream has flexible security architecture with pluggable
+  security policies (zope.security)
+
+- BlueBream has unit and functional testing frameworks (zope.testing,
+  zope.testbrowser),
+
+- BlueBream has XHTML-compliant templating language
+  (zope.pagetemplate)
+
+- BlueBream has schema engine and automatic form generation machinery
+  (zope.schema, zope.formlib)
 
 The main aim of this book is to create a free online book about
 BlueBream.  This book will cover how to develop web applications
