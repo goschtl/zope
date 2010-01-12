@@ -5,13 +5,13 @@ Overview
 --------
 
 **BlueBream** is a web framework written in Python programming
-language.  BlueBream is a free/open source software, licensed under
-Zope Public License (BSD like, GPL compatible license) owned by
-:term:`Zope Foundation`.  BlueBream was known as **Zope 3** in the
-past.  The development of BlueBream started in 2002.  BlueBream was
-developed by the Zope community with the leadership of Jim Fulton.  A
-brief history is given in the next section.  There are many
-attractive features which make BlueBream unique among Python web
+language.  BlueBream is a free/open source software, owned by
+:term:`Zope Foundation`, licensed under Zope Public License (BSD
+like, GPL compatible license).  BlueBream was known as **Zope 3** in
+the past.  The development of BlueBream started in 2002.  BlueBream
+was developed by the Zope community with the leadership of Jim
+Fulton.  A brief history is given in the next section.  There are
+many attractive features which make BlueBream unique among Python web
 frameworks.
 
 - BlueBream is built on top of :term:`Zope Tool Kit` (ZTK).  In fact,
