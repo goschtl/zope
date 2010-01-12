@@ -1,31 +1,29 @@
 FAQ
 ===
 
-This FAQ is originated from: http://wiki.zope.org/zope3/FAQ
-
 .. contents::
 
 General
 -------
 
-What is Zope 3?
-~~~~~~~~~~~~~~~
+What is BlueBream ?
+~~~~~~~~~~~~~~~~~~~
 
-Zope 3 is a **production ready** free/open source web application
-framework written in the Python programming language.  Zope 3 provides
+BlueBream is a **production ready** free/open source web application
+framework written in the Python programming language.  BlueBream provides
 a component architecture, transactional object database, tightly
 integrated security model and many other features.
 
-Zope 3 is coming from the Zope community which is started around 1998.
+BlueBream is coming from the Zope community which is started around 1998.
 Initially Zope's core technologies were designed by Zope Corporation.
-The development of Zope 3 started in late 2001.  In November 2004,
-Zope 3 was released.  Zope 3 is a complete rewrite that only preserves
-the original ZODB object database.  The design of Zope 3 is driven by
+The development of BlueBream started in late 2001.  In November 2004,
+BlueBream was released.  BlueBream is a complete rewrite that only preserves
+the original ZODB object database.  The design of BlueBream is driven by
 the needs of large companies.  It is directly intended for enterprise
 web application development using the newest development paradigms.
-Extreme programming development process has a real influence in Zope 3
-development.  Automated testing is a major strength of Zope 3.
-Sprints_ were introduced to help accelerate Zope 3 development.  In
+Extreme programming development process has a real influence in BlueBream
+development.  Automated testing is a major strength of BlueBream.
+Sprints_ were introduced to help accelerate BlueBream development.  In
 2006 `Zope foundation`_ was formed to help organize and formalize the
 relationships with the Zope community.
 
@@ -33,12 +31,12 @@ relationships with the Zope community.
 .. _Zope foundation: http://www.zope.org/foundation
 .. _subversion: http://svn.zope.org/
 
-Why Zope 3?
-~~~~~~~~~~~
+Why BlueBream ?
+~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004205.html
 
-Zope 3 has:
+BlueBream has:
 
   - WSGI-compatible object publisher (zope.publisher)
 
@@ -68,221 +66,140 @@ Zope 3 has:
   - many more core and third-party packages that may already solve
     some of your problems. See http://svn.zope.org, for instance.
 
-Zope 3 is:
+BlueBream is:
 
   - ZPL (BSD-ish license)
 
-  - soon to be owned by Zope Foundation
+  - Owned by Zope Foundation
 
   - written mostly by contributors, not just Zope Corporation.
 
   - usable in pieces or in whole
 
-What is the Zope Foundation?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What is the Zope Foundation ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-From http://foundation.zope.org:
+From http://foundation.zope.org::
 
   The Zope Foundation has the goal to promote, maintain, and develop
-  the Zope platform. It does this by supporting the Zope
-  community. Our community includes the open source community of
-  contributors to the Zope software, contributors to the documentation
-  and web infrastructure, as well as the community of businesses and
+  the Zope platform.  It does this by supporting the Zope community.
+  Our community includes the open source community of contributors to
+  the Zope software, contributors to the documentation and web
+  infrastructure, as well as the community of businesses and
   organizations that use Zope.
 
-  The Zope Foundation is the copyright holder of the Zope software and
-  many extensions and associated software. The Zope Foundation also
-  manages the zope.org website, and manages the infrastructure for
-  open source collaboration.
+  The Zope Foundation is the copyright holder of the Zope software
+  and many extensions and associated software.  The Zope Foundation
+  also manages the zope.org website, and manages the infrastructure
+  for open source collaboration.
 
-For more details: http://foundation.zope.org/about.html
-
-
-How can I help?
-~~~~~~~~~~~~~~~
-
-If you're interested in helping and you have time, educate yourself on
-the component architecture and Zope 3 then volunteer to assist in your
-particular area of expertise.  See HowToContribute for details.
+For more details: http://foundation.zope.org/about
 
 
+How can I help ?
+~~~~~~~~~~~~~~~~
 
-What is the license of Zope 3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Zope 3 is licensed under Zope Public License, Version 2.1 (ZPL).
-
-Since we also use some contributions from other projects, some parts
-of Zope 3 will have other licenses. See `LICENSES.txt`_ for more
-details.
-
-.. _LICENSES.txt:
-  http://svn.zope.org/\*checkout\*/Zope3/branches/3.3/LICENSES.txt
+If you're interested in helping and you have time, educate yourself
+on the component architecture and BlueBream then volunteer to assist
+in your particular area of expertise.  Please come to our IRC
+channel: #bluebream at irc.freenode.net
 
 
+What is the license of BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Is Zope 3 stable enough to be used in production environment?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+BlueBream is licensed under Zope Public License, Version 2.1 (ZPL).
 
-Zope 3 is used in several larger production sites already.  Public
-applications include `Launchpad`_, `SchoolTool`_, `Tiks`_ and `SIP`_.
-Several custom solutions have been written too.  But the
-development of Zope 3 will probably never be done, it will continue
-until all our needs are met :)
+Is BlueBream stable enough to be used in production environment ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _Launchpad: http://www.launchpad.net
-.. _SchoolTool: http://www.schooltool.org
-.. _Tiks: http://www.tiks.org/
-.. _SIP: http://sourceforge.net/projects/sampleinventory
-
+Yes, it is stable enough to be used in production environment.
+BlueBream (or old Zope 3) is used in several larger production sites
+already.  Several custom solutions have been written too.  But the
+development of BlueBream will probably never be done, it will
+continue until all our needs are met :)
 
 Which Python version is required?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Zope 3.4 can be run using Python 2.4 or 2.5.
+Python 2.6 will the supported version for BlueBream 1.0 final
+release.
 
 
-What is the KGS (Known Good Set)?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What is the KGS (Known Good Set) ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting from version 3.4, Zope has been split into many packages called "eggs", that are released independently. The KGS is a set of python eggs, that are known to work together, and that are listed in a separate Python Package Index (to be used with setuptools/easy_install and zc.buildout).
+Starting from version 3.4, Zope has been split into many packages
+called "eggs", that are released independently.  The KGS is a set of
+python eggs, that are known to work together, and that are listed in
+a separate Python Package Index (to be used with
+setuptools/easy_install and zc.buildout).
 
- * The KGS package index for zope 3.4 is : http://download.zope.org/zope3.4/
- * Some explanations about using the KGS : http://download.zope.org/zope3.4/intro.html
+* The KGS package index for zope 3.4 is : http://download.zope.org/zope3.4/
+* Some explanations about using the KGS : http://download.zope.org/zope3.4/intro.html
 
-The KGS is used to define what a major release of Zope is. The KGS for Zope 3.4 is here: http://svn.zope.org/zope.release/tags/
+The KGS is used to define what a major release of Zope is.  The KGS
+for Zope 3.4 is here: http://svn.zope.org/zope.release/tags/
 
-The generic code that is used to build and maintain any KGS is here: http://svn.zope.org/zope.kgs/
+The generic code that is used to build and maintain any KGS is here:
+http://svn.zope.org/zope.kgs/
 
-How do I start a new Zope3 project?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I start a new BlueBream project ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You currently have a choice between:
-
- * the old and discouraged way of using the monolithic distribution of Zope, that you can download here: http://zope.org/Products/Zope3
-
- * learn zc.buildout, and build your own setup for zope.
-
-   - buildout documentation: http://pypi.python.org/pypi/zc.buildout/1.0.0
-   - buildout tutorial: http://grok.zope.org/documentation/tutorial/introduction-to-zc.buildout
-
-   You can start with a very simple buildout, then add some useful 'recipes' you can find in http://pypi.python.org or in http://svn.zope.org
-
- * Use zopeproject: http://pypi.python.org/pypi/zopeproject/
-
-zopeproject will automatically create a buildout for you, and you will be able to start your new zope application in a few seconds. The buildout does not contain every zope component by default, you will want to modify the setup.py to add the eggs that will be eventually used by your application.
-
-zopeproject 0.4.1 will use all the latest eggs by default, so that the setup may fail. You should instead use the KGS of zope 3.4, by replacing::
-
-  find-links = http://download.zope.org/distribution/
-
-with::
-
-  extends = http://download.zope.org/zope3.4/versions.cfg
-  versions = versions
-
+Please start with `Getting Started <gettingstarted.html>`_
+documentation.
 
 Concepts
 --------
 
-What is the component architecture?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What is the component architecture ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It's similar to other component architectures in that it lets you fit
 small pieces of functionality together.  While Zope 2 has many parts
-welded together with inheritance, Zope 3 will let you take things
-apart and put them together like LEGO bricks(TM).  See the
-[Vision Statement], [Components], [Interfaces], and the [Glossary].
+welded together with inheritance, BlueBream will let you take things
+apart and put them together like LEGO bricks(TM).
 
-Where can I find pointers to resources?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Where can I find pointers to resources ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- 1. This wiki
+1. IRC : #zope3-dev at irc.freenode.net , logs at : http://zope3.pov.lt/irclogs
 
- 2. http://apidoc.zope.org/++apidoc++/
+2. Users list (for development with BlueBream): zope3-users@zope.org,
+   archives at : http://mail.zope.org/pipermail/zope3-users/
 
- 3. Zope 3 Base : http://codespeak.net/z3/
+3. Developers list (for development of BlueBream itself) :
+   zope-dev@zope.org, archives at :
+   http://mail.zope.org/pipermail/zope-dev/
 
- 4. IRC : #zope3-dev at irc.freenode.net , logs at : http://zope3.pov.lt/irclogs
+4. Zope 3 book by Philipp von Weitershausen :
+   http://worldcookery.com/
 
- 5. Users list (for development with Zope 3): zope3-users@zope.org, archives at : http://mail.zope.org/pipermail/zope3-users/
+5. Planet :  http://planetzope.org/
 
- 6. Developers list (for development of Zope 3 itself) : zope3-dev@zope.org, archives at : http://mail.zope.org/pipermail/zope3-dev/
-
- 7. Zope 3 book by Philipp von Weitershausen : http://worldcookery.com/
-
- 8. Planet :  http://planetzope.org/
-
- 9. News letter : http://blog.planetzope.org/
-
- 10. Zope Cookbook : http://zope-cookbook.org/
-
- 11. http://del.icio.us/tag/zope3
-
- 12. https://wiki.ubuntu.com/LearningZope3
-
- 13. ZopeGuide
+6. https://wiki.ubuntu.com/LearningZope3
 
 
-What's the deal with the '/@@' syntax?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What's the deal with the ``/@@`` syntax ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@@ is a shortcut for ++view++.
-(Mnemonically, it kinda looks like a pair of goggle-eyes)
+``@@`` is a shortcut for ``++view++``.  (Mnemonically, it kinda looks
+like a pair of goggle-eyes)
 
-To specify that you want to traverse to a view named "bar" of content 
-object "foo", you could (compactly) say .../foo/@@bar instead of
-.../foo/++view++bar.
+To specify that you want to traverse to a view named ``bar`` of
+content object ``foo``, you could (compactly) say ``.../foo/@@bar``
+instead of ``.../foo/++view++bar``.
 
-Note that even the '@@' is not necessary if container "foo" has no
-element named "bar" - it only serves to disambiguate between views of
-an object and things contained within the object.
-
-
-How do dotted package names (like "dotted.name") work?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004538.html
-
-  Q. In /zopeinstance/lib/python, is the package actually in
-     /zopeinstance/lib/python/dotted.name, or is it in
-     /zopeinstance/lib/python/dotted/name?
-
-    The latter.
-
-  Q. What is the purpose of using the dotted name?
-
-    Short answer: package namespaces.
-
-    Long answer: Say you're creating a widget library. You could call
-    your package simply "widget". But then if I create a widget
-    library and called it "widget", too, we'd have a conflict and
-    couldn't use them at the same time. That's why you call your
-    package "george.widget" and I'll call my package
-    "philikon.widget".
-
+Note that even the ``@@`` is not necessary if container ``foo`` has
+no element named ``bar`` - it only serves to disambiguate between
+views of an object and things contained within the object.
 
 Are ContainerTypesConstraint & ItemTypePrecondition deprecated ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These two are not deprecated, but ``contains`` and ``containers``
 functions are recommended.
-
-What's the difference between service and utility?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Mainly, Services have been deprecated and no longer exist ;-) Existing
-services have been rewritten as Utilities.
-
-For historical information, see
-DifferencesBetweenServicesAndUtilities.  Originally, a utility was
-thought of a one-off thing, while a service was something that's
-carefully designed into the infrastructure.  As an analogy, "mapping",
-"sequence" and "file-like object" are generic interfaces in Python,
-and could be considered somewhat like Zope services, while other
-things (e.g. frame objects, mmap objects, curses screen objects etc.)
-are one-off types/classes, similar to Zope utilities.
-
 
 Security
 --------
@@ -304,8 +221,8 @@ Use `like_class` attribute of `require` tag, Here are some examples::
   </class>
 
 
-How can I determine (in code) if a principal has the right permissions?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How can I determine (in code) if a principal has the right permissions ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004201.html
 
@@ -393,15 +310,16 @@ Via the ZMI:
  * Now, register both the PAU and the ldap plugin
  * Then you can see your ldap-users in Grant action
 
-How do I logout from Zope 3 Management Interface (ZMI) ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I logout from BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2005-October/001112.html
 
 Ref: http://svn.zope.org/\*checkout\*/Zope3/branches/3.3/src/zope/app/security/browser/loginlogout.txt
 
-Logout is available from 3.3 onwards, but it is disabled by default.
-To enable add this line to ``$instance/etc/overrides.zcml``::
+Logout is available from Zope 3.3 onwards, but it is disabled by
+default.  To enable add this line to
+``$instance/etc/overrides.zcml``::
 
   <adapter factory="zope.app.security.LogoutSupported" />
 
@@ -435,7 +353,7 @@ How do I create a ZServer instance (instead of the default twisted instance) ?
 Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
 
 >>> Is there a non-twisted main.py or does zope.app.twisted.main get used
->>> for all Zope 3 instances?
+>>> for all BlueBream instances?
 >>
 >> zope.app.server.main
 >
@@ -574,15 +492,6 @@ Then you can use it in your TAL templates just like this::
 
 Also, you may want to pass some parameters via TAL. For info on how to do this, read documentation in the zope.contentprovider. If you want to bind some content provider to some skin, change IDefaultBrowserLayer to your skin interface.
 
-How do I use the Zope 3 WSGI application object?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://blog.d2m.at/2006/09/23/zope3-and-wsgi-integration/
-
-for an example of integrating the Zope3 WSGI application with a standard WSGI
-server
-
-
 How do I serve out static content in zope3?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -591,9 +500,8 @@ Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2006-10-02.log.html
 See the ZCML directives <resource> and <resourceDirectory> they let
 you publish static files through Zope
 
-
-Is webdav source server available in Zope 3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Is webdav source server available in BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004648.html
 
@@ -608,12 +516,10 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006106.html
 
   <includeOverrides package="myapp" file="overrides.zcml" />
 
-
-How write custom traversal in Zope 3 ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How write custom traversal in BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See this blog entry by Marius Gedminas : http://mg.pov.lt/blog/zope3-custom-traversal.html
-
 
 Programming
 -----------
@@ -663,7 +569,7 @@ How do I upgrade from one minor release to another?
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004025.html
 
-You can have more than one Zope 3 installed, e.g. you can install Zope
+You can have more than one BlueBream installed, e.g. you can install Zope
 3.2.1 in parallel to 3.2.0 and switch your instance over to 3.2.1 (by
 editing the start scripts in $INSTANCE/bin). You can also install Zope
 3.2.1 into the place where 3.2.0 was installed; your instance should
@@ -1023,7 +929,7 @@ How do I create a ZServer instance (instead of the default twisted instance) ?
 Ref: http://mail.zope.org/pipermail/zope3-dev/2007-February/021678.html
 
 >>> Is there a non-twisted main.py or does zope.app.twisted.main get used
->>> for all Zope 3 instances?
+>>> for all BlueBream instances?
 >>
 >> zope.app.server.main
 >
@@ -1162,8 +1068,8 @@ Then you can use it in your TAL templates just like this::
 
 Also, you may want to pass some parameters via TAL. For info on how to do this, read documentation in the zope.contentprovider. If you want to bind some content provider to some skin, change IDefaultBrowserLayer to your skin interface.
 
-How do I use the Zope 3 WSGI application object?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I use the BlueBream WSGI application object ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://blog.d2m.at/2006/09/23/zope3-and-wsgi-integration/
 
@@ -1180,8 +1086,8 @@ See the ZCML directives <resource> and <resourceDirectory> they let
 you publish static files through Zope
 
 
-Is webdav source server available in Zope 3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Is webdav source server available in BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004648.html
 
@@ -1196,9 +1102,8 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006106.html
 
   <includeOverrides package="myapp" file="overrides.zcml" />
 
-
-How write custom traversal in Zope 3 ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How write custom traversal in BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See this blog entry by Marius Gedminas : http://mg.pov.lt/blog/zope3-custom-traversal.html
 
@@ -1344,7 +1249,7 @@ http://dev.zope.org/Members/spascoe/HowOneZope3BugWasFixed (Scott Pascoe)
 Ken Manheimer wrote up an in-depth account of interactive Zope
 debugging using the python prompt - it was written for Zope 2, but
 many of the principles and some of the actual techniques should
-translate to Zope 3.  It's at:
+translate to BlueBream.  It's at:
 
 http://www.zope.org/Members/klm/ZopeDebugging
 
@@ -1402,72 +1307,72 @@ with the debugger).::
 Now, when a request raises an exception, you'll be dropped into a post-mortem
 debugger at the point of the exception.
 
-What version of ZODB does Zope 3 use?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What version of ZODB does BlueBream use ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Right now Zope 3 is using ZODB 3.  Zope 3.4 is using ZODB 3.8 .
-
-ZODB 4 development has halted indefinitely because of lack of
-resources to support both versions. However, many ZODB 4 features
-have been back-ported to ZODB 3.
-
+BlueBream 1.0 is using ZODB 3.9.x
 
 How do I use ZODB blob ?
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2007-11-18.log.html
+You can use `z3c.blobfile
+<http://pypi.python.org/pypi/z3c.blobfile>`_ implementation for
+storing images and other normal files.
 
-Create a directory under `INSTANCE/var` for storing blobs::
-
-  $ mkdir var/blobs
-
-Then in your `zope.conf` change `<zodb>` definition like this::
+In BlueBream, blob storage is configured by default.  The final
+configuration is inside ``etc/zope.conf``, but this configuration
+file is generated from a template by Buildout.  The templates is
+available in ``templates/zope_conf.in``.  So, if you want to make any
+changes, you can do it there::
 
   <zodb>
+    # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
+    # support.
+    # This won't be needed with ZODB 3.9, as its FileStorage supports
+    # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
+    # the blob-dir parameter right in in filestorage, just after path.
     <blobstorage>
+      blob-dir ${config:blob}
       <filestorage>
-        path $DATADIR/Data.fs
+        path ${config:filestorage}/Data.fs
       </filestorage>
-      blob-dir $DATADIR/blobs
     </blobstorage>
   </zodb>
 
-The `blob-dir` specifies where you want to store blobs.  You may use
-``z3c.blobfile`` implementation for storing images and other normal
-files.
+The ``blob-dir`` specifies where you want to store blobs.  As you can
+see, the directory location information is getting from Buildout
+configuration file.  So, if you want to change the location, you need
+to change it in the Buildout configuration.
 
-The next time you run your app, new .pyc files with correct references will be 
-created, and presto - you're ok!
-
-Do you have an example of CRUD (create/read/update/delete)?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Do you have an example of CRUD (create/read/update/delete) ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004248.html
 
 The Zope Object DataBase (ZODB), available by default to your application,
-makes CRUD very simple::
+makes CRUD very simple.
 
-  Create:
+Create::
 
-     >>> from recipe import MyFolder, Recipe
-     >>> folder = MyFolder()
-     >>> recipe = Recipe()
-     >>> folder['dead_chicken'] = recipe
+  >>> from recipe import MyFolder, Recipe
+  >>> folder = MyFolder()
+  >>> recipe = Recipe()
+  >>> folder['dead_chicken'] = recipe
 
-  Read:
+Read::
 
-     >>> folder['dead_chicken']
-     <worldcookery.recipe.Recipe object at XXX>
+  >>> folder['dead_chicken']
+  <worldcookery.recipe.Recipe object at XXX>
 
-  Update:
+Update::
 
-     >>> recipe = folder['dead_chicken']
-     >>> recipe.title = u'Dead chicken'
-     >>> recipe.description = u'Beat it to death'
+  >>> recipe = folder['dead_chicken']
+  >>> recipe.title = u'Dead chicken'
+  >>> recipe.description = u'Beat it to death'
 
-  Delete:
+Delete::
 
-     >>> del recipe['dead_chicken']
+  >>> del recipe['dead_chicken']
 
 Is there any tool to monitor ZODB activity ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1476,33 +1381,20 @@ Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2007-05-15.log.html
 
 There are some packages under development:
 
- - http://svn.zope.org/zc.z3monitor
- - http://svn.zope.org/zc.zservertracelog
- - http://svn.zope.org/zc.zodbactivitylog
+- http://svn.zope.org/zc.z3monitor
+- http://svn.zope.org/zc.zservertracelog
+- http://svn.zope.org/zc.zodbactivitylog
 
+Where is zope.app.workflow ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+It has never been released with BlueBream, just as an add-on package.
+Please look at these packages:
 
-Should I use __docformat___ = 'restructuredtext' in Zope3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- http://pypi.python.org/pypi/hurry.workflow
 
-Yes, if you are using ReStructuredText in docstrings, the default is
-still structured text.
+- http://pypi.python.org/pypi/zope.wfmc
 
-Which psycopg works with Zope3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Zope 3.1 and 3.2 works with Psycopg v1.0.
-
-FIXME: What about Psycopg v2.0 support in 3.3?
-
-Where is zope.app.workflow?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It has never been released with Zope 3, just as an add-on
-package. People are now encouraged to use zope.wfmc and zope.app.wfmc.
-There is also a z3lab extension specifically for document workflows.
-
-Note: also check out the PyPI site for egg versions.
 
 .. raw:: html
 
