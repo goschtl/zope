@@ -16,6 +16,13 @@ class AddSampleApplication(form.AddForm):
         app = SampleApplication()
         name = namechooser.chooseName(name, app)
         self.context[name] = app
+        self.request.response.redirect(name)
+
+
+class SampleApplicationDefaultView(BrowserView):
+
+    def __call__(self):
+        return """Welcome to the Sample application"""
 
 
 class RootDefaultView(BrowserView):
@@ -33,5 +40,7 @@ class RootDefaultView(BrowserView):
 <li><a href="https://mail.zope.org/mailman/listinfo/zope3-users">Mailing list</a></li>
 <li><a href="http://webchat.freenode.net/?randomnick=1&channels=bluebream">IRC Channel: #bluebream at irc.freenode.net</a></li>
 </ul>
+<br/>
+<a href="@@add">Add Sample application</a>
 </body></html>
 """
