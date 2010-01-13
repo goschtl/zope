@@ -31,7 +31,7 @@ overview of the sections.
 - **Package directory structure:** -- Show the directory structure
   and decribe the purpose of each directories and files.
 
-At the end, few hello world examples are also given.
+- At the end, few hello world examples are also given.
 
 .. _started-preparations:
 
@@ -199,9 +199,11 @@ project template will look like this::
   |       |-- __init__.py
   |       `-- main/
   |           |-- application.zcml
+  |           |-- app.py
   |           |-- configure.zcml
   |           |-- ftesting.zcml
   |           |-- __init__.py
+  |           |-- interfaces.py
   |           |-- README.txt
   |           |-- securitypolicy.zcml
   |           |-- startup.py
@@ -255,6 +257,10 @@ Files &  Purpose
   include other application specific ZCMLs.  Now only the main
   package is included, you can add other ZCMLs from here.
 
+- ``src/mynamespace/main/app.py`` -- The main application object
+  implementation.  Replace the sample implementation with your
+  application.
+
 - ``src/mynamespace/main/configure.zcml`` -- You can customize this
   ZCML which is included from application.zcml
 
@@ -263,6 +269,8 @@ Files &  Purpose
   testing
 
 - ``src/mynamespace/main/__init__.py`` -- The main package
+
+- ``src/mynamespace/main/interfaces.py`` -- Interface definitiions
 
 - ``src/mynamespace/main/README.txt`` -- main packages's readme
 
