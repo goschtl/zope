@@ -1,8 +1,7 @@
-Reference
-=========
+:mod:`zope.app.wsgi` --- WSGI Application
+=========================================
 
-zope.app.wsgi
--------------
+.. module:: zope.app.wsgi
 
 - getWSGIApplication
 

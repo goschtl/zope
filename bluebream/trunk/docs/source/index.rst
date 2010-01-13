@@ -10,7 +10,7 @@ Welcome to BlueBream's documentation!
    tutorial
    faq
    howto/index
-   reference
+   reference/index
    glossary
 
 Indices and tables
