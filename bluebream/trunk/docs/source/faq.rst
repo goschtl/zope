@@ -148,8 +148,7 @@ http://svn.zope.org/zope.kgs/
 How do I start a new BlueBream project ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Please start with `Getting Started <gettingstarted.html>`_
-documentation.
+You can start with the :ref:`started-getting` documentation.
 
 .. _faq-concepts:
 

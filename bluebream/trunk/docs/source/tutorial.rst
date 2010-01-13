@@ -8,11 +8,11 @@ Tutorial
 Introduction
 ------------
 
-In the `Getting Started <gettingstarted.html>`_ chapater you learned
-how to install BlueBream and create a new project using the
-``bluebream`` project template.  In this chapter, we will explore
-creating a simple ticket collector application.  This will help you
-to familiarize more concepts in BlueBream.
+In the :ref:`started-getting` chapater you learned how to install
+BlueBream and create a new project using the ``bluebream`` project
+template.  In this chapter, we will explore creating a simple ticket
+collector application.  This will help you to familiarize more
+concepts in BlueBream.
 
 Befire proceeding, we will see the user stories:
 
@@ -34,10 +34,9 @@ Starting new project
 In this section, we will create the directory layout for ticket
 collector application.  I assume you have already installed
 ``bluebream`` using ``easy_install bluebream`` command as mentioned
-in the `Getting Started <gettingstarted.html>`_.  We are going to use
-the project name as ``ticketcollector`` and namespace package as
-``tc``. Let's create the project directory layout for
-``ticketcollector``::
+in the :ref:`started-getting`.  We are going to use the project name
+as ``ticketcollector`` and namespace package as ``tc``. Let's create
+the project directory layout for ``ticketcollector``::
 
   $ paster create -t bluebream
   Selected and implied templates:

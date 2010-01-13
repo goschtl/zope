@@ -518,9 +518,9 @@ Conclusion
 
 This chapter walked through the process of getting started with web
 application development with BlueBream.  Also introduced few simple
-``Hello World`` example applications.  The `tutorial
-<tutorial.html>`_ chapter will go through a bigger application to
-introduce more concepts.
+``Hello World`` example applications.  The :ref:`tut-tutorial`
+chapter will go through a bigger application to introduce more
+concepts.
 
 .. raw:: html
 
