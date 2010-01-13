@@ -1,5 +1,9 @@
+.. _started-getting:
+
 Getting Started
 ===============
+
+.. _started-intro:
 
 Introduction
 ------------
@@ -29,6 +33,8 @@ overview of the sections.
 
 At the end, few hello world examples are also given.
 
+.. _started-preparations:
+
 Preparations
 ------------
 
@@ -53,6 +59,8 @@ your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
 required to perform installation of ``bluebream`` distribution.
 Internet is required for bootstrapping the Buildout and building the
 application.
+
+.. _started-installation:
 
 Installation
 ------------
@@ -81,11 +89,13 @@ install its dependencies.  The dependencies are:
 - `PasteDeploy <http://pypi.python.org/pypi/PasteDeploy>`_
 - `Paste <http://pypi.python.org/pypi/Paste>`_
 
+.. _started-sample-project:
+
 Creating a sample project
 -------------------------
 
 The ``bluebream`` package provides a template based project creation
-script based on `PasteScript
+based on `PasteScript template
 <http://pythonpaste.org/script/developer.html>`_.  Once BlueBream is
 installed, run ``paster`` command to create the project directory
 structure.  The ``create`` sub-command provided by ``paster`` will
@@ -136,6 +146,8 @@ If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
 good name for your project.
 
+.. _started-building:
+
 Building the application
 ------------------------
 
@@ -149,6 +161,8 @@ After bootstrap, run the buildout::
 
   $ ./bin/buildout
 
+.. _started-basic-usage:
+
 Basic usage
 -----------
 
@@ -161,6 +175,8 @@ To run the server::
   $ ./bin/paster serve debug.ini
 
 The server can be accessed at http://localhost:8080/ now.
+
+.. _started-directory-structure:
 
 Package directory structure
 ---------------------------
@@ -277,6 +293,8 @@ Files &  Purpose
 The next few sections will explain how to create hello world
 applications.
 
+.. _started-example-1:
+
 Example 1: Hello World without page template
 --------------------------------------------
 
@@ -343,6 +361,8 @@ by visiting this URL: http://localhost:8080/@@hello
    has no element named ``bar`` - it only serves to disambiguate
    between views of an object and things contained within the object.
 
+.. _started-example-2:
+
 Example 2: Hello World with page template
 -----------------------------------------
 
@@ -394,6 +414,8 @@ this view will be available for all content objects.
 
 Restart your application, then visit the following URL:
 http://127.0.0.1:8080/@@hello2
+
+.. _started-example-3:
 
 Example 3: A dynamic hello world
 --------------------------------
@@ -480,6 +502,8 @@ following URL: http://127.0.0.1:8080/@@hello.html?name=World
 You should then see the following text::
 
   Hello World !
+
+.. _started-conclusion:
 
 Conclusion
 ----------

@@ -1,5 +1,9 @@
+.. _intro-intro:
+
 Introduction
 ============
+
+.. _intro-overview:
 
 Overview
 --------
@@ -50,10 +54,12 @@ BlueBream.  This book will cover how to develop web applications
 using BlueBream components. You suggestions and edits are always
 welcome.
 
+.. _intro-history:
+
 Brief History
 -------------
 
-.. FIXME: we can improve the history
+.. FIXME: we need to improve the history
 
 The beginning of Zope's story goes something like this, in 1996, Jim
 Fulton (CTO of Zope Corporation) was drafted to teach a class on
@@ -90,6 +96,8 @@ also widely used.
 
 Very recently Zope 3 project is renamed to BlueBream.
 
+.. _intro-organization:
+
 Organization of the book
 ------------------------
 
@@ -99,16 +107,17 @@ chapter is given below.
 Introduction
 ~~~~~~~~~~~~
 
-This chapter introduce BlueBream with an overview and brief history.
-Then walks through the organization of the book.  Finally, finish
-with a thanks section.
+This chapter introduce BlueBream with an :ref:`intro-overview` and
+:ref:`intro-history`.  Then walks through the
+:ref:`intro-organization`.  Finally, ends with :ref:`intro-thanks`
+section.
 
 Getting Started
 ~~~~~~~~~~~~~~~
 
-This chapter narrate the process of creating a new web application
-project using BlueBream.  Also it gives few excercises to familiarize
-the basic concepts in BlueBream.
+The :ref:`started-getting` chapter narrate the process of creating a
+new web application project using BlueBream.  Also it gives few
+excercises to familiarize the basic concepts in BlueBream.
 
 Tutorial
 ~~~~~~~~
@@ -132,6 +141,8 @@ Reference
 ~~~~~~~~~
 
 A complete reference to BlueBream.
+
+.. _intro-thanks:
 
 Thanks
 ------
