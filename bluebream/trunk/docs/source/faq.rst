@@ -1,7 +1,11 @@
+.. _faq-faq:
+
 FAQ
 ===
 
 .. contents::
+
+.. _faq-general:
 
 General
 -------
@@ -147,6 +151,8 @@ How do I start a new BlueBream project ?
 Please start with `Getting Started <gettingstarted.html>`_
 documentation.
 
+.. _faq-concepts:
+
 Concepts
 --------
 
@@ -197,6 +203,8 @@ Are ContainerTypesConstraint & ItemTypePrecondition deprecated ?
 
 These two are not deprecated, but ``contains`` and ``containers``
 functions are recommended.
+
+.. _faq-security:
 
 Security
 --------
@@ -340,6 +348,8 @@ You need to inlcude ``zope.login`` package in your ZCML configuration
 file (``site.zcml``) as the adapter registration is available there::
 
    <include package="zope.login" />
+
+.. _faq-ui:
 
 User Interface
 --------------
@@ -500,6 +510,8 @@ How write custom traversal in BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See this blog entry by Marius Gedminas : http://mg.pov.lt/blog/zope3-custom-traversal.html
+
+.. _faq-programming:
 
 Programming
 -----------
@@ -899,6 +911,7 @@ You basically have to manually create a deletion dependency tree,
 and force the deletion order yourself.  This is one of the
 problems with events, ie: their order is not well defined.
 
+.. _faq-configuration:
 
 Configuration and Setup
 -----------------------
@@ -1084,6 +1097,8 @@ How can I determine (in code) if the instance is running in devmode or not?
         """Is devmode enabled in zope.conf?"""
         config_context = getConfigContext()
         return config_context.hasFeature('devmode')
+
+.. _faq-misc:
 
 Miscellaneous
 -------------

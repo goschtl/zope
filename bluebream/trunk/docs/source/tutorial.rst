@@ -1,6 +1,9 @@
+.. _tut-tutorial:
+
 Tutorial
 ========
 
+.. _tut-introduction:
 
 Introduction
 ------------
@@ -23,6 +26,7 @@ Befire proceeding, we will see the user stories:
 
  4. Additional comments can be added to tickets.
 
+.. _tut-new-project:
 
 Starting new project
 --------------------
@@ -222,6 +226,8 @@ also created three more scripts inside ``bin`` directory.
 
 - The ``test`` command can be used to run the test runner.
 
+.. _tut-app-object:
+
 Creating the application object
 -------------------------------
 
@@ -253,9 +259,12 @@ Then implement the interface in ``src/tc/main/ticketcollector.py``::
 
       implements(ICollector)
 
+.. _tut-main-page:
 
 Creating the main page
 ----------------------
+
+.. _tut-conclusion:
 
 Conclusion
 ----------
