@@ -22,13 +22,13 @@ overview of the sections.
 - **Creating a sample project:** -- Explain creating an example
   project using ``bluebream`` project template.
 
-- **Building the application:** -- Shows how to build the application
+- **Building the application:** -- Show how to build the application
   using Buildout.
 
 - **Basic usage section:** -- Explain the basic usage of BlueBream
   commands.
 
-- **Package directory structure:** -- Shows the directory structure
+- **Package directory structure:** -- Show the directory structure
   and decribe the purpose of each directories and files.
 
 At the end, few hello world examples are also given.
