@@ -96,7 +96,13 @@ class ObjectRenamer:
             if isinstance(klass_info, tuple):
                 klass_info = self.__update_symb(klass_info)
             return ZODBReference((oid, klass_info))
-        # TODO multidatabase ['m'], (database, oid, klass)
+        if isinstance(reference, list):
+            mode, information = reference
+            if mode == 'm':
+                database_name, oid, klass_info = information
+                if isinstance(klass_info, tuple):
+                    klass_info = self.__update_symb(klass_info)
+                return ZODBReference(['m', (database_name, oid, klass_info)])
         return ZODBReference(reference)
 
     def __unpickler(self, pickle):
