@@ -58,5 +58,8 @@ ${long_description|nothing}""",
       entry_points = """
       [paste.app_factory]
       main = ${namespace_package}.${main_package}.startup:application_factory
+
+      [paste.global_paster_command]
+      shell = ${namespace_package}.${main_package}.debug:Shell
       """,
       )

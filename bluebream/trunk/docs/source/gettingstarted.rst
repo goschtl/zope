@@ -170,6 +170,10 @@ To run test cases::
 
   $ ./bin/test
 
+To get the debug shell::
+
+  $ ./bin/paster shell debug.ini
+
 To run the server::
 
   $ ./bin/paster serve debug.ini

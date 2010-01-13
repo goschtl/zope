@@ -4,6 +4,10 @@ Changelog
 0.1.9 (unreleased)
 ------------------
 
+- LP #506879: debug shell added. Basic usage::
+
+    ./bin/paster shell debug.ini
+
 0.1.8 (2010-01-12)
 ------------------
 

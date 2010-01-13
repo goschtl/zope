@@ -80,6 +80,7 @@ the project directory layout for ``ticketcollector``::
           Copying app.py to ./ticketcollector/src/tc/main/app.py
           Copying application.zcml_tmpl to ./ticketcollector/src/tc/main/application.zcml
           Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
+          Copying debug.py to ./sample/src/test_name/test_main/debug.py
           Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/ftesting.zcml
           Copying interfaces.py to ./ticketcollector/src/tc/main/interfaces.py
           Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
