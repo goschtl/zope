@@ -16,15 +16,15 @@ to familiarize more concepts in BlueBream.
 
 Befire proceeding, we will see the user stories:
 
- 1. Individual small ticket collector for each project.  Many
-    collectors can be added to one running BlueBream.
+1. Individual small ticket collector for each project.  Many
+   collectors can be added to one running BlueBream.
 
- 2. Any number of tickets can be added to one collector.
+2. Any number of tickets can be added to one collector.
 
- 3. Each ticket will be added with a description and one initial
-    comment.
+3. Each ticket will be added with a description and one initial
+   comment.
 
- 4. Additional comments can be added to tickets.
+4. Additional comments can be added to tickets.
 
 .. _tut-new-project:
 
@@ -49,17 +49,17 @@ the project name as ``ticketcollector`` and namespace package as
     package:  ticketcollector
     project:  ticketcollector
   Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter main_package (Main package name (under the namespace)) ['main']:
-  Enter interpreter (Name of custom Python interpreter) ['breampy']:
-  Enter version (Version (like 0.1)) ['0.1']:
+  Enter main_package (Main package name (under the namespace)) ['main']: 
+  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
+  Enter version (Version (like 0.1)) ['0.1']: 
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
-  Enter keywords (Space-separated keywords/tags) ['']:
+  Enter keywords (Space-separated keywords/tags) ['']: 
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@muthukadan.net
-  Enter url (URL of homepage) ['']:
+  Enter url (URL of homepage) ['']: 
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
   Creating template bluebream
   Creating directory ./ticketcollector
     Copying bootstrap.py to ./ticketcollector/bootstrap.py
@@ -78,9 +78,11 @@ the project name as ``ticketcollector`` and namespace package as
           Creating ./ticketcollector/src/tc/main/
           Copying README.txt_tmpl to ./ticketcollector/src/tc/main/README.txt
           Copying __init__.py to ./ticketcollector/src/tc/main/__init__.py
+          Copying app.py to ./ticketcollector/src/tc/main/app.py
           Copying application.zcml_tmpl to ./ticketcollector/src/tc/main/application.zcml
           Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
           Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/ftesting.zcml
+          Copying interfaces.py to ./ticketcollector/src/tc/main/interfaces.py
           Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
           Copying startup.py to ./ticketcollector/src/tc/main/startup.py
           Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests.py
@@ -107,12 +109,13 @@ the project name as ``ticketcollector`` and namespace package as
         Copying README.txt to ./ticketcollector/var/log/README.txt
     Copying versions.cfg to ./ticketcollector/versions.cfg
   Running /opt/baiju/py26/bin/python2.6 setup.py egg_info
-
+  
 As you can see above, we have provided most of the project details
-and some are simply skipped.  You can change the values provided here
-later, if you desired later.  But changing the package name or
-namespace package name may not be as simple as changing the
-description as it is referred from many places.
+and some are skipped.  If you want, it is possible to change the
+values provided here later.  But changing the package name or
+namespace package name may not be easy as changing the description.
+The reason is that, the name and namepace package might be referred
+from many places.
 
 If you change directory to ``ticketcollector``, you can see few
 directories and files::
@@ -122,20 +125,33 @@ directories and files::
   buildout.cfg  deploy.ini  setup.py  templates/  versions.cfg
 
 Once the project directory layout is ready, you can add it to your
-version controlling system::
+version controlling system.  You need **not** to add
+``src/ticketcollector.egg-info`` directory as it is generted by
+setuptools.  Here is an example using `bzr
+<http://bazaar.canonical.com/en/>`_::
 
+  jack@computer:/projects/ticketcollector$ rm -fr src/ticketcollector.egg-info/
   jack@computer:/projects/ticketcollector$ bzr init
   Created a standalone tree (format: 2a)
+  jack@computer:/projects/ticketcollector$ bzr add *
+  adding bootstrap.py
+  adding buildout.cfg
+  adding debug.ini
+  ...
+  jack@computer:/projects/ticketcollector$ bzr ci -m "Initial import"
+  Committing to: /projects/ticketcollector/
+  added bootstrap.py
+  added buildout.cfg
+  ...
+  Committed revision 1.
 
-You need **not** to add ``src/ticketcollector.egg-info`` directory as
-it is generted by setuptools.  After adding code to version
-controlling system, you need to bootstrap the Buildout and run
-``buildout`` command to build the application.  The purpose of
-Buildout is to automate all the process involved in bulding an Python
-application/package from scratch.  The only basic requirement for
-Buildout is a Python installation.  Buildout provides a bootstrapping
-script to to initialize Buildout.  This bootstrap script named
-``bootstrap.py`` will do these things:
+After adding code to version controlling system, you need to
+bootstrap the Buildout and run ``buildout`` command to build the
+application.  The purpose of Buildout is to automate all the process
+involved in bulding an Python application/package from scratch.  The
+only basic requirement for Buildout is a Python installation.
+Buildout provides a bootstrapping script to to initialize Buildout.
+This bootstrap script named ``bootstrap.py`` will do these things:
 
 - Download and install ``setuptools`` package from PyPI
 
@@ -202,7 +218,18 @@ application.  Before running the buildout, let's see the content of
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
-.. FIXME: Need to explain the configuration here.
+The buildout configration file is devided into muliple sections
+called parts.  The main part is called ``[buildout]``, and that is
+given as the second part in the above configration file.  We have
+added a part named ``[config]`` for convenience which includes some
+common options referred from other places.  Each part will be handled
+by the Buildout plugin mechanism called recipes,, with few
+exceptions.  However, the main part ``[buildout]`` need not to have
+any recipe, this part will be handled by Buildout itself.  As you can
+see above ``[config]`` part also doesn't have any recipe.  So, the
+``[config]`` part itself will not be performing any actions.
+
+.. FIXME: Explain each line in the configuration
 
 When you run buildout, it will show something like this::
 
@@ -231,8 +258,8 @@ also created three more scripts inside ``bin`` directory.
 Creating the application object
 -------------------------------
 
-You can create a file named ``src/tc/main/interfaces.py`` to add
-interfaces::
+You can modify the file named ``src/tc/main/interfaces.py`` to add
+new interfaces like this::
 
   from zope.container.interfaces import IContainer
   from zope.schema import Text
