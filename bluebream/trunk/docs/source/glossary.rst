@@ -45,5 +45,5 @@ Glossary
 
   Zope Foundation
     The `Zope Foundation <http://foundation.zope.org>`_ is a
-    not-for-profit organisation that provides support for the Zope
+    not-for-profit organization that provides support for the Zope
     community and the Zope platform and its associated software.

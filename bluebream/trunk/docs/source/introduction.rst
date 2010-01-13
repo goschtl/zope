@@ -51,7 +51,7 @@ frameworks.
 - BlueBream has schema engine and automatic form generation machinery
   (zope.schema, zope.formlib)
 
-The main aim of this book is to create a free online book about
+The main aim of this book is to create a free on-line book about
 BlueBream.  This book will cover how to develop web applications
 using BlueBream components. You suggestions and edits are always
 welcome.
@@ -80,7 +80,7 @@ Document Template, and BoboPOS. These packages were written in a
 language called Python, and provided a web publishing facility, text
 templating, and an object database, respectively. Digital Creations
 developed a commercial application server based on their three
-opensource components. This product was called Principia. In November
+open source components. This product was called Principia. In November
 of 1998, investor Hadar Pedhazur convinced Digital Creations to open
 source Principia. These packages evolved into what are now the core
 components of Zope 2.
@@ -119,7 +119,7 @@ Getting Started
 
 The :ref:`started-getting` chapter narrate the process of creating a
 new web application project using BlueBream.  Also it gives few
-excercises to familiarize the basic concepts in BlueBream.
+exercises to familiarize the basic concepts in BlueBream.
 
 Tutorial
 ~~~~~~~~
@@ -131,7 +131,7 @@ BlueBream.
 FAQ
 ~~~
 
-These are FAQs collected from mailing lists, blogs and other online
+These are FAQs collected from mailing lists, blogs and other on-line
 resources.
 
 HOWTOs

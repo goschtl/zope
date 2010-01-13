@@ -9,9 +9,9 @@ Introduction
 ------------
 
 This chapter narrate the process of creating a new web application
-project using BlueBream.  Also it gives few excercises to familiarize
+project using BlueBream.  Also it gives few exercises to familiarize
 the basic concepts in BlueBream.  We suggest you to try out all the
-commands and excercises given here.  Before proceeding, here is an
+commands and exercises given here.  Before proceeding, here is an
 overview of the sections.
 
 - **Preparations:** -- Prerequisites and preparations you need to
@@ -29,7 +29,7 @@ overview of the sections.
   commands.
 
 - **Package directory structure:** -- Show the directory structure
-  and decribe the purpose of each directories and files.
+  and describe the purpose of each directories and files.
 
 - At the end, few hello world examples are also given.
 
@@ -46,14 +46,14 @@ setuptools, you can install `distribute
 distribute is installed you will get an ``easy_install`` command
 which you can use to install ``bluebream`` distribution.
 
-You can also install BlueBream inside an isolated Python enironment
+You can also install BlueBream inside an isolated Python environment
 created by `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
 Although, *virtualenv* is not necessary as we are going to use
 `Buildout <http://www.buildout.org>`_ for repeatable, isolated
 working environment.  Buildout is a declarative, configuration driven
-build system reccommended by BlueBream.
+build system recommended by BlueBream.
 
-It is reccommended to use a custom built Python for working with
+It is recommended to use a custom built Python for working with
 BlueBream.  You will be required to install a C compiler (gcc) in
 your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
 required to perform installation of ``bluebream`` distribution.
@@ -76,7 +76,7 @@ command will be available.  Then, you can install BlueBream using
 As mentioned earlier, Internet access to `PyPI
 <http://pypi.python.org>`_ is required to perform installation of
 ``bluebream`` distribution.  If you use any proxy, make sure it
-works.  The ``easy_install`` will look for the enviroment variable
+works.  The ``easy_install`` will look for the environment variable
 named ``http_proxy`` in GNU/Linux platforms.  You can set it like this::
 
  $ set http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
@@ -140,7 +140,7 @@ The other variables which can be given from command line are:
 - ``license_name`` -- License name
 
 - ``zip_safe`` -- ``True``, if the package can be distributed as a
-  .zip file othewise ``False``.
+  .zip file otherwise ``False``.
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
@@ -218,7 +218,7 @@ project template will look like this::
   |-- var/
   `-- versions.cfg
   
-The name of toplevel directory will be always what you gave as
+The name of top-level directory will be always what you gave as
 project name in the wizard.  The name of egg also will be same as
 that of package name by default.  But if you want, you can change it
 to something else from ``setup.py``.  Here are the details about
@@ -274,9 +274,9 @@ Files &  Purpose
 
 - ``src/mynamespace/main/__init__.py`` -- The main package
 
-- ``src/mynamespace/main/interfaces.py`` -- Interface definitiions
+- ``src/mynamespace/main/interfaces.py`` -- Interface definitions
 
-- ``src/mynamespace/main/README.txt`` -- main packages's readme
+- ``src/mynamespace/main/README.txt`` -- main packages' README
 
 - ``src/mynamespace/main/securitypolicy.zcml`` -- security policy
   declarations which is included from site.zcml
@@ -383,7 +383,7 @@ In this example, we will use a hello world using a page template.
 Create a page template
 ~~~~~~~~~~~~~~~~~~~~~~
 
-First you need to create a page template file inside your pacakge.
+First you need to create a page template file inside your package.
 You can save it as ``src/mynamespace/main/helloworld.pt``, with the
 following content::
 

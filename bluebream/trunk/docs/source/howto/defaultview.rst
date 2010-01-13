@@ -10,8 +10,8 @@ The view could be accessed without using the ``@@`` symbols also,
 provided there is no object with same same exist inside the
 container.  In the above example, If there is no object named
 ``testview`` inside ``myobject`` container, then, the view can be
-accessed like ``myobject/testview``.  However, BlueBream reccommends
-to use ``@@`` symbols always to access view to avoid ambiguity.
+accessed like ``myobject/testview``.  However, BlueBream recommend to
+use ``@@`` symbols always to access view to avoid ambiguity.
 
 If you try to access an object without specifying any view name,
 BlueBream will try to display the default view registered.  You can
@@ -30,7 +30,7 @@ configured, you will get an error like this::
   URL=http://localhost:8080>)
 
 If you have created the application using ``bluebream`` project
-template, you won't get this error.  Beacause there is already a a
+template, you won't get this error.  Because there is already a a
 default view name (``index``) is configured in ``application.zcml``
 configuration file inside the main package.
 
@@ -61,7 +61,7 @@ this::
 If ``index`` is registered as the name for default view, BlueBream
 will try to get ``@@index`` view for any containers, if the view is
 not explicitly mentioned in the URL.  However, you need to have a
-browser view registered to acces the view, otherwise a ``NotFound``
+browser view registered to access the view, otherwise a ``NotFound``
 error will be raised as mentioned above.
 
 More details about registering a browser view using ``browser:page``
