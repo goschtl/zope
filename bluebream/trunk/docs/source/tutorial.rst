@@ -222,13 +222,36 @@ called parts.  The main part is called ``[buildout]``, and that is
 given as the second part in the above configration file.  We have
 added a part named ``[config]`` for convenience which includes some
 common options referred from other places.  Each part will be handled
-by the Buildout plugin mechanism called recipes,, with few
-exceptions.  However, the main part ``[buildout]`` need not to have
-any recipe, this part will be handled by Buildout itself.  As you can
-see above ``[config]`` part also doesn't have any recipe.  So, the
-``[config]`` part itself will not be performing any actions.
+by the Buildout plugin mechanism called recipes, with few exceptions.
+However, the main part ``[buildout]`` need not to have any recipe,
+this part will be handled by Buildout itself.  As you can see above
+``[config]`` part also doesn't have any recipe.  So, the ``[config]``
+part itself will not be performing any actions.
 
-.. FIXME: Explain each line in the configuration
+We will look at each part here.  Let's start with ``[config]``::
+
+  [config]
+  site_zcml = ${buildout:directory}/etc/site.zcml
+  blob = ${buildout:directory}/var/blob
+  filestorage = ${buildout:directory}/var/filestorage
+  log = ${buildout:directory}/var/log
+
+The ``[config]`` is kind of meta part which is created for
+convenience to hold some common options used by other parts and
+templates.  Using ``[config]`` part is a good Buildout pattern used
+by many users.  In the above given configuration, the options
+provided are _not_ used by other parts directly, but all are used in
+one template given in the ``[zope_conf]`` part.  Here is details
+about each options:
+
+- ``site_zcml`` -- this is the location where final ``site.zcml``
+  file will be residing.  The value of ``${buildout:directory}`` will
+  be the absolute path to the directory where you are runnning
+  buildout.  In the above example, the value will be:
+  ``/projects/ticketcollector``.  So, the value of ``site_zcml`` will
+  be: ``/projects/ticketcollector/etc/site.zcml``
+
+- ``blob`` -- 
 
 When you run buildout, it will show something like this::
 
