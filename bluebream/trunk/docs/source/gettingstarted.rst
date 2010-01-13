@@ -19,13 +19,13 @@ overview of the sections.
 
 - **Installation:** -- An overview of installing BlueBream.
 
-- **Creating a sample project:** -- Explains creating an example
+- **Creating a sample project:** -- Explain creating an example
   project using ``bluebream`` project template.
 
 - **Building the application:** -- Shows how to build the application
   using Buildout.
 
-- **Basic usage section:** -- Explains the basic usage of BlueBream
+- **Basic usage section:** -- Explain the basic usage of BlueBream
   commands.
 
 - **Package directory structure:** -- Shows the directory structure
