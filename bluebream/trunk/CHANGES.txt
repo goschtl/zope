@@ -1,7 +1,7 @@
 Changelog
 *********
 
-0.1.9 (unreleased)
+0.1.9 (2010-01-13)
 ------------------
 
 - LP #506879: debug shell added. Basic usage::
