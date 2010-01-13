@@ -145,13 +145,21 @@ setuptools.  Here is an example using `bzr
   ...
   Committed revision 1.
 
-After adding code to version controlling system, you need to
-bootstrap the Buildout and run ``buildout`` command to build the
-application.  The purpose of Buildout is to automate all the process
-involved in building an Python application/package from scratch.  The
-only basic requirement for Buildout is a Python installation.
-Buildout provides a bootstrapping script to to initialize Buildout.
-This bootstrap script named ``bootstrap.py`` will do these things:
+Adding source code to version controlling system is an optional step,
+but it is recommended even for experiments.  Now you have, a ready to
+use, stand alone source code.  You need not to have the ``bluebream``
+distribution installed anymore to function any task.  The source code
+contains mechanism to install dependencies and setup other things
+required.  The only necessary things you need to have is a pure
+Python installation and internet access to PyPI.  We will see how
+this is becoming possible in the upcoming sections.
+
+The next step is building the application using Buildout.  The
+purpose of Buildout is to automate all the process involved in
+building an Python application/package from scratch.  The only basic
+requirement for Buildout is a Python installation.  Buildout provides
+a bootstrapping script to initialize Buildout.  This bootstrap
+script named ``bootstrap.py`` will do these things:
 
 - Download and install ``setuptools`` package from PyPI
 
@@ -183,8 +191,12 @@ directories and the ``bin/buildout`` script as mentioned earlier::
 - The ``develop-eggs`` directory is where buildout save links to all
   locally developing Python eggs.
 
-Now you are ready to run the ``bin/buildout`` to build the
-application.  Before running the buildout, let's see the content of
+After bootstrapping the Buildout, you can perform the real building
+of your application.  All the steps you have done so far is not
+required to be repeated.  But the build step will be required to
+repeat whenever you make changed to the buildout configuration.  Now
+you are ready to run the ``bin/buildout`` to build the application.
+Before running the buildout, let's see the content of
 ``buildout.cfg``::
 
   [config]
@@ -252,9 +264,15 @@ about each options:
   ``/projects/ticketcollector``.  So, the value of ``site_zcml`` will
   be: ``/projects/ticketcollector/etc/site.zcml``
 
-- ``blob`` -- 
+- ``blob`` -- location where ZODB blob files are stored.
 
-When you run buildout, it will show something like this::
+- ``filestorage`` -- ZODB data files are stored here.
+
+- ``log`` -- All log files goes here.
+
+Now you can the ``bin/buildout`` command.  This will take some time
+to download packages from PyPI.  When you run buildout, it will show
+something like this::
 
   jack@computer:/projects/ticketcollector$ ./bin/buildout
   Develop: '/projects/ticketcollector/.'

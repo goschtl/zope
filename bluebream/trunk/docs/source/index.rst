@@ -7,6 +7,7 @@ Welcome to BlueBream's documentation!
 
    introduction
    gettingstarted
+   concepts
    tutorial
    faq
    howto/index
