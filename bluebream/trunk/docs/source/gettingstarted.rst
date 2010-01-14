@@ -312,26 +312,26 @@ applications.
 Example 1: Hello World without page template
 --------------------------------------------
 
-To create a page which displays ``Hello World!``, you need to create
-a view and then register it using ``browser:page`` ZCML directive.
-By default, the default page which you are getting when you access:
-http://localhost:8080 is a page registerd like this.  You can see the
-registration inside ``configure.zcml``, the name of view will be
-``index``.  You can access the default page by explicitly mentioning
-the view name in the URL like this: http://localhost:8080/@@index.
-You can refer the :ref:`howto-default-view` HOWTO for more details
-about how the default view for a container object is working.  The
-term *view* and *page* can be used almost use interchangeably in the
-browser context.  But, *view* is very low level, and can be used to
-refer XMLRPC, REST and other views.
+To create a web page which displays ``Hello World!``, you need to
+create a page and then register it using ``browser:page`` ZCML
+directive.  In BlueBream, we call it as *Browser Page* or more
+generic term, *View* which can be used to refer XMLRPC, REST and
+other views.  By default, the default page which you are getting when
+you access: http://localhost:8080 is a page registerd like this.  You
+can see the registration inside ``configure.zcml``, the name of view
+will be ``index``.  You can access the default page by explicitly
+mentioning the page name in the URL like this:
+http://localhost:8080/@@index.  You can refer the
+:ref:`howto-default-view` HOWTO for more details about how the
+default view for a container object is working.
 
 First you need to create a Python file named ``myhello.py`` at
 ``src/mynamespace/main/myhello.py``::
 
   $ touch src/mynamespace/main/myhello.py
 
-You can define your browser view inside this module.  All browser
-views should implement
+You can define your browser page inside this module.  All browser
+pages should implement
 ``zope.publisher.interfaces.browser.IBrowserView`` interface.  An
 easy way to do this would be to inherit from
 ``zope.publisher.browser.BrowserView`` which is already implementing
@@ -346,8 +346,8 @@ The content of this file could be like this::
       def __call__(self):
           return "Hello World!"
 
-Now you can register this view for a particular interface.  So that
-it will be available as a browser view for any object which implement
+Now you can register this page for a particular interface.  So that
+it will be available as a browser page for any object which implement
 this.  At this point you can register this for root folder which is
 implementing ``zope.site.interfaces.IRootFolder`` interface.
 
@@ -427,14 +427,10 @@ This declaration means: there is a web page called `hello2`,
 available for any content, rendered by the template helloworld.pt,
 and this page is public.  This kind of XML configuration is very
 common in BlueBream and you will need it for every page or component.
-If you feel extremely uncomfortable with XML, you should try `Grok
-<http://grok.zope.org>`_, which adds a layer on top of ZTK, replacing
-declarative configuration with conventions and declarations in
-Python.
 
 In the above example, instead of using
 ``zope.site.interfaces.IRootFolder`` interface, we used ``*``.  So,
-this view will be available for all content objects.
+this view will be available for all objects.
 
 Restart your application, then visit the following URL:
 http://127.0.0.1:8080/@@hello2

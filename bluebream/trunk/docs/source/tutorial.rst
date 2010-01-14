@@ -270,6 +270,54 @@ about each options:
 
 - ``log`` -- All log files goes here.
 
+Let's look at the main ``[buildout]`` part details now::
+
+  [buildout]
+  develop = .
+  extends = versions.cfg
+  parts = app
+          zope_conf
+          test 
+
+The second option ``develop`` says to buildout that, the current
+directory is a Python distribution source, i.e., there is a
+``setup.py`` file.  Buildout will inspect the ``setup.py`` and add
+create develop egg link inside ``develop-eggs`` directory.  The link
+file should contain path to location where the Python package is
+residing.  So, buildout will make sure that the packages is always
+importable.  The value of ``develop`` option could be a relative
+path, as given above or absolute path to some directory.  You can
+also add multiple lines to ``develop`` option with different paths.
+
+The ``extends`` option says buildout to include the full content of
+``versions.cfg`` file as part the configuration.  The
+``versions.cfg`` is another Buildout configuration file which
+contains the release numbers of different dependencies.  You can add
+multiple lines to ``extends`` option to include multiple
+configuration files.
+
+The ``parts`` option list all the parts to be built by Buildout.
+Buildout expects a recipe for each parts listed here.  So, you cannot
+include ``config`` part here as it doesn't have any recipe.
+
+Now let's look at the ``app`` part::
+
+  [app]
+  recipe = zc.recipe.egg
+  eggs = ticketcollector
+         z3c.evalexception>=2.0
+         Paste
+         PasteScript
+         PasteDeploy
+  interpreter = breampy
+
+This part takes care of all the eggs required for the application to
+function.  Majority of the dependencies will come as part of the main
+appliation egg.  The option ``eggs`` list all the eggs.  The first
+egg, ``ticketcollector`` is the main locally developing egg.
+
+.. FIXME: need to add ``[zope_conf]`` and ``[test]`` parts here.
+
 Now you can the ``bin/buildout`` command.  This will take some time
 to download packages from PyPI.  When you run buildout, it will show
 something like this::
@@ -293,6 +341,10 @@ also created three more scripts inside ``bin`` directory.
   all eggs included in path.
 
 - The ``test`` command can be used to run the test runner.
+
+Now we have a project source where we can continue developing this
+application.  Now onwards, you need to do the remaining things
+manually.
 
 .. _tut-app-object:
 

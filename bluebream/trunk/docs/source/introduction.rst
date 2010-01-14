@@ -37,7 +37,10 @@ frameworks.
 - BlueBream has transactional object database (ZODB)
 
 - BlueBream has an XML based configuration language for registering
-  components (ZCML)
+  components (ZCML).  If you feel extremely uncomfortable with XML,
+  you should try `Grok <http://grok.zope.org>`_, which adds a layer
+  on top of ZTK, replacing declarative configuration with conventions
+  and declarations in Python.
 
 - BlueBream has flexible security architecture with pluggable
   security policies (zope.security)
