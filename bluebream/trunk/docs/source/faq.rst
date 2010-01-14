@@ -1102,6 +1102,17 @@ How can I determine (in code) if the instance is running in devmode or not?
 Miscellaneous
 -------------
 
+How to check an object is implementing/providing a particular interface ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``providedBy`` available for the interface, it will return
+True, if the object provides the interface otherwise False.
+
+Eg::
+
+  >>> IMyInterface.providedBy(myobject)
+  True
+
 How do I run a particular test from a package?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
