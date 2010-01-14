@@ -42,5 +42,32 @@ ZODB
 Object Publishing
 -----------------
 
+View
+----
+
+Browser Page
+------------
+
+Browser Resource
+----------------
+
 Container
 ---------
+
+Content Object
+--------------
+
+Layer
+-----
+
+Skin
+----
+
+Annotation
+----------
+
+Content Provider
+----------------
+
+Viewlet
+-------
