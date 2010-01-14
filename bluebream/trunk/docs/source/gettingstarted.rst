@@ -205,6 +205,7 @@ project template will look like this::
   |           |-- application.zcml
   |           |-- app.py
   |           |-- configure.zcml
+  |           |-- debug.py
   |           |-- ftesting.zcml
   |           |-- __init__.py
   |           |-- interfaces.py
@@ -268,6 +269,8 @@ Files &  Purpose
 - ``src/mynamespace/main/configure.zcml`` -- You can customize this
   ZCML which is included from application.zcml
 
+- ``src/mynamespace/main/debug.py`` -- The debug application object.
+  The class given here will be registered from an entry point.
 
 - ``src/mynamespace/main/ftesting.zcml`` -- ZCML for functional
   testing
@@ -288,7 +291,6 @@ Files &  Purpose
   tests.
 
 - ``src/mynamespace/main/views.py`` -- An example view.
-
 
 - ``templates/`` -- Buildout specific templates used by
   "collective.recipe.template"
