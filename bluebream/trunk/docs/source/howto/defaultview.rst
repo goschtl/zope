@@ -1,3 +1,5 @@
+.. _howto-default-view:
+
 Default view for objects
 ========================
 

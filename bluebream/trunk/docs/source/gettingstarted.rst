@@ -314,6 +314,16 @@ Example 1: Hello World without page template
 
 To create a page which displays ``Hello World!``, you need to create
 a view and then register it using ``browser:page`` ZCML directive.
+By default, the default page which you are getting when you access:
+http://localhost:8080 is a page registerd like this.  You can see the
+registration inside ``configure.zcml``, the name of view will be
+``index``.  You can access the default page by explicitly mentioning
+the view name in the URL like this: http://localhost:8080/@@index.
+You can refer the :ref:`howto-default-view` HOWTO for more details
+about how the default view for a container object is working.  The
+term *view* and *page* can be used almost use interchangeably in the
+browser context.  But, *view* is very low level, and can be used to
+refer XMLRPC, REST and other views.
 
 First you need to create a Python file named ``myhello.py`` at
 ``src/mynamespace/main/myhello.py``::
