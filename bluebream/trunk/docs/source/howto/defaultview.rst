@@ -17,15 +17,17 @@ then, the view can be accessed like ``myobject/testview``.  However,
 BlueBream recommend, always to use ``@@`` symbols to access view to
 avoid ambiguity.
 
-In BlueBream, a default view name will be defined for
+In BlueBream, ``index`` is registered as the view name for
 ``zope.container.interfaces.IContainer`` interface.  So, if you try
 to access any container object without specifying any view name,
-BlueBream will try to display the default view registered.  You can
-configure the name of default view for a particular type of object
-[#type_of_object]_ with ``browser:defaultView`` directive available
-in ``zope.publisher`` package [#access_directive]_.  If the name of
-default view is not configured, and when you try to access an object
-without specifying the view name, you will get a
+BlueBream will try to display the view registered with name as
+``index``.
+
+You can configure the name of default view for a particular type of
+object [#type_of_object]_ with ``browser:defaultView`` directive
+available in ``zope.publisher`` package [#access_directive]_.  If the
+name of default view is not configured, and when you try to access an
+object without specifying the view name, you will get a
 ``ComponentLookupError`` with a message like this: ``Couldn't find
 default view name``.  For example, if you try to access the root
 folder like: htt://localhost:8080/ and name of default view is not
