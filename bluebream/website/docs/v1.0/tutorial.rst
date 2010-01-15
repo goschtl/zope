@@ -48,17 +48,17 @@ the project directory layout for ``ticketcollector``::
     package:  ticketcollector
     project:  ticketcollector
   Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter main_package (Main package name (under the namespace)) ['main']: 
-  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
-  Enter version (Version (like 0.1)) ['0.1']: 
+  Enter main_package (Main package name (under the namespace)) ['main']:
+  Enter interpreter (Name of custom Python interpreter) ['breampy']:
+  Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
-  Enter keywords (Space-separated keywords/tags) ['']: 
+  Enter keywords (Space-separated keywords/tags) ['']:
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@muthukadan.net
-  Enter url (URL of homepage) ['']: 
+  Enter url (URL of homepage) ['']:
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
   Creating template bluebream
   Creating directory ./ticketcollector
     Copying bootstrap.py to ./ticketcollector/bootstrap.py
@@ -109,7 +109,7 @@ the project directory layout for ``ticketcollector``::
         Copying README.txt to ./ticketcollector/var/log/README.txt
     Copying versions.cfg to ./ticketcollector/versions.cfg
   Running /opt/baiju/py26/bin/python2.6 setup.py egg_info
-  
+
 As you can see above, we have provided most of the project details
 and some are skipped.  If you want, it is possible to change the
 values provided here later.  But changing the package name or
@@ -210,7 +210,7 @@ Before running the buildout, let's see the content of
   extends = versions.cfg
   parts = app
           zope_conf
-          test 
+          test
 
   [app]
   recipe = zc.recipe.egg
@@ -277,7 +277,7 @@ Let's look at the main ``[buildout]`` part details now::
   extends = versions.cfg
   parts = app
           zope_conf
-          test 
+          test
 
 The second option ``develop`` says to buildout that, the current
 directory is a Python distribution source, i.e., there is a
@@ -322,7 +322,74 @@ option, ``interpreter`` specify the name of custom interpreter create
 by this part.  The custom interpreter contains path to all eggs
 listed here.
 
-.. FIXME: need to add ``[zope_conf]`` and ``[test]`` parts here.
+The ``zope_conf]`` part creates the ``zope.conf`` from a template::
+
+  [zope_conf]
+  recipe = collective.recipe.template
+  input = templates/zope_conf.in
+  output = etc/zope.conf
+
+This part must be very self explanatory, it simply creates a
+``zope.conf`` file from a template.  This template recipe is very
+common among Buildout users.  Here is the template file
+(``templates/zope_conf.in``)::
+
+  # Identify the component configuration used to define the site:
+  site-definition ${config:site_zcml}
+
+  <zodb>
+    # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
+    # support.
+    # This won't be needed with ZODB 3.9, as its FileStorage supports
+    # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
+    # the blob-dir parameter right in in filestorage, just after path.
+    <blobstorage>
+      blob-dir ${config:blob}
+      <filestorage>
+        path ${config:filestorage}/Data.fs
+      </filestorage>
+    </blobstorage>
+
+  # Uncomment this if you want to connect to a ZEO server instead:
+  #  <zeoclient>
+  #    server localhost:8100
+  #    storage 1
+  #    # ZEO client cache, in bytes
+  #    cache-size 20MB
+  #    # Uncomment to have a persistent disk cache
+  #    #client zeo1
+  #  </zeoclient>
+  </zodb>
+
+  <eventlog>
+    # This sets up logging to both a file and to standard output (STDOUT).
+    # The "path" setting can be a relative or absolute filesystem path or
+    # the tokens STDOUT or STDERR.
+
+    <logfile>
+      path ${config:log}/z3.log
+      formatter zope.exceptions.log.Formatter
+    </logfile>
+
+    <logfile>
+      path STDOUT
+      formatter zope.exceptions.log.Formatter
+    </logfile>
+  </eventlog>
+
+  # Comment this line to disable developer mode.  This should be done in
+  # production
+  devmode on
+
+The last part creates a test runner::
+
+  [test]
+  recipe = zc.recipe.testrunner
+  eggs = ticketcollector
+
+The testrunner recipe creates a test runner using ``zope.testing``
+module.  The only mandatory option is ``eggs`` where you can specify
+the eggs.
 
 Now you can the ``bin/buildout`` command.  This will take some time
 to download packages from PyPI.  When you run buildout, it will show
