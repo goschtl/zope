@@ -11,10 +11,10 @@
 		  zope.index.interfaces.IStatistics" />
   </class>
 
-  <browser:addMenuItem
+  <!--browser:addMenuItem
      title="Path Index"
      description="Index object path"
      class=".index.PathIndex"
-     permission="zope.ManageServices" />
+     permission="zope.ManageServices" /-->
 
 </configure>
