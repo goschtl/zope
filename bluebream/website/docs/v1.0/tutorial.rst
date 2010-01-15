@@ -31,6 +31,9 @@ Before proceeding, we will see the user stories:
 Starting new project
 --------------------
 
+Using project template
+~~~~~~~~~~~~~~~~~~~~~~
+
 In this section, we will create the directory layout for ticket
 collector application.  I assume you have already installed
 ``bluebream`` using ``easy_install bluebream`` command as mentioned
@@ -117,6 +120,9 @@ namespace package name may not be easy as changing the description.
 The reason is that, the name and namespace package might be referred
 from many places.
 
+Fresh package
+~~~~~~~~~~~~~
+
 If you change directory to ``ticketcollector``, you can see few
 directories and files::
 
@@ -154,6 +160,9 @@ required.  The only necessary things you need to have is a pure
 Python installation and internet access to PyPI.  We will see how
 this is becoming possible in the upcoming sections.
 
+Buildout
+~~~~~~~~
+
 The next step is building the application using Buildout.  The
 purpose of Buildout is to automate all the process involved in
 building an Python application/package from scratch.  The only basic
@@ -190,6 +199,9 @@ directories and the ``bin/buildout`` script as mentioned earlier::
 
 - The ``develop-eggs`` directory is where buildout save links to all
   locally developing Python eggs.
+
+Buildout configuration
+~~~~~~~~~~~~~~~~~~~~~~
 
 After bootstrapping the Buildout, you can perform the real building
 of your application.  All the steps you have done so far is not
@@ -390,6 +402,9 @@ The last part creates a test runner::
 The testrunner recipe creates a test runner using ``zope.testing``
 module.  The only mandatory option is ``eggs`` where you can specify
 the eggs.
+
+Running Buildout
+~~~~~~~~~~~~~~~~
 
 Now you can the ``bin/buildout`` command.  This will take some time
 to download packages from PyPI.  When you run buildout, it will show
