@@ -68,6 +68,9 @@
   <!-- browser views -->
   <include package=".browser" />
 
+  <!-- bootstrap -->
+  <include file="bootstrap.zcml" />
+
   <!-- translations -->
   <i18n:registerTranslations directory="locales"/>
 

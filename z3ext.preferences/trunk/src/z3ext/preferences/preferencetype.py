@@ -144,7 +144,7 @@ class PreferenceProperty(object):
     >>> ob.attr1 = 'value1'
     Traceback (most recent call last):
     ...
-    WrongType: ('value1', <type 'unicode'>)
+    WrongType: ('value1', <type 'unicode'>, 'attr1')
 
     >>> ob.attr1 = u'value1'
     >>> ob.attr1
