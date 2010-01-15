@@ -11,7 +11,7 @@ Changes
 - Resolved the following testing issues: signal handlers weren't cleaned
   up properly in some tests, Twisted was leaking file descriptors during
   ftesting tearDown (http://twistedmatrix.com/trac/ticket/3063), and
-  the twisted.txt regression test was not repeatable due to the
+  the twisted.txt regression test was not repeatable due to
   Twisted's recalcitrance when it comes to stopping and subsequently
   starting a reactor instance.
 
