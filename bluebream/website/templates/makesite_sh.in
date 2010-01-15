@@ -1,0 +1,7 @@
+#!/bin/bash
+cd ${buildout:directory}/main
+make html
+cd ${buildout:directory}/docs/v0.2
+make html
+cd ${buildout:directory}/docs/v0.3
+make html
