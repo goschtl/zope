@@ -11,6 +11,7 @@ Welcome to BlueBream's documentation!
    tutorial
    faq
    howto/index
+   dev/index
    reference/index
    glossary
 
