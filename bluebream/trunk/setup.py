@@ -23,8 +23,7 @@ setup(
     version="0.2.0dev",
     author="BlueBream Team",
     author_email="zope-dev@zope.org",
-    url="http://packages.python.org/bluebream",
-    download_url="http://pypi.python.org/pypi/bluebream",
+    url="http://bluebream.zope.org",
     description="The Zope Web Framework",
     long_description=(
         read('README.txt')

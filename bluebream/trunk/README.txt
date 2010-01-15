@@ -133,7 +133,7 @@ There is a view named ``index`` registered by default for root
 folder. which can be accessed here: http://localhost:8080/@@index
 
 You can continue reading about BlueBream from the `documentation site
-<http://packages.python.org/bluebream>`_.
+<http://bluebream.zope.org>`_.
 
 Resources
 ---------
@@ -155,7 +155,7 @@ Resources
 
 - `PyPI page <http://pypi.python.org/pypi/bluebream>`_
 
-- `Documentation <http://packages.python.org/bluebream>`_
+- `Documentation <http://bluebream.zope.org>`_
 
 - `Twitter <http://twitter.com/bluebream>`_
 
