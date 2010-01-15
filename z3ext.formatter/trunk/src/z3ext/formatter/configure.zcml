@@ -6,15 +6,15 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.formatter">
 
-  <!-- formatter: chameleon expression -->
-  <utility
-     name="formatter"
-     factory=".chameleonexpr.FormatterTranslator" />
-
   <!-- formatter: tales expresison -->
   <tales:expressiontype
      name="formatter"
      handler=".expression.FormatterExpression" />
+
+  <!-- formatter: chameleon expression -->
+  <utility
+     name="formatter"
+     factory=".chameleonexpr.FormatterTranslator" />
 
   <!-- formatters -->
   <adapter name="date"
