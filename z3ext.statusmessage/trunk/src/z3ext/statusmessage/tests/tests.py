@@ -25,6 +25,7 @@ from zope.session.session import RAMSessionDataContainer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.testing.functional import ZCMLLayer, FunctionalDocFileSuite
 from zope.traversing.testing import setUp as setUpTraversing
+from zope.contentprovider import tales
 from z3ext.statusmessage import message
 
 

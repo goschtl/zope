@@ -15,7 +15,7 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.browserpage import ViewPageTemplateFile
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 
