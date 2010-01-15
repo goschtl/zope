@@ -62,7 +62,8 @@ class DependencyFinder(object):
                     self.context.location, path, candidate)
 
                 if os.path.isfile(candidate_path):
-                    result[candidate].append(self.context.project_name)
+                    name = path.replace(os.path.sep, '.')
+                    result[candidate].append(name)
 
         return result
 
