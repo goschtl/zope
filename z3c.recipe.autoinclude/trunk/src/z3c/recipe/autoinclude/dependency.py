@@ -1,5 +1,7 @@
 import os, sys, pkg_resources
 
+deps = {1: {}, 2: {}}
+
 
 class DependencyFinder(object):
 
@@ -20,6 +22,7 @@ class DependencyFinder(object):
         result = []
         for ns_path in ns_paths:
             path = os.path.join(dist_path, ns_path)
+
             subpackages = subpackageDottedNames(path, ns_path)
             for subpackage in subpackages:
                 if subpackage not in ns_paths:
@@ -37,6 +40,16 @@ class DependencyFinder(object):
         # process package requirenments
         for req in self.context.requires():
             pkg = req.project_name
+
+            if pkg.startswith('zope.app.') or pkg in ('zope.formlib', 'z3ext.resource'):
+                global deps
+                d = deps[1].setdefault(self.context.project_name, [])
+                if pkg not in d:
+                    d.append(pkg)
+
+                d = deps[2].setdefault(pkg, [])
+                if self.context.project_name not in d:
+                    d.append(self.context.project_name)
 
             if pkg in seen or pkg == 'setuptools':
                 continue

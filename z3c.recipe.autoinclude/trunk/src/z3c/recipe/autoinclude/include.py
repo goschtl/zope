@@ -19,7 +19,7 @@ import os
 import zc.buildout
 import zc.recipe.egg
 import pkg_resources
-from dependency import DependencyFinder
+from dependency import deps, DependencyFinder
 
 
 class AutoIncludeSetup(object):
@@ -73,18 +73,14 @@ class AutoIncludeSetup(object):
             ['<include package="%s" file="exclude.zcml" />\n'%pkg for pkg in exclude])
 
         configureData = ''.join(
-            ['<include package="%s" />\n'%pkg for pkg in configure])
+            ['<include package="%s" />\n'%
+             pkg for pkg in configure if pkg != 'Chameleon'])
 
-        # fix zope.app.xxx dependencies problem
-        if 'zope.app.appsetup' in configure:
+        # fix zope.traversing.browser dependencies problem
+        if 'zope.traversing' in configure:
             configureData = (
-                '<include package="zope.app.appsetup" />\n' +
-                configureData)
-
-        if 'zope.app.zcmlfiles' in configure:
-            configureData = (
-                '<include package="zope.app.zcmlfiles" file="menus.zcml" />\n' +
-                configureData)
+                configureData +
+                '<include package="zope.traversing.browser" />\n')
 
         dest = []
 
@@ -105,6 +101,12 @@ class AutoIncludeSetup(object):
 
         open(os.path.join(location, 'packages-exclude.zcml'), 'w').write(
             packages_zcml_template % exclude)
+
+        for key, val in deps[2].items():
+            print key
+            val.sort()
+            print val
+            print '==============================='
 
         return dest
 
