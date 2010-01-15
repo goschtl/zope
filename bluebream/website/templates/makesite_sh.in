@@ -1,7 +1,8 @@
 #!/bin/bash
+# Comment the following line when css/template
+# is not required to be updated
+rm -fr ${buildout:directory}/htdocs/*
 cd ${buildout:directory}/main
 make html
-cd ${buildout:directory}/docs/v0.2
-make html
-cd ${buildout:directory}/docs/v0.3
+cd ${buildout:directory}/docs/v1.0
 make html
