@@ -18,7 +18,6 @@ $Id: tales.py 2720 2008-08-25 11:15:10Z fafhrd91 $
 import logging, sys
 from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 from zope.error.interfaces import IErrorReportingUtility
-from zope.pagetemplate.engine import Engine, TrustedEngine
 from zope.tales.expressions import StringExpr, SimpleModuleImporter
 
 from pagelet import queryPagelet
@@ -50,7 +49,3 @@ class TALESPageletExpression(StringExpr, PageletExpression):
         view = econtext.vars['view']
 
         return self.render(context, request, view, name)
-
-
-Engine.registerType("pagelet", TALESPageletExpression)
-TrustedEngine.registerType("pagelet", TALESPageletExpression)

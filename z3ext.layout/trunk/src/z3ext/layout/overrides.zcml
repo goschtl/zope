@@ -1,0 +1,7 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+	   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- default view -->
+  <browser:defaultView name="index.html" />
+
+</configure>

@@ -2,6 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:tales="http://namespaces.zope.org/tales"
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.layout">
 
@@ -20,6 +21,11 @@
   <utility
      name="pagelet"
      factory=".expressions.PageletTranslator" />
+
+  <!-- resourcepackage: tales expression -->
+  <tales:expressiontype
+     name="pagelet"
+     handler=".tales.TALESPageletExpression" />
 
   <!-- @@pagelet view -->
   <adapter
@@ -78,11 +84,9 @@
      description="Page layout. It contains html headers, html body, etc."
      template="layoutpage.pt" />
 
-  <!-- default view -->
-  <browser:defaultView name="index.html" />
-
+  <!-- default page -->
   <z3ext:pagelet
-     for="*"
+     for="zope.interface.Interface"
      name="index.html"
      template="index.pt" />
 

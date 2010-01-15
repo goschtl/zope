@@ -795,8 +795,10 @@ Let's now create a view using a page template:
 Also we should register tales expression
 
   >>> from z3ext.layout import tales
+  >>> from zope.browserpage.metaconfigure import registerType
+  >>> registerType('pagelet', tales.TALESPageletExpression)
 
-Finally we look up the view and render it.
+  Finally we look up the view and render it.
 
   >>> from z3ext.layout.tests import SimpleViewClass
 
@@ -1011,7 +1013,7 @@ Pagelets with errors
   >>> print error.getLogEntries()[0]['tb_html']
   <p>Traceback (most recent call last):
   <ul>
-    <li>  Module z3ext.layout.tales, line 34, in render<br />
+    <li>  Module z3ext.layout.tales, line 33, in render<br />
         return pagelet.updateAndRender()</li>
     <li>  Module z3ext.layout.pagelet, line 131, in updateAndRender<br />
         return self.render()</li>
