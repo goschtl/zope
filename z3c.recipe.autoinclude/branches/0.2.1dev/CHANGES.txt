@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+0.2.0 (2009-04-15)
+------------------
+
+- Fixed zope.app.xxx dependencies
+
+- Added 'packages-exclude.zcml', list all exclude.zcml files
+
+
+0.1.0 (2009-04-06)
+------------------
+
+- Initial release.
