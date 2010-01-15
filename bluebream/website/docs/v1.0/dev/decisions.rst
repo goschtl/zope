@@ -40,25 +40,3 @@ Technical Decisions
   be added to project template creation for the previous reason.
   Another supporting reason is the easiness of adding sources to
   version controlling system.
-
-Notes for developers
---------------------
-
-To upload documentation::
-
-  ./bin/sphinxbuilder
-  ./bin/buildout setup . upload_sphinx
-
-Road map
---------
-
-- Make the documentation better
-
-- Study each package in detail and help to improve its documentation
-
-- Understand how each package works together
-
-- Create a tutorial which explain creating a simple application with
-  all basic requirements
-
-- Write in detail about ZODB and how persistence works
