@@ -9,4 +9,5 @@ which is actually used by the developers.
    :numbered:
    :maxdepth: 2
 
+   resources
    decisions
