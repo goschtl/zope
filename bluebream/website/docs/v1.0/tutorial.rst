@@ -157,7 +157,7 @@ use, stand alone source code.  You need not to have the ``bluebream``
 distribution installed anymore to function any task.  The source code
 contains mechanism to install dependencies and setup other things
 required.  The only necessary things you need to have is a pure
-Python installation and internet access to PyPI.  We will see how
+Python installation and Internet access to PyPI.  We will see how
 this is becoming possible in the upcoming sections.
 
 Buildout
@@ -327,7 +327,7 @@ This part takes care of all the eggs required for the application to
 function.  The `zc.recipe.egg
 <http://pypi.python.org/pypi/zc.recipe.egg>`_ is an advanced Buildout
 recipe with many features to deal with egg.  Majority of the
-dependencies will come as part of the main appliation egg.  The
+dependencies will come as part of the main application egg.  The
 option ``eggs`` list all the eggs.  The first egg,
 ``ticketcollector`` is the main locally developing egg.  The last
 option, ``interpreter`` specify the name of custom interpreter create
@@ -519,7 +519,7 @@ By default, it will look like this::
 
     <!-- The following registration (defaultView) register 'index' as
          the default view for a container.  The name of default view
-         can be chaged to a different value, for example, 'index.html'.
+         can be changed to a different value, for example, 'index.html'.
          More details about defaultView registration is available here:
          http://bluebream.zope.org/doc/1.0/howto/defaultview.html
          -->
@@ -534,13 +534,36 @@ By default, it will look like this::
   </configure>
 
 As you can see in the ``application.zcml``, it includes ``tc.main``.
-By default, if you include a package without mentionining the
+By default, if you include a package without mentioning the
 configuration file, it will include ``configure.zcml``.
 
 .. _tut-app-object:
 
 Creating the application object
 -------------------------------
+
+In this section, we will create ticketcollector main application
+container object.  BlueBream use the object database know as ZODB to
+store your data (object).  An object data base, you can think of as a
+container which contains objects, the inside object may be another
+container which contains objects.
+
+So, the object hierarchy will look like this::
+
+  +-------------------+
+  |                   |
+  |   +---------+     |
+  |   |         |     |
+  |   |  +--+   |     |
+  |   |  +--+   |     |
+  |   +---------+     |
+  |                   |
+  +-------------------+
+
+BlueBream will take care of the persistence of the objects.  You only
+need to provide some hints in the form of interfaces and inheriting
+from some special classes.  You will see more details about how to do
+it in the upcoming sections.
 
 You can modify the file named ``src/tc/main/interfaces.py`` to add
 new interfaces like this::
