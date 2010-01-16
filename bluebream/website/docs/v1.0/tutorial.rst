@@ -434,6 +434,109 @@ Now we have a project source where we can continue developing this
 application.  Now onwards, you need to do the remaining things
 manually.
 
+The site definition
+-------------------
+
+BlueBream use ZCML for application specific configuration.  ZCML is
+an XML based declarative configuration language.  As you have seen
+already in ``zope.conf`` the main configuration is located at
+``etc/site.zcml``.  Here is the default listing::
+
+  <configure
+     xmlns="http://namespaces.zope.org/zope">
+
+    <include package="zope.component" file="meta.zcml" />
+    <include package="zope.security" file="meta.zcml" />
+    <include package="zope.publisher" file="meta.zcml" />
+    <include package="zope.i18n" file="meta.zcml" />
+    <include package="zope.browserresource" file="meta.zcml" />
+    <include package="zope.browsermenu" file="meta.zcml" />
+    <include package="zope.browserpage" file="meta.zcml" />
+    <include package="zope.securitypolicy" file="meta.zcml" />
+    <include package="zope.principalregistry" file="meta.zcml" />
+    <include package="zope.app.publication" file="meta.zcml" />
+    <include package="zope.app.form.browser" file="meta.zcml" />
+    <include package="zope.app.container.browser" file="meta.zcml" />
+
+    <include package="zope.publisher" />
+    <include package="zope.component" />
+    <include package="zope.traversing" />
+    <include package="zope.site" />
+    <include package="zope.annotation" />
+    <include package="zope.container" />
+    <include package="zope.componentvocabulary" />
+    <include package="zope.formlib" />
+    <include package="zope.app.appsetup" />
+    <include package="zope.app.security" />
+    <include package="zope.app.publication" />
+    <include package="zope.app.form.browser" />
+    <include package="zope.app.basicskin" />
+    <include package="zope.browsermenu" />
+    <include package="zope.principalregistry" />
+    <include package="zope.authentication" />
+    <include package="zope.securitypolicy" />
+    <include package="zope.login" />
+    <include package="zope.app.zcmlfiles" file="menus.zcml" />
+    <include package="zope.app.authentication" />
+    <include package="zope.app.security.browser" />
+
+    <include package="tc.main" file="securitypolicy.zcml" />
+    <include package="tc.main" file="application.zcml" />
+
+  </configure>
+
+The main configuration, ``site.zcml`` include other configuration
+files specific to packages.  The ZCML has some directives like
+`include``, ``page``, ``defaultView`` etc. available at various XML
+namespaces.  In the ``site.zcml`` the default XML namespace is
+``http://namespaces.zope.org/zope``.  If you look at top of
+site.zcml, you can see the namespace defined like this::
+
+  <configure
+   xmlns="http://namespaces.zope.org/zope">
+
+The ``include`` directive is available in
+``http://namespaces.zope.org/zope`` namespace.  If you look at other
+configuration files, you can see some other namespaces like
+``http://namespaces.zope.org/browser`` used.
+
+At the end of ``site.zcml``, two application specific configuration
+files are included like this::
+
+  <include package="tc.main" file="securitypolicy.zcml" />
+  <include package="tc.main" file="application.zcml" />
+
+The ``securitypolicy.zcml`` is where you can define the security
+policies.  The ``application.zcml`` is a generic configuration file
+where you can include other application specific configuration files.
+Also you can define common configuration for your entire application.
+By default, it will look like this::
+
+  <configure
+     i18n_domain="tc.main"
+     xmlns="http://namespaces.zope.org/zope"
+     xmlns:browser="http://namespaces.zope.org/browser">
+
+    <!-- The following registration (defaultView) register 'index' as
+         the default view for a container.  The name of default view
+         can be chaged to a different value, for example, 'index.html'.
+         More details about defaultView registration is available here:
+         http://bluebream.zope.org/doc/1.0/howto/defaultview.html
+         -->
+
+    <browser:defaultView
+       name="index"
+       for="zope.container.interfaces.IContainer"
+       />
+
+    <include package="tc.main" />
+
+  </configure>
+
+As you can see in the ``application.zcml``, it includes ``tc.main``.
+By default, if you include a package without mentionining the
+configuration file, it will include ``configure.zcml``.
+
 .. _tut-app-object:
 
 Creating the application object
