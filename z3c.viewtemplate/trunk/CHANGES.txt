@@ -2,6 +2,8 @@
 CHANGES
 =======
 
+ - fixed exception handling if macro is not found in the template
+
 0.4.0 (2008-11-05)
 ------------------
 

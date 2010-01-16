@@ -33,7 +33,7 @@ class Macro(object):
     def __call__(self, *args, **kwargs):
         try:
             program = self.template.macros[self.macroName]
-        except TypeError:
+        except KeyError:
             raise KeyError('Macro "%s" not found in file "%s"'% (
                 self.macroName, self.template.filename))
         output = StringIO(u'')
