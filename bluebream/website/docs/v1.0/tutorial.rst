@@ -565,22 +565,42 @@ need to provide some hints in the form of interfaces and inheriting
 from some special classes.  You will see more details about how to do
 it in the upcoming sections.
 
-You can modify the file named ``src/tc/main/interfaces.py`` to add
-new interfaces like this::
+As the first step for creating the main application container object
+which is going to hold all other objects, you need to create an
+interface.  You can name the main container interface as
+``ICollector``, the easiest way to create a container is to inherit
+from ``zope.container.interfaces.IContainer`` interface.  You can
+modify the file named ``src/tc/main/interfaces.py`` to add new
+interfaces like this::
 
   from zope.container.interfaces import IContainer
+  from zope.schema import TextLine
   from zope.schema import Text
 
   class ICollector(IContainer):
-        """The main application container object."""
+      """The main application container."""
 
-        description = Text(
-            title=u"Description",
-            description=u"A description of the collector.",
-            default=u"",
-            required=False)
+      name = TextLine(
+          title=u"Name",
+          description=u"Name of application.",
+          default=u"",
+          required=True)
 
-Then implement the interface in ``src/tc/main/ticketcollector.py``::
+      description = Text(
+          title=u"Description",
+          description=u"The name of application container.",
+          default=u"",
+          required=False)
+
+The interface defined is your schema for the object.  There are two
+fields defined in the schema.  The first one is ``name`` and the
+second one is ``description``.  The schema is used for
+auto-generating web forms.
+
+Next, you need to implement this interface.  To implement
+``IContainer``, it is recommended to inherit from
+``zope.container.btree.BTreeContainer``.  You can create the
+implementation in ``src/tc/main/ticketcollector.py``::
 
   from zope.interface import implements
   from zope.container.btree import BTreeContainer
@@ -592,6 +612,11 @@ Then implement the interface in ``src/tc/main/ticketcollector.py``::
       Container."""
 
       implements(ICollector)
+
+      name = u""
+      description = u""
+
+To declare a class is implementing a particular interface, you
 
 .. _tut-main-page:
 
