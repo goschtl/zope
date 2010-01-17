@@ -542,6 +542,9 @@ configuration file, it will include ``configure.zcml``.
 Creating the application object
 -------------------------------
 
+Container objects
+~~~~~~~~~~~~~~~~~
+
 In this section, we will create ticketcollector main application
 container object.  BlueBream use the object database know as ZODB to
 store your data (object).  An object data base, you can think of as a
@@ -564,6 +567,9 @@ BlueBream will take care of the persistence of the objects.  You only
 need to provide some hints in the form of interfaces and inheriting
 from some special classes.  You will see more details about how to do
 it in the upcoming sections.
+
+Declaring Interface
+~~~~~~~~~~~~~~~~~~~
 
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
@@ -597,6 +603,9 @@ fields defined in the schema.  The first one is ``name`` and the
 second one is ``description``.  The schema is used for
 auto-generating web forms.
 
+Implementing Interface
+~~~~~~~~~~~~~~~~~~~~~~
+
 Next, you need to implement this interface.  To implement
 ``IContainer``, it is recommended to inherit from
 ``zope.container.btree.BTreeContainer``.  You can create the
@@ -616,7 +625,40 @@ implementation in ``src/tc/main/ticketcollector.py``::
       name = u""
       description = u""
 
-To declare a class is implementing a particular interface, you
+To declare a class is implementing a particular interface, you can
+use ``implements`` function.
+
+Registering components
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  <interface 
+     interface=".interfaces.ICollector" 
+     type="zope.app.content.interfaces.IContentType"
+     /> 
+
+  <class class=".ticketcollector.Collector">
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <implements
+       interface="zope.container.interfaces.IContentContainer" 
+       />
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.ICollector"
+       />
+    <require
+       permission="zope.ManageContent"
+       set_schema=".interfaces.ICollector"
+       />
+  </class>
+
+The ``zope.app.content.interfaces.IContentType`` represents a content
+type.  If an **interface** provides ``IContentType`` interface type,
+then all objects providing the **interface** are considered content
+objects.
 
 .. _tut-main-page:
 
