@@ -1,7 +1,7 @@
 #!/bin/bash
 # Comment the following line when css/template
 # is not required to be updated
-#rm -fr ${buildout:directory}/htdocs/*
+rm -fr ${buildout:directory}/htdocs/*
 cd ${buildout:directory}/main
 make html
 cd ${buildout:directory}/docs/v1.0

@@ -1,9 +1,9 @@
-.. _tut-tutorial:
+.. _tut1-tutorial:
 
-Tutorial Part 1
-===============
+Tutorial --- Part 1
+===================
 
-.. _tut-introduction:
+.. _tut1-introduction:
 
 Introduction
 ------------
@@ -26,7 +26,7 @@ Before proceeding, we will see the user stories:
 
 4. Additional comments can be added to tickets.
 
-.. _tut-new-project:
+.. _tut1-new-project:
 
 Starting new project
 --------------------
@@ -537,7 +537,7 @@ As you can see in the ``application.zcml``, it includes ``tc.main``.
 By default, if you include a package without mentioning the
 configuration file, it will include ``configure.zcml``.
 
-.. _tut-app-object:
+.. _tut1-app-object:
 
 Creating the application object
 -------------------------------
@@ -720,7 +720,7 @@ In the next section, you will see more details about the main page.
 Also we are ging to learn a brief overview of Zope Page Template.
 
 
-.. _tut-main-page:
+.. _tut1-main-page:
 
 Creating the main page
 ----------------------
@@ -737,7 +737,7 @@ Implementing view
 Registering view
 ~~~~~~~~~~~~~~~~
 
-.. _tut-conclusion:
+.. _tut1-conclusion:
 
 Conclusion
 ----------

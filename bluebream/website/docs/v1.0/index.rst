@@ -8,7 +8,8 @@ Welcome to BlueBream's documentation!
    introduction
    gettingstarted
    concepts
-   tutorial
+   tutorial1
+   tutorial2
    faq
    howto/index
    dev/index
