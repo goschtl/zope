@@ -8,27 +8,24 @@ Introduction
 Overview
 --------
 
-**BlueBream** is a web framework written in Python programming
-language.  BlueBream is a free/open source software, owned by
-:term:`Zope Foundation`, licensed under Zope Public License (BSD
-like, GPL compatible license).  BlueBream was known as **Zope 3** in
-the past.  The development of BlueBream, then known as `Zope 3
-started in 2001
-<https://mail.zope.org/pipermail/zope3-dev/2001-December/000000.html>`_.
-BlueBream was developed by the Zope community with the leadership of
-Jim Fulton.  A brief history is given in the next section.  There are
-many attractive features which make BlueBream unique among Python web
+**BlueBream** is a web framework written in the Python programming
+language.  BlueBream is free/open source software, owned by the
+:term:`Zope Foundation`, licensed under the Zope Public License (BSD
+like, GPL compatible license).  BlueBream was previously known 
+as :term:`Zope 3`.
+
+A few of the features which distinguish BlueBream among Python web
 frameworks.
 
 - BlueBream is built on top of :term:`Zope Tool Kit` (ZTK).  In fact,
   ZTK is derived from BlueBream.
 
-- BlueBream use and recommend to use :term:`Buildout` -- a build
+- BlueBream leverages the power of :term:`Buildout` a build
   system written in Python.
 
-- BlueBream support WSGI and use Paste (PasteScript & PasteDeploy).
+- BlueBream support WSGI and uses Paste (PasteScript & PasteDeploy).
 
-- BlueBream use :term:`Zope Component Architecture` (ZCA) for
+- BlueBream uses :term:`Zope Component Architecture` (ZCA) for
   `separation of concerns` and to create highly cohesive reusable
   components (zope.component).
 
@@ -132,7 +129,7 @@ application.  This will help you to familiarize more concepts in
 BlueBream.
 
 FAQ
-~~~
+~~~~
 
 These are FAQs collected from mailing lists, blogs and other on-line
 resources.
@@ -163,3 +160,4 @@ it.  Thanks to all those who contributed to this documentation.
   discussion thread.</a></noscript><a href="http://disqus.com"
   class="dsq-brlink">blog comments powered by <span
   class="logo-disqus">Disqus</span></a>
+
