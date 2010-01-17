@@ -697,10 +697,45 @@ A view for adding collector
      class=".views.AddTicketCollector"
      />
 
+A default view for collector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+views.py::
+
+  class TicketCollectorMainView(BrowserView):
+
+      def __call__(self):
+          return "Helloo tttt "
+
+configure.zcml::
+
+  <browser:page
+     for=".interfaces.ICollector"
+     name="index"
+     permission="zope.ManageContent"
+     class=".views.TicketCollectorMainView"
+     />
+
+In the next section, you will see more details about the main page.
+Also we are ging to learn a brief overview of Zope Page Template.
+
+
 .. _tut-main-page:
 
 Creating the main page
 ----------------------
+
+Browser Page
+~~~~~~~~~~~~
+
+Zope Page Template
+~~~~~~~~~~~~~~~~~~
+
+Implementing view
+~~~~~~~~~~~~~~~~~
+
+Registering view
+~~~~~~~~~~~~~~~~
 
 .. _tut-conclusion:
 
