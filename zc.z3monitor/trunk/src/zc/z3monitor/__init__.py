@@ -102,9 +102,9 @@ def dbinfo(connection, database='', deltat=300):
 
     By default, the statistics are for a sampling interval of 5
     minutes.  You can request another sampling interval, up to an
-    hour, by passing a sampling interval in seconds after the database name.    
+    hour, by passing a sampling interval in seconds after the database name.
     """
-    
+
     if database == '-':
         database = ''
     db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
@@ -145,7 +145,7 @@ def zeocache(connection, database=''):
     By default, data for the main database are returned.  To return
     information for another database, pass the database name.
     """
-    
+
     db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
     print >> connection, ' '.join(map(str, db._storage._cache.fc.getStats()))
 
@@ -157,7 +157,7 @@ def zeostatus(connection, database=''):
     By default, data for the main database are returned.  To return
     information for another database, pass the database name.
     """
-    
+
     db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
     print >> connection, db._storage.is_connected()
 
@@ -202,4 +202,3 @@ def getStatus(want=('VmSize', 'VmRSS')):
     for line in open('/proc/%s/status' % pid):
         if (line.split(':')[0] in want):
             yield line.strip()
-

@@ -13,7 +13,7 @@ tools that work within the zc.monitor server.  These are demonstrated below.
 Please see the zc.monitor documentation for details on how the server works.
 
 This package also supports starting a monitor using ZConfig, and provides a
-default configure.zcml for registering plugins.  
+default configure.zcml for registering plugins.
 
 The ZConfig setup is not demonstrated in this documentation, but the usage is
 simple.  In your ZConfig file, provide a "product-config" stanza for
@@ -97,6 +97,9 @@ Process Information
 To get information about the process overall, use the monitor
 command:
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
     >>> connection.test_input('help monitor\n')
     Help for monitor:
     <BLANKLINE>
@@ -119,16 +122,22 @@ command:
     <BLANKLINE>
     -> CLOSE
 
-    >>> connection.test_input('monitor\n')
-    0 
-    VmSize:	   35284 kB 
-    VmRSS:	   28764 kB 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('monitor\n') #doctest: +NORMALIZE_WHITESPACE
+    0
+    VmSize:	   35284 kB
+    VmRSS:	   28764 kB
     -> CLOSE
 
-    >>> connection.test_input('monitor 100 other\n')
-    0 
-    VmSize:	   35284 kB 
-    VmRSS:	   28764 kB 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('monitor 100 other\n') #doctest: +NORMALIZE_WHITESPACE
+    0
+    VmSize:	   35284 kB
+    VmRSS:	   28764 kB
     -> CLOSE
 
 Note that, as of this writing, the VmSize and VmRSS lines will only be present
@@ -141,12 +150,15 @@ with a value of 0:
     >>> conn1 = main.open()
     >>> conn2 = main.open()
 
-    >>> connection.test_input('monitor 0\n')
-    2 
-    VmSize:	   36560 kB 
-    VmRSS:	   28704 kB 
-    0.0    (0) 
-    0.0    (0) 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('monitor 0\n') #doctest: +NORMALIZE_WHITESPACE
+    2
+    VmSize:	   36560 kB
+    VmRSS:	   28704 kB
+    0.0    (0)
+    0.0    (0)
     -> CLOSE
 
 The extra line of output gives connection debug info.
@@ -155,12 +167,15 @@ If we set some additional input, we'll see it:
     >>> conn1.setDebugInfo('/foo')
     >>> conn2.setDebugInfo('/bar')
 
-    >>> connection.test_input('monitor 0\n')
-    2 
-    VmSize:	   13048 kB 
-    VmRSS:	   10084 kB 
-    0.0   /bar (0) 
-    0.0   /foo (0) 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('monitor 0\n') #doctest: +NORMALIZE_WHITESPACE
+    2
+    VmSize:	   13048 kB
+    VmRSS:	   10084 kB
+    0.0   /bar (0)
+    0.0   /foo (0)
     -> CLOSE
 
     >>> conn1.close()
@@ -170,6 +185,9 @@ Database Information
 ====================
 
 To get information about a database, use the dbinfo command:
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
 
     >>> connection.test_input('help dbinfo\n')
     Help for dbinfo:
@@ -193,12 +211,15 @@ To get information about a database, use the dbinfo command:
     <BLANKLINE>
         By default, the statistics are for a sampling interval of 5
         minutes.  You can request another sampling interval, up to an
-        hour, by passing a sampling interval in seconds after the database name.    
+        hour, by passing a sampling interval in seconds after the database name.
     <BLANKLINE>
     -> CLOSE
 
-    >>> connection.test_input('dbinfo\n')
-    0   0   2   0   0 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo\n') #doctest: +NORMALIZE_WHITESPACE
+    0   0   2   0   0
     -> CLOSE
 
 Let's open a connection and do some work:
@@ -211,40 +232,58 @@ Let's open a connection and do some work:
     >>> transaction.commit()
     >>> conn.close()
 
-    >>> connection.test_input('dbinfo\n')
-    1   2   3   1   1 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo\n') #doctest: +NORMALIZE_WHITESPACE
+    1   2   3   1   1
     -> CLOSE
 
 You can specify a database name.  So, to get statistics for the other
 database, we'll specify the name it was registered with:
 
-    >>> connection.test_input('dbinfo other\n')
-    0   0   0   0   0 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo other\n')  #doctest: +NORMALIZE_WHITESPACE
+    0   0   0   0   0
     -> CLOSE
 
 You can use '-' to name the main database:
 
-    >>> connection.test_input('dbinfo -\n')
-    1   2   3   1   1 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo -\n')  #doctest: +NORMALIZE_WHITESPACE
+    1   2   3   1   1
     -> CLOSE
 
 You can specify a number of seconds to sample. For example, to get
 data for the last 10 seconds:
 
-    >>> connection.test_input('dbinfo - 10\n')
-    1   2   3   1   1 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo - 10\n') #doctest: +NORMALIZE_WHITESPACE
+    1   2   3   1   1
     -> CLOSE
 
 .. Edge case to make sure that ``deltat`` is used:
 
-    >>> connection.test_input('dbinfo - 0\n')
-    0   0   0   1   1 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('dbinfo - 0\n') #doctest: +NORMALIZE_WHITESPACE
+    0   0   0   1   1
     -> CLOSE
 
 ZEO Cache Statistics
 ====================
 
 You can get ZEO cache statistics using the zeocache command.
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
 
     >>> connection.test_input('help zeocache\n')
     Help for zeocache:
@@ -268,20 +307,29 @@ You can get ZEO cache statistics using the zeocache command.
     <BLANKLINE>
     -> CLOSE
 
-    >>> connection.test_input('zeocache\n')
-    42 4200 23 2300 1000 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('zeocache\n') #doctest: +NORMALIZE_WHITESPACE
+    42 4200 23 2300 1000
     -> CLOSE
 
 You can specify a database name:
 
-    >>> connection.test_input('zeocache other\n')
-    42 4200 23 2300 1000 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('zeocache other\n') #doctest: +NORMALIZE_WHITESPACE
+    42 4200 23 2300 1000
     -> CLOSE
 
 ZEO Connection Status
 =====================
 
 The zeostatus command lets you get information about ZEO connection status:
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
 
     >>> connection.test_input('help zeostatus\n')
     Help for zeostatus:
@@ -295,12 +343,18 @@ The zeostatus command lets you get information about ZEO connection status:
     <BLANKLINE>
     -> CLOSE
 
-    >>> connection.test_input('zeostatus\n')
-    True 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('zeostatus\n') #doctest: +NORMALIZE_WHITESPACE
+    True
     -> CLOSE
 
-    >>> connection.test_input('zeostatus other\n')
-    True 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('zeostatus other\n') #doctest: +NORMALIZE_WHITESPACE
+    True
     -> CLOSE
 
 In this example, we're using a faux ZEO connection.  It has an
@@ -308,7 +362,10 @@ attribute that determines whether it is connected or not.  Id we
 change it, then the zeocache output will change:
 
     >>> main._storage._is_connected = False
-    >>> connection.test_input('zeostatus\n')
-    False 
-    -> CLOSE
 
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.monitor.Server(connection)
+
+    >>> connection.test_input('zeostatus\n') #doctest: +NORMALIZE_WHITESPACE
+    False
+    -> CLOSE
