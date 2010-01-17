@@ -5,6 +5,9 @@ Glossary
 
 .. glossary::
 
+  BlueBream
+   BlueBream is a renaming of :term:`Zope 3`, `started in 2010`_ 
+
   Setuptools
     Using Setuptools_, developers can distribute Python packages.  
     It creates the :term:`Egg` deployment format.  
@@ -40,10 +43,55 @@ Glossary
     The `Zope Foundation`_ is a not-for-profit organization that 
     provides support for the Zope community and the Zope platform 
     and its associated software.
-    
+
   Zope 3
    A project `started in 2001`_ by the Zope community under the 
    leadership of Jim Fulton.
+
+  Zope Public License
+   The ZPL_ has been certified as open source. It has also been 
+   designated as GPL compatible by the Free Software Foundation (FSF).
+
+  WSGI
+   The `Web Server Gateway Interface`_ defines a simple and universal 
+   interface between web servers and web applications or frameworks 
+   for the Python programming language. The latest version 
+   3.0 of Python, released in December 2008, is already supported 
+   by mod_wsgi (a module for the Apache Web server).
+   
+  Paste
+   Paste_ is a tool for using a Web Server Gateway Interface stack
+   
+  PasteDeploy
+   PasteDeploy_ provides code to load WSGI applications and servers 
+   from URIs; these URIs can refer to Python Eggs for INI-style 
+   configuration files. Paste Script provides commands to serve applications 
+   based on this configuration file.
+   
+  PasteScript
+   PasteScript_ is a pluggable command-line frontend, including commands 
+   to setup package file layouts
+   
+  Separation of concerns
+   `Separation of concerns`_ (SoC) is the process of separating a computer 
+   program into distinct features that overlap in functionality as 
+   little as possible.
+   
+  ZODB
+   The `Zope Object Database`_ provides an object-oriented database 
+   for Python that provides a high-degree of transparency. Applications 
+   can take advantage of object database features with few, if any, changes 
+   to application logic. ZODB includes features such as a plugable storage 
+   interface, rich transaction support, and undo.
+    
+  ZCML
+   The `Zope Configuration Markup Language`_
+   
+  Grok
+   Grok_ is a web application framework for Python developers. 
+   It is aimed at both beginners and very experienced web developers.
+   Grok has an emphasis on agile development. Grok is easy and powerful.   
+   
 
 .. _Setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 .. _Python based Build system:  http://www.buildout.org
@@ -56,4 +104,15 @@ Glossary
 .. _Zope Foundation: http://foundation.zope.org
 .. _Zope Tool Kit: http://docs.zope.org/zopetoolkit
 .. _started in 2001: https://mail.zope.org/pipermail/zope3-dev/2001-December/000000.html
+.. _started in 2010: https://mail.zope.org/pipermail/zope-dev/2010-January/039072.html
+.. _ZPL: http://www.zope.org/Resources/ZPL
+.. _Web Server Gateway Interface: http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
+.. _Paste: http://pypi.python.org/pypi/Paste/
+.. _PasteDeploy: http://pypi.python.org/pypi/PasteDeploy/
+.. _PasteScript: http://pypi.python.org/pypi/PasteScript
+.. _Separation of concerns: http://en.wikipedia.org/wiki/Separation_of_concerns
+.. _Zope Object Database: http://pypi.python.org/pypi/ZODB3
+.. \_Zope Configuration Markup Language: http://worldcookery.com/files/ploneconf05-five/step2.html
+.. _Zope Configuration Markup Language: http://www.muthukadan.net/docs/zca.html#zcml
+.. _Grok: http://grok.zope.org/
 
