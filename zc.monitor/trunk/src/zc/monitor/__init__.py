@@ -70,15 +70,15 @@ class Server:
         pass                            # Don't care
 
 
-def start(port):
+def start(port, address=''):
     """start monitor server.
-    
+
     Returns True if monitor server started; returns False if the port is
     already in use; and raises an exception otherwise.
     """
     import zc.ngi.async
     try:
-        zc.ngi.async.listener(('', port), Server)
+        zc.ngi.async.listener((address, port), Server)
     except socket.error, e:
         if e.args[0] == errno.EADDRINUSE:
             # Don't kill the process just because somebody else has our port.
@@ -95,11 +95,11 @@ def start(port):
 
 def interactive(connection):
     """Turn on monitor's interactive mode
-    
+
     Normally, the monitor releases the connection after a single command.
     By entering the interactive mode, the monitor will not end the connection
     until you enter the "quit" command.
-    
+
     In interactive mode, an empty line repeats the last command.
     """
     connection.write('Interactive mode on.  Use "quit" To exit.\n')
@@ -107,7 +107,7 @@ def interactive(connection):
 
 def quit(connection):
     """Quit the monitor
-    
+
     This is only really useful in interactive mode (see the "interactive"
     command).
     """
