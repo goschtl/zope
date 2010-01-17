@@ -8,53 +8,64 @@ Introduction
 Overview
 --------
 
-**BlueBream** is a web framework written in the Python programming
+:term:`BlueBream` is a web framework written in the Python programming
 language.  BlueBream is free/open source software, owned by the
-:term:`Zope Foundation`, licensed under the Zope Public License (BSD
+:term:`Zope Foundation`, licensed under the :term:`Zope Public License` (BSD
 like, GPL compatible license).  BlueBream was previously known 
 as :term:`Zope 3`.
 
 A few of the features which distinguish BlueBream among Python web
 frameworks.
 
-- BlueBream is built on top of :term:`Zope Tool Kit` (ZTK).  In fact,
-  ZTK is derived from BlueBream.
+- BlueBream is built implements the :term:`Zope Tool Kit` (ZTK), a 
+  distillation of many years of experience in meeting demanding 
+  requirements for stable, scalable software.
 
 - BlueBream leverages the power of :term:`Buildout` a build
   system written in Python.
 
-- BlueBream support WSGI and uses Paste (PasteScript & PasteDeploy).
+- BlueBream supports :term:`WSGI` and uses :term:`Paste` 
+  (:term:`PasteScript` & :term:`PasteDeploy`).
 
-- BlueBream uses :term:`Zope Component Architecture` (ZCA) for
-  `separation of concerns` and to create highly cohesive reusable
-  components (zope.component).
+- BlueBream features the :term:`Zope Component Architecture` (ZCA) which 
+  implements :term:`Separation of concerns` to create highly cohesive reusable
+  components (zope.component_).
 
-- BlueBream has an object publisher (zope.publisher)
+- BlueBream has an object publisher (zope.publisher_)
 
-- BlueBream has transactional object database (ZODB)
+- BlueBream has transactional object database (:term:`ZODB`)
 
-- BlueBream has an XML based configuration language for registering
-  components (ZCML).  If you feel extremely uncomfortable with XML,
-  you should try `Grok <http://grok.zope.org>`_, which adds a layer
-  on top of ZTK, replacing declarative configuration with conventions
-  and declarations in Python.
+- BlueBream offers :term:`ZCML`, an XML based configuration language 
+  for registering components, providing limitless flexibility. If you
+  don't need the power of ZCML and the complexity it adds, try :term:`Grok`,
+  which adds a layer replacing the declarative configuration of ZCML with 
+  conventions and declarations in standard Python.
 
 - BlueBream has flexible security architecture with pluggable
-  security policies (zope.security)
+  security policies (zope.security_)
 
-- BlueBream has unit and functional testing frameworks (zope.testing,
-  zope.testbrowser),
+- BlueBream has unit and functional testing frameworks (zope.testing_,
+  zope.testbrowser_),
 
 - BlueBream has XHTML-compliant templating language
-  (zope.pagetemplate)
+  (zope.pagetemplate_)
 
 - BlueBream has schema engine and automatic form generation machinery
-  (zope.schema, zope.formlib)
+  (zope.schema_, zope.formlib_)
 
 The main aim of this book is to create a free on-line book about
 BlueBream.  This book will cover how to develop web applications
 using BlueBream components. You suggestions and edits are always
 welcome.
+
+.. _zope.component: http://pypi.python.org/pypi/zope.component
+.. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
+.. _zope.security: http://pypi.python.org/pypi/zope.security
+.. _zope.testing: http://pypi.python.org/pypi/zope.testing
+.. _zope.testbrowser: http://pypi.python.org/pypi/zope.testbrowser
+.. _zope.pagetemplate: http://pypi.python.org/pypi/zope.pagetemplate
+.. _zope.schema: http://pypi.python.org/pypi/zope.schema
+.. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
 
 .. _intro-history:
 
