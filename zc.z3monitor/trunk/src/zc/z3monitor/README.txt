@@ -24,6 +24,14 @@ listen.  For instance, this stanza will start a monitor server on port 8888::
         port 8888
     </product-config>
 
+Optionally you can include an ``address`` parameter to bind to a specific
+adapter::
+
+    <product-config zc.z3monitor>
+        port 8888
+        address 127.0.0.1
+    </product-config>
+
 To include the default commands of zc.monitor and zc.z3monitor, simply include
 the configure.zcml from this package::
 

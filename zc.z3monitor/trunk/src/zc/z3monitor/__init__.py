@@ -172,7 +172,12 @@ def initialize(opened_event):
             db.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
 
     port = int(config['port'])
-    zc.monitor.start(int(config['port']))
+    try:
+        address = config['address']
+        zc.monitor.start(port, address = address)
+    except KeyError:
+        #being backwards compatible here and not passing address if not given
+        zc.monitor.start(port)
 
 @zope.component.adapter(
     zope.traversing.interfaces.IContainmentRoot,
