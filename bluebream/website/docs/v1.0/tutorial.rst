@@ -633,17 +633,17 @@ Registering components
 
 ::
 
-  <interface 
-     interface=".interfaces.ICollector" 
+  <interface
+     interface=".interfaces.ICollector"
      type="zope.app.content.interfaces.IContentType"
-     /> 
+     />
 
   <class class=".ticketcollector.Collector">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <implements
-       interface="zope.container.interfaces.IContentContainer" 
+       interface="zope.container.interfaces.IContentContainer"
        />
     <require
        permission="zope.ManageContent"
@@ -659,6 +659,43 @@ The ``zope.app.content.interfaces.IContentType`` represents a content
 type.  If an **interface** provides ``IContentType`` interface type,
 then all objects providing the **interface** are considered content
 objects.
+
+A view for adding collector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  from zope.publisher.browser import BrowserView
+  from zope.container.interfaces import INameChooser
+  from zope.formlib import form
+
+  from interfaces import ICollector
+
+  from ticketcollector import Collector
+
+  class AddTicketCollector(form.AddForm):
+
+      form_fields = form.Fields(ICollector)
+
+      def createAndAdd(self, data):
+          name = data['name']
+          description = data.get('description')
+          namechooser = INameChooser(self.context)
+          collector = Collector()
+          collector.name = name
+          collector.description = description
+          name = namechooser.chooseName(name, collector)
+          self.context[name] = collector
+          self.request.response.redirect(name)
+
+::
+
+  <browser:page
+     for="zope.site.interfaces.IRootFolder"
+     name="add_ticket_collector"
+     permission="zope.ManageContent"
+     class=".views.AddTicketCollector"
+     />
 
 .. _tut-main-page:
 
