@@ -696,6 +696,9 @@ delcared permission setting for ``Collector``.
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Now the content component is ready to use.  We need a web page from
+where we can add
+
 ::
 
   from zope.publisher.browser import BrowserView

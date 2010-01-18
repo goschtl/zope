@@ -38,7 +38,7 @@ overview of the sections.
 Preparations
 ------------
 
-This book assume that you have already installed `Python 2.6
+This documentation assume that you have already installed `Python 2.6
 <http://www.python.org>`_ and `setuptools
 <http://pypi.python.org/pypi/setuptools>`_.  As an alternative to
 setuptools, you can install `distribute

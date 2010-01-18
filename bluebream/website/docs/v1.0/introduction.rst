@@ -53,8 +53,8 @@ frameworks.
 - BlueBream has schema engine and automatic form generation machinery
   (zope.schema_, zope.formlib_)
 
-The main aim of this book is to create a free on-line book about
-BlueBream.  This book will cover how to develop web applications
+The main aim of this documentation is to create a free on-line documentation about
+BlueBream.  This documentation will cover how to develop web applications
 using BlueBream components. You suggestions and edits are always
 welcome.
 
@@ -100,7 +100,7 @@ In 2001, the Zope community began working on a component architecture
 for Zope, but after several years they ended up with something much
 more: Zope 3 (now renamed to BlueBream). While Zope 2 was powerful
 and popular, Zope 3 was designed to bring web application development
-to the next level. This book is about this BlueBream (Zope 3), which
+to the next level. This documentation is about this BlueBream (Zope 3), which
 is not really a new version of Zope 2.
 
 In 2007 the Zope community created yet another framework based on
@@ -111,11 +111,11 @@ Very recently Zope 3 project is renamed to BlueBream.
 
 .. _intro-organization:
 
-Organization of the book
+Organization of the documentation
 ------------------------
 
-This book has divided into multiple chapters.  Summary of each
-chapter is given below.
+This documentation has divided into multiple chapters.  Summary of
+each chapter is given below.
 
 Introduction
 ~~~~~~~~~~~~
