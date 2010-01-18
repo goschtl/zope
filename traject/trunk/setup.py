@@ -14,7 +14,7 @@ long_description = (
     )
 
 setup(name='traject',
-      version = '0.11dev',
+      version = '0.10.1',
       description="A URL dispatch to object system that combines aspects of routing and traversal.",
       long_description=long_description,
       # Use classifiers that are already listed at:
