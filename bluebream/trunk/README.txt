@@ -147,6 +147,8 @@ Resources
   agreement
   <http://docs.zope.org/developer/becoming-a-contributor.html>`_.
 
+- `Project blog <http://bluebream.posterous.com>`_
+
 - The bugs and issues are tracked at `launchpad
   <https://launchpad.net/bluebream>`_.
 
