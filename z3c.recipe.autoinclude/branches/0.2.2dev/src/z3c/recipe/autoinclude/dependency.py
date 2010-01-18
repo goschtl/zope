@@ -38,7 +38,7 @@ class DependencyFinder(object):
         for req in self.context.requires():
             pkg = req.project_name
 
-            if pkg in seen or pkg == 'setuptools':
+            if pkg == 'setuptools':
                 continue
 
             # get info from requirenments
@@ -46,26 +46,39 @@ class DependencyFinder(object):
             if dist is None:
                 continue
 
-            info = DependencyFinder(
-                self.ws.find(req), self.ws).includableInfo(zcml_to_look_for, seen)
+            if pkg in seen:
+                result = add_context_to_result(
+                            DependencyFinder(dist, self.ws),
+                            result, zcml_to_look_for, True)
 
-            for key, items in info.items():
-                data = result[key]
-                for item in items:
-                    if item not in data:
-                        data.append(item)
+            else:
+                info = DependencyFinder(
+                    self.ws.find(req), self.ws).includableInfo(zcml_to_look_for, seen)
 
-        # get info for self
-        for path in self.paths():
-            for candidate in zcml_to_look_for:
-                candidate_path = os.path.join(
-                    self.context.location, path, candidate)
+                for key, items in info.items():
+                    data = result[key]
+                    for item in items:
+                        if item not in data:
+                            data.append(item)
 
-                if os.path.isfile(candidate_path):
-                    name = path.replace(os.path.sep, '.')
+        return add_context_to_result(self, result, zcml_to_look_for)
+
+
+def add_context_to_result(self, result, zcml_to_look_for, precede=False):
+    # get info for context
+    for path in self.paths():
+        for candidate in zcml_to_look_for:
+            candidate_path = os.path.join(
+                self.context.location, path, candidate)
+
+            if os.path.isfile(candidate_path):
+                name = path.replace(os.path.sep, '.')
+                if name not in result[candidate]:
                     result[candidate].append(name)
-
-        return result
+                elif precede:
+                    result[candidate].remove(name)
+                    result[candidate].insert(0, name)
+    return result
 
 
 def subpackageDottedNames(package_path, ns_path=None):
