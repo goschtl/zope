@@ -262,6 +262,8 @@ class Patterns(object):
     
             if gen_name == ':':
                 name = name[1:]
+                if ':' in name:
+                    name, converter_name = name.split(':')
                 name = variables.pop(name)  
             model.__name__ = unicode(name)
     

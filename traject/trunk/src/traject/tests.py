@@ -727,6 +727,24 @@ class PatternsTestCase(unittest.TestCase):
         obj = patterns.resolve(root, 'a/1.1', default)
         self.assertEquals(1.1, obj.v)
 
+
+    def test_converter_locate(self):
+        patterns = traject.Patterns()
+        class Obj(object):
+            def __init__(self, v):
+                self.v = v
+        patterns.register(Root, 'a/:v:int', Obj)
+        def args(obj):
+            return {'v': obj.v}
+        patterns.register_inverse(Root, Obj, 'a/:v:int', args)
+
+        root = Root()
+        obj = Obj(3)
+        
+        patterns.locate(root, obj, default)
+        self.assertEquals('3', obj.__name__)
+        self.assertEquals(root, obj.__parent__.__parent__)
+        
     # XXX need a test for trailing slash?
 
     # XXX could already introspect function to see whether we can properly
