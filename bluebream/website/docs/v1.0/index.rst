@@ -1,6 +1,9 @@
 Welcome to BlueBream's documentation!
 =====================================
 
+:Release: |version|
+:Date: |today|
+
 .. toctree::
    :numbered:
    :maxdepth: 2
