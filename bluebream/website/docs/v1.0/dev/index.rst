@@ -11,3 +11,4 @@ which is actually used by the developers.
 
    resources
    decisions
+   writing
