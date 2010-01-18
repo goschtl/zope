@@ -571,6 +571,16 @@ it in the upcoming sections.
 Declaring Interface
 ~~~~~~~~~~~~~~~~~~~
 
+From the overview of introduction chapter, you must be noticed, one
+of the important BlueBream feature: BlueBream has transactional
+object database (:term:`ZODB`).  This is the reason why relational
+database connectivity and ORMs are not discussed yet.  BlueBream
+recommend to use the Python based object database called ZODB for
+storing data.  BlueBream makes it easy to do this.  In this section,
+you will see the basic steps you need to make your objects
+persistent.  Having a well defined schema for all objects (data) is
+good idea.
+
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
 interface.  You can name the main container interface as
@@ -598,8 +608,8 @@ interfaces like this::
           default=u"",
           required=False)
 
-The interface defined is your schema for the object.  There are two
-fields defined in the schema.  The first one is ``name`` and the
+The interface defined here is your schema for the object.  There are
+two fields defined in the schema.  The first one is ``name`` and the
 second one is ``description``.  The schema is used for
 auto-generating web forms.
 
