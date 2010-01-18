@@ -610,11 +610,15 @@ interfaces like this::
 
 The interface defined here is your schema for the object.  There are
 two fields defined in the schema.  The first one is ``name`` and the
-second one is ``description``.  The schema is used for
-auto-generating web forms.
+second one is ``description``.  The schema is also can be used to
+auto-generate web forms.
 
 Implementing Interface
 ~~~~~~~~~~~~~~~~~~~~~~
+
+Schema is kind of blueprint for your objects, schema define the
+contracts for the objects.  Once you have schema ready, you can
+create some concrete classes which implement the schema.
 
 Next, you need to implement this interface.  To implement
 ``IContainer``, it is recommended to inherit from
@@ -636,17 +640,37 @@ implementation in ``src/tc/main/ticketcollector.py``::
       description = u""
 
 To declare a class is implementing a particular interface, you can
-use ``implements`` function.
+use ``implements`` function.  The class also provides defaults values
+for attributes.
 
 Registering components
 ~~~~~~~~~~~~~~~~~~~~~~
 
-::
+Once the interfaces and its implementations are ready.  You can do
+the configuration in ZCML.
+
+Mark the ``ICollector`` as a content component::
 
   <interface
      interface=".interfaces.ICollector"
      type="zope.app.content.interfaces.IContentType"
      />
+
+The ``zope.app.content.interfaces.IContentType`` represents a content
+type.  If an **interface** provides ``IContentType`` interface type,
+then all objects providing the **interface** are considered content
+objects.
+
+To set annotations for collector objects, we need to mark it as
+implementing ``zope.annotation.interfaces.IAttributeAnnotatable``
+marker interface.  Also this configuration declare that ``Collector``
+class implements ``zope.container.interfaces.IContentContainer``.
+These two classes are marker interfaces.  An interface used to
+declare that a particular object belongs to a special type is called
+marker interface.  Marker interface won't be having any attribute or
+method.
+
+::
 
   <class class=".ticketcollector.Collector">
     <implements
@@ -665,10 +689,9 @@ Registering components
        />
   </class>
 
-The ``zope.app.content.interfaces.IContentType`` represents a content
-type.  If an **interface** provides ``IContentType`` interface type,
-then all objects providing the **interface** are considered content
-objects.
+The ``class`` directive is a complext directive, that is there are
+some subdirective below that.  The above ``class`` directive also
+delcared permission setting for ``Collector``.
 
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
