@@ -17,46 +17,46 @@ as :term:`Zope 3`.
 A few of the features which distinguish BlueBream among Python web
 frameworks.
 
-- BlueBream is built implements the :term:`Zope Tool Kit` (ZTK), a 
-  distillation of many years of experience in meeting demanding 
+- BlueBream implements the :term:`Zope Tool Kit` (ZTK), a 
+  distillation of decades of experience in meeting demanding 
   requirements for stable, scalable software.
 
 - BlueBream leverages the power of :term:`Buildout` a build
   system written in Python.
-
-- BlueBream supports :term:`WSGI` and uses :term:`Paste` 
-  (:term:`PasteScript` & :term:`PasteDeploy`).
-
-- BlueBream features the :term:`Zope Component Architecture` (ZCA) which 
-  implements :term:`Separation of concerns` to create highly cohesive reusable
-  components (zope.component_).
-
-- BlueBream has an object publisher (zope.publisher_)
-
-- BlueBream has transactional object database (:term:`ZODB`)
-
-- BlueBream offers :term:`ZCML`, an XML based configuration language 
+  
+- BlueBream uses the :term:`ZODB` transactional object database, providing
+  extremely powerful and easy to use persistence.
+  
+- BlueBream uses :term:`ZCML`, an XML based configuration language 
   for registering components, providing limitless flexibility. If you
   don't need the power of ZCML and the complexity it adds, try :term:`Grok`,
   which adds a layer replacing the declarative configuration of ZCML with 
   conventions and declarations in standard Python.
 
-- BlueBream has flexible security architecture with pluggable
-  security policies (zope.security_)
+- BlueBream features the :term:`Zope Component Architecture` (ZCA) which 
+  implements :term:`Separation of concerns` to create highly cohesive reusable
+  components (zope.component_).
 
-- BlueBream has unit and functional testing frameworks (zope.testing_,
-  zope.testbrowser_),
+- BlueBream supports :term:`WSGI` using :term:`Paste`, 
+  :term:`PasteScript`, and :term:`PasteDeploy`.
+  
 
-- BlueBream has XHTML-compliant templating language
-  (zope.pagetemplate_)
+- BlueBream includes a number of compenents which provide well tested
+  implementation of common requirements. A few are of these are:
+  
+  - zope.publisher_ publishes Python objects on the web, it is geared
+    towards :term:`WSGI` compatibility
 
-- BlueBream has schema engine and automatic form generation machinery
-  (zope.schema_, zope.formlib_)
+  - zope.security_ provides a generic mechanism supporting pluggable 
+    security policies
 
-The main aim of this documentation is to create a free on-line documentation about
-BlueBream.  This documentation will cover how to develop web applications
-using BlueBream components. You suggestions and edits are always
-welcome.
+  - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
+    frameworks 
+
+  - zope.pagetemplate_ is an XHTML-compliant templating language
+
+  - zope.schema_ and zope.formlib_ provide a schema engine and 
+    automatic form generation machinery
 
 .. _zope.component: http://pypi.python.org/pypi/zope.component
 .. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
@@ -66,6 +66,34 @@ welcome.
 .. _zope.pagetemplate: http://pypi.python.org/pypi/zope.pagetemplate
 .. _zope.schema: http://pypi.python.org/pypi/zope.schema
 .. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
+
+Join our community
+------------------
+
+We aim to provide high quality free online documentation for BlueBream.
+If you would like to contribute, the ReStructuredText source for this
+website is available from the zope.org repository::
+
+ svn co svn+ssh://svn.zope.org/repos/main/bluebream/website 
+ 
+Stay in touch with BlueBream:
+
+- Twitter 
+   http://twitter.com/bluebream
+   
+- Blog 
+   http://posterous.com/site/profile/bluebream
+   
+- IRC 
+   #bluebream at freenode.net
+   
+- Google Wave
+   http://wiki.zope.org/bluebream/BlueBreamWave
+   
+- PyPi home 
+   http://pypi.python.org/pypi/bluebream
+
+
 
 .. _intro-history:
 
@@ -112,7 +140,7 @@ Very recently Zope 3 project is renamed to BlueBream.
 .. _intro-organization:
 
 Organization of the documentation
-------------------------
+---------------------------------
 
 This documentation has divided into multiple chapters.  Summary of
 each chapter is given below.
