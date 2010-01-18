@@ -132,12 +132,25 @@ The :ref:`started-getting` chapter narrate the process of creating a
 new web application project using BlueBream.  Also it gives few
 exercises to familiarize the basic concepts in BlueBream.
 
-Tutorial
+Concepts
 ~~~~~~~~
 
-This tutorial chapter explain creating a simple ticket collector
-application.  This will help you to familiarize more concepts in
+This chapter discuss important concepts and technologies used in
 BlueBream.
+
+Tutorial --- Part 1
+~~~~~~~~~~~~~~~~~~~
+
+This is the first of the BlueBream tutorial. This chapter walk
+through creating a simple ticket collector application.  This will
+help you to familiarize more concepts in BlueBream.
+
+Tutorial --- Part 2
+~~~~~~~~~~~~~~~~~~~
+
+This is the first of the BlueBream tutorial. This chapter continue
+the ticket collector application development.  This chapter explain
+forms, schemas in more detail.
 
 FAQ
 ~~~~
@@ -149,6 +162,13 @@ HOWTOs
 ~~~~~~
 
 Small documents focusing on specific topics.
+
+Core Development
+~~~~~~~~~~~~~~~~
+
+These documents are written for core development team.  Always visit
+the latest documentation site for recent version of these documents
+which is actually used by the developers.
 
 Reference
 ~~~~~~~~~
