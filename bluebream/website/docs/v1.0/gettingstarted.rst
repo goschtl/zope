@@ -66,12 +66,13 @@ configuration driven build system created by Jim Fulton.
 
 It is recommended to use a custom built Python for working with
 BlueBream.  You will be required to install a C compiler (gcc) in
-your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
-required to perform installation of ``bluebream`` distribution.
-Later, to build the application using Buildout and to bootstrap the
-buildout itself, you need internet access.  But for deployment, you
-can avoid the internet access using `zc.sourcerelease
-<http://pypi.python.org/pypi/zc.sourcerelease>`_ package.
+your system.  Internet access to `PyPI
+<http://pypi.python.org/pypi>`_ is required to perform installation
+of ``bluebream`` distribution.  Later, to build the application using
+Buildout and to bootstrap the buildout itself, you need internet
+access.  But for deployment, you can avoid the internet access using
+`zc.sourcerelease <http://pypi.python.org/pypi/zc.sourcerelease>`_
+package.
 
 .. _started-installation:
 

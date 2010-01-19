@@ -206,7 +206,7 @@ Buildout configuration
 After bootstrapping the Buildout, you can perform the real building
 of your application.  All the steps you have done so far is not
 required to be repeated.  But the build step will be required to
-repeat whenever you make changed to the buildout configuration.  Now
+repeat whenever you make changes to the buildout configuration.  Now
 you are ready to run the ``bin/buildout`` to build the application.
 Before running the buildout, let's see the content of
 ``buildout.cfg``::
@@ -406,9 +406,9 @@ the eggs.
 Running Buildout
 ~~~~~~~~~~~~~~~~
 
-Now you can the ``bin/buildout`` command.  This will take some time
-to download packages from PyPI.  When you run buildout, it will show
-something like this::
+Now you can run the ``bin/buildout`` command.  This will take some
+time to download packages from PyPI.  When you run buildout, it will
+show something like this::
 
   jack@computer:/projects/ticketcollector$ ./bin/buildout
   Develop: '/projects/ticketcollector/.'
@@ -858,6 +858,10 @@ the usage of ``bluebream`` paster project template to create a new
 project.  Also it walked though the build process.  Then, you have
 created an application container.  Finally, a default view for
 application container is also created.
+
+.. todo:: Show the test cases and how it is running.
+
+.. todo:: Provide an overview of generated ``setup.py``
 
 .. raw:: html
 
