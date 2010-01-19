@@ -47,7 +47,7 @@ Before proceeding, here is an overview of the sections.
 Preparations
 ------------
 
-This documentation assume that you have already installed `Python 2.6
+This document assume that you have already installed `Python 2.6
 <http://www.python.org>`_ and `setuptools
 <http://pypi.python.org/pypi/setuptools>`_.  As an alternative to
 setuptools, you can install `distribute
@@ -55,17 +55,23 @@ setuptools, you can install `distribute
 distribute is installed you will get an ``easy_install`` command
 which you can use to install ``bluebream`` distribution.
 
-You can also install BlueBream inside a Python environment created by
-`virtualenv <http://pypi.python.org/pypi/virtualenv>`_.  Although,
-*virtualenv* is not necessary as you are going to use `Buildout
-<http://www.buildout.org>`_ to create repeatable, isolated working
-environments.  Buildout is a declarative, configuration driven build
-system recommended by BlueBream.
+You can also install BlueBream inside a Python environment created
+using `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
+Although, *virtualenv* may not be required when you are working on
+the application itself.  Because, `Buildout
+<http://www.buildout.org>`_ support will available in the application
+created.  Buildout is the recommended approach to create repeatable,
+isolated working environments.  Buildout is a declarative,
+configuration driven build system created by Jim Fulton.
 
 It is recommended to use a custom built Python for working with
 BlueBream.  You will be required to install a C compiler (gcc) in
 your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
 required to perform installation of ``bluebream`` distribution.
+Later, to build the application using Buildout and to bootstrap the
+buildout itself, you need internet access.  But for deployment, you
+can avoid the internet access using `zc.sourcerelease
+<http://pypi.python.org/pypi/zc.sourcerelease>`_ package.
 
 .. _started-installation:
 
@@ -81,10 +87,11 @@ command will be available.  Then, you can install BlueBream using
   $ easy_install bluebream
 
 As mentioned earlier, Internet access to `PyPI
-<http://pypi.python.org>`_ is required to perform installation of
-``bluebream`` distribution.  If you use any proxy, make sure it
+<http://pypi.python.org/pypi>`_ is required to perform installation
+of ``bluebream`` distribution.  If you use any proxy, make sure it
 works.  The ``easy_install`` will look for the environment variable
-named ``http_proxy`` in GNU/Linux platforms.  You can set it like this::
+named ``http_proxy`` in GNU/Linux platforms.  You can set it like
+this::
 
  $ set http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
 
@@ -97,8 +104,8 @@ install its dependencies.  The dependencies are:
 
 The installation of ``bluebream`` project template package is a one
 time process.  Once the project package is ready, you don't require
-the ``bluebream`` project template package anymore.  The project
-package you are going to create will be self-bootstrappable.
+the ``bluebream`` project template package anymore.  Because, the
+project package you are going to create will be self-bootstrappable.
 
 .. _started-sample-project:
 
