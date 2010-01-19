@@ -58,7 +58,7 @@ the project directory layout for ``ticketcollector``::
   Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
   Enter keywords (Space-separated keywords/tags) ['']:
   Enter author (Author name) ['']: Baiju M
-  Enter author_email (Author email) ['']: baiju@muthukadan.net
+  Enter author_email (Author email) ['']: baiju@example.com
   Enter url (URL of homepage) ['']:
   Enter license_name (License name) ['']: ZPL
   Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
@@ -537,6 +537,88 @@ As you can see in the ``application.zcml``, it includes ``tc.main``.
 By default, if you include a package without mentioning the
 configuration file, it will include ``configure.zcml``.
 
+.. _tut1-package-meta-data:
+
+The package meta-data
+---------------------
+
+.. todo:: Provide an overview of generated ``setup.py``
+
+.. todo:: A better name for this section ?
+
+::
+
+  from setuptools import setup, find_packages
+  
+  
+  setup(name='ticketcollector',
+        version='0.1',
+        description='Ticket Collector',
+        long_description="""\
+  A ticket collector application""",
+        # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+        classifiers=[], 
+        keywords='',
+        author='Baiju M',
+        author_email='baiju@example.com',
+        url='',
+        license='ZPL',
+        package_dir={'': 'src'},
+        packages=find_packages('src'),
+        namespace_packages=['tc',],
+        include_package_data=True,
+        zip_safe=False,
+        install_requires=['setuptools',
+                          'zope.app.twisted',
+                          'zope.securitypolicy',
+                          'zope.component',
+                          'zope.annotation',
+                          'zope.app.dependable',
+                          'zope.app.appsetup',
+                          'zope.app.content',
+                          'zope.publisher',
+                          'zope.app.broken',
+                          'zope.app.component',
+                          'zope.app.generations',
+                          'zope.app.error',
+                          'zope.app.interface',
+                          'zope.app.publisher',
+                          'zope.app.security',
+                          'zope.app.form',
+                          'zope.app.i18n',
+                          'zope.app.locales',
+                          'zope.app.zopeappgenerations',
+                          'zope.app.principalannotation',
+                          'zope.app.basicskin',
+                          'zope.app.rotterdam',
+                          'zope.app.folder',
+                          'zope.app.wsgi',
+                          'zope.formlib',
+                          'zope.i18n',
+                          'zope.app.pagetemplate',
+                          'zope.app.schema',
+                          'zope.app.container',
+                          'zope.app.debug',
+                          'z3c.testsetup',
+                          'zope.app.testing',
+                          'zope.testbrowser',
+                          'zope.login',
+                          'zope.app.zcmlfiles',
+                          ],
+        entry_points = """
+        [paste.app_factory]
+        main = tc.main.startup:application_factory
+  
+        [paste.global_paster_command]
+        shell = tc.main.debug:Shell
+        """,
+        )
+
+Running Tests
+------------- 
+
+.. todo:: Show the test cases and how it is running.
+
 .. _tut1-app-object:
 
 Creating the application object
@@ -858,10 +940,6 @@ the usage of ``bluebream`` paster project template to create a new
 project.  Also it walked though the build process.  Then, you have
 created an application container.  Finally, a default view for
 application container is also created.
-
-.. todo:: Show the test cases and how it is running.
-
-.. todo:: Provide an overview of generated ``setup.py``
 
 .. raw:: html
 
