@@ -12,7 +12,7 @@
 #
 ##############################################################################
 name = 'bobodoctestumentation'
-version = '0.0.0'
+version = '0.2.2'
 
 from setuptools import setup
 
