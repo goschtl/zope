@@ -8,11 +8,20 @@ Getting Started
 Introduction
 ------------
 
-This chapter narrate the process of creating a web application
-project using BlueBream.  Also it gives few exercises to familiarize
-the basic concepts in BlueBream.  It is recommended to try out all
-the commands and exercises given here.  Before proceeding, here is an
-overview of the sections.
+This chapter narrate creating a web application project using
+BlueBream.  If you complete this chapter, you should be able to:
+
+- Install PasteScript based BlueBream project template
+
+- Create a BlueBream application project using the template
+
+- Bootstrap and build the application
+
+- Run test cases and web server to serve the application
+
+- Create Hello World applications
+
+Before proceeding, here is an overview of the sections.
 
 - **Preparations:** -- Prerequisites and preparations you need to
   make to start a web application project using BlueBream.
@@ -31,6 +40,7 @@ overview of the sections.
   and describe the purpose of each directories and files.
 
 - At the end, few hello world examples are also given.
+
 
 .. _started-preparations:
 
