@@ -8,25 +8,24 @@ Getting Started
 Introduction
 ------------
 
-This chapter narrate the process of creating a new web application
+This chapter narrate the process of creating a web application
 project using BlueBream.  Also it gives few exercises to familiarize
-the basic concepts in BlueBream.  It is recommended to try out all the
-commands and exercises given here.  Before proceeding, here is an
+the basic concepts in BlueBream.  It is recommended to try out all
+the commands and exercises given here.  Before proceeding, here is an
 overview of the sections.
 
 - **Preparations:** -- Prerequisites and preparations you need to
-  make to start a new web application project using BlueBream.
+  make to start a web application project using BlueBream.
 
-- **Installation:** -- An overview of installing BlueBream.
+- **Installation:** -- Instructions for installing BlueBream.
 
-- **Creating a sample project:** -- Explain creating an example
-  project using ``bluebream`` project template.
+- **Creating a sample project:** -- Explain creating a sample project
+  using ``bluebream`` project template.
 
-- **Building the application:** -- Show how to build the application
-  using Buildout.
+- **Building the application:** -- Explain how to build the
+  application using Buildout.
 
-- **Basic usage section:** -- Explain the basic usage of BlueBream
-  commands.
+- **Basic usage:** -- Explain the basic usage of BlueBream commands.
 
 - **Package directory structure:** -- Show the directory structure
   and describe the purpose of each directories and files.
