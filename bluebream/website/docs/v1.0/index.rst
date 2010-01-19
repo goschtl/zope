@@ -9,6 +9,7 @@ Welcome to BlueBream's documentation!
    :maxdepth: 2
 
    introduction
+   new/index
    gettingstarted
    concepts
    tutorial1
