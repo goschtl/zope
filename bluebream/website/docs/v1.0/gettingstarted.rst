@@ -10,7 +10,7 @@ Introduction
 
 This chapter narrate the process of creating a new web application
 project using BlueBream.  Also it gives few exercises to familiarize
-the basic concepts in BlueBream.  We suggest you to try out all the
+the basic concepts in BlueBream.  It is recommended to try out all the
 commands and exercises given here.  Before proceeding, here is an
 overview of the sections.
 
@@ -48,7 +48,7 @@ which you can use to install ``bluebream`` distribution.
 
 You can also install BlueBream inside a Python environment created by
 `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.  Although,
-*virtualenv* is not necessary as we are going to use `Buildout
+*virtualenv* is not necessary as you are going to use `Buildout
 <http://www.buildout.org>`_ to create repeatable, isolated working
 environments.  Buildout is a declarative, configuration driven build
 system recommended by BlueBream.
@@ -312,7 +312,7 @@ Example 1: Hello World without page template
 
 To create a web page which displays ``Hello World!``, you need to
 create a page and then register it using ``browser:page`` ZCML
-directive.  In BlueBream, we call it as *Browser Page* or more
+directive.  In BlueBream, it is called as *Browser Page* or more
 generic term, *View* which can be used to refer XMLRPC, REST and
 other views.  By default, the default page which you are getting when
 you access: http://localhost:8080 is a page registerd like this.  You
@@ -358,7 +358,7 @@ So the registration could be like this::
      class=".myhello.HelloView"
      />
 
-Since we are using the ``browser`` XML namespace, we need to
+Since you are using the ``browser`` XML namespace, you need to
 advertise it in the ``configure`` directive::
 
   <configure
@@ -388,7 +388,7 @@ by visiting this URL: http://localhost:8080/@@hello
 Example 2: Hello World with page template
 -----------------------------------------
 
-In this example, we will use a hello world using a page template. 
+In this example, you will create a hello world using a page template.
 
 Create a page template
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -427,7 +427,7 @@ and this page is public.  This kind of XML configuration is very
 common in BlueBream and you will need it for every page or component.
 
 In the above example, instead of using
-``zope.site.interfaces.IRootFolder`` interface, we used ``*``.  So,
+``zope.site.interfaces.IRootFolder`` interface, ``*`` is used.  So,
 this view will be available for all objects.
 
 Restart your application, then visit the following URL:
@@ -461,7 +461,7 @@ content.
 Page template
 ~~~~~~~~~~~~~
 
-We now need a page template to render the page content in html. So
+Now you need a page template to render the page content in html. So
 let's add a ``hello.pt`` in the ``src/mynamespace/main`` directory::
 
   <html>
@@ -497,7 +497,7 @@ This declaration means: there is a web page called ``hello.html``,
 available for any content, managed by the view class ``Hello``,
 rendered by the template ``hello.pt``, and this page is public.
 
-Since we are using the browser XML namespace, we need to declare it
+Since you are using the browser XML namespace, you need to declare it
 in the configure directive.  Modify the first lines of the
 configure.zcml file so it looks like this (You can skip this step if
 the browser namespace is already there from the static hello world
