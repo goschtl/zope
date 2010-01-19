@@ -740,8 +740,27 @@ directive is used for registering pages.  You can give the name as
      class=".views.AddTicketCollector"
      />
 
-Now you can acces the URL: http://localhost:8080/@@add_ticket_collector .
-It should display a form where you can enter details like
+Now you can acces the URL:
+http://localhost:8080/@@add_ticket_collector .  It should display a
+form where you can enter details like ``name`` and ``description``.
+You cann enter the ``name`` as ``mytracker``, after entering data,
+submit the form.
+
+You can see the file size of ``var/filestorage/Data.fs`` is
+increasing as objects are getting added.  The ``Data.fs`` is where
+the data is physically stored.
+
+You can also confirm the object is actually saved into database from
+Python shell.  If you go to Python shell and try to access the root
+object, you can see that it has the object you added:
+
+  jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
+  ...
+  Welcome to the interactive debug prompt.
+  The 'root' variable contains the ZODB root folder.
+  The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
+  >>> list(root.keys())
+  [u'mytracker']
 
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
