@@ -696,10 +696,9 @@ delcared permission setting for ``Collector``.
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now the content component is ready to use.  We need a web page from
-where we can add
-
-::
+Now the content component is ready to use.  You need a web page from
+where we can add the ticket collector.  You can use ``zope.formlib``
+package to create a form::
 
   from zope.publisher.browser import BrowserView
   from zope.container.interfaces import INameChooser
@@ -722,9 +721,13 @@ where we can add
           collector.description = description
           name = namechooser.chooseName(name, collector)
           self.context[name] = collector
-          self.request.response.redirect(name)
+          self.request.response.redirect(".")
 
-::
+The ``createAndAdd`` function will be called when used submit *Add*
+button from web form.
+
+The last last thing you need to do is registering this view in ZCML.
+Add these lines to ``configure.zcml``::
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
