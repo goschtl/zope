@@ -70,30 +70,33 @@ frameworks.
 Join our community
 ------------------
 
-We aim to provide high quality free online documentation for BlueBream.
-If you would like to contribute, the ReStructuredText source for this
-website is available from the zope.org repository::
+We aim to provide high quality free online documentation for
+BlueBream.  If you would like to contribute, the ReStructuredText
+source for this website is available from the zope.org repository
+(Please replace ``USERNAME`` with your zope.org username.)::
 
- svn co svn+ssh://svn.zope.org/repos/main/bluebream/website 
- 
+ svn co svn+ssh://USERNAME@svn.zope.org/repos/main/bluebream/website 
+
+If you don't have svn commit access, please follow the `Becoming a
+contributor
+<http://docs.zope.org/developer/becoming-a-contributor.html>`_
+document.  For any queries, please contact us in mailing list or IRC
+chat, we can help you to get *reference committer*, which is required
+to fill the contributor agreement form.
+
 Stay in touch with BlueBream:
 
-- Twitter 
-   http://twitter.com/bluebream
-   
-- Blog 
-   http://posterous.com/site/profile/bluebream
-   
-- IRC 
-   #bluebream at freenode.net
-   
-- Google Wave
-   http://wiki.zope.org/bluebream/BlueBreamWave
-   
-- PyPi home 
-   http://pypi.python.org/pypi/bluebream
+- Mailing List: https://mail.zope.org/mailman/listinfo/bluebream
 
-
+- Twitter: http://twitter.com/bluebream
+   
+- Blog: http://bluebream.posterous.com
+   
+- IRC Channel: `#bluebream at freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
+   
+- Google Wave: http://wiki.zope.org/bluebream/BlueBreamWave
+   
+- PyPI Home : http://pypi.python.org/pypi/bluebream
 
 .. _intro-history:
 
@@ -208,8 +211,13 @@ A complete reference to BlueBream.
 Thanks
 ------
 
-Thanks to all contributors of BlueBream (old Zope 3) for developing
-it.  Thanks to all those who contributed to this documentation.
+There are many people who contributed to BlueBream through the old
+Zope 3 project from 2001.  In fact, many of the technologies came
+from Zope 2 project which was started in 1998.  Thanks to all
+contributors from 1998 for developing Zope.  It would be difficult to
+list all the names here as we don't have enough details.  However a
+:ref:`contributors-start` page has created to list names of
+new contributors from January 2010.
 
 .. raw:: html
 

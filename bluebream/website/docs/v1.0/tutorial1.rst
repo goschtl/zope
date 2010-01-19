@@ -727,7 +727,11 @@ The ``createAndAdd`` function will be called when used submit *Add*
 button from web form.
 
 The last last thing you need to do is registering this view in ZCML.
-Add these lines to ``configure.zcml``::
+As you have already seen in the previous chapter, ``browser:page``
+directive is used for registering pages.  You can give the name as
+``add_ticket_collector`` and register it for
+``zope.site.interfaces.IRootFolder``.  Add these lines to
+``configure.zcml``::
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
@@ -735,6 +739,9 @@ Add these lines to ``configure.zcml``::
      permission="zope.ManageContent"
      class=".views.AddTicketCollector"
      />
+
+Now you can acces the URL: http://localhost:8080/@@add_ticket_collector .
+It should display a form where you can enter details like
 
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
