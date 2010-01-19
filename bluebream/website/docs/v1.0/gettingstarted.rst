@@ -64,7 +64,7 @@ Installation
 
 If you have installed `setuptools
 <http://pypi.python.org/pypi/setuptools>`_ or `distribute
-<http://pypi.python.org/pypi/setuptools>`_ an ``easy_install``
+<http://pypi.python.org/pypi/distribute>`_ an ``easy_install``
 command will be available.  Then, you can install BlueBream using
 ``easy_install`` command like this::
 
@@ -81,10 +81,14 @@ named ``http_proxy`` in GNU/Linux platforms.  You can set it like this::
 Apart from ``bluebream`` distribution, easy_install will download and
 install its dependencies.  The dependencies are:
 
-- `Sphinx-PyPI-upload <http://pypi.python.org/pypi/Sphinx-PyPI-upload>`_
 - `PasteScript <http://pypi.python.org/pypi/PasteScript>`_
 - `PasteDeploy <http://pypi.python.org/pypi/PasteDeploy>`_
 - `Paste <http://pypi.python.org/pypi/Paste>`_
+
+The installation of ``bluebream`` project template package is a one
+time process.  Once the project package is ready, you don't require
+the ``bluebream`` project template package anymore.  The project
+package you are going to create will be self-bootstrappable.
 
 .. _started-sample-project:
 
