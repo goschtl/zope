@@ -762,6 +762,18 @@ object, you can see that it has the object you added:
   >>> list(root.keys())
   [u'mytracker']
 
+If you try to access the collector from the URL:
+http://localhost:8080/mytracker , you will get ``NotFound`` error
+like this::
+
+  URL: http://localhost:8080/mytracker
+  ...
+  NotFound: Object: <tc.main.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
+
+This error is raised, because there is no view named ``index``
+registered for ``ICollector``.  The next section will show how to
+create a default view for ``ICollector`` interface.
+
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
