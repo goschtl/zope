@@ -100,7 +100,7 @@ Stay in touch with BlueBream:
 
 .. _intro-history:
 
-Brief History
+Brief history
 -------------
 
 .. FIXME: we need to improve the history
