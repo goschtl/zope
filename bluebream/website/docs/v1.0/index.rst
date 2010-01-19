@@ -18,6 +18,7 @@ Welcome to BlueBream's documentation!
    dev/index
    reference/index
    glossary
+   contributors
 
 Indices and tables
 ==================

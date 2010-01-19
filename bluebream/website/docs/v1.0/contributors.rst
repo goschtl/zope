@@ -10,7 +10,10 @@ contributors from 1998 for developing Zope.  It would be difficult to
 list all the names here as we don't have enough details.  So, this is
 a list of new contributors to documentation and bluebream package
 from January, 2010.  This is a list of people who directly committed
-to bluebream documentation and ``bluebream`` package.
+to bluebream documentation and ``bluebream`` package.  But there are
+many others who helped us through IRC, mailing list, wiki etc.
+Thanks to all.  Please update this list, as soon as somebody is
+committed to documentation directly.
 
 - Baiju M (baijum)
 - Kent Tenney (ktenney)
