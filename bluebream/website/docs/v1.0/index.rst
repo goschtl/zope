@@ -13,6 +13,7 @@ Welcome to BlueBream's documentation!
    concepts
    tutorial1
    tutorial2
+   manual/index
    faq
    howto/index
    dev/index
