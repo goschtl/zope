@@ -743,7 +743,7 @@ directive is used for registering pages.  You can give the name as
 Now you can acces the URL:
 http://localhost:8080/@@add_ticket_collector .  It should display a
 form where you can enter details like ``name`` and ``description``.
-You cann enter the ``name`` as ``mytracker``, after entering data,
+You cann enter the ``name`` as ``mycolector``, after entering data,
 submit the form.
 
 You can see the file size of ``var/filestorage/Data.fs`` is
@@ -760,13 +760,13 @@ object, you can see that it has the object you added:
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
   >>> list(root.keys())
-  [u'mytracker']
+  [u'mycolector']
 
 If you try to access the collector from the URL:
-http://localhost:8080/mytracker , you will get ``NotFound`` error
+http://localhost:8080/mycolector , you will get ``NotFound`` error
 like this::
 
-  URL: http://localhost:8080/mytracker
+  URL: http://localhost:8080/mycolector
   ...
   NotFound: Object: <tc.main.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
@@ -777,25 +777,32 @@ create a default view for ``ICollector`` interface.
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-views.py::
+As you have alreay seen in the :ref:`started-getting` chapter, you
+can create a simple view and register it from ZCML.
+
+In the ``src/tc/main/views.py`` add a new view like this::
 
   class TicketCollectorMainView(BrowserView):
 
       def __call__(self):
-          return "Helloo tttt "
+          return "Hello ticket collector!"
 
-configure.zcml::
+Then, in the ``src/tc/main/configure.zcml``::
 
   <browser:page
      for=".interfaces.ICollector"
      name="index"
-     permission="zope.ManageContent"
+     permission="zope.Public"
      class=".views.TicketCollectorMainView"
      />
 
-In the next section, you will see more details about the main page.
-Also we are ging to learn a brief overview of Zope Page Template.
+Now you can visit: http://localhost:8080/mycolector
+It should display a message like this:
 
+  Hello ticket collector!
+
+In the next section, you will see more details about the main page
+for collector.  Also we are ging to learn about Zope Page Template.
 
 .. _tut1-main-page:
 
@@ -805,14 +812,40 @@ Creating the main page
 Browser Page
 ~~~~~~~~~~~~
 
-Zope Page Template
-~~~~~~~~~~~~~~~~~~
+First remove the ``__call__`` method from
+``TicketCollectorMainView``, so that it will look like this::
 
-Implementing view
-~~~~~~~~~~~~~~~~~
+  class TicketCollectorMainView(BrowserView):
+      pass
 
-Registering view
-~~~~~~~~~~~~~~~~
+Then add a ``template`` attribute with value as ``collectormain.pt``.
+This tells to use the Zope Page Teplate to render as the page.  The
+ZCML registration will look like this::
+
+  <browser:page
+     for=".interfaces.ICollector"
+     name="index"
+     permission="zope.Public"
+     class=".views.TicketCollectorMainView"
+     template="collectormain.pt"
+     />
+
+You can create ``src/tc/main/configure.zcml`` with the following
+content::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector</title>
+  </head>
+  <body>
+
+  Welcome to ticket collector
+
+  </body>
+  </html>
+
+Now you can visit: http://localhost:8080/mycolector .  It should
+display "Welcome to ticket collector" message.
 
 .. _tut1-conclusion:
 
