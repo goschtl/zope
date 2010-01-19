@@ -171,15 +171,23 @@ good name for your project.
 Building the application
 ------------------------
 
-The generated package include a buildout configuration file and
-``bootstrap.py``.  First you need to bootstrap the buildout itself::
+As mentioned earlier, the generated package is bundled with Buildout
+configuration and the Buildout bootstrap script (``bootstrap.py``).
+First you need to bootstrap the buildout itself::
 
   $ cd sampleproject
   $ python2.6 bootstrap.py
 
-After bootstrap, run the buildout::
+The bootstrap script will install ``zc.buildout`` and ``setuptools``
+package.  Also, it will create the basic directory structure.  Next
+step is building the application.  To build the application, run the
+buildout::
 
   $ ./bin/buildout
+
+The buildout script will download all dependencies and setup the
+environment to run your application.  The next section will show the
+basic usage.
 
 .. _started-basic-usage:
 
