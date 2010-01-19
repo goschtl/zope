@@ -183,6 +183,11 @@ This is the first of the BlueBream tutorial. This chapter continue
 the ticket collector application development.  This chapter explain
 forms, schemas in more detail.
 
+Manual
+~~~~~~
+
+This is a comprehensive guide to BlueBream.
+
 FAQ
 ~~~~
 
