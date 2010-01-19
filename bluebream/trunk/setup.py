@@ -47,7 +47,6 @@ setup(
     package_dir={"": "src"},
     zip_safe=False,
     include_package_data=True,
-    setup_requires=["Sphinx-PyPI-upload"],
     install_requires=["PasteScript>=1.7.3"],
     extras_require={"test": ["zc.buildout"]},
     entry_points={

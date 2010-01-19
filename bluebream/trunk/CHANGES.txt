@@ -4,6 +4,9 @@ Changelog
 0.2.0 (unreleased)
 ------------------
 
+- Removed `Sphinx-PyPI-upload` -- no more used as the
+  website is moved to http://bluebream.zope.org
+
 0.1.9 (2010-01-13)
 ------------------
 
