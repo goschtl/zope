@@ -205,6 +205,7 @@ class ComboBox(Field):
         if self.widget.prompt:
             emptyText = [self.widget.promptMessage]
         config.update(dict(
+            allowBlank = not self.widget.required,
             hiddenName = config['name']+':list',
             triggerAction = 'all',
             editable = True,
