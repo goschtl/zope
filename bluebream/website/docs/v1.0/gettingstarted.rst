@@ -42,23 +42,21 @@ This documentation assume that you have already installed `Python 2.6
 <http://www.python.org>`_ and `setuptools
 <http://pypi.python.org/pypi/setuptools>`_.  As an alternative to
 setuptools, you can install `distribute
-<http://pypi.python.org/pypi/setuptools>`_.  If setuptools or
+<http://pypi.python.org/pypi/distribute>`_.  If setuptools or
 distribute is installed you will get an ``easy_install`` command
 which you can use to install ``bluebream`` distribution.
 
-You can also install BlueBream inside an isolated Python environment
-created by `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
-Although, *virtualenv* is not necessary as we are going to use
-`Buildout <http://www.buildout.org>`_ for repeatable, isolated
-working environment.  Buildout is a declarative, configuration driven
-build system recommended by BlueBream.
+You can also install BlueBream inside a Python environment created by
+`virtualenv <http://pypi.python.org/pypi/virtualenv>`_.  Although,
+*virtualenv* is not necessary as we are going to use `Buildout
+<http://www.buildout.org>`_ to create repeatable, isolated working
+environments.  Buildout is a declarative, configuration driven build
+system recommended by BlueBream.
 
 It is recommended to use a custom built Python for working with
 BlueBream.  You will be required to install a C compiler (gcc) in
 your system.  Internet access to `PyPI <http://pypi.python.org>`_ is
 required to perform installation of ``bluebream`` distribution.
-Internet is required for bootstrapping the Buildout and building the
-application.
 
 .. _started-installation:
 
