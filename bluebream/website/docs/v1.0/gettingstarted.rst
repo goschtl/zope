@@ -112,8 +112,8 @@ project package you are going to create will be self-bootstrappable.
 Creating a sample project
 -------------------------
 
-The ``bluebream`` package provides a template based project creation
-based on `PasteScript template
+The ``bluebream`` distribution provides a template based project
+creation based on `PasteScript template
 <http://pythonpaste.org/script/developer.html>`_.  Once BlueBream is
 installed, run ``paster`` command to create the project directory
 structure.  The ``create`` sub-command provided by ``paster`` will
@@ -137,7 +137,9 @@ The name of namespace package also can be given from the command line::
 
   $ paster create -t bluebream sampleproject namespace_package=mycompany
 
-The other variables which can be given from command line are:
+If you provide an option from command line, it will be prompted by
+the wizard.  The other variables are give below, you may be give the
+values from command line, if required:
 
 - ``interpreter`` -- Name of custom Python interpreter
 
