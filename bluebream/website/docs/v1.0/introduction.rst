@@ -17,8 +17,8 @@ as :term:`Zope 3`.
 A few of the features which distinguish BlueBream among Python web
 frameworks.
 
-- BlueBream implements the :term:`Zope Tool Kit` (ZTK), a 
-  distillation of decades of experience in meeting demanding 
+- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), a
+  distillation of decades of experience in meeting demanding
   requirements for stable, scalable software.
 
 - BlueBream leverages the power of :term:`Buildout` a build

@@ -119,8 +119,6 @@ Technologies
 ZODB
 ~~~~
 
-.. todo:: Should we 
-
 The Zope Object Database provides an object-oriented database for
 Python that provides a high-degree of transparency.  Applications can
 take advantage of object database features with few, if any, changes

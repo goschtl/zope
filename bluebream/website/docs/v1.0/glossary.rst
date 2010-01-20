@@ -105,7 +105,7 @@ Glossary
 .. _Zope Tool Kit: http://docs.zope.org/zopetoolkit
 .. _started in 2001: https://mail.zope.org/pipermail/zope3-dev/2001-December/000000.html
 .. _started in 2010: https://mail.zope.org/pipermail/zope-dev/2010-January/039072.html
-.. _ZPL: http://www.zope.org/Resources/ZPL
+.. _ZPL: http://foundation.zope.org/agreements/ZPL_2.1.pdf
 .. _Web Server Gateway Interface: http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
 .. _Paste: http://pypi.python.org/pypi/Paste/
 .. _PasteDeploy: http://pypi.python.org/pypi/PasteDeploy/
