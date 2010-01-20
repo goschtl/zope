@@ -617,7 +617,35 @@ The package meta-data
 Running Tests
 ------------- 
 
-.. todo:: Show the test cases and how it is running.
+BlueBream use `zope.testing
+<http://pypi.python.org/pypi/zope.testing>` as the main framework for
+automated testing.  Along with **zope.testing**, you can use Python's
+``unittest`` and ``doctest`` modules.  Also there is a functional
+testing module called `zope.testbrowser
+<http://pypi.python.org/pypi/zope.testbrowser>`_ . To setup the test
+cases, layers etc. BlueBream use `z3c.testsetup
+<http://pypi.python.org/pypi/z3c.testsetup>` pacakge.
+
+BlueBream use the Buildout recipe called `zc.recipe.testrunner
+<http://pypi.python.org/pypi/zc.recipe.testrunner>` to generate test
+runner script.
+
+If you look the buildout configuration, you can see the test runner
+part::
+
+  [test]
+  recipe = zc.recipe.testrunner
+  eggs = ticketcollector
+
+The testrunner recipe creates a test runner using ``zope.testing``
+module.  The only mandatory option is ``eggs`` where you can specify
+the eggs.
+
+To run all test cases, use the ``bin/test`` command::
+
+  jack@computer:/projects/ticketcollector$ ./bin/test
+
+This command will find all the test cases and run it.
 
 .. _tut1-app-object:
 
