@@ -15,27 +15,26 @@ install_requires = [
     'grokcore.component >= 2.0',
     'grokcore.security >= 1.3',
     'martian >= 0.12',
-    'zope.app.pagetemplate',
-    'zope.app.publisher >= 3.5',
+    'zope.browserresource >= 3.9.0',
     'zope.component',
     'zope.interface',
     'zope.pagetemplate',
+    'zope.ptresource >= 3.9.0',
     'zope.publisher',
+    'zope.schema',
     'zope.security',
     'zope.traversing',
     ]
 
 tests_require = [
     'zope.app.authentication',
-    'zope.app.basicskin',
-    'zope.app.container',
-    'zope.app.rotterdam',
-    'zope.app.testing',
     'zope.app.zcmlfiles',
-    'zope.configuration',
+    'zope.container',
     'zope.securitypolicy',
+    'zope.site',
     'zope.testbrowser',
     'zope.testing',
+    'zope.login',
     ]
 
 setup(

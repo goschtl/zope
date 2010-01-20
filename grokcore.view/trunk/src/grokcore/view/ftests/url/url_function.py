@@ -5,7 +5,7 @@ absolute URL of objects.
 
   >>> from grokcore.view import url
 
-  >>> from zope.app.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> herd = Folder()
   >>> getRootFolder()['herd'] = herd
   >>> manfred = Mammoth()
@@ -99,7 +99,7 @@ keywords by using find()
 """
 import grokcore.view as grok
 from grokcore.view import url
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 class Mammoth(Contained):
     pass

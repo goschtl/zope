@@ -4,6 +4,9 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Back-ported the changes of the 1.13 branch related to the directory
+  resource registration, using the latest ztk packages.
+
 - Factor out generally useful methods and properties for view-ish
   components into components.ViewSupport mixin.
 

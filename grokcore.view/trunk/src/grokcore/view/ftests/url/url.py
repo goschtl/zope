@@ -2,7 +2,7 @@
 """
 Views have a method that can be used to construct URLs:
 
-  >>> from zope.app.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> herd = Folder()
   >>> getRootFolder()['herd'] = herd
   >>> manfred = Mammoth()
@@ -173,7 +173,7 @@ Zope magic!! Here we test casting parameters in the CGI query string:
 
 """
 import grokcore.view as grok
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 class Mammoth(Contained):
     pass
