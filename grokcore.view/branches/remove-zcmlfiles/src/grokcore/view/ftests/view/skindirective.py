@@ -12,10 +12,6 @@
   </body>
   </html>
 
-  >>> browser.open("http://localhost/++skin++Rotterdam/manfred/@@moredrawings")
-  >>> print browser.contents
-  Pretty
-
   >>> browser.open("http://localhost/++skin++myskin/manfred/@@evenmoredrawings")
   >>> print browser.contents
   Awesome
@@ -23,7 +19,7 @@
 """
 import grokcore.view as grok
 from zope.app.basicskin import IBasicSkin
-from zope.app.rotterdam import rotterdam
+# from zope.app.rotterdam import rotterdam
 
 grok.layer(IBasicSkin)
 
@@ -47,11 +43,11 @@ cavedrawings = grok.PageTemplate("""\
 </html>
 """)
 
-class MoreDrawings(grok.View):
-    grok.layer(rotterdam)
+# class MoreDrawings(grok.View):
+#     grok.layer(rotterdam)
 
-    def render(self):
-        return "Pretty"
+#     def render(self):
+#         return "Pretty"
 
 
 class EvenMoreDrawings(grok.View):
