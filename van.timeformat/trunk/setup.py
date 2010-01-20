@@ -25,7 +25,7 @@ long_description = (
     )
 
 setup(name="van.timeformat",
-      version='1.1.0',
+      version='1.1.1dev',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.timeformat',
       author_email='zope-dev@zope.org',
