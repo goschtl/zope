@@ -17,6 +17,7 @@ tests_require = [
     'zope.configuration',
     'zope.contentprovider',
     'zope.securitypolicy',
+    'zope.testbrowser',
     'zope.testing',
     ]
 
