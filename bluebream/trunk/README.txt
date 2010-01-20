@@ -8,11 +8,12 @@ Introduction
 ------------
 
 `BlueBream <http://bluebream.zope.org>`_ is a web framework written
-in Python programming language.  BlueBream is the new name for "Zope
-3".  This package makes it easy to setup a new project using
-BlueBream.  It generates a project directory from a template called
-``bluebream``.  The template is created using `PasteScript
-<http://pythonpaste.org/script/developer.html>`_ by Ian Bicking.
+in Python programming language.  BlueBream is free/open source
+software, owned by the `Zope Foundation
+<http://foundation.zope.org>`_, licensed under the `Zope Public
+License <http://foundation.zope.org/agreements/ZPL_2.1.pdf>`_ (BSD
+like, GPL compatible license).  BlueBream was previously known as
+**Zope 3**.
 
 .. raw:: html
 
@@ -39,16 +40,65 @@ BlueBream.  It generates a project directory from a template called
 Features
 --------
 
-1. Generated project package includes ZTK with few additional
-   packages which was part of "Zope 3".
+A few of the features which distinguish BlueBream among Python web
+frameworks.
 
-2. Runnable Buildout
+- BlueBream is built on top of the `Zope Tool Kit
+  <http://docs.zope.org/zopetoolkit>`_ (ZTK), a distillation of
+  decades of experience in meeting demanding requirements for stable,
+  scalable software.
 
-3. Functional testing enabled by default using z3c.testsetup
+- BlueBream leverages the power of `Buildout
+  <http://www.buildout.org>`_ a build system written in Python.
+  
+- BlueBream uses the `ZODB <http://pypi.python.org/pypi/ZODB3>`_
+  transactional object database, providing extremely powerful and
+  easy to use persistence.
+  
+- BlueBream uses `ZCML
+  <http://www.muthukadan.net/docs/zca.html#zcml>`_, an XML based
+  configuration language for registering components, providing
+  limitless flexibility. If you don't need the power of ZCML and the
+  complexity it adds, try `Grok <http://grok.zope.org>`_, which adds
+  a layer replacing the declarative configuration of ZCML with
+  conventions and declarations in standard Python.
 
-4. Use PasteDeploy to support WSGI based deployment.
+- BlueBream features the `Zope Component Architecture
+  <http://muthukadan.net/docs/zca.html>` (ZCA) which implements
+  *Separation of concerns* to create highly cohesive reusable
+  components (zope.component).
 
-5. Create a namespace package by default.
+- BlueBream supports `WSGI <http://www.wsgi.org/wsgi>`_ using `Paste
+  <http://pythonpaste.org>`_, `PasteScript
+  <http://pythonpaste.org/script>`, and `PasteDeploy
+  <http://pythonpaste.org/deploy>`.
+  
+
+- BlueBream includes a number of compenents which provide well tested
+  implementation of common requirements. A few are of these are:
+  
+  - zope.publisher_ publishes Python objects on the web, it is geared
+    towards `WSGI <http://www.wsgi.org/wsgi>` compatibility
+
+  - zope.security_ provides a generic mechanism supporting pluggable 
+    security policies
+
+  - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
+    frameworks 
+
+  - zope.pagetemplate_ is an XHTML-compliant templating language
+
+  - zope.schema_ and zope.formlib_ provide a schema engine and 
+    automatic form generation machinery
+
+.. _zope.component: http://pypi.python.org/pypi/zope.component
+.. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
+.. _zope.security: http://pypi.python.org/pypi/zope.security
+.. _zope.testing: http://pypi.python.org/pypi/zope.testing
+.. _zope.testbrowser: http://pypi.python.org/pypi/zope.testbrowser
+.. _zope.pagetemplate: http://pypi.python.org/pypi/zope.pagetemplate
+.. _zope.schema: http://pypi.python.org/pypi/zope.schema
+.. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
 
 Installation
 ------------
