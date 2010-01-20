@@ -619,6 +619,13 @@ Your ticketcollector package's setup.py will look like this::
         """,
         )
 
+Most of the details in the ``setup.py`` is what you given while
+creating the project from template.  In the ``install_requires``
+keyword argument, you can list all dependencies for the package.
+There are two entry points, the first one is used by PasteDeploy to
+find the WSGI application factory and the second one register one
+sub-command for ``paster`` command.
+
 Running Tests
 -------------
 
