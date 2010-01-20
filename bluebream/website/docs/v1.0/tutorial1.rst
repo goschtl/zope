@@ -3,6 +3,12 @@
 Tutorial --- Part 1
 ===================
 
+.. warning::
+
+   This documentation is under construction.  See the `Documentation
+   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
+   in wiki for the current status and timeline.
+
 .. _tut1-introduction:
 
 Introduction
@@ -542,22 +548,21 @@ configuration file, it will include ``configure.zcml``.
 The package meta-data
 ---------------------
 
-.. todo:: Provide an overview of generated ``setup.py``
+BlueBream use :term:`Setuptools` to distribute the application
+package.  However, you could easily replace it with
+:term:`Distribute`.
 
-.. todo:: A better name for this section ?
-
-::
+Your ticketcollector package's setup.py will look like this::
 
   from setuptools import setup, find_packages
-  
-  
+
   setup(name='ticketcollector',
         version='0.1',
         description='Ticket Collector',
         long_description="""\
   A ticket collector application""",
         # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-        classifiers=[], 
+        classifiers=[],
         keywords='',
         author='Baiju M',
         author_email='baiju@example.com',
@@ -608,14 +613,14 @@ The package meta-data
         entry_points = """
         [paste.app_factory]
         main = tc.main.startup:application_factory
-  
+
         [paste.global_paster_command]
         shell = tc.main.debug:Shell
         """,
         )
 
 Running Tests
-------------- 
+-------------
 
 BlueBream use `zope.testing
 <http://pypi.python.org/pypi/zope.testing>` as the main framework for
