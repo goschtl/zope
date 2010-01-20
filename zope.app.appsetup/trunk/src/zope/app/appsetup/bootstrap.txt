@@ -14,7 +14,7 @@ object.  It subscribes to DatabaseOpened events:
     >>> db = util.DB()
     >>> bootstrap.bootStrapSubscriber(zope.processlifetime.DatabaseOpened(db))
 
-The subscriber makes ure that there is a root folder:
+The subscriber makes sure that there is a root folder:
 
     >>> from zope.app.publication.zopepublication import ZopePublication
     >>> conn = db.open()
