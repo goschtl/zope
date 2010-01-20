@@ -73,7 +73,6 @@ frameworks.
   <http://pythonpaste.org/script>`, and `PasteDeploy
   <http://pythonpaste.org/deploy>`.
   
-
 - BlueBream includes a number of compenents which provide well tested
   implementation of common requirements. A few are of these are:
   
@@ -103,14 +102,16 @@ frameworks.
 Installation
 ------------
 
-To create a new project, first you need to install BlueBream::
+If you have installed `setuptools
+<http://pypi.python.org/pypi/setuptools>`_ or `distribute
+<http://pypi.python.org/pypi/distribute>`_ an ``easy_install``
+command will be available.  Then, you can install BlueBream using
+``easy_install`` command like this::
 
   $ easy_install bluebream
 
-.. note::
-
-  Access to `PyPI <http://pypi.python.org>`_ is required to perform
-  the installation and bootstrapping process.
+Internet access to `PyPI <http://pypi.python.org/pypi>`_ is required
+to perform installation of BlueBream.
 
 Once BlueBream is installed, run ``paster`` command to create the
 project directory.  The ``create`` sub-command provided by ``paster``
@@ -133,6 +134,8 @@ The name of namespace package also can be given from the command line::
 
 The other variables which can be given from command line are:
 
+- ``interpreter`` -- Name of custom Python interpreter
+
 - version: Version (like 0.1)
 
 - description: One-line description of the package
@@ -152,19 +155,29 @@ The other variables which can be given from command line are:
 - zip_safe: ``True``, if the package can be distributed as a .zip
   file othewise ``False``.
 
+If you are in a hurry, you can simply press *Enter/Return* key and
+change the values later.  But it would be a good idea, if you provide
+good name for your project.
 
 Usage
 -----
 
-The generated package include Buildout's bootstrap.py script and
-configuration file.  First you need to bootstrap the buildout::
+The generated package is bundled with Buildout configuration and the
+Buildout bootstrap script (``bootstrap.py``).  First you need to
+bootstrap the buildout itself::
 
   $ cd sampleproject
   $ python2.6 bootstrap.py
 
-After bootstrap, run the buildout::
+The bootstrap script will install ``zc.buildout`` and ``setuptools``
+package.  Also, it will create the basic directory structure.  Next
+step is building the application.  To build the application, run the
+buildout::
 
   $ ./bin/buidout
+
+The buildout script will download all dependencies and setup the
+environment to run your application.
 
 To run test cases::
 
@@ -178,8 +191,7 @@ To run the server::
 
   $ ./bin/paster serve debug.ini
 
-There is a view named ``index`` registered by default for root
-folder. which can be accessed here: http://localhost:8080/@@index
+Now you can access the main page from: http://localhost:8080
 
 You can continue reading about BlueBream from the `documentation site
 <http://bluebream.zope.org>`_.
