@@ -87,6 +87,17 @@ Glossary
   ZCML
    The `Zope Configuration Markup Language`_
    
+  Jim Fulton
+   `James Fulton`_ - Chief Technology Officer, Zope Corp, AKA the 
+   *Zope Pope*, J1m in IRC. He's the man.
+   
+  Bobo
+   Jim Fulton's original design of object oriented internet
+   publishing technology, implemented in Python.
+   
+  CGI
+   `Common Gateway Interface`_
+   
   Grok
    Grok_ is a web application framework for Python developers. 
    It is aimed at both beginners and very experienced web developers.
@@ -115,4 +126,5 @@ Glossary
 .. \_Zope Configuration Markup Language: http://worldcookery.com/files/ploneconf05-five/step2.html
 .. _Zope Configuration Markup Language: http://www.muthukadan.net/docs/zca.html#zcml
 .. _Grok: http://grok.zope.org/
+.. _James Fulton: http://www.zope.com/about_us/management/james_fulton.html
 

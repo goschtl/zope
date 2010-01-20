@@ -12,7 +12,7 @@ Introduction
 .. _intro-overview:
 
 Overview
---------
+++++++++
 
 :term:`BlueBream` is a web framework written in the Python programming
 language.  BlueBream is free/open source software, owned by the
@@ -24,7 +24,7 @@ A few of the features which distinguish BlueBream among Python web
 frameworks.
 
 - BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), a
-  distillation of decades of experience in meeting demanding
+  distillation of many years of experience in meeting demanding
   requirements for stable, scalable software.
 
 - BlueBream leverages the power of :term:`Buildout` a build
@@ -47,7 +47,7 @@ frameworks.
   :term:`PasteScript`, and :term:`PasteDeploy`.
   
 
-- BlueBream includes a number of compenents which provide well tested
+- BlueBream includes a number of components which provide well tested
   implementation of common requirements. A few are of these are:
   
   - zope.publisher_ publishes Python objects on the web, it is geared
@@ -74,7 +74,7 @@ frameworks.
 .. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
 
 Join our community
-------------------
+++++++++++++++++++
 
 We aim to provide high quality free online documentation for
 BlueBream.  If you would like to contribute, the ReStructuredText
@@ -107,9 +107,20 @@ Stay in touch with BlueBream:
 .. _intro-history:
 
 Brief history
--------------
++++++++++++++
 
 .. FIXME: we need to improve the history
+
+.. committing as a comment until more complete
+
+	Our story begins in 1996, :term:`Jim Fulton` was Technical Director
+	at Digital Creations. At the IPC (International Python Conference)
+	that year, Jim gave a presentation on :term:`CGI`: 
+	`Python and Internet Programming`_. Jim, considering CGI less than elegant,
+	envisioned a better way to program for the internet in Python. According
+	to legend, Jim learned CGI on the plane to the conference, and designed
+	:term:`Bobo` on the plane ride back home.
+
 
 The beginning of Zope's story goes something like this, in 1996, Jim
 Fulton (CTO of Zope Corporation) was drafted to teach a class on
@@ -146,16 +157,17 @@ also widely used.
 
 Very recently Zope 3 project is renamed to BlueBream.
 
+.. _Python and Internet Programming: http://www.python.org/workshops/1996-06/agenda.html
 .. _intro-organization:
 
 Organization of the documentation
----------------------------------
++++++++++++++++++++++++++++++++++
 
 This documentation has divided into multiple chapters.  Summary of
 each chapter is given below.
 
 Introduction
-~~~~~~~~~~~~
+************
 
 This chapter introduce BlueBream with an :ref:`intro-overview` and
 :ref:`intro-history`.  Then walks through the
@@ -163,64 +175,64 @@ This chapter introduce BlueBream with an :ref:`intro-overview` and
 section.
 
 Getting Started
-~~~~~~~~~~~~~~~
+***************
 
 The :ref:`started-getting` chapter narrate the process of creating a
 new web application project using BlueBream.  Also it gives few
 exercises to familiarize the basic concepts in BlueBream.
 
 Concepts
-~~~~~~~~
+********
 
 This chapter discuss important concepts and technologies used in
 BlueBream.
 
 Tutorial --- Part 1
-~~~~~~~~~~~~~~~~~~~
+*******************
 
 This is the first of the BlueBream tutorial. This chapter walk
 through creating a simple ticket collector application.  This will
 help you to familiarize more concepts in BlueBream.
 
 Tutorial --- Part 2
-~~~~~~~~~~~~~~~~~~~
+*******************
 
 This is the first of the BlueBream tutorial. This chapter continue
 the ticket collector application development.  This chapter explain
 forms, schemas in more detail.
 
 Manual
-~~~~~~
+******
 
 This is a comprehensive guide to BlueBream.
 
 FAQ
-~~~~
+****
 
 These are FAQs collected from mailing lists, blogs and other on-line
 resources.
 
 HOWTOs
-~~~~~~
+******
 
 Small documents focusing on specific topics.
 
 Core Development
-~~~~~~~~~~~~~~~~
+****************
 
 These documents are written for core development team.  Always visit
 the latest documentation site for recent version of these documents
 which is actually used by the developers.
 
 Reference
-~~~~~~~~~
+*********
 
 A complete reference to BlueBream.
 
 .. _intro-thanks:
 
 Thanks
-------
+++++++
 
 There are many people who contributed to BlueBream through the old
 Zope 3 project from 2001.  In fact, many of the technologies came
