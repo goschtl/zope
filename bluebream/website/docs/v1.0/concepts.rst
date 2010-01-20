@@ -25,6 +25,25 @@ Some of the motivations for using interfaces are:
 
 - Document the API
 
+Zope Component Architecture
+---------------------------
+
+The main idea in the Zope Component Architecture is the use of
+components, rather than multiple-inheritence for managing complexity.
+
+Zope Component Architecture is about how to create reusable
+components, but not reusable components itself.
+
+A component is a reusable object with introspectable interfaces.
+Also components are cohesive and decoupled objects.  A component
+provides an interface implemented in a class.  It doesn't matter how
+a component is implemented, the important part is that it complies
+with its interface contracts.  An interface is an object that
+describes how you work with a particular component.  Using Zope
+component architecture we can spread the complexity of systems over
+multiple cooperating components.  Zope component architecture help us
+to create two basic kinds of components, adapters and utilities.
+
 Event
 -----
 
@@ -35,6 +54,8 @@ points.
 Adpater
 -------
 
+Adapter takes the Interface of an existing component and adapts it to
+provide another Interface.
 
 Utility
 -------
