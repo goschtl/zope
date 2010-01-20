@@ -25,9 +25,10 @@ long_description = (
     )
 
 setup(name="van.timeformat",
-      version='1.0.1dev',
+      version='1.1.0',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.timeformat',
+      author_email='zope-dev@zope.org',
       packages=find_packages(),
       author="Vanguardistas LLC",
       description="Convienience functions for formatting dates/times using zope.i18n and TAL",

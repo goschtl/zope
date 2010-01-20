@@ -35,6 +35,11 @@ The 'iso' format also triggers this:
     >>> print timefmt(mydatetime, format='iso')
     1975-12-17T05:24:36
 
+If None is used as an input date, timefmt will return None:
+    
+    >>> timefmt(None) is None
+    True
+
 rfc2822
 +++++++
 
@@ -106,6 +111,10 @@ Localized:
     >>> print ltimefmt(mydate, german, category="date", length="long")
     17. Dezember 1975
 
+If None is used as an input date, ltimefmt will return None:
+    
+    >>> ltimefmt(None, us) is None
+    True
 
 Localized formatting examples
 +++++++++++++++++++++++++++++
@@ -139,3 +148,4 @@ Long Datetimes:
 
     >>> print ltimefmt(mydatetime, us, category="dateTime", length="long")
     December 17, 1975 5:24:36 AM +000
+

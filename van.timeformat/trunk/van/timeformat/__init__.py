@@ -17,6 +17,8 @@ from zope.component import getUtility
 from van.timeformat.interfaces import ITimeFormat
 
 def timefmt(obj, format='iso'):
+    if obj is None:
+        return None
     assert isinstance(obj, date), "format only accepts date or datetime objects"
     if format == 'iso':
         s = obj.isoformat()
@@ -27,6 +29,8 @@ def timefmt(obj, format='iso'):
     return unicode(s)
 
 def ltimefmt(obj, locale, category=None, length=None):
+    if obj is None:
+        return None
     if category is None:
         if isinstance(obj, datetime):
             category = 'dateTime'
