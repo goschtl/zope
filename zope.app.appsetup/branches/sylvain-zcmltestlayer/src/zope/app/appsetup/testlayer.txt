@@ -53,7 +53,7 @@ We define a suite with our test:
 And run that suite:
 
   >>> from zope.testing.testrunner.runner import Runner
-  >>> runner = Runner(found_suites=[suite])
+  >>> runner = Runner(args=[], found_suites=[suite])
   >>> succeeded = runner.run()
   Running zope.app.appsetup.testpackage.ZODBLayer tests:
     Set up zope.app.appsetup.testpackage.ZODBLayer in ... seconds.
