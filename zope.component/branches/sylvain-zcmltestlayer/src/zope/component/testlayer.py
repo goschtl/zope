@@ -79,7 +79,7 @@ class ZCMLLayerBase(LayerBase):
         xmlconfig.registerCommonDirectives(context)
         for feature in self.features:
             context.provideFeature(feature)
-        self._load_zcml(context)
+        self.context = self._load_zcml(context)
 
     def tearDown(self):
         cleanUp()
@@ -95,13 +95,13 @@ class ZCMLStringLayer(ZCMLLayerBase):
     based on another ZCMLLayer's ZCML, just use a ZCML include
     statement in your own ZCML to load it.
     """
-    def __init__(self, package, name=None, zcml_string=None,
-                 features=None):
+    def __init__(self, package, zcml_string=None,
+                 name=None, features=None):
         super(ZCMLStringLayer, self).__init__(package, name, features)
         self.zcml_string = zcml_string
 
     def _load_zcml(self, context):
-        xmlconfig.string(self.zcml_string, context=context, execute=True)
+        return xmlconfig.string(self.zcml_string, context=context, execute=True)
 
 class ZCMLFileLayer(ZCMLLayerBase):
     """This layer can be used to run tests with a ZCML file loaded.
@@ -111,11 +111,11 @@ class ZCMLFileLayer(ZCMLLayerBase):
     based on another ZCMLLayer's ZCML, just use a ZCML include
     statement in your own ZCML to load it.
     """
-    def __init__(self, package, name=None, zcml_file='ftesting.zcml',
-                 features=None):
+    def __init__(self, package, zcml_file='ftesting.zcml',
+                 name=None, features=None):
         super(ZCMLFileLayer, self).__init__(package, name, features)
         self.zcml_file = os.path.join(os.path.dirname(package.__file__),
                                       zcml_file)
 
     def _load_zcml(self, context):
-        xmlconfig.file(self.zcml_file, context=context, execute=True)
+        return xmlconfig.file(self.zcml_file, context=context, execute=True)

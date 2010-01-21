@@ -13,7 +13,7 @@ LayerBase
 ---------
 
 We check whether our LayerBase can be used to create layers of our
-own. We do this simply by subclassing::
+own. We do this simply by subclassing:
 
   >>> from zope.component.testlayer import LayerBase
   >>> class OurLayer(LayerBase):
@@ -41,7 +41,7 @@ layer is defined in::
   >>> import zope.component
   >>> layer = OurLayer(zope.component)
 
-Now we run some tests with this layer::
+Now we run some tests with this layer:
 
   >>> import unittest
   >>> class TestCase(unittest.TestCase):
@@ -68,3 +68,32 @@ Now we run some tests with this layer::
 ZCMLLayer
 ---------
 
+We now want a layer that loads up some ZCML from a file. The default
+is ``ftesting.zcml``, but here we'll load a test ``testlayer.zcml``.
+
+  >>> from zope.component.testlayer import ZCMLFileLayer
+  >>> zcml_file_layer = ZCMLFileLayer(
+  ...     zope.component.testfiles,
+  ...     'testlayer.zcml')
+
+  >>> class TestCase(unittest.TestCase):
+  ...    layer = zcml_file_layer
+  ...    
+  ...    def testFoo(self):
+  ...        # we should now have the adapter registered
+  ...        from zope import component
+  ...        from zope.component.testfiles import components
+  ...        self.assert_(isinstance(
+  ...            components.IApp(components.comp), components.Comp))
+
+Since the ZCML sets up an adapter, we expect the tests to pass::
+
+  >>> suite = unittest.TestSuite()
+  >>> suite.addTest(unittest.makeSuite(TestCase))
+  >>> runner = Runner(found_suites=[suite])
+  >>> succeeded = runner.run()
+  Running zope.component.testfiles.ZCMLFileLayer tests:
+    Set up zope.component.testfiles.ZCMLFileLayer in ... seconds.
+    Ran 1 tests with 0 failures and 0 errors in ... seconds.
+  Tearing down left over layers:
+    Tear down zope.component.testfiles.ZCMLFileLayer in ... seconds.
