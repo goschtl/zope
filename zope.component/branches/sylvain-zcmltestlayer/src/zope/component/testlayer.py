@@ -86,22 +86,6 @@ class ZCMLLayerBase(LayerBase):
 
     def _load_zcml(self, context):
         raise NotImplementedError
-    
-class ZCMLStringLayer(ZCMLLayerBase):
-    """This layer can be used to run tests with a ZCML string loaded.
-
-    The ZCML string is assumed to include sufficient (meta)configuration
-    so that it can be interpreted itself. I.e. to create a ZCMLLayer
-    based on another ZCMLLayer's ZCML, just use a ZCML include
-    statement in your own ZCML to load it.
-    """
-    def __init__(self, package, zcml_string=None,
-                 name=None, features=None):
-        super(ZCMLStringLayer, self).__init__(package, name, features)
-        self.zcml_string = zcml_string
-
-    def _load_zcml(self, context):
-        return xmlconfig.string(self.zcml_string, context=context, execute=True)
 
 class ZCMLFileLayer(ZCMLLayerBase):
     """This layer can be used to run tests with a ZCML file loaded.

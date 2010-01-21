@@ -84,7 +84,7 @@ is ``ftesting.zcml``, but here we'll load a test ``testlayer.zcml``.
   ...        from zope import component
   ...        from zope.component.testfiles import components
   ...        self.assert_(isinstance(
-  ...            components.IApp(components.comp), components.Comp))
+  ...            components.IApp2(components.content), components.Comp2))
 
 Since the ZCML sets up an adapter, we expect the tests to pass::
 
@@ -97,3 +97,4 @@ Since the ZCML sets up an adapter, we expect the tests to pass::
     Ran 1 tests with 0 failures and 0 errors in ... seconds.
   Tearing down left over layers:
     Tear down zope.component.testfiles.ZCMLFileLayer in ... seconds.
+
