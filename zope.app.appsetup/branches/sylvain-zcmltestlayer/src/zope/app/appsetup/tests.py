@@ -274,6 +274,12 @@ def test_suite():
         'debug.txt',
         setUp=setUpDebug, tearDown=tearDownDebug,
         ))
+    suite.addTest(doctest.DocFileSuite(
+        'testlayer.txt',
+         optionflags=(doctest.ELLIPSIS +
+                      doctest.NORMALIZE_WHITESPACE +
+                      doctest.REPORT_NDIFF)))
+
     return suite
 
 if __name__ == '__main__':
