@@ -36,6 +36,7 @@ from zope.site.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.site.site import LocalSiteManager
 
+import zope.app.appsetup
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \
      ensureObject, ensureUtility
@@ -45,9 +46,9 @@ from zope.app.appsetup.session import bootStrapSubscriber as sessionBootstrapSub
 from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISessionDataContainer
 
-from zope.app.testing import placelesssetup
-from zope.app.testing import setup
+from zope.component.testlayer import ZCMLFileLayer
 
+layer = ZCMLFileLayer(zope.app.appsetup)
 
 class EventStub(object):
 
@@ -58,15 +59,15 @@ class EventStub(object):
 # TODO: some methods from the boostap module are not tested
 #
 
-class TestBootstrapSubscriber(placelesssetup.PlacelessSetup, unittest.TestCase):
+class TestBootstrapSubscriber(unittest.TestCase):
+
+    layer = layer
 
     def setUp(self):
-        setup.placefulSetUp()
         self.db = DB()
 
     def tearDown(self):
         transaction.abort()
-        setup.placefulTearDown()
         self.db.close()
 
     def createRootFolder(self):
@@ -230,50 +231,55 @@ class TestConfigurationSchema(unittest.TestCase):
         schema = ZConfig.loadSchema(url)
 
 
-def bootstraptearDown(test):
-    test.globs['db'].close()
 
+class DebugLayer(ZCMLFileLayer):
 
-def setUpDebug(test):
-    placelesssetup.setUp(test)
-    test.real_stderr = sys.stderr
-    test.real_argv = list(sys.argv)
-    test.olddir = os.getcwd()
-    os.chdir(os.path.join(os.path.dirname(__file__), 'testdata'))
-    from zope.security.management import endInteraction
-    endInteraction()
+    def setUp(self):
+        super(DebugLayer, self).setUp()
+        self.stderr = sys.stderr
+        self.argv = list(sys.argv)
+        self.olddir = os.getcwd()
+        os.chdir(os.path.join(os.path.dirname(__file__), 'testdata'))
+        from zope.security.management import endInteraction
+        endInteraction()
 
-
-def tearDownDebug(test):
-    sys.stderr = test.real_stderr
-    sys.argv[:] = test.real_argv
-    if hasattr(sys, 'ps1'):
-        del sys.ps1
-    os.chdir(test.olddir)
-    # make sure we don't leave environment variables that would cause
-    # Python to open an interactive console
-    if 'PYTHONINSPECT' in os.environ:
-        del os.environ['PYTHONINSPECT']
-    from zope.security.management import endInteraction
-    endInteraction()
-    placelesssetup.tearDown(test)
+    def tearDown(self):
+        sys.stderr = self.stderr
+        sys.argv[:] = self.argv
+        if hasattr(sys, 'ps1'):
+            del sys.ps1
+        os.chdir(self.olddir)
+        # make sure we don't leave environment variables that would cause
+        # Python to open an interactive console
+        if 'PYTHONINSPECT' in os.environ:
+            del os.environ['PYTHONINSPECT']
+        from zope.security.management import endInteraction
+        endInteraction()
+        super(DebugLayer, self).tearDown()
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
     suite.addTest(unittest.makeSuite(TestConfigurationSchema))
-    suite.addTest(doctest.DocTestSuite(
-        'zope.app.appsetup.appsetup',
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
+    for module in ['zope.app.appsetup.appsetup',]:
+        test = doctest.DocTestSuite(module)
+        test.layer = layer
+        suite.addTest(test)
+    for filename in ['bootstrap.txt', 'product.txt',]:
+        test = doctest.DocFileSuite(filename)
+        test.layer = layer
+        suite.addTest(test)
+
+    test = doctest.DocFileSuite('debug.txt')
+    test.layer = DebugLayer(zope.app.appsetup)
+    suite.addTest(test)
     suite.addTest(doctest.DocFileSuite(
-        'bootstrap.txt', 'product.txt',
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
-        ))
-    suite.addTest(doctest.DocFileSuite(
-        'debug.txt',
-        setUp=setUpDebug, tearDown=tearDownDebug,
-        ))
+        'testlayer.txt',
+         optionflags=(doctest.ELLIPSIS +
+                      doctest.NORMALIZE_WHITESPACE +
+                      doctest.REPORT_NDIFF)))
+
     return suite
 
 if __name__ == '__main__':

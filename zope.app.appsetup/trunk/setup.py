@@ -64,7 +64,6 @@ setup(
     package_dir={'': 'src'},
     extras_require=dict(
         test=[
-            'zope.app.testing',
             'zope.componentvocabulary',
             'zope.principalregistry',
             'zope.testing',

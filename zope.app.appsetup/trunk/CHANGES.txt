@@ -4,7 +4,9 @@ Changelog
 3.13.1 (unreleased)
 -------------------
 
-- make zope.testing an optional (test) dependency
+- make zope.testing an optional (test) dependency.
+
+- remove test dependency zope.app.testing. 
 
 
 3.13.0 (2009-12-24)
