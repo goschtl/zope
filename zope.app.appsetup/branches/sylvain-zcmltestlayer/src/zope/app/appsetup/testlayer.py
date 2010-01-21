@@ -16,6 +16,7 @@ from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
 import ZODB.ActivityMonitor
 import ZODB.interfaces
+import transaction
 
 from zope import component
 from zope.app.publication.zopepublication import ZopePublication
@@ -63,9 +64,9 @@ class ZODBLayer(ZCMLFileLayer):
         self.db = createTestDB(self.db_name)
 
     def testTearDown(self):
-        super(ZODBLayer, self).testTearDown()
         # Close any opened connections
         if self.connection is not None:
+            transaction.abort()
             self.connection.close()
             self.connection = None
 
@@ -78,4 +79,4 @@ class ZODBLayer(ZCMLFileLayer):
             self.db.close()
             self.db = None
 
-
+        super(ZODBLayer, self).testTearDown()
