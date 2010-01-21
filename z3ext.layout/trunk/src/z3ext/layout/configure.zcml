@@ -23,7 +23,7 @@
      factory=".expressions.PageletTranslator" />
 
   <!-- resourcepackage: tales expression -->
-  <tales:expressiontype
+  <z3ext:expressiontype
      name="pagelet"
      handler=".tales.TALESPageletExpression" />
 

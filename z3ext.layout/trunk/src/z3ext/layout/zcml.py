@@ -31,6 +31,7 @@ from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.component.zcml import IBasicViewInformation
+from zope.browserpage.metaconfigure import registerType
 
 from z3c.pt.pagetemplate import ViewPageTemplateFile
 
@@ -187,6 +188,30 @@ class ILayoutDirective(interface.Interface):
 
 # Arbitrary keys and values are allowed
 ILayoutDirective.setTaggedValue('keyword_arguments', True)
+
+
+# ExpressionType
+class IExpressionTypeDirective(interface.Interface):
+    """Register a new TALES expression type"""
+
+    name = schema.TextLine(
+        title=u"Name",
+        description=u"""Name of the expression. This will also be used
+        as the prefix in actual TALES expressions.""",
+        required=True)
+
+    handler = GlobalObject(
+        title=u"Handler",
+        description=u"""Handler is class that implements
+        zope.tales.interfaces.ITALESExpression.""",
+        required=True)
+
+
+def expressiontype(_context, name, handler):
+    _context.action(
+        discriminator = ("tales:expressiontype", name),
+        callable = registerType,
+        args = (name, handler))
 
 
 def pageletTypeDirective(_context, name, interface):

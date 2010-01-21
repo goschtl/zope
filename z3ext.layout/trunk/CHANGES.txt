@@ -13,6 +13,8 @@ CHANGES
 
 - Use ``ErrorReportingUtility`` for exception logging
 
+- Added ``z3ext:expressiontype`` directive
+
 
 2.2.2 (2009-09-14)
 ------------------
