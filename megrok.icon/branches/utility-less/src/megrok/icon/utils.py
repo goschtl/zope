@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-
 import megrok.icon
 from megrok.icon import getIconsRegistry, queryIconsRegistry
 from zope.traversing.browser.absoluteurl import absoluteURL
