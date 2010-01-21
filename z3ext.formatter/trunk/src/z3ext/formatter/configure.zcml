@@ -7,7 +7,7 @@
    i18n_domain="z3ext.formatter">
 
   <!-- formatter: tales expresison -->
-  <tales:expressiontype
+  <z3ext:expressiontype
      name="formatter"
      handler=".expression.FormatterExpression" />
 

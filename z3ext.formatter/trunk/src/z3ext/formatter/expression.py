@@ -55,4 +55,3 @@ class FormatterExpression(PathExpr):
 
         value = super(FormatterExpression, self).__call__(econtext)
         return formatter.format(value)
-
