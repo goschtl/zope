@@ -95,11 +95,11 @@ directive is explained in `browser page HOWTO <browserpage.html>`_.
 
 .. [#type_of_object] To specify a particular type of object, BlueBream use interface.
 
-.. [#access_directive] In order to use any ZCML excepte few built-ins
+.. [#access_directive] In order to use any ZCML except few built-ins
    like ``configure`` and ``include``, you include the ZCML where it
    is defined the directive, conventionally in BlueBream it will be
    inside ``meta.zcml`` for any package.  For example, to use
-   ``defaultView`` directive, you need to include ``mata.zcml`` file
+   ``defaultView`` directive, you need to include ``meta.zcml`` file
    inside ``zope.publisher``::
 
      <include package="zope.publisher" file="meta.zcml" />

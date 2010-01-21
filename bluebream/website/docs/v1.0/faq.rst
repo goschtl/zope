@@ -349,7 +349,7 @@ Ref: https://mail.zope.org/pipermail/zope3-users/2010-January/008745.html
   instance URL=http://localhost:9060/@@login.html>, <InterfaceClass 
   zope.authentication.interfaces.ILoginPassword>)
 
-You need to inlcude ``zope.login`` package in your ZCML configuration
+You need to include ``zope.login`` package in your ZCML configuration
 file (``site.zcml``) as the adapter registration is available there::
 
    <include package="zope.login" />
@@ -372,7 +372,7 @@ z3c.traverser and zope.contentprovider are helpful packages with good
 and clear doctests. It takes not too much time to get up and running
 with them.  However the packages do not include an example of how to
 configure your new useful code into your project. It is clear from the
-doctests (and from your own doctests writen while making and testing
+doctests (and from your own doctests written while making and testing
 your own code) **what** needs to be configured. But if you are like me
 and it all isn't yet quite second-nature, it isn't clear **how** it
 can be configured. So, for z3c.traverser::
@@ -658,7 +658,7 @@ Now use `validateInvariants` method of the interface to validate::
   >>> IPerson.validateInvariants(jill)
   Traceback (most recent call last):
   ...
-  Exception: At least one contact info is rquired
+  Exception: At least one contact info is required
 
 How do I get the parent of location?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -865,7 +865,7 @@ Refer: http://zope3.pov.lt/irclogs/%23zope3-dev.2008-04-01.log.html
 
 Look at schema.xml inside zope.app.appsetup egg
 And this xml file can point you to rest of the syntax.
-for details about <zodb> look for component.xml in ZOBD egg
+for details about <zodb> look for component.xml in ZODB egg
 
 How do I register a browser resource in a test?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -935,7 +935,7 @@ z3c.traverser and zope.contentprovider are helpful packages with good
 and clear doctests. It takes not too much time to get up and running
 with them.  However the packages do not include an example of how to
 configure your new useful code into your project. It is clear from the
-doctests (and from your own doctests writen while making and testing
+doctests (and from your own doctests written while making and testing
 your own code) **what** needs to be configured. But if you are like me
 and it all isn't yet quite second-nature, it isn't clear **how** it
 can be configured. So, for z3c.traverser::
@@ -1214,7 +1214,7 @@ utf-8 error in i18nfile
   with a simple File object.
 
 Okay, I18n file is a demo that is probably not well-developed. Don't
-use it. I will propose to not distribute it anymore. Noone is using
+use it. I will propose to not distribute it anymore. No one is using
 it, so you are on your own finding the problem and providing a patch.
 
 When running $instance/bin/runzope zlib import error appears?

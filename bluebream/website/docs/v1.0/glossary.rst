@@ -26,7 +26,7 @@ Glossary
 
   Zope
     A `developer community`_ which has created many frameworks and Python
-    libraries. The term Zope originally refered to :term:`Zope 2`.
+    libraries. The term Zope originally referred to :term:`Zope 2`.
 
   Zope Component Architecture
     `Zope Component Architecture`_ (ZCA) is a Python
@@ -81,7 +81,7 @@ Glossary
    The `Zope Object Database`_ provides an object-oriented database 
    for Python that provides a high-degree of transparency. Applications 
    can take advantage of object database features with few, if any, changes 
-   to application logic. ZODB includes features such as a plugable storage 
+   to application logic. ZODB includes features such as a pluggable storage 
    interface, rich transaction support, and undo.
     
   ZCML

@@ -14,7 +14,7 @@ Getting Started
 Introduction
 ------------
 
-This chapter narrate creating a web application project using
+This chapter narrates creating a web application project using
 BlueBream.  If you complete this chapter, you should be able to:
 
 - Install PasteScript based BlueBream project template
@@ -45,7 +45,7 @@ Before proceeding, here is an overview of the sections.
 - **Package directory structure:** -- Show the directory structure
   and describe the purpose of each directories and files.
 
-- At the end, few hello world examples are also given.
+- At the end, a few hello world examples are also given.
 
 
 .. _started-preparations:
@@ -352,7 +352,7 @@ create a page and then register it using ``browser:page`` ZCML
 directive.  In BlueBream, it is called as *Browser Page* or more
 generic term, *View* which can be used to refer XMLRPC, REST and
 other views.  By default, the default page which you are getting when
-you access: http://localhost:8080 is a page registerd like this.  You
+you access: http://localhost:8080 is a page registered like this.  You
 can see the registration inside ``configure.zcml``, the name of view
 will be ``index``.  You can access the default page by explicitly
 mentioning the page name in the URL like this:

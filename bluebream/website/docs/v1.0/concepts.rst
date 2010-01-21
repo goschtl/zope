@@ -38,7 +38,7 @@ Zope Component Architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The main idea in the Zope Component Architecture is the use of
-components, rather than multiple-inheritence for managing complexity.
+components, rather than multiple-inheritance for managing complexity.
 
 Zope Component Architecture is about how to create reusable
 components, but not reusable components itself.
@@ -60,7 +60,7 @@ Events are objects that represent something happening in a system.
 They are used to extend processing by providing processing plug
 points.
 
-Adpater
+Adapter
 ~~~~~~~
 
 Adapter takes the Interface of an existing component and adapts it to
@@ -128,7 +128,7 @@ ZODB
 The Zope Object Database provides an object-oriented database for
 Python that provides a high-degree of transparency.  Applications can
 take advantage of object database features with few, if any, changes
-to application logic.  ZODB includes features such as a plugable
+to application logic.  ZODB includes features such as a pluggable
 storage interface, rich transaction support, and undo.
 
 WSGI

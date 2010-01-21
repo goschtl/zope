@@ -636,7 +636,7 @@ automated testing.  Along with **zope.testing**, you can use Python's
 testing module called `zope.testbrowser
 <http://pypi.python.org/pypi/zope.testbrowser>`_ . To setup the test
 cases, layers etc. BlueBream use `z3c.testsetup
-<http://pypi.python.org/pypi/z3c.testsetup>` pacakge.
+<http://pypi.python.org/pypi/z3c.testsetup>` package.
 
 BlueBream use the Buildout recipe called `zc.recipe.testrunner
 <http://pypi.python.org/pypi/zc.recipe.testrunner>` to generate test
@@ -811,9 +811,9 @@ method.
        />
   </class>
 
-The ``class`` directive is a complext directive, that is there are
+The ``class`` directive is a complex directive, that is there are
 some subdirective below that.  The above ``class`` directive also
-delcared permission setting for ``Collector``.
+declared permission setting for ``Collector``.
 
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -862,10 +862,10 @@ directive is used for registering pages.  You can give the name as
      class=".views.AddTicketCollector"
      />
 
-Now you can acces the URL:
+Now you can access the URL:
 http://localhost:8080/@@add_ticket_collector .  It should display a
 form where you can enter details like ``name`` and ``description``.
-You cann enter the ``name`` as ``mycolector``, after entering data,
+You can enter the ``name`` as ``mycolector``, after entering data,
 submit the form.
 
 You can see the file size of ``var/filestorage/Data.fs`` is
@@ -899,7 +899,7 @@ create a default view for ``ICollector`` interface.
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As you have alreay seen in the :ref:`started-getting` chapter, you
+As you have already seen in the :ref:`started-getting` chapter, you
 can create a simple view and register it from ZCML.
 
 In the ``src/tc/main/views.py`` add a new view like this::
@@ -924,7 +924,7 @@ It should display a message like this:
   Hello ticket collector!
 
 In the next section, you will see more details about the main page
-for collector.  Also we are ging to learn about Zope Page Template.
+for collector.  Also we are going to learn about Zope Page Template.
 
 .. _tut1-main-page:
 
@@ -941,7 +941,7 @@ First remove the ``__call__`` method from
       pass
 
 Then add a ``template`` attribute with value as ``collectormain.pt``.
-This tells to use the Zope Page Teplate to render as the page.  The
+This tells to use the Zope Page Template to render as the page.  The
 ZCML registration will look like this::
 
   <browser:page
