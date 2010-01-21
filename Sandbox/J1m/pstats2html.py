@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.4
+#!/usr/local/python/2.6/bin/python
 ##############################################################################
 #
 # Copyright (c) Zope Corporation and Contributors.
@@ -120,7 +120,6 @@ detail_call_template = template('''
       <tr>
       <th>function</th>
       <th>calls</th>
-      <th>time credited to function</th>
       <th>cummulative time credited to function</th>
       </tr>
 $rows
@@ -156,7 +155,7 @@ class StatsView:
              ) in self.stats.iteritems():
             if not calls:
                 continue
-            
+
             t = tree
             t.time += time
             for n in filename.split(delimiter):
@@ -189,7 +188,7 @@ class StatsView:
                 simplify_tree(t)
 
         simplify_tree(tree)
-            
+
         def showtree(tree, write, style=''):
             items = sorted(tree.iteritems())
             if items and style:
@@ -210,9 +209,9 @@ class StatsView:
 
         results = []
         showtree(tree, results.append)
-                
+
         return tree_template(label=self.label, tree="\n".join(results))
-        
+
     def _table_data(self):
         table = []
         total = 0
@@ -241,7 +240,7 @@ class StatsView:
             key = lambda row: -row[sortby]
         else:
             key = lambda row: row[sortby]
-            
+
         data, total = self._table_data()
         return table_template(
             label=self.label,
@@ -278,19 +277,17 @@ class StatsView:
             cummulativeper=format(cummulative*1e6/direct_calls),
             callers=[
                 (self.link(*caller), n,
-                 format(time*n/calls),
-                 (caller != key) and format(cummulative*n/direct_calls) or 0,
+                 (caller != key) and format(ct) or 0,
                  )
-                for (caller, n) in sorted(callers.iteritems())
+                for (caller, (n, _, t, ct)) in sorted(callers.iteritems())
                 ],
             callees=[
                 (self.link(*callee), n,
-                 format(n*time_per(stats, callee)),
                  (callee != key)
-                 and format(n*cummulative_per(stats, callee))
+                 and format(ct)
                  or 0,
                  )
-                for (callee, n) in sorted(callees)
+                for (callee, (n, _, t, ct)) in sorted(callees)
                 ],
             )
 
@@ -367,7 +364,7 @@ def format(n):
         return str(int(round(n, l)))
     else:
         return "%%.%sf" % l % n
-        
+
 
 def main(argv=None):
     if argv is None:
