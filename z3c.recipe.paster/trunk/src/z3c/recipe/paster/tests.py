@@ -71,11 +71,8 @@ def setUp(test):
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.traversing', test)
     zc.buildout.testing.install('zope.contenttype', test)
-    zc.buildout.testing.install_develop('z3c.recipe.paster', test)
-
-def setUpDebug(test):
-    setUp(test)
     zc.buildout.testing.install('zope.app.debug', test)
+    zc.buildout.testing.install_develop('z3c.recipe.paster', test)
 
 checker = renormalizing.RENormalizing([
     zc.buildout.testing.normalize_path,
@@ -106,7 +103,7 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker),
         doctest.DocFileSuite('debug.txt',
-            setUp=setUpDebug, tearDown=zc.buildout.testing.buildoutTearDown,
+            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker),
         ))
