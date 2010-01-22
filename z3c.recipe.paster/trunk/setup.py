@@ -108,6 +108,7 @@ setup(
         'setuptools',
         'zc.recipe.egg',
         'zope.app.wsgi',
+        'zope.app.debug',
         'zope.schema',
         'zope.interface',
         ],
@@ -115,6 +116,7 @@ setup(
         'zc.buildout': [
              'serve = z3c.recipe.paster.serve:ServeSetup',
              'paster = z3c.recipe.paster.paster:PasterSetup',
+             'debug = z3c.recipe.paster.debug:DebugSetup',
          ]
     },
 )

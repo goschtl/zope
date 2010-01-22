@@ -5,6 +5,8 @@ CHANGES
 0.5.1dev (unreleased)
 ---------------------
 
+- Added ``debug``, an interactive debug prompt.
+
 - Fixed tests and fix all eggs in test setup.
 
 - Fixed test normalizer.
