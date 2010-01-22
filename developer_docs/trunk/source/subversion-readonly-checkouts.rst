@@ -31,7 +31,7 @@ For a Zope 3 trunk checkout::
 
 For a Zope 3.4 checkout::
 
-    svn co svn://svn.zope.org/repos/main/Zope/branches/3.4 Zope
+    svn co svn://svn.zope.org/repos/main/Zope3/branches/3.4 Zope3
 
 Mirrors
 +++++++
