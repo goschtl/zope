@@ -208,3 +208,62 @@ Once we're done we can tell the calculator to let us go.
 
     >>> connection.test_input('quit\n')
     -> CLOSE
+
+Start server
+------------
+
+    >>> import time
+    >>> import zope.testing.loggingsupport, logging
+    >>> loghandler = zope.testing.loggingsupport.InstalledHandler(
+    ...                  None, level=logging.INFO)
+
+
+    >>> zc.monitor.start(9644)
+    True
+
+    >>> print loghandler
+    zc.ngi.async.server INFO
+      listening on ('', 9644)
+
+    >>> zc.monitor.last_listener.close()
+    >>> zc.monitor.last_listener = None
+    >>> time.sleep(0.1)
+
+
+
+    >>> loghandler.clear()
+
+    >>> zc.monitor.start(('127.0.0.1', 9644))
+    True
+
+    >>> print loghandler
+    zc.ngi.async.server INFO
+      listening on ('127.0.0.1', 9644)
+
+    >>> zc.monitor.last_listener.close()
+    >>> zc.monitor.last_listener = None
+    >>> time.sleep(0.1)
+
+Trying to rebind to a port in use:
+
+    >>> loghandler.clear()
+
+    >>> zc.monitor.start(('127.0.0.1', 9644))
+    True
+
+    >>> zc.monitor.start(('127.0.0.1', 9644))
+    False
+
+    >>> print loghandler
+    zc.ngi.async.server INFO
+      listening on ('127.0.0.1', 9644)
+    zc.ngi.async.server WARNING
+      unable to listen on ('127.0.0.1', 9644)
+    root WARNING
+      unable to start zc.monitor server because the address ('127.0.0.1', 9644) is in use.
+
+    >>> zc.monitor.last_listener.close()
+    >>> zc.monitor.last_listener = None
+    >>> time.sleep(0.1)
+
+    >>> loghandler.uninstall()

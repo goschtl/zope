@@ -69,6 +69,8 @@ class Server:
     def handle_close(self, connection, reason):
         pass                            # Don't care
 
+#testing support
+last_listener = None
 
 def start(address):
     """start monitor server.
@@ -90,14 +92,16 @@ def start(address):
         ourAddress = address
 
     try:
-        zc.ngi.async.listener(ourAddress, Server)
+        global last_listener
+        last_listener = zc.ngi.async.listener(ourAddress, Server)
     except socket.error, e:
         if e.args[0] == errno.EADDRINUSE:
             # Don't kill the process just because somebody else has our port.
             # This might be a zopectl debug or some other innocuous problem.
             logging.warning(
-                'unable to start zc.monitor server because port %d is in use.',
-                port)
+                'unable to start zc.monitor server because the address %s '\
+                'is in use.',
+                ourAddress)
             return False
         else:
             raise
