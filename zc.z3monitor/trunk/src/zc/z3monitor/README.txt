@@ -18,18 +18,24 @@ default configure.zcml for registering plugins.
 The ZConfig setup is not demonstrated in this documentation, but the usage is
 simple.  In your ZConfig file, provide a "product-config" stanza for
 zc.z3monitor that specifies the port on which the zc.monitor server should
-listen.  For instance, this stanza will start a monitor server on port 8888::
+listen.
+
+For instance, this stanza will start a monitor server on port 8888::
 
     <product-config zc.z3monitor>
-        port 8888
+        bind 8888
     </product-config>
 
-Optionally you can include an ``address`` parameter to bind to a specific
-adapter::
+To bind to a specific address::
 
     <product-config zc.z3monitor>
-        port 8888
-        address 127.0.0.1
+        bind 127.0.0.1:8888
+    </product-config>
+
+To bind to a unix domain socket::
+
+    <product-config zc.z3monitor>
+        bind /var/socket
     </product-config>
 
 To include the default commands of zc.monitor and zc.z3monitor, simply include

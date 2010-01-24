@@ -8,7 +8,8 @@ Change History
 Features
 --------
 
-* New optional ``address`` product-config option to bind to a specific adapter
+* New ``bind`` product-config option to bind to a specific address/socket
+  Old ``port`` still useable.
 
 0.7.0 (2008-09-14)
 ==================

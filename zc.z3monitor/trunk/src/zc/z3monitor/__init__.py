@@ -171,13 +171,32 @@ def initialize(opened_event):
         if db.getActivityMonitor() is None:
             db.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
 
-    port = int(config['port'])
     try:
-        address = config['address']
-        zc.monitor.start(port, address = address)
-    except KeyError:
         #being backwards compatible here and not passing address if not given
+        port = int(config['port'])
         zc.monitor.start(port)
+    except KeyError:
+        #new style bind
+        try:
+            bind = config['bind']
+            bind = bind.strip()
+            m = re.match(r'^(?P<addr>\S+):(?P<port>\d+)$', bind)
+            if m:
+                #we have an address:port
+                zc.monitor.start((m.group('addr'), int(m.group('port'))))
+                return
+
+            m = re.match(r'^(?P<port>\d+)$', bind)
+            if m:
+                #we have a port
+                zc.monitor.start(int(m.group('port')))
+                return
+
+            #we'll consider everything else as a domain socket
+            zc.monitor.start(bind)
+        except KeyError:
+            #no bind config no server
+            pass
 
 @zope.component.adapter(
     zope.traversing.interfaces.IContainmentRoot,
