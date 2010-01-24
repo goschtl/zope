@@ -17,9 +17,11 @@ Manual
    interface
    componentarchitecture
    contentcomponent
+   configuration
    functionaltesting
    advancedviews
    skinsandlayers
+   i18nl10n
    basicsecurity
    schema
    form
