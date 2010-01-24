@@ -1,6 +1,4 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
   <addform
       schema="..principalfolder.IInternalPrincipalContainer"

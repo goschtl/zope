@@ -4,21 +4,21 @@
     i18n_domain="zope"
     >
 
-  <class class=".PluggableAuthentication">
+  <class class="zope.pluggableauth.authentication.PluggableAuthentication">
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.ManageSite"
-        interface=".interfaces.IPluggableAuthentication"
-        set_schema=".interfaces.IPluggableAuthentication"
+        interface="zope.pluggableauth.interfaces.IPluggableAuthentication"
+        set_schema="zope.pluggableauth.interfaces.IPluggableAuthentication"
         />
   </class>
 
   <adapter
       for=".interfaces.IQuerySchemaSearch
-           .interfaces.IPluggableAuthentication"
-      provides=".interfaces.IQueriableAuthenticator"
+           zope.pluggableauth.interfaces.IPluggableAuthentication"
+      provides="zope.pluggableauth.interfaces.IQueriableAuthenticator"
       factory=".authentication.QuerySchemaSearchAdapter"
       />
 
@@ -34,8 +34,8 @@
 
   <utility
       name="No Challenge if Authenticated"
-      factory=".generic.NoChallengeCredentialsPlugin"
-      provides=".interfaces.ICredentialsPlugin"
+      factory="zope.pluggableauth.plugins.generic.NoChallengeCredentialsPlugin"
+      provides="zope.pluggableauth.interfaces.ICredentialsPlugin"
       />
 
   <!-- Registering documentation with API doc -->

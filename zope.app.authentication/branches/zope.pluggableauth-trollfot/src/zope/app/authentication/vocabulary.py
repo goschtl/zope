@@ -25,8 +25,8 @@ from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
 from zope.app.authentication.i18n import ZopeMessageFactory as _
+from zope.pluggableauth import interfaces
 
-from zope.app.authentication import interfaces
 
 UTILITY_TITLE = _(
     'zope.app.authentication.vocabulary-utility-plugin-title',

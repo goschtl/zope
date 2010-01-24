@@ -34,7 +34,7 @@ from zope.session.session import \
 from zope.session.http import CookieClientIdManager
 
 from zope.publisher import base
-from zope.app.authentication.session import SessionCredentialsPlugin
+from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
 
 
 class TestClientId(object):

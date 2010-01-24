@@ -4,7 +4,7 @@
 
   <addMenuItem
       title="Session Credentials Plugin"
-      class="..session.SessionCredentialsPlugin"
+      class="zope.pluggableauth.plugins.session.SessionCredentialsPlugin"
       permission="zope.ManageServices"
       />
 

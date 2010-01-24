@@ -15,129 +15,16 @@
 
 $Id$
 """
+
 import zope.interface
 from zope import component
-from zope.schema.interfaces import ISourceQueriables
 from zope.location.interfaces import ILocation
-from zope.site.next import queryNextUtility
-
-from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
-import zope.container.btree
-
 from zope.app.authentication import interfaces
 
-class PluggableAuthentication(zope.container.btree.BTreeContainer):
-
-    zope.interface.implements(
-        IAuthentication,
-        interfaces.IPluggableAuthentication,
-        ISourceQueriables)
-
-    authenticatorPlugins = ()
-    credentialsPlugins = ()
-
-    def __init__(self, prefix=''):
-        super(PluggableAuthentication, self).__init__()
-        self.prefix = prefix
-
-    def _plugins(self, names, interface):
-        for name in names:
-            plugin = self.get(name)
-            if not interface.providedBy(plugin):
-                plugin = component.queryUtility(interface, name, context=self)
-            if plugin is not None:
-                yield name, plugin
-
-    def getAuthenticatorPlugins(self):
-        return self._plugins(
-            self.authenticatorPlugins, interfaces.IAuthenticatorPlugin)
-
-    def getCredentialsPlugins(self):
-        return self._plugins(
-            self.credentialsPlugins, interfaces.ICredentialsPlugin)
-
-    def authenticate(self, request):
-        authenticatorPlugins = [p for n, p in self.getAuthenticatorPlugins()]
-        for name, credplugin in self.getCredentialsPlugins():
-            credentials = credplugin.extractCredentials(request)
-            for authplugin in authenticatorPlugins:
-                if authplugin is None:
-                    continue
-                info = authplugin.authenticateCredentials(credentials)
-                if info is None:
-                    continue
-                info.credentialsPlugin = credplugin
-                info.authenticatorPlugin = authplugin
-                principal = component.getMultiAdapter((info, request),
-                    interfaces.IAuthenticatedPrincipalFactory)(self)
-                principal.id = self.prefix + info.id
-                return principal
-        return None
-
-    def getPrincipal(self, id):
-        if not id.startswith(self.prefix):
-            next = queryNextUtility(self, IAuthentication)
-            if next is None:
-                raise PrincipalLookupError(id)
-            return next.getPrincipal(id)
-        id = id[len(self.prefix):]
-        for name, authplugin in self.getAuthenticatorPlugins():
-            info = authplugin.principalInfo(id)
-            if info is None:
-                continue
-            info.credentialsPlugin = None
-            info.authenticatorPlugin = authplugin
-            principal = interfaces.IFoundPrincipalFactory(info)(self)
-            principal.id = self.prefix + info.id
-            return principal
-        next = queryNextUtility(self, IAuthentication)
-        if next is not None:
-            return next.getPrincipal(self.prefix + id)
-        raise PrincipalLookupError(id)
-
-    def getQueriables(self):
-        for name, authplugin in self.getAuthenticatorPlugins():
-            queriable = component.queryMultiAdapter((authplugin, self),
-                interfaces.IQueriableAuthenticator)
-            if queriable is not None:
-                yield name, queriable
-
-    def unauthenticatedPrincipal(self):
-        return None
-
-    def unauthorized(self, id, request):
-        challengeProtocol = None
-
-        for name, credplugin in self.getCredentialsPlugins():
-            protocol = getattr(credplugin, 'challengeProtocol', None)
-            if challengeProtocol is None or protocol == challengeProtocol:
-                if credplugin.challenge(request):
-                    if protocol is None:
-                        return
-                    elif challengeProtocol is None:
-                        challengeProtocol = protocol
-
-        if challengeProtocol is None:
-            next = queryNextUtility(self, IAuthentication)
-            if next is not None:
-                next.unauthorized(id, request)
-
-    def logout(self, request):
-        challengeProtocol = None
-
-        for name, credplugin in self.getCredentialsPlugins():
-            protocol = getattr(credplugin, 'challengeProtocol', None)
-            if challengeProtocol is None or protocol == challengeProtocol:
-                if credplugin.logout(request):
-                    if protocol is None:
-                        return
-                    elif challengeProtocol is None:
-                        challengeProtocol = protocol
-
-        if challengeProtocol is None:
-            next = queryNextUtility(self, IAuthentication)
-            if next is not None:
-                next.logout(request)
+### BBB using zope.pluggableauth
+from zope.pluggableauth import PluggableAuthentication
+from zope.pluggableauth.interfaces import (
+    IQueriableAuthenticator, IPluggableAuthentication)
 
 
 class QuerySchemaSearchAdapter(object):
@@ -149,12 +36,12 @@ class QuerySchemaSearchAdapter(object):
     """
     component.adapts(
         interfaces.IQuerySchemaSearch,
-        interfaces.IPluggableAuthentication)
+        IPluggableAuthentication)
 
     zope.interface.implements(
-        interfaces.IQueriableAuthenticator,
-        interfaces.IQuerySchemaSearch,
-        ILocation)
+        ILocation,
+        IQueriableAuthenticator,
+        interfaces.IQuerySchemaSearch)
 
     def __init__(self, authplugin, pau):
         if (ILocation.providedBy(authplugin) and

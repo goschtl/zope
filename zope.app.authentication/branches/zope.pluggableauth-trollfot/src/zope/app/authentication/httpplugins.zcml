@@ -3,20 +3,16 @@
     i18n_domain="zope"
     >
 
-  <utility
-      name="Zope Realm Basic-Auth"
-      provides=".interfaces.ICredentialsPlugin"
-      factory=".httpplugins.HTTPBasicAuthCredentialsPlugin"
-      />
+  <include package="zope.pluggableauth.plugins" file="httpplugins.zcml" />
 
-  <class class=".httpplugins.HTTPBasicAuthCredentialsPlugin">
+  <class class="zope.pluggableauth.plugins.httpplugins.HTTPBasicAuthCredentialsPlugin">
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.ManageServices"
-        interface=".httpplugins.IHTTPBasicAuthRealm"
-        set_schema=".httpplugins.IHTTPBasicAuthRealm"
+        interface="zope.pluggableauth.plugins.httpplugins.IHTTPBasicAuthRealm"
+        set_schema="zope.pluggableauth.plugins.httpplugins.IHTTPBasicAuthRealm"
         />
   </class>
 
