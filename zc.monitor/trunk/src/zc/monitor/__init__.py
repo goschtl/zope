@@ -70,15 +70,27 @@ class Server:
         pass                            # Don't care
 
 
-def start(port, address=''):
+def start(address):
     """start monitor server.
 
     Returns True if monitor server started; returns False if the port is
     already in use; and raises an exception otherwise.
     """
     import zc.ngi.async
+
+    ourAddress = None
+    if isinstance(address, int):
+        #a port is passed as int
+        ourAddress = ('', address)
+    elif isinstance(address, tuple):
+        #an (address, port) tuple is passed
+        ourAddress = address
+    elif isinstance(address, basestring):
+        #a unix domain socket string is passed
+        ourAddress = address
+
     try:
-        zc.ngi.async.listener((address, port), Server)
+        zc.ngi.async.listener(ourAddress, Server)
     except socket.error, e:
         if e.args[0] == errno.EADDRINUSE:
             # Don't kill the process just because somebody else has our port.
