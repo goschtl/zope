@@ -248,7 +248,7 @@ Before running the buildout, let's see the content of
   eggs = ticketcollector
 
 The buildout configuration file is divided into multiple sections
-called parts.  The main part is called ``[buildout]``, and that is
+called *parts*.  The main part is called ``[buildout]``, and that is
 given as the second part in the above configuration file.  We have
 added a part named ``[config]`` for convenience which includes some
 common options referred from other places.  Each part will be handled
@@ -287,7 +287,7 @@ about each options:
 
 - ``log`` -- All log files goes here.
 
-Let's look at the main ``[buildout]`` part details now::
+Let's look at the main ``[buildout]`` part::
 
   [buildout]
   develop = .
@@ -302,9 +302,9 @@ directory is a Python distribution source, i.e., there is a
 create develop egg link inside ``develop-eggs`` directory.  The link
 file should contain path to location where the Python package is
 residing.  So, buildout will make sure that the packages is always
-importable.  The value of ``develop`` option could be a relative
-path, as given above or absolute path to some directory.  You can
-also add multiple lines to ``develop`` option with different paths.
+importable.  The value of ``develop`` option could be a relative path
+as given above or absolute path to some directory.  You can also add
+multiple lines to ``develop`` option with different paths.
 
 The ``extends`` option says buildout to include the full content of
 ``versions.cfg`` file as part the configuration.  The
@@ -346,9 +346,10 @@ The ``zope_conf]`` part creates the ``zope.conf`` from a template::
   input = templates/zope_conf.in
   output = etc/zope.conf
 
-This part must be very self explanatory, it simply creates a
-``zope.conf`` file from a template.  This template recipe is very
-common among Buildout users.  Here is the template file
+This part must be very self explanatory, it creates a ``zope.conf``
+file from one template file.  This `collective.recipe.template recipe
+<http://pypi.python.org/pypi/collective.recipe.template>`_ is very
+popular among Buildout users.  Here is the template file
 (``templates/zope_conf.in``)::
 
   # Identify the component configuration used to define the site:
