@@ -111,54 +111,51 @@ Brief history
 
 .. FIXME: we need to improve the history
 
-.. committing as a comment until more complete
+Our story begins in 1996, :term:`Jim Fulton` was Technical Director at Digital
+Creations. At the IPC (International Python Conference) that year, Jim gave a
+presentation on :term:`CGI`: `Python and Internet Programming`_. Jim,
+considering CGI less than elegant, envisioned a better way to program for the
+internet in Python. According to legend, Jim learned CGI on the plane to the
+conference, and designed :term:`Bobo` on the plane ride back home.
 
-	Our story begins in 1996, :term:`Jim Fulton` was Technical Director
-	at Digital Creations. At the IPC (International Python Conference)
-	that year, Jim gave a presentation on :term:`CGI`: 
-	`Python and Internet Programming`_. Jim, considering CGI less than elegant,
-	envisioned a better way to program for the internet in Python. According
-	to legend, Jim learned CGI on the plane to the conference, and designed
-	:term:`Bobo` on the plane ride back home.
+Digital Creations then released three open-source Python software packages:
+Bobo, Document Template, and BoboPOS.  These packages provided a web publishing
+facility, text templating, and an object database and were the core of
+*Principia*, a commercial application server.  In November of 1998, investor
+Hadar Pedhazur convinced Digital Creations to open source Principia. These
+packages evolved into the core components of Zope 2, and Digital Creations
+became Zope Corp.
+
+Since those days, Zope has been under active development. It has evolved in
+several ways as the community gains experience. We continually seek the optimum
+balance between power and ease of use. Zope 2 emphasized rapid development, the
+:term:`Zope Component Architecture`.  which is the core of Zope 3 emphasized
+modularity and configurability.  This proves very successful in "enterprise"
+applications where flexibility and scalability justify the longer learning
+curve which Zope 3 required, but is overkill for many situations which
+otherwise stand to benefit from the distilled wisdom of the ZCA. The Zope
+community has responded to this fact in a number of ways, several projects have
+built frameworks which implement :term:`convention over configuration`, and
+other refinements of the ZCA components, aimed at facilitating rapid
+deployment, with the power of ZCA available under the hood.  Notable among
+these are Grok_ and Repoze_.
+
+Zope 3 is now known as BlueBream. The name stems from the fact that the Z
+Object Publishing Environment, when spelled `zope`, is the name of a fish.
+Another name for the fish is `blue bream`.
+
+BlueBream presents a well defined (and documented) configuration framework
+which simplifies managing of the power of the ZCA. We've brought together ZCA,
+buildout and Sphinx in a way that makes building powerhouse applications fun.
+
+The components which comprise BlueBream are under continual development by an
+international team of extremely experienced coders. Take a look at the recent
+uploads to the :term:`PyPi` site, it is rare to not see several ZCA projects
+listed.
 
 
-The beginning of Zope's story goes something like this, in 1996, Jim
-Fulton (CTO of Zope Corporation) was drafted to teach a class on
-common gateway interface (CGI) programming, despite not knowing very
-much about the subject. CGI programming is a commonly-used web
-development model that allows developers to construct dynamic
-websites. On his way to the class, Jim studied all the existing
-documentation on CGI. On the way back, Jim considered what he didn't
-like about traditional, CGI-based programming environments. From
-these initial musings, the core of Zope was written while flying back
-from the CGI class.
-
-Zope Corporation (then known as Digital Creations) went on to release
-three open-source software packages to support web publishing: Bobo,
-Document Template, and BoboPOS. These packages were written in a
-language called Python, and provided a web publishing facility, text
-templating, and an object database, respectively. Digital Creations
-developed a commercial application server based on their three
-open source components. This product was called Principia. In November
-of 1998, investor Hadar Pedhazur convinced Digital Creations to open
-source Principia. These packages evolved into what are now the core
-components of Zope 2.
-
-In 2001, the Zope community began working on a component architecture
-for Zope, but after several years they ended up with something much
-more: Zope 3 (now renamed to BlueBream). While Zope 2 was powerful
-and popular, Zope 3 was designed to bring web application development
-to the next level. This documentation is about this BlueBream (Zope 3), which
-is not really a new version of Zope 2.
-
-In 2007 the Zope community created yet another framework based on
-Zope 3 called Grok. The original Zope which is now known as Zope 2 is
-also widely used.
-
-Very recently Zope 3 project is renamed to BlueBream.
-
-.. _Python and Internet Programming: http://www.python.org/workshops/1996-06/agenda.html
-.. _intro-organization:
+.. _Python and Internet Programming:
+http://www.python.org/workshops/1996-06/agenda.html .. _intro-organization:
 
 Organization of the documentation
 +++++++++++++++++++++++++++++++++
