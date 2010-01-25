@@ -399,13 +399,13 @@ popular among Buildout users.  Here is the template file
   # production
   devmode on
 
-The last part creates a test runner::
+The last part creates test runner::
 
   [test]
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
-The testrunner recipe creates a test runner using ``zope.testing``
+The testrunner recipe creates test runner using ``zope.testing``
 module.  The only mandatory option is ``eggs`` where you can specify
 the eggs.
 
@@ -437,8 +437,7 @@ also created three more scripts inside ``bin`` directory.
 - The ``test`` command can be used to run the test runner.
 
 Now we have a project source where we can continue developing this
-application.  Now onwards, you need to do the remaining things
-manually.
+application.
 
 The site definition
 -------------------
