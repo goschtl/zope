@@ -494,7 +494,7 @@ The main configuration, ``site.zcml`` include other configuration
 files specific to packages.  The ZCML has some directives like
 `include``, ``page``, ``defaultView`` etc. available at various XML
 namespaces.  In the ``site.zcml`` the default XML namespace is
-``http://namespaces.zope.org/zope``.  If you look at top of
+``http://namespaces.zope.org/zope``.  If you look at the top of
 site.zcml, you can see the namespace defined like this::
 
   <configure
@@ -503,7 +503,8 @@ site.zcml, you can see the namespace defined like this::
 The ``include`` directive is available in
 ``http://namespaces.zope.org/zope`` namespace.  If you look at other
 configuration files, you can see some other namespaces like
-``http://namespaces.zope.org/browser`` used.
+``http://namespaces.zope.org/browser`` used which has some directives
+like ``page``.
 
 At the end of ``site.zcml``, two application specific configuration
 files are included like this::
@@ -641,8 +642,8 @@ BlueBream use the Buildout recipe called `zc.recipe.testrunner
 <http://pypi.python.org/pypi/zc.recipe.testrunner>` to generate test
 runner script.
 
-If you look the buildout configuration, you can see the test runner
-part::
+If you look at the buildout configuration, you can see the test
+runner part::
 
   [test]
   recipe = zc.recipe.testrunner
