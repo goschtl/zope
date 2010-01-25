@@ -15,3 +15,4 @@ Here you can find some HOWTOs related to BlueBream.
 
    defaultview
    browserpage
+   newdependency
