@@ -20,7 +20,7 @@ template.  In this chapter, can learn creating a simple ticket
 collector application.  This will help you to familiarize more
 concepts in BlueBream.
 
-Before proceeding, we will see the user stories:
+These are the important user stories:
 
 1. Individual small ticket collector for each project.  Many
    collectors can be added to one running BlueBream.
@@ -125,8 +125,8 @@ the package name or namespace package name may not be easy as
 changing the description.  Because, the name and namespace package
 might be referred from many places.
 
-Fresh package
-~~~~~~~~~~~~~
+Organize new package
+~~~~~~~~~~~~~~~~~~~~
 
 If you change directory to ``ticketcollector``, you can see few
 directories and files::
@@ -170,10 +170,10 @@ Buildout
 
 The next step is building the application using Buildout.  The
 purpose of Buildout is to automate all the process involved in
-building an Python application/package from scratch.  The only basic
+building any Python application/package from scratch.  The only basic
 requirement for Buildout is a Python installation.  Buildout provides
-a bootstrapping script to initialize Buildout.  This bootstrap
-script named ``bootstrap.py`` will do these things:
+a bootstrapping script to initialize Buildout.  This bootstrap script
+named ``bootstrap.py`` will do these things:
 
 - Download and install ``setuptools`` package from PyPI
 
