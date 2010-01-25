@@ -16,5 +16,6 @@ Thanks to all.  Please update this list, as soon as somebody is
 committed to documentation directly.
 
 - Baiju M (baijum)
+- Chris McDonough (chrism)
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)

@@ -16,7 +16,7 @@ Introduction
 
 In the :ref:`started-getting` chapter you learned how to install
 BlueBream and create a new project using the ``bluebream`` project
-template.  In this chapter, we will explore creating a simple ticket
+template.  In this chapter, can learn creating a simple ticket
 collector application.  This will help you to familiarize more
 concepts in BlueBream.
 
