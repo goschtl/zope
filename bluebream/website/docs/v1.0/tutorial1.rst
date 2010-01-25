@@ -827,9 +827,10 @@ method.
        />
   </class>
 
-The ``class`` directive is a complex directive, that is there are
-some subdirective below that.  The above ``class`` directive also
-declared permission setting for ``Collector``.
+The ``class`` directive is a complex directive.  There are
+subdirective like ``implements`` and ``require`` below the ``class``
+directive.  The above ``class`` directive also declared permission
+setting for ``Collector``.
 
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
