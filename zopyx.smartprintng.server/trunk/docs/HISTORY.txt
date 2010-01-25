@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.6.4 (2010/12/25)
+------------------
+* minor fixes
+* documentation cleanup
+
 0.6.3 (2009/11/29)
 ------------------
 * compatiblity with BFG 1.2

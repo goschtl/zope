@@ -23,10 +23,11 @@ Installation
 
     virtualenv --no-site-packages smartprintng
 
-- install ``repoze.bfg`` (by installing ``repoze.bfg.xmlrpc`` having ``repoze.bfg``
+- install ``repoze.bfg`` 
   as a dependency) ::
 
-    bin/easy_install -i http://dist.repoze.org/bfgsite/simple repoze.bfg.xmlrpc
+    bin/easy_install repoze.bfg
+    bin/easy_install repoze.bfg.xmlrpc
 
 - install the SmartPrintNG server::
 
