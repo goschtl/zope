@@ -45,6 +45,47 @@ traverser to do this.
 
 You can register grok views for ``Department`` as usual.
 
+Context issues
+--------------
+
+If you *can*, make the models exposed by traject subclass from
+``grokcore.component.Context`` (or its alias ``grok.Context``, or its
+alias ``traject.Context``). By doing so, you avoid the problems
+described below. 
+
+Sometimes you cannot subclass your models from
+``grokcore.component.Context``, however. Exposing external models was
+something that megrok.traject was designed to allow, after all.
+
+When you use megrok.traject with external models, you can run into the
+following two issues with your models:
+
+* The ZTK assumes the default view for objects is ``index.html``, not
+  ``index``. The ``index`` default view setting is only used when you
+  subclass your model from ``grokcore.component.Context``. You can
+  still make ``index`` the default view of your model by adding the
+  following directive to your project's ``configure.zcml``::
+
+     <browser:defaultView
+       for="SomeForeignModel"
+       name="index"
+       />
+
+  You can also do this for a common base class that you know all your
+  models share, or a common interface that you know is provided by all
+  your models.
+
+* Views, adapters and such won't auto-associate with your models in
+  the same module. You will need to explicitly use the
+  ``grok.context()`` on the module or class level to associate your
+  component. For example::
+
+    class SomeForeignModel(object):
+        ...
+
+    class MyView(grok.View):
+        grok.context(SomeForeignModel)
+
 Traject models
 --------------
 
@@ -63,6 +104,9 @@ models directly::
     
     def arguments(self):
         return dict(department_id=self.id)
+
+``traject.Model`` derives from ``grokcore.component.Context``, so the
+issues mentioned above with external models won't be a problem here.
 
 Note that Traject models are not persistent in the ZODB sense. If you
 need a persistent Traject models you can mix in ``grok.Model`` or

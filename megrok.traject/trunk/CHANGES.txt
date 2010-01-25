@@ -1,11 +1,15 @@
 CHANGES.txt
 ***********
 
-0.11 (unreleased)
-=================
+0.10.1 (unreleased) 
+===================
 
-- Nothing changed yet.
+- Added notes to documentation about deriving your models from
+  ``grokcore.component.Context``, or what to do what you can't.
 
+- Expose ``traject.Context`` for convenience reasons.
+
+- Fixed ReST documentation.
 
 0.10 (2009-11-30)
 =================
