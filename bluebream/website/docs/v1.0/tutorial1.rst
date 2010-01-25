@@ -668,9 +668,9 @@ Container objects
 
 In this section, we will create ticketcollector main application
 container object.  BlueBream use the object database know as ZODB to
-store your data (object).  An object data base, you can think of as a
-container which contains objects, the inside object may be another
-container which contains objects.
+store your data (object).  You can think of object database as a
+container which contains objects, the inner object may be another
+container which contains other objects.
 
 So, the object hierarchy will look like this::
 
@@ -684,10 +684,27 @@ So, the object hierarchy will look like this::
   |                   |
   +-------------------+
 
-BlueBream will take care of the persistence of the objects.  You only
-need to provide some hints in the form of interfaces and inheriting
-from some special classes.  You will see more details about how to do
-it in the upcoming sections.
+BlueBream will take care of the persistence of the objects.  To make
+one object you need to inheriting from ``persistent.Persistent``
+class directly or indirectly.  Here is a list of classes which is
+inhering from ``persistent.Persistent``, directly or indirectly:
+
+- ``zope.container.btree.BTreeContainer``
+- ``zope.container.folder.Folder``
+- ``zope.site.folder.Folder``
+
+If you inherit from any of these classes, the instance of that class
+will be persistent.  The second thing you need to do to make it
+persistent is add the object to an existing container object.  Here
+is a simple example::
+
+  >>> from zope.container.btree import BTreeContainer
+  >>> class MyContainer(BTreeContainer):
+  ...     pass
+  >>> container1 = MyContainer()
+  >>> root_folder['c1'] = container1
+
+In the above example, ``root_folder`` is an existing container.
 
 Declaring Interface
 ~~~~~~~~~~~~~~~~~~~
