@@ -119,12 +119,11 @@ the project directory layout for ``ticketcollector``::
     Copying versions.cfg to ./ticketcollector/versions.cfg
   Running /opt/baiju/py26/bin/python2.6 setup.py egg_info
 
-As you can see above, we have provided most of the project details
-and some are skipped.  If you want, it is possible to change the
-values provided here later.  But changing the package name or
-namespace package name may not be easy as changing the description.
-The reason is that, the name and namespace package might be referred
-from many places.
+As you can see above, we have provided most of the project details.
+Later, you can change the values provided here.  However, changing
+the package name or namespace package name may not be easy as
+changing the description.  Because, the name and namespace package
+might be referred from many places.
 
 Fresh package
 ~~~~~~~~~~~~~
