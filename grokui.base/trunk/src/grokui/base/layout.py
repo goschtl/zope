@@ -1,31 +1,26 @@
 # -*- coding: utf-8 -*-
 
-import grok
 import megrok.menu
+import grokcore.view as grok
 from megrok.layout import Layout, Page
-from grokui.base import IGrokuiRealm
-from grokui.base.namespace import GrokUILayer
-from grokui.base.interfaces import IAdminPanel
-from zope.app.folder.interfaces import IRootFolder
-from zope.traversing.browser.absoluteurl import absoluteURL
+from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 
 
 grok.layer(GrokUILayer)
 grok.templatedir("templates")
 
 
-class AdminLayout(Layout):
+class GrokUILayout(Layout):
     """The general layout for the administration
     """
-    grok.context(IGrokuiRealm)
-    title = u"Grok Administration Interface"
+    grok.context(IGrokUIRealm)
+    title = u"Grok User Interface"
 
 
-class AdminView(Page):
-    """An admin view.
+class GrokUIView(Page):
+    """A grok ui view.
     """
     grok.baseclass()
-    grok.context(IGrokuiRealm)
-    grok.implements(IAdminPanel)
-    megrok.menu.menuitem('grokui_admin_menu')
-    
+    grok.context(IGrokUIRealm)
+    grok.implements(IUIPanel)
+    megrok.menu.menuitem(MainMenu)

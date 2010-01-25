@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import grok
-
-from zope.interface import Interface
-from zope.component import getUtility
+import grokcore.component as grok
 from z3c.flashmessage.message import PersistentMessage
 from z3c.flashmessage.sources import SessionMessageSource
 from z3c.flashmessage.receiver import GlobalMessageReceiver
-from z3c.flashmessage.interfaces import IMessageReceiver, IMessageSource
+from z3c.flashmessage.interfaces import IMessageSource
 
 
 class AdminMessageSource(grok.GlobalUtility):
@@ -36,4 +33,3 @@ class AdminMessageSource(grok.GlobalUtility):
 
 grok.global_utility(GlobalMessageReceiver)
 grok.global_utility(SessionMessageSource, name='session')
-

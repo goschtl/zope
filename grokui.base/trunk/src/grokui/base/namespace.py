@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Components to keep Grok UI releated stuff in a dedicated namespace.
+"""Components to keep Grok UI related stuff in a dedicated namespace.
 """
-import grok
-
-from zope.interface import Interface
+import grokcore.view as grok
+from zope.site.interfaces import IRootFolder
+from zope.location import LocationProxy
 from zope.publisher.browser import applySkin
 from zope.publisher.interfaces import browser
-from zope.app.folder.interfaces import IRootFolder
 from zope.traversing.interfaces import ITraversable
-from zope.location import LocationProxy
+from grokui.base.interfaces import IGrokUIRealm
+
 
 class GrokUILayer(grok.IDefaultBrowserLayer):
     """A basic layer for all Grok UI components.
@@ -22,15 +22,10 @@ class GrokUISkin(GrokUILayer, browser.IBrowserSkinType):
     grok.skin('GrokUISkin')
 
 
-class IGrokuiRealm(Interface):
-    def getRoot(self):
-        """returns the root folder"""
-
-
 class GrokUINamespace(grok.MultiAdapter):
     grok.name('grokui')
     grok.provides(ITraversable)
-    grok.implements(IGrokuiRealm)
+    grok.implements(IGrokUIRealm)
     grok.adapts(IRootFolder, browser.IBrowserRequest)
 
     def __init__(self, context, request):

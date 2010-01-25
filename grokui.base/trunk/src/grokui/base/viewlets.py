@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import grok
-from zope.component import getUtility
-from zope.app.folder.interfaces import IRootFolder
-from zope.app.publisher.interfaces.browser import IBrowserMenu
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from grokui.base import Header, Footer, IUIPanel, IGrokUIRealm, MainMenu
 from z3c.flashmessage.interfaces import IMessageReceiver
-from grokui.base import IGrokuiRealm
-from grokui.base.interfaces import IAdminPanel
-from grokui.base.contentproviders import AdministrationHeader
-from grokui.base.contentproviders import AdministrationFooter
+from zope.browsermenu.interfaces import IBrowserMenu
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.component import getUtility
 
+
+grok.view(IUIPanel)
+grok.context(IGrokUIRealm)
 grok.templatedir("templates")
-
-grok.view(IAdminPanel)
-grok.context(IGrokuiRealm)
-grok.viewletmanager(AdministrationHeader)
+grok.viewletmanager(Header)
 
 
 class Banner(grok.Viewlet):
@@ -39,7 +35,7 @@ class MenuViewlet(grok.Viewlet):
     grok.name("grokui.menu")
 
     def update(self):
-        menu = getUtility(IBrowserMenu, 'grokui_admin_menu')
+        menu = getUtility(IBrowserMenu, "grokui_mainmenu")
         self.rooturl = self.view.url(self.context)
         self.actions = menu.getMenuItems(self.context, self.request)
 
@@ -57,4 +53,4 @@ class Messages(grok.Viewlet):
 class Authors(grok.Viewlet):
     grok.order(10)
     grok.name('grokui.authors')
-    grok.viewletmanager(AdministrationFooter)
+    grok.viewletmanager(Footer)

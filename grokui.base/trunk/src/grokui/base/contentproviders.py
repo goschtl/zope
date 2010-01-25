@@ -1,28 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import grok
+import grokcore.viewlet as grok
 from megrok.menu import Menu
-from grokui.base import IGrokuiRealm
-from grokui.base.interfaces import IApplicationRepresentation
-from grokui.base.interfaces import IApplicationInformation
+from grokui.base import IGrokUIRealm, GrokUILayer
 
 
-class AdministrationHeader(grok.ViewletManager):
-    grok.name('grokui_admin_header')
-    grok.context(IGrokuiRealm)
+grok.layer(GrokUILayer)
+grok.context(IGrokUIRealm)
 
 
-class AdministrationFooter(grok.ViewletManager):
-    grok.name('grokui_admin_footer')
-    grok.context(IGrokuiRealm)
+class Header(grok.ViewletManager):
+    grok.name('grokui_header')
 
 
-class ApplicationInformation(grok.ViewletManager):
-    grok.name('grokui_application_info')
-    grok.context(IApplicationRepresentation)
+class Footer(grok.ViewletManager):
+    grok.name('grokui_footer')
 
 
-class AdministrationMenu(Menu):
-    grok.context(IGrokuiRealm)
-    grok.name('grokui_admin_menu')
-    grok.title('Administration panels')
+class MainMenu(Menu):
+    grok.name('grokui_mainmenu')
+    grok.title('Grok user interface panels')

@@ -2,8 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:grok="http://namespaces.zope.org/grok"
    i18n_domain="grok"
-   package="grokui.base"
-   >
+   package="grokui.base">
 
   <include package="grokui.base" />
   <grok:grok package="grokui.base.tests" />

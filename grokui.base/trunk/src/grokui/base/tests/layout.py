@@ -1,6 +1,6 @@
 """
-Building admin pages using `AdminView`
-======================================
+Building panels using `GrokUIView`
+===================================
 
 :doctest:
 :layer: grokui.base.tests.test_grokuibase.FunctionalLayer
@@ -26,7 +26,7 @@ with the contents delivered by the `render()` method inserted:
     >>> print browser.contents
     <html xmlns="http://www.w3.org/1999/xhtml">
     ...
-     <title>Grok Administration Interface</title>
+     <title>Grok User Interface</title>
     ...
     <BLANKLINE>
         <div id="grokui-content">Hello from CaveAdminView</div>
@@ -51,9 +51,9 @@ entry in the navigation bar:
     
 """
 import grok
-from grokui.base import AdminView
+from grokui.base import GrokUIView
 
-class CaveAdminView(AdminView):
+class CaveAdminView(GrokUIView):
     """An admin page to administer caves.
     """
     grok.name('caveview')

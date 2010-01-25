@@ -1,55 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from zope import schema
-from zope.location import ILocation
-from zope.interface import Interface
-from zope.contentprovider.interfaces import IContentProvider
+from zope.interface import Interface, Attribute
 
 
-class IAdminPanelMenu(Interface):
-    """A menu that allows the access to the different administration panels.
+class IMainMenu(Interface):
+    """A menu that allows the access to the different UI panels.
     """
 
 
-class IAdminPanel(Interface):
+class IUIPanel(Interface):
     """A panel of administration.
     """
 
 
-class IApplicationRepresentation(Interface):
-    """Defines an Grok application 
+class IGrokUIRealm(Interface):
+    """Represents an abstract object that acts as the UI namespace.
+    It provides an access to the very root folder and to the request.
     """
-    __name__ = schema.ASCIILine(
-        title = u"Name",
-        required = True
-        )
-    
-    classname = schema.ASCIILine(
-        title = u"Dotted name of the Application class",
-        required = True
-        )
-    
-    description = schema.Text(
-        title = u"Description of the Application",
-        default = u"",
-        required = False
-        )
-
-
-class IInstallableApplication(IApplicationRepresentation):
-    """Defines an installable application.
-    """
-
-
-class IInstalledApplication(IApplicationRepresentation, ILocation):
-    """Defines an application that is installed in our system.
-    """
-    url = schema.URI(
-        title = u"Absolute URL of the application",
-        required = True
-        )
-
-
-class IApplicationInformation(IContentProvider):
-    """Marker interface for the Application information content provider.
-    """
+    root = Attribute("The root folder object.")
+    request = Attribute("The HTTP request object.")
