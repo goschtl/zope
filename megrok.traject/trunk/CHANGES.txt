@@ -1,7 +1,7 @@
 CHANGES.txt
 ***********
 
-0.10.1 (unreleased) 
+0.10.1 (2010-01-25)
 -------------------
 
 - Added notes to documentation about deriving your models from
