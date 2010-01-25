@@ -14,5 +14,4 @@ Here you can find some HOWTOs related to BlueBream.
    :maxdepth: 2
 
    defaultview
-   browserpage
    newdependency

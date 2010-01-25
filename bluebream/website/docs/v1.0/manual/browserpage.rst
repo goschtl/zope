@@ -1,3 +1,5 @@
+.. _man-browser-page:
+
 Browser Page
 ============
 

@@ -80,7 +80,7 @@ view registered to access the view, otherwise a ``NotFound`` error
 will be raised as mentioned above.
 
 More details about registering a browser view using ``browser:page``
-directive is explained in `browser page HOWTO <browserpage.html>`_.
+directive is explained in :ref:`man-browser-page` manual.
 
 .. rubric:: Footnotes
 
