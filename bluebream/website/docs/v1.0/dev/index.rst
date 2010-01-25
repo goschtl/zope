@@ -15,6 +15,7 @@ which is actually used by the developers.
    :numbered:
    :maxdepth: 2
 
+   contributing
    resources
    decisions
    writing
