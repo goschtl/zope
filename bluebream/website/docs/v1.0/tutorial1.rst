@@ -991,12 +991,14 @@ display "Welcome to ticket collector" message.
 Conclusion
 ----------
 
-This part 1 of tutorial covered the basics of creating a web
+The first part of tutorial covered the basics of creating a web
 application using BlueBream.  The chapter narrated in detail about
 the usage of ``bluebream`` paster project template to create a new
 project.  Also it walked though the build process.  Then, you have
 created an application container.  Finally, a default view for
-application container is also created.
+application container is also created.  The :ref:`tut2-tutorial` will
+expand the application with additional functionalities like sarching
+and changing the look and feel.
 
 .. raw:: html
 
