@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import grokcore.viewlet as grok
+import grok
 from megrok.menu import Menu
 from grokui.base import IGrokUIRealm, GrokUILayer
 

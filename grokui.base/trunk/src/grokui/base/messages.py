@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import grokcore.component as grok
+import grok
 from z3c.flashmessage.message import PersistentMessage
 from z3c.flashmessage.sources import SessionMessageSource
 from z3c.flashmessage.receiver import GlobalMessageReceiver

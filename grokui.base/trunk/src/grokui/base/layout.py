@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import grok
 import megrok.menu
-import grokcore.view as grok
 from megrok.layout import Layout, Page
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 
