@@ -15,43 +15,43 @@ Overview
 ++++++++
 
 :term:`BlueBream` is a web framework written in the Python programming
-language.  BlueBream is free/open source software, owned by the
-:term:`Zope Foundation`, licensed under the :term:`Zope Public License` (BSD
-like, GPL compatible license).  BlueBream was previously known 
-as :term:`Zope 3`.
+language.  bluebream is free/open source software, owned by the
+:term:`zope foundation`, licensed under the :term:`zope public license` (bsd
+like, gpl compatible license).  bluebream was previously known 
+as :term:`zope 3`.
 
-A few of the features which distinguish BlueBream among Python web
+a few of the features which distinguish bluebream among python web
 frameworks.
 
-- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), a
+- bluebream is built on top of the :term:`zope tool kit` (ztk), a
   distillation of many years of experience in meeting demanding
   requirements for stable, scalable software.
 
-- BlueBream leverages the power of :term:`Buildout` a build
-  system written in Python.
+- bluebream leverages the power of :term:`buildout` a build
+  system written in python.
   
-- BlueBream uses the :term:`ZODB` transactional object database, providing
+- bluebream uses the :term:`zodb` transactional object database, providing
   extremely powerful and easy to use persistence.
   
-- BlueBream uses :term:`ZCML`, an XML based configuration language 
-  for registering components, providing limitless flexibility. If you
-  don't need the power of ZCML and the complexity it adds, try :term:`Grok`,
-  which adds a layer replacing the declarative configuration of ZCML with 
-  conventions and declarations in standard Python.
+- bluebream uses :term:`zcml`, an xml based configuration language 
+  for registering components, providing limitless flexibility. if you
+  don't need the power of zcml and the complexity it adds, try :term:`grok`,
+  which adds a layer replacing the declarative configuration of zcml with 
+  conventions and declarations in standard python.
 
-- BlueBream features the :term:`Zope Component Architecture` (ZCA) which 
-  implements :term:`Separation of concerns` to create highly cohesive reusable
+- bluebream features the :term:`zope component architecture` (zca) which 
+  implements :term:`separation of concerns` to create highly cohesive reusable
   components (zope.component_).
 
-- BlueBream supports :term:`WSGI` using :term:`Paste`, 
-  :term:`PasteScript`, and :term:`PasteDeploy`.
+- bluebream supports :term:`wsgi` using :term:`paste`, 
+  :term:`pastescript`, and :term:`pastedeploy`.
   
 
-- BlueBream includes a number of components which provide well tested
-  implementation of common requirements. A few are of these are:
+- bluebream includes a number of components which provide well tested
+  implementation of common requirements. a few are of these are:
   
-  - zope.publisher_ publishes Python objects on the web, it is geared
-    towards :term:`WSGI` compatibility
+  - zope.publisher_ publishes python objects on the web, it is geared
+    towards :term:`wsgi` compatibility
 
   - zope.security_ provides a generic mechanism supporting pluggable 
     security policies
@@ -59,7 +59,7 @@ frameworks.
   - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
     frameworks 
 
-  - zope.pagetemplate_ is an XHTML-compliant templating language
+  - zope.pagetemplate_ is an xhtml-compliant templating language
 
   - zope.schema_ and zope.formlib_ provide a schema engine and 
     automatic form generation machinery
@@ -73,89 +73,95 @@ frameworks.
 .. _zope.schema: http://pypi.python.org/pypi/zope.schema
 .. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
 
-Join our community
+join our community
 ++++++++++++++++++
 
-We aim to provide high quality free online documentation for
-BlueBream.  If you would like to contribute, the ReStructuredText
+we aim to provide high quality free online documentation for
+bluebream.  if you would like to contribute, the restructuredtext
 source for this website is available from the zope.org repository
-(Please replace ``USERNAME`` with your zope.org username.)::
+(please replace ``username`` with your zope.org username.)::
 
- svn co svn+ssh://USERNAME@svn.zope.org/repos/main/bluebream/website 
+ svn co svn+ssh://username@svn.zope.org/repos/main/bluebream/website 
 
-If you don't have svn commit access, please follow the `Becoming a
+if you don't have svn commit access, please follow the `becoming a
 contributor
 <http://docs.zope.org/developer/becoming-a-contributor.html>`_
-document.  For any queries, please contact us in mailing list or IRC
+document.  for any queries, please contact us in mailing list or irc
 chat, we can help you to get *reference committer*, which is required
 to fill the contributor agreement form.
 
-Stay in touch with BlueBream:
+stay in touch with bluebream:
 
-- Mailing List: https://mail.zope.org/mailman/listinfo/bluebream
+- mailing list: https://mail.zope.org/mailman/listinfo/bluebream
 
-- Twitter: http://twitter.com/bluebream
+- twitter: http://twitter.com/bluebream
    
-- Blog: http://bluebream.posterous.com
+- blog: http://bluebream.posterous.com
    
-- IRC Channel: `#bluebream at freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
+- irc channel: `#bluebream at freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
    
-- Google Wave: http://wiki.zope.org/bluebream/BlueBreamWave
+- google wave: http://wiki.zope.org/bluebream/bluebreamwave
    
-- PyPI Home : http://pypi.python.org/pypi/bluebream
+- pypi home : http://pypi.python.org/pypi/bluebream
 
 .. _intro-history:
 
-Brief history
+brief history
 +++++++++++++
 
-.. FIXME: we need to improve the history
+.. fixme: we need to improve the history
 
-Our story begins in 1996, :term:`Jim Fulton` was Technical Director at Digital
-Creations. At the IPC (International Python Conference) that year, Jim gave a
-presentation on :term:`CGI`: `Python and Internet Programming`_. Jim,
-considering CGI less than elegant, envisioned a better way to program for the
-internet in Python. According to legend, Jim learned CGI on the plane to the
-conference, and designed :term:`Bobo` on the plane ride back home.
+Our story begins in 1996, :term:`jim fulton` was technical director at digital
+creations. At the ipc (international python conference) that year, jim gave a
+presentation on :term:`cgi`: `python and Internet programming`_. Jim,
+considering cgi less than elegant, envisioned a better way to program for the
+internet in python. According to legend, jim learned cgi on the plane to the
+conference, and designed :term:`bobo` on the plane ride back home.
 
-Digital Creations then released three open-source Python software packages:
-Bobo, Document Template, and BoboPOS.  These packages provided a web publishing
+Digital creations then released three open-source python software packages:
+bobo, document template, and bobopos.  These packages provided a web publishing
 facility, text templating, and an object database and were the core of
-*Principia*, a commercial application server.  In November of 1998, investor
-Hadar Pedhazur convinced Digital Creations to open source Principia. These
-packages evolved into the core components of Zope 2, and Digital Creations
-became Zope Corp.
+*principia*, a commercial application server.  In november of 1998, investor
+hadar pedhazur convinced digital creations to open source principia. These
+packages evolved into the core components of zope 2, and digital creations
+became zope corp.
 
 Since those days, Zope has been under active development. It has evolved in
 several ways as the community gains experience. We continually seek the optimum
 balance between power and ease of use. Zope 2 emphasized rapid development, the
-:term:`Zope Component Architecture`.  which is the core of Zope 3 emphasized
+:term:`Zope Component Architecture`.  which is the core of Zope 3, emphasized
 modularity and configurability.  This proves very successful in "enterprise"
 applications where flexibility and scalability justify the longer learning
-curve which Zope 3 required, but is overkill for many situations which
+curve which Zope 3 requires, but is overkill for many situations which
 otherwise stand to benefit from the distilled wisdom of the ZCA. The Zope
-community has responded to this fact in a number of ways, several projects have
-built frameworks which implement :term:`convention over configuration`, and
-other refinements of the ZCA components, aimed at facilitating rapid
-deployment, with the power of ZCA available under the hood.  Notable among
+community has responded to this in a number of ways, several projects have
+built frameworks which implement `convention over configuration`_, and
+other refinements of the ZCA components aimed at facilitating rapid
+deployment, maintaining the power of ZCA under the hood.  Notable among
 these are Grok_ and Repoze_.
 
 Zope 3 is now known as BlueBream. The name stems from the fact that the Z
 Object Publishing Environment, when spelled `zope`, is the name of a fish.
-Another name for the fish is `blue bream`.
+another name for the fish is `blue bream`_.
 
-BlueBream presents a well defined (and documented) configuration framework
-which simplifies managing of the power of the ZCA. We've brought together ZCA,
-buildout and Sphinx in a way that makes building powerhouse applications fun.
+bluebream presents a well defined (and documented) configuration framework
+which simplifies managing of the power of the zca. we've brought together zca,
+buildout and sphinx in a way that makes building powerhouse applications fun.
 
 The components which comprise BlueBream are under continual development by an
 international team of extremely experienced coders. Take a look at the recent
-uploads to the :term:`PyPi` site, it is rare to not see several ZCA projects
+uploads to the `PyPi`_ site, it is rare to not see several zca projects
 listed.
 
 
-.. _Python and Internet Programming:
-http://www.python.org/workshops/1996-06/agenda.html .. _intro-organization:
+.. _convention over configuration: http://en.wikipedia.org/wiki/convention_over_configuration
+.. _python and Internet Programming: http://www.python.org/workshops/1996-06/agenda.html 
+
+.. _Grok: http://grok.zope.org/
+.. _Repoze: http://repoze.org/
+.. _blue bream: http://en.wikipedia.org/wiki/Blue_bream
+.. _PyPi: http://pypi.python.org/pypi
+.. _intro-organization:
 
 Organization of the documentation
 +++++++++++++++++++++++++++++++++
