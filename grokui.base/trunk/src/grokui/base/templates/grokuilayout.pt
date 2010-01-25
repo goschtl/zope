@@ -6,12 +6,12 @@
   </head>
   <body>
     <div id="grokui-header"
-	 tal:content="structure provider:grokui_admin_header" />
+	 tal:content="structure provider:grokui_header" />
 
     <div id="grokui-content"
 	 tal:content="structure view/content" />
 
     <div id="grokui-footer"
-	 tal:content="structure provider:grokui_admin_footer" />
+	 tal:content="structure provider:grokui_footer" />
   </body>
 </html>
