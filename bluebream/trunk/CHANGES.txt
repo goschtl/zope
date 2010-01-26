@@ -7,6 +7,9 @@ Changelog
 - Removed `Sphinx-PyPI-upload` -- no more used as the
   website is moved to http://bluebream.zope.org
 
+- Added `zope.traversing.browser` from site.zcml
+  in the project template. Ref: http://bit.ly/80xltO
+
 0.1.9 (2010-01-13)
 ------------------
 
