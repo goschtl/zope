@@ -58,13 +58,49 @@ Event
 
 Events are objects that represent something happening in a system.
 They are used to extend processing by providing processing plug
-points.
+points.  The `zope.event <http://pypi.python.org/pypi/zope.event>`_
+provides the basic event publishing system.  The ``zope.event``
+package also provides a very simple event-dispatching system on which
+more sophisticated event dispatching systems can be built.  For
+example, a type-based event dispatching system that builds on
+``zope.event`` can be found in zope.component.
 
 Adapter
 ~~~~~~~
 
-Adapter takes the Interface of an existing component and adapts it to
-provide another Interface.
+.. based on zope-cookbook.org
+
+Summary: Adapter takes the Interface of an existing component and
+adapts it to provide another Interface.
+
+When applications gets bigger, there is a side effect on the code,
+called the spaggethi effect: interactions between classes can lead to
+unwanted dependencies and the code turns into a monolithic bloc.
+
+Adapters provides a way to prevent from this, by implementing the
+Liskov substitution principle.
+
+Adapters provide a cooperation mechanism between any given object and
+a particular context, using interfaces.  They allow an abritary type
+of class to be compatible with a given interface, by giving a
+compatibility layer.
+
+This mechanism is used in systems like Microsoft COM's QueryAdapter,
+and let the developer gathers objects in a speciﬁc functional
+context.  This also known as glue code.
+
+Adapters provides several advantages:
+
+* They can gather class instances in contexts they where not
+  implemented for, without having to change their code or make them
+  depend on each other.
+
+* They offer a smooth way to gather generic features, that can be
+  applied on several kind of classes.
+
+Adapters can be seen as a formalized duck typing and where proposed
+some years ago in PEP 246.  There are also Python implementations of
+it, like PyProtocols.
 
 Utility
 ~~~~~~~
