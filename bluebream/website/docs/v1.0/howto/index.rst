@@ -16,3 +16,4 @@ Here you can find some HOWTOs related to BlueBream.
    defaultview
    newdependency
    absoluteurl
+   dynamicfields
