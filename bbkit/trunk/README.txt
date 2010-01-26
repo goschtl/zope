@@ -1,7 +1,7 @@
 BlueBream Kit
 =============
 
-The BlueBream Kit consists a set of pacakges used by the BlueBream
+The BlueBream Kit consists a set of packages used by the BlueBream
 project.  BlueBream Kit (**bbkit**) is part of the BlueBream project
 infrastructure. These are the important factors about the kit:
 
@@ -17,3 +17,11 @@ infrastructure. These are the important factors about the kit:
 
 For development progress of this package, see this wiki:
 http://wiki.zope.org/bluebream/BlueBreamKit
+
+Package categories
+------------------
+
+- Core (ZTK & ZopeApp packages defined in zopetoolkit)
+- Community (z3c.* and other community maintained packages)
+  Community packages are only suported by community
+  and it is not officially supported.
