@@ -18,6 +18,7 @@ Manual
    componentarchitecture
    contentcomponent
    configuration
+   startup
    functionaltesting
    advancedviews
    skinsandlayers
