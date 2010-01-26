@@ -27,3 +27,4 @@ Please add other contributors name here who helped but not committed
 directly.
 
 - Justin Denney (IRC nick: jdenney)
+- Hermann Himmelbauer
