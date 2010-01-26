@@ -1,4 +1,4 @@
-How to add a new dependency ?
+Adding new package dependency
 =============================
 
 .. warning::
