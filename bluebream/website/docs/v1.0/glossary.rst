@@ -127,4 +127,4 @@ Glossary
 .. _Zope Configuration Markup Language: http://www.muthukadan.net/docs/zca.html#zcml
 .. _Grok: http://grok.zope.org/
 .. _James Fulton: http://www.zope.com/about_us/management/james_fulton.html
-
+.. _Common Gateway Interface: http://en.wikipedia.org/wiki/Common_Gateway_Interface
