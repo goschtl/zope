@@ -15,6 +15,9 @@
 import monkeys
 
 # Functions moved here from the zope specific doctest module:
+import inspect
+import os
+import sys
 def _normalize_module(module, depth=2):
     """
     Return the module specified by `module`.  In particular:
