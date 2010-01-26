@@ -1,5 +1,5 @@
-Contributing to BlueBream Project
-=================================
+Contributing to BlueBream
+=========================
 
 .. warning::
 
@@ -7,5 +7,6 @@ Contributing to BlueBream Project
    Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
    in wiki for the current status and timeline.
 
-This document provides inforamation required for those who looking to
-contribute to BlueBream project.
+If you are interested in contributing to BlueBream project, please
+look at the wiki page:
+http://wiki.zope.org/bluebream/ContributingToBlueBream
