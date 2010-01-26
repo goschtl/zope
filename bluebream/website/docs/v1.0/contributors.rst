@@ -19,3 +19,11 @@ committed to documentation directly.
 - Chris McDonough (chrism)
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
+
+Other Contributors
+------------------
+
+Please add other contributors name here who helped but not committed
+directly.
+
+- Justin Denney (IRC nick: jdenney)

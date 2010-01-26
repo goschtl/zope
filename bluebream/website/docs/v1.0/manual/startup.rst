@@ -1,3 +1,5 @@
+.. _man-startup:
+
 Startup
 =======
 
@@ -10,9 +12,11 @@ Startup
 Introduction
 ------------
 
-The web application created using BlueBream is a WSGI application.
-The factory function which return the WSGI application object is
-defined inside ``startup.py``.  For example, in the "ticket
+The BlueBream framework creates WSGI applications, which can run
+behind any WSGI compliant web servers.  The main application is
+configured and created via a factory function defined inside
+``startup.py``.  This functions returns the WSGI complaint
+application object to the server.  For example, in the "ticket
 collector" tutorial, you can see the factory function defined in
 ``src/tc/main/startup.py`` file::
 
@@ -22,20 +26,21 @@ collector" tutorial, you can see the factory function defined in
       zope_conf = global_conf['zope_conf']
       return zope.app.wsgi.getWSGIApplication(zope_conf)
 
-BlueBream use PaseDeploy together with PasteScript to run the WSGI
+PaseDeploy together with PasteScript are then used to run the WSGI
 application.  However, any :term:`WSGI` server can be used to run
-BlueBream application [#wsgi_server]_.  PaseDeploy identify the WSGI
-application factory from the entry point defined in the main package.
-For example, in the "ticket collector" tutorial, you can see the
-entry point defined in ``setup.py`` file::
+BlueBream application [#wsgi_server]_.  We provide PaseDeploy with
+the WSGI application factory as an entry point.  For example, in the
+"ticket collector" tutorial, you can see the entry point defined in
+``setup.py`` file::
 
       [paste.app_factory]
       main = tc.main.startup:application_factory
 
-To load the WSGI application, you can use the ``paster serve``
-command provided by PasteScript which expects an INI file as the
-argument.  The INI file define WSGI application in a particular
-format specified by PasteScript.  For example, in the "ticket
+The application can now be launched as a web service using the 
+``paster serve`` command provided by PasteScript.  To configure the
+web server, an INI file has to be passed to the command as an argument.
+The INI file defines the WSGI application, any WSGI middleware we may
+want and web server options.  For example, in the "ticket
 collector" tutorial, you can see the WSGI application defined in
 ``deploy.ini`` file::
 
