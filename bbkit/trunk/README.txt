@@ -25,3 +25,15 @@ Package categories
 - Community (z3c.* and other community maintained packages)
   Community packages are only suported by community
   and it is not officially supported.
+
+Runnig compatibility test suite
+-------------------------------
+
+::
+
+ $ python bootstrap.py
+ $ ./bin/buildout
+ $ ./bin/test-ztk
+ $ ./bin/test-zopeapp
+ $ ./bin/test-community
+
