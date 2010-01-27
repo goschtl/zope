@@ -164,6 +164,12 @@ Container
 Content Object
 ~~~~~~~~~~~~~~
 
+Schema
+------
+
+Widget
+------
+
 Layer
 ~~~~~
 
