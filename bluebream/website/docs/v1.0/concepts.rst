@@ -105,12 +105,39 @@ it, like PyProtocols.
 Utility
 ~~~~~~~
 
+Utility components are components that serve only one specific
+function, and are not designed to act on another component.  A good
+analogy for Python programmers are functions and methods.  Utility
+components, like Python functions, are standalone objects that do not
+need any other objects to do their work.  Adapter components, like
+Python methods, require another object to work upon.
+
+Utility components will mostly be used for simple, throw-away
+components that serve one simple task, like an XML parser.  Sometimes
+it would be useful to register an object which is not adapting
+anything.  Database connection, XML parser, object returning unique
+Ids etc. are examples of these kinds of objects.  These kind of
+components provided by the ZCA are called utility components.
+
+Utilities are just objects that provide an interface and that are
+looked up by an interface and a name.  This approach creates a global
+registry by which instances can be registered and accessed by
+different parts of your application, with no need to pass the
+instances around as parameters.
+
 Subscriber
 ~~~~~~~~~~
 
 Handler
 ~~~~~~~
 
+Component Registry
+~~~~~~~~~~~~~~~~~~
+
+Registries keep the list of which components are available, which
+interface they provide, which interface(s) they possibly adapt, along
+with an optional registration name.  The ``zope.component`` package
+implements a global component registry.
 
 Object Publishing
 ~~~~~~~~~~~~~~~~~
