@@ -8,34 +8,12 @@ Introduction
 ------------
 
 `BlueBream <http://bluebream.zope.org>`_ is a web framework written
-in Python programming language.  BlueBream is free/open source
+in Python programming language.  BlueBream is a free/open source
 software, owned by the `Zope Foundation
 <http://foundation.zope.org>`_, licensed under the `Zope Public
 License <http://foundation.zope.org/agreements/ZPL_2.1.pdf>`_ (BSD
 like, GPL compatible license).  BlueBream was previously known as
 **Zope 3**.
-
-.. raw:: html
-
-  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-  <script> new TWTR.Widget({ version: 2, type: 'search', search:
-  'bluebream', interval: 6000, title: 'The Zope Web Framework',
-  subject: 'BlueBream', width: 480, height: 300, theme: { shell: {
-  background: '#8ec1da', color: '#ffffff' }, tweets: { background:
-  '#ffffff', color: '#444444', links: '#1985b5' } }, features: {
-  scrollbar: false, loop: true, live: true, hashtags: true,
-  timestamp: true, avatars: true, behavior: 'default' }
-  }).render().start(); </script> <br/>
-
-.. raw:: html
-
-  <object width="480" height="295"><param name="movie"
-  value="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&">
-  </param> <param name="allowFullScreen" value="true"></param><param
-  name="allowscriptaccess" value="always"></param><embed
-  src="http://www.youtube.com/v/HyG5Qee5wbs&hl=en_US&fs=1&"
-  type="application/x-shockwave-flash" allowscriptaccess="always"
-  allowfullscreen="true" width="480" height="295"></embed></object>
 
 Features
 --------
