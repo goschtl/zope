@@ -13,6 +13,7 @@
      name="index"
      permission="zope.Public"
      class=".views.RootDefaultView"
+     layer="tc.skin.interfaces.IBlueWaves"
      />
 
   <interface 

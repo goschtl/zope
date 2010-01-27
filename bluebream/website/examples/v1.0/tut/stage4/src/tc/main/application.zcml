@@ -16,5 +16,6 @@
      />
 
   <include package="tc.main" />
+  <include package="tc.skin" />
 
 </configure>

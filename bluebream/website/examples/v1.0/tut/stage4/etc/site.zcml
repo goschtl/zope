@@ -35,6 +35,7 @@
   <include package="zope.app.zcmlfiles" file="menus.zcml" />
   <include package="zope.app.authentication" />
   <include package="zope.app.security.browser" />
+  <include package="zope.traversing.browser" />
 
   <include package="tc.main" file="securitypolicy.zcml" />
   <include package="tc.main" file="application.zcml" />

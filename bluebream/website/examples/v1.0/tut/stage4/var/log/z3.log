@@ -850,3 +850,149 @@ ComponentLookupError: (<InterfaceClass zope.error.interfaces.IErrorReportingUtil
 2010-01-19T15:35:15 INFO paste.httpserver.ThreadPool Shutting down threadpool
 ------
 2010-01-19T15:35:15 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T07:57:10 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T07:59:16 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T07:59:54 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:00:53 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:00:55 WARNING ZODB.blob (8230) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:00:55 WARNING ZODB.blob (8230) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-26T08:03:35 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:03:35 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:03:35 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:03:35 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:05:51 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:05:52 WARNING ZODB.FileStorage Ignoring index for /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/filestorage/Data.fs
+------
+2010-01-26T08:05:52 WARNING ZODB.blob (8295) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:05:52 WARNING ZODB.blob (8295) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-26T08:07:11 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:07:12 WARNING ZODB.blob (8299) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:07:12 WARNING ZODB.blob (8299) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-26T08:08:10 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:08:10 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:08:10 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:08:10 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:10:07 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:10:08 WARNING ZODB.blob (8335) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:10:08 WARNING ZODB.blob (8335) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-26T08:10:39 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:10:39 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:10:39 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-26T08:10:39 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-26T08:10:45 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:10:46 WARNING ZODB.blob (8348) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:10:46 WARNING ZODB.blob (8348) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-26T08:13:53 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-26T08:13:54 WARNING ZODB.blob (8375) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-26T08:13:54 WARNING ZODB.blob (8375) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T05:52:03 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T05:52:06 WARNING ZODB.blob (20852) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-27T05:52:06 WARNING ZODB.blob (20852) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T06:05:50 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:05:50 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:05:50 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:05:50 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:05:52 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:06:04 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:12:32 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:13:00 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:13:12 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:13:16 WARNING ZODB.blob (21322) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-27T06:13:16 WARNING ZODB.blob (21322) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T06:15:33 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:15:33 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:15:33 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:15:33 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:15:45 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:15:46 WARNING ZODB.blob (21364) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-27T06:15:46 WARNING ZODB.blob (21364) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T06:16:44 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:16:44 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:16:44 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:16:44 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:16:46 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:16:48 WARNING ZODB.blob (21383) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-27T06:16:48 WARNING ZODB.blob (21383) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T06:21:39 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:21:39 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:21:39 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:21:39 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:21:41 WARNING root Developer mode is enabled: this is a security risk and should NOT be enabled on production servers. Developer mode can usually be turned off by setting the `devmode` option to `off` or by removing it from the instance configuration file completely.
+------
+2010-01-27T06:21:42 WARNING ZODB.blob (21445) The `lawn` blob directory layout is deprecated due to scalability issues on some file systems, please consider migrating to the `bushy` layout.
+------
+2010-01-27T06:21:42 WARNING ZODB.blob (21445) Blob dir /opt/baiju/wa/bluebream_website/examples/v1.0/tut/stage4/var/blob/ has insecure mode setting
+------
+2010-01-27T06:26:26 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:26:26 INFO paste.httpserver.ThreadPool All workers stopped
+------
+2010-01-27T06:26:26 INFO paste.httpserver.ThreadPool Shutting down threadpool
+------
+2010-01-27T06:26:26 INFO paste.httpserver.ThreadPool All workers stopped

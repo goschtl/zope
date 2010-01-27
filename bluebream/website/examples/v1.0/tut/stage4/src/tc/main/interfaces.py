@@ -1,3 +1,4 @@
+from zope.interface import Interface
 from zope.container.interfaces import IContainer
 from zope.schema import TextLine
 from zope.schema import Text
@@ -21,5 +22,8 @@ class ICollector(IContainer):
 class ITicket(Interface):
     """ """
 
-    name = ""
-
+    name = TextLine(
+        title=u"Name",
+        description=u"Name of application.",
+        default=u"",
+        required=True)
