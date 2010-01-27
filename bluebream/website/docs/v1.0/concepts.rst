@@ -167,8 +167,41 @@ Content Object
 Layer
 ~~~~~
 
+- Define the “feel” of a site
+- Contain presentation logic
+- Common artifacts: pages, content providers, viewlet managers, and viewlets
+- Developed by BlueBream application developers
+
 Skin
 ~~~~
+
+- Define the “look” of a site
+- Common artifacts: templates and resources (CSS, Javascript, etc.)
+- Use layers to retrieve the data for templates
+- Developed by HTML and Graphic Designer/Scripter
+
+Technically, skins are interfaces inherited from a special interface
+called ``IDefaultBrowserLayer``.  The ``IDefaultBrowserLayer`` is
+defined in ``zope.publisher.interfaces.browser`` module.  You can
+also inherit from an already existing skin.  It is also important to
+register the skin interface type as ``IBrowserSkinType``.  Skins are
+directly provided by a request.
+
+.. note:: Layers versus skins
+
+    - Both are implemented as interfaces
+
+    - BlueBream does not differentiate between the two
+
+    - In fact, the distinction of layers defining the “feel” and
+      skins the “look” is a convention. You may not want to follow
+      the convention, if it is too abstract for you, but if you are
+      developing application with multiple look and feel, I strongly
+      suggest using this convention, since it cleanly separates
+      concerns.
+
+    - Both support inheritance/acquisition
+
 
 Annotation
 ~~~~~~~~~~
