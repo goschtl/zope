@@ -170,16 +170,50 @@ storage interface, rich transaction support, and undo.
 WSGI
 ~~~~
 
+:term:`WSGI` is the Web Server Gateway Interface.  It is a
+specification for web servers and application servers to communicate
+with web applications (though it can also be used for more than
+that).  It is a Python standard, described in detail in `PEP 333
+<http://www.python.org/dev/peps/pep-0333/>`_.
+
 PasteScript
 ~~~~~~~~~~~
 
+PasteScript is an external package created by Ian Bicking.
+
+PasteScript is a framework for defining commands.  It comes with a
+few commands out of the box, like ``paster serve`` and ``paster
+create``.
+
+The ``paster serve`` command loads and serves a WSGI application
+defined in a Paste Deploy config file.  The ``paster create`` command
+creates directory layout for packages from a template.
+
 PasteDeploy
 ~~~~~~~~~~~
+
+PasteDeploy is an external package created by Ian Bicking.  
+
+PasteDeploy is a system for loading and configuring WSGI applications
+and servers.  PasteDeploy create a WSGI app as specified in the
+configuration file.  The INI format of configuration file is
+specified by PasteDeploy.
+
+From the PasteDeploy site:
+
+Paste Deployment is a system for finding and configuring WSGI
+applications and servers.  For WSGI application consumers it provides
+a single, simple function (loadapp) for loading a WSGI application
+from a configuration file or a Python Egg.  For WSGI application
+providers it only asks for a single, simple entry point to your
+application, so that application users don’t need to be exposed to
+the implementation details of your application.
 
 ZCML
 ~~~~
 
 The Zope Configuration Markup Language (ZCML) is an XML based
 configuration system for registration of components.  Instead of
-using Python API for registration, you can use ZCML
+using Python API for registration, you can use ZCML.  Security
+declarations is also done in ZCML.
 
