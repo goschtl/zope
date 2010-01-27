@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup (
     name='z3c.jsonrpcproxy',
-    version='0.6.0',
+    version='0.7.0dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "JSON RPC (javascript) proxy implementation for Zope3",
