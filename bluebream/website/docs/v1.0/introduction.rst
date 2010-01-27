@@ -127,21 +127,21 @@ Digital creations then released three open-source python software
 packages: bobo, document template, and bobopos.  These packages
 provided a web publishing facility, text templating, and an object
 database and were the core of *principia*, a commercial application
-server.  In november of 1998, investor hadar pedhazur convinced
-digital creations to open source principia. These packages evolved
+server.  In november of 1998, investor Hadar Pedhazur convinced
+Digital Creations to open source principia.  These packages evolved
 into the core components of zope 2, and digital creations became zope
 corp.
 
-Since those days, Zope has been under active development. It has
-evolved in several ways as the community gains experience. We
-continually seek the optimum balance between power and ease of
-use. Zope 2 emphasized rapid development, the :term:`Zope Component
-Architecture`.  which is the core of Zope 3, emphasized modularity
-and configurability.  This proves very successful in "enterprise"
+Since those days, Zope has been under active development.  It has
+evolved in several ways as the community gains experience.  We
+continually seek the optimum balance between power and ease of use.
+Zope 2 emphasized rapid development, the :term:`Zope Component
+Architecture`, which is the core of Zope 3, emphasized modularity and
+configurability.  This proves very successful in "enterprise"
 applications where flexibility and scalability justify the longer
 learning curve which Zope 3 requires, but is overkill for many
 situations which otherwise stand to benefit from the distilled wisdom
-of the ZCA. The Zope community has responded to this in a number of
+of the ZCA.  The Zope community has responded to this in a number of
 ways, several projects have built frameworks which implement
 `Convention over configuration`_, and other refinements of the ZCA
 components aimed at facilitating rapid deployment, maintaining the
@@ -153,14 +153,14 @@ the Z Object Publishing Environment, when spelled `ZOPE`, is the name
 of a fish.  Another name for the fish is `Blue bream`_.
 
 BlueBream presents a well defined (and documented) configuration
-framework which simplifies managing of the power of the zca.  We've
-brought together zca, buildout and sphinx in a way that makes
+framework which simplifies managing of the power of the ZCA.  We've
+brought together ZCA, buildout and sphinx in a way that makes
 building powerhouse applications fun.
 
 The components which comprise BlueBream are under continual
-development by an international team of extremely experienced
-coders. Take a look at the recent uploads to the `PyPi`_ site, it is
-rare to not see several zca projects listed.
+development by an international team of extremely experienced coders.
+Take a look at the recent uploads to the `PyPi`_ site, it is rare to
+not see several zca projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
 .. _python and Internet Programming: http://www.python.org/workshops/1996-06/agenda.html 
