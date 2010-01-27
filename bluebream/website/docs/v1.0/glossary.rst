@@ -116,6 +116,15 @@ Glossary
     average self managed personal sites running on web hosting
     services.
 
+.. raw:: html
+
+  <div id="disqus_thread"></div><script type="text/javascript"
+  src="http://disqus.com/forums/bluebream/embed.js"></script><noscript><a
+  href="http://disqus.com/forums/bluebream/?url=ref">View the
+  discussion thread.</a></noscript><a href="http://disqus.com"
+  class="dsq-brlink">blog comments powered by <span
+  class="logo-disqus">Disqus</span></a>
+
 .. _Setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 .. _Python based Build system:  http://www.buildout.org
 .. _Buildout PyPi page: http://pypi.python.org/pypi/zc.buildout

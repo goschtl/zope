@@ -16,7 +16,7 @@ Developer Resources
 - The bugs and issues are tracked at `launchpad
   <https://launchpad.net/bluebream>`_.
 
-- There is also a `Wiki <http://wiki.zope.org/bluebream>`_ available.
+- `BlueBream Wiki <http://wiki.zope.org/bluebream>`_.
 
 - `PyPI page <http://pypi.python.org/pypi/bluebream>`_
 
@@ -27,3 +27,14 @@ Developer Resources
 - `Mailing list <https://mail.zope.org/mailman/listinfo/zope3-users>`_
 
 - IRC Channel: `#bluebream <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_ at irc.freenode.net
+
+- `Buildbot <http://zope3.afpy.org/buildbot>`_
+
+.. raw:: html
+
+  <div id="disqus_thread"></div><script type="text/javascript"
+  src="http://disqus.com/forums/bluebream/embed.js"></script><noscript><a
+  href="http://disqus.com/forums/bluebream/?url=ref">View the
+  discussion thread.</a></noscript><a href="http://disqus.com"
+  class="dsq-brlink">blog comments powered by <span
+  class="logo-disqus">Disqus</span></a>
