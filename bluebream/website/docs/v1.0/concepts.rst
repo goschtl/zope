@@ -212,6 +212,52 @@ directly provided by a request.
 Annotation
 ~~~~~~~~~~
 
+Every object that comes with BlueBream and can have some sort of
+annotation, uses attribute annotations.  Attribute annotations store
+the annotation data directly in the objects.  This implementation
+works fine as long as the object is persistent and is stored in the
+ZODB.  But what if you have SQL-based objects, such as in
+relational-to-object mapping solutions? Storing annotations on the
+attribute of the object would certainly not work.  In these scenarios
+it becomes necessary to implement a custom annotations
+implementation.
+
+First, there exists an interface named ``IAnnotatable``.  By
+providing this interface, an object declares that it is possible to
+store annotations for itself.
+
+However, ``IAnnotable`` is too general, since it does not specify how
+the annotation can be stored and should therefore never be provided
+directly.  One should never assume that one method works for all
+possible objects.
+
+BlueBream comes by default with an ``IAttributeAnnotatable``
+interface that allows you to store the annotations in the attribute
+``__annotations__`` on the object itself.  This works well for any
+object whose instances are stored in the ZODB.
+
+As second part to the equation we have the ``IAnnotations``
+interface, which provides a simple mapping API (i.e. dictionary-like)
+that allows you to look up annotation data using a unique key.  This
+interface is commonly implemented as an adapter requiring
+IAnnotatable and providing IAnnotations.  Thus we need to provide an
+implementation for ``IAnnotations`` to have our own annotations
+storage mechanism.
+
+For ``IAttributeAnnotable`` we have an ``AttributeAnnotations``
+adapter.  Note that by definition ``IAnnotations`` extends
+``IAnnotable``, since an ``IAnnotation`` can always adapt to itself.
+
+Another important aspect about annotations is the key (unique id)
+that is being used in the mapping.  Since annotations may contain a
+large amount of data, it is important to choose keys in a way that
+they will always be unique.  The simplest way to ensure this is to
+include the package name in the key.  So for dublin core meta data,
+for example, instead of using ``ZopeDublinCore`` as the key one
+should use ``zope.app.dublincore.ZopeDublinCore``.  Some people also
+use a URI-based namespace notation:
+``http://namespace.zope.org/dublincore/ZopeDublinCore/1.0.``
+
 Content Provider
 ~~~~~~~~~~~~~~~~
 
