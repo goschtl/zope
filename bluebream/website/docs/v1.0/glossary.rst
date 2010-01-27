@@ -97,7 +97,9 @@ Glossary
    
   Bobo
     Jim Fulton's original design of object oriented internet
-    publishing technology, implemented in Python.
+    publishing technology, implemented in Python. Jim has recently
+    come full circle, releasing Bobo_, a *Web application framework 
+    for the impatient*.
    
   CGI
     `Common Gateway Interface`_
@@ -139,3 +141,7 @@ Glossary
 .. _James Fulton: http://www.zope.com/about_us/management/james_fulton.html
 .. _Common Gateway Interface: http://en.wikipedia.org/wiki/Common_Gateway_Interface
 .. _Apache module: http://www.modwsgi.org
+.. _Bobo: http://pypi.python.org/pypi/bobo/0.2.2
+
+Web application framework for the impatient
+
