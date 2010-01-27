@@ -17,5 +17,6 @@ which is actually used by the developers.
 
    contributing
    resources
+   developing
    decisions
    writing
