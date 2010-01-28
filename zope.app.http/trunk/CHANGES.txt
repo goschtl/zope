@@ -5,7 +5,9 @@ CHANGES
 3.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix for an edge case:
+  If someone does a defaultView for the context object and someone comes with
+  a not allowed method, the exception view fails on getAdapters
 
 
 3.6.1 (2010-01-08)

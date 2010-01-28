@@ -26,15 +26,22 @@ class MethodNotAllowedView(object):
     def __init__(self, error, request):
         self.error = error
         self.request = request
-        self.allow = [
-            name for name, adapter
-            in getAdapters((error.object, error.request), Interface)
-            if hasattr(adapter, name)]
-        self.allow.sort()
+        allow = []
+
+        try:
+            # see test_methodnotallowed.TestMethodNotAllowedView.test_defaultView
+            # I could not solve this with a while ... next() iterator
+            # because it seems like once the generator had an exception it
+            # stops returning items
+            self.allow = [
+                name for name, adapter
+                in getAdapters((error.object, error.request), Interface)
+                if hasattr(adapter, name)]
+            self.allow.sort()
+        except TypeError:
+            self.allow = []
 
     def __call__(self):
         self.request.response.setHeader('Allow', ', '.join(self.allow))
         self.request.response.setStatus(405)
         return 'Method Not Allowed'
-
-
