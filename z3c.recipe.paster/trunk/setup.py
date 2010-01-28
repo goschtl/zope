@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.recipe.paster',
-    version = '0.5.2dev',
+    version = '0.5.2',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 paste deploy setup recipe',
