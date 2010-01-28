@@ -1331,13 +1331,21 @@ see, the directory location information is getting from Buildout
 configuration file.  So, if you want to change the location, you need
 to change it in the Buildout configuration.
 
+How to clear history (pack) in ZODB ?
+-------------------------------------
+
+From the debug shell, call the ``app.db.pack`` function::
+
+  $ ./bin/paster shell debug.ini
+  >>> app.db.pack()
+
 Do you have an example of CRUD (create/read/update/delete) ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004248.html
 
 The Zope Object DataBase (ZODB), available by default to your application,
-makes CRUD very simple.
+makes CRUD very simpe.
 
 Create::
 
