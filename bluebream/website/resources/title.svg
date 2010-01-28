@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.47pre4 r22446"
-   sodipodi:docname="title.svg">
+   sodipodi:docname="title.svg"
+   inkscape:export-filename="/opt/baiju/wa/private/title.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -54,7 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -78,7 +81,10 @@
          style="font-size:32">BlueBream - The Zope Web Framework</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot2840"
-       style="font-size:18px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"><flowRegion
+       style="font-size:18px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       inkscape:export-filename="/opt/baiju/wa/private/title.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
          id="flowRegion2842"><rect
            id="rect2844"
            width="683.06512"
