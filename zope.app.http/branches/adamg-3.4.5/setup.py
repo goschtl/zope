@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.http',
-      version = '3.4.4',
+      version = '3.4.5dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='HTTP Behavior for the Zope Publisher',
@@ -47,11 +47,12 @@ setup(name='zope.app.http',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope', 'zope.app'],
-      extras_require=dict(
-          test=['zope.app.testing',
-                'zope.app.securitypolicy',
+      extras_require = dict(
+        test = ['zope.app.securitypolicy',
                 'zope.app.file',
-                'zope.app.zcmlfiles']),
+                'zope.app.zcmlfiles',
+                'zope.app.testing',
+                ]),
       install_requires=['setuptools',
                         'zope.interface',
                         'zope.publisher',

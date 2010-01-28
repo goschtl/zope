@@ -52,11 +52,22 @@ class TestMethodNotAllowedView(PlacelessSetup, TestCase):
 
     def setUp(self):
         from zope.publisher.interfaces.http import IHTTPRequest
+
         PlacelessSetup.setUp(self)
         ztapi.provideView(I, IHTTPRequest, Interface, 'GET', GetView)
         ztapi.provideView(I, IHTTPRequest, Interface, 'DELETE', DeleteView)
         ztapi.provideView(I, IHTTPRequest, Interface, 'irrelevant', GetView)
         ztapi.provideView(I, IHTTPRequest, Interface, 'also_irr.', DeleteView)
+
+        from zope.component.interfaces import IDefaultViewName
+        from zope.publisher.interfaces.browser import IBrowserRequest
+        #do the same as defaultView would for something like:
+        #<defaultView
+        #    for=".test_methodnotallowed.I"
+        #    name="index.html"
+        #    />
+
+        ztapi.provideAdapter((I, IBrowserRequest), IDefaultViewName, u'index.html')
 
     def test(self):
         from zope.app.publication.http import MethodNotAllowed
@@ -73,6 +84,34 @@ class TestMethodNotAllowedView(PlacelessSetup, TestCase):
 
         self.assertEqual(request.response.getStatus(), 405)
         self.assertEqual(request.response.getHeader('Allow'), 'DELETE, GET')
+        self.assertEqual(result, 'Method Not Allowed')
+
+
+    def test_defaultView(self):
+        # do the same with a BrowserRequest
+        # edge case is that if someone does a defaultView for the context object
+        # but the app is not prepared for webdav or whatever
+        # and someone comes with a not allowed method, the exception
+        # view fails on getAdapters
+        # this might be an issue with zope.publisher, as it provides
+        # a unicode object with provideAdapter, but I don't think I can
+        # change zope.publisher
+        from zope.app.publication.http import MethodNotAllowed
+        from zope.app.http.exception.methodnotallowed \
+             import MethodNotAllowedView
+        from zope.publisher.browser import BrowserRequest
+
+        context = C()
+        request = BrowserRequest(StringIO('PUT /bla/bla HTTP/1.1\n\n'), {})
+
+        error = MethodNotAllowed(context, request)
+        view = MethodNotAllowedView(error, request)
+
+        result = view()
+
+        self.assertEqual(request.response.getStatus(), 405)
+        #well this is empty, but we're grateful that it does not break
+        self.assertEqual(request.response.getHeader('Allow'), '')
         self.assertEqual(result, 'Method Not Allowed')
 
 

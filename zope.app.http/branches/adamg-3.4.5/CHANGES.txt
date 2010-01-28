@@ -2,7 +2,15 @@
 CHANGES
 =======
 
-3.4.4 (unreleased)
+3.4.5 (2010-01-28)
+------------------
+
+- Backport r108613 from trunk:
+  Fix for an edge case:
+  If someone does a defaultView for the context object and someone comes with
+  a not allowed method, the exception view fails on getAdapters
+
+3.4.4 (2009-01-29)
 ------------------
 
 - Make tests compatible with new zope.traversing release.
