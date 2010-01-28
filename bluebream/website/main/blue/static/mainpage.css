@@ -62,3 +62,7 @@ ul.mainlinks li a span.linkdesc {
 div.footer a {
     color: black;
 }
+
+div.gfg-root {
+    height: 370px
+}
