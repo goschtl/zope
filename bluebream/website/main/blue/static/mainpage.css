@@ -11,6 +11,7 @@ div.topnavbar ul {
 
 div.topnavbar ul li {
     display: inline;
+    padding-left: 10px;
 }
 
 div.logo {
