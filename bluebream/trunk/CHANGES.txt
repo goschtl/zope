@@ -4,6 +4,8 @@ Changelog
 0.2.0 (unreleased)
 ------------------
 
+- Changed template summary into: A BlueBream project
+
 - Removed `Sphinx-PyPI-upload` -- no more used as the
   website is moved to http://bluebream.zope.org
 
