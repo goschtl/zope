@@ -69,6 +69,11 @@ ul {
   margin: 1.6em auto;
 }
 
+ul.simple {
+  margin: 0;
+  padding: 0;
+}
+
 li {
   left: 0;
   margin: 0 5em 0 0;
@@ -132,7 +137,6 @@ div#grokui-messages {
   margin: 0;
 }
 
-/* ---- form and form-like elements ----- */
 form {
   clear: both;
 }
@@ -162,6 +166,12 @@ fieldset {
   -webkit-border-radius : 10px;
 }
 
+fieldset fieldset {
+  border: 0;
+  margin: 0 1em;
+  background-color: transparent;
+}
+
 legend {
   color: #c90;
   font-size: 1.2em;
@@ -180,95 +190,44 @@ a:hover.button {
   padding: 0 0.2em 0.2em;
 }
 
-
-/* ----- menu elements ----- */
-
-#menu {
-  color: #A90101;
-  font-size: 1.1em;
+dl.table {
+  margin: 1em;
 }
 
-.menu-box1 {
-  padding: 0.5em;
-}
-
-.menu-box2 {
-  background-color: #fff4be;
-  border: 1px solid #fc9;
-  padding: 0.5em;
-}
-
-.menu-box3 {
-  margin: 1em 0.5em;
-}
-
-.menu-description1 {
-  margin-left: 1.5em;
-}
-
-.menu-label1 { 
-  width: 40em;
-}
-
-.menu-head1 h3 {
-  margin: 0.2em 0.3em;
-}
-
-
-/* --- system proces related --- */
-div#server-processes {
-  background-color: #f9f9D4;
+dl.table dt {
   border: 1px solid #cc9900;
-  padding: 0.75em;
-}
-
-div#server-processes dl {
-  margin: 0.6em;
-  padding-top: 0;  
-}
-
-div#server-processes dt.emph {
-  background: url(banner-shadow.jpg) top left repeat-x;
-  border: 1px solid grey;
   margin-left: 0;
   margin-top: 0.5em;
   padding-left: 0.75em;
   background-color: #fff4be;
+  font-weight: bold;
 }
 
-div#server-processes dd {
-  border: 1px solid grey;
+dl.table dd {
+  border: 1px solid #cc9900;
   border-top: none;
   margin: 0 0 1em 0;
   padding-left: 0.75em;
   background-color: white;
 }
 
-div#server-processes ul {
-  margin: 0;
+.details {
+  margin: 0 0.75em;
+}
+
+.details .description {
+  font-size: 90%;
+  margin: 0.2em 0;
+}
+
+.details h3 {
+  margin: 0.2em 0 0.1em 0;
+  font-size: 130%;
+  border-bottom: 1px solid #cc9900;
   padding: 0;
 }
 
-/* ----- misc elements ----- */
-.huge {
-  font-size: 1.6em;
-  text-align: center;
+label {
+  font-weight: bold !important;
 }
 
-.rightalign {
-  text-align: right;
-}
-
-.emph,.menu-head1,.docgrok-description1 {
-  font-weight: bold;
-}
-
-.header {
-  color: #C90;
-  clear: both;
-  display: block;
-  font-size: 1.2em;
-  font-weight: bold;
-  padding-top: 1em;
-  padding-left: 0.8em;
-}
