@@ -172,21 +172,17 @@ apart and put them together like LEGO bricks(TM).
 Where can I find pointers to resources ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. IRC : #zope3-dev at irc.freenode.net , logs at : http://zope3.pov.lt/irclogs
+1. IRC : #bluebream at irc.freenode.net
 
-2. Users list (for development with BlueBream): zope3-users@zope.org,
-   archives at : http://mail.zope.org/pipermail/zope3-users/
+2. Mailing list: bluebream@zope.org,
+   Archives at: http://mail.zope.org/pipermail/bluebream/
 
-3. Developers list (for development of BlueBream itself) :
-   zope-dev@zope.org, archives at :
-   http://mail.zope.org/pipermail/zope-dev/
+3. Wiki: http://wiki.zope.org/bluebream
 
-4. Zope 3 book by Philipp von Weitershausen :
-   http://worldcookery.com/
+4. Zope 3 book by Philipp von Weitershausen:
+   http://worldcookery.com/ (Bit outdated)
 
-5. Planet :  http://planetzope.org/
-
-6. https://wiki.ubuntu.com/LearningZope3
+5. Planet:  http://planetzope.org/
 
 
 What's the deal with the ``/@@`` syntax ?
@@ -254,7 +250,7 @@ To check for a specific permission on an object, you can do something like::
 I've registered a PAU in the site-root; now I cannot log in as zope.Manager. What gives?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Start zopedebug then unregister the utility. This will then let you
+Start zopedebug then unregister the utility.  This will then let you
 log in as a user defined in principals.zcml.
 
 Example (execute the following with zopedebug)::
@@ -280,17 +276,7 @@ root of the site and have full permissions.
 How do I setup authentication (using a PAU)?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Via the ZMI:
-
- * go to the site manager (in the root, or in your folder/site)
- * add a Pluggable Authentication Utility (name as you want, prefix empty)
- * enter it and activate "no challenge if auth" and "session credentials" in this order
- * add a Principal Folder (name and prefix as you want)
- * return back to the PAU, and activate your Principal Folder
- * Now, register both the PAU and the Principal Folder 
- * Then you can add users in your Principal Folder (aka Principals)
-
-Via the API::
+::
 
   site = getSite()
   sm = site.getSiteManager()
@@ -302,23 +288,6 @@ Via the API::
   sm.registerUtility(users, IAuthenticatorPlugin, name="Users")
   pau.authenticatorPlugins = (users.__name__, )
   pau.credentialsPlugins = ( "No Challenge if Authenticated", "Session Credentials" ) 
-
-How do I setup authentication (via ldap)?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Install ldapadapter and ldappas.
-
-Via the ZMI:
-
- * go to the site manager (in the root, or in your folder/site)
- * add a ldapadapter and configure it for your ldapserver, test it
- * Now, register it with some custom name (example, ldapadapter.interfaces.ILDAPAdapter utility named 'myldap')
- * add a Pluggable Authentication Utility (name as you want, prefix empty)
- * enter it and activate "no challenge if auth" and "session credentials" in this order
- * add a LDAP Authentication plugin
- * return back to the PAU, and activate your ldap plugin
- * Now, register both the PAU and the ldap plugin
- * Then you can see your ldap-users in Grant action
 
 How do I logout from BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -358,12 +327,6 @@ file (``site.zcml``) as the adapter registration is available there::
 
 User Interface
 --------------
-
-How do I disable the url selection of the skin?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FIXME: override the  ++skin++ namespace traversal?
-
 
 How do I set up z3c.traverser and zope.contentprovider?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -456,7 +419,8 @@ not type checked.
 How can I register a content provider without using viewlet managers?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You need to create and register simple adapter for object, request and view that implements the IContentProvider interface::
+You need to create and register simple adapter for object, request
+and view that implements the ``IContentProvider`` interface::
 
   class LatestNews(object):
     
@@ -485,7 +449,10 @@ Then you can use it in your TAL templates just like this::
 
   <div tal:content="provider latestNews" />
 
-Also, you may want to pass some parameters via TAL. For info on how to do this, read documentation in the zope.contentprovider. If you want to bind some content provider to some skin, change IDefaultBrowserLayer to your skin interface.
+Also, you may want to pass some parameters via TAL.  For info on how
+to do this, read documentation in the zope.contentprovider.  If you
+want to bind some content provider to some skin, change
+IDefaultBrowserLayer to your skin interface.
 
 How do I serve out static content in zope3?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -514,19 +481,13 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006106.html
 How write custom traversal in BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-See this blog entry by Marius Gedminas : http://mg.pov.lt/blog/zope3-custom-traversal.html
+See this blog entry by Marius Gedminas:
+http://mg.pov.lt/blog/zope3-custom-traversal.html
 
 .. _faq-programming:
 
 Programming
 -----------
-
-Is there a tutorial?
-~~~~~~~~~~~~~~~~~~~~
-
- - http://www.benjiyork.com/quick_start/
- - [Zope 3 in 30 Minutes]
- - ProgrammerTutorial (out dated)
 
 Is API documentation available online?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -576,21 +537,18 @@ between major versions, though (3.2 to 3.3).
 Note: this is even easier if you use an egg based infrastructure. However,
 learning how to use eggs in a realistic way, is a significant leap.
 
-Must I always restart the  zope server, when I modify my code? 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Must I always restart the BlueBream server, when I modify my code ? 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://mail.zope.org/pipermail/zope3-users/2006-September/004531.html
+No, you need not to restart, if you use the ``--reload`` option
+provided by the ``paster serve`` command.  So, you can run like this::
 
-  - Yes, you have to restart the server, though we recommend writing unit
-    tests that take a lot less time than starting Zope)
+  ./bin/paster serve --reload debug.ini
 
-  - This probably isn't going to be implemented (it's very much non-trivial)
-
-  - Significantly, you don't have to restart for changes in resources or Page Templates.
-
-In the beginning, this seems like a huge annoyance - however, getting in the 
-habit of writing unit and functional tests as you develop code will greatly 
-alleviate this issue.
+Note: We recommend writing automated tests to see the effect of
+changes.  In the beginning, this seems like a huge annoyance -
+however, getting in the habit of writing unit and functional tests as
+you develop code will greatly alleviate this issue.
 
 How do I automatically create some needed object at application startup?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -782,8 +740,9 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2006-July/003876.html
            param2 = self.request.form['param2']
            do_something(param1, param2)
 
-MyPageView has to be either the default view associated to the 'mypage' object
-or a view called 'mypage' associated to the RootFolder object.
+MyPageView has to be either the default view associated to the
+'mypage' object or a view called 'mypage' associated to the
+RootFolder object.
 
 Alternately, you could use::
 
@@ -863,9 +822,9 @@ Where to get zope.conf syntax details ?
 
 Refer: http://zope3.pov.lt/irclogs/%23zope3-dev.2008-04-01.log.html
 
-Look at schema.xml inside zope.app.appsetup egg
-And this xml file can point you to rest of the syntax.
-for details about <zodb> look for component.xml in ZODB egg
+Look at schema.xml inside zope.app.appsetup egg And this xml file can
+point you to rest of the syntax.  for details about <zodb> look for
+component.xml in ZODB egg
 
 How do I register a browser resource in a test?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -886,27 +845,31 @@ Then register it for your layer::
 How do I get a registered browser resource in a test?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A resource is just an adapter on the request. It can be seen as a view without any context.
-you can retrieve the FileResource or DirectoryResource like this:::
+A resource is just an adapter on the request.  It can be seen as a
+view without any context.  you can retrieve the FileResource or
+DirectoryResource like this:::
 
-    getAdapter(request, name='file.png')
+  getAdapter(request, name='file.png')
 
 If this is a directory resource, you can access the files in it:::
 
-    getAdapter(request, name='img_dir')['foobar.png']
+  getAdapter(request, name='img_dir')['foobar.png']
 
-then get the content of the file with the GET method (although this is not part of any interface)::
+Then get the content of the file with the GET method (although this
+is not part of any interface)::
 
-    getAdapter(request, name='img_dir')['foobar.png'].GET()
+  getAdapter(request, name='img_dir')['foobar.png'].GET()
 
 How do I write a custom 404 error page?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Register a view for zope.publisher.interfaces.INotFound in your layer.
 The default corresponding view is zope.app.exception.browser.notfound.NotFound
 An equivalent exists for pagelets : z3c.layer.pagelet.browser.NotFoundPagelet
 
 How do I delete an entire tree of objects?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 You can't control the order of deletion. The problem is that
 certain objects get deleted too soon, and other items may need
 them around, particularly if you have specified IObjectRemoved
@@ -1019,7 +982,8 @@ not type checked.
 How can I register a content provider without using viewlet managers?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You need to create and register simple adapter for object, request and view that implements the IContentProvider interface::
+You need to create and register simple adapter for object, request
+and view that implements the IContentProvider interface::
 
   class LatestNews(object):
     
@@ -1048,7 +1012,10 @@ Then you can use it in your TAL templates just like this::
 
   <div tal:content="provider latestNews" />
 
-Also, you may want to pass some parameters via TAL. For info on how to do this, read documentation in the zope.contentprovider. If you want to bind some content provider to some skin, change IDefaultBrowserLayer to your skin interface.
+Also, you may want to pass some parameters via TAL.  For info on how
+to do this, read documentation in the zope.contentprovider.  If you
+want to bind some content provider to some skin, change
+IDefaultBrowserLayer to your skin interface.
 
 
 How do I serve out static content in zope3?
@@ -1079,7 +1046,8 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006106.html
 How write custom traversal in BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-See this blog entry by Marius Gedminas : http://mg.pov.lt/blog/zope3-custom-traversal.html
+See this blog entry by Marius Gedminas :
+http://mg.pov.lt/blog/zope3-custom-traversal.html
 
 How do I make my project (or a third party project) appear in the APIDOC?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1170,19 +1138,19 @@ Why do I see ForbiddenAttribute exceptions/errors ?
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004027.html
 
 ForbiddenAttribute are always (ALWAYS!!!) an sign of missing security
-declarations, or of code accessing stuff it shouldn't. If you're accessing
-a known method, you're most definitely lacking a
-security declaration for it.
+declarations, or of code accessing stuff it shouldn't.  If you're
+accessing a known method, you're most definitely lacking a security
+declaration for it.
 
-Zope, by default, is set to deny access for attributes and methods that don't
-have explicit declarations.
+Zope, by default, is set to deny access for attributes and methods
+that don't have explicit declarations.
 
 "order" attribute not in browser:menuItem directive:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Q. I want to add a new view tab in the ZMI to be able to edit object
-  attributes of some objects. So I'm adding a new menuItem in the
-  zmi_views menu via ZCML with::
+  Q. I want to add a new view tab in the ZMI to be able to edit
+  object attributes of some objects.  So I'm adding a new menuItem in
+  the zmi_views menu via ZCML with::
 
     <browser:menuItem
         action="properties.html"
@@ -1193,10 +1161,10 @@ have explicit declarations.
         order="2" />
 
   (MyClass is just a derived Folder with custom attributes) The
-  problem is: the new tab always appear in the first place. I would
-  like to put it just after the "content" tab, not before. The "order"
-  directive does not work for that. How can I reorder the tabs so that
-  my new tab appears in the 2nd position?
+  problem is: the new tab always appear in the first place.  I would
+  like to put it just after the "content" tab, not before.  The
+  "order" directive does not work for that.  How can I reorder the
+  tabs so that my new tab appears in the 2nd position?
 
 The default implementation of menus sorts by interface first, and this
 item is most specific. See zope.app.publisher.browser.menu. If you do
@@ -1207,14 +1175,14 @@ utf-8 error in i18nfile
 
   Q. Why do I always get an error when I try to add some utf-8 text
   into an i18nfile? I just add an i18nfile in the ZMI, then I chose a
-  name and I set the contentType to "text/plain;charset=utf-8". If I
-  enter some text with accents like "ÃÂ©Ã ÃÂ®ÃÂ®", I get a system error
-  which says : UnicodeDecodeError: 'ascii' codec can't decode byte
-  0xc3 in position 0: ordinal not in range(128). I don't get any error
-  with a simple File object.
+  name and I set the contentType to "text/plain;charset=utf-8".  If I
+  enter some text with accents like "ÃÂ©Ã ÃÂ®ÃÂ®", I
+  get a system error which says : UnicodeDecodeError: 'ascii' codec
+  can't decode byte 0xc3 in position 0: ordinal not in range(128).  I
+  don't get any error with a simple File object.
 
 Okay, I18n file is a demo that is probably not well-developed. Don't
-use it. I will propose to not distribute it anymore. No one is using
+use it.  I will propose to not distribute it anymore. No one is using
 it, so you are on your own finding the problem and providing a patch.
 
 When running $instance/bin/runzope zlib import error appears?
