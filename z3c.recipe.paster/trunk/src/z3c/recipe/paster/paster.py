@@ -27,8 +27,10 @@ class PasterSetup(zc.recipe.egg.Scripts):
             raise zc.buildout.UserError(
                 'You have to define at least one egg for setup a paster.')
 
-        # add PasteScript egg
-        options['eggs'] = '%s\nPasteScript' % options.get('eggs')
+        if 'PasteScript' not in options.get('eggs'):
+            # add PasteScript egg
+            options['eggs'] = '%s\nPasteScript' % options.get('eggs')
+
         super(PasterSetup, self).__init__(buildout, name, options)
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 

@@ -31,6 +31,15 @@ class ServeSetup:
         self.buildout = buildout
         self.name = name
         self.options = options
+
+        if options.get('eggs') is None:
+            raise zc.buildout.UserError(
+                'You have to define at least one egg for setup an application.')
+
+        if 'PasteScript' not in options.get('eggs'):
+            # add PasteScript egg
+            options['eggs'] = '%s\nPasteScript' % options.get('eggs')
+
         options['script'] = os.path.join(buildout['buildout']['bin-directory'],
                                          options.get('script', self.name),
                                          )
@@ -38,9 +47,6 @@ class ServeSetup:
             options['location'] = os.path.join(
                 buildout['buildout']['parts-directory'], name)
 
-        if options.get('eggs') is None:
-            raise zc.buildout.UserError(
-                'You have to define at least one egg for setup an application.')
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
     def install(self):

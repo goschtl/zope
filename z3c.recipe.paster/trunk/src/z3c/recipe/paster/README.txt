@@ -115,7 +115,10 @@ generated script uses the ``paste.script.command.run`` for starting our server:
   <BLANKLINE>
   import sys
   sys.path[0:0] = [
-    '...demo',
+    '/sample-buildout/demo',
+    '/sample-pyN.N.egg',
+    ...
+    '/sample-pyN.N.egg',
     ]
   <BLANKLINE>
   import os
@@ -128,6 +131,8 @@ generated script uses the ``paste.script.command.run`` for starting our server:
       paste.script.command.run([
     'serve', '...myapp.ini',
     ]+sys.argv[1:])
+
+Those ``sample-pyN.N.egg`` lines should be PasteScript and it's dependencies.
 
 Check the content of our new generated myapp.ini file:
 
@@ -170,4 +175,3 @@ your custom setup.py file like::
           main = z3c.recipe.paster.wsgi:application_factory
           """,
   )
-

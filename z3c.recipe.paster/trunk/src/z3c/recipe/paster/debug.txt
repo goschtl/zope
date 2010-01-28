@@ -114,6 +114,9 @@ Check the content of our new generated script.
   import sys
   sys.path[0:0] = [
     '/sample-buildout/sample',
+    '/sample-pyN.N.egg',
+    ...
+    '/sample-pyN.N.egg',
     ]
   <BLANKLINE>
   import z3c.recipe.paster.debug

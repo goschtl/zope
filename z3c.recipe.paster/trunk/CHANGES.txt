@@ -5,6 +5,8 @@ CHANGES
 0.5.2dev (unreleased)
 ---------------------
 
+- Fix: add PasteScript egg if it's not there to make sure it's installed
+
 0.5.1 (2010-01-22)
 ------------------
 
