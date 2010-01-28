@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlueBream - The Zope Web Framework</title>
+    <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
+    <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
+    <link rel="stylesheet" href="{{ pathto('_static/mainpage.css', 1) }}" type="text/css" />
+  </head>
+
+  <body style="min-width: 750px; background-color: white">
+
+    <div class="document1">
+
+      <div class="topnavbar">
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Download</a></li>
+          <li><a href="#">Screencasts</a></li>
+          <li><a href="doc/1.0/index.html">Documentation</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="http://bluebream.posterous.com/">Blog</a></li>
+        </ul>
+      </div>
+
+	  <div style="margin:0 auto; width:800px; padding-top: 30px">
+        <img src="_static/img/logo.png" border="0px"/>
+        <img src="_static/img/title.png" border="0px"/>
+	  </div>
+
+	  <div class="clearer"></div>
+	  <div style="margin:0 auto; width:800px; text-align: center">
+	    <ul class="mainlinks">
+	      <li>
+		    <a href="#">
+		      <span class="linktitle"> Watch </span>
+		      <span class="linkimg"><img src="_static/img/watch.jpg" /></span>
+		      <span class="linkdesc">
+		        Screencasts, Presentations etc.
+		      </span>
+		    </a>
+	      </li>
+	      <li>
+		    <a href="doc/1.0/index.html">
+		      <span class="linktitle"> Read </span>
+		      <span class="linkimg"><img src="_static/img/read.jpg" /></span>
+		      <span class="linkdesc">
+		        Tutorials, Guides etc.
+		      </span>
+		    </a>
+	      </li>
+	      <li>
+		    <a href="#">
+		      <span class="linktitle"> Involve </span>
+		      <span class="linkimg"><img src="_static/img/involve.jpg" /></span>
+		      <span class="linkdesc">
+		        Mailing list, Code etc.
+		      </span>
+		    </a>
+	      </li>
+	    </ul>
+	  </div>
+
+	  <div class="clearer"></div>
+
+	  <div class="news">
+	  </div>
+
+	  <div class="tweets">
+	  </div>
+
+	</div>
+
+	<div class="clearer"></div>
+
+  </div>
+
+</div>
+
+<div class="clearer"></div>
+
+  {%- block footer %}
+  <div class="footer" style="color: black">
+    {%- if hasdoc('copyright') %}
+    {% trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
+    {%- else %}
+    {% trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{% endtrans %}
+    {%- endif %}
+    {%- if last_updated %}
+    {% trans last_updated=last_updated|e %}Last updated on {{ last_updated }}.{% endtrans %}
+    {%- endif %}
+    {%- if show_sphinx %}
+    {% trans sphinx_version=sphinx_version|e %}Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
+    {%- endif %}
+    <a href="doc/1.0/contributors.html">Credits</a>
+  </div>
+  {%- endblock %}
+
+</body>
+</html>
