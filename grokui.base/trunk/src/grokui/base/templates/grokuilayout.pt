@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" i18n:domain="zope">
   <head>
     <title tal:content="layout/title" />
+    <base tal:attributes="href layout/baseurl" />
     <link rel="stylesheet" type="text/css" 
 	  tal:attributes="href static/grok.css" />
   </head>
