@@ -31,6 +31,7 @@ Layout::
   |   |-- _static
   |   `-- _templates
   |-- README.txt
+  |-- resources/
   |-- templates/
   |   `-- makesite_sh.in*
   `-- versions.cfg
@@ -83,6 +84,8 @@ Layout::
 - ``main/_templates`` -- Templates for main site goes here.
 
 - ``README.txt`` -- This file
+
+- ``resources/`` -- Source files for images and resources
 
 - ``templates/`` -- Templates for Buildout (now only one)
 
