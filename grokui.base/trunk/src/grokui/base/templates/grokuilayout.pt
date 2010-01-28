@@ -6,13 +6,18 @@
 	  tal:attributes="href static/grok.css" />
   </head>
   <body>
-    <div id="grokui-header"
-	 tal:content="structure provider:grokui_header" />
+    <div id="grokui-page">
+      <div id="grokui-header"
+	   tal:content="structure provider:grokui_header" />
 
-    <div id="grokui-content"
-	 tal:content="structure view/content" />
+      <div id="grokui-messages"
+	   tal:content="structure provider:grokui_messages" />
 
-    <div id="grokui-footer"
-	 tal:content="structure provider:grokui_footer" />
+      <div id="grokui-content"
+	   tal:content="structure view/content" />
+
+      <div id="grokui-footer"
+	   tal:content="structure provider:grokui_footer" />
+    </div>
   </body>
 </html>

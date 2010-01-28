@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import grok
-from grokui.base import Header, Footer, IUIPanel, IGrokUIRealm
+from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
 from z3c.flashmessage.interfaces import IMessageReceiver
 from zope.browsermenu.interfaces import IBrowserMenu
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.component import getUtility
 
-
 grok.view(IUIPanel)
 grok.context(IGrokUIRealm)
 grok.templatedir("templates")
-grok.viewletmanager(Header)
 
 
 class Banner(grok.Viewlet):
     grok.order(10)
     grok.name('grokui.banner')
+    grok.viewletmanager(Header)
 
 
 class LoginInformation(grok.Viewlet):
     grok.order(20)
     grok.name('grokui.login')
+    grok.viewletmanager(Header)
 
     @property
     def is_authenticated(self):
@@ -33,6 +33,7 @@ class LoginInformation(grok.Viewlet):
 class MenuViewlet(grok.Viewlet):
     grok.order(30)
     grok.name("grokui.menu")
+    grok.viewletmanager(Header)
 
     def update(self):
         menu = getUtility(IBrowserMenu, "grokui_mainmenu")
@@ -43,6 +44,7 @@ class MenuViewlet(grok.Viewlet):
 class Messages(grok.Viewlet):
     grok.order(40)
     grok.name('grokui.messages')
+    grok.viewletmanager(Messages)
 
     @property
     def messages(self):

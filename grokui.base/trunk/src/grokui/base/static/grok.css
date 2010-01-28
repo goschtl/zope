@@ -1,8 +1,8 @@
 /* ---- general styling elements ---- */
 
 body {
-  margin:0;
-  color:#555;
+  margin: 0;
+  color: #555;
   background-color: white;
   font-size: 85%;
   font-family: "Trebuchet MS",Verdana,Helvetica,Arial,sans-serif;
@@ -10,70 +10,69 @@ body {
 }
 
 h1 {
-  border-bottom:1px solid #C90;
-  color:#C90;
-  font-size:1.5em;
-  text-align:left;
-  width:100%;
+  border-bottom: 1px solid #C90;
+  color: #C90;
+  font-size: 1.5em;
+  text-align: left;
+  width: 100%;
 }
 
 h2 {
-  border-bottom:1px dotted #ccc;
-  color:#C90;
-  font-size:1.3em;
-  width:100%;
+  border-bottom: 1px dotted #ccc;
+  color: #C90;
+  font-size: 1.3em;
+  width: 100%;
 }
 
 h3 {
-  color:#555;
-  font-size:1.2em;
-  width:100%;
+  color: #555;
+  font-size: 1.2em;
+  width: 100%;
 }
 
 p {
-  color:#555;
-  font-size:1em;
+  color: #555;
+  font-size: 1em;
 }
 
 a:link,a:visited {
-  border-bottom-style:dotted;
-  border-bottom-width:1px;
-  color:#555;
-  text-decoration:none;
+  border-bottom-style: dotted;
+  border-bottom-width: 1px;
+  color: #555;
+  text-decoration: none;
 }
 
 a:hover {
-  background-color:#fff;
-  border-bottom-style:dotted;
-  border-width:0.1em;
-  color:#C90;
+  background-color: #fff;
+  border-bottom-style: dotted;
+  border-width: 0.1em;
+  color: #C90;
 }
 
 img {
-  border:none;
+  border: none;
 }
 
 pre {
-  background:#eee;
-  border-bottom:1px solid #ddd;
-  border-top:1px solid #ccc;
-  color:#A90101;
-  font-size:1.1em;
-  margin:0.8em auto;
-  padding:1.6em 0.8em;
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ccc;
+  color: #A90101;
+  font-size: 1.1em;
+  margin: 0.8em auto;
+  padding: 1.6em 0.8em;
 }
 
 ul {
-  color:#555;
-  font-size:1.1em;
-  list-style-type:none;
-  margin:1.6em auto;
+  color: #555;
+  list-style-type: none;
+  margin: 1.6em auto;
 }
 
 li {
-  left:0;
-  margin:0 5em 0 0;
-  padding:0;
+  left: 0;
+  margin: 0 5em 0 0;
+  padding: 0;
 }
 
 
@@ -99,76 +98,80 @@ div#logout {
   background:#cc9900 url("shadow.jpg") repeat-x;
 }
 
-div#grokui-content {
-  margin: 1em 5em;
-}
-
 #grokui-menu-entries {
   text-align: center;
+  margin: 0 0 1em 0;
 }
 
 #grokui-menu-entries li {
   display: inline;
+  font-size: 1.1em;
 }
 
 #grokui-footer {
   text-align: center;
 }
 
-#grokui-messages {
-  margin: 1em 5em;
+div#grokui-content {
+  padding: 0 5em;
 }
 
-#grokui-messages li {
+div#grokui-messages {
+  padding: 0 6em;
+}
+
+.messages-list {
+  padding: 0;
+}
+
+#grokui-messages .message {
   padding: 0.1em 0.2em;
-}
-
-#grokui-messages li.admin {
-  border: 1px solid #990000;
-  background-color: #fdefca;
+  color: #555;
+  font-size: 1.1em;
+  list-style-type: none;
+  margin: 0;
 }
 
 /* ---- form and form-like elements ----- */
 form {
-clear:both;
+  clear: both;
 }
 
 input, select {
-border:1px solid #C90;
-margin:0;
-padding:0;
+  border: 1px solid #C90;
+  margin: 0;
+  padding: 0;
 }
 
 .button {
-background-color:#ccc;
-font-size:1em;
-padding:0;
-margin:0;
+  background-color: #ccc;
+  font-size: 1em;
+  padding: 0;
+  margin: 0;
 }
 
 fieldset {
-position: relative;
-margin-top:1em;
-padding:0.75em;
-border:1px solid #c90;
-text-align:left;
-background-color:#f9f9D4;
+  position: relative;
+  margin-top: 1em;
+  padding: 0.75em;
+  border: 1px solid #c90;
+  text-align: left;
+  background-color: #f9f9D4;
   border-radius : 10px;
   -moz-border-radius : 10px;
   -webkit-border-radius : 10px;
-
 }
 
 legend {
-  color:#c90;
-  font-size:1.2em;
-  font-weight:700;
-  background-color: transparent;
+  color: #c90;
+  font-size: 1.2em;
+  font-weight: 700;
+  background-color:  transparent;
 }
 
 a.button {
-  color:#000;
-  padding:0 0.2em 0.2em;
+  color: #000;
+  padding: 0 0.2em 0.2em;
 }
 
 a:hover.button {
@@ -215,7 +218,7 @@ a:hover.button {
 /* --- system proces related --- */
 div#server-processes {
   background-color: #f9f9D4;
-  border:1px solid #cc9900;
+  border: 1px solid #cc9900;
   padding: 0.75em;
 }
 
@@ -225,47 +228,47 @@ div#server-processes dl {
 }
 
 div#server-processes dt.emph {
-  background:url(banner-shadow.jpg) top left repeat-x;
-  border:1px solid grey;
-  margin-left:0;
-  margin-top:0.5em;
-  padding-left:0.75em;
+  background: url(banner-shadow.jpg) top left repeat-x;
+  border: 1px solid grey;
+  margin-left: 0;
+  margin-top: 0.5em;
+  padding-left: 0.75em;
   background-color: #fff4be;
 }
 
 div#server-processes dd {
-  border:1px solid grey;
-  border-top:none;
+  border: 1px solid grey;
+  border-top: none;
   margin: 0 0 1em 0;
-  padding-left:0.75em;
+  padding-left: 0.75em;
   background-color: white;
 }
 
 div#server-processes ul {
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 
 /* ----- misc elements ----- */
 .huge {
-font-size:1.6em;
-text-align:center;
+  font-size: 1.6em;
+  text-align: center;
 }
 
 .rightalign {
-text-align:right;
+  text-align: right;
 }
 
 .emph,.menu-head1,.docgrok-description1 {
-font-weight:700;
+  font-weight: bold;
 }
 
 .header {
-color:#C90;
-clear:both;
-display:block;
-font-size:1.2em;
-font-weight:700;
-padding-top:1em;
-padding-left:0.8em;
+  color: #C90;
+  clear: both;
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding-top: 1em;
+  padding-left: 0.8em;
 }

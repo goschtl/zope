@@ -1,5 +1,5 @@
-<ul id="grokui-messages">
-  <li tal:repeat="message viewlet/messages"
+<dl class="messages-list">
+  <dd tal:repeat="message viewlet/messages"
       tal:attributes="class message/type"
       tal:content="message/message" />
-</ul>
+</dl>
