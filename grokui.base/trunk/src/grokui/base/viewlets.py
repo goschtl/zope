@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import grok
-from grokui.base import Header, Footer, IUIPanel, IGrokUIRealm, MainMenu
+from grokui.base import Header, Footer, IUIPanel, IGrokUIRealm
 from z3c.flashmessage.interfaces import IMessageReceiver
 from zope.browsermenu.interfaces import IBrowserMenu
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
