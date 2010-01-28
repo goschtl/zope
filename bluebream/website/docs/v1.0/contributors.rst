@@ -20,6 +20,11 @@ committed to documentation directly.
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
 
+Logo Design
+-----------
+
+Thanks to `Hiran V <http://hiran.in>`_ for the logo design.
+
 Other Contributors
 ------------------
 
