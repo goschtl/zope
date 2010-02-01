@@ -46,6 +46,15 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.7.0 (2010-02-01)
+==================
+
+Features Added
+--------------
+
+You can now specify a user for crontab entries that is different than
+a deployment user.
+
 0.6 (2008-02-01)
 ================
 
