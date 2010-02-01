@@ -29,31 +29,41 @@ class Install:
             options['name'] = name
 
         name = options['name']
-        
+
         create = []
-
-        options['run-directory'] = os.path.join(options.get('run', '/var/run'),
-                                                name)
-        options['log-directory'] = os.path.join(options.get('log', '/var/log'),
-                                                name)
-        options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
-                                                name)
-        options['crontab-directory'] = options.get('crontab-directory',
-                                                   '/etc/cron.d')
-        options['rc-directory'] = options.get('rc-directory', '/etc/init.d')
-
-        options['logrotate-directory'] = options.get('logrotate-directory',
-                                                     '/etc/logrotate.d')
+        options['prefix'] = options.get('prefix', '/')
+        options['run-directory'] = os.path.join(
+            options['prefix'], options.get('run', 'var/run'), name)
+        options['log-directory'] = os.path.join(
+            options['prefix'], options.get('log', 'var/log'), name)
+        options['etc-directory'] = os.path.join(
+            options['prefix'], options.get('etc', 'etc'), name)
+        etc = os.path.join(options['prefix'], options.get('etc', 'etc'))
+        options['crontab-directory'] = options.get(
+            'crontab-directory', os.path.join(etc, 'cron.d'))
+        options['rc-directory'] = options.get(
+            'rc-directory', os.path.join(etc, 'init.d'))
+        options['logrotate-directory'] = options.get(
+            'logrotate-directory', os.path.join(etc, 'logrotate.d'))
 
     def install(self):
         options = self.options
-        user = options['user']
-        uid, gid = pwd.getpwnam(user)[2:4]
+        run_user = options['user']
+        etc_user = options.get('etc-user', 'root')
+        run_uid, run_gid = pwd.getpwnam(run_user)[2:4]
+        etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
         created = []
         try:
-            make_dir(options['etc-directory'],   0,   0, 0755, created)
-            make_dir(options['log-directory'], uid, gid, 0755, created)
-            make_dir(options['run-directory'], uid, gid, 0750, created)
+            make_dir(options['etc-directory'], etc_uid, etc_gid, 0755, created)
+            make_dir(options['log-directory'], run_uid, run_gid, 0755, created)
+            make_dir(options['run-directory'], run_uid, run_gid, 0750, created)
+            if options['prefix'] != '/':
+                make_dir(options['crontab-directory'],
+                         etc_uid, etc_gid, 0755, created)
+                make_dir(options['rc-directory'],
+                         etc_uid, etc_gid, 0755, created)
+                make_dir(options['logrotate-directory'],
+                         etc_uid, etc_gid, 0755, created)
         except Exception:
             for d in created:
                 try:
@@ -73,7 +83,10 @@ def uninstall(name, options):
     path = options['etc-directory']
     shutil.rmtree(path)
     logger.info("Removing %r", path)
-    for d in 'log', 'run':
+    directories = ()
+    if options['prefix'] != '/':
+        directories = ('crontab', 'rc', 'logrotate')
+    for d in directories + ('log', 'run'):
         path = options[d+'-directory']
         if os.listdir(path):
             logger.warn("Can't remove non-empty directory %r.", path)
@@ -85,7 +98,7 @@ def make_dir(name, uid, gid, mode, created):
     uname = pwd.getpwuid(uid)[0]
     gname = grp.getgrgid(gid)[0]
     if not os.path.isdir(name):
-        os.mkdir(name, mode)
+        os.makedirs(name, mode)
         created.append(name)
         logger.info('\n    Creating %r,\n    mode %o, user %r, group %r',
                     name, mode, uname, gname)
@@ -145,4 +158,4 @@ class Crontab:
         return options['location']
 
     update = install
-    
+

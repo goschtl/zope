@@ -9,137 +9,187 @@ Let's add a deployment to a sample buildout:
     ... parts = foo
     ...
     ... [foo]
+    ... prefix = %s
     ... recipe = zc.recipe.deployment
-    ... user = jim
-    ... ''')
+    ... user = %s
+    ... etc-user = %s
+    ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Installing foo.
-    zc.recipe.deployment: 
-        Creating '/etc/foo',
-        mode 755, user 'root', group 'root'
-    zc.recipe.deployment: 
-        Creating '/var/log/foo',
-        mode 755, user 'jim', group 'jim'
-    zc.recipe.deployment: 
-        Creating '/var/run/foo',
-        mode 750, user 'jim', group 'jim'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
 
 
-(Note that we have to be running as root and must have a user jim for
-this to work.)
+Note that we are providing a prefix and an etc-user here.  These options
+default to '/' and 'root', respectively.
 
-Now we can see that directories named foo in /etc, /var/log and
-/var/run have been created:
+Now we can see that directories named foo in PREFIX/etc, PREFIX/var/log and
+PREFIX/var/run have been created:
 
-    >>> print system('ls -ld /etc/foo'), 
-    drwxr-xr-x 2 root root 4096 2007-02-06 09:50 /etc/foo
+    >>> import os
+    >>> print ls(os.path.join(sample_buildout, 'etc/foo'))
+    drwxr-xr-x USER GROUP PREFIX/etc/foo
 
-    >>> print system('ls -ld /var/log/foo'), 
-    drwxr-xr-x 2 jim jim 4096 2007-02-06 09:50 /var/log/foo
+    >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
-    >>> print system('ls -ld /var/run/foo'), 
-    drwxr-x--- 2 jim jim 40 2007-02-06 09:50 /var/run/foo
-    
+    >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
+    drwxr-x--- USER GROUP PREFIX/var/run/foo
+
 By looking at .installed.cfg, we can see the options available for use
 by other recipes:
 
-    >>> cat('.installed.cfg') # doctest: +ELLIPSIS
+    >>> cat('.installed.cfg') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [buildout]
     ...
     [foo]
-    __buildout_installed__ = 
+    __buildout_installed__ =
     ...
-    crontab-directory = /etc/cron.d
-    etc-directory = /etc/foo
-    log-directory = /var/log/foo
-    logrotate-directory = /etc/logrotate.d
+    crontab-directory = PREFIX/etc/cron.d
+    etc-directory = PREFIX/etc/foo
+    etc-user = USER
+    log-directory = PREFIX/var/log/foo
+    logrotate-directory = PREFIX/etc/logrotate.d
     name = foo
-    rc-directory = /etc/init.d
+    prefix = PREFIX
+    rc-directory = PREFIX/etc/init.d
     recipe = zc.recipe.deployment
-    run-directory = /var/run/foo
-    user = jim
+    run-directory = PREFIX/var/run/foo
+    user = USER
 
-If we ininstall, then the directories are removed.
+If we uninstall, then the directories are removed.
 
     >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/foo'
-    zc.recipe.deployment: Removing '/var/log/foo'.
-    zc.recipe.deployment: Removing '/var/run/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
     >>> import os
-    >>> os.path.exists('/etc/foo')
+    >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
-    >>> os.path.exists('/var/log/foo')
+    >>> os.path.exists(os.path.join(sample_buildout, 'var/log/foo'))
     False
-    >>> os.path.exists('/var/run/foo')
+    >>> os.path.exists(os.path.join(sample_buildout, 'var/run/foo'))
     False
 
 The log and run directories are only removed if they are empty.
 To see that, we'll put a file in each of the directories created:
 
-    >>> print system(join('bin', 'buildout')), # doctest: +ELLIPSIS
+    >>> print system(join('bin', 'buildout')),
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     Installing foo.
-    ...
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
 
-    >>> write('/etc/foo/x', '')
-    >>> write('/var/log/foo/x', '')
-    >>> write('/var/run/foo/x', '')
+    >>> write(os.path.join(sample_buildout, 'etc/foo/x'), '')
+    >>> write(os.path.join(sample_buildout, 'var/log/foo/x'), '')
+    >>> write(os.path.join(sample_buildout, 'var/run/foo/x'), '')
 
 And then uninstall:
 
     >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/foo'
-    zc.recipe.deployment: Can't remove non-empty directory '/var/log/foo'.
-    zc.recipe.deployment: Can't remove non-empty directory '/var/run/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/run/foo'.
 
-    >>> os.path.exists('/etc/foo')
+    >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
 
-    >>> print system('ls -ld /var/log/foo'), 
-    drwxr-xr-x 2 jim jim 4096 2007-02-06 09:50 /var/log/foo
+    >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
-    >>> print system('ls -ld /var/run/foo'), 
-    drwxr-x--- 2 jim jim 40 2007-02-06 09:50 /var/run/foo
+    >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
+    drwxr-x--- USER GROUP PREFIX/var/run/foo
 
 Here we see that the var and run directories are kept. The etc
 directory is discarded because only buildout recipes should write to
-it and all of it's data are expendible.
+it and all of its data are expendible.
 
 If we reinstall, remove the files, and uninstall, then the directories
 are removed:
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Installing foo.
-    zc.recipe.deployment: 
-        Creating '/etc/foo',
-        mode 755, user 'root', group 'root'
-    zc.recipe.deployment: 
-        Updating '/var/log/foo',
-        mode 755, user 'jim', group 'jim'
-    zc.recipe.deployment: 
-        Updating '/var/run/foo',
-        mode 750, user 'jim', group 'jim'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
 
-    >>> os.remove('/var/log/foo/x')
-    >>> os.remove('/var/run/foo/x')
+    >>> os.remove(os.path.join(sample_buildout, 'var/log/foo/x'))
+    >>> os.remove(os.path.join(sample_buildout, 'var/run/foo/x'))
 
     >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/foo'
-    zc.recipe.deployment: Removing '/var/log/foo'.
-    zc.recipe.deployment: Removing '/var/run/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
-    >>> os.path.exists('/etc/foo')
+    >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/etc/foo'))
     False
-    >>> os.path.exists('/var/log/foo')
+    >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/log/foo'))
     False
-    >>> os.path.exists('/var/run/foo')
+    >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/run/foo'))
     False
 
 Deployment Name
@@ -156,52 +206,66 @@ name can be specified explicitly:
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
+    ... prefix = %s
     ... name = bar
-    ... user = jim
-    ... ''')
+    ... user = %s
+    ... etc-user = %s
+    ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Installing foo.
-    zc.recipe.deployment: 
-        Creating '/etc/bar',
-        mode 755, user 'root', group 'root'
-    zc.recipe.deployment: 
-        Creating '/var/log/bar',
-        mode 755, user 'jim', group 'jim'
-    zc.recipe.deployment: 
-        Creating '/var/run/bar',
-        mode 750, user 'jim', group 'jim'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/bar',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
 
-    >>> print system('ls -ld /etc/bar'), 
-    drwxr-xr-x 2 root root 4096 2007-02-06 09:50 /etc/bar
 
-    >>> print system('ls -ld /var/log/bar'), 
-    drwxr-xr-x 2 jim jim 4096 2007-02-06 09:50 /var/log/bar
+    >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
+    drwxr-xr-x USER GROUP PREFIX/etc/bar
 
-    >>> print system('ls -ld /var/run/bar'), 
-    drwxr-x--- 2 jim jim 40 2007-02-06 09:50 /var/run/bar
+    >>> print ls(os.path.join(sample_buildout, 'var/log/bar'))
+    drwxr-xr-x USER GROUP PREFIX/var/log/bar
 
-    >>> cat('.installed.cfg') # doctest: +ELLIPSIS
+    >>> print ls(os.path.join(sample_buildout, 'var/run/bar'))
+    drwxr-x--- USER GROUP PREFIX/var/run/bar
+
+    >>> cat('.installed.cfg') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [buildout]
-    installed_develop_eggs = 
+    installed_develop_eggs =
     parts = foo
     <BLANKLINE>
     [foo]
-    __buildout_installed__ = 
+    __buildout_installed__ =
     ...
-    crontab-directory = /etc/cron.d
-    etc-directory = /etc/bar
-    log-directory = /var/log/bar
-    logrotate-directory = /etc/logrotate.d
+    crontab-directory = PREFIX/etc/cron.d
+    etc-directory = PREFIX/etc/bar
+    etc-user = USER
+    log-directory = PREFIX/var/log/bar
+    logrotate-directory = PREFIX/etc/logrotate.d
     name = bar
-    rc-directory = /etc/init.d
+    prefix = PREFIX
+    rc-directory = PREFIX/etc/init.d
     recipe = zc.recipe.deployment
-    run-directory = /var/run/bar
-    user = jim
+    run-directory = PREFIX/var/run/bar
+    user = USER
 
 Note (here and earlier) that the options include the name option,
 which defaults to the part name.  Other parts that use the deployment
-name should use the name option rather than the part name. 
+name should use the name option rather than the part name.
 
 Configuration files
 ===================
@@ -220,31 +284,45 @@ Let's add a configuration file to our buildout:
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
-    ... user = jim
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
     ...
     ... [x.cfg]
     ... recipe = zc.recipe.deployment:configuration
     ... text = xxx
     ...        yyy
     ...        zzz
-    ... ''')
+    ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/bar'
-    zc.recipe.deployment: Removing '/var/log/bar'.
-    zc.recipe.deployment: Removing '/var/run/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/bar'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/bar'.
     Installing foo.
-    zc.recipe.deployment: 
-        Creating '/etc/foo',
-        mode 755, user 'root', group 'root'
-    zc.recipe.deployment: 
-        Creating '/var/log/foo',
-        mode 755, user 'jim', group 'jim'
-    zc.recipe.deployment: 
-        Creating '/var/run/foo',
-        mode 750, user 'jim', group 'jim'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
     Installing x.cfg.
 
 By default, the configuration is installed as a part:
@@ -264,7 +342,9 @@ deployment etc directory:
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
-    ... user = jim
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
     ...
     ... [x.cfg]
     ... recipe = zc.recipe.deployment:configuration
@@ -272,7 +352,7 @@ deployment etc directory:
     ...        yyy
     ...        zzz
     ... deployment = foo
-    ... ''')
+    ... ''' % (sample_buildout, user, user))
 
     >>> print system(join('bin', 'buildout')),
     Uninstalling x.cfg.
@@ -282,7 +362,7 @@ deployment etc directory:
     >>> os.path.exists(join('parts', 'x.cfg'))
     False
 
-    >>> cat('/etc/foo/x.cfg')
+    >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
     xxx
     yyy
     zzz
@@ -299,20 +379,22 @@ configuration:
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
-    ... user = jim
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
     ...
     ... [x.cfg]
     ... recipe = zc.recipe.deployment:configuration
     ... file = x.in
     ... deployment = foo
-    ... ''')
+    ... ''' % (sample_buildout, user, user))
 
     >>> print system(join('bin', 'buildout')),
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
 
-    >>> cat('/etc/foo/x.cfg')
+    >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
     1
     2
     3
@@ -324,7 +406,7 @@ The recipe sets a location option that can be used by other recipes:
     ...
     [x.cfg]
     ...
-    location = /etc/foo/x.cfg
+    location = PREFIX/etc/foo/x.cfg
     ...
 
 Cron support
@@ -341,24 +423,26 @@ option containing the command.
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
-    ... user = jim
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
     ...
     ... [cron]
     ... recipe = zc.recipe.deployment:crontab
     ... times = 30 23 * * *
     ... command = echo hello world!
     ... deployment = foo
-    ... ''')
+    ... ''' % (sample_buildout, user, user))
 
     >>> print system(join('bin', 'buildout')),
     Uninstalling x.cfg.
     Updating foo.
     Installing cron.
 
-This example creates /etc/cron.d/foo-cron
+This example creates PREFIX/etc/cron.d/foo-cron
 
-    >>> open('/etc/cron.d/foo-cron').read()
-    '30 23 * * *\tjim\techo hello world!\n'
+    >>> open(os.path.join(sample_buildout, 'etc/cron.d/foo-cron')).read()
+    '30 23 * * *\tUSER\techo hello world!\n'
 
 .. make sure cron recipe honors deployment name option:
 
@@ -370,38 +454,51 @@ This example creates /etc/cron.d/foo-cron
     ...
     ... [foo]
     ... recipe = zc.recipe.deployment
+    ... prefix = %s
     ... name = bar
-    ... user = jim
+    ... user = %s
+    ... etc-user = %s
     ...
     ... [cron]
     ... recipe = zc.recipe.deployment:crontab
     ... times = 30 23 * * *
     ... command = echo hello world!
     ... deployment = foo
-    ... ''')
+    ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/foo'
-    zc.recipe.deployment: Removing '/var/log/foo'.
-    zc.recipe.deployment: Removing '/var/run/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
     Installing foo.
-    zc.recipe.deployment: 
-        Creating '/etc/bar',
-        mode 755, user 'root', group 'root'
-    zc.recipe.deployment: 
-        Creating '/var/log/bar',
-        mode 755, user 'jim', group 'jim'
-    zc.recipe.deployment: 
-        Creating '/var/run/bar',
-        mode 750, user 'jim', group 'jim'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/bar',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
     Installing cron.
 
-    >>> open('/etc/cron.d/bar-cron').read()
-    '30 23 * * *\tjim\techo hello world!\n'
-
+    >>> open(os.path.join(sample_buildout, 'etc/cron.d/bar-cron')).read()
+    '30 23 * * *\tUSER\techo hello world!\n'
 
 .. cleanup
 
@@ -409,10 +506,12 @@ This example creates /etc/cron.d/foo-cron
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing '/etc/bar'
-    zc.recipe.deployment: Removing '/var/log/bar'.
-    zc.recipe.deployment: Removing '/var/run/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/bar'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/bar'.
 
-    >>> os.path.exists('/etc/cron.d/bar-cron')
+    >>> os.path.exists(os.path.join(sample_buildout, 'etc/cron.d/bar-cron'))
     False
-    
