@@ -500,6 +500,38 @@ This example creates PREFIX/etc/cron.d/foo-cron
     >>> open(os.path.join(sample_buildout, 'etc/cron.d/bar-cron')).read()
     '30 23 * * *\tUSER\techo hello world!\n'
 
+The crontab recipe gets its  user from the buildout's deployment by default,
+but it doesn't have to.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo cron
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... name = bar
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [cron]
+    ... recipe = zc.recipe.deployment:crontab
+    ... times = 30 23 * * *
+    ... user = bob
+    ... command = echo hello world!
+    ... deployment = foo
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling cron.
+    Updating foo.
+    Installing cron.
+
+    >>> open('etc/cron.d/bar-cron').read()
+    '30 23 * * *\tbob\techo hello world!\n'
+
+
 .. cleanup
 
     >>> print system(join('bin', 'buildout')+' buildout:parts='),

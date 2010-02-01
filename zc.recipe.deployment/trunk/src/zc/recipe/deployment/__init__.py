@@ -145,12 +145,13 @@ class Crontab:
         self.options = options
 
         deployment = options['deployment']
+        user = options.get('user', buildout[deployment]['user'])
         deployment_name = buildout[deployment]['name']
         options['location'] = os.path.join(
             buildout[deployment]['crontab-directory'],
             deployment_name + '-' + name)
         options['entry'] = '%s\t%s\t%s\n' % (
-            options['times'], buildout[deployment]['user'], options['command'])
+            options['times'], user, options['command'])
 
     def install(self):
         options = self.options
