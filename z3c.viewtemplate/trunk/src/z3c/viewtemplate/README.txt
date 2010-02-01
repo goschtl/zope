@@ -69,7 +69,7 @@ We register the factory on a view interface and a layer.
   >>> template = component.getMultiAdapter(
   ...               (view, request), IPageTemplate)
   >>> template
-  <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile ...>
+  <zope...viewpagetemplatefile.ViewPageTemplateFile ...>
 
 Now that we have a registered template for the default layer we can
 call our view again. The view is a contentprovider so a
