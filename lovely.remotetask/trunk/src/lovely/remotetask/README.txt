@@ -209,7 +209,8 @@ But first stop all processing services:
   >>> root_service.isProcessing()
   False
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
 And reset the logger:
 
@@ -248,7 +249,8 @@ services on all sites:
   >>> service.isProcessing()
   False
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
 Reset the product configuration with the asterisked service names:
 
@@ -294,7 +296,8 @@ service called `service` on all sites:
   >>> root_service.isProcessing()
   False
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
 Reset the product configuration with the asterisked service names:
 
@@ -332,7 +335,8 @@ any site logging will show a warning message:
   >>> service.isProcessing()
   False
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
   >>> config.mapping['autostart'] = '*@Foo'
   >>> setProductConfigurations([config])
@@ -366,7 +370,8 @@ manually as we don't have the right environment in the tests.
   >>> root_service.isProcessing()
   False
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
 Let's now read a job:
 
@@ -670,7 +675,8 @@ message:
   >>> service2.stopProcessing()
   >>> root_service.stopProcessing()
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
 
 The threads have exited now:
 

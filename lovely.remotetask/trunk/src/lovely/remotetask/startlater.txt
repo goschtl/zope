@@ -126,4 +126,5 @@ the ``startLater=True`` parameter.
 
   >>> service.stopProcessing()
 
-  >>> import time; time.sleep(STOP_SLEEP_TIME)
+  >>> import time
+  >>> time.sleep(STOP_SLEEP_TIME)
