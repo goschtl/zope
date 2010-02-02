@@ -54,19 +54,7 @@ will report missing classes and not touch your database.
 Non-FileStorage configurations
 ------------------------------
 
-You can configure any storage known to your ZODB installation by providing a
-ZConfig configuration file (similar to zope.conf). For example you can connect
-to a ZEO server by providing a config file `zeo.conf`::
-
-    <zeoclient>
-        server 127.0.0.1:8100
-        storage 1
-    </zeoclient>
-
-And then running `zodbupdate` using:
-
-    $ zodbupdate -c zeo.conf
-
+Are not supported anymore.
 
 Pre-defined rename rules
 ------------------------

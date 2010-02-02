@@ -30,6 +30,8 @@ parser.add_option("-c", "--config",
                   help="load storage from config file")
 parser.add_option("-n", "--dry-run", action="store_true",
                   help="perform a trial run with no changes made")
+parser.add_option("-s", "--save-renames",
+                  help="save automatically determined rename rules to file")
 parser.add_option("-q", "--quiet", action="store_true",
                   help="suppress non-error messages")
 parser.add_option("-v", "--verbose", action="store_true",
@@ -85,15 +87,23 @@ def main():
     updater = zodbupdate.update.Updater(
         storage, dry=options.dry_run,
         renames=rename_rules)
+
     try:
         updater()
     except Exception, e:
         logging.debug(u'An error occured', exc_info=True)
         logging.error(u'Stopped processing, due to: %s' % e)
         raise SystemExit()
+
     implicit_renames = updater.processor.get_found_implicit_rules()
     if implicit_renames:
         print 'Found new rules:'
         print pprint.pformat(implicit_renames)
+    if options.save_renames:
+        print 'Saving rules into %s' % options.save_renames
+        rename_rules.update(implicit_renames)
+        f = open(options.save_renames, 'w')
+        f.write('renames = %s' % pprint.pformat(rename_rules))
+        f.close()
     storage.close()
 
