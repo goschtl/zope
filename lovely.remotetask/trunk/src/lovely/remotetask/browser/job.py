@@ -22,6 +22,7 @@ from datetime import datetime
 from zope import interface
 from zope import component
 from zope import schema
+from zope.browserpage import namedtemplate
 
 from zope import formlib
 
@@ -106,7 +107,7 @@ class DayOfWeekWidget(StringTupleWidget):
     values = tuple(range(0,7))
 
 class TaskWidget(DropdownWidget):
-    
+
     def __init__(self, field, request):
         terms = [SimpleTerm(name) for name in field.context.getAvailableTasks()]
         vocabulary = SimpleVocabulary(terms)
@@ -213,6 +214,5 @@ class AddCronJob(formlib.form.Form, CronJobFormBase):
 class InputSchemaForm(formlib.form.AddForm):
     """An editor for input data of a job"""
     interface.implements(formlib.interfaces.ISubPageForm)
-    template = formlib.namedtemplate.NamedTemplate('default')
+    template = namedtemplate.NamedTemplate('default')
     actions = []
-
