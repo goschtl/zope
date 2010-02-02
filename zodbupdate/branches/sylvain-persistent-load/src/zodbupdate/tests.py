@@ -27,18 +27,23 @@ import unittest
 import zodbupdate.update
 
 
-class IgnoringFilter(object):
-    # Do not spit out any logging during testing.
-    def filter(self, record):
-        return False
+class LogFilter(object):
 
-ignore = IgnoringFilter()
+    def __init__(self, msg_lst):
+        self.msg_lst = msg_lst
+
+    # Do not spit out any logging, but record them
+    def filter(self, record):
+        self.msg_lst.append(record.msg)
+        return False
 
 
 class ZODBUpdateTests(unittest.TestCase):
 
     def setUp(self):
-        zodbupdate.update.logger.addFilter(ignore)
+        self.log_messages = []
+        self.log_filter = LogFilter(self.log_messages)
+        zodbupdate.update.logger.addFilter(self.log_filter)
 
         sys.modules['module1'] =  types.ModuleType('module1')
         sys.modules['module2'] =  types.ModuleType('module2')
@@ -73,23 +78,15 @@ class ZODBUpdateTests(unittest.TestCase):
         return updater
 
     def tearDown(self):
-        zodbupdate.update.logger.removeFilter(ignore)
+        zodbupdate.update.logger.removeFilter(self.log_filter)
         del sys.modules['module1']
+        del sys.modules['module2']
 
         self.db.close()
         os.unlink(self.dbfile)
         os.unlink(self.dbfile + '.index')
         os.unlink(self.dbfile + '.tmp')
         os.unlink(self.dbfile + '.lock')
-
-    def test_factory_missing(self):
-        # Create a ZODB with an object referencing a factory, then
-        # remove the factory and update the ZODB.
-        self.root['test'] = sys.modules['module1'].Factory()
-        transaction.commit()
-        del sys.modules['module1'].Factory
-
-        self.update()
 
     def test_factory_ignore_missing(self):
         # Create a ZODB with an object referencing a factory, then
@@ -104,6 +101,9 @@ class ZODBUpdateTests(unittest.TestCase):
                           self.storage.load(self.root['test']._p_oid, '')[0])
         self.assert_(isinstance(self.root['test'],
                                 ZODB.broken.PersistentBroken))
+        self.failUnless(len(self.log_messages))
+        self.assertEquals('Warning: Missing factory for module1 Factory',
+                          self.log_messages[0])
         renames = updater.processor.get_found_implicit_rules()
         self.assertEquals({}, renames)
 
