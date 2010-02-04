@@ -32,13 +32,6 @@ import time
 import zc.queue
 import zope.interface
 from BTrees.IOBTree import IOBTree
-from zope import component
-from zope.app import zapi
-from zope.app.container import contained
-from zope.app.component.interfaces import ISite
-from zope.app.publication.zopepublication import ZopePublication
-from zope.component.interfaces import ComponentLookupError
-from lovely.remotetask import interfaces, job, task, processor
 import zope.location
 
 
@@ -69,7 +62,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         processorFactory = processor.SimpleProcessor
     else:
         processorFactory = processor.SimpleZope2Processor
-        
+
     processorArguments = {'waitTime': 1.0}
 
     _scheduledJobs  = None
@@ -474,4 +467,3 @@ def bootStrapSubscriber(event):
         if (siteName == "*" or serviceName == "*") and serviceCount == 0:
             msg = 'no services started by directive %s'
             log.warn(msg % name)
-
