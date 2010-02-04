@@ -2,18 +2,17 @@
 from lovely.remotetask.service import TaskService
 
 try:
-    from Products.Five.site.interfaces import IFiveUtilityRegistry
+    from Products import Five
+    del Five
     ZOPE2=True
 except ImportError:
     ZOPE2=False
-    
+
 # This is implemented as IDatabaseOpenedEvent in Zope 3
 if ZOPE2:
-    from lovely.remotetask.service import TaskService, getAutostartServiceNames
+    from lovely.remotetask.service import getAutostartServiceNames
     from lovely.remotetask.interfaces import ITaskService
-    from zope.component import ComponentLookupError
     from zope.app.component.hooks import getSite, setSite
-    from Products.CMFCore.interfaces._content import ISiteRoot
 
     def initialize(context):
         # dirty trick, but it works
