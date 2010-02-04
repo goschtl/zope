@@ -21,7 +21,7 @@ __docformat__ = 'restructuredtext'
 from zope import interface
 from zope import component
 
-from zope import formlib
+import zope.formlib
 
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.publisher.browser import BrowserPage
@@ -113,7 +113,7 @@ class TaskWidget(DropdownWidget):
 class CronJobFormBase(object):
     """base settings for all cron job forms"""
 
-    form_fields = formlib.form.Fields(ICronJob).select(
+    form_fields = zope.formlib.form.Fields(ICronJob).select(
             'task',
             'hour',
             'minute',
@@ -129,11 +129,11 @@ class CronJobFormBase(object):
     form_fields['month'].custom_widget = MonthWidget
     form_fields['dayOfWeek'].custom_widget = DayOfWeekWidget
 
-    base_template = formlib.form.EditForm.template
+    base_template = zope.formlib.form.EditForm.template
     template = ViewPageTemplateFile('cronjob.pt')
 
 
-class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
+class CronJobEdit(zope.formlib.form.EditForm, CronJobFormBase):
     """An edit view for cron jobs."""
 
     inputForm = None
@@ -149,18 +149,18 @@ class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
                                       request=self.request,
                                      )
             subform.prefix = 'taskinput'
-            subform.form_fields = formlib.form.Fields(jobtask.inputSchema)
+            subform.form_fields = zope.formlib.form.Fields(jobtask.inputSchema)
             self.inputForm = subform
         super(CronJobEdit, self).setUpWidgets(ignore_request=ignore_request)
 
-    @formlib.form.action(u'Apply')
+    @zope.formlib.form.action(u'Apply')
     def handle_apply_action(self, action, data):
         inputData = None
         if self.inputForm is not None:
             self.inputForm.update()
             inputData = {}
             # errors are not reported
-            formlib.form.getWidgetsData(self.inputForm.widgets,
+            zope.formlib.form.getWidgetsData(self.inputForm.widgets,
                                                  self.inputForm.prefix,
                                                  inputData)
             if len(inputData) == 0:
@@ -176,7 +176,7 @@ class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
                 )
         self.context.__parent__.reschedule(self.context.id)
 
-    @formlib.form.action(u'Cancel', validator=noValidation)
+    @zope.formlib.form.action(u'Cancel', validator=noValidation)
     def handle_cancel_action(self, action, data):
         self.request.response.redirect(self.nextURL())
 
@@ -185,10 +185,10 @@ class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
                                              self.request)
 
 
-class AddCronJob(formlib.form.Form, CronJobFormBase):
+class AddCronJob(zope.formlib.form.Form, CronJobFormBase):
     """An edit view for cron jobs."""
 
-    @formlib.form.action(u'Add')
+    @zope.formlib.form.action(u'Add')
     def handle_add_action(self, action, data):
         self.context.addCronJob(
                 task = data['task'],
@@ -200,7 +200,7 @@ class AddCronJob(formlib.form.Form, CronJobFormBase):
                 delay = data['delay'],
                 )
 
-    @formlib.form.action(u'Cancel', validator=noValidation)
+    @zope.formlib.form.action(u'Cancel', validator=noValidation)
     def handle_cancel_action(self, action, data):
         self.request.response.redirect(self.nextURL())
 
@@ -209,8 +209,8 @@ class AddCronJob(formlib.form.Form, CronJobFormBase):
                                              self.request)
 
 
-class InputSchemaForm(formlib.form.AddForm):
+class InputSchemaForm(zope.formlib.form.AddForm):
     """An editor for input data of a job"""
-    interface.implements(formlib.interfaces.ISubPageForm)
-    template = formlib.namedtemplate.NamedTemplate('default')
+    interface.implements(zope.formlib.interfaces.ISubPageForm)
+    template = zope.formlib.namedtemplate.NamedTemplate('default')
     actions = []
