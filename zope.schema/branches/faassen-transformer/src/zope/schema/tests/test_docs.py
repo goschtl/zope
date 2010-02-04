@@ -31,6 +31,9 @@ def test_suite():
         doctest.DocFileSuite(
             '../validation.txt', checker=checker,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        doctest.DocFileSuite(
+            '../transformer.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),     
         ))
 
 if __name__ == '__main__':

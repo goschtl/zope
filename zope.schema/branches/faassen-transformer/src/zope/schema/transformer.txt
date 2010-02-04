@@ -1,0 +1,94 @@
+Transforming schemas
+====================
+
+It is possible to transform schemas into other ones. The transformer 
+facility follows the rule that schemas are immutable, but that other
+schemas can be constructed out of old ones.
+
+Let's take a simple schema::
+
+  >>> from zope.interface import Interface
+  >>> from zope import schema
+  >>> class IFoo(Interface):
+  ...     a = schema.Int(title=u'A')
+  ...     b = schema.TextLine(title=u'B')
+  ...     c = schema.TextLine(title=u'C')
+  ...     d = schema.Int(title=u'D')
+
+To transform the schema, we first need to wrap it into a transformer::
+
+  >>> from zope.schema import transformer
+  >>> ifoo_transformer = transformer(IFoo)
+
+A transformer has a ``schema`` attribute indicating its schema::
+
+  >>> ifoo_transformer.schema is IFoo
+  True
+
+Transformers define operations, and each returns a transformer. This
+allows these operations to be chained.
+
+Select
+------
+
+We can use the transformer to construct a new schema, selecting only
+``a``, and ``b``::
+
+  >>> selected_transformer = ifoo_transformer.select(['a', 'b'])
+
+Out comes another transformer, with the transformed schema::
+
+  >>> IFooSelect = selected_transformer.schema
+  >>> from zope.schema import getFieldNamesInOrder
+  >>> getFieldNamesInOrder(IFooSelect)
+  ['a', 'b']
+
+We can also reorder the fields in the schema this way::
+
+  >>> reordered_transformer = ifoo_transformer.select(['d', 'c', 'b', 'a'])
+  >>> getFieldNamesInOrder(reordered_transformer.schema)
+  ['d', 'c', 'b', 'a']
+
+We cannot select fields that do not exist::
+ 
+  >>> ifoo_transformer.select(['z'])
+  Traceback (most recent call last):
+    ...
+  KeyError: 'z'
+
+Omit
+----
+
+We can also omit fields. This results in a new schema without the omitted
+field. The order of the remaining fields is unaffected::
+
+  >>> omitted_transformer = ifoo_transformer.omit(['a'])
+  >>> getFieldNamesInOrder(omitted_transformer.schema)
+  ['b', 'c', 'd']
+
+We are free to omit fields that do not exist, as they aren't there anyway::
+
+  >>> getFieldNamesInOrder(ifoo_transformer.omit(['z']).schema)
+  ['a', 'b', 'c', 'd']
+
+Override
+--------
+
+We can also override field properties. Let's say we want to modify the
+title of the ``a`` field.
+
+The title starts out as ``'A'``:
+
+  >>> IFoo['a'].title
+  u'A'
+
+Now we override the title, producing a new schema::
+
+  >>> schema = ifoo_transformer.override('a', title=u'A overridden').schema
+  >>> schema['a'].title
+  u'A overridden'
+
+You can override any property, and also more than one, by using
+keyword arguments.
+  
+  
