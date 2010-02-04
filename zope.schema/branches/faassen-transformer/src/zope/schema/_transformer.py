@@ -36,8 +36,30 @@ class transformer(object):
             order += 1
         return self._transformer(attrs)
     
- 
-
+    def add(self, field, name=None, before=None):
+        attrs = {}
+        order = 0
+        added = False
+        add_name = name
+        for name in getFieldNamesInOrder(self.schema):
+            if not added and name == before:
+                field.order = order
+                if add_name is not None:
+                    field.__name__ = add_name
+                attrs[field.__name__] = field
+                order += 1
+                added = True
+            attrs[name] = self._copy_field(self.schema[name],
+                                           order=order)
+            order += 1
+        if not added:
+            if add_name is not None:
+                field.__name__ = add_name
+            field.order = order
+            attrs[field.__name__] = field
+            
+        return self._transformer(attrs)
+    
     def _transformer(self, attrs):
         return transformer(InterfaceClass(name=self.schema.__name__,
                                           bases=self.schema.__bases__,

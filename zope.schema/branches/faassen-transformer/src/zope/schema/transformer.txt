@@ -84,11 +84,38 @@ The title starts out as ``'A'``:
 
 Now we override the title, producing a new schema::
 
-  >>> schema = ifoo_transformer.override('a', title=u'A overridden').schema
-  >>> schema['a'].title
+  >>> s = ifoo_transformer.override('a', title=u'A overridden').schema
+  >>> s['a'].title
   u'A overridden'
 
 You can override any property, and also more than one, by using
 keyword arguments.
   
-  
+Add
+---
+
+We can also add a field to the schema. Let's add a field ``z``. First
+we need to create one::
+
+  >>> z = schema.TextLine(__name__='z', title=u'Z')
+  >>> s = ifoo_transformer.add(z).schema
+  >>> getFieldNamesInOrder(s)
+  ['a', 'b', 'c', 'd', 'z']
+
+Note that we have to set the __name__ manually in the field to be added. There
+is a convenience for this::
+
+  >>> z = schema.TextLine(title=u'Z')
+  >>> s = ifoo_transformer.add(z, name='z').schema
+  >>> getFieldNamesInOrder(s)
+  ['a', 'b', 'c', 'd', 'z']
+
+We can also insert a field before another one::
+
+  >>> s = ifoo_transformer.add(z, name='z', before='a').schema
+  >>> getFieldNamesInOrder(s)
+  ['z', 'a', 'b', 'c', 'd']
+
+  >>> s = ifoo_transformer.add(z, name='z', before='c').schema
+  >>> getFieldNamesInOrder(s)
+  ['a', 'b', 'z', 'c', 'd']
