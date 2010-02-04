@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2 (unreleased)
+1.2 (2010-02-04)
 ----------------
 
 - Make ``five.megrok.layout`` work with Zope 2.12. If you whish to use
