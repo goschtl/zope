@@ -17,11 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from datetime import datetime
 
 from zope import interface
 from zope import component
-from zope import schema
 
 from zope import formlib
 
@@ -106,7 +104,7 @@ class DayOfWeekWidget(StringTupleWidget):
     values = tuple(range(0,7))
 
 class TaskWidget(DropdownWidget):
-    
+
     def __init__(self, field, request):
         terms = [SimpleTerm(name) for name in field.context.getAvailableTasks()]
         vocabulary = SimpleVocabulary(terms)
@@ -161,7 +159,8 @@ class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
         if self.inputForm is not None:
             self.inputForm.update()
             inputData = {}
-            errors = formlib.form.getWidgetsData(self.inputForm.widgets,
+            # errors are not reported
+            formlib.form.getWidgetsData(self.inputForm.widgets,
                                                  self.inputForm.prefix,
                                                  inputData)
             if len(inputData) == 0:
@@ -215,4 +214,3 @@ class InputSchemaForm(formlib.form.AddForm):
     interface.implements(formlib.interfaces.ISubPageForm)
     template = formlib.namedtemplate.NamedTemplate('default')
     actions = []
-
