@@ -76,7 +76,8 @@ class Server(object):
             fullname = os.path.join(self.spool_directory, name)
             age = time.time() - os.stat(fullname)[ST_CTIME]
             if age > self.keep_files_for:
-                shutil.rmtree(fullname)
+                if os.path.exists(fullname):
+                    shutil.rmtree(fullname)
 
     def _inject_base_tag(self, html_filename):
         """ All input HTML files contain relative urls (relative
