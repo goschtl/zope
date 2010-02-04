@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="lovely.remotetask">
+
+  <class class=".service.TaskService">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ITaskService" />
+  </class>
+
+  <class class=".job.Job">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IJob"
+        set_schema=".interfaces.IJob" />
+  </class>
+
+  <class class=".job.CronJob">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ICronJob"
+        set_schema=".interfaces.ICronJob" />
+  </class>
+
+  <subscriber
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      handler=".service.bootStrapSubscriber"
+   />
+   
+  <!-- Demo: Echo Task -->
+  <utility
+      factory=".task.EchoTask"
+      name="echo" />
+
+  <include zcml:condition="not-installed Products.Five" file="xmlrpc.zcml" />
+  <five:registerPackage zcml:condition="installed Products.Five" package="." initialize=".initialize" />
+  
+  <include package=".browser" />
+  <include package=".generations" />
+
+</configure>
