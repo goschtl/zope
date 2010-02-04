@@ -13,50 +13,35 @@
 ##############################################################################
 
 import megrok.layout
-from grokcore.formlib.components import default_form_template
 from five import grok
 from zope import component, interface
 
 from Products.Five.browser.decode import processInputs, setPageEncoding
 
-import Acquisition
 
-
-class Layout(megrok.layout.Layout, Acquisition.Explicit):
+class Layout(megrok.layout.Layout):
 
     grok.baseclass()
 
     def __init__(self, *args):
         super(Layout, self).__init__(*args)
         if not (self.static is None):
-            # static should be wrapper correctly with acquisition,
-            # otherwise you will not be able to compute URL for
-            # resources.
-            self.static = self.static.__of__(self)
-
-    # We let getPhysicalPath to be acquired. This make static URL's
-    # work, and prevent us to inherit from Acquisition.Implicit
-    getPhysicalPath = Acquisition.Acquired
+            # Set parent to get acquisition chain
+            self.static.__parent__ = self.context
 
 
-class Page(megrok.layout.Page, Acquisition.Explicit):
+class Page(megrok.layout.Page):
 
     grok.baseclass()
 
     def __init__(self, *args):
         super(Page, self).__init__(*args)
         if not (self.static is None):
-            # static should be wrapper correctly with acquisition,
-            # otherwise you will not be able to compute URL for
-            # resources.
-            self.static = self.static.__of__(self)
-
-    # We let getPhysicalPath to be acquired. This make static URL's
-    # work, and prevent us to inherit from Acquisition.Implicit
-    getPhysicalPath = Acquisition.Acquired
+            # Set parent to get acquisition chain
+            self.static.__parent__ = self.context
 
 
-class Form(megrok.layout.Form, Acquisition.Explicit):
+class Form(megrok.layout.Form):
 
     grok.baseclass()
 
@@ -68,7 +53,7 @@ class Form(megrok.layout.Form, Acquisition.Explicit):
             self.request, interface.Interface,
             name = self.module_info.package_dotted_name)
         if not (self.static is None):
-            self.static = self.static.__of__(self)
+            self.static.__parent__ = self.context
 
     def update_form(self):
         processInputs(self.request)

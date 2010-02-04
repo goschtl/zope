@@ -85,6 +85,8 @@ def warn(message, category=None, stacklevel=1):
 
 
 from zope.app.testing.placelesssetup import tearDown as _cleanUp
+from Testing.ZopeTestCase.layer import ZopeLiteLayer
+
 def cleanUp():
     '''Cleans up the component architecture.'''
     _cleanUp()
@@ -108,7 +110,7 @@ def safe_load_site():
     zcml.load_config('ftesting.zcml', five.megrok.layout)
     setDebugMode(0)
 
-class Layer:
+class Layer(ZopeLiteLayer):
 
     def setUp(cls):
         '''Sets up the CA by loading etc/site.zcml.'''

@@ -15,7 +15,7 @@ You can create a context object and as a layout for it:
   <five.megrok.layout.ftests.layout.layout.MyLayout object at ...>
   >>> verifyObject(ILayout, mylayout)
   True
-  >>> mylayout.context.aq_base
+  >>> mylayout.context
   <Mammoth at arthur>
   >>> mylayout.render()
   '<div> MyLayout </div>'
@@ -26,7 +26,7 @@ The layout can be different depending of the context:
   >>> mycontextlayout = getMultiAdapter((request, elephant), ILayout)
   >>> mycontextlayout
   <five.megrok.layout.ftests.layout.layout.MyContextLayout object at ...>
-  >>> mycontextlayout.context.aq_base
+  >>> mycontextlayout.context
   <Elephant at paul>
   >>> mycontextlayout.render()
   '<div> MyContextLayout </div>'

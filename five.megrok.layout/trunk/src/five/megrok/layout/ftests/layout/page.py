@@ -12,11 +12,8 @@
 
   >>> request = TestRequest()
   >>> root = getRootFolder()
-  >>> id = root._setObject("cow", Cow(id='cow'))
-  >>> cow = root._getOb("cow")
-
-  Hack for Zope2:
-  >>> cow.REQUEST = request
+  >>> root["cow"] = Cow(id='cow')
+  >>> cow = root["cow"]
 
   You can now a page:
   >>> myview = getMultiAdapter((cow, request), name='myview')
@@ -38,12 +35,9 @@
   >>> print myview.content()
   <p> My nice Content </p>
 
-  >>> del cow.REQUEST
-
   Here an another example:
   >>> id = root._setObject("bigcow", BigCow(id='bigcow'))
   >>> bigcow = root._getOb("bigcow")
-  >>> bigcow.REQUEST = request
 
   >>> mybigview = getMultiAdapter((bigcow, request), name='myview')
 
@@ -61,8 +55,6 @@
   <five.megrok.layout.ftests.layout.page.Master object at ...>
   >>> print mybigview.content()
   <p> My big cool Content </p>
-
-  >>> del bigcow.REQUEST
 
   We can even do some functional testing:
   >>> browser.open('http://localhost/cow/myview')
