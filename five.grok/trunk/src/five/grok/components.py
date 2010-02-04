@@ -127,9 +127,9 @@ class ZopeTwoPageTemplate(PageTemplate):
         self._template = ViewPageTemplateFile(filename, _prefix)
 
     def render(self, view):
-        namespace = self.getNamespace(view)
         template = self._template
-        namespace.update(template.pt_getContext(view, view.request))
+        namespace = template.pt_getContext(view, view.request)
+        namespace.update(self.getNamespace(view))
         return template.pt_render(namespace)
 
 

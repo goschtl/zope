@@ -1,5 +1,5 @@
 """
-  >>> from five.grok.ftests.view.namespace import *
+  >>> from five.grok.ftests.view.namespace_override import *
   >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
 
   >>> from Products.Five.testbrowser import Browser
@@ -9,7 +9,7 @@
   >>> print browser.contents
   <html>
   <body>
-  <h1>Hello I am manfred!</h1>
+  <h1>Hello!</h1>
   </body>
   </html>
 
@@ -22,15 +22,15 @@ class Mammoth(grok.Model):
         super(Mammoth, self).__init__(id)
         self.id = id
 
+
+class CustomViewClass(object):
+
+    def hello(self):
+        return u'Hello'
+
+
 class Index(grok.View):
 
     def namespace(self):
-        return {'name': self.context.id}
+        return {'view': CustomViewClass()}
 
-index = grok.PageTemplate("""\
-<html>
-<body>
-<h1>Hello I am <tal:name tal:replace="name" />!</h1>
-</body>
-</html>
-""")
