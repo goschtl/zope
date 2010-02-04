@@ -17,13 +17,11 @@
 __docformat__ = "reStructuredText"
 
 from lovely.remotetask import service
-from zope.app.testing import placelesssetup
 from zope.app.testing.setup import (placefulSetUp, placefulTearDown)
 from zope.testing.doctest import INTERPRET_FOOTNOTES
 from zope.testing.doctestunit import DocFileSuite
 from zope.testing.loggingsupport import InstalledHandler
 import doctest
-import logging
 import random
 import unittest
 
