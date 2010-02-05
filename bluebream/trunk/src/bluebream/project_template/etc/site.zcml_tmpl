@@ -13,6 +13,7 @@
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.form.browser" file="meta.zcml" />
   <include package="zope.app.container.browser" file="meta.zcml" />
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
 
   <include package="zope.publisher" />
   <include package="zope.component" />
@@ -36,6 +37,7 @@
   <include package="zope.app.authentication" />
   <include package="zope.app.security.browser" />
   <include package="zope.traversing.browser" />
+  <include package="zope.app.pagetemplate" />
 
   <include package="${namespace_package}.${main_package}" file="securitypolicy.zcml" />
   <include package="${namespace_package}.${main_package}" file="application.zcml" />

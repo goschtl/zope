@@ -4,6 +4,8 @@ Changelog
 0.2.0 (unreleased)
 ------------------
 
+- Add `zope.app.pagetemplate` to site.zcml template
+
 - Changed template summary into: A BlueBream project
 
 - Removed `Sphinx-PyPI-upload` -- no more used as the
