@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.1 (2010-02-06)
 ------------------
 
-- ...
+- Fix test by including zope.login
+- Include ftesting.zcml from zope.app.securitypolicy.browser.tests
+- Include meta.zcml from zope.securitypolicy 
 
 3.5.0 (2009-02-01)
 ------------------
