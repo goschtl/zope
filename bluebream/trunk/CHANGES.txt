@@ -4,7 +4,11 @@ Changelog
 1.0a1 (unreleased)
 ------------------
 
-- Add `zope.app.pagetemplate` to site.zcml template
+- Include new packages to `site.zcml` template:
+
+  - `zope.app.publisher.xmlrpc` (meta.zcml)
+  - `zope.copypastemove`
+  - `zope.app.pagetemplate`
 
 - Changed template summary into: A BlueBream project
 
