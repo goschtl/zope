@@ -42,20 +42,20 @@ frameworks.
   conventions and declarations in standard Python.
 
 - BlueBream features the `Zope Component Architecture
-  <http://muthukadan.net/docs/zca.html>` (ZCA) which implements
+  <http://muthukadan.net/docs/zca.html>`_ (ZCA) which implements
   *Separation of concerns* to create highly cohesive reusable
   components (zope.component).
 
 - BlueBream supports `WSGI <http://www.wsgi.org/wsgi>`_ using `Paste
   <http://pythonpaste.org>`_, `PasteScript
-  <http://pythonpaste.org/script>`, and `PasteDeploy
-  <http://pythonpaste.org/deploy>`.
+  <http://pythonpaste.org/script>`_, and `PasteDeploy
+  <http://pythonpaste.org/deploy>`_.
   
 - BlueBream includes a number of compenents which provide well tested
   implementation of common requirements. A few are of these are:
   
   - zope.publisher_ publishes Python objects on the web, it is geared
-    towards `WSGI <http://www.wsgi.org/wsgi>` compatibility
+    towards `WSGI <http://www.wsgi.org/wsgi>`_ compatibility
 
   - zope.security_ provides a generic mechanism supporting pluggable 
     security policies
