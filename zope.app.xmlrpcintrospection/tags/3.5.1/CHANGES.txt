@@ -1,0 +1,20 @@
+=======
+CHANGES
+=======
+
+3.5.1 (2010-02-06)
+------------------
+
+- Fix test by including zope.login
+- Include ftesting.zcml from zope.app.securitypolicy.browser.tests
+- Include meta.zcml from zope.securitypolicy 
+
+3.5.0 (2009-02-01)
+------------------
+
+- Update ``zope.app.folder`` with ``zope.site``.
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
