@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -12,17 +13,17 @@ install_requires = [
     'grokcore.component >= 1.5, < 2.0',
     'zope.annotation',
     'zope.container',
-    'zope.interface'
+    'zope.interface',
     ],
 
 tests_require = [
     'zope.testing',
-    'zope.component'
+    'zope.component',
     ]
 
 setup(
     name='grokcore.content',
-    version = '1.0',
+    version='1.0',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -30,13 +31,13 @@ setup(
     description='Base content types for Grok',
     long_description=long_description,
     license='ZPL',
-    install_requires = install_requires,
+    install_requires=install_requires,
     tests_require=tests_require,
     extras_require={'test': tests_require},
     packages=find_packages('src'),
-    package_dir = {'': 'src'},
+    package_dir={'': 'src'},
     namespace_packages=['grokcore'],
-    include_package_data = True,
+    include_package_data=True,
     zip_safe=False,
     classifiers=[
         'Environment :: Web Environment',
