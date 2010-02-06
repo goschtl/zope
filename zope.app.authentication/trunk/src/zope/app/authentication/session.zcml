@@ -3,13 +3,9 @@
     i18n_domain="zope"
     >
 
-  <utility
-      name="Session Credentials"
-      provides=".interfaces.ICredentialsPlugin"
-      factory=".session.SessionCredentialsPlugin"
-      />
+  <include package="zope.pluggableauth.plugins" file="session.zcml" />
 
-  <class class=".session.SessionCredentialsPlugin">
+  <class class="zope.pluggableauth.plugins.session.SessionCredentialsPlugin">
 
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
@@ -17,8 +13,8 @@
 
     <require
         permission="zope.ManageServices"
-        interface=".session.IBrowserFormChallenger"
-        set_schema=".session.IBrowserFormChallenger"
+        interface="zope.pluggableauth.plugins.session.IBrowserFormChallenger"
+        set_schema="zope.pluggableauth.plugins.session.IBrowserFormChallenger"
         />
 
   </class>

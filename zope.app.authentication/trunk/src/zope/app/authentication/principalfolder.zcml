@@ -1,7 +1,12 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="zope"
-    >
+<configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
+
+  <adapter
+      factory="zope.pluggableauth.factories.FoundPrincipalFactory"
+      />
+
+  <adapter
+      factory="zope.pluggableauth.factories.AuthenticatedPrincipalFactory"
+      />
 
   <class class=".principalfolder.InternalPrincipal">
     <require
@@ -34,10 +39,6 @@
       for=".principalfolder.IInternalPrincipalContainer"
       factory=".idpicker.IdPicker"
       />
-
-  <adapter factory=".principalfolder.FoundPrincipalFactory" />
-
-  <adapter factory=".principalfolder.AuthenticatedPrincipalFactory" />
 
   <include package=".browser" file="principalfolder.zcml" />
 

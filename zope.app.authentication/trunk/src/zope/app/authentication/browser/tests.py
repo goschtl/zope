@@ -26,8 +26,8 @@ import transaction
 from zope.interface import directlyProvides
 from zope.exceptions.interfaces import UserError
 from zope.app.testing import functional
+from zope.pluggableauth.factories import Principal
 from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.authentication.principalfolder import Principal
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.testing import AppAuthenticationLayer
 

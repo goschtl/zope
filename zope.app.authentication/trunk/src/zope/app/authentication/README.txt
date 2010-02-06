@@ -817,6 +817,6 @@ And the parent is the pau::
 
   >>> queriable = queriables[0][1]
   >>> queriable.__parent__  # doctest: +ELLIPSIS
-  <zope.app.authentication.authentication.PluggableAuthentication object ...>
+  <zope.pluggableauth.authentication.PluggableAuthentication object ...>
   >>> queriable.__parent__ is pau
   True

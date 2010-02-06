@@ -8,9 +8,9 @@ We'll add a  pluggable authentication utility:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
+  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
   ... 
-  ... type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication&new_value=PAU""")
+  ... type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU""")
   HTTP/1.1 303 See Other
   ...
 
