@@ -1,8 +1,11 @@
 Changelog
 *********
 
-1.0a1 (unreleased)
+1.0a1 (2010-02-06)
 ------------------
+
+- Use released package distribution versions:
+  http://download.zope.org/bluebream/bluebream-1.0a1.cfg
 
 - Include new packages to `site.zcml` template:
 
