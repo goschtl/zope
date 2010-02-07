@@ -352,6 +352,18 @@ use a URI-based namespace notation:
 Content Provider
 ~~~~~~~~~~~~~~~~
 
+Content Provider is a term from the Java world that refers to
+components that can provide HTML content.  It means nothing more! How
+the content is found and returned is totally up to the
+implementation.  The BlueBream touch to the concept is that content
+providers are multi-adapters that are looked up by the context,
+request (and thus the layer/skin), and view they are displayed in.
+
+The second important concept of content providers are their two-phase
+rendering design.  In the first phase the state of the content
+provider is prepared and, if applicable, any data, the provider is
+responsible for, is updated.
+
 Viewlet
 ~~~~~~~
 
