@@ -17,17 +17,32 @@ application started in the first part of tutorial with additional
 functionalities.  If you complete this chapter, you should be able
 to:
 
+- Create content components
+- Change the look and feel
+- Using catalog to search
+
 Adding tickets and comments
 ---------------------------
 
 In this section, you will learn about adding tickets and comments to
 collector.
 
-Searching tickets
------------------
+::
+
+  class ITicket(Interface):
+     """Ticket - the main content object"""
+
+      name = TextLine(
+          title=u"Name",
+          description=u"Name of application.",
+          default=u"",
+          required=True)
 
 Change the look and feel
 ------------------------
+
+Searching tickets
+-----------------
 
 .. raw:: html
 

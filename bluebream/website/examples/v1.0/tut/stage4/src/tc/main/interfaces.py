@@ -4,7 +4,7 @@ from zope.schema import TextLine
 from zope.schema import Text
 
 class ICollector(IContainer):
-    """The main application container."""
+    """The main application container"""
 
     name = TextLine(
         title=u"Name",
@@ -20,7 +20,7 @@ class ICollector(IContainer):
 
 
 class ITicket(Interface):
-    """ """
+    """Ticket - the main content object"""
 
     name = TextLine(
         title=u"Name",
