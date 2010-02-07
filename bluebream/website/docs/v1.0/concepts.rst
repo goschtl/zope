@@ -128,8 +128,24 @@ instances around as parameters.
 Subscriber
 ~~~~~~~~~~
 
+Unlike regular adapters, subscription adapters (subscriber) are used
+when we want all of the adapters that adapt an object to a particular
+interface.  Subscription adapter is also known as subscriber.
+
 Handler
 ~~~~~~~
+
+Handlers are subscription adapter factories that don't produce
+anything.  They do all of their work when called.  Handlers are
+typically used to handle events.  Handlers are also known as event
+subscribers or event subscription adapters.
+
+Event subscribers are different from other subscription adapters in
+that the caller of event subscribers doesn't expect to interact with
+them in any direct way.  For example, an event publisher doesn't
+expect to get any return value.  Because subscribers don't need to
+provide an API to their callers, it is more natural to define them
+with functions, rather than classes.
 
 Component Registry
 ~~~~~~~~~~~~~~~~~~
