@@ -211,12 +211,6 @@ Core Developer Reference that provides information on how BlueBream
 Views are being used in Plone:
 http://plone.org/documentation/manual/plone-developer-reference/patterns/views
 
-Browser Page
-~~~~~~~~~~~~
-
-Browser Resource
-~~~~~~~~~~~~~~~~
-
 Container
 ~~~~~~~~~
 
@@ -226,8 +220,30 @@ Content Object
 Schema
 ------
 
+Schemas are just an extension to interfaces and therefore depend on
+the ``zope.interface`` package.  Fields in schemas are equivalent to
+methods in interfaces.  Both are complementary to each other, since
+they describe different aspects of an object.  The methods of an
+interface describe the functionality of a component, while the
+schema’s fields represent the state.
+
+Schemas provide:
+
+1. Full specification of properties on an API level
+2. Data input validation and conversion
+3. Automated GUI form generation (mainly for the Web browser)
+
 Widget
 ------
+
+The views of schema fields are called widgets.  Widgets responsible
+for data display and conversion in their specific presentation type.
+Currently widgets exist mainly for HTML (the Web browser).
+
+Widgets are separated into two groups, display and input widgets.
+Display widgets are often very simply and only show a text
+representation of the Python object.  The input widgets, however, are
+more complex and display a greater variety of choices.
 
 Layer
 ~~~~~
