@@ -227,11 +227,15 @@ Core Developer Reference that provides information on how BlueBream
 Views are being used in Plone:
 http://plone.org/documentation/manual/plone-developer-reference/patterns/views
 
+Content Object
+~~~~~~~~~~~~~~
+
+Content obejcts are objects with a user visisble view. 
+
 Container
 ~~~~~~~~~
 
-Content Object
-~~~~~~~~~~~~~~
+Containers are content objects which hold content objects.
 
 Schema
 ------
