@@ -733,17 +733,17 @@ interfaces like this::
   from zope.schema import Text
 
   class ICollector(IContainer):
-      """The main application container."""
+      """The main application container"""
 
       name = TextLine(
           title=u"Name",
-          description=u"Name of application.",
+          description=u"Name of application container",
           default=u"",
           required=True)
 
       description = Text(
           title=u"Description",
-          description=u"The name of application container.",
+          description=u"Description of application container",
           default=u"",
           required=False)
 

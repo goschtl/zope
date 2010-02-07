@@ -19,15 +19,14 @@ to:
 
 - Create content components
 - Change the look and feel
-- Using catalog to search
+- Use catalog to search
 
-Adding tickets and comments
----------------------------
+Adding tickets
+--------------
 
-In this section, you will learn about adding tickets and comments to
-collector.
+In this section, you will learn about adding tickets to collector.
 
-::
+Update the ::
 
   class ITicket(Interface):
      """Ticket - the main content object"""
