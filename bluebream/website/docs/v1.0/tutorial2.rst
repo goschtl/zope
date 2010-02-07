@@ -9,6 +9,8 @@ Tutorial --- Part 2
    Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
    in wiki for the current status and timeline.
 
+.. _tut2-intro:
+
 Introduction
 ------------
 
@@ -21,12 +23,15 @@ to:
 - Change the look and feel
 - Use catalog to search
 
+.. _tut2-adding-tickets:
+
 Adding tickets
 --------------
 
 In this section, you will learn about adding tickets to collector.
-
-Update the ::
+In order to use ticket objects, first you need to create an interface
+for tickets.  Update the ``interfaces.py`` with the ticket
+interface::
 
   class ITicket(Interface):
      """Ticket - the main content object"""
@@ -36,6 +41,15 @@ Update the ::
           description=u"Name of application.",
           default=u"",
           required=True)
+
+      summary = TextLine(
+          title=u"Summary",
+          description=u"Ticket summary",
+          default=u"",
+          required=True)
+
+
+.. _tut2-adding-tickets:
 
 Change the look and feel
 ------------------------

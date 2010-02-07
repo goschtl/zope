@@ -4,7 +4,7 @@
 </head>
 <body>
 
-Welcome to ticket collector
+<a href="@@add_ticket">Add Ticket</a>
 
 </body>
 </html>

@@ -54,7 +54,6 @@ A ticket collector application""",
                         'zope.testbrowser',
                         'zope.login',
                         'zope.app.zcmlfiles',
-                        'z3c.layer.minimal',
                         ],
       entry_points = """
       [paste.app_factory]

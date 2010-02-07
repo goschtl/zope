@@ -38,6 +38,25 @@
        />
   </class>
 
+  <interface 
+     interface=".interfaces.ITicket" 
+     type="zope.app.content.interfaces.IContentType"
+     /> 
+
+  <class class=".ticket.Ticket">
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.ITicket"
+       />
+    <require
+       permission="zope.ManageContent"
+       set_schema=".interfaces.ITicket"
+       />
+  </class>
+
   <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="add_ticket_collector"
@@ -51,6 +70,13 @@
      permission="zope.ManageContent"
      class=".views.TicketCollectorMainView"
      template="collectormain.pt"
+     />
+
+  <browser:page
+     for=".interfaces.ICollector"
+     name="add_ticket"
+     permission="zope.ManageContent"
+     class=".views.AddTicket"
      />
 
 </configure>

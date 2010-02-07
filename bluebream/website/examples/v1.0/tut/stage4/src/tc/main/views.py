@@ -2,9 +2,11 @@ from zope.publisher.browser import BrowserView
 from zope.container.interfaces import INameChooser
 from zope.formlib import form
 
-from interfaces import ICollector
+from tc.main.interfaces import ICollector
+from tc.main.interfaces import ITicket
 
-from ticketcollector import Collector
+from tc.main.ticketcollector import Collector
+from tc.main.ticket import Ticket
 
 class AddTicketCollector(form.AddForm):
 
@@ -24,6 +26,19 @@ class AddTicketCollector(form.AddForm):
 class TicketCollectorMainView(BrowserView):
 
     pass
+
+
+class AddTicket(form.AddForm):
+
+    form_fields = form.Fields(ITicket)
+
+    def createAndAdd(self, data):
+        number = data['number']
+        summary = data['summary']
+        ticket = Ticket()
+        self.context[number] = ticket
+        self.request.response.redirect('.')
+
 
 class RootDefaultView(BrowserView):
 
