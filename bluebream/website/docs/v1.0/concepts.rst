@@ -238,7 +238,7 @@ Container
 Containers are content objects which hold content objects.
 
 Schema
-------
+~~~~~~
 
 Schemas are just an extension to interfaces and therefore depend on
 the ``zope.interface`` package.  Fields in schemas are equivalent to
@@ -254,7 +254,7 @@ Schemas provide:
 3. Automated GUI form generation (mainly for the Web browser)
 
 Widget
-------
+~~~~~~
 
 The views of schema fields are called widgets.  Widgets responsible
 for data display and conversion in their specific presentation type.
