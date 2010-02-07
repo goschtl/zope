@@ -152,6 +152,65 @@ XML-RPC.
 View
 ~~~~
 
+.. based on: http://wiki.zope.org/zope3/WhatIsAViewWhatAreContextAndRequest
+
+**Views** provide a connection between an **external actor** and an **object**.
+
+A View is typically a display component. Views are typically
+reponsible for creating HTML.  Views can directly return HTML, but
+will often supply presentational logic and processed data to a Zope
+Page Template, which then contains the HTML.
+
+Web developers will normally deal with a specialized View called a
+BrowserView.  This is just a View that is made for a web browser, as
+BlueBream can also provide Views for other protocols, such as FTP or
+WebDAV.  In a BrowserView, the **external actor** is a web browser
+**request**, and the **object** that the view connects is looked up
+using traversal and is called the **context**.  Because the Web is
+the predominant focus of most Zope developers, often the term View is
+assumed to be a BrowserView.
+
+The constructor for a BrowserView looks like this::
+
+	class BrowserView(Location):
+	    implements(IBrowserView)
+
+	    def __init__(self, context, request):
+	        self.context = context
+	        self.request = request
+
+
+**Context** is the object that the View is acting upon.  Often
+context will be a Content or Model object, but it may also be a
+Container or Site object or any object that Zope can publish.
+
+**Request** is an HTTP Request.  If the View is a BrowserView, the
+Request will have a form attribute where all form data is already
+marshalled for the programmer.
+
+Consider the URL
+http://localhost:8080/your-id/a-todo-list/get-cat-food.  In
+BlueBream, ``your-id`` would be a Container component that also
+provided a IHomeFolder interface, ``a-todo-list`` would be a To-Do
+Container component that also provided a IToDoList interaface, and
+``get-cat-food`` would be a ToDo-Item Content or Model component that
+also provided a IToDoItem interface.  If you entered the URL
+http://localhost:8080/your-id/a-todo-list/get-cat-food into your web
+browser, then **context** would be an object that provided the
+IToDoItem interface, while **request** would be an object that
+represented the web browser request for that web page. However, if
+the URL was just http://localhost:8080/your-id/ then **context**
+would be an object that represented your home folder.
+
+You can look-up a View programmatically with a query::
+
+    view = component.queryMultiAdapter((object, request), name='index')
+
+For more reading on Views, there is a section about them in the Plone
+Core Developer Reference that provides information on how BlueBream
+Views are being used in Plone:
+http://plone.org/documentation/manual/plone-developer-reference/patterns/views
+
 Browser Page
 ~~~~~~~~~~~~
 
