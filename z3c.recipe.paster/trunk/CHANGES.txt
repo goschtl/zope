@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-0.5.3dev (unreleased)
----------------------
+0.5.3 (2010-02-08)
+------------------
 
 - Fix: add z3c.recipe.paster egg for debugging if it's not there to
   make sure it's installed
