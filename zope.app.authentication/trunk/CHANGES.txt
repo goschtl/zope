@@ -2,16 +2,19 @@
 Changes
 =======
 
-3.6.3 (unreleased)
+3.7.0 (2010-02-08)
 ------------------
 
-- Nothing changed yet.
+* The Pluggable Authentication utility has been severed and released
+  in a standalone package: `zope.pluggableauth`. We are now using this
+  new package, providing backward compatibility imports to assure a
+  smooth transition.
 
 
 3.6.2 (2010-01-05)
 ------------------
 
-- Fix tests by using zope.login, and require new zope.publisher 3.12.
+* Fix tests by using zope.login, and require new zope.publisher 3.12.
 
 
 3.6.1 (2009-10-07)
