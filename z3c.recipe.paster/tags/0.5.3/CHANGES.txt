@@ -1,0 +1,33 @@
+=======
+CHANGES
+=======
+
+0.5.3 (2010-02-08)
+------------------
+
+- Fix: add z3c.recipe.paster egg for debugging if it's not there to
+  make sure it's installed
+
+0.5.2 (2010-01-28)
+------------------
+
+- Fix: add PasteScript egg if it's not there to make sure it's installed
+
+0.5.1 (2010-01-22)
+------------------
+
+- Added ``debug``, an interactive debug prompt.
+
+- Fixed tests and fix all eggs in test setup.
+
+- Fixed test normalizer.
+
+- Updated tests, so they work with current packages.
+
+- Fixed tests, so they run both an Windows-like and Unix-like OS.
+
+
+0.5.0 (2009-02-22)
+------------------
+
+- Initial Release
