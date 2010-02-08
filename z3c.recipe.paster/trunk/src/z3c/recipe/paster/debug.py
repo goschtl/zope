@@ -39,7 +39,7 @@ class DebugSetup:
             raise zc.buildout.UserError(
                 'You have to define at the app (which has the eggs and zope.conf).')
         self.app = options.get('app')
-        options['eggs'] = buildout[self.app]['eggs']
+        options['eggs'] = '%s\nz3c.recipe.paster' % buildout[self.app]['eggs']
 
         if not options.get('working-directory', ''):
             options['location'] = buildout[self.app].get('location',
