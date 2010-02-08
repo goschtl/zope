@@ -48,6 +48,72 @@ interface::
           default=u"",
           required=True)
 
+Next, you can implement this interface inside ``ticket.py``::
+
+  from zope.interface import implements
+  from tc.main.interfaces import ITicket
+  from tc.main.interfaces import ITicketContained
+  from zope.location.contained import Contained
+
+
+  class Ticket(Contained):
+
+      implements(ITicket, ITicketContained)
+
+      number = u""
+      summary = u""
+
+Then, register the interface & class::
+
+  <interface 
+     interface=".interfaces.ITicket" 
+     type="zope.app.content.interfaces.IContentType"
+     /> 
+
+  <class class=".ticket.Ticket">
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.ITicket"
+       />
+    <require
+       permission="zope.ManageContent"
+       set_schema=".interfaces.ITicket"
+       />
+  </class>
+
+Now you can add a link in ``collectormain.pt`` like this::
+
+  <a href="@@add_ticket">Add Ticket</a>
+
+When you click on this link, it expects a view. You can create an
+AddForm inside ``views.py``::
+
+  from tc.main.interfaces import ITicket
+
+  from tc.main.ticket import Ticket
+
+  class AddTicket(form.AddForm):
+
+      form_fields = form.Fields(ITicket)
+
+      def createAndAdd(self, data):
+          number = data['number']
+          summary = data['summary']
+          ticket = Ticket()
+          self.context[number] = ticket
+          self.request.response.redirect('.')
+
+You can register the view inside `configure.zcml`::
+
+    <browser:page
+       for=".interfaces.ICollector"
+       name="add_ticket"
+       permission="zope.ManageContent"
+       class=".views.AddTicket"
+       />
 
 .. _tut2-adding-tickets:
 
