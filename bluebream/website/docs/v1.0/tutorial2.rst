@@ -17,11 +17,7 @@ Introduction
 This is the second part of tutorial.  This chapter expand the
 application started in the first part of tutorial with additional
 functionalities.  If you complete this chapter, you should be able
-to:
-
-- Create content components
-- Change the look and feel
-- Use catalog to search
+to create content components.
 
 .. _tut2-adding-tickets:
 
@@ -115,13 +111,11 @@ You can register the view inside `configure.zcml`::
        class=".views.AddTicket"
        />
 
-.. _tut2-adding-tickets:
+Conclusion
+----------
 
-Change the look and feel
-------------------------
-
-Searching tickets
------------------
+This chapter explored creating content components.  You can learn
+more about BlueBream from the :ref:`manual`.
 
 .. raw:: html
 
