@@ -60,8 +60,7 @@ all inputs and stuff, but start it later.
 Watch for the ``startLater=True``.
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'}, startLater=True)
-  >>> jobid
-  1392637175 
+  >>> initial_jobid = jobid
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
@@ -86,8 +85,8 @@ Let's see how the starting later works.
 Add a job again:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'}, startLater=True)
-  >>> jobid
-  1392637176 
+  >>> jobid == initial_jobid + 1
+  True
 
 It's still in the status ``start later``:
 

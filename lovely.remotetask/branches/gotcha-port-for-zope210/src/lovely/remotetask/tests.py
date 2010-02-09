@@ -37,6 +37,7 @@ def setUp(test):
     # Make tests predictable
     random.seed(27)
 
+
 def tearDown(test):
     random.seed()
     placefulTearDown()
@@ -44,7 +45,6 @@ def tearDown(test):
     log_info.clear()
     log_info.uninstall()
     service.TaskService.processorArguments = test.origArgs
-
 
 
 class TestIdGenerator(unittest.TestCase):
@@ -57,19 +57,20 @@ class TestIdGenerator(unittest.TestCase):
         random.seed()
 
     def test_sequence(self):
-        self.assertEquals(1392637175, self.service._generateId())
-        self.assertEquals(1392637176, self.service._generateId())
-        self.assertEquals(1392637177, self.service._generateId())
-        self.assertEquals(1392637178, self.service._generateId())
+        initial_id = self.service._generateId()
+        self.assertEquals(initial_id + 1, self.service._generateId())
+        self.assertEquals(initial_id + 2, self.service._generateId())
+        self.assertEquals(initial_id + 3, self.service._generateId())
 
     def test_in_use_randomises(self):
-        self.assertEquals(1392637175, self.service._generateId())
-        self.service.jobs[1392637176] = object()
-        self.assertEquals(1506179619, self.service._generateId())
-        self.assertEquals(1506179620, self.service._generateId())
-        self.service.jobs[1506179621] = object()
-        self.assertEquals(2055242787, self.service._generateId())
-
+        initial_id = self.service._generateId()
+        self.service.jobs[initial_id] = object()
+        second_id = self.service._generateId()
+        self.assertNotEquals(second_id, initial_id)
+        self.assertEquals(second_id + 1, self.service._generateId())
+        self.service.jobs[second_id + 2] = object()
+        next_id = self.service._generateId()
+        self.assertNotEquals(next_id, second_id)
 
 
 def test_suite():
@@ -82,7 +83,6 @@ def test_suite():
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE
-                     |doctest.ELLIPSIS
-                     |INTERPRET_FOOTNOTES
-                     ),
+                     | doctest.ELLIPSIS
+                     | INTERPRET_FOOTNOTES),
         ))

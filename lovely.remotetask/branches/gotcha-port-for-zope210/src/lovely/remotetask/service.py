@@ -22,7 +22,6 @@ from zope.app.container import contained
 from zope.app.publication.zopepublication import ZopePublication
 from zope.component.interfaces import ComponentLookupError
 from zope.traversing.api import getParents
-import BTrees
 import datetime
 import logging
 import persistent
@@ -31,7 +30,6 @@ import threading
 import time
 import zc.queue
 import zope.interface
-from BTrees.IOBTree import IOBTree
 import zope.location
 
 
@@ -50,7 +48,7 @@ except ImportError:
 storage = threading.local()
 
 
-class TaskService(contained.Contained, persistent.Persistent):
+class BaseTaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
 
     The available tasks for this service are managed as utilities.
@@ -58,27 +56,19 @@ class TaskService(contained.Contained, persistent.Persistent):
     zope.interface.implements(interfaces.ITaskService)
 
     taskInterface = interfaces.ITask
-    if not ZOPE2:
-        processorFactory = processor.SimpleProcessor
-    else:
-        processorFactory = processor.SimpleZope2Processor
+    processorFactory = processor.SimpleProcessor
 
     processorArguments = {'waitTime': 1.0}
 
-    _scheduledJobs  = None
+    _scheduledJobs = None
     _scheduledQueue = None
     _v_nextid = None
-    if not ZOPE2:
-        family = BTrees.family32
+    containerClass = None
 
     def __init__(self):
-        super(TaskService, self).__init__()
-        if not ZOPE2:
-            self.jobs = self.family.IO.BTree()
-            self._scheduledJobs = self.family.IO.BTree()
-        else:
-            self.jobs = IOBTree()
-            self._scheduledJobs = IOBTree()
+        super(BaseTaskService, self).__init__()
+        self.jobs = self.containerClass()
+        self._scheduledJobs = self.containerClass()
         self._queue = zc.queue.Queue()
         self._scheduledQueue = zc.queue.Queue()
 
@@ -152,10 +142,9 @@ class TaskService(contained.Contained, persistent.Persistent):
                 break
         if jobid in self.jobs:
             job = self.jobs[jobid]
-            if (   job.status == interfaces.CRONJOB
+            if (job.status == interfaces.CRONJOB
                 or job.status == interfaces.DELAYED
-                or job.status == interfaces.STARTLATER
-               ):
+                or job.status == interfaces.STARTLATER):
                 job.status = interfaces.CANCELLED
 
     def getStatus(self, jobid):
@@ -170,24 +159,20 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         return str(self.jobs[jobid].error)
 
+    def getServicePath(self):
+        raise NotImplemented
+
     def startProcessing(self):
         """See interfaces.ITaskService"""
         if self.__parent__ is None:
             return
         if self._scheduledJobs is None:
-            if not ZOPE2:
-                self._scheduledJobs = self.family.IOB.Tree()
-            else:
-                self._scheduledJobs = IOBTree()
+            self._scheduledJobs = self.containerClass()
         if self._scheduledQueue is None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
-        if not ZOPE2:
-            servicePath = [parent.__name__ for parent in getParents(self)
-                           if parent.__name__]
-        else:
-            servicePath = [path for path in self.getPhysicalPath() if path]
-        servicePath.reverse()
+        servicePath = self.getServicePath()
+        log.info('starting service %s' % self._threadName())
         # Start the thread running the processor inside.
         processor = self.processorFactory(
             self._p_jar.db(), servicePath, **self.processorArguments)
@@ -201,6 +186,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         if self.__name__ is None:
             return
         name = self._threadName()
+        log.info('stopping service %s' % name)
         for thread in threading.enumerate():
             if thread.getName() == name:
                 thread.running = False
@@ -221,16 +207,10 @@ class TaskService(contained.Contained, persistent.Persistent):
         """Return name of the processing thread."""
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
-        if not ZOPE2:
-            path = [parent.__name__ for parent in getParents(self)
-                    if parent.__name__]
-            path.append('remotetasks')
-            path.reverse()
-            path.append(self.__name__)
-        else:
-            path = [path for path in self.getPhysicalPath() if path]
-            path.append('remotetasks')
-            path.reverse()
+        path = self.getServicePath()
+        path.append('remotetasks')
+        path.reverse()
+        path.append(self.__name__)
         return '.'.join(path)
 
     def hasJobsWaiting(self, now=None):
@@ -272,7 +252,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         try:
             jobtask = component.getUtility(self.taskInterface, name=job.task)
         except ComponentLookupError, error:
-            log.error('Task "%s" not found!'% job.task)
+            log.error('Task "%s" not found!' % job.task)
             log.exception(error)
             job.error = error
             if job.status != interfaces.CRONJOB:
@@ -332,9 +312,8 @@ class TaskService(contained.Contained, persistent.Persistent):
                 self._scheduledJobs[first] = jobs[1:]
                 if len(self._scheduledJobs[first]) == 0:
                     del self._scheduledJobs[first]
-                if (    job.status != interfaces.CANCELLED
-                    and job.status != interfaces.ERROR
-                   ):
+                if (job.status != interfaces.CANCELLED
+                    and job.status != interfaces.ERROR):
                     if job.status != interfaces.DELAYED:
                         self._insertCronJob(job, now)
                     return job
@@ -370,38 +349,12 @@ class TaskService(contained.Contained, persistent.Persistent):
         """
         while True:
             if self._v_nextid is None:
-                if not ZOPE2:
-                    self._v_nextid = random.randrange(0, self.family.maxint)
-                else:
-                    self._v_nextid = random.randrange(0, sys.maxint)
+                self._v_nextid = random.randrange(0, self.maxint)
             uid = self._v_nextid
             self._v_nextid += 1
             if uid not in self.jobs:
                 return uid
             self._v_nextid = None
-
-
-
-def getAutostartServiceNames():
-    """get a list of services to start"""
-
-    serviceNames = []
-    if not ZOPE2:
-        config = getProductConfiguration('lovely.remotetask')
-        if config is not None:
-            serviceNames = [name.strip()
-                            for name in config.get('autostart', '').split(',')]
-    else:
-        config = getConfiguration().product_config
-        if config is not None:
-            task_config = config.get('lovely.remotetask', None)
-            if task_config:
-                autostart = task_config.get('autostart', '')
-                serviceNames = [name.strip()
-                                for name in autostart.split(',')]
-
-    return serviceNames
-
 
 
 def bootStrapSubscriber(event):
@@ -435,22 +388,22 @@ def bootStrapSubscriber(event):
         rootServices = list(rootSM.getUtilitiesFor(interfaces.ITaskService))
 
         for site in sites:
+            serviceCount = 0
             csName = getattr(site, "__name__", '')
             if csName is None:
                 csName = 'root'
             if site is not None:
                 sm = site.getSiteManager()
                 if serviceName == '*':
-                    services = list(sm.getUtilitiesFor(interfaces.ITaskService))
+                    services = list(
+                        sm.getUtilitiesFor(interfaces.ITaskService))
                     if siteName != "*" and siteName != '':
                         services = [s for s in services
                                        if s not in rootServices]
                 else:
                     services = [(serviceName,
-                                 component.queryUtility(interfaces.ITaskService,
-                                                       context=site,
-                                                       name=serviceName))]
-                serviceCount = 0
+                        component.queryUtility(interfaces.ITaskService,
+                        context=site, name=serviceName))]
                 for srvname, service in services:
                     if service is not None and not service.isProcessing():
                         service.startProcessing()
@@ -467,3 +420,55 @@ def bootStrapSubscriber(event):
         if (siteName == "*" or serviceName == "*") and serviceCount == 0:
             msg = 'no services started by directive %s'
             log.warn(msg % name)
+
+
+def getAutostartServiceNames():
+    """get a list of services to start"""
+
+    serviceNames = []
+    config = getTaskConfig()
+    if config is not None:
+        autostart = config.get('autostart', '')
+        serviceNames = [name.strip()
+                        for name in autostart.split(',')]
+
+    return serviceNames
+
+
+if not ZOPE2:
+
+    class TaskService(BaseTaskService):
+        from BTree import family32
+        containerClass = family32.IO.BTree
+        maxint = family32.maxint
+
+        def getServicePath(self):
+            path = [parent.__name__ for parent in getParents(self)
+                           if parent.__name__]
+            path.reverse()
+            path.append(self.__name__)
+            return path
+
+    def getTaskConfig():
+        return getProductConfiguration('lovely.remotetask')
+
+else:
+    from OFS.SimpleItem import SimpleItem
+
+    class TaskService(BaseTaskService, SimpleItem):
+        from BTrees.IOBTree import IOBTree
+        containerClass = IOBTree
+        maxint = sys.maxint
+
+        def getServicePath(self):
+            path = [part for part in self.getPhysicalPath() if part]
+            return path
+
+    def getTaskConfig():
+        config = getConfiguration()
+        if not hasattr(config, 'product_config'):
+            return
+        product_config = config.product_config
+        if config is None:
+            return
+        return product_config.get('lovely.remotetask', None)

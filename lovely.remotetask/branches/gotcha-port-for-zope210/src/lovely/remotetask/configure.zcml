@@ -41,7 +41,7 @@
       name="echo" />
 
   <include zcml:condition="not-installed Products.Five" file="xmlrpc.zcml" />
-  <five:registerPackage zcml:condition="installed Products.Five" package="." initialize=".initialize" />
+  <!--five:registerPackage zcml:condition="installed Products.Five" package="." initialize=".initialize" /-->
   
   <include package=".browser" />
   <include package=".generations" />

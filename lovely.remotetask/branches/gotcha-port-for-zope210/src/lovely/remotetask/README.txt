@@ -114,8 +114,6 @@ Since the service cannot instantaneously complete a task, incoming jobs are
 managed by a queue. First we request the echo task to be executed:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
-  >>> jobid
-  1392637175
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
@@ -155,6 +153,12 @@ emulate the ``zope.conf`` settings:
   >>> config.mapping['autostart'] = (
   ...     'site1@TestTaskService1, site2@TestTaskService2,@RootTaskService')
   >>> from zope.app.appsetup.product import setProductConfigurations
+  >>> from App.config import getConfiguration
+  >>> def setProductConfigurations(configs):
+  ...     global_config = getConfiguration()
+  ...     global_config.product_config = {}
+  ...     for config in configs:
+  ...         global_config.product_config[config.getSectionName()] = config.mapping
   >>> setProductConfigurations([config])
   >>> from lovely.remotetask.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
@@ -197,11 +201,16 @@ Checking out the logging will prove the started service:
   lovely.remotetask INFO
     handling event IStartRemoteTasksEvent
   lovely.remotetask INFO
+    starting service remotetasks.testTaskService1
+  lovely.remotetask INFO
     service TestTaskService1 on site site1 started
   lovely.remotetask ERROR
     site site2 not found
   lovely.remotetask INFO
+    starting service remotetasks.rootTaskService
+  lovely.remotetask INFO
     service RootTaskService on site root started
+
 
 The verification for the jobs in the root-level service is done in another
 footnote [#2]_
@@ -216,9 +225,9 @@ But first stop all processing services:
   >>> service.isProcessing()
   False
 
-  >>> root_service.stopProcessing()
-  >>> root_service.isProcessing()
-  False
+  >>> print log_info
+  lovely.remotetask INFO
+    stopping service remotetasks.testTaskService1
 
   >>> import time
   >>> time.sleep(STOP_SLEEP_TIME)
@@ -289,6 +298,8 @@ Let's check the logging:
   >>> print log_info
   lovely.remotetask INFO
     handling event IStartRemoteTasksEvent
+  lovely.remotetask INFO
+    starting service remotetasks.testTaskService1
   lovely.remotetask INFO
     service RootTaskService on site root started
   lovely.remotetask INFO
@@ -718,8 +729,6 @@ Footnotes
 
      >>> r_jobid = root_service.add(
      ...     u'echo', {'foo': 'this is for root_service'})
-     >>> r_jobid
-     1506179619
 
 
 .. [#2] We verify the root_service does get processed:
@@ -741,6 +750,7 @@ Footnotes
      False
 
      >>> root_service.clean()
+     >>> log_info.clear()
 
 
 Check Interfaces and stuff

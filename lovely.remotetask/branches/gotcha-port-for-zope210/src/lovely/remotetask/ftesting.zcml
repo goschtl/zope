@@ -1,8 +1,10 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:zcml="http://namespaces.zope.org/zcml"
+           xmlns:meta="http://namespaces.zope.org/meta"
            i18n_domain="zope">
 
+  <meta:provides feature="deprecatedlayers" />
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
   <include
@@ -42,5 +44,4 @@
    role="zope.Manager"
    principal="zope.manager"
    />
-
 </configure>
