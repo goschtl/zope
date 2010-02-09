@@ -1,0 +1,73 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <resourceDirectory
+      name="lovely-remotetask-icons"
+      directory="icons"
+      />
+
+  <addMenuItem
+      zcml:condition="not-installed Products.Five"
+      class="..service.TaskService"
+      title="Remote Task Service"
+      description="A Remote Task Service"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      zcml:condition="not-installed Products.Five"
+      name="jobs.html"
+      for="..interfaces.ITaskService"
+      class=".service.JobsOverview"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Jobs"
+      />
+
+  <page
+      zcml:condition="not-installed Products.Five"
+      name="detail"
+      for="..interfaces.IJob"
+      permission="zope.ManageContent"
+      class=".job.JobDetail"
+      />
+
+  <page
+      zcml:condition="not-installed Products.Five"
+      name="detail"
+      for="..interfaces.ICronJob"
+      permission="zope.Public"
+      class=".job.CronJobDetail"
+      />
+
+  <page
+      zcml:condition="not-installed Products.Five"
+      name="editjob"
+      for="..interfaces.ICronJob"
+      permission="zope.ManageContent"
+      class=".job.CronJobEdit"
+      menu="zmi_views" title="edit"
+      />
+
+  <page
+      zcml:condition="not-installed Products.Five"
+      name="addcronjob.html"
+      for="..interfaces.ITaskService"
+      class=".job.AddCronJob"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="add cron"
+      />
+
+  <!-- traverser for the site -->
+  <zope:view
+      for="..interfaces.ITaskService"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory=".service.ServiceJobTraverser"
+      permission="zope.Public"
+      />
+
+  <include file="zope210compat.zcml" zcml:condition="installed Products.Five" /> 
+
+</configure>

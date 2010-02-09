@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <page
+      name="jobs.html"
+      for="..interfaces.ITaskService"
+      class=".service.JobsOverview"
+      permission="zope.Public"
+      />
+
+  <page
+      name="detail"
+      for="..interfaces.IJob"
+      permission="zope.Public"
+      class=".job.JobDetail"
+      />
+
+  <page
+      name="detail"
+      for="..interfaces.ICronJob"
+      permission="zope.Public"
+      class=".job.CronJobDetail"
+      />
+
+  <page
+      name="editjob"
+      for="..interfaces.ICronJob"
+      permission="zope.Public"
+      class=".job.CronJobEdit"
+      />
+
+  <page
+      name="addcronjob.html"
+      for="..interfaces.ITaskService"
+      class=".job.AddCronJob"
+      permission="zope.Public"
+      />
+
+</configure>
