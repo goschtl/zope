@@ -16,7 +16,7 @@
 $Id$
 """
 import datetime
-import psycopg2
+import psycopg2, psycopg2.extensions
 import zope.psycopgda.adapter as adapter
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.psycopgda.adapter import _conv_date, _conv_time, _conv_timestamp
@@ -59,10 +59,10 @@ class PsycopgStub(object):
 
     __shared_state = {}     # 'Borg' design pattern
 
-    DATE = psycopg2.DATE
-    TIME = psycopg2.TIME
+    DATE = psycopg2.extensions.DATE
+    TIME = psycopg2.extensions.TIME
     DATETIME = psycopg2.DATETIME
-    INTERVAL = psycopg2.INTERVAL
+    INTERVAL = psycopg2.extensions.INTERVAL
 
     def __init__(self):
         self.__dict__ = self.__shared_state
@@ -78,7 +78,6 @@ class PsycopgStub(object):
     def register_type(self, type):
         for typeid in type.values:
             self.types[typeid] = type
-
 
 class TestPsycopgTypeConversion(TestCase):
 
@@ -181,6 +180,7 @@ class TestPsycopgAdapter(TestCase):
     def setUp(self):
         self.real_psycopg = adapter.psycopg2
         adapter.psycopg2 = self.psycopg_stub = PsycopgStub()
+        self.psycopg_stub.extensions = self.real_psycopg.extensions
 
     def tearDown(self):
         adapter.psycopg2 = self.real_psycopg
@@ -201,9 +201,8 @@ class TestPsycopgAdapter(TestCase):
         for typename in ('DATE', 'TIME', 'TIMETZ', 'TIMESTAMP',
                          'TIMESTAMPTZ', 'INTERVAL'):
             typeid = getattr(adapter, '%s_OID' % typename)
-            result = self.psycopg_stub.types.get(typeid, None)
+            result = self.psycopg_stub.extensions.string_types.get(typeid, None)
             if not result:
-                # comparing None with psycopg.type object segfaults
                 self.fail("did not register %s (%d): got None, not Z%s"
                           % (typename, typeid, typename))
             else:
