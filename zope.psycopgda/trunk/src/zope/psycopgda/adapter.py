@@ -232,18 +232,18 @@ def parse_interval(s):
 
 
 # Type conversions
-def _conv_date(s):
+def _conv_date(s, cursor=None):
     if s:
         return datetime.date(*parse_date(s))
 
-def _conv_time(s):
+def _conv_time(s, cursor=None):
     if s:
         hr, mn, sc = parse_time(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
         return datetime.time(hr, mn, int(sc), int(micro))
 
-def _conv_timetz(s):
+def _conv_timetz(s, cursor=None):
     if s:
         hr, mn, sc, tz = parse_timetz(s)
         sc, micro = divmod(sc, 1.0)
@@ -252,23 +252,25 @@ def _conv_timetz(s):
             tz = tzinfo(tz)
         return datetime.time(hr, mn, int(sc), int(micro), tz)
 
-def _conv_timestamp(s):
+def _conv_timestamp(s, cursor=None):
     if s:
         y, m, d, hr, mn, sc = parse_datetime(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
         return datetime.datetime(y, m, d, hr, mn, int(sc), int(micro))
 
-def _conv_timestamptz(s):
+def _conv_timestamptz(s, cursor=None):
     if s:
         y, m, d, hr, mn, sc, tz = parse_datetimetz(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
         if tz:
             tz = tzinfo(tz)
+        else:
+            tz = None
         return datetime.datetime(y, m, d, hr, mn, int(sc), int(micro), tz)
 
-def _conv_interval(s):
+def _conv_interval(s, cursor=None):
     if s:
         y, m, d, hr, mn, sc = parse_interval(s)
         if (y, m) != (0, 0):
@@ -279,7 +281,7 @@ def _conv_interval(s):
             return datetime.timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
 
 def _get_string_conv(encoding):
-    def _conv_string(s):
+    def _conv_string(s, cursor=None):
         if s is not None:
             s = s.decode(encoding)
         return s
@@ -311,7 +313,7 @@ def registerTypes(encoding):
     psycopg2.extensions.register_type(TIMESTAMP)
     psycopg2.extensions.register_type(TIMESTAMPTZ)
     psycopg2.extensions.register_type(INTERVAL)
-    STRING = psycopg.extensions.new_type(
+    STRING = psycopg2.extensions.new_type(
         (CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
         "ZSTRING", _get_string_conv(encoding))
     psycopg2.extensions.register_type(STRING)
@@ -339,7 +341,7 @@ class PsycopgAdapter(zope.rdb.ZopeDatabaseAdapter):
                 self._v_connection = PsycopgConnection(
                         self._connection_factory(), self
                         )
-            except psycopg.Error, error:
+            except psycopg2.Error, error:
                 raise DatabaseException, str(error)
 
     def registerTypes(self):
@@ -400,7 +402,7 @@ class PsycopgConnection(zope.rdb.ZopeConnection):
     def commit(self):
         try:
             zope.rdb.ZopeConnection.commit(self)
-        except psycopg.Error, error:
+        except psycopg2.Error, error:
             _handle_psycopg_exception(error)
 
 
@@ -419,5 +421,5 @@ class PsycopgCursor(zope.rdb.ZopeCursor):
         try:
             return zope.rdb.ZopeCursor.execute(
                 self, operation, seq_of_parameters)
-        except psycopg.Error, error:
+        except psycopg2.Error, error:
             _handle_psycopg_exception(error)
