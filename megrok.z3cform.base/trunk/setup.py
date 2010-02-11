@@ -2,7 +2,7 @@ from os.path import join
 from setuptools import setup, find_packages
 
 name = 'megrok.z3cform.base'
-version = '0.3'
+version = '0.4dev'
 readme = open(join('src', 'megrok', 'z3cform', 'base', 'README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
