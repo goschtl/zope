@@ -1,4 +1,5 @@
 import martian
+import os.path
 import grokcore.view
 import grokcore.component
 import grokcore.viewlet
@@ -66,8 +67,8 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
 
     def execute(self, factory, config, context, layer,
                 template, view, field, widget, mode, **kw):
-        template_path = '/'.join(factory.module_info.path.split('/')[:-1])
-        template = "%s/%s" %(template_path, template)
+        template_path = os.path.split(factory.module_info.path)[0]
+        template = os.path.join(template_path, template)
         widgetTemplateDirective(config, template, context, layer,
                     view=view, field=field, widget=widget, mode=mode)
         return True

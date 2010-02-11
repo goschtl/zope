@@ -142,4 +142,3 @@ def test_suite():
     suite = doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite
-
