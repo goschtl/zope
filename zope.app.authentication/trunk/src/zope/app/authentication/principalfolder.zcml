@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
 
-  <include package="zope.pluggableauth" file="principalregistries.zcml" />
+  <include package="zope.pluggableauth" file="principalfactories.zcml" />
 
   <class class=".principalfolder.InternalPrincipal">
     <require
