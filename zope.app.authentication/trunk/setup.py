@@ -27,7 +27,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.authentication',
-      version = '3.7.1dev',
+      version = '3.7.1',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description=('Principals and groups management for '
@@ -93,7 +93,7 @@ setup(name='zope.app.authentication',
           'zope.interface',
           'zope.location',
           'zope.password>=3.5.1',
-          'zope.pluggableauth>=1.0.1dev',
+          'zope.pluggableauth>=1.0.1',
           'zope.schema',
           'zope.security',
           'zope.traversing',
