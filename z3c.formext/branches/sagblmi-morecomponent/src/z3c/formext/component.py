@@ -371,7 +371,7 @@ class Container(Component):
             config['layout'] = self.layout
         if self.form.label:
             config['title'] = self.form.label
-        if not self.form.widgets:
+        if self.form.widgets is None:
             self.form.updateWidgets()
         items = getWidgetsConfig(self.form, asDict=False)
         if items:
