@@ -5,7 +5,8 @@ Changes
 3.7.1 (unreleased)
 ------------------
 
-* ...
+* Using the new `principalfactories.zcml` file, from zope.pluggableauth,
+  to avoid duplication errors, in the adapters registration.
 
 
 3.7.0 (2010-02-08)

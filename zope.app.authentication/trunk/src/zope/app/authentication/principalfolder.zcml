@@ -1,12 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
 
-  <adapter
-      factory="zope.pluggableauth.factories.FoundPrincipalFactory"
-      />
-
-  <adapter
-      factory="zope.pluggableauth.factories.AuthenticatedPrincipalFactory"
-      />
+  <include package="zope.pluggableauth" file="principalregistries.zcml" />
 
   <class class=".principalfolder.InternalPrincipal">
     <require
