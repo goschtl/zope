@@ -9,16 +9,15 @@ from zope.proxy import removeAllProxies
 from ZODB.utils import p64, u64, tid_repr
 from grokui.zodbbrowser.interfaces import IObjectInfo
 
-class ObjectInfo(grok.Adapter):
+class ObjectInfo(object):
     """Infos about objects.
     """
-    grok.context(Interface)
-    grok.provides(IObjectInfo)
+    grok.implements(IObjectInfo)
     
-    def __init__(self, context, obj_name=None, parent_oid=None):
+    def __init__(self, context):
         self.obj = removeAllProxies(context)
-        self.name = obj_name
-        self.parent_oid = parent_oid
+        self.name = None
+        self.parent_oid = None
 
     def getOID(self):
         try:
@@ -28,7 +27,7 @@ class ObjectInfo(grok.Adapter):
         return None
 
     def getName(self):
-        return getattr(self.obj, '__name__', 'CH' + str(self.name))
+        return getattr(self.obj, '__name__', str(self.name))
     
     def getParent(self):
         return getattr(self.obj, '__parent__', None)
@@ -42,15 +41,13 @@ class ObjectInfo(grok.Adapter):
     
     def getMembers(self):
         result = []
+        oid = self.getOID()
         for name, obj in inspect.getmembers(self.obj):
-            result.append(MemberInfo(name, self.obj, obj))
+            member = IObjectInfo(obj)
+            member.name = name
+            member.parent_oid = oid
+            result.append(member)
         return result
-
-class MemberInfo(object):
-    def __init__(self, name, parent, obj):
-        self.name = name
-        self.parent = parent
-        self.obj = removeAllProxies(obj)
 
     @property
     def linkable(self):
@@ -89,7 +86,6 @@ class MemberInfo(object):
         descr = inspect.getdoc(self.obj)
         return descr
 
-
     @property
     def type_string(self):
         try:
@@ -107,3 +103,9 @@ class MemberInfo(object):
             signature = u'(...)'
         
         return '%s%s' % (self.name, signature)
+
+@grok.adapter(Interface)
+@grok.implementer(IObjectInfo)
+def info_for_object(obj):
+    # Adapter factory for object infos.
+    return ObjectInfo(obj)
