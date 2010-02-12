@@ -1,2 +1,2 @@
 #!/bin/sh
-bin/paster serve server.ini
+bin/paster serve server.ini --daemon
