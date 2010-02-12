@@ -1,0 +1,19 @@
+<div>
+    <h3>
+      <span tal:condition="context/linkable">
+	<a href=""
+	   tal:attributes="href view/getMemberLink"
+	   tal:content="context/signature">context.signature</a>
+      </span>
+      <span tal:condition="not: context/linkable"
+	    tal:replace="context/signature">
+      </span>
+      <span tal:replace="context/type_string">member.type</span>
+    </h3>
+    <p>
+      <pre tal:condition="context/doc" 
+	   tal:content="context/doc">member.docs</pre>
+    </p>
+
+  <hr />
+</div>
