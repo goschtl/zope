@@ -1,0 +1,24 @@
+<h2>The GrokUI ZODBBrowser</h2>
+Name:<h3 tal:content="view/info/getName">the_object_name</h3>
+<h3 tal:content="view/info/obj">The_Object</h3>
+<div tal:content="view/info/getDescription">
+  The object description
+</div>
+<h3>Members</h3>
+<div tal:repeat="member view/info/getMembers">
+  <span tal:replace="member/type_string">member.type</span>
+  <h4>
+    <span tal:condition="member/linkable">
+      <a href=""
+	 tal:attributes="href python: view.getMemberLink(member)"
+	 tal:content="member/signature">member.signature</a>
+    </span>
+    <span tal:condition="not: member/linkable"
+	  tal:replace="member/signature">
+    </span>
+  </h4>
+  <p>
+    <pre tal:condition="member/doc" 
+	 tal:content="member/doc">member.docs</pre>
+  </p>
+</div>
