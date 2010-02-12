@@ -2,11 +2,11 @@
 """
 import grok
 from persistent import Persistent
+from zope.component import getMultiAdapter
 from zope.security.proxy import removeSecurityProxy
 from ZODB.utils import p64, u64, tid_repr
 from grokui.base import IGrokUIRealm, GrokUIView
 from grokui.zodbbrowser.interfaces import IObjectInfo
-from grokui.zodbbrowser.objectinfo import MemberInfo
 
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
@@ -66,3 +66,23 @@ class GrokUIZODBBrowserInfo(GrokUIView):
     def getMemberLink(self, member):
         return self.url(self.context, '@@zodbbrowser',
                         data = dict(oid=member.oid,name=member.name))
+
+    def getMemberView(self, member):
+        view = getMultiAdapter((member, self.request), name='memberinfo')
+        # this subview needs a reference to our context...
+        view.parent_context = self.context
+        return view
+    
+class MemberInfoView(grok.View):
+    """View objectinfo as memberinfo.
+    """
+    grok.name('memberinfo')
+    grok.template('memberinfo')
+    grok.context(IObjectInfo)
+    grok.require('grok.ManageApplications')
+
+    def getMemberLink(self):
+        return self.url(
+            self.parent_context, '@@zodbbrowser',
+            data=dict(oid=self.context.oid, name=self.context.name)
+            )
