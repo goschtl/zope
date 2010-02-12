@@ -49,6 +49,9 @@ class ObjectInfo(object):
             result.append(member)
         return result
 
+    def getValue(self):
+        return '%r' % self.obj
+    
     @property
     def linkable(self):
         if self.oid is not None:
