@@ -22,14 +22,7 @@ Manual
    configuration
    startup
    functionaltesting
-   advancedviews
-   skinsandlayers
-   i18nl10n
-   basicsecurity
+   skinning
    schema
    form
-   authentication
-   annotation
-   traverser
-   event
-   catalog
+
