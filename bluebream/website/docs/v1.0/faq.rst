@@ -1300,7 +1300,7 @@ configuration file.  So, if you want to change the location, you need
 to change it in the Buildout configuration.
 
 How to clear history (pack) in ZODB ?
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 From the debug shell, call the ``app.db.pack`` function::
 
