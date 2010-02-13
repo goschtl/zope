@@ -13,12 +13,18 @@ class ObjectInfo(object):
     """Infos about objects.
     """
     grok.implements(IObjectInfo)
-    
+
     def __init__(self, context):
         self.obj = removeAllProxies(context)
-        self.name = None
-        self.parent_oid = None
+        self._name = None
+        self._parent_oid = None
 
+    @property
+    def name(self):
+        """Get name of wrapped obj.
+        """
+        return getattr(self.obj, '__name__', str(self._name))
+    
     def getOID(self):
         try:
             return u64(self.obj._p_oid)
@@ -26,9 +32,6 @@ class ObjectInfo(object):
             pass
         return None
 
-    def getName(self):
-        return getattr(self.obj, '__name__', str(self.name))
-    
     def getParent(self):
         return getattr(self.obj, '__parent__', None)
 
@@ -44,8 +47,8 @@ class ObjectInfo(object):
         oid = self.getOID()
         for name, obj in inspect.getmembers(self.obj):
             member = IObjectInfo(obj)
-            member.name = name
-            member.parent_oid = oid
+            member._name = name
+            member._parent_oid = oid
             result.append(member)
         return result
 
