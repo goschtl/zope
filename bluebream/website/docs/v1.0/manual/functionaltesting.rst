@@ -4,9 +4,10 @@ Functional Testing
 Introduction
 ------------
 
-In this chapter, you will learn more about functional testing.  A doctest based
-package (``zope.testbrowser``) is used in Zope 3 for functional testing.
-Unlike unit tests, functional tests are user interface (view) oriented.
+In this chapter, you will learn more about functional testing.  A
+doctest based package (``zope.testbrowser``) is used in BlueBream for
+functional testing.  Unlike unit tests, functional tests are user
+interface (view) oriented.
 
 
 zope.testbrowser
@@ -36,21 +37,45 @@ To open a page::
   >>> browser.url
   'http://localhost/zopetest/simple.html'
 
+Test layer
+----------
 
 Running tests
 -------------
 
-By conventions your functional test modules are put in `ftests` packages under
-each main packages.  But the doctest files can be placed in the package itself.
-Create a sub-package `zopetic.ftests`, under this package create test modules
-like `test_main.py`, `test_extra.py` etc.
+Your test suites can be placed in ``tests.py`` module under each
+packages.  By default, in BlueBream there will be a ``tests.py`` with
+one test suite created using ``z3c.testsetup``::
 
-To run the functional tests, change to instance home::
+  import z3c.testsetup
 
-  $ cd $HOME/myzope/etc
-  $ ../bin/test
+  test_suite = z3c.testsetup.register_all_tests('tc.main')
 
-Note that, for unit test 'vpu' is used and here it is 'vpf'.
+
+The ``z3c.testsetup`` will aut-recover test suites from doctest
+files.  You can create your doctest files, similar to example given
+in ``README.txt``::
+
+  ticketcollector
+
+  :doctest:
+  :functional-zcml-layer: ftesting.zcml
+
+  Open browser and test::
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.open('http://localhost/@@index')
+    >>> 'Welcome to BlueBream' in browser.contents
+    True
+
+The fouth line specifies that a ZCML file named ``ftesting.zcml`` is
+required to setup the test layer.
+
+To run the tests::
+
+  $ ./bin/test
+
 
 .. raw:: html
 
