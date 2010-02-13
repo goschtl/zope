@@ -1,4 +1,4 @@
-"""ZODBbrowser pages.
+"""ZODBbrowser pages and other viewing components.
 """
 import grok
 from persistent import Persistent
@@ -29,7 +29,8 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             jar = self.jar()
             self.obj = jar.get(oid)
         self.info = IObjectInfo(self.obj)
-        self.info.name = name
+        self.info._name = name
+        self.getBreadCrumbs()
 
     def findClosestPersistent(self):
         obj = removeSecurityProxy(self.context)
@@ -72,6 +73,36 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         # this subview needs a reference to our context...
         view.parent_context = self.context
         return view
+
+    def getBreadCrumbs(self):
+        """Breadcrumb navigation.
+        """
+        root_oid = self.getRootOID()
+        curr = self.info
+        parent_list = [curr] #dict(name=curr.name, oid=curr.oid)]
+        while True:
+            parent = IObjectInfo(curr.getParent())
+            if parent.obj is not None:
+                parent_list.append(parent)
+            if parent.obj is None or parent.obj is curr.obj:
+                break
+            curr = parent
+        link_list = []
+        for info in parent_list:
+            name = info.name or '???'
+            if info.oid == root_oid:
+                name = '&lt;root&gt;'
+            link = '<a href="%s">%s</a>' % (self.getMemberLink(info), name)
+            link_list.append(link)
+        if parent_list[-1].oid != root_oid:
+            link_list.append('...')
+            link_list.append(
+                '<a href="%s">%s</a>' % (
+                    self.getMemberLink(IObjectInfo(self.context.root)),
+                    '&lt;root&gt;'))
+        link_list.reverse()
+        result = ' > '.join(link_list)
+        return result
     
 class MemberInfoView(grok.View):
     """View objectinfo as memberinfo.
