@@ -50,7 +50,7 @@ class ObjectInfo(object):
         return result
 
     def getValue(self):
-        return '%r' % self.obj
+        return '%r' % (self.obj, )
     
     @property
     def linkable(self):
