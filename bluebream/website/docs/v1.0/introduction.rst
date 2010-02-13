@@ -12,7 +12,7 @@ Introduction
 .. _intro-overview:
 
 Overview
-++++++++
+--------
 
 :term:`BlueBream` is a web framework written in the Python programming
 language.  BlueBream is free/open source software, owned by the
@@ -77,7 +77,7 @@ frameworks.
 .. _intro-join-community:
 
 Join our community
-++++++++++++++++++
+------------------
 
 We aim to provide high quality free online documentation for
 BlueBream.  If you would like to contribute, the RestructuredText
@@ -94,7 +94,7 @@ chat, we can help you to get *reference committer*, which is required
 to fill the contributor agreement form.
 
 Stay in touch with BlueBream
-****************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Mailing list: https://mail.zope.org/mailman/listinfo/bluebream
 
@@ -112,7 +112,7 @@ Stay in touch with BlueBream
 .. _intro-history:
 
 Brief history
-+++++++++++++
+-------------
 
 .. FIXME: we need to improve the history
 
@@ -172,13 +172,13 @@ the `PyPi`_ site, it is rare to not see several zca projects listed.
 .. _intro-organization:
 
 Organization of the documentation
-+++++++++++++++++++++++++++++++++
+---------------------------------
 
 This documentation has divided into multiple chapters.  Summary of
 each chapter is given below.
 
 Introduction
-************
+~~~~~~~~~~~~
 
 This chapter introduce BlueBream with an :ref:`intro-overview` and
 :ref:`intro-history`.  Then walks through the
@@ -186,62 +186,62 @@ This chapter introduce BlueBream with an :ref:`intro-overview` and
 section.
 
 Getting Started
-***************
+~~~~~~~~~~~~~~~
 
 The :ref:`started-getting` chapter narrate the process of creating a
 new web application project using BlueBream.  Also it gives few
 exercises to familiarize the basic concepts in BlueBream.
 
 Concepts
-********
+~~~~~~~~
 
 This chapter discuss important concepts and technologies used in
 BlueBream.
 
 Tutorial --- Part 1
-*******************
+~~~~~~~~~~~~~~~~~~~
 
 We demonstrate how to build a simple ticket collector
 application using BlueBream. Part 1 introduces basic BlueBream concepts.
 
 Tutorial --- Part 2
-*******************
+~~~~~~~~~~~~~~~~~~~
 
 Part 2 continues the ticket collector application, providing more detail
 on forms and schemas.
 
 Manual
-******
+~~~~~~
 
 This is a comprehensive guide to BlueBream.
 
 FAQ
-****
+~~~
 
 These are FAQs collected from mailing lists, blogs and other on-line
 resources.
 
 HOWTOs
-******
+~~~~~~
 
 Small documents focusing on specific topics.
 
 Core Development
-****************
+~~~~~~~~~~~~~~~~
 
 These documents are written for core development team.  Always visit
 the latest documentation site for recent version of these documents
 which is actually used by the developers.
 
 Reference
-*********
+~~~~~~~~~
 
 A complete reference to BlueBream.
 
 .. _intro-thanks:
 
 Thanks
-++++++
+------
 
 BlueBream truly stands on the shoulders of giants. The Zope 3 concepts
 built on Zope 2 which was built on Bobo and friends. The list of Zope Corp.
