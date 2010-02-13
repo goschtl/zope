@@ -146,8 +146,8 @@ of the ZCA.  The Zope community has responded to this in a number of
 ways, several projects have built frameworks which implement
 `Convention over configuration`_, and other refinements of the ZCA
 components aimed at facilitating rapid deployment, maintaining the
-power of ZCA under the hood.  Notable among these are Grok_ and
-Repoze_.
+power of ZCA under the hood.  Notable among these are :term:`grok`
+and Repoze_.
 
 Zope 3 is now known as BlueBream.  The name stems from the fact that
 the Z Object Publishing Environment, when spelled `zope`, is the name
@@ -163,13 +163,63 @@ international team of experienced coders.  Take a look at the recent uploads to
 the `PyPi`_ site, it is rare to not see several zca projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
+
 .. _python and Internet Programming: http://www.python.org/workshops/1996-06/agenda.html 
 
-.. _Grok: http://grok.zope.org/
 .. _Repoze: http://repoze.org/
 .. _Blue bream: http://en.wikipedia.org/wiki/Blue_bream
 .. _PyPi: http://pypi.python.org/pypi
 .. _intro-organization:
+
+More about the project
+----------------------
+
+As mentioned earlier, BlueBream is a web framework based on Zope
+technology.  BlueBream utilizes the Zope Toolkit (ZTK) and is the
+successor and logical upgrade path from the Zope 3 application
+server, also known as "Zope 3".  This section will show the position
+of BlueBream in the wider Zope ecosystem.
+
+Zope 3 was conceived as a fresh start to leave certain aspects and
+limitations of its presumed predecessor `Zope 2
+<http://docs.zope.org/zope2/zope2book/>`_ behind.  Zope 3 introduced
+a new component architecture to address some of the
+inheritance-based-programming limitations of Zope 2.  The `Zope
+Component Architecture (aka ZCA)
+<http://www.muthukadan.net/docs/zca.html>`_, notionally includes the
+packages named ``zope.component``, ``zope.interface`` and
+``zope.configuration``.
+
+As well as the ZCA packages at its core, Zope 3 offered a large
+number of extra libraries and provided an application server that
+enabled programmers to develop standalone web applications.
+
+The original intent of Zope 3 was to become a replacement for Zope 2.
+However, this did not happen as planned.  Instead, Zope 2 continued
+to make up the majority of new Zope deployments, due mostly to the
+popularity of `Plone <http://plone.org>`_.
+
+In the meantime, another wave of web frameworks appeared.
+:term:`grok` evolved with many Zope 3 libraries at its core.
+`repoze.bfg (aka BFG) <http://bfg.repoze.org>`_ evolved around the
+ZCA.  Additionally, Zope 2 began to make use of the ZCA and various
+other Zope 3 packages.
+
+In 2009, a group of Zope developers agreed to concentrate primarily
+on the development of the Zope 3 libraries and formed the Zope
+Toolkit (ZTK) that focusses on a slim library subset of the Zope 3
+project, which can then be efficiently utilized by web application
+frameworks on top.  This development led to the following logical
+steps:
+
+- Form a project around the remaining web application part of Zope 3
+
+- Name it BlueBream as a new, unique name to avoid confusion
+
+- Create an upgrade path from the former Zope 3 application server
+
+BlueBream can thus be seen as the successor of Zope 3 web application
+server; along with Grok, it relies on the ZTK.
 
 Organization of the documentation
 ---------------------------------
