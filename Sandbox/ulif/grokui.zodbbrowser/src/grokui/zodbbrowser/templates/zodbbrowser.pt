@@ -1,5 +1,7 @@
 <h1>The GrokUI ZODBBrowser</h1>
-<h3 tal:content="view/info/getName">the_object_name</h3>
+<span tal:content="structure view/getBreadCrumbs">
+</span>
+<h3 tal:content="view/info/name">the_object_name</h3>
 <h3 tal:content="view/info/obj">The_Object</h3>
 <div tal:content="view/info/getDescription">
   The object description
@@ -7,5 +9,7 @@
 
 <h2>Members</h2>
 <div tal:repeat="member view/info/getMembers">
-  <div tal:content="structure python: view.getMemberView(member)()" />
+  <!-- div tal:condition="not: member/linkable" -->
+    <div tal:content="structure python: view.getMemberView(member)()" />
+  <!-- /div -->
 </div>
