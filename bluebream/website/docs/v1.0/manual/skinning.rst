@@ -18,20 +18,12 @@ the application to have different user interface components, such as
 widgets, tables etc.  Also you will be required to mix and match user
 interface components from multiple packages.
 
-The level of customization of Zope (2 and 3) has been a strong point
-for years.  Initially the user interface was customized relying on
-implicit acquisition, where it was simply a matter of adding an
-object higher in the object path to customize the user interface.
-Since implicit acquisition is often hard to debug, the CMF introduced
-the concept of skins, where a skin describes the look and feel of a
-site.  Skins could acquire from other skins explicitly.
-
-In Zope 3 the concept of skins was reconsidered and re-implemented to
-use the component architecture.
+In BlueBream, the skin concept is implemented to use the Zope
+component architecture.
 
 There are two terms associated with skinning named, `layer` and
 `skin`.  Before proceeding, it would be better to understand the
-meaning of these two terms in Zope 3 skinning.
+meaning of these two terms in BlueBream skinning.
 
 Layers
 ~~~~~~
@@ -43,7 +35,7 @@ Layers
 * Common artifacts: pages, content providers, viewlet managers, and
   viewlets
 
-* Developed by Zope 3 Python developers
+* Developed by BlueBream (Python) developers
 
 
 Skins
