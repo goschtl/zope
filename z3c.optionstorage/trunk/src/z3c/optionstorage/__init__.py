@@ -15,7 +15,7 @@
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.proxy import removeAllProxies
 from zope.interface import implements
-from zope.app import zapi
+from zope.traversing.api import getParents
 
 from persistent.dict import PersistentDict
 from persistent import Persistent
@@ -194,7 +194,7 @@ class OptionStorage(IterableUserDict, object):
             self.data = annotations[OptionStorageKey] = PersistentDict()
 
 def queryOptionStorage(context, name):
-    lookuplist = zapi.getParents(context)
+    lookuplist = getParents(context)
     lookuplist.insert(0, context)
     for object in lookuplist:
         object = removeAllProxies(object)

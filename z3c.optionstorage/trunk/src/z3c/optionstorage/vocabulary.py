@@ -14,13 +14,12 @@
 from zope.schema.interfaces import IVocabularyTokenized
 from zope.schema.vocabulary import SimpleTerm
 from zope.interface import implements
-from zope.app import zapi
 
 from zope.security.management import getInteraction
 from zope.i18n.negotiator import negotiator
 
-from z3c.optionstorage.interfaces import IOptionStorage, IOptionStorageVocabulary
-from z3c.optionstorage import OptionStorageKey, queryOptionStorage
+from z3c.optionstorage.interfaces import IOptionStorageVocabulary
+from z3c.optionstorage import queryOptionStorage
 
 
 class OptionStorageVocabulary(object):
