@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os.path
 
-version = '1.0dev'
+version = '1.0'
 
 readme = open('README.txt').read()
 changes = open('CHANGES.txt').read()

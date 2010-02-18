@@ -1,7 +1,7 @@
 Changelog of z3c.bcrypt
 =======================
 
-1.0 (unreleased)
+1.0 (2010-02-18)
 ----------------
 
 - Initial public release.
