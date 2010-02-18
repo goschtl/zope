@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.4 (2010-02-18)
+----------------
+
+* Cleaned the dependencies : everything is declared as it
+  should. `zope.site` is now a main and not test dependency.
+
+* Renamed module "traversal" to "url", to describe accurately what the
+  module is about : url computation.
+
+* "mode" from `hurry.resource` is now exposed by the package.
+
 0.3 (2009-12-23)
 ----------------
 

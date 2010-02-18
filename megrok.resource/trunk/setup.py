@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 from os.path import join
 
-version = '0.3'
+version = '0.4'
 HISTORY = open(join("docs", "HISTORY.txt")).read()
 README = open(join("src", "megrok", "resource", "README.txt")).read()
 
@@ -11,7 +11,9 @@ test_requires = [
     'zope.app.testing',
     'zope.app.zcmlfiles',
     'zope.publisher',
-    'zope.site',
+    'zope.securitypolicy',
+    'zope.testbrowser',
+    'zope.testing',
     ]
 
 setup(name='megrok.resource',
@@ -36,6 +38,7 @@ setup(name='megrok.resource',
           'hurry.resource >= 0.4.1',
 	  'hurry.zoperesource',
           'z3c.hashedresource',
+          'zope.site',
           'zope.app.publication',
           'zope.component',
           'zope.interface',
