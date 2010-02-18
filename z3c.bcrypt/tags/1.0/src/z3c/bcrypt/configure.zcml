@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok">
+
+  <include package="zope.password" />
+
+  <utility
+    name="bcrypt"
+    provides="zope.password.interfaces.IPasswordManager"
+    factory=".passwordmanager.BcryptPasswordManager"
+  />
+  <utility
+    name="pbkdf2"
+    provides="zope.password.interfaces.IPasswordManager"
+    factory=".passwordmanager.PBKDF2PasswordManager"
+  />
+
+  <configure zcml:condition="installed zope.security">
+    <class class=".passwordmanager.BcryptPasswordManager">
+      <allow interface="zope.password.interfaces.IPasswordManager" />
+    </class>
+    <class class=".passwordmanager.PBKDF2PasswordManager">
+      <allow interface=".interfaces.IPasswordManager" />
+    </class>
+  </configure>
+</configure>
