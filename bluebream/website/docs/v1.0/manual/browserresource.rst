@@ -13,8 +13,8 @@ File Resource
 Certain presentation, like images and style sheets are not associated
 with any other component, so that one cannot create a view.  To solve
 this problem, resources were developed, which are presentation
-components that do not require any context.  This mini-chapter will
-demonstrate how resources are created and registered with Zope 3.
+components that do not require any context.  This chapter will
+demonstrate how resources are created and registered with BlueBream.
 
 The first goal is to register a simple plain-text file called
 ``resource.txt`` as a browser resource.  The first step is to create
@@ -44,7 +44,7 @@ Line 4: The optional layer attribute specifies the layer the resource
 is added to.  By default, the default layer is selected.
 
 Once you hook up the configuration file to the main configuration
-path and restart Zope 3, you should be able to access the resource
+path and restart BlueBream, you should be able to access the resource
 now via a Browser using http://localhost:8080/@@/resource.txt. The
 @@/ in the URL tells the traversal mechanism that the following
 object is a resource.
