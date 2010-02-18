@@ -1,0 +1,42 @@
+z3c.bcrypt
+===========
+
+    >>> from zope.interface.verify import verifyObject
+    >>> from zope.password.interfaces import IPasswordManager
+    >>> from z3c.bcrypt import BcryptPasswordManager
+    >>> manager = BcryptPasswordManager()
+    >>> verifyObject(IPasswordManager, manager)
+    True
+
+    >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
+
+    >>> encoded = manager.encodePassword(password)
+    >>> encoded
+    '$2a$...'
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> from z3c.bcrypt import PBKDF2PasswordManager
+    >>> manager = PBKDF2PasswordManager()
+    >>> verifyObject(IPasswordManager, manager)
+    True
+
+    >>> encoded = manager.encodePassword(password)
+    >>> encoded
+    '$p5k2$...'
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> # A previously encoded password, should be decodable even if the
+    >>> # current encoding of the same password is different::
+    >>> previouslyencoded = (
+    ...     '$p5k2$1000$LgAFPIlc9CgrlSaxHyTUMA='
+    ...     '=$IuUYplhMkR4qCl8-ONRVjEgJNwE=')
+    >>> encoded == previouslyencoded
+    False
+    >>> manager.checkPassword(previouslyencoded , password)
+    True

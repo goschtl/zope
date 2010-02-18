@@ -1,0 +1,7 @@
+Changelog of z3c.bcrypt
+=======================
+
+1.0 (unreleased)
+----------------
+
+- Initial public release.
