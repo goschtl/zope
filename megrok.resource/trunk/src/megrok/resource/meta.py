@@ -4,8 +4,7 @@ import martian
 from grokcore import component
 from grokcore import view
 
-from grokcore.view.meta.directoryresource import DirectoryResourceGrokker
-from hurry.resource import ResourceInclusion, NeededInclusions
+from hurry.resource import ResourceInclusion
 from hurry.resource.interfaces import IInclusion
 from megrok.resource import Library, ILibrary, ResourceLibrary
 from megrok.resource import resource
@@ -22,7 +21,7 @@ class LibraryGrokker(martian.ClassGrokker):
     martian.directive(view.path)
     martian.directive(component.name, get_default=default_library_name)
 
-    def execute(self, factory, config, name, path, **kw):        
+    def execute(self, factory, config, name, path, **kw):
         # We set the name using the grok.name or the class name
         # We do that only if the attribute is not already set.
         if getattr(factory, 'name', None) is None:
@@ -36,7 +35,7 @@ class LibraryGrokker(martian.ClassGrokker):
         # We provide ILibrary. It is needed since classProvides
         # is not inherited.
         alsoProvides(factory, ILibrary)
-        return True    
+        return True
 
 
 class ResourceLibraryGrokker(martian.ClassGrokker):
@@ -51,4 +50,4 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
     def execute(self, factory, config, resource, **kw):
         factory.depends = list(self.create_resources(factory, resource))
         alsoProvides(factory, IInclusion)
-        return True  
+        return True

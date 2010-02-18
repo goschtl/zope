@@ -3,12 +3,9 @@
 from grokcore.component import baseclass
 from grokcore.view import DirectoryResource
 from zope.component import getUtility
-from hurry.resource import ResourceInclusion, GroupInclusion
 from hurry.resource.interfaces import ICurrentNeededInclusions
-from megrok.resource.directives import resource
-from megrok.resource.interfaces import ILibrary
 
-    
+
 class Library(DirectoryResource):
     """A library that exposes resources through an URL.
     This component is only used to declare a resources folder.

@@ -23,5 +23,5 @@ def library_url(library):
         resource = getAdapter(request, name=library.name)
         hashpath = IResourceContentsHash(resource)
         return '%s/@@/++noop++%s/%s' % (base_url, hashpath, library.name)
-        
+
     return '%s/@@/%s' % (base_url, library.name)

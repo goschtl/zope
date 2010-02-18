@@ -8,7 +8,6 @@
   <include package="zope.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.zcmlfiles" />
-  <include package="zope.app.authentication" />
   <include package="grokcore.view" />
   <include package="megrok.resource" />
  
@@ -20,20 +19,10 @@
       id="zope.anybody"
       title="Unauthenticated User"
       />
+
   <grant
       permission="zope.View"
       principal="zope.anybody"
       />
-
-  <principal
-      id="zope.mgr"
-      title="Manager"
-      login="mgr"
-      password="mgrpw"
-      />
-
-  <role id="zope.Manager" title="Site Manager" />
-  <grantAll role="zope.Manager" />
-  <grant role="zope.Manager" principal="zope.mgr" />
 
 </configure>

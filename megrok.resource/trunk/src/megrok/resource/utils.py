@@ -1,9 +1,9 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from martian.util import isclass
 from megrok.resource import include, IResourcesIncluder
 from zope.interface import classImplements, alsoProvides
+
 
 def component_includes(component, *resources):
     if isclass(component):
@@ -12,5 +12,5 @@ def component_includes(component, *resources):
     else:
         if not IResourcesIncluder.providedBy(component):
             alsoProvides(component, IResourcesIncluder)
-            
+
     include.set(component, resources)

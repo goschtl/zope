@@ -9,7 +9,7 @@
   <include package="z3c.hashedresource" />
   
   <grok:grok package=".event" />
-  <grok:grok package=".traversal" />
+  <grok:grok package=".url" />
   <grok:grok package=".meta" />
   
 </configure>
