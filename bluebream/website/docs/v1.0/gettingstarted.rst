@@ -179,8 +179,9 @@ Building the application
 ------------------------
 
 As mentioned earlier, the generated package is bundled with Buildout
-configuration and the Buildout bootstrap script (``bootstrap.py``).
-First you need to bootstrap the buildout itself::
+configuration (``buildout.cfg``) and Buildout bootstrap script
+(``bootstrap.py``).  First you need to bootstrap the buildout
+itself::
 
   $ cd sampleproject
   $ python2.6 bootstrap.py
@@ -201,19 +202,33 @@ basic usage.
 Basic usage
 -----------
 
-To run test cases::
-
-  $ ./bin/test
-
-To get the debug shell::
-
-  $ ./bin/paster shell debug.ini
-
-To run the server::
+The most common thing you need while developing application is
+running the server.  BlueBream use ``paster`` command provided by
+PasteScript to run the WSGI server.  To run the server, you can pass
+the PasteDeploy configuration file as the argument to ``serve``
+sub-command as given here::
 
   $ ./bin/paster serve debug.ini
 
-The server can be accessed at http://localhost:8080/ now.
+Once you run the server, you can access it here:
+http://localhost:8080/ .  The port number (``8080``) can be changed
+from the PasteDeploy configuration file (``debug.ini``).
+
+The second most common thing must be running the test cases.
+BlueBream by create a testrunner using the ``zc.recipe.testrunner``
+Buildout recipe.  You can see a ``test`` command inside the ``bin``
+directory.  To run test cases, you can run this command::
+
+  $ ./bin/test
+
+Sometimes you may want to get the debug shell.  BlueBream provides a
+Python prompt with your application object.  You can invoke the debug
+shell like this::
+
+  $ ./bin/paster shell debug.ini
+
+More about the test runner and debug shell will be exaplained in the
+BlueBream Manual.
 
 .. _started-directory-structure:
 
