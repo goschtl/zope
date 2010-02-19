@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.app.publisher.browser.metadirectives import IViewDirective
+from zope.browserpage.metadirectives import IViewDirective
 from zope.configuration.fields import MessageID
 from zope.interface import Interface
 from zope.schema import TextLine

@@ -5,7 +5,8 @@ CHANGES
 1.0.6 (unreleased)
 ------------------
 
-- ...
+- Remove dependency on zope.app.zapi and zope.deprecation
+- Replace the use of zope.app.publisher with zope.browserpage
 
 1.0.5 (2010-01-04)
 ------------------

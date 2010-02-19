@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.app.publisher.browser.viewmeta import page
+from zope.browserpage.metaconfigure import page
 from z3c.optionstorage.browser import OptionStorageView
 
 class optionStorage(object):
