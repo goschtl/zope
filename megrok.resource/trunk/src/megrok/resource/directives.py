@@ -3,15 +3,18 @@
 import martian
 from hurry.resource import ResourceInclusion
 from hurry.resource.interfaces import IInclusion
+from megrok.resource.components import ResourceLibrary
 from megrok.resource.interfaces import IResourcesIncluder
 from zope.interface import classImplements
 from zope.interface.declarations import addClassAdvisor
 
 
 def validateInclusion(directive, value):
-    if not IInclusion.providedBy(value):
+    if (not IInclusion.providedBy(value) and
+        not martian.util.check_subclass(value, ResourceLibrary)):
         raise ValueError(
-            "You can only include IInclusions components.")
+            "You can only include IInclusion or"
+            " ResourceLibrary components.")
 
 
 class use_hash(martian.Directive):

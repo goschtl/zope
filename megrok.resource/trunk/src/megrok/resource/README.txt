@@ -205,8 +205,21 @@ not a valid inclusion object::
   ...	  return u""
   Traceback (most recent call last):
   ...
-  ValueError: You can only include IInclusions components.
+  ValueError: You can only include IInclusion or ResourceLibrary components.
 
+It should accept non-grokked ResourceLibraries as valid inclusions::
+
+  >>> class OtherResources(resource.ResourceLibrary):
+  ...    resource.path('ftests/css')
+  ...    resource.resource('a.css')
+
+  >>> class TolerantView(view.View):
+  ...   grok.context(Interface)
+  ...   resource.include(OtherResources)
+  ...
+  ...   def render(self):
+  ...	  return u""
+ 
 
 Remote inclusion
 -----------------
