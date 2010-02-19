@@ -413,6 +413,14 @@ Some of the features that ZODB brings to you:
 - Pluggable storages
 - Scalable architecture
 
+ZCML
+~~~~
+
+The Zope Configuration Markup Language (ZCML) is an XML based
+configuration system for registration of components.  Instead of
+using Python API for registration, you can use ZCML.  Security
+declarations is also done in ZCML.
+
 WSGI
 ~~~~
 
@@ -454,14 +462,6 @@ from a configuration file or a Python Egg.  For WSGI application
 providers it only asks for a single, simple entry point to your
 application, so that application users don’t need to be exposed to
 the implementation details of your application.
-
-ZCML
-~~~~
-
-The Zope Configuration Markup Language (ZCML) is an XML based
-configuration system for registration of components.  Instead of
-using Python API for registration, you can use ZCML.  Security
-declarations is also done in ZCML.
 
 .. raw:: html
 
