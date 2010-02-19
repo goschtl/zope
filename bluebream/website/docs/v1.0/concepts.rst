@@ -416,10 +416,16 @@ Some of the features that ZODB brings to you:
 ZCML
 ~~~~
 
-The Zope Configuration Markup Language (ZCML) is an XML based
-configuration system for registration of components.  Instead of
-using Python API for registration, you can use ZCML.  Security
-declarations is also done in ZCML.
+.. based on http://worldcookery.com/files/ploneconf05-five/step2.html
+
+BlueBream separates all the policy from the actual code and moves it
+out to separate configuration files.  The Zope Configuration Markup
+Language (ZCML), the XML-based configuration language that is used
+for this, is tailored to do component registration and security
+declarations, for the most part.  By enabling or disabling certain
+components in ZCML, you can configure certain policies of the overall
+application.  If you don't enable it explicitly, it will not be
+found.
 
 WSGI
 ~~~~
