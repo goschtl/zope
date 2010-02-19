@@ -1,10 +1,15 @@
 Changelog
 =========
 
-0.5 (unreleased)
-----------------
+0.4.1 (2010-02-19)
+------------------
 
-* ...
+* Fixed the case where a ResourceLibrary is included using the
+  "include" directive, in the same package. It was triggering an error
+  because a non-grokked ResourceLibrary does not provide
+  `IInclusion`. The directive now checks the subclass of the value to
+  determine if the given inclusion is a valid `IInclusion` or a
+  ResourceLibrary sub-class.
 
 0.4 (2010-02-18)
 ----------------
