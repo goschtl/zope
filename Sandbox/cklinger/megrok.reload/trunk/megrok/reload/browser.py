@@ -1,26 +1,68 @@
 import grok
 
 from zope.interface import Interface
+from grok.interfaces import IApplication
 from megrok.reload.code import reload_code
-from megrok.reload.interfaces import IReload
 from megrok.reload.zcml import reload_zcml
+from megrok.reload.interfaces import IReload
+from zope.schema.interfaces import IVocabularyFactory
+from zope.component import getAllUtilitiesRegisteredFor
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from grokcore.component.testing import grok as grok_module
 
-grok.templatedir('templates')
+from widgets import MultiCheckBoxWidget
 
-class Reload(grok.View):
+def null_validator(*args, **kwargs):
+    """A validator that doesn't validate anything.
+    
+    This is somewhat lame, but if you have a "Cancel" type button that
+    won't want to validate the form, you need something like this.
+
+    @form.action(_(u"label_cancel", default=u"Cancel"),
+                 validator=null_validator,
+                 name=u'cancel')
+    """
+    return ()
+
+
+class ApplicationVocabulary(grok.GlobalUtility):
+    grok.implements(IVocabularyFactory)
+    grok.name(u'megrok.reload.applications')
+
+    def __call__(self, context):
+        rc = []
+        apps = getAllUtilitiesRegisteredFor(IApplication)
+        for app in apps:
+            rc.append(SimpleTerm(app.__module__, app.__name__, app.__name__))
+        return SimpleVocabulary(rc)
+
+class MultiCheckBoxVocabularyWidget(MultiCheckBoxWidget):
+    """ """
+
+    def __init__(self, field, request):
+        """Initialize the widget."""
+        super(MultiCheckBoxVocabularyWidget, self).__init__(field,
+            field.value_type.vocabulary, request)
+
+
+class Reload(grok.Form):
     """Reload view.
     """
     grok.context(Interface)
     grok.implements(IReload)
     message = None
 
-    def update(self):
-        action = self.request.form.get('action')
-        if action is not None:
-            if action == 'code':
-                self.message = self.code_reload()
-            elif action == 'zcml':
-                self.message = self.zcml_reload()
+    form_fields = grok.Fields(IReload)
+    form_fields['applications'].custom_widget = MultiCheckBoxVocabularyWidget
+
+
+    @grok.action(u'Reload Code', validator=null_validator)
+    def handle_relaod(self, **kw):
+        self.code_reload()
+
+    @grok.action(u'Reload Code and ZCML')
+    def handle_relaod(self, **kw):
+        self.zcml_reload(kw.get('applications', []))
 
     def status(self):
         return self.message
@@ -36,16 +78,11 @@ class Reload(grok.View):
             result = 'No code reloaded!'
         return result
 
-    def zcml_reload(self):
-
-        # We always do an implicit code reload so we can register all newly
-        # added classes.
+    def zcml_reload(self, applications):
         reloaded = reload_code()
-        reload_zcml()
+        for application in applications:
+            grok_module(application.split('.')[0]) ### BBB: THIS IS VERY BUGGY...
 
-        # TODO Minimize all caches, we only really want to invalidate the
-        # local site manager from all caches
-        # aq_base(self.context)._p_jar.db().cacheMinimize() BBB
         result = ''
         if reloaded:
             result += 'Code reloaded:\n\n'

@@ -29,35 +29,25 @@ def cleanups():
             functions.append(r)
     return functions
 
-import martian
 def reload_zcml():
-    #from grokcore.component.zcml import 
+    from grokcore.component.testing import grok
+    grok('greload')
 
-    def resetBootstrap():
-        # we need to make sure that the grokker registry is clean again
-        the_module_grokker.clear()
-    from zope.testing.cleanup import addCleanUp
-    addCleanUp(resetBootstrap)
-
-    the_multi_grokker = martian.MetaMultiGrokker()
-    the_module_grokker = martian.ModuleGrokker(the_multi_grokker)
-
-    return
-    gsm = getGlobalSiteManager()
-    old_gsm_dict = gsm.__dict__.copy()
-    try:
-        setSite(None)
-        gsm.__init__(gsm.__name__)
-        # Clean up
-        for clean in cleanups():
-            clean()
-        # Reload all ZCML
-        import pdb;pdb.set_trace()
-        fivezcml._initialized = False
-        fivezcml._context._seen_files.clear()
-        fivezcml.load_site()
-    except Exception, e:
-        gsm.__init__(gsm.__name__)
-        gsm.__dict__.clear()
-        gsm.__dict__.update(old_gsm_dict)
-        raise e
+    #gsm = getGlobalSiteManager()
+    #old_gsm_dict = gsm.__dict__.copy()
+    #try:
+    #    setSite(None)
+    #    gsm.__init__(gsm.__name__)
+    #    # Clean up
+    #    for clean in cleanups():
+    #        clean()
+    #    # Reload all ZCML
+    #    import pdb;pdb.set_trace()
+    #    fivezcml._initialized = False
+    #    fivezcml._context._seen_files.clear()
+    #    fivezcml.load_site()
+    #except Exception, e:
+    #    gsm.__init__(gsm.__name__)
+    #    gsm.__dict__.clear()
+    #    gsm.__dict__.update(old_gsm_dict)
+    #    raise e
