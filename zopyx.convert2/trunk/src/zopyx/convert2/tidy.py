@@ -6,10 +6,13 @@
 
 import os
 import re
+import logging
 
 from util import newTempfile
 from htmlentitydefs import name2codepoint
 from BeautifulSoup import BeautifulSoup
+
+LOG = logging.getLogger('zopyx.convert2')
 
 def tidyhtml(filename, encoding='utf-8'):
 
@@ -30,7 +33,7 @@ def tidyhtml(filename, encoding='utf-8'):
             if os.path.exists(possible_img):
                 img['src'] = possible_img
             else:
-                raise IOError('No image file found: %s' % src)
+                LOG.warn('No image file found: %s' % src)
 
     html = soup.renderContents()
 
