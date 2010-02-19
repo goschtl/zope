@@ -14,16 +14,16 @@ Introduction
 Overview
 --------
 
-:term:`BlueBream` is a web framework written in the Python programming
-language.  BlueBream is free/open source software, owned by the
-:term:`Zope Foundation`, licensed under the :term:`Zope Public License` (bsd
-like, gpl compatible license).  BlueBream was previously known 
-as :term:`Zope 3`.
+:term:`BlueBream` is a web framework written in the Python
+programming language.  BlueBream is free/open source software, owned
+by the :term:`Zope Foundation`, licensed under the :term:`Zope Public
+License` (BSD like, GPL compatible license).  BlueBream was
+previously known as :term:`Zope 3`.
 
 A few of the features which distinguish BlueBream among Python web
 frameworks.
 
-- BlueBream is built on top of the :term:`zope tool kit` (ztk), a
+- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), a
   distillation of many years of experience in meeting demanding
   requirements for stable, scalable software.
 
@@ -36,7 +36,7 @@ frameworks.
 - BlueBream uses :term:`ZCML`, an XML based configuration language
   for registering components, providing limitless flexibility.  If
   you don't need the power of ZCML and the complexity it adds, try
-  :term:`grok`, which adds a layer replacing the declarative
+  :term:`GROK`, which adds a layer replacing the declarative
   configuration of ZCML with conventions and declarations in standard
   Python.
 
@@ -46,7 +46,6 @@ frameworks.
 
 - BlueBream supports :term:`WSGI` using :term:`Paste`,
   :term:`PasteScript`, and :term:`PasteDeploy`.
-  
 
 - BlueBream includes a number of components which provide well tested
   implementation of common requirements.  A few are of these are:
@@ -131,7 +130,7 @@ database and were the core of *Principia*, a commercial application
 server.  In november of 1998, investor Hadar Pedhazur convinced
 Digital Creations to open source Principia.  These packages evolved
 into the core components of Zope 2, and Digital Creations became Zope
-Corp.
+Corporation.
 
 Since those days, Zope has been under active development.  It has
 evolved in several ways as the community gains experience.  We
@@ -158,9 +157,10 @@ framework which simplifies managing of the power of the ZCA.  We've
 brought together ZCA, Buildout and Sphinx in a way that makes
 building powerhouse applications fun.
 
-The components which comprise BlueBream are under continual development by an
-international team of experienced coders.  Take a look at the recent uploads to
-the `PyPi`_ site, it is rare to not see several zca projects listed.
+The components which comprise BlueBream are under continual
+development by an international team of experienced coders.  Take a
+look at the recent uploads to the `PyPi`_ site, it is rare to not see
+several zca projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
 
@@ -251,8 +251,8 @@ BlueBream.
 Tutorial --- Part 1
 ~~~~~~~~~~~~~~~~~~~
 
-We demonstrate how to build a simple ticket collector
-application using BlueBream. Part 1 introduces basic BlueBream concepts.
+We demonstrate how to build a simple ticket collector application
+using BlueBream.  Part 1 introduces basic BlueBream concepts.
 
 Tutorial --- Part 2
 ~~~~~~~~~~~~~~~~~~~
@@ -293,12 +293,13 @@ A complete reference to BlueBream.
 Thanks
 ------
 
-BlueBream truly stands on the shoulders of giants. The Zope 3 concepts
-built on Zope 2 which was built on Bobo and friends. The list of Zope Corp.
-alumni is a *Who's Who* of Python, including one *Guido Van Rossum*.
-Contributions from the larger community have come from all over the world, for
-more than 10 years. We thank you all. Please help us and add to the list of
-contributer names as we move forward from January 2010.
+BlueBream truly stands on the shoulders of giants.  The Zope 3
+concepts built on Zope 2 which was built on Bobo and friends.  The
+list of Zope Corporation alumni is a *Who's Who* of Python, including
+one *Guido Van Rossum*.  Contributions from the larger community have
+come from all over the world, for more than 10 years.  We thank you
+all.  Please help us and add to the list of contributer names as we
+move forward from January 2010.
 
 :ref:`contributors-start` 
 
