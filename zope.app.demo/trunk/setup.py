@@ -35,6 +35,8 @@ setup(
                       "zope.location",
                       "zope.publisher",
                       "zope.schema"],
+    extras_require=dict(test=['zope.app.testing',
+                              ]),
 
     zip_safe=False
 )
