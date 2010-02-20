@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.6 (unreleased)
+1.0.6 (2010-02-20)
 ------------------
 
 - Remove dependency on zope.app.zapi and zope.deprecation
