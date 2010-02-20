@@ -1,0 +1,14 @@
+<configure
+	xmlns="http://namespaces.zope.org/zope"
+	xmlns:meta="http://namespaces.zope.org/meta">
+
+<meta:directive
+	namespace="http://namespaces.zope.org/zope"
+	name="optionStorageVocabulary"
+	schema=".metadirectives.IOptionStorageVocabularyDirective"
+	handler=".metaconfigure.optionStorageVocabulary"
+	/>
+
+<include package=".browser" file="meta.zcml" />
+
+</configure>
