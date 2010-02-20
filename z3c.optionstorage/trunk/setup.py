@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='z3c.optionstorage',
       version = '1.0.6dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Optional Storages -- Persistent, Managable Vocabularies',
       long_description=(
           read('README.txt')
@@ -42,7 +42,7 @@ setup(name='z3c.optionstorage',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.optionstorage',
+      url='http://pypi.python.org/pypi/z3c.optionstorage',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
