@@ -50,6 +50,8 @@ setup(name='zope.weakset',
       author_email='zodb-dev@zope.org',
       description='ZODB weakset implementation',
       long_description=(
+          __doc__
+          + '\n\n' +
           read('README.txt')
           + '\n\n' +
           read('CHANGES.txt')
@@ -58,7 +60,6 @@ setup(name='zope.weakset',
       license='ZPL 2.1',
       platforms = ['any'],
       classifiers = filter(None, classifiers.split("\n")),
-      long_description = __doc__,
       packages=['zope', 'zope.weakset'],
       package_dir = {'': 'src'},
       namespace_packages = ['zope'],
