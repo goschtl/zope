@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.app.container.tests import test_containertraverser  
+from zope.container.tests import test_containertraverser
 from zope.app.demo.insensitivefolder import CaseInsensitiveContainerTraverser
 
 class Container(test_containertraverser.TestContainer):
@@ -39,10 +39,10 @@ class InsensitiveCaseTraverserTest(test_containertraverser.TraverserTest):
     def test_allLowerCaseItemTraversal(self):
         self.assertEquals(
             self.traverser.publishTraverse(self.request, 'foo'),
-            self.foo)
+            self.subcontainer.Foo)
         self.assertEquals(
             self.traverser.publishTraverse(self.request, 'foO'),
-            self.foo)
+            self.subcontainer.Foo)
 
 
 def test_suite():
