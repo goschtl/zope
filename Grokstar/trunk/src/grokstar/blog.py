@@ -61,8 +61,18 @@ class Right(grok.ViewletManager):
 class Top(grok.ViewletManager):
     grok.name('top')
 
+class HtmlHead(grok.Viewlet):
+    grok.viewletmanager(Head)
+    grok.order(0)
+
+    def getAppTitle(self):
+        """Get the title of our blog.
+        """
+        return grok.getSite().title
+    
 class CssHead(grok.Viewlet):
     grok.viewletmanager(Head)
+    grok.order(1)
 
 class TitleHeader(grok.Viewlet):
     grok.viewletmanager(Top)
@@ -120,12 +130,6 @@ class DraftsIndex(grok.Viewlet):
     def entries(self): 
         return allEntries(10)
 
-class Breadcrumbs(object):
-    grok.viewletmanager(Top)
-    def parents(self):
-        pl = getParents(self.context)
-        return pl
-        
 class Entries(grok.Container):
     pass
 
@@ -206,3 +210,22 @@ class Categories(grok.Viewlet):
         self.entries = Query().searchResults(
                 (query.Eq(('entry_catalog', 'workflow_state'), PUBLISHED) &
                   AllOf(('entry_catalog', 'categories'), [self.c])))
+
+class Breadcrumbs(grok.Viewlet):
+    grok.viewletmanager(Top)
+    grok.context(Interface)
+    grok.order(10)
+    
+    def parents(self):
+        parent_list = getParents(self.context)
+        parent_list.reverse()
+        return parent_list
+    
+    def getName(self, obj):
+        """Get a name for an object.
+        """
+        if IBlog.providedBy(obj):
+            return obj.title
+        elif isinstance(obj, Entries):
+            return 'All Entries'
+        return getattr(obj, '__name__', '')
