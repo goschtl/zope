@@ -27,6 +27,21 @@ a {
     padding:1em;
 }
 
+#breadcrumbs {
+    margin-top: 12px;
+    font-weight: bold;
+    text-align: left;
+}
+
+#breadcrumbs span {
+    background-color: #fd7;
+    background-color: #fec;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 3px;
+    border: 1px solid #ec6;
+}
+
 h1, h2, h3, h4 {
     margin-bottom:0.2em;
 }
