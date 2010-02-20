@@ -166,8 +166,11 @@ class EntriesIndex(grok.Viewlet):
     grok.context(Entries)
     grok.viewletmanager(Main)
 
-    def render(self):
-        return "Entries: %s" % ' '.join(self.context.keys())
+    @property
+    def entries(self):
+        """TODO: the returned values should be sorted.
+        """
+        return self.context.values()
 
 class RecentEntries(grok.Viewlet):
     grok.viewletmanager(Right)
