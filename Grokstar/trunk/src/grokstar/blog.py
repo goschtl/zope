@@ -219,7 +219,7 @@ class Breadcrumbs(grok.Viewlet):
     def parents(self):
         parent_list = getParents(self.context)
         parent_list.reverse()
-        return parent_list
+        return parent_list[1:]
     
     def getName(self, obj):
         """Get a name for an object.
