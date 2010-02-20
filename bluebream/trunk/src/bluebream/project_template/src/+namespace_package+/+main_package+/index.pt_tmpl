@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Welcome to BlueBream!</title>
+  </head>
+  <body>
+    <h1>Welcome to BlueBream!</h1>
+    <ul>
+      <li><a href="http://bluebream.zope.org">BlueBream Website (Documentation)</a></li>
+      <li><a href="http://pypi.python.org/pypi/bluebream">PyPI page</a></li>
+      <li><a href="https://launchpad.net/bluebream">Issue Tracker</a></li>
+      <li><a href="http://wiki.zope.org/bluebream">Wiki</a></li>
+      <li><a href="http://twitter.com/bluebream">Twitter</a></li>
+      <li><a href="https://mail.zope.org/mailman/listinfo/bluebream">Mailing list</a></li>
+      <li>
+        <a href="http://webchat.freenode.net/?randomnick=1&channels=bluebream">
+          IRC Channel: #bluebream at irc.freenode.net</a>
+      </li>
+    </ul>
+    <a href="@@login.html">Login</a>
+    <br/>
+    <a href="@@add_sample_app">Add Sample application</a>
+  </body>
+</html>

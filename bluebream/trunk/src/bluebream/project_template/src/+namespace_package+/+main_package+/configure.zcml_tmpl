@@ -31,7 +31,7 @@
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
-     name="add"
+     name="add_sample_app"
      permission="zope.ManageContent"
      class=".views.AddSampleApplication"
      />

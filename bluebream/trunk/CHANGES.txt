@@ -4,6 +4,17 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+- Use a template to display default page for the root
+  folder
+
+- Use ``zope.formlib.form.DisplayForm`` as base class for
+  views instead of ``zope.publisher.browser.BrowserView``
+
+- Sample application add form view name is changed from
+  ``@@add`` to ``@@add_sample_app``
+
+- Add links to to BlueBream website & mailing list
+
 1.0a1 (2010-02-06)
 ------------------
 
