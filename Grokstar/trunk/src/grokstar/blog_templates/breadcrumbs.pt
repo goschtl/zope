@@ -1,5 +1,7 @@
-<span tal:repeat="obj viewlet/parents" tal:omit-tag="">
-  <a href="" 
-     tal:attributes="href python: view.url(obj)" 
-     tal:content="python: viewlet.getName(obj)" />
-</span>
+<div id="breadcrumbs">
+  <span tal:repeat="obj viewlet/parents">
+    <a href="" 
+       tal:attributes="href python: view.url(obj)" 
+       tal:content="python: viewlet.getName(obj)" />
+  </span>
+</div>
