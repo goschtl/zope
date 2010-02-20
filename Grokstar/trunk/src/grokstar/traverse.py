@@ -6,7 +6,6 @@ class BlogTraverser(grok.Traverser):
     grok.context(Blog)
 
     def traverse(self, name):
-        #import pdb;pdb.set_trace()
         if name == "drafts":
             drafts =  Drafts()
             drafts.__name__ = 'drafts'
