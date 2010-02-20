@@ -168,9 +168,9 @@ class EntriesIndex(grok.Viewlet):
 
     @property
     def entries(self):
-        """TODO: the returned values should be sorted.
+        """Return all published entries.
         """
-        return self.context.values()
+        return lastEntries(-1)
 
 class RecentEntries(grok.Viewlet):
     grok.viewletmanager(Right)
@@ -182,9 +182,13 @@ def lastEntries(amount):
     entries = Query().searchResults(
         query.Eq(('entry_catalog', 'workflow_state'),
                   PUBLISHED))
-    return sorted(
+    result = sorted(
         entries, key=lambda entry: entry.published, reverse=True
-        )[:amount]
+        )
+    if amount == -1:
+        # Return all published entries
+        return result
+    return result[:amount]
 
 def allEntries(amount):
     entries = Query().searchResults(
