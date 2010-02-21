@@ -23,8 +23,7 @@ Package categories
 
 - Core (ZTK & ZopeApp packages defined in zopetoolkit)
 - Community (z3c.* and other community maintained packages)
-  Community packages are only suported by community
-  and it is not officially supported.
+  Community packages are suported by community.
 
 Runnig compatibility test suite
 -------------------------------
