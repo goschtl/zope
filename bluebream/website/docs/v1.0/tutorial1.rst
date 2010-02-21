@@ -16,21 +16,26 @@ Introduction
 
 In the :ref:`started-getting` chapter you learned how to install
 BlueBream and create a new project using the ``bluebream`` project
-template.  In this chapter, can learn creating a simple ticket
+template.  In this tutorial, you can learn creating a simple ticket
 collector application.  This will help you to familiarize more
 concepts in BlueBream.
 
-These are the important user stories:
+Here is the user stories for the ticket collector application:
 
-1. Individual small ticket collector for each project.  Many
-   collectors can be added to one running BlueBream.
+1. Any number of tickets can be added to one collector.
 
-2. Any number of tickets can be added to one collector.
-
-3. Each ticket will be added with a description and one initial
+2. Each ticket will be added with a description and one initial
    comment.
 
-4. Additional comments can be added to tickets.
+3. Additional comments can be added to tickets.
+
+This is the first part of the tutorial.  After completing this
+chapter, you should be able to:
+
+- Understand the project directory structure
+- Use Buildout and edit Buildout configuration
+- Create content objects and interfaces
+- Use form generation tool (zope.formlib)
 
 .. _tut1-new-project:
 
