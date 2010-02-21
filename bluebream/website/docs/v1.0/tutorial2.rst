@@ -38,11 +38,18 @@ interface::
           default=u"",
           required=True)
 
-      summary = TextLine(
+      summary = Text(
           title=u"Summary",
           description=u"Ticket summary",
           default=u"",
           required=True)
+
+The ``Interface``, ``TextLine`` and ``Text`` are already imported, if
+not, you can import it from these locations::
+
+  from zope.container.interfaces import IContainer
+  from zope.schema import TextLine
+  from zope.schema import Text
 
 Next, you can implement this interface inside ``ticket.py``::
 
