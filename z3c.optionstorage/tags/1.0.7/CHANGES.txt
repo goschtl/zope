@@ -1,0 +1,44 @@
+=======
+CHANGES
+=======
+
+1.0.7 (2010-02-21)
+------------------
+
+- Remove dependency on zope.app.publisher by using a newer zope.browserpage
+
+1.0.6 (2010-02-20)
+------------------
+
+- Remove dependency on zope.app.zapi and zope.deprecation
+- Replace the use of zope.app.publisher with zope.browserpage
+
+1.0.5 (2010-01-04)
+------------------
+
+- Remove dependency on zope.app.schema.
+
+1.0.4 (2007-11-03)
+------------------
+
+- Fix up package meta data.
+
+0.1.3 (2007-07-04)
+------------------
+
+- Ensure that all package files are included in the egg.
+
+0.1.2 (2007-07-04)
+------------------
+
+- Bug fix.
+
+0.1.1 (2007-07-04)
+------------------
+
+- Fix packaging data.
+
+0.1.0 (2007-06-22)
+------------------
+
+- Initial release.
