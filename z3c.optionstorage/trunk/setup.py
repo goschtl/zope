@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.optionstorage',
-      version = '1.0.7',
+      version = '1.0.8dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Optional Storages -- Persistent, Managable Vocabularies',
