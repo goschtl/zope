@@ -86,7 +86,7 @@ of class to be compatible with a given interface, by giving a
 compatibility layer.
 
 This mechanism is used in systems like Microsoft COM's QueryAdapter,
-and let the developer gathers objects in a speciﬁc functional
+and let the developer gathers objects in a specific functional
 context.  This also known as glue code.
 
 Adapters provides several advantages:
