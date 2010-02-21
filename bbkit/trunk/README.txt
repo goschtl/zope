@@ -3,7 +3,7 @@ BlueBream Kit
 
 The BlueBream Kit consists a set of packages used by the BlueBream
 project.  BlueBream Kit (**bbkit**) is part of the BlueBream project
-infrastructure. These are the important factors about the kit:
+infrastructure.
 
 - The Kit will provide a place holder location for KGS based release
   tagging and maintenance
