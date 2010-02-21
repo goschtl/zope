@@ -11,17 +11,29 @@ Default view for objects
 
 In BlueBream, a browser view can be accessed using ``@@`` symbols
 before the view name.  For example, if you have registered a view
-named ``testview`` for a container object [#container_object]_ named
-``myobject``, that view can be accessed like this:
-``myobject/@@testview``.
+named ``testview`` for a container object named ``myobject``, that
+view can be accessed like this: ``myobject/@@testview``.
+
+.. note::
+
+  Container object -- Any object implementing
+  ``zope.content.interfaces.IContainer`` interface is called a
+  content object.
 
 The view could be accessed without using the ``@@`` symbols also,
-provided there is no content object [#content_object]_ with the same
-same exist inside the container.  In the above example, If there is
-no content object named ``testview`` inside ``myobject`` container,
-then, the view can be accessed like ``myobject/testview``.  However,
-BlueBream recommend, always to use ``@@`` symbols to access view to
-avoid ambiguity.
+provided there is no content object with the same same exist inside
+the container.  In the above example, If there is no content object
+named ``testview`` inside ``myobject`` container, then, the view can
+be accessed like ``myobject/testview``.  However, BlueBream
+recommend, always to use ``@@`` symbols to access view to avoid
+ambiguity.
+
+.. note::
+
+   Content Object -- If an **interface** provides
+   ``zope.app.content.interfaces.IContentType`` interface type, then
+   all objects providing the **interface** are considered content
+   objects.
 
 In BlueBream, ``index`` is registered as the view name for
 ``zope.container.interfaces.IContainer`` interface.  So, if you try
@@ -30,19 +42,30 @@ BlueBream will try to display the view registered with name as
 ``index``.
 
 You can configure the name of default view for a particular type of
-object [#type_of_object]_ with ``browser:defaultView`` directive
-available in ``zope.publisher`` package [#access_directive]_.  If the
-name of default view is not configured, and when you try to access an
-object without specifying the view name, you will get a
-``ComponentLookupError`` with a message like this: ``Couldn't find
-default view name``.  For example, if you try to access the root
-folder like: htt://localhost:8080/ and name of default view is not
-configured, you will get an error like this::
+object with ``browser:defaultView`` directive available in
+``zope.publisher`` package.  If the name of default view is not
+configured, and when you try to access an object without specifying
+the view name, you will get a ``ComponentLookupError`` with a message
+like this: ``Couldn't find default view name``.  For example, if you
+try to access the root folder like: htt://localhost:8080/ and name of
+default view is not configured, you will get an error like this::
 
   ComponentLookupError: ("Couldn't find default view name",
   <zope.site.folder.Folder object at 0xa3a09ac>,
   <zope.publisher.browser.BrowserRequest instance
   URL=http://localhost:8080>)
+
+.. note::
+
+   In order to use any ZCML except few built-ins like ``configure``
+   and ``include``, you include the ZCML where it is defined the
+   directive, conventionally in BlueBream it will be inside
+   ``meta.zcml`` for any package.  For example, to use
+   ``defaultView`` directive, you need to include ``meta.zcml`` file
+   inside ``zope.publisher``::
+
+     <include package="zope.publisher" file="meta.zcml" />
+
 
 If you have created the application using the ``bluebream`` project
 template, you won't get this error.  Because there is already a a
@@ -81,28 +104,6 @@ will be raised as mentioned above.
 
 More details about registering a browser view using ``browser:page``
 directive is explained in :ref:`man-browser-page` manual.
-
-.. rubric:: Footnotes
-
-.. [#container_object] Container object -- Any object implementing
-  ``zope.content.interfaces.IContainer`` interface is called a
-  content object.
-
-.. [#content_object] Content Object -- If an **interface** provides
-   ``zope.app.content.interfaces.IContentType`` interface type, then
-   all objects providing the **interface** are considered content
-   objects.
-
-.. [#type_of_object] To specify a particular type of object, BlueBream use interface.
-
-.. [#access_directive] In order to use any ZCML except few built-ins
-   like ``configure`` and ``include``, you include the ZCML where it
-   is defined the directive, conventionally in BlueBream it will be
-   inside ``meta.zcml`` for any package.  For example, to use
-   ``defaultView`` directive, you need to include ``meta.zcml`` file
-   inside ``zope.publisher``::
-
-     <include package="zope.publisher" file="meta.zcml" />
 
 .. raw:: html
 
