@@ -29,7 +29,7 @@ frameworks.
 - BlueBream leverages the power of `Buildout
   <http://www.buildout.org>`_ a build system written in Python.
   
-- BlueBream uses the `ZODB <http://pypi.python.org/pypi/ZODB3>`_
+- BlueBream uses the `ZODB <http://zodb.org>`_
   transactional object database, providing extremely powerful and
   easy to use persistence.
   
