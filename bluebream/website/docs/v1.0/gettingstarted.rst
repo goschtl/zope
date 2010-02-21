@@ -144,9 +144,9 @@ The name of namespace package also can be given from the command line::
 
   $ paster create -t bluebream sampleproject namespace_package=mycompany
 
-If you provide an option from command line, it will be prompted by
-the wizard.  The other variables are give below, you may be give the
-values from command line, if required:
+If you provide an option from the command line, it will not be
+prompted by the wizard.  The other variables are give below, you may
+be give the values from command line, if required:
 
 - ``interpreter`` -- Name of custom Python interpreter
 
@@ -171,7 +171,7 @@ values from command line, if required:
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
-good name for your project.
+a good name for your project.
 
 .. _started-building:
 
