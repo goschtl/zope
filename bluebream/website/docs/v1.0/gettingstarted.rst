@@ -21,9 +21,11 @@ BlueBream.  If you complete this chapter, you should be able to:
 
 - Create a BlueBream application project using the template
 
-- Bootstrap and build the application
+- Bootstrap the build system (Buildout) and build the application
 
-- Run test cases and web server to serve the application
+- Run WSGI based web server to serve the application
+
+- Run test cases and use the debug shell
 
 - Create Hello World applications
 
