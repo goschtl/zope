@@ -623,8 +623,8 @@ Most of the details in the ``setup.py`` is what you given while
 creating the project from template.  In the ``install_requires``
 keyword argument, you can list all dependencies for the package.
 There are two entry points, the first one is used by PasteDeploy to
-find the WSGI application factory and the second one register one
-sub-command for ``paster`` command.
+find the WSGI application factory.  The second entry point register a
+sub-command for ``paster`` script named ``shell`.
 
 Running Tests
 -------------
@@ -667,11 +667,11 @@ Creating the application object
 Container objects
 ~~~~~~~~~~~~~~~~~
 
-In this section, we will create ticketcollector main application
-container object.  BlueBream use the object database know as ZODB to
-store your data (object).  You can think of object database as a
-container which contains objects, the inner object may be another
-container which contains other objects.
+In this section, we will create main application container object for
+ticketcollector.  BlueBream use Zope object database (ZODB) store
+your object.  You can think of object database as a container which
+contains objects, the inner object may be another container which
+contains other objects.
 
 So, the object hierarchy will look like this::
 
@@ -688,7 +688,7 @@ So, the object hierarchy will look like this::
 BlueBream will take care of the persistence of the objects.  To make
 one object you need to inheriting from ``persistent.Persistent``
 class directly or indirectly.  Here is a list of classes which is
-inhering from ``persistent.Persistent``, directly or indirectly:
+inheriting from ``persistent.Persistent``, directly or indirectly:
 
 - ``zope.container.btree.BTreeContainer``
 - ``zope.container.folder.Folder``
@@ -717,7 +717,7 @@ database connectivity and ORMs are not discussed yet.  BlueBream
 recommend to use the Python based object database called ZODB for
 storing data.  BlueBream makes it easy to do this.  In this section,
 you will see the basic steps you need to make your objects
-persistent.  Having a well defined schema for all objects (data) is
+persistent.  Having a well defined schema for all objects (data) is a
 good idea.
 
 As the first step for creating the main application container object
@@ -840,7 +840,6 @@ Now the content component is ready to use.  You need a web page from
 where we can add the ticket collector.  You can use ``zope.formlib``
 package to create a form::
 
-  from zope.publisher.browser import BrowserView
   from zope.container.interfaces import INameChooser
   from zope.formlib import form
 
@@ -922,7 +921,7 @@ can create a simple view and register it from ZCML.
 
 In the ``src/tc/main/views.py`` add a new view like this::
 
-  class TicketCollectorMainView(BrowserView):
+  class TicketCollectorMainView(form.DisplayForm):
 
       def __call__(self):
           return "Hello ticket collector!"
@@ -952,25 +951,23 @@ Creating the main page
 Browser Page
 ~~~~~~~~~~~~
 
-First remove the ``__call__`` method from
-``TicketCollectorMainView``, so that it will look like this::
+The browser page can be created using a page template.  The
+``form.DisplayForm`` supports a ``template`` and ``form_fields``
+attributes.  You can also remove the ``__call__`` method from
+``TicketCollectorMainView``.
 
-  class TicketCollectorMainView(BrowserView):
-      pass
+::
 
-Then add a ``template`` attribute with value as ``collectormain.pt``.
-This tells to use the Zope Page Template to render as the page.  The
-ZCML registration will look like this::
+  from zope.browserpage import ViewPageTemplateFile
 
-  <browser:page
-     for=".interfaces.ICollector"
-     name="index"
-     permission="zope.Public"
-     class=".views.TicketCollectorMainView"
-     template="collectormain.pt"
-     />
+  class TicketCollectorMainView(form.DisplayForm):
 
-You can create ``src/tc/main/configure.zcml`` with the following
+      form_fields = form.Fields(IWikiContainer)
+
+      template = ViewPageTemplateFile("collectormain.pt")
+
+
+You can create ``src/tc/main/collectormain.pt`` with the following
 content::
 
   <html>
