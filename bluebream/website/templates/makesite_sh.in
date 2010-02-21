@@ -6,3 +6,6 @@ cd ${buildout:directory}/main
 make html
 cd ${buildout:directory}/docs/v1.0
 make html
+#make latex
+#cd ${buildout:directory}/htdocs/doc/1.0/latex
+#make all-pdf
