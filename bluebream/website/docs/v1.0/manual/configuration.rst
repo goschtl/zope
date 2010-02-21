@@ -199,7 +199,7 @@ Here is a short list of the most important namespaces:
   HTML output, including managing skins and layer, declare new views
   (pages) and resources as well as setup auto-generated forms.
 
-- meta - As discussed above, you can use this namespace to extend ZCMLâￜￜs
+- meta - As discussed above, you can use this namespace to extend
   available directives.
 
 - xmlrpc - This is the equivalent to browser, except that allows one to
