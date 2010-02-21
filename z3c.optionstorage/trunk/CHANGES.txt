@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+1.0.7 (2010-02-21)
+------------------
+
+- Remove dependency on zope.app.publisher by using a newer zope.browserpage
+
 1.0.6 (2010-02-20)
 ------------------
 
