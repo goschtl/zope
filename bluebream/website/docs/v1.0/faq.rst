@@ -1170,21 +1170,6 @@ The default implementation of menus sorts by interface first, and this
 item is most specific. See zope.app.publisher.browser.menu. If you do
 not like this behavior, you have to implement your own menu code.
 
-utf-8 error in i18nfile
-~~~~~~~~~~~~~~~~~~~~~~~
-
-  Q. Why do I always get an error when I try to add some utf-8 text
-  into an i18nfile? I just add an i18nfile in the ZMI, then I chose a
-  name and I set the contentType to "text/plain;charset=utf-8".  If I
-  enter some text with accents like "ÃÂ©Ã ÃÂ®ÃÂ®", I
-  get a system error which says : UnicodeDecodeError: 'ascii' codec
-  can't decode byte 0xc3 in position 0: ordinal not in range(128).  I
-  don't get any error with a simple File object.
-
-Okay, I18n file is a demo that is probably not well-developed. Don't
-use it.  I will propose to not distribute it anymore. No one is using
-it, so you are on your own finding the problem and providing a patch.
-
 When running $instance/bin/runzope zlib import error appears?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
