@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.12.2 (Unreleased)
+3.12.2 (unreleased)
 ===================
 
 - Escape MultiCheckBoxWidget content [LP:302427].
