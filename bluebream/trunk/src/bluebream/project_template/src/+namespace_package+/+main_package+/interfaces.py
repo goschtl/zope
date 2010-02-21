@@ -2,6 +2,7 @@ from zope.container.interfaces import IContainer
 from zope.schema import TextLine
 from zope.schema import Text
 
+
 class ISampleApplication(IContainer):
     """The main application container"""
 
