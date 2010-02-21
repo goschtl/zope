@@ -17,6 +17,10 @@ Changelog
 
 - Added license file
 
+- Improve "Usage" section in README.txt
+
+- Include ``zest.release`` to prepare release
+
 1.0a1 (2010-02-06)
 ------------------
 

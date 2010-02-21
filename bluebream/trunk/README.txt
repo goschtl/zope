@@ -91,16 +91,21 @@ command will be available.  Then, you can install BlueBream using
 Internet access to `PyPI <http://pypi.python.org/pypi>`_ is required
 to perform installation of BlueBream.
 
-Once BlueBream is installed, run ``paster`` command to create the
-project directory.  The ``create`` sub-command provided by ``paster``
-will show a wizard to create the project directory.
+The ``bluebream`` distribution provides a template based project
+creation based on PasteScript template.  Once BlueBream is installed,
+run ``paster`` command to create the project directory structure.
+The ``create`` sub-command provided by paster will show a wizard to
+create the project directory structure.
 
 ::
 
   $ paster create -t bluebream
 
-You need to provide the project name and namespace package name.  The
-project name will be used as the egg name.
+This will bring a wizard asking details about your new project.  If
+you provide package name, namespace package name and version number,
+you will get a working application which can be modified further.
+The project name will be used as the name of egg.  You can also
+change the values provided later.
 
 The project name can be give given as a command line argument::
 
@@ -110,32 +115,34 @@ The name of namespace package also can be given from the command line::
 
   $ paster create -t bluebream sampleproject namespace_package=mycompany
 
-The other variables which can be given from command line are:
+If you provide an option from the command line, it will not be
+prompted by the wizard.  The other variables are give below, you may
+be give the values from command line, if required:
 
 - ``interpreter`` -- Name of custom Python interpreter
 
-- version: Version (like 0.1)
+- ``version`` -- Version (like 0.1)
 
-- description: One-line description of the package
+- ``description`` -- One-line description of the package
 
-- long_description: Multi-line description (in reST)
+- ``long_description`` -- Multi-line description (in reST)
 
-- keywords: Space-separated keywords/tags
+- ``keywords`` -- Space-separated keywords/tags
 
-- author: Author name
+- ``author`` -- Author name
 
-- author_email: Author email
+- ``author_email`` -- Author email
 
-- url: URL of homepage
+- ``url`` -- URL of homepage
 
-- license_name: License name
+- ``license_name`` -- License name
 
-- zip_safe: ``True``, if the package can be distributed as a .zip
+- ``zip_safe`` -- ``True``, if the package can be distributed as a .zip
   file othewise ``False``.
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
-good name for your project.
+a good name for your project.
 
 Usage
 -----
@@ -157,35 +164,39 @@ buildout::
 The buildout script will download all dependencies and setup the
 environment to run your application.
 
-To run test cases::
-
-  $ ./bin/test
-
-To get the debug shell::
-
-  $ ./bin/paster shell debug.ini
-
-To run the server::
+The most common thing you need while developing application is
+running the server.  BlueBream use ``paster`` command provided by
+PasteScript to run the WSGI server.  To run the server, you can pass
+the PasteDeploy configuration file as the argument to ``serve``
+sub-command as given here::
 
   $ ./bin/paster serve debug.ini
 
-Now you can access the main page from: http://localhost:8080
+Once you run the server, you can access it here:
+http://localhost:8080/ .  The port number (``8080``) can be changed
+from the PasteDeploy configuration file (``debug.ini``).
 
-You can continue reading about BlueBream from the `documentation site
-<http://bluebream.zope.org>`_.
+The second most common thing must be running the test cases.
+BlueBream by create a testrunner using the ``zc.recipe.testrunner``
+Buildout recipe.  You can see a ``test`` command inside the ``bin``
+directory.  To run test cases, you can run this command::
+
+  $ ./bin/test
+
+Sometimes you may want to get the debug shell.  BlueBream provides a
+Python prompt with your application object.  You can invoke the debug
+shell like this::
+
+  $ ./bin/paster shell debug.ini
+
+More about the test runner and debug shell will be exaplained in the
+BlueBream Manual.  You can continue reading about BlueBream from the
+`documentation site <http://bluebream.zope.org>`_.
 
 Resources
 ---------
 
-- The source code is managed at `Zope reposistory
-  <http://svn.zope.org/bluebream>`_.  You can checkout the trunk code
-  like this (Anonymous access)::
-
-    svn co svn://svn.zope.org/repos/main/bluebream/trunk bluebream
-
-  You can also `become a contributor after signing a contributor
-  agreement
-  <http://docs.zope.org/developer/becoming-a-contributor.html>`_
+- `Website with documentation <http://bluebream.zope.org>`_
 
 - `Project blog <http://bluebream.posterous.com>`_
 
@@ -196,8 +207,6 @@ Resources
 
 - `PyPI Home <http://pypi.python.org/pypi/bluebream>`_
 
-- `Documentation <http://bluebream.zope.org>`_
-
 - `Twitter <http://twitter.com/bluebream>`_
 
 - `Mailing list <https://mail.zope.org/mailman/listinfo/bluebream>`_
@@ -205,3 +214,13 @@ Resources
 - IRC Channel: `#bluebream at irc.freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
 
 - `Buildbot <http://zope3.afpy.org/buildbot>`_
+
+- The source code is managed at `Zope reposistory
+  <http://svn.zope.org/bluebream>`_.  You can perform a read-only
+  checkout of trunk code like this (Anonymous access)::
+
+    svn co svn://svn.zope.org/repos/main/bluebream/trunk bluebream
+
+  You can also `become a contributor after signing a contributor
+  agreement
+  <http://docs.zope.org/developer/becoming-a-contributor.html>`_
