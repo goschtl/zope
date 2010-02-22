@@ -15,7 +15,7 @@ http://code.google.com/p/google-app-engine-samples/source/browse/trunk/cccwiki/
       author="d2m",
       author_email="michael@d2m.at",
       url="http://blog.d2m.at",
-      license="ZPL2",
+      license="ZPL",
       package_dir={'': 'src'},
       packages=find_packages('src'),
       include_package_data=True,
