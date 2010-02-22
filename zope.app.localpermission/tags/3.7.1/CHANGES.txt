@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+3.7.1 (unreleased)
+------------------
+
+- The zope.app namespace wasn't declared correctly.
+
+3.7.0 (2009-03-14)
+------------------
+
+Initial release. This package was extracted from zope.app.security to separate
+the functionality without additional dependencies.
