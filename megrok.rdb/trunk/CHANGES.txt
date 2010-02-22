@@ -7,6 +7,9 @@ CHANGES
 
 - Added a LICENSE.txt file.
 
+- Added setupDatabaseSkipCreate. This allows setting up the database
+  without trying to create any tables, just reflection.
+
 0.10 (2009-09-18)
 -----------------
 

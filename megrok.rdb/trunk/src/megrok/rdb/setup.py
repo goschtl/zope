@@ -20,7 +20,18 @@ def setupDatabase(metadata):
     reflectTables(metadata)
     createTables(metadata)
     notify(DatabaseSetupEvent(metadata))
-    
+
+def setupDatabaseSkipCreate(metadata):
+    """Set up of ORM for engine in current site.
+
+    This will:
+
+    * reflect any reflected tables that need to be reflected from the database
+      into classes.
+    """
+    reflectTables(metadata)
+    notify(DatabaseSetupEvent(metadata))
+
 def reflectTables(metadata):
     """Reflect tables into ORM.
     """
