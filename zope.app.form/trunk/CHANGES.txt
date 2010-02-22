@@ -2,11 +2,15 @@
 CHANGES
 =======
 
-4.0.2 (unreleased)
+4.0.3 (unreleased)
 ==================
 
-- Nothing changed yet.
+- ...
 
+4.0.2 (2010-01-22)
+==================
+
+- Seems like 4.0.1 was released already. Brown bag.
 
 4.0.1 (2010-01-08)
 ==================
@@ -16,7 +20,6 @@ CHANGES
   library.
 
 - Widget documentation is now on PyPI too.
-
 
 4.0 (2010-01-08)
 ================
