@@ -5,8 +5,7 @@ CHANGES
 0.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Added a LICENSE.txt file.
 
 0.10 (2009-09-18)
 -----------------
