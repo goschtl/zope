@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.7.1 (unreleased)
+3.7.1 (2010-02-22)
 ------------------
 
 - The zope.app namespace wasn't declared correctly.
