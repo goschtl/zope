@@ -1,3 +1,11 @@
+===========
+grokui.base
+===========
+
+``grokui.base`` is a base layer to build a zope instance-level set of
+utilities. The package provides a collection of easy-to-use components
+that will allow you to build your own configuration or admin panels.
+
 .. contents::
 
 
@@ -5,18 +13,29 @@ Detailed Description
 ********************
 
 .. :doctest:
-.. :layer: grokui.base.tests.test_grokuibase.FunctionalLayer
+.. :layer: grokui.base.tests.FunctionalLayer
 
-To build a component usable in the `grokui` environment we can (and
-should) use viewlets, layouts, namespaces and menus from this
-`grokui.base` package.
+``grokui.base`` provides tools to assemble a coherent environment.
 
 The ``++grokui++`` namespace
 ============================
 
-In order not to pollute the default namespace of root folders too
-much, all Grok UI related views should be kept in the ``++grokui++``
-namespace which is defined and registered in `grokui.base`.
+In order to keep a sane and clean naming policy, the grokui components
+are compartmented in a logical namespace, ``++grokui++``, which is
+defined and registered in `grokui.base`.
+
+This namespace is a multi-adapter that will act like a parent for the
+view. It's the natural context of all the grokui pages. Let's get out
+first contact with this namespace::
+
+  >>> from grokui.base import GrokUINamespace
+  >>> from grokui.base import IGrokUIRealm
+
+  >>> IGrokUIRealm.implementedBy(GrokUINamespace)
+  True
+
+Example
+-------
 
 We can build a simple admin screen that fits into the environment like
 this:
