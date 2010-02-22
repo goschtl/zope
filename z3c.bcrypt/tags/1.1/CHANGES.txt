@@ -1,0 +1,12 @@
+Changelog of z3c.bcrypt
+=======================
+
+1.1 (2010-02-22)
+----------------
+
+- Fixes in the configure.zcml.
+
+1.0 (2010-02-18)
+----------------
+
+- Initial public release.
