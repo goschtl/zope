@@ -13,7 +13,7 @@ setup (
     long_description=(
         read('README.txt')
         ),
-    license = "ZPL 2.1",
+    license="ZPL",
     keywords = "zope3 kirbi grok",
     classifiers = [
         'Development Status :: 1 - Beta',
