@@ -36,6 +36,7 @@ class Index(grok.View):
     """
     grok.name('index.html') # The root folder is not a grok.Model
     grok.context(IRootFolder)
+    grok.require('zope.ManageServices')
     grok.layer(grok.IDefaultBrowserLayer)
 
     def render(self):
@@ -47,6 +48,6 @@ class Index(grok.View):
             # No grokui panel installed.
             return u'No further grokui components are installed.'
         first_name = items[0]['action']
-        grokui_url = self.url(self.context, '/++grokui++/%s' % first_name)
+        grokui_url = self.url(self.context) + '/++grokui++/@@' + first_name
         self.redirect(grokui_url)
         return
