@@ -4,6 +4,8 @@ Changes
 0.3.3 (unreleased)
 ------------------
 
+* Clearly specify license as ZPL (not public domain, as it was
+  claiming before).
 
 0.3.2 (2009-12-19)
 ------------------
