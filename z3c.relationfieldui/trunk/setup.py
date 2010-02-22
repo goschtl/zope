@@ -22,7 +22,7 @@ setup(
     keywords='',
     author='Martijn Faassen',
     author_email='faassen@startifact.com',
-    license='',
+    license='ZPL',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     namespace_packages=['z3c'],
