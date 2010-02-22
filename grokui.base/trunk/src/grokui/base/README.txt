@@ -1,3 +1,7 @@
+
+.. contents::
+
+
 Detailed Description
 ********************
 
@@ -57,3 +61,79 @@ will not be found:
     Traceback (most recent call last):
     ...
     NotFound: Object: <zope....Folder object at 0x...>, name: u'@@helloadmin'
+
+
+GrokUI Pages
+============
+
+We can, however, also create admin pages, that fit completely into the
+GrokUI layout without much hassle, providing a menu bar, images and
+all other parts of the standard grokui layout automatically for your
+page.
+
+To do so, we derive our admin page from ``GrokUIView``, give it a
+title, and optionally set an order number:
+
+    >>> from grokui.base.layout import GrokUIView
+    >>> from grokui.base.namespace import GrokUILayer
+    >>> class CaveManagementScreen(GrokUIView):
+    ...   # Name where we can access this page via URL:
+    ...   grok.name('managecave')
+    ...   # Also optional, but highly recommended:
+    ...   grok.require('zope.ManageServices')
+    ...   # Set title of page in menu bar:
+    ...   grok.title('admin stuff')
+    ...   # Display this entry very far to the left in menu bar:
+    ...   grok.order(-1)
+    ...
+    ...   def render(self):
+    ...     # Instead of render() we could also define a page template
+    ...     # for the actual contents of this page.
+    ...     return u'Hello cave manager!'
+
+    >>> grok.testing.grok_component(
+    ...   'CaveManagementScreen', CaveManagementScreen)
+    True
+
+While the title will be displayed in the main menu bar of the GrokUI
+layout automatically, the ``order`` tells at which position in the
+menu we want our page to appear. Pages without a title do not appear
+in the menu bar at all.
+
+Instances of `GrokUIView` are in fact `megrok.layout.Page` instances
+that render the content provided by a template or `render` method
+into a given layout (here: the general GrokUI layout).
+
+We can access the page in GrokUI namespace ``++grokui++`` under the
+name given above (``managecave``):
+
+    >>> browser.open('http://localhost/++grokui++/managecave')
+    >>> print browser.contents
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    ...<head>
+    ...<title>Grok User Interface</title>
+    ...<base href="http://localhost/++grokui++/" />
+    ...Hello cave manager!...
+    ...
+
+Making your admin page the default target page
+==============================================
+
+The above admin page was set up with order number ``-1``. That means,
+that its menu entry will appear at far left position in the menu
+bar. As we have currently no menu entries with a lower order number,
+the entry will even appear at leftmost position.
+
+Furthermore this leftmost entry is also the default page if someone
+wants to see the index page of the running Zope instance at all:
+
+    >>> browser.open('http://localhost/')
+    >>> browser.url
+    'http://localhost/++grokui++/@@managecave'
+
+This means, we've been redirected to our cave admin page.
+
+If we want to change this default, for instance in order to set
+another page as default, we simply have to provide a lower order
+number for that other admin page. The redirect will then redirect to
+it.
