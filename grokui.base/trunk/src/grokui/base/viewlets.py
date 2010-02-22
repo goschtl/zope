@@ -41,7 +41,7 @@ class MenuViewlet(grok.Viewlet):
         self.actions = menu.getMenuItems(self.context, self.request)
 
 
-class Messages(grok.Viewlet):
+class StatusMessages(grok.Viewlet):
     grok.order(40)
     grok.name('grokui.messages')
     grok.viewletmanager(Messages)

@@ -2,11 +2,13 @@ import os
 from setuptools import setup, find_packages
 
 tests_require = [
-    'z3c.testsetup',
-    'zope.app.testing',
     'zope.security',
     'zope.testbrowser',
-    'zope.securitypolicy'
+    'zope.securitypolicy',
+    'zope.app.testing',
+    'zope.principalregistry',
+    'zope.testing',
+    'z3c.testsetup',
     ]
 
 def read(*rnames):

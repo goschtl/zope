@@ -5,7 +5,6 @@
    package="grokui.base">
 
   <include package="grokui.base" />
-  <grok:grok package="grokui.base.tests" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"

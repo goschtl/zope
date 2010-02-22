@@ -3,7 +3,10 @@ Building panels using `GrokUIView`
 ===================================
 
 :doctest:
-:layer: grokui.base.tests.test_grokuibase.FunctionalLayer
+:layer: grokui.base.tests.FunctionalLayer
+
+    >>> from grokcore.component import testing
+    >>> testing.grok(__file__)
 
 We create a browser to watch our views:
 
@@ -51,7 +54,12 @@ entry in the navigation bar:
     
 """
 import grok
+import unittest
 from grokui.base import GrokUIView
+from grokui.base.tests import FunctionalLayer
+from zope.testing import doctest
+from zope.app.testing import functional
+
 
 class CaveAdminView(GrokUIView):
     """An admin page to administer caves.
@@ -65,22 +73,9 @@ class CaveAdminView(GrokUIView):
         return u'Hello from CaveAdminView'
 
 
-import z3c.testsetup
-import os.path
-import grokui.base
-import unittest
-from zope.app.testing import functional
-from zope.app.testing.functional import ZCMLLayer
-
-ftesting_zcml = os.path.join(
-    os.path.dirname(__file__), 'ftesting.zcml')
-FunctionalLayer = functional.ZCMLLayer(
-    ftesting_zcml, __name__, 'GrokUIBaseFunctionalLayer', allow_teardown=True)
-
-
 def test_suite():
     suite = unittest.TestSuite()
-    test = functional.functionalDocTestSuite(
+    test = functional.FunctionalDocFileSuite(
         optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE)
     test.layer = FunctionalLayer
     suite.addTest(test)
