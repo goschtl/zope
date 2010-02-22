@@ -2,6 +2,9 @@
 
 import grok
 from megrok.menu import Menu
+from zope.site.interfaces import IRootFolder
+from zope.component import getUtility, getMultiAdapter
+from zope.browsermenu.interfaces import IBrowserMenu
 from grokui.base import IGrokUIRealm, GrokUILayer
 
 grok.layer(GrokUILayer)
@@ -23,3 +26,27 @@ class Messages(grok.ViewletManager):
 class MainMenu(Menu):
     grok.name('grokui_mainmenu')
     grok.title('Grok user interface panels')
+
+
+class Index(grok.View):
+    """Redirect to the grokui namespace.
+
+    Redirect to the first item displayed in grokui-namespaced main
+    menu.
+    """
+    grok.name('index.html') # The root folder is not a grok.Model
+    grok.context(IRootFolder)
+    grok.layer(grok.IDefaultBrowserLayer)
+
+    def render(self):
+        menu = getUtility(IBrowserMenu, 'grokui_mainmenu')
+        realm = getMultiAdapter((self.context, self.request),
+                                name='grokui')
+        items = menu.getMenuItems(realm, self.request)
+        if len(items) == 0:
+            # No grokui panel installed.
+            return u'No further grokui components are installed.'
+        first_name = items[0]['action']
+        grokui_url = self.url(self.context, '/++grokui++/%s' % first_name)
+        self.redirect(grokui_url)
+        return
