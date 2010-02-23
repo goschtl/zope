@@ -6,9 +6,8 @@ tests_require = [
     'zope.testbrowser',
     'zope.securitypolicy',
     'zope.app.testing',
-    'zope.principalregistry',
     'zope.testing',
-    'z3c.testsetup',
+    'grokcore.component',
     ]
 
 def read(*rnames):

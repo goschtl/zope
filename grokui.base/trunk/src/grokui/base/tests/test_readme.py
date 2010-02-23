@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from grokui.base import tests
-from zope.testing import doctest
 from zope.app.testing import functional
 from grokui.base.tests import FunctionalLayer
 
