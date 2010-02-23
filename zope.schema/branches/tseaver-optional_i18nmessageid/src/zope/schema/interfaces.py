@@ -19,12 +19,7 @@ __docformat__ = "reStructuredText"
 
 from zope.interface import Interface, Attribute
 
-try:
-    from zope.i18nmessageid import MessageFactory
-except ImportError:
-    _ = lambda x: unicode(x)
-else:
-    _ = MessageFactory("zope")
+from zope.schema._messageid import _
 
 # Import from _bootstrapinterfaces only because other packages will expect
 # to find these interfaces here.

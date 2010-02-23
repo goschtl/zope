@@ -28,12 +28,7 @@ from zope.schema.tests.test_field import FieldTestBase
 from zope.schema.interfaces import IBeforeObjectAssignedEvent
 from zope.testing.cleanup import CleanUp
 
-try:
-    from zope.i18nmessageid import MessageFactory
-except ImportError:
-    _ = lambda x: unicode(x)
-else:
-    _ = MessageFactory("zope")
+from zope.schema._messageid import _
 
 
 class ITestSchema(Interface):
