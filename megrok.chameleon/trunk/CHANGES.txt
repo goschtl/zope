@@ -17,7 +17,7 @@ CHANGES
 0.2 (2009-09-18)
 ================
 
-* Provides a macros access from the template.
+* Provide macro access from templates.
 
 * Don't depend anymore on grok, but only grokcore.view.
 
