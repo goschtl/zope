@@ -1,10 +1,3 @@
-===========
-grokui.base
-===========
-
-``grokui.base`` is a base layer to build a zope instance-level set of
-utilities. The package provides a collection of easy-to-use components
-that will allow you to build your own configuration or admin panels.
 
 .. contents::
 
@@ -16,6 +9,7 @@ Detailed Description
 .. :layer: grokui.base.tests.FunctionalLayer
 
 ``grokui.base`` provides tools to assemble a coherent environment.
+
 
 The ``++grokui++`` namespace
 ============================

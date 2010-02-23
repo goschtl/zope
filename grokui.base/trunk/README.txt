@@ -1,6 +1,9 @@
 grokui.base -- Base components for Grok UI
 ******************************************
 
+``grokui.base`` is a base layer to build a zope instance-level set of
+utilities. The package provides a collection of easy-to-use components
+that will allow you to build your own configuration or admin panels.
 `grokui.base` provides the components that should be used by other
 `grokui` packages to plug into a coherent layout.
 
