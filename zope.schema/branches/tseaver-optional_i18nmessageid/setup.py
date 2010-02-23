@@ -84,7 +84,7 @@ setup(name='zope.schema',
       extras_require={'test': ['zope.testing'],
                       'docs': ['z3c.recipe.sphinxdoc']},
       install_requires=['setuptools',
-                        'zope.i18nmessageid',
+                        #'zope.i18nmessageid', optional
                         'zope.interface',
                         'zope.event',
                        ],

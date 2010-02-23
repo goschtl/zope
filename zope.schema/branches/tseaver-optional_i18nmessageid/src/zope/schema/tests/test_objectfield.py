@@ -18,7 +18,6 @@ $Id$
 from unittest import TestSuite, main, makeSuite
 
 import zope.event
-from zope.i18nmessageid import MessageFactory
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Object, TextLine
 from zope.schema.fieldproperty import FieldProperty
@@ -29,7 +28,12 @@ from zope.schema.tests.test_field import FieldTestBase
 from zope.schema.interfaces import IBeforeObjectAssignedEvent
 from zope.testing.cleanup import CleanUp
 
-_ = MessageFactory('zope')
+try:
+    from zope.i18nmessageid import MessageFactory
+except ImportError:
+    _ = lambda x: unicode(x)
+else:
+    _ = MessageFactory("zope")
 
 
 class ITestSchema(Interface):

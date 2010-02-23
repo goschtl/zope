@@ -17,8 +17,12 @@ $Id$
 """
 import zope.interface
 
-from zope.i18nmessageid import MessageFactory
-_ = MessageFactory("zope")
+try:
+    from zope.i18nmessageid import MessageFactory
+except ImportError:
+    _ = lambda x: unicode(x)
+else:
+    _ = MessageFactory("zope")
 
 class StopValidation(Exception):
     """Raised if the validation is completed early.
