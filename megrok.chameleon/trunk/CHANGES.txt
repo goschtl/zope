@@ -4,7 +4,10 @@ CHANGES
 0.4 (unreleased)
 ================
 
-* ...
+* Fixed order of includes in ftesting.zcml.
+
+* Moved pure test-requirements into own setup-section in order to reduce
+  dependencies in regular (non-testing) mode.
 
 0.3 (2010-02-14)
 ================
