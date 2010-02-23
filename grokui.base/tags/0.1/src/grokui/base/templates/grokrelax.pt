@@ -1,4 +1,0 @@
-<div id="fireplace">
-  <img alt="grok_relax_image" src="images/grok-relax5.gif"
-       tal:attributes="src view/static/grok-relax5.gif" />
-</div>
