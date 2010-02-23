@@ -22,7 +22,7 @@ class GrokUILayout(Layout):
 
     def update(self):
         self.baseurl = absoluteURL(self.context, self.request) + '/'
-        
+
 
 class GrokUIView(Page):
     """A grok ui view.

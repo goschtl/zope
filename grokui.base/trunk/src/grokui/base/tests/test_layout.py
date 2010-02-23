@@ -51,7 +51,7 @@ entry in the navigation bar:
     </ul>
     ...
     </html>
-    
+
 """
 import grok
 import unittest
@@ -67,6 +67,7 @@ class CaveAdminView(GrokUIView):
     grok.name('caveview')
     # This title will appear in the navigation bar:
     grok.title('cave management')
+
     def render(self):
         """This will go into a standard Grok UI page.
         """
@@ -76,7 +77,7 @@ class CaveAdminView(GrokUIView):
 def test_suite():
     suite = unittest.TestSuite()
     test = functional.FunctionalDocFileSuite(
-        optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE)
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
     test.layer = FunctionalLayer
     suite.addTest(test)
     return suite
