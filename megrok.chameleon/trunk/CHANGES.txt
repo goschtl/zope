@@ -4,6 +4,8 @@ CHANGES
 0.4 (unreleased)
 ================
 
+* Declared ``megrok`` as namespace package.
+
 * Fixed order of includes in ftesting.zcml.
 
 * Moved pure test-requirements into own setup-section in order to reduce
