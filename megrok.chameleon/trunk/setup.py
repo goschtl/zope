@@ -3,6 +3,25 @@ from setuptools import setup, find_packages
 
 version = '0.4dev'
 
+install_requires = [
+    'setuptools',
+    'grokcore.view',
+    'chameleon.zpt',
+    'chameleon.genshi',
+    'z3c.pt',
+    'lxml', # Needed by chameleon.genshi
+    ]
+
+tests_require = [
+    'grokcore.component',
+    'grokcore.viewlet',
+    'z3c.testsetup',
+    'zope.app.testing',
+    'zope.app.zcmlfiles',
+    'zope.securitypolicy',
+    'zope.testing',
+    ]
+
 long_description = (open('README.txt').read() +
                     '\n\n' +
                     open(os.path.join('src', 'megrok', 'chameleon',
@@ -32,20 +51,7 @@ setup(name='megrok.chameleon',
       packages=find_packages('src'),
       include_package_data=True,
       zip_safe=False,
-      install_requires=['setuptools',
-		        'zope.component',
-                        'zope.publisher',
-                        'grokcore.view',
-                        'grokcore.component',
-                        'z3c.testsetup',
-                        'chameleon.zpt',
-                        'chameleon.genshi',
-                        'z3c.pt',
-                        'lxml', # Needed by chameleon.genshi
-                        # for ftests:
-                        'grokcore.viewlet',
-                        'zope.securitypolicy',
-                        'zope.app.zcmlfiles',
-                        'zope.app.authentication',
-                        ],
+      install_requires=install_requires,
+      tests_require=tests_require,
+      extras_require={'test': tests_require},
       )
