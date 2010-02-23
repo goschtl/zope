@@ -1,0 +1,34 @@
+CHANGES
+*******
+
+0.4 (2010-02-23)
+================
+
+* Declared ``megrok`` as namespace package.
+
+* Fixed order of includes in ftesting.zcml.
+
+* Moved pure test-requirements into own setup-section in order to reduce
+  dependencies in regular (non-testing) mode.
+
+0.3 (2010-02-14)
+================
+
+* Added license file.
+
+0.2 (2009-09-18)
+================
+
+* Provide macro access from templates.
+
+* Don't depend anymore on grok, but only grokcore.view.
+
+* Added support for `path()` and `exists()` in page templates. This
+  was introduced from `z3c.pt`.
+
+* Fix ZCML includes.
+
+0.1 (2009-02-22)
+================
+
+* Initial release
