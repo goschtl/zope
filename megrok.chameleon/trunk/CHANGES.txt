@@ -4,7 +4,7 @@ CHANGES
 0.5 (unreleased)
 ================
 
-* ...
+* Switch to use ``Chameleon`` instead of ``chameleon.*`` packages.
 
 0.4 (2010-02-23)
 ================
