@@ -29,7 +29,6 @@ class Recipe(object):
             self.options.get('include-dependencies', ''), [])
         self.exclude = string2list(self.options.get('exclude', ''), [])
         self.extra_paths = self.options.get('extra-paths', '')
-        self.wanted_packages = self._wanted_packages()
 
         self.script = self.options.get('script', self.name)
 
@@ -44,14 +43,15 @@ class Recipe(object):
         return self.update()
 
     def update(self):
+        wanted_packages = self._wanted_packages()
         installed = []
-        installed.extend(self._install_testrunners())
-        installed.extend(self._install_run_script())
+        installed.extend(self._install_testrunners(wanted_packages))
+        installed.extend(self._install_run_script(wanted_packages))
         return installed
 
-    def _install_testrunners(self):
+    def _install_testrunners(self, wanted_packages):
         installed = []
-        for package in self.wanted_packages:
+        for package in wanted_packages:
             ws = self._working_set(package)
             package_ = ws.find(pkg_resources.Requirement.parse(package))
             extras = '[' + ','.join(package_.extras) + ']'
@@ -66,10 +66,10 @@ class Recipe(object):
             installed.extend(recipe.install())
         return installed
 
-    def _install_run_script(self):
+    def _install_run_script(self, wanted_packages):
         bindir = self.buildout['buildout']['bin-directory']
         runners = ['%s-%s' % (self.name, package) for package
-                        in self.wanted_packages]
+                        in wanted_packages]
         runners = [repr(os.path.join(bindir, runner)) for runner in runners]
 
         return zc.buildout.easy_install.scripts(
