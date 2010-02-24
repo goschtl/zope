@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-0.13 (unreleased)
-=================
+0.12.2 (2010-02-24)
+===================
 
 - Moved the gathering of include-dependencies from the __init__ to the update
   method to prevent installing dependencies before other buildout parts could
