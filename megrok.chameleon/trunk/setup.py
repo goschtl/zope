@@ -6,7 +6,7 @@ version = '0.5dev'
 install_requires = [
     'setuptools',
     'grokcore.view',
-    'chameleon.zpt',
+    'Chameleon',
     'chameleon.genshi',
     'z3c.pt',
     'lxml', # Needed by chameleon.genshi
