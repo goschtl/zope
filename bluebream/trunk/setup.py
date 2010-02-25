@@ -51,5 +51,6 @@ setup(
     extras_require={"test": ["zc.buildout"]},
     entry_points={
     "paste.paster_create_template":
-        ["bluebream = bluebream.template:BlueBream"]},
-    )
+        ["bluebream = bluebream.bluebream_base.template:BlueBream",
+         "bluebream_simple = bluebream.bluebream_simple.template:BlueBream"]})
+

@@ -1,0 +1,17 @@
+<configure
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="${project}">
+  
+  <page
+     for="zope.site.interfaces.IRootFolder"
+     name="index"
+     permission="zope.Public"
+     template="index.pt"
+     />
+  
+  <resourceDirectory
+     name="static"
+     directory="static"
+     />
+
+</configure>
