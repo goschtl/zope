@@ -265,7 +265,10 @@ project template will look like this::
   |           |-- securitypolicy.zcml
   |           |-- startup.py
   |           |-- tests.py
-  |           `-- views.py
+  |           |-- views.py
+  |           `-- static/
+  |               |-- logo.png
+  |               `-- style.css
   |-- templates/
   |   `-- zope_conf.in
   |-- var/
@@ -343,6 +346,8 @@ Files &  Purpose
   tests.
 
 - ``src/mynamespace/main/views.py`` -- An example view.
+
+- ``src/mynamespace/main/static/`` -- Static resource files (images, CSS etc.)
 
 - ``templates/`` -- Buildout specific templates used by
   "collective.recipe.template"
