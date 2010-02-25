@@ -23,7 +23,10 @@ Changelog
 
 - Include ``bluebream_simple`` template
 
-- Move ``bluebream`` template code to bluebream_base
+- Move ``bluebream`` template code to ``bluebream_base``
+
+- Add static resource directory with CSS to ``bluebream_base``
+  (based on ``bluebream_simple``).  The new style applied to main page.
 
 1.0a1 (2010-02-06)
 ------------------

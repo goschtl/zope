@@ -68,6 +68,10 @@ Creating directory ./sample
         Copying interfaces.py to ./sample/src/test_name/test_main/interfaces.py
         Copying securitypolicy.zcml_tmpl to ./sample/src/test_name/test_main/securitypolicy.zcml
         Copying startup.py to ./sample/src/test_name/test_main/startup.py
+        Recursing into static
+          Creating ./sample/src/test_name/test_main/static/
+          Copying logo.png to ./sample/src/test_name/test_main/static/logo.png
+          Copying style.css to ./sample/src/test_name/test_main/static/style.css
         Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests.py
         Copying views.py to ./sample/src/test_name/test_main/views.py
       Copying __init__.py to ./sample/src/test_name/__init__.py
