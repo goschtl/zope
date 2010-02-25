@@ -21,10 +21,10 @@ from zope.i18nmessageid import Message
 from zope.security.interfaces import Unauthorized
 import zope.dublincore.interfaces
 import zope.location.interfaces
-from zope.app import zapi
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.browser import BrowserView
+from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.traversing.interfaces import IContainmentRoot
 
 from zc.displayname import interfaces
@@ -97,9 +97,9 @@ class Breadcrumbs(BrowserView):
             base = tuple(view(maxlength))
         name_gen = component.getMultiAdapter(
             (context, request), interfaces.IDisplayNameGenerator)
-        url = zapi.absoluteURL(context, request)
+        url = absoluteURL(context, request)
         return base + (
-            {"name_gen": name_gen, "url": url, "name": name_gen(maxlength), 
+            {"name_gen": name_gen, "url": url, "name": name_gen(maxlength),
              "object": context},)
 
 class TerminalBreadcrumbs(BrowserView):
@@ -111,8 +111,8 @@ class TerminalBreadcrumbs(BrowserView):
         request = self.request
         name_gen = component.getMultiAdapter(
             (context, request), interfaces.IDisplayNameGenerator)
-        url = zapi.absoluteURL(context, request)
-        return ({"name_gen": name_gen, "url": url, "name": name_gen(maxlength), 
+        url = absoluteURL(context, request)
+        return ({"name_gen": name_gen, "url": url, "name": name_gen(maxlength),
                  "object": context},)
 
 class HiddenBreadcrumbs(BrowserView):
