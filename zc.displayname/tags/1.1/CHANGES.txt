@@ -1,0 +1,13 @@
+1.1 (2010-02-25)
+----------------
+
+* Spell out dependencies in setup.py.
+
+* Get rid of dependency on zope.app.zapi.
+
+* Add CHANGES.txt.
+
+1.0 (2006-12-07)
+----------------
+
+* Initial release.

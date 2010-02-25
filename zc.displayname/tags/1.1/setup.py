@@ -1,0 +1,33 @@
+from setuptools import setup, find_packages
+
+setup(
+    name = "zc.displayname",
+    version = "1.1dev",
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['zc'],
+    install_requires = [
+    'setuptools',
+    'zope.app.container',
+    'zope.app.pagetemplate',
+    'zope.component',
+    'zope.dublincore',
+    'zope.i18n',
+    'zope.i18nmessageid',
+    'zope.interface',
+    'zope.location',
+    'zope.proxy',
+    'zope.publisher',
+    'zope.security',
+    'zope.testing',
+    'zope.traversing',
+    ],
+    zip_safe=False,
+    author='Zope Project',
+    author_email='zope3-dev@zope.org',
+    description=open("README.txt").read(),
+    long_description=open("src/zc/displayname/adapters.txt").read(),
+    license='ZPL 2.1',
+    keywords="zope zope3",
+    )
