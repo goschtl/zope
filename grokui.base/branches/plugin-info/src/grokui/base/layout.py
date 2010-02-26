@@ -2,7 +2,6 @@
 
 import grok
 import megrok.menu
-import z3c.flashmessage.interfaces
 
 from grok import util
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
@@ -33,9 +32,6 @@ class GrokUIView(Page):
     megrok.menu.menuitem(MainMenu)
 
     def application_url(self, name=None, data=None):
+        """We override the Page base application_url method.
+        """
         return util.application_url(self.request, self.context, name, data)
-
-    def flash(self, message, type='message'):
-        source = getUtility(
-            z3c.flashmessage.interfaces.IMessageSource, name='session')
-        source.send(message, type)

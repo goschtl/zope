@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import grok
+import grokcore.component as grok
 from z3c.flashmessage.message import PersistentMessage
-from z3c.flashmessage.sources import SessionMessageSource
-from z3c.flashmessage.receiver import GlobalMessageReceiver
 from z3c.flashmessage.interfaces import IMessageSource
 
 
@@ -29,7 +27,3 @@ class AdminMessageSource(grok.GlobalUtility):
             self.message = None
         else:
             raise KeyError(message)
-
-
-grok.global_utility(GlobalMessageReceiver)
-grok.global_utility(SessionMessageSource, name='session')

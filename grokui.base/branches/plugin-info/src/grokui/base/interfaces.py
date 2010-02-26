@@ -27,4 +27,4 @@ class IGrokUIPluginInfo(IDCDescriptiveProperties):
     """Represents a component dedicated to give specific info
     about a grokui extension package.
     """
-    version = TextLine(title="Version of the package")
+    version = TextLine(title=u"Version of the package")
