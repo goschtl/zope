@@ -5,10 +5,11 @@ from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
 from z3c.flashmessage.interfaces import IMessageReceiver
 from zope.browsermenu.interfaces import IBrowserMenu
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.interface import Interface
 from zope.component import getUtility
 
 grok.view(IUIPanel)
-grok.context(IGrokUIRealm)
+grok.context(Interface)
 grok.templatedir("templates")
 
 

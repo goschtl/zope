@@ -1,0 +1,5 @@
+<div class="plugin-page">
+  <h1 tal:content="context/title" />
+  <h2 tal:content="context/version" />
+  <p tal:content="context/description" />
+</div>

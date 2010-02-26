@@ -6,6 +6,7 @@ import megrok.menu
 from grok import util
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 from megrok.layout import Layout, Page
+from zope.interface import Interface
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 grok.layer(GrokUILayer)
@@ -15,7 +16,7 @@ grok.templatedir("templates")
 class GrokUILayout(Layout):
     """The general layout for the administration
     """
-    grok.context(IGrokUIRealm)
+    grok.context(Interface)
     title = u"Grok User Interface"
 
     def update(self):

@@ -1,5 +1,6 @@
 <configure
     xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns="http://namespaces.zope.org/zope">
 
   <include package="grok" />
@@ -7,5 +8,10 @@
   <include package="megrok.layout" file="meta.zcml" />
   <include package="megrok.layout" file="messages.zcml" />
   <grok:grok package="." />
+
+  <browser:defaultView
+      for="grokui.base.interfaces.IGrokUIPluginInfo"
+      name="index"
+      />
 
 </configure>

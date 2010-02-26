@@ -231,3 +231,6 @@ label {
   font-weight: bold !important;
 }
 
+#plugins {
+  padding: 0.4em 3em;
+}

@@ -39,17 +39,17 @@ class GrokUINamespace(grok.MultiAdapter):
         return LocationProxy(self, self.root, "++grokui++")
 
 
-class GrokUIPluginInfo(grok.MultiAdapter):
+class GrokUIPluginsInfo(grok.MultiAdapter):
     grok.name('info')
     grok.provides(ITraversable)
     grok.adapts(IGrokUIRealm, browser.IBrowserRequest)
 
     def __init__(self, context, request):
-        self.root = context
+        self.context = context
         self.request = request
 
     def traverse(self, name, ignore):
         info = queryUtility(IGrokUIPluginInfo, name=name)
         if info is None:
             raise NotFound(self.context, name, self.request)
-        return LocationProxy(info, self.context, "++info++%s" % name)
+        return LocationProxy(info, self.context, '++info++%s' % name)
