@@ -7,7 +7,6 @@ tests_require = [
     'zope.securitypolicy',
     'zope.app.testing',
     'zope.testing',
-    'grokcore.component',
     ]
 
 def read(*rnames):
@@ -58,6 +57,9 @@ setup(name='grokui.base',
           'zope.site',
           'zope.traversing',
           'setuptools',
+          'grokcore.component',
+          'zope.dublincore',
+          'zope.schema',
           ],
       tests_require = tests_require,
       extras_require = dict(test=tests_require),
