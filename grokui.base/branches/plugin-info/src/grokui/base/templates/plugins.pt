@@ -1,0 +1,13 @@
+<div>
+  <h1>Installed user interface panels</h1>
+  <div id="plugins">
+    <div class="info-plugin" tal:repeat="plugin view/plugins">
+      <h2>
+	<span tal:content="plugin/title" />
+	&mdash;
+	<span tal:content="plugin/version" />
+      </h2>
+      <p tal:content="plugin/description" />
+    </div>
+  </div>
+</div>
