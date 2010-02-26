@@ -1,25 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import grokcore.viewlet as grok
+from grokui.base import IGrokUIPluginInfo, GrokUIView, GrokUILayer, IUIPanel
 from megrok.layout import Page
 from zope.component import getUtilitiesFor
 from zope.location import LocationProxy
 from zope.schema.fieldproperty import FieldProperty
 from zope.traversing.browser.absoluteurl import absoluteURL
 
-from grokui.base import interfaces
-from grokui.base import GrokUIPluginsInfo, GrokUIView, GrokUILayer
-
 grok.templatedir('templates')
 
 
 class BasePluginInfo(grok.GlobalUtility):
     grok.baseclass()
-    grok.implements(interfaces.IGrokUIPluginInfo)
+    grok.implements(IGrokUIPluginInfo)
 
-    title = FieldProperty(interfaces.IGrokUIPluginInfo['title'])
-    description = FieldProperty(interfaces.IGrokUIPluginInfo['description'])
-    version = FieldProperty(interfaces.IGrokUIPluginInfo['version'])
+    title = FieldProperty(IGrokUIPluginInfo['title'])
+    description = FieldProperty(IGrokUIPluginInfo['description'])
+    version = FieldProperty(IGrokUIPluginInfo['version'])
 
 
 class Plugins(GrokUIView):
@@ -27,7 +25,7 @@ class Plugins(GrokUIView):
     grok.title(u'Information panels')
 
     def plugins(self):
-        plugins = getUtilitiesFor(interfaces.IGrokUIPluginInfo)
+        plugins = getUtilitiesFor(IGrokUIPluginInfo)
         for name, plugin in plugins:
             located = LocationProxy(plugin, self.context, '++info++%s' % name)
             yield dict(
@@ -40,5 +38,5 @@ class Plugins(GrokUIView):
 class PluginPage(Page):
     grok.name('index')
     grok.layer(GrokUILayer)
-    grok.implements(interfaces.IUIPanel)
-    grok.context(interfaces.IGrokUIPluginInfo)
+    grok.implements(IUIPanel)
+    grok.context(IGrokUIPluginInfo)
