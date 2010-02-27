@@ -4,12 +4,15 @@ import grok
 from persistent import Persistent
 from zope.component import getMultiAdapter
 from zope.security.proxy import removeSecurityProxy
+from zope.session.interfaces import ISession
 from ZODB.utils import p64, u64, tid_repr
 from grokui.base import IGrokUIRealm, GrokUIView
 from grokui.zodbbrowser.interfaces import IObjectInfo
 
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
+
+marker = object()
 
 class ManageApplications(grok.Permission):
     grok.name('grok.ManageApplications')
@@ -18,8 +21,10 @@ class GrokUIZODBBrowserInfo(GrokUIView):
     grok.name('zodbbrowser')
     grok.template('zodbbrowser')
     grok.require('grok.ManageApplications')
+    grok.title('ZODB browser')
 
-    def update(self, oid=None, name=None):
+    def update(self, oid=None, name=None, show_all=False, show_docs=False,
+               update=None):
         self.obj = None
         if oid is None:
             self.obj = self.context.root
@@ -29,9 +34,17 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             jar = self.jar()
             self.obj = jar.get(oid)
         self.info = IObjectInfo(self.obj)
-        self.info._name = name
-        self.getBreadCrumbs()
+        session = ISession(self.request)['grokui.zodbbrowser']
 
+        self.show_all = show_all
+        self.show_docs = show_docs
+        if update is None:
+            self.show_all = session.get('show_all', False)
+            self.show_docs = session.get('show_docs', False)
+        session['show_all'] = self.show_all
+        session['show_docs'] = self.show_docs
+        return
+        
     def findClosestPersistent(self):
         obj = removeSecurityProxy(self.context)
         while not isinstance(obj, Persistent):
@@ -101,7 +114,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
                     self.getMemberLink(IObjectInfo(self.context.root)),
                     '&lt;root&gt;'))
         link_list.reverse()
-        result = ' > '.join(link_list)
+        result = ' / '.join(link_list)
         return result
     
 class MemberInfoView(grok.View):
@@ -112,8 +125,13 @@ class MemberInfoView(grok.View):
     grok.context(IObjectInfo)
     grok.require('grok.ManageApplications')
 
+    def update(self):
+        session = ISession(self.request)['grokui.zodbbrowser']
+        self.show_all = session.get('show_all', False)
+        self.show_docs = session.get('show_docs', False)
+    
     def getMemberLink(self):
         return self.url(
             self.parent_context, '@@zodbbrowser',
-            data=dict(oid=self.context.oid, name=self.context.name)
+            data=dict(oid=self.context.oid)
             )
