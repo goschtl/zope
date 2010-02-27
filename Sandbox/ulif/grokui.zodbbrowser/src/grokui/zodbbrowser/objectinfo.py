@@ -19,11 +19,14 @@ class ObjectInfo(object):
         self._name = None
         self._parent_oid = None
 
+        
     @property
     def name(self):
         """Get name of wrapped obj.
         """
-        return getattr(self.obj, '__name__', str(self._name))
+        if self._name is not None:
+            return self._name
+        return getattr(self.obj, '__name__', u'???')
     
     def getOID(self):
         try:
