@@ -1,5 +1,5 @@
 <div>
-    <h3>
+    <b>
       <span tal:condition="context/linkable">
 	<a href=""
 	   tal:attributes="href view/getMemberLink"
@@ -8,15 +8,11 @@
       <span tal:condition="not: context/linkable"
 	    tal:replace="context/signature">
       </span>
-      <span tal:replace="context/type_string">member.type</span>
-    </h3>
+      :
+    </b>
+    <span tal:content="context/getValue">member-value</span>
     <p>
-      <pre tal:condition="context/doc" 
+      <pre tal:condition="python: context.doc and view.show_docs" 
 	   tal:content="context/doc">member.docs</pre>
     </p>
-    <p>
-      Value: <span tal:content="context/getValue">member-value</span>
-    </p>
-
-  <hr />
 </div>
