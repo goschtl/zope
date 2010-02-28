@@ -22,7 +22,8 @@ class GrokUIZODBBrowserInfo(GrokUIView):
     grok.name('zodbbrowser')
     grok.template('zodbbrowser')
     grok.require('grok.ManageApplications')
-    grok.title('ZODB browser')
+    grok.title('ZODB browser') # This will appear in grokui menu bar
+    grok.order(5) # Position of menu entry will be somewhat to the right
 
     def publishTraverse(self, request, name):
         self.request.form['oid'] = name
