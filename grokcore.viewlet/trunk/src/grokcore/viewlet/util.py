@@ -13,7 +13,7 @@
 ##############################################################################
 """Grok utility functions.
 """
-import grokcore.viewlet
+from grokcore.viewlet import directive
 from zope.security.checker import NamesChecker, defineChecker
 
 from grokcore.security.util import check_permission
@@ -38,7 +38,7 @@ def make_checker(factory, view_factory, permission, method_names=None):
 
 def _sort_key(component):
     # If components have a grok.order directive, sort by that.
-    explicit_order, implicit_order = grokcore.viewlet.order.bind().get(component)
+    explicit_order, implicit_order = directive.order.bind().get(component)
     return (explicit_order,
             component.__module__,
             implicit_order,

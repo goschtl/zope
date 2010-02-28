@@ -53,10 +53,11 @@ with the same context::
 """
 
 import grokcore.viewlet as grok
-from zope.interface import Interface
+
 
 class CavemenViewletManager(grok.ViewletManager):
     grok.name('manage.cavemen')
+
 
 class FredViewlet(grok.Viewlet):
     grok.viewletmanager(CavemenViewletManager)
@@ -64,8 +65,10 @@ class FredViewlet(grok.Viewlet):
     def render(self):
         return 'Me Fred'
 
+
 class Cave(grok.Context):
     pass
+
 
 class Index(grok.View):
     def render(self):

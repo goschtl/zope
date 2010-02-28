@@ -34,9 +34,10 @@ class ViewletManagerContextGrokker(martian.GlobalGrokker):
     martian.priority(1001)
 
     def grok(self, name, module, module_info, config, **kw):
-        viewletmanager = determine_module_component(module_info,
-                                                    grokcore.viewlet.viewletmanager,
-                                                    IGrokViewletManager)
+        viewletmanager = determine_module_component(
+            module_info,
+            grokcore.viewlet.viewletmanager,
+            IGrokViewletManager)
         grokcore.viewlet.viewletmanager.set(module, viewletmanager)
         return True
 
@@ -65,22 +66,23 @@ class ViewletManagerGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
-                )
+                args=(templates, factory.module_info, factory))
 
         config.action(
-            discriminator = ('viewletManager', context, layer, view, name),
-            callable = component.provideAdapter,
-            args = (factory, (context, layer, view), IViewletManager, name)
-            )
+            discriminator=('viewletManager', context, layer, view, name),
+            callable=component.provideAdapter,
+            args=(factory, (context, layer, view), IViewletManager, name))
         return True
 
     def checkTemplates(self, templates, module_info, factory):
+
         def has_render(factory):
             return factory.render != components.ViewletManager.render
+
         def has_no_render(factory):
             # always has a render method
             return False
+
         templates.checkTemplates(module_info, factory, 'viewlet manager',
                                  has_render, has_no_render)
 
@@ -112,29 +114,29 @@ class ViewletGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
-                )
+                args=(templates, factory.module_info, factory))
 
         config.action(
-            discriminator = ('viewlet', context, layer,
-                             view, viewletmanager, name),
-            callable = component.provideAdapter,
-            args = (factory, (context, layer, view, viewletmanager),
-                    IViewlet, name)
-            )
+            discriminator=(
+                'viewlet', context, layer, view, viewletmanager, name),
+            callable=component.provideAdapter,
+            args=(factory, (context, layer, view, viewletmanager),
+                  IViewlet, name))
 
         config.action(
             discriminator=('protectName', factory, '__call__'),
             callable=make_checker,
-            args=(factory, factory, permission, ['update', 'render']),
-            )
+            args=(factory, factory, permission, ['update', 'render']))
 
         return True
 
     def checkTemplates(self, templates, module_info, factory):
+
         def has_render(factory):
             return factory.render != components.Viewlet.render
+
         def has_no_render(factory):
             return not has_render(factory)
+
         templates.checkTemplates(module_info, factory, 'viewlet',
                                  has_render, has_no_render)

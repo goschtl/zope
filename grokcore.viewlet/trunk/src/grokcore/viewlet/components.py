@@ -34,7 +34,7 @@ class ViewletManager(ViewletManagerBase):
         self.static = component.queryAdapter(
             self.request,
             interface.Interface,
-            name=self.module_info.package_dotted_name
+            name=self.module_info.package_dotted_name,
             )
 
     def sort(self, viewlets):
@@ -52,12 +52,12 @@ class ViewletManager(ViewletManagerBase):
         # viewlet) tuples, now in the correct order.
         s_viewlets = []
         for name, viewlet in viewlets:
-             # Stuff away viewlet name so we can later retrieve it.
-             # XXX We loose name information in case the same viewlet
-             # is in the viewlets list twice, but with a different
-             # name. Most probably this situation doesn't occur.
-             viewlet.__viewlet_name__ = name
-             s_viewlets.append(viewlet)
+            # Stuff away viewlet name so we can later retrieve it.
+            # XXX We loose name information in case the same viewlet
+            # is in the viewlets list twice, but with a different
+            # name. Most probably this situation doesn't occur.
+            viewlet.__viewlet_name__ = name
+            s_viewlets.append(viewlet)
         s_viewlets = util.sort_components(s_viewlets)
         return [(viewlet.__viewlet_name__, viewlet) for viewlet in s_viewlets]
 
@@ -96,7 +96,7 @@ class Viewlet(ViewletBase):
         self.static = component.queryAdapter(
             self.request,
             interface.Interface,
-            name=self.module_info.package_dotted_name
+            name=self.module_info.package_dotted_name,
             )
 
     def default_namespace(self):

@@ -20,6 +20,7 @@ import grokcore.component.interfaces
 import grokcore.security.interfaces
 import grokcore.view.interfaces
 
+
 class IBaseClasses(grokcore.component.interfaces.IBaseClasses,
                    grokcore.security.interfaces.IBaseClasses,
                    grokcore.view.interfaces.IBaseClasses):

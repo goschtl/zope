@@ -38,7 +38,6 @@ registered for::
 """
 
 import grokcore.viewlet as grok
-from zope import interface
 
 
 class AContext(grok.Context):
