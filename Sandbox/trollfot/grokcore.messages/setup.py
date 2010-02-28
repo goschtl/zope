@@ -1,15 +1,15 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '0.1dev'
 
-readme = open(os.join('src', 'grokcore', 'messages', 'README.txt')).read()
+readme = open(os.path.join('src', 'grokcore', 'messages', 'README.txt')).read()
 changes = open("CHANGES.txt").read()
 
 setup(name='grokcore.messages',
       version=version,
       description="Grok messaging machinery",
-      long_description="%s\n\n%s\n" % (readme + changes),
+      long_description="%s\n\n%s\n" % (readme, changes),
       keywords='Grok Messages',
       author='Souheil Chelfouh',
       author_email='souheil@chelfouh.com',
