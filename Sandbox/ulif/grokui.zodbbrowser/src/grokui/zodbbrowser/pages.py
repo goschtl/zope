@@ -5,6 +5,7 @@ from persistent import Persistent
 from zope.component import getMultiAdapter
 from zope.security.proxy import removeSecurityProxy
 from zope.session.interfaces import ISession
+from ZODB.POSException import POSKeyError
 from ZODB.utils import p64, u64, tid_repr
 from grokui.base import IGrokUIRealm, GrokUIView
 from grokui.zodbbrowser.interfaces import IObjectInfo
@@ -34,9 +35,17 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             self.obj = self.context.root
             #self.obj = self.findClosestPersistent()
         if self.obj is None:
+
             oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
             jar = self.jar()
-            self.obj = jar.get(oid)
+            try:
+                self.obj = jar.get(oid)
+            except POSKeyError:
+                # This doesn't work currently...
+                #self.flash(u'OID not found: %s', oid)
+                self.redirect(self.url(self.context, '@@zodbbrowser'))
+                return
+
         self.info = IObjectInfo(self.obj)
         session = ISession(self.request)['grokui.zodbbrowser']
 
