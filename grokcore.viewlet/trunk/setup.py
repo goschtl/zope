@@ -11,14 +11,21 @@ long_description = (
     )
 
 tests_require = [
-    'zope.app.authentication',
+    'zope.annotation',
+    'zope.app.appsetup',
+    'zope.app.pagetemplate',
+    'zope.app.publication',
     'zope.app.testing',
-    'zope.app.zcmlfiles',
+    'zope.browserpage',
     'zope.configuration',
+    'zope.container',
     'zope.contentprovider',
+    'zope.principalregistry',
     'zope.securitypolicy',
+    'zope.site',
     'zope.testbrowser',
     'zope.testing',
+    'zope.traversing',
     ]
 
 setup(
