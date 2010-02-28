@@ -34,9 +34,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         self.obj = None
         if oid is None:
             self.obj = self.context.root
-            #self.obj = self.findClosestPersistent()
         if self.obj is None:
-
             oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
             jar = self.jar()
             try:
@@ -59,16 +57,9 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         session['show_docs'] = self.show_docs
         return
         
-    def findClosestPersistent(self):
-        obj = removeSecurityProxy(self.context)
-        while not isinstance(obj, Persistent):
-            try:
-                obj = obj.__parent__
-            except AttributeError:
-                return None
-        return obj
-
     def getRootOID(self):
+        """Get OID of root object.
+        """
         root = self.jar().root()
         try:
             # The blessed way would be:
@@ -106,7 +97,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         """
         root_oid = self.getRootOID()
         curr = self.info
-        parent_list = [curr] #dict(name=curr.name, oid=curr.oid)]
+        parent_list = [curr]
         while True:
             parent = IObjectInfo(curr.getParent())
             if parent.obj is not None:
