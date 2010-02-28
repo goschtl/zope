@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.4.1 (unreleased)
+1.4.1 (2010-02-28)
 ------------------
 
 * Dropped the dependency on ``zope.app.zcmlfiles``.

@@ -30,7 +30,7 @@ tests_require = [
 
 setup(
     name='grokcore.viewlet',
-    version = '1.5dev',
+    version = '1.4.1',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -44,7 +44,6 @@ setup(
                  'Programming Language :: Python',
                  'Framework :: Zope3',
                  ],
-
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['grokcore'],
