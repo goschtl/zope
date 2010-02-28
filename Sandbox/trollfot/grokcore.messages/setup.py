@@ -6,10 +6,22 @@ version = '0.1dev'
 readme = open(os.path.join('src', 'grokcore', 'messages', 'README.txt')).read()
 changes = open("CHANGES.txt").read()
 
+long_description = "%s\n\n%s\n" % (readme, changes)
+
+install_requires = [
+    'setuptools',
+    'z3c.flashmessage',
+    'grokcore.component',
+    ]
+
+tests_require = [
+    'zope.testing',
+    ]
+
 setup(name='grokcore.messages',
       version=version,
       description="Grok messaging machinery",
-      long_description="%s\n\n%s\n" % (readme, changes),
+      long_description=long_description,
       keywords='Grok Messages',
       author='Souheil Chelfouh',
       author_email='souheil@chelfouh.com',
@@ -20,14 +32,9 @@ setup(name='grokcore.messages',
       package_dir={'': 'src'},
       include_package_data=True,
       zip_safe=False,
-      install_requires=[
-          'setuptools',
-          'z3c.flashmessage',
-          'grokcore.component',
-      ],
-      extras_require = dict(test=[
-          'zope.testing',
-          ]),
+      install_requires=install_requires,
+      tests_require=tests_require,
+      extras_require = dict(test=tests_require),
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Environment :: Web Environment',
