@@ -14,12 +14,12 @@ grok.context(IGrokUIRealm)
 grok.templatedir('templates')
 
 class ManageApplications(grok.Permission):
-    grok.name('grok.ManageApplications')
+    grok.name('grok.BrowseZODB')
 
 class GrokUIZODBBrowserInfo(GrokUIView):
     grok.name('zodbbrowser')
     grok.template('zodbbrowser')
-    grok.require('grok.ManageApplications')
+    grok.require('grok.BrowseZODB')
     grok.title('ZODB browser') # This will appear in grokui menu bar
     grok.order(5) # Position of menu entry will be somewhat to the right
 
@@ -124,7 +124,7 @@ class MemberInfoView(grok.View):
     grok.name('memberinfo')
     grok.template('memberinfo')
     grok.context(IObjectInfo)
-    grok.require('grok.ManageApplications')
+    grok.require('grok.BrowseZODB')
 
     def update(self):
         session = ISession(self.request)['grokui.zodbbrowser']
