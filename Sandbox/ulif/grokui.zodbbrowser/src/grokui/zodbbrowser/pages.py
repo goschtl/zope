@@ -23,6 +23,10 @@ class GrokUIZODBBrowserInfo(GrokUIView):
     grok.require('grok.ManageApplications')
     grok.title('ZODB browser')
 
+    def publishTraverse(self, request, name):
+        self.request.form['oid'] = name
+        return self
+    
     def update(self, oid=None, name=None, show_all=False, show_docs=False,
                update=None):
         self.obj = None
