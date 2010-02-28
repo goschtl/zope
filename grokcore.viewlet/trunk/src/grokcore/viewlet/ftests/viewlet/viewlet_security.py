@@ -129,14 +129,14 @@ class TRexBone(grok.Viewlet):
     grok.viewletmanager(Pot)
 
     def render(self):
-        return "T-Rex Bone"
+        return u"T-Rex Bone"
 
 class BrackerBone(grok.Viewlet):
     grok.context(Interface)
     grok.viewletmanager(Pot)
 
     def render(self):
-        return "Brack Bone"
+        return u"Brack Bone"
 
 class GoldBone(grok.Viewlet):
     grok.context(Interface)
@@ -162,7 +162,7 @@ class ManBone(grok.Viewlet):
     grok.context(CaveMan)
 
     def render(self):
-        return "Man Bone"
+        return u"Man Bone"
 
 class LadyViewlet(grok.Viewlet):
     grok.context(Interface)
@@ -182,5 +182,4 @@ class NamedViewlet(grok.Viewlet):
     grok.viewletmanager(NamedViewletManager)
 
     def render(self):
-        return "NamedViewlet"
-
+        return u"NamedViewlet"

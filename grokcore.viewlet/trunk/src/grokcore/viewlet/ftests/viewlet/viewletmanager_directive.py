@@ -39,4 +39,4 @@ grok.viewletmanager(CaveManager)
 
 class FredViewlet(grok.Viewlet):
     def render(self):
-        return 'Fred viewlet'
+        return u"Fred viewlet"

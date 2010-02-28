@@ -59,42 +59,42 @@ class CaveViewlet(grok.Viewlet):
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Cave"
+        return u"Cave"
 
 class BarneyViewlet(grok.Viewlet):
     grok.order(60)
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Barney"
+        return u"Barney"
 
 class BoneViewlet(grok.Viewlet):
     grok.order(10)
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Bone"
+        return u"Bone"
 
 class WilmaViewlet(grok.Viewlet):
     grok.order(50)
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Wilma"
+        return u"Wilma"
 
 class GoldViewlet(grok.Viewlet):
     grok.order(1)
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Gold"
+        return u"Gold"
 
 class FredViewlet(grok.Viewlet):
     grok.order(20)
     grok.viewletmanager(CaveManager)
 
     def render(self):
-        return "Fred"
+        return u"Fred"
 
 class OrderView2(grok.View):
     grok.template('orderview')
@@ -112,11 +112,11 @@ class NoExplicitOrderCaveViewlet(grok.Viewlet):
     grok.viewletmanager(CaveManager2)
 
     def render(self):
-        return "Cave"
+        return u"Cave"
 
 class NoExplicitOrderBarneyViewlet(grok.Viewlet):
     grok.name('barney')
     grok.viewletmanager(CaveManager2)
 
     def render(self):
-        return "Barney"
+        return u"Barney"
