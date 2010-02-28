@@ -1,5 +1,3 @@
-/* ---- general styling elements ---- */
-
 body {
   margin: 0;
   color: #555;
@@ -80,7 +78,6 @@ li {
   padding: 0;
 }
 
-
 div#grokui-banner #logo span {
   display: none;
 }
@@ -98,9 +95,8 @@ div#logout {
   padding-right: 3em;
   background-color: #ddd;
   text-align: right;
-  height: 36px;
-  line-height: 36px;
-  background:#cc9900 url("shadow.jpg") repeat-x;
+  line-height: 28px;
+  background: transparent url("shadow.jpg") repeat-x;
 }
 
 #grokui-menu-entries {
@@ -115,6 +111,15 @@ div#logout {
 
 #grokui-footer {
   text-align: center;
+  border-top: 1px solid #ddd;
+  margin-top: 2.5em;
+  background-color: #f4f4f4;
+}
+
+#grokui-footer p {
+  padding: 0.5em 0;
+  margin: 0;
+  color: #777;
 }
 
 div#grokui-content {
@@ -230,4 +235,3 @@ dl.table dd {
 label {
   font-weight: bold !important;
 }
-
