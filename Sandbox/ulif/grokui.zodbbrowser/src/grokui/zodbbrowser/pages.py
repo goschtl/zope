@@ -13,8 +13,6 @@ from grokui.zodbbrowser.interfaces import IObjectInfo
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
 
-marker = object()
-
 class ManageApplications(grok.Permission):
     grok.name('grok.ManageApplications')
 
