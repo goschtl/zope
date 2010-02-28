@@ -48,7 +48,7 @@ class ViewWithItems(grok.View):
     grok.name('with_items')
 
     def render(self):
-        return ''
+        return u""
 
 
 class ViewItemsManager(grok.ViewletManager):
@@ -59,11 +59,11 @@ class ItemOneViewlet(grok.Viewlet):
     grok.name('item_one')
 
     def render(self):
-        return "Item one reporting, sir!"
+        return u"Item one reporting, sir!"
 
 
 class ItemTwoViewlet(grok.Viewlet):
     grok.name('item_two')
 
     def render(self):
-        return "Item two reporting, sir!"
+        return u"Item two reporting, sir!"

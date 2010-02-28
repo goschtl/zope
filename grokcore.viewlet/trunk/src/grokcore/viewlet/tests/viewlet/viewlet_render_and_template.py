@@ -13,15 +13,15 @@ associated with it at the same time.
 import grokcore.viewlet as grok
 from zope.interface import Interface
 
+
 class ViewletManager(grok.ViewletManager):
     grok.name('foo')
     grok.context(Interface)
+
 
 class Viewlet(grok.Viewlet):
     grok.viewletmanager(ViewletManager)
     grok.context(Interface)
 
     def render(self):
-        return "Render method but also a template!"
-
-
+        return u"Render method but also a template!"

@@ -24,15 +24,19 @@ registered for the default layer, with the anybody permission::
 
 import grokcore.viewlet as grok
 
+
 class Fred(grok.Context):
     pass
 
+
 class CaveView(grok.View):
     def render(self):
-        return 'Cave'
+        return u"Cave"
+
 
 class BoneView(grok.View):
     pass
+
 
 grok.view(CaveView)
 

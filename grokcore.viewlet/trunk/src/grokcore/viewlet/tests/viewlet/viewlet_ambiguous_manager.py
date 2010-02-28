@@ -12,18 +12,19 @@ a viewlet will not auto-associate but instead raise an error.
 import grokcore.viewlet as grok
 from zope.interface import Interface
 
+
 class ViewletManager(grok.ViewletManager):
     grok.name('foo')
     grok.context(Interface)
+
 
 class ViewletManager2(grok.ViewletManager):
     grok.name('bar')
     grok.context(Interface)
 
+
 class Viewlet(grok.Viewlet):
     grok.context(Interface)
 
     def render(self):
-        return "Render method"
-
-
+        return u"Render method"

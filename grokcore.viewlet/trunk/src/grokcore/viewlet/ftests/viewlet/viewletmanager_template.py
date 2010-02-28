@@ -34,11 +34,14 @@ registered for the default layer, with the anybody permission::
 
 import grokcore.viewlet as grok
 
+
 class Fred(grok.Context):
     pass
 
+
 class OrderView(grok.View):
     pass
+
 
 class CaveManager(grok.ViewletManager):
     grok.name('cave')
@@ -54,18 +57,21 @@ class CaveManager(grok.ViewletManager):
         k.sort()
         return k
 
+
 class CaveViewlet(grok.Viewlet):
     grok.order(30)
     grok.viewletmanager(CaveManager)
     grok.name('Cave')
 
     def render(self):
-        return "Cave"
+        return u"Cave"
+
 
 class BarneyViewlet(grok.Viewlet):
     grok.order(60)
     grok.viewletmanager(CaveManager)
     grok.name('Barney')
+
 
 class BoneViewlet(grok.Viewlet):
     grok.order(10)
@@ -73,7 +79,8 @@ class BoneViewlet(grok.Viewlet):
     grok.name('Bone')
 
     def render(self):
-        return "Bone"
+        return u"Bone"
+
 
 class WilmaViewlet(grok.Viewlet):
     grok.order(50)
@@ -81,7 +88,8 @@ class WilmaViewlet(grok.Viewlet):
     grok.name('Wilma')
 
     def render(self):
-        return "Wilma"
+        return u"Wilma"
+
 
 class GoldViewlet(grok.Viewlet):
     grok.order(1)
@@ -89,7 +97,8 @@ class GoldViewlet(grok.Viewlet):
     grok.name('Gold')
 
     def render(self):
-        return "Gold"
+        return u"Gold"
+
 
 class FredViewlet(grok.Viewlet):
     grok.order(20)
@@ -97,4 +106,4 @@ class FredViewlet(grok.Viewlet):
     grok.name('Fred')
 
     def render(self):
-        return "Fred"
+        return u"Fred"

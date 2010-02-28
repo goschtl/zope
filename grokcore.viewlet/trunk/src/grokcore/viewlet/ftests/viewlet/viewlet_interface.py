@@ -35,7 +35,7 @@ class FredViewlet(grok.Viewlet):
     grok.viewletmanager(ICavemenViewletManager)
 
     def render(self):
-        return u'Me Fred'
+        return u"Me Fred"
 
 class Cave(grok.Context):
     pass

@@ -63,7 +63,7 @@ class FredViewlet(grok.Viewlet):
     grok.viewletmanager(CavemenViewletManager)
 
     def render(self):
-        return 'Me Fred'
+        return u"Me Fred"
 
 
 class Cave(grok.Context):
@@ -72,4 +72,4 @@ class Cave(grok.Context):
 
 class Index(grok.View):
     def render(self):
-        return "hoi"
+        return u"hoi"
