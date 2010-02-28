@@ -29,8 +29,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         self.request.form['oid'] = name
         return self
     
-    def update(self, oid=None, name=None, show_all=False, show_docs=False,
-               update=None):
+    def update(self, oid=None, show_all=False, show_docs=False, update=None):
         self.obj = None
         if oid is None:
             self.obj = self.context.root
@@ -83,8 +82,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             return obj._p_jar
 
     def getMemberLink(self, member):
-        return self.url(self.context, '@@zodbbrowser',
-                        data = dict(oid=member.oid,name=member.name))
+        return self.url(self.context, '@@zodbbrowser/%s' % member.oid)
 
     def getMemberView(self, member):
         view = getMultiAdapter((member, self.request), name='memberinfo')
@@ -137,6 +135,4 @@ class MemberInfoView(grok.View):
     
     def getMemberLink(self):
         return self.url(
-            self.parent_context, '@@zodbbrowser',
-            data=dict(oid=self.context.oid)
-            )
+            self.parent_context, '@@zodbbrowser/%s' % self.context.oid)
