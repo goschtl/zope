@@ -4,6 +4,8 @@ BlueBream Kit
 1.0a2 (unreleased)
 ------------------
 
+- Use bluebream 1.0a2 release
+
 - Added zope.pluggableauth (1.0.1) to ztk.cfg
 
 - Changed versions: ztk.cfg (r107997 -> r108937)
