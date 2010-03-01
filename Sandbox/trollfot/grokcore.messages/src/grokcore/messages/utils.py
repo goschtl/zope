@@ -28,11 +28,6 @@ def get_from_source(name=''):
         return None
     return source.list()
     
-    receiver = queryUtility(IMessageReceiver, name=name)
-    if receiver is None:
-        return False
-    return receiver.receive()
-
 
 def receive(name=''):
     """Receives messages from a given receiver.
