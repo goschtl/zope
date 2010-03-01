@@ -21,7 +21,8 @@ Changelog
 
 - Include ``zest.release`` to prepare release
 
-- Include ``bluebream_simple`` template
+- Include ``bluebream_simple`` template (This will not be released
+  with 1.0a2 as the documentation is not ready yet)
 
 - Move ``bluebream`` template code to ``bluebream_base``
 
