@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import grokcore.component as grok
-from grokcore.messages import IMessageSource, PersistentMessage
+from grokcore.message import IMessageSource, PersistentMessage
+
 
 class UniqueMessageSource(grok.GlobalUtility):
     """A source that handles a unique message.
@@ -10,7 +11,7 @@ class UniqueMessageSource(grok.GlobalUtility):
     grok.implements(IMessageSource)
 
     message = None
-    
+
     def send(self, message, type):
         self.message = PersistentMessage(message, type)
 

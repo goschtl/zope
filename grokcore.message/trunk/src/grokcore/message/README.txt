@@ -143,7 +143,7 @@ feed sources or get data from them.
 
     >>> import grokcore.message
     >>> grokcore.message.get_from_source('session')
-    <generator object at 0x...>
+    <generator object ...>
 
     >>> grokcore.message.get_from_source('not-existing') is None
     True
@@ -199,7 +199,7 @@ After being grokked, the source is automatically registered:
 We can list the message stored in the source:
 
   >>> source.list()
-  <generator object at 0x...>
+  <generator object ...>
 
   >>> list(source.list())
   []
