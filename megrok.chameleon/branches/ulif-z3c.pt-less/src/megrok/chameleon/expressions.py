@@ -1,3 +1,4 @@
+import grokcore.component as grok
 import re
 import namespaces
 import zope.event
@@ -207,8 +208,12 @@ class PathTranslator(expressions.ExpressionTranslator):
 
         return value
 
-class NotTranslator(expressions.ExpressionTranslator):
-    zope.component.adapts(IExpressionTranslator)
+
+class NotTranslator(expressions.ExpressionTranslator, grok.Adapter):
+    #zope.component.adapts(IExpressionTranslator)
+    grok.name('not')
+    grok.context(IExpressionTranslator)
+    grok.provides(IExpressionTranslator)
 
     recursive = True
 
@@ -289,3 +294,7 @@ class ExistsTranslator(PathTranslator):
 exists_translator = ExistsTranslator()
 path_translator = PathTranslator()
 provider_translator = ProviderTranslator()
+
+grok.global_utility(ExistsTranslator, name='exists')
+grok.global_utility(PathTranslator, name='path')
+grok.global_utility(ProviderTranslator, name='provider')
