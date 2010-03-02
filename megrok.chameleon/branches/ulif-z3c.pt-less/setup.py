@@ -9,6 +9,10 @@ install_requires = [
     'Chameleon',
     'chameleon.genshi',
     'lxml', # Needed by chameleon.genshi
+    'zope.component',
+    'zope.contentprovider',
+    'zope.event',
+    'zope.traversing',
     ]
 
 tests_require = [
