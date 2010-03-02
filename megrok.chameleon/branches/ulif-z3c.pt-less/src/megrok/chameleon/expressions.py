@@ -1,6 +1,5 @@
 import grokcore.component as grok
 import re
-import namespaces
 import zope.event
 
 from zope.traversing.adapters import traversePathElement
@@ -17,7 +16,8 @@ from chameleon.core import types
 from chameleon.zpt import expressions
 from chameleon.zpt.interfaces import IExpressionTranslator
 
-from types import MethodType
+from megrok.chameleon import namespaces
+
 
 _marker = object()
 _valid_name = re.compile(r"[a-zA-Z][a-zA-Z0-9_]*$").match
@@ -69,7 +69,7 @@ class ZopeTraverser(object):
 
                 if next is not _marker:
                     base = next
-                    if ns is True and isinstance(base, MethodType):
+                    if ns is True and isinstance(base, types.MethodType):
                         base = base()
                     continue
                 else:
