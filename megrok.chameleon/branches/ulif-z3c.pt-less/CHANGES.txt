@@ -4,6 +4,12 @@ CHANGES
 0.5 (unreleased)
 ================
 
+* Removed dependency from ``z3c.pt`` by copying the relevant bits over
+  and registering them locally.
+
+  Drop support for ``exists('varname')`` expressions. The regular
+  TALES expression ``exists: varname/path`` can still be used.
+
 * Switch to use ``Chameleon`` instead of ``chameleon.*`` packages.
 
 0.4 (2010-02-23)
