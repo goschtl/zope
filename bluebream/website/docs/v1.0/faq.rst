@@ -48,40 +48,40 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004205.html
 
 BlueBream has:
 
-  - WSGI-compatible object publisher (zope.publisher)
+- WSGI-compatible object publisher (zope.publisher)
 
-  - Object database (ZODB) for transparently persisting objects; comes
-    with load-balancing support (ZEO).
+- Object database (ZODB) for transparently persisting objects; comes
+  with load-balancing support (ZEO).
 
-  - Component Architecture for making things pluggable very easily
-    (zope.component)
+- Component Architecture for making things pluggable very easily
+  (zope.component)
 
-  - XML-configuration language for registering components
-    (zope.configuration), not mandatory but pretty much standard
+- XML-configuration language for registering components
+  (zope.configuration), not mandatory but pretty much standard
 
-  - Flexible security architecture with pluggable security policies
-    (zope.security)
+- Flexible security architecture with pluggable security policies
+  (zope.security)
 
-  - Good unit, integration and functional testing frameworks
-    (zope.testing, zope.testbrowser)
+- Good unit, integration and functional testing frameworks
+  (zope.testing, zope.testbrowser)
 
-  - XHTML-compliant templating language (zope.pagetemplate)
+- XHTML-compliant templating language (zope.pagetemplate)
 
-  - Schema engine and automatic form generation machinery
-    (zope.formlib)
+- Schema engine and automatic form generation machinery
+  (zope.formlib)
 
-  - many more core and third-party packages that may already solve
-    some of your problems. See http://svn.zope.org, for instance.
+- many more core and third-party packages that may already solve
+  some of your problems. See http://svn.zope.org, for instance.
 
 BlueBream is:
 
-  - ZPL (BSD-ish license)
+- ZPL (BSD-ish license)
 
-  - Owned by Zope Foundation
+- Owned by Zope Foundation
 
-  - written mostly by contributors, not just Zope Corporation.
+- written mostly by contributors, not just Zope Corporation.
 
-  - usable in pieces or in whole
+- usable in pieces or in whole
 
 What is the Zope Foundation ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,13 +109,15 @@ How can I help ?
 If you're interested in helping and you have time, educate yourself
 on the component architecture and BlueBream then volunteer to assist
 in your particular area of expertise.  Please come to our IRC
-channel: #bluebream at irc.freenode.net
+channel: #bluebream at irc.freenode.net  Also join the mailing list:
+https://mail.zope.org/mailman/listinfo/bluebream
 
 
 What is the license of BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-BlueBream is licensed under Zope Public License, Version 2.1 (ZPL).
+BlueBream is licensed under :term:`Zope Public License` (BSD like,
+GPL compatible license).
 
 Is BlueBream stable enough to be used in production environment ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,32 +131,27 @@ continue until all our needs are met :)
 Which Python version is required?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Python 2.6 will the supported version for BlueBream 1.0 final
+Python 2.5 & 2.6 are the supported versions for BlueBream 1.0 final
 release.
 
 
 What is the KGS (Known Good Set) ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting from version 3.4, Zope has been split into many packages
-called "eggs", that are released independently.  The KGS is a set of
-python eggs, that are known to work together, and that are listed in
-a separate Python Package Index (to be used with
-setuptools/easy_install and zc.buildout).
+Starting from version Zope 3.4, Zope 3 (BlueBream) has been split
+into many packages called "eggs", that are released independently.
+The KGS is a set of python eggs, that are known to work together
+listed as a Buildout version file.
 
 * The KGS package index for zope 3.4 is : http://download.zope.org/zope3.4/
-* Some explanations about using the KGS : http://download.zope.org/zope3.4/intro.html
 
-The KGS is used to define what a major release of Zope is.  The KGS
-for Zope 3.4 is here: http://svn.zope.org/zope.release/tags/
-
-The generic code that is used to build and maintain any KGS is here:
-http://svn.zope.org/zope.kgs/
+New versions file will be available here:
+http://download.zope.org/bluebream/
 
 How do I start a new BlueBream project ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can start with the :ref:`started-getting` documentation.
+Please look at the :ref:`started-getting` documentation.
 
 .. _faq-concepts:
 
@@ -165,9 +162,7 @@ What is the component architecture ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It's similar to other component architectures in that it lets you fit
-small pieces of functionality together.  While Zope 2 has many parts
-welded together with inheritance, BlueBream will let you take things
-apart and put them together like LEGO bricks(TM).
+small pieces of functionality together.
 
 Where can I find pointers to resources ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
