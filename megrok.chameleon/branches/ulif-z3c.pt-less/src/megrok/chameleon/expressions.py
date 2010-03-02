@@ -210,7 +210,6 @@ class PathTranslator(expressions.ExpressionTranslator):
 
 
 class NotTranslator(expressions.ExpressionTranslator, grok.Adapter):
-    #zope.component.adapts(IExpressionTranslator)
     grok.name('not')
     grok.context(IExpressionTranslator)
     grok.provides(IExpressionTranslator)
