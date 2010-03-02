@@ -3,7 +3,8 @@ Technical Decisions
 
 - BlueBream is a "web framework".
 
-- Shortening BlueBream as Bream or BB is acceptable.
+- Shortening BlueBream as Bream or BB is acceptable.  As of now, the
+  "BB" shortening is getting popular in community.
 
 - The only public API exposed by "bluebream - the package"
   is an entry point::
@@ -12,29 +13,22 @@ Technical Decisions
         ["bluebream = bluebream.template:BlueBream"]
 
   The implementation of "bluebream" template is defined in
-  "bluebream.template.BlueBream".  The template implementation
-  location could be changed if required later.  This leaves us an
-  option to change "bluebream" as a namespace package if desired.
+  "bluebream.bluebream_base.template.BlueBream".  The template
+  implementation location could be changed if required later.
 
 - All the framework code will be using "zope" or "zope.app" namespace
-  packages.  Although "bream" could be considered as a namespace
-  package in future.
+  packages.  Although "bb" could be used as a namespace in future.
 
-- "bluebream" the project consists of
+- "bluebream" the project consists of project templates
 
-   - documentation
+- "bluebream_website" is the location where web content is stored.
 
-   - compatibility test suite
-
-   - project template
-
-   May be documentation and compatibility test suite could be
-   separated out to separate locations/packages later.
+- "bbkit" is where KGS infrastructure located.
 
 - BlueBream 1.0 should provide an up-gradation path from Zope 3.4 KGS
 
-- Any "shell command" need to be repeated should not be automated by
-  the project template.
+- Any "shell command" required to be repeated should not be automated
+  by the project template.
 
 - Running ``bootstrap.py`` and ``buildout`` inside project should not
   be added to project template creation for the previous reason.
