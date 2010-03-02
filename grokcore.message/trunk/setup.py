@@ -12,15 +12,13 @@ install_requires = [
     'setuptools',
     'z3c.flashmessage',
     'grokcore.component',
+    'zope.component',
     ]
 
 tests_require = [
-    'zope.app.testing',
-    'zope.app.zcmlfiles',
     'zope.publisher',
     'zope.security',
     'zope.session',
-    'zope.testing',
     ]
 
 setup(name='grokcore.message',
