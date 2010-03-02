@@ -20,7 +20,7 @@ def read(*rnames):
 
 setup(
     name="bluebream",
-    version="1.0a2dev",
+    version='1.0a2',
     author="BlueBream Team",
     author_email="zope-dev@zope.org",
     url="http://bluebream.zope.org",
