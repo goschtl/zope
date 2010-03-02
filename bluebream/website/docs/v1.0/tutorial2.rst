@@ -16,8 +16,9 @@ Introduction
 
 This is the second part of tutorial.  This chapter expand the
 application started in the first part of tutorial with additional
-functionalities.  If you complete this chapter, you should be able
-to create content components.
+functionalities.  If you complete this chapter, you should be able to
+create content components. (Content components are objects with a
+user visisble view).
 
 .. _tut2-adding-tickets:
 
