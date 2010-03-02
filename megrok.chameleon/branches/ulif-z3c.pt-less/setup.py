@@ -8,7 +8,6 @@ install_requires = [
     'grokcore.view',
     'Chameleon',
     'chameleon.genshi',
-    'z3c.pt',
     'lxml', # Needed by chameleon.genshi
     ]
 
