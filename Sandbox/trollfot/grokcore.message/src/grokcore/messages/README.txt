@@ -1,4 +1,4 @@
-grokcore.messages
+grokcore.message
 *****************
 
 This package provides integration of `z3c.flashmessage`_ for a grok
@@ -22,7 +22,7 @@ please see the `z3c.flashmessage`_ documentation.
 .. contents::
 
 
-Setting up ``grokcore.messages``
+Setting up ``grokcore.message``
 ================================
 
 When being grokked, ``grokcore.message`` registers
@@ -38,7 +38,7 @@ automatically.
 One can, of course, also grok the package manually:
 
   >>> import grokcore.component as grok
-  >>> grok.testing.grok('grokcore.messages')
+  >>> grok.testing.grok('grokcore.message')
 
 This setups a global message receiver:
 
@@ -62,10 +62,10 @@ including ``ram.zcml`` and is not registered by default:
   ComponentLookupError: (<InterfaceClass ...IMessageSource>, u'ram')
 
 You can enable this source by including ``ram.zcml`` from
-``grokcore.messages`` in your ZCML setup like this::
+``grokcore.message`` in your ZCML setup like this::
 
   <configure xmlns="http://namespaces.zope.org/zope">
-    <include package="grokcore.messages" file="ram.zcml" />
+    <include package="grokcore.message" file="ram.zcml" />
   </configure>
 
 or, of course, by registering a RAMMessageSource manually:
@@ -83,7 +83,7 @@ Now we can get the RAM source:
 Components (API)
 ================
 
-``grokcore.messages`` provides some extra-components and functions
+``grokcore.message`` provides some extra-components and functions
 beside the usual components from ``z3c.flashmessage``.
 
 UniqueMessageSource
@@ -101,7 +101,7 @@ grokked (see examples below).
 It provides the methods required by the IMessageSource interface:
 
   >>> from z3c.flashmessage.interfaces import IMessageSource
-  >>> from grokcore.messages import UniqueMessageSource
+  >>> from grokcore.message import UniqueMessageSource
   >>> IMessageSource.implementedBy(UniqueMessageSource)
   True
 
@@ -120,41 +120,41 @@ Methods:
 Convenience functions
 ---------------------
 
-``grokcore.messages`` provides a couple of convenience functions to
+``grokcore.message`` provides a couple of convenience functions to
 feed sources or get data from them.
 
-**grokcore.messages.send(message[, type='message'])**
+**grokcore.message.send(message[, type='message'])**
 
   Send ``message`` to the session based source (named 'session').
 
   Returns ``True`` if the message could be sent
   successfully. Otherwise ``False`` is returned:
 
-    >>> import grokcore.messages
-    >>> grokcore.messages.send('Meet at dawn!')
+    >>> import grokcore.message
+    >>> grokcore.message.send('Meet at dawn!')
     True
 
-**grokcore.messages.get_from_source([name=''])**
+**grokcore.message.get_from_source([name=''])**
 
   Get a list of messages stored at message source registered under
   name ``name`` or ``None``.
 
   This action never deletes messages from the queried source.
 
-    >>> import grokcore.messages
-    >>> grokcore.messages.get_from_source('session')
+    >>> import grokcore.message
+    >>> grokcore.message.get_from_source('session')
     <generator object at 0x...>
 
-    >>> grokcore.messages.get_from_source('not-existing') is None
+    >>> grokcore.message.get_from_source('not-existing') is None
     True
 
-**grokcore.messages.receive([name=''])**
+**grokcore.message.receive([name=''])**
 
   Receive the messages collected by the receiver registered under name
   ``name``.
 
-  >>> import grokcore.messages
-  >>> msgs = list(grokcore.messages.receive())
+  >>> import grokcore.message
+  >>> msgs = list(grokcore.message.receive())
   >>> msgs
   [<z3c.flashmessage.message.Message object at 0x...>]
 
@@ -167,12 +167,12 @@ feed sources or get data from them.
 
   The session source for instance is now empty:
 
-  >>> list(grokcore.messages.get_from_source('session'))
+  >>> list(grokcore.message.get_from_source('session'))
   []
 
   Receiving again will give no results:
 
-  >>> list(grokcore.messages.receive())
+  >>> list(grokcore.message.receive())
   []
 
 
@@ -181,7 +181,7 @@ Examples
 
 Creating a ``UniqueMessageSource``:
 
-  >>> from grokcore.messages import UniqueMessageSource
+  >>> from grokcore.message import UniqueMessageSource
   >>> class MyUniqueMessageSource(UniqueMessageSource):
   ...   grok.name('uniq_source')
   

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 version = '0.1dev'
 
-readme = open(os.path.join('src', 'grokcore', 'messages', 'README.txt')).read()
+readme = open(os.path.join('src', 'grokcore', 'message', 'README.txt')).read()
 changes = open("CHANGES.txt").read()
 
 long_description = "%s\n\n%s\n" % (readme, changes)
@@ -23,7 +23,7 @@ tests_require = [
     'zope.testing',
     ]
 
-setup(name='grokcore.messages',
+setup(name='grokcore.message',
       version=version,
       description="Grok messaging machinery",
       long_description=long_description,

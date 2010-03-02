@@ -5,5 +5,5 @@ from z3c.flashmessage.interfaces import (
 from z3c.flashmessage.receiver import GlobalMessageReceiver
 from z3c.flashmessage.message import Message, PersistentMessage
 from z3c.flashmessage.sources import SessionMessageSource, RAMMessageSource
-from grokcore.messages.sources import UniqueMessageSource
-from grokcore.messages.utils import send, receive, get_from_source
+from grokcore.message.sources import UniqueMessageSource
+from grokcore.message.utils import send, receive, get_from_source
