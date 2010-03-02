@@ -26,10 +26,22 @@ Now it is time to rebuild your application::
 
     $ ./bin/buildout
 
-Finally, remember to register the new package at ``site.zcml``::
+Finally, remember to register the new package at ``etc/site.zcml``::
 
     <configure xmlns="http://namespaces.zope.org/zope"
       ...
+      <include package="ldappas" />
+      ...
+    </configure>
+
+If there is any new directive required for this package, you need to
+include the configuration file where the directive is registered.
+Normally the ZCML directives will be registered in meta package.  You
+can use the ``file`` option as given below::
+
+    <configure xmlns="http://namespaces.zope.org/zope"
+      ...
+      <include package="some.package" file="meta.zcml" />
       <include package="ldappas" />
       ...
     </configure>
