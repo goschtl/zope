@@ -27,7 +27,7 @@ def get_from_source(name=''):
     if source is None:
         return None
     return source.list()
-    
+
 
 def receive(name=''):
     """Receives messages from a given receiver.
