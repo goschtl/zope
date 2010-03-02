@@ -24,7 +24,7 @@ Developer Resources
 
 - `Twitter <http://twitter.com/bluebream>`_
 
-- `Mailing list <https://mail.zope.org/mailman/listinfo/zope3-users>`_
+- `Mailing list <https://mail.zope.org/mailman/listinfo/bluebream>`_
 
 - IRC Channel: `#bluebream <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_ at irc.freenode.net
 
