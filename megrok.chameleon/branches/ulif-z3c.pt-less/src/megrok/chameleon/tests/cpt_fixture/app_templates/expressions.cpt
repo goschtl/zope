@@ -6,9 +6,6 @@
     <div tal:condition="exists: food">
       ${food}
     </div>
-    <div tal:condition="exists('food')">
-      ${food}
-    </div>
 
     <!-- We support `not` -->
     <div tal:content="not: food" />

@@ -331,9 +331,6 @@ as we can see, when we look at the ``expressions.cpt`` from our fixture::
         <div tal:condition="exists: food">
           ${food}
         </div>
-        <div tal:condition="exists('food')">
-          ${food}
-        </div>
     <BLANKLINE>
         <!-- We support `not` -->
         <div tal:content="not: food" />
@@ -359,9 +356,6 @@ and render it::
     <body>
     <BLANKLINE>
         <!-- We support `exists` -->
-        <div>
-          Yummy Dinoburger
-        </div>
         <div>
           Yummy Dinoburger
         </div>
