@@ -10,7 +10,7 @@ Technical Decisions
   is an entry point::
 
     "paste.paster_create_template":
-        ["bluebream = bluebream.template:BlueBream"]
+        ["bluebream = bluebream.bluebream_base.template:BlueBream"]
 
   The implementation of "bluebream" template is defined in
   "bluebream.bluebream_base.template.BlueBream".  The template
