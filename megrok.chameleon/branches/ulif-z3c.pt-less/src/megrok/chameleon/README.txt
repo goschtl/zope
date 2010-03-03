@@ -376,6 +376,91 @@ and render it::
     </body>
     </html>
 
+Macros
+------
+
+With ``megrok.chameleon`` we can also use macros, although it is a bit
+different from regular Zope page templates.
+
+We can define macros like this:
+
+    >>> cpt_file = os.path.join(template_dir, 'macromaster.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <p xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:define-macro="hello">
+      Hello from <b metal:define-slot="name">macro master</b>
+    </p>
+
+The defined macro ``hello`` can be rendered in another Chameleon
+template with the METAL attribute ``use-macro``.
+
+To refer to a local macro, i.e. a macros defined in the same template,
+you can use something like::
+
+  <div metal:use-macro="template.macros['<macro-name>']">
+    Replaced by macro
+  </div>
+
+where ``<macro-name>`` must be an existing macro name.
+
+To refer to macros in external templates, you must use the ``path:``
+expression like this::
+
+  <div metal:use-macro="path:
+    context/@@<viewname>/template/macros/<macro-name>">
+     Replaced by external macro
+  </div>
+
+where ``<viewname>`` refers to an existing view on ``context`` and
+``macro-name`` again refers to an existing macro in the specified template.
+
+Note, that this is different from how you refer to macros in standard
+Zope page templates. The short notation ``view/macros/<macro-name>``
+works only with regular Zope page templates.
+
+The following template makes use of both methods:
+
+    >>> cpt_file = os.path.join(template_dir, 'macrouser.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <html xmlns:metal="http://xml.zope.org/namespaces/metal">
+    <body>
+      <p metal:define-macro="hello">
+        Hi there from macro user!
+      </p>
+      <div metal:use-macro="template.macros['hello']">
+        Fill this
+      </div>
+    <BLANKLINE>
+      <div metal:use-macro="path: context/@@macromaster/template/macros/hello">
+        <b metal:fill-slot="name">user slot</b>
+        Fill this too
+      </div>
+    </body>
+    </html>
+
+When rendered also the slot defined in the master template is filled
+by macro user content:
+
+    >>> cpt_file = os.path.join(template_dir, 'macrouser.cpt')
+    >>> view = getMultiAdapter((manfred, request), name='macrouser')
+    >>> print view()
+    <html>
+    <body>
+      <p>
+        Hi there from macro user!
+      </p>
+      <p>
+        Hi there from macro user!
+      </p>
+    <BLANKLINE>
+    <BLANKLINE>
+      <p>
+      Hello from <b>user slot</b>
+    <BLANKLINE>
+    </p>
+    </body>
+    </html>
+
 
 Clean up::
 
@@ -385,6 +470,7 @@ Clean up::
 Differences from regular Zope page templates
 --------------------------------------------
 
+* Macros are referenced differently. See appropriate section above.
 
 
 Chameleon Genshi templates
