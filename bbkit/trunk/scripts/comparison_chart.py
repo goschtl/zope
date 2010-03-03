@@ -29,4 +29,4 @@ for package, version in new.items():
 for row in data:
     chart.add_row(row)
 
-chart.printt(hrules=1)
+chart.printt(hrules=1,sortby="Package Name")
