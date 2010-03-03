@@ -1,0 +1,8 @@
+CHANGES
+*******
+
+0.1 (2010-03-03)
+================
+
+Factored out from former versions of ``grokui.admin``, ``grok`` and
+``megrok.layout`` respectively.
