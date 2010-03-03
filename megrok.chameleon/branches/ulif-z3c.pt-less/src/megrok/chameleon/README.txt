@@ -281,6 +281,10 @@ TALES expressions provided by ``megrok.chameleon`` are:
 .. warning:: `z3c.pt` support has been dropped with
              ``megrok.chameleon`` 0.5.
 
+.. note:: Starting with ``megrok.chameleon`` 0.5 support for the
+          Python expression ``exists()`` has been dropped. The TALES
+          expression ``exists: path/to/something`` is still available.
+
 In our ``app.py`` we defined a special view for showing some special
 expressions. This also includes a viewlet::
 
