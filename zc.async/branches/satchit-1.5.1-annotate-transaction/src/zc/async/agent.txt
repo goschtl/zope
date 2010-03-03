@@ -1,0 +1,289 @@
+Agents choose and keep track of jobs for a dispatcher.  It is a
+component in the zc.async design that is intended to be pluggable.
+
+Arguably the most interesting method to control is ``claimJob``.  It is 
+responsible for getting the next job from the queue.
+
+The default implementation in zc.async.agent allows you to control this in one
+of two ways: a ``filter`` or a ``chooser``.  We will examine these later.  The
+default behavior is to accept all jobs (constrained by the agent's size, as
+also seen below).
+
+Let's take a quick look at how the agent works.  Let's imagine we have a
+queue with a dispatcher with an agent [#setUp]_.
+
+The agent is initially empty.
+
+    >>> len(agent)
+    0
+    >>> bool(agent)
+    False
+    >>> list(agent)
+    []
+
+Dispatchers ask the agent to claim jobs.  Initially there are no jobs to
+claim.
+
+    >>> print agent.claimJob()
+    None
+    >>> list(agent)
+    []
+
+We can add some jobs to claim.
+
+    >>> def mock_work():
+    ...     return 42
+    ...
+    >>> job1 = queue.put(mock_work)
+    >>> job2 = queue.put(mock_work)
+    >>> job3 = queue.put(mock_work)
+    >>> job4 = queue.put(mock_work)
+    >>> job5 = queue.put(mock_work)
+
+It will only claim as many active jobs as its size.
+
+    >>> agent.size
+    3
+    >>> job1 is agent.claimJob()
+    True
+    >>> job2 is agent.claimJob()
+    True
+    >>> job3 is agent.claimJob()
+    True
+    >>> print agent.claimJob()
+    None
+    >>> len(agent)
+    3
+    >>> list(agent) == [job1, job2, job3]
+    True
+    >>> job1.parent is agent
+    True
+    >>> job2.parent is agent
+    True
+    >>> job3.parent is agent
+    True
+
+When a job informs its agent that it is done, the agent moves the job to
+the ``completed`` collection [#test_completed]_.
+
+    >>> len(agent.completed)
+    0
+    >>> job2()
+    42
+    >>> list(agent) == [job1, job3]
+    True
+    >>> len(agent)
+    2
+    >>> len(agent.completed)
+    1
+    >>> list(agent.completed) == [job2]
+    True
+    >>> job2.parent is agent
+    True
+
+The completed collection rotates, by default, to get old jobs rotated out in
+about a week.
+
+Now we can claim another job.
+
+    >>> job4 is agent.claimJob()
+    True
+    >>> print agent.claimJob()
+    None
+    >>> list(agent) == [job1, job3, job4]
+    True
+    >>> len(agent)
+    3
+
+An agent may not claim a job if its parent is considered deactivated or dead.
+This is a safeguard for unlikely situations in which a parent dispatcher has
+been incorrectly labeled as dead because of ping times (see catastrophes.txt
+for details).
+
+    >>> da.deactivate()
+    >>> len(agent)
+    0
+    >>> bool(da.activated)
+    False
+    >>> print agent.claimJob()
+    None
+    >>> da.activate()
+    >>> import datetime
+    >>> import pytz
+    >>> da.activated = da.last_ping.value = (datetime.datetime.now(pytz.UTC) -
+    ...                                      datetime.timedelta(days=365))
+    >>> bool(da.activated)
+    True
+    >>> da.dead
+    True
+    >>> print agent.claimJob()
+    None
+    >>> da.deactivate()
+    >>> da.activate()
+    >>> agent.claimJob() is job5
+    True
+    >>> len(agent)
+    1
+
+Let's clean out the queue and agent so our next section has a clean slate.
+
+    >>> while len(queue):
+    ...     ignore = queue.pull(0)
+    ...
+    >>> job5()
+    42
+    >>> len(queue)
+    0
+    >>> len(agent)
+    0
+
+Filters and Choosers
+====================
+
+This particular agent invites you to provide a function to choose jobs.  As
+mentioned above, this can either be a "filter" or a "chooser".  Filters are
+preferred because they allow for better reporting in monitoring code.
+
+Our agent has a ``None`` filter at the moment, and provides a special
+interface indicating that it uses filters:
+``zc.async.interfaces.IFilterAgent``.
+
+    >>> print agent.filter
+    None
+    >>> import zc.async.interfaces
+    >>> zc.async.interfaces.IFilterAgent.providedBy(agent)
+    True
+
+We can define a filter.  The ``filter`` attribute, if not None, must simply
+be a callable that takes a job and returns ``True`` if the agent will accept
+the job, and ``False`` otherwise.  Let's define a filter that accepts
+only jobs with the ``mock_work`` callable and put it on our agent.
+
+    >>> def mock_work_filter(job):
+    ...     return job.callable == mock_work
+    ...
+    >>> agent.filter = mock_work_filter
+    >>> zc.async.interfaces.IFilterAgent.providedBy(agent)
+    True
+    >>> transaction.commit()
+
+Now let's add some jobs.
+
+    >>> import operator
+    >>> import zc.async.job
+    >>> job6 = queue.put(mock_work)
+    >>> job7 = queue.put(zc.async.job.Job(operator.mul, 42, 2))
+    >>> job8 = queue.put(mock_work)
+    >>> job9 = queue.put(zc.async.job.Job(operator.mul, 42, 2))
+
+The agent will claim the mock_work jobs, but not the other two.
+    
+    >>> job6 is agent.claimJob()
+    True
+    >>> job8 is agent.claimJob()
+    True
+    >>> print agent.claimJob()
+    None
+    >>> len(agent)
+    2
+    >>> job6()
+    42
+    >>> job8()
+    42
+    >>> len(agent)
+    0
+    >>> print agent.claimJob()
+    None
+
+Filters are used for monitoring to determine how many jobs in a queue a given
+agent might help to perform.  Therefore, typically a filter should not take the
+state of an agent into account when it decides whether or not to accept a job.
+That should happen in a subclass' ``claimJob`` custom implementation...or in
+a ``chooser``.
+
+The ``chooser`` attribute is the original approach of the agent implementation
+before the ``filter`` was added.  It's primary failing is that it is not
+designed to allow easy introspection of what jobs an agent would be willing to
+do, because the code that filtered also mutated the queue.  That said, it can
+still come in handy if you want to have a chooser that takes the agent's state
+into account.
+
+You cannot have a non-None filter and set a chooser, in this implementation.
+
+    >>> def choose_add(agent):
+    ...     return agent.queue.claim(lambda j: j.callable == operator.add)
+    ...
+    >>> agent.chooser = choose_add
+    Traceback (most recent call last):
+    ...
+    ValueError: cannot set both chooser and filter to non-None
+    >>> agent.filter = None
+    >>> zc.async.interfaces.IFilterAgent.providedBy(agent)
+    True
+    >>> agent.chooser = choose_add
+    >>> zc.async.interfaces.IFilterAgent.providedBy(agent)
+    False
+    >>> agent.filter = mock_work_filter
+    Traceback (most recent call last):
+    ...
+    ValueError: cannot set both chooser and filter to non-None
+    >>> transaction.commit()
+
+Now we have a chooser that only wants to perform jobs with an operator.add
+callable.
+
+    >>> len(queue)
+    2
+    >>> print agent.claimJob()
+    None
+    >>> job9 = queue.put(zc.async.job.Job(operator.add, 41, 1))
+    >>> agent.claimJob() is job9
+    True
+    >>> len(queue)
+    2
+    >>> len(agent)
+    1
+
+Again, filters are preferred.
+
+.. [#setUp] First we'll get a database and the necessary registrations.
+
+    >>> from ZODB.tests.util import DB
+    >>> db = DB()
+    >>> conn = db.open()
+    >>> root = conn.root()
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
+
+    Now we need a queue.
+
+    >>> import zc.async.queue
+    >>> import zc.async.interfaces
+    >>> container = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
+    >>> queue = container[''] = zc.async.queue.Queue()
+    >>> import transaction
+    >>> transaction.commit()
+
+    Now we need an activated dispatcher agents collection.
+    
+    >>> import zc.async.instanceuuid
+    >>> queue.dispatchers.register(zc.async.instanceuuid.UUID)
+    >>> da = queue.dispatchers[zc.async.instanceuuid.UUID]
+    >>> da.activate()
+
+    And now we need an agent.
+    
+    >>> import zc.async.agent
+    >>> agent = da['main'] = zc.async.agent.Agent()
+    >>> agent.name
+    'main'
+    >>> agent.parent is da
+    True
+
+.. [#test_completed]
+
+    >>> import zope.interface.verify
+    >>> zope.interface.verify.verifyObject(
+    ...     zc.async.interfaces.ICompletedCollection,
+    ...     agent.completed)
+    True
