@@ -5,7 +5,7 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- ...
+- Adapted tests for Python 2.4
 
 3.6.0 (2009-01-39)
 ------------------
