@@ -4,13 +4,13 @@ from zope.component import queryUtility
 from grokcore.message import IMessageSource, IMessageReceiver
 
 
-def send(message, type='message'):
+def send(message, type='message', name='session'):
     """Adds a short message to a given source.
 
     If the message has been sent with success, True is returned.
     Otherwise, False is returned.
     """
-    source = queryUtility(IMessageSource, name='session')
+    source = queryUtility(IMessageSource, name=name)
     if source is None:
         return False
     source.send(message, type)

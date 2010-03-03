@@ -123,9 +123,9 @@ Convenience functions
 ``grokcore.message`` provides a couple of convenience functions to
 feed sources or get data from them.
 
-**grokcore.message.send(message[, type='message'])**
+**grokcore.message.send(message[, type='message'[, name='session']])**
 
-  Send ``message`` to the session based source (named 'session').
+  Send ``message`` to the message source ``name``.
 
   Returns ``True`` if the message could be sent
   successfully. Otherwise ``False`` is returned:
@@ -133,6 +133,9 @@ feed sources or get data from them.
     >>> import grokcore.message
     >>> grokcore.message.send('Meet at dawn!')
     True
+
+    >>> grokcore.message.send('grok sucks', name='doesnotexist')
+    False
 
 **grokcore.message.get_from_source([name=''])**
 

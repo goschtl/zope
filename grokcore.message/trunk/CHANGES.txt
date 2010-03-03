@@ -1,13 +1,14 @@
 CHANGES
 *******
 
-0.2 (unreleased)
+0.2 (2010-03-03)
 ================
 
-* ...
+* The utility function ``send`` now takes a ``name`` argument,
+  allowing the choice of the target message source.
 
 0.1 (2010-03-03)
 ================
 
-Factored out from former versions of ``grokui.admin``, ``grok`` and
-``megrok.layout`` respectively.
+* Factored out from former versions of ``grokui.admin``, ``grok`` and
+  ``megrok.layout`` respectively.
