@@ -4,6 +4,8 @@ CHANGES
 0.5 (unreleased)
 ================
 
+* Added tests to show usage of macros with ``megrok.chameleon``.
+
 * Removed dependency from ``z3c.pt`` by copying the relevant bits over
   and registering them locally.
 
