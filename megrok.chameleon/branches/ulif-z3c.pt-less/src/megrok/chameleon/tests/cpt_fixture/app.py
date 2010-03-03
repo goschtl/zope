@@ -39,3 +39,13 @@ class MainContent(grokcore.viewlet.Viewlet):
     grokcore.viewlet.viewletmanager(MainArea)
     def render(self):
         return 'Hello from viewlet'
+
+class MacroMaster(grokcore.view.View):
+    """A view with a template that contains macro defs.
+    """
+    pass
+
+class MacroUser(grokcore.view.View):
+    """A view with a template that uses macros.
+    """
+    pass
