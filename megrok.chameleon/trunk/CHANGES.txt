@@ -4,7 +4,11 @@ CHANGES
 0.6 (unreleased)
 ================
 
-* ...
+* Made registering of ITranslatorExpressions conditional: if
+  ``z3c.pt`` is installed as well, we don't register our own
+  ones. Should fix DuplicationError when using megrok.chameleon
+  together with other packages that require z3c.pt like ``z3c.form``
+  and dependent packages from grok-ecosphere.
 
 0.5 (2010-03-03)
 ================
