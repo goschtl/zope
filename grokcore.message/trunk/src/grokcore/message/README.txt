@@ -134,7 +134,7 @@ feed sources or get data from them.
     >>> grokcore.message.send('Meet at dawn!')
     True
 
-    >>> grokcore.message.send('grok sucks', name='doesnotexist')
+    >>> grokcore.message.send('Meat a fawn!', name='doesnotexist')
     False
 
 **grokcore.message.get_from_source([name=''])**
