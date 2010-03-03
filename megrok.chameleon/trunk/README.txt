@@ -9,7 +9,8 @@ page templates is provided.
 For more information on Grok and Chameleon templates see:
 
 - http://grok.zope.org/
-- http://pypi.python.org/pypi/chameleon.zpt
+- http://chameleon.repoze.org/
+- http://pypi.python.org/pypi/Chameleon
 - http://pypi.python.org/pypi/chameleon.genshi
 
 .. contents::
@@ -17,7 +18,7 @@ For more information on Grok and Chameleon templates see:
 Requirements
 ============
 
-- Chameleon templates (`chameleon.zpt`).
+- Chameleon templates (`Chameleon`).
 - Chameleon genshi templates (`chameleon.genshi`).
 - Grok v1.0a1 or later, or five.grok 1.0 or later.
 
@@ -53,10 +54,10 @@ Then run ``bin/buildout`` again. You should now see buildout saying
 something like::
 
    Getting distribution for 'megrok.chameleon'.
-   Got megrok.chameleon 0.2.
+   Got megrok.chameleon 0.5.
 
 That's all. You can now start using Chameleon page templates in your
-Grok application!
+Grok application.
 
 
 Usage

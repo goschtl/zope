@@ -6,7 +6,7 @@ Grok-support for using chameleon driven templates.
 :Test-Layer: functional
 
 With `megrok.chameleon` you can use templates parsed and rendered by
-`chameleon`. Currently Zope page templates and Genshi templates are
+`Chameleon`_. Currently Zope page templates and Genshi templates are
 supported.
 
 Chameleon Zope page templates
@@ -31,15 +31,15 @@ few aspects, most notably:
 Beside this, most rules for regular Zope page templates apply also to
 chameleon page templates.
 
-See the `chameleon.zpt`_ page for more information.
+See the `Chameleon`_ page for more information.
 
-.. _chameleon.zpt: http://pypi.python.org/pypi/chameleon.zpt
+.. _Chameleon: http://chameleon.repoze.org/docs/latest/zpt.html
 
 Prerequisites
 -------------
 
 Before we can see the templates in action, we care for correct
-registration and set some used variables::
+registration and set some used variables:
 
     >>> import os
     >>> testdir = os.path.join(os.path.dirname(__file__), 'tests')
@@ -48,7 +48,7 @@ registration and set some used variables::
 
 We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
-are registered with the framework::
+are registered with the framework:
 
     >>> import grokcore.view
     >>> grokcore.view.testing.grok('megrok.chameleon')
@@ -62,7 +62,7 @@ info::
     >>> manfred = Mammoth()
     >>> getRootFolder()['manfred'] = manfred
 
-Furthermore we prepare for getting the different views on manfred::
+Furthermore we prepare for getting the different views on manfred:
 
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.component import getMultiAdapter
@@ -71,7 +71,7 @@ Furthermore we prepare for getting the different views on manfred::
 Simple templates
 ----------------
 
-We prepared a plain cavepainting view. The template looks like this::
+We prepared a plain cavepainting view. The template looks like this:
 
     >>> cavepainting_cpt = os.path.join(template_dir, 'cavepainting.cpt')
     >>> print open(cavepainting_cpt, 'rb').read()
@@ -81,7 +81,7 @@ We prepared a plain cavepainting view. The template looks like this::
       </body>
     </html>
 
-The rendered view looks like this::
+The rendered view looks like this:
 
     >>> view = getMultiAdapter((manfred, request),
     ...                         name='cavepainting')
@@ -97,7 +97,7 @@ Substituting variables
 
 A template can access variables like ``view``, ``context`` and its
 methods and attributes. The ``food`` view does exactly this. The
-template looks like this::
+template looks like this:
 
     >>> food_cpt = os.path.join(template_dir, 'food.cpt')
     >>> print open(food_cpt, 'rb').read()
@@ -114,7 +114,7 @@ template looks like this::
     </body>
     </html>
 
-The rendered view looks like this::
+The rendered view looks like this:
 
     >>> view = getMultiAdapter((manfred, request), name='food')
     >>> print view()
@@ -174,7 +174,7 @@ Each template provides at least the following vars:
 * ``static`` 
     the static dir of the application
 
-as we can see, when we look at the ``vars.cpt`` from our fixture::
+as we can see, when we look at the ``vars.cpt`` from our fixture:
 
     >>> cpt_file = os.path.join(template_dir, 'vars.cpt')
     >>> print open(cpt_file, 'rb').read()
@@ -199,7 +199,7 @@ as we can see, when we look at the ``vars.cpt`` from our fixture::
     </body>
     </html>
 
-and render it::
+and render it:
 
     >>> view = getMultiAdapter((manfred, request), name='vars')
     >>> print view()
@@ -244,7 +244,7 @@ inline template like this::
   inline = components.ChameleonPageTemplate(
       "<html><body>ME GROK HAS INLINES! ${view.sometext}</body></html>")
 
-If we render this view we get::
+If we render this view we get:
 
     >>> view = getMultiAdapter((manfred, request), name='inline')
     >>> print view()
@@ -253,31 +253,37 @@ If we render this view we get::
 TAL expressions
 ---------------
 
+Starting with ``megrok.chameleon`` 0.5 we deploy the all-in-one
+`Chameleon`_ package.
+
 What TAL/TALES expressions in templates are supported depends mainly
-from the installed version of `chameleon.zpt`.
+from the installed version of `Chameleon`, while we support some
+additional, Zope-related TALES expressions.
 
 A list of all supported expressions and statements can be found at the
-`chameleon.zpt documentation <http://chameleon.repoze.org/docs/zpt/>`_.
+`chameleon.zpt documentation
+<http://chameleon.repoze.org/docs/latest/zpt.html>`_. The additional
+TALES expressions provided by ``megrok.chameleon`` are:
 
-Furthermore `megrok.chameleon` currently comes with support for
-`z3c.pt`, a package that supports the more Zope specific expressions
-often used in page templates.
+* ``exists``
+     Tell whether a name exists in the templates' namespace.
 
-These include, for instance, support for viewlets, etc. The set of
-additional language constructs supported with this package can be seen
-at the `z3c.pt documentation
-<http://chameleon.repoze.org/docs/z3c/>`_. Please note, that
-`megrok.chameleon` templates (a.k.a. CPT templates), different to
-`z3c.pt` still use Python expressions by default.
+* ``not``
+     Evaluate the trailing expression to a boolean value and invert it.
 
-.. warning:: `z3c.pt` support might be factored out in future.
+* ``path`` 
+     Handle the trailing expression as a path and not as a
+     Python expression.
 
-   While it is nice to have support for all the additional expressions
-   provided by `z3c.pt`, using this package means a lot of more
-   dependencies which might be unwanted in certain cases.
+* ``provider``
+     Support for viewlet providers.
 
-   We therefore think about factoring additional z3c.pt support out to
-   a separate package in not too far future.
+.. warning:: `z3c.pt` support has been dropped with
+             ``megrok.chameleon`` 0.5.
+
+.. note:: Starting with ``megrok.chameleon`` 0.5 support for the
+          Python expression ``exists()`` has been dropped. The TALES
+          expression ``exists: path/to/something`` is still available.
 
 In our ``app.py`` we defined a special view for showing some special
 expressions. This also includes a viewlet::
@@ -302,24 +308,9 @@ expressions. This also includes a viewlet::
        def render(self):
            return 'Hello from viewlet'
 
-
-At least the following TAL/TALES expressions are supported by time of
-writing this:
-
-* ``exists``
-     Tell whether a name exists in the templates' namespace.
-
-* ``not``
-     Evaluate the trailing expression to a boolean value and invert it.
-
-* ``path`` 
-     Handle the trailing expression as a path and not as a
-     Python expression.
-
-* ``provider``
-     Support for viewlet providers.
-
-as we can see, when we look at the ``expressions.cpt`` from our fixture::
+Now we can make use of the TALES expressions ``not:``, ``path:``,
+``exists:`` and ``provider:`` in the ``expressions.cpt`` template of
+our fixture:
 
     >>> cpt_file = os.path.join(template_dir, 'expressions.cpt')
     >>> print open(cpt_file, 'rb').read()
@@ -329,9 +320,6 @@ as we can see, when we look at the ``expressions.cpt`` from our fixture::
            tal:omit-tag="">
         <!-- We support `exists` -->
         <div tal:condition="exists: food">
-          ${food}
-        </div>
-        <div tal:condition="exists('food')">
           ${food}
         </div>
     <BLANKLINE>
@@ -351,7 +339,7 @@ as we can see, when we look at the ``expressions.cpt`` from our fixture::
     </body>
     </html>
 
-and render it::
+and render it:
 
     >>> view = getMultiAdapter((manfred, request), name='expressions')
     >>> print view()
@@ -359,9 +347,6 @@ and render it::
     <body>
     <BLANKLINE>
         <!-- We support `exists` -->
-        <div>
-          Yummy Dinoburger
-        </div>
         <div>
           Yummy Dinoburger
         </div>
@@ -382,8 +367,93 @@ and render it::
     </body>
     </html>
 
+Macros
+------
 
-Clean up::
+With ``megrok.chameleon`` we can also use macros, although it is a bit
+different from regular Zope page templates.
+
+We can define macros like this:
+
+    >>> cpt_file = os.path.join(template_dir, 'macromaster.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <p xmlns:metal="http://xml.zope.org/namespaces/metal"
+       metal:define-macro="hello">
+      Hello from <b metal:define-slot="name">macro master</b>
+    </p>
+
+The defined macro ``hello`` can be rendered in another Chameleon
+template with the METAL attribute ``use-macro``.
+
+To refer to a local macro, i.e. a macros defined in the same template,
+you can use something like::
+
+  <div metal:use-macro="template.macros['<macro-name>']">
+    Replaced by macro
+  </div>
+
+where ``<macro-name>`` must be an existing macro name.
+
+To refer to macros in external templates, you must use the ``path:``
+expression like this::
+
+  <div metal:use-macro="path:
+    context/@@<viewname>/template/macros/<macro-name>">
+     Replaced by external macro
+  </div>
+
+where ``<viewname>`` refers to an existing view on ``context`` and
+``macro-name`` again refers to an existing macro in the specified template.
+
+Note, that this is different from how you refer to macros in standard
+Zope page templates. The short notation ``view/macros/<macro-name>``
+works only with regular Zope page templates.
+
+The following template makes use of both methods:
+
+    >>> cpt_file = os.path.join(template_dir, 'macrouser.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <html xmlns:metal="http://xml.zope.org/namespaces/metal">
+    <body>
+      <p metal:define-macro="hello">
+        Hi there from macro user!
+      </p>
+      <div metal:use-macro="template.macros['hello']">
+        Fill this
+      </div>
+    <BLANKLINE>
+      <div metal:use-macro="path: context/@@macromaster/template/macros/hello">
+        <b metal:fill-slot="name">user slot</b>
+        Fill this too
+      </div>
+    </body>
+    </html>
+
+When rendered also the slot defined in the master template is filled
+by macro user content:
+
+    >>> cpt_file = os.path.join(template_dir, 'macrouser.cpt')
+    >>> view = getMultiAdapter((manfred, request), name='macrouser')
+    >>> print view()
+    <html>
+    <body>
+      <p>
+        Hi there from macro user!
+      </p>
+      <p>
+        Hi there from macro user!
+      </p>
+    <BLANKLINE>
+    <BLANKLINE>
+      <p>
+      Hello from <b>user slot</b>
+    <BLANKLINE>
+    </p>
+    </body>
+    </html>
+
+
+Clean up:
 
     >>> del getRootFolder()['manfred']
 
@@ -391,12 +461,18 @@ Clean up::
 Differences from regular Zope page templates
 --------------------------------------------
 
+* Macros are referenced differently. See appropriate section above.
 
+* Expressions are parsed in ``Python-mode`` by default. This means,
+  instead of ``tal:content="view/value"`` you must use
+  ``tal:content="view.value"``. Every occurence of TAL-expressions
+  starting with ``python:`` now can be shortened by skipping this
+  marker.
 
 Chameleon Genshi templates
 ==========================
 
-Chameleon provides supprt for Genshi templates which can be used from
+Chameleon provides support for Genshi templates which can be used from
 grok writing templates with the ``.cg`` filename extension.
 
 Genshi text templates can be used with the ``.cgt`` filename
@@ -415,7 +491,7 @@ Prerequisites
 -------------
 
 Before we can see the templates in action, we care for correct
-registration and set some used variables::
+registration and set some used variables:
 
     >>> import os
     >>> testdir = os.path.join(os.path.dirname(__file__), 'tests')
@@ -424,19 +500,19 @@ registration and set some used variables::
 
 We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
-are registered with the framework::
+are registered with the framework:
 
     >>> grokcore.view.testing.grok('megrok.chameleon')
     >>> grokcore.view.testing.grok('megrok.chameleon.tests.genshi_fixture')
 
 We create a mammoth, which should provide us a bunch of Genshi driven
-views and put it in the database to setup location info::
+views and put it in the database to setup location info:
 
     >>> from megrok.chameleon.tests.genshi_fixture.app import Mammoth
     >>> manfred = Mammoth()
     >>> getRootFolder()['manfred'] = manfred
 
-Furthermore we prepare for getting the different views on manfred::
+Furthermore we prepare for getting the different views on manfred:
 
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.component import getMultiAdapter
@@ -446,7 +522,7 @@ Furthermore we prepare for getting the different views on manfred::
 Simple templates
 ----------------
 
-We prepared a plain cavepainting view. The template looks like this::
+We prepared a plain cavepainting view. The template looks like this:
 
     >>> cavepainting_cg = os.path.join(template_dir, 'cavepainting.cg')
     >>> print open(cavepainting_cg, 'rb').read()
@@ -456,7 +532,7 @@ We prepared a plain cavepainting view. The template looks like this::
       </body>
     </html>
 
-The rendered view looks like this::
+The rendered view looks like this:
 
     >>> view = getMultiAdapter((manfred, request),
     ...                         name='cavepainting')
@@ -473,7 +549,7 @@ Substituting variables
 
 A template can access variables like ``view``, ``context`` and its
 methods and attributes. The ``food`` view does exactly this. The
-template looks like this::
+template looks like this:
 
     >>> food_cg = os.path.join(template_dir, 'food.cg')
     >>> print open(food_cg, 'rb').read()
@@ -485,7 +561,7 @@ template looks like this::
     </body>
     </html>
 
-The rendered view looks like this::
+The rendered view looks like this:
 
     >>> view = getMultiAdapter((manfred, request), name='food')
     >>> print view()
@@ -502,7 +578,7 @@ Including other templates
 -------------------------
 
 With genshi support we can also include other templates. The
-``gatherer`` view looks like this::
+``gatherer`` view looks like this:
 
     >>> gatherer_cg = os.path.join(template_dir, 'gatherer.cg')
     >>> print open(gatherer_cg, 'rb').read()
@@ -514,14 +590,14 @@ With genshi support we can also include other templates. The
     </html>
 
 Apparently here we include a template called ``berries.cg``. It looks
-like this::
+like this:
 
     >>> berries_cg = os.path.join(template_dir, 'berries.cg')
     >>> print open(berries_cg, 'rb').read()
     <strong>Lovely blueberries!</strong>
 
 
-When we render the former template, we get::
+When we render the former template, we get:
 
     >>> view = getMultiAdapter((manfred, request), name='gatherer')
     >>> print view()
@@ -536,7 +612,7 @@ Text templates
 --------------
 
 Also genshi text templates are supported. We have a template that
-looks like so::
+looks like so:
 
     >>> hunter_cgt = os.path.join(template_dir, 'hunter.cgt')
     >>> print open(hunter_cgt, 'rb').read()
@@ -545,7 +621,7 @@ looks like so::
 Note, that this template has the ``.cgt`` (= **c**\ ameleon **g**\ enshi
 **t**\ ext template) file extension.
 
-If we render it, all expressions are substituted::
+If we render it, all expressions are substituted:
 
     >>> view = getMultiAdapter((manfred, request), name='hunter')
     >>> print view()
