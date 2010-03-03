@@ -294,6 +294,19 @@ exists_translator = ExistsTranslator()
 path_translator = PathTranslator()
 provider_translator = ProviderTranslator()
 
-grok.global_utility(ExistsTranslator, name='exists')
-grok.global_utility(PathTranslator, name='path')
-grok.global_utility(ProviderTranslator, name='provider')
+z3c_pt_installed = True
+try:
+    import z3c.pt
+except ImportError:
+    z3c_pt_installed = False
+    
+if not z3c_pt_installed:
+    #XXX: Nasty workaround when z3c.pt is installed
+    #
+    # As z3c.pt registers same sort of translators for same interfaces
+    # and under same name (Chameleon needs it to parse certain TALES
+    # expressions), we do only conditionally register these utilites
+    # here.
+    grok.global_utility(ExistsTranslator, name='exists')
+    grok.global_utility(PathTranslator, name='path')
+    grok.global_utility(ProviderTranslator, name='provider')
