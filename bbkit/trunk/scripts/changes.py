@@ -7,7 +7,7 @@ import re
 import os
 
 OLD_VERSIONS = 'releases/zope-3.4.0.cfg'
-NEW_VERSIONS = 'releases/bluebream-1.0a1.cfg'
+NEW_VERSIONS = 'releases/bluebream-1.0a2.cfg'
 
 def get_package(old_versions=OLD_VERSIONS,
                 new_versions=NEW_VERSIONS):
