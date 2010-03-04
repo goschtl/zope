@@ -503,6 +503,8 @@ Example 3: A dynamic hello world
 
 .. based on: http://wiki.zope.org/zope3/ADynamicHelloWorld
 
+This section explain creating a dynamic hello world application.
+
 Python class
 ~~~~~~~~~~~~
 
@@ -550,13 +552,13 @@ page name.  This is done with a simple XML configuration language
 (ZCML).  Edit the existing file called ``configure.zcml`` and add the
 following content before the final ``</configure>``::
 
-  <browser:page name="hello.html"
+  <browser:page name="hello3"
       for="*"
       class=".hello.Hello"
       template="hello.pt"
       permission="zope.Public" />
 
-This declaration means: there is a web page called ``hello.html``,
+This declaration means: there is a web page called ``hello3``,
 available for any content, managed by the view class ``Hello``,
 rendered by the template ``hello.pt``, and this page is public.
 
@@ -571,14 +573,14 @@ view)::
     xmlns:browser="http://namespaces.zope.org/browser">
 
 Restart your application, then visit the following URL:
-http://127.0.0.1:8080/@@hello.html
+http://127.0.0.1:8080/@@hello3
 
 You should then see the following text in your browser::
 
   Hello ! What's your name ?
 
 You can pass a parameter to the Hello view class, by visiting the
-following URL: http://127.0.0.1:8080/@@hello.html?name=World
+following URL: http://127.0.0.1:8080/@@hello3?name=World
 
 You should then see the following text::
 
