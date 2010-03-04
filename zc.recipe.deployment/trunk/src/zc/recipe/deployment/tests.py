@@ -46,7 +46,8 @@ def ls(path):
         permissions = ['d']
     else:
         permissions = ['-']
-    permissions = ''.join(permissions + [perm(power, st.st_mode) for power in reversed(xrange(9))])
+    permissions = ''.join(permissions + [
+        perm(power, st.st_mode) for power in reversed(xrange(9))])
     return '%s %s %s %s' % (permissions, user, group, path)
 
 def setUp(test):
@@ -77,18 +78,9 @@ def test_suite():
                 # The order doesn't matter after this point
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
-##                zc.buildout.testing.normalize_path,
-        
-##                zc.buildout.testing.normalize_script,
-##                zc.buildout.testing.normalize_egg_py,        
-##                (re.compile('#!\S+python\S*'), '#!python'),
-##                (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
-##                (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
-##                (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
                ]),
             optionflags = zope.testing.doctest.REPORT_NDIFF,
             ),
-        
         ))
 
 if __name__ == '__main__':
