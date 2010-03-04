@@ -4,6 +4,13 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+- The summary of ``bluebream_base`` template changed to:
+  "A BlueBream project, base template"
+
+- Enable ``bluebream_simple`` again.  Documentation is
+  available here:
+  http://wiki.zope.org/bluebream/AlternateProjectTemplates
+
 1.0a2 (2010-03-02)
 ------------------
 

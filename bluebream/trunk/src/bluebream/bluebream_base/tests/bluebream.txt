@@ -23,7 +23,7 @@ BlueBream
 ...            ]
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
-  bluebream#bluebream  A BlueBream project
+  bluebream#bluebream  A BlueBream project, base template
 <BLANKLINE>
 Variables:
   author:             test_author

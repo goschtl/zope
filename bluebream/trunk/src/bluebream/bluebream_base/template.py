@@ -19,7 +19,7 @@ from paste.script.templates import var
 class BlueBream(templates.Template):
 
     _template_dir = 'project_template'
-    summary = "A BlueBream project"
+    summary = "A BlueBream project, base template"
 
     vars = [
         var('namespace_package', 'Namespace package name'),
