@@ -52,6 +52,41 @@ not, you can import it from these locations::
   from zope.schema import TextLine
   from zope.schema import Text
 
+It would be good if you set a precondition to restrict what types of
+objects you want to add inside a collector.  Now you know that, you
+only expect tickets objects inside collector.  So, you can a
+precondition for restricting ticket objects inside collector object.
+To do this, you need to add a ``__setitem__`` method to
+``ICollector`` interface definition.  The ``__setitem__`` is part of
+``IContainer`` API.  Then below that, you can add ``precondition``
+attribute, which is an instance of ``ItemTypePrecondition`` class.
+You can pass the interfaces as arguments to ``ItemTypePrecondition``
+class.  Below, only one class (``ITicket``) is passed.  So, only
+ticket objects are allowed inside collector.
+
+    def __setitem__(name, object):
+        """Add an ICollector object."""
+
+    __setitem__.precondition = ItemTypePrecondition(ITicket)
+
+The ``ItemTypePrecondition`` provides a way to restrict the type of
+object which can be added inside a container.  You can also specify
+that ticket objects can be only added inside collector.  To do this,
+you need to create another interface inheriting from
+``zope.container.interfaces.IContained``.
+
+::
+
+  from zope.schema import Field
+  from zope.container.interfaces import IContained
+
+  class ITicketContained(IContained):
+      """Interface that specifies the type of objects that can contain
+      tickets.  So a ticket can only contain in a collector."""
+
+      __parent__ = Field(
+          constraint = ContainerTypesConstraint(ICollector))
+
 Next, you can implement this interface inside ``ticket.py``::
 
   from zope.interface import implements
@@ -118,6 +153,58 @@ You can register the view inside `configure.zcml`::
        permission="zope.ManageContent"
        class=".views.AddTicket"
        />
+
+Adding Comments
+---------------
+
+In this section, you will create `comment` objects and add it to
+tickets.  As the first step, you need to define the interface for the
+comments.  You can add this interface definition inside
+``interfaces.py``::
+
+  class IComment(Interface):
+      """Comment for Ticket"""
+
+      body = Text(
+          title=u"Additional Comment",
+          description=u"Body of the Comment.",
+          default=u"",
+          required=True)
+
+Next, you can implement the comment like this::
+
+  from zope.interface import implements
+
+  from tc.main.interfaces import IComment
+  from tc.main.interfaces import ICommentContained
+  from zope.location.contained import Contained
+
+  class Comment(Contained):
+
+      implements(IComment, ICommentContained)
+
+      body = u""
+
+Then, register the interface & class::
+
+  <interface 
+     interface=".interfaces.IComment" 
+     type="zope.app.content.interfaces.IContentType"
+     /> 
+
+  <class class=".ticket.Comment">
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <require
+       permission="zope.ManageContent"
+       interface=".interfaces.IComment"
+       />
+    <require
+       permission="zope.ManageContent"
+       set_schema=".interfaces.IComment"
+       />
+  </class>
 
 Conclusion
 ----------
