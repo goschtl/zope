@@ -12,7 +12,7 @@ class UniqueMessageSource(grok.GlobalUtility):
 
     message = None
 
-    def send(self, message, type):
+    def send(self, message, type=u'message'):
         self.message = PersistentMessage(message, type)
 
     def list(self, type=None):
