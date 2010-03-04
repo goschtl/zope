@@ -2,7 +2,7 @@
 
 import grok
 from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
-from z3c.flashmessage.interfaces import IMessageReceiver
+from grokcore.message.utils import receive
 from zope.browsermenu.interfaces import IBrowserMenu
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.component import getUtility
@@ -48,8 +48,7 @@ class StatusMessages(grok.Viewlet):
 
     @property
     def messages(self):
-        receiver = getUtility(IMessageReceiver)
-        return receiver.receive()
+        return receive()
 
 
 class Authors(grok.Viewlet):

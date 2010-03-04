@@ -3,6 +3,7 @@
     xmlns="http://namespaces.zope.org/zope">
 
   <include package="grok" />
+  <include package="grokcore.message" />
   <include package="megrok.menu" file="meta.zcml" />
   <include package="megrok.layout" file="meta.zcml" />
   <grok:grok package="." />
