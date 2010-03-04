@@ -376,17 +376,17 @@ Example 1: Hello World without page template
 --------------------------------------------
 
 To create a web page which displays ``Hello World!``, you need to
-create a page and then register it using ``browser:page`` ZCML
-directive.  In BlueBream, it is called as *Browser Page* or more
-generic term, *View* which can be used to refer XMLRPC, REST and
-other views.  By default, the default page which you are getting when
-you access: http://localhost:8080 is a page registered like this.  You
-can see the registration inside ``configure.zcml``, the name of view
-will be ``index``.  You can access the default page by explicitly
-mentioning the page name in the URL like this:
-http://localhost:8080/@@index.  You can refer the
-:ref:`howto-default-view` HOWTO for more details about how the
-default view for a container object is working.
+create a view class and register it using ``browser:page`` ZCML
+directive.  In BlueBream, this is called as *Browser Page*.
+Sometimes more generic term, *View* is used instead of *Browser Page*
+which can be used to refer to HTTP, XMLRPC, REST and other views.  By
+default, the default page which you are getting when you access:
+http://localhost:8080 is a page registered like this.  You can see
+the registration inside ``configure.zcml``, the name of view will be
+``index``.  You can access the default page by explicitly mentioning
+the page name in the URL like this: http://localhost:8080/@@index.
+You can refer the :ref:`howto-default-view` HOWTO for more details
+about how the default view for a container object is working.
 
 First you need to create a Python file named ``myhello.py`` at
 ``src/mynamespace/main/myhello.py``::
@@ -411,10 +411,9 @@ The content of this file could be like this::
 
 Now you can register this page for a particular interface.  So that
 it will be available as a browser page for any object which implement
-this.  At this point you can register this for root folder which is
-implementing ``zope.site.interfaces.IRootFolder`` interface.
-
-So the registration could be like this::
+that particular interface.  Now you can register this for the root
+folder, which is implementing ``zope.site.interfaces.IRootFolder``
+interface.  So, the registration will be like this::
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
@@ -429,7 +428,6 @@ advertise it in the ``configure`` directive::
   <configure
      xmlns="http://namespaces.zope.org/zope"
      xmlns:browser="http://namespaces.zope.org/browser">
-
 
 You can add this configuration to:
 ``src/mynamespace/main/configure.zcml``.  Now you can access the view
