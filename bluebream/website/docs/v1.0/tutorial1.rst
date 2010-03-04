@@ -214,12 +214,11 @@ Buildout configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 
 After bootstrapping the Buildout, you can perform the real building
-of your application.  All the steps you have done so far is not
-required to be repeated.  But the build step will be required to
-repeat whenever you make changes to the buildout configuration.  Now
-you are ready to run the ``bin/buildout`` to build the application.
-Before running the buildout, let's see the content of
-``buildout.cfg``::
+of your application.  All the steps you did so far is not required to
+be repeated.  But the build step will be repeated whenever you make
+changes to the buildout configuration.  Now you are ready to run the
+``bin/buildout`` to build the application.  Before running the
+buildout, let's see the content of ``buildout.cfg``::
 
   [config]
   site_zcml = ${buildout:directory}/etc/site.zcml
