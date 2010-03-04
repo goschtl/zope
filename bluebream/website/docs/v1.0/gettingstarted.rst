@@ -121,8 +121,8 @@ project package you are going to create will be self-bootstrappable.
 Creating a sample project
 -------------------------
 
-The ``bluebream`` distribution provides a template based project
-creation based on `PasteScript template
+The ``bluebream`` distribution provides project templates based on
+`PasteScript template
 <http://pythonpaste.org/script/developer.html>`_.  Once BlueBream is
 installed, run ``paster`` command to create the project directory
 structure.  The ``create`` sub-command provided by ``paster`` will
@@ -174,6 +174,12 @@ be give the values from command line, if required:
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
 a good name for your project.
+
+.. note:: Alternate Project Templates
+
+   Alternate project templates will be available from 1.0b1 release
+   onwards, and it is `documented in the wiki
+   <http://wiki.zope.org/bluebream/AlternateProjectTemplates>`_.
 
 .. _started-building:
 
