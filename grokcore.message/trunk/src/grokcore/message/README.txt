@@ -101,13 +101,14 @@ grokked (see examples below).
 It provides the methods required by the IMessageSource interface:
 
   >>> from z3c.flashmessage.interfaces import IMessageSource
+  >>> from zope.interface import verify
   >>> from grokcore.message import UniqueMessageSource
-  >>> IMessageSource.implementedBy(UniqueMessageSource)
+  >>> verify.verifyClass(IMessageSource, UniqueMessageSource)
   True
 
 Methods:
 
-  **UniqueMessageSource.send(message, type)**
+  **UniqueMessageSource.send(message[, type=u'message'])**
     Send a message ``message`` of type ``type``.
 
   **UniqueMessageSource.list(type=None)**
