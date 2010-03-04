@@ -39,7 +39,7 @@ We can register them with the Component Architecture:
 Now let's go through the events.  We'll see that the handlers have been
 called accordingly:
 
-  >>> from zope.event import notify
+  >>> from zope.component.event import notify
   >>> notify(Event1())
   >>> called
   [1]

@@ -37,7 +37,7 @@ from zope.component.interfaces import Registered
 from zope.component.interfaces import Unregistered
 from zope.component._api import handle
 from zope.component._declaration import adapter
-from zope.event import notify
+from zope.component._event import notify
 
 class Components(object):
 

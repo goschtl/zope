@@ -23,10 +23,10 @@ these features.
 As components are registered, events are generated.  Let's register
 an event subscriber, so we can see the events generated:
 
-    >>> import zope.event
+    >>> import zope.component.event
     >>> def logevent(event):
     ...     print event
-    >>> zope.event.subscribers.append(logevent)
+    >>> zope.component.event.subscribers.append(logevent)
     
 Utilities
 ---------

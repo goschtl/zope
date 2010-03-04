@@ -1664,8 +1664,8 @@ def setUpRegistryTests(tests):
 
 def tearDownRegistryTests(tests):
     tearDown()
-    import zope.event
-    zope.event.subscribers.pop()
+    import zope.component.event
+    zope.component.event.subscribers.pop()
 
 def clearZCML(test=None):
     tearDown()
