@@ -4,7 +4,8 @@ CHANGES
 0.3 (unreleased)
 ================
 
-* ...
+* ``UniqueMessageSource`` now implements the ``IMessageSource``
+  interface completely.
 
 0.2 (2010-03-03)
 ================
