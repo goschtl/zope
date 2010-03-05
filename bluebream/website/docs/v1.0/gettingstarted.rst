@@ -138,6 +138,10 @@ you will get a working application which can be modified further.
 The project name will be used as the name of egg.  You can also
 change the values provided later.
 
+Here is a screenshot of sample project creation:
+
+.. image:: images/gettingstarted1.png
+
 The project name can be give given as a command line argument::
 
   $ paster create -t bluebream sampleproject
@@ -195,11 +199,20 @@ itself::
   $ python2.6 bootstrap.py
 
 The bootstrap script will install ``zc.buildout`` and ``setuptools``
-package.  Also, it will create the basic directory structure.  Next
-step is building the application.  To build the application, run the
-buildout::
+package.  Also, it will create the basic directory structure.
+
+Here is a screenshot of bootstrapping the buildout:
+
+.. image:: images/gettingstarted2.png
+
+Next step is building the application.  To build the application, run
+the buildout::
 
   $ ./bin/buildout
+
+Here is a screenshot of building the application:
+
+.. image:: images/gettingstarted3.png
 
 The buildout script will download all dependencies and setup the
 environment to run your application.  The next section will show the
@@ -218,9 +231,14 @@ sub-command as given here::
 
   $ ./bin/paster serve debug.ini
 
-Once you run the server, you can access it here:
+After running the server, you can access the site from browser here:
 http://localhost:8080/ .  The port number (``8080``) can be changed
 from the PasteDeploy configuration file (``debug.ini``).
+
+When you open the browser, it will look like as given in this
+screenshot:
+
+.. image:: images/gettingstarted4.png
 
 The second most common thing must be running the test cases.
 BlueBream by create a testrunner using the ``zc.recipe.testrunner``
@@ -374,6 +392,12 @@ applications.
 
 Example 1: Hello World without page template
 --------------------------------------------
+
+You can watch the video creating hello world application here:
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/Onuq2PnFnZ8&hl=en_US&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/Onuq2PnFnZ8&hl=en_US&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
 
 To create a web page which displays ``Hello World!``, you need to
 create a view class and register it using ``browser:page`` ZCML
