@@ -1,5 +1,12 @@
-Buildbots
-=========
+==========================
+Automated builds and tests
+==========================
+
+List of servers
+===============
+
+This is a list of servers that run regular builds of various parts of the code
+base.
 
 .. list-table::
     
@@ -35,3 +42,33 @@ Buildbots
       - Linux 32/64
       - 2.4, 2.5, 2.6
       - KGS (3.4/3.5), ZTK, grok, BFG (trunk), zc.buildout
+
+
+Notifications
+=============
+
+To ensure a reasonable amount of communication from automated systems that
+reaches the Zope developers and keeps them aware of the overall build status
+we prefer not to send individual build information directly to the
+zope-dev@zope.org mailing list.
+
+A separate list (zope-tests@zope.org) exists which you can send build
+notifications to.  This list is usually not read by humans. However, a script
+aggregates the messages once per day and reports the overall build status back
+to zope-dev.
+
+To ensure that your build output is correctly picked up, you need to
+
+- ensure the formatting of the subject line to start with OK/FAILURE/UNKNOWN,
+- provide a sender email address / sender name that allows to identify the
+  build server quickly, and
+- subscribe your sender email address to `zope-tests@zope.org
+  <https://mail.zope.org/mailman/listinfo/zope-tests>`_
+
+The subject line should be formatted like this::
+
+    <STATUS>: <SUBJECT OF TEST>
+
+    OK: Zope 2.12 on Linux 64-bit with Python 2.4
+    FAILURE: Zope 2.6 on Windows XP 32-bit with Python 2.5
+    UNKNOWN: zope.interface on Linux 64-bit
