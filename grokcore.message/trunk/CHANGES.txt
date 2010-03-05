@@ -1,11 +1,12 @@
 CHANGES
 *******
 
-0.3 (unreleased)
+0.3 (2010-03-05)
 ================
 
 * ``UniqueMessageSource`` now implements the ``IMessageSource``
-  interface completely.
+  interface completely, i.e. the ``type`` parameter is now optional
+  when using ``UniqueMessageSource.send()``.
 
 0.2 (2010-03-03)
 ================
