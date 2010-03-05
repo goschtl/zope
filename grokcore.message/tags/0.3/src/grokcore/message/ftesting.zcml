@@ -1,0 +1,34 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+
+  <include package="zope.security" />
+
+  <!-- We define exactly what we need. zope.session doesn't
+       declare all its dependencies. (zope.traversing) -->
+
+  <adapter
+      factory="zope.session.session.ClientId"
+      permission="zope.Public" 
+      />
+
+  <adapter
+      factory="zope.session.session.Session"
+      provides="zope.session.interfaces.ISession"
+      permission="zope.Public"
+      />
+
+  <utility
+    factory="zope.session.http.CookieClientIdManager"
+    provides="zope.session.interfaces.IClientIdManager"
+    />
+
+  <utility
+    factory="zope.session.session.RAMSessionDataContainer"
+    provides="zope.session.interfaces.ISessionDataContainer"
+    />
+
+</configure>
