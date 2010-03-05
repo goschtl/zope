@@ -1,0 +1,15 @@
+
+- the rules are enforced on all top level subversion modules on the branches
+  trunk, develop
+
+- the rules are *not* enforced in the modules
+  Sandbox, ...
+
+
+- all copyright headers (c-style, python style) must be zope foundation
+
+- every package must have a license.txt which is ZPL 2.1
+- every package must have a copyright.txt according to ZPL 2.1 which points to
+  the Zope Foundation
+
+- exceptions to the rules are codified in each package in a special file
