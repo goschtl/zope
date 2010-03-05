@@ -592,6 +592,98 @@ Package version comparison
 | zope.xmlpickle               | 3.4.0      | 3.4.0           |
 +------------------------------+------------+-----------------+
 
+Possible errors and solutions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+While running buildout, you may get module import errors like this::
+
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global authentication')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global broken')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global error')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global i18n')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global session')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global schema')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global zopeappgenerations')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global keyreference')
+  ConfigurationError: ('Invalid value for', 'package', 'ImportError: Module zope.app has no global principalannotation')
+
+**Solution**
+
+Add the egg name (Eg:- ``zope.app.principalannotation``) to
+``install_requires`` inside ``setup.py`` as given here.  Aftern
+adding this, you need to run ``./bin/buildout`` command again.
+
+::
+
+  install_requires=['setuptools',
+                    ...
+                    'zope.app.authentication',
+                    'zope.app.broken',
+                    'zope.app.error',
+                    'zope.app.i18n',
+                    'zope.app.session',
+                    'zope.app.schema',
+                    'zope.app.zopeappgenerations',
+                    'zope.app.keyreference',
+                    'zope.app.principalannotation',
+                    ...
+                    ],
+
+Another solution is to inlude egg name (Eg:-
+``zope.app.principalannotation``) in the Buildout part where other
+eggs are listed using``zc.recipe.egg`` recipe as given here::
+
+  [app]
+  recipe = zc.recipe.egg
+  eggs = samplproject
+         ...
+         zope.app.authentication
+         zope.app.broken
+         zope.app.error
+         zope.app.i18n
+         zope.app.session
+         zope.app.schema
+         zope.app.zopeappgenerations
+         zope.app.keyreference
+         zope.app.principalannotation
+  interpreter = breampy
+
+Import error: ``zope.app.folder.interfaces.IFolder``
+
+If you get error like this::
+
+    ZopeXMLConfigurationError: File "/home/baiju/myapp/src/myapp/browser.zcml", line 21.2-27.8
+    ConfigurationError: ('Invalid value for', 'for', "ImportError: Couldn't import zope.app.folder.interfaces, No module named folder.interfaces")
+
+Open the ``browser.zcml`` file and look at line number 21, inside that ZCML declaration change:
+``zope.app.folder.interfaces.IFolder`` to ``zope.site.interfaces.IFolder``.
+
+If you get error like this::
+
+  raise ValueError("Undefined permission id", permission_id)
+zope.configuration.config.ConfigurationExecutionError: <type 'exceptions.ValueError'>: ('Undefined permission id', 'zope.ManageApplication')
+
+You need to include ``zope.applicationcontrol`` package in your ZCML
+configuration file (``site.zcml``) as the permission definition is
+available there.
+
+
+If you are getting an error like this when accessing ``login.html`` view.
+
+::
+
+  .../eggs/zope.principalregistry-3.7.0-py2.5.egg/zope/principalregistry/principalregistry.py", 
+  line 82, in unauthorized
+     a = ILoginPassword(request)
+  TypeError: ('Could not adapt', <zope.publisher.browser.BrowserRequest 
+  instance URL=http://localhost:9060/@@login.html>, <InterfaceClass 
+  zope.authentication.interfaces.ILoginPassword>)
+
+You need to include ``zope.login`` package in your ZCML configuration
+file (``site.zcml``) as the adapter registration is available there::
+
+   <include package="zope.login" />
+
 
 ChangeLog of Individual Packages
 --------------------------------
