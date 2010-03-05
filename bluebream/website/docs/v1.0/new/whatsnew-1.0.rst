@@ -593,7 +593,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 
 Possible errors and solutions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
 While running buildout, you may get module import errors like this::
 
@@ -685,7 +685,7 @@ file (``site.zcml``) as the adapter registration is available there::
    <include package="zope.login" />
 
 
-ChangeLog of Individual Packages
+ChangeLog of individual packages
 --------------------------------
 
 bluebream
