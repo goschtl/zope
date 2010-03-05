@@ -532,18 +532,35 @@ but it doesn't have to.
     '30 23 * * *\tbob\techo hello world!\n'
 
 
-.. cleanup
+.. edge case
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    uninstall with no stored prefix
+
+    >>> installed = [l for l in open('.installed.cfg')
+    ...              if not l.startswith('prefix =')]
+    >>> open('.installed.cfg', 'w').write(''.join(installed))
+
+    uninstall with some directories already gone:
+
+    >>> rmdir(sample_buildout, 'etc', 'bar')
+    >>> rmdir(sample_buildout, 'var', 'run')
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts =
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
-    zc.recipe.deployment: Removing 'PREFIX/etc/bar'
-    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
-    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
-    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
-    zc.recipe.deployment: Removing 'PREFIX/var/run/bar'.
+
+
+.. cleanup
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
 
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/cron.d/bar-cron'))
     False

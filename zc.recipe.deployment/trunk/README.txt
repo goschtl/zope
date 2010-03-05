@@ -46,6 +46,18 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.7.1 (2010-03-05)
+==================
+
+Bugs fixed
+----------
+
+- Fixed a serious bug that cause buildouts to fail when using new
+  versions of the deployment recipe with older buildouts.
+
+- Made uninstall more tolerant of directories it's about to delete
+  already being deleted.
+
 0.7.0 (2010-02-01)
 ==================
 

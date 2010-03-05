@@ -81,18 +81,20 @@ class Install:
 
 def uninstall(name, options):
     path = options['etc-directory']
-    shutil.rmtree(path)
-    logger.info("Removing %r", path)
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+        logger.info("Removing %r", path)
     directories = ()
-    if options['prefix'] != '/':
+    if options.get('prefix', '/') != '/':
         directories = ('crontab', 'rc', 'logrotate')
     for d in directories + ('log', 'run'):
         path = options[d+'-directory']
-        if os.listdir(path):
-            logger.warn("Can't remove non-empty directory %r.", path)
-        else:
-            os.rmdir(path)
-            logger.info("Removing %r.", path)
+        if os.path.isdir(path):
+            if os.listdir(path):
+                logger.warn("Can't remove non-empty directory %r.", path)
+            else:
+                os.rmdir(path)
+                logger.info("Removing %r.", path)
 
 def make_dir(name, uid, gid, mode, created):
     uname = pwd.getpwuid(uid)[0]
