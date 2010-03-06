@@ -28,9 +28,9 @@ OID, we can browse the object directly:
     >>> from ZODB.utils import u64
     >>> root = getRootFolder()
 
-The ``_p_oid`` attribute of a ZODB-stored object contains binary data
-(8 bytes) that we transform into an int using the ``u64`` helper
-function from ``ZODB.utils``.
+The ``_p_oid`` attribute of a ZODB-stored object contains the OID as
+binary data (8 bytes) that we transform into an int using the ``u64``
+helper function from ``ZODB.utils``.
 
     >>> root_oid = u64(root._p_oid)
     >>> browser.open(
