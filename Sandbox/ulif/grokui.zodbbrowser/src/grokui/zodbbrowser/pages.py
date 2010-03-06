@@ -32,13 +32,19 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         if oid is None:
             self.obj = self.context.root
         if self.obj is None:
-            oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
+            try:
+                oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
+            except ValueError:
+                # Invalid number sent
+                self.flash(
+                    u'Not a valid object ID: %s' % self.request.get('oid'))
+                self.redirect(self.url(self.context, '@@zodbbrowser'))
+                return
             jar = self.jar()
             try:
                 self.obj = jar.get(oid)
             except POSKeyError:
-                # This doesn't work currently...
-                #self.flash(u'OID not found: %s', oid)
+                self.flash(u'No such object ID: %s' % u64(oid))
                 self.redirect(self.url(self.context, '@@zodbbrowser'))
                 return
 
