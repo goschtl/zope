@@ -86,7 +86,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             return obj._p_jar
 
     def getMemberLink(self, member):
-        return self.url(self.context, '@@zodbbrowser/%s' % member.oid)
+        return "%s/%s" % (self.url(self.context, '@@zodbbrowser'), member.oid)
 
     def getMemberView(self, member):
         view = getMultiAdapter((member, self.request), name='memberinfo')
@@ -138,5 +138,6 @@ class MemberInfoView(grok.View):
         self.show_docs = session.get('show_docs', False)
     
     def getMemberLink(self):
-        return self.url(
-            self.parent_context, '@@zodbbrowser/%s' % self.context.oid)
+        return "%s/%s" % (
+            self.url(self.parent_context, '@@zodbbrowser'),
+            self.context.oid)
