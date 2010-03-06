@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import grok
+import grokcore.viewlet as grok
 from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
 from grokcore.message.utils import receive
 from zope.browsermenu.interfaces import IBrowserMenu

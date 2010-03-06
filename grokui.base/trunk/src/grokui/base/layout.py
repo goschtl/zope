@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import grok
 import megrok.menu
+import grokcore.view as grok
 
-from grok import util
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 from megrok.layout import Layout, Page
-from zope.component import getUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 grok.layer(GrokUILayer)

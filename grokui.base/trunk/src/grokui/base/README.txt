@@ -34,7 +34,7 @@ Example
 We can build a simple admin screen that fits into the environment like
 this:
 
-    >>> import grok
+    >>> import grokcore.viewlet as grok
     >>> from zope.interface import Interface
     >>> from grokui.base import GrokUILayer
 
@@ -50,7 +50,8 @@ GrokUI namespace, which is named ``++grokui++`` in URLs.
 
 We grok this view to register it with the component architechture:
 
-    >>> grok.testing.grok_component('MyAdminScreen', MyAdminScreen)
+    >>> from grokcore.component.testing import grok_component
+    >>> grok_component('MyAdminScreen', MyAdminScreen)
     True
 
 Let's create a browser to lookup this view:
@@ -88,6 +89,7 @@ title, and optionally set an order number:
 
     >>> from grokui.base.layout import GrokUIView
     >>> from grokui.base.namespace import GrokUILayer
+
     >>> class CaveManagementScreen(GrokUIView):
     ...   # Name where we can access this page via URL:
     ...   grok.name('managecave')
@@ -103,8 +105,7 @@ title, and optionally set an order number:
     ...     # for the actual contents of this page.
     ...     return u'Hello cave manager!'
 
-    >>> grok.testing.grok_component(
-    ...   'CaveManagementScreen', CaveManagementScreen)
+    >>> grok_component('CaveManagementScreen', CaveManagementScreen)
     True
 
 While the title will be displayed in the main menu bar of the GrokUI

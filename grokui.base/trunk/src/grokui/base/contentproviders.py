@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import grok
+import grokcore.viewlet as grok
 from megrok.menu import Menu
 from zope.site.interfaces import IRootFolder
 from zope.component import getUtility, getMultiAdapter

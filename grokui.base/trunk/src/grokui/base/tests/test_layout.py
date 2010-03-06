@@ -53,7 +53,7 @@ entry in the navigation bar:
     </html>
 
 """
-import grok
+import grokcore.component as grok
 import unittest
 from grokui.base import GrokUIView
 from grokui.base.tests import FunctionalLayer
