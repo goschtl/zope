@@ -1,6 +1,6 @@
 """Infos about objects.
 """
-import grok
+import grokcore.component as grok
 import inspect
 import types
 from persistent import Persistent
