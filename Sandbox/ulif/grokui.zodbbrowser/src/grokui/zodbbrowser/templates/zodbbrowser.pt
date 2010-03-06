@@ -22,7 +22,8 @@
 
 <h2>Members</h2>
 <div tal:repeat="member view/info/getMembers">
-  <div tal:condition="python: member.linkable or view.show_all">
-    <div tal:content="structure python: view.getMemberView(member)()" />
+  <div tal:condition="python: member.linkable or view.show_all"
+       tal:content="structure python: view.getMemberView(member)()" >
+    Member infos go here
   </div>
 </div>
