@@ -14,7 +14,6 @@ from martian.error import GrokError
 from zope.browsermenu.metaconfigure import (
     menuDirective, menuItemDirective, subMenuItemDirective)
 from zope.configuration.exceptions import ConfigurationError
-from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
@@ -48,23 +47,23 @@ class SubMenuItemGrokker(martian.ClassGrokker):
     martian.directive(megrok.menu.menuitem)
 
     def execute(self, factory, config, name, title, description,
-                order = None, menuitem=None, context=None,
+                order=None, menuitem=None, context=None,
                 layer=None, permission=None):
 
         menuDirective(config, id=name, class_=factory,
                       title=title, description=description)
-        
+
         if menuitem is None:
             return False
 
         menu_id, icon, filter, enforced_order, extra = menuitem
-       
+
         if enforced_order is None:
             enforced_order = order[0] or 0
 
         try:
-            menu = config.resolve('zope.app.menus.'+menu_id)
-        except ConfigurationError, v:
+            menu = config.resolve('zope.app.menus.' + menu_id)
+        except ConfigurationError:
             raise GrokError("The %r menu could not be found.  Please use "
                             "megrok.menu.Menu to register a menu first."
                             % menu_id, factory)
@@ -73,8 +72,7 @@ class SubMenuItemGrokker(martian.ClassGrokker):
             config, menu=menu, for_=context, submenu=name,
             title=title, description=description, icon=icon,
             filter=filter, permission=permission, layer=layer,
-            order=enforced_order, action='', extra=extra
-            )
+            order=enforced_order, action='', extra=extra)
         return True
 
 
@@ -95,15 +93,15 @@ class MenuItemGrokker(ViewSecurityGrokker):
 
         if menuitem is None:
             return False
-        
+
         menu_id, icon, filter, enforced_order, extra = menuitem
-        
+
         if enforced_order is None:
             enforced_order = order[0] or 0
 
         try:
-            menu = config.resolve('zope.app.menus.'+menu_id)
-        except ConfigurationError, v:
+            menu = config.resolve('zope.app.menus.' + menu_id)
+        except ConfigurationError:
             raise GrokError("The %r menu could not be found.  Please use "
                             "megrok.menu.Menu to register a menu first."
                             % menu_id, factory)
