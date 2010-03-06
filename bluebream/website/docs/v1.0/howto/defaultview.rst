@@ -47,7 +47,7 @@ object with ``browser:defaultView`` directive available in
 configured, and when you try to access an object without specifying
 the view name, you will get a ``ComponentLookupError`` with a message
 like this: ``Couldn't find default view name``.  For example, if you
-try to access the root folder like: htt://localhost:8080/ and name of
+try to access the root folder like: http://localhost:8080/ and name of
 default view is not configured, you will get an error like this::
 
   ComponentLookupError: ("Couldn't find default view name",
