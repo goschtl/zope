@@ -1,7 +1,11 @@
 """
   >>> from zope.component import getUtility
-  >>> from zope.app.publisher.interfaces.browser import IBrowserMenu
+  >>> from zope.browsermenu.interfaces import IBrowserMenu
   >>> from zope.publisher.browser import TestRequest
+
+We log as anonymous::
+
+  >>> newInteraction(Participation(Principal('zope.anybody')))
 
 A menu is available as a named utility providing ``IBrowserMenu``.
 
@@ -45,10 +49,13 @@ to the request:
     'submenu': None,
     'title': 'my third view'}]
 
-"""
+   >>> endInteraction()
 
+"""
 import megrok.menu
 import grokcore.viewlet as grok
+from zope.security.management import newInteraction, endInteraction
+from zope.security.testing import Principal, Participation
 
 
 class Mammoth(grok.Context):
@@ -99,7 +106,6 @@ class CluelessView(grok.View):
 
 def test_suite():
     from zope.testing import doctest
-    from megrok.menu.tests import FunctionalLayer
     suite = doctest.DocTestSuite()
-    suite.layer = FunctionalLayer
+    suite.layer = megrok.menu.tests.MegrokMenuLayer(megrok.menu.tests)
     return suite

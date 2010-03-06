@@ -1,16 +1,21 @@
 """
+
 Let's create a Mammoth object in the root folder so we can access
 views through the publisher:
 
-  >>> from zope.app.testing.functional import getRootFolder
-  >>> root = getRootFolder()
-  >>> root['manfred'] = Mammoth()
+  >>> from zope.component.hooks import getSite
+  >>> root = getSite()
+  >>> manfred = root['manfred'] = Mammoth()
 
 As an anonymous user, we only see the unprotected menu items:
 
-  >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser('http://localhost/manfred/showmenu')
-  >>> print browser.contents
+  >>> from zope.publisher.browser import TestRequest
+
+  >>> newInteraction(Participation(Principal('zope.anybody')))
+  >>> request = TestRequest()
+  
+  >>> page = getMultiAdapter((manfred, TestRequest()), name='showmenu')
+  >>> print page()  
   [{'action': '',
     'description': '',
     'extra': None,
@@ -41,9 +46,11 @@ As an anonymous user, we only see the unprotected menu items:
 
 After logging in as a manager, we also see the protected one:
 
-  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> browser.open('http://localhost/manfred/showmenu')
-  >>> print browser.contents
+  >>> endInteraction()
+  >>> newInteraction(Participation(Principal('zope.mgr')))
+
+  >>> page = getMultiAdapter((manfred, TestRequest()), name='showmenu')
+  >>> print page()
   [{'action': '',
     'description': '',
     'extra': None,
@@ -92,27 +99,32 @@ After logging in as a manager, we also see the protected one:
     'submenu': None,
     'title': 'Manage'}]
 
+   >>> endInteraction()
 """
+import megrok.menu
+
 from grokcore.component import Context, name, title, description
 from grokcore.view import View
 from grokcore.security import Permission, require
 
-import megrok.menu
-
 from pprint import pformat
-from zope.component import getUtility
-from zope.app.publisher.interfaces.browser import IBrowserMenu
+from zope.component import getUtility, getMultiAdapter
+from zope.browsermenu.interfaces import IBrowserMenu
+from zope.security.management import newInteraction, endInteraction
+from zope.security.testing import Principal, Participation
+
 
 class Mammoth(Context):
     pass
+
 
 class Actions(megrok.menu.Menu):
     name('actions')
     title('Actions')
     description('')
 
-# You can either refer to the menu class itself:
 
+# You can either refer to the menu class itself:
 class Index(View):
     title('View')
     megrok.menu.menuitem(Actions)
@@ -120,14 +132,15 @@ class Index(View):
     def render(self):
         return 'index'
 
-# or you can refer to its identifier:
 
+# or you can refer to its identifier:
 class Edit(View):
     title('Edit')
     megrok.menu.menuitem('actions')
 
     def render(self):
         return 'edit'
+
 
 # also you can define sub-menus items
 class Options(megrok.menu.SubMenuItem):
@@ -137,6 +150,7 @@ class Options(megrok.menu.SubMenuItem):
 
     megrok.menu.menuitem('actions')
 
+
 class OptionOne(View):
     title('Option one')
     megrok.menu.menuitem('options')
@@ -144,11 +158,12 @@ class OptionOne(View):
     def render(self):
         return 'option one'
 
+
 # Here's a view that's protected by a permission. We expect the menu
 # item that we configure for it to have the same permission setting:
-
 class ManageStuff(Permission):
     name('my.ManageStuff')
+
 
 class Manage(View):
     require(ManageStuff)
@@ -157,6 +172,7 @@ class Manage(View):
 
     def render(self):
         return 'manage'
+
 
 #Sub menus item are also available to be protected using a permission
 class Setup(megrok.menu.SubMenuItem):
@@ -167,6 +183,7 @@ class Setup(megrok.menu.SubMenuItem):
 
     megrok.menu.menuitem('actions')
 
+
 class ConfigOption(View):
     title('Protected configuration')
     megrok.menu.menuitem('setup')
@@ -174,15 +191,15 @@ class ConfigOption(View):
     def render(self):
         return 'Configuration'
 
-class ShowMenu(View):
 
+class ShowMenu(View):
     def render(self):
         menu = getUtility(IBrowserMenu, 'actions')
         return pformat(menu.getMenuItems(self.context, self.request))
 
+
 def test_suite():
     from zope.testing import doctest
-    from megrok.menu.tests import FunctionalLayer
     suite = doctest.DocTestSuite()
-    suite.layer = FunctionalLayer
+    suite.layer = megrok.menu.tests.MegrokMenuLayer(megrok.menu.tests)
     return suite

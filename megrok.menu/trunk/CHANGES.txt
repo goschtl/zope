@@ -1,13 +1,25 @@
 Changelog
 =========
 
-0.4 (unreleased)
+0.4 (2010-03-06)
 ----------------
-* ...
+
+* Cleaned the tests module. Now, we only use the ZTK packages to test.
+
+* The dependencies have been cleared. We no longer depend on zope.app
+  packages.
+
+* Updated the security grokking in the menu items grokker. We don't
+  need the protect_getattr, as the view security grokker already does
+  it for us.
+
+* Fixed the dependencies in the package requires. All dependencies are
+  now clearly declared.
 
 
 0.3 (2009-11-02)
 ----------------
+
 * Added the support of the grokcore.viewlet 'order' directive to
   reorder the menu items and sub menus. This permits to have a
   baseclass defining the basic menu and to keep the ordering
@@ -15,7 +27,9 @@ Changelog
   different arguments of the menuitem directive. That would allow more
   genericity and reusability. Note : this change is 100% backward
   compatible. Simply added tests to show the behavior. [trollfot]
+
 * Get rid of the grok dependency. Now depends only on grokcore.* packages
+
 * Updated the build process
 
 
@@ -23,9 +37,13 @@ Changelog
 ----------------
 
 * Compatible with grok1.0a1
+
 * Add the SubMenuItem base class and it's grokker SubMenuItemGrokker
+
 * Add the `extra` parameter to the menuitem directive
+
 * Tests for added functionality
+
 * Remove version.cfg
 
 

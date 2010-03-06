@@ -1,21 +1,17 @@
 from setuptools import setup, find_packages
 
-long_description = (open("README.txt").read()
-                    + '\n\n' +
-                    open("CHANGES.txt").read())
+long_description = (
+    open("README.txt").read() + '\n\n' + open("CHANGES.txt").read())
+
+test_requires = []
 
 setup(name='megrok.menu',
-      version='0.4dev',
+      version='0.4',
       description="Grok extension to configure browser menus",
       long_description=long_description,
-      classifiers=['Programming Language :: Python',
-                   'Environment :: Web Environment',
-                   'Framework :: Zope3',
-                   'License :: OSI Approved :: Zope Public License',
-                   ],
       keywords='',
-      author='Philipp von Weitershausen',
-      author_email='philipp@weitershausen.de',
+      author='The Grok community',
+      author_email='grok-dev@zope.org',
       url='http://pypi.python.org/pypi/megrok.menu',
       license='ZPL',
       packages=find_packages('src'),
@@ -23,14 +19,30 @@ setup(name='megrok.menu',
       namespace_packages=['megrok'],
       include_package_data=True,
       zip_safe=False,
+      extras_require={'test': [
+          'zope.component',
+          'zope.interface',
+          'zope.principalregistry',
+          'zope.security',
+          'zope.securitypolicy',
+          'zope.site',
+          'zope.testing',
+          ]},
       install_requires=[
-          'setuptools',
           'grokcore.component',
+          'grokcore.security',
           'grokcore.view',
           'grokcore.viewlet',
-          'grokcore.security',
+          'martian',
+          'setuptools',
+          'zope.browsermenu',
+          'zope.configuration',
+          'zope.publisher',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      classifiers=[
+          'Programming Language :: Python',
+          'Environment :: Web Environment',
+          'Framework :: Zope3',
+          'License :: OSI Approved :: Zope Public License',
+          ],
       )

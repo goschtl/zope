@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import martian.util
 import grokcore.component
 from martian.error import GrokImportError
-from zope.app.publisher.browser.menu import BrowserMenu
+from zope.browsermenu.menu import BrowserMenu
+
 
 class Menu(BrowserMenu):
     pass
+
 
 class SubMenuItem(BrowserMenu):
     pass
@@ -22,4 +26,3 @@ class menuitem(martian.Directive):
                 "You can only pass unicode, ASCII, or a subclass "
                 "of megrok.menu.Menu to the '%s' directive." % self.name)
         return (menu, icon, filter, order, extra)
-
