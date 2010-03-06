@@ -3,18 +3,18 @@
     xmlns:grok="http://namespaces.zope.org/grok"
     i18n_domain="megrok.menu">
 
-
-  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-
-  <include package="zope.app.zcmlfiles" />
-  <include package="zope.app.authentication" />
-
-  <!-- Load minimal support of grokcore.view, views + templates  -->
+  <include package="zope.principalregistry" file="meta.zcml" />
   <include package="grokcore.view" file="meta-minimal.zcml" />
-  <include package="grokcore.view" />
-
   <include package="megrok.menu" file="meta.zcml" />
+  
+  <include package="zope.security" />
+  <include package="zope.securitypolicy" />
+  <include package="zope.principalregistry" />
+  <include package="grokcore.view" />
+ 
   <grok:grok package="megrok.menu.tests" />
 
   <securityPolicy
@@ -25,10 +25,6 @@
       id="zope.anybody"
       title="Unauthenticated User"
       />
-  <grant
-      permission="zope.View"
-      principal="zope.anybody"
-      />
 
   <principal
       id="zope.mgr"
@@ -37,8 +33,7 @@
       password="mgrpw"
       />
 
-  <role id="zope.Manager" title="Site Manager" />
-  <grantAll role="zope.Manager" />
-  <grant role="zope.Manager" principal="zope.mgr" />
+  <grant permission="zope.View" principal="zope.anybody" />
+  <grantAll principal="zope.mgr" />
 
 </configure>
