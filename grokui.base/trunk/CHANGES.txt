@@ -1,6 +1,12 @@
 CHANGES
 *******
 
+0.3 (unreleased)
+================
+
+* ...
+
+
 0.2 (2010-03-06)
 ================
 
@@ -11,7 +17,7 @@ CHANGES
   ``z3c.flashmessage``.
 
 * Dependencies have been cleaned up : ``grokui.base`` no longer
-  depends on ``zope.app.zcml`` and can now be used outside the
+  depends on ``zope.app.zcmlfiles`` and can now be used outside the
   ``Grok`` suite. It uses only the `grokcore` packages.
 
 
