@@ -16,6 +16,8 @@ Changelog
 * Fixed the dependencies in the package requires. All dependencies are
   now clearly declared.
 
+* Added a LICENSE.txt file for the ZPL 2.1.
+
 
 0.3 (2009-11-02)
 ----------------
