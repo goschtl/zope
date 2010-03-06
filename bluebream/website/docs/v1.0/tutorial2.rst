@@ -14,11 +14,21 @@ Tutorial --- Part 2
 Introduction
 ------------
 
-This is the second part of tutorial.  This chapter expand the
-application started in the first part of tutorial with additional
-functionalities.  If you complete this chapter, you should be able to
-create content components. (Content components are objects with a
-user visisble view).
+This is the second part of tutorial.  If you complete this chapter,
+you should be able to create content components.
+
+Content components are objects with a user visisble view.  A view
+could be a browser view (HTML/JS/CSS) or JSON or XMLRPC or any other
+view.  To exaplain the idea of content components, the ticket
+collector project started in the first part of tutorial will be
+expanded with additional functionalities.  In fact, the collector
+object created in the last chapter is a content component.  In this
+chapter, you will create new content objects like tickets and
+comments.
+
+.. Before proceeding further, here is an overview of sections.
+
+.. - **Adding tickets** -- 
 
 .. _tut2-adding-tickets:
 
@@ -31,7 +41,7 @@ for tickets.  Update the ``interfaces.py`` with the ticket
 interface::
 
   class ITicket(Interface):
-     """Ticket - the main content object"""
+     """Ticket - the main content component"""
 
       name = TextLine(
           title=u"Name",
