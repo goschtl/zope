@@ -1,0 +1,21 @@
+<configure
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.security" file="meta.zcml" />
+  <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.viewlet" file="meta.zcml" />
+  
+  <include package="grokcore.viewlet" />
+  <include package="megrok.menu" file="meta.zcml" />
+  <include package="megrok.layout" file="meta.zcml" />
+
+  <!-- Register the messaging utilities -->
+  <include package="grokcore.message" />
+
+  <!-- Declares the zope.ManageServices perm -->
+  <include package="zope.security" />
+
+  <grok:grok package="." />
+
+</configure>
