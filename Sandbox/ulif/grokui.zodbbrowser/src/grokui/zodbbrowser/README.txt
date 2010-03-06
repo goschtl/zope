@@ -35,3 +35,9 @@ helper function from ``ZODB.utils``.
     >>> root_oid = u64(root._p_oid)
     >>> browser.open(
     ...     'http://localhost/++grokui++/@@zodbbrowser/%s' % root_oid)
+
+A root folder normally contains a local site manager names
+``_sm``. A link to this site manager is available:
+
+    >>> browser.getLink('_sm')
+    <Link text='_sm' url='http://localhost/++grokui++/@@zodbbrowser/...>
