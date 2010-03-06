@@ -15,6 +15,7 @@ HOWTOs
    newdependency
    absoluteurl
    dynamicfields
+   testingpersistent
 
 .. raw:: html
 
