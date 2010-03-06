@@ -43,8 +43,10 @@ You should get an erorr like this::
 Now open the ``tests.py`` and add two keyword arguments to
 ``z3c.testsetup.register_all_tests`` function named ``setup`` and
 ``teardown``.  The values of those keyword arguments could be
-``module.setUp`` and ``module.tearDown`` respectively as given here::
+``zope.testing.module.setUp`` and ``zope.testing.module.tearDown``
+respectively as given here::
 
+  from zope.testing import module
   test_suite = z3c.testsetup.register_all_tests('testp2.main', setup=module.setUp, teardown=module.tearDown)
 
 A better method would be to create your own ``setUp`` and
