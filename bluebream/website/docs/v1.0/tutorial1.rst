@@ -941,7 +941,7 @@ the data is physically stored.
 
 You can also confirm the object is actually saved into database from
 Python shell.  If you go to Python shell and try to access the root
-object, you can see that it has the object you added:
+object, you can see that it has the object you added::
 
   jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
   ...
