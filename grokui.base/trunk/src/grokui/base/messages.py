@@ -11,6 +11,6 @@ class AdminMessageSource(UniqueMessageSource):
 
     def send(self, message, type="admin"):
         return UniqueMessageSource.send(self, message, type=type)
-        
+
     def list(self, type="admin"):
         return UniqueMessageSource.list(self, type=type)
