@@ -1012,7 +1012,7 @@ attributes.  You can also remove the ``__call__`` method from
 
   class TicketCollectorMainView(form.DisplayForm):
 
-      form_fields = form.Fields(IWikiContainer)
+      form_fields = form.Fields(ICollector)
 
       template = ViewPageTemplateFile("collectormain.pt")
 
