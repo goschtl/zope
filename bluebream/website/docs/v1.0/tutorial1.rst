@@ -835,9 +835,8 @@ Registering components
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Once the interfaces and its implementations are ready.  You can do
-the configuration in ZCML.
-
-Mark the ``ICollector`` as a content component::
+the configuration in ZCML.  Open the ``src/tc/main/configure.zcml``
+file to edit, then mark the ``ICollector`` as a content component::
 
   <interface
      interface="tc.main.interfaces.ICollector"
@@ -887,7 +886,8 @@ A view for adding collector
 
 Now the content component is ready to use.  You need a web page from
 where we can add the ticket collector.  You can use ``zope.formlib``
-package to create a form::
+package to create a form.  You can add the view class definition
+inside ``src/tc/main/views.py`` like this::
 
   from zope.container.interfaces import INameChooser
   from zope.formlib import form
@@ -919,7 +919,7 @@ As you have already seen in the previous chapter, ``browser:page``
 directive is used for registering pages.  You can give the name as
 ``add_ticket_collector`` and register it for
 ``zope.site.interfaces.IRootFolder``.  Add these lines to
-``configure.zcml``::
+``src/tc/main/configure.zcml``::
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
