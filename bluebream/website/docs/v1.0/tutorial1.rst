@@ -671,28 +671,29 @@ Creating the application object
 Container objects
 ~~~~~~~~~~~~~~~~~
 
-In this section, we will create main application container object for
-ticketcollector.  BlueBream use Zope object database (ZODB) store
-your object.  You can think of object database as a container which
+In this section, we will explore one of the main concepts in
+BlueBream called **container object**.  As mentioned earlier,
+BlueBream use an object database called ZODB to store your Python
+objects.  You can think of object database as a container which
 contains objects, the inner object may be another container which
 contains other objects.
 
-So, the object hierarchy will look like this::
+The object hierarchy may look like this::
 
-  +-------------------+
-  |                   |
-  |   +---------+     |
-  |   |         |     |
-  |   |  +--+   |     |
-  |   |  +--+   |     |
-  |   +---------+     |
-  |                   |
-  +-------------------+
+  +-----------------------+
+  |                       |
+  |   +---------+  +--+   |
+  |   |         |  +--+   |
+  |   |  +--+   |         |
+  |   |  +--+   |         |
+  |   +---------+    +--+ |
+  |                  +--+ |
+  +-----------------------+
 
 BlueBream will take care of the persistence of the objects.  To make
-one object you need to inheriting from ``persistent.Persistent``
-class directly or indirectly.  Here is a list of classes which is
-inheriting from ``persistent.Persistent``, directly or indirectly:
+one custom object persistent first you need to inheriting from
+``persistent.Persistent``.  BlueBream has some classes inheriting
+from ``persistent.Persistent``:
 
 - ``zope.container.btree.BTreeContainer``
 - ``zope.container.folder.Folder``
@@ -700,16 +701,61 @@ inheriting from ``persistent.Persistent``, directly or indirectly:
 
 If you inherit from any of these classes, the instance of that class
 will be persistent.  The second thing you need to do to make it
-persistent is add the object to an existing container object.  Here
-is a simple example::
+persistent is add the object to an existing container object.  You
+can experiment this from the debug shell provided by BlueBream.
+Before that create a container class somewhere in your code which can
+be imported later.  You can add this definition to
+``src/tc/main/__init__.py`` file (Delete it after the experiment)::
 
-  >>> from zope.container.btree import BTreeContainer
-  >>> class MyContainer(BTreeContainer):
-  ...     pass
-  >>> container1 = MyContainer()
-  >>> root_folder['c1'] = container1
+  from zope.container.btree import BTreeContainer
 
-In the above example, ``root_folder`` is an existing container.
+  class MyContainer(BTreeContainer):
+      pass
+
+Then open the debug shell as given below::
+
+  $ ./bin/paster shell debug.ini
+  ...
+  Welcome to the interactive debug prompt.
+  The 'root' variable contains the ZODB root folder.
+  The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
+  >>> 
+
+The name, ``root`` referring to the top-level container.  This is the
+default location where the object hierarchy starts.  You can import
+your own container class and create instance and add it to the root
+folder::
+
+  >>> from tc.main import MyContainer
+  >>> root['c1'] = MyContainer()
+
+ZODB is transactional database, so you need to commit your
+transaction.  To commit transaction, use the ``transaction.commit``
+function as given below::
+
+  >>> import transaction
+  >>> transaction.commit()
+
+Now you can exit the debug prompt and open it again and see that you
+can access the persistent object again::
+
+  $ ./bin/paster shell debug.ini
+  ...
+  Welcome to the interactive debug prompt.
+  The 'root' variable contains the ZODB root folder.
+  The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
+  >>> root['c1']
+  <tc.main.MyContainer object at 0x96091ac>
+
+Peristing any random objects like this is not a good idea.  The next
+section will explain how to create a formal schema for your objects.
+Now you can delete the object and remove ``MyContainer`` class
+definition from ``src/tc/main/__init__.py``.  You can delete the
+object like this::
+
+  >>> del(root['c1'])
+  >>> import transaction
+  >>> transaction.commit()
 
 Declaring Interface
 ~~~~~~~~~~~~~~~~~~~
