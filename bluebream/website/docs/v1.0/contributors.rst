@@ -17,6 +17,7 @@ committed to documentation directly.
 
 - Baiju M (baijum)
 - Chris McDonough (chrism)
+- Daniel Nilsson
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
 
