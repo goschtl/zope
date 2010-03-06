@@ -841,7 +841,7 @@ the configuration in ZCML.
 Mark the ``ICollector`` as a content component::
 
   <interface
-     interface=".interfaces.ICollector"
+     interface="tc.main.interfaces.ICollector"
      type="zope.app.content.interfaces.IContentType"
      />
 
@@ -861,7 +861,7 @@ method.
 
 ::
 
-  <class class=".ticketcollector.Collector">
+  <class class="tc.main.ticketcollector.Collector">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
@@ -870,11 +870,11 @@ method.
        />
     <require
        permission="zope.ManageContent"
-       interface=".interfaces.ICollector"
+       interface="tc.main.interfaces.ICollector"
        />
     <require
        permission="zope.ManageContent"
-       set_schema=".interfaces.ICollector"
+       set_schema="tc.main.interfaces.ICollector"
        />
   </class>
 
@@ -893,9 +893,9 @@ package to create a form::
   from zope.container.interfaces import INameChooser
   from zope.formlib import form
 
-  from interfaces import ICollector
+  from tc.main.interfaces import ICollector
 
-  from ticketcollector import Collector
+  from tc.main.ticketcollector import Collector
 
   class AddTicketCollector(form.AddForm):
 
@@ -926,7 +926,7 @@ directive is used for registering pages.  You can give the name as
      for="zope.site.interfaces.IRootFolder"
      name="add_ticket_collector"
      permission="zope.ManageContent"
-     class=".views.AddTicketCollector"
+     class="tc.main.views.AddTicketCollector"
      />
 
 Now you can access the URL:
@@ -979,10 +979,10 @@ In the ``src/tc/main/views.py`` add a new view like this::
 Then, in the ``src/tc/main/configure.zcml``::
 
   <browser:page
-     for=".interfaces.ICollector"
+     for="tc.main.interfaces.ICollector"
      name="index"
      permission="zope.Public"
-     class=".views.TicketCollectorMainView"
+     class="tc.main.views.TicketCollectorMainView"
      />
 
 Now you can visit: http://localhost:8080/mycolector
