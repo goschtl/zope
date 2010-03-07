@@ -1996,6 +1996,11 @@ zope.annotation
 zope.app.apidoc
 ~~~~~~~~~~~~~~~
 
+3.7.2 (2010-03-07)
+******************
+
+- Adapted tests for Python2.4
+
 3.7.1 (2010-01-05)
 ******************
 
@@ -3184,6 +3189,12 @@ zope.app.intid
 
 zope.app.keyreference
 ~~~~~~~~~~~~~~~~~~~~~
+
+3.6.1 (2010-03-07)
+******************
+
+- Adapted tests for Python 2.4
+- Added license file
 
 3.6.0 (2009-01-39)
 ******************
