@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.0a3 (unreleased)
+1.0a3 (2010-03-07)
 ------------------
 
 - The summary of ``bluebream_base`` template changed to:
