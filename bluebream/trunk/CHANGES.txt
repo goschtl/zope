@@ -4,8 +4,9 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Added an empty PKG-INFO
+  Work around fix for "empty directory" problem.
+  (refer: LP #503301)
 
 1.0a3 (2010-03-07)
 ------------------
