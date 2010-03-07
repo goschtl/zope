@@ -27,8 +27,9 @@ class ObjectInfo(object):
         if self._name is not None:
             return self._name
         return getattr(self.obj, '__name__', u'???')
-    
-    def getParent(self):
+
+    @property
+    def parent(self):
         return getattr(self.obj, '__parent__', None)
 
     def getDescription(self):
