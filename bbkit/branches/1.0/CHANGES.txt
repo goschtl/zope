@@ -1,8 +1,22 @@
 BlueBream Kit
 =============
 
-1.0a3 (unreleased)
+1.0a3 (2010-03-07)
 ------------------
+
+- Changed versions: ztk.cfg
+
+  - zope.component (3.9.1 -> 3.9.2)
+  - zope.publisher (3.12.0 -> 3.12.1)
+
+- Changed versions: zopeapp.cfg (r107993 -> r108937)
+
+  - zope.app.apidoc (3.7.1 -> 3.7.2)
+  - zope.app.form (4.0.1 -> 4.0.2)
+  - zope.app.keyreference (3.6.0 -> 3.6.1)
+  - zope.app.localpermission (3.7.0 -> 3.7.1)
+
+- Use local copies of ztk.cfg & zopeapp.cfg
 
 1.0a2 (2010-03-06)
 ------------------
