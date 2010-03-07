@@ -28,13 +28,6 @@ class ObjectInfo(object):
             return self._name
         return getattr(self.obj, '__name__', u'???')
     
-    def getOID(self):
-        try:
-            return u64(self.obj._p_oid)
-        except:
-            pass
-        return None
-
     def getParent(self):
         return getattr(self.obj, '__parent__', None)
 
@@ -47,11 +40,10 @@ class ObjectInfo(object):
     
     def getMembers(self):
         result = []
-        oid = self.getOID()
         for name, obj in inspect.getmembers(self.obj):
             member = IObjectInfo(obj)
             member._name = name
-            member._parent_oid = oid
+            member._parent_oid = self.oid
             result.append(member)
         return result
 
