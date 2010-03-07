@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2010-03-07)
 ------------------
 
 - Adapted tests for Python 2.4
+- Added license file
 
 3.6.0 (2009-01-39)
 ------------------
