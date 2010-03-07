@@ -1,22 +1,28 @@
 """grokui.zodbbrowser interfaces.
 """
+from zope import schema
 from zope.interface import Interface
 
 class IObjectInfo(Interface):
-    """Infos about an ZODB object.
+    """Infos about a ZODB object.
     """
-    def getOID():
-        """Get the OID of an object.
+    oid = schema.Int(
+        title = u"ZODB object ID of an object",
+        required = False,
+        )
+
+    name = schema.TextLine(
+        title = u"Name of an object or '???'",
+        required = True,
+        )
+
+    parent = schema.Object(
+        schema = Interface,
+        title = u"Parent of an object. Can be of arbitrary type.",
+        required = False,
+        )
+    
+    def getMembers():
+        """Get a list of object infos for all members of an object.
         """
 
-    def getName():
-        """Get the name of an object or None.
-        """
-        
-    def getParent():
-        """Get parent of associated object or None.
-        """
-
-    def getChildren():
-        """Get a list of children objects.
-        """
