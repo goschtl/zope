@@ -55,7 +55,7 @@ the project name ``ticketcollector`` and namespace package name
 
   $ paster create -t bluebream
   Selected and implied templates:
-    bluebream#bluebream  A Zope project
+    bluebream#bluebream  A BlueBream project
 
   Enter project name: ticketcollector
   Variables:
@@ -67,7 +67,7 @@ the project name ``ticketcollector`` and namespace package name
   Enter interpreter (Name of custom Python interpreter) ['breampy']:
   Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
-  Enter long_description (Multi-line description (in reST)) ['']: A ticket collector application
+  Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
   Enter keywords (Space-separated keywords/tags) ['']:
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@example.com
@@ -95,11 +95,16 @@ the project name ``ticketcollector`` and namespace package name
           Copying app.py to ./ticketcollector/src/tc/main/app.py
           Copying application.zcml_tmpl to ./ticketcollector/src/tc/main/application.zcml
           Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
-          Copying debug.py to ./sample/src/test_name/test_main/debug.py
+          Copying debug.py to ./ticketcollector/src/tc/main/debug.py
           Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/ftesting.zcml
+          Copying index.pt_tmpl to ./ticketcollector/src/tc/main/index.pt
           Copying interfaces.py to ./ticketcollector/src/tc/main/interfaces.py
           Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
           Copying startup.py to ./ticketcollector/src/tc/main/startup.py
+          Recursing into static
+            Creating ./ticketcollector/src/tc/main/static/
+            Copying logo.png to ./ticketcollector/src/tc/main/static/logo.png
+            Copying style.css to ./ticketcollector/src/tc/main/static/style.css
           Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests.py
           Copying views.py to ./ticketcollector/src/tc/main/views.py
         Copying __init__.py to ./ticketcollector/src/tc/__init__.py
@@ -114,8 +119,6 @@ the project name ``ticketcollector`` and namespace package name
       Recursing into blob
         Creating ./ticketcollector/var/blob/
         Copying README.txt to ./ticketcollector/var/blob/README.txt
-        Recursing into tmp
-          Creating ./ticketcollector/var/blob/tmp/
       Recursing into filestorage
         Creating ./ticketcollector/var/filestorage/
         Copying README.txt to ./ticketcollector/var/filestorage/README.txt
@@ -123,7 +126,7 @@ the project name ``ticketcollector`` and namespace package name
         Creating ./ticketcollector/var/log/
         Copying README.txt to ./ticketcollector/var/log/README.txt
     Copying versions.cfg to ./ticketcollector/versions.cfg
-  Running /opt/baiju/py26/bin/python2.6 setup.py egg_info
+  Running /usr/bin/python2.6 setup.py egg_info
 
 As you can see above, we have provided most of the project details.
 Later, you can change the values provided here.  However, changing
@@ -718,7 +721,7 @@ Then open the debug shell as given below::
   Welcome to the interactive debug prompt.
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
-  >>> 
+  >>>
 
 The name, ``root`` referring to the top-level container.  This is the
 default location where the object hierarchy starts.  You can import
