@@ -2,7 +2,8 @@
 <span tal:content="structure view/getBreadCrumbs">
 </span>
 <p>
-  <form method="POST">
+  <form method="POST"
+        tal:attributes="action request/getURL">
     <input type="checkbox" name="show_all" id="show_all"
 	   tal:attributes="checked python: view.show_all and 'checked'" />
     <label for="show_all">show all members</label>
