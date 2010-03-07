@@ -37,6 +37,11 @@ chapter, you should be able to:
 - Create content objects and interfaces
 - Use form generation tool (zope.formlib)
 
+.. note::
+
+   The examples in this documentation can be downloaded from here:
+   http://download.zope.org/bluebream/examples/ticketcollector-1.0.0.tar.bz2
+
 .. _tut1-new-project:
 
 Starting a new project
