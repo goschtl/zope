@@ -41,3 +41,44 @@ A root folder normally contains a local site manager names
 
     >>> browser.getLink('_sm')
     <Link text='_sm' url='http://localhost/++grokui++/@@zodbbrowser/...>
+
+By default you will only see a limited set of member for each browsed
+object, these members, which are stored in ZODB separated from the
+currently browsed object. Not displayed are other members, that are
+'native' attributes or methods of a browsed object.
+
+    >>> 'getSiteManager(self)' in browser.contents
+    False
+
+You can, however, enable displaying of those members by ticking `show
+all members` box and clicking the `Update` button:
+
+    >>> browser.getControl('show all members')
+    <ItemControl name='show_all' type='checkbox' ... selected=False>
+    >>> browser.getControl('show all members').selected = True
+    >>> browser.getControl('Update').click()
+
+Now the ``getSiteManager()`` method is displayed:
+
+    >>> 'getSiteManager(self)' in browser.contents
+    True
+
+We can also enable or disable displaying of doc strings of
+members (disabled by default). For example the docstring for a folders
+``keys()`` method tells us:
+
+    >>> browser.getControl('show docstrings').selected = True
+    >>> browser.getControl('Update').click()
+    >>> print browser.contents
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    ...
+    ...<pre>Return a sequence-like object containing the names
+    associated with the objects that appear in the folder</pre>
+    ...
+
+We disable both, displaying of docstrings and non-persistent members
+to get shorter output:
+
+    >>> browser.getControl('show docstrings').selected = False
+    >>> browser.getControl('show all members').selected = False
+    >>> browser.getControl('Update').click()
