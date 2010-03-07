@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.0a4 (unreleased)
+1.0a4 (2010-03-07)
 ------------------
 
 - Added an empty PKG-INFO
