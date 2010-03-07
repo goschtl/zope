@@ -51,13 +51,11 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         self.info = IObjectInfo(self.obj)
         session = ISession(self.request)['grokui.zodbbrowser']
 
-        self.show_all = show_all
-        self.show_docs = show_docs
         if update is None:
-            self.show_all = session.get('show_all', False)
-            self.show_docs = session.get('show_docs', False)
-        session['show_all'] = self.show_all
-        session['show_docs'] = self.show_docs
+            show_all = session.get('show_all', False)
+            show_docs = session.get('show_docs', False)
+        self.show_all = session['show_all'] = show_all
+        self.show_docs = session['show_docs'] = show_docs
         return
         
     def getRootOID(self):
