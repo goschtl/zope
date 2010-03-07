@@ -28,10 +28,10 @@ base.
       - 2.4, 2.5
       - KGS for Zope 3.4
 
-    * - `AFPY <http://zope3.afpy.org/buildbot/>`_
+    * - `AFPY <http://buildbot.afpy.org/bluebream/>`_
       - Christophe Combelles
       - Linux 32
-      - 2.4, 2.5, 2.6, 2.7
+      - 2.4, 2.5, 2.6, 2.7, 3.1
       - ZTK, BlueBream
 
     * - Securactive `Zope <http://zope.buildbot.securactive.org/>`_
