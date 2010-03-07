@@ -99,7 +99,7 @@ class GrokUIZODBBrowserInfo(GrokUIView):
         curr = self.info
         parent_list = [curr]
         while True:
-            parent = IObjectInfo(curr.getParent())
+            parent = IObjectInfo(curr.parent)
             if parent.obj is not None:
                 parent_list.append(parent)
             if parent.obj is None or parent.obj is curr.obj:
