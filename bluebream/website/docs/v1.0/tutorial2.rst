@@ -24,11 +24,13 @@ collector project started in the first part of tutorial will be
 expanded with additional functionalities.  In fact, the collector
 object created in the last chapter is a content component.  In this
 chapter, you will create new content objects like tickets and
-comments.
+comments.  Another thing you might be noticed that every content
+component, including container objects, there is well defined
+interface defined using ``zope.interface`` module.
 
-.. Before proceeding further, here is an overview of sections.
+Before proceeding further, here is an overview of sections.
 
-.. - **Adding tickets** -- 
+- **Adding tickets** -- 
 
 .. _tut2-adding-tickets:
 
@@ -37,7 +39,7 @@ Adding tickets
 
 In this section, you will learn about adding tickets to collector.
 In order to use ticket objects, first you need to create an interface
-for tickets.  Update the ``interfaces.py`` with the ticket
+for tickets.  Update the ``src/tc/main/interfaces.py`` with the ticket
 interface::
 
   class ITicket(Interface):
@@ -64,15 +66,17 @@ not, you can import it from these locations::
 
 It would be good if you set a precondition to restrict what types of
 objects you want to add inside a collector.  Now you know that, you
-only expect tickets objects inside collector.  So, you can a
-precondition for restricting ticket objects inside collector object.
+only expect tickets objects inside collector.  So, you can add a
+precondition for restricting only ticket objects inside collector.
 To do this, you need to add a ``__setitem__`` method to
-``ICollector`` interface definition.  The ``__setitem__`` is part of
-``IContainer`` API.  Then below that, you can add ``precondition``
+``ICollector`` interface definition (The ``__setitem__`` is part of
+``IContainer`` API).  Then below that, you can add ``precondition``
 attribute, which is an instance of ``ItemTypePrecondition`` class.
 You can pass the interfaces as arguments to ``ItemTypePrecondition``
 class.  Below, only one class (``ITicket``) is passed.  So, only
 ticket objects are allowed inside collector.
+
+    from zope.app.container.constraints import ItemTypePrecondition
 
     def __setitem__(name, object):
         """Add an ICollector object."""
@@ -89,6 +93,7 @@ you need to create another interface inheriting from
 
   from zope.schema import Field
   from zope.container.interfaces import IContained
+  from zope.app.container.constraints import ContainerTypesConstraint
 
   class ITicketContained(IContained):
       """Interface that specifies the type of objects that can contain
@@ -96,6 +101,9 @@ you need to create another interface inheriting from
 
       __parent__ = Field(
           constraint = ContainerTypesConstraint(ICollector))
+
+Here you added a constraint for ``__parent__`` field using
+``ContainerTypesConstraint`` class.
 
 Next, you can implement this interface inside ``ticket.py``::
 
