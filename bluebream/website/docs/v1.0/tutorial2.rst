@@ -30,12 +30,21 @@ interface defined using ``zope.interface`` module.
 
 Before proceeding further, here is an overview of sections.
 
-- **Adding tickets** -- 
+- **Adding tickets** -- This section shows creating a ticket
+  collector objects.  This section provide a detailed overview of
+  creating content object and demonstrate with a simple example.
+
+- **Adding comments** -- This section explain about adding content
+  object inside other container objects.  Ticket objects will be
+  transformed to a container object.
 
 .. _tut2-adding-tickets:
 
 Adding tickets
 --------------
+
+Schema definition
+~~~~~~~~~~~~~~~~~
 
 In this section, you will learn about adding tickets to collector.
 In order to use ticket objects, first you need to create an interface
@@ -76,6 +85,8 @@ You can pass the interfaces as arguments to ``ItemTypePrecondition``
 class.  Below, only one class (``ITicket``) is passed.  So, only
 ticket objects are allowed inside collector.
 
+::
+
     from zope.app.container.constraints import ItemTypePrecondition
 
     def __setitem__(name, object):
@@ -105,6 +116,9 @@ you need to create another interface inheriting from
 Here you added a constraint for ``__parent__`` field using
 ``ContainerTypesConstraint`` class.
 
+Implementation
+~~~~~~~~~~~~~~
+
 Next, you can implement this interface inside ``ticket.py``::
 
   from zope.interface import implements
@@ -119,6 +133,9 @@ Next, you can implement this interface inside ``ticket.py``::
 
       number = u""
       summary = u""
+
+Configuration
+~~~~~~~~~~~~~
 
 Then, register the interface & class::
 
@@ -174,6 +191,10 @@ You can register the view inside `configure.zcml`::
 
 Adding Comments
 ---------------
+
+.. warning::
+
+   This section is not completed.
 
 In this section, you will create `comment` objects and add it to
 tickets.  As the first step, you need to define the interface for the
