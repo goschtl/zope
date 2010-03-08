@@ -14,21 +14,28 @@ Tutorial --- Part 2
 Introduction
 ------------
 
-This is the second part of tutorial.  If you complete this chapter,
-you should be able to create content components.
+This is the second part of tutorial.  In the first part, you learned
+about project directory structure, Buildout configuration, content
+components and using the form library.  Content components are
+objects with a user visisble view.  A view could be a browser view
+(HTML/JS/CSS) or JSON or XMLRPC or any other view.  To exaplain the
+idea of content components, the ticket collector project started in
+the first part of tutorial will be expanded with additional
+functionalities.  In fact, the collector object created in the last
+chapter is a content component.  In this chapter, you will create new
+content objects like tickets and comments.  Another thing you might
+be noticed that every content component, including container objects,
+there is well defined interface defined using ``zope.interface``
+module.
 
-Content components are objects with a user visisble view.  A view
-could be a browser view (HTML/JS/CSS) or JSON or XMLRPC or any other
-view.  To exaplain the idea of content components, the ticket
-collector project started in the first part of tutorial will be
-expanded with additional functionalities.  In fact, the collector
-object created in the last chapter is a content component.  In this
-chapter, you will create new content objects like tickets and
-comments.  Another thing you might be noticed that every content
-component, including container objects, there is well defined
-interface defined using ``zope.interface`` module.
+This chapter explore content components in more detail.  After
+completing this chapter, you should be able to:
 
-Before proceeding further, here is an overview of sections.
+- Define schema for content components
+- Create container objects
+- Use ZCML to configure various components
+
+Before proceeding further, here is an overview of sections:
 
 - **Adding tickets** -- This section shows creating a ticket
   collector objects.  This section provide a detailed overview of
