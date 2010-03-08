@@ -1,9 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <utility
-      name="lovely.remotetask" 
-      provides="zope.app.generations.interfaces.ISchemaManager"
-      component=".schemaManager"
-      />
-
-</configure>
