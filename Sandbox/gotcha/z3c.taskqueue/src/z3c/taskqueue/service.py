@@ -20,7 +20,6 @@ from lovely.remotetask import interfaces, job, task, processor
 from zope import component
 from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
-from zope.app.publication.zopepublication import ZopePublication
 from zope.component.interfaces import ComponentLookupError
 from zope.traversing.api import getParents
 import BTrees
@@ -51,7 +50,7 @@ class TaskService(contained.Contained, persistent.Persistent):
     processorFactory = processor.SimpleProcessor
     processorArguments = {'waitTime': 1.0}
 
-    _scheduledJobs  = None
+    _scheduledJobs = None
     _scheduledQueue = None
     _v_nextid = None
     family = BTrees.family32
@@ -133,10 +132,9 @@ class TaskService(contained.Contained, persistent.Persistent):
                 break
         if jobid in self.jobs:
             job = self.jobs[jobid]
-            if (   job.status == interfaces.CRONJOB
+            if (job.status == interfaces.CRONJOB
                 or job.status == interfaces.DELAYED
-                or job.status == interfaces.STARTLATER
-               ):
+                or job.status == interfaces.STARTLATER):
                 job.status = interfaces.CANCELLED
 
     def getStatus(self, jobid):
@@ -243,7 +241,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         try:
             jobtask = component.getUtility(self.taskInterface, name=job.task)
         except ComponentLookupError, error:
-            log.error('Task "%s" not found!'% job.task)
+            log.error('Task "%s" not found!' % job.task)
             log.exception(error)
             job.error = error
             if job.status != interfaces.CRONJOB:
@@ -303,9 +301,8 @@ class TaskService(contained.Contained, persistent.Persistent):
                 self._scheduledJobs[first] = jobs[1:]
                 if len(self._scheduledJobs[first]) == 0:
                     del self._scheduledJobs[first]
-                if (    job.status != interfaces.CANCELLED
-                    and job.status != interfaces.ERROR
-                   ):
+                if (job.status != interfaces.CANCELLED
+                    and job.status != interfaces.ERROR):
                     if job.status != interfaces.DELAYED:
                         self._insertCronJob(job, now)
                     return job
@@ -347,7 +344,6 @@ class TaskService(contained.Contained, persistent.Persistent):
             if uid not in self.jobs:
                 return uid
             self._v_nextid = None
-
 
 
 def getAutostartServiceNames():
