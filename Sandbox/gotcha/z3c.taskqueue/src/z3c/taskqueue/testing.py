@@ -33,10 +33,10 @@ class ExceptionTask(object):
 
     def __call__(self, service, id, input):
         # always raise division by zero
-        1/0
+        1 / 0
 
     def __repr__(self):
-        return '<%s>' %(self.__class__.__name__)
+        return '<%s>' % (self.__class__.__name__)
 
 
 ###############################################################################
@@ -44,6 +44,7 @@ class ExceptionTask(object):
 # Stub implementations (Note: use the ITaskStub interface for this service)
 #
 ###############################################################################
+
 
 class QueueStub(object):
 
@@ -57,9 +58,9 @@ class QueueStub(object):
             len_self = len(self._data)
             index += len_self
             if index < 0:
-                raise IndexError(index-len_self)
+                raise IndexError(index - len_self)
         res = self._data[index]
-        self._data = self._data[:index] + self._data[index+1:]
+        self._data = self._data[:index] + self._data[index + 1:]
         return res
 
     def put(self, item):
