@@ -50,8 +50,8 @@ class ITask(interface.Interface):
     def __call__(service, jobid, input):
         """Execute the task.
 
-        The ``service`` argument is the task service object. It allows access to
-        service wide data and the system as a whole.
+        The ``service`` argument is the task service object. It allows access
+        to service wide data and the system as a whole.
 
         Tasks do not live in a vacuum, but are tightly coupled to the job
         executing it. The ``jobid`` argument provides the id of the job being
@@ -71,9 +71,9 @@ class ITaskService(IContained):
         schema=interface.common.mapping.IMapping)
 
     taskInterface = fields.GlobalInterface(
-            title = u'Task Interface',
-            description = u'The interface to lookup task utilities',
-            default = ITask,
+            title=u'Task Interface',
+            description=u'The interface to lookup task utilities',
+            default=ITask,
             )
 
     def getAvailableTasks():
@@ -213,43 +213,43 @@ class ICronJob(IJob):
     minute = schema.Tuple(
             title=u'minute(s)',
             default=(),
-            required=False
+            required=False,
             )
 
     hour = schema.Tuple(
             title=u'hour(s)',
             default=(),
-            required=False
+            required=False,
             )
 
     dayOfMonth = schema.Tuple(
             title=u'day of month',
             default=(),
-            required=False
+            required=False,
             )
 
     month = schema.Tuple(
             title=u'month(s)',
             default=(),
-            required=False
+            required=False,
             )
 
     dayOfWeek = schema.Tuple(
             title=u'day of week',
             default=(),
-            required=False
+            required=False,
             )
 
     delay = schema.Int(
             title=u'delay',
             default=0,
-            required=False
+            required=False,
             )
 
     scheduledFor = schema.Datetime(
             title=u'scheduled',
             default=None,
-            required=False
+            required=False,
             )
 
     def update(minute, hour, dayOfMonth, month, dayOfWeek, delay):
@@ -269,10 +269,10 @@ class IStartRemoteTasksEvent(interface.Interface):
     """Event to start the Remote Tasks"""
 
     serviceNames = schema.List(
-            title = u'Services to start',
-            default = [],
-            required = False,
-            value_type = schema.TextLine()
+            title=u'Services to start',
+            default=[],
+            required=False,
+            value_type=schema.TextLine(),
             )
 
 
