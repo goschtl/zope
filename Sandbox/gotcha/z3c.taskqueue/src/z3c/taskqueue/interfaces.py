@@ -63,7 +63,7 @@ class ITask(interface.Interface):
 
 
 class ITaskService(IContained):
-    """A service for managing and executing long-running, remote tasks."""
+    """A service for managing and executing tasks."""
 
     jobs = schema.Object(
         title=u'Jobs',
