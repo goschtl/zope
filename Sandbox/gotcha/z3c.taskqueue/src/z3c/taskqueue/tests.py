@@ -17,13 +17,11 @@
 __docformat__ = "reStructuredText"
 
 from lovely.remotetask import service
-from zope.app.testing import placelesssetup
 from zope.app.testing.setup import (placefulSetUp, placefulTearDown)
 from zope.testing.doctest import INTERPRET_FOOTNOTES
 from zope.testing.doctestunit import DocFileSuite
 from zope.testing.loggingsupport import InstalledHandler
 import doctest
-import logging
 import random
 import unittest
 
@@ -39,6 +37,7 @@ def setUp(test):
     # Make tests predictable
     random.seed(27)
 
+
 def tearDown(test):
     random.seed()
     placefulTearDown()
@@ -46,7 +45,6 @@ def tearDown(test):
     log_info.clear()
     log_info.uninstall()
     service.TaskService.processorArguments = test.origArgs
-
 
 
 class TestIdGenerator(unittest.TestCase):
@@ -73,7 +71,6 @@ class TestIdGenerator(unittest.TestCase):
         self.assertEquals(2055242787, self.service._generateId())
 
 
-
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestIdGenerator),
@@ -83,7 +80,6 @@ def test_suite():
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE
-                     |doctest.ELLIPSIS
-                     |INTERPRET_FOOTNOTES
-                     ),
+                     | doctest.ELLIPSIS
+                     | INTERPRET_FOOTNOTES),
         ))
