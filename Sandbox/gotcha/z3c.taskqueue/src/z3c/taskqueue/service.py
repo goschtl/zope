@@ -29,7 +29,6 @@ import random
 import time
 import zc.queue
 import zope.interface
-import zope.location
 
 
 log = logging.getLogger('z3c.taskqueue')
