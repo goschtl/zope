@@ -958,6 +958,13 @@ object, you can see that it has the object you added::
   >>> list(root.keys())
   [u'mycolector']
 
+You can use this debug shell to introspect Python objects stored in
+ZODB.  You can add, update or delete objects and attributes from the
+debug shell.
+
+A default view for collector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 If you try to access the collector from the URL:
 http://localhost:8080/mycolector , you will get ``NotFound`` error
 like this::
@@ -967,11 +974,8 @@ like this::
   NotFound: Object: <tc.main.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
 This error is raised, because there is no view named ``index``
-registered for ``ICollector``.  The next section will show how to
-create a default view for ``ICollector`` interface.
-
-A default view for collector
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+registered for ``ICollector``.  This section will show how to create
+a default view for ``ICollector`` interface.
 
 As you have already seen in the :ref:`started-getting` chapter, you
 can create a simple view and register it from ZCML.
@@ -993,7 +997,7 @@ Then, in the ``src/tc/main/configure.zcml``::
      />
 
 Now you can visit: http://localhost:8080/mycolector
-It should display a message like this:
+It should display a message like this::
 
   Hello ticket collector!
 
