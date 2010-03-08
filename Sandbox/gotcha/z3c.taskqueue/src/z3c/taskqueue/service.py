@@ -18,7 +18,6 @@ __docformat__ = 'restructuredtext'
 
 from lovely.remotetask import interfaces, job, task, processor
 from zope import component
-from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
 from zope.component.interfaces import ComponentLookupError
 from zope.traversing.api import getParents
@@ -344,14 +343,3 @@ class TaskService(contained.Contained, persistent.Persistent):
             if uid not in self.jobs:
                 return uid
             self._v_nextid = None
-
-
-def getAutostartServiceNames():
-    """get a list of services to start"""
-
-    serviceNames = []
-    config = getProductConfiguration('lovely.remotetask')
-    if config is not None:
-        serviceNames = [name.strip()
-                        for name in config.get('autostart', '').split(',')]
-    return serviceNames
