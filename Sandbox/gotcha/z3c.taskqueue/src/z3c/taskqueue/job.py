@@ -49,7 +49,7 @@ class Job(persistent.Persistent):
         self.created = datetime.datetime.now()
 
     def __repr__(self):
-        return '<%s %r>' %(self.__class__.__name__, self.id)
+        return '<%s %r>' % (self.__class__.__name__, self.id)
 
 
 class CronJob(Job):
@@ -103,16 +103,17 @@ class CronJob(Job):
         if self.minute:
             pass
         elif self.hour:
-            inc = lambda t: 60*60
+            inc = lambda t: 60 * 60
             lnow = lnow[:4]
         elif self.dayOfMonth:
-            inc = lambda t: 24*60*60
+            inc = lambda t: 24 * 60 * 60
             lnow = lnow[:3]
         elif self.dayOfWeek:
-            inc = lambda t: 24*60*60
+            inc = lambda t: 24 * 60 * 60
             lnow = lnow[:3]
         elif self.month:
             mlen = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
             def minc(t):
                 m = time.gmtime(t)[1] - 1
                 if m == 1:
@@ -126,14 +127,14 @@ class CronJob(Job):
                         d = 28
                     else:
                         d = 29
-                    return d*24*60*60
-                return mlen[m]*24*60*60
+                    return d * 24 * 60 * 60
+                return mlen[m] * 24 * 60 * 60
             inc = minc
             lnow = lnow[:3]
             lnow[2] = 1
-        while len(lnow)<9:
+        while len(lnow) < 9:
             lnow.append(0)
-        while next <= now+365*24*60*60:
+        while next <= now + 365 * 24 * 60 * 60:
             next += inc(next)
             fields = time.gmtime(next)
             if ((self.month and fields[1] not in self.month) or
@@ -144,4 +145,3 @@ class CronJob(Job):
                 continue
             return int(next)
         return None
-
