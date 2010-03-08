@@ -149,18 +149,6 @@ class TaskServiceStub(contained.Contained):
         """See interfaces.ITaskService"""
         return str(self.jobs[jobid].error)
 
-    def startProcessing(self):
-        """See interfaces.ITaskService"""
-        raise NotImplementedError("Stub doesn't startProcessing")
-
-    def stopProcessing(self):
-        """See interfaces.ITaskService"""
-        raise NotImplementedError("Stub doesn't stopProcessing")
-
-    def isProcessing(self):
-        """See interfaces.ITaskService"""
-        return False
-
     def processNext(self):
         job = self._queue.pull()
         jobtask = zope.component.getUtility(
@@ -173,8 +161,3 @@ class TaskServiceStub(contained.Contained):
             job.error = error
             job.status = interfaces.ERROR
         job.completed = datetime.datetime.now()
-
-    def process(self):
-        """See interfaces.ITaskService"""
-        while self._queue:
-            self.processNext()

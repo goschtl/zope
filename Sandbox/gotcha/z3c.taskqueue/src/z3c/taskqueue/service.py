@@ -20,7 +20,6 @@ from z3c.taskqueue import interfaces, job, task
 from zope import component
 from zope.app.container import contained
 from zope.component.interfaces import ComponentLookupError
-from zope.traversing.api import getParents
 import BTrees
 import datetime
 import logging
@@ -142,29 +141,6 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         return str(self.jobs[jobid].error)
 
-    def startProcessing(self):
-        """See interfaces.ITaskService"""
-        if self.__parent__ is None:
-            return
-        if self._scheduledJobs is None:
-            self._scheduledJobs = self.family.IOB.Tree()
-        if self._scheduledQueue is None:
-            self._scheduledQueue = zc.queue.PersistentQueue()
-        # Create the path to the service within the DB.
-        servicePath = [parent.__name__ for parent in getParents(self)
-                       if parent.__name__]
-        servicePath.reverse()
-        servicePath.append(self.__name__)
-
-    def stopProcessing(self):
-        """See interfaces.ITaskService"""
-        if self.__name__ is None:
-            return
-
-    def isProcessing(self):
-        """See interfaces.ITaskService"""
-        return False
-
     def hasJobsWaiting(self, now=None):
         # If there is are any simple jobs in the queue, we have work to do.
         if self._queue:
@@ -225,11 +201,6 @@ class TaskService(contained.Contained, persistent.Persistent):
                 job.status = interfaces.ERROR
         job.completed = datetime.datetime.now()
         return True
-
-    def process(self, now=None):
-        """See interfaces.ITaskService"""
-        while self.processNext(now):
-            pass
 
     def _pullJob(self, now=None):
         # first move new cron jobs from the scheduled queue into the cronjob
