@@ -79,7 +79,6 @@ def test_suite():
         unittest.makeSuite(TestIdGenerator),
         DocFileSuite('README.txt',
                      'startlater.txt',
-                     'processor.txt',
                      'TESTING.txt',
                      setUp=setUp,
                      tearDown=tearDown,
