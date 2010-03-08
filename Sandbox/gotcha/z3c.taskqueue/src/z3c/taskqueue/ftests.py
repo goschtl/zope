@@ -37,7 +37,6 @@ def tearDown(test):
 def test_suite():
     suite1 = functional.FunctionalDocFileSuite(
         'browser/README.txt',
-        'xmlrpc.txt',
         setUp=setUp,
         tearDown=tearDown,
     )

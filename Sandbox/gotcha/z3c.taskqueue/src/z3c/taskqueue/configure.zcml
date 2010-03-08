@@ -33,6 +33,4 @@
       factory=".task.EchoTask"
       name="echo" />
 
-  <include file="xmlrpc.zcml" />
-
 </configure>

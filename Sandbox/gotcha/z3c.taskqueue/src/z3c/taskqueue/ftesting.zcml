@@ -18,7 +18,6 @@
   <include package="zope.app.authentication" />
   <include package="zope.app.session" />
   <include package="lovely.remotetask" />
-  <include package="zope.app.xmlrpcintrospection" />
 
   <utility
       factory="lovely.remotetask.testing.ExceptionTask"
