@@ -18,7 +18,7 @@ __docformat__ = 'restructuredtext'
 
 from z3c.taskqueue import interfaces, job, task
 from zope import component
-from zope.app.container import contained
+from zope.container import contained
 from zope.component.interfaces import ComponentLookupError
 import BTrees
 import datetime

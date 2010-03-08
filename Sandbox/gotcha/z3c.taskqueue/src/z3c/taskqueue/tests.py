@@ -17,31 +17,20 @@
 __docformat__ = "reStructuredText"
 
 from z3c.taskqueue import service
-from zope.app.testing.setup import (placefulSetUp, placefulTearDown)
 from zope.testing.doctest import INTERPRET_FOOTNOTES
 from zope.testing.doctestunit import DocFileSuite
-from zope.testing.loggingsupport import InstalledHandler
 import doctest
 import random
 import unittest
 
 
 def setUp(test):
-    root = placefulSetUp(site=True)
-    test.globs['root'] = root
-
-    log_info = InstalledHandler('z3c.taskqueue')
-    test.globs['log_info'] = log_info
     # Make tests predictable
     random.seed(27)
 
 
 def tearDown(test):
     random.seed()
-    placefulTearDown()
-    log_info = test.globs['log_info']
-    log_info.clear()
-    log_info.uninstall()
 
 
 class TestIdGenerator(unittest.TestCase):
@@ -73,7 +62,6 @@ def test_suite():
         unittest.makeSuite(TestIdGenerator),
         DocFileSuite('README.txt',
                      'startlater.txt',
-                     'TESTING.txt',
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE

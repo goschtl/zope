@@ -4,18 +4,8 @@ Remote Task Execution
 
 .. contents::
 
-This package provides an implementation of a remote task execution Web service
-that allows to execute pre-defined tasks on another server. It is also
-possible to run cron jobs at specific times. Those services are useful in two
-ways:
-
-1. They enable us to complete tasks that are not natively available on a
-   particular machine. For example, it is not possible to convert an AVI file
-   to a Flash(R) movie using Linux, the operating system our Web server might
-   run on.
-
-2. They also allow to move expensive operations to other servers. This is
-   valuable, for example, when converting videos on high-traffic sites.
+This package provides an implementation of a task queue service
+It is also possible to run cron jobs at specific times.
 
 Usage
 _____
@@ -31,7 +21,6 @@ The object should be located, so it gets a name:
 
   >>> from zope.app.folder import Folder
   >>> site1 = Folder()
-  >>> root['site1'] = site1
   >>> from zope.app.component.site import LocalSiteManager
   >>> from zope.security.proxy import removeSecurityProxy
   >>> sm = LocalSiteManager(removeSecurityProxy(site1))
@@ -111,256 +100,10 @@ As long as the job is not being processed, it can be cancelled:
   >>> service.getStatus(jobid)
   'cancelled'
 
-The service isn't being started by default:
-
-  >>> service.isProcessing()
-  False
-
-The ``TaskService`` is being started automatically - if specified in
-``zope.conf`` - as soon as the ``IDatabaseOpenedEvent`` is fired. Let's
-emulate the ``zope.conf`` settings:
-
-  >>> class Config(object):
-  ...     mapping = {}
-  ...     def getSectionName(self):
-  ...         return 'z3c.taskqueue'
-  >>> config = Config()
-  >>> config.mapping['autostart'] = (
-  ...     'site1@TestTaskService1, site2@TestTaskService2,@RootTaskService')
-  >>> from zope.app.appsetup.product import setProductConfigurations
-  >>> setProductConfigurations([config])
-  >>> from z3c.taskqueue.service import getAutostartServiceNames
-  >>> getAutostartServiceNames()
-  ['site1@TestTaskService1', 'site2@TestTaskService2', '@RootTaskService']
-
-Note that `RootTaskService` is for a use-case where the service is directly
-registered at the root. We test this use-case in a separate footnote so that
-the flow of this document is not broken. [#1]_
-
-To get a clean logging environment let's clear the logging stack:
-
-  >>> log_info.clear()
-
-On Zope startup the ``IDatabaseOpenedEvent`` is fired, and will call
-the ``bootStrap()`` method:
-
-  >>> from ZODB.tests import util
-  >>> import transaction
-  >>> db = util.DB()
-  >>> from zope.app.publication.zopepublication import ZopePublication
-  >>> conn = db.open()
-  >>> conn.root()[ZopePublication.root_name] = root
-  >>> transaction.commit()
-
-Fire the event:
-
-  >>> from zope.app.appsetup.interfaces import DatabaseOpenedWithRoot
-  >>> from z3c.taskqueue.service import bootStrapSubscriber
-  >>> event = DatabaseOpenedWithRoot(db)
-  >>> bootStrapSubscriber(event)
-
-and voila - the service is processing:
-
-  >>> service.isProcessing()
-  True
-
-Checking out the logging will prove the started service:
-
-  >>> print log_info
-  z3c.taskqueue INFO
-    handling event IStartRemoteTasksEvent
-  z3c.taskqueue INFO
-    service TestTaskService1 on site site1 started
-  z3c.taskqueue ERROR
-    site site2 not found
-  z3c.taskqueue INFO
-    service RootTaskService on site root started
-
-The verification for the jobs in the root-level service is done in another
-footnote [#2]_
-
-To deal with a lot of services in one sites it will be possible to use
-asterisks (*) to start services. In case of using site@* means start all
-services in that site:
-
-But first stop all processing services:
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
-
-  >>> root_service.stopProcessing()
-  >>> root_service.isProcessing()
-  False
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
-And reset the logger:
-
-  >>> log_info.clear()
-
-Reset the product configuration with the asterisked service names:
-
-  >>> config.mapping['autostart'] = 'site1@*'
-  >>> setProductConfigurations([config])
-  >>> getAutostartServiceNames()
-  ['site1@*']
-
-Firing the event again will start all services in the configured site:
-
-  >>> bootStrapSubscriber(event)
-
-  >>> service.isProcessing()
-  True
-
-  >>> root_service.isProcessing()
-  False
-
-Let's checkout the logging:
-
-  >>> print log_info
-  z3c.taskqueue INFO
-    handling event IStartRemoteTasksEvent
-  z3c.taskqueue INFO
-    service TestTaskService1 on site site1 started
-
-To deal with a lot of services in a lot of sites it possible to use
-asterisks (*) to start services. In case of using *@* means start all
-services on all sites:
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
-Reset the product configuration with the asterisked service names:
-
-  >>> config.mapping['autostart'] = '*@*'
-  >>> setProductConfigurations([config])
-  >>> getAutostartServiceNames()
-  ['*@*']
-
-...and reset the logger:
-
-  >>> log_info.clear()
-
-And fire the event again. All services should be started now:
-
-  >>> bootStrapSubscriber(event)
-
-  >>> service.isProcessing()
-  True
-
-  >>> root_service.isProcessing()
-  True
-
-Let's check the logging:
-
-  >>> print log_info
-  z3c.taskqueue INFO
-    handling event IStartRemoteTasksEvent
-  z3c.taskqueue INFO
-    service RootTaskService on site root started
-  z3c.taskqueue INFO
-    service TestTaskService1 on site site1 started
-
-
-To deal with a specific service in a lot of sites it possible to use
-asterisks (*) to start services. In case of using \*@service means start the
-service called `service` on all sites:
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
-
-  >>> root_service.stopProcessing()
-  >>> root_service.isProcessing()
-  False
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
-Reset the product configuration with the asterisked service names:
-
-  >>> config.mapping['autostart'] = '*@TestTaskService1'
-  >>> setProductConfigurations([config])
-  >>> getAutostartServiceNames()
-  ['*@TestTaskService1']
-
-...and reset the logger:
-
-  >>> log_info.clear()
-
-And fire the event again. All services should be started now:
-
-  >>> bootStrapSubscriber(event)
-
-  >>> service.isProcessing()
-  True
-
-  >>> root_service.isProcessing()
-  False
-
-Let's checkout the logging:
-
-  >>> print log_info
-  z3c.taskqueue INFO
-    handling event IStartRemoteTasksEvent
-  z3c.taskqueue INFO
-    service TestTaskService1 on site site1 started
-
-In case of configuring a directive which does not match any service on
-any site logging will show a warning message:
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
-  >>> config.mapping['autostart'] = '*@Foo'
-  >>> setProductConfigurations([config])
-  >>> getAutostartServiceNames()
-  ['*@Foo']
-
-  >>> log_info.clear()
-
-  >>> bootStrapSubscriber(event)
-
-  >>> service.isProcessing()
-  False
-
-  >>> root_service.isProcessing()
-  False
-
-  >>> print log_info
-  z3c.taskqueue INFO
-    handling event IStartRemoteTasksEvent
-  z3c.taskqueue WARNING
-    no services started by directive *@Foo
-
-Finally stop processing and kill the thread. We'll call service.process()
-manually as we don't have the right environment in the tests.
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
-
-  >>> root_service.stopProcessing()
-  >>> root_service.isProcessing()
-  False
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
 Let's now read a job:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
-  >>> service.process()
+  >>> service.processNext()
 
   >>> service.getStatus(jobid)
   'completed'
@@ -378,7 +121,7 @@ Now, let's define a new task that causes an error:
 Now add and execute it:
 
   >>> jobid = service.add(u'error')
-  >>> service.process()
+  >>> service.processNext()
 
 Let's now see what happened:
 
@@ -509,16 +252,16 @@ A delayed job is executed once after the given delay time in seconds.
   ...                           )
   >>> service.getStatus(jobid)
   'delayed'
-  >>> service.process(0)
+  >>> service.processNext(0)
   >>> service.getStatus(jobid)
   'delayed'
-  >>> service.process(9)
+  >>> service.processNext(9)
   >>> service.getStatus(jobid)
   'delayed'
 
 At 10 seconds the job is executed and completed.
 
-  >>> service.process(10)
+  >>> service.processNext(10)
   >>> service.getStatus(jobid)
   'completed'
 
@@ -540,7 +283,7 @@ Here we create a cron job which runs 10 minutes and 13 minutes past the hour.
 We process the remote task but our cron job is not executed because we are too
 early in time.
 
-  >>> service.process(0)
+  >>> service.processNext(0)
   >>> service.getStatus(jobid)
   'cronjob'
   >>> service.getResult(jobid) is None
@@ -548,7 +291,7 @@ early in time.
 
 Now we run the remote task 10 minutes later and get a result.
 
-  >>> service.process(10*60)
+  >>> service.processNext(10*60)
   >>> service.getStatus(jobid)
   'cronjob'
   >>> service.getResult(jobid)
@@ -556,13 +299,13 @@ Now we run the remote task 10 minutes later and get a result.
 
 And 1 minutes later it is not called.
 
-  >>> service.process(11*60)
+  >>> service.processNext(11*60)
   >>> service.getResult(jobid)
   1
 
 But 3 minutes later it is called again.
 
-  >>> service.process(13*60)
+  >>> service.processNext(13*60)
   >>> service.getResult(jobid)
   2
 
@@ -577,144 +320,15 @@ After the update the job must be rescheduled in the service.
 
 Now the job is not executed at the old registration minute which was 10.
 
-  >>> service.process(10*60+60*60)
+  >>> service.processNext(10*60+60*60)
   >>> service.getResult(jobid)
   2
 
 But it executes at the new minute which is set to 11.
 
-  >>> service.process(11*60+60*60)
+  >>> service.processNext(11*60+60*60)
   >>> service.getResult(jobid)
   3
-
-
-Threading behavior
-------------------
-
-Each task service runs in a separate thread, allowing them to operate
-independently.  Tasks should be designed to avoid conflict errors in
-the database.
-
-Let's start the task services we have defined at this point, and see
-what threads are running as a result:
-
-  >>> service.startProcessing()
-  >>> root_service.startProcessing()
-
-  >>> import pprint
-  >>> import threading
-
-  >>> def show_threads():
-  ...     threads = [t for t in threading.enumerate()
-  ...                if t.getName().startswith('taskqueues.')]
-  ...     threads.sort(key=lambda t: t.getName())
-  ...     pprint.pprint(threads)
-
-  >>> show_threads()
-  [<Thread(taskqueues.rootTaskService, started daemon)>,
-   <Thread(taskqueues.site1.++etc++site.default.testTaskService1, started daemon)>]
-
-Let's add a second site containing a task service with the same name as the
-service in the first site:
-
-  >>> site2 = Folder()
-  >>> service2 = taskqueue.TaskService()
-
-  >>> root['site2'] = site2
-  >>> sm = LocalSiteManager(removeSecurityProxy(site2))
-  >>> site2.setSiteManager(sm)
-
-  >>> sm['default']['testTaskService1'] = service2
-  >>> service2 = sm['default']['testTaskService1'] # caution! proxy
-
-Let's register it under the name `TestTaskService1`:
-
-  >>> sm = site2.getSiteManager()
-  >>> sm.registerUtility(
-  ...     service2, interfaces.ITaskService, name='TestTaskService1')
-
-The service requires that it's been committed to the database before it can
-be used:
-
-  >>> transaction.commit()
-
-The new service isn't currently processing:
-
-  >>> service2.isProcessing()
-  False
-
-If we start the new service, we can see that there are now three background
-threads:
-
-  >>> service2.startProcessing()
-  >>> show_threads()
-  [<Thread(taskqueues.rootTaskService, started daemon)>,
-   <Thread(taskqueues.site1.++etc++site.default.testTaskService1, started daemon)>,
-   <Thread(taskqueues.site2.++etc++site.default.testTaskService1, started daemon)>]
-
-Let's stop the services, and give the background threads a chance to get the
-message:
-
-  >>> service.stopProcessing()
-  >>> service2.stopProcessing()
-  >>> root_service.stopProcessing()
-
-  >>> import time
-  >>> time.sleep(STOP_SLEEP_TIME)
-
-The threads have exited now:
-
-  >>> print [t for t in threading.enumerate()
-  ...        if t.getName().startswith('taskqueues.')]
-  []
-
-
-Footnotes
----------
-
-.. [#1] Tests for use-cases where a service is registered at `root` level.
-
-   Register service for RootLevelTask
-
-     >>> root_service = taskqueue.TaskService()
-     >>> component.provideUtility(root_service, interfaces.ITaskService,
-     ...                          name='RootTaskService')
-
-   The object should be located, so it get's a name:
-
-     >>> root['rootTaskService'] = root_service
-     >>> root_service = root['rootTaskService'] # caution! proxy
-     >>> root_service.__name__
-     u'rootTaskService'
-     >>> root_service.__parent__ is root
-     True
-
-     >>> r_jobid = root_service.add(
-     ...     u'echo', {'foo': 'this is for root_service'})
-     >>> r_jobid
-     1506179619
-
-
-.. [#2] We verify the root_service does get processed:
-
-     >>> root_service.isProcessing()
-     True
-
-   Cleaning up root-level service:
-
-     >>> print root_service.getStatus(r_jobid)
-     queued
-
-   Thus the root-service is indeed enabled, which is what we wanted to verify.
-   The rest of the API is tested in the main content above; so we don't need
-   to test it again. We just clean up the the root service.
-
-     >>> root_service.stopProcessing()
-     >>> root_service.isProcessing()
-     False
-
-     >>> root_service.clean()
-
 
 Check Interfaces and stuff
 --------------------------

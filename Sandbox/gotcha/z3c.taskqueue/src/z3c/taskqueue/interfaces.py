@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 from zope import interface
 from zope import schema
 from zope.configuration import fields
-from zope.app.container.interfaces import IContained
+from zope.container.interfaces import IContained
 
 QUEUED = 'queued'
 PROCESSING = 'processing'
