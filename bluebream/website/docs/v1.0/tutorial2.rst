@@ -206,7 +206,7 @@ You can register the view inside `configure.zcml`::
 
 You can add a ticket by visiting:
 http://localhost:8080/mycolector/@@add_ticket You can give the ticket
-number as '1' and provide some summary.
+number as '1' and provide summary as 'Test Summary'.
 
 You can check the object from debug shell::
 
@@ -231,7 +231,68 @@ you will get ``NotFound`` error like this::
   ...
   NotFound: Object: <tc.main.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
 
-**TBD**
+This error is raised, because there is no view named ``index``
+registered for ``ITicket``.  This section will show how to create a
+default view for ``ITicket`` interface.
+
+As you have already seen in the :ref:`started-getting` chapter, you
+can create a simple view and register it from ZCML.
+
+In the ``src/tc/main/views.py`` add a new view like this::
+
+  class TicketMainView(form.DisplayForm):
+
+      form_fields = form.Fields(ICollector)
+
+      template = ViewPageTemplateFile("ticketmain.pt")
+
+You can create the template file here:
+``src/tc/main/ticketmain.pt`` with this content::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector</title>
+  </head>
+  <body>
+
+  You are looking at ticket number:
+  <b tal:content="context/number">number</b>
+
+  <h3>Summary</h3>
+
+  <p tal:content="context/summary">Summary goes here</p>
+
+  </body>
+  </html>
+
+
+Then, in the ``src/tc/main/configure.zcml``::
+
+  <browser:page
+     for="tc.main.interfaces.ITicket"
+     name="index"
+     permission="zope.Public"
+     class="tc.main.views.TicketMainView"
+     />
+
+Now you can visit: http://localhost:8080/mycolector/1 It should
+display the ticket number and summary.  If you open the source, it
+will like this::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector</title>
+  </head>
+  <body>
+
+  You are looking at ticket number: <b>1</b>
+
+  <h3>Summary</h3>
+
+  <p>Test Summary</p>
+
+  </body>
+  </html>
 
 Listing tickets
 ---------------
