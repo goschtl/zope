@@ -76,12 +76,6 @@ class ITaskService(IContained):
             default = ITask,
             )
 
-    #processor = schema.Field(
-    #        title = u'Processor',
-    #        description = u'A callable that processes queued jobs using '
-    #                      u'an infinite loop.',
-    #        )
-
     def getAvailableTasks():
         """Return a mapping of task name to the task."""
 
