@@ -204,12 +204,47 @@ You can register the view inside `configure.zcml`::
      class="tc.main.views.AddTicket"
      />
 
+You can add a ticket by visiting:
+http://localhost:8080/mycolector/@@add_ticket You can give the ticket
+number as '1' and provide some summary.
+
+You can check the object from debug shell::
+
+  jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
+  ...
+  Welcome to the interactive debug prompt.
+  The 'root' variable contains the ZODB root folder.
+  The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
+  >>> root['mycollector']
+  <tc.main.ticketcollector.Collector object at 0xa5fc96c>
+  >>> root['mycollector']['1']
+  <tc.main.ticket.Ticket object at 0xa5ffecc>
+
+Default browser page for tickets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Now there is no default browser page for tickets.  If you try to
+access the ticket from the URL: http://localhost:8080/mycolector/1 ,
+you will get ``NotFound`` error like this::
+
+  URL: http://localhost:8080/mycolector/1
+  ...
+  NotFound: Object: <tc.main.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
+
+**TBD**
+
+Listing tickets
+---------------
+
+This section explain listing tickets in the main page, so that the
+user can navigate to ticket and see the details.
+
+**TBD**
+
 Adding Comments
 ---------------
 
-.. warning::
-
-   This section is not completed.
+**TBD**
 
 In this section, you will create `comment` objects and add it to
 tickets.  As the first step, you need to define the interface for the
