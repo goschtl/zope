@@ -1033,17 +1033,17 @@ content::
 
   <html>
   <head>
-  <title>Welcome to ticket collector</title>
+  <title>Welcome to ticket collector!</title>
   </head>
   <body>
 
-  Welcome to ticket collector
+  Welcome to ticket collector!
 
   </body>
   </html>
 
 Now you can visit: http://localhost:8080/mycolector .  It should
-display "Welcome to ticket collector" message.
+display "Welcome to ticket collector!" message.
 
 .. _tut1-conclusion:
 
