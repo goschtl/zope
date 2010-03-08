@@ -30,6 +30,7 @@ allowed_resource_names = (
 
 allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
 
+
 def _get_resource_path(module_info, path):
     resource_path = module_info.getResourcePath(path)
     if os.path.isdir(resource_path):
@@ -46,6 +47,7 @@ def _get_resource_path(module_info, path):
                     "'%s.py'" % (path, path), module_info.getModule())
     return resource_path
 
+
 def _register(config, resource_path, name, layer):
     # public checker by default
     checker = NamesChecker(allowed_resourcedir_names)
@@ -60,6 +62,7 @@ def _register(config, resource_path, name, layer):
         args=(resource_factory, adapts, provides, name),
         )
     return True
+
 
 class DirectoryResourceGrokker(martian.ClassGrokker):
     martian.component(components.DirectoryResource)
@@ -80,6 +83,7 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
         name = name or factory.module_info.dotted_name
         return _register(config, resource_path, name, layer)
 
+
 class StaticResourcesGrokker(martian.GlobalGrokker):
 
     def grok(self, name, module, module_info, config, **kw):
@@ -88,10 +92,10 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         if not module_info.isPackage():
             return False
         resource_path = _get_resource_path(module_info, 'static')
-        
+
         if not os.path.exists(resource_path):
             return False
-        
+
         name = module_info.dotted_name
         layer = IDefaultBrowserLayer
         return _register(config, resource_path, name, layer)

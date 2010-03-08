@@ -4,58 +4,79 @@
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> browser.open("http://localhost/++skin++Basic/manfred/@@cavedrawings")
+  >>> browser.open("http://localhost/++skin++casual/manfred/@@hello")
   >>> print browser.contents
   <html>
   <body>
-  <h1>Hello, world!</h1>
+  <h1>Hi sir !</h1>
   </body>
   </html>
 
-  >>> browser.open("http://localhost/++skin++Rotterdam/manfred/@@moredrawings")
+  >>> browser.open("http://localhost/++skin++party/manfred/@@happy")
   >>> print browser.contents
-  Pretty
+  Hee yay !
 
-  >>> browser.open("http://localhost/++skin++myskin/manfred/@@evenmoredrawings")
+  >>> browser.open("http://localhost/++skin++rainy/manfred/@@sad")
   >>> print browser.contents
-  Awesome
+  Aw... It rains.
 
 """
 import grokcore.view as grok
-from zope.app.basicskin import IBasicSkin
-from zope.app.rotterdam import rotterdam
 
-grok.layer(IBasicSkin)
 
-class MySkinLayer(grok.IBrowserRequest):
+class CasualLayer(grok.IBrowserRequest):
     pass
 
-class MySkin(MySkinLayer):
-    grok.skin('myskin')
+
+class PartyLayer(grok.IBrowserRequest):
+    pass
+
+
+class RainyLayer(grok.IBrowserRequest):
+    pass
+
+
+class PartySkin(PartyLayer):
+    grok.skin('party')
+
+
+class CasualSkin(CasualLayer):
+    grok.skin('casual')
+
+
+class RainySkin(RainyLayer):
+    grok.skin('rainy')
+
+
+grok.layer(CasualLayer)
+
 
 class Mammoth(grok.Context):
     pass
 
-class CaveDrawings(grok.View):
+
+class Hello(grok.View):
     pass
 
-cavedrawings = grok.PageTemplate("""\
+
+hello = grok.PageTemplate("""\
 <html>
 <body>
-<h1>Hello, world!</h1>
+<h1>Hi sir !</h1>
 </body>
 </html>
 """)
 
-class MoreDrawings(grok.View):
-    grok.layer(rotterdam)
+
+class Happy(grok.View):
+    grok.layer(PartyLayer)
 
     def render(self):
-        return "Pretty"
+        return u"Hee yay !"
 
 
-class EvenMoreDrawings(grok.View):
-    grok.layer(MySkinLayer)
+class Sad(grok.View):
+    grok.layer(RainyLayer)
 
     def render(self):
-        return "Awesome"
+        return u"Aw... It rains."

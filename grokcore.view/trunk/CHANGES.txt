@@ -4,6 +4,13 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Fixed launchpad bug #395061 : removed the default_fallback_to_name
+  function. It can be imported from ``grokcore.security`` if needed.
+
+- ``grokcore.view`` no longer depends on ``zope.app.zcmlfiles``. We
+  removed all the extra dependencies and fixed one test that used
+  ``zope.app.rotterdam`` and ``zope.app.basicskin``.
+
 - Back-ported the changes of the 1.13 branch related to the directory
   resource registration, using the latest ztk packages.
 

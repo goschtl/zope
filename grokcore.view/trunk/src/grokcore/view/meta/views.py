@@ -26,11 +26,9 @@ import grokcore.view
 from grokcore.security.util import protect_getattr
 from grokcore.view import components
 
+
 def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()
-
-def default_fallback_to_name(factory, module, name, **data):
-    return name
 
 
 class ViewGrokker(martian.ClassGrokker):
@@ -53,7 +51,7 @@ class ViewGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
+                args=(templates, factory.module_info, factory),
                 )
 
         # safety belt: make sure that the programmer didn't use
@@ -86,7 +84,7 @@ class ViewGrokker(martian.ClassGrokker):
 
         def has_no_render(factory):
             return not has_render(factory)
-        
+
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
 
@@ -103,6 +101,3 @@ class ViewSecurityGrokker(martian.ClassGrokker):
                 args=(factory, method_name, permission),
                 )
         return True
-
-
-

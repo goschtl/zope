@@ -26,6 +26,7 @@ import grokcore.view
 
 _skin_not_used = object()
 
+
 class SkinInterfaceDirectiveGrokker(martian.InstanceGrokker):
     martian.component(InterfaceClass)
 
@@ -43,11 +44,10 @@ class SkinInterfaceDirectiveGrokker(martian.InstanceGrokker):
                 "required for interfaces that are used as layers and are to "
                 "be registered as a skin."
                 % (interface.__identifier__, interface.__identifier__),
-                interface
+                interface,
                 )
         config.action(
             discriminator=('utility', IBrowserSkinType, skin),
             callable=zope.component.interface.provideInterface,
-            args=(skin, interface, IBrowserSkinType)
-            )
+            args=(skin, interface, IBrowserSkinType))
         return True

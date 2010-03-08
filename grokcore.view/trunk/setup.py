@@ -21,20 +21,25 @@ install_requires = [
     'zope.pagetemplate',
     'zope.ptresource >= 3.9.0',
     'zope.publisher',
-    'zope.schema',
     'zope.security',
     'zope.traversing',
     ]
 
 tests_require = [
-    'zope.app.authentication',
-    'zope.app.zcmlfiles',
+    'zope.app.testing',
     'zope.container',
     'zope.securitypolicy',
     'zope.site',
     'zope.testbrowser',
     'zope.testing',
     'zope.login',
+    'zope.app.testing',
+    'zope.configuration',
+    'zope.app.appsetup',
+    'zope.app.publication',
+    'zope.browserpage',
+    'zope.password',
+    'zope.principalregistry',
     ]
 
 setup(

@@ -42,12 +42,12 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
         config.action(
             discriminator=None,
             callable=templates.register,
-            args=(name, instance)
+            args=(name, instance),
             )
         config.action(
             discriminator=None,
             callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name)
+            args=(name, module_info.dotted_name),
             )
         return True
 
@@ -65,7 +65,7 @@ class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
         config.action(
             discriminator=None,
             callable=templates.findFilesystem,
-            args=(module_info,)
+            args=(module_info,),
             )
         return True
 
@@ -81,7 +81,6 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
         config.action(
             discriminator=None,
             callable=templates.checkUnassociated,
-            args=(module_info,)
+            args=(module_info,),
             )
         return True
-

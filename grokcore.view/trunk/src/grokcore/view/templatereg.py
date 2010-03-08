@@ -1,3 +1,18 @@
+##############################################################################
+#
+# Copyright (c) 2006-2010 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Template registry
+"""
 import os
 import warnings
 import zope.component
@@ -6,6 +21,7 @@ import grokcore.view
 from martian.error import GrokError
 from grokcore.view.interfaces import ITemplateFileFactory, ITemplate
 from grokcore.view.components import PageTemplate
+
 
 class TemplateRegistry(object):
 

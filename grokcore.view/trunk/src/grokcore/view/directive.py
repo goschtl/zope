@@ -24,10 +24,13 @@ from zope.interface.interface import TAGGED_DATA
 def validateLocalPath(directive, value):
     martian.validateText(directive, value)
     if os.path.sep in value:
-        raise GrokImportError("The '%s' directive can not contain path separator."
-                               % directive.name)
+        raise GrokImportError(
+            "The '%s' directive can not contain path separator."
+            % directive.name)
+
 
 # Define grok directives
+
 
 class template(martian.Directive):
     scope = martian.CLASS

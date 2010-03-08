@@ -22,6 +22,7 @@ class IBaseClasses(Interface):
     DirectoryResource = Attribute("Base class to create new "
                                   "directory resource.")
 
+
 class IDirectives(Interface):
 
     def layer(layer):
@@ -87,7 +88,7 @@ class IGrokView(IBrowserPage, IBrowserView):
                        "the static files of the view's package.")
 
     def redirect(url):
-       """Redirect to given URL"""
+        """Redirect to given URL"""
 
     def url(obj=None, name=None, data=None):
         """Construct URL.
@@ -157,6 +158,7 @@ class ITemplateFileFactory(Interface):
 
         _prefix is the directory the file is located in
         """
+
 
 class ITemplate(Interface):
     """Template objects
