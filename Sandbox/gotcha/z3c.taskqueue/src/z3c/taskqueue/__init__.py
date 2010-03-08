@@ -1,2 +1,2 @@
 # Make a package.
-from lovely.remotetask.service import TaskService
+from z3c.taskqueue.service import TaskService
