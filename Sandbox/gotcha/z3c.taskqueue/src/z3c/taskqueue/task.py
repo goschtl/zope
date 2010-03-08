@@ -21,7 +21,7 @@ import zope.interface
 
 from zope.schema.fieldproperty import FieldProperty
 
-from lovely.remotetask import interfaces
+from z3c.taskqueue import interfaces
 
 
 class TaskError(Exception):
