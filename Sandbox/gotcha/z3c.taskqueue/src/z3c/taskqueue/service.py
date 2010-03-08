@@ -16,7 +16,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from lovely.remotetask import interfaces, job, task, processor
+from z3c.taskqueue import interfaces, job, task, processor
 from zope import component
 from zope.app.container import contained
 from zope.component.interfaces import ComponentLookupError
@@ -33,7 +33,7 @@ import zope.interface
 import zope.location
 
 
-log = logging.getLogger('lovely.remotetask')
+log = logging.getLogger('z3c.taskqueue')
 
 storage = threading.local()
 
