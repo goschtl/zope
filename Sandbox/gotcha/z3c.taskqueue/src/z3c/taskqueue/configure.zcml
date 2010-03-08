@@ -1,6 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="lovely.remotetask">
+    i18n_domain="z3c.taskqueue">
 
   <class class=".service.TaskService">
     <implements
@@ -28,11 +28,6 @@
         set_schema=".interfaces.ICronJob" />
   </class>
 
-  <subscriber
-      for="zope.app.appsetup.IDatabaseOpenedEvent"
-      handler=".service.bootStrapSubscriber"
-   />
-   
   <!-- Demo: Echo Task -->
   <utility
       factory=".task.EchoTask"
