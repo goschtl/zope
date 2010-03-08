@@ -45,6 +45,11 @@ Before proceeding further, here is an overview of sections:
   object inside other container objects.  Ticket objects will be
   transformed to a container object.
 
+.. note::
+
+   The examples in this documentation can be downloaded from here:
+   http://download.zope.org/bluebream/examples/ticketcollector-1.0.0.tar.bz2
+
 .. _tut2-adding-tickets:
 
 Adding tickets
@@ -58,12 +63,14 @@ In order to use ticket objects, first you need to create an interface
 for tickets.  Update the ``src/tc/main/interfaces.py`` with the ticket
 interface::
 
-  class ITicket(Interface):
-     """Ticket - the main content component"""
+  from zope.interface import Interface
 
-      name = TextLine(
-          title=u"Name",
-          description=u"Name of application.",
+  class ITicket(Interface):
+      """Ticket - the ticket content component"""
+
+      number = TextLine(
+          title=u"Number",
+          description=u"Ticket number",
           default=u"",
           required=True)
 
@@ -73,10 +80,10 @@ interface::
           default=u"",
           required=True)
 
-The ``Interface``, ``TextLine`` and ``Text`` are already imported, if
-not, you can import it from these locations::
 
-  from zope.container.interfaces import IContainer
+The ``TextLine`` and ``Text`` are already imported, if not, you can
+import it from these locations::
+
   from zope.schema import TextLine
   from zope.schema import Text
 
@@ -90,9 +97,10 @@ To do this, you need to add a ``__setitem__`` method to
 attribute, which is an instance of ``ItemTypePrecondition`` class.
 You can pass the interfaces as arguments to ``ItemTypePrecondition``
 class.  Below, only one class (``ITicket``) is passed.  So, only
-ticket objects are allowed inside collector.
-
-::
+ticket objects are allowed inside collector.  You need to move the
+definition of ``ITicket`` above the ``IContainer`` as the ``ITicket``
+being used there.  Add the following method definition to
+``ICollector`` class::
 
     from zope.app.container.constraints import ItemTypePrecondition
 
@@ -131,7 +139,7 @@ Next, you can implement this interface inside ``ticket.py``::
   from zope.interface import implements
   from tc.main.interfaces import ITicket
   from tc.main.interfaces import ITicketContained
-  from zope.location.contained import Contained
+  from zope.container.contained import Contained
 
 
   class Ticket(Contained):
@@ -146,22 +154,22 @@ Configuration
 
 Then, register the interface & class::
 
-  <interface 
-     interface=".interfaces.ITicket" 
+  <interface
+     interface="tc.main.interfaces.ITicket"
      type="zope.app.content.interfaces.IContentType"
-     /> 
+     />
 
-  <class class=".ticket.Ticket">
+  <class class="tc.main.ticket.Ticket">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <require
        permission="zope.ManageContent"
-       interface=".interfaces.ITicket"
+       interface="tc.main.interfaces.ITicket"
        />
     <require
        permission="zope.ManageContent"
-       set_schema=".interfaces.ITicket"
+       set_schema="tc.main.interfaces.ITicket"
        />
   </class>
 
@@ -189,12 +197,12 @@ AddForm inside ``views.py``::
 
 You can register the view inside `configure.zcml`::
 
-    <browser:page
-       for=".interfaces.ICollector"
-       name="add_ticket"
-       permission="zope.ManageContent"
-       class=".views.AddTicket"
-       />
+  <browser:page
+     for="tc.main.interfaces.ICollector"
+     name="add_ticket"
+     permission="zope.ManageContent"
+     class="tc.main.views.AddTicket"
+     />
 
 Adding Comments
 ---------------
@@ -233,10 +241,10 @@ Next, you can implement the comment like this::
 
 Then, register the interface & class::
 
-  <interface 
-     interface=".interfaces.IComment" 
+  <interface
+     interface=".interfaces.IComment"
      type="zope.app.content.interfaces.IContentType"
-     /> 
+     />
 
   <class class=".ticket.Comment">
     <implements
