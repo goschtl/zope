@@ -17,31 +17,6 @@ Let's now start by creating a single service:
   >>> from z3c import taskqueue
   >>> service = taskqueue.TaskService()
 
-The object should be located, so it gets a name:
-
-  >>> from zope.app.folder import Folder
-  >>> site1 = Folder()
-  >>> from zope.app.component.site import LocalSiteManager
-  >>> from zope.security.proxy import removeSecurityProxy
-  >>> sm = LocalSiteManager(removeSecurityProxy(site1))
-  >>> site1.setSiteManager(sm)
-
-  >>> sm['default']['testTaskService1'] = service
-  >>> service = sm['default']['testTaskService1'] # caution! proxy
-  >>> service.__name__
-  u'testTaskService1'
-  >>> service.__parent__ is sm['default']
-  True
-
-Let's register it under the name `TestTaskService1`:
-
-  >>> from zope import component
-  >>> from z3c.taskqueue import interfaces
-  >>> sm = site1.getSiteManager()
-  >>> sm.registerUtility(service, interfaces.ITaskService,
-  ...                          name='TestTaskService1')
-
-
 We can discover the available tasks:
 
   >>> service.getAvailableTasks()
@@ -104,6 +79,7 @@ Let's now read a job:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
   >>> service.processNext()
+  True
 
   >>> service.getStatus(jobid)
   'completed'
@@ -122,6 +98,7 @@ Now add and execute it:
 
   >>> jobid = service.add(u'error')
   >>> service.processNext()
+  True
 
 Let's now see what happened:
 
@@ -253,15 +230,18 @@ A delayed job is executed once after the given delay time in seconds.
   >>> service.getStatus(jobid)
   'delayed'
   >>> service.processNext(0)
+  True
   >>> service.getStatus(jobid)
   'delayed'
   >>> service.processNext(9)
+  False
   >>> service.getStatus(jobid)
   'delayed'
 
 At 10 seconds the job is executed and completed.
 
   >>> service.processNext(10)
+  True
   >>> service.getStatus(jobid)
   'completed'
 
@@ -284,6 +264,7 @@ We process the remote task but our cron job is not executed because we are too
 early in time.
 
   >>> service.processNext(0)
+  False
   >>> service.getStatus(jobid)
   'cronjob'
   >>> service.getResult(jobid) is None
@@ -292,6 +273,7 @@ early in time.
 Now we run the remote task 10 minutes later and get a result.
 
   >>> service.processNext(10*60)
+  True
   >>> service.getStatus(jobid)
   'cronjob'
   >>> service.getResult(jobid)
@@ -300,12 +282,14 @@ Now we run the remote task 10 minutes later and get a result.
 And 1 minutes later it is not called.
 
   >>> service.processNext(11*60)
+  False
   >>> service.getResult(jobid)
   1
 
 But 3 minutes later it is called again.
 
   >>> service.processNext(13*60)
+  True
   >>> service.getResult(jobid)
   2
 
@@ -321,18 +305,21 @@ After the update the job must be rescheduled in the service.
 Now the job is not executed at the old registration minute which was 10.
 
   >>> service.processNext(10*60+60*60)
+  False
   >>> service.getResult(jobid)
   2
 
 But it executes at the new minute which is set to 11.
 
   >>> service.processNext(11*60+60*60)
+  True
   >>> service.getResult(jobid)
   3
 
 Check Interfaces and stuff
 --------------------------
 
+  >>> from z3c.taskqueue import interfaces
   >>> from zope.interface.verify import verifyClass, verifyObject
   >>> verifyClass(interfaces.ITaskService, taskqueue.TaskService)
   True
