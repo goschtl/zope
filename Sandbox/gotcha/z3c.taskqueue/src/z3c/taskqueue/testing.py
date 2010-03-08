@@ -24,7 +24,7 @@ import zope.component
 import zope.interface
 from BTrees.IOBTree import IOBTree
 from zope.app.container import contained
-from lovely.remotetask import interfaces, job, task
+from z3c.taskqueue import interfaces, job, task
 
 
 class ExceptionTask(object):
@@ -86,7 +86,7 @@ class TaskServiceStub(contained.Contained):
     """A task service stub.
 
     The available tasks for this service are managed as stub utilities.
-    This task service stub could be helpful if you need to use a different 
+    This task service stub could be helpful if you need to use a different
     testing setup. If so, register your own testing ITaskStub in ftesting.zcml.
     """
     zope.interface.implements(interfaces.ITaskService)
@@ -120,7 +120,7 @@ class TaskServiceStub(contained.Contained):
             self._queue.put(newjob)
             newjob.status = interfaces.QUEUED
         return jobid
-    
+
     def startJob(self, jobid):
         job = self.jobs[jobid]
         if job.status == interfaces.STARTLATER:
