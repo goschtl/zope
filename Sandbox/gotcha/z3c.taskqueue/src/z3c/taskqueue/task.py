@@ -43,7 +43,7 @@ class SimpleTask(object):
         return self.func(input)
 
     def __repr__(self):
-        return '<%s %r>' %(self.__class__.__name__, self.func)
+        return '<%s %r>' % (self.__class__.__name__, self.func)
 
 
 class EchoTask(object):
@@ -53,4 +53,4 @@ class EchoTask(object):
         return input
 
     def __repr__(self):
-        return '<%s>' %(self.__class__.__name__)
+        return '<%s>' % (self.__class__.__name__)
