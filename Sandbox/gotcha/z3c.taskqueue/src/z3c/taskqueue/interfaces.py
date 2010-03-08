@@ -242,14 +242,3 @@ class ICronJob(IJob):
 
         now is a convenience parameter for testing.
         """
-
-
-class IStartRemoteTasksEvent(interface.Interface):
-    """Event to start the Remote Tasks"""
-
-    serviceNames = schema.List(
-            title=u'Services to start',
-            default=[],
-            required=False,
-            value_type=schema.TextLine(),
-            )
