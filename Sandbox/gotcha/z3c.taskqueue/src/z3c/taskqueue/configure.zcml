@@ -35,7 +35,4 @@
 
   <include file="xmlrpc.zcml" />
 
-  <include package=".browser" />
-  <include package=".generations" />
-
 </configure>
