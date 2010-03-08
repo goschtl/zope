@@ -18,7 +18,6 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import datetime
-import threading
 import zc.queue
 import zope.component
 import zope.interface
@@ -160,11 +159,6 @@ class TaskServiceStub(contained.Contained):
 
     def isProcessing(self):
         """See interfaces.ITaskService"""
-        name = 'remotetasks.' + self.__name__
-        for thread in threading.enumerate():
-            if thread.getName() == name:
-                if thread.running:
-                    return True
         return False
 
     def processNext(self):

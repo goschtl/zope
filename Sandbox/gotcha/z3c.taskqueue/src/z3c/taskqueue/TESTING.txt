@@ -7,14 +7,12 @@ that allows to execute pre-defined tasks on another server. See more info
 about the TaskService in README.txt. This test will test the TaskServiceStub
 implementation. The only different is, that the TaskServiceStub will handle
 task implementation providing ITaskStub interfaces rather then ITask. This way
-we can register stub tasks for a testing setup. See also another usecase for
-a task service stub implementation which is working with XML-RPC in the
-package lovely.transcoding.
+we can register stub tasks for a testing setup.
 
 Let's now start by creating a task service stub:
 
-  >>> from lovely import remotetask
-  >>> from lovely.remotetask import testing
+  >>> from z3c import taskqueue
+  >>> from z3c.taskqueue import testing
   >>> service = testing.TaskServiceStub()
 
 We can discover the available tasks:
@@ -28,8 +26,8 @@ now define a task that simply echos an input string:
   >>> def echo(input):
   ...     return input
 
-  >>> import lovely.remotetask.task
-  >>> echoTask = remotetask.task.SimpleTask(echo)
+  >>> import z3c.taskqueue.task
+  >>> echoTask = taskqueue.task.SimpleTask(echo)
 
 The only API requirement on the converter is to be callable. Now we make sure
 that the task works:
@@ -107,10 +105,10 @@ it manually here, since none of the other infrastructure is setup.
 Now, let's define a new task that causes an error:
 
   >>> def error(input):
-  ...     raise remotetask.task.TaskError('An error occurred.')
+  ...     raise taskqueue.task.TaskError('An error occurred.')
 
   >>> zope.component.provideUtility(
-  ...     remotetask.task.SimpleTask(error), provides=testing.ITaskStub,
+  ...     taskqueue.task.SimpleTask(error), provides=testing.ITaskStub,
   ...     name='error')
 
 Now add and execute it:

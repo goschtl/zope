@@ -17,22 +17,6 @@ ways:
 2. They also allow to move expensive operations to other servers. This is
    valuable, for example, when converting videos on high-traffic sites.
 
-Installation
-------------
-
-Define the remotetasks that should be started on startup in zope.conf like
-this::
-
-  <product-config lovely.remotetask>
-    autostart site1@TestTaskService1, site2@TestTaskService2, @RootTaskService
-  </product-config>
-
-Note that services registered directly in the root folder can be referred to
-by just prefixing them with the `@` symbol. The site name can be omitted. An
-example of this is `RootTaskService` referenced above.
-
-This causes the Remotetasks being started upon zope startup.
-
 Usage
 _____
 
@@ -40,8 +24,8 @@ _____
 
 Let's now start by creating a single service:
 
-  >>> from lovely import remotetask
-  >>> service = remotetask.TaskService()
+  >>> from z3c import taskqueue
+  >>> service = taskqueue.TaskService()
 
 The object should be located, so it gets a name:
 
@@ -63,7 +47,7 @@ The object should be located, so it gets a name:
 Let's register it under the name `TestTaskService1`:
 
   >>> from zope import component
-  >>> from lovely.remotetask import interfaces
+  >>> from z3c.taskqueue import interfaces
   >>> sm = site1.getSiteManager()
   >>> sm.registerUtility(service, interfaces.ITaskService,
   ...                          name='TestTaskService1')
@@ -80,8 +64,8 @@ now define a task that simply echos an input string:
   >>> def echo(input):
   ...     return input
 
-  >>> import lovely.remotetask.task
-  >>> echoTask = remotetask.task.SimpleTask(echo)
+  >>> import z3c.taskqueue.task
+  >>> echoTask = taskqueue.task.SimpleTask(echo)
 
 The only API requirement on the converter is to be callable. Now we make sure
 that the task works:
@@ -139,13 +123,13 @@ emulate the ``zope.conf`` settings:
   >>> class Config(object):
   ...     mapping = {}
   ...     def getSectionName(self):
-  ...         return 'lovely.remotetask'
+  ...         return 'z3c.taskqueue'
   >>> config = Config()
   >>> config.mapping['autostart'] = (
   ...     'site1@TestTaskService1, site2@TestTaskService2,@RootTaskService')
   >>> from zope.app.appsetup.product import setProductConfigurations
   >>> setProductConfigurations([config])
-  >>> from lovely.remotetask.service import getAutostartServiceNames
+  >>> from z3c.taskqueue.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
   ['site1@TestTaskService1', 'site2@TestTaskService2', '@RootTaskService']
 
@@ -171,7 +155,7 @@ the ``bootStrap()`` method:
 Fire the event:
 
   >>> from zope.app.appsetup.interfaces import DatabaseOpenedWithRoot
-  >>> from lovely.remotetask.service import bootStrapSubscriber
+  >>> from z3c.taskqueue.service import bootStrapSubscriber
   >>> event = DatabaseOpenedWithRoot(db)
   >>> bootStrapSubscriber(event)
 
@@ -183,13 +167,13 @@ and voila - the service is processing:
 Checking out the logging will prove the started service:
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
-  lovely.remotetask ERROR
+  z3c.taskqueue ERROR
     site site2 not found
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service RootTaskService on site root started
 
 The verification for the jobs in the root-level service is done in another
@@ -236,9 +220,9 @@ Firing the event again will start all services in the configured site:
 Let's checkout the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
 
 To deal with a lot of services in a lot of sites it possible to use
@@ -276,11 +260,11 @@ And fire the event again. All services should be started now:
 Let's check the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service RootTaskService on site root started
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
 
 
@@ -323,9 +307,9 @@ And fire the event again. All services should be started now:
 Let's checkout the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
 
 In case of configuring a directive which does not match any service on
@@ -354,9 +338,9 @@ any site logging will show a warning message:
   False
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     handling event IStartRemoteTasksEvent
-  lovely.remotetask WARNING
+  z3c.taskqueue WARNING
     no services started by directive *@Foo
 
 Finally stop processing and kill the thread. We'll call service.process()
@@ -386,10 +370,10 @@ Let's now read a job:
 Now, let's define a new task that causes an error:
 
   >>> def error(input):
-  ...     raise remotetask.task.TaskError('An error occurred.')
+  ...     raise taskqueue.task.TaskError('An error occurred.')
 
   >>> zope.component.provideUtility(
-  ...     remotetask.task.SimpleTask(error), name='error')
+  ...     taskqueue.task.SimpleTask(error), name='error')
 
 Now add and execute it:
 
@@ -427,7 +411,7 @@ Cron jobs
 Cron jobs execute on specific times.
 
   >>> import time
-  >>> from lovely.remotetask.job import CronJob
+  >>> from z3c.taskqueue.job import CronJob
   >>> now = 0
   >>> time.gmtime(now)
   (1970, 1, 1, 0, 0, 0, 3, 1, 0)
@@ -516,7 +500,7 @@ A delayed job is executed once after the given delay time in seconds.
   ...     global count
   ...     count += 1
   ...     return count
-  >>> countingTask = remotetask.task.SimpleTask(counting)
+  >>> countingTask = taskqueue.task.SimpleTask(counting)
   >>> zope.component.provideUtility(countingTask, name='counter')
 
   >>> jobid = service.addCronJob(u'counter',
@@ -622,19 +606,19 @@ what threads are running as a result:
 
   >>> def show_threads():
   ...     threads = [t for t in threading.enumerate()
-  ...                if t.getName().startswith('remotetasks.')]
+  ...                if t.getName().startswith('taskqueues.')]
   ...     threads.sort(key=lambda t: t.getName())
   ...     pprint.pprint(threads)
 
   >>> show_threads()
-  [<Thread(remotetasks.rootTaskService, started daemon)>,
-   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>]
+  [<Thread(taskqueues.rootTaskService, started daemon)>,
+   <Thread(taskqueues.site1.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's add a second site containing a task service with the same name as the
 service in the first site:
 
   >>> site2 = Folder()
-  >>> service2 = remotetask.TaskService()
+  >>> service2 = taskqueue.TaskService()
 
   >>> root['site2'] = site2
   >>> sm = LocalSiteManager(removeSecurityProxy(site2))
@@ -664,9 +648,9 @@ threads:
 
   >>> service2.startProcessing()
   >>> show_threads()
-  [<Thread(remotetasks.rootTaskService, started daemon)>,
-   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>,
-   <Thread(remotetasks.site2.++etc++site.default.testTaskService1, started daemon)>]
+  [<Thread(taskqueues.rootTaskService, started daemon)>,
+   <Thread(taskqueues.site1.++etc++site.default.testTaskService1, started daemon)>,
+   <Thread(taskqueues.site2.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's stop the services, and give the background threads a chance to get the
 message:
@@ -681,7 +665,7 @@ message:
 The threads have exited now:
 
   >>> print [t for t in threading.enumerate()
-  ...        if t.getName().startswith('remotetasks.')]
+  ...        if t.getName().startswith('taskqueues.')]
   []
 
 
@@ -692,7 +676,7 @@ Footnotes
 
    Register service for RootLevelTask
 
-     >>> root_service = remotetask.TaskService()
+     >>> root_service = taskqueue.TaskService()
      >>> component.provideUtility(root_service, interfaces.ITaskService,
      ...                          name='RootTaskService')
 
@@ -736,14 +720,14 @@ Check Interfaces and stuff
 --------------------------
 
   >>> from zope.interface.verify import verifyClass, verifyObject
-  >>> verifyClass(interfaces.ITaskService, remotetask.TaskService)
+  >>> verifyClass(interfaces.ITaskService, taskqueue.TaskService)
   True
   >>> verifyObject(interfaces.ITaskService, service)
   True
   >>> interfaces.ITaskService.providedBy(service)
   True
 
-  >>> from lovely.remotetask.job import Job
+  >>> from z3c.taskqueue.job import Job
   >>> fakejob = Job(1, u'echo', {})
   >>> verifyClass(interfaces.IJob, Job)
   True

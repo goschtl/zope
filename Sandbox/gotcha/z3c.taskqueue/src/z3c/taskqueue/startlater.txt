@@ -12,8 +12,8 @@ _____
 
 Let's now start by creating a single service:
 
-  >>> from lovely import remotetask
-  >>> service = remotetask.TaskService()
+  >>> from z3c import taskqueue
+  >>> service = taskqueue.TaskService()
 
 The object should be located, so it gets a name:
 
@@ -35,7 +35,7 @@ The object should be located, so it gets a name:
 Let's register it under the name `TestTaskService1`:
 
   >>> from zope import component
-  >>> from lovely.remotetask import interfaces
+  >>> from z3c.taskqueue import interfaces
   >>> sm = site1.getSiteManager()
   >>> sm.registerUtility(service, interfaces.ITaskService,
   ...                          name='TestTaskService1')
@@ -45,8 +45,8 @@ Let's now define a task that simply echos an input string:
   >>> def echo(input):
   ...     return input
 
-  >>> import lovely.remotetask.task
-  >>> echoTask = remotetask.task.SimpleTask(echo)
+  >>> import z3c.taskqueue.task
+  >>> echoTask = taskqueue.task.SimpleTask(echo)
 
 Let's now register the task as a utility:
 
