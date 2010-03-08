@@ -173,9 +173,22 @@ Then, register the interface & class::
        />
   </class>
 
-Now you can add a link in ``collectormain.pt`` like this::
+Now you can add a link to ``@@add_ticket`` in
+``src/tc/main/collectormain.pt``.  Now the template will look like
+this::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector</title>
+  </head>
+  <body>
+
+  Welcome to ticket collector!
 
   <a href="@@add_ticket">Add Ticket</a>
+
+  </body>
+  </html>
 
 When you click on this link, it expects a view. You can create an
 AddForm inside ``views.py``::
@@ -251,7 +264,7 @@ You can create the template file here:
 
   <html>
   <head>
-  <title>Welcome to ticket collector</title>
+  <title>Welcome to ticket collector!</title>
   </head>
   <body>
 
@@ -276,12 +289,13 @@ Then, in the ``src/tc/main/configure.zcml``::
      />
 
 Now you can visit: http://localhost:8080/mycolector/1 It should
-display the ticket number and summary.  If you open the source, it
-will like this::
+display the ticket number and summary.  Alternately you can also
+visit: http://localhost:8080/mycolector/1/@@index.  Then, if you open
+the HTML source from browser, it will look like this::
 
   <html>
   <head>
-  <title>Welcome to ticket collector</title>
+  <title>Welcome to ticket collector!</title>
   </head>
   <body>
 
@@ -297,15 +311,52 @@ will like this::
 Listing tickets
 ---------------
 
-This section explain listing tickets in the main page, so that the
-user can navigate to ticket and see the details.
+This section explain listing tickets in the main collector page, so
+that the user can navigate to ticket and see the details.
 
-**TBD**
+To list the tikets in the main collector page, you need to modify the
+``src/tc/main/collectormain.pt``::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector!</title>
+  </head>
+  <body>
+
+  Welcome to ticket collector!
+
+  <ol tal:repeat="ticket view/getTickets">
+    <li><a href=""
+           tal:attributes="href ticket/url"
+           tal:content="ticket/summary">Ticket Summary</a>
+    </li>
+  </ol>
+
+  </body>
+  </html>
+
+You need to change the ``TicketCollectorMainView`` defined in
+``src/main/tc/main/views.py`` file::
+
+  from zope.browserpage import ViewPageTemplateFile
+
+  class TicketCollectorMainView(form.DisplayForm):
+
+      form_fields = form.Fields(ICollector)
+
+      template = ViewPageTemplateFile("collectormain.pt")
+
+      def getTickets(self):
+          tickets = []
+          for ticket in self.context:
+              tickets.append({'url':ticket.number,
+                              'summary': ticket.summary})
+          return tickets
 
 Adding Comments
 ---------------
 
-**TBD**
+.. warning:: This section is incomplete
 
 In this section, you will create `comment` objects and add it to
 tickets.  As the first step, you need to define the interface for the

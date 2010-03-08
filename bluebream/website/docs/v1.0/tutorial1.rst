@@ -635,7 +635,7 @@ creating the project from template.  In the ``install_requires``
 keyword argument, you can list all dependencies for the package.
 There are two entry points, the first one is used by PasteDeploy to
 find the WSGI application factory.  The second entry point register a
-sub-command for ``paster`` script named ``shell`.
+sub-command for ``paster`` script named ``shell``.
 
 Running Tests
 -------------
