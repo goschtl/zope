@@ -24,6 +24,12 @@ setup(name='z3c.taskqueue',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
+          'zope.interface',
+          'zope.component',
+          'zope.schema',
+          'zope.configuration',
+          'zope.container',
+          'zc.queue',
       ],
       entry_points="""
       # -*- Entry points: -*-
