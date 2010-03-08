@@ -32,8 +32,6 @@ def setUp(test):
 
     log_info = InstalledHandler('lovely.remotetask')
     test.globs['log_info'] = log_info
-    test.origArgs = service.TaskService.processorArguments
-    service.TaskService.processorArguments = {'waitTime': 0.0}
     # Make tests predictable
     random.seed(27)
 
@@ -44,7 +42,6 @@ def tearDown(test):
     log_info = test.globs['log_info']
     log_info.clear()
     log_info.uninstall()
-    service.TaskService.processorArguments = test.origArgs
 
 
 class TestIdGenerator(unittest.TestCase):
