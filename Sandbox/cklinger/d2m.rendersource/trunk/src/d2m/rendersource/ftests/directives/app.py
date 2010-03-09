@@ -35,7 +35,7 @@ Check include/raw/csv-table directives:
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
    <title></title>
-   <link rel="stylesheet" href="http://localhost/app/&#64;&#64;/d2m.rendersource.ftests.directives/grok.css" type="text/css" />
+   <link rel="stylesheet" href="http://localhost/&#64;&#64;/d2m.rendersource.ftests.directives/grok.css" type="text/css" />
    </head>
    <body>
    <div class="document">
@@ -75,8 +75,10 @@ import d2m.rendersource
 class Application(grokcore.component.Context):
     pass
 
+
 class Index(grokcore.view.View):
-    pass # see app_templates/index.pt
+    grokcore.component.name('index.html')
+
 
 class Base(grokcore.view.View):
     
