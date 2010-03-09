@@ -20,7 +20,6 @@ from z3c.taskqueue import interfaces, job, task
 from zope import component
 from zope.container import contained
 from zope.component.interfaces import ComponentLookupError
-import BTrees
 import datetime
 import logging
 import persistent
@@ -29,11 +28,18 @@ import time
 import zc.queue
 import zope.interface
 
+try:
+    from Products import Five
+    ZOPE2 = True
+    del Five
+    import sys
+except ImportError:
+    ZOPE2 = False
 
 log = logging.getLogger('z3c.taskqueue')
 
 
-class TaskService(contained.Contained, persistent.Persistent):
+class BaseTaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
 
     The available tasks for this service are managed as utilities.
@@ -45,13 +51,13 @@ class TaskService(contained.Contained, persistent.Persistent):
     _scheduledJobs = None
     _scheduledQueue = None
     _v_nextid = None
-    family = BTrees.family32
+    containerClass = None
 
     def __init__(self):
-        super(TaskService, self).__init__()
-        self.jobs = self.family.IO.BTree()
+        super(BaseTaskService, self).__init__()
+        self.jobs = self.containerClass()
+        self._scheduledJobs = self.containerClass()
         self._queue = zc.queue.Queue()
-        self._scheduledJobs = self.family.IO.BTree()
         self._scheduledQueue = zc.queue.Queue()
 
     def getAvailableTasks(self):
@@ -262,9 +268,24 @@ class TaskService(contained.Contained, persistent.Persistent):
         """
         while True:
             if self._v_nextid is None:
-                self._v_nextid = random.randrange(0, self.family.maxint)
+                self._v_nextid = random.randrange(0, self.maxint)
             uid = self._v_nextid
             self._v_nextid += 1
             if uid not in self.jobs:
                 return uid
             self._v_nextid = None
+
+if not ZOPE2:
+
+    class TaskService(BaseTaskService):
+        from BTrees import family32
+        containerClass = family32.IO.BTree
+        maxint = family32.maxint
+
+else:
+    from OFS.SimpleItem import SimpleItem
+
+    class TaskService(BaseTaskService, SimpleItem):
+        from BTrees.IOBTree import IOBTree
+        containerClass = IOBTree
+        maxint = sys.maxint
