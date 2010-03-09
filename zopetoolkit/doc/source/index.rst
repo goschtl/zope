@@ -21,7 +21,7 @@ of the ZTK.
     Currently some of the ZTK libraries are more reusable 
     than others, but we are working on getting them all in shape.
 
-    The ZTK is not by installable by itself directly, but its libraries
+    The ZTK is not installable by itself directly, but its libraries
     are.
 
 Documentation
