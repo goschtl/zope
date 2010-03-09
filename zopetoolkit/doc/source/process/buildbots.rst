@@ -17,7 +17,7 @@ base.
       - **Packages / Branches**
 
     * - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
-      - Jan-Wijbrand Kolman (tentative)
+      - Jan-Jaap Driessen
       - OS X, Ubuntu 32/64, Windows 
       - 2.4, 2.5, 2.6
       - ZTK, Zope 2, zc.buildout, many grok packages
