@@ -175,6 +175,10 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         return job and job.id or None
 
     def processNext(self, now=None, jobid=None):
+        """
+        process next job in the queue
+        """
+        log.debug('processNext')
         if jobid is None:
             job = self._pullJob(now)
         else:
