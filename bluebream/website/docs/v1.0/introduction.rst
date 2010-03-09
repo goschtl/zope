@@ -78,22 +78,10 @@ frameworks.
 Join our community
 ------------------
 
-We aim to provide high quality free online documentation for
-BlueBream.  If you would like to contribute, the RestructuredText
-source for this website is available from the zope.org repository
-(please replace ``username`` with your zope.org username.)::
+**We invite you to become part of our community!**
 
- svn co svn+ssh://username@svn.zope.org/repos/main/bluebream/website 
-
-If you don't have svn commit access, please consult: `becoming a
-contributor
-<http://docs.zope.org/developer/becoming-a-contributor.html>`_
-document.  For any queries, please contact us in mailing list or irc
-chat, we can help you to get *reference committer*, which is required
-to fill the contributor agreement form.
-
-Stay in touch with BlueBream
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can become part of our community by joining/subscribing to these
+community platforms:
 
 - Mailing list: https://mail.zope.org/mailman/listinfo/bluebream
 
@@ -101,12 +89,35 @@ Stay in touch with BlueBream
    
 - Blog: http://bluebream.posterous.com
    
-- Irc channel: `#bluebream at freenode.net
+- IRC channel: `#bluebream at freenode.net
   <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
    
 - Wiki: http://wiki.zope.org/bluebream
-   
-- Pypi home : http://pypi.python.org/pypi/bluebream
+
+- Ohloh.net: https://www.ohloh.net/p/bluebream
+
+- PyPi home : http://pypi.python.org/pypi/bluebream
+
+BlueBream developer community is an active community involved in the
+development of BlueBream itself.  We are looking for contributors to
+this project.  All the development related information in documented
+in the `wiki <http://wiki.zope.org/bluebream>`_.  You can read this
+wiki page fore information:
+http://wiki.zope.org/bluebream/ContributingToBlueBream
+
+We aim to provide high quality free online documentation for
+BlueBream.  If you would like to contribute, the RestructuredText
+source for this website is available from the zope.org repository
+(please replace ``USERNAME`` with your zope.org username.)::
+
+ svn co svn+ssh://USERNAME@svn.zope.org/repos/main/bluebream/website 
+
+If you don't have svn commit access, please consult: `becoming a
+contributor
+<http://docs.zope.org/developer/becoming-a-contributor.html>`_
+document.  For any queries, please contact us in mailing list or irc
+chat, we can help you to get *reference committer*, which is required
+to fill the contributor agreement form.
 
 .. _intro-history:
 
