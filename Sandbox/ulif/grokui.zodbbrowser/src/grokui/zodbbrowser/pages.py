@@ -13,7 +13,7 @@ from grokui.zodbbrowser.interfaces import IObjectInfo
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
 
-class ManageApplications(grok.Permission):
+class BrowseZODBPermission(grok.Permission):
     grok.name('grok.BrowseZODB')
 
 class GrokUIZODBBrowserInfo(GrokUIView):
