@@ -771,9 +771,8 @@ Declaring an Interface
 
 .. note::
 
-   If you have never worked with ``zope.interface`` before we
-   recommend that you read through the `Interface chapter
-   <http://bluebream.muthukadan.net/doc/1.0/manual/interface.html>`_
+   If you have never worked with ``zope.interface`` before, we
+   recommend that you read through the :ref:`man-interface` chapter
    in the manual before proceding.
 
 As the first step for creating the main application container object
