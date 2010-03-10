@@ -21,7 +21,6 @@ class ObjectInfo(grok.Adapter):
         self._name = None
         self._parent_oid = None
 
-        
     @property
     def name(self):
         """Get name of wrapped obj.
@@ -34,13 +33,17 @@ class ObjectInfo(grok.Adapter):
     def parent(self):
         return getattr(self.obj, '__parent__', None)
 
-    def getDescription(self):
-        descr = getattr(self.obj, '__doc__', u'')
+    @property
+    def description(self):
+        """Get a description of the associated object.
+
+        This is currently the docstring if it exists or empty string.
+        """
         descr = inspect.getdoc(self.obj)
         if descr is None:
             return u''
         return descr
-    
+
     def getMembers(self):
         result = []
         for name, obj in inspect.getmembers(self.obj):
@@ -84,11 +87,6 @@ class ObjectInfo(grok.Adapter):
         if isinstance(self.obj, types.MethodType):
             return "%s(...)" % self.name
         return self.name
-
-    @property
-    def doc(self):
-        descr = inspect.getdoc(self.obj)
-        return descr
 
     @property
     def type_string(self):

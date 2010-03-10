@@ -17,7 +17,7 @@
 </p>
 <h3 tal:content="view/info/name">the_object_name</h3>
 <h3 tal:content="view/info/type_string">The_Object</h3>
-<div tal:content="view/info/getDescription">
+<div tal:content="view/info/description">
   The object description
 </div>
 

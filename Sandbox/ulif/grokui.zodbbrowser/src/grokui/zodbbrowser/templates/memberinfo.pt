@@ -12,7 +12,7 @@
     </b>
     <span tal:content="context/getValue">member-value</span>
     <p>
-      <pre tal:condition="python: context.doc and view.show_docs" 
-	   tal:content="context/doc">member.docs</pre>
+      <pre tal:condition="python: context.description and view.show_docs" 
+	   tal:content="context/description">member.docs</pre>
     </p>
 </div>
