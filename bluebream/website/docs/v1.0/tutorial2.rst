@@ -186,7 +186,7 @@ this::
   </head>
   <body>
 
-  Welcome to ticket collector!
+  Welcome to ticket collector! <br/> <br/>
 
   <a href="@@add_ticket">Add Ticket</a>
 
@@ -324,7 +324,9 @@ To list the tikets in the main collector page, you need to modify the
   </head>
   <body>
 
-  Welcome to ticket collector!
+  Welcome to ticket collector! <br/> <br/>
+
+  <a href="@@add_ticket">Add Ticket</a> <br/> <br/>
 
   <ol tal:repeat="ticket view/getTickets">
     <li><a href=""
@@ -339,20 +341,18 @@ To list the tikets in the main collector page, you need to modify the
 You need to change the ``TicketCollectorMainView`` defined in
 ``src/main/tc/main/views.py`` file::
 
-  from zope.browserpage import ViewPageTemplateFile
+    class TicketCollectorMainView(form.DisplayForm):
 
-  class TicketCollectorMainView(form.DisplayForm):
+        form_fields = form.Fields(ICollector)
 
-      form_fields = form.Fields(ICollector)
+        template = ViewPageTemplateFile("collectormain.pt")
 
-      template = ViewPageTemplateFile("collectormain.pt")
-
-      def getTickets(self):
-          tickets = []
-          for ticket in self.context:
-              tickets.append({'url':ticket.number,
-                              'summary': ticket.summary})
-          return tickets
+        def getTickets(self):
+            tickets = []
+            for ticket in self.context.values():
+                tickets.append({'url': ticket.number+"/@@index",
+                                'summary': ticket.summary})
+            return tickets
 
 Adding Comments
 ---------------
