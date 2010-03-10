@@ -1,12 +1,22 @@
+import os
 from setuptools import setup, find_packages
 
-version = '0.5'
+version = '0.5.1dev'
+
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt'))
+
 
 setup(name='megrok.rendersource',
       version=version,
       description="Grok source renderers",
-      long_description="""\
-""",
+      long_description=long_description,
       classifiers=[], 
       keywords="",
       author="d2m",
