@@ -218,7 +218,7 @@ You can register the view inside ``src/tc/main/configure.zcml``::
      />
 
 You can add a ticket by visiting:
-http://localhost:8080/mycolector/@@add_ticket You can give the ticket
+http://localhost:8080/mycollector/@@add_ticket You can give the ticket
 number as '1' and provide summary as 'Test Summary'.
 
 You can check the object from debug shell::
@@ -237,10 +237,10 @@ Default browser page for tickets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now there is no default browser page for tickets.  If you try to
-access the ticket from the URL: http://localhost:8080/mycolector/1 ,
+access the ticket from the URL: http://localhost:8080/mycollector/1 ,
 you will get ``NotFound`` error like this::
 
-  URL: http://localhost:8080/mycolector/1
+  URL: http://localhost:8080/mycollector/1
   ...
   NotFound: Object: <tc.main.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
 
@@ -288,9 +288,9 @@ Then, in the ``src/tc/main/configure.zcml``::
      class="tc.main.views.TicketMainView"
      />
 
-Now you can visit: http://localhost:8080/mycolector/1 It should
+Now you can visit: http://localhost:8080/mycollector/1 It should
 display the ticket number and summary.  Alternately you can also
-visit: http://localhost:8080/mycolector/1/@@index.  Then, if you open
+visit: http://localhost:8080/mycollector/1/@@index.  Then, if you open
 the HTML source from browser, it will look like this::
 
   <html>

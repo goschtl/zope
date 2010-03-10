@@ -50,8 +50,8 @@ Starting a new project
 Using the *bluebream* project template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this section, we will create the directory layout for ticket
-collector application.  I assume you have already installed
+In this section we will create the directory layout for our ticket
+collector application.  I will assume that you have already installed
 ``bluebream`` using the ``easy_install bluebream`` command as
 mentioned in the :ref:`started-getting` chapter.  We are going to use
 the project name ``ticketcollector`` and namespace package name
@@ -133,16 +133,16 @@ the project name ``ticketcollector`` and namespace package name
     Copying versions.cfg to ./ticketcollector/versions.cfg
   Running /usr/bin/python2.6 setup.py egg_info
 
-As you can see above, we have provided most of the project details.
-Later, you can change the values provided here.  However, changing
-the package name or namespace package name may not be easy as
+As you can see above we have provided most of the project details.
+The values you provided here may be changed later, however changing
+the package name or the namespace package name may not be as easy as
 changing the description because the name and namespace package might
 be referred to from many places.
 
 Organize the new package
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you change directory to ``ticketcollector``, you can see few
+If you change directory to ``ticketcollector`` you can see a few
 directories and files::
 
   jack@computer:/projects/ticketcollector$ ls -CF
@@ -641,16 +641,16 @@ Running Tests
 -------------
 
 BlueBream use `zope.testing
-<http://pypi.python.org/pypi/zope.testing>` as the main framework for
+<http://pypi.python.org/pypi/zope.testing>`_ as the main framework for
 automated testing.  Along with **zope.testing**, you can use Python's
 ``unittest`` and ``doctest`` modules.  Also there is a functional
 testing module called `zope.testbrowser
 <http://pypi.python.org/pypi/zope.testbrowser>`_ . To setup the test
 cases, layers etc. BlueBream use the `z3c.testsetup
-<http://pypi.python.org/pypi/z3c.testsetup>` package.
+<http://pypi.python.org/pypi/z3c.testsetup>`_ package.
 
 BlueBream use the Buildout recipe called `zc.recipe.testrunner
-<http://pypi.python.org/pypi/zc.recipe.testrunner>` to generate test
+<http://pypi.python.org/pypi/zc.recipe.testrunner>`_ to generate test
 runner script.
 
 If you look at the buildout configuration, you can see the test
@@ -678,12 +678,12 @@ Creating the application object
 Container objects
 ~~~~~~~~~~~~~~~~~
 
-In this section, we will explore one of the main concepts in
-BlueBream called **container object**.  As mentioned earlier,
-BlueBream use an object database called ZODB to store your Python
-objects.  You can think of object database as a container which
-contains objects, the inner object may be another container which
-contains other objects.
+In this section we will explore one of the main concepts in BlueBream
+called **container object**.  As mentioned earlier BlueBream use an
+object database called ZODB to store your Python objects.  You can
+think of an object database as a container which contains objects,
+the inner object may be another container which contains other
+objects.
 
 The object hierarchy may look like this::
 
@@ -697,22 +697,25 @@ The object hierarchy may look like this::
   |                  +--+ |
   +-----------------------+
 
-BlueBream will take care of the persistence of the objects.  To make
-one custom object persistent first you need to inheriting from
-``persistent.Persistent``.  BlueBream has some classes inheriting
-from ``persistent.Persistent``:
+BlueBream will take care of the persistence of the objects.  In order
+to make a custom object persistent the object class will have to
+inherit from ``persistent.Persistent``.
+
+Some classes in BlueBream that inherits
+``persistent.Persistent``:
 
 - ``zope.container.btree.BTreeContainer``
 - ``zope.container.folder.Folder``
 - ``zope.site.folder.Folder``
 
-If you inherit from any of these classes, the instance of that class
-will be persistent.  The second thing you need to do to make it
-persistent is add the object to an existing container object.  You
-can experiment this from the debug shell provided by BlueBream.
-Before that create a container class somewhere in your code which can
-be imported later.  You can add this definition to
-``src/tc/main/__init__.py`` file (Delete it after the experiment)::
+When you inherit from any of these classes the instances of that
+class will be persistent.  The second thing you need to do to make it
+persistent is to add the object to an existing container object.  You
+can experiment with this from the debug shell provided by BlueBream.
+But before you try that out create a container class somewhere in
+your code which can be imported later.  You can add this definition
+to the ``src/tc/main/__init__.py`` file (Delete it after the
+experiment)::
 
   from zope.container.btree import BTreeContainer
 
@@ -728,17 +731,16 @@ Then open the debug shell as given below::
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
   >>>
 
-The name, ``root`` referring to the top-level container.  This is the
-default location where the object hierarchy starts.  You can import
-your own container class and create instance and add it to the root
-folder::
+The name ``root`` refers to the top-level container in the database.
+You can import your own container class, create an instance and add
+it to the root folder::
 
   >>> from tc.main import MyContainer
   >>> root['c1'] = MyContainer()
 
-ZODB is transactional database, so you need to commit your
-transaction.  To commit transaction, use the ``transaction.commit``
-function as given below::
+ZODB is a transactional database so you will have to commit your
+changes in order for them to be performed.  To commit your changes
+use the function ``transaction.commit`` as described below::
 
   >>> import transaction
   >>> transaction.commit()
@@ -754,28 +756,25 @@ can access the persistent object again::
   >>> root['c1']
   <tc.main.MyContainer object at 0x96091ac>
 
-Persisting any random objects like this is not a good idea.  The next
-section will explain how to create a formal schema for your objects.
-Now you can delete the object and remove ``MyContainer`` class
-definition from ``src/tc/main/__init__.py``.  You can delete the
-object like this::
+Persisting random objects like this is not a particulary good idea.
+The next section will explain how to create a formal schema for your
+objects.  Now you can delete the object and remove the
+``MyContainer`` class definition from ``src/tc/main/__init__.py``.
+You can delete the object like this::
 
   >>> del(root['c1'])
   >>> import transaction
   >>> transaction.commit()
 
-Declaring Interface
-~~~~~~~~~~~~~~~~~~~
+Declaring an Interface
+~~~~~~~~~~~~~~~~~~~~~~
 
-From the overview of introduction chapter, you must be noticed, one
-of the important BlueBream feature: BlueBream has transactional
-object database (:term:`ZODB`).  This is the reason why relational
-database connectivity and ORMs are not discussed yet.  BlueBream
-recommend to use the Python based object database called ZODB for
-storing data.  BlueBream makes it easy to do this.  In this section,
-you will see the basic steps you need to make your objects
-persistent.  Having a well defined schema for all objects (data) is a
-good idea.
+.. note::
+
+   If you have never worked with ``zope.interface`` before we
+   recommend that you read through the `Interface chapter
+   <http://bluebream.muthukadan.net/doc/1.0/manual/interface.html>`_
+   in the manual before proceding.
 
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
@@ -939,7 +938,7 @@ directive is used for registering pages.  You can give the name as
 Now you can access the URL:
 http://localhost:8080/@@add_ticket_collector .  It should display a
 form where you can enter details like ``name`` and ``description``.
-You can enter the ``name`` as ``mycolector``, after entering data,
+You can enter the ``name`` as ``mycollector``, after entering data,
 submit the form.
 
 You can see the file size of ``var/filestorage/Data.fs`` is
@@ -956,7 +955,7 @@ object, you can see that it has the object you added::
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
   >>> list(root.keys())
-  [u'mycolector']
+  [u'mycollector']
 
 You can use this debug shell to introspect Python objects stored in
 ZODB.  You can add, update or delete objects and attributes from the
@@ -966,10 +965,10 @@ A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you try to access the collector from the URL:
-http://localhost:8080/mycolector , you will get ``NotFound`` error
+http://localhost:8080/mycollector , you will get ``NotFound`` error
 like this::
 
-  URL: http://localhost:8080/mycolector
+  URL: http://localhost:8080/mycollector
   ...
   NotFound: Object: <tc.main.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
@@ -996,7 +995,7 @@ Then, in the ``src/tc/main/configure.zcml``::
      class="tc.main.views.TicketCollectorMainView"
      />
 
-Now you can visit: http://localhost:8080/mycolector
+Now you can visit: http://localhost:8080/mycollector
 It should display a message like this::
 
   Hello ticket collector!
@@ -1042,7 +1041,7 @@ content::
   </body>
   </html>
 
-Now you can visit: http://localhost:8080/mycolector .  It should
+Now you can visit: http://localhost:8080/mycollector .  It should
 display "Welcome to ticket collector!" message.
 
 .. _tut1-conclusion:
