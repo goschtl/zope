@@ -9,10 +9,12 @@ from zope.proxy import removeAllProxies
 from ZODB.utils import p64, u64, tid_repr
 from grokui.zodbbrowser.interfaces import IObjectInfo
 
-class ObjectInfo(object):
+class ObjectInfo(grok.Adapter):
     """Infos about objects.
     """
+    grok.context(Interface)
     grok.implements(IObjectInfo)
+    grok.provides(IObjectInfo)
 
     def __init__(self, context):
         self.obj = removeAllProxies(context)
@@ -105,9 +107,3 @@ class ObjectInfo(object):
             signature = u'(...)'
         
         return '%s%s' % (self.name, signature)
-
-@grok.adapter(Interface)
-@grok.implementer(IObjectInfo)
-def info_for_object(obj):
-    # Adapter factory for object infos.
-    return ObjectInfo(obj)
