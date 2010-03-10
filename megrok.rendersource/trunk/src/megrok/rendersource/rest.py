@@ -5,6 +5,7 @@ import grokcore.view
 import docutils.core
 import grokcore.component
 
+from StringIO import StringIO
 from docutils.writers.html4css1 import Writer
 from docutils.writers.html4css1 import HTMLTranslator
 from zope.app.renderer.rest import (
@@ -29,6 +30,7 @@ class RSTToHTMLRenderer(ReStructuredTextToHTMLRenderer):
         html = docutils.core.publish_file(
             source_path=self.context,
             writer=writer,
+            destination=StringIO(), # prevents output to console!
             settings_overrides=overrides,
             )
         return html
