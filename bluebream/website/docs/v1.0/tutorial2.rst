@@ -40,6 +40,9 @@ Before proceeding further, here is an overview of sections:
   collector objects.  This section provide a detailed overview of
   creating content object and demonstrate with a simple example.
 
+- **Listing tickets** -- This section shows displaying tickets from
+  the main collector page.
+
 - **Adding comments** -- This section explain about adding content
   object inside other container objects.  Ticket objects will be
   transformed to a container object.
