@@ -258,7 +258,7 @@ In the ``src/tc/main/views.py`` add a new view like this::
 
   class TicketMainView(form.DisplayForm):
 
-      form_fields = form.Fields(ICollector)
+      form_fields = form.Fields(ITicket)
 
       template = ViewPageTemplateFile("ticketmain.pt")
 
@@ -281,7 +281,6 @@ You can create the template file here:
   </body>
   </html>
 
-
 Then, in the ``src/tc/main/configure.zcml``::
 
   <browser:page
@@ -291,10 +290,9 @@ Then, in the ``src/tc/main/configure.zcml``::
      class="tc.main.views.TicketMainView"
      />
 
-Now you can visit: http://localhost:8080/mycollector/1 It should
-display the ticket number and summary.  Alternately you can also
-visit: http://localhost:8080/mycollector/1/@@index.  Then, if you open
-the HTML source from browser, it will look like this::
+Now you can visit: http://localhost:8080/mycollector/1/@@index It
+should display the ticket number and summary.  If you open the HTML
+source from browser, it will look like this::
 
   <html>
   <head>
