@@ -15,7 +15,7 @@ Installation
 Add 'megrok.rendersource' to the 'install_requires' list in your packages 'setup.py'.
 Run buildout again.
 Template reloading is available in developer mode only:
-  add 'devmode on' to the 'zope.conf = ' line in your buildout.cfg
+add 'devmode on' to the 'zope.conf = ' line in your buildout.cfg
  
 
 Configuration
