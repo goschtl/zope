@@ -24,9 +24,8 @@ the first part of tutorial will be expanded with additional
 functionalities.  In fact, the collector object created in the last
 chapter is a content component.  In this chapter, you will create new
 content objects like tickets and comments.  Another thing you might
-be noticed that every content component, including container objects,
-there is well defined interface defined using ``zope.interface``
-module.
+be noticed that, every content component, including container
+components has well defined interfaces.
 
 This chapter explore content components in more detail.  After
 completing this chapter, you should be able to:
@@ -134,7 +133,7 @@ Here you added a constraint for ``__parent__`` field using
 Implementation
 ~~~~~~~~~~~~~~
 
-Next, you can implement this interface inside ``ticket.py``::
+Next, you can implement this interface inside ``src/tc/main/ticket.py``::
 
   from zope.interface import implements
   from tc.main.interfaces import ITicket
@@ -152,7 +151,8 @@ Next, you can implement this interface inside ``ticket.py``::
 Configuration
 ~~~~~~~~~~~~~
 
-Then, register the interface & class::
+Then, register the interface & class.  Open the
+``src/tc/main/configure.zcml`` and update it with these details::
 
   <interface
      interface="tc.main.interfaces.ITicket"
@@ -191,7 +191,7 @@ this::
   </html>
 
 When you click on this link, it expects a view. You can create an
-AddForm inside ``views.py``::
+AddForm inside ``src/tc/main/views.py``::
 
   from tc.main.interfaces import ITicket
 
@@ -208,7 +208,7 @@ AddForm inside ``views.py``::
           self.context[number] = ticket
           self.request.response.redirect('.')
 
-You can register the view inside `configure.zcml`::
+You can register the view inside ``src/tc/main/configure.zcml``::
 
   <browser:page
      for="tc.main.interfaces.ICollector"
