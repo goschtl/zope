@@ -14,8 +14,9 @@ Requirements
 Installation
 ============
 
-- create an virtualenv environment (Python 2.6) - either within your
-  current (empty) directory or by letting virtualenv create one for you::
+- create an ``virtualenv`` environment (Python 2.6) - either within your
+  current (empty) directory or by letting virtualenv create one for you. 
+  (``easy_install virtualenv`` if ``virtualenv`` is not available on your system)::
 
     virtualenv --no-site-packages .
 
@@ -33,7 +34,7 @@ Installation
 
     bin/easy_install zopyx.smartprintng.server
 
-- create a ``server.ini`` configuration file (and change according to your needs)::
+- create a ``server.ini`` configuration file (and change it according to your needs)::
 
     [DEFAULT]
     debug = true
@@ -49,9 +50,13 @@ Installation
     host = 127.0.0.1
     port = 6543
 
-- start the server::
+- start the server (in foreground)::
 
     bin/paster serve server.ini 
+
+- or start it in background::
+
+    bin/paster serve server.ini  --daemon
 
 XMLRPC API
 ==========
