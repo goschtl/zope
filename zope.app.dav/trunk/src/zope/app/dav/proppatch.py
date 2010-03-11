@@ -10,30 +10,34 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """WebDAV method PROPPATCH
-
-$Id$
 """
-__docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
 
 import transaction
-from zope.component import getUtilitiesFor, queryUtility
-from zope.schema import getFieldNamesInOrder, getFields
-from zope.app.container.interfaces import IReadContainer
+from zope.component import getUtilitiesFor
+from zope.component import queryUtility
+from zope.schema import getFieldNamesInOrder
+from zope.schema import getFields
 from zope.publisher.http import status_reasons
-from zope.app.form.utility import setUpWidget, no_value
 from zope.traversing.browser.absoluteurl import absoluteURL
 
-from interfaces import IDAVNamespace, IDAVWidget
-from opaquenamespaces import IDAVOpaqueNamespaces
+from zope.app.container.interfaces import IReadContainer
+from zope.app.form.utility import no_value
+from zope.app.form.utility import setUpWidget
+
+from zope.app.dav.interfaces import IDAVNamespace
+from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
 class PROPPATCH(object):
-    """PROPPATCH handler for all objects"""
+    """PROPPATCH handler for all objects
+    """
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self._dav_ns_adapters = {}
         ct = request.getHeader('content-type', 'text/xml')
         if ';' in ct:
             parts = ct.split(';', 1)
@@ -54,6 +58,15 @@ class PROPPATCH(object):
             for ns, oprops in self.oprops.items():
                 _avail_props[ns] = list(oprops.keys())
         self.avail_props = _avail_props
+
+    def _getDAVAdapter(self, ns):
+        if ns not in self._dav_ns_adapters:
+            iface = queryUtility(IDAVNamespace, ns)
+            if iface:
+                adapter = self._dav_ns_adapters[ns] = iface(self.context)
+            else:
+                adapter = self._dav_ns_adapters[ns] = None
+        return self._dav_ns_adapters[ns]
 
     def PROPPATCH(self):
         if self.content_type not in ['text/xml', 'application/xml']:
@@ -165,7 +178,8 @@ class PROPPATCH(object):
         if field.readonly:
             return 409 # RFC 2518 specifies 409 for readonly props
 
-        value = field.get(iface(self.context))
+        dav_adapter = self._getDAVAdapter(ns)
+        value = field.get(dav_adapter)
         if value is field.missing_value:
             value = no_value
         setUpWidget(self, prop.localName, field, IDAVWidget,
@@ -177,7 +191,7 @@ class PROPPATCH(object):
         if not widget.hasValidInput():
             return 409 # Didn't match the widget validation
 
-        if widget.applyChanges(iface(self.context)):
+        if widget.applyChanges(dav_adapter):
             return 200
 
         return 422 # Field didn't accept the value
@@ -200,13 +214,14 @@ class PROPPATCH(object):
         if field.readonly:
             return 409 # RFC 2518 specifies 409 for readonly props
 
+        dav_adapter = self._getDAVAdapter(ns)
         if field.required:
             if field.default is None:
                 return 409 # Clearing a required property is a conflict
             # Reset the field to the default if a value is required
-            field.set(iface(self.context), field.default)
+            field.set(dav_adapter, field.default)
             return 200
 
         # Reset the field to it's defined missing_value
-        field.set(iface(self.context), field.missing_value)
+        field.set(dav_adapter, field.missing_value)
         return 200

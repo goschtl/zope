@@ -5,7 +5,8 @@ CHANGES
 3.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Avoid creating a DAV namespace adapter per property in PROPPATCH
+  (create only one per namespace in a given request).  See LP #98454.
 
 
 3.5.2 (2010-01-08)

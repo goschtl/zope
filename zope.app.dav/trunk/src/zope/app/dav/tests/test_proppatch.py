@@ -12,11 +12,7 @@
 #
 ##############################################################################
 """Test the dav PROPPATCH interactions.
-
-$Id$
 """
-__docformat__ = 'restructuredtext'
-
 import unittest
 from StringIO import StringIO
 
@@ -42,7 +38,6 @@ from zope.dublincore.zopedublincore import ScalarProperty
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 
-import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
 from zope.app.dav import proppatch
 from zope.app.dav.interfaces import IDAVSchema, IDAVNamespace, IDAVWidget
