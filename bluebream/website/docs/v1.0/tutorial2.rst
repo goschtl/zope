@@ -47,6 +47,9 @@ Before proceeding further, here is an overview of sections:
   object inside other container objects.  Ticket objects will be
   transformed to a container object.
 
+- **Listing comments** -- This section shows displaying tickets from
+  the ticket page.
+
 .. note::
 
    The examples in this documentation can be downloaded from here:
@@ -328,10 +331,11 @@ To list the tikets in the main collector page, you need to modify the
 
   <a href="@@add_ticket">Add Ticket</a> <br/> <br/>
 
-  <ol tal:repeat="ticket view/getTickets">
-    <li><a href=""
-           tal:attributes="href ticket/url"
-           tal:content="ticket/summary">Ticket Summary</a>
+  <ol>
+    <li tal:repeat="ticket view/getTickets">
+      <a href=""
+         tal:attributes="href ticket/url"
+         tal:content="ticket/summary">Ticket Summary</a>
     </li>
   </ol>
 
@@ -373,13 +377,20 @@ comments.  You can add this interface definition inside
           default=u"",
           required=True)
 
-Next, you can implement the comment like this::
+  class ICommentContained(IContained):
+      """Interface that specifies the type of objects that can contain
+      comments.  A comment can only contain in a ticket."""
+
+      __parent__ = Field(
+          constraint = ContainerTypesConstraint(ITicket))
+
+Next, you can implement the comment like this.  You can create a new
+file for the implementation, ``src/tc/main/comment.py``::
 
   from zope.interface import implements
-
   from tc.main.interfaces import IComment
   from tc.main.interfaces import ICommentContained
-  from zope.location.contained import Contained
+  from zope.container.contained import Contained
 
   class Comment(Contained):
 
@@ -390,23 +401,136 @@ Next, you can implement the comment like this::
 Then, register the interface & class::
 
   <interface
-     interface=".interfaces.IComment"
+     interface="tc.main.interfaces.IComment"
      type="zope.app.content.interfaces.IContentType"
      />
 
-  <class class=".ticket.Comment">
+  <class class="tc.main.comment.Comment">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <require
        permission="zope.ManageContent"
-       interface=".interfaces.IComment"
+       interface="tc.main.interfaces.IComment"
        />
     <require
        permission="zope.ManageContent"
-       set_schema=".interfaces.IComment"
+       set_schema="tc.main.interfaces.IComment"
        />
   </class>
+
+This is not sufficient to add comment to tickets.  Now ticket is not
+a container.  So, you need to change the interface::
+
+  class ITicket(IContainer):
+      """Ticket - the ticket content component"""
+
+      number = TextLine(
+          title=u"Number",
+          description=u"Ticket number",
+          default=u"",
+          required=True)
+
+      summary = Text(
+          title=u"Summary",
+          description=u"Ticket summary",
+          default=u"",
+          required=True)
+
+      def __setitem__(name, object):
+          """Add an ICollector object."""
+
+      __setitem__.precondition = ItemTypePrecondition(IComment)
+
+Update the ticket implementation at ``src/tc/main/ticket.py``::
+
+  from zope.interface import implements
+  from tc.main.interfaces import ITicket
+  from tc.main.interfaces import ITicketContained
+  from zope.container.contained import Contained
+  from zope.container.btree import BTreeContainer
+
+
+  class Ticket(BTreeContainer, Contained):
+
+      implements(ITicket, ITicketContained)
+
+      number = u""
+      summary = u""
+
+You can update the template file here:
+``src/tc/main/ticketmain.pt`` with this content::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector!</title>
+  </head>
+  <body>
+
+  You are looking at ticket number:
+  <b tal:content="context/number">number</b>
+
+  <h3>Summary</h3>
+
+  <p tal:content="context/summary">Summary goes here</p>
+
+  <a href="@@add_comment">Add Comment</a>
+
+  </body>
+  </html>
+
+You need to create an ``AddForm`` like this::
+
+  from tc.main.interfaces import IComment
+  from tc.main.comment import Comment
+
+  class AddComment(form.AddForm):
+
+      form_fields = form.Fields(IComment)
+
+      def createAndAdd(self, data):
+          body = data['body']
+          comment = Comment()
+          comment.body = body
+          namechooser = INameChooser(self.context)
+          number = namechooser.chooseName('c', comment)
+          self.context[number] = comment
+          self.request.response.redirect('.')
+
+You can register the view inside ``src/tc/main/configure.zcml``::
+
+  <browser:page
+     for="tc.main.interfaces.ITicket"
+     name="add_comment"
+     permission="zope.ManageContent"
+     class="tc.main.views.AddComment"
+     />
+
+Listing comments
+----------------
+
+This section explain listing tickets in the ticket page, so that the
+user can see comments for the particular ticket.
+
+To list the comments in the ticket page, you need to modify the
+``src/tc/main/ticketmain.pt``::
+
+  <html>
+  <head>
+  <title>Welcome to ticket collector!</title>
+  </head>
+  <body>
+
+  Welcome to ticket collector! <br/> <br/>
+
+  <a href="@@add_ticket">Add Ticket</a> <br/> <br/>
+
+  <p tal:repeat="ticket context/values">
+    <span tal:content="ticket/body">Comment goes here</span>
+  </p>
+
+  </body>
+  </html>
 
 Conclusion
 ----------
