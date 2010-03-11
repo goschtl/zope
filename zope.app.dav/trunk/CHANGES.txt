@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.3 (unreleased)
+3.5.3 (2010-03-11)
 ------------------
 
 - Avoid creating a DAV namespace adapter per property in PROPPATCH
