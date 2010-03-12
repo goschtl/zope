@@ -68,9 +68,7 @@ In order to use ticket objects, first you need to create an interface
 for tickets.  Update the ``src/tc/main/interfaces.py`` with the ticket
 interface::
 
-  from zope.interface import Interface
-
-  class ITicket(Interface):
+  class ITicket(IContainer):
       """Ticket - the ticket content component"""
 
       number = TextLine(
@@ -147,7 +145,7 @@ Next, you can implement this interface inside ``src/tc/main/ticket.py``::
   from zope.container.contained import Contained
 
 
-  class Ticket(Contained):
+  class Ticket(BTreeContainer, Contained):
 
       implements(ITicket, ITicketContained)
 
@@ -168,6 +166,9 @@ Then, register the interface & class.  Open the
   <class class="tc.main.ticket.Ticket">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+    <implements
+       interface="zope.container.interfaces.IContentContainer" 
        />
     <require
        permission="zope.ManageContent"
