@@ -367,7 +367,7 @@ Adding Comments
 In this section, you will create `comment` objects and add it to
 tickets.  As the first step, you need to define the interface for the
 comments.  You can add this interface definition inside
-``interfaces.py``::
+``src/tc/main/interfaces.py``::
 
   class IComment(Interface):
       """Comment for Ticket"""
@@ -420,8 +420,8 @@ Then, register the interface & class::
        />
   </class>
 
-This is not sufficient to add comment to tickets.  Now ticket is not
-a container.  So, you need to change the interface::
+You can add ``ItemTypePrecondition`` to ``ITicket``.  Open the
+``src/tc/main/interfaces.py`` and update the interface definition::
 
   class ITicket(IContainer):
       """Ticket - the ticket content component"""
@@ -480,7 +480,9 @@ You can update the template file here:
   </body>
   </html>
 
-You need to create an ``AddForm`` like this::
+You need to create an ``AddForm`` like this.  Open the
+``src/tc/main/views.py`` file and update with the ``AddComment`` form
+given below::
 
   from tc.main.interfaces import IComment
   from tc.main.comment import Comment
