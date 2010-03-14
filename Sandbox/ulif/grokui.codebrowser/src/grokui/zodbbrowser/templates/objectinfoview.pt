@@ -1,0 +1,13 @@
+<h3 tal:content="context/name">the_object_name</h3>
+<h3 tal:content="context/type_string">The ObjectType</h3>
+<div>OID: <span tal:replace="context/oid">12</span></div>
+<div tal:content="context/description">
+  The object description
+</div>
+<h2>Members</h2>
+<div tal:repeat="member context/getMembers">
+  <div tal:condition="python: member.linkable or view.show_all"
+       tal:content="structure python: view.getMemberView(member)()" >
+    Member infos go here
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<h1>The GrokUI ZODBBrowser</h1>
+<span tal:content="structure view/getBreadCrumbs">
+</span>
+<p>
+  <form method="POST"
+        tal:attributes="action request/getURL">
+    <input type="checkbox" name="show_all" id="show_all"
+	   tal:attributes="checked python: view.show_all and 'checked'" />
+    <label for="show_all">show all members</label>
+    <input type="checkbox" name="show_docs" id="show_docs"
+	   tal:attributes="checked python: view.show_docs and 'checked'" />
+    <label for="show_docs">show docstrings</label>
+    <input type="hidden" name="oid" 
+	   tal:attributes="value view/info/oid" />
+    <input type="submit" name="update" value="Update" />
+  </form>
+</p>
+<div tal:content="structure view/info/@@index">
+  Info text
+</div>
