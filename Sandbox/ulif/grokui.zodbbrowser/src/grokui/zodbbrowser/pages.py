@@ -3,12 +3,14 @@
 import grok
 from persistent import Persistent
 from zope.component import getMultiAdapter
+from zope.location import LocationProxy
 from zope.security.proxy import removeSecurityProxy
 from zope.session.interfaces import ISession
 from ZODB.POSException import POSKeyError
 from ZODB.utils import p64, u64, tid_repr
+
 from grokui.base import IGrokUIRealm, GrokUIView
-from grokui.zodbbrowser.interfaces import IObjectInfo
+from grokui.zodbbrowser.interfaces import IObjectInfo, IBTreeInfo
 
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
@@ -26,38 +28,16 @@ class GrokUIZODBBrowserInfo(GrokUIView):
     def publishTraverse(self, request, name):
         self.request.form['oid'] = name
         return self
-    
-    def update(self, oid=None, show_all=False, show_docs=False, update=None):
-        self.obj = None
-        if oid is None:
-            self.obj = self.context.root
-        if self.obj is None:
-            try:
-                oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
-            except ValueError:
-                # Invalid number sent
-                self.flash(
-                    u'Not a valid object ID: %s' % self.request.get('oid'))
-                self.redirect(self.url(self.context, '@@zodbbrowser'))
-                return
-            jar = self.jar()
-            try:
-                self.obj = jar.get(oid)
-            except POSKeyError:
-                self.flash(u'No such object ID: %s' % u64(oid))
-                self.redirect(self.url(self.context, '@@zodbbrowser'))
-                return
 
-        self.info = IObjectInfo(self.obj)
-        session = ISession(self.request)['grokui.zodbbrowser']
+    def jar(self):
+        try:
+            return self.request.annotations['ZODB.interfaces.IConnection']
+        except KeyError:
+            obj = removeSecurityProxy(self.context)
+            while not isinstance(obj, Persistent):
+                obj = removeSecurityProxy(obj.__parent__)
+            return obj._p_jar
 
-        if update is None:
-            show_all = session.get('show_all', False)
-            show_docs = session.get('show_docs', False)
-        self.show_all = session['show_all'] = show_all
-        self.show_docs = session['show_docs'] = show_docs
-        return
-        
     def getRootOID(self):
         """Get OID of root object.
         """
@@ -74,54 +54,89 @@ class GrokUIZODBBrowserInfo(GrokUIView):
             pass
         return u64(root._p_oid)
 
-    def jar(self):
+    def getObjectAndOID(self, oid=None):
+        """Compute associated object and its OID.
+        """
+        obj = None
+        if oid is None:
+            obj = self.context.root
+        if obj is None:
+            oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
+            obj = self.jar().get(oid)
+        return (obj, oid)
+
+    def update(self, oid=None, show_all=False, show_docs=False, update=None):
         try:
-            return self.request.annotations['ZODB.interfaces.IConnection']
-        except KeyError:
-            obj = removeSecurityProxy(self.context)
-            while not isinstance(obj, Persistent):
-                obj = removeSecurityProxy(obj.__parent__)
-            return obj._p_jar
+            self.obj, self.oid = self.getObjectAndOID(oid=oid)
+        except (POSKeyError, ValueError):
+            # Invalid number sent
+            self.flash(
+                u'Not a valid object ID: %s' % self.request.get('oid'))
+            self.redirect(self.url(self.context, '@@zodbbrowser'))
+            return
 
-    def getMemberLink(self, member):
-        return "%s/%s" % (self.url(self.context, '@@zodbbrowser'), member.oid)
+        info = IObjectInfo(self.obj)
+        self.info = LocationProxy(info, self, str(info.oid))
 
-    def getMemberView(self, member):
-        view = getMultiAdapter((member, self.request), name='memberinfo')
-        # this subview needs a reference to our context...
-        view.parent_context = self.context
-        return view
+        session = ISession(self.request)['grokui.zodbbrowser']
+        if update is None:
+            show_all = session.get('show_all', False)
+            show_docs = session.get('show_docs', False)
+        self.show_all = session['show_all'] = show_all
+        self.show_docs = session['show_docs'] = show_docs
+        return
 
     def getBreadCrumbs(self):
         """Breadcrumb navigation.
         """
         root_oid = self.getRootOID()
         curr = self.info
-        parent_list = [curr]
+        b_list = []
         while True:
-            parent = IObjectInfo(curr.parent)
-            if parent.obj is not None:
-                parent_list.append(parent)
-            if parent.obj is None or parent.obj is curr.obj:
-                break
-            curr = parent
-        link_list = []
-        for info in parent_list:
-            name = info.name or '???'
-            if info.oid == root_oid:
+            link = self.getMemberLink(curr)
+            name = curr.name or '???'
+            if curr.oid == root_oid:
                 name = '&lt;root&gt;'
-            link = '<a href="%s">%s</a>' % (self.getMemberLink(info), name)
-            link_list.append(link)
-        if parent_list[-1].oid != root_oid:
-            link_list.append('...')
-            link_list.append(
-                '<a href="%s">%s</a>' % (
+            b_list.append('<a href="%s">%s</a>' % (link, name))
+            if curr.parent is None or curr.parent is curr.obj:
+                break
+            curr = IObjectInfo(curr.parent)
+        if curr.oid != root_oid:
+            b_list.append('...')
+            b_list.append('<a href="%s">%s</a>' % (
                     self.getMemberLink(IObjectInfo(self.context.root)),
                     '&lt;root&gt;'))
-        link_list.reverse()
-        result = ' / '.join(link_list)
-        return result
-    
+        b_list.reverse()
+        return ' / '.join(b_list)
+
+    def getMemberLink(self, memberinfo):
+        return self.url(
+            LocationProxy(memberinfo, self, str(memberinfo.oid)))
+
+class ObjectInfoView(grok.View):
+    grok.name('index')
+    grok.require('grok.BrowseZODB')
+    grok.context(IObjectInfo)
+
+    def update(self):
+        session = ISession(self.request)['grokui.zodbbrowser']
+        self.show_all = session.get('show_all', False)
+        self.show_docs = session.get('show_docs', False)
+
+    def getMemberView(self, member=None):
+        if member is None:
+            member = self.context
+        member = LocationProxy(
+            member, self.context.__parent__, str(member.oid))
+        view = getMultiAdapter((member, self.request), name='memberinfo')
+        return view
+
+class FolderInfoView(ObjectInfoView):
+    grok.name('index')
+    grok.require('grok.BrowseZODB')
+    grok.context(IBTreeInfo)
+    grok.template('objectinfoview')
+
 class MemberInfoView(grok.View):
     """View objectinfo as memberinfo.
     """
@@ -136,6 +151,4 @@ class MemberInfoView(grok.View):
         self.show_docs = session.get('show_docs', False)
     
     def getMemberLink(self):
-        return "%s/%s" % (
-            self.url(self.parent_context, '@@zodbbrowser'),
-            self.context.oid)
+        return self.url(self.context)
