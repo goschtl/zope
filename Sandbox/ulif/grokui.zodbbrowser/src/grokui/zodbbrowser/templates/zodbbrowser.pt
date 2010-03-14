@@ -15,16 +15,6 @@
     <input type="submit" name="update" value="Update" />
   </form>
 </p>
-<h3 tal:content="view/info/name">the_object_name</h3>
-<h3 tal:content="view/info/type_string">The_Object</h3>
-<div tal:content="view/info/description">
-  The object description
-</div>
-
-<h2>Members</h2>
-<div tal:repeat="member view/info/getMembers">
-  <div tal:condition="python: member.linkable or view.show_all"
-       tal:content="structure python: view.getMemberView(member)()" >
-    Member infos go here
-  </div>
+<div tal:content="structure view/info/@@index">
+  Info text
 </div>
