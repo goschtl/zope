@@ -5,8 +5,8 @@ import urlparse
 
 from hurry.resource import generate_code, ResourceInclusion, Library
 
-BASEURL = "http://jqueryjs.googlecode.com/files/"
-VERSION = '1.3.2'
+BASEURL = "http://code.jquery.com/"
+VERSION = '1.4.2'
 MINIFIED = "jquery-%s.min.js" % VERSION
 FULL = "jquery-%s.js" % VERSION
 
