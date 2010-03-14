@@ -1,9 +1,11 @@
+# An alternative patch for ZPublisher 2.12 since this is no longer
+# just a backport... at least until we get these changes into a new release
+# 
+# The only differences from patch.py (other than our new PubSuccess
+# handling) are those bits that were modified for the pre-2.12 
+# environment. I'm assuming those bits are actually needed in 2.12.
+
 import sys
-import tempfile
-import thread
-
-from ZServer.Producers import file_part_producer
-
 from ZPublisher.Publish import call_object
 from ZPublisher.Publish import missing_name
 from ZPublisher.Publish import dont_publish_class
@@ -11,15 +13,18 @@ from ZPublisher.Publish import get_module_info
 from ZPublisher.Publish import Retry
 from ZPublisher.mapply import mapply
 from zExceptions import Redirect
-# XXX change from ZPublisher 2.12
-# from zope.publisher.interfaces import ISkinnable
+
+# XXX one of the ZPublisher 2.12 bits we're putting back
+from zope.publisher.interfaces import ISkinnable
+
 from zope.publisher.browser import setDefaultSkin
 from zope.security.management import newInteraction, endInteraction
 from zope.event import notify
-from webdav.common import rfc1123_date
 
 from pubevents import PubStart, PubSuccess, PubFailure, \
      PubBeforeCommit, PubAfterTraversal, PubBeforeAbort
+
+from patch import zserver_write, zpublisher_write, index_html
 
 def publish(request, module_name, after_list, debug=0,
             # Optimize:
@@ -146,9 +151,9 @@ def publish(request, module_name, after_list, debug=0,
             request.close()  # Free resources held by the request.
 
             # Set the default layer/skin on the newly generated request
-            # XXX change from ZPublisher 2.12
-            # if ISkinnable.providedBy(newrequest):
-            setDefaultSkin(newrequest)
+            # XXX one of the ZPublisher 2.12 bits we're putting back
+            if ISkinnable.providedBy(newrequest):
+                setDefaultSkin(newrequest)
             try:
                 return publish(newrequest, module_name, after_list, debug)
             finally:
@@ -166,145 +171,3 @@ def publish(request, module_name, after_list, debug=0,
                 endInteraction()
                 notify(PubFailure(request, exc_info, retry))
             raise
-
-def zserver_write(self, data, request=None):
-    """\
-    Return data as a stream
-
-    HTML data may be returned using a stream-oriented interface.
-    This allows the browser to display partial results while
-    computation of a response to proceed.
-
-    The published object should first set any output headers or
-    cookies on the response object.
-
-    Note that published objects must not generate any errors
-    after beginning stream-oriented output.
-
-    """
-
-    if type(data) != type(''):
-        raise TypeError('Value must be a string')
-
-    stdout=self.stdout
-
-    if not self._wrote:
-        if request is not None:
-            notify(PubSuccess(request))
-        l=self.headers.get('content-length', None)
-        if l is not None:
-            try:
-                if type(l) is type(''): l=int(l)
-                if l > 128000:
-                    self._tempfile=tempfile.TemporaryFile()
-                    self._templock=thread.allocate_lock()
-            except: pass
-
-        self._streaming=1
-        stdout.write(str(self))
-        self._wrote=1
-
-    if not data: return
-
-    if self._chunking:
-        data = '%x\r\n%s\r\n' % (len(data),data)
-
-    l=len(data)
-
-    t=self._tempfile
-    if t is None or l<200:
-        stdout.write(data)
-    else:
-        b=self._tempstart
-        e=b+l
-        self._templock.acquire()
-        try:
-            t.seek(b)
-            t.write(data)
-        finally:
-            self._templock.release()
-        self._tempstart=e
-        stdout.write(file_part_producer(t,self._templock,b,e), l)
-
-def zpublisher_write(self, data, request=None):
-    """\
-    Return data as a stream
-
-    HTML data may be returned using a stream-oriented interface.
-    This allows the browser to display partial results while
-    computation of a response to proceed.
-
-    The published object should first set any output headers or
-    cookies on the response object.
-
-    Note that published objects must not generate any errors
-    after beginning stream-oriented output.
-
-    """
-    if not self._wrote:
-        if request is not None:
-            notify(PubSuccess(request))
-        self.outputBody()
-        self._wrote = 1
-        self.stdout.flush()
-
-    self.stdout.write(data)
-
-def index_html(self, REQUEST, RESPONSE):
-    """
-    The default view of the contents of a File or Image.
-
-    Returns the contents of the file or image.  Also, sets the
-    Content-Type HTTP header to the objects content type.
-    """
-    
-    if self._if_modified_since_request_handler(REQUEST, RESPONSE):
-        # we were able to handle this by returning a 304
-        # unfortunately, because the HTTP cache manager uses the cache
-        # API, and because 304 responses are required to carry the Expires
-        # header for HTTP/1.1, we need to call ZCacheable_set here.
-        # This is nonsensical for caches other than the HTTP cache manager
-        # unfortunately.
-        self.ZCacheable_set(None)
-        return ''
-
-    if self.precondition and hasattr(self, str(self.precondition)):
-        # Grab whatever precondition was defined and then
-        # execute it.  The precondition will raise an exception
-        # if something violates its terms.
-        c=getattr(self, str(self.precondition))
-        if hasattr(c,'isDocTemp') and c.isDocTemp:
-            c(REQUEST['PARENTS'][1],REQUEST)
-        else:
-            c()
-
-    if self._range_request_handler(REQUEST, RESPONSE):
-        # we served a chunk of content in response to a range request.
-        return ''
-
-    RESPONSE.setHeader('Last-Modified', rfc1123_date(self._p_mtime))
-    RESPONSE.setHeader('Content-Type', self.content_type)
-    RESPONSE.setHeader('Content-Length', self.size)
-    RESPONSE.setHeader('Accept-Ranges', 'bytes')
-
-    if self.ZCacheable_isCachingEnabled():
-        result = self.ZCacheable_get(default=None)
-        if result is not None:
-            # We will always get None from RAMCacheManager and HTTP
-            # Accelerated Cache Manager but we will get
-            # something implementing the IStreamIterator interface
-            # from a "FileCacheManager"
-            return result
-
-    self.ZCacheable_set(None)
-    
-    data=self.data
-    if isinstance(data, str):
-        RESPONSE.setBase(None)
-        return data
-    
-    while data is not None:
-        RESPONSE.write(data.data, request=REQUEST)
-        data=data.next
-
-    return ''
