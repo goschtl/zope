@@ -55,7 +55,7 @@ class ObjectInfo(grok.Adapter):
 
     def getValue(self):
         return '%r' % (self.obj, )
-    
+
     @property
     def linkable(self):
         if self.oid is not None:
@@ -95,7 +95,7 @@ class ObjectInfo(grok.Adapter):
         except:
             pass
         return '<UNKNOWN>'
-        
+
     def getFunctionSignature(self):
         try:
             signature = inspect.formatargspec(*inspect.getargspec(self.obj))
@@ -103,5 +103,4 @@ class ObjectInfo(grok.Adapter):
             # For certain funcs/methods (C-defined ones, for instance)
             # we cannot get a signature.
             signature = u'(...)'
-        
         return '%s%s' % (self.name, signature)
