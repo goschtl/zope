@@ -12,11 +12,11 @@ tests_require = [
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='grokui.zodbbrowser',
+setup(name='grokui.codebrowser',
       version='0.1dev',
-      description="The Grok administration and development UIs ZODB browser",
+      description="The Grok administration and development UIs code browser",
       long_description=(
-          read(os.path.join('src', 'grokui', 'zodbbrowser', 'README.txt')) +
+          read(os.path.join('src', 'grokui', 'codebrowser', 'README.txt')) +
           '\n\n' +
           read('CHANGES.txt')
         ),
@@ -30,10 +30,10 @@ setup(name='grokui.zodbbrowser',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'], 
-      keywords="zope3 grok grokui zodb zodbbrowser",
+      keywords="zope3 grok grokui zodb codebrowser",
       author="Uli Fouquet and lots of contributors from grok community",
       author_email="grok-dev@zope.org",
-      url="http://svn.zope.org/grokui.zodbbrowser",
+      url="http://svn.zope.org/grokui.codebrowser",
       license="ZPL 2.1",
       package_dir={'': 'src'},
       packages=find_packages('src'),
