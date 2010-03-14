@@ -40,7 +40,7 @@ A root folder normally contains a local site manager names
 ``_sm``. A link to this site manager is available:
 
     >>> browser.getLink('_sm')
-    <Link text='_sm' url='http://localhost/++grokui++/@@zodbbrowser/...>
+    <Link text='_sm' url='http://localhost/++grokui++/zodbbrowser/...>
 
 By default you will only see a limited set of member for each browsed
 object, these members, which are stored in ZODB separated from the
