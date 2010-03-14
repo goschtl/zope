@@ -28,6 +28,9 @@ try:
 except ImportError:
     pass
 
+from patch_write import zserver_write, zpublisher_write
+from patch_ofs_image import index_html, _range_request_handler
+
 # an updated version of the old patch
 import ZPublisher.Publish
 ZPublisher.Publish.publish = patch.publish
@@ -35,17 +38,18 @@ logging.info("Monkeypatch ZPublisher publish with publication events")
 
 # passing the request to 'write' for the PubSuccess event
 import OFS.Image.File
-OFS.Image.File.index_html = patch.index_html
-logging.info("Monkeypatch OFS.Image.File.index_html to support PubSuccess event")
+OFS.Image.File.index_html = patch_ofs_image.index_html
+OFS.Image.File._range_request_handler = patch_ofs_image._range_request_handler
+logging.info("Monkeypatch OFS.Image.File to support PubSuccess event")
 
 # adding the PubSuccess event to 'write'
 import ZServer.HTTPResponse
-ZServer.HTTPResponse.ZServerHTTPResponse.write = patch.zserver_write
+ZServer.HTTPResponse.ZServerHTTPResponse.write = patch_write.zserver_write
 logging.info("Monkeypatch ZServer.HTTPResponse.write with PubSuccess event")
 
 # adding the PubSuccess event to 'write'
 # not sure if this last one is necessary but it doesn't hurt
 import ZPublisher.HTTPResponse
-ZPublisher.HTTPResponse.HTTPResponse.write = patch.zpublisher_write
+ZPublisher.HTTPResponse.HTTPResponse.write = patch_write.zpublisher_write
 logging.info("Monkeypatch ZPublisher.HTTPResponse.write with PubSuccess event")
 

@@ -24,7 +24,6 @@ from zope.event import notify
 from pubevents import PubStart, PubSuccess, PubFailure, \
      PubBeforeCommit, PubAfterTraversal, PubBeforeAbort
 
-from patch import zserver_write, zpublisher_write, index_html
 
 def publish(request, module_name, after_list, debug=0,
             # Optimize:
