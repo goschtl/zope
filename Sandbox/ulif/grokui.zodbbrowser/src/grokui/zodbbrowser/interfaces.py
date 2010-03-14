@@ -26,3 +26,6 @@ class IObjectInfo(Interface):
         """Get a list of object infos for all members of an object.
         """
 
+class IBTreeInfo(IObjectInfo):
+    """Infos about BTrees.
+    """
