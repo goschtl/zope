@@ -22,6 +22,7 @@ setup(
     entry_points="""
         [console_scripts]
         zope-org-check-repos = zope.repositorypolicy.repository:main
+        zope-org-check-repos-mail = zope.repositorypolicy.repository:main_mail
         zope-org-check-project = zope.repositorypolicy.project:main
         zope-org-fix-project = zope.repositorypolicy.copyright:main
     """)

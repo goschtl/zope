@@ -1,11 +1,14 @@
 # Copyright (c) 2010 Zope Foundation and Contributors
 # See also LICENSE.txt
 
+import datetime
 import os
 import re
 import shutil
+import smtplib
 import subvertpy.client
 import subvertpy.ra
+import sys
 import tempfile
 import zope.repositorypolicy.project
 
@@ -37,6 +40,11 @@ class Checker(object):
 
     def list_projects_branches(self):
         for project in self.repos.get_dir('/')[0].keys():
+            if not project.startswith('gocept.'):
+                continue
+            print project
+            if project == 'README.txt':
+                continue
             top = self.repos.get_dir(project)[0].keys()
             if 'trunk' in top:
                 yield project, 'trunk'
@@ -61,3 +69,32 @@ def main():
         result = 1
         print entry
     sys.exit(result)
+
+
+def main_mail():
+    smtp_host, sender_address, target_address, httpbase, logbase = sys.argv[1:]
+
+    stamp = datetime.datetime.now().isoformat()
+    logname =  'report-%s.txt' % stamp
+    log = open(os.path.join(logbase, logname), 'w')
+
+    checker = Checker()
+    errors = 0
+    for entry in checker.run():
+        errors += 1
+        log.write(entry+'\n')
+    log.close()
+
+    if errors:
+        subject = 'FAILURE: Repository policy check found %s errors' % errors
+    else:
+        subject = 'OK: Repository policy check found no errors'
+
+    body = ('The log can be found at %s/%s\r\n\r\n-- \r\n'
+            'This message was generated automatically.' % (httpbase, logname))
+
+    mailserver = smtplib.SMTP(smtp_host)
+    msg = ('From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s' %
+            (sender_address, target_address, subject, body))
+    mailserver.sendmail(sender_address, [target_address], msg)
+    mailserver.quit()

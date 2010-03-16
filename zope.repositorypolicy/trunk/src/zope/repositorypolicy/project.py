@@ -64,23 +64,27 @@ class Checker(object):
 
     def check_egg_metadata(self):
         setup = os.path.join(self.working_dir, 'setup.py')
-        if os.path.isfile(setup):
-            s = subprocess.Popen([sys.executable, setup,
-                                  '--license', '--author'],
-                                 stdout=subprocess.PIPE)
-            s.wait()
-            metadata = s.stdout.readlines()
-            license = metadata[0].strip()
-            if license != self.license_name:
-                self.log.append(
-                    'setup.py: license not declared as "%s" (found: "%s")' %
-                    (self.license_name, license))
-            author = metadata[1].strip()
-            if author != self.copyright_holder:
-                self.log.append(
-                    'setup.py: author not declared as "%s" '
-                    '(found: "%s")' %
-                    (self.copyright_holder, author))
+        if not os.path.isfile(setup):
+            return
+        s = subprocess.Popen([sys.executable, setup,
+                              '--license', '--author'],
+                             stdout=subprocess.PIPE)
+        s.wait()
+        metadata = s.stdout.readlines()
+        if len(metadata) != 2:
+            self.log.append('setup.py: could not extract metadata')
+            return
+        license = metadata[0].strip()
+        if license != self.license_name:
+            self.log.append(
+                'setup.py: license not declared as "%s" (found: "%s")' %
+                (self.license_name, license))
+        author = metadata[1].strip()
+        if author != self.copyright_holder:
+            self.log.append(
+                'setup.py: author not declared as "%s" '
+                '(found: "%s")' %
+                (self.copyright_holder, author))
 
     def check_copyright(self):
         """Verifies the copyright assignment to the Zope Foundation
