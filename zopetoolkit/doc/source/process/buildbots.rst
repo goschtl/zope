@@ -72,3 +72,25 @@ The subject line should be formatted like this::
     OK: Zope 2.12 on Linux 64-bit with Python 2.4
     FAILURE: Zope 2.6 on Windows XP 32-bit with Python 2.5
     UNKNOWN: zope.interface on Linux 64-bit
+
+
+Coordination
+============
+
+Patrik Gerken (do3cc) is the voluntary coordinator for automated builds and
+nightly tests.
+
+The responsibility of the coordinator is to help the community reach our goals
+regarding:
+
+* achieving and maintaining availability and visibility of automated builds
+  and nightly tests
+
+* ensuring coerage of builds/tests with respect to varying Python versions,
+  platforms for individual packages, frameworks and toolkits
+
+The coordinator's tasks include:
+
+* Assisting people who want to contribute build machines
+* Assisting Zope developers who are missing builds or tests for packages they
+  develop
