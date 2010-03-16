@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Projects.RecentItemsIndex documentation build configuration file, created by
+# Products.RecentItemsIndex documentation build configuration file, created by
 # sphinx-quickstart on Tue Mar 16 18:05:54 2010.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -37,7 +37,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Projects.RecentItemsIndex'
+project = u'Products.RecentItemsIndex'
 copyright = u'2010, Zope Foundation and contributors'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -158,7 +158,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ProjectsRecentItemsIndexdoc'
+htmlhelp_basename = 'ProductsRecentItemsIndexdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -172,7 +172,7 @@ htmlhelp_basename = 'ProjectsRecentItemsIndexdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'ProjectsRecentItemsIndex.tex', u'Projects.RecentItemsIndex Documentation',
+  ('index', 'ProductsRecentItemsIndex.tex', u'Products.RecentItemsIndex Documentation',
    u'Zope Foundation and contributors', 'manual'),
 ]
 
