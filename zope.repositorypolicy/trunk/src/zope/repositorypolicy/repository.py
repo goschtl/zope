@@ -40,8 +40,6 @@ class Checker(object):
 
     def list_projects_branches(self):
         for project in self.repos.get_dir('/')[0].keys():
-            if not project.startswith('gocept.'):
-                continue
             print project
             if project == 'README.txt':
                 continue
