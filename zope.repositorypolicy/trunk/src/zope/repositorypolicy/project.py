@@ -68,6 +68,7 @@ class Checker(object):
             return
         s = subprocess.Popen([sys.executable, setup,
                               '--license', '--author'],
+                             cwd=self.working_dir,
                              stdout=subprocess.PIPE)
         s.wait()
         metadata = s.stdout.readlines()
