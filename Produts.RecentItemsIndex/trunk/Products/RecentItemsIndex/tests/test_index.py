@@ -28,8 +28,8 @@ class RecentItemsIndexTest(unittest.TestCase):
                  max_length=10,
                  *args, **kw):
         catalog = self._makeCatalog()
-        index = self._getTargetClass()(id, field_name, date_name, max_length,
-                                        *args, **kw)
+        klass = self._getTargetClass()
+        index = klass(id, field_name, date_name, max_length, *args, **kw)
         return index.__of__(catalog)
 
     def _makeDoc(self, **kw):
@@ -99,6 +99,17 @@ class RecentItemsIndexTest(unittest.TestCase):
         from Products.PluginIndexes.interfaces import IPluggableIndex
         index = self._makeOne()
         verifyObject(IPluggableIndex, index)
+
+    def test_class_conforms_to_IUniqueValueIndex(self):
+        from zope.interface.verify import verifyClass
+        from Products.PluginIndexes.interfaces import IUniqueValueIndex
+        verifyClass(IUniqueValueIndex, self._getTargetClass())
+
+    def test_instance_conforms_to_IUniqueValueIndex(self):
+        from zope.interface.verify import verifyObject
+        from Products.PluginIndexes.interfaces import IUniqueValueIndex
+        index = self._makeOne()
+        verifyObject(IUniqueValueIndex, index)
 
     def test_construct_with_extra(self):
         # Simulate instantiating from ZCatalog
