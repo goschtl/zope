@@ -12,25 +12,26 @@
 #
 ##############################################################################
 """ZCatalog index for efficient queries of the most recent items
-
-$Id: index.py,v 1.5 2004/08/10 16:01:26 caseman Exp $"""
-
+"""
 import types
-from Globals import DTMLFile, InitializeClass
-from Acquisition import aq_inner, aq_parent
-from Persistence import Persistent
-from OFS.SimpleItem import SimpleItem
-from Products.PluginIndexes.common.PluggableIndex \
-    import PluggableIndexInterface
-from Products.ZCatalog.Lazy import LazyMap
+
+from zope.interface import implements
 from AccessControl import Permissions
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from BTrees.OOBTree import OOBTree
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBucket
 from BTrees.Length import Length
-from zLOG import LOG, WARNING
+from App.special_dtml import DTMLFile
+from App.class_init import InitializeClass
+from OFS.SimpleItem import SimpleItem
+from Products.PluginIndexes.interfaces import IPluggableIndex
+from Products.ZCatalog.Lazy import LazyMap
+from zLOG import LOG
+from zLOG import WARNING
     
 _marker = []
 
@@ -47,9 +48,12 @@ def _getSourceValue(obj, attrname):
 class RecentItemsIndex(SimpleItem):
     """Recent items index"""
 
-    __implements__ = PluggableIndexInterface
+    implements(IPluggableIndex)
     
     meta_type = 'Recent Items Index'
+
+    # class default;  instances get Length() in their clear()
+    numObjects = lambda: 0
 
     manage_options = (
         {'label': 'Overview', 'action': 'manage_main'},
@@ -105,6 +109,16 @@ class RecentItemsIndex(SimpleItem):
         self.clear()
     
     ## Index specific methods ##
+
+    def getIndexSourceNames(self):
+        """ See IPluggableIndex.
+        """
+        return (self.field_name,)
+
+    def indexSize(self):
+        """ See IPluggableIndex.
+        """
+        return len(self._value2items)
     
     def getItemCounts(self):
         """Return a dict of field value => item count"""
