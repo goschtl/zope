@@ -1,21 +1,32 @@
 # Copyright (c) 2010 Zope Foundation and Contributors
 # See also LICENSE.txt
 
+import StringIO
+import os.path
 import sys
 import zope.repositorypolicy.project
-import StringIO
 
 
 class FixCopyrightHeaders(object):
     """A simple helper to fix source file copyright headers."""
 
-    def __init__(self, working_dir, owner):
+    owner = zope.repositorypolicy.project.Checker.copyright_holder
+
+    def __init__(self, working_dir):
         self.working_dir = working_dir
-        self.owner = owner
 
     def run(self):
         zope.repositorypolicy.project.walk_project_dir(
             self.working_dir, self._fix_file)
+
+        license = open(os.path.join(self.working_dir, 'LICENSE.txt'), 'w')
+        license.write(open(os.path.join(
+            os.path.dirname(__file__), 'data', 'ZPL-2.1.txt')).read())
+        license.close()
+
+        copyright = open(os.path.join(self.working_dir, 'COPYRIGHT.txt'), 'w')
+        copyright.write(self.owner)
+        copyright.close()
 
     def _fix_file(self, path):
         print path
@@ -31,4 +42,4 @@ class FixCopyrightHeaders(object):
 
 
 def main():
-    FixCopyrightHeaders(sys.argv[1], sys.argv[2]).run()
+    FixCopyrightHeaders(sys.argv[1]).run()

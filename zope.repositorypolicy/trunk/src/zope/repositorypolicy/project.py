@@ -102,8 +102,8 @@ class Checker(object):
             content = open(copyright).read().strip()
             if content != self.copyright_holder:
                 self.log.append(
-                    'COPYRIGHT.txt: not assigned to Zope Foundation '
-                    '(found: "%s")' % content)
+                    'COPYRIGHT.txt: not assigned to "%s" '
+                    '(found: "%s")' % (self.copyright_holder, content))
         walk_project_dir(self.working_dir, self._check_copyright_file)
 
     def _check_copyright_file(self, filename):
