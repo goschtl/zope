@@ -1,8 +1,9 @@
 kw = dict(
     name="zc.rebootstrap",
     version="0.2.2",
-    author="Zope Corporation and Contributors",
-    author_email="zope3-dev@zope.org",
+    author="Zope Foundation and Contributors",
+    author_email="zope-dev@zope.org",
+    license = "ZPL 2.1",
     url="http://svn.zope.org/zc.rebootstrap",
     description=(
         "Helper package to re-bootstrap packages for RPM construction."),
