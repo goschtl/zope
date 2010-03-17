@@ -24,6 +24,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   api
+   glossary
    CHANGES
 
 Indices and tables
