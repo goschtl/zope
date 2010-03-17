@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.3'
+version = '0.3.1dev'
 name='z3c.recipe.openoffice'
 
 def read(*rnames):

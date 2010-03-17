@@ -2,9 +2,10 @@ import glob
 import logging
 import os, sys
 import shutil
-import urllib
 from distutils import sysconfig
-import zc.buildout
+import zc.buildout.easy_install
+import zc.buildout.download
+from platform import uname
 
 PYUNO_SETUP = """
 from setuptools import setup, find_packages
@@ -30,6 +31,18 @@ setup(name=name,
       zip_safe=False)
 """
 
+BASE_URL = ('http://download.services.openoffice.org/files/stable/3.2.0/'
+            'OOo_3.2.0_Linux%s_install_wJRE_en-US.tar.gz')
+# XXX add more rpm platforms (HPPA, IA64, S390X, PPC)
+ARCH_MAP = {
+    'i386': 'Intel',
+    'i586': 'Intel',
+    'i686': 'Intel',
+    'x86_64': 'X86-64'
+}
+DEFAULT_UNPACK_NAME = 'OOO320_m12_native_packed-1_en-US.9483'
+DEFAULT_VERSION = '3'
+
 class Recipe(object):
     def __init__(self, buildout, name, options):
         self.buildout = buildout
@@ -43,22 +56,30 @@ class Recipe(object):
         python = buildout['buildout']['python']
         options['executable'] = buildout[python]['executable']
 
-        options['tmp-storage'] = os.path.join(
-            buildout['buildout']['directory'], 'tmp-storage')
-        options.setdefault(
-            'version','2.3')
-        options.setdefault(
-            'download-url',
-            'ftp://ftp.openoffice.skynet.be/pub/ftp.openoffice.org/stable/2.3.1/OOo_2.3.1_LinuxIntel_install_en-US.tar.gz')
-        options.setdefault(
-            'unpack-name',
-            'OOG680_m9_native_packed-1_en-US.9238')
+        options.setdefault('tmp-storage', options['location'] + '__unpack__')
+        if not options.get('download-url'):
+            base_url = options.setdefault('base-url', BASE_URL)
+            options.setdefault('platform', self._guessPackagePlatform())
+            options['download-url'] = base_url % options['platform']
         options.setdefault(
             'hack-openoffice-python',
             'no')
         options.setdefault(
             'install-pyuno-egg',
             'no')
+
+        # XXX: these two settings below are mere package layout details
+        # that the user should not be bothered with. We should simply be
+        # smarter about looking inside the package and figuring out this
+        # information.
+        options.setdefault('version', DEFAULT_VERSION)
+        options.setdefault('unpack-name', DEFAULT_UNPACK_NAME)
+
+    def _guessPackagePlatform(self):
+        arch = uname()[-2]
+        target = ARCH_MAP.get(arch)
+        assert target, 'Unknown architecture'
+        return target
 
     def install(self):
         location = self.options['location']
@@ -67,30 +88,30 @@ class Recipe(object):
         storage = self.options['tmp-storage']
         if not os.path.exists(storage):
             os.mkdir(storage)
-        download_file = self.download(storage)
+        download_file, is_temp = self.download()
         self.untar(download_file, storage)
+        if is_temp:
+            os.remove(download_file)
         self.unrpm(storage)
         copy_created = self.copy(storage)
-        if copy_created and \
-           self.options['hack-openoffice-python'].lower() == 'yes':
+        if (copy_created and
+            self.options['hack-openoffice-python'].lower() == 'yes'):
             self.hack_python()
         if copy_created and self.options['install-pyuno-egg'].lower() == 'yes':
             self.install_pyuno_egg()
-        return location
+        # XXX, actually remove the "temporary" storage. It's not very temporary
+        # right now...
+        return [location, storage]
 
-    def download(self, whereto):
-        """Download tarball into temporary location.
+    def download(self):
+        """Download tarball. Caching if required.
         """
         url = self.options['download-url']
-        tarball_name = os.path.basename(url)
-        download_file = os.path.join(whereto, tarball_name)
-        if not os.path.exists(download_file):
-            self.logger.info(
-                'Downloading %s to %s', url, download_file)
-            urllib.urlretrieve(url, download_file)
-        else:
-            self.logger.info("Tarball already downloaded.")
-        return download_file
+        namespace = self.options['recipe']
+        download = zc.buildout.download.Download(self.buildout['buildout'],
+                                                 namespace=namespace,
+                                                 logger=self.logger)
+        return download(url)
 
     def untar(self, download_file, storage):
         """Untar tarball into temporary location.
@@ -102,12 +123,15 @@ class Recipe(object):
             return
         self.logger.info("Unpacking tarball")
         os.chdir(storage)
+        # avoiding internal tarfile module for now, due to the python 2.4 bug
+        # http://bugs.python.org/issue1509889
         status = os.system('tar xzf ' + download_file)
         assert status == 0
-        assert os.path.exists(unpack_dir)
+        assert os.path.exists(unpack_dir), ("Package did not unpack to '%s'" %
+                                            unpack_dir)
 
     def unrpm(self, storage):
-        """extract information from rpms into temporary locatin.
+        """extract information from rpms into temporary location.
         """
         unrpm_dir = os.path.join(storage, 'opt')
         if os.path.exists(unrpm_dir):
