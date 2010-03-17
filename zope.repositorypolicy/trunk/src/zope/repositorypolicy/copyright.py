@@ -13,7 +13,7 @@ class FixCopyrightHeaders(object):
     owner = zope.repositorypolicy.project.Checker.copyright_holder
 
     def __init__(self, working_dir):
-        self.working_dir = working_dir
+        self.working_dir = os.path.abspath(working_dir)
 
     def run(self):
         zope.repositorypolicy.project.walk_project_dir(
@@ -29,16 +29,22 @@ class FixCopyrightHeaders(object):
         copyright.close()
 
     def _fix_file(self, path):
-        print path
+        needs_fixing = False
         output = StringIO.StringIO()
         for line in open(path):
             m = zope.repositorypolicy.project.COPYRIGHT_PATTERN.match(line)
             if m is not None:
-                line = '%sCopyright (c) %s %s%s' % (
+                new_line = '%sCopyright (c) %s %s%s' % (
                     m.group('lead'), m.group('periods'), self.owner,
                     m.group('tail'))
+                if new_line != line:
+                    line = new_line
+                    needs_fixing = True
             output.write(line)
-        open(path, 'w').write(output.getvalue())
+
+        if needs_fixing:
+            print 'Fixing: %s' % path
+            open(path, 'w').write(output.getvalue())
 
 
 def main():
