@@ -66,10 +66,13 @@ class Checker(object):
         setup = os.path.join(self.working_dir, 'setup.py')
         if not os.path.isfile(setup):
             return
+        environment = os.environ
+        environment['PYTHONPATH'] = ':'.join(sys.path)
         s = subprocess.Popen([sys.executable, setup,
                               '--license', '--author'],
                              cwd=self.working_dir,
-                             stdout=subprocess.PIPE)
+                             stdout=subprocess.PIPE,
+                             env=environment)
         s.wait()
         metadata = s.stdout.readlines()
         if len(metadata) != 2:
