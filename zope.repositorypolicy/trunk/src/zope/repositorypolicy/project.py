@@ -33,7 +33,7 @@ def walk_project_dir(root, callback):
 class Checker(object):
 
     data_dir = os.path.join(os.path.dirname(__file__), 'data')
-    license_name = 'ZPL 2.1'
+    license_name = 'ZPL'
     copyright_holder = 'Zope Foundation and Contributors'
 
     def __init__(self, working_dir):
@@ -83,7 +83,7 @@ class Checker(object):
             self.log.append('setup.py: could not extract metadata')
             return
         license = metadata[0].strip()
-        if license != self.license_name:
+        if not license.startswith(self.license_name):
             self.log.append(
                 'setup.py: license not declared as "%s" (found: "%s")' %
                 (self.license_name, license))
