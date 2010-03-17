@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.2'
+version = '0.3'
 
 setup(name='z3c.recipe.egg',
       version=version,
@@ -20,7 +20,7 @@ setup(name='z3c.recipe.egg',
       author='Ross Patterson',
       author_email='me@rpatterson.net',
       url='http://cheeseshop.python.org/pypi/z3c.recipe.egg',
-      license='GPL',
+      license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['z3c', 'z3c.recipe'],
       include_package_data=True,
