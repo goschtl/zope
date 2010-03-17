@@ -5,7 +5,7 @@ Secure FTP (SFTP) Extension for zc.buildout
 The zc.buildoutsftp package provides a zc.buildout extension that
 provides support for SFTP.  To use it, simply provide the option::
 
-  extension = zc.buildoutsftp
+  extensions = zc.buildoutsftp
 
 in your buildout section. Then you can use sftp URLs for fine-links or
 index URLs. (Note that zc.buildout >=1.0.0b5 is needed for this to
