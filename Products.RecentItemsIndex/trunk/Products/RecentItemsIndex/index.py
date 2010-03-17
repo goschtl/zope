@@ -78,7 +78,7 @@ class RecentItemsIndex(SimpleItem):
                 ):
         """ Recent items index constructor
 
-        id -- Zope id for index in
+        id -- Zope id for index inside its catalog.
 
         field_name -- Name of attribute used to classify the objects. A
         recent item list is created for each value of this field indexed.
