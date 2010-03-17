@@ -28,11 +28,11 @@ from BTrees.Length import Length
 from App.special_dtml import DTMLFile
 from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
-from Products.PluginIndexes.interfaces import IUniqueValueIndex
-from Products.PluginIndexes.interfaces import ISortIndex
 from Products.ZCatalog.Lazy import LazyMap
 from zLOG import LOG
 from zLOG import WARNING
+
+from Products.RecentItemsIndex.interfaces import IRecentItemsIndex
 
 _marker = []
 
@@ -50,11 +50,11 @@ def _getSourceValue(obj, attrname):
 class RecentItemsIndex(SimpleItem):
     """ Recent items index.
     """
-    implements(IUniqueValueIndex, ISortIndex)
+    implements(IRecentItemsIndex)
 
     meta_type = 'Recent Items Index'
 
-    # class default;  instances get Length() in their clear()
+    # class default;  instances get a Length assigned in their clear()
     numObjects = lambda: 0
 
     manage_options = (
@@ -271,7 +271,7 @@ class RecentItemsIndex(SimpleItem):
         """
         return self._rid2value
 
-    ## Index specific methods ##
+    ## IRecentItemsIndex implementation
     def getItemCounts(self):
         """ Return a mapping of field values => item counts.
         """

@@ -159,6 +159,17 @@ class RecentItemsIndexTest(unittest.TestCase):
         index = self._makeOne()
         verifyObject(ISortIndex, index)
 
+    def test_class_conforms_to_IRecentItemsIndex(self):
+        from zope.interface.verify import verifyClass
+        from Products.RecentItemsIndex.interfaces import IRecentItemsIndex
+        verifyClass(IRecentItemsIndex, self._getTargetClass())
+
+    def test_instance_conforms_to_IRecentItemsIndex(self):
+        from zope.interface.verify import verifyObject
+        from Products.RecentItemsIndex.interfaces import IRecentItemsIndex
+        index = self._makeOne()
+        verifyObject(IRecentItemsIndex, index)
+
     def test_ctor_defaults(self):
         from BTrees.Length import Length
         klass = self._getTargetClass()
