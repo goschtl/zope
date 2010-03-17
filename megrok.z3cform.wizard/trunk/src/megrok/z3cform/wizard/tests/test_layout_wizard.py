@@ -13,22 +13,21 @@ basic setup
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest() 
 
-  >>> person = Person()
-  >>> root['person'] = person
-  >>> person.__parent__ = root
-  >>> person.__name__ = u'person'
+  >>> root['person1'] = person1 = Person()
+  >>> person1.__parent__ = root
+  >>> person1.__name__ = u'person'
 
   >>> from zope.component import getMultiAdapter
-  >>> pw = getMultiAdapter((person, request), name=u"personwizard")
+  >>> pw = getMultiAdapter((person1, request), name=u"personwizardlayout")
   >>> pw
-  <PersonWizard 'personwizard'>
+  <PersonWizardLayout 'personwizardlayout'>
 
   >>> obj, names = pw.browserDefault(request)
   >>> obj
-  <PersonWizard 'personwizard'>
+  <PersonWizardLayout 'personwizardlayout'>
 
   >>> names
-  ('personstep',)
+  ('person1step',)
 
 Render the personStep
 
@@ -40,10 +39,10 @@ Render the personStep
       <div class="header">Person Wizard</div>
       <div class="wizardMenu">
         <span class="selected">
-            <span>Person</span>
+            <span>Person1</span>
         </span>
         <span>
-            <a href="http://127.0.0.1/person/personwizard/addressstep">Address</a>
+            <a href="http://127.0.0.1/person/personwizardlayout/address1step">Address1</a>
         </span>
       </div>
     <form action="http://127.0.0.1" method="post"
@@ -51,7 +50,7 @@ Render the personStep
           name="form" id="form">
         <fieldset class="main">
         <div class="viewspace">
-            <div class="label">Person</div>
+            <div class="label">Person1</div>
             <div class="required-info">
               <span class="required">*</span>&ndash; required
             </div>
@@ -106,11 +105,12 @@ Render the personStep
     </form>
   </div>
 
+
 Sending an request but with no data
 
   >>> request = TestRequest(form={'form.buttons.next': 'Next'})
-  >>> personWizard = PersonWizard(person, request)
-  >>> personWizard.__parent__ = person
+  >>> personWizard = PersonWizardLayout(person1, request)
+  >>> personWizard.__parent__ = person1
   >>> personWizard.__name__ = u'wizard'
   >>> personStep = personWizard.publishTraverse(request, names[0])
   >>> personStep.update()
@@ -129,15 +129,15 @@ Sending an request with a working data set...
   >>> request = TestRequest(form={'form.widgets.firstName': u'Roger',
   ...                             'form.widgets.lastName': u'Ineichen',
   ...                             'form.buttons.next': 'Next'})
-  >>> personWizard = PersonWizard(person, request)
-  >>> personWizard.__parent__ = person
+  >>> personWizard = PersonWizardLayout(person1, request)
+  >>> personWizard.__parent__ = person1
   >>> personWizard.__name__ = u'wizard'
   >>> personStep = personWizard.publishTraverse(request, names[0])
   >>> personStep.update()
   >>> print personStep.render()
 
   >>> print personWizard.nextURL
-  http://127.0.0.1/person/wizard/addressstep
+  http://127.0.0.1/person/wizard/address1step
 
 """
 
@@ -150,6 +150,14 @@ from z3c.wizard import wizard, step
 from zope.location.interfaces import ILocation
 from zope.schema.fieldproperty import FieldProperty
 from z3c.form import field
+from megrok.layout import Layout
+
+
+class MyLayout(Layout):
+    grok.context(zope.interface.Interface)
+
+    def render(self):
+        return "<html> %s </html>" % self.view.contentn()
 
 class IPerson(ILocation):
     """Person interface."""
@@ -171,10 +179,12 @@ class Person(object):
     street = FieldProperty(IPerson['street'])
     city = FieldProperty(IPerson['city'])
 
+
 class IPersonWizard(z3cwizard.IWizard):
     """Person wizard marker."""
 
-class PersonWizard(z3cwizard.WizardForm):
+
+class PersonWizardLayout(z3cwizard.WizardForm):
     """ Wizard form."""
     grok.implements(IPersonWizard)
     grok.context(Person)
@@ -183,20 +193,20 @@ class PersonWizard(z3cwizard.WizardForm):
 
     def setUpSteps(self):
         return [
-            step.addStep(self, 'personstep', weight=1),
-            step.addStep(self, 'addressstep', weight=2),
+            step.addStep(self, 'person1step', weight=1),
+            step.addStep(self, 'address1step', weight=2),
             ]
 
 
-class PersonStep(z3cwizard.Step):
-    grok.context(PersonWizard)
-    label = u'Person'
+class Person1Step(z3cwizard.PageStep):
+    grok.context(PersonWizardLayout)
+    label = u'Person1'
     fields = field.Fields(IPerson).select('firstName', 'lastName')
 
 
-class AddressStep(z3cwizard.Step):
-    grok.context(PersonWizard)
-    label = u'Address'
+class Address1Step(z3cwizard.PageStep):
+    grok.context(PersonWizardLayout)
+    label = u'Address1'
     fields = field.Fields(IPerson).select('street', 'city')
 
 

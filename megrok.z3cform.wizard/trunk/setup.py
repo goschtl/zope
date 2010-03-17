@@ -30,6 +30,7 @@ setup(name='megrok.z3cform.wizard',
           'grok',
 	  'megrok.z3cform.base',
           'megrok.pagetemplate',
+          'zope.app.testing',
       ],
       entry_points="""
       # -*- Entry points: -*-

@@ -7,6 +7,7 @@ from zope import component
 from z3c.wizard import wizard, step
 from megrok.z3cform.base import PageForm, Form
 from zope.publisher.publish import mapply
+from megrok.layout import Page
 
 class WizardForm(Form, wizard.Wizard, grokcore.view.View):
     """Base Class for a z3c.wizdard.
@@ -32,24 +33,17 @@ class Step(BaseStep):
         return self.render()
 
 
-class LayoutStep(BaseStep):
+class PageStep(Page, BaseStep):
     """A Step for the Witzard
     """
+   
+    def __init__(self, context, request, wizard):
+        self.context = context
+        self.request = request
+        self.wizard = self.__parent__ = wizard
 
-    def _render_template(self):
-        assert not (self.template is None)
-        if IGrokTemplate.providedBy(self.template):
-            return super(Form, self)._render_template()
-        return self.template(self)
+    def update(self):
+        BaseStep.update(self)
 
-    def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-        if self.layout is None:
-            layout = component.getMultiAdapter(
-                (self.request, self.context), megrok.layout.ILayout)
-            return layout(self)
-        return self.layout()
+    def render(self):
+        return BaseStep.render(self)
