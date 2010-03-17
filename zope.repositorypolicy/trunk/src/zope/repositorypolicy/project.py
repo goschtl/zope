@@ -41,6 +41,10 @@ class Checker(object):
         self.log = []
 
     def run(self):
+        if not os.path.isdir(self.working_dir):
+            self.log.append('Invalid folder path %s' % self.working_dir)
+            return
+
         self.check_license_file()
         self.check_egg_metadata()
         self.check_copyright()
