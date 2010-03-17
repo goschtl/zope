@@ -29,6 +29,7 @@ from App.special_dtml import DTMLFile
 from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from Products.PluginIndexes.interfaces import IUniqueValueIndex
+from Products.PluginIndexes.interfaces import ISortIndex
 from Products.ZCatalog.Lazy import LazyMap
 from zLOG import LOG
 from zLOG import WARNING
@@ -49,7 +50,7 @@ def _getSourceValue(obj, attrname):
 class RecentItemsIndex(SimpleItem):
     """ Recent items index.
     """
-    implements(IUniqueValueIndex)
+    implements(IUniqueValueIndex, ISortIndex)
 
     meta_type = 'Recent Items Index'
 
@@ -103,8 +104,11 @@ class RecentItemsIndex(SimpleItem):
         self.id = id
         self.field_name = field_name or getattr(extra, 'field_name', None)
         self.date_name = date_name or extra.date_name
-        self.max_length = max_length or extra.max_length
-        assert self.max_length > 0, 'Max item length value must be 1 or greater'
+        if max_length is None:
+            max_length = extra.max_length
+        if max_length < 1:
+            raise ValueError('max_length value must be 1 or greater')
+        self.max_length = max_length
         if guard_roles is None:
             guard_roles = getattr(extra, 'guard_roles', None)
         if guard_permission is None:
@@ -255,6 +259,17 @@ class RecentItemsIndex(SimpleItem):
             return self._value2items.keys()
         else:
             return []
+
+    # ISortIndex implementation
+    def keyForDocument(self, documentId):
+        """ See ISortIndex.
+        """
+        return self._rid2value[documentId]
+
+    def documentToKeyMap(self):
+        """ See ISortIndex.
+        """
+        return self._rid2value
 
     ## Index specific methods ##
     def getItemCounts(self):
