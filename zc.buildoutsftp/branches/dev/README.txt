@@ -60,6 +60,11 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.6.1 (2010/03/17)
+------------------
+
+Fixed documentation typo.
+
 0.6.0 (2009/06/22)
 ------------------
 
