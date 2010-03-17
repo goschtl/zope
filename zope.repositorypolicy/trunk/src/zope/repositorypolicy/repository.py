@@ -40,7 +40,6 @@ class Checker(object):
 
     def list_projects_branches(self):
         for project in self.repos.get_dir('/')[0].keys():
-            print project
             if project == 'README.txt':
                 continue
             top = self.repos.get_dir(project)[0].keys()
