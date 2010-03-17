@@ -273,7 +273,7 @@ class RecentItemsIndex(SimpleItem):
 
     ## IRecentItemsIndex implementation
     def getItemCounts(self):
-        """ Return a mapping of field values => item counts.
+        """ See IRecentItemsIndex.
         """
         counts = {}
         for value, items in self._value2items.items():
@@ -281,21 +281,7 @@ class RecentItemsIndex(SimpleItem):
         return counts
 
     def query(self, value=None, limit=None, merge=1):
-        """ Return a lazy sequence of catalog brains like a catalog search.
-
-        Return results in order, newest first, for the value(s) given.
-
-        If 'value' is omitted, return the most recent for all values.
-        
-        'limit', if passed, must be an integer value restricting the maximum
-        number of results.
-        
-        If no limit is specified, use the 'max_length' of the index as
-        the limit.
-
-        'merge' is a flag:  if true, return a lazy map of the brains.  If
-        false, return a sequence of (value, rid, fetch) tuples which can
-        be merged later.
+        """ See IRecentItemsIndex.
         """
         catalog = aq_parent(aq_inner(self))
         if value is None and self.field_name is not None:
