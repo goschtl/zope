@@ -37,7 +37,7 @@ class Checker(object):
     copyright_holder = 'Zope Foundation and Contributors'
 
     def __init__(self, working_dir):
-        self.working_dir = working_dir
+        self.working_dir = os.path.abspath(working_dir)
         self.log = []
 
     def run(self):
