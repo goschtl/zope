@@ -141,15 +141,16 @@ Sending an request with a working data set...
 
 """
 
-import grokcore.component as grok
 import zope.schema
 import zope.interface
+import grokcore.component as grok
 
-from megrok.z3cform import wizard as z3cwizard
+from z3c.form import field
 from z3c.wizard import wizard, step
 from zope.location.interfaces import ILocation
+from megrok.z3cform import wizard as z3cwizard
 from zope.schema.fieldproperty import FieldProperty
-from z3c.form import field
+
 
 class IPerson(ILocation):
     """Person interface."""
@@ -171,8 +172,10 @@ class Person(object):
     street = FieldProperty(IPerson['street'])
     city = FieldProperty(IPerson['city'])
 
+
 class IPersonWizard(z3cwizard.IWizard):
     """Person wizard marker."""
+
 
 class PersonWizard(z3cwizard.WizardForm):
     """ Wizard form."""

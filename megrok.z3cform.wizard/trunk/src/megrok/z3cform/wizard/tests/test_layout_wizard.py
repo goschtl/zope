@@ -141,16 +141,16 @@ Sending an request with a working data set...
 
 """
 
-import grokcore.component as grok
 import zope.schema
 import zope.interface
+import grokcore.component as grok
 
-from megrok.z3cform import wizard as z3cwizard
-from z3c.wizard import wizard, step
-from zope.location.interfaces import ILocation
-from zope.schema.fieldproperty import FieldProperty
 from z3c.form import field
 from megrok.layout import Layout
+from z3c.wizard import wizard, step
+from zope.location.interfaces import ILocation
+from megrok.z3cform import wizard as z3cwizard
+from zope.schema.fieldproperty import FieldProperty
 
 
 class MyLayout(Layout):
@@ -158,6 +158,7 @@ class MyLayout(Layout):
 
     def render(self):
         return "<html> %s </html>" % self.view.contentn()
+
 
 class IPerson(ILocation):
     """Person interface."""

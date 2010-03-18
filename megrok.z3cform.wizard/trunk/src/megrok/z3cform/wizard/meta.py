@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import martian
 import grokcore.component
 
@@ -16,4 +18,3 @@ class WizardStepGrokker(martian.ClassGrokker):
         wizardStepDirective(config, factory, name,
                             'zope.Public', wizard=context)
         return True
-

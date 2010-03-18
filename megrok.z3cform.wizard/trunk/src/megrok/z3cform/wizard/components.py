@@ -1,13 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import martian
 import grokcore.view
-import megrok.layout
 
-from z3c.form import form
-from zope import component
 from z3c.wizard import wizard, step
-from megrok.z3cform.base import PageForm, Form
 from zope.publisher.publish import mapply
-from megrok.layout import Page
+from megrok.z3cform.base import PageForm, Form
+
 
 class WizardForm(Form, wizard.Wizard, grokcore.view.View):
     """Base Class for a z3c.wizdard.
@@ -17,13 +16,16 @@ class WizardForm(Form, wizard.Wizard, grokcore.view.View):
     def update(self):
         self.updateForm()
 
+
 class BaseStep(step.EditStep):
-    """ Base Step
+    """Needed for one Grokker
     """
 
+
 class Step(BaseStep):
-    """A Step for the Witzard
+    """A Step for the Wizard
     """
+
     def __call__(self):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
@@ -33,10 +35,10 @@ class Step(BaseStep):
         return self.render()
 
 
-class PageStep(Page, BaseStep):
-    """A Step for the Witzard
+class PageStep(PageForm, BaseStep):
+    """A Step for the Wizard renderd in an ILayout component
     """
-   
+
     def __init__(self, context, request, wizard):
         self.context = context
         self.request = request
