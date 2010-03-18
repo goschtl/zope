@@ -9,5 +9,5 @@ class z3cWizardLib(resource.Library):
     resource.path('wizard')
 
 z3cWizard = resource.ResourceInclusion(
-    z3cWizardLib, 'z3c.js', depends=[jquery])
+    z3cWizardLib, 'z3cwizard.js', depends=[jquery])
 

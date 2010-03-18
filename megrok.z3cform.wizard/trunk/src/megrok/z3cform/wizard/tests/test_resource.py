@@ -11,8 +11,8 @@ Let's import and init the necessary work environment::
   >>> print browser.contents
   <html><head>
     <script ... src="http://localhost/@@/jquery/jquery-1.4.2.js"></script>
-    <script ... src="http://localhost/@@/++noop++.../ajaxwizard/z3c.js"></script>
-  </head>...</html>
+    <script ... src="http://localhost/@@/++noop++.../ajaxwizard/z3cwizard.js"></script>
+  </head></html>
 
 """
 
