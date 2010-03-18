@@ -32,6 +32,9 @@ setup(name='megrok.z3cform.wizard',
           'zope.app.zcmlfiles',
 	  'megrok.z3cform.base',
           'megrok.z3cform.ui',
+          'hurry.jquery',
+          'megrok.resource',
+          'zope.testbrowser',
       ],
       entry_points="""
       # -*- Entry points: -*-

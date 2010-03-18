@@ -10,8 +10,10 @@
   <include package="megrok.z3cform.base" />
 
   <include package="megrok.z3cform.ui" />
-  <include package="z3c.wizard"/>
+  <include package="z3c.wizard" />
+  <include package="megrok.resource" />
 
   <grok:grok package=".meta" />
+  <grok:grok package=".resource" />
 
 </configure>
