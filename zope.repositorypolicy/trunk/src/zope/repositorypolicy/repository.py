@@ -95,3 +95,40 @@ def main_mail():
             (sender_address, target_address, subject, body))
     mailserver.sendmail(sender_address, [target_address], msg)
     mailserver.quit()
+
+SUMMARY_TEMPLATE = """\
+The packages and branches listed below have failed one or 
+more repository policy checks. To see more detailed output, 
+use the "zope.repositorypolicy" package and run its script
+"zope-org-check-project" against a checkout of the branch 
+in question.
+
+%s
+
+"""
+
+def main_summarymail():
+    smtp_host, sender_address, target_address = sys.argv[1:]
+    stamp = datetime.datetime.now().isoformat()
+    branches = set([])
+
+    checker = Checker()
+    for entry in checker.run():
+        branches.add(entry.split(':')[0])
+
+    if branches:
+        subject = 'FAILURE: Repository policy check failed on %i branches' % len(branches)
+    else:
+        subject = 'OK: Repository policy check found no errors'
+
+    branches = list(branches)
+    branches.sort()
+
+    body = SUMMARY_TEMPLATE % '\n'.join(branches)
+
+    mailserver = smtplib.SMTP(smtp_host)
+    msg = ('From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s' %
+            (sender_address, target_address, subject, body))
+    mailserver.sendmail(sender_address, [target_address], msg)
+    mailserver.quit()
+
