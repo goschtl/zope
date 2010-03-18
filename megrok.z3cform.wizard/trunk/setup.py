@@ -27,10 +27,10 @@ setup(name='megrok.z3cform.wizard',
       install_requires=[
           'setuptools',
 	  'z3c.wizard',
-          'grok',
-	  'megrok.z3cform.base',
-          'megrok.pagetemplate',
+          'grokcore.view',
           'zope.app.testing',
+          'zope.app.zcmlfiles',
+	  'megrok.z3cform.base',
       ],
       entry_points="""
       # -*- Entry points: -*-
