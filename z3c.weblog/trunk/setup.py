@@ -34,7 +34,7 @@ setup (
         + '\n' +
         read('src', 'z3c', 'weblog', 'README.txt')
         ),
-    license = "??",
+    license = "ZPL",
     keywords = "zope3",
     classifiers = [
         'Environment :: Web Environment',
