@@ -1,4 +1,4 @@
-<h1>The GrokUI ZODBBrowser</h1>
+<h1>The GrokUI Code Browser</h1>
 <span tal:content="structure view/getBreadCrumbs">
 </span>
 <p>
@@ -10,11 +10,13 @@
     <input type="checkbox" name="show_docs" id="show_docs"
 	   tal:attributes="checked python: view.show_docs and 'checked'" />
     <label for="show_docs">show docstrings</label>
-    <input type="hidden" name="oid" 
-	   tal:attributes="value view/info/oid" />
+    <input type="hidden" name="dotted_name" 
+	   tal:attributes="value view/path" />
     <input type="submit" name="update" value="Update" />
   </form>
 </p>
-<div tal:content="structure view/info/@@index">
+
+<div tal:repeat="subview view/info_views"
+     tal:content="structure subview">
   Info text
 </div>
