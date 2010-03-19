@@ -1,154 +1,142 @@
-"""ZODBbrowser pages and other viewing components.
+"""Code browser pages and other viewing components.
 """
 import grok
-from persistent import Persistent
+import pkg_resources
+from martian.scan import module_info_from_dotted_name
 from zope.component import getMultiAdapter
+from zope.introspector.code import Code, Package, Module
+from zope.introspector.interfaces import IInfo, IInfos
 from zope.location import LocationProxy
-from zope.security.proxy import removeSecurityProxy
 from zope.session.interfaces import ISession
-from ZODB.POSException import POSKeyError
-from ZODB.utils import p64, u64, tid_repr
 
 from grokui.base import IGrokUIRealm, GrokUIView
-from grokui.zodbbrowser.interfaces import IObjectInfo, IBTreeInfo
 
 grok.context(IGrokUIRealm)
 grok.templatedir('templates')
 
-class BrowseZODBPermission(grok.Permission):
-    grok.name('grok.BrowseZODB')
+class BrowseCodePermission(grok.Permission):
+    grok.name('grok.BrowseCode')
 
-class GrokUIZODBBrowserInfo(GrokUIView):
-    grok.name('zodbbrowser')
-    grok.template('zodbbrowser')
-    grok.require('grok.BrowseZODB')
-    grok.title('ZODB browser') # This will appear in grokui menu bar
-    grok.order(5) # Position of menu entry will be somewhat to the right
+class GrokUICodeBrowser(GrokUIView):
+    grok.name('codebrowser')
+    grok.template('codebrowser')
+    grok.require('grok.BrowseCode')
+    grok.title('Code browser') # This will appear in grokui menu bar
+    grok.order(8) # Position of menu entry will be somewhat to the right
+
+    url_path = []
 
     def publishTraverse(self, request, name):
-        self.request.form['oid'] = name
+        self.url_path = request.getTraversalStack() + [name]
+        request.setTraversalStack([])
+        self.url_path.reverse()
         return self
 
-    def jar(self):
-        try:
-            return self.request.annotations['ZODB.interfaces.IConnection']
-        except KeyError:
-            obj = removeSecurityProxy(self.context)
-            while not isinstance(obj, Persistent):
-                obj = removeSecurityProxy(obj.__parent__)
-            return obj._p_jar
+    def update(self, show_all=False, show_docs=False, update=None):
 
-    def getRootOID(self):
-        """Get OID of root object.
-        """
-        root = self.jar().root()
-        try:
-            # The blessed way would be:
-            #
-            #   root = root[ZopePublication.root_name]
-            # 
-            # This, however would force us to import zope.app stuff
-            # only to get the silly string.
-            root = root[u'Application']
-        except KeyError:
-            pass
-        return u64(root._p_oid)
-
-    def getObjectAndOID(self, oid=None):
-        """Compute associated object and its OID.
-        """
-        obj = None
-        if oid is None:
-            obj = self.context.root
-        if obj is None:
-            oid = p64(int(self.request.get('oid', self.getRootOID()), 0))
-            obj = self.jar().get(oid)
-        return (obj, oid)
-
-    def update(self, oid=None, show_all=False, show_docs=False, update=None):
-        try:
-            self.obj, self.oid = self.getObjectAndOID(oid=oid)
-        except (POSKeyError, ValueError):
-            # Invalid number sent
-            self.flash(
-                u'Not a valid object ID: %s' % self.request.get('oid'))
-            self.redirect(self.url(self.context, '@@zodbbrowser'))
-            return
-
-        info = IObjectInfo(self.obj)
-        self.info = LocationProxy(info, self, str(info.oid))
-
-        session = ISession(self.request)['grokui.zodbbrowser']
+        session = ISession(self.request)['grokui.codebrowser']
         if update is None:
             show_all = session.get('show_all', False)
             show_docs = session.get('show_docs', False)
         self.show_all = session['show_all'] = show_all
         self.show_docs = session['show_docs'] = show_docs
-        return
+
+        self.path = '/'.join(self.url_path)
+        self.infos = []
+        self.info_views = []
+        if not self.url_path:
+            self.url_path = ['code']
+        if self.url_path[0] == 'code':
+            obj = self.traverseParts()
+            self.info_views = self.getInfoViewsForCode(obj)
+
+    def getInfoViewsForCode(self, codeobj):
+        result = []
+        infos = IInfos(codeobj).infos()
+        for name, info in infos:
+            view = None
+            try:
+                # We set the same location infos for the info
+                # object as for its context.
+                info = LocationProxy(
+                    info, codeobj.__parent__, codeobj.__name__
+                    )
+                result.append(
+                    getMultiAdapter((info, self.request), name='index')
+                    )
+            except:
+                # No view available for that info...
+                pass
+        return result
+
+    def traverseParts(self):
+        curr = LocationProxy(NamespaceRoot(), self, 'code')
+        for name in self.url_path[1:]:
+            curr = LocationProxy(curr[name], curr, name)
+        return curr
 
     def getBreadCrumbs(self):
-        """Breadcrumb navigation.
-        """
-        root_oid = self.getRootOID()
-        curr = self.info
-        b_list = []
-        while True:
-            link = self.getMemberLink(curr)
-            name = curr.name or '???'
-            if curr.oid == root_oid:
-                name = '&lt;root&gt;'
-            b_list.append('<a href="%s">%s</a>' % (link, name))
-            if curr.parent is None or curr.parent is curr.obj:
-                break
-            curr = IObjectInfo(curr.parent)
-        if curr.oid != root_oid:
-            b_list.append('...')
-            b_list.append('<a href="%s">%s</a>' % (
-                    self.getMemberLink(IObjectInfo(self.context.root)),
-                    '&lt;root&gt;'))
-        b_list.reverse()
-        return ' / '.join(b_list)
+        return ''
 
-    def getMemberLink(self, memberinfo):
-        return self.url(
-            LocationProxy(memberinfo, self, str(memberinfo.oid)))
+class NamespaceRoot(Code):
+    def __init__(self, dotted_name=''):
+        self.dotted_name = ''
+        
+    def __getitem__(self, name):
+        sub_module = None
+        try:
+            sub_module = module_info_from_dotted_name(name)
+        except ImportError:
+            # No module of that name found. The name might denote
+            # something different like a file or be really trash.
+            pass
+        if sub_module is None:
+            raise KeyError
+        if sub_module.isPackage():
+            return Package(sub_module.dotted_name)
+        return Module(sub_module.dotted_name)
 
-class ObjectInfoView(grok.View):
-    grok.name('index')
-    grok.require('grok.BrowseZODB')
-    grok.context(IObjectInfo)
-
-    def update(self):
-        session = ISession(self.request)['grokui.zodbbrowser']
-        self.show_all = session.get('show_all', False)
-        self.show_docs = session.get('show_docs', False)
-
-    def getMemberView(self, member=None):
-        if member is None:
-            member = self.context
-        member = LocationProxy(
-            member, self.context.__parent__, str(member.oid))
-        view = getMultiAdapter((member, self.request), name='memberinfo')
-        return view
-
-class FolderInfoView(ObjectInfoView):
-    grok.name('index')
-    grok.require('grok.BrowseZODB')
-    grok.context(IBTreeInfo)
-    grok.template('objectinfoview')
-
-class MemberInfoView(grok.View):
-    """View objectinfo as memberinfo.
-    """
-    grok.name('memberinfo')
-    grok.template('memberinfo')
-    grok.context(IObjectInfo)
-    grok.require('grok.BrowseZODB')
-
-    def update(self):
-        session = ISession(self.request)['grokui.zodbbrowser']
-        self.show_all = session.get('show_all', False)
-        self.show_docs = session.get('show_docs', False)
+class NamespaceRootInfo(grok.Adapter):
+    grok.context(NamespaceRoot)
+    grok.provides(IInfo)
+    grok.name('coderoot')
     
-    def getMemberLink(self):
-        return self.url(self.context)
+    def getDottedName(self):
+        return self.context.dotted_name
+
+    def getSubItems(self):
+        importables = pkg_resources.Environment()
+        top_level_pkgs = [x.split('.')[0] for x in importables]
+        top_level_pkgs = sorted(list(set(top_level_pkgs)))
+        for pkg in top_level_pkgs:
+            yield pkg
+
+    def _filterSubItems(self, filter=lambda x: True):
+        for name in self.getSubItems():
+            try:
+                info = module_info_from_dotted_name(name)
+                if filter and filter(info):
+                    yield info
+            except ImportError:
+                pass
+            except AttributeError:
+                # This is thrown sometimes by martian.scan if an
+                # object lacks a __file__ attribute and needs further
+                # investigation.
+                pass
+        
+    def getSubPackages(self):
+        return sorted(self._filterSubItems(lambda x: x.isPackage()),
+                      key=lambda x:x.dotted_name)
+
+    def getModules(self):
+        return sorted(self._filterSubItems(lambda x: not x.isPackage()))
+
+class NamespaceRootInfoView(grok.View):
+    grok.context(NamespaceRootInfo)
+    grok.require('grok.BrowseCode')
+    grok.name('index')
+    grok.template('rootinfo')
+
+    def item_url(self, info):
+        return self.url(LocationProxy(info, self.context, info.dotted_name))
