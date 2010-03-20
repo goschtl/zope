@@ -1,0 +1,16 @@
+
+<h3>Available top level packages (no built-ins)</h3>
+<div>
+  <div tal:repeat="info view/context/getSubPackages">
+    <a tal:attributes="href python: view.item_url(info)"
+       tal:content="info/dotted_name">name</a>
+  </div>
+</div>
+
+<h3>Available top level modules (no built-ins)</h3>
+<div>
+  <div tal:repeat="info view/context/getModules">
+    <a tal:attributes="href python: view.item_url(info)"
+       tal:content="info/dotted_name">name</a>
+  </div>
+</div>
