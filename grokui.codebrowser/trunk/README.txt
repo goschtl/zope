@@ -1,15 +1,14 @@
-grokui.zodbbrowser
+grokui.codebrowser
 ******************
 
-A simple ZODB browser for the grokUI environment.
+A code browser for the grokUI environment.
 
-This ZODB browser acts as a plugin into the grokui.base.
+This code browser acts as a plugin into the grokui.base.
 
-It is also a replacement for the ZODB browser in the former
+It is also a replacement for the code browser in the former
 grokui.admin introspector.
 
-You can browse the contents of your currently used ZODB by pointing
+You can browse the contents of your local codebase by pointing
 your browser to::
 
-   http://localhost:8080/++grokui++/zodbbrowser
-
+   http://localhost:8080/++grokui++/codebrowser
