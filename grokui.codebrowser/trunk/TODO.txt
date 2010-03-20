@@ -4,14 +4,17 @@ TODO
 Short term
 ----------
 
-* Enable flashmessages in pages when we sorted out flashmessage issues
-  (grokcore.message)
+* Fintune output using own views for packages, modules, etc.
 
-* Provide at least specialized BTree info.
-
+* Find more root packages.
 
 Long term
 ---------
 
-* Standalone browser
+* Passive scanning of code?
+
+  Right now all packages and components scanned are actively loaded
+  before being examined. This can have unwanted
+  side-effects. Furthermore the used scanner (from martian) is not
+  able to handle all packages available.
 
