@@ -2,11 +2,6 @@
 CHANGES
 =======
 
-0.2.2 (2009-01-18)
-------------------
-
-- Fixed dependency order (Takayuki Shimizukawa)
-
 
 0.2.1 (2010-01-15)
 ------------------
