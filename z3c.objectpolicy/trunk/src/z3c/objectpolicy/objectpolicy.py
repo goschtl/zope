@@ -1,3 +1,16 @@
+##############################################################################
+#
+# Copyright (c) 2010 Zope Foundation and Contributors
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """
 The objectpolicy package makes it easy to override the default
 zope.app.securitypolicy.zopepolicy on an object by object basis.
@@ -8,7 +21,8 @@ and have an adapter to `IObjectPolicy`.
 
 """
 
-from zope import interface, component
+import zope.interface
+import zope.component
 
 from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
 from zope.security.checker import CheckerPublic
@@ -33,35 +47,31 @@ class ObjectPolicy(ZopeSecurityPolicy):
     def checkPermission(self, permission, object):
         if permission is CheckerPublic:
             return True
-        
+
         object = removeSecurityProxy(object)
-        
+
         if IObjectPolicyMarker.providedBy(object):
-            #print permission, str(object)
-            #if 'Modi' in permission:
-            #    from pub.dbgpclient import brk
-            #    brk()
             try:
                 adapted = IObjectPolicy(object)
             except TypeError:
                 return self.checkZopePermission(permission, object)
-            
+
             return adapted.checkPermission(self, permission)
         else:
             return self.checkZopePermission(permission, object)
 
 class ObjectPrincipalPermissionManager(AnnotationPrincipalPermissionManager):
-    component.adapts(IObjectPolicyMarker)
-    interface.implements(IPrincipalPermissionManager)
-    
+    zope.component.adapts(IObjectPolicyMarker)
+    zope.interface.implements(IPrincipalPermissionManager)
+
     def __init__(self, context):
         super(ObjectPrincipalPermissionManager, self).__init__(context)
-        
+
         try:
             self._adapted = IObjectPolicy(context)
         except TypeError:
             self.getSetting = self.getZopePrincipalSetting
-    
+
     def getPrincipalsForPermission(self, permission_id):
         """Get the principas that have a permission.
 
@@ -87,11 +97,11 @@ class ObjectPrincipalPermissionManager(AnnotationPrincipalPermissionManager):
         raise NotImplementedError("Seemed like nobody calls getPermissionsForPrincipal")
         return super(ObjectPrincipalPermissionManager, self).getPermissionsForPrincipal(
             principal_id)
-    
+
     def getZopePrincipalSetting(self, permission_id, principal_id, default=Unset):
         return super(ObjectPrincipalPermissionManager, self).getSetting(
             permission_id, principal_id, default)
-    
+
     def getSetting(self, permission_id, principal_id, default=Unset):
         """Get the setting for a permission and principal.
 
@@ -125,17 +135,17 @@ class ObjectPrincipalPermissionManager(AnnotationPrincipalPermissionManager):
     #    """
 
 class ObjectRolePermissionManager(AnnotationRolePermissionManager):
-    component.adapts(IObjectPolicyMarker)
-    interface.implements(IRolePermissionManager)
-    
+    zope.component.adapts(IObjectPolicyMarker)
+    zope.interface.implements(IRolePermissionManager)
+
     def __init__(self, context):
         super(ObjectRolePermissionManager, self).__init__(context)
-        
+
         try:
             self._adapted = IObjectPolicy(context)
         except TypeError:
             self.getSetting = self.getZopeRoleSetting
-            
+
     def getPermissionsForRole(self, role_id):
         """Get the premissions granted to a role.
 
@@ -161,11 +171,11 @@ class ObjectRolePermissionManager(AnnotationRolePermissionManager):
         print "ROLE:getRolesForPermission"
         return super(ObjectRolePermissionManager, self).getRolesForPermission(
             permission_id)
-    
+
     def getZopeRoleSetting(self, permission_id, role_id):
         return super(ObjectRolePermissionManager, self).getSetting(
             permission_id, role_id)
-    
+
     def getSetting(self, permission_id, role_id):
         """Return the setting for the given permission id and role id
 
@@ -186,7 +196,7 @@ class ObjectRolePermissionManager(AnnotationRolePermissionManager):
         print "ROLE:getRolesAndPermissions"
         return super(ObjectRolePermissionManager, self).getRolesAndPermissions()
 
-    
+
     #def grantPermissionToRole(permission_id, role_id):
     #    """Bind the permission to the role.
     #    """
@@ -200,26 +210,25 @@ class ObjectRolePermissionManager(AnnotationRolePermissionManager):
     #    """
 
 class DefaultObjectPolicyAdapter(object):
-    interface.implements(IObjectPolicy)
+    zope.interface.implements(IObjectPolicy)
 
     def __init__(self, context):
-        #context is a Person
         self.context = context
 
     def getPrincipalPermission(self, manager, permissionid, principalid, default):
         #return the Z3 default permissions
         return manager.getZopePrincipalSetting(
             permissionid, principalid, default)
-    
+
     def getRolePermission(self, manager, permissionid, roleid):
         #return the Z3 default permissions
         return manager.getZopeRoleSetting(
             permissionid, roleid)
-    
+
     def checkPermission(self, manager, permissionid):
         #print permissionid, str(self.context)
         return manager.checkZopePermission(permissionid, self.context)
-    
+
     def checkPermissionForParticipation(self, manager, permissionid):
         object = self.context
         seen = {}
@@ -239,7 +248,7 @@ class DefaultObjectPolicyAdapter(object):
             seen[principal.id] = 1
 
         return True
-    
+
     def checkPermissionForParticipant(self, manager, principal, permissionid):
         return manager.cached_decision(
                 self.context, principal.id,
