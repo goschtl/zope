@@ -8,4 +8,4 @@ ftesting_zcml = os.path.join(
 
 GrokCodeBrowserFunctionalLayer = ZCMLLayer(
     ftesting_zcml, __name__,
-    'GrokCodeBRowserFunctionalLayer', allow_teardown=True)
+    'GrokCodeBrowserFunctionalLayer', allow_teardown=True)
