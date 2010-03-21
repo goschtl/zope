@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.7.2 (unreleased)
+3.7.2 (2010-03-21)
 ------------------
 
 - Added missing i18n domain to ``browser.zcml``.
