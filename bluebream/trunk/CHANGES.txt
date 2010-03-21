@@ -4,8 +4,8 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- zope.browserresource package registration was missing
+  Fix LP #541457 
 
 1.0a4 (2010-03-07)
 ------------------
