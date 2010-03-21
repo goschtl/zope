@@ -8,6 +8,9 @@ Short term
 
 * Find more root packages.
 
+* Add displaying of source code
+
+
 Long term
 ---------
 
@@ -16,5 +19,7 @@ Long term
   Right now all packages and components scanned are actively loaded
   before being examined. This can have unwanted
   side-effects. Furthermore the used scanner (from martian) is not
-  able to handle all packages available.
+  able to handle all packages available. Find out what's going on
+  there and fix it by providing an own scanner or improving martian
+  scanner.
 
