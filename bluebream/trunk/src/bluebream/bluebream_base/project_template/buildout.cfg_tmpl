@@ -1,8 +1,8 @@
 [config]
-site_zcml = $${buildout:directory}/etc/site.zcml
-blob = $${buildout:directory}/var/blob
-filestorage = $${buildout:directory}/var/filestorage
-log = $${buildout:directory}/var/log
+site_zcml = etc/site.zcml
+blob = var/blob
+filestorage = var/filestorage
+log = var/log
 
 [buildout]
 develop = .
