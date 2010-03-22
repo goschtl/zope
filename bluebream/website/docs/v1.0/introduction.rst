@@ -14,55 +14,60 @@ Introduction
 Overview
 --------
 
-:term:`BlueBream` is a web framework written in the Python
-programming language.  BlueBream is free/open source software, owned
-by the :term:`Zope Foundation`, licensed under the :term:`Zope Public
-License` (BSD like, GPL compatible license).  BlueBream was
-previously known as :term:`Zope 3`.
+:term:`BlueBream` -- formerly known as :term:`Zope 3` -- is a web
+framework written in the Python programming language.
 
-A few of the features which distinguish BlueBream among Python web
-frameworks.
+A few features distinguish BlueBream from other Python web frameworks.
 
-- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), a
-  distillation of many years of experience in meeting demanding
+- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), which
+  has many years of experience proving it meets the demanding
   requirements for stable, scalable software.
 
-- BlueBream leverages the power of :term:`Buildout` a build
-  system written in Python.
+- BlueBream uses the powerful and familiar :term:`Buildout` system
+  written in Python.
   
-- BlueBream uses the :term:`ZODB` transactional object database,
-  providing extremely powerful and easy to use persistence.
+- BlueBream employs the Zope Object Database (:term:`ZODB`),
+  transactional object database, providing extremely powerful and easy
+  to use persistence.
   
-- BlueBream uses :term:`ZCML`, an XML based configuration language
-  for registering components, providing limitless flexibility.  If
-  you don't need the power of ZCML and the complexity it adds, try
-  :term:`GROK`, which adds a layer replacing the declarative
-  configuration of ZCML with conventions and declarations in standard
-  Python.
+- BlueBream registers components with Zope Component Markup Language
+  (:term:`ZCML`), an XML based configuration language, providing
+  limitless flexibility.
+
+- BlueBream can also register components using :term:`GROK`, which
+  adds a layer replacing the declarative configuration of ZCML with
+  conventions and declarations in standard Python.
 
 - BlueBream features the :term:`Zope Component Architecture` (ZCA)
   which implements :term:`Separation of concerns` to create highly
   cohesive reusable components (zope.component_).
 
-- BlueBream supports :term:`WSGI` using :term:`Paste`,
-  :term:`PasteScript`, and :term:`PasteDeploy`.
+- BlueBream implements Python Web Server Gateway Interface
+  :term:`WSGI` using :term:`Paste`, :term:`PasteScript`, and
+  :term:`PasteDeploy`.
 
-- BlueBream includes a number of components which provide well tested
-  implementation of common requirements.  A few are of these are:
+- BlueBream includes a number of well tested components to implement
+  of common activities.  A few are of these are:
   
-  - zope.publisher_ publishes Python objects on the web, it is geared
-    towards :term:`WSGI` compatibility
+  - zope.publisher_ publishes Python objects on the web, emphasizing
+    :term:`WSGI` compatibility
 
-  - zope.security_ provides a generic mechanism supporting pluggable 
+  - zope.security_ provides a generic mechanism for pluggable 
     security policies
 
   - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
     frameworks 
 
-  - zope.pagetemplate_ is an xhtml-compliant templating language
+  - zope.pagetemplate_ is an XHTML-compliant language for devloping
+    templates
 
-  - zope.schema_ and zope.formlib_ provide a schema engine and 
-    automatic form generation machinery
+  - zope.schema_ is provide a schema engine
+
+  - zope.formlib_ is a tool for automatically generating forms
+
+BlueBream is free/open source software, owned by the :term:`Zope
+Foundation`.  Bluebream is licensed under the :term:`Zope Public
+License` (BSD like, GPL compatible license).
 
 .. _zope.component: http://pypi.python.org/pypi/zope.component
 .. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
@@ -98,11 +103,10 @@ community platforms:
 
 - PyPi home : http://pypi.python.org/pypi/bluebream
 
-BlueBream developer community is an active community involved in the
-development of BlueBream itself.  We are looking for contributors to
-this project.  All the development related information in documented
-in the `wiki <http://wiki.zope.org/bluebream>`_.  You can read this
-wiki page fore information:
+The BlueBream developer community is an active community involved in
+the development of BlueBream itself, and is looking for contributors
+to this project.  Development related information is documented in the
+`wiki <http://wiki.zope.org/bluebream>`_ wiki located at:
 http://wiki.zope.org/bluebream/ContributingToBlueBream
 
 We aim to provide high quality free online documentation for
@@ -115,9 +119,9 @@ source for this website is available from the zope.org repository
 If you don't have svn commit access, please consult: `becoming a
 contributor
 <http://docs.zope.org/developer/becoming-a-contributor.html>`_
-document.  For any queries, please contact us in mailing list or irc
-chat, we can help you to get *reference committer*, which is required
-to fill the contributor agreement form.
+document.  If you have any questions, please contact us in mailing
+list or irc chat.  We are happy to assist you with submitting the
+contributor agreement form required to become a *committer*.
 
 .. _intro-history:
 
@@ -126,52 +130,57 @@ Brief history
 
 .. FIXME: we need to improve the history
 
-Our story begins in 1996, :term:`Jim Fulton` was technical director
-at digital creations.  At the IPC (International Python Conference)
+Our story begins in 1996.  :term:`Jim Fulton` was technical director
+at digital creations.  At the International Python Conference (IPC)
 that year, Jim gave a presentation on :term:`CGI`: `Python and
 Internet Programming`_.  Jim, considering CGI less than elegant,
 envisioned a better way to program for the internet in Python.
 According to legend, Jim learned CGI on the plane to the conference,
 and designed :term:`Bobo` on the plane ride back home.
 
-Digital creations then released three open-source Python software
-packages: Bobo, Document Template, and Bobopos.  These packages
-provided a web publishing facility, text templating, and an object
-database and were the core of *Principia*, a commercial application
-server.  In november of 1998, investor Hadar Pedhazur convinced
-Digital Creations to open source Principia.  These packages evolved
-into the core components of Zope 2, and Digital Creations became Zope
-Corporation.
+Digital Creations then released three open-source Python software
+packages: Bobo, Document Template, and Bobopos.  These packages -- a
+web publisher, a text template, and an object database -- were the
+core of *Principia*, a commercial application server.  In November of
+1998, investor Hadar Pedhazur convinced Digital Creations to open
+source Principia.  These packages evolved into the core components of
+Zope 2, and Digital Creations became Zope Corporation.
 
 Since those days, Zope has been under active development.  It has
-evolved in several ways as the community gains experience.  We
-continually seek the optimum balance between power and ease of use.
-Zope 2 emphasized rapid development, the :term:`Zope Component
+evolved in several ways as the community gained experience,
+continually seeking the optimum balance between power and ease of use.
+Zope 2 emphasized rapid development.  The :term:`Zope Component
 Architecture`, which is the core of Zope 3, emphasized modularity and
-configurability.  This proves very successful in "enterprise"
-applications where flexibility and scalability justify the longer
-learning curve which Zope 3 requires, but is overkill for many
-situations which otherwise stand to benefit from the distilled wisdom
-of the ZCA.  The Zope community has responded to this in a number of
-ways, several projects have built frameworks which implement
-`Convention over configuration`_, and other refinements of the ZCA
-components aimed at facilitating rapid deployment, maintaining the
-power of ZCA under the hood.  Notable among these are :term:`grok`
+configurability, which proved very successful in "enterprise"
+applications requiring flexibility and scalability.
+
+justify the longer learning curve which Zope 3 requires, but is
+overkill for many situations which otherwise stand to benefit from the
+distilled wisdom of the ZCA.  The Zope community has responded to this
+in a number of ways, several projects have built frameworks which
+implement `Convention over configuration`_, and other refinements of
+the ZCA components aimed at facilitating rapid deployment, maintaining
+the power of ZCA under the hood.  Notable among these are :term:`grok`
 and Repoze_.
 
-Zope 3 is now known as BlueBream.  The name stems from the fact that
-the Z Object Publishing Environment, when spelled `zope`, is the name
-of a fish.  Another name for the fish is `blue bream`_.
+Zope 3 is now known as BlueBream.  The name stems from the coincidence
+that the Z Object Publishing Environment, when spelled `zope`, is the
+name of a fish.  `Blue bream`_ is another for the fish.
 
-BlueBream presents a well defined (and documented) configuration
-framework which simplifies managing of the power of the ZCA.  We've
-brought together ZCA, Buildout and Sphinx in a way that makes
-building powerhouse applications fun.
+BlueBream combines the ZCA, Buildout into a well defined, and
+documented, that makes building powerhouse applications fun.
 
 The components which comprise BlueBream are under continual
-development by an international team of experienced coders.  Take a
-look at the recent uploads to the `PyPi`_ site, it is rare to not see
-several zca projects listed.
+development by an international team of experienced coders.
+
+The longer learning curve for deploying Zope 3 is overkill for some
+situations which would otherwise stand to benefit from the distilled
+wisdom of the ZCA.  The Zope community has responded to this in with
+several rapidly deployable ZCA-derived frameworks, which implement
+Convention over configuration while maintaining the power of ZCA under
+the hood.  Notable among these are Grok and Repoze.  Take a look at
+the recent uploads to the PyPi site, it is rare to not see several zca
+projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
 
@@ -185,43 +194,34 @@ several zca projects listed.
 More about the project
 ----------------------
 
-As mentioned earlier, BlueBream is a web framework based on Zope
-technology.  BlueBream utilizes the Zope Toolkit (ZTK) and is the
-successor and logical upgrade path from the Zope 3 application
-server, also known as "Zope 3".  This section will show the position
-of BlueBream in the wider Zope ecosystem.
+The original intent of Zope 3 was to become a replacement for Zope 2.
+However, this did not happen as planned.  Instead, Zope 2 continued to
+make up the majority of new Zope deployments, due mostly to the
+popularity of Plone.
 
 Zope 3 was conceived as a fresh start to leave certain aspects and
 limitations of its presumed predecessor `Zope 2
 <http://docs.zope.org/zope2/zope2book/>`_ behind.  Zope 3 introduced
 a new component architecture to address some of the
-inheritance-based-programming limitations of Zope 2.  The `Zope
-Component Architecture (aka ZCA)
-<http://www.muthukadan.net/docs/zca.html>`_, notionally includes the
-packages named ``zope.component``, ``zope.interface`` and
-``zope.configuration``.
+inheritance-based-programming limitations of Zope 2.
 
-As well as the ZCA packages at its core, Zope 3 offered a large
-number of extra libraries and provided an application server that
-enabled programmers to develop standalone web applications.
-
-The original intent of Zope 3 was to become a replacement for Zope 2.
-However, this did not happen as planned.  Instead, Zope 2 continued
-to make up the majority of new Zope deployments, due mostly to the
-popularity of `Plone <http://plone.org>`_.
+The `ZCA <http://www.muthukadan.net/docs/zca.html>`_, notionally
+includes the packages named ``zope.component``, ``zope.interface`` and
+``zope.configuration``.  Zope 3 added to this a large number of extra
+libraries and provided an application server that enabled programmers
+to develop standalone web applications.
 
 In the meantime, another wave of web frameworks appeared.
-:term:`grok` evolved with many Zope 3 libraries at its core.
+:term:`Grok` evolved with many Zope 3 libraries at its core.
 `repoze.bfg (aka BFG) <http://bfg.repoze.org>`_ evolved around the
 ZCA.  Additionally, Zope 2 began to make use of the ZCA and various
 other Zope 3 packages.
 
-In 2009, a group of Zope developers agreed to concentrate primarily
-on the development of the Zope 3 libraries and formed the Zope
-Toolkit (ZTK) that focusses on a slim library subset of the Zope 3
-project, which can then be efficiently utilized by web application
-frameworks on top.  This development led to the following logical
-steps:
+In 2009, a group of Zope developers agreed to concentrate primarily on
+the development of the Zope 3 libraries and formed the Zope Toolkit
+(ZTK) that focused on a slim library subset of the Zope 3 project,
+which can then be efficiently utilized by web application frameworks
+on top.  This development led to the following logical steps:
 
 - Form a project around the remaining web application part of Zope 3
 
@@ -235,23 +235,15 @@ server; along with Grok, it relies on the ZTK.
 Organization of the documentation
 ---------------------------------
 
-This documentation has divided into multiple chapters.  Summary of
-each chapter is given below.
-
-Introduction
-~~~~~~~~~~~~
-
-This chapter introduce BlueBream with an :ref:`intro-overview` and
-:ref:`intro-history`.  Then walks through the
-:ref:`intro-organization`.  Finally, ends with :ref:`intro-thanks`
-section.
+This documentation has divided into multiple chapters.  A summary of
+each remaining chapters is given below.
 
 Getting Started
 ~~~~~~~~~~~~~~~
 
 The :ref:`started-getting` chapter narrate the process of creating a
-new web application project using BlueBream.  Also it gives few
-exercises to familiarize the basic concepts in BlueBream.
+new web application project using BlueBream.  It also gives a few
+exercises to demonstrate the basic concepts of BlueBream.
 
 Concepts
 ~~~~~~~~
@@ -262,54 +254,55 @@ BlueBream.
 Tutorial --- Part 1
 ~~~~~~~~~~~~~~~~~~~
 
-We demonstrate how to build a simple ticket collector application
-using BlueBream.  Part 1 introduces basic BlueBream concepts.
+This chapter presents a tutorial exercise demonstrating how to build a
+simple ticket collector application using BlueBream.  Part 1
+introduces basic BlueBream concepts.
 
 Tutorial --- Part 2
 ~~~~~~~~~~~~~~~~~~~
 
-Part 2 continues the ticket collector application, providing more detail
-on forms and schemas.
+This chapter continues with Part 2 of the ticket collector application
+tutorial excercise,, providing more detail on forms and schemas.
 
 Manual
 ~~~~~~
 
-This is a comprehensive guide to BlueBream.
+This chapter contains a comprehensive guide to BlueBream.
 
 FAQ
 ~~~
 
-These are FAQs collected from mailing lists, blogs and other on-line
-resources.
+These chapter presents Frequently Asked Questions (FAQs) collected
+from mailing lists, blogs and other on-line resources.
 
 HOWTOs
 ~~~~~~
 
-Small documents focusing on specific topics.
+This chapter contains brief explanations of special topics.
 
 Core Development
 ~~~~~~~~~~~~~~~~
 
-These documents are written for core development team.  Always visit
-the latest documentation site for recent version of these documents
-which is actually used by the developers.
+This chapter contains explanations written for the core development
+team.  Developers should always consult the latest documentation site
+for changes to the documentation in this section.
 
 Reference
 ~~~~~~~~~
 
-A complete reference to BlueBream.
+This chapter contains a complete reference to BlueBream.
 
 .. _intro-thanks:
 
 Thanks
 ------
 
-BlueBream truly stands on the shoulders of giants.  The Zope 3
-concepts built on Zope 2 which was built on Bobo and friends.  The
-list of Zope Corporation alumni is a *Who's Who* of Python, including
-one *Guido Van Rossum*.  Contributions from the larger community have
-come from all over the world, for more than 10 years.  We thank you
-all.  Please help us and add to the list of contributer names as we
+BlueBream truly stands on the shoulders of giants.  Zope 3 was built
+on the concepts of Zope 2 which was built on Bobo and friends.  The
+list of Zope Corporation alumni is a *Who's Who* of Python
+development, including one *Guido Van Rossum*.  For more than 10 years
+contributions have come from a a world-wide community.  We thank you
+all.  Please help us add more names to the list of contributor as we
 move forward from January 2010.
 
 :ref:`contributors-start` 
