@@ -1,6 +1,14 @@
 BlueBream Kit
 =============
 
+1.0a5 (unreleased)
+------------------
+
+- Changed versions: zopeapp.cfg
+
+  - zope.app.localpermission (3.7.1 -> 3.7.2)
+
+
 1.0a4 (2010-03-07)
 ------------------
 
