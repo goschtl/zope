@@ -4,6 +4,9 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- The default ZODB blob layout should be 'bushy'
+  Fix LP #543525
+
 - Use relative paths in etc/zope.conf Fix LP #543451
 
 - Specify i18n domain in ftesting.zcml Fix LP #543516

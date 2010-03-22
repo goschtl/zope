@@ -85,7 +85,6 @@ Creating directory ./sample
     Creating ./sample/var/
     Recursing into blob
       Creating ./sample/var/blob/
-      Copying README.txt to ./sample/var/blob/README.txt
       Recursing into tmp
         Creating ./sample/var/blob/tmp/
     Recursing into filestorage
