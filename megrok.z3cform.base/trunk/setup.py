@@ -17,7 +17,7 @@ install_requires = [
     'megrok.pagetemplate >= 0.3',
     ]
 
-test_requires = install_requires + ['grok >= 1.0',]
+test_requires = install_requires + ['grok >= 1.0', 'zope.app.testing']
 
 setup(name=name,
       version=version,

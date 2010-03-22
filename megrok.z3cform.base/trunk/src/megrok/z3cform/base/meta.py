@@ -7,6 +7,7 @@ import grokcore.viewlet
 from z3c.form import field
 from martian.error import GrokError
 from zope.interface import Interface
+from zope.component.zcml import adapter
 from megrok.z3cform.base import directives
 from megrok.z3cform.base import components
 from zope.interface.interfaces import IInterface
@@ -14,7 +15,6 @@ from grokcore.view.meta.views import ViewGrokker, default_view_name
 from z3c.form.zcml import widgetTemplateDirective
 from grokcore.formlib.formlib import most_specialized_interfaces
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
 
 def get_auto_fields(context):
     """Get the form fields for context.
@@ -72,3 +72,27 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
         widgetTemplateDirective(config, template, context, layer,
                     view=view, field=field, widget=widget, mode=mode)
         return True
+
+
+class ValidatorAdapterGrokker(martian.GlobalGrokker):
+    
+    def grok(self, name, module, module_info, config, **kw):
+        # context = grokcore.component.context.bind().get(module=module)
+        adapters = module_info.getAnnotation('form.validator_adapters', [])
+        for factory in adapters:
+            adapter(config, factory=(factory,),
+            )
+        return True
+
+class ValueAdapterGrokker(martian.GlobalGrokker):
+    
+    def grok(self, name, module, module_info, config, **kw):
+        # context = grokcore.component.context.bind().get(module=module)
+        adapters = module_info.getAnnotation('form.value_adapters', [])
+        for factory, name in adapters:
+            adapter(config,
+                factory=(factory,),
+                name=name
+            )
+        return True
+

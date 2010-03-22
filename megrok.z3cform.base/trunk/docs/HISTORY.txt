@@ -4,7 +4,8 @@ Changelog
 0.4 (unreleased)
 ----------------
 
-* ...
+* Added decorators for validator, invariant and default_value.
+  The idea of these decoraters is from plone.directives.form.
 
 
 0.3 (2010-02-11)
