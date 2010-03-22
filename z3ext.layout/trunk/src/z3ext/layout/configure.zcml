@@ -42,6 +42,10 @@
        interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
   </class>
 
+  <class class=".pagelet.Result">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPage" />
+  </class>
+
   <!-- default layouts -->
   <z3ext:layout
      layout="viewspace"

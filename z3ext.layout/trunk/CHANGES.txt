@@ -5,6 +5,8 @@ CHANGES
 2.3.0 (Unreleased)
 ------------------
 
+- Fixed @@pagelet publisher
+
 - Use ``zope.site`` intead of ``zope.app.component``
 
 - Use ``zope.browserpage`` intead of ``zope.app.publisher``

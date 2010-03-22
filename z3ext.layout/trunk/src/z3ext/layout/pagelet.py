@@ -153,6 +153,17 @@ class BrowserPagelet(BrowserPage):
             return layout()
 
 
+class Result(BrowserPage):
+
+    def __init__(self, context, request, str):
+        self.context = context
+        self.request = request
+        self.str = str
+
+    def __call__(self):
+        return self.str
+
+
 class PageletPublisher(object):
     interface.implements(IBrowserPublisher)
     component.adapts(interface.Interface, interface.Interface)
@@ -184,7 +195,8 @@ class PageletPublisher(object):
 
         if view is not None:
             try:
-                return view.updateAndRender()
+                return Result(
+                    self.context, self.request, view.updateAndRender())
             except:
                 errUtility = queryUtility(IErrorReportingUtility)
                 if errUtility is not None:
