@@ -1,5 +1,6 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="${namespace_package}.${main_package}"
    >
 
   <include package="zope.component" file="meta.zcml" />

@@ -4,6 +4,7 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Specify i18n domain in ftesting.zcml Fix LP #543516
 - zope.browserresource package registration was missing
   Fix LP #541457 
 
