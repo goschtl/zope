@@ -23,11 +23,11 @@ If you have a template like this (helloworld.pt)::
 
   Hello, World !
 
-Here is how to register a page for IFolder interface::
+Here is how to register a page for ``IFolder`` interface::
 
   <browser:page
     name="helloworld.html"
-    for="zope.app.folder.interfaces.IFolder"
+    for="zope.site.interfaces.IFolder"
     template="helloworld.pt"
     permission="zope.Public"
     /> 
@@ -47,20 +47,19 @@ representation is created (context) and request object holding all
 Implementation
 ~~~~~~~~~~~~~~
 
-Normally view components are added inside `browser` package inside
-your main package.  The organization of the browser code is really up
-to you and the above examples are just the most basic rules of thumb.
+The organization of the browser code is really up to you and the above
+examples are just the most basic rules of thumb.
 
-Here is simple view defined::
+Here is a simple view defined::
 
-  from zope.publisher.browser import BrowserPage
-  from zope.app.folder import interfaces
+  from zope.formlib import DisplayForm
+  from zope.site.interfaces import IFolder
 
-  class HelloWorld(BrowserPage):
+  class HelloWorld(DisplayForm):
 
       def subFolderIds(self):
           for name, subobj in self.context.items():
-              if interfaces.IFolder.providedBy(subobj):
+              if IFolder.providedBy(subobj):
                   yield name 
 
 Since methods and attributes of the view component are directly used

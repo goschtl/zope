@@ -23,7 +23,8 @@ component architecture.
 
 There are two terms associated with skinning named, `layer` and
 `skin`.  Before proceeding, it would be better to understand the
-meaning of these two terms in BlueBream skinning.
+meaning of these two terms in BlueBream skinning.  Skins are directly
+provided by a request
 
 Layers
 ~~~~~~
@@ -69,33 +70,11 @@ This is realized through a combination of interface inheritance and
 component lookup techniques.  This book will discuss this in more
 detail later.
 
-Skins are directly provided by a request
-
-
-Core skins
-----------
-
-* Access skin using ++skin++Name after the server root
-
-* Core Skins that are part of the repository
-
-  - Rotterdam -- the default skin shown
-
-  - Boston -- a newer skin featuring viewlets
-
-  - Basic -- a skin with no layout styles
-
-  - Debug -- based on Rotterdam, shows debug information upon
-    failures
-
-* Try http://localhost:8080/++skin++Boston
-
 Unfortunately, it is hard to reuse the UI components developed for
 these skins, since they still rely on the not so flexible macro
 pattern.  Thus, it is better if you start from scratch.  This will
 also avoid a lot of the overhead that comes with the over-generalized
 core skins.
-
 
 A new skin
 ----------
@@ -173,16 +152,8 @@ Setting up a skin
 ~~~~~~~~~~~~~~~~~
 
 Skins are technically interfaces defined using ``zope.interface``
-package.  To create a custom skin it is always better to inherit from
-a standard layer or another skin interface.  It is by convention that
-skins will be created in sub-package named ``skin`` in your
-``browser`` package of your main package.  For example, if your
-package name is ``foo``, then ``foo.browser.skin`` will be the skin
-package, but this is not mandatory.  Your skin interfaces can be
-defined in ``foo.browser.skin.interfaces``.
-
-Write an interface for each new skin that inherits the Hello World
-application layer::
+package.  Write an interface for each new skin that inherits the Hello
+World application layer::
 
   class IBasicSkin(IHelloWorldLayer):
       """Basic Skin for Hello World App."""
