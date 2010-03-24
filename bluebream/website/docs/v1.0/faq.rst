@@ -131,9 +131,14 @@ continue until all our needs are met :)
 Which Python version is required?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Python 2.5 & 2.6 are the supported versions for BlueBream 1.0 final
-release.
+BlueBream 1.0 support the following Python versions:
 
+- Python 2.4
+- Python 2.5
+- Python 2.6
+
+If you are using 64 bit platform, it is recommended to use Python 2.6
+with BlueBream.
 
 What is the KGS (Known Good Set) ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
