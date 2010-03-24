@@ -199,12 +199,6 @@ Note that even the ``@@`` is not necessary if container ``foo`` has
 no element named ``bar`` - it only serves to disambiguate between
 views of an object and things contained within the object.
 
-Are ContainerTypesConstraint & ItemTypePrecondition deprecated ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-These two are not deprecated, but ``contains`` and ``containers``
-functions are recommended.
-
 .. _faq-security:
 
 Security
