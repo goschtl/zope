@@ -15,14 +15,14 @@ Manual
 
    browserresource
    browserpage
-   unittesting
+   zpt
    interface
-   componentarchitecture
    contentcomponent
+   schema
+   form
+   unittesting
+   componentarchitecture
    configuration
    startup
    functionaltesting
    skinning
-   schema
-   form
-
