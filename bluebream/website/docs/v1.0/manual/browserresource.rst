@@ -31,22 +31,22 @@ browser resource directive::
       file="resource.txt"
       layer="default" />
 
-Line 2: This is the name under which the resource will be known in
-Zope.
+- Line 2: This is the name under which the resource will be known in
+  Zope.
 
-Line 3: The file attribute specifies the path to the resource on the
-filessytem.  The current working directory ('.') is always the
-directory the configuration file is located.  So in the example
-above, the file ``resource.txt`` is located in the same folder as the
-configuration file is.
+- Line 3: The file attribute specifies the path to the resource on
+  the filessytem.  The current working directory (``.``) is always
+  the directory the configuration file is located.  So in the example
+  above, the file ``resource.txt`` is located in the same folder as
+  the configuration file is.
 
-Line 4: The optional layer attribute specifies the layer the resource
-is added to.  By default, the default layer is selected.
+- Line 4: The optional layer attribute specifies the layer the
+  resource is added to.  By default, the default layer is selected.
 
 Once you hook up the configuration file to the main configuration
 path and restart BlueBream, you should be able to access the resource
-now via a Browser using http://localhost:8080/@@/resource.txt. The
-@@/ in the URL tells the traversal mechanism that the following
+now via a Browser at: http://localhost:8080/@@/resource.txt.  The
+``@@/`` in the URL tells the traversal mechanism that the following
 object is a resource.
 
 Image Resource
@@ -61,20 +61,20 @@ it as follows::
       image="img.png"
       permission="zope.ManageContent" />
 
-Line 3: As you can see, instead of the file attribute we use the
-image one.  Internally this will create an Image object, which is
-able to detect the content type and returns it correctly.  There is a
-third possible attribute named template.  If specified, a Page
-Template that is executed when the resource is called.  Note that
-only one of file, image, or template attributes can be specified
-inside a resource directive.
+- Line 3: As you can see, instead of the file attribute we use the
+  image one.  Internally this will create an Image object, which is
+  able to detect the content type and returns it correctly.  There is
+  a third possible attribute named template.  If specified, a Page
+  Template that is executed when the resource is called.  Note that
+  only one of file, image, or template attributes can be specified
+  inside a resource directive.
 
-Line 4: A final optional attribute is the "permission" one must have
-to view the resource.  To demonstrate the security, I set the
-permission required for viewing the image to zope.ManageContent, so
-that you must log in as an administrator/manager to be able to view
-it.  The default of the attribute is zope.Public so that everyone can
-see the resource.
+- Line 4: A final optional attribute is the ``permission`` one must
+  have to view the resource.  To demonstrate the security, I set the
+  permission required for viewing the image to zope.ManageContent, so
+  that you must log in as an administrator/manager to be able to view
+  it.  The default of the attribute is zope.Public so that everyone
+  can see the resource.
 
 
 Directory Resource
@@ -93,16 +93,20 @@ directory called resource, then you can use the following::
     directory="../resource"
     />
 
-The image will then be publically available under the URL:
+The image will then be publically available from the following URL:
 http://localhost:8080/@@/resources/img.png
 
 The directory resource object uses a simple resource type
 recognition.  It looks at the filename extensions to discover the
 type.  For page templates, currently the extensions ``pt``, ``zpt``
 and ``html`` are registered and for an image ``gif``, ``png`` and
-`jpg``.  All other extensions are converted to file resources.  Note
+``jpg``.  All other extensions are converted to file resources.  Note
 that it is not necessary to have a list of all image types, since
 only Browser-displayable images must be recognized.
+
+There is a community supported package named `z3c.zrtresource
+<http://pypi.python.org/pypi/z3c.zrtresource>`_ which is documented
+here: http://wiki.zope.org/bluebream/BrowserResource
 
 .. raw:: html
 
