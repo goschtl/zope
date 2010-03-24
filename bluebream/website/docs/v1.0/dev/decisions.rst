@@ -6,15 +6,15 @@ Technical Decisions
 - Shortening BlueBream as Bream or BB is acceptable.  As of now, the
   "BB" shortening is getting popular in community.
 
-- The only public API exposed by "bluebream - the package"
-  is an entry point::
+- There are only two public APIs exposed by "bluebream - the package"
+  Those APIs are two entry points provided by setuptools which use
+  PasteScript::
 
+    entry_points={
     "paste.paster_create_template":
-        ["bluebream = bluebream.bluebream_base.template:BlueBream"]
-
-  The implementation of "bluebream" template is defined in
-  "bluebream.bluebream_base.template.BlueBream".  The template
-  implementation location could be changed if required later.
+        ["bluebream = bluebream.bluebream_base.template:BlueBream",
+         "bluebream_simple = bluebream.bluebream_simple.template:BlueBream"
+         ]}
 
 - All the framework code will be using "zope" or "zope.app" namespace
   packages.  Although "bb" could be used as a namespace in future.
