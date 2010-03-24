@@ -244,23 +244,23 @@ To check for a specific permission on an object, you can do something like::
 I've registered a PAU in the site-root; now I cannot log in as zope.Manager. What gives?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Start zopedebug then unregister the utility.  This will then let you
-log in as a user defined in principals.zcml.
+Start debug shell then unregister the utility.  This will then let
+you log in as a user defined in ``securitypolicy.zcml``.
 
-Example (execute the following with zopedebug)::
+Example::
 
-  import transaction
-  from zope.component import getSiteManager
-  from zope.app.security.interfaces import IAuthentication
+  $ ./bin/paster shell debug.ini
+  ...
+  >>> import transaction
+  >>> from zope.component import getSiteManager
+  >>> from zope.app.security.interfaces import IAuthentication
+  >>> lsm = getSiteManager(root)
+  >>> lsm.unregisterUtility(lsm.getUtility(IAuthentication), IAuthentication)
+  >>> transaction.commit()
 
-  lsm = getSiteManager(root)
-  lsm.unregisterUtility(lsm.getUtility(IAuthentication), IAuthentication)
-
-  transaction.commit()
-
-When you exit zopedebug and start the server, you should be able to
-log in again using the user defined in principals.zcml.  This should
-have the zope.Manager permission.
+When you exit debug and start the server, you should be able to log
+in again using the user defined in principals.zcml.  This should have
+the ``zope.Manager`` permission.
 
 To avoid this happening, either assign a role to a user defined in the
 PAU or set up a folder beneath the root, make it a site and add and
