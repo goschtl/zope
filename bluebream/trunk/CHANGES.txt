@@ -4,6 +4,8 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Remove `zope.app.twisted` from dependency list
+
 - Since BlueBream requires ZODB 3.9, FileStorage need not be
   wrapped with BlobStorage proxy to get ZODB blobs support.
 
