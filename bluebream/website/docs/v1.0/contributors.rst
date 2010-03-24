@@ -20,6 +20,7 @@ committed to documentation directly.
 - Daniel Nilsson
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
+- Paul Harouff
 
 Logo Design
 -----------
