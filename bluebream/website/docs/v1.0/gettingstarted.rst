@@ -102,7 +102,7 @@ works.  The ``easy_install`` will look for the environment variable
 named ``http_proxy`` in GNU/Linux platforms.  You can set it like
 this::
 
- $ set http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
+ $ export http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
 
 Apart from ``bluebream`` distribution, easy_install will download and
 install its dependencies.  The dependencies are:
