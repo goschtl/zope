@@ -1,0 +1,3 @@
+z3c.javascript has been moved to http://code.google.com/p/z3c-javascript/ for legal reasons.
+
+This zope 3 package includes some predefined 3rd party javascript libraries for inclusion in zope 3 projects. The project was moved to code.google.com because of licensing issues on svn.zope.org. It is currently not maintained anymore. If you want to work on it, just contact one of the developers listed on http://code.google.com/p/z3c-javascript/
