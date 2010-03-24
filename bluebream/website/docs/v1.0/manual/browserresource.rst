@@ -19,12 +19,14 @@ demonstrate how resources are created and registered with BlueBream.
 The first goal is to register a simple plain-text file called
 ``resource.txt`` as a browser resource.  The first step is to create
 this file anywhere you wish on the filesystem, and adding the
-following content::
+following content.  If you are working on the official tutorial, you
+can create the file at: ``src/tc/main/resource.txt``::
 
   Hello, I am a BlueBream Resource Component!
 
 Now just register the resource in a ZCML configuration file using the
-browser resource directive::
+browser resource directive.  If you are working on the official
+tutorial, you can add these lines to ``src/tc/main/configure.zcml``::
 
   <browser:resource
       name="resource.txt"
@@ -71,10 +73,10 @@ it as follows::
 
 - Line 4: A final optional attribute is the ``permission`` one must
   have to view the resource.  To demonstrate the security, I set the
-  permission required for viewing the image to zope.ManageContent, so
-  that you must log in as an administrator/manager to be able to view
-  it.  The default of the attribute is zope.Public so that everyone
-  can see the resource.
+  permission required for viewing the image to
+  ``zope.ManageContent``, so that you must log in as an
+  administrator/manager to be able to view it.  The default of the
+  attribute is ``zope.Public`` so that everyone can see the resource.
 
 
 Directory Resource
@@ -82,15 +84,16 @@ Directory Resource
 
 If you have many resource files to register, it can be very tedious
 to write a single directive for every resource.  For this purpose the
-resourceDirectory is provided, with which you can simply declare an
-entire directory, including its content as resources.  Thereby the
-filenames of the files are reused as the names for the resource
-available.  Assuming you put your two previous resources in a
-directory called resource, then you can use the following::
+``browser:resourceDirectory`` directive is provided, with which you
+can simply declare an entire directory, including its content as
+resources.  Thereby the filenames of the files are reused as the
+names for the resource available.  Assuming you put your two previous
+resources in a directory called ``resource``, then you can use the
+following::
 
   <browser:resourceDirectory
-    name="resources"
-    directory="../resource"
+    name="resource"
+    directory="resource"
     />
 
 The image will then be publically available from the following URL:
@@ -103,6 +106,19 @@ and ``html`` are registered and for an image ``gif``, ``png`` and
 ``jpg``.  All other extensions are converted to file resources.  Note
 that it is not necessary to have a list of all image types, since
 only Browser-displayable images must be recognized.
+
+In BlueBream, there is a resource directory registered named
+``static``.  If you are working the tutorial, you can see it at:
+``src/tc/main/configure.zcml``.  At the beginning of the file, you
+can see the registration like this::
+
+  <browser:resourceDirectory
+     name="static"
+     directory="static"
+     />
+
+Two resource files (``style.css`` and ``logo.png``) will be already
+available inside ``src/tc/main/static`` directory.
 
 There is a community supported package named `z3c.zrtresource
 <http://pypi.python.org/pypi/z3c.zrtresource>`_ which is documented
