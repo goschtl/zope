@@ -30,3 +30,12 @@ In other words, before starting a release make sure that:
 Post release steps
 ------------------
 
+1. Send announce to mailing list
+2. Blog about it
+3. Update twitter
+
+Release check list
+------------------
+
+Release check list is currently maintained in wiki:
+http://wiki.zope.org/bluebream/ReleaseChecklist
