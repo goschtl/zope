@@ -181,8 +181,8 @@ a good name for your project.
 
 .. note:: Alternate Project Templates
 
-   Alternate project templates will be available from 1.0b1 release
-   onwards, and it is `documented in the wiki
+   Another project template named ``bluebream_simple`` is also
+   available, and it is `documented in the wiki
    <http://wiki.zope.org/bluebream/AlternateProjectTemplates>`_.
 
 .. _started-building:
