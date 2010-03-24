@@ -2,17 +2,11 @@
 site-definition ${config:site_zcml}
 
 <zodb>
-  # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
-  # support.
-  # This won't be needed with ZODB 3.9, as its FileStorage supports
-  # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
-  # the blob-dir parameter right in in filestorage, just after path.
-  <blobstorage>
+
+  <filestorage>
+    path ${config:filestorage}/Data.fs
     blob-dir ${config:blob}
-    <filestorage>
-      path ${config:filestorage}/Data.fs
-    </filestorage>
-  </blobstorage>
+  </filestorage>
 
 # Uncomment this if you want to connect to a ZEO server instead:
 #  <zeoclient>

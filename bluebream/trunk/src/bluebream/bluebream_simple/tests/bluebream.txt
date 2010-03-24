@@ -62,10 +62,6 @@ Creating directory ./sample
     Copying zope_conf.in to ./sample/templates/zope_conf.in
   Recursing into var
     Creating ./sample/var/
-    Recursing into blob
-      Creating ./sample/var/blob/
-      Recursing into tmp
-        Creating ./sample/var/blob/tmp/
     Recursing into filestorage
       Creating ./sample/var/filestorage/
       Copying README.txt to ./sample/var/filestorage/README.txt
@@ -129,10 +125,6 @@ Creating directory ./Sample
     Copying zope_conf.in to ./Sample/templates/zope_conf.in
   Recursing into var
     Creating ./Sample/var/
-    Recursing into blob
-      Creating ./Sample/var/blob/
-      Recursing into tmp
-        Creating ./Sample/var/blob/tmp/
     Recursing into filestorage
       Creating ./Sample/var/filestorage/
       Copying README.txt to ./Sample/var/filestorage/README.txt

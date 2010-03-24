@@ -4,6 +4,9 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Since BlueBream requires ZODB 3.9, FileStorage need not be
+  wrapped with BlobStorage proxy to get ZODB blobs support.
+
 - The default ZODB blob layout should be 'bushy'
   Fix LP #543525
 
