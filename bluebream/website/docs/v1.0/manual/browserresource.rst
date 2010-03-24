@@ -86,7 +86,7 @@ resourceDirectory is provided, with which you can simply declare an
 entire directory, including its content as resources.  Thereby the
 filenames of the files are reused as the names for the resource
 available.  Assuming you put your two previous resources in a
-directory called resource, then you can use the following:
+directory called resource, then you can use the following::
 
   <browser:resourceDirectory
     name="resources"
