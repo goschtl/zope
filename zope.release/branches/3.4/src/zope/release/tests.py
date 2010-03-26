@@ -17,13 +17,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import unittest
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import doctest
 
 def test_suite():
-    return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
+    return doctest.DocFileSuite('README.txt',
+                                optionflags=doctest.NORMALIZE_WHITESPACE
+                                           |doctest.ELLIPSIS)
