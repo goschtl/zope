@@ -71,7 +71,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     if len(args) < 2:
-        print __file__.__doc__
+        print __doc__
         sys.exit(1)
 
     destination = args[-1]
