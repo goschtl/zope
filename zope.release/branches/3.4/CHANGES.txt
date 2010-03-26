@@ -8,6 +8,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 ------------------
 
 - Upgraded RestrictedPython to 3.5.1
+- Upgraded setuptools to 0.6c11
 - Upgraded zdaemon to 2.0.4
 - Upgraded zope.annotation to 3.4.2
 - Upgraded zope.app.catalog to 3.5.2
