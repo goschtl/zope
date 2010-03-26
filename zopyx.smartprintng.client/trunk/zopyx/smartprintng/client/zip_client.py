@@ -21,7 +21,7 @@ class Proxy(object):
         self.port = port
         self.username = username
         self.password = password
-        self.output_directory = os.getcwd()
+        self.setOutputDirectory(tempfile.mkdtemp(prefix='smartprintng_client_'))
 
     def setOutputDirectory(self, output_directory):
         if not os.path.exists(output_directory):
@@ -116,7 +116,7 @@ class Proxy(object):
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
 
-    proxy = Proxy(port=6543)
+    proxy = Proxy(host='zopyx.com', port=6543)
     print proxy.ping()
     print proxy.availableConverters()
     print proxy.convertZIP(sys.argv[1])

@@ -1,9 +1,13 @@
 Changelog
 =========
 
+0.5.3 (2010-03-27)
+------------------
+* fixing racing condition in handling of the output directory
+
+
 0.5.2 (2007-09-18)
 ------------------
-
 * added method for setting the output directory
 
 
