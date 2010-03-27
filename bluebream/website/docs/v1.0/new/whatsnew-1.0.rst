@@ -323,7 +323,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zc.recipe.testrunner         | 1.0.0      | 1.2.0           |
 +------------------------------+------------+-----------------+
-| zc.resourcelibrary           | 1.0.1      | 1.3.0           |
+| zc.resourcelibrary           | 1.0.1      | 1.3.1           |
 +------------------------------+------------+-----------------+
 | zc.sourcefactory             |            | 0.6.0           |
 +------------------------------+------------+-----------------+
@@ -337,7 +337,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.annotation              | 3.4.1      | 3.5.0           |
 +------------------------------+------------+-----------------+
-| zope.app.apidoc              | 3.4.3      | 3.7.1           |
+| zope.app.apidoc              | 3.4.3      | 3.7.2           |
 +------------------------------+------------+-----------------+
 | zope.app.applicationcontrol  | 3.4.3      | 3.5.5           |
 +------------------------------+------------+-----------------+
@@ -359,7 +359,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.app.content             | 3.4.0      | 3.4.0           |
 +------------------------------+------------+-----------------+
-| zope.app.dav                 | 3.4.1      | 3.5.2           |
+| zope.app.dav                 | 3.4.1      | 3.5.3           |
 +------------------------------+------------+-----------------+
 | zope.app.debug               | 3.4.1      | 3.4.1           |
 +------------------------------+------------+-----------------+
@@ -373,7 +373,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.app.folder              | 3.4.0      | 3.5.1           |
 +------------------------------+------------+-----------------+
-| zope.app.form                | 3.4.1      | 4.0.1           |
+| zope.app.form                | 3.4.1      | 4.0.2           |
 +------------------------------+------------+-----------------+
 | zope.app.ftp                 | 3.4.0      | 3.5.0           |
 +------------------------------+------------+-----------------+
@@ -389,11 +389,11 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.app.intid               | 3.4.1      | 3.7.1           |
 +------------------------------+------------+-----------------+
-| zope.app.keyreference        | 3.4.1      | 3.6.0           |
+| zope.app.keyreference        | 3.4.1      | 3.6.1           |
 +------------------------------+------------+-----------------+
 | zope.app.locales             | 3.4.5      | 3.6.0           |
 +------------------------------+------------+-----------------+
-| zope.app.localpermission     |            | 3.7.0           |
+| zope.app.localpermission     |            | 3.7.2           |
 +------------------------------+------------+-----------------+
 | zope.app.locking             | 3.4.0      | 3.5.0           |
 +------------------------------+------------+-----------------+
@@ -463,7 +463,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.catalog                 |            | 3.8.1           |
 +------------------------------+------------+-----------------+
-| zope.component               | 3.4.0      | 3.9.1           |
+| zope.component               | 3.4.0      | 3.9.3           |
 +------------------------------+------------+-----------------+
 | zope.componentvocabulary     |            | 1.0             |
 +------------------------------+------------+-----------------+
@@ -473,7 +473,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.contentprovider         | 3.4.0      | 3.6.1           |
 +------------------------------+------------+-----------------+
-| zope.contenttype             | 3.4.0      | 3.5.0           |
+| zope.contenttype             | 3.4.0      | 3.5.1           |
 +------------------------------+------------+-----------------+
 | zope.copy                    |            | 3.5.0           |
 +------------------------------+------------+-----------------+
@@ -501,7 +501,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.filerepresentation      | 3.4.0      | 3.6.0           |
 +------------------------------+------------+-----------------+
-| zope.formlib                 | 3.4.0      | 4.0             |
+| zope.formlib                 | 3.4.0      | 4.0.2           |
 +------------------------------+------------+-----------------+
 | zope.hookable                | 3.4.0      | 3.4.1           |
 +------------------------------+------------+-----------------+
@@ -549,7 +549,7 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.ptresource              |            | 3.9.0           |
 +------------------------------+------------+-----------------+
-| zope.publisher               | 3.4.6      | 3.12.0          |
+| zope.publisher               | 3.4.6      | 3.12.1          |
 +------------------------------+------------+-----------------+
 | zope.ramcache                |            | 1.0             |
 +------------------------------+------------+-----------------+
@@ -1262,6 +1262,18 @@ zc.recipe.testrunner
 
 zc.resourcelibrary
 ~~~~~~~~~~~~~~~~~~
+
+1.3.1 (2010-03-24)
+******************
+
+- Resource libraries that are required during a retried request are now
+  correctly registered and injected to the HTML.
+
+- Import hooks functionality from zope.component after it was moved there from
+  zope.site. This lifts the dependency on zope.site.
+
+- Removed an unused ISite import and thereby, the undeclared dependency on
+  zope.location.
 
 1.3.0 (2009-10-08)
 ******************
@@ -2648,6 +2660,12 @@ zope.app.content
 zope.app.dav
 ~~~~~~~~~~~~
 
+3.5.3 (2010-03-11)
+******************
+
+- Avoid creating a DAV namespace adapter per property in PROPPATCH
+  (create only one per namespace in a given request).  See LP #98454.
+
 3.5.2 (2010-01-08)
 ******************
 
@@ -3261,6 +3279,11 @@ zope.app.locales
 
 zope.app.localpermission
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+3.7.2 (2010-03-21)
+******************
+
+- Added missing i18n domain to ``browser.zcml``.
 
 3.7.1 (2010-02-22)
 ******************
@@ -4519,6 +4542,14 @@ zope.catalog
 zope.component
 ~~~~~~~~~~~~~~
 
+3.9.3 (2010-03-08)
+******************
+
+- The ZCML directives provided by zope.component now register the components in
+  the registry returned by getSiteManager instead of the global registry. This
+  allows the hooking of the getSiteManager method before the load of a ZCML
+  file to register the components in a custom registry.
+
 3.9.2 (2010-01-22)
 ******************
 
@@ -4888,6 +4919,14 @@ zope.contentprovider
 zope.contenttype
 ~~~~~~~~~~~~~~~~
 
+3.5.1 (2010-03-23)
+******************
+
+* LP #242321:  fix IndexError raised when testing strings consisting
+  solely of leading whitespace.
+
+* Updated mime-type for .js to be application/javascript.
+
 3.5.0 (2009-10-22)
 ******************
 
@@ -5169,6 +5208,11 @@ zope.filerepresentation
 
 zope.formlib
 ~~~~~~~~~~~~
+
+4.0.2 (2010-03-07)
+******************
+
+- Adapted tests for Python 2.4 (enforce sorting for short pprint output)
 
 4.0.1 (2010-02-21)
 ******************
