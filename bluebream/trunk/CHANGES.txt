@@ -4,6 +4,8 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Include `zope.session` from `site.zcml`
+
 - Include `browser` namespace in `site.zcml` for convenience.
 
 - Added an empty `[versions]` part in `versions.cfg` with

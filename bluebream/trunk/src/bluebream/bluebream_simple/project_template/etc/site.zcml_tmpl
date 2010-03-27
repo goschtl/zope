@@ -37,6 +37,7 @@
   <include package="zope.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.login" />
+  <include package="zope.session" />
   <include package="zope.app.zcmlfiles" file="menus.zcml" />
   <include package="zope.app.authentication" />
   <include package="zope.app.security.browser" />
