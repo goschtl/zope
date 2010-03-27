@@ -4,6 +4,9 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Added an empty `[versions]` part in `versions.cfg` with
+  a recommendation to pin-down versions of other dependencies.
+
 - Remove `zope.app.twisted` from dependency list
 
 - Since BlueBream requires ZODB 3.9, FileStorage need not be
