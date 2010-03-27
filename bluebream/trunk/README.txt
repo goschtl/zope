@@ -7,67 +7,68 @@ BlueBream
 Introduction
 ------------
 
-`BlueBream <http://bluebream.zope.org>`_ is a web framework written
-in Python programming language.  BlueBream is a free/open source
-software, owned by the `Zope Foundation
+`BlueBream <http://bluebream.zope.org>`_ -- formerly known as **Zope
+3** -- is a web framework written in the Python programming language.
+
+BlueBream is free/open source software, owned by the `Zope Foundation
 <http://foundation.zope.org>`_, licensed under the `Zope Public
 License <http://foundation.zope.org/agreements/ZPL_2.1.pdf>`_ (BSD
-like, GPL compatible license).  BlueBream was previously known as
-**Zope 3**.
+like, GPL compatible license).
 
 Features
 --------
 
-A few of the features which distinguish BlueBream among Python web
-frameworks.
+A few features distinguish BlueBream from other Python web
+frameworks:
 
 - BlueBream is built on top of the `Zope Tool Kit
-  <http://docs.zope.org/zopetoolkit>`_ (ZTK), a distillation of
-  decades of experience in meeting demanding requirements for stable,
+  <http://docs.zope.org/zopetoolkit>`_ (ZTK), which has many years of
+  experience proving it meets the demanding requirements for stable,
   scalable software.
 
-- BlueBream leverages the power of `Buildout
-  <http://www.buildout.org>`_ a build system written in Python.
+- BlueBream uses the powerful and familiar Buildout_ system written
+  in Python.
   
-- BlueBream uses the `ZODB <http://zodb.org>`_
-  transactional object database, providing extremely powerful and
-  easy to use persistence.
+- BlueBream employs the Zope Object Database ZODB_, a transactional
+  object database, providing extremely powerful and easy to use
+  persistence.
   
-- BlueBream uses `ZCML
-  <http://www.muthukadan.net/docs/zca.html#zcml>`_, an XML based
-  configuration language for registering components, providing
-  limitless flexibility. If you don't need the power of ZCML and the
-  complexity it adds, try `Grok <http://grok.zope.org>`_, which adds
-  a layer replacing the declarative configuration of ZCML with
-  conventions and declarations in standard Python.
+- BlueBream registers components with Zope Component Markup Language
+  (`ZCML <http://www.muthukadan.net/docs/zca.html#zcml>`_), an XML
+  based configuration language, providing limitless flexibility.
 
 - BlueBream features the `Zope Component Architecture
   <http://muthukadan.net/docs/zca.html>`_ (ZCA) which implements
   *Separation of concerns* to create highly cohesive reusable
-  components (zope.component).
+  components (zope.component_).
 
-- BlueBream supports `WSGI <http://www.wsgi.org/wsgi>`_ using `Paste
+- BlueBream implements Python Web Server Gateway Interface (`WSGI
+  <http://www.wsgi.org/wsgi>`_) using `Paste
   <http://pythonpaste.org>`_, `PasteScript
   <http://pythonpaste.org/script>`_, and `PasteDeploy
   <http://pythonpaste.org/deploy>`_.
-  
-- BlueBream includes a number of compenents which provide well tested
-  implementation of common requirements. A few are of these are:
-  
-  - zope.publisher_ publishes Python objects on the web, it is geared
-    towards `WSGI <http://www.wsgi.org/wsgi>`_ compatibility
 
-  - zope.security_ provides a generic mechanism supporting pluggable 
+- BlueBream includes a number of well tested components to implement
+  common activities.  A few are of these are:
+  
+  - zope.publisher_ publishes Python objects on the web, emphasizing
+    `WSGI <http://www.wsgi.org/wsgi>`_ compatibility
+
+  - zope.security_ provides a generic mechanism for pluggable 
     security policies
 
   - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
     frameworks 
 
-  - zope.pagetemplate_ is an XHTML-compliant templating language
+  - zope.pagetemplate_ is an XHTML-compliant language for devloping
+    templates
 
-  - zope.schema_ and zope.formlib_ provide a schema engine and 
-    automatic form generation machinery
+  - zope.schema_ is a schema engine
 
+  - zope.formlib_ is a tool for automatically generating forms
+
+.. _Buildout: http://www.buildout.org
+.. _ZODB: http://www.zodb.org
 .. _zope.component: http://pypi.python.org/pypi/zope.component
 .. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
 .. _zope.security: http://pypi.python.org/pypi/zope.security
