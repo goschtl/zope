@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.5.4 (2010-03-28)
+------------------
+* better output directory handling
+
+
 0.5.3 (2010-03-27)
 ------------------
 * fixing racing condition in handling of the output directory

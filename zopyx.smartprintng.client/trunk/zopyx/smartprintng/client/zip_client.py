@@ -8,6 +8,7 @@
 import os
 import sys
 import base64
+import time
 import xmlrpclib
 import zipfile
 import tempfile
@@ -21,7 +22,7 @@ class Proxy(object):
         self.port = port
         self.username = username
         self.password = password
-        self.setOutputDirectory(tempfile.mkdtemp(prefix='smartprintng_client_'))
+        self.setOutputDirectory(os.path.join(tempfile.gettempdir(), 'smartprintng_client', str(time.time())))
 
     def setOutputDirectory(self, output_directory):
         if not os.path.exists(output_directory):
