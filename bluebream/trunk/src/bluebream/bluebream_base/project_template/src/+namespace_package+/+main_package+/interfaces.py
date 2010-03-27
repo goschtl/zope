@@ -1,8 +1,8 @@
-from zope.container.interfaces import IContainer
+from zope.site.interfaces import IFolder
 from zope.schema import TextLine
 from zope.schema import Text
 
-class ISampleApplication(IContainer):
+class ISampleApplication(IFolder):
     """The main application container."""
 
     name = TextLine(

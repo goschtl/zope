@@ -4,6 +4,9 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- The sample application object use 'zope.site.interfaces.IFolder`
+  instead of `zope.container.interfaces.IContainer`
+
 - Include `zope.session` from `site.zcml`
 
 - Include `browser` namespace in `site.zcml` for convenience.
