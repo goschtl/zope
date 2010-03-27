@@ -26,9 +26,9 @@ A few features distinguish BlueBream from other Python web frameworks.
 - BlueBream uses the powerful and familiar :term:`Buildout` system
   written in Python.
   
-- BlueBream employs the Zope Object Database (:term:`ZODB`),
-  transactional object database, providing extremely powerful and easy
-  to use persistence.
+- BlueBream employs the Zope Object Database (:term:`ZODB`), a
+  transactional object database, providing extremely powerful and
+  easy to use persistence.
   
 - BlueBream registers components with Zope Component Markup Language
   (:term:`ZCML`), an XML based configuration language, providing
@@ -47,7 +47,7 @@ A few features distinguish BlueBream from other Python web frameworks.
   :term:`PasteDeploy`.
 
 - BlueBream includes a number of well tested components to implement
-  of common activities.  A few are of these are:
+  common activities.  A few are of these are:
   
   - zope.publisher_ publishes Python objects on the web, emphasizing
     :term:`WSGI` compatibility
@@ -61,7 +61,7 @@ A few features distinguish BlueBream from other Python web frameworks.
   - zope.pagetemplate_ is an XHTML-compliant language for devloping
     templates
 
-  - zope.schema_ is provide a schema engine
+  - zope.schema_ is a schema engine
 
   - zope.formlib_ is a tool for automatically generating forms
 
