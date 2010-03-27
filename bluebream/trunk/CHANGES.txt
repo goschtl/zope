@@ -4,6 +4,10 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Move the sample application provided by `bluebream` template
+  to a sub-package named `welcome` similar to `bluebream_simple`
+  The sample application can be easily removed.
+
 - The sample application object use 'zope.site.interfaces.IFolder`
   instead of `zope.container.interfaces.IContainer`
 

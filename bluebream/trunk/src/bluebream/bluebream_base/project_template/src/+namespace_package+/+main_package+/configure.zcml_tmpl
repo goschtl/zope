@@ -3,49 +3,23 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:resourceDirectory
-     name="static"
-     directory="static"
-     />
+  <include file="securitypolicy.zcml" />
 
-  <!-- The following registration (page) is _not_ required for
-       functioning your application.  This registration is given to
-       provide a default page when you access root folder from web
-       like: http://localhost:8080/ -->
+  <!-- The following registration (defaultView) register 'index' as
+       the default view for a container.  The name of default view
+       can be changed to a different value, for example, 'index.html'.
+       More details about defaultView registration is available here:
+       http://bluebream.zope.org/doc/1.0/howto/defaultview.html
+       -->
 
-  <browser:page
-     for="zope.site.interfaces.IRootFolder"
+  <browser:defaultView
+     for="zope.container.interfaces.IContainer"
      name="index"
-     permission="zope.Public"
-     class=".views.RootDefaultView"
      />
 
-  <class class=".app.SampleApplication">
-    <implements
-       interface="zope.annotation.interfaces.IAttributeAnnotatable"
-       />
-    <implements
-       interface="zope.container.interfaces.IContentContainer" 
-       />
-    <require
-       permission="zope.ManageContent"
-       interface=".interfaces.ISampleApplication"
-       set_schema=".interfaces.ISampleApplication"
-       />
-  </class>
-
-  <browser:page
-     for="zope.site.interfaces.IRootFolder"
-     name="add_sample_app"
-     permission="zope.ManageContent"
-     class=".views.AddSampleApplication"
-     />
-
-  <browser:page
-     for=".interfaces.ISampleApplication"
-     name="index"
-     permission="zope.Public"
-     class=".views.SampleApplicationDefaultView"
-     />
+  <!-- To remove the sample application delete the following line
+       and remove the `welcome` folder from this directory.
+       -->
+  <include package=".welcome" />
 
 </configure>

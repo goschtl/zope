@@ -44,7 +44,6 @@
   <include package="zope.traversing.browser" />
   <include package="zope.app.pagetemplate" />
 
-  <include package="${namespace_package}.${main_package}" file="securitypolicy.zcml" />
-  <include package="${namespace_package}.${main_package}" file="application.zcml" />
+  <include package="${namespace_package}.${main_package}" />
 
 </configure>

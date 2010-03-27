@@ -57,23 +57,29 @@ Creating directory ./sample
       Creating ./sample/src/test_name/
       Recursing into +main_package+
         Creating ./sample/src/test_name/test_main/
-        Copying README.txt_tmpl to ./sample/src/test_name/test_main/README.txt
         Copying __init__.py to ./sample/src/test_name/test_main/__init__.py
-        Copying app.py to ./sample/src/test_name/test_main/app.py
-        Copying application.zcml_tmpl to ./sample/src/test_name/test_main/application.zcml
         Copying configure.zcml_tmpl to ./sample/src/test_name/test_main/configure.zcml
         Copying debug.py to ./sample/src/test_name/test_main/debug.py
-        Copying ftesting.zcml_tmpl to ./sample/src/test_name/test_main/ftesting.zcml
-        Copying index.pt_tmpl to ./sample/src/test_name/test_main/index.pt
-        Copying interfaces.py to ./sample/src/test_name/test_main/interfaces.py
         Copying securitypolicy.zcml_tmpl to ./sample/src/test_name/test_main/securitypolicy.zcml
         Copying startup.py to ./sample/src/test_name/test_main/startup.py
-        Recursing into static
-          Creating ./sample/src/test_name/test_main/static/
-          Copying logo.png to ./sample/src/test_name/test_main/static/logo.png
-          Copying style.css to ./sample/src/test_name/test_main/static/style.css
-        Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests.py
-        Copying views.py to ./sample/src/test_name/test_main/views.py
+        Recursing into tests
+          Creating ./sample/src/test_name/test_main/tests/
+          Copying __init__.py to ./sample/src/test_name/test_main/tests/__init__.py
+          Copying ftesting.zcml_tmpl to ./sample/src/test_name/test_main/tests/ftesting.zcml
+          Copying ftests.txt_tmpl to ./sample/src/test_name/test_main/tests/ftests.txt
+          Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests/tests.py
+        Recursing into welcome
+          Creating ./sample/src/test_name/test_main/welcome/
+          Copying __init__.py to ./sample/src/test_name/test_main/welcome/__init__.py
+          Copying app.py to ./sample/src/test_name/test_main/welcome/app.py
+          Copying configure.zcml_tmpl to ./sample/src/test_name/test_main/welcome/configure.zcml
+          Copying index.pt_tmpl to ./sample/src/test_name/test_main/welcome/index.pt
+          Copying interfaces.py to ./sample/src/test_name/test_main/welcome/interfaces.py
+          Recursing into static
+            Creating ./sample/src/test_name/test_main/welcome/static/
+            Copying logo.png to ./sample/src/test_name/test_main/welcome/static/logo.png
+            Copying style.css to ./sample/src/test_name/test_main/welcome/static/style.css
+          Copying views.py to ./sample/src/test_name/test_main/welcome/views.py
       Copying __init__.py to ./sample/src/test_name/__init__.py
     Recursing into +package+.egg-info
       Creating ./sample/src/sample.egg-info/

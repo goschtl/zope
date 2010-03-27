@@ -1,7 +1,7 @@
 ${project}
 
 :doctest:
-:functional-zcml-layer: ftesting.zcml
+:functional-zcml-layer: ../tests/ftesting.zcml
 
 Open browser and test::
 

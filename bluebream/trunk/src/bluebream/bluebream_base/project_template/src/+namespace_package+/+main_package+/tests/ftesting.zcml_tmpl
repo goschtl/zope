@@ -49,7 +49,6 @@
   <grantAll role="zope.Manager" />
   <grant role="zope.Manager" principal="zope.mgr" />
 
-  <include package="${namespace_package}.${main_package}" file="securitypolicy.zcml" />
-  <include package="${namespace_package}.${main_package}" file="application.zcml" />
+  <include package="${namespace_package}.${main_package}" />
 
 </configure>
