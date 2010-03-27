@@ -4,6 +4,8 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
+- Include the sample application in the `bluebream_simple` template
+
 - Move the sample application provided by `bluebream` template
   to a sub-package named `welcome` similar to `bluebream_simple`
   The sample application can be easily removed.

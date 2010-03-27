@@ -14,5 +14,9 @@
       <li><a href="https://mail.zope.org/mailman/listinfo/bluebream" target="_blank" title="BlueBream Mailing List">Mailing list</a></li>
       <li><a href="http://webchat.freenode.net/?randomnick=1&channels=bluebream" target="_blank" title="IRC Channel on Freenode.net">IRC Channel: #bluebream at irc.freenode.net</a></li>
     </ul>
+    <ul>
+      <li><a href="@@login.html" title="Login page">Login</a></li>
+      <li><a href="@@add_sample_app">Add Sample application</a></li>
+    </ul>
   </body>
 </html>
