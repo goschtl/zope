@@ -21,6 +21,8 @@ class AddSampleApplication(form.AddForm):
         namechooser = INameChooser(self.context)
         app = SampleApplication()
         name = namechooser.chooseName(name, app)
+        app.name = name
+        app.description = description
         self.context[name] = app
         self.request.response.redirect(name)
 
