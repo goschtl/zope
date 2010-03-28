@@ -772,17 +772,17 @@ Declaring an Interface
 
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
-interface.  You can name the main container interface as
+interface.  You can name the main application container interface as
 ``ICollector``, the easiest way to create a container is to inherit
-from ``zope.container.interfaces.IContainer`` interface.  You can
-modify the file named ``src/tc/main/interfaces.py`` to add new
-interfaces like this::
+from ``zope.site.interfaces.IFolder`` interface.  You can modify the
+file named ``src/tc/main/interfaces.py`` to add new interfaces like
+this::
 
-  from zope.container.interfaces import IContainer
+  from zope.site.interfaces import IFolder
   from zope.schema import TextLine
   from zope.schema import Text
 
-  class ICollector(IContainer):
+  class ICollector(IFolder):
       """The main application container"""
 
       name = TextLine(
@@ -811,15 +811,15 @@ create some concrete classes which implement the schema.
 
 Next, you need to implement this interface.  To implement
 ``IContainer``, it is recommended to inherit from
-``zope.container.btree.BTreeContainer``.  You can create the
-implementation in ``src/tc/main/ticketcollector.py``::
+``zope.site.folder.Folder``.  You can create the implementation in
+``src/tc/main/ticketcollector.py``::
 
   from zope.interface import implements
-  from zope.container.btree import BTreeContainer
+  from zope.site.folder import Folder
 
   from tc.main.interfaces import ICollector
 
-  class Collector(BTreeContainer):
+  class Collector(Folder):
       """A simple implementation of a collector using B-Tree
       Container."""
 
@@ -891,6 +891,7 @@ package to create a form.  You can add the view class definition
 inside ``src/tc/main/views.py`` like this::
 
   from zope.container.interfaces import INameChooser
+  from zope.site import LocalSiteManager
   from zope.formlib import form
 
   from tc.main.interfaces import ICollector
@@ -910,6 +911,7 @@ inside ``src/tc/main/views.py`` like this::
           collector.description = description
           name = namechooser.chooseName(name, collector)
           self.context[name] = collector
+          collector.setSiteManager(LocalSiteManager(collector))
           self.request.response.redirect(".")
 
 The ``createAndAdd`` function will be called when used submit *Add*
