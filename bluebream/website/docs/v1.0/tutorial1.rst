@@ -60,25 +60,25 @@ the project name ``ticketcollector`` and namespace package name
 
   $ paster create -t bluebream
   Selected and implied templates:
-    bluebream#bluebream  A BlueBream project
-
+    bluebream#bluebream  A BlueBream project, base template
+  
   Enter project name: ticketcollector
   Variables:
     egg:      ticketcollector
     package:  ticketcollector
     project:  ticketcollector
   Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter main_package (Main package name (under the namespace)) ['main']:
-  Enter interpreter (Name of custom Python interpreter) ['breampy']:
-  Enter version (Version (like 0.1)) ['0.1']:
+  Enter main_package (Main package name (under the namespace)) ['main']: 
+  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
+  Enter version (Version (like 0.1)) ['0.1']: 
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
-  Enter keywords (Space-separated keywords/tags) ['']:
+  Enter keywords (Space-separated keywords/tags) ['']: 
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@example.com
-  Enter url (URL of homepage) ['']:
+  Enter url (URL of homepage) ['']: 
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
   Creating template bluebream
   Creating directory ./ticketcollector
     Copying bootstrap.py to ./ticketcollector/bootstrap.py
@@ -95,23 +95,29 @@ the project name ``ticketcollector`` and namespace package name
         Creating ./ticketcollector/src/tc/
         Recursing into +main_package+
           Creating ./ticketcollector/src/tc/main/
-          Copying README.txt_tmpl to ./ticketcollector/src/tc/main/README.txt
           Copying __init__.py to ./ticketcollector/src/tc/main/__init__.py
-          Copying app.py to ./ticketcollector/src/tc/main/app.py
-          Copying application.zcml_tmpl to ./ticketcollector/src/tc/main/application.zcml
           Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
           Copying debug.py to ./ticketcollector/src/tc/main/debug.py
-          Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/ftesting.zcml
-          Copying index.pt_tmpl to ./ticketcollector/src/tc/main/index.pt
-          Copying interfaces.py to ./ticketcollector/src/tc/main/interfaces.py
           Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
           Copying startup.py to ./ticketcollector/src/tc/main/startup.py
-          Recursing into static
-            Creating ./ticketcollector/src/tc/main/static/
-            Copying logo.png to ./ticketcollector/src/tc/main/static/logo.png
-            Copying style.css to ./ticketcollector/src/tc/main/static/style.css
-          Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests.py
-          Copying views.py to ./ticketcollector/src/tc/main/views.py
+          Recursing into tests
+            Creating ./ticketcollector/src/tc/main/tests/
+            Copying __init__.py to ./ticketcollector/src/tc/main/tests/__init__.py
+            Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/tests/ftesting.zcml
+            Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests/tests.py
+          Recursing into welcome
+            Creating ./ticketcollector/src/tc/main/welcome/
+            Copying __init__.py to ./ticketcollector/src/tc/main/welcome/__init__.py
+            Copying app.py to ./ticketcollector/src/tc/main/welcome/app.py
+            Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/welcome/configure.zcml
+            Copying ftests.txt_tmpl to ./ticketcollector/src/tc/main/welcome/ftests.txt
+            Copying index.pt to ./ticketcollector/src/tc/main/welcome/index.pt
+            Copying interfaces.py to ./ticketcollector/src/tc/main/welcome/interfaces.py
+            Recursing into static
+              Creating ./ticketcollector/src/tc/main/welcome/static/
+              Copying logo.png to ./ticketcollector/src/tc/main/welcome/static/logo.png
+              Copying style.css to ./ticketcollector/src/tc/main/welcome/static/style.css
+            Copying views.py to ./ticketcollector/src/tc/main/welcome/views.py
         Copying __init__.py to ./ticketcollector/src/tc/__init__.py
       Recursing into +package+.egg-info
         Creating ./ticketcollector/src/ticketcollector.egg-info/
@@ -121,9 +127,6 @@ the project name ``ticketcollector`` and namespace package name
       Copying zope_conf.in to ./ticketcollector/templates/zope_conf.in
     Recursing into var
       Creating ./ticketcollector/var/
-      Recursing into blob
-        Creating ./ticketcollector/var/blob/
-        Copying README.txt to ./ticketcollector/var/blob/README.txt
       Recursing into filestorage
         Creating ./ticketcollector/var/filestorage/
         Copying README.txt to ./ticketcollector/var/filestorage/README.txt
@@ -229,10 +232,10 @@ build the application, but before doing this let's have a look at the
 content of ``buildout.cfg``::
 
   [config]
-  site_zcml = ${buildout:directory}/etc/site.zcml
-  blob = ${buildout:directory}/var/blob
-  filestorage = ${buildout:directory}/var/filestorage
-  log = ${buildout:directory}/var/log
+  site_zcml = etc/site.zcml
+  blob = var/blob
+  filestorage = var/filestorage
+  log = var/log
 
   [buildout]
   develop = .
@@ -272,12 +275,12 @@ contains options used for other parts.
 We will look at each part here.  Let's start with ``[config]``::
 
   [config]
-  site_zcml = ${buildout:directory}/etc/site.zcml
-  blob = ${buildout:directory}/var/blob
-  filestorage = ${buildout:directory}/var/filestorage
-  log = ${buildout:directory}/var/log
+  site_zcml = etc/site.zcml
+  blob = var/blob
+  filestorage = var/filestorage
+  log = var/log
 
-The ``[config]`` is a kind of abstract part which exists for
+The ``[config]`` is kind of abstract part which exists for
 convenience to hold options used by other parts and is an idiom in
 many projects using Buildout.  In this configuration the options
 provided are _not_ used by other parts directly, but all are used in
@@ -285,11 +288,7 @@ one template given in the ``[zope_conf]`` part.  Here is details
 about each options:
 
 - ``site_zcml`` -- this is the location where final ``site.zcml``
-  file will be residing.  The value of ``${buildout:directory}`` will
-  be the absolute path to the directory where you are running
-  buildout.  In the above example, the value will be:
-  ``/projects/ticketcollector``.  So, the value of ``site_zcml`` will
-  be: ``/projects/ticketcollector/etc/site.zcml``
+  file is residing.
 
 - ``blob`` -- location where ZODB blob files are stored.
 
@@ -367,17 +366,12 @@ popular among Buildout users.  Here is the template file
   site-definition ${config:site_zcml}
 
   <zodb>
-    # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
-    # support.
-    # This won't be needed with ZODB 3.9, as its FileStorage supports
-    # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
-    # the blob-dir parameter right in in filestorage, just after path.
-    <blobstorage>
-      blob-dir ${config:blob}
+
+
       <filestorage>
         path ${config:filestorage}/Data.fs
+        blob-dir ${config:blob}
       </filestorage>
-    </blobstorage>
 
   # Uncomment this if you want to connect to a ZEO server instead:
   #  <zeoclient>
@@ -496,8 +490,7 @@ already in ``zope.conf`` the main configuration is located at
     <include package="zope.app.authentication" />
     <include package="zope.app.security.browser" />
 
-    <include package="tc.main" file="securitypolicy.zcml" />
-    <include package="tc.main" file="application.zcml" />
+    <include package="tc.main" />
 
   </configure>
 
@@ -517,42 +510,46 @@ configuration files, you can see some other namespaces like
 ``http://namespaces.zope.org/browser`` used which has some directives
 like ``page``.
 
-At the end of ``site.zcml``, two application specific configuration
-files are included like this::
+At the end of ``site.zcml``, project specific configuration files are
+included like this.  This will cause to load
+``src/tc/main/configure.zcml`` file::
 
-  <include package="tc.main" file="securitypolicy.zcml" />
-  <include package="tc.main" file="application.zcml" />
+  <include package="tc.main" />
 
-The ``securitypolicy.zcml`` is where you can define the security
-policies.  The ``application.zcml`` is a generic configuration file
-where you can include other application specific configuration files.
-Also you can define common configuration for your entire application.
-By default, it will look like this::
+Also you can define common configuration for your entire application
+in the ``site.zcml``.  The content of ``src/tc/main/configure.zcml``
+will look like this::
 
   <configure
      i18n_domain="tc.main"
      xmlns="http://namespaces.zope.org/zope"
      xmlns:browser="http://namespaces.zope.org/browser">
-
+  
+    <include file="securitypolicy.zcml" />
+  
     <!-- The following registration (defaultView) register 'index' as
          the default view for a container.  The name of default view
          can be changed to a different value, for example, 'index.html'.
          More details about defaultView registration is available here:
          http://bluebream.zope.org/doc/1.0/howto/defaultview.html
          -->
-
+  
     <browser:defaultView
-       name="index"
        for="zope.container.interfaces.IContainer"
+       name="index"
        />
-
-    <include package="tc.main" />
-
+  
+    <!-- To remove the sample application delete the following line
+         and remove the `welcome` folder from this directory.
+         -->
+    <include package=".welcome" />
+  
   </configure>
 
-As you can see in the ``application.zcml``, it includes ``tc.main``.
-By default, if you include a package without mentioning the
-configuration file, it will include ``configure.zcml``.
+The ``securitypolicy.zcml`` is where you can define the security
+policies.  As you can see in the ``configure.zcml``, it includes
+``welcome``.  By default, if you include a package without mentioning
+the configuration file, it will include ``configure.zcml``.
 
 .. _tut1-package-meta-data:
 
@@ -585,7 +582,6 @@ Your ticketcollector package's setup.py will look like this::
         include_package_data=True,
         zip_safe=False,
         install_requires=['setuptools',
-                          'zope.app.twisted',
                           'zope.securitypolicy',
                           'zope.component',
                           'zope.annotation',
@@ -701,8 +697,7 @@ BlueBream will take care of the persistence of the objects.  In order
 to make a custom object persistent the object class will have to
 inherit from ``persistent.Persistent``.
 
-Some classes in BlueBream that inherits
-``persistent.Persistent``:
+Some classes in BlueBream that inherits ``persistent.Persistent``:
 
 - ``zope.container.btree.BTreeContainer``
 - ``zope.container.folder.Folder``
