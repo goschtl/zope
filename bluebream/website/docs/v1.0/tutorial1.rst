@@ -513,18 +513,18 @@ like ``page``.
 
 At the end of ``site.zcml``, project specific configuration files are
 included like this.  This will cause to load
-``src/tc/main/configure.zcml`` file::
+``src/tc/collector/configure.zcml`` file::
 
   <include package="tc.main" />
 
 Also you can define common configuration for your entire application
-in the ``site.zcml``.  The content of ``src/tc/main/configure.zcml``
+in the ``site.zcml``.  The content of ``src/tc/collector/configure.zcml``
 will look like this::
 
   <configure
-     i18n_domain="tc.main"
      xmlns="http://namespaces.zope.org/zope"
-     xmlns:browser="http://namespaces.zope.org/browser">
+     xmlns:browser="http://namespaces.zope.org/browser"
+     i18n_domain="ticketcollector">
   
     <include file="securitypolicy.zcml" />
   
@@ -710,7 +710,7 @@ persistent is to add the object to an existing container object.  You
 can experiment with this from the debug shell provided by BlueBream.
 But before you try that out create a container class somewhere in
 your code which can be imported later.  You can add this definition
-to the ``src/tc/main/__init__.py`` file (Delete it after the
+to the ``src/tc/collector/__init__.py`` file (Delete it after the
 experiment)::
 
   from zope.container.btree import BTreeContainer
@@ -755,7 +755,7 @@ can access the persistent object again::
 Persisting random objects like this is not a particulary good idea.
 The next section will explain how to create a formal schema for your
 objects.  Now you can delete the object and remove the
-``MyContainer`` class definition from ``src/tc/main/__init__.py``.
+``MyContainer`` class definition from ``src/tc/collector/__init__.py``.
 You can delete the object like this::
 
   >>> del(root['c1'])
@@ -774,11 +774,21 @@ Declaring an Interface
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
 interface.  You can name the main application container interface as
-``ICollector``.  To make this a container, user need to inherit from
+``ICollector``.  To make this a container object, inherit from
 ``zope.container.interfaces.IContainer`` or any derived interfaces.
-For application containers, it is recommend to inherit from
-``zope.site.interfaces.IFolder`` interface.  You can modify the file
-named ``src/tc/main/interfaces.py`` to add new interfaces like this::
+It is recommended add a site manager inside the main application
+container.  In order to add a site manager later, it is recommend to
+inherit from ``zope.site.interfaces.IFolder`` interface.  The
+``IFolder`` is inheriting from ``IContainer``.
+
+You can create a new Python package named ``collector`` inside
+``src/tc`` like this::
+
+  $ mkdir src/tc/collector
+  $ echo "# Python Package" > src/tc/collector/__init__.py
+
+You can create a file named ``src/tc/collector/interfaces.py`` to add
+new interfaces like this::
 
   from zope.site.interfaces import IFolder
   from zope.schema import TextLine
@@ -812,14 +822,14 @@ contracts for the objects.  Once you have schema ready, you can
 create some concrete classes which implement the schema.
 
 Next, you need to implement this interface.  To implement
-``IContainer``, it is recommended to inherit from
-``zope.site.folder.Folder``.  You can create the implementation in
-``src/tc/main/ticketcollector.py``::
+``IContainer``, you can inherit from ``zope.site.folder.Folder``.
+You can create the implementation in
+``src/tc/collector/ticketcollector.py``::
 
   from zope.interface import implements
   from zope.site.folder import Folder
 
-  from tc.main.interfaces import ICollector
+  from tc.collector.interfaces import ICollector
 
   class Collector(Folder):
       """A simple implementation of a collector using B-Tree
@@ -838,11 +848,11 @@ Registering components
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Once the interfaces and its implementations are ready.  You can do
-the configuration in ZCML.  Open the ``src/tc/main/configure.zcml``
+the configuration in ZCML.  Open the ``src/tc/collector/configure.zcml``
 file to edit, then mark the ``ICollector`` as a content component::
 
   <interface
-     interface="tc.main.interfaces.ICollector"
+     interface="tc.collector.interfaces.ICollector"
      type="zope.app.content.interfaces.IContentType"
      />
 
@@ -862,7 +872,7 @@ method.
 
 ::
 
-  <class class="tc.main.ticketcollector.Collector">
+  <class class="tc.collector.ticketcollector.Collector">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
@@ -871,11 +881,11 @@ method.
        />
     <require
        permission="zope.ManageContent"
-       interface="tc.main.interfaces.ICollector"
+       interface="tc.collector.interfaces.ICollector"
        />
     <require
        permission="zope.ManageContent"
-       set_schema="tc.main.interfaces.ICollector"
+       set_schema="tc.collector.interfaces.ICollector"
        />
   </class>
 
@@ -890,14 +900,14 @@ A view for adding collector
 Now the content component is ready to use.  You need a web page from
 where we can add the ticket collector.  You can use ``zope.formlib``
 package to create a form.  You can add the view class definition
-inside ``src/tc/main/views.py`` like this::
+inside ``src/tc/collector/views.py`` like this::
 
   from zope.site import LocalSiteManager
   from zope.formlib import form
 
-  from tc.main.interfaces import ICollector
+  from tc.collector.interfaces import ICollector
 
-  from tc.main.ticketcollector import Collector
+  from tc.collector.ticketcollector import Collector
 
   class AddTicketCollector(form.AddForm):
 
@@ -922,19 +932,26 @@ This line add a site manager to the collector, so that it can be used
 as a persistent component registry to register local components like
 local utilities.
 
-The last last thing you need to do is registering this view in ZCML.
 As you have already seen in the previous chapter, ``browser:page``
 directive is used for registering pages.  You can give the name as
 ``add_ticket_collector`` and register it for
 ``zope.site.interfaces.IRootFolder``.  Add these lines to
-``src/tc/main/configure.zcml``::
+``src/tc/collector/configure.zcml``::
 
   <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="add_ticket_collector"
      permission="zope.ManageContent"
-     class="tc.main.views.AddTicketCollector"
+     class="tc.collector.views.AddTicketCollector"
      />
+
+The package development is completed now.  This package is not
+included from the main package yet.  To include this package from the
+main package (``tc.main``), you need to modify the
+``src/tc/main/configure.zcml`` and add this line before
+``</configure>``::
+
+  <include package="tc.collector" />
 
 Now you can access the URL:
 http://localhost:8080/@@add_ticket_collector .  It should display a
@@ -971,7 +988,7 @@ like this::
 
   URL: http://localhost:8080/mycollector
   ...
-  NotFound: Object: <tc.main.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
+  NotFound: Object: <tc.collector.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
 This error is raised, because there is no view named ``index``
 registered for ``ICollector``.  This section will show how to create
@@ -980,20 +997,20 @@ a default view for ``ICollector`` interface.
 As you have already seen in the :ref:`started-getting` chapter, you
 can create a simple view and register it from ZCML.
 
-In the ``src/tc/main/views.py`` add a new view like this::
+In the ``src/tc/collector/views.py`` add a new view like this::
 
   class TicketCollectorMainView(form.DisplayForm):
 
       def __call__(self):
           return "Hello ticket collector!"
 
-Then, in the ``src/tc/main/configure.zcml``::
+Then, in the ``src/tc/collector/configure.zcml``::
 
   <browser:page
-     for="tc.main.interfaces.ICollector"
+     for="tc.collector.interfaces.ICollector"
      name="index"
      permission="zope.Public"
-     class="tc.main.views.TicketCollectorMainView"
+     class="tc.collector.views.TicketCollectorMainView"
      />
 
 Now you can visit: http://localhost:8080/mycollector
@@ -1028,7 +1045,7 @@ attributes.  You can also remove the ``__call__`` method from
       template = ViewPageTemplateFile("collectormain.pt")
 
 
-You can create ``src/tc/main/collectormain.pt`` with the following
+You can create ``src/tc/collector/collectormain.pt`` with the following
 content::
 
   <html>
