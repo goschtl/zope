@@ -171,11 +171,11 @@ Then, register the interface & class.  Open the
        interface="zope.container.interfaces.IContentContainer" 
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        interface="tc.collector.interfaces.ITicket"
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        set_schema="tc.collector.interfaces.ITicket"
        />
   </class>
@@ -220,7 +220,7 @@ You can register the view inside ``src/tc/collector/configure.zcml``::
   <browser:page
      for="tc.collector.interfaces.ICollector"
      name="add_ticket"
-     permission="zope.ManageContent"
+     permission="zope.Public"
      class="tc.collector.views.AddTicket"
      />
 
@@ -411,11 +411,11 @@ Then, register the interface & class::
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        interface="tc.collector.interfaces.IComment"
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        set_schema="tc.collector.interfaces.IComment"
        />
   </class>
@@ -505,7 +505,7 @@ You can register the view inside ``src/tc/collector/configure.zcml``::
   <browser:page
      for="tc.collector.interfaces.ITicket"
      name="add_comment"
-     permission="zope.ManageContent"
+     permission="zope.Public"
      class="tc.collector.views.AddComment"
      />
 

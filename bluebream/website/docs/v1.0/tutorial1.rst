@@ -880,11 +880,11 @@ method.
        interface="zope.container.interfaces.IContentContainer"
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        interface="tc.collector.interfaces.ICollector"
        />
     <require
-       permission="zope.ManageContent"
+       permission="zope.Public"
        set_schema="tc.collector.interfaces.ICollector"
        />
   </class>
@@ -941,7 +941,7 @@ directive is used for registering pages.  You can give the name as
   <browser:page
      for="zope.site.interfaces.IRootFolder"
      name="add_ticket_collector"
-     permission="zope.ManageContent"
+     permission="zope.Public"
      class="tc.collector.views.AddTicketCollector"
      />
 
