@@ -75,7 +75,7 @@ adapts it to provide another Interface.
 
 When applications gets bigger, there is a side effect on the code,
 called the spaggethi effect: interactions between classes can lead to
-unwanted dependencies and the code turns into a monolithic bloc.
+unwanted dependencies and the code turns into a monolithic block.
 
 Adapters provides a way to prevent from this, by implementing the
 Liskov substitution principle.
@@ -153,7 +153,9 @@ Component Registry
 Registries keep the list of which components are available, which
 interface they provide, which interface(s) they possibly adapt, along
 with an optional registration name.  The ``zope.component`` package
-implements a global component registry.
+implements a global component registry.  The ``zope.site`` package
+provides a local and persistent component registry called site
+manager, so that one can register local utilities and adapters.
 
 Object Publishing
 ~~~~~~~~~~~~~~~~~
