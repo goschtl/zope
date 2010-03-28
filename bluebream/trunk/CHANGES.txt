@@ -6,6 +6,8 @@ Changelog
 
 - Set `name` & `description` for the sample application
 
+- Use project name as i18n_domain in base template
+
 1.0a5 (2010-03-28)
 ------------------
 
