@@ -217,6 +217,8 @@ AddForm inside ``src/tc/collector/views.py``::
           number = data['number']
           summary = data['summary']
           ticket = Ticket()
+          ticket.number = number
+          ticket.summary = summary
           self.context[number] = ticket
           self.request.response.redirect('.')
 
