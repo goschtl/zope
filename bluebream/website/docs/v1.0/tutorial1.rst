@@ -773,10 +773,11 @@ Declaring an Interface
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
 interface.  You can name the main application container interface as
-``ICollector``, the easiest way to create a container is to inherit
-from ``zope.site.interfaces.IFolder`` interface.  You can modify the
-file named ``src/tc/main/interfaces.py`` to add new interfaces like
-this::
+``ICollector``.  To make this a container, user need to inherit from
+``zope.container.interfaces.IContainer`` or any derived interfaces.
+For application containers, it is recommend to inherit from
+``zope.site.interfaces.IFolder`` interface.  You can modify the file
+named ``src/tc/main/interfaces.py`` to add new interfaces like this::
 
   from zope.site.interfaces import IFolder
   from zope.schema import TextLine
@@ -890,7 +891,6 @@ where we can add the ticket collector.  You can use ``zope.formlib``
 package to create a form.  You can add the view class definition
 inside ``src/tc/main/views.py`` like this::
 
-  from zope.container.interfaces import INameChooser
   from zope.site import LocalSiteManager
   from zope.formlib import form
 
@@ -904,18 +904,22 @@ inside ``src/tc/main/views.py`` like this::
 
       def createAndAdd(self, data):
           name = data['name']
-          description = data.get('description')
-          namechooser = INameChooser(self.context)
+          description = data.get('description', u'')
           collector = Collector()
           collector.name = name
           collector.description = description
-          name = namechooser.chooseName(name, collector)
           self.context[name] = collector
           collector.setSiteManager(LocalSiteManager(collector))
           self.request.response.redirect(".")
 
 The ``createAndAdd`` function will be called when used submit *Add*
-button from web form.
+button from web form.  The second last line is very important::
+
+  collector.setSiteManager(LocalSiteManager(collector))
+
+This line add a site manager to the collector, so that it can be used
+as a persistent component registry to register local components like
+local utilities.
 
 The last last thing you need to do is registering this view in ZCML.
 As you have already seen in the previous chapter, ``browser:page``
