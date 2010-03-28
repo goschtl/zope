@@ -286,21 +286,16 @@ project template is as shown::
   |   `-- mynamespace/
   |       |-- __init__.py
   |       `-- main/
-  |           |-- application.zcml
-  |           |-- app.py
   |           |-- configure.zcml
   |           |-- debug.py
-  |           |-- ftesting.zcml
   |           |-- __init__.py
-  |           |-- interfaces.py
-  |           |-- README.txt
   |           |-- securitypolicy.zcml
   |           |-- startup.py
-  |           |-- tests.py
-  |           |-- views.py
-  |           `-- static/
-  |               |-- logo.png
-  |               `-- style.css
+  |           |-- tests/
+  |           |   |-- ftesting.zcml
+  |           |   |-- __init__.py
+  |           |   `-- tests.py
+  |           `-- welcome/
   |-- templates/
   |   `-- zope_conf.in
   |-- var/
@@ -345,28 +340,14 @@ Files &  Purpose
 - ``src/mynamespace/main/`` -- This is the main package which
   contains your application code.
 
-- ``src/mynamespace/main/application.zcml`` -- Boiler plate ZCML to
-  include other application specific ZCMLs.  Now only the main
-  package is included, you can add other ZCMLs from here.
-
-- ``src/mynamespace/main/app.py`` -- The main application object
-  implementation.  Replace the sample implementation with your
-  application.
-
 - ``src/mynamespace/main/configure.zcml`` -- User can customize this
-  ZCML which is included from application.zcml
+  ZCML which is included from ``etc/site.zcml``
 
 - ``src/mynamespace/main/debug.py`` -- The debug application object.
   The class given here will be registered from an entry point.
 
-- ``src/mynamespace/main/ftesting.zcml`` -- ZCML for functional
-  testing
-
-- ``src/mynamespace/main/__init__.py`` -- The main package
-
-- ``src/mynamespace/main/interfaces.py`` -- Interface definitions
-
-- ``src/mynamespace/main/README.txt`` -- main packages' README
+- ``src/mynamespace/main/__init__.py`` -- Boiler plate file to make
+  this directory as a Python package.
 
 - ``src/mynamespace/main/securitypolicy.zcml`` -- security policy
   declarations which is included from site.zcml
@@ -374,13 +355,18 @@ Files &  Purpose
 - ``src/mynamespace/main/startup.py`` This script is called by WSGI
   server to start the application. (Mostly boiler plate code)
 
-- ``src/mynamespace/main/tests.py`` -- Boiler plate to register
+- ``src/mynamespace/main/tests/`` -- The tests package
+
+- ``src/mynamespace/main/tests/ftesting.zcml`` -- ZCML for functional
+  testing
+
+- ``src/mynamespace/main/tests/__init__.py`` -- Boiler plate file to
+  make this directory as a Python package.
+
+- ``src/mynamespace/main/tests/tests.py`` -- Boiler plate to register
   tests.
 
-- ``src/mynamespace/main/views.py`` -- An example view.
-
-- ``src/mynamespace/main/static/`` -- Static resource files (images,
-  CSS etc.)
+- ``src/mynamespace/main/welcome/`` -- A sample application.
 
 - ``templates/`` -- Buildout specific templates used by
   "collective.recipe.template"
