@@ -343,10 +343,11 @@ function.  The `zc.recipe.egg
 <http://pypi.python.org/pypi/zc.recipe.egg>`_ is an advanced Buildout
 recipe with many features to deal with egg.  Majority of the
 dependencies will come as part of the main application egg.  The
-option ``eggs`` list all the eggs.  The first egg, ``ticketcollector``
-is the main locally developing egg.  The last option, ``interpreter``
-specify the name of a custom interpreter create by this part.  The
-custom interpreter contains the paths to all eggs listed here.
+option ``eggs`` list all the eggs.  The first egg,
+``ticketcollector`` is the main locally developing egg.  The last
+option, ``interpreter`` specify the name of custom interpreter
+created by this part.  The custom interpreter contains the paths to
+all eggs listed here and its dependencies.
 
 The ``[zope_conf]`` part creates the ``zope.conf`` from a template::
 
