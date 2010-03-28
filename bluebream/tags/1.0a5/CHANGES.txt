@@ -1,0 +1,170 @@
+Changelog
+*********
+
+1.0a5 (2010-03-28)
+------------------
+
+- Include the sample application in the `bluebream_simple` template
+
+- Move the sample application provided by `bluebream` template
+  to a sub-package named `welcome` similar to `bluebream_simple`
+  The sample application can be easily removed.
+
+- The sample application object use 'zope.site.interfaces.IFolder`
+  instead of `zope.container.interfaces.IContainer`
+
+- Include `zope.session` from `site.zcml`
+
+- Include `browser` namespace in `site.zcml` for convenience.
+
+- Added an empty `[versions]` part in `versions.cfg` with
+  a recommendation to pin-down versions of other dependencies.
+
+- Remove `zope.app.twisted` from dependency list
+
+- Since BlueBream requires ZODB 3.9, FileStorage need not be
+  wrapped with BlobStorage proxy to get ZODB blobs support.
+
+- The default ZODB blob layout should be 'bushy'
+  Fix LP #543525
+
+- Use relative paths in etc/zope.conf Fix LP #543451
+
+- Specify i18n domain in ftesting.zcml Fix LP #543516
+
+- zope.browserresource package registration was missing
+  Fix LP #541457 
+
+1.0a4 (2010-03-07)
+------------------
+
+- Added an empty PKG-INFO
+  Work around fix for "empty directory" problem.
+  (refer: LP #503301)
+
+1.0a3 (2010-03-07)
+------------------
+
+- The summary of ``bluebream_base`` template changed to:
+  "A BlueBream project, base template"
+
+- Enable ``bluebream_simple`` again.  Documentation is
+  available here:
+  http://wiki.zope.org/bluebream/AlternateProjectTemplates
+
+1.0a2 (2010-03-02)
+------------------
+
+- Use a template to display default page for the root
+  folder
+
+- Use ``zope.formlib.form.DisplayForm`` as base class for
+  views instead of ``zope.publisher.browser.BrowserView``
+
+- Sample application add form view name is changed from
+  ``@@add`` to ``@@add_sample_app``
+
+- Add links to to BlueBream website & mailing list
+
+- Added license file
+
+- Improve "Usage" section in README.txt
+
+- Include ``zest.release`` to prepare release
+
+- Include ``bluebream_simple`` template (This will not be released
+  with 1.0a2 as the documentation is not ready yet)
+
+- Move ``bluebream`` template code to ``bluebream_base``
+
+- Add static resource directory with CSS to ``bluebream_base``
+  (based on ``bluebream_simple``).  The new style applied to main page.
+
+1.0a1 (2010-02-06)
+------------------
+
+- Use released package distribution versions:
+  http://download.zope.org/bluebream/bluebream-1.0a1.cfg
+
+- Include new packages to `site.zcml` template:
+
+  - `zope.app.publisher.xmlrpc` (meta.zcml)
+  - `zope.copypastemove`
+  - `zope.app.pagetemplate`
+
+- Changed template summary into: A BlueBream project
+
+- Removed `Sphinx-PyPI-upload` -- no more used as the
+  website is moved to http://bluebream.zope.org
+
+- Added `zope.traversing.browser` from site.zcml
+  in the project template. Ref: http://bit.ly/80xltO
+
+0.1.9 (2010-01-13)
+------------------
+
+- LP #506879: debug shell added. Basic usage::
+
+    ./bin/paster shell debug.ini
+
+0.1.8 (2010-01-12)
+------------------
+
+- Use `zope` ZCML namespace as default in configure.zcml
+- Documentation improvements
+- Create a sample application by default
+
+0.1.7 (2010-01-10)
+------------------
+
+- Update version: zope.tales = 3.5.0
+- LP #505362: Fix. Main package name is hard-coded as 'main'
+- Change 'defaultView' registration location and interface
+- LP #505413: Name of default custom Python interpreter
+  should be able to customize
+
+0.1.6 (2010-01-07)
+------------------
+
+- LP #502819: Main page after a fresh installation
+- Removed ``hello`` view from template.
+- LP #502941: Add trove classifiers.
+- Mention all resources in PyPI page.
+
+0.1.5 (2010-01-07)
+------------------
+
+- LP #503388: Value of "namespace_package" should not be
+  empty string. 
+- Updated description, added promotional video.
+
+0.1.4 (2010-01-04)
+------------------
+
+- LP #503301: Work around fix for "empty directory" problem.
+- Change author as "BlueBream" team and email to zope-dev list.
+
+0.1.3 (2010-01-04)
+------------------
+
+- LP #502817: var directory and its subdirectories not exist
+- Documentation improvements: added "Usage" section
+
+0.1.2 (2010-01-03)
+------------------
+
+- Added functional testing support for project
+- Sphinx based documentation infrastruture improvements
+- LP #502529: Update wizard to ask all package meta to
+  be updated in setup.py
+
+0.1.1 (2010-01-02)
+------------------
+
+- Fix missing package data. The 0.1.0 releases was broken.
+- Improve documentation.
+
+0.1.0 (2010-01-02)
+------------------
+
+- Initial release.
