@@ -21,6 +21,7 @@ committed to documentation directly.
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
 - Paul Harouff
+- Saket Srivastav
 
 Logo Design
 -----------
