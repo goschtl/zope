@@ -1032,7 +1032,8 @@ Browser Page
 The browser page can be created using a page template.  The
 ``form.DisplayForm`` supports a ``template`` and ``form_fields``
 attributes.  You can also remove the ``__call__`` method from
-``TicketCollectorMainView``.
+``TicketCollectorMainView``.  Update the ``TicketCollectorMainView``
+class inside ``src/tc/collector/views.py`` like this::
 
 ::
 
