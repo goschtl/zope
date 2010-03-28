@@ -22,7 +22,7 @@ setup(
     name="bluebream",
     version = '1.0a6dev',
     author="BlueBream Team",
-    author_email="zope-dev@zope.org",
+    author_email="bluebream@zope.org",
     url="http://bluebream.zope.org",
     description="The Zope Web Framework",
     long_description=(
