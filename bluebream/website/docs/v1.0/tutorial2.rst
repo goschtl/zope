@@ -68,6 +68,8 @@ In order to use ticket objects, first you need to create an interface
 for tickets.  Update the ``src/tc/collector/interfaces.py`` with the ticket
 interface::
 
+  from zope.container.interfaces import IContainer
+
   class ITicket(IContainer):
       """Ticket - the ticket content component"""
 
@@ -137,12 +139,15 @@ Here you added a constraint for ``__parent__`` field using
 Implementation
 ~~~~~~~~~~~~~~
 
-Next, you can implement this interface inside ``src/tc/collector/ticket.py``::
+Next, you can implement this interface inside
+``src/tc/collector/ticket.py``::
 
   from zope.interface import implements
+  from zope.container.contained import Contained
+  from zope.container.btree import BTreeContainer
+
   from tc.collector.interfaces import ITicket
   from tc.collector.interfaces import ITicketContained
-  from zope.container.contained import Contained
 
 
   class Ticket(BTreeContainer, Contained):
