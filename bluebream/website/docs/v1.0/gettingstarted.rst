@@ -36,7 +36,7 @@ Before proceeding further, let's have an overview of the sections.
   BlueBream.
 
 - **Installation:** -- It gives the user instructions for installing
-    BlueBream.
+  BlueBream.
 
 - **Creating a sample project:** -- This section explains the user
   how to create a sample web application project using ``bluebream``
@@ -46,7 +46,7 @@ Before proceeding further, let's have an overview of the sections.
   build the application using Buildout.
 
 - **Basic usage:** -- This section explains the basic usage of
-    BlueBream commands.
+  BlueBream commands.
 
 - **Package directory structure:** -- This section shows the
   directory structure and describes the purpose of each directory and
