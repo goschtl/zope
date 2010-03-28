@@ -134,7 +134,7 @@ the project name ``ticketcollector`` and namespace package name
         Creating ./ticketcollector/var/log/
         Copying README.txt to ./ticketcollector/var/log/README.txt
     Copying versions.cfg to ./ticketcollector/versions.cfg
-  Running /usr/bin/python2.6 setup.py egg_info
+  Running /usr/bin/python setup.py egg_info
 
 As you can see above we have provided most of the project details.
 The values you provided here may be changed later, however changing
@@ -202,7 +202,7 @@ bootstrap script is named ``bootstrap.py`` and will do these things:
 When you run ``bootstrap.py`` you can see that it creates a few
 directories and the ``bin/buildout`` script as mentioned earlier::
 
-  jack@computer:/projects/ticketcollector$ python2.6 bootstrap.py
+  jack@computer:/projects/ticketcollector$ python bootstrap.py
   Creating directory '/projects/ticketcollector/bin'.
   Creating directory '/projects/ticketcollector/parts'.
   Creating directory '/projects/ticketcollector/develop-eggs'.

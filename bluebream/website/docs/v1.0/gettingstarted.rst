@@ -203,7 +203,7 @@ configuration (``buildout.cfg``) and Buildout bootstrap script
 itself::
 
   $ cd sampleproject
-  $ python2.6 bootstrap.py
+  $ python bootstrap.py
 
 The bootstrap script will install ``zc.buildout`` and ``setuptools``
 package.  Also, it will create the basic directory structure.
