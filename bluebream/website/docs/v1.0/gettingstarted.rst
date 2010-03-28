@@ -14,7 +14,7 @@ Getting Started
 Introduction
 ------------
 
-This chapter narrates creating a web application project using
+This chapter narrates you to create a web application project using
 BlueBream.  If you complete this chapter, you should be able to:
 
 - Install PasteScript based BlueBream project template
@@ -29,23 +29,28 @@ BlueBream.  If you complete this chapter, you should be able to:
 
 - Create Hello World applications
 
-Before proceeding, here is an overview of the sections.
+Before proceeding further, let's have an overview of the sections.
 
-- **Preparations:** -- Prerequisites and preparations you need to
-  make to start a web application project using BlueBream.
+- **Preparations:** -- This section discusses about the prerequisites
+  and preparations user need to start a web application project using
+  BlueBream.
 
-- **Installation:** -- Instructions for installing BlueBream.
+- **Installation:** -- It gives the user instructions for installing
+    BlueBream.
 
-- **Creating a sample project:** -- Explain creating a sample project
-  using ``bluebream`` project template.
+- **Creating a sample project:** -- This section explains the user
+  how to create a sample web application project using ``bluebream``
+  project template.
 
-- **Building the application:** -- Explain how to build the
-  application using Buildout.
+- **Building the application:** -- This section explains the user to
+  build the application using Buildout.
 
-- **Basic usage:** -- Explain the basic usage of BlueBream commands.
+- **Basic usage:** -- This section explains the basic usage of
+    BlueBream commands.
 
-- **Package directory structure:** -- Show the directory structure
-  and describe the purpose of each directories and files.
+- **Package directory structure:** -- This section shows the
+  directory structure and describes the purpose of each directory and
+  files.
 
 - At the end, a few hello world examples are also given.
 
@@ -55,52 +60,50 @@ Before proceeding, here is an overview of the sections.
 Preparations
 ------------
 
-This document assume that you have already installed `Python 2.6
+This document assumes that user has already installed `Python 2.6
 <http://www.python.org>`_ and `setuptools
 <http://pypi.python.org/pypi/setuptools>`_.  As an alternative to
-setuptools, you can install `distribute
+setuptools, user can install `distribute
 <http://pypi.python.org/pypi/distribute>`_.  If setuptools or
-distribute is installed you will get an ``easy_install`` command
-which you can use to install ``bluebream`` distribution.
+distribute is installed then user will get an ``easy_install``
+command which can be used to install ``bluebream`` distribution.
 
-You can also install BlueBream inside a Python environment created
+User can also install BlueBream inside a Python environment created
 using `virtualenv <http://pypi.python.org/pypi/virtualenv>`_.
-Although, *virtualenv* may not be required when you are working on
-the application itself.  Because, `Buildout
-<http://www.buildout.org>`_ support will available in the application
-created.  Buildout is the recommended approach to create repeatable,
-isolated working environments.  Buildout is a declarative,
-configuration driven build system created by Jim Fulton.
+Although, *virtualenv* may not be required when user is working on
+the application itself because, `Buildout <http://www.buildout.org>`_
+support will be available in the application created.  Buildout is
+the recommended approach to create repeatable, isolated working
+environments.  Buildout is a declarative, configuration driven build
+system created by Jim Fulton.
 
 It is recommended to use a custom built Python for working with
-BlueBream.  You will be required to install a C compiler (gcc) in
-your system.  Internet access to `PyPI
-<http://pypi.python.org/pypi>`_ is required to perform installation
-of ``bluebream`` distribution.  Later, to build the application using
-Buildout and to bootstrap the buildout itself, you need internet
-access.  But for deployment, you can avoid the internet access using
-`zc.sourcerelease <http://pypi.python.org/pypi/zc.sourcerelease>`_
-package.
+BlueBream.  User required to install a C compiler (gcc) in his
+system.  User is required to have internet access to `PyPI
+<http://pypi.python.org/pypi>`_ to perform installation of
+``bluebream`` distribution, to build the application using Buildout
+and to bootstrap the buildout itself.  Internet access is not
+required for deployment if `zc.sourcerelease
+<http://pypi.python.org/pypi/zc.sourcerelease>`_ package is used.
 
 .. _started-installation:
 
 Installation
 ------------
 
-If you have installed `setuptools
+If user has installed `setuptools
 <http://pypi.python.org/pypi/setuptools>`_ or `distribute
-<http://pypi.python.org/pypi/distribute>`_ an ``easy_install``
-command will be available.  Then, you can install BlueBream using
-``easy_install`` command like this::
+<http://pypi.python.org/pypi/distribute>`_, ``easy_install`` command
+will be available and can be used to install BlueBream.
 
   $ easy_install bluebream
 
 As mentioned earlier, Internet access to `PyPI
 <http://pypi.python.org/pypi>`_ is required to perform installation
-of ``bluebream`` distribution.  If you use any proxy, make sure it
-works.  The ``easy_install`` will look for the environment variable
-named ``http_proxy`` in GNU/Linux platforms.  You can set it like
-this::
+of ``bluebream`` distribution.  If user is using any proxy, its upto
+the user to make sure it works.  The ``easy_install`` will look for
+the environment variable named ``http_proxy`` in GNU/Linux platforms.
+User can set it like this::
 
  $ export http_proxy="http://username:password@PROXY-IP-ADDRESS:PORT"
 
@@ -112,9 +115,10 @@ install its dependencies.  The dependencies are:
 - `Paste <http://pypi.python.org/pypi/Paste>`_
 
 The installation of ``bluebream`` project template package is a one
-time process.  Once the project package is ready, you don't require
-the ``bluebream`` project template package anymore.  Because, the
-project package you are going to create will be self-bootstrappable.
+time process.  Once the project package is ready, user need not
+require the ``bluebream`` project template package anymore because
+the project package user is going to create will be
+self-bootstrappable.
 
 .. _started-sample-project:
 
@@ -132,27 +136,26 @@ show a wizard to create the project directory structure.
 
   $ paster create -t bluebream
 
-This will bring a wizard asking details about your new project.  If
-you provide package name, namespace package name and version number,
-you will get a working application which can be modified further.
-The project name will be used as the name of egg.  You can also
-change the values provided later.
+This will bring a wizard asking details about the new project.  User
+can choose to provide package name, namespace package name and
+version number in the wizard itself otherwise these details can also
+be modified later.  Now, user gets a working application with project
+name as the name of the egg.
 
 Here is a screenshot of sample project creation:
 
 .. image:: images/gettingstarted1.png
 
-The project name can be give given as a command line argument::
+The project name as well as namespace package name can be given as a
+command line argument::
 
   $ paster create -t bluebream sampleproject
 
-The name of namespace package also can be given from the command line::
-
   $ paster create -t bluebream sampleproject namespace_package=mycompany
 
-If you provide an option from the command line, it will not be
-prompted by the wizard.  The other variables are give below, you may
-be give the values from command line, if required:
+User does not get asked by the wizard for the options whose values
+are already passed through command line.Other variables can also be
+given values from command line, if required:
 
 - ``interpreter`` -- Name of custom Python interpreter
 
@@ -175,14 +178,16 @@ be give the values from command line, if required:
 - ``zip_safe`` -- ``True``, if the package can be distributed as a
   .zip file otherwise ``False``.
 
-If you are in a hurry, you can simply press *Enter/Return* key and
-change the values later.  But it would be a good idea, if you provide
-a good name for your project.
+.. note:: Recommended use of Wizard
+
+   It is recommended to provide the details in the wizard itself but
+   user can choose to provide the details at a later stage by simply
+   pressing *Enter/Return* key.
 
 .. note:: Alternate Project Templates
 
-   Another project template named ``bluebream_simple`` is also
-   available, and it is `documented in the wiki
+   An alternate project template named ``bluebream_simple`` is also
+   available, and its `documented in the wiki
    <http://wiki.zope.org/bluebream/AlternateProjectTemplates>`_.
 
 .. _started-building:
@@ -192,7 +197,7 @@ Building the application
 
 As mentioned earlier, the generated package is bundled with Buildout
 configuration (``buildout.cfg``) and Buildout bootstrap script
-(``bootstrap.py``).  First you need to bootstrap the buildout
+(``bootstrap.py``).  First, user needs to bootstrap the buildout
 itself::
 
   $ cd sampleproject
@@ -223,38 +228,39 @@ basic usage.
 Basic usage
 -----------
 
-The most common thing you need while developing application is
+The most common thing user need while developing application is
 running the server.  BlueBream use ``paster`` command provided by
-PasteScript to run the WSGI server.  To run the server, you can pass
+PasteScript to run the WSGI server.  To run the server, user can pass
 the PasteDeploy configuration file as the argument to ``serve``
 sub-command as given here::
 
   $ ./bin/paster serve debug.ini
 
-After running the server, you can access the site from browser here:
-http://localhost:8080/ .  The port number (``8080``) can be changed
-from the PasteDeploy configuration file (``debug.ini``).
+After running the server, user can access the site from browser by
+this URL: http://localhost:8080/ .  The port number (``8080``) can be
+changed in PasteDeploy configuration file (``debug.ini``) to user
+choice.
 
-When you open the browser, it will look like as given in this
+When user opens the browser, it will look like as shown in this
 screenshot:
 
 .. image:: images/gettingstarted4.png
 
-The second most common thing must be running the test cases.
-BlueBream by create a testrunner using the ``zc.recipe.testrunner``
-Buildout recipe.  You can see a ``test`` command inside the ``bin``
-directory.  To run test cases, you can run this command::
+The second most common thing that must be running are the test cases.
+BlueBream creates a testrunner using the ``zc.recipe.testrunner``
+Buildout recipe.  User can see a ``test`` command inside the ``bin``
+directory.  To run test cases, following command is used::
 
   $ ./bin/test
 
-Sometimes you may want to get the debug shell.  BlueBream provides a
+Sometimes user may want to get the debug shell.  BlueBream provides a
 Python prompt with your application object.  You can invoke the debug
-shell like this::
+shell in the following way::
 
   $ ./bin/paster shell debug.ini
 
-More about the test runner and debug shell will be exaplained in the
-BlueBream Manual.
+More details about the test runner and debug shell are explained in
+the BlueBream Manual.
 
 .. _started-directory-structure:
 
@@ -262,7 +268,7 @@ Package directory structure
 ---------------------------
 
 The default directory structure created by the ``bluebream`` paster
-project template will look like this::
+project template is as shown::
 
   myproject/
   |-- bootstrap.py
@@ -298,11 +304,11 @@ project template will look like this::
   |-- var/
   `-- versions.cfg
   
-The name of top-level directory will be always what you gave as
-project name in the wizard.  The name of egg also will be same as
-that of package name by default.  But if you want, you can change it
-to something else from ``setup.py``.  Here are the details about
-other files inside the project.
+The name of top-level directory will always be the project name as
+given in the wizard.  The name of egg also will be same as that of
+package name by default.  User can change it to something else from
+``setup.py``.  Here are the details about other files inside the
+project.
 
 Files &  Purpose
 ~~~~~~~~~~~~~~~~
@@ -345,7 +351,7 @@ Files &  Purpose
   implementation.  Replace the sample implementation with your
   application.
 
-- ``src/mynamespace/main/configure.zcml`` -- You can customize this
+- ``src/mynamespace/main/configure.zcml`` -- User can customize this
   ZCML which is included from application.zcml
 
 - ``src/mynamespace/main/debug.py`` -- The debug application object.
@@ -371,7 +377,8 @@ Files &  Purpose
 
 - ``src/mynamespace/main/views.py`` -- An example view.
 
-- ``src/mynamespace/main/static/`` -- Static resource files (images, CSS etc.)
+- ``src/mynamespace/main/static/`` -- Static resource files (images,
+  CSS etc.)
 
 - ``templates/`` -- Buildout specific templates used by
   "collective.recipe.template"
@@ -565,8 +572,7 @@ let's add a ``hello.pt`` in the ``src/mynamespace/main`` directory::
   </html>
 
 The ``tal:content`` directive tells zope to replace the fake content
-of the tag with the output of the getText method of the view
-class.
+of the tag with the output of the getText method of the view class.
 
 ZCML registration
 ~~~~~~~~~~~~~~~~~
