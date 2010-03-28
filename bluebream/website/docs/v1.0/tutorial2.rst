@@ -349,7 +349,7 @@ To list the tikets in the main collector page, you need to modify the
   </html>
 
 You need to change the ``TicketCollectorMainView`` defined in
-``src/main/tc/collector/views.py`` file::
+``src/tc/collector/views.py`` file::
 
     class TicketCollectorMainView(form.DisplayForm):
 
