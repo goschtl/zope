@@ -65,7 +65,7 @@ Schema definition
 
 In this section, you will learn about adding tickets to collector.
 In order to use ticket objects, first you need to create an interface
-for tickets.  Update the ``src/tc/main/interfaces.py`` with the ticket
+for tickets.  Update the ``src/tc/collector/interfaces.py`` with the ticket
 interface::
 
   class ITicket(IContainer):
@@ -137,11 +137,11 @@ Here you added a constraint for ``__parent__`` field using
 Implementation
 ~~~~~~~~~~~~~~
 
-Next, you can implement this interface inside ``src/tc/main/ticket.py``::
+Next, you can implement this interface inside ``src/tc/collector/ticket.py``::
 
   from zope.interface import implements
-  from tc.main.interfaces import ITicket
-  from tc.main.interfaces import ITicketContained
+  from tc.collector.interfaces import ITicket
+  from tc.collector.interfaces import ITicketContained
   from zope.container.contained import Contained
 
 
@@ -156,14 +156,14 @@ Configuration
 ~~~~~~~~~~~~~
 
 Then, register the interface & class.  Open the
-``src/tc/main/configure.zcml`` and update it with these details::
+``src/tc/collector/configure.zcml`` and update it with these details::
 
   <interface
-     interface="tc.main.interfaces.ITicket"
+     interface="tc.collector.interfaces.ITicket"
      type="zope.app.content.interfaces.IContentType"
      />
 
-  <class class="tc.main.ticket.Ticket">
+  <class class="tc.collector.ticket.Ticket">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
@@ -172,16 +172,16 @@ Then, register the interface & class.  Open the
        />
     <require
        permission="zope.ManageContent"
-       interface="tc.main.interfaces.ITicket"
+       interface="tc.collector.interfaces.ITicket"
        />
     <require
        permission="zope.ManageContent"
-       set_schema="tc.main.interfaces.ITicket"
+       set_schema="tc.collector.interfaces.ITicket"
        />
   </class>
 
 Now you can add a link to ``@@add_ticket`` in
-``src/tc/main/collectormain.pt``.  Now the template will look like
+``src/tc/collector/collectormain.pt``.  Now the template will look like
 this::
 
   <html>
@@ -198,11 +198,11 @@ this::
   </html>
 
 When you click on this link, it expects a view. You can create an
-AddForm inside ``src/tc/main/views.py``::
+AddForm inside ``src/tc/collector/views.py``::
 
-  from tc.main.interfaces import ITicket
+  from tc.collector.interfaces import ITicket
 
-  from tc.main.ticket import Ticket
+  from tc.collector.ticket import Ticket
 
   class AddTicket(form.AddForm):
 
@@ -215,13 +215,13 @@ AddForm inside ``src/tc/main/views.py``::
           self.context[number] = ticket
           self.request.response.redirect('.')
 
-You can register the view inside ``src/tc/main/configure.zcml``::
+You can register the view inside ``src/tc/collector/configure.zcml``::
 
   <browser:page
-     for="tc.main.interfaces.ICollector"
+     for="tc.collector.interfaces.ICollector"
      name="add_ticket"
      permission="zope.ManageContent"
-     class="tc.main.views.AddTicket"
+     class="tc.collector.views.AddTicket"
      />
 
 You can add a ticket by visiting:
@@ -236,9 +236,9 @@ You can check the object from debug shell::
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
   >>> root['mycollector']
-  <tc.main.ticketcollector.Collector object at 0xa5fc96c>
+  <tc.collector.ticketcollector.Collector object at 0xa5fc96c>
   >>> root['mycollector']['1']
-  <tc.main.ticket.Ticket object at 0xa5ffecc>
+  <tc.collector.ticket.Ticket object at 0xa5ffecc>
 
 Default browser page for tickets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,7 +249,7 @@ you will get ``NotFound`` error like this::
 
   URL: http://localhost:8080/mycollector/1
   ...
-  NotFound: Object: <tc.main.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
+  NotFound: Object: <tc.collector.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
 
 This error is raised, because there is no view named ``index``
 registered for ``ITicket``.  This section will show how to create a
@@ -258,7 +258,7 @@ default view for ``ITicket`` interface.
 As you have already seen in the :ref:`started-getting` chapter, you
 can create a simple view and register it from ZCML.
 
-In the ``src/tc/main/views.py`` add a new view like this::
+In the ``src/tc/collector/views.py`` add a new view like this::
 
   class TicketMainView(form.DisplayForm):
 
@@ -267,7 +267,7 @@ In the ``src/tc/main/views.py`` add a new view like this::
       template = ViewPageTemplateFile("ticketmain.pt")
 
 You can create the template file here:
-``src/tc/main/ticketmain.pt`` with this content::
+``src/tc/collector/ticketmain.pt`` with this content::
 
   <html>
   <head>
@@ -285,13 +285,13 @@ You can create the template file here:
   </body>
   </html>
 
-Then, in the ``src/tc/main/configure.zcml``::
+Then, in the ``src/tc/collector/configure.zcml``::
 
   <browser:page
-     for="tc.main.interfaces.ITicket"
+     for="tc.collector.interfaces.ITicket"
      name="index"
      permission="zope.Public"
-     class="tc.main.views.TicketMainView"
+     class="tc.collector.views.TicketMainView"
      />
 
 Now you can visit: http://localhost:8080/mycollector/1/@@index It
@@ -320,7 +320,7 @@ This section explain listing tickets in the main collector page, so
 that the user can navigate to ticket and see the details.
 
 To list the tikets in the main collector page, you need to modify the
-``src/tc/main/collectormain.pt``::
+``src/tc/collector/collectormain.pt``::
 
   <html>
   <head>
@@ -344,7 +344,7 @@ To list the tikets in the main collector page, you need to modify the
   </html>
 
 You need to change the ``TicketCollectorMainView`` defined in
-``src/main/tc/main/views.py`` file::
+``src/main/tc/collector/views.py`` file::
 
     class TicketCollectorMainView(form.DisplayForm):
 
@@ -367,7 +367,7 @@ Adding Comments
 In this section, you will create `comment` objects and add it to
 tickets.  As the first step, you need to define the interface for the
 comments.  You can add this interface definition inside
-``src/tc/main/interfaces.py``::
+``src/tc/collector/interfaces.py``::
 
   class IComment(Interface):
       """Comment for Ticket"""
@@ -386,11 +386,11 @@ comments.  You can add this interface definition inside
           constraint = ContainerTypesConstraint(ITicket))
 
 Next, you can implement the comment like this.  You can create a new
-file for the implementation, ``src/tc/main/comment.py``::
+file for the implementation, ``src/tc/collector/comment.py``::
 
   from zope.interface import implements
-  from tc.main.interfaces import IComment
-  from tc.main.interfaces import ICommentContained
+  from tc.collector.interfaces import IComment
+  from tc.collector.interfaces import ICommentContained
   from zope.container.contained import Contained
 
   class Comment(Contained):
@@ -402,26 +402,26 @@ file for the implementation, ``src/tc/main/comment.py``::
 Then, register the interface & class::
 
   <interface
-     interface="tc.main.interfaces.IComment"
+     interface="tc.collector.interfaces.IComment"
      type="zope.app.content.interfaces.IContentType"
      />
 
-  <class class="tc.main.comment.Comment">
+  <class class="tc.collector.comment.Comment">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <require
        permission="zope.ManageContent"
-       interface="tc.main.interfaces.IComment"
+       interface="tc.collector.interfaces.IComment"
        />
     <require
        permission="zope.ManageContent"
-       set_schema="tc.main.interfaces.IComment"
+       set_schema="tc.collector.interfaces.IComment"
        />
   </class>
 
 You can add ``ItemTypePrecondition`` to ``ITicket``.  Open the
-``src/tc/main/interfaces.py`` and update the interface definition::
+``src/tc/collector/interfaces.py`` and update the interface definition::
 
   class ITicket(IContainer):
       """Ticket - the ticket content component"""
@@ -443,11 +443,11 @@ You can add ``ItemTypePrecondition`` to ``ITicket``.  Open the
 
       __setitem__.precondition = ItemTypePrecondition(IComment)
 
-Update the ticket implementation at ``src/tc/main/ticket.py``::
+Update the ticket implementation at ``src/tc/collector/ticket.py``::
 
   from zope.interface import implements
-  from tc.main.interfaces import ITicket
-  from tc.main.interfaces import ITicketContained
+  from tc.collector.interfaces import ITicket
+  from tc.collector.interfaces import ITicketContained
   from zope.container.contained import Contained
   from zope.container.btree import BTreeContainer
 
@@ -460,7 +460,7 @@ Update the ticket implementation at ``src/tc/main/ticket.py``::
       summary = u""
 
 You can update the template file here:
-``src/tc/main/ticketmain.pt`` with this content::
+``src/tc/collector/ticketmain.pt`` with this content::
 
   <html>
   <head>
@@ -481,11 +481,11 @@ You can update the template file here:
   </html>
 
 You need to create an ``AddForm`` like this.  Open the
-``src/tc/main/views.py`` file and update with the ``AddComment`` form
+``src/tc/collector/views.py`` file and update with the ``AddComment`` form
 given below::
 
-  from tc.main.interfaces import IComment
-  from tc.main.comment import Comment
+  from tc.collector.interfaces import IComment
+  from tc.collector.comment import Comment
 
   class AddComment(form.AddForm):
 
@@ -500,13 +500,13 @@ given below::
           self.context[number] = comment
           self.request.response.redirect('.')
 
-You can register the view inside ``src/tc/main/configure.zcml``::
+You can register the view inside ``src/tc/collector/configure.zcml``::
 
   <browser:page
-     for="tc.main.interfaces.ITicket"
+     for="tc.collector.interfaces.ITicket"
      name="add_comment"
      permission="zope.ManageContent"
-     class="tc.main.views.AddComment"
+     class="tc.collector.views.AddComment"
      />
 
 Listing comments
@@ -516,7 +516,7 @@ This section explain listing tickets in the ticket page, so that the
 user can see comments for the particular ticket.
 
 To list the comments in the ticket page, you need to modify the
-``src/tc/main/ticketmain.pt``::
+``src/tc/collector/ticketmain.pt``::
 
   <html>
   <head>
