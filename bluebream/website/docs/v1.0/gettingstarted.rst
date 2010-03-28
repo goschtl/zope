@@ -96,6 +96,8 @@ If user has installed `setuptools
 <http://pypi.python.org/pypi/distribute>`_, ``easy_install`` command
 will be available and can be used to install BlueBream.
 
+::
+
   $ easy_install bluebream
 
 As mentioned earlier, Internet access to `PyPI
