@@ -8,6 +8,9 @@ Changelog
 
 - Use project name as i18n_domain in base template
 
+- Merge the `bluebream_simple` with the defaut template by allowing to create a
+  flat or nested namespace structure, depending on the project name.
+
 1.0a5 (2010-03-28)
 ------------------
 

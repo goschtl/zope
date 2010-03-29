@@ -5,6 +5,7 @@ The template supports any number namespace levels, depending on the provided
 project name. 
 
 First try with a single flat package:
+-------------------------------------
 
 >>> from paste.script import command
 >>> project = 'sample'
@@ -97,8 +98,8 @@ Creating directory ./sample
 Running python setup.py egg_info
 
 
-
 We can also create a project with a namespace:
+----------------------------------------------
 
 >>> from paste.script import command
 >>> project = 'sample.main'
@@ -195,8 +196,8 @@ Moving ./sample.main/src/main to ./sample.main/src/sample
 Running python setup.py egg_info
 
 
-
-Another with two levels of namespaces:
+Another project with two levels of namespace:
+---------------------------------------------
 
 >>> from paste.script import command
 >>> project = 'sample.app.main'
