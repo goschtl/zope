@@ -1,15 +1,60 @@
-==========================
-Automated builds and tests
-==========================
+=====================================
+Automated test suite / nightly builds
+=====================================
 
-List of servers
-===============
+The ZTK builds on the automated test suites (unit and functional tests) from
+the individual projects it keeps track of. We use automated build systems,
+like buildbot, to run various combinations of differing Python versions,
+operating systems and packages and ensure everything works as expected.
+
+
+The automated test suite
+========================
+
+The ZTK's automated test suite builds on the individual packages' unit and functional tests and creates 
+a combined test runner that runs each packages' test suite in isolation but
+ensures that the dependencies are satisfied using the ZTK versions under test.
+
+The combined test runner is created using `z3c.recipe.compattest
+<http://pypi.python.org/pypi/z3c.recipe.compattest>`_ -- check the
+documentation for details.
+
+If you take a ZTK checkout, you can run the tests yourself like this::
+
+    $ svn co svn://svn.zope.org/repos/main/ztk/trunk
+    $ python bootstrap.py
+    $ bin/buildout
+    $ bin/test-ztk
+
+If you work on a ZTK package and want to ensure that your changes are
+compatible with a specific version of the ZTK (but using the version of the
+package you're working on instead of the version listed in the ZTK) then you
+can create a combined test runner in your buildout like this::
+
+    [buildout]
+    parts = compattest
+    extends = path-to-specific-ztk-version.cfg
+    develop = .
+
+    [versions]
+    <package-you-work-on> =
+
+    [compattest]
+    recipe = z3c.recipe.compattest
+    include = ${ztk:packages}
+
+
+The nightly builds
+==================
+
+Build servers
+-------------
 
 This is a list of servers that run regular builds of various parts of the code
 base.
 
 .. list-table::
-    
+
     * - **Buildbot**
       - **Contact**
       - **Platforms**
@@ -44,8 +89,8 @@ base.
       - KGS (3.4/3.5), ZTK, grok, BFG (trunk), zc.buildout
 
 
-Notifications
-=============
+Informing the Zope developer community about build results
+----------------------------------------------------------
 
 To ensure a reasonable amount of communication from automated systems that
 reaches the Zope developers and keeps them aware of the overall build status
@@ -74,8 +119,8 @@ The subject line should be formatted like this::
     UNKNOWN: zope.interface on Linux 64-bit
 
 
-Coordination
-============
+Automated/nightly build effort coordination
+===========================================
 
 Patrik Gerken (do3cc) is the voluntary coordinator for automated builds and
 nightly tests.
@@ -86,7 +131,7 @@ regarding:
 * achieving and maintaining availability and visibility of automated builds
   and nightly tests
 
-* ensuring coerage of builds/tests with respect to varying Python versions,
+* ensuring coverage of builds/tests with respect to varying Python versions,
   platforms for individual packages, frameworks and toolkits
 
 The coordinator's tasks include:
