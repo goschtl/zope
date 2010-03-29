@@ -7,6 +7,7 @@ import DateTime
 epoch = DateTime.DateTime(0)
 one_year = 365
 
+
 class ExponentialDateTimeScale(scale.ExponentialDatetimeScale):
 
     def __init__(self, scale_unit=one_year, scale_ratio=2,

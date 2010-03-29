@@ -2,6 +2,7 @@ from zope import interface, component
 
 from z3c.metrics import interfaces
 
+
 class InitMetric(object):
     interface.implements(interfaces.IMetric)
 
@@ -18,6 +19,7 @@ class InitMetric(object):
         for engine in component.subscribers(
             [self, obj, event], interfaces.IEngine):
             engine.removeScore()
+
 
 class AttributeMetric(object):
     interface.implements(interfaces.IAttributeMetric)
@@ -50,6 +52,7 @@ class AttributeMetric(object):
             value = value()
         return value
 
+
 class SelfMetric(InitMetric, AttributeMetric):
 
     @component.adapter(interface.Interface,
@@ -62,6 +65,7 @@ class SelfMetric(InitMetric, AttributeMetric):
             if init:
                 engine.initScore()
             engine.addValue(value)
+
 
 class OtherMetric(AttributeMetric):
 

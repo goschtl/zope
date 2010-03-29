@@ -11,14 +11,17 @@ from Products.CMFDefault import DiscussionItem
 
 from z3c.metrics import interfaces
 
+
 class ReplyCreatedEvent(contained.ObjectAddedEvent):
     interface.implementsOnly(interfaces.IChangeScoreEvent,
                              interfaces.IAddValueEvent)
 
+
 class ReplyDeletedEvent(contained.ObjectRemovedEvent):
     interface.implementsOnly(interfaces.IChangeScoreEvent,
                              interfaces.IRemoveValueEvent)
-    
+
+
 def createReply(self, *args, **kw):
     reply_id = createReply.orig(
         self, *args, **kw)
@@ -27,7 +30,8 @@ def createReply(self, *args, **kw):
         newName=reply_id))
     return reply_id
 createReply.orig = DiscussionItem.DiscussionItemContainer.createReply
-    
+
+
 def deleteReply(self, reply_id, *args, **kw):
     reply = self.getReply(reply_id)
     reply_id = deleteReply.orig(self, reply_id, *args, **kw)
@@ -36,9 +40,11 @@ def deleteReply(self, reply_id, *args, **kw):
     return reply_id
 deleteReply.orig = DiscussionItem.DiscussionItemContainer.deleteReply
 
+
 def patch():
     DiscussionItem.DiscussionItemContainer.createReply = createReply
     DiscussionItem.DiscussionItemContainer.deleteReply = deleteReply
+
 
 def unpatch():
     DiscussionItem.DiscussionItemContainer.createReply = (
@@ -49,6 +55,7 @@ def unpatch():
 patch()
 cleanup.addCleanUp(unpatch)
 
+
 @component.adapter(cmf_ifaces.IDiscussionResponse,
                    interfaces.IChangeScoreEvent)
 def dispatchToDiscussed(obj, event):
@@ -58,7 +65,8 @@ def dispatchToDiscussed(obj, event):
     discussed = Acquisition.aq_parent(Acquisition.aq_inner(parent))
     for _ in component.subscribers(
         [obj, event, discussed], None):
-        pass # Just make sure the handlers run
+        pass  # Just make sure the handlers run
+
 
 @component.adapter(cmf_ifaces.IDiscussable,
                    interfaces.IBuildScoreEvent)
@@ -71,5 +79,4 @@ def dispatchToReplies(obj, event, dispatched=None):
     for reply in portal_discussion.getDiscussionFor(obj).getReplies():
         for _ in component.subscribers(
             [reply, event, dispatched], None):
-            pass # Just make sure the handlers run
-    
+            pass  # Just make sure the handlers run

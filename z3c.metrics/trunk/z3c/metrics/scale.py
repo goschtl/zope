@@ -1,4 +1,6 @@
-import math, datetime, time
+import math
+import datetime
+import time
 
 from zope import interface
 from zope.cachedescriptors import property
@@ -7,6 +9,7 @@ import persistent
 from z3c.metrics import interfaces
 
 inf = 1e1000000
+
 
 class ExponentialScale(persistent.Persistent):
     interface.implements(interfaces.IScale)
@@ -34,18 +37,19 @@ class ExponentialScale(persistent.Persistent):
         return quantity
 
     def fromValue(self, value):
-        return self.origin*self.scale_ratio**(
-            self._fromDelta(value-self.start)/float(self.scale_unit))
+        return self.origin * self.scale_ratio ** (
+            self._fromDelta(value - self.start) / float(self.scale_unit))
 
     def toValue(self, scaled):
         return self.start + self._toDelta(
-            math.log(scaled/float(self.origin),
-                     self.scale_ratio)*self.scale_unit)
+            math.log(scaled / float(self.origin),
+                     self.scale_ratio) * self.scale_unit)
 
     def normalize(self, raw, query=None):
         if query is None:
             query = self.default
-        return raw/float(self.fromValue(query))
+        return raw / float(self.fromValue(query))
+
 
 def getOrigin(min_unit, scale_unit, scale_ratio):
     """
@@ -61,9 +65,10 @@ def getOrigin(min_unit, scale_unit, scale_ratio):
 
     scale_ratio**(min_unit/scale_unit)-1 == 1/origin
     """
-    return 1/(scale_ratio**(
-        min_unit/float(scale_unit))-1)
-    
+    return 1 / (scale_ratio ** (
+        min_unit / float(scale_unit)) - 1)
+
+
 def getRatio(scaled, scale_units, scale_unit, min_unit=None):
     """
     Return the ratio such that the number of units will result in
@@ -76,7 +81,7 @@ def getRatio(scaled, scale_units, scale_unit, min_unit=None):
 
     scaled*(scale_ratio**(
         min_unit/scale_unit)-1) == scale_ratio**units
-    
+
     scale_ratio**(min_unit/scale_unit)-1 == scale_ratio**units/scaled
 
     ----------------------------
@@ -95,8 +100,9 @@ def getRatio(scaled, scale_units, scale_unit, min_unit=None):
 
 epoch = datetime.datetime(*time.gmtime(0)[:3])
 one_day = datetime.timedelta(1)
-one_year = one_day*365
-seconds_per_day = 24*60*60
+one_year = one_day * 365
+seconds_per_day = 24 * 60 * 60
+
 
 class ExponentialDatetimeScale(ExponentialScale):
 
@@ -112,8 +118,8 @@ class ExponentialDatetimeScale(ExponentialScale):
 
     def _fromDelta(self, delta):
         """Convert a time delta into a float of seconds"""
-        return (delta.days*seconds_per_day + delta.seconds +
-                delta.microseconds/float(1000000))
+        return (delta.days * seconds_per_day + delta.seconds +
+                delta.microseconds / float(1000000))
 
     def _toDelta(self, quantity):
         return datetime.timedelta(seconds=quantity)

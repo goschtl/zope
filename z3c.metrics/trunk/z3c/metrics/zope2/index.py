@@ -13,8 +13,10 @@ from Products.GenericSetup.PluginIndexes import exportimport
 from z3c.metrics import interfaces, index
 from z3c.metrics.zope2 import scale
 
+
 class IRemoveScoreEvent(interfaces.IRemoveValueEvent):
     """Remove the object score from the index."""
+
 
 class IAddSelfValueEvent(interfaces.IAddValueEvent):
     """Add self value with special handling for the index."""
@@ -22,16 +24,20 @@ class IAddSelfValueEvent(interfaces.IAddValueEvent):
     # the self add handlers to trigger for initial indexing and
     # rebuilding scores but not on object add
 
+
 class InitIndexScoreEvent(index.IndexesScoreEvent):
     interface.implements(interfaces.IInitScoreEvent,
                          IAddSelfValueEvent)
 
+
 class RemoveIndexScoreEvent(index.IndexesScoreEvent):
     interface.implements(IRemoveScoreEvent)
+
 
 class IMetricsIndex(interfaces.IIndex,
                     plugidx_ifaces.IPluggableIndex):
     """sro"""
+
 
 class MetricsIndex(index.Index, SimpleItem.SimpleItem):
     """A Metrics Index in a ZCatalog"""
@@ -102,6 +108,7 @@ class MetricsIndex(index.Index, SimpleItem.SimpleItem):
         obj = self._getCatalog().getobject(documentId)
         event = RemoveIndexScoreEvent(obj, [self])
         component.subscribers([obj, event], None)
+
 
 class MetricsIndexNodeAdapter(exportimport.PluggableIndexNodeAdapter):
     component.adapts(IMetricsIndex, gs_ifaces.ISetupEnviron)

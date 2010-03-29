@@ -6,6 +6,7 @@ from z3c.metrics import interfaces, metric, subscription
 
 default = object()
 
+
 class IMetric(interfaces.IMetric):
     """Defines what values are to be collected for an object."""
 
@@ -13,8 +14,10 @@ class IMetric(interfaces.IMetric):
         title=u'Interfaces of the objects the metric applied to',
         required=True, value_type=fields.GlobalObject())
 
+
 class IAttributeMetric(IMetric, interfaces.IAttributeMetric):
     """Retrieves the metric value from an interface field."""
+
 
 class Metric(config.GroupingContextDecorator):
 
@@ -32,16 +35,17 @@ class Metric(config.GroupingContextDecorator):
         other_ifaces = self.handler_adapts[1:]
         metaconfigure.subscriber(
             _context=self.context,
-            for_=[object_iface, self.add_interface]+other_ifaces,
+            for_=[object_iface, self.add_interface] + other_ifaces,
             handler=getattr(self.metric, self.add_handler))
         metaconfigure.subscriber(
             _context=self.context,
-            for_=[object_iface, self.remove_interface]+other_ifaces,
+            for_=[object_iface, self.remove_interface] + other_ifaces,
             handler=getattr(self.metric, self.remove_handler))
 
     @property
     def handler_adapts(self):
-        return [self.object_interface]+self.for_
+        return [self.object_interface] + self.for_
+
 
 class InitMetric(Metric):
 
@@ -50,11 +54,13 @@ class InitMetric(Metric):
     add_handler = 'initSelfScore'
     remove_handler = 'removeSelfScore'
 
+
 class SelfMetric(Metric):
 
     metric_factory = metric.SelfMetric
     add_handler = 'initSelfScore'
     remove_handler = 'removeSelfScore'
+
 
 class OtherMetric(Metric):
 
@@ -64,7 +70,8 @@ class OtherMetric(Metric):
 
     @property
     def handler_adapts(self):
-        return self.for_+[self.object_interface]
+        return self.for_ + [self.object_interface]
+
 
 def weighted(_context, utility_interface, weight=default):
     sub = subscription.UtilityWeightedSubscription(
@@ -76,13 +83,11 @@ def weighted(_context, utility_interface, weight=default):
     metaconfigure.subscriber(
         _context=_context, provides=provides,
         for_=[interfaces.IMetric, _context.object_interface,
-              interfaces.IChangeScoreEvent]+_context.for_,
+              interfaces.IChangeScoreEvent] + _context.for_,
         factory=sub.getChangeScoreEngine)
     provides, = interface.implementedBy(sub.getBuildScoreEngine)
     metaconfigure.subscriber(
         _context=_context, provides=provides,
         for_=[interfaces.IMetric, _context.object_interface,
-              interfaces.IIndexesScoreEvent]+_context.for_,
+              interfaces.IIndexesScoreEvent] + _context.for_,
         factory=sub.getBuildScoreEngine)
-    
-    

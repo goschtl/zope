@@ -7,8 +7,10 @@ from zope.app.event import objectevent
 
 from z3c.metrics import interfaces, scale
 
+
 class ScoreError(Exception):
     pass
+
 
 class IndexesScoreEvent(objectevent.ObjectEvent):
     interface.implements(interfaces.IIndexesScoreEvent)
@@ -17,9 +19,11 @@ class IndexesScoreEvent(objectevent.ObjectEvent):
         self.object = obj
         self.indexes = indexes
 
+
 class BuildScoreEvent(IndexesScoreEvent):
     interface.implements(interfaces.IBuildScoreEvent,
                          interfaces.IAddValueEvent)
+
 
 class Index(persistent.Persistent):
     interface.implements(interfaces.IIndex)

@@ -6,13 +6,16 @@ from zope.configuration import xmlconfig
 import z3c.metrics
 from z3c.metrics import bbb
 
+
 def setUp(test):
     cleanup.setUp()
     bbb.eventtesting.PlacelessSetup().setUp()
     xmlconfig.file('testing.zcml', z3c.metrics)
 
+
 def tearDown(test):
     cleanup.tearDown()
+
 
 def test_suite():
     return doctest.DocFileSuite(
@@ -25,9 +28,9 @@ def test_suite():
         'README.txt',
         setUp=setUp, tearDown=tearDown,
         optionflags=(
-            doctest.REPORT_NDIFF|
-            #doctest.REPORT_ONLY_FIRST_FAILURE|
-            doctest.NORMALIZE_WHITESPACE|
+            doctest.REPORT_NDIFF |
+            #doctest.REPORT_ONLY_FIRST_FAILURE |
+            doctest.NORMALIZE_WHITESPACE |
             doctest.ELLIPSIS))
 
 if __name__ == '__main__':

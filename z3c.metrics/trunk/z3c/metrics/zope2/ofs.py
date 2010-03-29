@@ -5,6 +5,7 @@ from OFS import interfaces as ofs_ifaces
 
 from z3c.metrics import interfaces, metric, dispatch
 
+
 @component.adapter(ofs_ifaces.IItem)
 @interface.implementer(dispatch.IAncestors)
 def getAncestors(contained):
@@ -14,6 +15,7 @@ def getAncestors(contained):
         ancestor = Acquisition.aq_parent(
             Acquisition.aq_inner(ancestor))
 
+
 class InitMetric(metric.InitMetric):
 
     @component.adapter(interface.Interface,
@@ -22,8 +24,10 @@ class InitMetric(metric.InitMetric):
         if not ofs_ifaces.IObjectWillBeAddedEvent.providedBy(event):
             super(InitMetric, self).removeSelfScore(obj, event)
 
+
 class SelfMetric(InitMetric, metric.SelfMetric):
     pass
+
 
 class OtherMetric(metric.OtherMetric):
 
@@ -34,4 +38,3 @@ class OtherMetric(metric.OtherMetric):
         if not ofs_ifaces.IObjectWillBeAddedEvent.providedBy(event):
             super(OtherMetric, self).removeOtherValue(
                 other, event, obj)
-
