@@ -1,0 +1,140 @@
+BlueBream alternate #paster template
+====================================
+
+
+>>> from paste.script import command
+>>> commands = command.get_commands()
+>>> cmd = commands['create'].load()
+>>> runner = cmd('create')
+
+
+
+Project name: lowercase
+-----------------------
+
+>>> exit_code = runner.run(['-t', 'bluebream_simple', 'sample'])
+Selected and implied templates:
+  bluebream#bluebream_simple  A BlueBream project, simple template
+<BLANKLINE>
+Variables:
+  egg:      sample
+  package:  sample
+  project:  sample
+Creating template bluebream_simple
+Creating directory ./sample
+  Copying bootstrap.py to ./sample/bootstrap.py
+  Copying buildout.cfg_tmpl to ./sample/buildout.cfg
+  Copying debug.ini_tmpl to ./sample/debug.ini
+  Copying deploy.ini_tmpl to ./sample/deploy.ini
+  Recursing into etc
+    Creating ./sample/etc/
+    Copying site.zcml_tmpl to ./sample/etc/site.zcml
+  Copying setup.py_tmpl to ./sample/setup.py
+  Recursing into src
+    Creating ./sample/src/
+    Recursing into +project+
+      Creating ./sample/src/sample/
+      Copying __init__.py to ./sample/src/sample/__init__.py
+      Copying configure.zcml_tmpl to ./sample/src/sample/configure.zcml
+      Copying debug.py to ./sample/src/sample/debug.py
+      Copying securitypolicy.zcml to ./sample/src/sample/securitypolicy.zcml
+      Copying startup.py to ./sample/src/sample/startup.py
+      Recursing into tests
+        Creating ./sample/src/sample/tests/
+        Copying __init__.py to ./sample/src/sample/tests/__init__.py
+        Copying ftesting.zcml_tmpl to ./sample/src/sample/tests/ftesting.zcml
+        Copying tests.py_tmpl to ./sample/src/sample/tests/tests.py
+      Recursing into welcome
+        Creating ./sample/src/sample/welcome/
+        Copying __init__.py to ./sample/src/sample/welcome/__init__.py
+        Copying app.py to ./sample/src/sample/welcome/app.py
+        Copying configure.zcml_tmpl to ./sample/src/sample/welcome/configure.zcml
+        Copying ftests.txt_tmpl to ./sample/src/sample/welcome/ftests.txt
+        Copying index.pt to ./sample/src/sample/welcome/index.pt
+        Copying interfaces.py to ./sample/src/sample/welcome/interfaces.py
+        Recursing into static
+          Creating ./sample/src/sample/welcome/static/
+          Copying logo.png to ./sample/src/sample/welcome/static/logo.png
+          Copying style.css to ./sample/src/sample/welcome/static/style.css
+        Copying views.py to ./sample/src/sample/welcome/views.py
+    Recursing into +project+.egg-info
+      Creating ./sample/src/sample.egg-info/
+      Copying PKG-INFO to ./sample/src/sample.egg-info/PKG-INFO
+  Recursing into templates
+    Creating ./sample/templates/
+    Copying zope_conf.in to ./sample/templates/zope_conf.in
+  Recursing into var
+    Creating ./sample/var/
+    Recursing into filestorage
+      Creating ./sample/var/filestorage/
+      Copying README.txt to ./sample/var/filestorage/README.txt
+    Recursing into log
+      Creating ./sample/var/log/
+      Copying README.txt to ./sample/var/log/README.txt
+  Copying versions.cfg to ./sample/versions.cfg
+Running python setup.py egg_info
+
+Project name: uppercase
+-----------------------
+
+>>> exit_code = runner.run(['-t', 'bluebream_simple', 'Sample'])
+Selected and implied templates:
+  bluebream#bluebream_simple  A BlueBream project, simple template
+<BLANKLINE>
+Variables:
+  egg:      Sample
+  package:  sample
+  project:  Sample
+Creating template bluebream_simple
+Creating directory ./Sample
+  Copying bootstrap.py to ./Sample/bootstrap.py
+  Copying buildout.cfg_tmpl to ./Sample/buildout.cfg
+  Copying debug.ini_tmpl to ./Sample/debug.ini
+  Copying deploy.ini_tmpl to ./Sample/deploy.ini
+  Recursing into etc
+    Creating ./Sample/etc/
+    Copying site.zcml_tmpl to ./Sample/etc/site.zcml
+  Copying setup.py_tmpl to ./Sample/setup.py
+  Recursing into src
+    Creating ./Sample/src/
+    Recursing into +project+
+      Creating ./Sample/src/Sample/
+      Copying __init__.py to ./Sample/src/Sample/__init__.py
+      Copying configure.zcml_tmpl to ./Sample/src/Sample/configure.zcml
+      Copying debug.py to ./Sample/src/Sample/debug.py
+      Copying securitypolicy.zcml to ./Sample/src/Sample/securitypolicy.zcml
+      Copying startup.py to ./Sample/src/Sample/startup.py
+      Recursing into tests
+        Creating ./Sample/src/Sample/tests/
+        Copying __init__.py to ./Sample/src/Sample/tests/__init__.py
+        Copying ftesting.zcml_tmpl to ./Sample/src/Sample/tests/ftesting.zcml
+        Copying tests.py_tmpl to ./Sample/src/Sample/tests/tests.py
+      Recursing into welcome
+        Creating ./Sample/src/Sample/welcome/
+        Copying __init__.py to ./Sample/src/Sample/welcome/__init__.py
+        Copying app.py to ./Sample/src/Sample/welcome/app.py
+        Copying configure.zcml_tmpl to ./Sample/src/Sample/welcome/configure.zcml
+        Copying ftests.txt_tmpl to ./Sample/src/Sample/welcome/ftests.txt
+        Copying index.pt to ./Sample/src/Sample/welcome/index.pt
+        Copying interfaces.py to ./Sample/src/Sample/welcome/interfaces.py
+        Recursing into static
+          Creating ./Sample/src/Sample/welcome/static/
+          Copying logo.png to ./Sample/src/Sample/welcome/static/logo.png
+          Copying style.css to ./Sample/src/Sample/welcome/static/style.css
+        Copying views.py to ./Sample/src/Sample/welcome/views.py
+    Recursing into +project+.egg-info
+      Creating ./Sample/src/Sample.egg-info/
+      Copying PKG-INFO to ./Sample/src/Sample.egg-info/PKG-INFO
+  Recursing into templates
+    Creating ./Sample/templates/
+    Copying zope_conf.in to ./Sample/templates/zope_conf.in
+  Recursing into var
+    Creating ./Sample/var/
+    Recursing into filestorage
+      Creating ./Sample/var/filestorage/
+      Copying README.txt to ./Sample/var/filestorage/README.txt
+    Recursing into log
+      Creating ./Sample/var/log/
+      Copying README.txt to ./Sample/var/log/README.txt
+  Copying versions.cfg to ./Sample/versions.cfg
+Running python setup.py egg_info
