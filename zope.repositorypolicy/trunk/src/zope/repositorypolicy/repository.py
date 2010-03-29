@@ -80,7 +80,6 @@ Summary
 -------
 
 %(project_branches)s
-
 --\x20
 This message was generated automatically.
 """
@@ -97,24 +96,24 @@ def main_mail():
 
     checker = Checker()
     for project, branch, error in checker.run():
-        projects.setdefault(project, [])
-        projects[project].append(branch)
+        projects.setdefault(project, set())
+        projects[project].add(branch)
         log.write('%s/%s:%s\n' % (project, branch, error))
     log.close()
 
     if projects:
-        subject = ('FAILURE: Repository policy check found'
+        subject = ('FAILURE: Repository policy check found '
                    'errors in %s projects' % len(projects))
     else:
         subject = 'OK: Repository policy check found no errors'
 
+    mail = {}
     mail['log_url'] = httpbase + '/' + logname
     mail['project_branches'] = ''
     for project in sorted(projects):
         mail['project_branches'] += (
             project + '\n' +
-            ('\t%s\n' % for x in projects[project]) +
-            '\n')
+            ''.join('\t%s\n' % x for x in projects[project]))
 
     body = MAIL_TEMPLATE % mail
 
