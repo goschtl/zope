@@ -68,18 +68,23 @@ class BlueBream(templates.Template):
         """Add namespace packages and nest the main package in them"""
         templates.Template.write_files(self, command, output_dir, vars)
         if len(self.ns_split) > 1:
+            print 'Namespace package detected!'
             target_dir = os.path.join(output_dir, 'src',
                                       os.path.join(*self.ns_split[:-1]))
+            print 'Creating directory %s' % target_dir
             os.makedirs(target_dir)
             ns_declar = "__import__('pkg_resources').declare_namespace(__name__)"
             for i, namespace_package in enumerate(self.ns_split[:-1]):
                 init_file = os.path.join(output_dir, 'src',
                                          os.path.join(*self.ns_split[:i+1]),
                                          '__init__.py')
+                print 'Creating namespace-enabled %s' % init_file
                 open(init_file, 'w').write(ns_declar)
-            shutil.move(os.path.join(output_dir, 'src', vars['main_package']),
-                        target_dir)
-
+            main_package_dir = os.path.join(output_dir,
+                                            'src',
+                                            vars['main_package'])
+            print 'Moving %s to %s' % (main_package_dir, target_dir)
+            shutil.move(main_package_dir, target_dir)
 
 
 
