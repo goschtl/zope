@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os, sys, shutil
+import re, os, sys, shutil
+import pkg_resources
 from paste.script import templates
 from paste.script.templates import var
 
@@ -22,10 +23,6 @@ class BlueBream(templates.Template):
     summary = "A BlueBream project, base template"
 
     vars = [
-#        var('namespace_package', 'Namespace package name'),
-#        var('main_package',
-#            'Main package name (under the namespace)',
-#            default='main'),
         var('interpreter',
             'Name of custom Python interpreter',
             default='breampy'),
@@ -51,18 +48,17 @@ class BlueBream(templates.Template):
             sys.exit(1)
 
         # detect namespaces in the project name
-        vars['main_package'] = vars['project'].split('.')[-1]
+        vars['package'] = re.sub('[^A-Za-z0-9.]+', '_', vars['project']).lower()
+        vars['main_package'] = vars['package'].split('.')[-1]
         self.ns_split = vars['project'].split('.')
-        vars['ns_packages'] = self.ns_split[:-1]
-        vars['packages'] = vars['project']
+        vars['namespace_packages'] = [
+                    vars['package'].rsplit('.', i)[0]
+                    for i in range(1,len(self.ns_split))]
+        vars['ns_prefix'] = '.'.join(self.ns_split[:-1])
+        if len(self.ns_split) == 0:
+            vars['ns_prefix'] = ''
 
-        for var in self.vars:
-            if var.name == 'namespace_package':
-                var.default = vars['package']
-
-        self._vars = vars = templates.Template.check_vars(self, vars, cmd)
-
-        return vars
+        return templates.Template.check_vars(self, vars, cmd)
 
     def write_files(self, command, output_dir, vars):
         "Add namespace packages and move the main package to the last level"
