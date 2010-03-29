@@ -15,7 +15,7 @@ ${long_description|nothing}""",
       license=${repr(license_name)|empty},
       package_dir={'': 'src'},
       packages=find_packages('src'),
-      namespace_packages=[${repr(namespace_package)},],
+      ${ns_packages and 'namespace_packages=%s,' % repr(['.'.join(ns_packages[:i+1]) for i in range(len(ns_packages))]) or None}
       include_package_data=True,
       zip_safe=${repr(bool(zip_safe))|False},
       install_requires=['setuptools',
@@ -57,9 +57,9 @@ ${long_description|nothing}""",
                         ],
       entry_points = """
       [paste.app_factory]
-      main = ${namespace_package}.${main_package}.startup:application_factory
+      main = ${'.'.join(ns_packages)}${ns_packages and '.' or None}${main_package}.startup:application_factory
 
       [paste.global_paster_command]
-      shell = ${namespace_package}.${main_package}.debug:Shell
+      shell = ${'.'.join(ns_packages)}${ns_packages and '.' or None}${main_package}.debug:Shell
       """,
       )

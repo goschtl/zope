@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import sys
+import os, sys, shutil
 from paste.script import templates
 from paste.script.templates import var
 
@@ -22,10 +22,10 @@ class BlueBream(templates.Template):
     summary = "A BlueBream project, base template"
 
     vars = [
-        var('namespace_package', 'Namespace package name'),
-        var('main_package',
-            'Main package name (under the namespace)',
-            default='main'),
+#        var('namespace_package', 'Namespace package name'),
+#        var('main_package',
+#            'Main package name (under the namespace)',
+#            default='main'),
         var('interpreter',
             'Name of custom Python interpreter',
             default='breampy'),
@@ -43,7 +43,6 @@ class BlueBream(templates.Template):
         ]
 
     def check_vars(self, vars, cmd):
-
         if vars['package'] in ('bluebream', 'bream', 'zope'):
             print
             print "Error: The chosen project name results in an invalid " \
@@ -51,10 +50,36 @@ class BlueBream(templates.Template):
             print "Please choose a different project name."
             sys.exit(1)
 
+        # detect namespaces in the project name
+        vars['main_package'] = vars['project'].split('.')[-1]
+        self.ns_split = vars['project'].split('.')
+        vars['ns_packages'] = self.ns_split[:-1]
+        vars['packages'] = vars['project']
+
         for var in self.vars:
             if var.name == 'namespace_package':
                 var.default = vars['package']
 
-        vars = templates.Template.check_vars(self, vars, cmd)
+        self._vars = vars = templates.Template.check_vars(self, vars, cmd)
 
         return vars
+
+    def write_files(self, command, output_dir, vars):
+        """Add namespace packages and nest the main package in them"""
+        templates.Template.write_files(self, command, output_dir, vars)
+        if len(self.ns_split) > 1:
+            target_dir = os.path.join(output_dir, 'src',
+                                      os.path.join(*self.ns_split[:-1]))
+            os.makedirs(target_dir)
+            ns_declar = "__import__('pkg_resources').declare_namespace(__name__)"
+            for i, namespace_package in enumerate(self.ns_split[:-1]):
+                init_file = os.path.join(output_dir, 'src',
+                                         os.path.join(*self.ns_split[:i+1]),
+                                         '__init__.py')
+                open(init_file, 'w').write(ns_declar)
+            shutil.move(os.path.join(output_dir, 'src', vars['main_package']),
+                        target_dir)
+
+
+
+
