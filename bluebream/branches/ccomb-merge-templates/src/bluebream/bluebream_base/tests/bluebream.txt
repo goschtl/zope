@@ -88,24 +88,7 @@ sample/var/log/README.txt
 We can also create a project with a namespace:
 ----------------------------------------------
 
->>> from paste.script import command
 >>> project = 'sample.main'
->>> commands = command.get_commands()
->>> cmd = commands['create'].load()
->>> runner = cmd('create')
->>> option_args = []
->>> extra_args = [
-...            "interpreter=testpy",
-...            "version=0.1",
-...            "description=test_description",
-...            "long_description=test_long_description",
-...            "keywords=test_keyword",
-...            "author=test_author",
-...            "author_email=test_author_email",
-...            "url=http://example.com",
-...            "license_name=Test Public License",
-...            "zip_safe=False",
-...            ]
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
@@ -170,24 +153,7 @@ sample.main/var/log/README.txt
 Another project with two levels of namespace:
 ---------------------------------------------
 
->>> from paste.script import command
 >>> project = 'sample.app.main'
->>> commands = command.get_commands()
->>> cmd = commands['create'].load()
->>> runner = cmd('create')
->>> option_args = []
->>> extra_args = [
-...            "interpreter=testpy",
-...            "version=0.1",
-...            "description=test_description",
-...            "long_description=test_long_description",
-...            "keywords=test_keyword",
-...            "author=test_author",
-...            "author_email=test_author_email",
-...            "url=http://example.com",
-...            "license_name=Test Public License",
-...            "zip_safe=False",
-...            ]
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
