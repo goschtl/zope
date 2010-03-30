@@ -16,7 +16,7 @@ from os.path import join
 from setuptools import setup, find_packages, Extension
 
 setup(name='Missing',
-      version = '2.13.0dev',
+      version = '2.13.0',
       url='http://pypi.python.org/pypi/Missing',
       license='ZPL 2.1',
       description="Special Missing objects used in Zope2.",
