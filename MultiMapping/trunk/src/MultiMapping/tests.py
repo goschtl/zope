@@ -46,8 +46,6 @@
 ...     raise "That\'s odd", "This last pop should have failed!"
 ... except: # I should probably raise a specific error in this case.
 ...     pass
-
-$Id$
 """
 import unittest
 from doctest import DocTestSuite
