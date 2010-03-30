@@ -1,0 +1,7 @@
+Changelog
+=========
+
+2.13.0 (unreleased)
+-------------------
+
+- Release as separate package.
