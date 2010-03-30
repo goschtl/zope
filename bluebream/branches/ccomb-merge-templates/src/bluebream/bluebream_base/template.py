@@ -62,14 +62,13 @@ class BlueBream(templates.Template):
 
     def write_files(self, command, output_dir, vars):
         "Add namespace packages and move the main package to the last level"
+        command.verbose = 0
         templates.Template.write_files(self, command, output_dir, vars)
 
         if len(self.ns_split) > 1:
-            print 'Namespace package detected!'
             target_dir = os.path.join(output_dir, 'src',
                                       os.path.join(*self.ns_split[:-1]))
 
-            print 'Creating directory %s' % target_dir
             os.makedirs(target_dir)
 
             ns_decl = "__import__('pkg_resources').declare_namespace(__name__)"
@@ -77,12 +76,10 @@ class BlueBream(templates.Template):
                 init_file = os.path.join(output_dir, 'src',
                                          os.path.join(*self.ns_split[:i+1]),
                                          '__init__.py')
-                print 'Creating namespace-enabled %s' % init_file
                 open(init_file, 'w').write(ns_decl)
             main_package_dir = os.path.join(output_dir,
                                             'src',
                                             vars['main_package'])
-            print 'Moving %s to %s' % (main_package_dir, target_dir)
             shutil.move(main_package_dir, target_dir)
 
 
