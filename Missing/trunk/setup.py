@@ -33,7 +33,7 @@ setup(name='Missing',
             sources=[join('src', 'Missing', '_Missing.c')],
             depends=[join('include', 'ExtensionClass', 'ExtensionClass.h')]),
       ],
-      install_requires=['ExtensionClass', 'zope.interface', 'zope.testing'],
+      install_requires=['ExtensionClass'],
       include_package_data=True,
       zip_safe=False,
       )
