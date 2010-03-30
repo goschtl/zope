@@ -62,7 +62,8 @@ class BlueBream(templates.Template):
 
     def write_files(self, command, output_dir, vars):
         "Add namespace packages and move the main package to the last level"
-        command.verbose = 0
+        if not command.options.verbose:
+            command.verbose = 0
         templates.Template.write_files(self, command, output_dir, vars)
 
         if len(self.ns_split) > 1:
