@@ -16,10 +16,11 @@
 """
 __docformat__ = 'restructuredtext'
 
-from z3c.taskqueue import interfaces, job, task
 from zope import component
 from zope.container import contained
 from zope.component.interfaces import ComponentLookupError
+from zope.traversing.api import getParents
+import threading
 import datetime
 import logging
 import persistent
@@ -28,13 +29,10 @@ import time
 import zc.queue
 import zope.interface
 
-try:
-    from Products import Five
-    ZOPE2 = True
-    del Five
-    import sys
-except ImportError:
-    ZOPE2 = False
+from BTrees import family32
+
+from z3c.taskqueue import interfaces, job, task
+from z3c.taskqueue import processor
 
 log = logging.getLogger('z3c.taskqueue')
 
@@ -48,10 +46,10 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
 
     taskInterface = interfaces.ITask
 
-    _scheduledJobs = None
-    _scheduledQueue = None
     _v_nextid = None
     containerClass = None
+    processorFactory = processor.SimpleProcessor
+    processorArguments = {'waitTime': 1.0}
 
     def __init__(self):
         super(BaseTaskService, self).__init__()
@@ -178,7 +176,6 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         """
         process next job in the queue
         """
-        log.debug('processNext')
         if jobid is None:
             job = self._pullJob(now)
         else:
@@ -279,17 +276,68 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
                 return uid
             self._v_nextid = None
 
-if not ZOPE2:
+    def startProcessing(self):
+        """See interfaces.ITaskService"""
+        if self.__parent__ is None:
+            return
+        if self._scheduledJobs is None:
+            self._scheduledJobs = self.containerClass()
+        if self._scheduledQueue is None:
+            self._scheduledQueue = zc.queue.PersistentQueue()
+        # Create the path to the service within the DB.
+        servicePath = self.getServicePath()
+        log.info('starting service %s' % self._threadName())
+        # Start the thread running the processor inside.
+        processor = self.processorFactory(
+            self._p_jar.db(), servicePath, **self.processorArguments)
+        thread = threading.Thread(target=processor, name=self._threadName())
+        thread.setDaemon(True)
+        thread.running = True
+        thread.start()
 
-    class TaskService(BaseTaskService):
-        from BTrees import family32
-        containerClass = family32.IO.BTree
-        maxint = family32.maxint
+    def stopProcessing(self):
+        """See interfaces.ITaskService"""
+        if self.__name__ is None:
+            return
+        name = self._threadName()
+        log.info('stopping service %s' % name)
+        for thread in threading.enumerate():
+            if thread.getName() == name:
+                thread.running = False
+                break
 
-else:
-    from OFS.SimpleItem import SimpleItem
+    def isProcessing(self):
+        """See interfaces.ITaskService"""
+        if self.__name__ is not None:
+            name = self._threadName()
+            for thread in threading.enumerate():
+                if thread.getName() == name:
+                    if thread.running:
+                        return True
+                    break
+        return False
 
-    class TaskService(BaseTaskService, SimpleItem):
-        from BTrees.IOBTree import IOBTree
-        containerClass = IOBTree
-        maxint = sys.maxint
+    def getServicePath(self):
+        raise NotImplemented
+
+    def _threadName(self):
+        """Return name of the processing thread."""
+        # This name isn't unique based on the path to self, but this doesn't
+        # change the name that's been used in past versions.
+        path = self.getServicePath()
+        path.append('remotetasks')
+        path.reverse()
+        path.append(self.__name__)
+        return '.'.join(path)
+
+
+class TaskService(BaseTaskService):
+    containerClass = family32.IO.BTree
+    maxint = family32.maxint
+
+    def getServicePath(self):
+        path = [parent.__name__ for parent in getParents(self)
+                       if parent.__name__]
+        path.reverse()
+        path.append(self.__name__)
+        return path

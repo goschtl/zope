@@ -75,7 +75,7 @@ As long as the job is not being processed, it can be cancelled:
   >>> service.getStatus(jobid)
   'cancelled'
 
-Let's now read a job:
+Let's add another job:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
   >>> service.processNext()

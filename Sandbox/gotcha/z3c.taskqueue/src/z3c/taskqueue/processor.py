@@ -23,27 +23,19 @@ import transaction
 import zope.interface
 import zope.publisher.base
 import zope.publisher.publish
+import types
 from zope.app.publication.zopepublication import ZopePublication
 from zope.security import management
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import traverse
 
-try:
-    from ZPublisher.HTTPRequest import HTTPRequest
-    from ZPublisher.HTTPResponse import HTTPResponse
-    import ZPublisher
-    from types import StringType
-    ZOPE2 = True
-except ImportError:
-    ZOPE2 = False
-
-from lovely.remotetask import interfaces
+from z3c.taskqueue import interfaces
 
 THREAD_STARTUP_WAIT = 0.05
 
 ERROR_MARKER = object()
 
-log = logging.getLogger('lovely.remotetask')
+log = logging.getLogger('z3c.taskqueue')
 
 
 class ProcessorPublication(ZopePublication):
@@ -102,60 +94,27 @@ class BaseSimpleProcessor(object):
             if not result:
                 time.sleep(self.waitTime)
 
-if not ZOPE2:
 
-    class SimpleProcessor(BaseSimpleProcessor):
+class SimpleProcessor(BaseSimpleProcessor):
 
-        def call(self, method, args=(), errorValue=ERROR_MARKER):
-            # Create the path to the method.
-            path = self.servicePath[:] + [method]
-            path.reverse()
-            # Produce a special processor event to be sent to the publisher.
-            request = ProcessorRequest(*args)
-            request.setPublication(ProcessorPublication(self.db))
-            request.setTraversalStack(path)
-            # Publish the request, making sure that *all* exceptions are
-            # handled. The processor should *never* crash.
-            try:
-                zope.publisher.publish.publish(request, False)
-                return request.response._result
-            except Exception, error:
-                # This thread should never crash, thus a blank except
-                log.error('Processor: ``%s()`` caused an error!' % method)
-                log.exception(error)
-                return errorValue is ERROR_MARKER and error or errorValue
-
-else:
-
-    class SimpleProcessor(BaseSimpleProcessor):
-        """ SimpleProcessor for Zope2 """
-
-        def call(self, method, args=(), errorValue=ERROR_MARKER):
-            path = self.servicePath[:] + [method]
-            response = HTTPResponse()
-            env = {'SERVER_NAME': 'dummy',
-                    'SERVER_PORT': '8080',
-                    'PATH_INFO': '/' + '/'.join(path)}
-            log.info(env['PATH_INFO'])
-            request = HTTPRequest(None, env, response)
-            conn = self.db.open()
-            root = conn.root()
-            request['PARENTS'] = [root[ZopePublication.root_name]]
-            try:
-                try:
-                    ZPublisher.Publish.publish(request, 'Zope2', [None])
-                except Exception, error:
-                    # This thread should never crash, thus a blank except
-                    log.error('Processor: ``%s()`` caused an error!' % method)
-                    log.exception(error)
-                    return errorValue is ERROR_MARKER and error or errorValue
-            finally:
-                request.close()
-                conn.close()
-                if not request.response.body:
-                    time.sleep(1)
-                else:
-                    return request.response.body
+    def call(self, method, args=(), errorValue=ERROR_MARKER):
+        # Create the path to the method.
+        path = self.servicePath[:] + [method]
+        path.reverse()
+        # Produce a special processor event to be sent to the publisher.
+        request = ProcessorRequest(*args)
+        request.setPublication(ProcessorPublication(self.db))
+        request.setTraversalStack(path)
+        # Publish the request, making sure that *all* exceptions are
+        # handled. The processor should *never* crash.
+        try:
+            zope.publisher.publish.publish(request, False)
+            return request.response._result
+        except Exception, error:
+            # This thread should never crash, thus a blank except
+            log.error('Processor: ``%s()`` caused an error!' % method)
+            log.exception(error)
+            return errorValue is ERROR_MARKER and error or errorValue
 
 
 class BaseMultiProcessor(SimpleProcessor):
@@ -205,40 +164,35 @@ class BaseMultiProcessor(SimpleProcessor):
                 time.sleep(THREAD_STARTUP_WAIT)
 
 
-if not ZOPE2:
+class MultiProcessor(BaseMultiProcessor):
+    """Multi-threaded Job Processor
 
-    class MultiProcessor(BaseMultiProcessor):
-        pass
+    This processor can work on multiple jobs at the same time.
 
-else:
+    WARNING: This still does not work correctly in Zope2
+    """
+    zope.interface.implements(interfaces.IProcessor)
 
-    class MultiProcessor(BaseMultiProcessor):
-        """Multi-threaded Job Processor
+    def __init__(self, *args, **kwargs):
+        self.maxThreads = kwargs.pop('maxThreads', 5)
+        super(MultiProcessor, self).__init__(*args, **kwargs)
+        self.threads = []
 
-        This processor can work on multiple jobs at the same time.
+    def hasJobsWaiting(self):
+        value = self.call('hasJobsWaiting', errorValue=False)
+        if isinstance(value, types.StringType):
+            if value == 'True':
+                return True
+            else:
+                return False
+        return value
 
-        WARNING: This still does not work correctly in Zope2
-        """
-        zope.interface.implements(interfaces.IProcessor)
-
-        def __init__(self, *args, **kwargs):
-            self.maxThreads = kwargs.pop('maxThreads', 5)
-            super(MultiProcessor, self).__init__(*args, **kwargs)
-            self.threads = []
-
-        def hasJobsWaiting(self):
-            value = self.call('hasJobsWaiting', errorValue=False)
-            if isinstance(value, StringType):
-                if value == 'True':
-                    return True
-                else:
-                    return False
-            return value
-
-        def claimNextJob(self):
-            value = self.call('claimNextJob', errorValue=None)
-            try:
-                value = int(value)
-            except ValueError:
-                pass
-            return value
+    def claimNextJob(self):
+        value = self.call('claimNextJob', errorValue=None)
+        try:
+            value = int(value)
+        except TypeError:
+            log.debug(value)
+        except ValueError:
+            pass
+        return value

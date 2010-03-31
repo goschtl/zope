@@ -242,3 +242,30 @@ class ICronJob(IJob):
 
         now is a convenience parameter for testing.
         """
+
+
+class IProcessor(interface.Interface):
+    """Job Processor
+
+    Process the jobs that are waiting in the queue. A processor is meant to
+    be run in a separate thread. To complete a job, it simply calls back into
+    the task server. This works, since it does not use up any Web server
+    threads.
+
+    Processing a job can take a long time. However, we do not have to worry
+    about transaction conflicts, since no other request is touching the job
+    object.
+    """
+
+    running = schema.Bool(
+        title=u"Running Flag",
+        description=u"Tells whether the processor is currently running.",
+        readonly=True)
+
+    def __call__(db, servicePath):
+        """Run the processor.
+
+        The ``db`` is a ZODB instance that is used to call back into the task
+        service. The ``servicePath`` specifies how to traverse to the task
+        service itself.
+        """

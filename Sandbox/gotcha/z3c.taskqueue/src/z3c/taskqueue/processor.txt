@@ -6,35 +6,35 @@ The actual processing of the jobs in a queue is handled by a spearate
 component, known as the job processor. This component usually runs in its own
 thread and provides its own main loop.
 
-  >>> from lovely.remotetask import processor
+  >>> from z3c.taskqueue import processor
 
 The ``processor`` module provides several implementations of the processor
 API. Let's create the necessary components to test the processor:
 
 1. Create the task service and add it to the root site:
 
-  >>> from lovely import remotetask
-  >>> tasks = remotetask.TaskService()
+  >>> from z3c.taskqueue import TaskService
+  >>> tasks = TaskService()
 
   >>> sm = root['tasks'] = tasks
 
 2. Register the service as a utility:
 
-  >>> from lovely.remotetask import interfaces
+  >>> from z3c.taskqueue import interfaces
   >>> sm = root.getSiteManager()
   >>> sm.registerUtility(tasks, interfaces.ITaskService, name='tasks')
 
 3. Register a task that simply sleeps and writes a message:
 
   >>> import logging
-  >>> log = logging.getLogger('lovely.remotetask')
+  >>> log = logging.getLogger('z3c.taskqueue')
   >>> import time
   >>> def sleep((sleepTime, id)):
   ...     time.sleep(sleepTime)
   ...     log.info('Job: %i' %id)
 
-  >>> import lovely.remotetask.task
-  >>> sleepTask = remotetask.task.SimpleTask(sleep)
+  >>> from z3c.taskqueue import task
+  >>> sleepTask = task.SimpleTask(sleep)
 
   >>> import zope.component
   >>> zope.component.provideUtility(sleepTask, name='sleep')
@@ -84,14 +84,14 @@ existing interactions in order to process the job in this thread:
   True
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 1
 
 Let's now use the processor from within the task service. Since the processor
 constructors also accept additional arguments, they are specified as well:
 
   >>> tasks.processorFactory
-  <class 'lovely.remotetask.processor.SimpleProcessor'>
+  <class 'z3c.taskqueue.processor.SimpleProcessor'>
   >>> tasks.processorArguments
   {'waitTime': 0.0}
 
@@ -111,14 +111,18 @@ The log shows that all jobs have been processed. But more importantly, they
 were all completed in the order they were defined.
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 1
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    starting service remotetasks.tasks.tasks
+  z3c.taskqueue INFO
     Job: 2
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 3
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 4
+  z3c.taskqueue INFO
+    stopping service remotetasks.tasks.tasks
 
 Transactions in jobs
 --------------------
@@ -137,7 +141,7 @@ transaction, so if it is aborted, the job remains on the queue):
   ...     global counter
   ...     counter += 1
   ...     transaction.abort()
-  >>> countTask = remotetask.task.SimpleTask(count)
+  >>> countTask = task.SimpleTask(count)
   >>> zope.component.provideUtility(countTask, name='count')
 
   >>> jobid = tasks.add(u'count', ())
@@ -209,7 +213,7 @@ job, we can process it:
   True
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 1
 
 Let's now have a look at using the processor in the task service. This
@@ -236,12 +240,17 @@ As you can see, this time the jobs are not completed in order, because they
 all need different time to execute:
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    starting service remotetasks.tasks.tasks
+  z3c.taskqueue INFO
     Job: 3
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 4
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 2
+  z3c.taskqueue INFO
+    stopping service remotetasks.tasks.tasks
+
 
 Let's now set the thread limit to two and construct a new set of tasks that
 demonstrate that not more than two threads run at the same time:
@@ -269,14 +278,18 @@ the jobs and see the result:
   >>> transaction.commit()
 
   >>> print log_info
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    starting service remotetasks.tasks.tasks
+  z3c.taskqueue INFO
     Job: 1
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 2
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 3
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
     Job: 4
+  z3c.taskqueue INFO
+    stopping service remotetasks.tasks.tasks
 
 Note: Sometimes (about 20% of the time in this test) the log will contain a
 conflict error. As long as the error is *not* produced by ``processNext()``,

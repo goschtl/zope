@@ -30,7 +30,10 @@ setup(name='z3c.taskqueue',
           'zope.configuration',
           'zope.container',
           'zc.queue',
+          'zope.app.publication',
       ],
+      extras_require=dict(test=['zope.app.testing',
+        ]),
       entry_points="""
       # -*- Entry points: -*-
       """,
