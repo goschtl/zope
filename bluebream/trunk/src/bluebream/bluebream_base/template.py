@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import re, os, sys, shutil
+import re, os, sys
 import pkg_resources
 from paste.script import templates
 from paste.script.templates import var
@@ -82,7 +82,8 @@ class BlueBream(templates.Template):
             main_package_dir = os.path.join(output_dir,
                                             'src',
                                             vars['main_package'])
-            shutil.move(main_package_dir, target_dir)
-
+            os.rename(main_package_dir,
+                      os.path.join(target_dir,
+                                   os.path.basename(main_package_dir,)))
 
 
