@@ -1,6 +1,20 @@
 BlueBream
 =========
 
+The template supports any number namespace levels, depending on the
+provided project name.
+
+First try with a single flat package:
+-------------------------------------
+
+>>> import os
+>>> def print_dir(d):
+...     for dirpath, dirnames, filenames in sorted(os.walk(d)):
+...         for filename in sorted(filenames):
+...             # Hack for http://trac.pythonpaste.org/pythonpaste/ticket/414
+...             if not filename.endswith('.pyo'):
+...                 print os.path.join(dirpath,filename)
+
 >>> from paste.script import command
 >>> project = 'sample'
 >>> commands = command.get_commands()
@@ -8,8 +22,6 @@ BlueBream
 >>> runner = cmd('create')
 >>> option_args = []
 >>> extra_args = [
-...            "namespace_package=test_name",
-...            "main_package=test_main",
 ...            "interpreter=testpy",
 ...            "version=0.1",
 ...            "description=test_description",
@@ -26,74 +38,208 @@ Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
 <BLANKLINE>
 Variables:
-  author:             test_author
-  author_email:       test_author_email
-  description:        test_description
-  egg:                sample
-  interpreter:        testpy
-  keywords:           test_keyword
-  license_name:       Test Public License
-  long_description:   test_long_description
-  main_package:       test_main
-  namespace_package:  test_name
-  package:            sample
-  project:            sample
-  url:                http://example.com
-  version:            0.1
-  zip_safe:           False
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sample
+  project:           sample
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
 Creating template bluebream
 Creating directory ./sample
-  Copying bootstrap.py to ./sample/bootstrap.py
-  Copying buildout.cfg_tmpl to ./sample/buildout.cfg
-  Copying debug.ini_tmpl to ./sample/debug.ini
-  Copying deploy.ini_tmpl to ./sample/deploy.ini
-  Recursing into etc
-    Creating ./sample/etc/
-    Copying site.zcml_tmpl to ./sample/etc/site.zcml
-  Copying setup.py_tmpl to ./sample/setup.py
-  Recursing into src
-    Creating ./sample/src/
-    Recursing into +namespace_package+
-      Creating ./sample/src/test_name/
-      Recursing into +main_package+
-        Creating ./sample/src/test_name/test_main/
-        Copying __init__.py to ./sample/src/test_name/test_main/__init__.py
-        Copying configure.zcml_tmpl to ./sample/src/test_name/test_main/configure.zcml
-        Copying debug.py to ./sample/src/test_name/test_main/debug.py
-        Copying securitypolicy.zcml_tmpl to ./sample/src/test_name/test_main/securitypolicy.zcml
-        Copying startup.py to ./sample/src/test_name/test_main/startup.py
-        Recursing into tests
-          Creating ./sample/src/test_name/test_main/tests/
-          Copying __init__.py to ./sample/src/test_name/test_main/tests/__init__.py
-          Copying ftesting.zcml_tmpl to ./sample/src/test_name/test_main/tests/ftesting.zcml
-          Copying tests.py_tmpl to ./sample/src/test_name/test_main/tests/tests.py
-        Recursing into welcome
-          Creating ./sample/src/test_name/test_main/welcome/
-          Copying __init__.py to ./sample/src/test_name/test_main/welcome/__init__.py
-          Copying app.py to ./sample/src/test_name/test_main/welcome/app.py
-          Copying configure.zcml_tmpl to ./sample/src/test_name/test_main/welcome/configure.zcml
-          Copying ftests.txt_tmpl to ./sample/src/test_name/test_main/welcome/ftests.txt
-          Copying index.pt_tmpl to ./sample/src/test_name/test_main/welcome/index.pt
-          Copying interfaces.py to ./sample/src/test_name/test_main/welcome/interfaces.py
-          Recursing into static
-            Creating ./sample/src/test_name/test_main/welcome/static/
-            Copying logo.png to ./sample/src/test_name/test_main/welcome/static/logo.png
-            Copying style.css to ./sample/src/test_name/test_main/welcome/static/style.css
-          Copying views.py to ./sample/src/test_name/test_main/welcome/views.py
-      Copying __init__.py to ./sample/src/test_name/__init__.py
-    Recursing into +package+.egg-info
-      Creating ./sample/src/sample.egg-info/
-      Copying PKG-INFO to ./sample/src/sample.egg-info/PKG-INFO
-  Recursing into templates
-    Creating ./sample/templates/
-    Copying zope_conf.in to ./sample/templates/zope_conf.in
-  Recursing into var
-    Creating ./sample/var/
-    Recursing into filestorage
-      Creating ./sample/var/filestorage/
-      Copying README.txt to ./sample/var/filestorage/README.txt
-    Recursing into log
-      Creating ./sample/var/log/
-      Copying README.txt to ./sample/var/log/README.txt
-  Copying versions.cfg to ./sample/versions.cfg
-Running python setup.py egg_info
+
+>>> print_dir('sample')
+sample/bootstrap.py
+sample/buildout.cfg
+sample/debug.ini
+sample/deploy.ini
+sample/setup.py
+sample/versions.cfg
+sample/etc/site.zcml
+sample/src/sample/__init__.py
+sample/src/sample/configure.zcml
+sample/src/sample/debug.py
+sample/src/sample/securitypolicy.zcml
+sample/src/sample/startup.py
+sample/src/sample.egg-info/PKG-INFO
+sample/src/sample.egg-info/SOURCES.txt
+sample/src/sample.egg-info/dependency_links.txt
+sample/src/sample.egg-info/entry_points.txt
+sample/src/sample.egg-info/requires.txt
+sample/src/sample.egg-info/top_level.txt
+sample/src/sample.egg-info/zip-safe
+sample/src/sample/tests/__init__.py
+sample/src/sample/tests/ftesting.zcml
+sample/src/sample/tests/tests.py
+sample/src/sample/welcome/__init__.py
+sample/src/sample/welcome/app.py
+sample/src/sample/welcome/configure.zcml
+sample/src/sample/welcome/ftests.txt
+sample/src/sample/welcome/index.pt
+sample/src/sample/welcome/interfaces.py
+sample/src/sample/welcome/views.py
+sample/src/sample/welcome/static/logo.png
+sample/src/sample/welcome/static/style.css
+sample/templates/zope_conf.in
+sample/var/filestorage/README.txt
+sample/var/log/README.txt
+
+>>> print open(os.path.join('sample', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      shell = sample.debug:Shell
+...
+
+We can also create a project with a namespace:
+----------------------------------------------
+
+>>> project = 'sample.main'
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample.main
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           samplemain
+  project:           sample.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sample.main
+
+>>> print_dir('sample.main')
+sample.main/bootstrap.py
+sample.main/buildout.cfg
+sample.main/debug.ini
+sample.main/deploy.ini
+sample.main/setup.py
+sample.main/versions.cfg
+sample.main/etc/site.zcml
+sample.main/src/sample/__init__.py
+sample.main/src/sample.main.egg-info/PKG-INFO
+sample.main/src/sample.main.egg-info/SOURCES.txt
+sample.main/src/sample.main.egg-info/dependency_links.txt
+sample.main/src/sample.main.egg-info/entry_points.txt
+sample.main/src/sample.main.egg-info/namespace_packages.txt
+sample.main/src/sample.main.egg-info/requires.txt
+sample.main/src/sample.main.egg-info/top_level.txt
+sample.main/src/sample.main.egg-info/zip-safe
+sample.main/src/sample/main/__init__.py
+sample.main/src/sample/main/configure.zcml
+sample.main/src/sample/main/debug.py
+sample.main/src/sample/main/securitypolicy.zcml
+sample.main/src/sample/main/startup.py
+sample.main/src/sample/main/tests/__init__.py
+sample.main/src/sample/main/tests/ftesting.zcml
+sample.main/src/sample/main/tests/tests.py
+sample.main/src/sample/main/welcome/__init__.py
+sample.main/src/sample/main/welcome/app.py
+sample.main/src/sample/main/welcome/configure.zcml
+sample.main/src/sample/main/welcome/ftests.txt
+sample.main/src/sample/main/welcome/index.pt
+sample.main/src/sample/main/welcome/interfaces.py
+sample.main/src/sample/main/welcome/views.py
+sample.main/src/sample/main/welcome/static/logo.png
+sample.main/src/sample/main/welcome/static/style.css
+sample.main/templates/zope_conf.in
+sample.main/var/filestorage/README.txt
+sample.main/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample'],
+...
+shell = sample.main.debug:Shell
+...
+
+
+Another project with two levels of namespace:
+---------------------------------------------
+
+>>> project = 'sample.app.main'
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample.app.main
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sampleappmain
+  project:           sample.app.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sample.app.main
+
+>>> print_dir('sample.app.main')
+sample.app.main/bootstrap.py
+sample.app.main/buildout.cfg
+sample.app.main/debug.ini
+sample.app.main/deploy.ini
+sample.app.main/setup.py
+sample.app.main/versions.cfg
+sample.app.main/etc/site.zcml
+sample.app.main/src/sample/__init__.py
+sample.app.main/src/sample.app.main.egg-info/PKG-INFO
+sample.app.main/src/sample.app.main.egg-info/SOURCES.txt
+sample.app.main/src/sample.app.main.egg-info/dependency_links.txt
+sample.app.main/src/sample.app.main.egg-info/entry_points.txt
+sample.app.main/src/sample.app.main.egg-info/namespace_packages.txt
+sample.app.main/src/sample.app.main.egg-info/requires.txt
+sample.app.main/src/sample.app.main.egg-info/top_level.txt
+sample.app.main/src/sample.app.main.egg-info/zip-safe
+sample.app.main/src/sample/app/__init__.py
+sample.app.main/src/sample/app/main/__init__.py
+sample.app.main/src/sample/app/main/configure.zcml
+sample.app.main/src/sample/app/main/debug.py
+sample.app.main/src/sample/app/main/securitypolicy.zcml
+sample.app.main/src/sample/app/main/startup.py
+sample.app.main/src/sample/app/main/tests/__init__.py
+sample.app.main/src/sample/app/main/tests/ftesting.zcml
+sample.app.main/src/sample/app/main/tests/tests.py
+sample.app.main/src/sample/app/main/welcome/__init__.py
+sample.app.main/src/sample/app/main/welcome/app.py
+sample.app.main/src/sample/app/main/welcome/configure.zcml
+sample.app.main/src/sample/app/main/welcome/ftests.txt
+sample.app.main/src/sample/app/main/welcome/index.pt
+sample.app.main/src/sample/app/main/welcome/interfaces.py
+sample.app.main/src/sample/app/main/welcome/views.py
+sample.app.main/src/sample/app/main/welcome/static/logo.png
+sample.app.main/src/sample/app/main/welcome/static/style.css
+sample.app.main/templates/zope_conf.in
+sample.app.main/var/filestorage/README.txt
+sample.app.main/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.app.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample', 'sample.app'],
+...
+shell = sample.app.main.debug:Shell
+...

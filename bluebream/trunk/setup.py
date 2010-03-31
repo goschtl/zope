@@ -52,6 +52,5 @@ setup(
     entry_points={
     "paste.paster_create_template":
         ["bluebream = bluebream.bluebream_base.template:BlueBream",
-         "bluebream_simple = bluebream.bluebream_simple.template:BlueBream"
          ]})
 

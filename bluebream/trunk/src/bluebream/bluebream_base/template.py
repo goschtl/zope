@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import sys
+import re, os, sys, shutil
+import pkg_resources
 from paste.script import templates
 from paste.script.templates import var
 
@@ -22,10 +23,6 @@ class BlueBream(templates.Template):
     summary = "A BlueBream project, base template"
 
     vars = [
-        var('namespace_package', 'Namespace package name'),
-        var('main_package',
-            'Main package name (under the namespace)',
-            default='main'),
         var('interpreter',
             'Name of custom Python interpreter',
             default='breampy'),
@@ -43,7 +40,6 @@ class BlueBream(templates.Template):
         ]
 
     def check_vars(self, vars, cmd):
-
         if vars['package'] in ('bluebream', 'bream', 'zope'):
             print
             print "Error: The chosen project name results in an invalid " \
@@ -51,10 +47,42 @@ class BlueBream(templates.Template):
             print "Please choose a different project name."
             sys.exit(1)
 
-        for var in self.vars:
-            if var.name == 'namespace_package':
-                var.default = vars['package']
+        # detect namespaces in the project name
+        vars['package'] = re.sub('[^A-Za-z0-9.]+', '_', vars['project']).lower()
+        vars['main_package'] = vars['package'].split('.')[-1]
+        self.ns_split = vars['project'].split('.')
+        vars['namespace_packages'] = list(reversed([
+                    vars['package'].rsplit('.', i)[0]
+                    for i in range(1,len(self.ns_split))]))
+        vars['ns_prefix'] = '.'.join(self.ns_split[:-1]) + '.'
+        if len(self.ns_split) == 1:
+            vars['ns_prefix'] = ''
 
-        vars = templates.Template.check_vars(self, vars, cmd)
+        return templates.Template.check_vars(self, vars, cmd)
 
-        return vars
+    def write_files(self, command, output_dir, vars):
+        """Add namespace packages and move the main package to the last level
+        """
+        if not command.options.verbose:
+            command.verbose = 0
+        templates.Template.write_files(self, command, output_dir, vars)
+
+        if len(self.ns_split) > 1:
+            target_dir = os.path.join(output_dir, 'src',
+                                      os.path.join(*self.ns_split[:-1]))
+
+            os.makedirs(target_dir)
+
+            ns_decl = "__import__('pkg_resources').declare_namespace(__name__)"
+            for i, namespace_package in enumerate(self.ns_split[:-1]):
+                init_file = os.path.join(output_dir, 'src',
+                                         os.path.join(*self.ns_split[:i+1]),
+                                         '__init__.py')
+                open(init_file, 'w').write(ns_decl)
+            main_package_dir = os.path.join(output_dir,
+                                            'src',
+                                            vars['main_package'])
+            shutil.move(main_package_dir, target_dir)
+
+
+

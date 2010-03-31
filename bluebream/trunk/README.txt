@@ -18,16 +18,15 @@ like, GPL compatible license).
 Features
 --------
 
-A few features distinguish BlueBream from other Python web
-frameworks:
+Here are the features distinguishing BlueBream from other Python web frameworks:
 
-- BlueBream is built on top of the `Zope Tool Kit
+- BlueBream is built on top of the `Zope Toolkit
   <http://docs.zope.org/zopetoolkit>`_ (ZTK), which has many years of
   experience proving it meets the demanding requirements for stable,
   scalable software.
 
-- BlueBream uses the powerful and familiar Buildout_ system written
-  in Python.
+- BlueBream uses the powerful and familiar Buildout_ building system written in
+  Python.
   
 - BlueBream employs the Zope Object Database ZODB_, a transactional
   object database, providing extremely powerful and easy to use
@@ -42,14 +41,12 @@ frameworks:
   *Separation of concerns* to create highly cohesive reusable
   components (zope.component_).
 
-- BlueBream implements Python Web Server Gateway Interface (`WSGI
-  <http://www.wsgi.org/wsgi>`_) using `Paste
-  <http://pythonpaste.org>`_, `PasteScript
-  <http://pythonpaste.org/script>`_, and `PasteDeploy
+- BlueBream implements the `WSGI` specification (`Web Server Gateway Interface
+  <http://www.wsgi.org/wsgi>`_) with the help of `PasteDeploy
   <http://pythonpaste.org/deploy>`_.
 
 - BlueBream includes a number of well tested components to implement
-  common activities.  A few are of these are:
+  common activities.  A few of these are:
   
   - zope.publisher_ publishes Python objects on the web, emphasizing
     `WSGI <http://www.wsgi.org/wsgi>`_ compatibility
@@ -60,12 +57,12 @@ frameworks:
   - zope.testing_ and zope.testbrowser_ offer unit and functional testing 
     frameworks 
 
-  - zope.pagetemplate_ is an XHTML-compliant language for devloping
+  - zope.pagetemplate_ is an XHTML-compliant language for developing
     templates
 
-  - zope.schema_ is a schema engine
+  - zope.schema_ is a schema engine to describe your data models
 
-  - zope.formlib_ is a tool for automatically generating forms
+  - zope.formlib_ is a tool for automatically generating forms from your schemas
 
 .. _Buildout: http://www.buildout.org
 .. _ZODB: http://www.zodb.org
@@ -92,8 +89,8 @@ command will be available.  Then, you can install BlueBream using
 Internet access to `PyPI <http://pypi.python.org/pypi>`_ is required
 to perform installation of BlueBream.
 
-The ``bluebream`` distribution provides a template based project
-creation based on PasteScript template.  Once BlueBream is installed,
+The ``bluebream`` distribution provides a quick project
+creation tool based on PasteScript templates.  Once BlueBream is installed,
 run ``paster`` command to create the project directory structure.
 The ``create`` sub-command provided by paster will show a wizard to
 create the project directory structure.
@@ -102,31 +99,31 @@ create the project directory structure.
 
   $ paster create -t bluebream
 
-This will bring a wizard asking details about your new project.  If
-you provide package name, namespace package name and version number,
-you will get a working application which can be modified further.
-The project name will be used as the name of egg.  You can also
-change the values provided later.
+This will bring a wizard asking details about your new project.  If you provide
+a package name and version number, you will get a working application which can
+be modified further.  The project name will be used as the egg name. You can
+also change the values provided later.
 
-The project name can be give given as a command line argument::
+The project name can be given as a command line argument::
 
   $ paster create -t bluebream sampleproject
 
-The name of namespace package also can be given from the command line::
-
-  $ paster create -t bluebream sampleproject namespace_package=mycompany
+You can provide a dotted name so that the package be created in a namespace,
+with any number of levels, such as "sample.main" or "sample.app.main". It will
+result in a nested structure allowing you to split large projects into several
+packages.
 
 If you provide an option from the command line, it will not be
-prompted by the wizard.  The other variables are give below, you may
-be give the values from command line, if required:
+prompted by the wizard. The other variables are given below, you can
+give the values from the command line, if required:
 
-- ``interpreter`` -- Name of custom Python interpreter
+- ``interpreter`` -- Name of the custom Python interpreter
 
 - ``version`` -- Version (like 0.1)
 
 - ``description`` -- One-line description of the package
 
-- ``long_description`` -- Multi-line description (in reST)
+- ``long_description`` -- Multi-line description (in reStructuredText)
 
 - ``keywords`` -- Space-separated keywords/tags
 
@@ -134,12 +131,12 @@ be give the values from command line, if required:
 
 - ``author_email`` -- Author email
 
-- ``url`` -- URL of homepage
+- ``url`` -- URL of the homepage
 
 - ``license_name`` -- License name
 
 - ``zip_safe`` -- ``True``, if the package can be distributed as a .zip
-  file othewise ``False``.
+  file otherwise ``False``.
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide
@@ -153,20 +150,19 @@ Buildout bootstrap script (``bootstrap.py``).  First you need to
 bootstrap the buildout itself::
 
   $ cd sampleproject
-  $ python2.6 bootstrap.py
+  $ python bootstrap.py
 
-The bootstrap script will install ``zc.buildout`` and ``setuptools``
-package.  Also, it will create the basic directory structure.  Next
-step is building the application.  To build the application, run the
-buildout::
+The bootstrap script will install the ``zc.buildout`` and ``setuptools``
+packages.  Also, it will create the basic directory structure.  Next step is
+building the application.  To build the application, run the buildout::
 
   $ ./bin/buidout
 
 The buildout script will download all dependencies and setup the
 environment to run your application.
 
-The most common thing you need while developing application is
-running the server.  BlueBream use ``paster`` command provided by
+The most common thing you need while developing an application is
+running the server.  BlueBream use the ``paster`` command provided by
 PasteScript to run the WSGI server.  To run the server, you can pass
 the PasteDeploy configuration file as the argument to ``serve``
 sub-command as given here::
@@ -178,9 +174,9 @@ http://localhost:8080/ .  The port number (``8080``) can be changed
 from the PasteDeploy configuration file (``debug.ini``).
 
 The second most common thing must be running the test cases.
-BlueBream by create a testrunner using the ``zc.recipe.testrunner``
+BlueBream creates a testrunner using the ``zc.recipe.testrunner``
 Buildout recipe.  You can see a ``test`` command inside the ``bin``
-directory.  To run test cases, you can run this command::
+directory.  To run test cases, just run this command::
 
   $ ./bin/test
 
@@ -190,7 +186,7 @@ shell like this::
 
   $ ./bin/paster shell debug.ini
 
-More about the test runner and debug shell will be exaplained in the
+More about the test runner and debug shell will be explained in the
 BlueBream Manual.  You can continue reading about BlueBream from the
 `documentation site <http://bluebream.zope.org>`_.
 
@@ -214,7 +210,7 @@ Resources
 
 - IRC Channel: `#bluebream at irc.freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
 
-- `Buildbot <http://zope3.afpy.org/buildbot>`_
+- `Buildbot <http://buildbot.afpy.org/bluebream>`_
 
 - The source code is managed at `Zope reposistory
   <http://svn.zope.org/bluebream>`_.  You can perform a read-only
