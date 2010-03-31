@@ -61,24 +61,24 @@ the project name ``ticketcollector`` and namespace package name
   $ paster create -t bluebream
   Selected and implied templates:
     bluebream#bluebream  A BlueBream project, base template
-  
+
   Enter project name: ticketcollector
   Variables:
     egg:      ticketcollector
     package:  ticketcollector
     project:  ticketcollector
   Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter main_package (Main package name (under the namespace)) ['main']: 
-  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
-  Enter version (Version (like 0.1)) ['0.1']: 
+  Enter main_package (Main package name (under the namespace)) ['main']:
+  Enter interpreter (Name of custom Python interpreter) ['breampy']:
+  Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
-  Enter keywords (Space-separated keywords/tags) ['']: 
+  Enter keywords (Space-separated keywords/tags) ['']:
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@example.com
-  Enter url (URL of homepage) ['']: 
+  Enter url (URL of homepage) ['']:
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
   Creating template bluebream
   Creating directory ./ticketcollector
     Copying bootstrap.py to ./ticketcollector/bootstrap.py
@@ -525,26 +525,26 @@ will look like this::
      xmlns="http://namespaces.zope.org/zope"
      xmlns:browser="http://namespaces.zope.org/browser"
      i18n_domain="ticketcollector">
-  
+
     <include file="securitypolicy.zcml" />
-  
+
     <!-- The following registration (defaultView) register 'index' as
          the default view for a container.  The name of default view
          can be changed to a different value, for example, 'index.html'.
          More details about defaultView registration is available here:
          http://bluebream.zope.org/doc/1.0/howto/defaultview.html
          -->
-  
+
     <browser:defaultView
        for="zope.container.interfaces.IContainer"
        name="index"
        />
-  
+
     <!-- To remove the sample application delete the following line
          and remove the `welcome` folder from this directory.
          -->
     <include package=".welcome" />
-  
+
   </configure>
 
 The ``securitypolicy.zcml`` is where you can define the security

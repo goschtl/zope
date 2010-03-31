@@ -691,6 +691,69 @@ ChangeLog of individual packages
 bluebream
 ~~~~~~~~~
 
+1.0a6 (unreleased)
+******************
+
+- Set `name` & `description` for the sample application
+
+- Use project name as i18n_domain in base template
+
+- Merge the two templates into a single one by allowing to create a
+  flat or nested namespace structure, depending on the project name.
+
+- Enabled Distribute by default instead of Setuptools
+
+1.0a5 (2010-03-28)
+******************
+
+- Include the sample application in the `bluebream_simple` template
+
+- Move the sample application provided by `bluebream` template
+  to a sub-package named `welcome` similar to `bluebream_simple`
+  The sample application can be easily removed.
+
+- The sample application object use 'zope.site.interfaces.IFolder`
+  instead of `zope.container.interfaces.IContainer`
+
+- Include `zope.session` from `site.zcml`
+
+- Include `browser` namespace in `site.zcml` for convenience.
+
+- Added an empty `[versions]` part in `versions.cfg` with
+  a recommendation to pin-down versions of other dependencies.
+
+- Remove `zope.app.twisted` from dependency list
+
+- Since BlueBream requires ZODB 3.9, FileStorage need not be
+  wrapped with BlobStorage proxy to get ZODB blobs support.
+
+- The default ZODB blob layout should be 'bushy'
+  Fix LP #543525
+
+- Use relative paths in etc/zope.conf Fix LP #543451
+
+- Specify i18n domain in ftesting.zcml Fix LP #543516
+
+- zope.browserresource package registration was missing
+  Fix LP #541457 
+
+1.0a4 (2010-03-07)
+******************
+
+- Added an empty PKG-INFO
+  Work around fix for "empty directory" problem.
+  (refer: LP #503301)
+
+1.0a3 (2010-03-07)
+******************
+
+- The summary of ``bluebream_base`` template changed to:
+  "A BlueBream project, base template"
+
+- Enable ``bluebream_simple`` again.  Documentation is
+  available here:
+  http://wiki.zope.org/bluebream/AlternateProjectTemplates
+
 1.0a2 (2010-03-02)
 ******************
 

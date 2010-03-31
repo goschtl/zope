@@ -6,7 +6,7 @@ Glossary
 .. glossary::
 
   BlueBream
-    BlueBream is a renaming of :term:`Zope 3`, `started in 2010`_ 
+    BlueBream is a renaming of :term:`Zope 3`, `started in 2010`_
 
   Setuptools
     Using Setuptools_, developers can distribute Python packages.  It
@@ -18,11 +18,12 @@ Glossary
     An Egg is a deployment format created by :term:`Setuptools`.
 
   Buildout
-    A `Python based Build system`_ created by Jim Fulton. 
+    A `Python-based build system`_ created by Jim Fulton.
     See the `Buildout PyPI page`_ for more detailed documentation.
 
   Zope 2
-    `The Z Object Publishing Framework`_, a Python based web application server.
+    `The Z Object Publishing Framework`_, a Python based web application server,
+    used in production for more than a decade.
 
   Zope
 
@@ -37,7 +38,7 @@ Glossary
   Distribute
     A `community developed fork`_ of the :term:`Setuptools` project.
 
-  Zope Tool Kit
+  Zope Toolkit
     The `Zope Tool Kit`_ (ZTK) is a set of libraries intended for
     reuse by projects to develop web applications or web frameworks.
 
@@ -59,55 +60,57 @@ Glossary
     The `Web Server Gateway Interface`_ defines a simple and
     universal interface between web servers and web applications or
     frameworks for the Python programming language.  The latest
-    version 3.0 of Python, released in December 2008, is already
+    version 3 of Python, released in December 2008, is already
     supported by :term:`mod_wsgi` (a module for the Apache Web
     server).
-   
+
   Paste
     Paste_ is a tool for using a Web Server Gateway Interface stack
-   
+
   PasteDeploy
-    PasteDeploy_ provides code to load WSGI applications and servers 
-    from URIs; these URIs can refer to Python Eggs for INI-style 
-    configuration files. Paste Script provides commands to serve applications 
+    PasteDeploy_ provides code to load WSGI applications and servers
+    from URIs; these URIs can refer to Python Eggs for INI-style
+    configuration files. Paste Script provides commands to serve applications
     based on this configuration file.
-   
+
   PasteScript
-    PasteScript_ is a pluggable command-line frontend, including commands 
+    PasteScript_ is a pluggable command-line frontend, including commands
     to setup package file layouts
-   
+
   Separation of concerns
-    `Separation of concerns`_ (SoC) is the process of separating a computer 
-    program into distinct features that overlap in functionality as 
+    `Separation of concerns`_ (SoC) is the process of separating a computer
+    program into distinct features that overlap in functionality as
     little as possible.
-   
+
   ZODB
-    The `Zope Object Database`_ provides an object-oriented database 
-    for Python that provides a high-degree of transparency. Applications 
-    can take advantage of object database features with few, if any, changes 
-    to application logic. ZODB includes features such as a pluggable storage 
+    The `Zope Object Database`_ provides an object-oriented database
+    for Python that provides a high-degree of transparency. Applications
+    can take advantage of object database features with few, if any, changes
+    to application logic. ZODB includes features such as a pluggable storage
     interface, rich transaction support, and undo.
-    
+
   ZCML
-    The `Zope Configuration Markup Language`_
-   
+    The `Zope Configuration Markup Language`_ is an XML configuration
+    language used to populate the global component registry of an application
+    that makes use of the Zope Component Architecture.
+
   Jim Fulton
-    `James Fulton`_ - Chief Technology Officer, Zope Corp, AKA the 
+    `James Fulton`_ - Chief Technology Officer, Zope Corp, AKA the
     *Zope Pope*, J1m in IRC.  He's the man.
-   
+
   Bobo
     Jim Fulton's original design of object oriented internet
     publishing technology, implemented in Python. Jim has recently
-    come full circle, releasing Bobo_, a *Web application framework 
+    come full circle, releasing Bobo_, a *Web application framework
     for the impatient*.
-   
+
   CGI
     `Common Gateway Interface`_
-   
+
   Grok
-    Grok_ is a web application framework for Python developers. 
+    Grok_ is a web application framework for Python developers.
     It is aimed at both beginners and very experienced web developers.
-    Grok has an emphasis on agile development. Grok is easy and powerful.   
+    Grok has an emphasis on agile development. Grok is easy and powerful.
 
   mod_wsgi
     `Apache module`_ to host any Python application which supports
@@ -139,7 +142,7 @@ Glossary
 .. _started in 2010: https://mail.zope.org/pipermail/zope-dev/2010-January/039072.html
 .. _ZPL: http://foundation.zope.org/agreements/ZPL_2.1.pdf
 .. _Web Server Gateway Interface: http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
-.. _Paste: http://pypi.python.org/pypi/Paste/
+.. _Paste: http://pypi.python.org/pypi/Paste/
 .. _PasteDeploy: http://pypi.python.org/pypi/PasteDeploy/
 .. _PasteScript: http://pypi.python.org/pypi/PasteScript
 .. _Separation of concerns: http://en.wikipedia.org/wiki/Separation_of_concerns
