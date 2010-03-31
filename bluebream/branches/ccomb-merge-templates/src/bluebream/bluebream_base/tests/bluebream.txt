@@ -22,6 +22,7 @@ First try with a single flat package:
 >>> runner = cmd('create')
 >>> option_args = []
 >>> extra_args = [
+...            "package=sample",
 ...            "interpreter=testpy",
 ...            "version=0.1",
 ...            "description=test_description",
@@ -100,6 +101,7 @@ We can also create a project with a namespace:
 ----------------------------------------------
 
 >>> project = 'sample.main'
+>>> extra_args[0] = "package=sample.main"
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
@@ -113,7 +115,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
-  package:           samplemain
+  package:           sample.main
   project:           sample.main
   url:               http://example.com
   version:           0.1
@@ -174,6 +176,7 @@ Another project with two levels of namespace:
 ---------------------------------------------
 
 >>> project = 'sample.app.main'
+>>> extra_args[0] = "package=sample.app.main"
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
@@ -187,7 +190,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
-  package:           sampleappmain
+  package:           sample.app.main
   project:           sample.app.main
   url:               http://example.com
   version:           0.1
