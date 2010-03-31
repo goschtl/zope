@@ -11,6 +11,8 @@ Changelog
 - Merge the two templates into a single one by allowing to create a
   flat or nested namespace structure, depending on the project name.
 
+- Enabled Distribute by default instead of Setuptools
+
 1.0a5 (2010-03-28)
 ------------------
 
