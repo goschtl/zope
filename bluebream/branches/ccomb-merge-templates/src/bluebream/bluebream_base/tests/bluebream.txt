@@ -68,6 +68,12 @@ sample/src/sample/debug.py
 sample/src/sample/securitypolicy.zcml
 sample/src/sample/startup.py
 sample/src/sample.egg-info/PKG-INFO
+sample/src/sample.egg-info/SOURCES.txt
+sample/src/sample.egg-info/dependency_links.txt
+sample/src/sample.egg-info/entry_points.txt
+sample/src/sample.egg-info/requires.txt
+sample/src/sample.egg-info/top_level.txt
+sample/src/sample.egg-info/zip-safe
 sample/src/sample/tests/__init__.py
 sample/src/sample/tests/ftesting.zcml
 sample/src/sample/tests/tests.py
@@ -84,6 +90,11 @@ sample/templates/zope_conf.in
 sample/var/filestorage/README.txt
 sample/var/log/README.txt
 
+>>> print open(os.path.join('sample', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      shell = sample.debug:Shell
+...
 
 We can also create a project with a namespace:
 ----------------------------------------------
@@ -148,6 +159,15 @@ sample.main/templates/zope_conf.in
 sample.main/var/filestorage/README.txt
 sample.main/var/log/README.txt
 
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample'],
+...
+shell = sample.main.debug:Shell
+...
 
 
 Another project with two levels of namespace:
@@ -214,3 +234,12 @@ sample.app.main/templates/zope_conf.in
 sample.app.main/var/filestorage/README.txt
 sample.app.main/var/log/README.txt
 
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.app.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample', 'sample.app'],
+...
+shell = sample.app.main.debug:Shell
+...

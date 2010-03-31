@@ -51,9 +51,9 @@ class BlueBream(templates.Template):
         vars['package'] = re.sub('[^A-Za-z0-9.]+', '_', vars['project']).lower()
         vars['main_package'] = vars['package'].split('.')[-1]
         self.ns_split = vars['project'].split('.')
-        vars['namespace_packages'] = [
+        vars['namespace_packages'] = list(reversed([
                     vars['package'].rsplit('.', i)[0]
-                    for i in range(1,len(self.ns_split))]
+                    for i in range(1,len(self.ns_split))]))
         vars['ns_prefix'] = '.'.join(self.ns_split[:-1]) + '.'
         if len(self.ns_split) == 1:
             vars['ns_prefix'] = ''
@@ -61,7 +61,8 @@ class BlueBream(templates.Template):
         return templates.Template.check_vars(self, vars, cmd)
 
     def write_files(self, command, output_dir, vars):
-        "Add namespace packages and move the main package to the last level"
+        """Add namespace packages and move the main package to the last level
+        """
         if not command.options.verbose:
             command.verbose = 0
         templates.Template.write_files(self, command, output_dir, vars)

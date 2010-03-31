@@ -15,7 +15,7 @@ ${long_description|nothing}""",
       license=${repr(license_name)|empty},
       package_dir={'': 'src'},
       packages=find_packages('src'),
-      namespace_packages=${repr(namespace_packages)},
+      ${len(namespace_packages) and 'namespace_packages=%s,' % repr(namespace_packages) or ''}
       include_package_data=True,
       zip_safe=${repr(bool(zip_safe))|False},
       install_requires=['setuptools',

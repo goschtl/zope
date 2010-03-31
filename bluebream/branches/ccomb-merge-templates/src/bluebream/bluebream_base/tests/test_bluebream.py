@@ -27,6 +27,7 @@ def test_suite():
         'bluebream.txt',
         setUp=easy_install_SetUp,
         tearDown=zc.buildout.testing.buildoutTearDown,
+        optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
         checker=renormalizing.RENormalizing([
                 zc.buildout.testing.normalize_path,
                 zc.buildout.testing.normalize_endings,
