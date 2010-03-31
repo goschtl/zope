@@ -11,14 +11,13 @@ _____
 Let's now start by creating a single service:
 
   >>> from z3c import taskqueue
-  >>> service = taskqueue.TaskService()
+  >>> service = taskqueue.service.TaskService()
 
 Let's now define a task that simply echos an input string:
 
   >>> def echo(input):
   ...     return input
 
-  >>> import z3c.taskqueue.task
   >>> echoTask = taskqueue.task.SimpleTask(echo)
 
 Let's now register the task as a utility:

@@ -13,8 +13,8 @@ API. Let's create the necessary components to test the processor:
 
 1. Create the task service and add it to the root site:
 
-  >>> from z3c.taskqueue import TaskService
-  >>> tasks = TaskService()
+  >>> from z3c.taskqueue import service
+  >>> tasks = service.TaskService()
 
   >>> sm = root['tasks'] = tasks
 

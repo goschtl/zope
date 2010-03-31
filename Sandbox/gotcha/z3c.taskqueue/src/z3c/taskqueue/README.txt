@@ -15,7 +15,7 @@ _____
 Let's now start by creating a single service:
 
   >>> from z3c import taskqueue
-  >>> service = taskqueue.TaskService()
+  >>> service = taskqueue.service.TaskService()
 
 We can discover the available tasks:
 
@@ -28,7 +28,6 @@ now define a task that simply echos an input string:
   >>> def echo(input):
   ...     return input
 
-  >>> import z3c.taskqueue.task
   >>> echoTask = taskqueue.task.SimpleTask(echo)
 
 The only API requirement on the converter is to be callable. Now we make sure
@@ -321,7 +320,7 @@ Check Interfaces and stuff
 
   >>> from z3c.taskqueue import interfaces
   >>> from zope.interface.verify import verifyClass, verifyObject
-  >>> verifyClass(interfaces.ITaskService, taskqueue.TaskService)
+  >>> verifyClass(interfaces.ITaskService, taskqueue.service.TaskService)
   True
   >>> verifyObject(interfaces.ITaskService, service)
   True
