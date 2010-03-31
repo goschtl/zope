@@ -54,8 +54,8 @@ class BlueBream(templates.Template):
         vars['namespace_packages'] = [
                     vars['package'].rsplit('.', i)[0]
                     for i in range(1,len(self.ns_split))]
-        vars['ns_prefix'] = '.'.join(self.ns_split[:-1])
-        if len(self.ns_split) == 0:
+        vars['ns_prefix'] = '.'.join(self.ns_split[:-1]) + '.'
+        if len(self.ns_split) == 1:
             vars['ns_prefix'] = ''
 
         return templates.Template.check_vars(self, vars, cmd)

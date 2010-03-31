@@ -57,9 +57,9 @@ ${long_description|nothing}""",
                         ],
       entry_points = """
       [paste.app_factory]
-      main = ${ns_prefix}.${main_package}.startup:application_factory
+      main = ${ns_prefix}${main_package}.startup:application_factory
 
       [paste.global_paster_command]
-      shell = ${ns_prefix}.${main_package}.debug:Shell
+      shell = ${ns_prefix}${main_package}.debug:Shell
       """,
       )

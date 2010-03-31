@@ -44,6 +44,6 @@
   <include package="zope.traversing.browser" />
   <include package="zope.app.pagetemplate" />
 
-  <include package="${ns_prefix}.${main_package}" />
+  <include package="${ns_prefix}${main_package}" />
 
 </configure>
