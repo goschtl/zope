@@ -2,13 +2,13 @@
 CMF.buildout
 ============
 -------------------------
-Build CMF 2.2 + Zope 2.13
+Build CMF 2.3 + Zope 2.12
 -------------------------
 
 Introduction
 ============
 
-Builds CMF 2.2 with Zope 2.13 from develop eggs located in ``src``.
+Builds CMF 2.3 with Zope 2.12 from develop eggs located in ``src``.
 
 Dependencies
 ============
