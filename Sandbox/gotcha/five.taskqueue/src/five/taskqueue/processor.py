@@ -1,0 +1,45 @@
+import logging
+import time
+
+from ZPublisher.HTTPRequest import HTTPRequest
+from ZPublisher.HTTPResponse import HTTPResponse
+import ZPublisher
+
+from z3c.taskqueue.processor import BaseSimpleProcessor
+from z3c.taskqueue.processor import ERROR_MARKER
+
+log = logging.getLogger('five.taskqueue')
+
+
+class SimpleProcessor(BaseSimpleProcessor):
+    """ SimpleProcessor for Zope2 """
+
+    def call(self, method, args=(), errorValue=ERROR_MARKER):
+        path = self.servicePath[:] + [method]
+        response = HTTPResponse()
+        env = {'SERVER_NAME': 'dummy',
+                'SERVER_PORT': '8080',
+                'PATH_INFO': '/' + '/'.join(path)}
+        log.info(env['PATH_INFO'])
+        request = HTTPRequest(None, env, response)
+        conn = self.db.open()
+        root = conn.root()
+        request['PARENTS'] = [root['Application']]
+        try:
+            try:
+                ZPublisher.Publish.publish(request, 'Zope2', [None])
+            except Exception, error:
+                # This thread should never crash, thus a blank except
+                log.error('Processor: ``%s()`` caused an error!' % method)
+                log.exception(error)
+                return errorValue is ERROR_MARKER and error or errorValue
+        finally:
+            request.close()
+            conn.close()
+            if not request.response.body:
+                time.sleep(1)
+            else:
+                return request.response.body
+
+    def processNext(self, jobid=None):
+        return self.call('processNext', args=(None, jobid)) == "True"

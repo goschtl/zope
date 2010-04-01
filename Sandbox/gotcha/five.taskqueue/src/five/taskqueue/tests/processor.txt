@@ -6,22 +6,25 @@ The actual processing of the jobs in a queue is handled by a spearate
 component, known as the job processor. This component usually runs in its own
 thread and provides its own main loop.
 
-  >>> from z3c.taskqueue import processor
+  >>> from five.taskqueue import processor
 
 The ``processor`` module provides several implementations of the processor
 API. Let's create the necessary components to test the processor:
 
 1. Create the task service and add it to the root site:
 
-  >>> from z3c.taskqueue import service
+  >>> from five.taskqueue import service
   >>> tasks = service.TaskService()
 
-  >>> sm = root['tasks'] = tasks
+  >>> root._setOb('tasks', tasks)
+  >>> tasks.__parent__ = root
+  >>> tasks.__name__ = 'tasks'
 
 2. Register the service as a utility:
 
   >>> from z3c.taskqueue import interfaces
-  >>> sm = root.getSiteManager()
+  >>> from zope.component import getGlobalSiteManager
+  >>> sm = getGlobalSiteManager()
   >>> sm.registerUtility(tasks, interfaces.ITaskService, name='tasks')
 
 3. Register a task that simply sleeps and writes a message:
@@ -39,17 +42,6 @@ API. Let's create the necessary components to test the processor:
   >>> import zope.component
   >>> zope.component.provideUtility(sleepTask, name='sleep')
 
-4. Setup a database:
-
-  >>> from ZODB.tests import util
-  >>> import transaction
-  >>> db = util.DB()
-
-  >>> from zope.app.publication.zopepublication import ZopePublication
-  >>> conn = db.open()
-  >>> conn.root()[ZopePublication.root_name] = root
-  >>> transaction.commit()
-
 
 The Simple Processor
 --------------------
@@ -60,10 +52,12 @@ also the default processor for the task service.
 
 Let's first register a few tasks:
 
+
   >>> jobid = tasks.add(u'sleep', (0.04, 1))
   >>> jobid = tasks.add(u'sleep', (0.1,  2))
   >>> jobid = tasks.add(u'sleep', (0,    3))
   >>> jobid = tasks.add(u'sleep', (0.08, 4))
+  >>> import transaction
   >>> transaction.commit()
 
 Let's start by executing a job directly. The first argument to the simple
@@ -81,7 +75,7 @@ existing interactions in order to process the job in this thread:
   >>> from zope.security import management
   >>> management.endInteraction()
   >>> proc.processNext()
-  True
+  'True'
 
   >>> print log_info
   z3c.taskqueue INFO
