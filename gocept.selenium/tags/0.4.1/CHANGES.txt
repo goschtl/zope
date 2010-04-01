@@ -1,0 +1,56 @@
+Changes
+=======
+
+0.4.1 (2010-04-01)
+------------------
+
+- API expansion: added ``getSelectedLabel``.
+
+- Ignore the code of a server's response when calling `open`. The default
+  behaviour of SeleniumRC changed between 1.0.1 and 1.0.2 but we want the old
+  behaviour by default.
+
+
+0.4 (2010-03-30)
+----------------
+
+- API expansion: add ``getLocation`` to retrieve currently loaded URL in
+  browser.
+
+- API expansion: added ``waitForPopUp``, ``selectPopUp``, ``deselectPopUp``
+  and ``close``.
+
+- API expansion: added ``verifyAlertPresent``, ``verifyAlertNotPresent`` and
+  ``waitForAlertPresent``.
+
+- Usability: raise a better readable exception when an unimplemented selenese
+  method is called.
+
+- Usability: raise failure exceptions that convey the name of the failed
+  assertion in spite of some lambdas wrapped around it.
+
+
+0.3 (2010-01-12)
+----------------
+
+- Extracted 'host' and 'port' as class attributes of gocept.selenium.ztk.Layer
+  so subclasses can override them; stopped hardcoding 8087 as the server port.
+
+
+0.2.1 (2009-12-18)
+------------------
+
+- Fix incomplete sdist release on PyPI.
+
+
+0.2 (2009-12-18)
+----------------
+
+- Make Zope 2 test server reachable from the outside.
+- Implemented getTitle/assertTitle/waitForTitle/etc.
+
+
+0.1 (2009-11-08)
+----------------
+
+- first release
