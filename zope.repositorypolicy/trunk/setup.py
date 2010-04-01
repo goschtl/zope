@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 setup(
     name='zope.repositorypolicy',
     version='0.1dev',
-    author='Zope Foundation and contributors',
+    author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     url='http://pypi.python.org/pypi/zope.repositorypolicy',
     description="""\
