@@ -31,13 +31,13 @@ is_jython = sys.platform.startswith('java')
 parser = OptionParser()
 parser.add_option("-v", "--version", dest="version",
                           help="use a specific zc.buildout version")
-parser.add_option("--setuptools",
-                   action="store_true", dest="setuptools", default=False,
-                   help="Use Setuptools rather than Distribute.")
 parser.add_option("-d", "--distribute",
                    action="store_true", dest="distribute", default=True,
                    help="For backward compatibility. "
                         "Distribute is used by default.")
+parser.add_option("--setuptools",
+                   action="store_false", dest="distribute", default=True,
+                   help="Use Setuptools rather than Distribute.")
 parser.add_option("-c", None, action="store", dest="config_file",
                    help=("Specify the path to the buildout configuration "
                          "file to be used."))
@@ -54,8 +54,6 @@ else:
     VERSION = ''
 
 USE_DISTRIBUTE = options.distribute
-if options.setuptools:
-    USE_DISTRIBUTE = False
 args = args + ['bootstrap']
 
 to_reload = False
