@@ -104,7 +104,7 @@ to zope-dev.
 
 To ensure that your build output is correctly picked up, you need to
 
-- ensure the formatting of the subject line to start with OK/FAILURE/UNKNOWN,
+- ensure the formatting of the subject line to start with OK/FAILED/UNKNOWN,
 - provide a sender email address / sender name that allows to identify the
   build server quickly, and
 - subscribe your sender email address to `zope-tests@zope.org
@@ -115,7 +115,7 @@ The subject line should be formatted like this::
     <STATUS>: <SUBJECT OF TEST>
 
     OK: Zope 2.12 on Linux 64-bit with Python 2.4
-    FAILURE: Zope 2.6 on Windows XP 32-bit with Python 2.5
+    FAILED: Zope 2.6 on Windows XP 32-bit with Python 2.5
     UNKNOWN: zope.interface on Linux 64-bit
 
 
