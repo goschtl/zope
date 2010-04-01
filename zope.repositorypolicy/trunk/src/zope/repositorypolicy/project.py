@@ -83,7 +83,6 @@ class Checker(object):
         s.wait()
         metadata = s.stdout.readlines()
         if len(metadata) < 2 or len(metadata) % 2:
-            import pdb; pdb.set_trace()
             self.log.append('setup.py: could not extract metadata')
             return
         while metadata:
