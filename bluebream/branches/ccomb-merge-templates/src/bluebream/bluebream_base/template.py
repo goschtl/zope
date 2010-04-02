@@ -23,8 +23,8 @@ class BlueBream(templates.Template):
     summary = "A BlueBream project, base template"
 
     vars = [
-        var('package',
-            'Main Python package (with namespace if any)'),
+        var('python_package',
+            'Main Python package (with namespace, if any)'),
         var('interpreter',
             'Name of custom Python interpreter',
             default='breampy'),
@@ -41,34 +41,31 @@ class BlueBream(templates.Template):
             default=False),
         ]
 
-    def check_name(self, name):
-        """Disallow certain package names
+    def check_vars(self, vars, cmd):
+        """This method checks the variables and ask for missing ones
         """
-        if name in ('bluebream', 'bream', 'zope'):
+        # suggest what Paste chose
+        for var in self.vars:
+            if var.name == 'python_package':
+                var.default = vars['package']
+                # but keep the user's input if there are dots in the middle
+                if '.' in vars['project'][1:-1]:
+                    var.default = re.sub('[^A-Za-z0-9.]+', '_',
+                                         vars['project']).lower()
+
+        # ask remaining variables
+        vars = templates.Template.check_vars(self, vars, cmd)
+
+        # replace Paste default choice with ours
+        vars['package'] = vars['python_package']
+
+        # check for bad python package names
+        if vars['package'] in ('bluebream', 'bream', 'zope'):
             print
             print "Error: The chosen project name results in an invalid " \
                 "package name: %s." % name
             print "Please choose a different project name."
             sys.exit(1)
-
-    def check_vars(self, vars, cmd):
-        """This method checks and cleans the variables
-        passed on the command line
-        """
-        # check once just after the project name choice
-        pkg_name = re.sub('[^A-Za-z0-9.]+', '_', vars['project']).lower()
-        self.check_name(pkg_name)
-
-        # remove Paste chosen value for the package name and suggest a new one
-        del vars['package']
-        for var in self.vars:
-            if var.name == 'package':
-                var.default = pkg_name
-
-        # ask the remaining questions
-        vars = templates.Template.check_vars(self, vars, cmd)
-        # check again since we could chose anything
-        self.check_name(vars['package'])
         return vars
 
     def pre(self, command, output_dir, vars):
@@ -79,7 +76,7 @@ class BlueBream(templates.Template):
         self.ns_split = vars['package'].split('.')
         vars['package'] = self.ns_split[-1]
         vars['namespace_packages'] = list(reversed([
-                    vars['package'].rsplit('.', i)[0]
+                    vars['python_package'].rsplit('.', i)[0]
                     for i in range(1,len(self.ns_split))]))
         vars['ns_prefix'] = '.'.join(self.ns_split[:-1]) + '.'
         if len(self.ns_split) == 1:
@@ -93,10 +90,13 @@ class BlueBream(templates.Template):
         if len(self.ns_split) == 1:
             return
 
+        package_dir = os.path.join(output_dir, 'src', vars['package'])
+        tmp_dir = package_dir + '.tmp'
+        os.rename(package_dir, tmp_dir)
+
         # create the intermediate namespace packages
         target_dir = os.path.join(output_dir, 'src',
                                   os.path.join(*self.ns_split[:-1]))
-
         os.makedirs(target_dir)
 
         # create each __init__.py with namespace declaration
@@ -107,9 +107,8 @@ class BlueBream(templates.Template):
                                      '__init__.py')
             open(init_file, 'w').write(ns_decl)
 
-        # move the main package to the last namespace
-        package_dir = os.path.join(output_dir, 'src', vars['package'])
-        os.rename(package_dir,
+        # move the (renamed) main package to the last namespace
+        os.rename(tmp_dir,
                   os.path.join(target_dir, os.path.basename(package_dir,)))
 
 

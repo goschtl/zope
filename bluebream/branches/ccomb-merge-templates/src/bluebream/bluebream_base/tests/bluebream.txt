@@ -22,7 +22,7 @@ First try with a single flat package:
 >>> runner = cmd('create')
 >>> option_args = []
 >>> extra_args = [
-...            "package=sample",
+...            "python_package=sample",
 ...            "interpreter=testpy",
 ...            "version=0.1",
 ...            "description=test_description",
@@ -49,6 +49,7 @@ Variables:
   long_description:  test_long_description
   package:           sample
   project:           sample
+  python_package:    sample
   url:               http://example.com
   version:           0.1
   zip_safe:          False
@@ -101,7 +102,7 @@ We can also create a project with a namespace:
 ----------------------------------------------
 
 >>> project = 'sample.main'
->>> extra_args[0] = "package=sample.main"
+>>> extra_args[0] = "python_package=sample.main"
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
@@ -115,8 +116,9 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
-  package:           sample.main
+  package:           samplemain
   project:           sample.main
+  python_package:    sample.main
   url:               http://example.com
   version:           0.1
   zip_safe:          False
@@ -176,7 +178,7 @@ Another project with two levels of namespace:
 ---------------------------------------------
 
 >>> project = 'sample.app.main'
->>> extra_args[0] = "package=sample.app.main"
+>>> extra_args[0] = "python_package=sample.app.main"
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
   bluebream#bluebream  A BlueBream project, base template
@@ -190,8 +192,9 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
-  package:           sample.app.main
+  package:           sampleappmain
   project:           sample.app.main
+  python_package:    sample.app.main
   url:               http://example.com
   version:           0.1
   zip_safe:          False
@@ -246,3 +249,79 @@ from setuptools import setup, find_packages
 ...
 shell = sample.app.main.debug:Shell
 ...
+
+
+An edge case:
+
+>>> project = 'foobar.foobar'
+>>> extra_args[0] = "python_package=foobar.foobar"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               foobar.foobar
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           foobarfoobar
+  project:           foobar.foobar
+  python_package:    foobar.foobar
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./foobar.foobar
+
+>>> print_dir('foobar.foobar')
+foobar.foobar/bootstrap.py
+foobar.foobar/buildout.cfg
+foobar.foobar/debug.ini
+foobar.foobar/deploy.ini
+foobar.foobar/setup.py
+foobar.foobar/versions.cfg
+foobar.foobar/etc/site.zcml
+foobar.foobar/src/foobar/__init__.py
+foobar.foobar/src/foobar.foobar.egg-info/PKG-INFO
+foobar.foobar/src/foobar.foobar.egg-info/SOURCES.txt
+foobar.foobar/src/foobar.foobar.egg-info/dependency_links.txt
+foobar.foobar/src/foobar.foobar.egg-info/entry_points.txt
+foobar.foobar/src/foobar.foobar.egg-info/namespace_packages.txt
+foobar.foobar/src/foobar.foobar.egg-info/requires.txt
+foobar.foobar/src/foobar.foobar.egg-info/top_level.txt
+foobar.foobar/src/foobar.foobar.egg-info/zip-safe
+foobar.foobar/src/foobar/foobar/__init__.py
+foobar.foobar/src/foobar/foobar/configure.zcml
+foobar.foobar/src/foobar/foobar/debug.py
+foobar.foobar/src/foobar/foobar/securitypolicy.zcml
+foobar.foobar/src/foobar/foobar/startup.py
+foobar.foobar/src/foobar/foobar/tests/__init__.py
+foobar.foobar/src/foobar/foobar/tests/ftesting.zcml
+foobar.foobar/src/foobar/foobar/tests/tests.py
+foobar.foobar/src/foobar/foobar/welcome/__init__.py
+foobar.foobar/src/foobar/foobar/welcome/app.py
+foobar.foobar/src/foobar/foobar/welcome/configure.zcml
+foobar.foobar/src/foobar/foobar/welcome/ftests.txt
+foobar.foobar/src/foobar/foobar/welcome/index.pt
+foobar.foobar/src/foobar/foobar/welcome/interfaces.py
+foobar.foobar/src/foobar/foobar/welcome/views.py
+foobar.foobar/src/foobar/foobar/welcome/static/logo.png
+foobar.foobar/src/foobar/foobar/welcome/static/style.css
+foobar.foobar/templates/zope_conf.in
+foobar.foobar/var/filestorage/README.txt
+foobar.foobar/var/log/README.txt
+
+>>> print open(os.path.join('foobar.foobar', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['foobar'],
+...
+shell = foobar.foobar.debug:Shell
+...
+
+
+
