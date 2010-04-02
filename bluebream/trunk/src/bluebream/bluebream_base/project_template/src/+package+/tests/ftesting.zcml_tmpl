@@ -48,6 +48,6 @@
   <grantAll role="zope.Manager" />
   <grant role="zope.Manager" principal="zope.mgr" />
 
-  <include package="${ns_prefix}${main_package}" />
+  <include package="${ns_prefix}${package}" />
 
 </configure>

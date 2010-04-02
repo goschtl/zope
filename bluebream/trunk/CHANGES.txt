@@ -9,7 +9,7 @@ Changelog
 - Use project name as i18n_domain in base template
 
 - Merge the two templates into a single one by allowing to create a
-  flat or nested namespace structure, depending on the project name.
+  flat or nested namespace structure, and choose the package name.
 
 - Enabled Distribute by default instead of Setuptools
 
