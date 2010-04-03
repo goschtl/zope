@@ -199,6 +199,16 @@ Note that even the ``@@`` is not necessary if container ``foo`` has
 no element named ``bar`` - it only serves to disambiguate between
 views of an object and things contained within the object.
 
+``@@`` is also used for static resources. To access the registered static
+resource named ``logo.png``, you can use ``/@@/logo.png`` or the equivalent
+``/++resource++logo.png``. The ``logo.png`` is a registration name for a file
+which may eventually have another filename.
+
+The same applies for a resource directory named ``images``:
+``/@@/images/logo.png`` is equivalent to ``/++resource++images/logo.png``. In
+that case, ``logo.png`` is the real filename located in the registered resource
+directory.
+
 .. _faq-security:
 
 Security
