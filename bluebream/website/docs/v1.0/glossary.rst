@@ -22,7 +22,7 @@ Glossary
     See the `Buildout PyPI page`_ for more detailed documentation.
 
   Zope 2
-    `The Z Object Publishing Framework`_, a Python based web application server,
+    `The Z Object Publishing Framework`_, a Python-based web application server,
     used in production for more than a decade.
 
   Zope
@@ -129,7 +129,7 @@ Glossary
   class="logo-disqus">Disqus</span></a>
 
 .. _Setuptools: http://peak.telecommunity.com/DevCenter/setuptools
-.. _Python based Build system:  http://www.buildout.org
+.. _Python-based Build system:  http://www.buildout.org
 .. _Buildout PyPi page: http://pypi.python.org/pypi/zc.buildout
 .. _The Z Object Publishing Framework: http://zope2.zope.org
 .. _Zope Component Architecture: http://muthukadan.net/docs/zca.html
@@ -142,7 +142,7 @@ Glossary
 .. _started in 2010: https://mail.zope.org/pipermail/zope-dev/2010-January/039072.html
 .. _ZPL: http://foundation.zope.org/agreements/ZPL_2.1.pdf
 .. _Web Server Gateway Interface: http://en.wikipedia.org/wiki/Web_Server_Gateway_Interface
-.. _Paste: http://pypi.python.org/pypi/Paste/
+.. _Paste: http://pypi.python.org/pypi/Paste/
 .. _PasteDeploy: http://pypi.python.org/pypi/PasteDeploy/
 .. _PasteScript: http://pypi.python.org/pypi/PasteScript
 .. _Separation of concerns: http://en.wikipedia.org/wiki/Separation_of_concerns

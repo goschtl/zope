@@ -661,7 +661,7 @@ Open the ``browser.zcml`` file and look at line number 21, inside that ZCML decl
 If you get error like this::
 
   raise ValueError("Undefined permission id", permission_id)
-zope.configuration.config.ConfigurationExecutionError: <type 'exceptions.ValueError'>: ('Undefined permission id', 'zope.ManageApplication')
+  zope.configuration.config.ConfigurationExecutionError: <type 'exceptions.ValueError'>: ('Undefined permission id', 'zope.ManageApplication')
 
 You need to include ``zope.applicationcontrol`` package in your ZCML
 configuration file (``site.zcml``) as the permission definition is
