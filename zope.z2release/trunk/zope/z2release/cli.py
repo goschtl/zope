@@ -17,9 +17,15 @@ import urllib
 from xmlrpclib import Server
 from ConfigParser import RawConfigParser as ConfigParser
 
-# packages containing upper-case letters
-upper_names = ('ClientForm', 'RestrictedPython', 'ZConfig', 'ZODB3', 'zLOG', 
-               'Acquisition', 'DateTime', 'ExtensionClass', 'Persistence')
+
+server = None
+
+
+class CasePreservingConfigParser(ConfigParser):
+
+    def optionxform(self, option):
+        return option  # don't flatten case!
+
 
 def write_index(package, version, dirname):
     print >>sys.stderr, 'Package %s==%s' % (package, version)
@@ -38,7 +44,7 @@ def write_index(package, version, dirname):
             print >>fp, link
             print >>fp, '<br/>'
     else:
-        # for externally hosted packages we need to rely on the 
+        # for externally hosted packages we need to rely on the
         # download_url metadata
         rel_data = server.release_data(package, version)
         download_url = rel_data['download_url']
@@ -51,13 +57,13 @@ def write_index(package, version, dirname):
     print >>fp, '</body></html>'
     fp.close()
 
-def main():
 
+def main():
     global server
 
     if len(sys.argv) != 3:
         print 'Usage: z2_kgs <tag-name> <destination-dirname>'
-        print 'Example: z2_kgs tags/2.10.0b4  /var/www/download.zope.org/Zope2/index/2.12.0b4/'
+        print 'Example: z2_kgs tags/2.12.1 /var/www/download.zope.org/Zope2/index/2.12.1/'
         sys.exit(1)
 
     tag = sys.argv[1]
@@ -73,21 +79,13 @@ def main():
     version_file = os.path.join(dirname, 'versions.cfg')
     file(version_file, 'w').write(data)
 
-    CP = ConfigParser()
+    CP = CasePreservingConfigParser()
     CP.read(version_file)
 
     server = Server('http://pypi.python.org/pypi')
-    links = list()
 
     write_index('Zope2', version, dirname)
     for package in CP.options('versions'):
-
-        # options() returns all options in lowercase but
-        # we must preserve the case for package names
-        for name in upper_names:
-            if name.lower() == package:
-                package = name
-                break
         version = CP.get('versions', package)
         write_index(package, version, dirname)
 
