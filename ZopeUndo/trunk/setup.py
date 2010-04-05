@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ZopeUndo',
-      version = '2.12.0',
+      version = '2.12.1dev',
       url='http://pypi.python.org/pypi/ZopeUndo',
       license='ZPL 2.1',
       description="ZODB undo support for Zope2.",
