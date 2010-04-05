@@ -11,17 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""ZODB undo support for Zope2.
-
-This package is used to support the Prefix object that Zope uses for
-undo.  It is a separate package only to aid configuration management.
-This package is included in Zope and ZODB3, so that ZODB3 is suitable
-for running a ZEO server that handles Zope undo.
-"""
 
 class Prefix:
     """A Prefix() is equal to any path it is a prefix of.
-
 
     This class can be compared to a string.
     The comparison will return True if all path elements of the
