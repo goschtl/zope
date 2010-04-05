@@ -20,6 +20,7 @@ setup(name='stxutils',
       long_description=(open('README.txt').read() + '\n\n' +
                         open('CHANGES.txt').read()
                        ),
+      author='Zope Foundation and Contributors',
       license='ZPL 2.1',
       packages=['stxutils'],
       include_package_data=True,
