@@ -296,3 +296,71 @@ from setuptools import setup, find_packages
 shell = foobar.foobar.debug:Shell
 ...
 
+Project with different project and package name:
+------------------------------------------------
+
+>>> project = 'sampleproject'
+>>> extra_args[0] = "python_package=sample.main"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sampleproject
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sampleproject
+  project:           sampleproject
+  python_package:    sample.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sampleproject
+
+>>> print_dir('sampleproject')
+sampleproject/bootstrap.py
+sampleproject/buildout.cfg
+sampleproject/debug.ini
+sampleproject/deploy.ini
+sampleproject/setup.py
+sampleproject/versions.cfg
+sampleproject/etc/site.zcml
+sampleproject/src/sample/__init__.py
+sampleproject/src/sample/main/__init__.py
+sampleproject/src/sample/main/configure.zcml
+sampleproject/src/sample/main/debug.py
+sampleproject/src/sample/main/securitypolicy.zcml
+sampleproject/src/sample/main/startup.py
+sampleproject/src/sample/main/tests/__init__.py
+sampleproject/src/sample/main/tests/ftesting.zcml
+sampleproject/src/sample/main/tests/tests.py
+sampleproject/src/sample/main/welcome/__init__.py
+sampleproject/src/sample/main/welcome/app.py
+sampleproject/src/sample/main/welcome/configure.zcml
+sampleproject/src/sample/main/welcome/ftests.txt
+sampleproject/src/sample/main/welcome/index.pt
+sampleproject/src/sample/main/welcome/interfaces.py
+sampleproject/src/sample/main/welcome/views.py
+sampleproject/src/sample/main/welcome/static/logo.png
+sampleproject/src/sample/main/welcome/static/style.css
+sampleproject/src/sampleproject.egg-info/PKG-INFO
+sampleproject/templates/zope_conf.in
+sampleproject/var/filestorage/README.txt
+sampleproject/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sampleproject', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample'],
+...
+shell = sample.main.debug:Shell
+...
+
