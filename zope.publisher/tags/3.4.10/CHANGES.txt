@@ -1,0 +1,118 @@
+Changes
+=======
+
+3.4.10 (2010-04-06)
+-------------------
+
+* Removed ``finally``-clause from test to keep Python2.4 happy.
+
+* Backport r101467 from trunk.
+
+  Fix for https://bugs.launchpad.net/zope3/+bug/98337
+
+  Previously, when the Accept-Charset specified a charset that could not encode
+  the result, a system error appeared, now we fall back to UTF-8, as per
+  RFC 2616 section 10.4.7.
+
+3.4.9 (2009-07-13)
+------------------
+
+* Backport fix LP #332061 from trunk (rev 101967): publisher emitted
+  all exceptions to the outside world when running in
+  'handle_errors=False' mode. Introduced `IReRaiseException` interface
+  to adjust reraising of certain exceptions on a custom basis.
+
+3.4.8 (2009-07-03)
+------------------
+
+* Fix LP #332063 and LP #283089: XMLRPC is broken for paster.httpserver
+  replace readlines with readline
+
+* Backport fix from z.p 3.5.3: PUT is broken for paster.httpserver
+  (revision 87610)
+
+3.4.7 (2008-09-22)
+------------------
+
+* LP# 273296: better dealing with malformed HTTP_ACCEPT_LANGUAGE headers
+
+3.4.6 (2008-09-04)
+------------------
+
+* Better fix for LP #98440: restore only the default skin, not all interfaces
+
+3.4.5 (2008-08-26)
+------------------
+
+* Fix the LP #98284 fix: do not pass ``size`` argument of None that causes
+  cStringIO objects to barf with a TypeError.
+
+3.4.4 (2008-08-18)
+------------------
+
+* Fixed bug #98440 (interfaces lost on retried request)
+
+* LP #98284: Pass the ``size`` argument to readline, as the version of
+  twisted used in zope.app.twisted supports it
+
+3.4.3 (2008-07-31)
+------------------
+
+* LP #253362: better dealing with malformed HTTP_ACCEPT_CHARSET headers
+
+* https://bugs.launchpad.net/zope2/+bug/143873
+
+  The zope.publisher.http.HTTPCharsets was confused by the Zope 2
+  publisher, which gives misleading information about which headers
+  it has.
+
+3.4.2 (2007-12-07)
+------------------
+
+* Made segmentation of URLs not strip (trailing) whitespace from path segments
+  to allow URLs ending in %20 to be handled correctly. (#172742)
+
+3.4.1 (2007-09-29)
+------------------
+
+No changes since 3.4.1b2.
+
+3.4.1b2 (2007-08-02)
+--------------------
+
+* zope.publisher now works on Python 2.5.
+
+* Fix a problem with request.get() when the object that's to be
+  retrieved is the request itself.
+
+3.4.1b1 (2007-07-13)
+--------------------
+
+No changes.
+
+3.4.0b2 (2007-07-05)
+--------------------
+
+* Fix https://bugs.launchpad.net/zope3/+bug/122054:
+  HTTPInputStream understands both the CONTENT_LENGTH and
+  HTTP_CONTENT_LENGTH environment variables. It is also now tolerant
+  of empty strings and will treat those as if the variable were
+  absent.
+
+3.4.0b1 (2007-07-05)
+--------------------
+
+* Fix caching issue. The input stream never got cached in a temp file
+  because of a wrong content-length header lookup. Added CONTENT_LENGTH
+  header check in addition to the previous used HTTP_CONTENT_LENGTH. The
+  HTTP\_ prefix is sometimes added by some CGI proxies, but CONTENT_LENGTH
+  is the right header info for the size.
+
+* Fix https://bugs.launchpad.net/zope3/+bug/98413:
+  HTTPResponse.handleException should set the content type
+
+3.4.0a1 (2007-04-22)
+--------------------
+
+Initial release as a separate project, corresponds to zope.publisher
+from Zope 3.4.0a1
