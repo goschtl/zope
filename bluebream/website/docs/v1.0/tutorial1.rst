@@ -774,12 +774,13 @@ Declaring an Interface
 As the first step for creating the main application container object
 which is going to hold all other objects, you need to create an
 interface.  You can name the main application container interface as
-``ICollector``.  To make this a container object, inherit from
-``zope.container.interfaces.IContainer`` or any derived interfaces.
-It is recommended add a site manager inside the main application
-container.  In order to add a site manager later, it is recommend to
-inherit from ``zope.site.interfaces.IFolder`` interface.  The
-``IFolder`` is inheriting from ``IContainer``.
+``ICollector``.  To make this interface describe a container object
+have it inherit ``zope.container.interfaces.IContainer`` or any
+interface derived from it.  It is recommended to add a site manager
+inside the main application container.  In order to add a site
+manager later, it is recommend to inherit from
+``zope.site.interfaces.IFolder`` interface.  The ``IFolder`` is
+inheriting from ``IContainer``.
 
 You can create a new Python package named ``collector`` inside
 ``src/tc`` like this::
@@ -809,17 +810,18 @@ new interfaces like this::
           default=u"",
           required=False)
 
-The interface defined here is your schema for the object.  There are
-two fields defined in the schema.  The first one is ``name`` and the
-second one is ``description``.  The schema is also can be used to
-auto-generate web forms.
+The interface defined here is your schema for the main application
+object.  There are two fields defined in the schema.  The first one
+is ``name`` and the second one is ``description``.  This schema can
+later can be used to auto-generate web forms.
 
 Implementing Interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Schema is kind of blueprint for your objects, schema define the
-contracts for the objects.  Once you have schema ready, you can
-create some concrete classes which implement the schema.
+A schema can be described as a blueprint for your objects as it
+defines the fields that the object must implement and the contracts
+that it must fulfil.  Once written you can create some concrete
+classes which implement your schema.
 
 Next, you need to implement this interface.  To implement
 ``IContainer``, you can inherit from ``zope.site.folder.Folder``.
@@ -840,16 +842,16 @@ You can create the implementation in
       name = u""
       description = u""
 
-To declare a class is implementing a particular interface, you can
-use ``implements`` function.  The class also provides defaults values
-for attributes.
+To declare that a class is implementing a particular interface you
+can use the ``implements`` function from ``zope.interface``.
 
 Registering components
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Once the interfaces and its implementations are ready.  You can do
-the configuration in ZCML.  Open the ``src/tc/collector/configure.zcml``
-file to edit, then mark the ``ICollector`` as a content component::
+Once the interfaces and its implementations are ready you can do the
+configuration in ZCML.  Open the ``src/tc/collector/configure.zcml``
+file for editing and enter the following to declare ``ICollector`` a
+content component::
 
   <interface
      interface="tc.collector.interfaces.ICollector"
@@ -857,18 +859,18 @@ file to edit, then mark the ``ICollector`` as a content component::
      />
 
 The ``zope.app.content.interfaces.IContentType`` represents a content
-type.  If an **interface** provides ``IContentType`` interface type,
-then all objects providing the **interface** are considered content
-objects.
+type.  If an **interface** provides the ``IContentType`` interface
+type, then all objects providing the **interface** are considered to
+be content objects.
 
-To set annotations for collector objects, we need to mark it as
-implementing ``zope.annotation.interfaces.IAttributeAnnotatable``
-marker interface.  Also this configuration declare that ``Collector``
-class implements ``zope.container.interfaces.IContentContainer``.
-These two classes are marker interfaces.  An interface used to
-declare that a particular object belongs to a special type is called
-marker interface.  Marker interface won't be having any attribute or
-method.
+To set annotations for collector objects we need to configure it as
+implementing the ``zope.annotation.interfaces.IAttributeAnnotatable``
+interface.  The example configuration below also declare that our
+``Collector`` class implements
+``zope.container.interfaces.IContentContainer``.  These two classes
+are examples of marker interfaces, interfaces used to declare that a
+particular object belongs to a special type without requiring the
+presence of any attributes or methods.
 
 ::
 
@@ -897,10 +899,10 @@ setting for ``Collector``.
 A view for adding collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now the content component is ready to use.  You need a web page from
-where we can add the ticket collector.  You can use ``zope.formlib``
-package to create a form.  You can add the view class definition
-inside ``src/tc/collector/views.py`` like this::
+Now the content component is ready to use but you will need a web
+page from where to add a ticket collector object.  You can use
+``zope.formlib`` package to create a form view.  You can add the view
+class definition inside ``src/tc/collector/views.py`` like this::
 
   from zope.site import LocalSiteManager
   from zope.formlib import form
@@ -923,17 +925,18 @@ inside ``src/tc/collector/views.py`` like this::
           collector.setSiteManager(LocalSiteManager(collector))
           self.request.response.redirect(".")
 
-The ``createAndAdd`` function will be called when used submit *Add*
-button from web form.  The second last line is very important::
+The ``createAndAdd`` function will be called when the user presses
+the *Add* button from the web form.  The second last line is very
+important::
 
   collector.setSiteManager(LocalSiteManager(collector))
 
-This line add a site manager to the collector, so that it can be used
+This line adds a site manager to the collector so that it can be used
 as a persistent component registry to register local components like
 local utilities.
 
-As you have already seen in the previous chapter, ``browser:page``
-directive is used for registering pages.  You can give the name as
+As you have already seen in the previous chapter the ``browser:page``
+directive is used for registering pages.  You can use the name
 ``add_ticket_collector`` and register it for
 ``zope.site.interfaces.IRootFolder``.  Add these lines to
 ``src/tc/collector/configure.zcml``::
@@ -945,11 +948,10 @@ directive is used for registering pages.  You can give the name as
      class="tc.collector.views.AddTicketCollector"
      />
 
-The package development is completed now.  This package is not
-included from the main package yet.  To include this package from the
-main package (``tc.main``), you need to modify the
-``src/tc/main/configure.zcml`` and add this line before
-``</configure>``::
+The package development is completed now but it is not yet included
+from the main package.  To include this package from the main package
+(``tc.main``) you need to modify the ``src/tc/main/configure.zcml``
+and add this line before ``</configure>``::
 
   <include package="tc.collector" />
 
@@ -961,11 +963,11 @@ submit the form.
 
 You can see the file size of ``var/filestorage/Data.fs`` is
 increasing as objects are getting added.  The ``Data.fs`` is where
-the data is physically stored.
+the persisted objects are physically stored.
 
-You can also confirm the object is actually saved into database from
-Python shell.  If you go to Python shell and try to access the root
-object, you can see that it has the object you added::
+You can also confirm that the object is actually saved into database
+from the Python shell.  If you go to the Python shell and try to
+access the root object you can see that it has the object you added::
 
   jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
   ...
@@ -975,22 +977,21 @@ object, you can see that it has the object you added::
   >>> list(root.keys())
   [u'mycollector']
 
-You can use this debug shell to introspect Python objects stored in
-ZODB.  You can add, update or delete objects and attributes from the
-debug shell.
+Through this debug shell you can introspect, add, update or delete
+Python objects and attributes.
 
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you try to access the collector from the URL:
-http://localhost:8080/mycollector , you will get ``NotFound`` error
+If you try to access the collector from the URL
+http://localhost:8080/mycollector you will get a ``NotFound`` error
 like this::
 
   URL: http://localhost:8080/mycollector
   ...
   NotFound: Object: <tc.collector.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
-This error is raised, because there is no view named ``index``
+This error is raised because there is no view named ``index``
 registered for ``ICollector``.  This section will show how to create
 a default view for ``ICollector`` interface.
 
@@ -1004,7 +1005,7 @@ In the ``src/tc/collector/views.py`` add a new view like this::
       def __call__(self):
           return "Hello ticket collector!"
 
-Then, in the ``src/tc/collector/configure.zcml``::
+Then add the following in ``src/tc/collector/configure.zcml``::
 
   <browser:page
      for="tc.collector.interfaces.ICollector"
@@ -1018,8 +1019,8 @@ It should display a message like this::
 
   Hello ticket collector!
 
-In the next section, you will see more details about the main page
-for collector.  Also we are going to learn about Zope Page Template.
+In the next section you will see more details about the main page for
+collector.  We're also going to learn about Zope Page Template.
 
 .. _tut1-main-page:
 
@@ -1034,8 +1035,6 @@ The browser page can be created using a page template.  The
 attributes.  You can also remove the ``__call__`` method from
 ``TicketCollectorMainView``.  Update the ``TicketCollectorMainView``
 class inside ``src/tc/collector/views.py`` like this::
-
-::
 
   from zope.browserpage import ViewPageTemplateFile
 
@@ -1061,20 +1060,20 @@ content::
   </html>
 
 Now you can visit: http://localhost:8080/mycollector .  It should
-display "Welcome to ticket collector!" message.
+display "Welcome to ticket collector!".
 
-.. _tut1-conclusion:
+.. _tut1-conclusions:
 
-Conclusion
-----------
+Conclusions
+-----------
 
-This part of tutorial covered the basics of creating a web
+This part of the tutorial covered the basics of creating a web
 application using BlueBream.  This chapter narrated in detail about
 the usage of ``bluebream`` paster project template to create a new
-project.  This part of tutorial also walked though the process of
-building application using Buildout.  Then, narrated creating an
-application container.  Finally, a default view for application
-container is also created.  The :ref:`tut2-tutorial` will expand the
+project.  This part of the tutorial also walked though the process of
+building application using Buildout.  Then narrated creating an
+application container.  Finally a default view for the application
+container was created.  :ref:`tut2-tutorial` will expand the
 application with additional functionalities.
 
 .. raw:: html
