@@ -30,7 +30,7 @@ class Checker(object):
             try:
                 c = subvertpy.client.Client()
                 c.checkout(url='%s/%s/%s' % (self.root, project, branch),
-                           path=working_dir, rev='HEAD')
+                           path=working_dir, rev='HEAD', ignore_externals=True)
                 checker = zope.repositorypolicy.project.Checker(working_dir)
                 checker.run()
                 for entry in checker.log:
