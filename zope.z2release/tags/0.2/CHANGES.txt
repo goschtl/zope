@@ -1,0 +1,43 @@
+Changelog
+=========
+
+0.2 - 2010/04/05
+----------------
+
+* Avoid hardcoded upper_names list.
+
+0.1.5 - 2009/12/25
+------------------
+
+* sanity check for download_url
+
+* better parameter check
+
+0.1.4 - 2009/08/06
+------------------
+
+* better parameter check
+
+
+0.1.3 - 2009/04/25
+------------------
+
+* generate a versions.cfg file within the index directory
+
+
+0.1.2 - 2009/04/25
+------------------
+
+* removed hard-coded Zope 2 version
+
+0.1.1 - 2009/04/25
+------------------
+
+* bahhh...fixed broken package
+
+
+0.1.0 - 2009/04/24
+------------------
+
+* Initial release
+
