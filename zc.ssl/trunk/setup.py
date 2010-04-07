@@ -11,7 +11,7 @@ if sys.version_info < (2, 6, 0):
 
 setup(
     name = "zc.ssl",
-    version = "1.2dev",
+    version = "1.3dev",
     author = "Zope Corporation",
     author_email = "zope-dev@zope.org",
     description = "An HTTPSConnection implementation with the new ssl module",
