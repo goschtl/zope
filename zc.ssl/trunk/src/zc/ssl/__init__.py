@@ -9,6 +9,7 @@ import socket
 import httplib
 import ssl
 import os.path
+import sys
 
 
 class HTTPSConnection(httplib.HTTPSConnection):
@@ -16,10 +17,15 @@ class HTTPSConnection(httplib.HTTPSConnection):
 
     def __init__(self, host, port=None, key_file=None, cert_file=None,
                  strict=None, timeout=None):
-        # timeout is None or float
-        self.timeout = timeout
-        httplib.HTTPSConnection.__init__(self, host, port, key_file, cert_file,
-                                         strict)
+        if sys.version_info < (2, 6, 0):
+            # timeout is None or float
+            self.timeout = timeout
+            httplib.HTTPSConnection.__init__(
+                self, host, port, key_file, cert_file, strict)
+        else:
+            httplib.HTTPSConnection.__init__(
+                self, host, port, key_file, cert_file, strict, timeout)
+
         if self.cert_file is None:
             self.cert_file = os.path.join(os.path.dirname(__file__),
                                           "certs.pem")

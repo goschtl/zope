@@ -1,4 +1,13 @@
+import sys
 from setuptools import setup, find_packages
+
+install_requires = [
+    'setuptools',
+    'zope.testing',
+    ]
+
+if sys.version_info < (2, 6, 0):
+    install_requires.append('ssl-for-setuptools')
 
 setup(
     name = "zc.ssl",
@@ -12,11 +21,7 @@ setup(
     zip_safe = False,
     package_dir = {'':'src'},
     namespace_packages = ['zc'],
-    install_requires = [
-       'setuptools',
-       'ssl-for-setuptools',
-       'zope.testing',
-       ],
+    install_requires = install_requires,
     dependency_links = ['http://download.zope.org/distribution/'],
     license = "ZPL 2.1",
     )
