@@ -1,0 +1,25 @@
+==============================
+Unit tests for HTTPSConnection
+==============================
+
+    >>> import zc.ssl.tests
+    >>> import zc.ssl
+    >>> sssl = zc.ssl.HTTPSConnection(
+    ...     "creditcard.company", 443, None, "/etc/certs.pem", None, 3.14)
+    >>> sssl.ssl_wrap_socket = zc.ssl.tests.StubSSLWrapper
+
+The connect method sets the socket's timeout and invokes its
+connect method:
+
+    >>> sssl.connect()
+    sssl(<socket._socketobject object at ...>, '/etc/certs.pem', 2)
+    sssl.settimeout(3.1400000000000001)
+    sssl.connect(('creditcard.company', 443))
+
+When the certificate file is not provided, the default one is used:
+
+    >>> sssl = zc.ssl.HTTPSConnection("creditcard.company")
+    >>> sssl.cert_file
+    '.../src/zc/ssl/certs.pem'
+    >>> file(sssl.cert_file)
+    <open file ...>

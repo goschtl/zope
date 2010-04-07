@@ -1,0 +1,15 @@
+1.2 (2010-04-07)
+================
+
+- Python 2.6 has ssl in the standard library.  Adapt accordingly.
+
+1.1 (2008-07-01)
+================
+
+- Update the certificate file with the new server certificate used by
+  authorize.net.
+
+1.0
+===
+
+Initial release.
