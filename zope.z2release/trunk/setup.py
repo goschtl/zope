@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import os
 
 version = '0.2'
 
@@ -7,7 +6,7 @@ setup(name='zope.z2release',
       version=version,
       description="Zope 2 release helper",
       long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+                       open("CHANGES.txt").read(),
       classifiers=[
         "Programming Language :: Python",
         ],
