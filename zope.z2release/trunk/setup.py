@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.2'
+version = '0.3'
 
 setup(name='zope.z2release',
       version=version,
@@ -13,7 +13,7 @@ setup(name='zope.z2release',
       keywords='',
       author='Andreas Jung',
       author_email='info@zopyx.com',
-      url='',
+      url='http://pypi.python.org/pypi/zope.z2release',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['zope'],
