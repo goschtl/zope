@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,7 +21,7 @@ setup(name='zLOG',
       url='http://cheeseshop.python.org/pypi/zLOG',
       license='ZPL 2.1',
       description='A general logging facility',
-      author='Zope Corporation and Contributors',
+      author='Zope Foundatino and Contributors',
       author_email='zope-dev@zope.org',
       long_description="""
 This package provides a general logging facility that, at this point,
