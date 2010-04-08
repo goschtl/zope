@@ -473,7 +473,7 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         # `Attribute` and `Method`
         for name, attr in attrs.items():
             if name == '__locals__':
-                # This happens under Python 3 sometimes
+                # This happens under Python 3 sometimes, not sure why. /regebro
                 continue
             if isinstance(attr, Attribute):
                 attr.interface = self
