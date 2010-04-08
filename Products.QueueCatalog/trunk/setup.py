@@ -14,9 +14,9 @@ version = open(os.path.join('Products', 'QueueCatalog', 'version.txt')).read().s
 
 setup(name='Products.QueueCatalog',
       version=version,
-      license='ZPL (see LICENSE.txt)',
-      author='Christian Theune',
-      author_email='ct@gocept.com',
+      license='ZPL 2.1',
+      author='Zope Foundation and Contributors',
+      author_email='zope-dev@zope.org',
       maintainer='Christian Theune',
       maintainer_email='ct@gocept.com',
       classifiers=CLASSIFIERS,
