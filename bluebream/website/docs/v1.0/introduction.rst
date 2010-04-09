@@ -154,15 +154,6 @@ Architecture`, which is the core of Zope 3, emphasized modularity and
 configurability which proved very successful in "enterprise"
 applications requiring flexibility and scalability.
 
-justify the longer learning curve which Zope 3 requires, but is
-overkill for many situations which otherwise stand to benefit from the
-distilled wisdom of the ZCA.  The Zope community has responded to this
-in a number of ways, several projects have built frameworks which
-implement `Convention over configuration`_, and other refinements of
-the ZCA components aimed at facilitating rapid deployment, maintaining
-the power of ZCA under the hood.  Notable among these are :term:`grok`
-and Repoze_.
-
 Zope 3 is now known as BlueBream.  The name stems from the
 coincidence that the Z Object Publishing Environment when spelled
 `zope` is the name of a species of fish.  `Blue bream`_ is another
