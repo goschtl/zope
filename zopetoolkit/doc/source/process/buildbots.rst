@@ -83,7 +83,7 @@ base.
                     `grok <http://grok.buildbot.securactive.org/>`_
                     `bfg <http://bfg.buildbot.securactive.org/>`_
                     `misc <http://misc.buildbot.securactive.org/>`_
-      - Sebastian Douche
+      - Sebastien Douche
       - Linux 32/64
       - 2.4, 2.5, 2.6
       - KGS (3.4/3.5), ZTK, grok, BFG (trunk), zc.buildout

@@ -14,7 +14,7 @@ independently, but typically build on each other.
 A library that at some point in time is considered to be part of the
 Zope Toolkit is called a "core library". The Zope Toolkit contains
 those libraries that are reused by a large number of projects, or that
-the Zope Toolkit developers want to promote to be being more widely
+the Zope Toolkit developers want to promote to being more widely
 adopted. The Zope Toolkit developers especially favor inclusions of
 libraries that are used by other Zope projects.
 

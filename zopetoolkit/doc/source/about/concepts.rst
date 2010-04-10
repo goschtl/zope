@@ -9,11 +9,17 @@ Zope 2
 
 Zope 3 (preferred: Zope 3 application server)
   Zope 3 as an application server, includes a way to create projects.
-  Currently also contains the ZMI.
+  Currently also contains the ZMI. Since 2010, Zope 3 as an application server
+  has been renamed to BlueBream.
+
+BlueBream
+    BlueBream is the new name of Zope 3 as an application server. It consists in
+    a project template and it uses the Zope Toolkit. It also provides a
+    migration path from Zope 3.4.
 
 Grok web framework
-    Grok, very similar to the Zope 3 application server, but with extra Grok
-    libraries and policy, and Grok community.
+    Grok, very similar to BlueBream, but with extra Grok libraries and policy,
+    and Grok community.
 
 Repoze
     a set of libraries that builds on Zope technology, reuse Zope concepts and
@@ -21,6 +27,10 @@ Repoze
 
 Plone
     a CMS based on Zope 2 and the CMF.
+
+CMF
+    The Content Management Framework for Zope 2, on which are based applications
+    such as Plone or CPS.
 
 Zope Toolkit
     the collection of Zope Toolkit core libraries. Shouldn't include the ZMI
