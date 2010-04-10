@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import re, os, sys
+import re, os, sys, shutil
 import pkg_resources
 from paste.script import templates
 from paste.script.templates import var
@@ -86,29 +86,34 @@ class BlueBream(templates.Template):
     def post(self, command, output_dir, vars):
         """Add namespace packages and move the main package to the last level
         """
-        # do nothing if there is no namespace
-        if len(self.ns_split) == 1:
-            return
+        # if we have a namespace package
+        if len(self.ns_split) > 1:
+            package_dir = os.path.join(output_dir, 'src', vars['package'])
+            tmp_dir = package_dir + '.tmp'
+            os.rename(package_dir, tmp_dir)
 
-        package_dir = os.path.join(output_dir, 'src', vars['package'])
-        tmp_dir = package_dir + '.tmp'
-        os.rename(package_dir, tmp_dir)
+            # create the intermediate namespace packages
+            target_dir = os.path.join(output_dir, 'src',
+                                      os.path.join(*self.ns_split[:-1]))
+            os.makedirs(target_dir)
 
-        # create the intermediate namespace packages
-        target_dir = os.path.join(output_dir, 'src',
-                                  os.path.join(*self.ns_split[:-1]))
-        os.makedirs(target_dir)
+            # create each __init__.py with namespace declaration
+            ns_decl = "__import__('pkg_resources').declare_namespace(__name__)"
+            for i, namespace_package in enumerate(self.ns_split[:-1]):
+                init_file = os.path.join(output_dir, 'src',
+                                         os.path.join(*self.ns_split[:i+1]),
+                                         '__init__.py')
+                open(init_file, 'w').write(ns_decl)
 
-        # create each __init__.py with namespace declaration
-        ns_decl = "__import__('pkg_resources').declare_namespace(__name__)"
-        for i, namespace_package in enumerate(self.ns_split[:-1]):
-            init_file = os.path.join(output_dir, 'src',
-                                     os.path.join(*self.ns_split[:i+1]),
-                                     '__init__.py')
-            open(init_file, 'w').write(ns_decl)
+            # move the (renamed) main package to the last namespace
+            os.rename(tmp_dir,
+                      os.path.join(target_dir, os.path.basename(package_dir,)))
 
-        # move the (renamed) main package to the last namespace
-        os.rename(tmp_dir,
-                  os.path.join(target_dir, os.path.basename(package_dir,)))
+        print("\nYour project has been created! Now, you want to:\n"
+              "1) put the generated files under version control\n"
+              "2) run: python boostrap.py "
+              "3) run: ./bin/buildout\n"
+             )
+
 
 

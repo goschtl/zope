@@ -55,6 +55,10 @@ Variables:
   zip_safe:          False
 Creating template bluebream
 Creating directory ./sample
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
 
 >>> print_dir('sample')
 sample/bootstrap.py
@@ -124,6 +128,9 @@ Variables:
   zip_safe:          False
 Creating template bluebream
 Creating directory ./sample.main
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
 
 >>> print_dir('sample.main')
 sample.main/bootstrap.py
@@ -200,6 +207,9 @@ Variables:
   zip_safe:          False
 Creating template bluebream
 Creating directory ./sample.app.main
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
 
 >>> print_dir('sample.app.main')
 sample.app.main/bootstrap.py
@@ -276,6 +286,9 @@ Variables:
   zip_safe:          False
 Creating template bluebream
 Creating directory ./foobar.foobar
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
 
 >>> print_dir('foobar.foobar')
 foobar.foobar/bootstrap.py
@@ -349,6 +362,9 @@ Variables:
   zip_safe:          False
 Creating template bluebream
 Creating directory ./sampleproject
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
 
 >>> print_dir('sampleproject')
 sampleproject/bootstrap.py
