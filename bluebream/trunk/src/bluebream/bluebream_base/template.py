@@ -111,7 +111,7 @@ class BlueBream(templates.Template):
 
         print("\nYour project has been created! Now, you want to:\n"
               "1) put the generated files under version control\n"
-              "2) run: python boostrap.py "
+              "2) run: python boostrap.py\n"
               "3) run: ./bin/buildout\n"
              )
 
