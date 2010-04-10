@@ -11,6 +11,9 @@ Migration issues
 ----------------
 
 .. note: based on ZTK documentation.
+         We should find a way to import this doc from the zopetoolkit instead of
+         duplicating it here.
+
 
 zope.app.keyreference -> zope.keyreference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
