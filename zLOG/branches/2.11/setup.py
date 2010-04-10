@@ -21,7 +21,7 @@ setup(name='zLOG',
       url='http://cheeseshop.python.org/pypi/zLOG',
       license='ZPL 2.1',
       description='A general logging facility',
-      author='Zope Foundatino and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       long_description="""
 This package provides a general logging facility that, at this point,
