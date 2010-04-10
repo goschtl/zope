@@ -75,6 +75,11 @@ class Checker(object):
             return
         environment = os.environ
         environment['PYTHONPATH'] = ':'.join(sys.path)
+        s = subprocess.Popen([sys.executable, setup, 'egg_info'],
+                             cwd=self.working_dir,
+                             stdout=subprocess.PIPE,
+                             env=environment)
+        s.wait()
         s = subprocess.Popen([sys.executable, setup,
                               '--license', '--author'],
                              cwd=self.working_dir,
