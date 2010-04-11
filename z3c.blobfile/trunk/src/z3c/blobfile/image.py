@@ -28,8 +28,6 @@ from zope.contenttype import guess_content_type
 from z3c.blobfile.i18n import ZopeMessageFactory as _
 from z3c.blobfile.file import File
 
-from ZODB.blob import Blob
-
 import interfaces
 
 IMAGE_INFO_BYTES = 1024
@@ -40,18 +38,26 @@ class Image(File):
     def _setData(self, data):
         super(Image, self)._setData(data)
         firstbytes = self.getFirstBytes()
-        contentType, self._width, self._height = getImageInfo(firstbytes)
+        res = getImageInfo(firstbytes)
+        while res == ('image/jpeg', -1, -1):
+            # header was longer than firstbytes
+            firstbytes += self.getFirstBytes(len(firstbytes))
+            res = getImageInfo(firstbytes)
+            if len(firstbytes) >= self.size:
+                break
+        contentType, self._width, self._height = res
         if contentType:
             self.contentType = contentType
 
     data = property(File._getData, _setData)
 
-    def getFirstBytes(self):
+    def getFirstBytes(self, start=0):
         """Returns the first bytes of the file.
         
         Returns an amount which is sufficient to determine the image type.
         """
         fp = self.open('r')
+        fp.seek(start)
         firstbytes = fp.read(IMAGE_INFO_BYTES)
         fp.close()
         return firstbytes

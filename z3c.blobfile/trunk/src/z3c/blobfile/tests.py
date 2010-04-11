@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 import zope.component
+import struct
 
 from zope.interface.verify import verifyClass
 from zope.app.file.interfaces import IImage
@@ -77,6 +78,16 @@ class TestImage(unittest.TestCase):
         self.failUnless(IBlobFile.implementedBy(Image))
         self.failUnless(IBlobImage.implementedBy(Image))
         self.failUnless(verifyClass(IBlobFile, Image))
+    
+    def testDataMutatorWithLargeHeader(self):
+        from z3c.blobfile.image import IMAGE_INFO_BYTES
+        bogus_header_length = struct.pack('>H', IMAGE_INFO_BYTES * 2)
+        data = ('\xff\xd8\xff\xe0' + bogus_header_length +
+                '\x00' * IMAGE_INFO_BYTES * 2 +
+                '\xff\xc0\x00\x11\x08\x02\xa8\x04\x00')
+        image = self._makeImage()
+        image._setData(data)
+        self.assertEqual(image.getImageSize(), (1024, 680))
 
 class TestFileAdapters(unittest.TestCase):
 
@@ -179,7 +190,7 @@ class TestSized(unittest.TestCase):
         t, w, h = getImageInfo('\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01'
                                '\x00\x00\x01\x00\x01\x00\x00\xff\xdb\x00C')
         self.assertEqual(t, "image/jpeg")
-    
+
     def test_getImageInfo_bmp(self):
         t, w, h = getImageInfo('BMl\x05\x00\x00\x00\x00\x00\x006\x04\x00\x00('
                                '\x00\x00\x00\x10\x00\x00\x00\x10\x00\x00\x00'

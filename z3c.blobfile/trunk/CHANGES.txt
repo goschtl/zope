@@ -5,6 +5,9 @@ CHANGES
 0.1.5 (unreleased)
 ------------------
 
+- Bug: Correctly detect the dimensions of JPEG images with the dimensions
+  in a position greater than IMAGE_INFO_BYTES.
+
 - Made tests compatible with ZODB 3.9.
 
 
