@@ -20,6 +20,11 @@
      class=".views.RootDefaultView"
      />
 
+  <interface
+     interface=".interfaces.ISampleApplication"
+     type="zope.app.content.interfaces.IContentType"
+     />
+
   <class class=".app.SampleApplication">
     <implements
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
