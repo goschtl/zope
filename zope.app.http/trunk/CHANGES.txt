@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-3.7 (unreleased)
------------------
+3.7 (2010-04-13)
+----------------
 
 - Remove unnecessary dependency on zope.app.publisher.
 
