@@ -28,7 +28,7 @@ passing an object to use as the parent as the second argument to the
 `loads()` function.  The name of the outermost object is not stored in
 the pickle unless it is stored in the object.
 
->>> from zope.location.tests import TLocation
+>>> from zope.fssync.tests import TLocation
 >>> root = TLocation()
 >>> interface.directlyProvides(root, IContainmentRoot)
 >>> o1 = DataLocation('o1', root, 12)
@@ -85,7 +85,7 @@ from zope import location
 
 from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
-from zope.location.tests import TLocation
+from zope.fssync.tests import TLocation
 from zope.traversing.interfaces import ITraverser
 from zope.traversing.interfaces import IContainmentRoot
 
@@ -102,7 +102,7 @@ def getPath(obj):
 class PathPersistentIdGenerator(object):
     """Uses traversal paths as persistent ids.
 
-    >>> from zope.location.tests import TLocation
+    >>> from zope.fssync.tests import TLocation
     >>> root = TLocation()
     >>> interface.directlyProvides(root, IContainmentRoot)
     >>> o1 = TLocation(); o1.__parent__ = root; o1.__name__ = 'o1'

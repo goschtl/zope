@@ -27,7 +27,7 @@ from zope.testing import doctest, doctestunit, module, cleanup
 
 
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location.tests import TLocation
+from zope.fssync.tests import TLocation
 
 from zope.fssync import pickle
 
