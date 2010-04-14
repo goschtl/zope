@@ -20,6 +20,9 @@ version = '0.1'
 
 setup(name='zope.bugchecker',
       version=version,
+      author='Charlie Clark',
+      author_email='',
+      url='http://pypi.python.org/pypi/zope.bugchecker',
       description="Check the Zope bugtracker for new bugs",
       long_description='\n\n'.join([README,CHANGES]),
       classifiers=[
@@ -30,17 +33,17 @@ setup(name='zope.bugchecker',
         "Framework :: Zope3",
       ],
       keywords='zope launchpad bugchecker',
-      author='Charlie Clark',
-      author_email='',
-      url='http://pypi.python.org/pypi/zope.bugchecker',
-      license='ZPL 2.1',
-      packages=find_packages(),
+      packages=find_packages('src'),
+      package_dir={'': 'src'},
       include_package_data=True,
       zip_safe=False,
+      license='ZPL 2.1',
+      namespace_packages=['zope'],
       install_requires=[
         'launchpadlib'
       ],
       entry_points="""
       [console_scripts]
+      check-bugs = zope.bugchecker.bugchecker:main
       """,
 )
