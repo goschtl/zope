@@ -29,6 +29,8 @@ install_requires = [
 tests_require = [
     'zope.app.wsgi [test]',
     'zope.configuration',
+    'zope.container',
+    'zope.site',
     'zope.testing',
     ]
 

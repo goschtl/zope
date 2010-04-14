@@ -21,11 +21,10 @@ import fnmatch
 from zope import component
 from zope import interface
 from zope.browserresource import directory
-from zope.browserresource.file import FileResourceFactory
 from zope.browserresource.interfaces import IResourceFactoryFactory
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.pagetemplate.engine import TrustedAppPT
-from zope.ptresource.ptresource import PageTemplateResourceFactory 
+from zope.ptresource.ptresource import PageTemplateResourceFactory
 from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.publisher.publish import mapply
@@ -41,7 +40,7 @@ class ViewSupport(object):
     @property
     def response(self):
         return self.request.response
-    
+
     @property
     def body(self):
         return self.request.bodyStream.getCacheStream().read()
@@ -68,7 +67,7 @@ class ViewSupport(object):
         elif name is not None and obj is None:
             # create URL to view on context
             obj = self.context
-            
+
         return util.url(self.request, obj, name, data)
 
 
@@ -127,7 +126,7 @@ class View(ViewSupport, BrowserPage):
                       "View %r, macro %s" % (self, key),
                       DeprecationWarning, 1)
         return value
-    
+
     def update(self, **kwargs):
         pass
 
@@ -259,7 +258,7 @@ _marker = object()
 
 class DirectoryResource(directory.DirectoryResource):
     forbidden_names = ('.svn', )
-    
+
     def get(self, name, default=_marker):
 
         for pat in self.forbidden_names:
@@ -268,7 +267,7 @@ class DirectoryResource(directory.DirectoryResource):
                     raise NotFound(None, name)
                 else:
                     return default
-        
+
         path = self.context.path
         filename = os.path.join(path, name)
         isfile = os.path.isfile(filename)

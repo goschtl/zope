@@ -1,11 +1,10 @@
 import re
 import unittest
-import os.path
 import grokcore.view
 
 from pkg_resources import resource_listdir
 from zope.testing import doctest, renormalizing
-from zope.app.wsgi.testlayer import BrowserLayer, http
+from zope.app.wsgi.testlayer import BrowserLayer
 
 FunctionalLayer = BrowserLayer(grokcore.view)
 
