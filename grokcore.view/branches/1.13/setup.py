@@ -30,7 +30,6 @@ tests_require = [
     'zope.app.authentication',
     'zope.app.basicskin',
     'zope.app.rotterdam',
-    'zope.app.testing',
     'zope.app.zcmlfiles',
     'zope.configuration',
     'zope.container',
@@ -42,7 +41,7 @@ tests_require = [
 
 setup(
     name='grokcore.view',
-    version = '1.13.3dev',
+    version = '1.14.0dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',

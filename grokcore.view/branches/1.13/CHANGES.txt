@@ -1,10 +1,10 @@
 Changes
 =======
 
-1.13.3 (unreleased)
+1.14.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Update tests not to require zope.app.testing anymore.
 
 
 1.13.2 (2010-01-09)

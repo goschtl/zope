@@ -16,6 +16,8 @@
   <include package="grokcore.view" />
   <grok:grok package="grokcore.view.ftests" />
 
+  <include package="zope.app.wsgi" file="ftesting.zcml" />
+
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />

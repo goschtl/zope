@@ -6,7 +6,7 @@ Views have a redirect() method to easily create redirects:
 Since the index view redirects to mammoth, we expect to see the URL
 point to mammoth:
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open('http://localhost/manfred')
