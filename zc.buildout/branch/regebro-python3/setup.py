@@ -15,6 +15,7 @@ name = "zc.buildout"
 version = "1.4.4dev"
 
 import os
+import sys
 from setuptools import setup
 
 def read(*rnames):
@@ -65,6 +66,13 @@ debug = %(name)s.testrecipes:Debug
 
 """ % dict(name=name)
 
+if sys.version > '3':
+    py3extras = {
+        'use_2to3': True,
+    }
+else:
+    py3extras = {}
+
 setup(
     name = name,
     version = version,
@@ -90,4 +98,5 @@ setup(
        'Topic :: Software Development :: Build Tools',
        'Topic :: Software Development :: Libraries :: Python Modules',
        ],
+    **py3extras
     )
