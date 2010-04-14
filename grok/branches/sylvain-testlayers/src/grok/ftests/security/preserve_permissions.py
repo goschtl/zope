@@ -62,7 +62,7 @@ the view just fine:
 
 The default view is accessible::
   
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/app')
   >>> print browser.contents

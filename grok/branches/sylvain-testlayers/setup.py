@@ -14,9 +14,8 @@ long_description = (
     )
 
 tests_require = [
-    'zope.app.testing',
+    'zope.app.wsgi',
     'zope.configuration',
-    'zope.testbrowser',
     'zope.testing',
     ]
 
@@ -91,7 +90,6 @@ setup(
                       'zope.app.appsetup',
                       'zope.app.pagetemplate',
                       'zope.app.security',
-                      'zope.app.twisted',
                       'zope.deprecation',
                       'zope.dottedname',
                       'zope.hookable',
