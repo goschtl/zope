@@ -8,7 +8,7 @@ we test the whole procedure on fields from schemas:
 
   >>> getRootFolder()["manfred"] = Mammoth('Manfred the Mammoth', 'Really big')
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 

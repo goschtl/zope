@@ -5,7 +5,7 @@ going to be set on it.
 
   >>> getRootFolder()["zoo"] = Zoo()
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 

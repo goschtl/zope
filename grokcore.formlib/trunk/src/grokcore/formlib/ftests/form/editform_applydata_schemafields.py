@@ -11,7 +11,7 @@ model class:
   >>> mammoth.name = 'Manfred the Mammoth'
   >>> mammoth.size = 'Really big'
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 

@@ -3,7 +3,7 @@ We can use grok.AddForm to render an add form for objects:
 
   >>> getRootFolder()["zoo"] = Zoo()
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 
