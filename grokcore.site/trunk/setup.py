@@ -11,7 +11,7 @@ long_description = (
     )
 
 tests_require = [
-    'zope.app.testing',
+    'zope.app.appsetup',
     'zope.app.zcmlfiles',
     'zope.component',
     'zope.configuration',
