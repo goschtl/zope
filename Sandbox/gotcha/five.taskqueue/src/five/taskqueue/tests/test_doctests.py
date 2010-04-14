@@ -23,16 +23,32 @@ from zope.testing.loggingsupport import InstalledHandler
 import doctest
 import random
 import unittest
+import logging
 
 from five.taskqueue import service
 
 ZopeTestCase.installProduct('Five')
 
 
+def _configure_conflict_error_log_level():
+    import App.config
+    config = App.config.getConfiguration()
+    config.conflict_error_log_level = logging.INFO
+    App.config.setConfiguration(config)
+
+
 def setUp(test):
-    log_info = InstalledHandler('z3c.taskqueue')
     test.globs['root'] = ZopeTestCase.base.app()
+    # As task will be run in different threads, we cannot rely on print
+    # results. We need to log calls to prove correctness.
+    log_info = InstalledHandler('z3c.taskqueue')
     test.globs['log_info'] = log_info
+    # We pass the ZPublisher conflict logger to prove that no conflict
+    # happened.
+    conflict_logger = InstalledHandler('ZPublisher.Conflict')
+    test.globs['conflict_logger'] = conflict_logger
+    # Make sure ZPublisher conflict error log level is setup.
+    _configure_conflict_error_log_level()
     test.origArgs = service.TaskService.processorArguments
     service.TaskService.processorArguments = {'waitTime': 0.0}
     # Make tests predictable

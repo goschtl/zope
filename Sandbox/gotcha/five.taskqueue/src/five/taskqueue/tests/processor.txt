@@ -292,6 +292,8 @@ the jobs and see the result:
   z3c.taskqueue INFO
     stopping service remotetasks.tasks.tasks
 
+  >>> print conflict_logger
+
 Note: Sometimes (about 20% of the time in this test) the log will contain a
 conflict error. As long as the error is *not* produced by ``processNext()``,
 they are harmless, even though they are logged on the error level. To avoid
