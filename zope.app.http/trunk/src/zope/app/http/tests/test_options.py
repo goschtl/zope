@@ -19,7 +19,6 @@ from unittest import TestCase, TestSuite, makeSuite
 
 import zope.interface
 
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.publisher.browser import IBrowserRequest
 from zope.publisher.browser import TestRequest
 
@@ -42,7 +41,7 @@ class DeleteView(object):
         self.request = request
 
 
-class TestOptions(PlacelessSetup, TestCase):
+class TestOptions(TestCase):
 
     def testDefaultMethods(self):
         dumbObj = object()

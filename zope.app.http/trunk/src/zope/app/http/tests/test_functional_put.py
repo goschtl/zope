@@ -16,45 +16,52 @@
 $Id$
 """
 
-from unittest import TestSuite, makeSuite
+from unittest import TestSuite, TestCase, makeSuite
 
-from zope.app.testing.functional import FunctionalTestCase, HTTPCaller
-from zope.app.http.testing import AppHttpLayer
+from zope.app.wsgi.testlayer import http, BrowserLayer
+import zope.app.http
 
-class TestPUT(FunctionalTestCase):
+layer = BrowserLayer(zope.app.http)
+
+class TestPUT(TestCase):    
     def test_put(self):
         # PUT something for the first time
-        response = HTTPCaller()(r"""PUT /testfile.txt HTTP/1.1
-Authorization: Basic bWdyOm1ncnB3
+        out = http(r"""PUT /testfile.txt HTTP/1.1
+Authorization: Basic globalmgr:globalmgrpw
 Content-Length: 20
 Content-Type: text/plain
 
 This is just a test.""")
-        self.assertEquals(response._response.getStatus(), 201)
-        self.assertEquals(response._response.getHeader("Location"),
-                          "http://localhost/testfile.txt")
-
-        response = HTTPCaller()(r"""GET /testfile.txt HTTP/1.1
-Authorization: Basic bWdyOm1ncnB3""")
-        self.assertEquals(response.getBody(), "This is just a test.")
-
+        self.assertEquals(
+            out,
+            ('HTTP/1.0 201 Created\n'
+             'X-Powered-By: Zope (www.zope.org), Python (www.python.org)\n'
+             'Content-Length: 0\n'
+             'Location: http://localhost/testfile.txt\n\n'))
+            
+        out = http(r"""GET /testfile.txt HTTP/1.1
+Authorization: Basic globalmgr:globalmgrpw""")
+        self.assertEquals(out.split('\n\n')[1],
+                          'This is just a test.')
+    
         # now modify it
-        response = HTTPCaller()(r"""PUT /testfile.txt HTTP/1.1
-Authorization: Basic bWdyOm1ncnB3
+        out = http(r"""PUT /testfile.txt HTTP/1.1
+Authorization: Basic globalmgr:globalmgrpw
 Content-Length: 23
 Content-Type: text/plain
 
 And now it is modified.""")
-        self.assertEquals(response._response.getStatus(), 200)
-        self.assertEquals(response.getBody(), "")
 
-        response = HTTPCaller()(r"""GET /testfile.txt HTTP/1.1
-Authorization: Basic bWdyOm1ncnB3""")
-        self.assertEquals(response.getBody(), "And now it is modified.")
-        
+        self.assert_('200' in out)
+        self.assertEquals(out.split('\n\n')[1], "")
+    
+        out = http(r"""GET /testfile.txt HTTP/1.1
+Authorization: Basic globalmgr:globalmgrpw""")
+
+        self.assertEquals(out.split('\n\n')[1], "And now it is modified.")
         
 def test_suite():
-    TestPUT.layer = AppHttpLayer
+    TestPUT.layer = layer
     return TestSuite((
         makeSuite(TestPUT),
         ))

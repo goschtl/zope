@@ -23,10 +23,11 @@ from zope.publisher.browser import TestRequest
 from zope.filerepresentation.interfaces import IWriteFile
 from zope.filerepresentation.interfaces import IWriteDirectory, IReadDirectory, IFileFactory
 
+
 import zope.app.http.put
-from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.component.testing import PlacefulSetup, Place
 from zope.location.interfaces import ILocation
+from zope.site.folder import rootFolder
+from zope.app.wsgi.testlayer import BrowserLayer
 
 class File(object):
 
@@ -40,12 +41,15 @@ class File(object):
     def write(self, data):
         self.data = data
 
-class Container(Place):
+class Container(object):
 
     implements(IWriteDirectory, IReadDirectory, IFileFactory, ILocation)
 
     __name__ = None
     __parent__ = None
+    
+    def __init__(self, path):
+        self.path = path
 
     def __setitem__(self, name, object):
         object.__name__ = name
@@ -59,9 +63,13 @@ class Container(Place):
         return File(name, content_type, data)
 
 
-class TestNullPUT(PlacefulSetup, TestCase):
+class TestNullPUT(TestCase):
 
+    layer = BrowserLayer(zope.app.http)
+    
     def test(self):
+        self.rootFolder = rootFolder()
+
         container = Container("put")
         self.rootFolder["put"] = container
         content = "some content\n for testing"
@@ -90,6 +98,7 @@ class TestNullPUT(PlacefulSetup, TestCase):
         ## object had a key beginning with 'HTTP_CONTENT_' with a status of 501.
         ## This was breaking the new Twisted server, so I am now allowing this
         ## this type of request to be valid.
+        self.rootFolder = rootFolder()
         container = Container("/put")
         self.rootFolder["put"] = container
         content = "some content\n for testing"
@@ -107,7 +116,8 @@ class TestNullPUT(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 201)
 
-class TestFilePUT(PlacelessSetup, TestCase):
+class TestFilePUT(TestCase):
+    layer = BrowserLayer(zope.app.http)
 
     def test(self):
         file = File("thefile", "text/x", "initial content")

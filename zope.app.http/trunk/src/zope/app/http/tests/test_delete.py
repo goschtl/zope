@@ -22,7 +22,6 @@ from zope.publisher.browser import TestRequest
 from zope.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 
 import zope.app.http.delete
-from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.container.contained import contained
 from zope.publisher.interfaces.http import MethodNotAllowed
 
@@ -38,7 +37,7 @@ class Container(object):
         delattr(self, name)
 
 
-class TestDelete(PlacelessSetup, TestCase):
+class TestDelete(TestCase):
 
     def test(self):
         container = Container()
