@@ -6,6 +6,8 @@ Changes
 
 - Update functional tests to only use zope.app.appsetup instead
   of zope.app.testing.
+- Update functional tests not to require zope.app.zcmlfiles
+  anymore.
 
 1.2 (2009-12-20)
 ----------------

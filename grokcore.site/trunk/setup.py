@@ -12,9 +12,9 @@ long_description = (
 
 tests_require = [
     'zope.app.appsetup',
-    'zope.app.zcmlfiles',
     'zope.component',
     'zope.configuration',
+    'zope.location',
     'zope.testing',
     ]
 
@@ -50,7 +50,6 @@ setup(
                       'zope.interface',
                       'zope.lifecycleevent',
                       'zope.site',
-                      'zope.location',
                       ],
     tests_require=tests_require,
     extras_require={'test': tests_require},

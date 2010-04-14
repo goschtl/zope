@@ -2,7 +2,7 @@ import unittest
 import grokcore.site
 
 from pkg_resources import resource_listdir
-from zope.testing import doctest, renormalizing
+from zope.testing import doctest
 from zope.app.appsetup.testlayer import ZODBLayer
 
 FunctionalLayer = ZODBLayer(grokcore.site)

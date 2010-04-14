@@ -1,5 +1,4 @@
 import grokcore.site
-from zope import interface
 
 class Fireplace(object):
     pass
