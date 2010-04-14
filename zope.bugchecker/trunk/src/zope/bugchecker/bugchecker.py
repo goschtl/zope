@@ -94,10 +94,17 @@ class BugTracker(object):
         for (idx, bug) in enumerate(bugs):
             date_created = datetime.date(*bug.date_created.timetuple()[:3])
             if date_created < self.report_date:
+                # lame, I know, but the bug's own link is on the 'edge'
+                # domain.
+                bug_id = bug.bug.id 
+                link = ('https://bugs.launchpad.net/%s/+bug/%s'
+                            % (self.project_name, bug_id))
                 self.bugs.append({'title': bug.title,
-                                  'link': bug.bug_link,
+                                  'link': link,
                                   'created': date_created.isoformat(),
                                   'status': bug.status,
+                                  'assignee': bug.assignee,
+                                  'id': bug_id,
                                  })
                 
     def report(self):
@@ -111,7 +118,8 @@ class BugTracker(object):
                 ]
         for bug in self.bugs:
             if self.verbose:
-                fmt = '%(title)s\n %(status)s %(created)s\n %(link)s'
+                fmt = ('%(title)s\n %(status)s %(created)s %(assignee)s\n'
+                       ' %(link)s')
             else:
                 fmt = '%(title)s\n %(link)s'
             lines.append(fmt % bug)
