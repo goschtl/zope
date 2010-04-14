@@ -17,8 +17,7 @@ class Response(HTTPResponse):
         self.body = body
 
 
-class SimpleProcessor(BaseSimpleProcessor):
-    """ SimpleProcessor for Zope2 """
+class Z2PublisherMixin(object):
 
     def call(self, method, args=(), errorValue=ERROR_MARKER):
         path = self.servicePath[:] + [method]
@@ -42,3 +41,7 @@ class SimpleProcessor(BaseSimpleProcessor):
             request.close()
             conn.close()
             return request.response.body
+
+
+class SimpleProcessor(Z2PublisherMixin, BaseSimpleProcessor):
+    """ SimpleProcessor for Zope2 """
