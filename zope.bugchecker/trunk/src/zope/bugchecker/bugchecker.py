@@ -113,7 +113,8 @@ class BugTracker(object):
         return "\n\n".join(lines)
 
 def get_projects_from_group(launchpad, project_group):
-    return [x['name'] for x in launchpad.project_groups[project_group]]
+    group = launchpad.project_groups[project_group]
+    return [x.name for x in group.projects]
 
 def main():
     verbose = 1
