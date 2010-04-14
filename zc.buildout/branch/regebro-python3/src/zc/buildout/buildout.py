@@ -21,6 +21,11 @@ except ImportError:
     # Python 2.4 and older
     from md5 import md5
 
+try:
+    import UserDict
+except ImportError:
+    # Python 3
+    from collections import UserDict
 import ConfigParser
 import copy
 import distutils.errors
@@ -34,7 +39,6 @@ import shutil
 import sys
 import socket
 import tempfile
-import UserDict
 import zc.buildout
 import zc.buildout.download
 import zc.buildout.easy_install
