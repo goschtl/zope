@@ -75,13 +75,13 @@ from launchpadlib.launchpad import Launchpad
 class BugTracker(object):
     """Check the BugTracker for new bugs"""
     
-    def __init__(self, launchpad, project, report_date, states, verbose):
+    def __init__(self, launchpad, project, report_date, states, rheostat):
         """Log into launchpad and get the Zope 3 project
         """
         self.project_name = project
         self.report_date = report_date
         self.states = states
-        self.verbose = verbose
+        self.rheostat = rheostat
         self.project = launchpad.projects[project]
         self.bugs = []
     
@@ -111,23 +111,32 @@ class BugTracker(object):
         """Return a printable summary
         """
         count = len(self.bugs)
-        lines = ['-' * 78 +
-                 '\n%-40s: languishing bugs: %d\n'
-                    % (self.project_name, count) +
-                 '-' * 78
-                ]
+        self.rheostat(1, '-' * 78)
+        self.rheostat(1, '%-40s: languishing bugs: %d'
+                           % (self.project_name, count))
+        self.rheostat(1, '-' * 78)
+
         for bug in self.bugs:
-            if self.verbose:
+            if self.rheostat.verbose:
                 fmt = ('%(title)s\n %(status)s %(created)s %(assignee)s\n'
                        ' %(link)s')
             else:
-                fmt = '%(title)s\n %(link)s'
-            lines.append(fmt % bug)
-        return count, "\n\n".join(lines)
+                fmt = '%(title)s\n %(link)s\n'
+            self.rheostat(0, fmt % bug)
+        return count
 
 def get_projects_from_group(launchpad, project_group):
     group = launchpad.project_groups[project_group]
     return [x.name for x in group.projects]
+
+class Rheostat:
+
+    def __init__(self, verbose):
+        self.verbose = verbose
+
+    def __call__(self, level, message):
+        if level <= self.verbose:
+            print message
 
 def main():
     verbose = 1
@@ -171,6 +180,19 @@ def main():
     today = datetime.date.today()
     delta = datetime.timedelta(days=days)
     report_date = today - delta
+
+    if not states:
+        states.append('New')
+
+    rheostat = Rheostat(verbose)
+
+    rheostat(1, '=' * 78)
+    rheostat(1, 'Languishing bugs report')
+    rheostat(1, '=' * 78)
+    rheostat(1, 'States included:  %s' % (', '.join(states)))
+    rheostat(1, 'Minimum age:      %s' % days)
+    rheostat(1, '')
+
     launchpad = Launchpad.login_anonymously("Zope Bugtracker", "edge")
 
     if args:
@@ -180,20 +202,15 @@ def main():
     else:
         projects = ['zope3']
 
-    if not states:
-        states.append('New')
-
     total = 0
     for project in projects:
-        Tracker = BugTracker(launchpad, project, report_date, states, verbose)
+        Tracker = BugTracker(launchpad, project, report_date, states, rheostat)
         Tracker.get()
-        count, text = Tracker.report()
-        total += count
-        print text
+        total += Tracker.report()
 
-    print '=' * 78
-    print 'Total:  %d' % total
-    print '=' * 78
+    rheostat(1, '=' * 78)
+    rheostat(0, 'Total languishing bugs:  %d' % total)
+    rheostat(1, '=' * 78)
 
     if total > 0:
         sys.exit(-1)
