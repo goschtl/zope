@@ -22,8 +22,7 @@ from zope.interface import Interface, implements
 from zope.publisher.http import HTTPRequest
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from zope.app.testing import ztapi
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.component import provideAdapter
 
 
 class I(Interface):
@@ -48,17 +47,16 @@ class DeleteView(object):
         pass
 
 
-class TestMethodNotAllowedView(PlacelessSetup, TestCase):
+class TestMethodNotAllowedView(TestCase):
 
     def setUp(self):
         from zope.publisher.interfaces.http import IHTTPRequest
 
-        PlacelessSetup.setUp(self)
-        ztapi.provideView(I, IHTTPRequest, Interface, 'GET', GetView)
-        ztapi.provideView(I, IHTTPRequest, Interface, 'DELETE', DeleteView)
-        ztapi.provideView(I, IHTTPRequest, Interface, 'irrelevant', GetView)
-        ztapi.provideView(I, IHTTPRequest, Interface, 'also_irr.', DeleteView)
-
+        provideAdapter(GetView, (I, IHTTPRequest), Interface, 'GET')
+        provideAdapter(DeleteView, (I, IHTTPRequest), Interface, 'DELETE')
+        provideAdapter(GetView, (I, IHTTPRequest), Interface, 'irrelevant')
+        provideAdapter(DeleteView, (I, IHTTPRequest), Interface, 'also_irr.')
+        
         from zope.publisher.interfaces import IDefaultViewName
         from zope.publisher.interfaces.browser import IBrowserRequest
         #do the same as defaultView would for something like:
@@ -67,8 +65,8 @@ class TestMethodNotAllowedView(PlacelessSetup, TestCase):
         #    name="index.html"
         #    />
 
-        ztapi.provideAdapter((I, IBrowserRequest), IDefaultViewName, u'index.html')
-
+        provideAdapter(u'index.html', (I, IBrowserRequest), IDefaultViewName)
+    
     def test(self):
         from zope.publisher.interfaces.http import MethodNotAllowed
         from zope.app.http.exception.methodnotallowed \

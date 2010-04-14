@@ -28,6 +28,7 @@ class TestPUT(TestCase):
         # PUT something for the first time
         out = http(r"""PUT /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw
+X-Zope-Handle-Errors: False
 Content-Length: 20
 Content-Type: text/plain
 
