@@ -94,7 +94,7 @@ class SimpleProcessor(object):
         except Exception, error:
             # This thread should never crash, thus a blank except
             log.error('Processor: ``%s()`` caused an error!' %method)
-            log.exception(error)
+            log.exception(str(error))
             return errorValue is ERROR_MARKER and error or errorValue
 
     def processNext(self, jobid=None):

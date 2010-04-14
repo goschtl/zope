@@ -244,7 +244,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             jobtask = component.getUtility(self.taskInterface, name=job.task)
         except ComponentLookupError, error:
             log.error('Task "%s" not found!'% job.task)
-            log.exception(error)
+            log.exception(str(error))
             job.error = error
             if job.status != interfaces.CRONJOB:
                 job.status = interfaces.ERROR
@@ -265,7 +265,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             if storage.runCount <= 3:
                 log.error('Caught a generic exception, preventing thread '
                           'from crashing')
-                log.exception(error)
+                log.exception(str(error))
                 raise
             else:
                 job.error = error
