@@ -5,6 +5,7 @@ from ZPublisher.HTTPResponse import HTTPResponse
 import ZPublisher
 
 from z3c.taskqueue.processor import BaseSimpleProcessor
+from z3c.taskqueue.processor import BaseMultiProcessor
 from z3c.taskqueue.processor import ERROR_MARKER
 
 log = logging.getLogger('z3c.taskqueue')
@@ -26,6 +27,7 @@ class Z2PublisherMixin(object):
                 'SERVER_PORT': '8080',
                 'PATH_INFO': '/' + '/'.join(path)}
         request = HTTPRequest(None, env, response)
+        request.args = args
         conn = self.db.open()
         root = conn.root()
         request['PARENTS'] = [root['Application']]
@@ -44,4 +46,8 @@ class Z2PublisherMixin(object):
 
 
 class SimpleProcessor(Z2PublisherMixin, BaseSimpleProcessor):
+    """ SimpleProcessor for Zope2 """
+
+
+class MultiProcessor(Z2PublisherMixin, BaseMultiProcessor):
     """ SimpleProcessor for Zope2 """

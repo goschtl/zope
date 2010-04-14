@@ -160,10 +160,17 @@ for jobs that would take a long time but use very little processing power.
 
 Let's add a few new tasks to execute:
 
-  >>> jobid = tasks.add(u'sleep', (0.04,  1))
+  >>> jobid_1 = tasks.add(u'sleep', (0.04,  1))
+
   >>> jobid = tasks.add(u'sleep', (0.18,  2))
+  >>> jobid == jobid_1 + 1
+  True
   >>> jobid = tasks.add(u'sleep', (0,     3))
+  >>> jobid == jobid_1 + 2
+  True
   >>> jobid = tasks.add(u'sleep', (0.02,  4))
+  >>> jobid == jobid_1 + 3
+  True
   >>> transaction.commit()
 
 Before testing the processor in the task service, let's have a look at every
@@ -191,15 +198,15 @@ executed:
   >>> proc.hasJobsWaiting()
   True
 
-Once you know that jobs are available, you can claim a job:
+Once you know that jobs are available, you can claim a job.
+We need to explicitely claim a job before executing it, to ensure it is markes
+as claimed: this avoids that another thread picks up the job.
 
   >>> jobid = proc.claimNextJob()
-  >>> jobid
-  1392637180
+  >>> jobid == jobid_1
+  True
 
-We need to claim a job before executing it, so that the database marks the job
-as claimed and no new thread picks up the job. Once we claimed a particular
-job, we can process it:
+Once we claimed a particular job, we can process it:
 
   >>> log_info.clear()
 
@@ -292,7 +299,8 @@ conflict errors when calling the ``processNext()`` method, we wait a little
 bit to give the thread a chance to start up. This waiting time is defined by a
 module global:
 
-  >>> processor.THREAD_STARTUP_WAIT
+  >>> import z3c.taskqueue
+  >>> z3c.taskqueue.processor.THREAD_STARTUP_WAIT
   0.050000000000000003
 
 On my machine this number seems to work well. On slower machines you might
