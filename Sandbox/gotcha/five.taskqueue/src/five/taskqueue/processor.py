@@ -1,5 +1,4 @@
 import logging
-import time
 
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
@@ -27,7 +26,6 @@ class SimpleProcessor(BaseSimpleProcessor):
         env = {'SERVER_NAME': 'dummy',
                 'SERVER_PORT': '8080',
                 'PATH_INFO': '/' + '/'.join(path)}
-        log.info('Call "%s"' % env['PATH_INFO'])
         request = HTTPRequest(None, env, response)
         conn = self.db.open()
         root = conn.root()
@@ -43,7 +41,4 @@ class SimpleProcessor(BaseSimpleProcessor):
         finally:
             request.close()
             conn.close()
-            if not request.response.body:
-                time.sleep(1)
-            else:
-                return request.response.body
+            return request.response.body

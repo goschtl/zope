@@ -79,8 +79,6 @@ Let's now process the first job. We clear the log.
 
   >>> print log_info
   z3c.taskqueue INFO
-    Call "/tasks/processNext"
-  z3c.taskqueue INFO
     Job: 1
 
 Let's now use the processor from within the task service. Since the processor
@@ -108,25 +106,15 @@ were all completed in the order they were defined.
 
   >>> print log_info
   z3c.taskqueue INFO
-    Call "/tasks/processNext"
-  z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
     starting service remotetasks.tasks.tasks
   z3c.taskqueue INFO
-    Call "/tasks/processNext"
-  z3c.taskqueue INFO
     Job: 2
-  z3c.taskqueue INFO
-    Call "/tasks/processNext"
   z3c.taskqueue INFO
     Job: 3
   z3c.taskqueue INFO
-    Call "/tasks/processNext"
-  z3c.taskqueue INFO
     Job: 4
-  z3c.taskqueue INFO
-    Call "/tasks/processNext"
   z3c.taskqueue INFO
     stopping service remotetasks.tasks.tasks
 
