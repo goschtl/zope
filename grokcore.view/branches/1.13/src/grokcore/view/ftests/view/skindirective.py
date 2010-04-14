@@ -4,7 +4,7 @@
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> browser.open("http://localhost/++skin++Basic/manfred/@@cavedrawings")
+  >>> browser.open("http://localhost/++skin++Simple/manfred/@@cavedrawings")
   >>> print browser.contents
   <html>
   <body>
@@ -12,7 +12,7 @@
   </body>
   </html>
 
-  >>> browser.open("http://localhost/++skin++Rotterdam/manfred/@@moredrawings")
+  >>> browser.open("http://localhost/++skin++Grokkerdam/manfred/@@moredrawings")
   >>> print browser.contents
   Pretty
 
@@ -22,10 +22,18 @@
 
 """
 import grokcore.view as grok
-from zope.app.basicskin import IBasicSkin
-from zope.app.rotterdam import rotterdam
 
-grok.layer(IBasicSkin)
+
+class SimpleLayer(grok.IBrowserRequest):
+    grok.skin('Simple')
+
+
+class GrokkerdamLayer(SimpleLayer):
+    grok.skin('Grokkerdam')
+
+
+grok.layer(SimpleLayer)
+
 
 class MySkinLayer(grok.IBrowserRequest):
     pass
@@ -48,7 +56,7 @@ cavedrawings = grok.PageTemplate("""\
 """)
 
 class MoreDrawings(grok.View):
-    grok.layer(rotterdam)
+    grok.layer(GrokkerdamLayer)
 
     def render(self):
         return "Pretty"

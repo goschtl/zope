@@ -28,8 +28,6 @@ install_requires = [
 
 tests_require = [
     'zope.app.authentication',
-    'zope.app.basicskin',
-    'zope.app.rotterdam',
     'zope.app.zcmlfiles',
     'zope.configuration',
     'zope.container',
