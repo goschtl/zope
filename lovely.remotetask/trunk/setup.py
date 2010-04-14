@@ -9,7 +9,7 @@ def read(*names):
 
 setup(
     name='lovely.remotetask',
-    version = '0.5.1',
+    version = '0.5.2dev',
     author="Lovely Systems",
     author_email="office@lovelysystems.com",
     description="A remotetask client utiltiy for zope 3",
