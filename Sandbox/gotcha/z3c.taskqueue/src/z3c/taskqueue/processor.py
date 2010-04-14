@@ -23,7 +23,6 @@ import transaction
 import zope.interface
 import zope.publisher.base
 import zope.publisher.publish
-import types
 from zope.app.publication.zopepublication import ZopePublication
 from zope.security import management
 from zope.security.proxy import removeSecurityProxy
@@ -84,7 +83,8 @@ class BaseSimpleProcessor(object):
         raise NotImplemented
 
     def processNext(self, jobid=None):
-        return self.call('processNext', args=(None, jobid))
+        result = self.call('processNext', args=(None, jobid))
+        return result
 
     def __call__(self):
         while self.running:
@@ -95,7 +95,7 @@ class BaseSimpleProcessor(object):
                 time.sleep(self.waitTime)
 
 
-class SimpleProcessor(BaseSimpleProcessor):
+class Z3PublisherMixin(object):
 
     def call(self, method, args=(), errorValue=ERROR_MARKER):
         # Create the path to the method.
@@ -117,7 +117,11 @@ class SimpleProcessor(BaseSimpleProcessor):
             return errorValue is ERROR_MARKER and error or errorValue
 
 
-class BaseMultiProcessor(SimpleProcessor):
+class SimpleProcessor(Z3PublisherMixin, BaseSimpleProcessor):
+    """ Z3 compatible processor"""
+
+
+class BaseMultiProcessor(BaseSimpleProcessor):
     """Multi-threaded Job Processor
 
     This processor can work on multiple jobs at the same time.
@@ -164,35 +168,5 @@ class BaseMultiProcessor(SimpleProcessor):
                 time.sleep(THREAD_STARTUP_WAIT)
 
 
-class MultiProcessor(BaseMultiProcessor):
-    """Multi-threaded Job Processor
-
-    This processor can work on multiple jobs at the same time.
-
-    WARNING: This still does not work correctly in Zope2
-    """
-    zope.interface.implements(interfaces.IProcessor)
-
-    def __init__(self, *args, **kwargs):
-        self.maxThreads = kwargs.pop('maxThreads', 5)
-        super(MultiProcessor, self).__init__(*args, **kwargs)
-        self.threads = []
-
-    def hasJobsWaiting(self):
-        value = self.call('hasJobsWaiting', errorValue=False)
-        if isinstance(value, types.StringType):
-            if value == 'True':
-                return True
-            else:
-                return False
-        return value
-
-    def claimNextJob(self):
-        value = self.call('claimNextJob', errorValue=None)
-        try:
-            value = int(value)
-        except TypeError:
-            log.debug(value)
-        except ValueError:
-            pass
-        return value
+class MultiProcessor(Z3PublisherMixin, BaseMultiProcessor):
+    """ Z3 compatible processor"""
