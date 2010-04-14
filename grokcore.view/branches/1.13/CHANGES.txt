@@ -6,6 +6,8 @@ Changes
 
 - Update tests not to require zope.app.testing anymore.
 
+- Update tsets not to require zope.app.zcmlfiles anymore.
+
 
 1.13.2 (2010-01-09)
 -------------------
