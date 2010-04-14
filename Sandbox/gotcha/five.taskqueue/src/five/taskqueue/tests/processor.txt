@@ -15,10 +15,13 @@ API. Let's create the necessary components to test the processor:
 
   >>> from five.taskqueue import service
   >>> tasks = service.TaskService()
+  >>> tasks.id = 'tasks'
 
   >>> root._setOb('tasks', tasks)
   >>> tasks.__parent__ = root
   >>> tasks.__name__ = 'tasks'
+  >>> tasks.getServicePath()
+  ['tasks']
 
 2. Register the service as a utility:
 
@@ -65,19 +68,18 @@ processor constructor is the database and the second the traversal stack to
 the task service. All other arguments are optional:
 
   >>> proc = processor.SimpleProcessor(
-  ...     tasks._p_jar.db(), ['tasks'], waitTime=0.0)
+  ...     tasks._p_jar.db(), tasks.getServicePath(), waitTime=0.0)
 
-Let's now process the first job. We clear the log and we also have to end any
-existing interactions in order to process the job in this thread:
+Let's now process the first job. We clear the log.
 
   >>> log_info.clear()
 
-  >>> from zope.security import management
-  >>> management.endInteraction()
   >>> proc.processNext()
-  'True'
+  True
 
   >>> print log_info
+  z3c.taskqueue INFO
+    Call "/tasks/processNext"
   z3c.taskqueue INFO
     Job: 1
 
@@ -85,7 +87,7 @@ Let's now use the processor from within the task service. Since the processor
 constructors also accept additional arguments, they are specified as well:
 
   >>> tasks.processorFactory
-  <class 'z3c.taskqueue.processor.SimpleProcessor'>
+  <class 'five.taskqueue.processor.SimpleProcessor'>
   >>> tasks.processorArguments
   {'waitTime': 0.0}
 
@@ -106,15 +108,25 @@ were all completed in the order they were defined.
 
   >>> print log_info
   z3c.taskqueue INFO
+    Call "/tasks/processNext"
+  z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
     starting service remotetasks.tasks.tasks
   z3c.taskqueue INFO
+    Call "/tasks/processNext"
+  z3c.taskqueue INFO
     Job: 2
+  z3c.taskqueue INFO
+    Call "/tasks/processNext"
   z3c.taskqueue INFO
     Job: 3
   z3c.taskqueue INFO
+    Call "/tasks/processNext"
+  z3c.taskqueue INFO
     Job: 4
+  z3c.taskqueue INFO
+    Call "/tasks/processNext"
   z3c.taskqueue INFO
     stopping service remotetasks.tasks.tasks
 
@@ -170,7 +182,7 @@ Before testing the processor in the task service, let's have a look at every
 method by itself. So we instantiate the processor:
 
   >>> proc = processor.MultiProcessor(
-  ...     tasks._p_jar.db(), ['tasks'], waitTime=0)
+  ...     tasks._p_jar.db(), tasks.getServicePath(), waitTime=0)
 
 The maximum amount of threads can be set as well:
 

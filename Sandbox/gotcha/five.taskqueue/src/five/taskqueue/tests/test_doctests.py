@@ -19,7 +19,6 @@ __docformat__ = "reStructuredText"
 from Testing import ZopeTestCase
 
 from zope.testing.doctest import INTERPRET_FOOTNOTES
-from zope.testing.doctestunit import DocFileSuite
 from zope.testing.loggingsupport import InstalledHandler
 import doctest
 import random
@@ -75,7 +74,8 @@ class TestIdGenerator(unittest.TestCase):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestIdGenerator),
-        DocFileSuite('processor.txt', package='five.taskqueue.tests',
+        ZopeTestCase.ZopeDocFileSuite('processor.txt',
+                     package='five.taskqueue.tests',
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE

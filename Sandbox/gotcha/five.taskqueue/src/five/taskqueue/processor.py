@@ -8,7 +8,14 @@ import ZPublisher
 from z3c.taskqueue.processor import BaseSimpleProcessor
 from z3c.taskqueue.processor import ERROR_MARKER
 
-log = logging.getLogger('five.taskqueue')
+log = logging.getLogger('z3c.taskqueue')
+
+
+class Response(HTTPResponse):
+    """override setBody to avoid that method result gets turned to a string."""
+
+    def setBody(self, body):
+        self.body = body
 
 
 class SimpleProcessor(BaseSimpleProcessor):
@@ -16,11 +23,11 @@ class SimpleProcessor(BaseSimpleProcessor):
 
     def call(self, method, args=(), errorValue=ERROR_MARKER):
         path = self.servicePath[:] + [method]
-        response = HTTPResponse()
+        response = Response()
         env = {'SERVER_NAME': 'dummy',
                 'SERVER_PORT': '8080',
                 'PATH_INFO': '/' + '/'.join(path)}
-        log.info(env['PATH_INFO'])
+        log.info('Call "%s"' % env['PATH_INFO'])
         request = HTTPRequest(None, env, response)
         conn = self.db.open()
         root = conn.root()
@@ -40,6 +47,3 @@ class SimpleProcessor(BaseSimpleProcessor):
                 time.sleep(1)
             else:
                 return request.response.body
-
-    def processNext(self, jobid=None):
-        return self.call('processNext', args=(None, jobid)) == "True"
