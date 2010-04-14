@@ -143,6 +143,9 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         return str(self.jobs[jobid].error)
 
     def hasJobsWaiting(self, now=None):
+        """
+        are there jobs waiting ?
+        """
         # If there is are any simple jobs in the queue, we have work to do.
         if self._queue:
             return True
@@ -166,6 +169,9 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         return False
 
     def claimNextJob(self, now=None):
+        """
+        claim next hob
+        """
         job = self._pullJob(now)
         return job and job.id or None
 
