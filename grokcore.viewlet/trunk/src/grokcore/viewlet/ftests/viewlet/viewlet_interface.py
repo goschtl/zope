@@ -11,7 +11,7 @@ Set up the model object to view::
 Viewing the cave object should result in the viewlet being displayed,
 as it is associated with the interface::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/cave")

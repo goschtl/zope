@@ -15,7 +15,7 @@ Set up a content object in the application root::
 Traverse to the view on the model object. We get the viewlets
 registered for the default layer, with the anybody permission::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/fred/@@orderview")
@@ -31,7 +31,6 @@ registered for the default layer, with the anybody permission::
 A different way of determining viewlet order is for the
 viewletmanager to override the sort() method::
 
-  >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/fred/@@orderview2")

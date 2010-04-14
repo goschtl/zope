@@ -8,7 +8,7 @@ viewlet is registered for, not the actual viewlet itself.
 
 Let's look at the first template, which includes the viewlet::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/cave/@@index")

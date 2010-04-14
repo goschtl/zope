@@ -4,7 +4,8 @@ Changes
 1.5 (unreleased)
 ----------------
 
-* ...
+* Update functional tests to use Browser implementation of zope.app.wsgi
+  instead of zope.app.testing.
 
 1.4.1 (2010-02-28)
 ------------------

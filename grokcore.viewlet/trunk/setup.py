@@ -15,7 +15,7 @@ tests_require = [
     'zope.app.appsetup',
     'zope.app.pagetemplate',
     'zope.app.publication',
-    'zope.app.testing',
+    'zope.app.wsgi',
     'zope.browserpage',
     'zope.configuration',
     'zope.container',
@@ -23,7 +23,6 @@ tests_require = [
     'zope.principalregistry',
     'zope.securitypolicy',
     'zope.site',
-    'zope.testbrowser',
     'zope.testing',
     'zope.traversing',
     ]
