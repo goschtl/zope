@@ -78,7 +78,7 @@ class BugTracker(object):
     def __init__(self, launchpad, project, report_date, states, verbose):
         """Log into launchpad and get the Zope 3 project
         """
-        self.project = project
+        self.project_name = project
         self.report_date = report_date
         self.states = states
         self.verbose = verbose
@@ -103,14 +103,19 @@ class BugTracker(object):
     def report(self):
         """Return a printable summary
         """
-        lines = ['Languishing bugs for: %s' % self.project]
+        count = len(self.bugs)
+        lines = ['-' * 78 +
+                 '\n%-40s: languishing bugs: %d\n'
+                    % (self.project_name, count) +
+                 '-' * 78
+                ]
         for bug in self.bugs:
             if self.verbose:
                 fmt = '%(title)s\n %(status)s %(created)s\n %(link)s'
             else:
                 fmt = '%(title)s\n %(link)s'
             lines.append(fmt % bug)
-        return "\n\n".join(lines)
+        return count, "\n\n".join(lines)
 
 def get_projects_from_group(launchpad, project_group):
     group = launchpad.project_groups[project_group]
@@ -170,10 +175,20 @@ def main():
     if not states:
         states.append('New')
 
+    total = 0
     for project in projects:
         Tracker = BugTracker(launchpad, project, report_date, states, verbose)
         Tracker.get()
-        print Tracker.report()
+        count, text = Tracker.report()
+        total += count
+        print text
+
+    print '=' * 78
+    print 'Total:  %d' % total
+    print '=' * 78
+
+    if total > 0:
+        sys.exit(-1)
 
 if __name__ == '__main__':
     main()
