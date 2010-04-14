@@ -11,12 +11,8 @@ long_description = (
     )
 
 tests_require = [
-    'zope.app.wsgi',
-    'zope.app.zcmlfiles',
-    'zope.component',
+    'zope.app.wsgi [test]',
     'zope.configuration',
-    'zope.securitypolicy',
-    'zope.testbrowser',
     'zope.testing',
     ]
 
