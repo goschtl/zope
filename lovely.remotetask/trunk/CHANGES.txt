@@ -2,8 +2,8 @@
 Changes for lovely.remotetask
 =============================
 
-0.6 (unreleased)
-----------------
+0.5.1 (2010-04-14)
+------------------
 
 - Convert logged exceptions to str because log messages should be strings.
 
