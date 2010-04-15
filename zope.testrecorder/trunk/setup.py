@@ -17,8 +17,6 @@
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
 """Setup for zope.testrecorder package
-
-$Id$
 """
 import os
 try:
@@ -30,7 +28,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.testrecorder',
-      version='0.4dev',
+      version='0.4',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Test recorder for functional tests',

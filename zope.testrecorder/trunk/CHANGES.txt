@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.4 (unreleased)
+0.4 (2010-04-14)
 ----------------
 
 - LP #98368:  Ensure that Zope2 helper's ``index_html`` method has a
