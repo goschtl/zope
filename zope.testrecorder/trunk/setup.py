@@ -29,7 +29,7 @@ def read(*rnames):
 
 setup(name='zope.testrecorder',
       version='0.4',
-      author='Zope Corporation and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Test recorder for functional tests',
       long_description=(
