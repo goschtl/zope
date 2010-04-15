@@ -11,10 +11,11 @@
 #
 ##############################################################################
 
-import sys, os
-from Globals import InitializeClass
-from OFS.SimpleItem import SimpleItem
+import os
+
+from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
+from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 _www = os.path.join(os.path.dirname(__file__), 'www')
@@ -44,6 +45,8 @@ class TestRecorder(SimpleItem):
 
     security.declareProtected(view, 'index_html')
     def index_html(self, REQUEST):
+        """ Redirect to resource page.
+        """
         REQUEST['RESPONSE'].redirect(self.absolute_url()+'/index.html')
 
     dict = locals()
