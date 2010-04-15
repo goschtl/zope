@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <browser:resourceDirectory
+      name="recorder"
+      directory="html"
+      />
+
+</configure>
