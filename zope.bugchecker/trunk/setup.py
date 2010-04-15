@@ -40,6 +40,7 @@ setup(name='zope.bugchecker',
       license='ZPL 2.1',
       namespace_packages=['zope'],
       install_requires=[
+        'setuptools',
         'launchpadlib',
         'pytz',
       ],
