@@ -46,7 +46,7 @@ setup(name='zope.testrecorder',
           'Topic :: Software Development :: Testing',
           ],
 
-      url='http://svn.zope.org/zope.testrecorder',
+      url='http://pypi.python.org/pypi/zope.testrecorder',
       license='ZPL 2.1',
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
