@@ -30,9 +30,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.testrecorder',
-      version='0.3.0',
+      version='0.4dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Test recorder for functional tests',
       long_description=(
           read('README.txt')
@@ -53,7 +53,12 @@ setup(name='zope.testrecorder',
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
       namespace_packages=['zope'],
-      install_requires=['setuptools'],
+      install_requires=[
+        'setuptools',
+      ],
+      extras_require={
+        'test': ['Zope2']
+      },
       include_package_data = True,
       zip_safe = False,
-      )
+)
