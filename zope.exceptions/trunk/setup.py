@@ -22,6 +22,16 @@ $Id$
 """
 import os
 from setuptools import setup, find_packages
+import sys
+if sys.version_info < (3,):
+    extra = {}
+else:
+    # Python 3 support:
+    extra = dict(
+        use_2to3=True,
+        setup_requires=['zope.fixers'],
+        use_2to3_fixers = ['zope.fixers'],
+    )
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -58,6 +68,8 @@ setup(name='zope.exceptions',
       install_requires=['setuptools',
                         'zope.interface',
                        ],
+      test_suite = 'zope.exceptions.tests',
       include_package_data = True,
       zip_safe = False,
+      **extra
       )
