@@ -1,0 +1,33 @@
+=======
+CHANGES
+=======
+
+0.4 (2010-04-14)
+----------------
+
+- LP #98368:  Ensure that Zope2 helper's ``index_html`` method has a
+  docstring.
+
+- Removed unneeded dependency on zope.app.publisher.
+
+0.3 (2007-11-04)
+----------------
+
+- Update package meta-data and first
+
+0.2 (2006-06-24)
+----------------
+
+- First real release with all bells and whistles
+
+- Rearranged directory structure to match standard Zope repository
+  layout
+
+- Some docs polishing
+
+
+0.1 (2005-08-10)
+----------------
+
+- First public "release" by being included via an svn:external in the
+  main Zope 3 source tree.
