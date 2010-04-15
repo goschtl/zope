@@ -71,6 +71,7 @@ import getopt
 import sys
 
 from launchpadlib.launchpad import Launchpad
+from pytz import utc
 
 class BugTracker(object):
     """Check the BugTracker for new bugs"""
@@ -186,8 +187,10 @@ def main():
 
     rheostat = Rheostat(verbose)
 
+    start = datetime.datetime.now(utc)
     rheostat(1, '=' * 78)
-    rheostat(1, 'Languishing bugs report')
+    rheostat(1, 'Languishing bugs report:   %s'
+                    % start.strftime('%Y-%m-%dT%H:%M%Z'))
     rheostat(1, '=' * 78)
     rheostat(1, 'States included:  %s' % (', '.join(states)))
     rheostat(1, 'Minimum age:      %s' % days)
