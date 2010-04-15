@@ -658,8 +658,8 @@ class Installer:
         while 1:
             try:
                 ws.resolve(requirements)
-            except pkg_resources.DistributionNotFound, err:
-                [requirement] = err
+            except pkg_resources.DistributionNotFound as err:
+                [requirement] = err.args
                 requirement = self._constrain(requirement)
                 if destination:
                     logger.debug('Getting required %r', str(requirement))
@@ -672,7 +672,7 @@ class Installer:
 
                     ws.add(dist)
                     self._maybe_add_setuptools(ws, dist)
-            except pkg_resources.VersionConflict, err:
+            except pkg_resources.VersionConflict as err:
                 raise VersionConflict(err, ws)
             else:
                 break
@@ -863,12 +863,14 @@ def develop(setup, dest,
         undo.append(lambda: os.remove(tsetup))
         undo.append(lambda: os.close(fd))
 
-        os.write(fd, runsetup_template % dict(
+        filecontent = runsetup_template % dict(
             setuptools=setuptools_loc,
             setupdir=directory,
             setup=setup,
             __file__ = setup,
-            ))
+            )
+        # os.write always needs binary data, so we encode it:
+        os.write(fd, filecontent.encode())
 
         tmp3 = tempfile.mkdtemp('build', dir=dest)
         undo.append(lambda : shutil.rmtree(tmp3))
@@ -915,7 +917,7 @@ def scripts(reqs, working_set, executable, dest,
 
     path = [dist.location for dist in working_set]
     path.extend(extra_paths)
-    path = map(realpath, path)
+    path = list(map(realpath, path))
 
     generated = []
 
@@ -1056,7 +1058,7 @@ def _script(module_name, attrs, path, dest, executable, arguments,
         logger.info("Generated script %r.", script)
 
         try:
-            os.chmod(dest, 0755)
+            os.chmod(dest, 0o755)
         except (AttributeError, os.error):
             pass
 
@@ -1108,7 +1110,7 @@ def _pyscript(path, dest, executable, rsetup):
     if changed:
         open(dest, 'w').write(contents)
         try:
-            os.chmod(dest,0755)
+            os.chmod(dest,0o755)
         except (AttributeError, os.error):
             pass
         logger.info("Generated interpreter %r.", script)
@@ -1144,7 +1146,7 @@ if len(sys.argv) > 1:
         sys.argv[:] = _args
         __file__ = _args[0]
         del _options, _args
-        execfile(__file__)
+        exec(open(__file__).read())
 
 if _interactive:
     del _interactive
@@ -1161,7 +1163,7 @@ __file__ = %(__file__)r
 
 os.chdir(%(setupdir)r)
 sys.argv[0] = %(setup)r
-execfile(%(setup)r)
+exec(open(%(setup)r).read())
 """
 
 

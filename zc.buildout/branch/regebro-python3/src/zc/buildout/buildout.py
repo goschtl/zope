@@ -14,7 +14,7 @@
 """Buildout main script
 """
 
-from rmtree import rmtree
+from .rmtree import rmtree
 try:
     from hashlib import md5
 except ImportError:
@@ -22,11 +22,11 @@ except ImportError:
     from md5 import md5
 
 try:
-    import UserDict
+    from collections import MutableMapping as DictMixin
 except ImportError:
-    # Python 3
-    from collections import UserDict
-import ConfigParser
+    # Python < 2.6
+    from UserDict import DictMixin
+import configparser
 import copy
 import distutils.errors
 import glob
@@ -79,20 +79,20 @@ def _annotate(data, note):
     return data
 
 def _print_annotate(data):
-    sections = data.keys()
+    sections = list(data.keys())
     sections.sort()
-    print
-    print "Annotated sections"
-    print "="*len("Annotated sections")
+    print()
+    print("Annotated sections")
+    print("="*len("Annotated sections"))
     for section in sections:
-        print
-        print '[%s]' % section
-        keys = data[section].keys()
+        print()
+        print('[%s]' % section)
+        keys = list(data[section].keys())
         keys.sort()
         for key in keys:
             value, notes = data[section][key]
             keyvalue = "%s= %s" % (key, value)
-            print keyvalue
+            print(keyvalue)
             line = '   '
             for note in notes.split():
                 if note == '[+]':
@@ -100,9 +100,9 @@ def _print_annotate(data):
                 elif note == '[-]':
                     line = '-= '
                 else:
-                    print line, note
+                    print(line, note)
                     line = '   '
-    print
+    print()
 
 
 def _unannotate_section(section):
@@ -137,11 +137,11 @@ def _setup_socket_timeout(timeout_string):
     except ValueError:
         _error("Timeout value must be numeric [%s]." % timeout_string)
     current_timeout = socket.getdefaulttimeout()
-    if current_timeout <> timeout:
+    if current_timeout != timeout:
         socket.setdefaulttimeout(timeout)
 
 
-class Buildout(UserDict.DictMixin):
+class Buildout(DictMixin):
 
     def __init__(self, config_file, cloptions,
                  user_defaults=True, windows_restart=False, command=None):
@@ -159,7 +159,7 @@ class Buildout(UserDict.DictMixin):
             base = os.path.dirname(config_file)
             if not os.path.exists(config_file):
                 if command == 'init':
-                    print 'Creating %r.' % config_file
+                    print('Creating %r.' % config_file)
                     open(config_file, 'w').write('[buildout]\nparts = \n')
                 elif command == 'setup':
                     # Sigh. This model of a buildout instance
@@ -438,11 +438,11 @@ class Buildout(UserDict.DictMixin):
         if self._log_level < logging.DEBUG:
             sections = list(self)
             sections.sort()
-            print
-            print 'Configuration data:'
+            print()
+            print('Configuration data:')
             for section in self._data:
                 _save_options(section, self[section], sys.stdout)
-            print
+            print()
 
 
         # compute new part recipe signatures
@@ -589,7 +589,7 @@ class Buildout(UserDict.DictMixin):
         installed = self['buildout']['installed']
         f = open(installed, 'a')
         f.write('\n[buildout]\n')
-        for option, value in buildout_options.items():
+        for option, value in list(buildout_options.items()):
             _save_option(option, value, f)
         f.close()
 
@@ -605,7 +605,7 @@ class Buildout(UserDict.DictMixin):
                 recipe, 'zc.buildout.uninstall', entry, self)
             self._logger.info('Running uninstall recipe.')
             uninstaller(part, installed_part_options[part])
-        except (ImportError, pkg_resources.DistributionNotFound), v:
+        except (ImportError, pkg_resources.DistributionNotFound) as v:
             pass
 
         # remove created files and directories
@@ -695,7 +695,7 @@ class Buildout(UserDict.DictMixin):
     def _read_installed_part_options(self):
         old = self['buildout']['installed']
         if old and os.path.isfile(old):
-            parser = ConfigParser.RawConfigParser()
+            parser = configparser.RawConfigParser()
             parser.optionxform = lambda s: s
             parser.read(old)
             result = {}
@@ -745,7 +745,7 @@ class Buildout(UserDict.DictMixin):
         installed = recipe_class(self, part, options).install()
         if installed is None:
             installed = []
-        elif isinstance(installed, basestring):
+        elif isinstance(installed, str):
             installed = [installed]
         base = self._buildout_path('')
         installed = [d.startswith(base) and d[len(base):] or d
@@ -760,7 +760,7 @@ class Buildout(UserDict.DictMixin):
         f = open(installed, 'w')
         _save_options('buildout', installed_options['buildout'], f)
         for part in installed_options['buildout']['parts'].split():
-            print >>f
+            print(file=f)
             _save_options(part, installed_options[part], f)
         f.close()
 
@@ -769,7 +769,7 @@ class Buildout(UserDict.DictMixin):
 
     def _display_socket_timeout(self):
         current_timeout = socket.getdefaulttimeout()
-        if current_timeout <> DEFAULT_SOCKET_TIMEOUT:
+        if current_timeout != DEFAULT_SOCKET_TIMEOUT:
             info_msg = 'Socket timeout is set to %d seconds.' % current_timeout
             self._logger.info(info_msg)
 
@@ -855,7 +855,7 @@ class Buildout(UserDict.DictMixin):
             return
 
         if sys.platform == 'win32' and not self.__windows_restart:
-            args = map(zc.buildout.easy_install._safe_arg, sys.argv)
+            args = list(map(zc.buildout.easy_install._safe_arg, sys.argv))
             args.insert(1, '-W')
             if not __debug__:
                 args.insert(0, '-O')
@@ -879,7 +879,7 @@ class Buildout(UserDict.DictMixin):
             )
 
         # Restart
-        args = map(zc.buildout.easy_install._safe_arg, sys.argv)
+        args = list(map(zc.buildout.easy_install._safe_arg, sys.argv))
         if not __debug__:
             args.insert(0, '-O')
         args.insert(0, zc.buildout.easy_install._safe_arg (sys.executable))
@@ -995,10 +995,13 @@ class Buildout(UserDict.DictMixin):
         raise NotImplementedError('__delitem__')
 
     def keys(self):
-        return self._raw.keys()
+        return list(self._raw.keys())
 
     def __iter__(self):
         return iter(self._raw)
+    
+    def __len__(self):
+        return len(self.keys())
 
 
 def _install_and_load(spec, group, entry, buildout):
@@ -1032,14 +1035,14 @@ def _install_and_load(spec, group, entry, buildout):
         return pkg_resources.load_entry_point(
             req.project_name, group, entry)
 
-    except Exception, v:
+    except Exception as v:
         buildout._logger.log(
             1,
             "Could't load %s entry point %s\nfrom %s:\n%s.",
             group, entry, spec, v)
         raise
 
-class Options(UserDict.DictMixin):
+class Options(DictMixin):
 
     def __init__(self, buildout, section, data):
         self.buildout = buildout
@@ -1056,7 +1059,7 @@ class Options(UserDict.DictMixin):
             self._raw = self._do_extend_raw(name, self._raw, [])
 
         # force substitutions
-        for k, v in self._raw.items():
+        for k, v in list(self._raw.items()):
             if '${' in v:
                 self._dosub(k, v)
 
@@ -1207,7 +1210,14 @@ class Options(UserDict.DictMixin):
         elif key in self._data:
             del self._data[key]
         else:
-            raise KeyError, key
+            raise KeyError(key)
+
+    def __len__(self):
+        return len(self.keys())
+        
+    def __iter__(self):
+        for k in self.keys():
+            yield k
 
     def keys(self):
         raw = self._raw
@@ -1283,11 +1293,11 @@ def _save_option(option, value, f):
         value = '%(__buildout_space_n__)s' + value[2:]
     if value.endswith('\n\t'):
         value = value[:-2] + '%(__buildout_space_n__)s'
-    print >>f, option, '=', value
+    print(option, '=', value, file=f)
 
 def _save_options(section, options, f):
-    print >>f, '[%s]' % section
-    items = options.items()
+    print('[%s]' % section, file=f)
+    items = list(options.items())
     items.sort()
     for option, value in items:
         _save_option(option, value, f)
@@ -1332,7 +1342,7 @@ def _open(base, filename, seen, dl_options, override):
 
     result = {}
 
-    parser = ConfigParser.RawConfigParser()
+    parser = configparser.RawConfigParser()
     parser.optionxform = lambda s: s
     parser.readfp(fp)
     if is_temp:
@@ -1403,7 +1413,7 @@ def _dists_sig(dists):
 
 def _update_section(s1, s2):
     s2 = s2.copy() # avoid mutating the second argument, which is unexpected
-    for k, v in s2.items():
+    for k, v in list(s2.items()):
         v2, note2 = v
         if k.endswith('+'):
             key = k.rstrip(' +')
@@ -1590,7 +1600,7 @@ Commands:
 
 """
 def _help():
-    print _usage
+    print(_usage)
     sys.exit(0)
 
 def main(args=None):
@@ -1684,7 +1694,7 @@ def main(args=None):
             getattr(buildout, command)(args)
         except SystemExit:
             pass
-        except Exception, v:
+        except Exception as v:
             _doing()
             exc_info = sys.exc_info()
             import pdb, traceback
@@ -1694,7 +1704,7 @@ def main(args=None):
                 pdb.post_mortem(exc_info[2])
             else:
                 if isinstance(v, (zc.buildout.UserError,
-                                  distutils.errors.DistutilsError,
+                                  distutils.errors.DistutilsError
                                   )
                               ):
                     _error(str(v))

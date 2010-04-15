@@ -19,7 +19,11 @@ buildout egg itself is installed as a develop egg.
 $Id$
 """
 
-import os, shutil, sys, subprocess, urllib2
+import os, shutil, sys, subprocess
+try:
+    from urllib2 import urlopen
+except: # Python 3
+    from urllib.request import urlopen
 
 is_jython = sys.platform.startswith('java')
 
@@ -34,8 +38,8 @@ try:
     import pkg_resources
 except ImportError:
     ez = {}
-    exec urllib2.urlopen('http://peak.telecommunity.com/dist/ez_setup.py'
-                         ).read() in ez
+    exec(urlopen('http://python-distribute.org/distribute_setup.py'
+                         ).read(), ez)
     ez['use_setuptools'](to_dir='eggs', download_delay=0)
 
     import pkg_resources
