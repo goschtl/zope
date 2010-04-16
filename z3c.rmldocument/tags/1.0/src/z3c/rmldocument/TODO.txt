@@ -1,0 +1,11 @@
+TODO
+====
+
+- Provide a display representation of field data that is suitable for
+  embedding in RML and customizable.
+
+- TinyRML-Integration and HTML-to-RML-Conversion
+
+    - subset of HTML to do markup
+    - XML-Element for inserting field data
+    - GUI picker for fields
