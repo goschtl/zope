@@ -39,7 +39,7 @@ To see how this works, we'll create two versions of a recipe egg:
 
     >>> write('recipe', 'README', '')
 
-    >>> print(system(buildout+' setup recipe bdist_egg'), end=' ') # doctest: +ELLIPSIS
+    >>> print(system(buildout+' setup recipe bdist_egg').decode(), end=' ') # doctest: +ELLIPSIS
     Running setup script 'recipe/setup.py'.
     ...
 

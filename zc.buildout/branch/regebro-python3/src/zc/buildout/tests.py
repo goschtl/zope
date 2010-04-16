@@ -2024,11 +2024,14 @@ We'll create a wacky buildout extension that is just another name for http:
     >>> src = tmpdir('src')
     >>> write(src, 'wacky_handler.py',
     ... '''
-    ... import urllib2
-    ... class Wacky(urllib2.HTTPHandler):
-    ...     wacky_open = urllib2.HTTPHandler.http_open
+    ... try:
+    ...     from urllib2 import install_opener, build_opener, HTTPHandler
+    ... except: # Python 3
+    ...     from urllib.request import urlopen
+    ... class Wacky(HTTPHandler):
+    ...     wacky_open = HTTPHandler.http_open
     ... def install(buildout=None):
-    ...     urllib2.install_opener(urllib2.build_opener(Wacky))
+    ...     install_opener(build_opener(Wacky))
     ... ''')
     >>> write(src, 'setup.py',
     ... '''
@@ -2859,17 +2862,20 @@ def test_suite():
             'buildout.txt', 'runsetup.txt', 'repeatable.txt', 'setup.txt',
             setUp=zc.buildout.testing.buildoutSetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
         doctest.DocFileSuite(
             'debugging.txt',
             setUp=zc.buildout.testing.buildoutSetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
 
         doctest.DocFileSuite(
             'update.txt',
             setUp=updateSetup,
             tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
 
         doctest.DocFileSuite(
@@ -2877,21 +2883,25 @@ def test_suite():
             'allowhosts.txt', 'unzip.txt', 'upgrading_distribute.txt',
             setUp=easy_install_SetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
 
         doctest.DocFileSuite(
             'download.txt', 'extends-cache.txt',
             setUp=easy_install_SetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS,
+            optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
 
         doctest.DocTestSuite(
             setUp=easy_install_SetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
             ),
         doctest.DocFileSuite(
-            'testing_bugfix.txt'),
+            'testing_bugfix.txt',
+            optionflags=doctest.REPORT_ONLY_FIRST_FAILURE,
+            ),
     ]
 
     # adding bootstrap.txt doctest to the suite

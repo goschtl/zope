@@ -483,6 +483,7 @@ def install_develop(project, destination):
         destination = os.path.join(destination.globs['sample_buildout'],
                                    'develop-eggs')
 
+    import pdb;pdb.set_trace()
     dist = pkg_resources.working_set.find(
         pkg_resources.Requirement.parse(project))
     open(os.path.join(destination, project+'.egg-link'), 'w'

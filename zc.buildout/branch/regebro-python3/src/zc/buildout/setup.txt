@@ -28,7 +28,7 @@ We've created a super simple (stupid) setup script.  Note that it
 doesn't import setuptools.  Let's try running it to create an egg.
 We'll use the buildout script from our sample buildout:
 
-    >>> print(system(buildout+' setup'), end=" ")
+    >>> print(system(buildout+' setup').decode(), end=" ")
     ... # doctest: +NORMALIZE_WHITESPACE
     Error: The setup command requires the path to a setup script or
     directory containing a setup script, and its arguments.
