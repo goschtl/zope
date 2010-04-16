@@ -1395,18 +1395,20 @@ def _dir_hash(dir):
                         if (not (f.endswith('pyc') or f.endswith('pyo'))
                             and os.path.exists(os.path.join(dirpath, f)))
                         ]
-        hash.update(' '.join(dirnames))
-        hash.update(' '.join(filenames))
+        hash.update(' '.join(dirnames).encode('ascii', 'ignore'))
+        hash.update(' '.join(filenames).encode('ascii', 'ignore'))
         for name in filenames:
-            hash.update(open(os.path.join(dirpath, name)).read())
-    return hash.digest().encode('base64').strip()
+            hash.update(open(os.path.join(dirpath, name), 'rb').read())
+    digest = hash.digest()
+    import base64
+    return base64.b64encode(digest).strip()
 
 def _dists_sig(dists):
     result = []
     for dist in dists:
         location = dist.location
         if dist.precedence == pkg_resources.DEVELOP_DIST:
-            result.append(dist.project_name + '-' + _dir_hash(location))
+            result.append(dist.project_name + '-' + _dir_hash(location).decode())
         else:
             result.append(os.path.basename(location))
     return result

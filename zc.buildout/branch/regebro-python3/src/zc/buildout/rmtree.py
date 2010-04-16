@@ -42,7 +42,7 @@ def rmtree (path):
 
     and make it unwriteable
 
-    >>> os.chmod (foo, 0400)
+    >>> os.chmod (foo, 0o400)
 
     rmtree should be able to remove it:
 
@@ -64,3 +64,4 @@ def test_suite():
 
 if "__main__" == __name__:
     doctest.testmod()
+

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 import os, re, sys, unittest
-from zope.testing import doctest, renormalizing
+import doctest
 import zc.buildout.tests
 import zc.buildout.testing
 
@@ -61,8 +61,4 @@ def test_suite():
     return doctest.DocTestSuite(
         setUp=setup,
         tearDown=zc.buildout.testing.buildoutTearDown,
-        checker=renormalizing.RENormalizing([
-            (re.compile('setuptools-\S+-py%s.egg' % other_version),
-             'setuptools-V-py%s.egg' % other_version),
-            ]),
         )

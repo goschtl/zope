@@ -99,7 +99,7 @@ needed to meet the given requirements.
 
 We have a link server that has a number of eggs:
 
-    >>> print get(link_server),
+    >>> print(get(link_server), end=" ")
     <html><body>
     <a href="bigdemo-0.1-py2.4.egg">bigdemo-0.1-py2.4.egg</a><br>
     <a href="demo-0.1-py2.4.egg">demo-0.1-py2.4.egg</a><br>
@@ -130,7 +130,7 @@ index directory as a package index.
 The working set contains the distributions we retrieved.
 
     >>> for dist in ws:
-    ...     print dist
+    ...     print(dist)
     demo 0.2
     demoneeded 1.1
 
@@ -174,7 +174,7 @@ The old setting is returned.
     >>> ws = zc.buildout.easy_install.install(
     ...     ['demo'], dest, links=[link_server], index=link_server+'index/')
     >>> for dist in ws:
-    ...     print dist
+    ...     print(dist)
     demo 0.4c1
     demoneeded 1.2c1
 
@@ -199,7 +199,7 @@ dependencies.  We might do this to specify a specific version.
     ...     links=[link_server], index=link_server+'index/')
 
     >>> for dist in ws:
-    ...     print dist
+    ...     print(dist)
     demo 0.3
     other 1.0
     demoneeded 1.0
@@ -311,7 +311,7 @@ we'll get an error:
     ...
     IncompatibleVersionError: Bad version 0.2
 
-    >>> print handler
+    >>> print(handler)
     zc.buildout.easy_install DEBUG
       Installing 'demo >0.2'.
     zc.buildout.easy_install ERROR
@@ -326,7 +326,7 @@ reporting that a version was picked automatically:
     ...     ['demo'], dest, links=[link_server], index=link_server+'index/',
     ...     )
 
-    >>> print handler
+    >>> print(handler)
     zc.buildout.easy_install DEBUG
       Installing 'demo'.
     zc.buildout.easy_install DEBUG
@@ -700,20 +700,20 @@ If invoked with a script name and arguments, it will run that script, instead.
 
     >>> write('ascript', '''
     ... "demo doc"
-    ... print sys.argv
-    ... print (__name__, __file__, __doc__)
+    ... print(sys.argv)
+    ... print((__name__, __file__, __doc__,))
     ... ''')
-    >>> print system(join(bin, 'py')+' ascript a b c'),
+    >>> print(system(join(bin, 'py')+' ascript a b c'), end=" ")
     ['ascript', 'a', 'b', 'c']
     ('__main__', 'ascript', 'demo doc')
 
 For Python 2.5 and higher, you can also use the -m option to run a
 module:
 
-    >>> print system(join(bin, 'py')+' -m pdb'),
+    >>> print(system(join(bin, 'py')+' -m pdb'), end=" ")
     usage: pdb.py scriptfile [arg] ...
 
-    >>> print system(join(bin, 'py')+' -m pdb what'),
+    >>> print(system(join(bin, 'py')+' -m pdb what'), end=" ")
     Error: what does not exist
 
 An additional argument can be passed to define which scripts to install
@@ -733,7 +733,7 @@ original script names to new script names.
     >>> ls(bin)
     -  run
 
-    >>> print system(os.path.join(bin, 'run')),
+    >>> print(system(os.path.join(bin, 'run')), end=" ")
     3 1
 
 Including extra paths in scripts
@@ -863,7 +863,7 @@ passed as relative_paths wasn't converted to a relative path.
 
 Of course, running the script works:
 
-    >>> print system(join(bo, 'bin', 'run')),
+    >>> print(system(join(bo, 'bin', 'run')), end=" ")
     3 1
 
 We specified an interpreter and its paths are adjusted too:
@@ -1025,7 +1025,7 @@ Now if we look in our destination directory, we see we have an extdemo egg:
 Let's update our link server with a new version of extdemo:
 
     >>> update_extdemo()
-    >>> print get(link_server),
+    >>> print(get(link_server), end=" ")
     <html><body>
     <a href="bigdemo-0.1-py2.4.egg">bigdemo-0.1-py2.4.egg</a><br>
     <a href="demo-0.1-py2.4.egg">demo-0.1-py2.4.egg</a><br>

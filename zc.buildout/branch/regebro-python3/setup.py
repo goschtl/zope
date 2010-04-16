@@ -66,13 +66,6 @@ debug = %(name)s.testrecipes:Debug
 
 """ % dict(name=name)
 
-if sys.version > '3':
-    py3extras = {
-        'use_2to3': True,
-    }
-else:
-    py3extras = {}
-
 setup(
     name = name,
     version = version,
@@ -83,12 +76,12 @@ setup(
     license = "ZPL 2.1",
     keywords = "development build",
     url='http://buildout.org',
-
+    test_suite='zc.buildout.tests.test_suite',
     data_files = [('.', ['README.txt'])],
     packages = ['zc', 'zc.buildout'],
     package_dir = {'': 'src'},
     namespace_packages = ['zc'],
-    install_requires = 'setuptools',
+    install_requires = ['setuptools'],
     include_package_data = True,
     entry_points = entry_points,
     zip_safe=False,
@@ -98,5 +91,4 @@ setup(
        'Topic :: Software Development :: Build Tools',
        'Topic :: Software Development :: Libraries :: Python Modules',
        ],
-    **py3extras
     )

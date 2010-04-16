@@ -43,7 +43,7 @@ zc.buildout used:
     ...     def install(self):
     ...         for project in 'zc.buildout', 'setuptools':
     ...             req = pkg_resources.Requirement.parse(project)
-    ...             print project, pkg_resources.working_set.find(req).version
+    ...             print(project + " " + pkg_resources.working_set.find(req).version)
     ...         return ()
     ...     update = install
     ... """)
@@ -63,7 +63,7 @@ zc.buildout used:
 Now if we run the buildout, the buildout will upgrade itself to the
 new versions found in new releases:
 
-    >>> print system(buildout),
+    >>> print(system(buildout), end=' ')
     Getting distribution for 'zc.buildout'.
     Got zc.buildout 99.99.
     Getting distribution for 'setuptools'.
@@ -114,7 +114,7 @@ buildout will install earlier versions of these packages:
 
 Now we can see that we actually "upgrade" to an earlier version.
 
-    >>> print system(buildout),
+    >>> print(system(buildout), end=' ')
     Upgraded:
       zc.buildout version 1.0.0,
       setuptools version 0.6;
@@ -142,7 +142,7 @@ We won't upgrade in offline mode:
     ... recipe = showversions
     ... """ % dict(new_releases=new_releases))
 
-    >>> print system(buildout+' -o'),
+    >>> print(system(buildout+' -o'), end=' ')
     Develop: '/sample-buildout/showversions'
     Updating show-versions.
     zc.buildout 1.0.0
@@ -150,7 +150,7 @@ We won't upgrade in offline mode:
 
 Or in non-newest mode:
 
-    >>> print system(buildout+' -N'),
+    >>> print(system(buildout+' -N'), end=' ')
     Develop: '/sample-buildout/showversions'
     Updating show-versions.
     zc.buildout 1.0.0
@@ -170,7 +170,7 @@ directory:
     ... """ % dict(new_releases=new_releases))
 
     >>> cd(sample_buildout2)
-    >>> print system(buildout),
+    >>> print(system(buildout), end=' ')
     Creating directory '/sample_buildout2/bin'.
     Creating directory '/sample_buildout2/parts'.
     Creating directory '/sample_buildout2/eggs'.
@@ -182,3 +182,4 @@ directory:
     Not upgrading because not running a local buildout command.
 
     >>> ls('bin')
+
