@@ -20,6 +20,7 @@ import sys
 import os
 import unittest
 from cStringIO import StringIO
+from doctest import DocTestSuite
 
 from zope import component
 from zope.interface import Interface, implements, directlyProvides, providedBy
@@ -34,7 +35,6 @@ from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope.security.proxy import removeSecurityProxy, ProxyFactory
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
-from zope.testing.doctest import DocTestSuite
 from zope.traversing.adapters import DefaultTraversable
 from zope.traversing.interfaces import ITraversable
 

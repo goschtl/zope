@@ -16,7 +16,8 @@
 $Id$
 """
 import unittest
-from zope.testing import cleanup, doctest
+import doctest
+from zope.testing import cleanup
 
 def test_suite():
     return unittest.TestSuite((

@@ -64,7 +64,7 @@ $Id$
 """
 
 import unittest
-from zope.testing.doctest import DocTestSuite
+from doctest import DocTestSuite
 import re
 import pprint
 import cStringIO

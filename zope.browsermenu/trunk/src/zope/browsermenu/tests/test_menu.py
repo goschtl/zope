@@ -16,13 +16,15 @@
 $Id$
 """
 import unittest
-from zope.testing import doctest, cleanup, doctestunit
+import doctest
+import pprint
+from zope.testing import cleanup
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('../README.txt',
                              setUp=lambda test:cleanup.setUp(),
                              tearDown=lambda test:cleanup.tearDown(),
-                             globs={'pprint': doctestunit.pprint},
+                             globs={'pprint': pprint.pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
