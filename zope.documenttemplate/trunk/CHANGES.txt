@@ -5,6 +5,8 @@ CHANGES
 3.4.3 (Unreleased)
 ------------------
 
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's doctest.
+
 - Simpler, faster implementation of dt_var.newline_to_br().
   (It still uses HTML 4 style <br> tags rather than XHTML style.)
 
