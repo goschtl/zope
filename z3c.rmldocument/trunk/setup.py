@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup (
     name='z3c.rmldocument',
-    version = '1.0',
+    version = '1.1dev',
     author = "Christian Theune and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "User-editable RML documents",
