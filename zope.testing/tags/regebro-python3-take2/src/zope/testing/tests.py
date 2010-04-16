@@ -18,6 +18,8 @@ import re
 import unittest
 import warnings
 from zope.testing import renormalizing
+import doctest
+#import renormalizing
 
 # Yes, it is deprecated, but we want to run tests on it here.
 warnings.filterwarnings("ignore", "zope.testing.doctest is deprecated",
@@ -31,7 +33,6 @@ def test_suite():
         doctest.DocTestSuite('zope.testing.loggingsupport'),
         doctest.DocTestSuite('zope.testing.renormalizing'),
         doctest.DocTestSuite('zope.testing.server'),
-        doctest.DocFileSuite('doctest.txt'),
         doctest.DocFileSuite('formparser.txt'),
         doctest.DocFileSuite(
             'module.txt',
@@ -43,5 +44,4 @@ def test_suite():
                 (re.compile('No module named zope.testing.unlikelymodulename'),
                  'No module named unlikelymodulename')])),
         doctest.DocFileSuite('setupstack.txt'),
-        doctest.DocTestSuite(doctest, optionflags=doctest.INTERPRET_FOOTNOTES),
         ))

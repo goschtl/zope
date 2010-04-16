@@ -12,10 +12,11 @@
 #
 ##############################################################################
 
-from zope.testing import doctest
+import doctest
 
 def eek(self):
     """
+    doctest: +REPORT_NDIFF
     >>> x = y
 
     >>> x
@@ -26,4 +27,4 @@ def eek(self):
     """
         
 def test_suite():
-    return doctest.DocTestSuite(optionflags=doctest.REPORT_NDIFF)
+    return doctest.DocTestSuite()

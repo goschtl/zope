@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.testing import doctest
+import doctest
 
 pledge_template = """\
 I give my pledge, as %s,
@@ -22,11 +22,14 @@ It's soils, minerals, forests, waters, and wildlife.
 
 def pledge():
     """
-    >>> print pledge_template % ('and earthling', 'planet'),
+    >>> def test_print():
+    ...     print pledge_template % ('and earthling', 'planet')
+    >>> test_print()
     I give my pledge, as an earthling,
     to save, and faithfully, to defend from waste,
     the natural resources of my planet.
     It's soils, minerals, forests, waters, and wildlife.
+    <BLANKLINE>
     """
 
 def test_suite():

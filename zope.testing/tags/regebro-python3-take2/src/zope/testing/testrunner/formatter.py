@@ -24,7 +24,6 @@ import tempfile
 import traceback
 
 from datetime import datetime, timedelta
-
 from zope.testing.exceptions import DocTestFailureException
 
 doctest_template = """
@@ -54,8 +53,10 @@ class OutputFormatter(object):
         self.last_width = 0
         self.compute_max_width()
 
-    progress = property(lambda self: self.options.progress)
-    verbose = property(lambda self: self.options.verbose)
+    # "or 0" here results in replacing a None with a 0. This is because
+    # you can't compare None to int in Python 3.
+    progress = property(lambda self: self.options.progress or 0)
+    verbose = property(lambda self: self.options.verbose or 0)
     in_subprocess = property(
         lambda self: self.options.resume_layer is not None and
                      self.options.processes > 1)
@@ -332,7 +333,8 @@ class OutputFormatter(object):
     def format_traceback(self, exc_info):
         """Format the traceback."""
         v = exc_info[1]
-        if isinstance(v, DocTestFailureException):
+        if (isinstance(v, AssertionError) and 
+            v.args[0].startswith('Failed doctest test')):
             tb = v.args[0]
         elif isinstance(v, doctest.DocTestFailure):
             tb = doctest_template % (
@@ -378,9 +380,17 @@ def tigetnum(attr, default=None):
         # avoid reimporting a broken module in python 2.3
         sys.modules['curses'] = None
     else:
+        # If sys.stdout is not a real file object (e.g. in unit tests that 
+        # use various wrappers), you get an error, different depending on
+        # Python version:
+        if sys.version_info >= (3,):
+            import io
+            expected_exceptions = (curses.error, TypeError, io.UnsupportedOperation)
+        else:
+            expected_exceptions = (curses.error, TypeError)
         try:
             curses.setupterm()
-        except (curses.error, TypeError):
+        except expected_exceptions:
             # You get curses.error when $TERM is set to an unknown name
             # You get TypeError when sys.stdout is not a real file object
             # (e.g. in unit tests that use various wrappers).
@@ -564,7 +574,8 @@ class ColorfulOutputFormatter(OutputFormatter):
         print
         print self.colorize('error', msg)
         v = exc_info[1]
-        if isinstance(v, DocTestFailureException):
+        if (isinstance(v, AssertionError) and 
+            v.args[0].startswith('Failed doctest test')):
             self.print_doctest_failure(v.args[0])
         elif isinstance(v, doctest.DocTestFailure):
             # I don't think these are ever used... -- mgedmin

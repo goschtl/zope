@@ -45,10 +45,10 @@ affecting the Python path:
       Tear down samplelayers.Layer12 in N.NNN seconds.
       Tear down samplelayers.Layer1 in N.NNN seconds.
       Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
-      Ran 192 tests with 0 failures and 0 errors in N.NNN seconds.
+      Ran 156 tests with 0 failures and 0 errors in N.NNN seconds.
     Tearing down left over layers:
       Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
-    Total: 405 tests, 0 failures, 0 errors in N.NNN seconds.
+    Total: 321 tests, 0 failures, 0 errors in N.NNN seconds.
     False
 
 Bug #251759: The test runner's protection against descending into non-package
@@ -112,11 +112,11 @@ Using pdb.set_trace in a function called by a doctest in a doc string:
     >>> try: testrunner.run_internal(defaults)
     ... finally: sys.stdin = real_stdin
     Running zope.testing.testrunner.layer.UnitTests tests:...
-    --Return--
-    > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    > testrunner-ex/sample3/sampletests_d.py(NNN)f()
+    -> y = x
     (Pdb) n
-    > testrunner-ex/sample3/sampletests_d.py(42)f()
+    --Return--
+    > ...->None
     -> y = x
     (Pdb) p x
     1
@@ -133,18 +133,19 @@ Using pdb in a docstring-based doctest
     >>> try: testrunner.run_internal(defaults)
     ... finally: sys.stdin = real_stdin
     Running zope.testing.testrunner.layer.UnitTests tests:...
-    --Return--
-    > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    > <doctest sample3.sampletests_d.set_trace3[1]>(3)?()
+    -> y = x
     (Pdb) n
-    > <doctest sample3.sampletests_d.set_trace3[line 3, example 1]>(3)...()
+    --Return--
+    > ...->None
     -> y = x
     (Pdb) p x
     1
     (Pdb) c
-      Ran 1 tests with 0 failures and 0 errors in 0.002 seconds.
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
     ...
     False
+
 
 Using pdb.set_trace in a doc file:
 
@@ -155,16 +156,16 @@ Using pdb.set_trace in a doc file:
     >>> try: testrunner.run_internal(defaults)
     ... finally: sys.stdin = real_stdin
     Running zope.testing.testrunner.layer.UnitTests tests:...
-    --Return--
-    > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    > <doctest set_trace5.txt[1]>(3)?()
+    -> y = x
     (Pdb) n
-    > <doctest set_trace5.txt[line 2, example 1]>(3)...()
+    --Return--
+    > ...->None
     -> y = x
     (Pdb) p x
     1
     (Pdb) c
-      Ran 1 tests with 0 failures and 0 errors in 0.002 seconds.
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
     ...
     False
 
@@ -178,11 +179,11 @@ Using pdb.set_trace in a function called by a doctest in a doc file:
     >>> try: testrunner.run_internal(defaults)
     ... finally: sys.stdin = real_stdin
     Running zope.testing.testrunner.layer.UnitTests tests:...
-    --Return--
-    > doctest.py(351)set_trace()->None
-    -> pdb.Pdb.set_trace(self)
+    > testrunner-ex/sample3/sampletests_d.py(42)f()...
+    -> y = x
     (Pdb) n
-    > testrunner-ex/sample3/sampletests_d.py(42)f()
+    --Return--
+    > ...->None
     -> y = x
     (Pdb) p x
     1
@@ -211,7 +212,7 @@ Post-mortem debugging function called from ordinary test:
         raise ValueError
     ValueError
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
     > testrunner-ex/sample3/sampletests_d.py(46)g()
     -> raise ValueError
@@ -245,11 +246,12 @@ Post-mortem debugging docstring-based doctest:
         exc_info)
       File ".../zope/testing/doctest/__init__.py", Line NNN, in report_unexpected_exception
         raise UnexpectedException(test, example, exc_info)
-    UnexpectedException: testrunner-ex/sample3/sampletests_d.py:61 (2 examples)>
+    ...UnexpectedException:
+       from testrunner-ex/sample3/sampletests_d.py:61 (2 examples)>
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
-    > <doctest sample3.sampletests_d.post_mortem3[line 3, example 1]>(1)...()
+    > <doctest sample3.sampletests_d.post_mortem3[1]>(1)?()
     (Pdb) p x
     1
     (Pdb) c
@@ -281,7 +283,7 @@ Post-mortem debugging function called from docstring-based doctest:
         raise UnexpectedException(test, example, exc_info)
     UnexpectedException: testrunner-ex/sample3/sampletests_d.py:NNN (1 example)>
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
     > testrunner-ex/sample3/sampletests_d.py(NNN)g()
     -> raise ValueError
@@ -314,11 +316,11 @@ Post-mortem debugging file-based doctest:
         exc_info)
       File ".../zope/testing/doctest/__init__.py", Line NNN, in report_unexpected_exception
         raise UnexpectedException(test, example, exc_info)
-    UnexpectedException: testrunner-ex/sample3/post_mortem5.txt:0 (2 examples)>
+    ...UnexpectedException: testrunner-ex/sample3/post_mortem5.txt:0 (2 examples)>
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
-    > <doctest post_mortem5.txt[line 2, example 1]>(1)...()
+    > <doctest post_mortem5.txt[1]>(1)?()
     (Pdb) p x
     1
     (Pdb) c
@@ -349,9 +351,9 @@ Post-mortem debugging function called from file-based doctest:
         exc_info)
       File ".../zope/testing/doctest/__init__.py", Line NNN, in report_unexpected_exception
         raise UnexpectedException(test, example, exc_info)
-    UnexpectedException: testrunner-ex/sample3/post_mortem6.txt:0 (2 examples)>
+    ...UnexpectedException: testrunner-ex/sample3/post_mortem6.txt:0 (2 examples)>
     <BLANKLINE>
-    exceptions.ValueError:
+    ...ValueError:
     <BLANKLINE>
     > testrunner-ex/sample3/sampletests_d.py(NNN)g()
     -> raise ValueError
@@ -386,7 +388,7 @@ Post-mortem debugging of a docstring doctest failure:
     <BLANKLINE>
     <BLANKLINE>
     > testrunner-ex/sample3/sampletests_d.py(81)_()
-    exceptions.ValueError:
+    ...ValueError:
     Expected and actual output are different
     > <string>(1)...()
     (Pdb) p x
@@ -421,7 +423,7 @@ Post-mortem debugging of a docfile doctest failure:
     <BLANKLINE>
     <BLANKLINE>
     > testrunner-ex/sample3/post_mortem_failure.txt(2)_()
-    exceptions.ValueError:
+    ...ValueError:
     Expected and actual output are different
     > <string>(1)...()
     (Pdb) p x

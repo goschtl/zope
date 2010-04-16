@@ -273,7 +273,7 @@ class RENormalizing(doctest.OutputChecker):
         return RENormalizing(self.transformers + other.transformers)
 
     def _cook(self, pattern):
-        if callable(pattern):
+        if hasattr(pattern, '__call__'):
             return pattern
         regexp, replacement = pattern
         return lambda text: regexp.sub(replacement, text)

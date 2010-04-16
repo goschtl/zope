@@ -1,10 +1,11 @@
 zope.testing Changelog
 **********************
 
-3.9.5 (Unreleased)
-==================
+3.10.0 (Unreleased)
+===================
 
-- ...
+- Python 3 support, thanks to Lennart Regebro and Wolfgang Schnerring.
+
 
 3.9.4 (2010-04-13)
 ==================
