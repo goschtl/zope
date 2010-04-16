@@ -15,8 +15,12 @@
 
 $Id$
 """
-
-import http.server
+try:
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    from urllib.request import urlopen
+except ImportError:
+    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+    from urllib2 import urlopen
 import errno
 import logging
 import os
@@ -30,11 +34,10 @@ import sys
 import tempfile
 import threading
 import time
-import urllib.request, urllib.error, urllib.parse
-
 import zc.buildout.buildout
 import zc.buildout.easy_install
 from zc.buildout.rmtree import rmtree
+from zc.buildout.py2compat import prn
 
 fsync = getattr(os, 'fsync', lambda fileno: None)
 is_win32 = sys.platform == 'win32'
@@ -49,7 +52,7 @@ def cat(dir, *names):
         and os.path.exists(path+'-script.py')
         ):
         path = path+'-script.py'
-    print(open(path).read(), end=' ')
+    prn(open(path).read(), end=' ')
 
 def ls(dir, *subs):
     if subs:
@@ -58,12 +61,12 @@ def ls(dir, *subs):
     names.sort()
     for name in names:
         if os.path.isdir(os.path.join(dir, name)):
-            print('d ', end=' ')
+            prn('d ', end=' ')
         elif os.path.islink(os.path.join(dir, name)):
-            print('l ', end=' ')
+            prn('l ', end=' ')
         else:
-            print('- ', end=' ')
-        print(name)
+            prn('- ', end=' ')
+        prn(name)
 
 def mkdir(*path):
     os.mkdir(os.path.join(*path))
@@ -110,7 +113,7 @@ def system(command, input=''):
     return result
 
 def get(url):
-    return urllib.request.urlopen(url).read()
+    return urlopen(url).read()
 
 def _runsetup(setup, executable, *args):
     if os.path.isdir(setup):
@@ -313,10 +316,10 @@ def buildoutTearDown(test):
     for f in test.globs['__tear_downs']:
         f()
 
-class Server(http.server.HTTPServer):
+class Server(HTTPServer):
 
     def __init__(self, tree, *args):
-        http.server.HTTPServer.__init__(self, *args)
+        HTTPServer.__init__(self, *args)
         self.tree = os.path.abspath(tree)
 
     __run = True
@@ -327,7 +330,7 @@ class Server(http.server.HTTPServer):
     def handle_error(self, *_):
         self.__run = False
 
-class Handler(http.server.BaseHTTPRequestHandler):
+class Handler(BaseHTTPRequestHandler):
 
     Server.__log = False
 
@@ -397,7 +400,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def log_request(self, code):
         if self.__server.__log:
-            print('%s %s %s' % (self.command, code, self.path))
+            prn('%s %s %s' % (self.command, code, self.path))
 
 def _run(tree, port):
     server_address = ('localhost', port)
@@ -430,7 +433,7 @@ def start_server(tree):
 
 def stop_server(url, thread=None):
     try:
-        urllib.request.urlopen(url+'__stop__')
+        urlopen(url+'__stop__')
     except Exception:
         pass
     if thread is not None:

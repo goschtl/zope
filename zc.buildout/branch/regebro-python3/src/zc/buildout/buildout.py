@@ -13,7 +13,6 @@
 ##############################################################################
 """Buildout main script
 """
-
 from .rmtree import rmtree
 try:
     from hashlib import md5
@@ -23,10 +22,12 @@ except ImportError:
 
 try:
     from collections import MutableMapping as DictMixin
+    import configparser
 except ImportError:
     # Python < 2.6
     from UserDict import DictMixin
-import configparser
+    import ConfigParser as configparser
+
 import copy
 import distutils.errors
 import glob
@@ -42,6 +43,7 @@ import tempfile
 import zc.buildout
 import zc.buildout.download
 import zc.buildout.easy_install
+from zc.buildout.py2compat import prn
 
 
 realpath = zc.buildout.easy_install.realpath
@@ -81,18 +83,18 @@ def _annotate(data, note):
 def _print_annotate(data):
     sections = list(data.keys())
     sections.sort()
-    print()
-    print("Annotated sections")
-    print("="*len("Annotated sections"))
+    prn()
+    prn("Annotated sections")
+    prn("="*len("Annotated sections"))
     for section in sections:
-        print()
-        print('[%s]' % section)
+        prn()
+        prn('[%s]' % section)
         keys = list(data[section].keys())
         keys.sort()
         for key in keys:
             value, notes = data[section][key]
             keyvalue = "%s= %s" % (key, value)
-            print(keyvalue)
+            prn(keyvalue)
             line = '   '
             for note in notes.split():
                 if note == '[+]':
@@ -100,9 +102,9 @@ def _print_annotate(data):
                 elif note == '[-]':
                     line = '-= '
                 else:
-                    print(line, note)
+                    prn(line, note)
                     line = '   '
-    print()
+    prn()
 
 
 def _unannotate_section(section):
@@ -159,7 +161,7 @@ class Buildout(DictMixin):
             base = os.path.dirname(config_file)
             if not os.path.exists(config_file):
                 if command == 'init':
-                    print('Creating %r.' % config_file)
+                    prn('Creating %r.' % config_file)
                     open(config_file, 'w').write('[buildout]\nparts = \n')
                 elif command == 'setup':
                     # Sigh. This model of a buildout instance
@@ -438,11 +440,11 @@ class Buildout(DictMixin):
         if self._log_level < logging.DEBUG:
             sections = list(self)
             sections.sort()
-            print()
-            print('Configuration data:')
+            prn()
+            prn('Configuration data:')
             for section in self._data:
                 _save_options(section, self[section], sys.stdout)
-            print()
+            prn()
 
 
         # compute new part recipe signatures
@@ -760,7 +762,7 @@ class Buildout(DictMixin):
         f = open(installed, 'w')
         _save_options('buildout', installed_options['buildout'], f)
         for part in installed_options['buildout']['parts'].split():
-            print(file=f)
+            prn(file=f)
             _save_options(part, installed_options[part], f)
         f.close()
 
@@ -1293,10 +1295,10 @@ def _save_option(option, value, f):
         value = '%(__buildout_space_n__)s' + value[2:]
     if value.endswith('\n\t'):
         value = value[:-2] + '%(__buildout_space_n__)s'
-    print(option, '=', value, file=f)
+    prn(option, '=', value, file=f)
 
 def _save_options(section, options, f):
-    print('[%s]' % section, file=f)
+    prn('[%s]' % section, file=f)
     items = list(options.items())
     items.sort()
     for option, value in items:
@@ -1602,7 +1604,7 @@ Commands:
 
 """
 def _help():
-    print(_usage)
+    prn(_usage)
     sys.exit(0)
 
 def main(args=None):

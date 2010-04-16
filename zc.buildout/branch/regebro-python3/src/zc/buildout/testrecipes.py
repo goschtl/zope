@@ -10,7 +10,7 @@ class Debug:
         items = list(self.options.items())
         items.sort()
         for option, value in items:
-            print("  %s=%r" % (option, value))
+            prn("  %s=%r" % (option, value))
         return ()
 
     update = install
