@@ -1,0 +1,19 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <view
+      for="zope.security.interfaces.IUnauthorized"
+      name="index.html"
+      permission="zope.Public"
+      factory="zope.app.http.exception.unauthorized.Unauthorized"
+      type="z3c.layer.minimal.IMinimalBrowserLayer"
+      />
+
+  <view
+      for="zope.publisher.interfaces.ITraversalException"
+      name="index.html"
+      permission="zope.Public"
+      factory="zope.app.http.exception.notfound.NotFound"
+      type="z3c.layer.minimal.IMinimalBrowserLayer"
+      />
+
+</configure>

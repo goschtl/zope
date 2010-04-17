@@ -1,0 +1,61 @@
+=======
+CHANGES
+=======
+
+1.0.2 (2010-04-18)
+------------------
+
+- **Security issue:** The traverser defined for
+  ``IPageletBrowserLayer`` was a trusted adapter, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
+
+  Making this change might BREAK your application!
+  That means if security is not well declared.
+
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Improved meta-data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Move ``z3c.layer.minimal`` package to it's own top level
+  package form ``zope.layer`` to ``z3c.layer.minimal``.
+
+- Restructure: Moved implementation from ``z3c.layer`` to
+  ``z3c.layer.minimal``
+
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+0.2.2 (2007-10-31)
+------------------
+
+- Bug: Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warning for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.
