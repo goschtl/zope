@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <browser:page 
+      name=""
+      for="zope.app.component.interfaces.ISite"
+      class="zope.app.publisher.browser.resources.Resources"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      />
+
+</configure>
