@@ -162,6 +162,9 @@ The user does not get asked by the wizard for the options whose values
 are already passed through command line. Other variables can also be
 given values from the command line, if required:
 
+- ``python_package`` -- Name of the main Python package (possibly with
+  namespaces)
+
 - ``interpreter`` -- Name of the custom Python interpreter
 
 - ``version`` -- Version (like 0.1)
@@ -258,10 +261,10 @@ screenshot:
 
 .. image:: images/gettingstarted4.png
 
-The second (mmh no, first!) most common thing that should be run are the unit
-tests.  BlueBream creates a testrunner using the ``zc.recipe.testrunner``
-Buildout recipe.  User can see a ``test`` command inside the ``bin`` directory.
-To run the test cases, the following command is used::
+The second most common thing that should be run are the unit tests.  BlueBream
+creates a testrunner using the ``zc.recipe.testrunner`` Buildout recipe. The user
+can see a ``test`` command inside the ``bin`` directory.  To run the test cases,
+the following command is used::
 
   $ ./bin/test
 
@@ -328,6 +331,7 @@ project template is as shown::
     |   `-- log
     |       `-- README.txt
     `-- versions.cfg
+
 
 The name of the top-level directory will always be the project name as given in
 the wizard.  The name of the egg will also be the same as the package name by
