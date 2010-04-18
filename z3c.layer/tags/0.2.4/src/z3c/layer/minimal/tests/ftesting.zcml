@@ -1,0 +1,140 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope"
+           package="z3c.layer.minimal.tests">
+
+  <include package="zope.app.zcmlfiles" />
+
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.app.authentication" />
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <grantAll role="zope.Manager" />
+
+  <include package="zope.app.form.browser" />
+  <include package="zope.app.http.exception" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.publisher.browser" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="z3c.layer.minimal" />
+
+  <interface
+      interface="z3c.layer.minimal.tests.IMinimalTestingSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="MinimalTesting"
+      />
+
+  <browser:page
+      for="*"
+      name="standard_macros"
+      permission="zope.Public"
+      class=".TestingStandardMacros"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
+  <browser:page
+      for="*"
+      name="page_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="page_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="view_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="view_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="error_macros"
+      permission="zope.Public"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="error_macros.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="page.html"
+      permission="zope.ManageContent"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      template="page.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="forbidden.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".UnauthorizedPage"
+      />
+
+  <browser:page
+      for="*"
+      name="usererror.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".UserErrorPage"
+      />
+
+  <browser:page
+      for="*"
+      name="systemerror.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".SystemErrorPage"
+      />
+  <browser:page
+      for="*"
+      name="container_contents.html"
+      permission="zope.View"
+      layer="z3c.layer.minimal.IMinimalBrowserLayer"
+      class=".ContainerContentsPage"
+      />
+
+
+</configure>
