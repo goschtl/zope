@@ -2,6 +2,21 @@
 CHANGES
 =======
 
+0.2.4 (2010-04-18)
+------------------
+
+- **Security issue:** The traversers defined for
+  ``IPageletBrowserLayer`` and ``IMinimalBrowserLayer`` was trusted adapters, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
+
+  Making this change might BREAK your application!
+  That means if security is not well declared.
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered
+
+
 0.2.3 (2007-11-07)
 ------------------
 
@@ -18,7 +33,7 @@ CHANGES
 
 - Bug: Fixed test failures due to depency updates.
 
-- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+- Restructure: Fixed deprecation warning for ``ZopeSecurityPolicy``.
 
 
 0.2.1 (2007-??-??)

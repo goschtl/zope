@@ -25,7 +25,7 @@ from z3c.pagelet import browser
 import z3c.layer.pagelet
 
 
-class IPageletBrowserTestingSkin(z3c.layer.pagelet.IPageletBrowserLayer):
+class IPageletBrowserTestSkin(z3c.layer.pagelet.IPageletBrowserLayer):
     """The IJSABrowser testing skin."""
 
 
@@ -55,3 +55,11 @@ class SystemErrorPage(BrowserPage):
     def __call__(self):
         raise Exception('simply system error')
         return u''
+
+
+class ContainerContentsPage(BrowserPage):
+    """Contents of a container."""
+
+    def __call__(self):
+        return str([type(x) for x in self.context.values()])
+

@@ -23,7 +23,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'z3c.layer',
-      version = '0.2.3',
+      version = '0.2.4',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Collection of Alternative Base Layers',
@@ -50,8 +50,8 @@ setup(name = 'z3c.layer',
       namespace_packages=['z3c'],
       extras_require = dict(
           test=['zope.app.testing',
-                'zope.app.securitypolicy',
                 'zope.securitypolicy',
+                'zope.app.securitypolicy',
                 'zope.testbrowser',
                 ]
           ),

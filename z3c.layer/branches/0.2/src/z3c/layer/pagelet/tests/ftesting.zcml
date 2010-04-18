@@ -52,6 +52,7 @@
   <grantAll role="zope.Manager" />
 
   <include package="zope.app.form.browser" />
+  <include package="zope.app.folder" />
   <include package="zope.app.http.exception" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
@@ -66,9 +67,9 @@
   <include package="z3c.layer.pagelet" />
 
   <interface
-      interface="z3c.layer.pagelet.tests.IPageletBrowserTestingSkin"
+      interface="z3c.layer.pagelet.tests.IPageletBrowserTestSkin"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="MinimalTesting"
+      name="PageletTestSkin"
       />
 
   <z3c:layout
@@ -114,5 +115,14 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       class=".SystemErrorPage"
       />
+
+  <browser:page
+      for="*"
+      name="container_contents.html"
+      permission="zope.View"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      class=".ContainerContentsPage"
+      />
+
 
 </configure>

@@ -3,17 +3,17 @@ README
 ======
 
 This package contains the minimal layer. This layer supports a correct set of 
-component registration and can be used for inheritation in custom skins.
+component registration and can be used for inheritance in custom skins.
 
-Right now the default implementation in Zope3 has different restriction in the
-traversal concept and use to much registration on the default layer.
+Right now the default implementation in Zope3 has different restrictions in the
+traversal concept and use to many registrations on the default layer.
 
 
 IMinimalBrowserLayer
 --------------------
 
 The minimal layer is useful for build custom presentation skins without access 
-to ZMI menus like zmi_views etc. This means there is no menu item registred if 
+to ZMI menus like zmi_views etc. This means there is no menu item registered if 
 you use this layer.
 
 This layer is NOT derived from IDefaultBrowserLayer. Therefore it provides 
