@@ -11,7 +11,7 @@ CHANGES
 ------------------
 
 - **Security issue:** The traverser defined for
-  ``IPageletBrowserLayer`` was a trusted adapter, so the security
+  ``IMinimalBrowserLayer`` was a trusted adapter, so the security
   proxy got removed from each traversed object. Thus all sub-objects
   were publically accessable, too.
 

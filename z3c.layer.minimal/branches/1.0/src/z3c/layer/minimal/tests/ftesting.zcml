@@ -51,6 +51,7 @@
   <grantAll role="zope.Manager" />
 
   <include package="zope.app.form.browser" />
+  <include package="zope.app.folder" />
   <include package="zope.app.http.exception" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
