@@ -1,0 +1,128 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:z3c="http://namespaces.zope.org/z3c"
+           i18n_domain="zope"
+           package="z3c.layer.pagelet.tests">
+
+  <include package="zope.app.zcmlfiles" />
+
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.app.authentication" />
+  <securityPolicy
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <grantAll role="zope.Manager" />
+
+  <include package="zope.app.form.browser" />
+  <include package="zope.app.folder" />
+  <include package="zope.app.http.exception" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.publisher.browser" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.contentprovider" />
+
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.pagelet" />
+
+  <include package="z3c.layer.pagelet" />
+
+  <interface
+      interface="z3c.layer.pagelet.tests.IPageletBrowserTestSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="PageletTestSkin"
+      />
+
+  <z3c:layout
+      for="*"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      template="template.pt"
+      />
+
+  <z3c:pagelet
+      for="*"
+      name="page.html"
+      permission="zope.ManageContent"
+      class=".TestPage"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <z3c:template
+      for=".TestPage"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      template="page.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="forbidden.html"
+      permission="zope.View"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      class=".UnauthorizedPage"
+      />
+
+  <browser:page
+      for="*"
+      name="usererror.html"
+      permission="zope.View"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      class=".UserErrorPage"
+      />
+
+  <browser:page
+      for="*"
+      name="systemerror.html"
+      permission="zope.View"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      class=".SystemErrorPage"
+      />
+
+  <browser:page
+      for="*"
+      name="container_contents.html"
+      permission="zope.View"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      class=".ContainerContentsPage"
+      />
+
+
+</configure>

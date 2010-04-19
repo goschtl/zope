@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <view
+      name="index.html"
+      for="zope.security.interfaces.IUnauthorized"
+      permission="zope.Public"
+      factory=".browser.UnauthorizedPagelet"
+      type="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <view
+      name="index.html"
+      for="zope.publisher.interfaces.ITraversalException"
+      permission="zope.Public"
+      factory=".browser.NotFoundPagelet"
+      type="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+</configure>
