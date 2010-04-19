@@ -21,48 +21,43 @@ from unittest import TestSuite, TestCase, makeSuite
 from zope.app.wsgi.testlayer import http, BrowserLayer
 import zope.app.http
 
-layer = BrowserLayer(zope.app.http)
-
-class TestPUT(TestCase):    
+class TestPUT(TestCase):
+    
+    layer = BrowserLayer(zope.app.http)
+    
     def test_put(self):
         # PUT something for the first time
-        out = http(r"""PUT /testfile.txt HTTP/1.1
+        response = http(r"""PUT /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw
-X-Zope-Handle-Errors: False
 Content-Length: 20
 Content-Type: text/plain
 
 This is just a test.""")
-        self.assertEquals(
-            out,
-            ('HTTP/1.0 201 Created\n'
-             'X-Powered-By: Zope (www.zope.org), Python (www.python.org)\n'
-             'Content-Length: 0\n'
-             'Location: http://localhost/testfile.txt\n\n'))
-            
-        out = http(r"""GET /testfile.txt HTTP/1.1
+ 
+        self.assertEquals(response.getStatus(), 201)
+        self.assertEquals(response.getHeader("Location"),
+                          "http://localhost/testfile.txt")
+
+        response = http(r"""GET /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw""")
-        self.assertEquals(out.split('\n\n')[1],
-                          'This is just a test.')
-    
+        self.assertEquals(response.getBody(), "This is just a test.")
+
         # now modify it
-        out = http(r"""PUT /testfile.txt HTTP/1.1
+        response = http(r"""PUT /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw
 Content-Length: 23
 Content-Type: text/plain
 
 And now it is modified.""")
+        self.assertEquals(response.getStatus(), 200)
+        self.assertEquals(response.getBody(), "")
 
-        self.assert_('200' in out)
-        self.assertEquals(out.split('\n\n')[1], "")
-    
-        out = http(r"""GET /testfile.txt HTTP/1.1
+        response = http(r"""GET /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw""")
-
-        self.assertEquals(out.split('\n\n')[1], "And now it is modified.")
+        self.assertEquals(response.getBody(), "And now it is modified.")
+        
         
 def test_suite():
-    TestPUT.layer = layer
     return TestSuite((
         makeSuite(TestPUT),
         ))

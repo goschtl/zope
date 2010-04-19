@@ -5,10 +5,12 @@ CHANGES
 3.8 (unreleased)
 ----------------
 
-- Remove dependency on zope.app.testing. At the time of this writing the
-  test dependency on zope.app.zcmlfiles cannot be removed however, because
-  there is a dependency on zope.app.file for testing, which pulls in
-  the world.
+- Remove dependency on zope.app.testing by using the
+  zope.app.wsgi.testlayer support instead. 
+
+  At the time of this writing the test dependency on
+  zope.app.zcmlfiles cannot be removed however, because there is a
+  dependency on zope.app.file for testing, which pulls in the world.
 
 3.7 (2010-04-13)
 ----------------
