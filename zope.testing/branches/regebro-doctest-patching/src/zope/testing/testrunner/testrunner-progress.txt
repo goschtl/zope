@@ -73,7 +73,7 @@ levels of verbosity.
                      ##r##
         34/34 (100.0%)##r##
                       ##r##
-      Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
+      Ran 26 tests with 0 failures and 0 errors in 0.008 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
       Tear down samplelayers.Layer12 in 0.000 seconds.
@@ -147,7 +147,7 @@ Running samplelayers.Layer122 tests:
                                                ##r##
     34/34 (100.0%) ... pe/testing/testrunner-ex/sampletests/../sampletestsl.txt##r##
                                                                                ##r##
-  Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
+  Ran 26 tests with 0 failures and 0 errors in 0.008 seconds.
 Tearing down left over layers:
   Tear down samplelayers.Layer122 in 0.000 seconds.
   Tear down samplelayers.Layer12 in 0.000 seconds.
@@ -223,7 +223,7 @@ that, we'll provide a fake curses module:
                                                    ##r##
         34/34 (100.0%) ... r-ex/sampletests/../sampletestsl.txt##r##
                                                                ##r##
-      Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
+      Ran 26 tests with 0 failures and 0 errors in 0.008 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
       Tear down samplelayers.Layer12 in 0.000 seconds.

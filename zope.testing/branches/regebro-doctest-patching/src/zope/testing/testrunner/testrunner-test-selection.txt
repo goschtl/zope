@@ -444,7 +444,7 @@ level.  For example, with the following options:
      test_y0 (sampletests.test_one.TestA)
      test_y1 (sampletests.test_one.TestB)
      test_y0 (sampletests.test_one)
-      Ran 36 tests with 0 failures and 0 errors in N.NNN seconds.
+      Ran 28 tests with 0 failures and 0 errors in N.NNN seconds.
     Tearing down left over layers:
       Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
     False
