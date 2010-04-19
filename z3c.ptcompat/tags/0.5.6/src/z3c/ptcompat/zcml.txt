@@ -1,0 +1,344 @@
+Directives
+==========
+
+We'll use a configuration machine to carry out actions; note that when
+actions are executed, the configuration machine is emptied.
+
+  >>> from zope.configuration import config
+  >>> context = config.ConfigurationMachine()
+
+Pages
+-----
+
+  >>> from z3c.ptcompat import zcml
+  >>> zcml.page_directive(
+  ...    context, "test1", "zope.View", None,
+  ...    template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer),
+  ...     interface.Interface, name="test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.page_directive(
+  ...    context, "test2", "zope.View", None,
+  ...    class_=View, template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer),
+  ...     interface.Interface, name="test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Forms
+=====
+
+Define a simple schema that we will use for those directives:
+
+  >>> from zope.interface import Interface
+  >>> from zope.schema import TextLine
+
+  >>> class Schema(Interface):
+  ...     title = TextLine(title=u'Some Title')
+
+
+Add Form
+--------
+
+  >>> from z3c.ptcompat import zcml
+  >>> zcml.AddFormDirective(
+  ...    context, name="add-test1", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="add-test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.AddFormDirective(
+  ...    context, name="add-test2", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    class_=View, template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="add-test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Edit Form
+---------
+
+  >>> from z3c.ptcompat import zcml
+  >>> zcml.EditFormDirective(
+  ...    context, name="edit-test1", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="edit-test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.EditFormDirective(
+  ...    context, name="edit-test2", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    class_=View, template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="edit-test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Subedit Form
+------------
+
+  >>> from z3c.ptcompat import zcml
+  >>> zcml.SubeditFormDirective(
+  ...    context, name="subedit-test1", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="subedit-test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.SubeditFormDirective(
+  ...    context, name="subedit-test2", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    class_=View, template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="subedit-test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Form
+----
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.FormDirective(
+  ...    context, name="form-test2", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    class_=View, template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="form-test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Schema Display
+--------------
+
+  >>> from z3c.ptcompat import zcml
+  >>> zcml.SchemaDisplayDirective(
+  ...    context, name="schema-display-test1", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="schema-display-test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the view on an existing class.
+
+  >>> class View(object):
+  ...     pass
+
+  >>> zcml.SchemaDisplayDirective(
+  ...    context, name="schema-display-test2", permission="zope.View",
+  ...    schema=Schema, for_=Schema,
+  ...    class_=View, template=os.path.join(path, "test.pt"))()
+
+  >>> context.execute_actions()
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (Schema, IDefaultBrowserLayer),
+  ...     interface.Interface, name="schema-display-test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, View)
+  True
+
+Viewlet managers
+----------------
+
+  >>> zcml.viewlet_manager_directive(
+  ...    context, "test1", "zope.View",
+  ...    template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> from zope.viewlet.interfaces import IViewletManager
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView),
+  ...     IViewletManager, name="test1")
+
+  >>> factory.template
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the viewlet manager on an existing class.
+
+  >>> class ViewletManager(object):
+  ...     pass
+
+  >>> zcml.viewlet_manager_directive(
+  ...    context, "test2", "zope.View",
+  ...    class_=ViewletManager, template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView),
+  ...     IViewletManager, name="test2")
+
+  >>> factory.template
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, ViewletManager)
+  True
+
+Viewlets
+--------
+
+  >>> zcml.viewlet_directive(
+  ...    context, "test1", "zope.View",
+  ...    template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView, IViewletManager),
+  ...     interface.Interface, name="test1")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+We can base the viewlet on an existing class.
+
+  >>> class Viewlet(object):
+  ...     pass
+
+  >>> zcml.viewlet_directive(
+  ...    context, "test2", "zope.View",
+  ...    class_=Viewlet, template=os.path.join(path, "test.pt"))
+
+  >>> context.execute_actions()
+
+Verify that page has been registered as a component.
+
+  >>> factory = component.getSiteManager().adapters.lookup(
+  ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView, IViewletManager),
+  ...     interface.Interface, name="test2")
+
+  >>> factory.index
+  <ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>
+
+  >>> issubclass(factory, Viewlet)
+  True
