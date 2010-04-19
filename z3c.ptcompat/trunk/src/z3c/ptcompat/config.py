@@ -37,4 +37,8 @@ def migrate(inst, args, kwargs):
     new_cls = getattr(z3c.ptcompat, cls.__name__)
     inst.__class__ = new_cls
     inst.__dict__.clear()
-    inst.__init__(*args, **kwargs)
+    try:
+        inst.__init__(*args, **kwargs)
+    except (OSError, ValueError):
+        # remove broken templates from registry
+        REGISTRY.pop(inst, None)

@@ -3,6 +3,10 @@ Changelog
 
 In next release...
 
+- Remove broken templates from registry during engine migration. In
+  some testing situation, stale templates would be tracked in the
+  regitry.
+
 - Existing template instances are now migrated to the right engine
   when using the ``enable`` and ``disable`` methods. [malthe]
 
