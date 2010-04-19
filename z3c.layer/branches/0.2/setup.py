@@ -26,7 +26,7 @@ setup(name = 'z3c.layer',
       version = '0.2.5dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      description='Collection of Alternative Base Layers',
+      description='RETIRED: Collection of Alternative Base Layers',
       long_description=(
           read('README.txt')
           + '\n\n' +
@@ -34,7 +34,7 @@ setup(name = 'z3c.layer',
           ),
       keywords = "zope3 layer",
       classifiers = [
-          'Development Status :: 5 - Production/Stable',
+          'Development Status :: 7 - Inactive',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
