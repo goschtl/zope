@@ -38,23 +38,19 @@ def databaseOpened(event):
     configuration = getProductConfiguration('z3c.taskqueue')
     startSpecifications = getStartSpecifications(configuration)
 
-    for siteName, serviceName in startSpecifications:
-        serviceCount = 0
-        sites = getSites(siteName, root_folder)
+    for sitesIdentifier, servicesIdentifier in startSpecifications:
+        startedAnything = False
+        sites = getSites(sitesIdentifier, root_folder)
         for site in sites:
-            if serviceName == '*':
-                services = getAllServices(site, root_folder)
+            if servicesIdentifier == '*':
+                started = startAllServices(site, root_folder)
             else:
-                service = getService(site, serviceName)
-                if service == None:
-                    services = []
-                else:
-                    services = [service]
-            serviceCount += startServices(services)
+                started = startOneService(site, servicesIdentifier)
+            startedAnything = startedAnything or started
 
-        if (siteName == "*" or serviceName == "*") and serviceCount == 0:
-            msg = 'no services started by directive %s@%s'
-            log.warn(msg % (siteName, serviceName))
+        if sitesIdentifier == "*" and not startedAnything:
+            msg = 'no services started by directive *@%s'
+            log.warn(msg % servicesIdentifier)
 
 
 def getRootFolder(event):
@@ -67,34 +63,34 @@ def getRootFolder(event):
 
 def getStartSpecifications(configuration):
     """get a list of sites/services to start"""
-
-    autostartParts = []
     if configuration is not None:
         autostart = configuration.get('autostart', '')
         autostartParts = [name.strip()
                         for name in autostart.split(',')]
 
-    result = [name.split('@') for name in autostartParts if name]
-    return result
-
-
-def getSites(siteName, root_folder):
-    # we search only for sites at the database root level
-    if siteName == '':
-        sites = [root_folder]
-    elif siteName == '*':
-        sites = getAllSites(root_folder)
+        specs = [name.split('@') for name in autostartParts if name]
+        return specs
     else:
-        site = getSite(siteName, root_folder)
-        if site == None:
-            sites = []
+        return []
+
+
+def getSites(sitesIdentifier, root_folder):
+    # we search only for sites at the database root level
+    if sitesIdentifier == '':
+        return [root_folder]
+    elif sitesIdentifier == '*':
+        return getAllSites(root_folder)
+    else:
+        site = getSite(sitesIdentifier, root_folder)
+        if site is not None:
+            return [site]
         else:
-            sites = [site]
-    return sites
+            return []
 
 
 def getAllSites(root_folder):
     sites = []
+    # do not forget to include root folder as it might have registered services
     sites.append(root_folder)
     root_values = root_folder.values()
     for folder in root_values:
@@ -106,45 +102,70 @@ def getAllSites(root_folder):
 def getSite(siteName, root_folder):
     try:
         site = root_folder.get(siteName)
+        return site
     except KeyError:
         log.error('site %s not found' % siteName)
-        site = None
-    return site
+        return None
+
+
+def startAllServices(site, root_folder):
+    startedAnything = False
+    services = getAllServices(site, root_folder)
+    for service in services:
+        started = startService(service)
+        startedAnything = startedAnything or started
+    if not startedAnything:
+        msg = 'no services started for site %s'
+        siteName = getSiteName(site)
+        log.warn(msg % siteName)
+    return startedAnything
 
 
 def getAllServices(site, root_folder):
     sm = site.getSiteManager()
     services = list(
         sm.getUtilitiesFor(interfaces.ITaskService))
+    # filter out services registered in root
     root_sm = root_folder.getSiteManager()
     if sm != root_sm:
-        # filter out services defined in root
         rootServices = list(root_sm.getUtilitiesFor(
             interfaces.ITaskService))
         services = [s for s in services
                        if s not in rootServices]
+    services = [service for name, service in services]
     return services
+
+
+def startService(service):
+    if not service.isProcessing():
+        service.startProcessing()
+        return True
+    else:
+        return False
+
+
+def getSiteName(site):
+    siteName = getattr(site, '__name__', '')
+    if siteName is None:
+        siteName = 'root'
+    return siteName
+
+
+def startOneService(site, serviceName):
+    service = getService(site, serviceName)
+    if service is not None:
+        return startService(service)
+    else:
+        return False
 
 
 def getService(site, serviceName):
     service = component.queryUtility(interfaces.ITaskService,
         context=site, name=serviceName)
     if service is not None:
-        service = (serviceName, service)
+        return service
     else:
-        csName = getattr(site, '__name__', '')
-        if csName is None:
-            csName = 'root'
+        siteName = getSiteName(site)
         msg = 'service %s on site %s not found'
-        log.error(msg % (serviceName, csName))
-        service = None
-    return service
-
-
-def startServices(services):
-    serviceCount = 0
-    for srvname, service in services:
-        if not service.isProcessing():
-            service.startProcessing()
-            serviceCount += 1
-    return serviceCount
+        log.error(msg % (serviceName, siteName))
+        return None
