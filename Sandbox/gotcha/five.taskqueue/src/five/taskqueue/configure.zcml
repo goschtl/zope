@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="five.taskqueue">
+
+    <include package="five.dbevent" />
+
+	  <subscriber
+	      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
+	      handler=".startup.databaseOpened"
+	   />
+
+</configure>

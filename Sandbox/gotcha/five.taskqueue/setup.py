@@ -23,8 +23,8 @@ setup(name='five.taskqueue',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
           'z3c.taskqueue',
+          'five.dbevent',
       ],
       entry_points="""
       # -*- Entry points: -*-
