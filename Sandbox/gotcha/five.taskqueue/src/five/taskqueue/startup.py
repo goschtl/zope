@@ -4,8 +4,7 @@ from App.config import getConfiguration
 
 from z3c.taskqueue.startup import getRootFolder
 from z3c.taskqueue.startup import getStartSpecifications
-from z3c.taskqueue.startup import startServices
-from z3c.taskqueue.startup import getService
+from z3c.taskqueue.startup import startOneService
 
 log = logging.getLogger('five.taskqueue')
 
@@ -21,15 +20,10 @@ def databaseOpened(event):
     startSpecifications = getStartSpecifications(configuration)
 
     for siteName, serviceName in startSpecifications:
-        serviceCount = 0
         site = getSite(siteName, root_folder)
         if site is None:
             continue
-        service = getService(site, serviceName)
-        if service is None:
-            continue
-        else:
-            serviceCount += startServices([service])
+        startOneService(site, serviceName)
 
 
 def getSite(siteName, root_folder):
