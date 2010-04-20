@@ -113,5 +113,40 @@ def _patched_tearDown(self):
 doctest.DocTestCase.__init__ = _patched_init
 doctest.DocTestCase.tearDown = _patched_tearDown
 
+
+# Patch so you can set REPORT_ONLY_FIRST_FAILURE even if you have a DIFF flag
+# on the test.
+import sys
+from StringIO import StringIO
+
+def _patched_runTest(self):
+    test = self._dt_test
+    old = sys.stdout
+    new = StringIO()
+    optionflags = self._dt_optionflags
+
+    if not (optionflags & doctest.REPORTING_FLAGS):
+        # The option flags don't include any reporting flags,
+        # so add the default reporting flags
+        optionflags |= doctest._unittest_reportflags
+        
+    # This should work even if you have a diff flag:
+    if doctest._unittest_reportflags & doctest.REPORT_ONLY_FIRST_FAILURE:
+        optionflags |= doctest.REPORT_ONLY_FIRST_FAILURE
+
+    runner = DocTestRunner(optionflags=optionflags,
+                           checker=self._dt_checker, verbose=False)
+
+    try:
+        runner.DIVIDER = "-"*70
+        failures, tries = runner.run(
+            test, out=new.write, clear_globs=False)
+    finally:
+        sys.stdout = old
+
+    if failures:
+        raise self.failureException(self.format_failure(new.getvalue()))
+    
+doctest.DocTestCase.runTest = _patched_runTest
     
 from doctest import *
