@@ -1,0 +1,30 @@
+Welcome to zope.interface's documentation!
+==========================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   README
+   adapter
+   human
+   verify
+   tests/foodforthought
+
+По-русски
+=========
+
+.. toctree::
+   :maxdepth: 2
+
+   README.ru
+   adapter.ru
+   human.ru
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
