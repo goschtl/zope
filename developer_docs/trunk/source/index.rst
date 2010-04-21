@@ -38,6 +38,7 @@ Contributing as a Non-Committer
 .. toctree::
    :maxdepth: 2
 
+   reporting-bugs
    noncommitter-svn
    noncommitter-bzr
 
