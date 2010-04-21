@@ -186,7 +186,7 @@ Checking out the logging will prove the started service:
   z3c.taskqueue INFO
     handling event IDatabaseOpenedEvent
   z3c.taskqueue INFO
-    starting service testTaskService1
+    starting service site1.++etc++site.default.testTaskService1
   z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
   z3c.taskqueue ERROR
@@ -243,7 +243,7 @@ Let's checkout the logging:
   z3c.taskqueue INFO
     handling event IDatabaseOpenedEvent
   z3c.taskqueue INFO
-    starting service testTaskService1
+    starting service site1.++etc++site.default.testTaskService1
   z3c.taskqueue INFO
     service testTaskService1 on site site1 started
 
@@ -291,7 +291,7 @@ Let's check the logging:
   z3c.taskqueue INFO
     service rootTaskService on site root started
   z3c.taskqueue INFO
-    starting service testTaskService1
+    starting service site1.++etc++site.default.testTaskService1
   z3c.taskqueue INFO
     service testTaskService1 on site site1 started
 
@@ -339,7 +339,7 @@ Let's checkout the logging:
   z3c.taskqueue ERROR
     service TestTaskService1 on site root not found
   z3c.taskqueue INFO
-    starting service testTaskService1
+    starting service site1.++etc++site.default.testTaskService1
   z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
 
