@@ -39,6 +39,7 @@ Contributing as a Non-Committer
    :maxdepth: 2
 
    noncommitter-svn
+   noncommitter-bzr
 
 
 Becoming a Zope Committer
