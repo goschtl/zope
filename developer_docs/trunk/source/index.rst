@@ -32,13 +32,13 @@ Resources for Contributors
    development-culture
 
 
-Zope Subversion Repository
---------------------------
+Contributing as a Non-Committer
+-------------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   subversion-readonly-checkouts
+   noncommitter-svn
 
 
 Becoming a Zope Committer
