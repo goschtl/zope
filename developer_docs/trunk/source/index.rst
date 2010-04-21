@@ -28,7 +28,7 @@ Resources for Contributors
    bugtrackers
    irc-channels
    mailinglists
-   subversion-ui
+   repository-browsing
 
 
 Zope Subversion Repository
