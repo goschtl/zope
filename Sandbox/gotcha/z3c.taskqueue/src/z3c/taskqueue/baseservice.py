@@ -212,6 +212,11 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         job.completed = datetime.datetime.now()
         return True
 
+    def process(self, now=None):
+        """See interfaces.ITaskService"""
+        while self.processNext(now):
+            pass
+
     def _pullJob(self, now=None):
         # first move new cron jobs from the scheduled queue into the cronjob
         # list
@@ -289,7 +294,7 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
         servicePath = self.getServicePath()
-        log.info('starting service %s' % self._threadName())
+        log.info('starting service %s' % self.__name__)
         # Start the thread running the processor inside.
         processor = self.processorFactory(
             self._p_jar.db(), servicePath, **self.processorArguments)
@@ -323,12 +328,12 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
     def getServicePath(self):
         raise NotImplemented
 
+    THREADNAME_PREFIX = 'taskqueue'
+
     def _threadName(self):
         """Return name of the processing thread."""
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
         path = self.getServicePath()
-        path.append('remotetasks')
-        path.reverse()
-        path.append(self.__name__)
+        path.insert(0, self.THREADNAME_PREFIX)
         return '.'.join(path)
