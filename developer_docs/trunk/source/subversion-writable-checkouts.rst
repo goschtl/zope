@@ -7,7 +7,7 @@ with checkin ability.
 Before you start
 ================
 
-Make sure you have :doc:`registered as a contributor <becoming-a-contributor>`.
+Make sure you have :doc:`registered as a committer <becoming-a-committer>`.
 
 
 

@@ -5,13 +5,13 @@
 Welcome to Zope Developer Information's documentation!
 ======================================================
 
-Becoming a Zope contributor
----------------------------
+Becoming a Zope Committer
+-------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   becoming-a-contributor
+   becoming-a-committer
 
 Resources
 ----------

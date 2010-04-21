@@ -10,7 +10,8 @@ Procedure for accepting new committer applications
    - Check readability of the scanned application form
    - If applicant and reference committer are (well)-known, proceed
      with procedure. Otherwise ask the reference committer about
-     the applicant. Note that the reference committer must be an active committer.
+     the applicant. Note that the reference committer must be an
+     active committer.
 
 2) Create SVN account for new committer::
 
@@ -38,13 +39,8 @@ Procedure for accepting new committer applications
 
        One last step, though: you need to deposit your SSH public key(s) as
        described:
-       http://docs.zope.org/developer/becoming-a-contributor.html
+       http://docs.zope.org/developer/becoming-a-committer.html
 
        Best regards,
        <<<SENDER>>>
-
-
-
-
-
 
