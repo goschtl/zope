@@ -25,10 +25,10 @@ Resources for Contributors
 .. toctree::
    :maxdepth: 2
 
+   repository-browsing
    bugtrackers
    irc-channels
    mailinglists
-   repository-browsing
 
 
 Zope Subversion Repository
