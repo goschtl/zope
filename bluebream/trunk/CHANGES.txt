@@ -13,6 +13,8 @@ Changelog
 
 - Enabled Distribute by default instead of Setuptools
 
+- Added zope.app.schema registrations to be able to register a named vocabulary
+
 1.0a5 (2010-03-28)
 ------------------
 
