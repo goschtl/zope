@@ -43,6 +43,7 @@
   <include package="zope.app.security.browser" />
   <include package="zope.traversing.browser" />
   <include package="zope.app.pagetemplate" />
+  <include package="zope.app.schema" />
 
   <include package="${ns_prefix}${package}" />
 
