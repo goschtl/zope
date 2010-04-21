@@ -54,6 +54,7 @@ setup(
                         'zope.app.pagetemplate',
                         'zope.app.publication',
                         'zope.app.publisher',
+                        'z3c.taskqueue',
                         # We depend on zope.app.session, but
                         # import from zope.session if available,
                         # to avoid deprecation warnings.
