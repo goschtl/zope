@@ -1,0 +1,5 @@
+=============================
+ TODOs for lovely.remotetask
+=============================
+
+- remove zope.app.session dependency
