@@ -294,11 +294,12 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
         servicePath = self.getServicePath()
-        log.info('starting service %s' % self.__name__)
+        log.info('starting service %s' % ".".join(servicePath))
         # Start the thread running the processor inside.
         processor = self.processorFactory(
             self._p_jar.db(), servicePath, **self.processorArguments)
-        thread = threading.Thread(target=processor, name=self._threadName())
+        threadName = self._threadName()
+        thread = threading.Thread(target=processor, name=threadName)
         thread.setDaemon(True)
         thread.running = True
         thread.start()
@@ -307,10 +308,11 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if self.__name__ is None:
             return
-        name = self._threadName()
-        log.info('stopping service %s' % name)
+        servicePath = self.getServicePath()
+        log.info('stopping service %s' % ".".join(servicePath))
+        threadName = self._threadName()
         for thread in threading.enumerate():
-            if thread.getName() == name:
+            if thread.getName() == threadName:
                 thread.running = False
                 break
 
