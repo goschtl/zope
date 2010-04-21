@@ -24,10 +24,10 @@ import zope.interface
 import zope.location
 
 
-log = logging.getLogger('z3c.remotetask')
+log = logging.getLogger('z3c.taskqueue')
 
 
-def databaseOpened(event):
+def databaseOpened(event, productName='z3c.taskqueue'):
     """Start the queue processing services based on the
        settings in zope.conf"""
     log.info('handling event IDatabaseOpenedEvent')
@@ -35,7 +35,7 @@ def databaseOpened(event):
     root_folder = getRootFolder(event)
 
     from zope.app.appsetup.product import getProductConfiguration
-    configuration = getProductConfiguration('z3c.taskqueue')
+    configuration = getProductConfiguration(productName)
     startSpecifications = getStartSpecifications(configuration)
 
     for sitesIdentifier, servicesIdentifier in startSpecifications:
@@ -100,12 +100,10 @@ def getAllSites(root_folder):
 
 
 def getSite(siteName, root_folder):
-    try:
-        site = root_folder.get(siteName)
-        return site
-    except KeyError:
+    site = root_folder.get(siteName)
+    if site is None:
         log.error('site %s not found' % siteName)
-        return None
+    return site
 
 
 def startAllServices(site, root_folder):
@@ -113,6 +111,10 @@ def startAllServices(site, root_folder):
     services = getAllServices(site, root_folder)
     for service in services:
         started = startService(service)
+        if started:
+            siteName = getSiteName(site)
+            msg = 'service %s on site %s started'
+            log.info(msg % (service.__name__, siteName))
         startedAnything = startedAnything or started
     if not startedAnything:
         msg = 'no services started for site %s'
@@ -154,7 +156,12 @@ def getSiteName(site):
 def startOneService(site, serviceName):
     service = getService(site, serviceName)
     if service is not None:
-        return startService(service)
+        started = startService(service)
+        if started:
+            siteName = getSiteName(site)
+            msg = 'service %s on site %s started'
+            log.info(msg % (serviceName, siteName))
+        return started
     else:
         return False
 
