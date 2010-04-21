@@ -1,3 +1,5 @@
+.. _becoming-a-committer:
+
 Becoming a Committer
 ====================
 

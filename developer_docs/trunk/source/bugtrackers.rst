@@ -1,3 +1,5 @@
+.. _zope-bugtrackers:
+
 The Zope Bugtrackers
 ====================
 
