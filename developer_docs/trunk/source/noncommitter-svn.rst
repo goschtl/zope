@@ -7,8 +7,8 @@ Zope projects, using a read-only checkout of the project's sources.
 
 .. _read-only-subversion-checkout:
 
-Read-only checkouts
--------------------
+How-To:  Get a Read-only Subversion Checkouts
+---------------------------------------------
 
 There are several top-level modules in the repository - chief among them
 is the Zope sources - we'll use them for our example. You can browse them
@@ -50,8 +50,10 @@ For a Zope 3.4 checkout:
    $ svn co svn://svn.zope.org/repos/main/Zope3/branches/3.4 Zope3
 
 
-Subversion Mirrors
-------------------
+.. _subversion-mirrors:
+
+How-To: Get a Read-only Checkout from a Subversion Mirror
+---------------------------------------------------------
 
 The `Deutschsprachige Zope User Group (DZUG) <http://www.zope.de>`_ hosts
 a read-only `SVN mirror http://svn.zope.de <http://svn.zope.de>`_  that can
@@ -71,8 +73,10 @@ You can also browse the official SVN repository through HTTP read-only through
 `http://svn.zope.org/repos/main/ <http://svn.zope.org/repos/main/>`_ .
 
 
-Working inside the Checkout
----------------------------
+.. _working-in-svn-checkout:
+
+Working inside the Read-only Checkout
+-------------------------------------
 
 You should then be able to work inside your checkout, fixing a bug or
 adding a feature.  You can use Subversion commands as normal, e.g.:
