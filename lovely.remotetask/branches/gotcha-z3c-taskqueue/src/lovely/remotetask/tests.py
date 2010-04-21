@@ -32,7 +32,7 @@ def setUp(test):
     root = placefulSetUp(site=True)
     test.globs['root'] = root
 
-    log_info = InstalledHandler('lovely.remotetask')
+    log_info = InstalledHandler('lovely.remotetask', 'z3c.taskqueue')
     test.globs['log_info'] = log_info
     test.origArgs = service.TaskService.processorArguments
     service.TaskService.processorArguments = {'waitTime': 0.0}

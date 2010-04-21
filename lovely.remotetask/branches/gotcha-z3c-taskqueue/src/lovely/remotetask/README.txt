@@ -147,7 +147,7 @@ emulate the ``zope.conf`` settings:
   >>> setProductConfigurations([config])
   >>> from lovely.remotetask.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
-  ['site1@TestTaskService1', 'site2@TestTaskService2', '@RootTaskService']
+  [['site1', 'TestTaskService1'], ['site2', 'TestTaskService2'], ['', 'RootTaskService']]
 
 Note that `RootTaskService` is for a use-case where the service is directly
 registered at the root. We test this use-case in a separate footnote so that
@@ -183,13 +183,17 @@ and voila - the service is processing:
 Checking out the logging will prove the started service:
 
   >>> print log_info
-  lovely.remotetask INFO
-    handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    handling event IDatabaseOpenedEvent
+  z3c.taskqueue INFO
+    starting service testTaskService1
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
-  lovely.remotetask ERROR
+  z3c.taskqueue ERROR
     site site2 not found
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    starting service rootTaskService
+  z3c.taskqueue INFO
     service RootTaskService on site root started
 
 The verification for the jobs in the root-level service is done in another
@@ -221,7 +225,7 @@ Reset the product configuration with the asterisked service names:
   >>> config.mapping['autostart'] = 'site1@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
-  ['site1@*']
+  [['site1', '*']]
 
 Firing the event again will start all services in the configured site:
 
@@ -236,10 +240,14 @@ Firing the event again will start all services in the configured site:
 Let's checkout the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
-    handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
-    service TestTaskService1 on site site1 started
+  z3c.taskqueue INFO
+    handling event IDatabaseOpenedEvent
+  z3c.taskqueue INFO
+    starting service testTaskService1
+  z3c.taskqueue INFO
+    service testTaskService1 on site site1 started
+
+
 
 To deal with a lot of services in a lot of sites it possible to use
 asterisks (*) to start services. In case of using *@* means start all
@@ -257,7 +265,7 @@ Reset the product configuration with the asterisked service names:
   >>> config.mapping['autostart'] = '*@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
-  ['*@*']
+  [['*', '*']]
 
 ...and reset the logger:
 
@@ -276,13 +284,16 @@ And fire the event again. All services should be started now:
 Let's check the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
-    handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
-    service RootTaskService on site root started
-  lovely.remotetask INFO
-    service TestTaskService1 on site site1 started
-
+  z3c.taskqueue INFO
+    handling event IDatabaseOpenedEvent
+  z3c.taskqueue INFO
+    starting service rootTaskService
+  z3c.taskqueue INFO
+    service rootTaskService on site root started
+  z3c.taskqueue INFO
+    starting service testTaskService1
+  z3c.taskqueue INFO
+    service testTaskService1 on site site1 started
 
 To deal with a specific service in a lot of sites it possible to use
 asterisks (*) to start services. In case of using \*@service means start the
@@ -304,7 +315,7 @@ Reset the product configuration with the asterisked service names:
   >>> config.mapping['autostart'] = '*@TestTaskService1'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
-  ['*@TestTaskService1']
+  [['*', 'TestTaskService1']]
 
 ...and reset the logger:
 
@@ -323,9 +334,13 @@ And fire the event again. All services should be started now:
 Let's checkout the logging:
 
   >>> print log_info
-  lovely.remotetask INFO
-    handling event IStartRemoteTasksEvent
-  lovely.remotetask INFO
+  z3c.taskqueue INFO
+    handling event IDatabaseOpenedEvent
+  z3c.taskqueue ERROR
+    service TestTaskService1 on site root not found
+  z3c.taskqueue INFO
+    starting service testTaskService1
+  z3c.taskqueue INFO
     service TestTaskService1 on site site1 started
 
 In case of configuring a directive which does not match any service on
@@ -341,7 +356,7 @@ any site logging will show a warning message:
   >>> config.mapping['autostart'] = '*@Foo'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
-  ['*@Foo']
+  [['*', 'Foo']]
 
   >>> log_info.clear()
 
@@ -354,10 +369,15 @@ any site logging will show a warning message:
   False
 
   >>> print log_info
-  lovely.remotetask INFO
-    handling event IStartRemoteTasksEvent
-  lovely.remotetask WARNING
+  z3c.taskqueue INFO
+    handling event IDatabaseOpenedEvent
+  z3c.taskqueue ERROR
+    service Foo on site root not found
+  z3c.taskqueue ERROR
+    service Foo on site site1 not found
+  z3c.taskqueue WARNING
     no services started by directive *@Foo
+
 
 Finally stop processing and kill the thread. We'll call service.process()
 manually as we don't have the right environment in the tests.
@@ -622,13 +642,14 @@ what threads are running as a result:
 
   >>> def show_threads():
   ...     threads = [t for t in threading.enumerate()
-  ...                if t.getName().startswith('remotetasks.')]
+  ...                if t.getName().startswith(
+  ...                remotetask.TaskService.THREADNAME_PREFIX + '.')]
   ...     threads.sort(key=lambda t: t.getName())
   ...     pprint.pprint(threads)
 
   >>> show_threads()
-  [<Thread(remotetasks.rootTaskService, started daemon)>,
-   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>]
+  [<Thread(taskqueue.rootTaskService, started daemon)>,
+   <Thread(taskqueue.site1.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's add a second site containing a task service with the same name as the
 service in the first site:
@@ -664,9 +685,9 @@ threads:
 
   >>> service2.startProcessing()
   >>> show_threads()
-  [<Thread(remotetasks.rootTaskService, started daemon)>,
-   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>,
-   <Thread(remotetasks.site2.++etc++site.default.testTaskService1, started daemon)>]
+  [<Thread(taskqueue.rootTaskService, started daemon)>,
+   <Thread(taskqueue.site1.++etc++site.default.testTaskService1, started daemon)>,
+   <Thread(taskqueue.site2.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's stop the services, and give the background threads a chance to get the
 message:
