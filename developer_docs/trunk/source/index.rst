@@ -39,6 +39,7 @@ Contributing as a Non-Committer
    :maxdepth: 2
 
    reporting-bugs
+   sphinx-documentation
    noncommitter-svn
    noncommitter-bzr
 
