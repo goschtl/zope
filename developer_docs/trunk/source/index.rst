@@ -1,20 +1,26 @@
-.. Zope Developer Information documentation master file, created by sphinx-quickstart on Mon Feb 23 12:41:00 2009.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Zope Developer Information
+==========================
 
-Welcome to Zope Developer Information's documentation!
-======================================================
+Intended Audience
+-----------------
 
-Becoming a Zope Committer
--------------------------
+This guide is for developers who are working **on** the various Zope-related
+software projects, rather than for developers who work **with** those
+projects' released software to build applications.  Developers in the
+latter category should consult the relevant documentation for that software,
+e.g.:
 
-.. toctree::
-   :maxdepth: 2
+- `Zope Tookit Documentation <http://docs.zope.org/zopetoolkit/>`_
 
-   becoming-a-committer
+- `The Zope2 Book <http://docs.zope.org/zope2/zope2book/>`_
 
-Resources
-----------
+- `The Zope2 Developers' Guide <http://docs.zope.org/zope2/zdgbook/>`_
+
+- `Zope3 API Documentation <http://docs.zope.org/zope3/>`_
+
+
+Resources for Contributors
+--------------------------
 
 .. toctree::
    :maxdepth: 2
@@ -22,7 +28,7 @@ Resources
    bugtrackers
    irc-channels
    mailinglists
-
+   subversion-ui
 
 
 Zope Subversion Repository
@@ -32,16 +38,17 @@ Zope Subversion Repository
    :maxdepth: 2
 
    subversion-readonly-checkouts
-   subversion-writable-checkouts
-   subversion-ui
 
-Zope CVS Repository (obsolete)
-------------------------------
+
+Becoming a Zope Committer
+-------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   cvs
+   becoming-a-committer
+   subversion-writable-checkouts
+
 
 Repository committee operations (internal)
 ------------------------------------------
@@ -51,3 +58,11 @@ Repository committee operations (internal)
 
    new-members-procedure
 
+
+Zope CVS Repository (obsolete)
+------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   cvs
