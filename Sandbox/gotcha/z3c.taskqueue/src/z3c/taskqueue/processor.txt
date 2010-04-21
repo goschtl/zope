@@ -114,7 +114,7 @@ were all completed in the order they were defined.
   z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 2
   z3c.taskqueue INFO
@@ -122,7 +122,7 @@ were all completed in the order they were defined.
   z3c.taskqueue INFO
     Job: 4
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
 Transactions in jobs
 --------------------
@@ -241,7 +241,7 @@ all need different time to execute:
 
   >>> print log_info
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 3
   z3c.taskqueue INFO
@@ -249,7 +249,7 @@ all need different time to execute:
   z3c.taskqueue INFO
     Job: 2
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
 
 Let's now set the thread limit to two and construct a new set of tasks that
@@ -279,7 +279,7 @@ the jobs and see the result:
 
   >>> print log_info
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
@@ -289,7 +289,7 @@ the jobs and see the result:
   z3c.taskqueue INFO
     Job: 4
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
 Note: Sometimes (about 20% of the time in this test) the log will contain a
 conflict error. As long as the error is *not* produced by ``processNext()``,
