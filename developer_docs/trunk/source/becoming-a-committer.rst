@@ -48,17 +48,5 @@ that you upload as your previous upload will be overwritten.
 Subscribe to the Mailing Lists
 ------------------------------
 
-Active Zope 2 committers should subscribe to the `zope-dev mailinglist
-https://mail.zope.org/mailman/listinfo/zope-dev`_.
-
-They should also either subscribe to the `zope2-tracker notifications
-mailinglist <http://mail.zope.org/mailman/listinfo/zope2-tracker>`_. 
-(this list receives notifications from Launchpad for each updated bugtracker
-issue in the ``zope2`` project), or ask to be added to the ``zope2-dev``
-team on Launchpad.
-
-Grok committers should be subscribed to the `grok-dev mailinglist
-<https://mail.zope.org/mailman/listinfo/grok-dev>`_.
-
-Bluebream committers should be subscribed to the `bluebream mailinglist
-<https://mail.zope.org/mailman/listinfo/bluebream>`_.
+Please subscribe to the :ref:`zope-mailing-lists` which correspond to
+your area(s) of interest.
