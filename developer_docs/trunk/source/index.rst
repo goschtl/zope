@@ -19,7 +19,7 @@ Resources
 .. toctree::
    :maxdepth: 2
 
-   bugtracker
+   bugtrackers
    mailinglists
 
 
