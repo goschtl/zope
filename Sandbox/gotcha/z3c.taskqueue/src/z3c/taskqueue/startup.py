@@ -139,7 +139,7 @@ def getAllServices(site, root_folder):
 def startService(service):
     if not service.isProcessing():
         service.startProcessing()
-        return True
+        return service.isProcessing()
     else:
         return False
 
