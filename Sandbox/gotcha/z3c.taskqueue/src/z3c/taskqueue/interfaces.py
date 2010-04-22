@@ -131,6 +131,27 @@ class ITaskService(IContained):
     def processNext():
         """Process the next job in the queue."""
 
+    def process():
+        """Process all scheduled jobs.
+
+        This call blocks the thread it is running in.
+        """
+
+    def startProcessing():
+        """Start processing jobs.
+
+        This method has to be called after every server restart.
+        """
+
+    def stopProcessing():
+        """Stop processing jobs."""
+
+    def isProcessing():
+        """Check whether the jobs are being processed.
+
+        Return a boolean representing the state.
+        """
+
 
 class IJob(interface.Interface):
     """An internal job object."""
