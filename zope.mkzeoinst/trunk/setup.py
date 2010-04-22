@@ -57,7 +57,7 @@ setup(
     test_suite='zope.mkzeoinst.tests.test_suite',
     entry_points = {
         'console_scripts': [
-         'mkzeoinst = zope.mkzeoinst:main',
+         'mkzeoinstance = zope.mkzeoinst:main',
          ],
     },
 )
