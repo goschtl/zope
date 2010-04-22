@@ -10,7 +10,7 @@ users. Instead we are asked to authenticate ourselves::
   >>> print http(r'''
   ... GET /@@contents.html HTTP/1.1
   ... ''')
-  HTTP/1.1 401 Unauthorized
+  HTTP/1.0 401 Unauthorized
   ...
   WWW-Authenticate: basic realm="Zope"
   ...
@@ -24,7 +24,7 @@ This is also the case for views on the Grok application object::
   >>> print http(r'''
   ... GET /app/++etc++site HTTP/1.1
   ... ''')
-  HTTP/1.1 401 Unauthorized
+  HTTP/1.0 401 Unauthorized
   ...
   WWW-Authenticate: basic realm="Zope"
   ...
@@ -43,7 +43,7 @@ which is protected by default::
   >>> print http(r'''
   ... GET /app/@@contents.html HTTP/1.1
   ... ''')
-  HTTP/1.1 401 Unauthorized
+  HTTP/1.0 401 Unauthorized
   ...
   
 However, if we make a grant, e.g. on the root object, we can access
@@ -57,7 +57,7 @@ the view just fine:
   >>> print http(r'''
   ... GET /@@contents.html HTTP/1.1
   ... ''')
-  HTTP/1.1 200 Ok
+  HTTP/1.0 200 Ok
   ...
 
 The default view is accessible::
