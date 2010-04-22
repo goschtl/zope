@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name='zope.mkzeoinstance',
-    version='3.9.4',
+    version='3.9.5dev',
     url='http://pypi.python.org/pypi/zope.mkzeoinstance',
     license='ZPL 2.1',
     description='Make standalone ZEO database server instances',
