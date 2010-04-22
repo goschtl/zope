@@ -17,7 +17,7 @@ How-to: Branch using the Bazaar mirror
 --------------------------------------
 
 Many Zope projects have a "mirror" of the trunk of their Subversion repository
-as a Bazaar branches on Launchpad:
+as a Bazaar branch on Launchpad:
 
   https://code.launchpad.net/zopetoolkit
 
@@ -109,7 +109,7 @@ e-mailing it), you can also publish your branch to a server where it
 can be cloned over HTTP for others to use, as well as for review and
 merging by the package maintainer.
 
-Let's ssume that you have been hacking on :mod:`zope.event`, and want to
+Let's assume that you have been hacking on :mod:`zope.event`, and want to
 publish your 'dictchannel' feature branch in hopes of landing it in the next
 release.  Let's also assume that you have an account on
 `Launchpad <http://launchpad.net/>`_, and want to publish your branch there.
@@ -130,4 +130,4 @@ How-to: Request a merge
 After pushing your branch, you can include its URL in an e-mail you send
 to the maintainer, requesting a merge of your branch.  You can also link
 your branch to a Launchpad issue, as well as using Launchpad's "merge request"
-feature to alert the mainatiner(s) that your branch is ready to merge.
+feature to alert the maintainer(s) that your branch is ready to merge.
