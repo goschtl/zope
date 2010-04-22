@@ -91,7 +91,7 @@ Let's now use the processor from within the task service. Since the processor
 constructors also accept additional arguments, they are specified as well:
 
   >>> tasks.processorFactory
-  <class 'lovely.remotetask.processor.SimpleProcessor'>
+  <class 'z3c.taskqueue.processor.SimpleProcessor'>
   >>> tasks.processorArguments
   {'waitTime': 0.0}
 
@@ -113,12 +113,17 @@ were all completed in the order they were defined.
   >>> print log_info
   lovely.remotetask INFO
     Job: 1
+  z3c.taskqueue INFO
+    starting service tasks
   lovely.remotetask INFO
     Job: 2
   lovely.remotetask INFO
     Job: 3
   lovely.remotetask INFO
     Job: 4
+  z3c.taskqueue INFO
+    stopping service tasks
+
 
 Transactions in jobs
 --------------------
@@ -236,12 +241,16 @@ As you can see, this time the jobs are not completed in order, because they
 all need different time to execute:
 
   >>> print log_info
+  z3c.taskqueue INFO
+    starting service tasks
   lovely.remotetask INFO
     Job: 3
   lovely.remotetask INFO
     Job: 4
   lovely.remotetask INFO
     Job: 2
+  z3c.taskqueue INFO
+    stopping service tasks
 
 Let's now set the thread limit to two and construct a new set of tasks that
 demonstrate that not more than two threads run at the same time:
@@ -269,6 +278,8 @@ the jobs and see the result:
   >>> transaction.commit()
 
   >>> print log_info
+  z3c.taskqueue INFO
+    starting service tasks
   lovely.remotetask INFO
     Job: 1
   lovely.remotetask INFO
@@ -277,6 +288,8 @@ the jobs and see the result:
     Job: 3
   lovely.remotetask INFO
     Job: 4
+  z3c.taskqueue INFO
+    stopping service tasks
 
 Note: Sometimes (about 20% of the time in this test) the log will contain a
 conflict error. As long as the error is *not* produced by ``processNext()``,
