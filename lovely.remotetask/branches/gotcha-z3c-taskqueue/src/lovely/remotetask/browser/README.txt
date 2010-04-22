@@ -19,6 +19,7 @@ Now we add a task service:
 Now let's have a look at the job's table:
 
   >>> browser.getLink('tasks').click()
+  >>> browser.getLink('Jobs').click()
 
 You can see the available tasks:
 
@@ -150,7 +151,7 @@ every exception a traceback is written to the log.
 We modify the python logger to get the log output.
 
   >>> import logging
-  >>> logger = logging.getLogger("lovely.remotetask")
+  >>> logger = logging.getLogger("z3c.taskqueue")
   >>> logger.setLevel(logging.ERROR)
   >>> import StringIO
   >>> io = StringIO.StringIO()
@@ -183,7 +184,7 @@ alive unnecessarily.
 
   >>> import threading
   >>> for thread in threading.enumerate():
-  ...     if thread.getName().startswith('remotetasks.'):
+  ...     if thread.getName().startswith('taskqueue.'):
   ...         print thread.isDaemon()
   True
 
