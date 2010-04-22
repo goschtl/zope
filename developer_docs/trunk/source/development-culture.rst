@@ -26,7 +26,7 @@ following standards:
      $ /path/to/python setup.py test
 
 - Integation or functional tests may require a more elaborate test runner,
-  such as the one provoided by :mod:`zope.testrunner`.  Most projects have
+  such as the one provided by :mod:`zope.testrunner`.  Most projects have
   built-in support for setting up this testrunner using :mod:`zc.buildout`.
   (see :ref:`using-buildout`).
 
@@ -37,8 +37,8 @@ following standards:
 
 While some older projects may not be completely in line with this
 culture, we are committed to moving them all closer with any change.
-As a corollary:  if you are suubmitting a patch to a project in this
-repository, and you want expedite its acceptance, ensure that your patch
+As a corollary:  if you are submitting a patch to a project in this
+repository, and you want to expedite its acceptance, ensure that your patch
 maintains or improves the target project's conformance to these goals.
 
 See these other resources on coding style in Zope projects:
@@ -54,7 +54,7 @@ Layout and Conventions
 ----------------------
 
 Each project should consist of a single, top-level project folder in
-Subverion, containing three conventional folders:  ``trunk``, where the
+Subversion, containing three conventional folders:  ``trunk``, where the
 majority of development work occurs, ``tags``, containing the "pristine"
 tags made when releasing the project, and ``branches``, containing both
 "maintenance" branches where bug fixes to a released version might be
