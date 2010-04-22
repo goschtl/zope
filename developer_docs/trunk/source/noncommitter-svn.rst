@@ -55,19 +55,28 @@ For a Zope 3.4 checkout:
 How-To: Get a Read-only Checkout from a Subversion Mirror
 ---------------------------------------------------------
 
+The main Zope repository can also be checked out read-only over HTTP,
+`http://svn.zope.org/repos/main/ <http://svn.zope.org/repos/main/>`_ .  E.g.:
+
+.. code-block:: sh
+
+  $ svn co http://svn.zope.org/svn/repos/Zope2/trunk.
+
 The `Deutschsprachige Zope User Group (DZUG) <http://www.zope.de>`_ hosts
-a read-only `SVN mirror http://svn.zope.de <http://svn.zope.de>`_  that can
-be checked out over HTTP.  Using the SVN mirror over HTTP is convinient if you
-are behind a firewall which blocks the ``svnserve`` port.  To check out the
-Zope2 trunk, for instance:
+another `SVN mirror http://svn.zope.de <http://svn.zope.de>`_  that can
+be checked out over HTTP.  E.g.:
 
 .. code-block:: sh
 
   $ svn co http://svn.zope.de/Zope2/trunk.
 
-Note that some Zope modules reference to other parts of the repository
-through ``svn:externals`` using the ``svn://`` protocol. You will not be
-able to check out such modules correctly: in fact you may encounter timeouts.
+Using a SVN mirror over HTTP is convenient if you are behind a firewall which
+blocks the ``svnserve`` port.
+
+.. note::
+   Some Zope projects pull-in other parts of the repository using
+   ``svn:externals`` using the ``svn://`` protocol.  Checking out such
+   a project over HTTP is problematic:  you may even encounter timeouts.
 
 You can also browse the official SVN repository through HTTP read-only through
 `http://svn.zope.org/repos/main/ <http://svn.zope.org/repos/main/>`_ .
