@@ -21,12 +21,12 @@ projects:
 Zope 2
 ------
 
-Zope2 developers tracks bugs within Zope2 using the ``zope2`` project on
+Zope2 developers track bugs within Zope2 using the ``zope2`` project on
 Launchpad:
 
  https://bugs.launchpad.net/zope2/
 
-notifications from Launchpad for each new or updated bugtracker issue are
+Notifications from Launchpad for each new or updated bugtracker issue are
 sent to the ``zope2-tracker`` mailing list:
 
  http://mail.zope.org/mailman/listinfo/zope2-tracker
@@ -46,7 +46,7 @@ on Launchpad:
   https://bugs.launchpad.net/grok
 
 To work on bugs in the ``grok`` project, you need to be member of the
-BlueBream developer team on Launchpad.  Join the team:
+Grok developer team on Launchpad.  Join the team:
 
  https://launchpad.net/~grok-development-team
 
