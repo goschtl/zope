@@ -2,7 +2,7 @@
 ================================
 
 
-3.9.4 (unreleased)
+3.9.4 (2010-04-22)
 ------------------
 
 - Renamed the script / package ``mkzeoinstance`` to avoid clashing with the
