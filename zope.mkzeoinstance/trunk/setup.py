@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Setup for zope.mkzeoinst package
+""" Setup for zope.mkzeoinstance package
 """
 
 import os
@@ -21,9 +21,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='zope.mkzeoinst',
+    name='zope.mkzeoinstance',
     version='3.9.4',
-    url='http://pypi.python.org/pypi/zope.mkzeoinst',
+    url='http://pypi.python.org/pypi/zope.mkzeoinstance',
     license='ZPL 2.1',
     description='Make standalone ZEO database server instances',
     author='Zope Foundation and Contributors',
@@ -54,10 +54,10 @@ setup(
         'ZODB3 >= 3.9.4',
     ],
     zip_safe=False,
-    test_suite='zope.mkzeoinst.tests.test_suite',
+    test_suite='zope.mkzeoinstance.tests.test_suite',
     entry_points = {
         'console_scripts': [
-         'mkzeoinstance = zope.mkzeoinst:main',
+         'mkzeoinstance = zope.mkzeoinstance:main',
          ],
     },
 )

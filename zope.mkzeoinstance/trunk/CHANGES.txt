@@ -1,9 +1,12 @@
-``zope.mkzeoinst`` Changelog
-============================
+``zope.mkzeoinstance`` Changelog
+================================
 
 
 3.9.4 (unreleased)
 ------------------
+
+- Renamed the script / package ``mkzeoinstance`` to avoid clashing with the
+  script bundled with ZODB.
 
 - Added an option to spell the host interface to be listened on, as well as
   the port the generated ZEO server configuration.  Thanks to Igor Stroh
