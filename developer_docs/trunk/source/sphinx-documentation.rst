@@ -76,7 +76,7 @@ Most Zope projects have support for building and running their tests using
    $ bin/make-docs
 
 If the ``make-docs`` script isn't included yet, then adding it would be
-a really useful contribution.  Add a sesction like the following to the
+a really useful contribution.  Add a section like the following to the
 project's ``buildout.cfg``:
 
 .. code-block:: ini

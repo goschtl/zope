@@ -7,8 +7,8 @@ Zope projects, using a read-only checkout of the project's sources.
 
 .. _read-only-subversion-checkout:
 
-How-To:  Get a Read-only Subversion Checkouts
----------------------------------------------
+How-To:  Get a Read-only Subversion Checkout
+--------------------------------------------
 
 There are several top-level modules in the repository - chief among them
 is the Zope sources - we'll use them for our example. You can browse them
@@ -186,8 +186,8 @@ The preferred place to submit patches is to the project's Launchpad bugtracker
 You will need to register for a Launchpad account, but you should then be
 able to create a new issue and upload your patch file to it. 
 
-Good titles, descriptions, and other metdata on the issue
+Good titles, descriptions, and other metadata on the issue
 should help it get the attention of the right maintainer for the project:
 if you don't hear back fairly quickly, try asking on the appropriate IRC
 channel for your project (see :doc:`irc-channels`), or follow up to the
-project developers' maininglist (see :doc:`mailinglists`).
+project developers' mailinglist (see :doc:`mailinglists`).
