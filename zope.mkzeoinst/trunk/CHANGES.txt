@@ -1,0 +1,9 @@
+``zope.mkzeoinst`` Changelog
+============================
+
+
+3.9.4 (unreleased)
+------------------
+
+- Forked from the version of the ``mkzeoinst`` script contained in
+  ZODB 3.9.4.
