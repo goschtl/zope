@@ -10,7 +10,7 @@ projects' released software to build applications.  Developers in the
 latter category should consult the relevant documentation for that software,
 e.g.:
 
-- `Zope Tookit Documentation <http://docs.zope.org/zopetoolkit/>`_
+- `Zope Toolkit Documentation <http://docs.zope.org/zopetoolkit/>`_
 
 - `The Zope2 Book <http://docs.zope.org/zope2/zope2book/>`_
 
