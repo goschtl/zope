@@ -4,7 +4,10 @@
 3.9.5 (unreleased)
 ------------------
 
-- TBD
+- Place the socket used by the ``zeoctl`` control process to conmmunicate
+  with its ``runzeo`` daemaon in ``$INSTANCE_HOME/var``, instead of
+  ``$INSTANCE_HOME/etc`` (which would idealy not be writable by the process).
+  See: https://bugs.launchpad.net/zope.mkzeoinstance/+bug/175981
 
 
 3.9.4 (2010-04-22)

@@ -64,7 +64,7 @@ zeo_conf_template = """\
 
 <runner>
   program $INSTANCE/bin/runzeo
-  socket-name $INSTANCE/etc/%(package)s.zdsock
+  socket-name $INSTANCE/var/%(package)s.zdsock
   daemon true
   forever false
   backoff-limit 10
