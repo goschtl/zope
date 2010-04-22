@@ -33,6 +33,8 @@ from z3c.taskqueue import processor
 
 log = logging.getLogger('z3c.taskqueue')
 
+storage = threading.local()
+
 
 class BaseTaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
@@ -197,6 +199,9 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
                 job.status = interfaces.ERROR
             return True
         job.started = datetime.datetime.now()
+        if not hasattr(storage, 'runCount'):
+            storage.runCount = 0
+        storage.runCount += 1
         try:
             job.output = jobtask(self, job.id, job.input)
             if job.status != interfaces.CRONJOB:
@@ -206,9 +211,15 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
             if job.status != interfaces.CRONJOB:
                 job.status = interfaces.ERROR
         except Exception, error:
-            job.error = error
-            if job.status != interfaces.CRONJOB:
-                job.status = interfaces.ERROR
+            if storage.runCount <= 3:
+                log.error('Caught a generic exception, preventing thread '
+                          'from crashing')
+                log.exception(str(error))
+                raise
+            else:
+                job.error = error
+                if job.status != interfaces.CRONJOB:
+                    job.status = interfaces.ERROR
         job.completed = datetime.datetime.now()
         return True
 
