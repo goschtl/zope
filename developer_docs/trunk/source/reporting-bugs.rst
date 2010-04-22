@@ -34,3 +34,24 @@ In order of increasing helpfulness:
 - Unit tests which fail against the current code
 
 - Changes to non-test code, which pass against those tests.
+
+
+Bug Triage and Workflow
+-----------------------
+
+- Assigning bugs
+
+- Prioritization
+
+  * Bugs with patches jump the queue
+
+- Semantics of status values
+
+  * 'wontfix' vs. 'incomplete'
+
+- Bugs affecting more than one project
+
+  * Status may differ.
+
+  * Track bug in the project whose *release* will resolve it,
+    not in dependent projects (these should be "wontfix").
