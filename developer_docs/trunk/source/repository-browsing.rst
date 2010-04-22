@@ -2,14 +2,17 @@ Browsing the Repository
 =======================
 
 
-Subversion Web Interface
-------------------------
+Subversion Web Interfaces
+-------------------------
 
 The main Subversion Repository provides a
 `web interface <http://svn.zope.org>`_ allowing developers to browse the
 repository.  This interface uses the `ViewCVS software
 <http://viewcvs.sourceforge.net/>`_;  please consult the documentation there
 for using its features.
+
+The `Programmers of Vilnius <http://pov.lt>` team maintains a `Trac-based
+repository browser <http://zope3.pov.lt/trac/browser>`_.
 
 
 Bazaar Branches
