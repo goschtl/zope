@@ -1,3 +1,5 @@
+.. _subversion-writable-checkout:
+
 Writable checkouts
 ------------------
 
