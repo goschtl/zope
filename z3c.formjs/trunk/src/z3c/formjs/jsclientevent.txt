@@ -1,10 +1,10 @@
 ========================================
-Propogating Events from Server to Client
+Propagating Events from Server to Client
 ========================================
 
 The ``jsclientevent`` module of this package provides an extremely minimal
 event framework whereby events that occur on the server, such as
-``IObjectModifiedEvent``s, propagate to a client's browser through
+``IObjectModifiedEvent``, propagate to a client's browser through
 injected JavaScript code.  This is not to be confused with "action
 events" that occur on the client such as "onClick".
 
