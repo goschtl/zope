@@ -18,7 +18,7 @@ Logs for the channel are available: http://zope3.pov.lt/irclogs-zope/
 ---------------------------------------------
 
 This channel serves the Zope3 and ZTK developers.  Some people prefer it
-over #zope since it's free of legacy Zope2 issues that sometimes muddle
+over `#zope` since it's free of legacy Zope2 issues that sometimes muddle
 things up.
 
 Logs for the channel are available: http://zope3.pov.lt/irclogs/
@@ -27,8 +27,9 @@ Logs for the channel are available: http://zope3.pov.lt/irclogs/
 `#grok <irc://freenode.net/#grok>`_
 ------------------------------------
 
-This channel serves the Grok developers.  Logs for the channel are
-available: http://jw.n--tree.net/irclogs/grok
+This channel serves the Grok developers.
+
+Logs for the channel are available: http://jw.n--tree.net/irclogs/grok
 
 
 `#bluebream <irc://freenode.net/#bluebream>`_
