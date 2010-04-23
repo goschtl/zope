@@ -111,13 +111,13 @@ Write an interface for the layer that inherits the minimal layer::
 
 
 Change all page, viewletmanager, and viewlet directives to specify
-this layer:
+this layer::
 
   layer=".interfaces.IHelloWorldLayer"
 
-Once you changed those registrations, the helloworld.html page is not
-available anymore in the core skins.  The templates by themselves do
-not matter.
+Once you changed those registrations, the `helloworld.html` page will
+not be available anymore in the core skins.  The templates by themselves
+do not matter.
 
 
 Using layer
@@ -196,7 +196,7 @@ Access it via: http://localhost:8080/++skin++BasicSkin
 
 Hide skin traversal step by using Apache's Virtual Hosting feature
 
-To change the default skin to something else use:
+To change the default skin to something else use::
 
   <browser:defaultSkin name="BasicSkin" />
 
