@@ -7,7 +7,8 @@ How-to:  Get a read-only CVS checkout
 
    This document is only of importance if you are interested for checking
    out older Zope 2 versions (before Zope 2.8). The current codebase
-   is now maintained in our Subversion repository
+   is now maintained in the Subversion repository (see
+   :ref:`read-only-subversion-checkout`).
   
 Anyone can track Zope changes with a read-only checkout of the sources - here
 are instructions for hooking it up.
