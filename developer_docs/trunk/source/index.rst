@@ -19,6 +19,26 @@ e.g.:
 - `Zope3 API Documentation <http://docs.zope.org/zope3/>`_
 
 
+Contributor Roles
+-----------------
+
+There are many different ways you might contribute to a Zope-related
+project.  This guide tries to allow for different levels of participation
+in such projects.  For instance:
+
+- Susan might find a bug in the project while using the project's
+  software in her own application.
+
+- Later, she might volunteer to help triage and fix bugs during a bugday.
+
+- She might attend a sprint to work on an important new feature in the
+  project with other volunteers.
+
+- Eventually, Susan might volunteer to assume responsibility with other
+  team members for the ongoing maintenance and release management of the
+  project.
+
+
 Resources for Contributors
 --------------------------
 
