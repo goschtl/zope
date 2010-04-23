@@ -234,6 +234,10 @@ Content Object
 
 Content obejcts are objects with a user visisble view. 
 
+If an **interface** provides ``zope.app.content.interfaces.IContentType``
+interface type, then all objects providing the **interface** are considered
+content objects.
+
 Container
 ~~~~~~~~~
 
