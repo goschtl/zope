@@ -1,27 +1,27 @@
-.. _zope-bugtrackers:
+.. _zope-bug-trackers:
 
-Bugtrackers for Zope-related Projects
-=====================================
+Bug Trackers for Zope-related Projects
+======================================
 
 The Zope developer community uses the
-`Launchpad platform <http://launchpad.net>`_ for managing bugreports.
+`Launchpad platform <http://launchpad.net>`_ for managing bug reports.
 
 
-.. _ztk-bugtracker:
+.. _ztk-bug-tracker:
 
 Zope Toolkit
 ------------
 
 The `zopetoolkit project group on Launchpad
 <https://launchpad.net/zopetoolkit>`_ is an "umbrella" for the various
-ZTK projects, each of which has its own bugtracker (see the project links
+ZTK projects, each of which has its own bug tracker (see the project links
 on that page).  You can see an overview of bugs across all ``zopetoolkit``
 projects:
 
  https://bugs.launchpad.net/zopetoolkit
 
 
-.. _zope2-bugtracker:
+.. _zope2-bug-tracker:
 
 Zope2
 -----
@@ -31,7 +31,7 @@ Launchpad:
 
  https://bugs.launchpad.net/zope2/
 
-Notifications from Launchpad for each new or updated bugtracker issue are
+Notifications from Launchpad for each new or updated issue are
 sent to the ``zope2-tracker`` mailing list:
 
  http://mail.zope.org/mailman/listinfo/zope2-tracker
@@ -42,7 +42,7 @@ Zope 2 developer team on Launchpad.  Join the team:
  https://launchpad.net/~zope2-dev
 
 
-.. _grok-bugtracker:
+.. _grok-bug-tracker:
 
 Grok
 ----
@@ -58,7 +58,7 @@ Grok developer team on Launchpad.  Join the team:
  https://launchpad.net/~grok-development-team
 
 
-.. _bluebream-bugtracker:
+.. _bluebream-bug-tracker:
 
 BlueBream
 ---------
@@ -74,7 +74,7 @@ BlueBream developer team on Launchpad.  Join the team:
  https://launchpad.net/~bluebream
 
 
-.. _zope3-bugtracker:
+.. _zope3-bug-tracker:
 
 Zope 3
 ++++++

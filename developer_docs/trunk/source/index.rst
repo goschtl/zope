@@ -46,9 +46,9 @@ Resources for Contributors
    :maxdepth: 2
 
    repository-browsing
-   bugtrackers
+   bug-trackers
    irc-channels
-   mailinglists
+   mailing-lists
    development-culture
 
 

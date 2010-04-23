@@ -181,8 +181,8 @@ And then send or upload that file as an attachment:  mailers and web-browsers
 are nearly as good at leaving attachments alone as they are at destroying
 sensitive inline text!
 
-The preferred place to submit patches is to the project's Launchpad bugtracker
-(see :ref:`zope-bugtrackers` for how to find your projects tracker).
+The preferred place to submit patches is to the project's Launchpad bug
+tracker (see :ref:`zope-bug-trackers` for how to find your project's tracker).
 You will need to register for a Launchpad account, but you should then be
 able to create a new issue and upload your patch file to it. 
 
@@ -190,4 +190,4 @@ Good titles, descriptions, and other metadata on the issue
 should help it get the attention of the right maintainer for the project:
 if you don't hear back fairly quickly, try asking on the appropriate IRC
 channel for your project (see :doc:`irc-channels`), or follow up to the
-project developers' mailinglist (see :doc:`mailinglists`).
+project developers' mailing list (see :doc:`mailing-lists`).
