@@ -1,10 +1,13 @@
 .. _zope-bugtrackers:
 
-The Zope Bugtrackers
-====================
+Bugtrackers for Zope-related Projects
+=====================================
 
-The Zope project uses the `Launchpad platform <http://launchpad.net>`_
-for managing bugreports.
+The Zope developer community uses the
+`Launchpad platform <http://launchpad.net>`_ for managing bugreports.
+
+
+.. _ztk-bugtracker:
 
 Zope Toolkit
 ------------
@@ -15,11 +18,13 @@ ZTK projects, each of which has its own bugtracker (see the project links
 on that page).  You can see an overview of bugs across all ``zopetoolkit``
 projects:
 
-  https://bugs.launchpad.net/zopetoolkit
+ https://bugs.launchpad.net/zopetoolkit
 
 
-Zope 2
-------
+.. _zope2-bugtracker:
+
+Zope2
+-----
 
 Zope2 developers track bugs within Zope2 using the ``zope2`` project on
 Launchpad:
@@ -37,13 +42,15 @@ Zope 2 developer team on Launchpad.  Join the team:
  https://launchpad.net/~zope2-dev
 
 
+.. _grok-bugtracker:
+
 Grok
 ----
 
 The Grok developers track their bugs using the ``grok`` project
 on Launchpad:
 
-  https://bugs.launchpad.net/grok
+ https://bugs.launchpad.net/grok
 
 To work on bugs in the ``grok`` project, you need to be member of the
 Grok developer team on Launchpad.  Join the team:
@@ -51,19 +58,23 @@ Grok developer team on Launchpad.  Join the team:
  https://launchpad.net/~grok-development-team
 
 
+.. _bluebream-bugtracker:
+
 BlueBream
 ---------
 
 The BlueBream developers track their bugs using the ``bluebream`` project
 on Launchpad:
 
-  https://bugs.launchpad.net/bluebream
+ https://bugs.launchpad.net/bluebream
 
 To work on bugs in the ``bluebream`` project, you need to be member of the
 BlueBream developer team on Launchpad.  Join the team:
 
  https://launchpad.net/~bluebream
 
+
+.. _zope3-bugtracker:
 
 Zope 3
 ++++++
@@ -73,6 +84,6 @@ Zope3 bugs are tracked within the ``zope3`` project on Launchpad:
  https://bugs.launchpad.net/zope3
 
 .. note:
-   Most effort in this project these days is devoted to migrating
+   Most effort in this project days is now devoted to migrating
    the bugs to other, active projects (``zope2``, ``bluebream``, ``grok``,
    or one of the ``zopetoolkit`` projects).
