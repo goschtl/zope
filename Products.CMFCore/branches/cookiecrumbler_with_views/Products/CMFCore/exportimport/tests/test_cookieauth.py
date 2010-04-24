@@ -35,9 +35,6 @@ _COOKIECRUMBLER_BODY = """\
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
  <property name="persist_cookie">__ac_persistent</property>
- <property name="auto_login_page">login_form</property>
- <property name="logout_page">logged_out</property>
- <property name="unauth_page"></property>
  <property name="local_cookie_path">False</property>
  <property name="cache_header_value">private</property>
  <property name="log_username">True</property>
@@ -51,9 +48,6 @@ _DEFAULT_EXPORT = """\
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
  <property name="persist_cookie">__ac_persistent</property>
- <property name="auto_login_page">login_form</property>
- <property name="logout_page">logged_out</property>
- <property name="unauth_page"></property>
  <property name="local_cookie_path">False</property>
  <property name="cache_header_value">private</property>
  <property name="log_username">True</property>
@@ -67,9 +61,6 @@ _CHANGED_EXPORT = """\
  <property name="name_cookie">value3</property>
  <property name="pw_cookie">value5</property>
  <property name="persist_cookie">value4</property>
- <property name="auto_login_page">value6</property>
- <property name="logout_page">value8</property>
- <property name="unauth_page">value7</property>
  <property name="local_cookie_path">True</property>
  <property name="cache_header_value">value2</property>
  <property name="log_username">False</property>
@@ -107,9 +98,6 @@ class _CookieCrumblerSetup(BaseRegistryTests):
             cc.persist_cookie = 'value4'
             cc.pw_cookie = 'value5'
             cc.local_cookie_path = 1
-            cc.auto_login_page = 'value6'
-            cc.unauth_page = 'value7'
-            cc.logout_page = 'value8'
 
         return site
 
@@ -169,9 +157,6 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual( cc.persist_cookie, 'value4' )
         self.assertEqual( cc.pw_cookie, 'value5' )
         self.assertEqual( cc.local_cookie_path, 1 )
-        self.assertEqual( cc.auto_login_page, 'value6' )
-        self.assertEqual( cc.unauth_page, 'value7' )
-        self.assertEqual( cc.logout_page, 'value8' )
 
 
 def test_suite():
