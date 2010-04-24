@@ -5,7 +5,7 @@ CHANGES
 3.12.3 (unreleased)
 ===================
 
-- ...
+- Improve truth testing for ItemDisplayWidget [LP:159232]
 
 3.12.2 (2010-02-21)
 ===================
