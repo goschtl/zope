@@ -121,9 +121,9 @@ methods for the requested resource::
 
   >>> print http('POST /++rest++b/app HTTP/1.1')
   HTTP/1.0 405 Method Not Allowed
-  Allow: GET, PUT
   Content-Length: 18
   Content-Type: text/plain
+  Allow: GET, PUT
   <BLANKLINE>
   Method Not Allowed
 
