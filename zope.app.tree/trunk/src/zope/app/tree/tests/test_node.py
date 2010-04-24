@@ -21,6 +21,7 @@ from zope.interface import implements
 from zope.container.interfaces import IObjectFindFilter
 from zope.app.tree.node import Node
 
+
 class FilterByObject(object):
     """Simple filter that filters out any objects that wasn't passed
     in as a valid object before
@@ -32,6 +33,7 @@ class FilterByObject(object):
 
     def match(self, obj):
         return obj in self.objects
+
 
 class NodeTestCase(BaseTestCase):
 
@@ -56,14 +58,14 @@ class NodeTestCase(BaseTestCase):
         # test hasChildren()
         root_node = self.root_node
         self.failUnless(root_node.hasChildren())
-        
+
         # test getChildNodes()
         children = [node.context for node in root_node.getChildNodes()]
         expected = [self.items['b'], self.items['c']]
         self.assertEqual(children, expected)
 
         # test with filter
-        expand_all = self.items.keys() # expand all nodes
+        expand_all = self.items.keys()  # expand all nodes
         # emulate node expansion with the FilterByObject filter
         filter = FilterByObject([self.items[id] for id in self.expanded_nodes])
         filtered_root = Node(self.root_obj, expand_all, filter)
@@ -105,8 +107,6 @@ class NodeTestCase(BaseTestCase):
         root_node = Node(self.root_obj, expanded)
         flat, maxdepth = root_node.getFlatDicts()
 
+
 def test_suite():
     return unittest.makeSuite(NodeTestCase)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
