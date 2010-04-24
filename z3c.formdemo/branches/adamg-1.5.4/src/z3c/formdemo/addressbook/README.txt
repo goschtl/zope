@@ -17,6 +17,8 @@ screen:
 Since all demos are purely public, there is no need to log in. Let's now click
 on the "Address Book" link:
 
+  >>> user.handleErrors = False
+
   >>> user.getLink('Address Book').click()
 
 There is only one screen for this demo. In it you see the table of all
