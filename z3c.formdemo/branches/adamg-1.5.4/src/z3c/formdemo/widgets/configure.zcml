@@ -4,6 +4,13 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="z3c.formdemo">
 
+<class class=".browser.AllFields">
+    <require permission="zope.Public"
+             interface=".interfaces.IAllFields" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IAllFields" />
+</class>
+
   <browser:resource
       name="pressme.png"
       file="pressme.png"
@@ -20,6 +27,7 @@
 
   <adapter
       factory=".browser.getAllFields"
+      trusted="yes"
       />
 
 </configure>

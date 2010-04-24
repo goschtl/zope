@@ -64,9 +64,10 @@
   <grantAll role="zope.Anonymous" />
 
   <class class="zope.app.folder.folder.Folder">
+  <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <require permission="zope.Public"
-             interface="zope.app.container.interfaces.IReadContainer" />
+             interface="zope.app.folder.interfaces.IFolder" />
     <require permission="zope.Public"
-             interface="zope.app.container.interfaces.IWriteContainer" />
+             set_schema="zope.app.folder.interfaces.IFolder" />
     </class>
 </configure>

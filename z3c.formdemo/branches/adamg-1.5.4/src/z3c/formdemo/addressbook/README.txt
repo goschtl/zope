@@ -17,8 +17,6 @@ screen:
 Since all demos are purely public, there is no need to log in. Let's now click
 on the "Address Book" link:
 
-  >>> user.handleErrors = False
-
   >>> user.getLink('Address Book').click()
 
 There is only one screen for this demo. In it you see the table of all
@@ -101,6 +99,9 @@ The new contact appears now in the contact list:
   </tr>
 
 By clicking on the name, the edit form for Stephan is shown:
+
+  >>> user.handleErrors = False
+  >>> print user.contents
 
   >>> user.getLink('Richter').click()
 

@@ -1,7 +1,16 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="z3c.formdemo">
+
+  <!-- security declaration -->
+  <zope:class class=".content.Candidate">
+    <zope:require permission="zope.Public"
+             interface=".content.ICandidate" />
+    <zope:require permission="zope.Public"
+             set_schema=".content.ICandidate" />
+  </zope:class>
 
   <!-- Resources -->
 

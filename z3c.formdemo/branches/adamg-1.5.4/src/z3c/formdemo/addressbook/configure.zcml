@@ -6,10 +6,24 @@
 
   <!-- Content Security Declarations -->
 
+  <class class="zope.app.container.btree.BTreeContainer">
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IContainer" />
+    <require permission="zope.Public"
+             set_schema="zope.app.container.interfaces.IContainer" />
+  </class>
+
   <class class=".contact.Address">
     <allow interface=".interfaces.IAddress" />
     <require permission="zope.Public"
              set_schema=".interfaces.IAddress" />
+  </class>
+
+  <class class=".contact.EMails">
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IContainer" />
+    <require permission="zope.Public"
+             set_schema="zope.app.container.interfaces.IContainer" />
   </class>
 
   <class class=".contact.EMail">
