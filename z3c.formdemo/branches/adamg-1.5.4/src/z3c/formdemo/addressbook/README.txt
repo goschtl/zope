@@ -100,9 +100,6 @@ The new contact appears now in the contact list:
 
 By clicking on the name, the edit form for Stephan is shown:
 
-  >>> user.handleErrors = False
-  >>> print user.contents
-
   >>> user.getLink('Richter').click()
 
 Note that the row is highlighted now:
