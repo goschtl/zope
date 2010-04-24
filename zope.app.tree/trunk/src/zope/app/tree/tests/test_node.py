@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from basetest import BaseTestCase
+from zope.app.tree.tests.basetest import BaseTestCase
 from zope.interface import implements
 from zope.container.interfaces import IObjectFindFilter
 from zope.app.tree.node import Node
@@ -28,10 +28,18 @@ class FilterByObject(object):
     """
     implements(IObjectFindFilter)
 
-    def __init__(self, *objects):
-        self.objects = objects
+    def __init__(self, *tree):
+        # Flatten recursive list
+        self.objects = []
+        tree = list(tree)
+        while tree:
+            candidate = tree.pop()
+            if isinstance(candidate, list):
+                tree.extend(candidate)
+            else:
+                self.objects.append(candidate)
 
-    def match(self, obj):
+    def matches(self, obj):
         return obj in self.objects
 
 
@@ -69,8 +77,8 @@ class NodeTestCase(BaseTestCase):
         # emulate node expansion with the FilterByObject filter
         filter = FilterByObject([self.items[id] for id in self.expanded_nodes])
         filtered_root = Node(self.root_obj, expand_all, filter)
-        children = [node.context for node in root_node.getChildNodes()]
-        expected = [self.items['b'], self.items['c']]
+        children = [node.context for node in filtered_root.getChildNodes()]
+        expected = [self.items['c']]
         self.assertEqual(children, expected)
 
     def test_flat(self):

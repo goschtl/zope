@@ -5,6 +5,8 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Fix #264614: Test for node filter didn't do what it was expected to do.
+
 - Import ISite from zope.component after it was moved there from
   zope.location.
 
