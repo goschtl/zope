@@ -283,25 +283,13 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         method( resp, self.auth_cookie, quote( ac ) )
 
     security.declarePublic('logout')
-    def logout(self):
-        '''
-        Logs out the user and redirects to the logout page.
-        '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
-        req = self.REQUEST
-        resp = req['RESPONSE']
-        method = self.getCookieMethod( 'expireAuthCookie'
-                                     , self.defaultExpireAuthCookie )
-        method( resp, cookie_name=self.auth_cookie )
-        if self.logout_page:
-            page = self.restrictedTraverse(self.logout_page, None)
-            if page is not None:
-                resp.redirect('%s?disable_cookie_login__=1'
-                              % page.absolute_url())
-                return ''
-        # We should not normally get here.
-        return 'Logged out.'
+    def logout(self, response=None):
+        """
+        Logs out the user
+        """
+        if response is None:
+            req = self.REQUEST['RESPONSE']
+        self.defaultExpireAuthCookie(response, cookie_name=self.auth_cookie)
 
     security.declarePublic('propertyLabel')
     def propertyLabel(self, id):

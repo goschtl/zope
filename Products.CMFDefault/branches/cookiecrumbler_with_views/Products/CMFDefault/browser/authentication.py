@@ -37,6 +37,7 @@ from Products.CMFCore.CookieCrumbler import ATTEMPT_NONE
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.formlib.form import EditFormBase
 from Products.CMFDefault.utils import Message as _
+from Products.CMFDefault.browser.utils import ViewBase, memoize
 
 
 class UnauthorizedView(BrowserView):
@@ -228,3 +229,31 @@ class MailPasswordFormView(EditFormBase):
         rtool.mailPassword(data['name'], self.request)
         self.status = _(u'Your password has been mailed to you.')
         return self._setRedirect('portal_actions', 'user/login')
+
+
+class Logout(ViewBase):
+    """Log the user out"""
+    
+    @memoize
+    def logged_in(self):
+        """Check whether the user is (still logged in)"""
+        mtool = self._getTool('portal_membership')
+        return mtool.isAnonymousUser()
+        
+    @memoize
+    def logout(self):
+        """Log the user out"""
+        cctool = self._getTool('cookie_authentication')
+        cctool.logout(self.request.response)
+    
+    @memoize    
+    def clear_skin_cookie(self):
+        """Remove skin cookie"""
+        stool = self._getTool('portal_skins')
+        stool.clearSkinCookie()
+    
+    def __call__(self):
+        """Clear cookies and return the template"""
+        self.clear_skin_cookie()
+        self.logout()
+        return super(Logout, self).__call__()

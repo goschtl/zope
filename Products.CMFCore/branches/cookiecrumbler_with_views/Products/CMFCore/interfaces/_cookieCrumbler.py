@@ -60,3 +60,6 @@ class ICookieCrumbler(Interface):
     def propertyLabel(id):
         """Return a label for the given property id
         """
+        
+    def logout(response):
+        """Log the user out"""

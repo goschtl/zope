@@ -368,26 +368,6 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         bt_removed = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_removed.items()), 0)
 
-    # def test_url_from_script(self):
-    #     """Check the right URL to redirect to is returned"""
-    #     from zope.component import getSiteManager, getUtility
-    #     from Products.CMFCore.tests.base.dummy import \
-    #                 DummySite, DummyTool, DummyObject
-    #     root, cc, req, credentials = self._makeSite()
-    #     root = DummySite("Dummy Portal")
-    #     from Products.CMFCore.URLTool import URLTool
-    #     from Products.CMFCore.interfaces import IURLTool
-    #     sm = getSiteManager()
-    #     utool = URLTool()
-    #     sm.registerUtility(utool, IURLTool)
-    #     root._setObject('portal_url', utool)
-    #     from Products.CMFCore import utils
-    #     utool = utils.getToolByName(cc, 'portal_url')
-    #     login = root._getOb('login_form')
-    #     # print login.absolute_url()
-    #     self.assertEqual(login.absolute_url(),
-    #                      cc.view_or_script('login_form'))
-        
 
 def test_suite():
     return unittest.TestSuite((
