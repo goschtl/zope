@@ -1,0 +1,8 @@
+<h1>
+  A <span tal:replace="structure view/widgets/what/render" /> Hello World
+  from <span tal:replace="structure view/widgets/who/render" />
+  on <span tal:replace="structure view/widgets/when/render" />!
+</h1>
+<a href="./edit.html"
+   tal:attributes="href string:${context/@@absolute_url}/edit.html">
+  Edit Message</a>

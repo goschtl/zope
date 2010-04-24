@@ -1,0 +1,115 @@
+/* zrt-replace: "images/" tal"string:${context/++resource++WizardImages}/" */
+
+/* [ layout ]--------------------------------------------------------------- */
+
+body {
+  background: #EEE;
+}
+
+div.wizard {
+  width: 600px;
+  font-family: Verdana, Arial, sans-serif;
+  background: white;
+  padding: 20px;
+}
+
+div.header {
+  background-color: #F9CA0B;
+  margin: 0;
+  padding: 10px;
+}
+
+div.header h1 {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+/* [ breadcrumbs ]---------------------------------------------------------- */
+
+table.breadcrumbs {
+  margin: 10px 0;
+  width: 100%;
+}
+
+table.breadcrumbs td div {
+  height: 25px;
+  width: 25px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  padding-top: 3px;
+  padding-left: 9px;
+}
+
+table.breadcrumbs td.active div {
+  background-image: url("images/breadcrumb_active.jpg");
+  color: #F9CA0B;
+}
+
+table.breadcrumbs td.inactive div {
+  background-image: url("images/breadcrumb.jpg");
+  color: white;
+}
+
+table.breadcrumbs td.inactive a {
+  color: inherit;
+}
+
+/* [ step ]----------------------------------------------------------------- */
+
+fieldset.step {
+  border: 1px solid #F9CA0B;
+  margin: 0;
+  padding: 10px 10px 5px 10px;
+}
+
+fieldset.step legend {
+  border: 1px solid #F9CA0B;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-variant: small-caps;
+}
+
+
+/* [ buttons ]-------------------------------------------------------------- */
+
+div.buttons {
+  height: 15px;
+  margin: 10px 0px 0px 0px;
+  padding: 0;
+}
+
+span.forward {
+  float: right;
+}
+
+span.forward input[type="submit"] {
+    cursor: pointer;
+    border: 0;
+    color: #000000;
+    background-color: #F9CA0B;
+    background-image: url("images/buttonRightBG.gif");
+    background-repeat: no-repeat;
+    background-position: right;
+    border: 1px solid #A28204;
+    padding: 1px 15px 1px 2px;
+}
+
+span.back {
+  float: left;
+}
+
+span.back input[type="submit"] {
+    cursor: pointer;
+    border: 0;
+    color: #000000;
+    background-color: #F9CA0B;
+    background-image: url("images/buttonLeftBG.gif");
+    background-repeat: no-repeat;
+    background-position: left;
+    border: 1px solid #A28204;
+    padding: 1px 2px 1px 15px;
+}
