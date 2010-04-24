@@ -62,4 +62,11 @@
 
   <role id="zope.Anonymous" title="Everybody" />
   <grantAll role="zope.Anonymous" />
+
+  <class class="zope.app.folder.folder.Folder">
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IReadContainer" />
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IWriteContainer" />
+    </class>
 </configure>
