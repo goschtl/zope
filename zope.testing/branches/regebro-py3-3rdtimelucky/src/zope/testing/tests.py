@@ -43,5 +43,4 @@ def test_suite():
                 (re.compile('No module named zope.testing.unlikelymodulename'),
                  'No module named unlikelymodulename')])),
         doctest.DocFileSuite('setupstack.txt'),
-        doctest.DocTestSuite(doctest, optionflags=doctest.INTERPRET_FOOTNOTES),
         ))

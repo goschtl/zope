@@ -21,7 +21,8 @@ some of the test files broken:
 Let's now run it as a doctest:
 
   >>> from zope.testing import doctest
-  >>> doctest.testfile(fn, False)
+  >>> a, b = doctest.testfile(fn, False) # doctest 2.6 and later uses a named tuple here.
+  >>> a, b
   (0, 1)
 
 It worked. Let's also try the test file suite:
