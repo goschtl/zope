@@ -2,7 +2,6 @@
 develop = .
 extends = versions.cfg
 parts = app
-        zope_conf
         test 
 
 [app]
