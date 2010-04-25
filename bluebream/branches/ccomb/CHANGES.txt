@@ -15,6 +15,9 @@ Changelog
 
 - Added zope.app.schema registrations to be able to register a named vocabulary
 
+- removed buildout templating and include two zope.conf files,
+  one for deployment and one for debugging with devmode
+
 1.0a5 (2010-03-28)
 ------------------
 
