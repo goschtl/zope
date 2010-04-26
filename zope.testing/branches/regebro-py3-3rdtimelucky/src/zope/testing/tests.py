@@ -14,6 +14,7 @@
 $Id$
 """
 
+import sys
 import re
 import unittest
 import warnings
@@ -27,7 +28,7 @@ from zope.testing import doctest
 
 
 def test_suite():
-    return unittest.TestSuite((
+    suite = unittest.TestSuite((
         doctest.DocTestSuite('zope.testing.loggingsupport'),
         doctest.DocTestSuite('zope.testing.renormalizing'),
         doctest.DocTestSuite('zope.testing.server'),
@@ -44,3 +45,7 @@ def test_suite():
                  'No module named unlikelymodulename')])),
         doctest.DocFileSuite('setupstack.txt'),
         ))
+
+    if sys.version < '3':
+        suite.addTests(doctest.DocFileSuite('unicode.txt'))
+    return suite
