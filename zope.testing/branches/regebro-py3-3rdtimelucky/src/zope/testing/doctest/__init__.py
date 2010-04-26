@@ -56,6 +56,7 @@ warnings.warn('zope.testing.doctest is deprecated in favour of '
 # Patch to fix an error that makes subsequent tests fail after you have
 # returned unicode in a test. This is obviously not an issue in Python 3.
 
+# Reported as #8471: http://bugs.python.org/issue8471
 import doctest
 
 if sys.version < '3':
@@ -69,7 +70,28 @@ if sys.version < '3':
     doctest._SpoofOut = _patched_SpoofOut
 
 
+# Patching a unicode error that has been fixed in Python 2.6.5:
+import sys
+if sys.version < '2.6.5':    
+    import re
+    doctest._encoding = getattr(sys.__stdout__, 'encoding', None) or 'utf-8'
+    
+    def _indent(s, indent=4):
+        """
+        Add the given number of space characters to the beginning of
+        every non-blank line in `s`, and return the result.
+        If the string `s` is Unicode, it is encoded using the stdout
+        encoding and the `backslashreplace` error handler.
+        """
+        if isinstance(s, unicode):
+            s = s.encode(doctest._encoding, 'backslashreplace')
+        # This regexp matches the start of non-blank lines:
+        return re.sub('(?m)^(?!$)', indent*' ', s)
+    
+    doctest._indent = _indent
+
 # Patch to fix tests that has mixed line endings:
+# Reported as #8473: http://bugs.python.org/issue8473
 import os
 
 if sys.version < '2.5':
@@ -165,12 +187,13 @@ else:
     
     doctest._load_testfile = _patched_load_testfile
 
-# Use a special exception for the test runner:
+# Use a special exception for the test runner.
 from zope.testing.exceptions import DocTestFailureException
 doctest.DocTestCase.failureException = DocTestFailureException
 
 
-# Patch to let the doctest have the globals of the testcase
+# Patch to let the doctest have the globals of the testcase. This is slightly
+# evil, but Zopes doctests did this, and if we change it everything breaks.
 import unittest
 
 def _patched_init(self, test, optionflags=0, setUp=None, tearDown=None,
