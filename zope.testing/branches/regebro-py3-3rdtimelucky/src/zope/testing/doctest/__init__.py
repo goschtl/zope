@@ -187,10 +187,6 @@ else:
     
     doctest._load_testfile = _patched_load_testfile
 
-# Use a special exception for the test runner.
-from zope.testing.exceptions import DocTestFailureException
-doctest.DocTestCase.failureException = DocTestFailureException
-
 
 # Patch to let the doctest have the globals of the testcase. This is slightly
 # evil, but Zopes doctests did this, and if we change it everything breaks.
