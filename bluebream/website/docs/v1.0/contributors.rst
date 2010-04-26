@@ -22,8 +22,6 @@ committed to documentation directly.
 - Michael Haubenwallner (d2m)
 - Chris McDonough (chrism)
 - Daniel Nilsson (vq)
-- Paul Harouff
-- Saket Srivastav
 
 Logo Design
 -----------
@@ -38,3 +36,5 @@ directly.
 
 - Justin Denney (IRC nick: jdenney)
 - Hermann Himmelbauer
+- Paul Harouff
+- Saket Srivastav
