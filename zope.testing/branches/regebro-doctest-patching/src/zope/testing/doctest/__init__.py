@@ -53,6 +53,7 @@ warnings.warn('zope.testing.doctest is deprecated in favour of '
 
 # Patch to fix an error that makes subsequent tests fail after you have
 # returned unicode in a test.
+# Reported as #8471: http://bugs.python.org/issue8471
 import doctest
 
 _org_SpoofOut = doctest._SpoofOut
@@ -66,6 +67,7 @@ doctest._SpoofOut = _patched_SpoofOut
 
 
 # Patch to fix tests that has mixed line endings:
+# Reported as #8473: http://bugs.python.org/issue8473
 import os
 
 def _patched_load_testfile(filename, package, module_relative):
@@ -83,12 +85,13 @@ def _patched_load_testfile(filename, package, module_relative):
 doctest._load_testfile = _patched_load_testfile
 
 
-# Use a special exception for the test runner:
+# Use a special exception for the test runner.
 from zope.testing.exceptions import DocTestFailureException
 doctest.DocTestCase.failureException = DocTestFailureException
 
 
-# Patch to let the doctest have the globals of the testcase
+# Patch to let the doctest have the globals of the testcase. This is slightly
+# evil, but Zopes doctests did this, and if we change it everything breaks.
 import unittest
 
 def _patched_init(self, test, optionflags=0, setUp=None, tearDown=None,
