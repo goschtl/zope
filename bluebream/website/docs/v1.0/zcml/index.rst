@@ -585,7 +585,7 @@ expressiontype
 
 :directive: ``expressiontype``
 :namespace: ``http://namespaces.zope.org/tales``
-:module: ``zope.app.pagetemplate``
+:module: ``zope.browserpage``
 
 **Examples**
 
