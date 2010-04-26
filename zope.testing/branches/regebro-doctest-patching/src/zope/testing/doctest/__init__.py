@@ -65,6 +65,25 @@ class _patched_SpoofOut(_org_SpoofOut):
 
 doctest._SpoofOut = _patched_SpoofOut
 
+# Patching a unicode error that has been fixed in Python 2.6.5:
+import sys
+if sys.version < '2.6.5':    
+    import re
+    doctest._encoding = getattr(sys.__stdout__, 'encoding', None) or 'utf-8'
+    
+    def _indent(s, indent=4):
+        """
+        Add the given number of space characters to the beginning of
+        every non-blank line in `s`, and return the result.
+        If the string `s` is Unicode, it is encoded using the stdout
+        encoding and the `backslashreplace` error handler.
+        """
+        if isinstance(s, unicode):
+            s = s.encode(doctest._encoding, 'backslashreplace')
+        # This regexp matches the start of non-blank lines:
+        return re.sub('(?m)^(?!$)', indent*' ', s)
+    
+    doctest._indent = _indent
 
 # Patch to fix tests that has mixed line endings:
 # Reported as #8473: http://bugs.python.org/issue8473
