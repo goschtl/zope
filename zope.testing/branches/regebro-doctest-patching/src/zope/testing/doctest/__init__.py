@@ -5,7 +5,6 @@ __all__ = [
     'DONT_ACCEPT_BLANKLINE',
     'NORMALIZE_WHITESPACE',
     'ELLIPSIS',
-    'SKIP',
     'IGNORE_EXCEPTION_DETAIL',
     'COMPARISON_FLAGS',
     'REPORT_UDIFF',
@@ -44,6 +43,9 @@ __all__ = [
     'debug',
 ]
 
+import sys
+if sys.version > '2.5':
+    __all__.append('SKIP')
 # Tell people to use the builtin module instead.
 import warnings
 warnings.warn('zope.testing.doctest is deprecated in favour of '
@@ -52,18 +54,21 @@ warnings.warn('zope.testing.doctest is deprecated in favour of '
 
 
 # Patch to fix an error that makes subsequent tests fail after you have
-# returned unicode in a test.
+# returned unicode in a test. This is obviously not an issue in Python 3.
+
 # Reported as #8471: http://bugs.python.org/issue8471
 import doctest
 
-_org_SpoofOut = doctest._SpoofOut
-class _patched_SpoofOut(_org_SpoofOut):
-    def truncate(self,   size=None):
-        _org_SpoofOut.truncate(self, size)
-        if not self.buf:
-            self.buf = ''
+if sys.version < '3':
+    _org_SpoofOut = doctest._SpoofOut
+    class _patched_SpoofOut(_org_SpoofOut):
+        def truncate(self,   size=None):
+            _org_SpoofOut.truncate(self, size)
+            if not self.buf:
+                self.buf = ''
+    
+    doctest._SpoofOut = _patched_SpoofOut
 
-doctest._SpoofOut = _patched_SpoofOut
 
 # Patching a unicode error that has been fixed in Python 2.6.5:
 import sys
@@ -89,20 +94,98 @@ if sys.version < '2.6.5':
 # Reported as #8473: http://bugs.python.org/issue8473
 import os
 
-def _patched_load_testfile(filename, package, module_relative):
-    if module_relative:
-        package = doctest._normalize_module(package, 3)
-        filename = doctest._module_relative_path(package, filename)
-        if hasattr(package, '__loader__'):
-            if hasattr(package.__loader__, 'get_data'):
-                file_contents = package.__loader__.get_data(filename)
-                # get_data() opens files as 'rb', so one must do the equivalent
-                # conversion as universal newlines would do.
-                return file_contents.replace(os.linesep, '\n'), filename
-    return open(filename, 'U').read(), filename
-
-doctest._load_testfile = _patched_load_testfile
-
+if sys.version < '2.5':
+    from doctest import DocTestParser, master
+    def _patched_testfile(filename, module_relative=True, name=None, package=None,
+                 globs=None, verbose=None, report=True, optionflags=0,
+                 extraglobs=None, raise_on_error=False, parser=DocTestParser()):
+        global master
+    
+        if package and not module_relative:
+            raise ValueError("Package may only be specified for module-"
+                             "relative paths.")
+    
+        # Relativize the path
+        if module_relative:
+            package = _normalize_module(package)
+            filename = _module_relative_path(package, filename)
+    
+        # If no name was given, then use the file's name.
+        if name is None:
+            name = os.path.basename(filename)
+    
+        # Assemble the globals.
+        if globs is None:
+            globs = {}
+        else:
+            globs = globs.copy()
+        if extraglobs is not None:
+            globs.update(extraglobs)
+    
+        if raise_on_error:
+            runner = DebugRunner(verbose=verbose, optionflags=optionflags)
+        else:
+            runner = DocTestRunner(verbose=verbose, optionflags=optionflags)
+    
+        # Read the file, convert it to a test, and run it.
+        s = open(filename, 'U').read()
+        test = parser.get_doctest(s, globs, name, filename, 0)
+        runner.run(test)
+    
+        if report:
+            runner.summarize()
+    
+        if master is None:
+            master = runner
+        else:
+            master.merge(runner)
+    
+        return runner.failures, runner.tries
+    doctest.testfile = _patched_testfile
+    
+    from doctest import _normalize_module, _module_relative_path, DocFileCase
+    def _patched_DocFileTest(path, module_relative=True, package=None,
+                    globs=None, parser=DocTestParser(), **options):
+        if globs is None:
+            globs = {}
+    
+        if package and not module_relative:
+            raise ValueError("Package may only be specified for module-"
+                             "relative paths.")
+    
+        # Relativize the path.
+        if module_relative:
+            package = _normalize_module(package)
+            path = _module_relative_path(package, path)
+    
+        # Find the file and read it.
+        name = os.path.basename(path)
+        doc = open(path, 'U').read()
+    
+        # Convert it to a test, and wrap it in a DocFileCase.
+        test = parser.get_doctest(doc, globs, name, path, 0)
+        return DocFileCase(test, **options)    
+    doctest.DocFileTest = _patched_DocFileTest
+else:
+    
+    def _patched_load_testfile(filename, package, module_relative, encoding=None):
+        if module_relative:
+            package = doctest._normalize_module(package, 3)
+            filename = doctest._module_relative_path(package, filename)
+            if hasattr(package, '__loader__'):
+                if hasattr(package.__loader__, 'get_data'):
+                    file_contents = package.__loader__.get_data(filename)
+                    if encoding is not None: # Python 3
+                        file_contents = file_contents.decode(encoding)
+                    # get_data() opens files as 'rb', so one must do the equivalent
+                    # conversion as universal newlines would do.
+                    return file_contents.replace(os.linesep, '\n'), filename
+        if encoding: # Python 3:
+            return open(filename, encoding=encoding).read(), filename
+        else:
+            return open(filename, 'U').read(), filename
+    
+    doctest._load_testfile = _patched_load_testfile
 
 # Use a special exception for the test runner.
 from zope.testing.exceptions import DocTestFailureException
@@ -170,5 +253,4 @@ def _patched_runTest(self):
         raise self.failureException(self.format_failure(new.getvalue()))
     
 doctest.DocTestCase.runTest = _patched_runTest
-    
 from doctest import *
