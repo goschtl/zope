@@ -152,7 +152,7 @@ bootstrap the buildout itself::
   $ cd sampleproject
   $ python bootstrap.py
 
-The bootstrap script will install the ``zc.buildout`` and ``setuptools``
+The bootstrap script will install the ``zc.buildout`` and ``distribute``
 packages.  Also, it will create the basic directory structure.  Next step is
 building the application.  To build the application, run the buildout::
 
