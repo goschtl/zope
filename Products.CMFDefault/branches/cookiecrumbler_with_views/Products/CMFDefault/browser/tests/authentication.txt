@@ -73,7 +73,7 @@ Use the login form with invalid input.
     >>> browser.getControl('[[cmf_default][Login]]').click()
     >>> '[[zope][There were errors]]' in browser.contents
     True
-    >>> '[[zope][Constraint not satisfied]]' in browser.contents
+    >>> '[[cmf_default][Login failure]]' in browser.contents
     True
 
 Use the login form with valid input but wrong password.
@@ -83,6 +83,8 @@ Use the login form with valid input but wrong password.
     >>> browser.getControl('[[cmf_default][Password]]').value = 'wrong'
     >>> browser.getControl('[[cmf_default][Remember my ID.]]').selected = False
     >>> browser.getControl('[[cmf_default][Login]]').click()
+    >>> '[[zope][There were errors]]' in browser.contents
+    True
     >>> '[[cmf_default][Login failure]]' in browser.contents
     True
     >>> '__ac' not in browser.cookies

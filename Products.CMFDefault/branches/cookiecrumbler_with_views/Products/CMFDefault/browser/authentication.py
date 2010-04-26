@@ -28,6 +28,7 @@ from zope.interface import Interface
 from zope.schema import Bool
 from zope.schema import Choice
 from zope.schema import Password
+from zope.schema import TextLine
 from zope.schema import URI
 from zope.schema.interfaces import ISource
 from zope.site.hooks import getSite
@@ -40,6 +41,16 @@ from Products.CMFDefault.utils import Message as _
 from Products.CMFDefault.browser.utils import ViewBase, memoize
 
 
+def _expireAuthCookie(view, response):
+    try:
+        cctool = getToolByName(view, 'cookie_authentication')
+        method = cctool.getCookieMethod('expireAuthCookie',
+                                        cctool.defaultExpireAuthCookie)
+        method(response, cctool.auth_cookie)
+    except AttributeError:
+        response.expireCookie('__ac', path='/')
+
+
 class UnauthorizedView(BrowserView):
 
     """Exception view for Unauthorized.
@@ -49,7 +60,6 @@ class UnauthorizedView(BrowserView):
 
     def __call__(self):
         try:
-            cctool = getToolByName(self, 'cookie_authentication')
             atool = getToolByName(self, 'portal_actions')
             target = atool.getActionInfo('user/login')['url']
         except (AttributeError, ValueError):
@@ -71,9 +81,7 @@ class UnauthorizedView(BrowserView):
             self.context = self.__parent__
             raise Forbidden(self.forbidden_template())
 
-        if req.response.cookies.has_key(cctool.auth_cookie):
-            del req.response.cookies[cctool.auth_cookie]
-
+        _expireAuthCookie(self, req.response)
         came_from = req.get('came_from', None)
         if came_from is None:
             came_from = req.get('ACTUAL_URL')
@@ -114,10 +122,9 @@ class ILoginSchema(Interface):
     came_from = URI(
         required=False)
 
-    name = Choice(
+    name = TextLine(
         title=_(u'Member ID'),
-        description=_(u'Member ID or email address'),
-        source=available_names)
+        description=_(u'Case sensitive'))
 
     password = Password(
         title=_(u'Password'),
@@ -148,43 +155,55 @@ class LoginFormView(EditFormBase):
     base_template = EditFormBase.template
     template = ViewPageTemplateFile('templates/login.pt')
     label = _(u'Log in')
+    prefix = ''
 
     form_fields = form.FormFields(ILoginSchema)
-    form_fields['name'].custom_widget = TextWidget
 
     actions = form.Actions(
         form.Action(
             name='login',
             label=_(u'Login'),
+            validator='handle_login_validate',
             success='handle_login_success',
             failure='handle_failure'))
 
     def setUpWidgets(self, ignore_request=False):
-        cctool = self._getTool('cookie_authentication')
-        ac_name = self.request.get(cctool.name_cookie)
-        if ac_name and not self.request.has_key('%s.name' % self.prefix):
-            self.request.form['%s.name' % self.prefix] = ac_name
+        try:
+            cctool = self._getTool('cookie_authentication')
+            ac_name_id = cctool.name_cookie
+            ac_password_id = cctool.pw_cookie
+            ac_persistent_id = cctool.persist_cookie
+        except AttributeError:
+            ac_name_id = '__ac_name'
+            ac_password_id = '__ac_password'
+            ac_persistent_id = '__ac_persistent'
+        ac_name = self.request.get(ac_name_id)
+        if ac_name is not None:
+            self.request.form['name'] = ac_name
+            self.request.form[ac_name_id] = ac_name
+        ac_persistent = self.request.get(ac_persistent_id)
+        if ac_persistent is not None:
+            self.request.form['persistent'] = ac_persistent
+        ac_persistent_used = self.request.get("%s.used" % ac_persistent_id)
+        if ac_persistent_used is not None:
+            self.request.form['persistent.used'] = ac_persistent_used
         super(LoginFormView,
               self).setUpWidgets(ignore_request=ignore_request)
         self.widgets['came_from'].hide = True
+        self.widgets['name'].name = ac_name_id
+        self.widgets['password'].name = ac_password_id
+        self.widgets['persistent'].name = ac_persistent_id
+
+    def handle_login_validate(self, action, data):
+        mtool = self._getTool('portal_membership')
+        if mtool.isAnonymousUser():
+            _expireAuthCookie(self, self.request.response)
+            return (_(u'Login failure'),)
+        return None
 
     def handle_login_success(self, action, data):
-        mtool = self._getTool('portal_membership')
-        if not mtool.getMemberById(data['name']):
-            candidates = mtool.searchMembers('email', data['name'])
-            for candidate in candidates:
-                if candidate['email'].lower() == data['name'].lower():
-                    data['name'] = candidate['username']
-                    break
-        cctool = self._getTool('cookie_authentication')
-        # logged_in uses default charset for decoding
-        charset = self._getDefaultCharset()
-        self.request.form[cctool.name_cookie] = data['name'].encode(charset)
-        self.request.form[cctool.pw_cookie] = data['password'].encode(charset)
-        self.request.form[cctool.persist_cookie] = data['persistent']
-        cctool(self.context, self.request)
         return self._setRedirect('portal_actions', 'user/logged_in',
-                                 '%s.came_from' % self.prefix)
+                                 'came_from')
 
 
 class MailPasswordFormView(EditFormBase):
@@ -210,8 +229,12 @@ class MailPasswordFormView(EditFormBase):
             failure='handle_failure'))
 
     def setUpWidgets(self, ignore_request=False):
-        cctool = self._getTool('cookie_authentication')
-        ac_name = self.request.get(cctool.name_cookie)
+        try:
+            cctool = self._getTool('cookie_authentication')
+            ac_name_id = cctool.name_cookie
+        except AttributeError:
+            ac_name_id = '__ac_name'
+        ac_name = self.request.get(ac_name_id)
         if ac_name and not self.request.has_key('%s.name' % self.prefix):
             self.request.form['%s.name' % self.prefix] = ac_name
         super(MailPasswordFormView,
