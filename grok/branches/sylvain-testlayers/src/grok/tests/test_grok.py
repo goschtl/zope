@@ -47,7 +47,6 @@ def test_suite():
                  'traversal', 'grokker', 'directive',
                  'baseclass', 'application',
                  'viewlet',
-                 #'testsetup',# XXX the failure is rather mysterious..
                  'conflict']:
         suite.addTest(suiteFromPackage(name))
     return suite
