@@ -98,11 +98,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     local_cookie_path = False
     cache_header_value = 'private'
     log_username = True
-    # the following properties are deprecated and will be replaced by
-    # user actions
-    auto_login_page = 'login_form'
-    unauth_page = ''
-    logout_page = 'logged_out'
 
     security.declarePrivate('delRequestVar')
     def delRequestVar(self, req, name):
@@ -263,12 +258,9 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 resp.setHeader('X-Cache-Control-Hdr-Modified-By',
                                'CookieCrumbler')
             phys_path = self.getPhysicalPath()
-            if self.logout_page:
-                # Cookies are in use.
-                page = getattr(container, self.logout_page, None)
-                if page is not None:
-                    # Provide a logout page.
-                    req._logout_path = phys_path + ('logout',)
+            # Cookies are in use.
+            # Provide a logout page.
+            req._logout_path = phys_path + ('logout',)
             req._credentials_changed_path = (
                 phys_path + ('credentialsChanged',))
 
