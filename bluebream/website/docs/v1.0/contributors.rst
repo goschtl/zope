@@ -16,10 +16,12 @@ Thanks to all.  Please update this list, as soon as somebody is
 committed to documentation directly.
 
 - Baiju M (baijum)
-- Chris McDonough (chrism)
-- Daniel Nilsson
+- Christophe Combelles (ccomb)
+- Ilshad Khabibullin (astoon)
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
+- Chris McDonough (chrism)
+- Daniel Nilsson
 - Paul Harouff
 - Saket Srivastav
 
