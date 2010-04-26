@@ -68,6 +68,8 @@ sample/deploy.ini
 sample/setup.py
 sample/versions.cfg
 sample/etc/site.zcml
+sample/etc/zope-debug.conf
+sample/etc/zope.conf
 sample/src/sample/__init__.py
 sample/src/sample/configure.zcml
 sample/src/sample/debug.py
@@ -92,7 +94,6 @@ sample/src/sample/welcome/interfaces.py
 sample/src/sample/welcome/views.py
 sample/src/sample/welcome/static/logo.png
 sample/src/sample/welcome/static/style.css
-sample/templates/zope_conf.in
 sample/var/filestorage/README.txt
 sample/var/log/README.txt
 
@@ -140,6 +141,8 @@ sample.main/deploy.ini
 sample.main/setup.py
 sample.main/versions.cfg
 sample.main/etc/site.zcml
+sample.main/etc/zope-debug.conf
+sample.main/etc/zope.conf
 sample.main/src/sample/__init__.py
 sample.main/src/sample.main.egg-info/PKG-INFO
 sample.main/src/sample.main.egg-info/SOURCES.txt
@@ -166,7 +169,6 @@ sample.main/src/sample/main/welcome/interfaces.py
 sample.main/src/sample/main/welcome/views.py
 sample.main/src/sample/main/welcome/static/logo.png
 sample.main/src/sample/main/welcome/static/style.css
-sample.main/templates/zope_conf.in
 sample.main/var/filestorage/README.txt
 sample.main/var/log/README.txt
 
@@ -219,6 +221,8 @@ sample.app.main/deploy.ini
 sample.app.main/setup.py
 sample.app.main/versions.cfg
 sample.app.main/etc/site.zcml
+sample.app.main/etc/zope-debug.conf
+sample.app.main/etc/zope.conf
 sample.app.main/src/sample/__init__.py
 sample.app.main/src/sample.app.main.egg-info/PKG-INFO
 sample.app.main/src/sample.app.main.egg-info/SOURCES.txt
@@ -246,7 +250,6 @@ sample.app.main/src/sample/app/main/welcome/interfaces.py
 sample.app.main/src/sample/app/main/welcome/views.py
 sample.app.main/src/sample/app/main/welcome/static/logo.png
 sample.app.main/src/sample/app/main/welcome/static/style.css
-sample.app.main/templates/zope_conf.in
 sample.app.main/var/filestorage/README.txt
 sample.app.main/var/log/README.txt
 
@@ -298,6 +301,8 @@ foobar.foobar/deploy.ini
 foobar.foobar/setup.py
 foobar.foobar/versions.cfg
 foobar.foobar/etc/site.zcml
+foobar.foobar/etc/zope-debug.conf
+foobar.foobar/etc/zope.conf
 foobar.foobar/src/foobar/__init__.py
 foobar.foobar/src/foobar.foobar.egg-info/PKG-INFO
 foobar.foobar/src/foobar.foobar.egg-info/SOURCES.txt
@@ -324,7 +329,6 @@ foobar.foobar/src/foobar/foobar/welcome/interfaces.py
 foobar.foobar/src/foobar/foobar/welcome/views.py
 foobar.foobar/src/foobar/foobar/welcome/static/logo.png
 foobar.foobar/src/foobar/foobar/welcome/static/style.css
-foobar.foobar/templates/zope_conf.in
 foobar.foobar/var/filestorage/README.txt
 foobar.foobar/var/log/README.txt
 
@@ -374,6 +378,8 @@ sampleproject/deploy.ini
 sampleproject/setup.py
 sampleproject/versions.cfg
 sampleproject/etc/site.zcml
+sampleproject/etc/zope-debug.conf
+sampleproject/etc/zope.conf
 sampleproject/src/sample/__init__.py
 sampleproject/src/sample/main/__init__.py
 sampleproject/src/sample/main/configure.zcml
@@ -400,7 +406,6 @@ sampleproject/src/sampleproject.egg-info/namespace_packages.txt
 sampleproject/src/sampleproject.egg-info/requires.txt
 sampleproject/src/sampleproject.egg-info/top_level.txt
 sampleproject/src/sampleproject.egg-info/zip-safe
-sampleproject/templates/zope_conf.in
 sampleproject/var/filestorage/README.txt
 sampleproject/var/log/README.txt
 
