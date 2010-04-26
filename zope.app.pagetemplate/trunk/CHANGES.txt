@@ -2,11 +2,10 @@
 Changes
 =======
 
-3.10.2 (unreleased)
+3.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Move tales:expressiontype directive down into zope.browserpage.
 
 3.10.1 (2010-01-04)
 -------------------

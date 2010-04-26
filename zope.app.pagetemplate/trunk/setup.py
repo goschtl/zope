@@ -49,7 +49,7 @@ setup(name='zope.app.pagetemplate',
       include_package_data=True,
       install_requires=[
           'setuptools',
-          'zope.browserpage>=3.11.0',
+          'zope.browserpage>=3.12.0',
           'zope.component [hook]',
           'zope.configuration',
           'zope.dublincore',
