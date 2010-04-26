@@ -21,7 +21,7 @@ committed to documentation directly.
 - Kent Tenney (ktenney)
 - Michael Haubenwallner (d2m)
 - Chris McDonough (chrism)
-- Daniel Nilsson
+- Daniel Nilsson (vq)
 - Paul Harouff
 - Saket Srivastav
 
