@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 1.5.4 (unreleased)
+Version 1.5.4 (2010-04-27)
 --------------------------
 
 - fixed security declarations for z3c.layer >= 0.2.4
