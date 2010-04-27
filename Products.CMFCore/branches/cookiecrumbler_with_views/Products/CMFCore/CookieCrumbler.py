@@ -261,18 +261,19 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             # Cookies are in use.
             # Provide a logout page.
             req._logout_path = phys_path + ('logout',)
-            req._credentials_changed_path = (
-                phys_path + ('credentialsChanged',))
 
     security.declarePublic('credentialsChanged')
-    def credentialsChanged(self, user, name, pw):
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
+    def credentialsChanged(self, user, name, pw, request):
+        """
+        Updates cookie credentials if user details are changed.
+        """
+        if request is None:
+            request = self.REQUEST # BBB for Membershiptool
+        reponse = request['RESPONSE']
         ac = encodestring('%s:%s' % (name, pw)).rstrip()
-        method = self.getCookieMethod( 'setAuthCookie'
-                                       , self.defaultSetAuthCookie )
-        resp = self.REQUEST['RESPONSE']
-        method( resp, self.auth_cookie, quote( ac ) )
+        method = self.getCookieMethod('setAuthCookie',
+                                       self.defaultSetAuthCookie)
+        method(reponse, self.auth_cookie, quote(ac))
 
     security.declarePublic('logout')
     def logout(self, response=None):
@@ -280,7 +281,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         Logs out the user
         """
         if response is None:
-            req = self.REQUEST['RESPONSE']
+            response = self.REQUEST['RESPONSE'] # BBB for App.Management
         self.defaultExpireAuthCookie(response, cookie_name=self.auth_cookie)
 
     security.declarePublic('propertyLabel')

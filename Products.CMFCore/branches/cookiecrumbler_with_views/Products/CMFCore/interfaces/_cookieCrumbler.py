@@ -51,11 +51,10 @@ class ICookieCrumbler(Interface):
     def __call__(container, req):
         """The __before_publishing_traverse__ hook."""
 
-    def credentialsChanged(user, name, pw):
+    def credentialsChanged(user, name, pw, request):
         """
-        Deprecated
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST """
+        Updates cookie credentials if user details are changed.
+        """
 
     def propertyLabel(id):
         """Return a label for the given property id

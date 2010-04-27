@@ -41,14 +41,14 @@ from Products.CMFDefault.utils import Message as _
 from Products.CMFDefault.browser.utils import ViewBase, memoize
 
 
-def _expireAuthCookie(view, response):
+def _expireAuthCookie(view):
     try:
         cctool = getToolByName(view, 'cookie_authentication')
         method = cctool.getCookieMethod('expireAuthCookie',
                                         cctool.defaultExpireAuthCookie)
-        method(response, cctool.auth_cookie)
+        method(view.response, cctool.auth_cookie)
     except AttributeError:
-        response.expireCookie('__ac', path='/')
+        view.response.expireCookie('__ac', path='/')
 
 
 class UnauthorizedView(BrowserView):
@@ -81,7 +81,7 @@ class UnauthorizedView(BrowserView):
             self.context = self.__parent__
             raise Forbidden(self.forbidden_template())
 
-        _expireAuthCookie(self, req.response)
+        _expireAuthCookie(self)
         came_from = req.get('came_from', None)
         if came_from is None:
             came_from = req.get('ACTUAL_URL')
@@ -197,7 +197,7 @@ class LoginFormView(EditFormBase):
     def handle_login_validate(self, action, data):
         mtool = self._getTool('portal_membership')
         if mtool.isAnonymousUser():
-            _expireAuthCookie(self, self.request.response)
+            _expireAuthCookie(self)
             return (_(u'Login failure'),)
         return None
 
@@ -266,8 +266,7 @@ class Logout(ViewBase):
     @memoize
     def logout(self):
         """Log the user out"""
-        cctool = self._getTool('cookie_authentication')
-        cctool.logout(self.request.response)
+        _expireAuthCookie(self)
     
     @memoize    
     def clear_skin_cookie(self):
