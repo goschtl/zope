@@ -25,8 +25,44 @@ But the formlib avoids many duplication works.  The formlib generate
 form for getting input data.  You can also create validators and
 responses.
 
+The most used forms are DisplayForm, AddForm and EditForm.  The
+DisplayForm is not really a web form to submit, but a convenience for
+displaying values based on particular context/interface.
+
 Creating an AddForm
 -------------------
+
+The ``AddForm`` can be used as a base class for views.  It can be
+imported like this::
+
+  from zope.formlib.form import AddForm
+
+A typical registration of view can be done like this::
+
+  <browser:page
+     for="zope.site.interfaces.IRootFolder"
+     name="add_sample_app"
+     permission="zope.ManageContent"
+     class=".views.AddSampleApplication"
+     />
+
+You need a schema definition as explain in the previous chapter::
+
+  class AddSampleApplication(form.AddForm):
+
+      form_fields = form.Fields(ISampleApplication)
+
+      def createAndAdd(self, data):
+          name = data['name']
+          description = data.get('description')
+          namechooser = INameChooser(self.context)
+          app = SampleApplication()
+          name = namechooser.chooseName(name, app)
+          app.name = name
+          app.description = description
+          self.context[name] = app
+          self.request.response.redirect(name)
+
 
 Creating an EditForm
 --------------------
