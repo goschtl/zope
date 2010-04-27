@@ -5489,6 +5489,14 @@ zope.i18n
 zope.i18nmessageid
 ~~~~~~~~~~~~~~~~~~
 
+3.5.1 (2010-04-10)
+******************
+
+- LP #257657 / 489529:  Fix memory leak in C extension.
+
+- Fixed the compilation of the C extension with python 2.6: refactored it as a
+  setuptools Feature.
+
 3.5.0 (2009-06-27)
 ******************
 
@@ -6153,6 +6161,14 @@ Other changes:
 
 zope.publisher
 ~~~~~~~~~~~~~~
+
+3.12.2 (2010-04-16)
+*******************
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's 'doctest'.
+
+- Fixed bug where xml-rpc requests would hang when served using
+  paster.httpserver.
 
 3.12.1 (2010-02-21)
 *******************
