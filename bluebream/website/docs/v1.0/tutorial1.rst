@@ -54,9 +54,11 @@ In this section we will create the directory layout for our ticket
 collector application.  I will assume that you have already installed
 ``bluebream`` using the ``easy_install bluebream`` command as
 mentioned in the :ref:`started-getting` chapter.  We are going to use
-the project name ``ticketcollector`` and namespace package name
-``tc``.  Let's create the project directory layout for
-``ticketcollector``::
+the project name as ``ticketcollector`` and the Python package name
+as ``tc.main``.  This will create a project with egg/distribution
+name as ``ticketcollector``, ``tc`` as a namespace package and
+``main`` as a Python sub-package.  Let's create the project directory
+layout for ``ticketcollector``::
 
   $ paster create -t bluebream
 
@@ -69,16 +71,16 @@ the project name ``ticketcollector`` and namespace package name
     package:  ticketcollector
     project:  ticketcollector
   Enter python_package (Main Python package (with namespace, if any)) ['ticketcollector']: tc.main
-  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
-  Enter version (Version (like 0.1)) ['0.1']: 
+  Enter interpreter (Name of custom Python interpreter) ['breampy']:
+  Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
-  Enter keywords (Space-separated keywords/tags) ['']: 
+  Enter keywords (Space-separated keywords/tags) ['']:
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@example.com
-  Enter url (URL of homepage) ['']: 
+  Enter url (URL of homepage) ['']:
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
   Creating template bluebream
   Creating directory ./ticketcollector
 
@@ -90,9 +92,9 @@ the project name ``ticketcollector`` and namespace package name
 
 As you can see above we have provided most of the project details.
 The values you provided here may be changed later, however changing
-the package name or the namespace package name may not be as easy as
-changing the description because the name and namespace package might
-be referred to from many places.
+the Python package name may not be as easy as changing other values.
+Because the Python package name might be referred from many places in
+code later.
 
 Organize the new package
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,11 +145,12 @@ installation.  BlueBream provides a bootstrapping script to install
 Buildout and to set up the project directory for running it.  This
 bootstrap script is named ``bootstrap.py`` and will do these things:
 
-- Download and install ``setuptools`` package from PyPI
+- Download and install ``distribute`` distribution from PyPI which
+  contains the forked ``setuptools`` Python package inside.
 
-- Download and install ``zc.buildout`` package from PyPI
+- Download and install ``zc.buildout`` distribution from PyPI.
 
-- Create a directory structure eg:- bin/ eggs/ parts/ develop-eggs/
+- Create the directory structure eg:- bin/ eggs/ parts/ develop-eggs/
 
 - Create a script inside the ``bin`` directory named ``buildout``
 
@@ -180,8 +183,8 @@ After bootstrapping the project you can build your application.  All
 the steps you did so far is only required once per project, but
 running buildout is required whenever you make changes to the
 buildout configuration.  You are now ready to run ``bin/buildout`` to
-build the application, but before doing this let's have a look at the
-content of ``buildout.cfg``::
+build the application, but before doing this, let's have a look at
+the content of ``buildout.cfg``::
 
   [buildout]
   develop = .
@@ -204,10 +207,10 @@ content of ``buildout.cfg``::
 
 The buildout configuration file is divided into multiple sections
 called *parts*.  The main part is called ``[buildout]``, and that is
-given as the first part in the above configuration file.  Each part will be
-handled by the Buildout plugin mechanism called recipes except for
-``[buildout]``.  ``[buildout]`` is handled specially
-by Buildout as it contains general settings.
+given as the first part in the above configuration file.  Each part
+will be handled by the Buildout plugin mechanism called recipes
+except for ``[buildout]``.  ``[buildout]`` is handled specially by
+Buildout as it contains general settings.
 
 Let's look at the main ``[buildout]`` part::
 
@@ -257,7 +260,8 @@ option ``eggs`` list all the eggs.  The first egg,
 ``ticketcollector`` is the main locally developing egg.  The last
 option, ``interpreter`` specify the name of custom interpreter
 created by this part.  The custom interpreter contains the paths to
-all eggs listed here and its dependencies.
+all eggs listed here and its dependencies.  So that you can import
+any module which is listed as a dependency.
 
 The last part creates the test runner::
 
@@ -299,6 +303,195 @@ also created three more scripts inside ``bin`` directory.
 Now we have a project source where we can continue developing this
 application.
 
+The PasteDeploy configuration
+-----------------------------
+
+BlueBream use WSGI to run the server using PasteDeploy.  There are
+two PasteDeploy configure one for deployment (``deploy.ini``) another
+for development (``debug.ini``).
+
+This is the content of ``debug.ini``::
+
+  [app:main]
+  use = egg:ticketcollector
+
+  [server:main]
+  use = egg:Paste#http
+  host = 127.0.0.1
+  port = 8080
+
+  [DEFAULT]
+  # set the name of the zope.conf file
+  zope_conf = %(here)s/etc/zope.conf
+
+First let's look at the ``[app:main]`` section::
+
+  [app:main]
+  use = egg:ticketcollector
+
+The ``[app:main]`` section specify the egg to be used.  PasteDeploy
+expects a ``paste.app_factory`` entry point defined in the egg.  If
+you look at the ``setup.py`` file, you can see that it is defined
+like this::
+
+      [paste.app_factory]
+      main = tc.main.startup:application_factory
+
+The name of entry point should be ``main``.  Otherwise, it should be
+explicitly mentioned in configuration file.  For example, if the
+definition is like this::
+
+      [paste.app_factory]
+      testapp = tc.main.startup:application_factory
+
+The PasteDeploy configuration should be changed like this::
+
+The second section (``[server:main]``) sepecify the WSGI server::
+
+  [server:main]
+  use = egg:Paste#http
+  host = 127.0.0.1
+  port = 8080
+
+You can change host name, port and the WSGI server itself from this
+section.  In oder to use any other WSGI server, it should included in
+th dependency list in Buildoout configuration.
+
+The last section (``[DEFAULT]``) is the place where you can specify
+the default values::
+
+  [DEFAULT]
+  # set the name of the zope.conf file
+  zope_conf = %(here)s/etc/zope.conf
+
+The WSGI application defined in ``tc.main.startup`` expects the
+``zope_conf`` option defined in the ``[DEFAULT]`` section.  So, this
+option is mandatory.  This option specify the path where the main
+zope specific configuration file is residing.  The next section
+explains more about the main zope configuration.
+
+The ``debug.ini`` add more section useful for debugging::
+
+  [loggers]
+  keys = root, wsgi
+
+  [handlers]
+  keys = console, accesslog
+
+  [formatters]
+  keys = generic, accesslog
+
+  [formatter_generic]
+  format = %(asctime)s %(levelname)s [%(name)s] %(message)s
+
+  [formatter_accesslog]
+  format = %(message)s
+
+  [handler_console]
+  class = StreamHandler
+  args = (sys.stderr,)
+  level = ERROR
+  formatter = generic
+
+  [handler_accesslog]
+  class = FileHandler
+  args = (os.path.join('var', 'log', 'access.log'),
+          'a')
+  level = INFO
+  formatter = accesslog
+
+  [logger_root]
+  level = INFO
+  handlers = console
+
+  [logger_wsgi]
+  level = INFO
+  handlers = accesslog
+  qualname = wsgi
+  propagate = 0
+
+  [filter:translogger]
+  use = egg:Paste#translogger
+  setup_console_handler = False
+  logger_name = wsgi
+
+  [filter-app:main]
+  # Change the last part from 'ajax' to 'pdb' for a post-mortem debugger
+  # on the console:
+  use = egg:z3c.evalexception#ajax
+  next = zope
+
+  [app:zope]
+  use = egg:ticketcollector
+  filter-with = translogger
+
+  [server:main]
+  use = egg:Paste#http
+  host = 127.0.0.1
+  port = 8080
+
+  [DEFAULT]
+  # set the name of the debug zope.conf file
+  zope_conf = %(here)s/etc/zope-debug.conf
+
+The debug configuration use ``filter-app`` instead of ``app`` to
+include WSGI middlewares.  Currently only one middleware
+(``z3c.evalexception#ajax``) is included.  You can look into
+PastDeploy documentation for more information about the other
+sections.  The Zope configuration file specified here
+(``etc/zope-debug.conf``) is different from the deployment
+configuration.
+
+The Zope configuration
+----------------------
+
+Similar to PasteDeploy configuration, there are two Zope
+configuration files.  The one included from ``debug.ini`` and the
+other from ``deploy.ini``.
+
+This is the content of ``etc/zope.conf`` file::
+
+  # Identify the component configuration used to define the site:
+  site-definition etc/site.zcml
+
+  <zodb>
+
+    <filestorage>
+      path var/filestorage/Data.fs
+      blob-dir var/blob
+    </filestorage>
+
+  # Uncomment this if you want to connect to a ZEO server instead:
+  #  <zeoclient>
+  #    server localhost:8100
+  #    storage 1
+  #    # ZEO client cache, in bytes
+  #    cache-size 20MB
+  #    # Uncomment to have a persistent disk cache
+  #    #client zeo1
+  #  </zeoclient>
+  </zodb>
+
+  <eventlog>
+    # This sets up logging to both a file and to standard output (STDOUT).
+    # The "path" setting can be a relative or absolute filesystem path or
+    # the tokens STDOUT or STDERR.
+
+    <logfile>
+      path var/log/z3.log
+      formatter zope.exceptions.log.Formatter
+    </logfile>
+
+    <logfile>
+      path STDOUT
+      formatter zope.exceptions.log.Formatter
+    </logfile>
+  </eventlog>
+
+From the ``zope.conf`` file, you can specify the main ZCML file to be
+loaded (site definition).  All paths are specified as relative to
+top-level diretory where PasteDeploy configuration file is residing.
+
 The site definition
 -------------------
 
@@ -308,7 +501,8 @@ already in ``zope.conf`` the main configuration is located at
 ``etc/site.zcml``.  Here is the default listing::
 
   <configure
-     xmlns="http://namespaces.zope.org/zope">
+     xmlns="http://namespaces.zope.org/zope"
+     xmlns:browser="http://namespaces.zope.org/browser">
 
     <include package="zope.component" file="meta.zcml" />
     <include package="zope.security" file="meta.zcml" />
@@ -322,7 +516,11 @@ already in ``zope.conf`` the main configuration is located at
     <include package="zope.app.publication" file="meta.zcml" />
     <include package="zope.app.form.browser" file="meta.zcml" />
     <include package="zope.app.container.browser" file="meta.zcml" />
+    <include package="zope.app.pagetemplate" file="meta.zcml" />
+    <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
 
+    <include package="zope.browserresource" />
+    <include package="zope.copypastemove" />
     <include package="zope.publisher" />
     <include package="zope.component" />
     <include package="zope.traversing" />
@@ -341,9 +539,13 @@ already in ``zope.conf`` the main configuration is located at
     <include package="zope.authentication" />
     <include package="zope.securitypolicy" />
     <include package="zope.login" />
+    <include package="zope.session" />
     <include package="zope.app.zcmlfiles" file="menus.zcml" />
     <include package="zope.app.authentication" />
     <include package="zope.app.security.browser" />
+    <include package="zope.traversing.browser" />
+    <include package="zope.app.pagetemplate" />
+    <include package="zope.app.schema" />
 
     <include package="tc.main" />
 
