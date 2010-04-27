@@ -35,6 +35,7 @@ __all__ = [
     # 8. Unittest Support
     'DocTestSuite',
     'DocFileSuite',
+    'DocFileTest',
     'set_unittest_reportflags',
     # 9. Debugging Support
     'script_from_examples',
@@ -247,3 +248,4 @@ def _patched_runTest(self):
     
 doctest.DocTestCase.runTest = _patched_runTest
 from doctest import *
+from doctest import DocFileTest # Not in doctests.__all__ for some reason.
