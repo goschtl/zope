@@ -9,4 +9,10 @@
 	      handler=".startup.databaseOpened"
 	   />
 
+	  <subscriber
+        for="z3c.taskqueue.interfaces.ITaskService
+	           zope.container.interfaces.IObjectAddedEvent"
+	      handler=".service.setNameAndParent"
+	   />
+
 </configure>

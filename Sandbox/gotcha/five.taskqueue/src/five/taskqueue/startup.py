@@ -23,7 +23,10 @@ def databaseOpened(event):
         site = getSite(siteName, root_folder)
         if site is None:
             continue
-        startOneService(site, serviceName)
+        started = startOneService(site, serviceName)
+        if not started:
+            msg = 'service %s from site %s was not started.'
+            log.warn(msg % (serviceName, siteName))
 
 
 def getSite(siteName, root_folder):
