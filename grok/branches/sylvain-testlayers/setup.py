@@ -78,6 +78,7 @@ setup(
                       'zope.location',
                       'zope.password',
                       'zope.pluggableauth',
+                      'zope.principalregistry',
                       'zope.publisher',
                       'zope.schema',
                       'zope.security',
@@ -89,7 +90,6 @@ setup(
                       # be removed or moved to the deprecated packages list.
                       'zope.app.appsetup',
                       'zope.app.pagetemplate',
-                      'zope.app.security',
                       'zope.deprecation',
                       'zope.dottedname',
                       'zope.hookable',
