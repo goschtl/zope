@@ -59,6 +59,7 @@ the project name ``ticketcollector`` and namespace package name
 ``ticketcollector``::
 
   $ paster create -t bluebream
+
   Selected and implied templates:
     bluebream#bluebream  A BlueBream project, base template
 
@@ -67,74 +68,25 @@ the project name ``ticketcollector`` and namespace package name
     egg:      ticketcollector
     package:  ticketcollector
     project:  ticketcollector
-  Enter namespace_package (Namespace package name) ['ticketcollector']: tc
-  Enter main_package (Main package name (under the namespace)) ['main']:
-  Enter interpreter (Name of custom Python interpreter) ['breampy']:
-  Enter version (Version (like 0.1)) ['0.1']:
+  Enter python_package (Main Python package (with namespace, if any)) ['ticketcollector']: tc.main
+  Enter interpreter (Name of custom Python interpreter) ['breampy']: 
+  Enter version (Version (like 0.1)) ['0.1']: 
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
-  Enter keywords (Space-separated keywords/tags) ['']:
+  Enter keywords (Space-separated keywords/tags) ['']: 
   Enter author (Author name) ['']: Baiju M
   Enter author_email (Author email) ['']: baiju@example.com
-  Enter url (URL of homepage) ['']:
+  Enter url (URL of homepage) ['']: 
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
+  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]: 
   Creating template bluebream
   Creating directory ./ticketcollector
-    Copying bootstrap.py to ./ticketcollector/bootstrap.py
-    Copying buildout.cfg_tmpl to ./ticketcollector/buildout.cfg
-    Copying debug.ini_tmpl to ./ticketcollector/debug.ini
-    Copying deploy.ini_tmpl to ./ticketcollector/deploy.ini
-    Recursing into etc
-      Creating ./ticketcollector/etc/
-      Copying site.zcml_tmpl to ./ticketcollector/etc/site.zcml
-    Copying setup.py_tmpl to ./ticketcollector/setup.py
-    Recursing into src
-      Creating ./ticketcollector/src/
-      Recursing into +namespace_package+
-        Creating ./ticketcollector/src/tc/
-        Recursing into +main_package+
-          Creating ./ticketcollector/src/tc/main/
-          Copying __init__.py to ./ticketcollector/src/tc/main/__init__.py
-          Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/configure.zcml
-          Copying debug.py to ./ticketcollector/src/tc/main/debug.py
-          Copying securitypolicy.zcml_tmpl to ./ticketcollector/src/tc/main/securitypolicy.zcml
-          Copying startup.py to ./ticketcollector/src/tc/main/startup.py
-          Recursing into tests
-            Creating ./ticketcollector/src/tc/main/tests/
-            Copying __init__.py to ./ticketcollector/src/tc/main/tests/__init__.py
-            Copying ftesting.zcml_tmpl to ./ticketcollector/src/tc/main/tests/ftesting.zcml
-            Copying tests.py_tmpl to ./ticketcollector/src/tc/main/tests/tests.py
-          Recursing into welcome
-            Creating ./ticketcollector/src/tc/main/welcome/
-            Copying __init__.py to ./ticketcollector/src/tc/main/welcome/__init__.py
-            Copying app.py to ./ticketcollector/src/tc/main/welcome/app.py
-            Copying configure.zcml_tmpl to ./ticketcollector/src/tc/main/welcome/configure.zcml
-            Copying ftests.txt_tmpl to ./ticketcollector/src/tc/main/welcome/ftests.txt
-            Copying index.pt to ./ticketcollector/src/tc/main/welcome/index.pt
-            Copying interfaces.py to ./ticketcollector/src/tc/main/welcome/interfaces.py
-            Recursing into static
-              Creating ./ticketcollector/src/tc/main/welcome/static/
-              Copying logo.png to ./ticketcollector/src/tc/main/welcome/static/logo.png
-              Copying style.css to ./ticketcollector/src/tc/main/welcome/static/style.css
-            Copying views.py to ./ticketcollector/src/tc/main/welcome/views.py
-        Copying __init__.py to ./ticketcollector/src/tc/__init__.py
-      Recursing into +package+.egg-info
-        Creating ./ticketcollector/src/ticketcollector.egg-info/
-        Copying PKG-INFO to ./ticketcollector/src/ticketcollector.egg-info/PKG-INFO
-    Recursing into templates
-      Creating ./ticketcollector/templates/
-      Copying zope_conf.in to ./ticketcollector/templates/zope_conf.in
-    Recursing into var
-      Creating ./ticketcollector/var/
-      Recursing into filestorage
-        Creating ./ticketcollector/var/filestorage/
-        Copying README.txt to ./ticketcollector/var/filestorage/README.txt
-      Recursing into log
-        Creating ./ticketcollector/var/log/
-        Copying README.txt to ./ticketcollector/var/log/README.txt
-    Copying versions.cfg to ./ticketcollector/versions.cfg
-  Running /usr/bin/python setup.py egg_info
+
+  Your project has been created! Now, you want to:
+  1) put the generated files under version control
+  2) run: python boostrap.py
+  3) run: ./bin/buildout
+
 
 As you can see above we have provided most of the project details.
 The values you provided here may be changed later, however changing
@@ -149,8 +101,8 @@ If you change directory to ``ticketcollector`` you can see a few
 directories and files::
 
   jack@computer:/projects/ticketcollector$ ls -CF
-  bootstrap.py  debug.ini   etc/      src/        var/
-  buildout.cfg  deploy.ini  setup.py  templates/  versions.cfg
+  bootstrap.py  debug.ini   etc/      src/  versions.cfg
+  buildout.cfg  deploy.ini  setup.py  var/
 
 Once the project directory layout is ready you can add it to your
 version control system.  You **should not** add
@@ -231,17 +183,10 @@ buildout configuration.  You are now ready to run ``bin/buildout`` to
 build the application, but before doing this let's have a look at the
 content of ``buildout.cfg``::
 
-  [config]
-  site_zcml = etc/site.zcml
-  blob = var/blob
-  filestorage = var/filestorage
-  log = var/log
-
   [buildout]
   develop = .
   extends = versions.cfg
   parts = app
-          zope_conf
           test
 
   [app]
@@ -253,48 +198,16 @@ content of ``buildout.cfg``::
          PasteDeploy
   interpreter = breampy
 
-  [zope_conf]
-  recipe = collective.recipe.template
-  input = templates/zope_conf.in
-  output = etc/zope.conf
-
   [test]
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
 The buildout configuration file is divided into multiple sections
 called *parts*.  The main part is called ``[buildout]``, and that is
-given as the second part in the above configuration file.  We have
-added a part named ``[config]`` for convenience which includes some
-common options referred to from other places.  Each part will be
+given as the first part in the above configuration file.  Each part will be
 handled by the Buildout plugin mechanism called recipes except for
-``[buildout]`` and ``[config]``.  ``[buildout]`` is handled specially
-by Buildout as it contains general settings and ``[config]`` only
-contains options used for other parts.
-
-We will look at each part here.  Let's start with ``[config]``::
-
-  [config]
-  site_zcml = etc/site.zcml
-  blob = var/blob
-  filestorage = var/filestorage
-  log = var/log
-
-The ``[config]`` is kind of abstract part which exists for
-convenience to hold options used by other parts and is an idiom in
-many projects using Buildout.  In this configuration the options
-provided are _not_ used by other parts directly, but all are used in
-one template given in the ``[zope_conf]`` part.  Here is details
-about each options:
-
-- ``site_zcml`` -- this is the location where final ``site.zcml``
-  file is residing.
-
-- ``blob`` -- location where ZODB blob files are stored.
-
-- ``filestorage`` -- ZODB data files are stored here.
-
-- ``log`` -- All log files goes here.
+``[buildout]``.  ``[buildout]`` is handled specially
+by Buildout as it contains general settings.
 
 Let's look at the main ``[buildout]`` part::
 
@@ -302,7 +215,6 @@ Let's look at the main ``[buildout]`` part::
   develop = .
   extends = versions.cfg
   parts = app
-          zope_conf
           test
 
 The first option (``develop``) tells buildout that, the current
@@ -323,9 +235,7 @@ dependencies.  You can add multiple lines to ``extends`` option to
 include multiple configuration files.
 
 The ``parts`` option list all the parts to be built by Buildout.
-Buildout expects a recipe for each parts listed here.  Which means
-that you cannot include ``config`` part here as it doesn't have any
-recipe associated with it.
+Buildout expects a recipe for each parts listed here.
 
 Now let's look at the ``app`` part::
 
@@ -348,62 +258,6 @@ option ``eggs`` list all the eggs.  The first egg,
 option, ``interpreter`` specify the name of custom interpreter
 created by this part.  The custom interpreter contains the paths to
 all eggs listed here and its dependencies.
-
-The ``[zope_conf]`` part creates the ``zope.conf`` from a template::
-
-  [zope_conf]
-  recipe = collective.recipe.template
-  input = templates/zope_conf.in
-  output = etc/zope.conf
-
-This part is fairly self explanatory, it creates a ``zope.conf`` file
-from the template file ``templates/zope_conf.in``.  This
-`collective.recipe.template recipe
-<http://pypi.python.org/pypi/collective.recipe.template>`_ is very
-popular among Buildout users.  Here is the template file
-(``templates/zope_conf.in``)::
-
-  # Identify the component configuration used to define the site:
-  site-definition ${config:site_zcml}
-
-  <zodb>
-
-
-      <filestorage>
-        path ${config:filestorage}/Data.fs
-        blob-dir ${config:blob}
-      </filestorage>
-
-  # Uncomment this if you want to connect to a ZEO server instead:
-  #  <zeoclient>
-  #    server localhost:8100
-  #    storage 1
-  #    # ZEO client cache, in bytes
-  #    cache-size 20MB
-  #    # Uncomment to have a persistent disk cache
-  #    #client zeo1
-  #  </zeoclient>
-  </zodb>
-
-  <eventlog>
-    # This sets up logging to both a file and to standard output (STDOUT).
-    # The "path" setting can be a relative or absolute filesystem path or
-    # the tokens STDOUT or STDERR.
-
-    <logfile>
-      path ${config:log}/z3.log
-      formatter zope.exceptions.log.Formatter
-    </logfile>
-
-    <logfile>
-      path STDOUT
-      formatter zope.exceptions.log.Formatter
-    </logfile>
-  </eventlog>
-
-  # Comment this line to disable developer mode.  This should be done in
-  # production
-  devmode on
 
 The last part creates the test runner::
 
