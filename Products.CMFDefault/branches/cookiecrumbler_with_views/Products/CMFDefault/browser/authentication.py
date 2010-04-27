@@ -46,9 +46,9 @@ def _expireAuthCookie(view):
         cctool = getToolByName(view, 'cookie_authentication')
         method = cctool.getCookieMethod('expireAuthCookie',
                                         cctool.defaultExpireAuthCookie)
-        method(view.response, cctool.auth_cookie)
+        method(view.request.response, cctool.auth_cookie)
     except AttributeError:
-        view.response.expireCookie('__ac', path='/')
+        view.request.response.expireCookie('__ac', path='/')
 
 
 class UnauthorizedView(BrowserView):
@@ -268,7 +268,7 @@ class Logout(ViewBase):
         """Log the user out"""
         _expireAuthCookie(self)
     
-    @memoize    
+    @memoize
     def clear_skin_cookie(self):
         """Remove skin cookie"""
         stool = self._getTool('portal_skins')
@@ -276,6 +276,8 @@ class Logout(ViewBase):
     
     def __call__(self):
         """Clear cookies and return the template"""
-        self.clear_skin_cookie()
-        self.logout()
+        if not self.logged_in():
+            self.clear_skin_cookie()
+            self.logout()
+            return self.request.response.redirect(self.request.URL)
         return super(Logout, self).__call__()

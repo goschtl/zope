@@ -28,6 +28,10 @@ class ICookieCrumbler(Interface):
         the parent URL if local_cookie_path is True otherwise /"""
         return path
 
+    def getCookieMethod(name, default):
+        """Get the cookie handler.
+        The cookie handler maybe overridden by acquisition."""
+
     def defaultSetAuthCookie(resp, cookie_name, cookie_value):
         """Set the authorisation cookie"""
 
@@ -61,4 +65,6 @@ class ICookieCrumbler(Interface):
         """
         
     def logout(response):
-        """Log the user out"""
+        """
+        Deprecated
+        Log the user out"""

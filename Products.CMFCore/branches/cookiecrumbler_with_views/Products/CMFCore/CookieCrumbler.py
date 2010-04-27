@@ -34,7 +34,7 @@ from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
 from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import UniqueObject, getToolByName
 
 
 # Constants.
@@ -263,7 +263,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             req._logout_path = phys_path + ('logout',)
 
     security.declarePublic('credentialsChanged')
-    def credentialsChanged(self, user, name, pw, request):
+    def credentialsChanged(self, user, name, pw, request=None):
         """
         Updates cookie credentials if user details are changed.
         """
@@ -280,9 +280,17 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         """
         Logs out the user
         """
+        target = None
         if response is None:
             response = self.REQUEST['RESPONSE'] # BBB for App.Management
-        self.defaultExpireAuthCookie(response, cookie_name=self.auth_cookie)
+            atool = getToolByName(self, 'portal_actions')
+            target = atool.getActionInfo('user/logout')['url']
+        method = self.getCookieMethod('expireAuthCookie',
+                                       self.defaultExpireAuthCookie)
+        method(response, cookie_name=self.auth_cookie)
+        # BBB for App.Management
+        if target is not None:
+            response.redirect(target)
 
     security.declarePublic('propertyLabel')
     def propertyLabel(self, id):

@@ -120,3 +120,14 @@ Use the mail password form with invalid input.
     True
     >>> '[[zope][Constraint not satisfied]]' in browser.contents
     True
+
+Log the user in and then out
+    >>> browser.open('http://localhost/site/@@login.html')
+    >>> browser.getControl('[[cmf_default][Member ID]]').value = 'mbr'
+    >>> browser.getControl('[[cmf_default][Password]]').value = 'mbrpw'
+    >>> browser.getControl('[[cmf_default][Login]]').click()
+    >>> '[[cmf_default][Login success]]' in browser.contents
+    True
+    >>> browser.open('http://localhost/site/@@logout.html')
+    >>> '[cmf_default][You have been logged out.' in browser.contents
+    True
