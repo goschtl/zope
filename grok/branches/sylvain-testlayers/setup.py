@@ -70,7 +70,6 @@ setup(
         'zope.dottedname',
         'zope.event',
         'zope.exceptions',
-        'zope.formlib',
         'zope.i18n',
         'zope.i18nmessageid',
         'zope.interface',

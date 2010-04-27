@@ -24,7 +24,6 @@
   <include package="zope.component" />
   <include package="zope.contentprovider" />
   <include package="zope.copypastemove" />
-  <include package="zope.formlib" />
   <include package="zope.i18n.locales" />
   <include package="zope.intid" />
   <include package="zope.keyreference" />
