@@ -694,7 +694,7 @@ ChangeLog of individual packages
 bluebream
 ~~~~~~~~~
 
-1.0a6 (unreleased)
+1.0b1 (2010-04-27)
 ******************
 
 - Set `name` & `description` for the sample application
@@ -705,6 +705,11 @@ bluebream
   flat or nested namespace structure, depending on the project name.
 
 - Enabled Distribute by default instead of Setuptools
+
+- Added zope.app.schema registrations to be able to register a named vocabulary
+
+- removed buildout templating and include two zope.conf files,
+  one for deployment and one for debugging with devmode
 
 1.0a5 (2010-03-28)
 ******************
