@@ -61,7 +61,6 @@ setup(
                       'zope.app.http',
                       'zope.app.publication',
                       'zope.app.publisher',
-                      'zope.app.renderer',
                       'zope.catalog',
                       'zope.component',
                       'zope.container',
@@ -90,9 +89,7 @@ setup(
                       # be removed or moved to the deprecated packages list.
                       'zope.app.appsetup',
                       'zope.app.pagetemplate',
-                      'zope.deprecation',
                       'zope.dottedname',
-                      'zope.hookable',
                       'zope.i18nmessageid',
                       'zope.pagetemplate',
                       'zope.proxy',

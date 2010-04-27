@@ -19,7 +19,6 @@
   <include package="zope.app.http" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher" />
-  <include package="zope.app.renderer" />
   <include package="zope.app.wsgi" />
   <include package="zope.annotation" />
   <include package="zope.catalog" />
