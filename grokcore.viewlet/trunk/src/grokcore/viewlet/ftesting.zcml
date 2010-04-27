@@ -11,7 +11,6 @@
   <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.publisher" file="meta.zcml" />
-  <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
 
   <!-- Viewlet includes only minimal view, need full for testing -->
