@@ -1,0 +1,166 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <!-- Content Security Declarations -->
+
+  <class class="zope.app.container.btree.BTreeContainer">
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IContainer" />
+    <require permission="zope.Public"
+             set_schema="zope.app.container.interfaces.IContainer" />
+  </class>
+
+  <class class=".contact.Address">
+    <allow interface=".interfaces.IAddress" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IAddress" />
+  </class>
+
+  <class class=".contact.EMails">
+    <require permission="zope.Public"
+             interface="zope.app.container.interfaces.IContainer" />
+    <require permission="zope.Public"
+             set_schema="zope.app.container.interfaces.IContainer" />
+  </class>
+
+  <class class=".contact.EMail">
+    <allow interface=".interfaces.IEMail" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IEMail" />
+  </class>
+
+  <class class=".contact.Phone">
+    <allow interface=".interfaces.IPhone" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IPhone" />
+  </class>
+
+  <class class=".contact.Contact">
+    <allow interface=".interfaces.IContact" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IContact" />
+  </class>
+
+  <!-- Supporting resources -->
+
+  <browser:zrt-resource
+      name="addressbook.css"
+      file="addressbook.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="addressbook.css"
+      view=".browser.AddressBook"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".browser.AddressBookCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      weight="1000"
+      />
+
+  <browser:zrt-resource
+      name="text-shadow.js"
+      file="text-shadow.js"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="text-shadow.js"
+      view=".browser.AddressBook"
+      manager="z3c.formdemo.skin.IJavaScript"
+      class=".browser.TextShadowViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:macro
+      name="widget-noerror-row"
+      macro="widget-noerror-row"
+      template="form-macros.pt"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Date-Select Widget -->
+
+  <adapter factory=".dateselect.DateSelectDataConverter" />
+
+  <z3c:widgetTemplate
+      mode="input"
+      widget=".dateselect.DateSelectWidget"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="dateselect.pt"
+      />
+
+  <!-- Address book view -->
+
+  <z3c:pagelet
+      name="addressbook.html"
+      for="zope.app.container.interfaces.IContainer"
+      class=".browser.AddressBook"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="addressbook.pt"
+      for=".browser.AddressBook"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <adapter
+      factory=".browser.AddContactLabel"
+      name="title" />
+
+  <z3c:template
+      template="contact.pt"
+      for=".browser.ContactAddForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="contact.pt"
+      for=".browser.ContactEditForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="addresses.pt"
+      for=".browser.AddressesForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="address.pt"
+      for=".browser.AddressForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="phones.pt"
+      for=".browser.PhonesForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="phone.pt"
+      for=".browser.PhoneForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="emails.pt"
+      for=".browser.EMailsForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="email.pt"
+      for=".browser.EMailForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

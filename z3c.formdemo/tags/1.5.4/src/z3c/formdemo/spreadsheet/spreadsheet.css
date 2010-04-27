@@ -1,0 +1,74 @@
+/* ----[ Layout ]----------------------------------------------------------- */
+
+h1 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* ----[ Form ]------------------------------------------------------------ */
+
+input.text-widget {
+  width: 150px;
+  padding: 2px;
+  background: white;
+}
+
+select.select-widget {
+  width: 130px;
+  padding: 2px;
+}
+
+input[type=submit] {
+  background: #D91813;
+  color: white;
+  border: 1px solid #8C100D;
+  font-weight: bold;
+}
+
+/* ----[ Table ]------------------------------------------------------------ */
+
+th {
+  background: #D91813;
+  color: white;
+  padding: 4px;
+}
+
+th a {
+  color: white;
+}
+
+th a:link {
+  color: white;
+}
+
+th a:hover {
+  color: white;
+}
+
+th a:visited {
+  color: white;
+}
+
+th.sorted-on {
+  background: #8C100D;
+}
+
+td {
+  padding: 3px;
+}
+
+td.sorted-on {
+  background: #DDD;
+}
+
+tr.even {
+  background: #EEE;
+}
+
+tr.even td.sorted-on {
+  background: #CCC;
+}
+
+tr.odd {
+  background: #F6F6F6;
+}
