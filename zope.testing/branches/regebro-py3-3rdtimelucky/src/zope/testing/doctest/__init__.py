@@ -192,15 +192,12 @@ else:
 # evil, but Zopes doctests did this, and if we change it everything breaks.
 import unittest
 
-def _patched_init(self, test, optionflags=0, setUp=None, tearDown=None,
-             checker=None):
-    unittest.TestCase.__init__(self)
-    self._dt_optionflags = optionflags
-    self._dt_checker = checker
-    self._dt_test = test
-    self._dt_setUp = setUp
-    self._dt_tearDown = tearDown
+def _patched_setUp(self):
+    test = self._dt_test
     self._dt_globs = test.globs.copy()
+
+    if self._dt_setUp is not None:
+        self._dt_setUp(test)
 
 def _patched_tearDown(self):
     test = self._dt_test
@@ -211,7 +208,7 @@ def _patched_tearDown(self):
     test.globs.clear()
     test.globs.update(self._dt_globs)
 
-doctest.DocTestCase.__init__ = _patched_init
+doctest.DocTestCase.setUp = _patched_setUp
 doctest.DocTestCase.tearDown = _patched_tearDown
 
 
