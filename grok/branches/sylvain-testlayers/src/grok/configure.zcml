@@ -41,11 +41,11 @@
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
 
+  <include package="grokcore.annotation" />
+  <include package="grokcore.formlib" />
+  <include package="grokcore.site" />
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
-  <include package="grokcore.formlib" />
-  <include package="grokcore.annotation" />
-  <include package="grokcore.site" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
