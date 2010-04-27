@@ -22,7 +22,6 @@
   <include package="zope.browserpage" />
   <include package="zope.catalog" />
   <include package="zope.component" />
-  <include package="zope.componentvocabulary" />
   <include package="zope.contentprovider" />
   <include package="zope.copypastemove" />
   <include package="zope.formlib" />

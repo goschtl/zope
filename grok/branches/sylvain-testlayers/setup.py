@@ -66,7 +66,6 @@ setup(
         'zope.browserpage',
         'zope.catalog',
         'zope.component',
-        'zope.componentvocabulary',
         'zope.container',
         'zope.contentprovider',
         'zope.copypastemove',
