@@ -60,6 +60,7 @@ setup(
                       'zope.annotation',
                       'zope.app.http',
                       'zope.app.publication',
+                      'zope.browserpage',
                       'zope.app.publisher',
                       'zope.catalog',
                       'zope.component',
