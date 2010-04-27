@@ -88,7 +88,6 @@ setup(
         'zope.security',
         'zope.securitypolicy',
         'zope.site',
-        'zope.size',
         'zope.traversing',
         ],
     tests_require=tests_require,
