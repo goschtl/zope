@@ -44,44 +44,66 @@ relationships with the Zope community.
 Why BlueBream ?
 ~~~~~~~~~~~~~~~
 
-Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004205.html
+A few features distinguish BlueBream from other Python web frameworks.
 
-BlueBream has:
+- BlueBream is built on top of the :term:`Zope Tool Kit` (ZTK), which
+  has many years of experience proving it meets the demanding
+  requirements for stable, scalable software.
 
-- WSGI-compatible object publisher (zope.publisher)
+- BlueBream uses the powerful and familiar :term:`Buildout` system
+  written in Python.
 
-- Object database (ZODB) for transparently persisting objects; comes
-  with load-balancing support (ZEO).
+- BlueBream employs the Zope Object Database (:term:`ZODB`), a
+  transactional object database providing extremely powerful and easy
+  to use persistence.
 
-- Component Architecture for making things pluggable very easily
-  (zope.component)
+- BlueBream registers components with Zope Component Markup Language
+  (:term:`ZCML`), an XML based configuration language, providing
+  limitless flexibility.
 
-- XML-configuration language for registering components
-  (zope.configuration), not mandatory but pretty much standard
+- BlueBream can also register components using :term:`GROK`, which
+  adds a layer replacing the declarative configuration of ZCML with
+  conventions and declarations in standard Python.
 
-- Flexible security architecture with pluggable security policies
-  (zope.security)
+- BlueBream features the :term:`Zope Component Architecture` (ZCA)
+  which implements :term:`Separation of concerns` to create highly
+  cohesive reusable components (zope.component_).
 
-- Good unit, integration and functional testing frameworks
-  (zope.testing, zope.testbrowser)
+- BlueBream implements Python Web Server Gateway Interface
+  :term:`WSGI` using :term:`Paste`, :term:`PasteScript`, and
+  :term:`PasteDeploy`.
 
-- XHTML-compliant templating language (zope.pagetemplate)
+- BlueBream includes a number of well tested components to implement
+  common activities.  A few are of these are:
 
-- Schema engine and automatic form generation machinery
-  (zope.formlib)
+  - zope.publisher_ publishes Python objects on the web, emphasizing
+    :term:`WSGI` compatibility
 
-- many more core and third-party packages that may already solve
-  some of your problems. See http://svn.zope.org, for instance.
+  - zope.security_ provides a generic mechanism for pluggable
+    security policies
 
-BlueBream is:
+  - zope.testing_ and zope.testbrowser_ offer unit and functional testing
+    frameworks
 
-- ZPL (BSD-ish license)
+  - zope.pagetemplate_ is an XHTML-compliant language for devloping
+    templates
 
-- Owned by Zope Foundation
+  - zope.schema_ is a schema engine
 
-- written mostly by contributors, not just Zope Corporation.
+  - zope.formlib_ is a tool for automatically generating forms
 
-- usable in pieces or in whole
+BlueBream is free/open source software, owned by the :term:`Zope
+Foundation`.  Bluebream is licensed under the :term:`Zope Public
+License` (BSD like, GPL compatible license).
+
+.. _zope.component: http://pypi.python.org/pypi/zope.component
+.. _zope.publisher: http://pypi.python.org/pypi/zope.publisher
+.. _zope.security: http://pypi.python.org/pypi/zope.security
+.. _zope.testing: http://pypi.python.org/pypi/zope.testing
+.. _zope.testbrowser: http://pypi.python.org/pypi/zope.testbrowser
+.. _zope.pagetemplate: http://pypi.python.org/pypi/zope.pagetemplate
+.. _zope.schema: http://pypi.python.org/pypi/zope.schema
+.. _zope.formlib: http://pypi.python.org/pypi/zope.formlib
 
 What is the Zope Foundation ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,9 +131,10 @@ How can I help ?
 If you're interested in helping and you have time, educate yourself
 on the component architecture and BlueBream then volunteer to assist
 in your particular area of expertise.  Please come to our IRC
-channel: #bluebream at irc.freenode.net  Also join the mailing list:
-https://mail.zope.org/mailman/listinfo/bluebream
-
+channel: #bluebream at irc.freenode.net Also join the mailing list:
+https://mail.zope.org/mailman/listinfo/bluebream There is wiki page
+with more details:
+http://wiki.zope.org/bluebream/ContributingToBlueBream
 
 What is the license of BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,17 +195,25 @@ small pieces of functionality together.
 Where can I find pointers to resources ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. IRC : #bluebream at irc.freenode.net
+- `Official Site <http://bluebream.zope.org>`_ (Updated once in a day)
 
-2. Mailing list: bluebream@zope.org,
-   Archives at: http://mail.zope.org/pipermail/bluebream/
+- `Mirror Site <http://bluebream.muthukadan.net>`_ (Updated every 30 minutes)
 
-3. Wiki: http://wiki.zope.org/bluebream
+- `PyPI Page <http://pypi.python.org/pypi/bluebream>`_
 
-4. Zope 3 book by Philipp von Weitershausen:
-   http://worldcookery.com/ (Bit outdated)
+- `Mailing List <https://mail.zope.org/mailman/listinfo/bluebream>`_
 
-5. Planet:  http://planetzope.org/
+- `Twitter <http://twitter.com/bluebream>`_
+   
+- `Blog <http://bluebream.posterous.com>`_
+   
+- IRC Channel: `#bluebream at freenode.net <http://webchat.freenode.net/?randomnick=1&channels=bluebream>`_
+
+- Ohloh.net: https://www.ohloh.net/p/bluebream
+
+- Buildbots: http://buildbot.afpy.org/bluebream/ http://bluebream.buildbot.securactive.org/
+
+- [[Community]] wiki pages
 
 
 What's the deal with the ``/@@`` syntax ?
@@ -296,13 +327,10 @@ How do I setup authentication (using a PAU)?
 How do I logout from BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://mail.zope.org/pipermail/zope3-users/2005-October/001112.html
-
-Ref: http://svn.zope.org/\*checkout\*/Zope3/branches/3.3/src/zope/app/security/browser/loginlogout.txt
+FIXME: Is this valid ?
 
 Logout is available from Zope 3.3 onwards, but it is disabled by
-default.  To enable add this line to
-``$instance/etc/overrides.zcml``::
+default.  To enable add this line to: ``etc/site.zcml``::
 
   <adapter factory="zope.app.security.LogoutSupported" />
 
@@ -482,8 +510,8 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006106.html
 
   <includeOverrides package="myapp" file="overrides.zcml" />
 
-How write custom traversal in BlueBream ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How to write custom traversal in BlueBream ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See this blog entry by Marius Gedminas:
 http://mg.pov.lt/blog/zope3-custom-traversal.html
@@ -507,39 +535,13 @@ http://apidoc.zope.org/++apidoc++/
 How do I check out a project/package from Zope subversion repository?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: SettingUpAZope3Sandbox
-
-You can browse available projects here: http://svn.zope.org (in the
-package names, "zc" stands for "Zope Corporation", "z3c" stands for
-"Zope 3 Community")
-
-Then, to check out Zope3 trunk anonymously::
-
-  svn co svn://svn.zope.org/repos/main/Zope3/trunk Zope3
-
-Stable branches are available from :
-http://svn.zope.org/Zope3/branches (online) .  And release tags from:
-http://svn.zope.org/Zope3/tags (online)
-
-To check out Zope 3.3 stable branch::
-
-  svn co svn://svn.zope.org/repos/main/Zope3/branches/3.3 Zope33
-
+Please look at: http://docs.zope.org/developer/noncommitter-svn.html
 
 How do I upgrade from one minor release to another?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://mail.zope.org/pipermail/zope3-users/2006-August/004025.html
-
-You can have more than one BlueBream installed, e.g. you can install Zope
-3.2.1 in parallel to 3.2.0 and switch your instance over to 3.2.1 (by
-editing the start scripts in $INSTANCE/bin). You can also install Zope
-3.2.1 into the place where 3.2.0 was installed; your instance should
-continue to work. Such a thing isn't recommended when upgrading
-between major versions, though (3.2 to 3.3).
-
-Note: this is even easier if you use an egg based infrastructure. However,
-learning how to use eggs in a realistic way, is a significant leap.
+Update the ``versions.cfg`` and point the URL of BB version file to
+new release and run buildout.
 
 Must I always restart the BlueBream server, when I modify my code ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -639,7 +641,6 @@ From IRC (http://zope3.pov.lt/irclogs/%23zope3-dev.2006-06-20.log.html)::
   rather "application/vnd.mozilla.xul+xml"?
 
 Use request.response.setHeader('content-type', ...)
-
 
 How do I give unique names to objects added to a container?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -832,6 +833,7 @@ component.xml in ZODB egg
 
 How do I register a browser resource in a test?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 First create a fileresource factory (or imageresourcefactory, or another one)::
 
     from zope.app.publisher.browser.fileresource import FileResourceFactory
@@ -867,27 +869,26 @@ is not part of any interface)::
 How do I write a custom 404 error page?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Register a view for zope.publisher.interfaces.INotFound in your layer.
-The default corresponding view is zope.app.exception.browser.notfound.NotFound
-An equivalent exists for pagelets : z3c.layer.pagelet.browser.NotFoundPagelet
+Register a view for ``zope.publisher.interfaces.INotFound`` in your
+layer.  The default corresponding view is
+``zope.app.exception.browser.notfound.NotFound`` An equivalent exists
+for pagelets: ``z3c.layer.pagelet.browser.NotFoundPagelet``
 
 How do I delete an entire tree of objects?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can't control the order of deletion. The problem is that
-certain objects get deleted too soon, and other items may need
-them around, particularly if you have specified IObjectRemoved
-adapters.
+You can't control the order of deletion. The problem is that certain
+objects get deleted too soon, and other items may need them around,
+particularly if you have specified ``IObjectRemoved`` adapters.
 
-You basically have to manually create a deletion dependency tree,
-and force the deletion order yourself.  This is one of the
-problems with events, ie: their order is not well defined.
+You basically have to manually create a deletion dependency tree, and
+force the deletion order yourself.  This is one of the problems with
+events, that is, their order is not well defined.
 
 .. _faq-configuration:
 
 Configuration and Setup
 -----------------------
-
 
 How do I disable the url selection of the skin?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1055,6 +1056,7 @@ http://mg.pov.lt/blog/zope3-custom-traversal.html
 
 How do I make my project (or a third party project) appear in the APIDOC?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Add the following in your apidoc.zcml or configure.zcml:
 
   <apidoc:rootModule module="myproject" />
@@ -1094,20 +1096,18 @@ Eg::
 How do I run a particular test from a package?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Go to your $ZOPE3INSTANCE/etc, then::
+::
 
-  $ cd $HOME/myzope/etc
-  $ ../bin/test.py -vpu --dir package/tests test_this_module
+  $ ./bin/test -vpu --dir package/tests test_this_module
 
-Here I assumed $HOME/myzope is your Zope3 instance directory.  Replace
-'package' with your package name.
+Replace 'package' with your package name.
 
 How do I record a session?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You will need to download Shane Hathaways' excellent (and minimal)
-tcpwatch package. This will log ALL data flowing between client
-and server for you, and you can use this in developing tests.
+tcpwatch package. This will log ALL data flowing between client and
+server for you, and you can use this in developing tests.
 
 To record a session::
 
@@ -1174,13 +1174,11 @@ The default implementation of menus sorts by interface first, and this
 item is most specific. See zope.app.publisher.browser.menu. If you do
 not like this behavior, you have to implement your own menu code.
 
-When running $instance/bin/runzope zlib import error appears?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When running, why ``zlib`` import error appears?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://mail.zope.org/pipermail/zope/2004-November/154739.html
-
-When you compile Python, make sure you have installed zlib development
-library.  In Debian 3.1 (Sarge) it is `zlib1g-dev`.
+When you compile Python, make sure you have installed zlib
+development library.
 
 I get a Server Error page when doing something that should work. How do I debug this?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
