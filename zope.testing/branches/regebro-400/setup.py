@@ -27,8 +27,7 @@ import sys
 if sys.version > '3':
     extras = dict(
     use_2to3 = True,
-    convert_2to3_doctests = ['src/zope/testing/doctest.txt',
-                             'src/zope/testing/formparser.txt',
+    convert_2to3_doctests = ['src/zope/testing/formparser.txt',
                              'src/zope/testing/module.txt',
                              'src/zope/testing/setupstack.txt',
                              ],
@@ -79,7 +78,6 @@ setup(
     
     packages=["zope", 
               "zope.testing", 
-              "zope.testing.doctest", 
               "zope.testing.renormalizing"],
     package_dir = {'': 'src'},
     namespace_packages=['zope',],
