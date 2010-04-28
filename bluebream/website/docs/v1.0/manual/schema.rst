@@ -7,6 +7,8 @@ Schemas and Widgets
    Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
    in wiki for the current status and timeline.
 
+.. highlight:: python
+   :linenothreshold: 5
 
 Introduction
 ------------
@@ -42,7 +44,9 @@ methods of an interface describe the functionality of a component,
 while the schema's fields represent the state.
 
 It is thus not necessary to develop a new syntax for writing schemas
-and we simply reuse the interface declaration::
+so, schema simply reuse the interface declaration.
+
+::
 
   from zope.interface import Interface
   from zope.schema import Text
@@ -54,7 +58,8 @@ and we simply reuse the interface declaration::
           description=u"The text of the example.",
           required=True)
 
-- Line 2: All default fields can be simply imported from zope.schema.
+- Line 2: All default fields can be simply imported from
+  ``zope.schema``.
 
 - Line 7-8: The title and description are used as human-readable text
   for the form generation. Of course, they also serve as
