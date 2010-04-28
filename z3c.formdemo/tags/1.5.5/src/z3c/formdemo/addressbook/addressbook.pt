@@ -1,0 +1,8 @@
+<h1><span>Address Book Demo</span></h1>
+
+<div id="layout">
+  <div id="contact-table"
+       tal:content="structure view/table" />
+  <div id="contact-form"
+       tal:content="structure view/form/render" />
+</div>

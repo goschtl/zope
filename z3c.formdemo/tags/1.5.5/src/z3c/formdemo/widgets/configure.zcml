@@ -1,0 +1,33 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+<class class=".browser.AllFields">
+    <require permission="zope.Public"
+             interface=".interfaces.IAllFields" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IAllFields" />
+</class>
+
+  <browser:resource
+      name="pressme.png"
+      file="pressme.png"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="widgets.html"
+      for="*"
+      class=".browser.AllFieldsForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <adapter
+      factory=".browser.getAllFields"
+      trusted="yes"
+      />
+
+</configure>

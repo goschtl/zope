@@ -1,0 +1,56 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <!-- security declaration -->
+  <zope:class class=".content.Candidate">
+    <zope:require permission="zope.Public"
+             interface=".content.ICandidate" />
+    <zope:require permission="zope.Public"
+             set_schema=".content.ICandidate" />
+  </zope:class>
+
+  <!-- Resources -->
+
+  <resourceDirectory
+      name="SpreadsheetImages"
+      directory="images/"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <zrt-resource
+      name="spreadsheet.css"
+      file="spreadsheet.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="spreadsheet.css"
+      view=".browser.CandidateSpreadsheet"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".browser.SpreadsheetCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      weight="1000"
+      />
+
+  <!-- Spreadsheet views -->
+
+  <z3c:pagelet
+      name="spreadsheet.html"
+      for="*"
+      class=".browser.CandidateSpreadsheet"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="spreadsheet.pt"
+      for=".browser.CandidateSpreadsheet"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

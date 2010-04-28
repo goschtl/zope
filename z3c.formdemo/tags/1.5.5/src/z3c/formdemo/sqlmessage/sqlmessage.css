@@ -1,0 +1,85 @@
+body {
+  background: #EBE6D3;
+}
+
+a:visited {
+  color: #D91813;
+}
+
+a:hover {
+  color: #D91813;
+}
+
+h1 {
+  background: #574E3F;
+  color: #D5CDC6;
+  font-weight: bold;
+  padding: 5px;
+  border-bottom: 3px solid #900002;
+}
+
+input[type=text] {
+ padding: 2px;
+}
+
+input[type=submit] {
+  border: 1px solid black;
+  background: #900002;
+  color: white;
+  font-weight: bold;
+  padding: 2px;
+  -moz-border-radius: 5px;
+}
+
+div#content {
+  margin: 0;
+  padding: 0;
+}
+
+div#body {
+  margin: 20px;
+}
+
+div.status {
+  background-color: #F5F2EB;
+  border: 1px solid #CAC8C2;
+  color: #D91813;
+  font-style: italic;
+  margin: 10px 0px;
+  padding: 7px;
+  -moz-border-radius: 5px;
+}
+
+div.actions, div.buttons {
+  background-color: #F5F2EB;
+  border: 1px solid #CAC8C2;
+  margin-top: 10px;
+  padding: 7px;
+  -moz-border-radius: 5px;
+}
+
+table.message-list th {
+  background: #A79E8D;
+  padding: 3px;
+}
+
+table.message-list td {
+  color: #574E3F;
+  padding: 2px 0px;
+}
+
+table.message-list tr.even {
+  background-color: #F5F2EB;
+}
+
+table.message-list td a {
+  color: #574E3F;
+}
+
+table.message-list td a:hover {
+  color: #574E3F;
+}
+
+table.message-list td a:visited {
+  color: #574E3F;
+}
