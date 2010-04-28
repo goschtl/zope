@@ -18,8 +18,9 @@ $Id$
 import unittest
 import Testing
 
-from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.component import eventtesting
 from zope.interface.verify import verifyClass
+from zope.testing.cleanup import cleanUp
 
 def makerequest(root, stdout, stdin=None):
     # Customized version of Testing.makerequest.makerequest()
@@ -39,7 +40,7 @@ def makerequest(root, stdout, stdin=None):
     return req
 
 
-class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
+class CookieCrumblerTests(unittest.TestCase):
 
     def _getTargetClass(self):
         from Products.CMFCore.CookieCrumbler  import CookieCrumbler
@@ -54,9 +55,9 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         from Products.CMFCore.interfaces import ICookieCrumbler
         from Products.CMFCore.CookieCrumbler import handleCookieCrumblerEvent
 
-        PlacelessSetup.setUp(self)
         self._finally = None
 
+        eventtesting.setUp()
         provideHandler(handleCookieCrumblerEvent,
                        adapts=(ICookieCrumbler, IObjectEvent))
 
@@ -67,7 +68,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
             self._finally()
 
         noSecurityManager()
-        PlacelessSetup.tearDown(self)
+        cleanUp()
 
     def _makeSite(self):
         import base64
