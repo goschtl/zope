@@ -26,16 +26,17 @@ Technical Decisions
 
 - BlueBream 1.0 should provide an upgrade path from Zope 3.4 KGS.
 
-- Any "shell command" required to be repeated after project creation should not
-  be automated by the project template.
+- Any "shell command" required to be repeated after project creation
+  should not be automated by the project template.
 
 - Running ``bootstrap.py`` and ``buildout`` in the project should not
   be done during project template creation for the previous reason.
   Another supporting reason is the easiness of adding sources to
   version control systems.
 
-- additional packages contained in namespaces such as "zc", "z3c", or others will
-  be added in the near future, but won't be part of the 1.0 release.
+- additional packages contained in namespaces such as "zc", "z3c", or
+  others will be added in the future, but won't be part of the 1.0
+  release.
 
 
 .. raw:: html
