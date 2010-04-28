@@ -10,24 +10,28 @@ Forms
 Introduction
 ------------
 
-BlueBream provides a HTML form library called ``zope.formlib`` to
-generate forms and widgets.  There is an advanced community supported
-library called ``z3c.form``.  This chapter will describe about using
-``zope.formlib``.
+BlueBream has a HTML form library called ``zope.formlib`` to generate
+forms and widgets.  Instead of using a form library, you can create
+all form manually.  But the formlib avoids many duplication works.
+The formlib generate form for getting input data.  You can also
+create validators and responses.
 
 Forms are web components that use widgets to display and input data.
 Typically a template displays the widgets by accessing an attribute
-or method on an underlying class.  BlueBream use ``zope.formlib`` to
-create various forms.  Example form are AddForm, EditForm, Form.
+or method on an underlying class.  The form library has support for
+validating user input data.  Form library automatically convert the
+user submitted form data into Python objects.
 
-Instead of using a form library, you can create all form manually.
-But the formlib avoids many duplication works.  The formlib generate
-form for getting input data.  You can also create validators and
-responses.
+The formlib provides some base classes for creating view classes.
+The most used base classes are DisplayForm, AddForm and EditForm.
+The DisplayForm is not really a web form to submit, but a convenience
+for displaying values based on particular context/interface.
 
-The most used forms are DisplayForm, AddForm and EditForm.  The
-DisplayForm is not really a web form to submit, but a convenience for
-displaying values based on particular context/interface.
+.. note::
+
+  There is another community supported library called `z3c.form
+  <http://docs.zope.org/z3c.form>`_.  Many projects are using this
+  library, and it is very well documented.
 
 Creating an AddForm
 -------------------
@@ -66,6 +70,8 @@ You need a schema definition as explain in the previous chapter::
 
 Creating an EditForm
 --------------------
+
+The usage of ``EditForm`` is very similar to ``AddForm``.
 
 Conclusion
 ----------
