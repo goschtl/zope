@@ -1,1 +1,0 @@
-<div metal:use-macro="macro:widget-rows" />
