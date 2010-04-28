@@ -16,23 +16,16 @@ $Id$
 
 import sys
 import re
+import doctest
 import unittest
 import warnings
 from zope.testing import renormalizing
-
-# Yes, it is deprecated, but we want to run tests on it here.
-warnings.filterwarnings("ignore", "zope.testing.doctest is deprecated",
-                        DeprecationWarning, __name__, 0)
-
-from zope.testing import doctest
-
 
 def test_suite():
     suite = unittest.TestSuite((
         doctest.DocTestSuite('zope.testing.loggingsupport'),
         doctest.DocTestSuite('zope.testing.renormalizing'),
         doctest.DocTestSuite('zope.testing.server'),
-        doctest.DocFileSuite('doctest.txt'),
         doctest.DocFileSuite('formparser.txt'),
         doctest.DocFileSuite(
             'module.txt',
@@ -46,6 +39,4 @@ def test_suite():
         doctest.DocFileSuite('setupstack.txt'),
         ))
 
-    if sys.version < '3':
-        suite.addTests(doctest.DocFileSuite('unicode.txt'))
     return suite
