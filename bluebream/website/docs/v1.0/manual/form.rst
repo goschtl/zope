@@ -33,6 +33,22 @@ for displaying values based on particular context/interface.
   <http://docs.zope.org/z3c.form>`_.  Many projects are using this
   library, and it is very well documented.
 
+Concepts
+--------
+
+Before proceeding further let's look into some Form concepts.
+
+Widget
+~~~~~~
+
+Formlib defines a widget like this: "views on bound schema fields"
+
+Field
+~~~~~
+
+Form
+~~~~
+
 Creating an AddForm
 -------------------
 
