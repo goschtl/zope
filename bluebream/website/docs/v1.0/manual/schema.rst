@@ -318,7 +318,7 @@ Auto-generated Forms using the forms Package
 --------------------------------------------
 
 Forms are much more Zope-specific than schemas and can be found in
-the zope.app.forms package.  The views of schema fields are called
+the ``zope.formlib`` package.  The views of schema fields are called
 widgets.  Widgets responsible for data display and conversion in
 their specific presentation type.  Currently widgets exist mainly for
 HTML (the Web browser).
@@ -328,7 +328,7 @@ Display widgets are often very simply and only show a text
 representation of the Python object.  The input widgets, however, are
 more complex and display a greater variety of choices.  The following
 list shows all available browser- based input widgets (found in
-zope.app.form.browser):
+zope.formlib.widget):
 
 
 Text Widgets
@@ -471,7 +471,7 @@ conversion functionality of a widget::
 
   >>> from zope.publisher.browser import TestRequest
   >>> from zope.schema import Int
-  >>> from zope.app.form.browser import IntWidget
+  >>> from zope.formlib.widget import IntWidget
   >>> field = Int(__name__='number', title=u'Number', min=0, max=10)
   >>> request = TestRequest(form={'field.number': u'9'})
   >>> widget = IntWidget(field, request)
@@ -511,18 +511,18 @@ conversion functionality of a widget::
 - Line 7-8: This method checks whether the form contained a value for
   this widget.
 
-- Line 9-10: If so, then we can use the getInputValue() method to
+- Line 9-10: If so, then we can use the ``getInputValue()`` method to
   return the converted and validated value (an integer in this case).
   If we would have chosen an integer outside this range, a
   WidgetInputError would have been raised.
 
 - Line 11-20: Display the HTML representation of the widget.  The
-  replace() call is only for better readability of the output.
+  ``replace()`` call is only for better readability of the output.
 
 Note that you usually will not have to deal with these methods at all
 manually, since the form generator and data converter does all the
 work for you.  The only method you will commonly overwrite is
-_validate(), which you will use to validate custom values.  This
+``_validate()``, which you will use to validate custom values.  This
 brings us right into the next subject, customizing widgets.
 
 There are two ways of customizing widgets.  For small adjustments to
@@ -538,7 +538,7 @@ field called "name", the following ZCML code can be used.
  
     <browser:widget
         field="name"
-        class="zope.app.form.browser.TextWidget"
+        class="zope.formlib.widget.TextWidget"
         displayWidth="45"
         style="width: 100%"/>
  
@@ -552,8 +552,8 @@ The second possibility to change the widget of a field is to write a
 custom view class.  In there, custom widgets are easily realized
 using the CustomWidget wrapper class.  Here is a brief example::
 
-  from zope.app.form.widget import CustomWidget
-  from zope.app.form.browser import TextWidget
+  from zope.formlib.widget import CustomWidget
+  from zope.formlib.widget import TextWidget
 
   class CustomTextWidget(TextWidget):
       ...
