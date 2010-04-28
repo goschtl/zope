@@ -1,5 +1,5 @@
-Zope Schemas and Widgets
-========================
+Schemas and Widgets
+===================
 
 .. warning::
 
@@ -11,43 +11,18 @@ Zope Schemas and Widgets
 Introduction
 ------------
 
-In the early stages of development, the BlueBream developers decided
-that it would be cumbersome to manually write HTML forms and to
-manually validate the input.  BlueBream team realized that if they
-could extend interfaces, we could auto-generate HTML forms and also
-automatically validate any input.  This chapter gives some background
-information and formally introduces the ``zope.schema`` and
-``zope.app.form`` packages.
+In the early stages of development, the BlueBream (then know as Zope
+3) developers decided that it would be cumbersome to manually write
+HTML forms and to manually validate the input.  BlueBream team
+realized that if they could extend interfaces, we could auto-generate
+HTML forms and also automatically validate any input.  This chapter
+gives some background information and formally introduces the
+``zope.schema`` and ``zope.formlib`` packages.
 
+Schema is an interface defined using special attributes called
+"fields".
 
-History and Motivation
-----------------------
-
-Originally, Stephan Richter wanted to port Formulator, a very
-successful Zope 2 product to auto-generate and validate forms, to
-BlueBream (then know as Zope 3).  In Formulator, one would create
-various input fields (like integers or text lines) in a form and
-provide some meta-data about the fields, like the maximum and minimum
-length of a string.  You could then tell the form to simply render
-itself.  For more details see
-`http://zope.org/Members/infrae/Formulator`_.
-
-Even though Formulator tried to split application logic and
-presentation, various parts were still not sufficiently separated,
-mainly due to the limitations Zope 2 provided.  Therefore the
-original port remained a hack in Zope 3 until the idea of schemas was
-developed by Jim Fulton and Martijn Faassen (the original author of
-Formulator) during the Berlin BBQ Sprint (April 2002) when trying to
-combine Zope 3's version of Formulator and class properties.  After
-all presentation logic was removed, Formulator fields felt a lot like
-interface specification for attributes.  So it was realized, that if
-we supply more meta-data to the attribute declarations in interfaces,
-then we could accomplish auto-generation and validation of HTML
-forms.  These extended attributes are still known as "fields".  If an
-interface contains any fields, then this interface is conventionally
-called a schema.
-
-The following three main goals of schemas developed:
+The schema was developed based on the following three main goals:
 
 1.  Full specification of properties on an API level
 
@@ -94,8 +69,8 @@ and we simply reuse the interface declaration::
 Core Schema Fields
 ------------------
 
-After we have seen a simple example of a schema, let's now look at all the
-basic fields and their properties.
+After we have seen a simple example of a schema, let's now look at
+all the basic fields and their properties.
 
 -   Properties that all fields support:
 
