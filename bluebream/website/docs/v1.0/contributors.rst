@@ -38,3 +38,4 @@ directly.
 - Hermann Himmelbauer
 - Paul Harouff
 - Saket Srivastav
+- Garry Steedman (IRC nick: birlinn)
