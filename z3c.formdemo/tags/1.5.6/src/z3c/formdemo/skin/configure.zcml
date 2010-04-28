@@ -1,0 +1,79 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <!-- div layout demo skin -->
+  <zope:interface
+      interface="z3c.formdemo.skin.IDivDemoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CFormDemo"
+      />
+
+  <!-- table layout demo skin -->
+  <zope:interface
+      interface="z3c.formdemo.skin.ITableDemoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CTableFormDemo"
+      />
+
+  <!-- resource -->
+  <zrt-resource
+      name="demo.css"
+      file="demo.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="img"
+      directory="img"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- viewlet managers -->
+  <viewletManager
+      name="ICSS"
+      provides="z3c.formdemo.skin.ICSS"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="z3c.formdemo.skin.IJavaScript"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+
+  <!-- viewlets -->
+  <viewlet
+      name="demo.css"
+      for="*"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".DemoCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- layout template -->
+  <z3c:layout
+      for="*"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      template="template.pt"
+      />
+
+  <!-- ZC Table Resource Library inclusion -->
+
+  <configure package="zc.table">
+    <zope:resourceLibrary
+        name="zc.table"
+        layer="z3c.formdemo.layer.IDemoBrowserLayer">
+      <zope:directory source="resources" include="sorting.js"/>
+    </zope:resourceLibrary>
+  </configure>
+
+</configure>

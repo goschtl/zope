@@ -1,0 +1,73 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="demo">
+
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="zope.app.component.browser" file="meta.zcml" />
+  <include package="zope.app.form.browser" file="meta.zcml" />
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.app.publisher" file="meta.zcml" />
+  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.rdb" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.zrtresource" file="meta.zcml" />
+  <include package="zc.resourcelibrary" file="meta.zcml" />
+
+  <browser:menu id="zmi_views" title="Views" />
+  <browser:menu id="zmi_actions" title="Actions" />
+
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.component" />
+  <include package="zope.app.container" />
+  <include package="zope.app.error" />
+  <include package="zope.app.i18n" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.security" />
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.session" />
+  <include package="zope.app.twisted" />
+  <include package="zope.app.wsgi" />
+  <include package="zope.annotation" />
+  <include package="zope.component" />
+  <include package="zope.contentprovider" />
+  <include package="zope.location" />
+  <include package="zope.publisher" />
+  <include package="zope.rdb" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.viewlet" />
+
+  <include package="z3c.form" />
+  <include package="z3c.formui" />
+  <include package="z3c.formdemo" />
+  <include package="z3c.layer.pagelet" />
+  <include package="z3c.macro" />
+  <include package="z3c.pagelet" />
+
+  <include package="zc.resourcelibrary" />
+  <include package="zc.table" />
+
+  <browser:defaultView name="index.html" />
+  <browser:defaultSkin name="Z3CFormDemo" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Anonymous" title="Everybody" />
+  <grantAll role="zope.Anonymous" />
+
+  <class class="zope.app.folder.folder.Folder">
+  <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require permission="zope.Public"
+             interface="zope.app.folder.interfaces.IFolder" />
+    <require permission="zope.Public"
+             set_schema="zope.app.folder.interfaces.IFolder" />
+    </class>
+</configure>
