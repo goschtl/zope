@@ -291,7 +291,7 @@ How do I setup authentication (using a PAU)?
   sm['authentication']['Users'] = users
   sm.registerUtility(users, IAuthenticatorPlugin, name="Users")
   pau.authenticatorPlugins = (users.__name__, )
-  pau.credentialsPlugins = ( "No Challenge if Authenticated", "Session Credentials" ) 
+  pau.credentialsPlugins = ( "No Challenge if Authenticated", "Session Credentials" )
 
 How do I logout from BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -315,11 +315,11 @@ Ref: https://mail.zope.org/pipermail/zope3-users/2010-January/008745.html
 
 ::
 
-  .../eggs/zope.principalregistry-3.7.0-py2.5.egg/zope/principalregistry/principalregistry.py", 
+  .../eggs/zope.principalregistry-3.7.0-py2.5.egg/zope/principalregistry/principalregistry.py",
   line 82, in unauthorized
      a = ILoginPassword(request)
-  TypeError: ('Could not adapt', <zope.publisher.browser.BrowserRequest 
-  instance URL=http://localhost:9060/@@login.html>, <InterfaceClass 
+  TypeError: ('Could not adapt', <zope.publisher.browser.BrowserRequest
+  instance URL=http://localhost:9060/@@login.html>, <InterfaceClass
   zope.authentication.interfaces.ILoginPassword>)
 
 You need to include ``zope.login`` package in your ZCML configuration
@@ -427,7 +427,7 @@ You need to create and register simple adapter for object, request
 and view that implements the ``IContentProvider`` interface::
 
   class LatestNews(object):
-    
+
       implements(IContentProvider)
       adapts(Interface, IDefaultBrowserLayer, Interface)
 
@@ -435,10 +435,10 @@ and view that implements the ``IContentProvider`` interface::
           self.context = context
           self.request = request
           self.__parent__ = view
-    
+
       def update(self):
           pass
-        
+
       def render(self):
           return 'Latest news'
 
@@ -541,7 +541,7 @@ between major versions, though (3.2 to 3.3).
 Note: this is even easier if you use an egg based infrastructure. However,
 learning how to use eggs in a realistic way, is a significant leap.
 
-Must I always restart the BlueBream server, when I modify my code ? 
+Must I always restart the BlueBream server, when I modify my code ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 No, you need not to restart, if you use the ``--reload`` option
@@ -562,7 +562,7 @@ http://mail.zope.org/pipermail/zope-dev/2007-December/030562.html
 Do it by subscribing to IDatabaseOpenedWithRootEvent (from zope.app.appsetup)
 
 Example code::
- 
+
   from zope.app.appsetup.interfaces import IDatabaseOpenedWithRootEvent
   from zope.app.appsetup.bootstrap import getInformationFromEvent
   import transaction
@@ -794,7 +794,7 @@ You can do so with a little zcml::
 How do I get IRequest object in event handler ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:Q: How I can get IRequest in my event handler (I have only context)? 
+:Q: How I can get IRequest in my event handler (I have only context)?
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2007-April/006051.html
 
@@ -990,7 +990,7 @@ You need to create and register simple adapter for object, request
 and view that implements the IContentProvider interface::
 
   class LatestNews(object):
-    
+
       implements(IContentProvider)
       adapts(Interface, IDefaultBrowserLayer, Interface)
 
@@ -998,10 +998,10 @@ and view that implements the IContentProvider interface::
           self.context = context
           self.request = request
           self.__parent__ = view
-    
+
       def update(self):
           pass
-        
+
       def render(self):
           return 'Latest news'
 
@@ -1213,7 +1213,7 @@ The fix is easy, but first the reason why this happens:
 When you install eggs with easy_install, it creates a temp directory,
 and byte compiles the python code. Hence, the .pyc files that are generated
 reference this (working, but temporary) path. Easy_install then copies the
-entire package into the right place, and so the .pyc files are stuck with 
+entire package into the right place, and so the .pyc files are stuck with
 invalid references to source files.
 
 To solve this, simply remove all the ".pyc" files from any .egg paths that you
@@ -1223,38 +1223,25 @@ have. On Unix, something like::
 
 should do the trick.
 
-How do I get more details about system errors, in the browser itself?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ref: http://mail.zope.org/pipermail/zope3-users/2006-November/004881.html
-
-Use the Debug skin via ++skin++Debug or via ++debug++errors (the
-latter is better if you still want to see your own skin).
-
 How can I get a postmortem debugger prompt when a request raises an exception?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Edit your zope.conf and change the server type from HTTP (or whatever it
-is) to PostmortemDebuggingHTTP or WSGI-PostmortemDebuggingHTTP.::
+Edit the ``debug.ini`` file and update ``[filter-app:main]`` section
+as mentioned in the comment there::
 
-    <server>
-      address 8080
-      type PostmortemDebuggingHTTP
-    </server>
+  [filter-app:main]
+  # Change the last part from 'ajax' to 'pdb' for a post-mortem debugger
+  # on the console:
+  use = egg:z3c.evalexception#ajax
+  next = zope
 
-Restart the server in the foreground (you need an attached console to interact
-with the debugger).::
+Restart the server in the foreground (you need an attached console to
+interact with the debugger).::
 
-    path/to/instance/control/script stop
-    path/to/instance/control/script fg
+    ./bin/paster serve debug.ini
 
-Now, when a request raises an exception, you'll be dropped into a post-mortem
-debugger at the point of the exception.
-
-What version of ZODB does BlueBream use ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-BlueBream 1.0 is using ZODB 3.9.x
+Now, when a request raises an exception, you'll be dropped into a
+post-mortem debugger at the point of the exception.
 
 How do I use ZODB blob ?
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1263,30 +1250,20 @@ You can use `z3c.blobfile
 <http://pypi.python.org/pypi/z3c.blobfile>`_ implementation for
 storing images and other normal files.
 
-In BlueBream, blob storage is configured by default.  The final
-configuration is inside ``etc/zope.conf``, but this configuration
-file is generated from a template by Buildout.  The templates is
-available in ``templates/zope_conf.in``.  So, if you want to make any
-changes, you can do it there::
+In BlueBream, blob storage is configured by default.  The Zope
+configuration is inside ``etc/zope.conf``::
 
   <zodb>
-    # Wrap standard FileStorage with BlobStorage proxy to get ZODB blobs
-    # support.
-    # This won't be needed with ZODB 3.9, as its FileStorage supports
-    # blobs by itself. If you use ZODB 3.9, remove the proxy and specify
-    # the blob-dir parameter right in in filestorage, just after path.
-    <blobstorage>
-      blob-dir ${config:blob}
-      <filestorage>
-        path ${config:filestorage}/Data.fs
-      </filestorage>
-    </blobstorage>
-  </zodb>
 
-The ``blob-dir`` specifies where you want to store blobs.  As you can
-see, the directory location information is getting from Buildout
-configuration file.  So, if you want to change the location, you need
-to change it in the Buildout configuration.
+    <filestorage>
+      path var/filestorage/Data.fs
+      blob-dir var/blob
+    </filestorage>
+  ...
+
+
+The ``blob-dir`` specifies the directory where you want to store
+blobs.
 
 How to clear history (pack) in ZODB ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1329,22 +1306,17 @@ Delete::
 Is there any tool to monitor ZODB activity ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2007-05-15.log.html
-
 There are some packages under development:
 
-- http://svn.zope.org/zc.z3monitor
-- http://svn.zope.org/zc.zservertracelog
-- http://svn.zope.org/zc.zodbactivitylog
+- http://pypi.python.org/pypi/zc.z3monitor
+- http://pypi.python.org/pypi/zc.zodbactivitylog
 
-Where is zope.app.workflow ?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Is there any workflow packages available ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It has never been released with BlueBream, just as an add-on package.
-Please look at these packages:
+Look at these packages:
 
 - http://pypi.python.org/pypi/hurry.workflow
-
 - http://pypi.python.org/pypi/zope.wfmc
 
 
