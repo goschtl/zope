@@ -2,6 +2,15 @@
 Change History
 **************
 
+x.y.z (Unreleased)
+==================
+
+- Updated tests to run with the last versions of all modules.
+
+- Removed the usage of the deprecated zope.testing.doctest, therby also
+  dropping Python 2.3 support.
+  
+
 1.2.0 (2009-03-23)
 ==================
 

@@ -85,6 +85,8 @@ Running bugfix1.tests.Layer1 tests:
   Running:
  test (bugfix1.tests.TestDemo1)
   Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+[Parallel tests running in bugfix1.tests.Layer2:
+  . LAYER FINISHED]
 Running bugfix1.tests.Layer2 tests:
   Running in a subprocess.
   Set up bugfix1.tests.Layer2 in 0.000 seconds.

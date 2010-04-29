@@ -17,7 +17,7 @@ import re
 import unittest
 
 import zc.buildout.testing
-import zope.testing.doctest
+import doctest
 import zope.testing.renormalizing
 
 
@@ -27,10 +27,11 @@ def setUp(test):
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.interface', test)
+    zc.buildout.testing.install('zope.exceptions', test)
 
 def test_suite():
     return unittest.TestSuite((
-        zope.testing.doctest.DocFileSuite(
+        doctest.DocFileSuite(
             'README.txt',
             'bugfixes.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
@@ -42,7 +43,9 @@ def test_suite():
                      (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
                      (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
                      (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
+                     (re.compile('distribute-[^-]+-'), 'setuptools-X-'),
                      (re.compile('zope.interface-[^-]+-'), 'zope.interface-X-'),
+                     (re.compile('zope.exceptions-[^-]+-.*\.egg'), 'zope.exceptions-X-pyN.N.egg'),
                      ]),
             ),
         ))
