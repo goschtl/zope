@@ -1,5 +1,5 @@
-Documentation Writing Guidelines
-================================
+Guidelines for writing documentation 
+====================================
 
 Original location: http://www.zope.org/DocProjects/writing_tips
 
