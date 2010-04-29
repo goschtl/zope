@@ -339,13 +339,16 @@ like this::
       main = tc.main.startup:application_factory
 
 The name of entry point should be ``main``.  Otherwise, it should be
-explicitly mentioned in configuration file.  For example, if the
-definition is::
+explicitly mentioned in configuration file (``debug.ini`` &
+``deploy.ini``).  For example, if the definition is::
 
       [paste.app_factory]
       testapp = tc.main.startup:application_factory
 
 The PasteDeploy configuration should be changed like this::
+
+  [app:main]
+  use = egg:ticketcollector#testapp
 
 The second section (``[server:main]``) specifies the WSGI server::
 
@@ -447,7 +450,7 @@ Zope configuration
 ----------------------
 
 Similar to PasteDeploy configuration, there are two Zope
-configuration files: ``debug.ini`` and ``deploy.ini``.
+configuration files: ``etc/zope.conf`` and ``etc/zope-debug.conf``.
 
 This is the content of ``etc/zope.conf``::
 
@@ -733,12 +736,12 @@ Creating the application object
 Container objects
 ~~~~~~~~~~~~~~~~~
 
-In this section we will explore one of the main concepts in BlueBream:
- **container objects**.  As mentioned earlier BlueBream uses an
-object database called ZODB to store your Python objects.  You can
-think of an object database as a container which contains objects;
-the inner object may be another container which contains other
-objects.
+In this section we will explore one of the main concepts in
+BlueBream: **container objects**.  As mentioned earlier BlueBream
+uses an object database called ZODB to store your Python objects.
+You can think of an object database as a container which contains
+objects; the inner object may be another container which contains
+other objects.
 
 The object hierarchy may look like this::
 
@@ -955,7 +958,7 @@ directive.  The ``class`` directive listed above also declares permission
 settings for ``Collector``.
 
 A view for adding collectors
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now the content component is ready to use but you will need a web
 page which lets us add a ticket collector object.  You can use the
@@ -1007,7 +1010,7 @@ directive is used for registering pages.  You can use the name
      />
 
 The package development is complete now, but it is not yet included
-from the main package.  To include this package from the main package
+from the main package.  To include this package in the main package
 (``tc.main``) you need to modify the ``src/tc/main/configure.zcml``
 and add this line before ``</configure>``::
 
