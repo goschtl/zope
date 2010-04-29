@@ -56,7 +56,6 @@ setup(
         'simplejson',
         'z3c.autoinclude',
         'z3c.flashmessage',
-        'z3c.testsetup',
         'zc.catalog',
         'zope.annotation',
         'zope.app.appsetup',
