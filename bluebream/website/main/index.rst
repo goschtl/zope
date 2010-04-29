@@ -8,3 +8,4 @@ Welcome to BlueBream!
    :maxdepth: 2
 
    screencasts
+   forum
