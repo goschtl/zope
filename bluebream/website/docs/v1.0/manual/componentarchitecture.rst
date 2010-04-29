@@ -7,8 +7,7 @@ Introdction
 `Zope Component Architecture (ZCA)` is a framework for supporting
 component based design and programming.  It is very well suited to
 developing large Python software systems.  The ZCA is not specific to
-the Zope web application server: it can be used for developing any
-Python application.
+the BlueBream: it can be used for developing any Python application.
 
 The ZCA is all about using Python objects effectively.  Components
 are reusable objects with introspectable interfaces.  A component
@@ -31,11 +30,10 @@ is about creating, registering, and retrieving components.  Remember
 also, an `adapter` is a normal Python class (or a factory in general)
 and `utility` is a normal Python callable object.
 
-The ZCA framework is developed as part of the Zope 3 project.  As
-noted earlier, it is a pure Python framework, so it can be used in any
-kind of Python application.  Currently both Zope 3 and Zope 2 projects
-use this framework extensively.  There are many other projects
-including non-web applications using it.
+The ZCA framework was developed as part of the BlueBream project.  As
+noted earlier, it is a pure Python framework, so it can be used in
+any kind of Python application.  There are many projects including
+non-web applications using it.
 
 Adapters
 --------
