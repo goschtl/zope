@@ -37,40 +37,8 @@ kind of Python application.  Currently both Zope 3 and Zope 2 projects
 use this framework extensively.  There are many other projects
 including non-web applications using it.
 
-Installation
-------------
-
-Using `zc.buildout` with `zc.recipe.egg` recipe you can create Python
-interpreter with specified Python eggs.  First you can create a
-directory and initialize Buildout::
-
-  $ mkdir explore-zope.component
-  $ cd explore-zope.component
-  $ echo "#Buildout configuration" > buildout.cfg
-  $ svn co svn://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap
-  $ ~/usr/bin/python2.4 bootstrap/bootstrap.py
-
-Now modify the `buildout.cfg` like this::
-
-  [buildout]
-  parts = py
-
-  [py]
-  recipe = zc.recipe.egg
-  eggs = zope.component
-  interpreter = mypython
-
-Now run `buildout` script inside `bin` directory.  This will download
-zope.component and its dependency eggs and install it.  Now you can
-access the interpreter created by the Buildout recipe like this::
-
-  $ ./bin/buildout
-  $ ./bin/mypython
-  >>> import zope.component
-
 Adapters
 --------
-
 
 Implementation
 ~~~~~~~~~~~~~~
