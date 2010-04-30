@@ -35,7 +35,7 @@ Bugfix: Inconsistent linefeeds
 ------------------------------
 
 Due to the way releases are made on different platforms, we sometimes test
-files on a *nix system with Windows file endings. Unfortunately, that leaves
+files on a Unix system with Windows file endings. Unfortunately, that leaves
 some of the test files broken:
 
   >>> import tempfile
@@ -71,4 +71,44 @@ If you tell the testrunner that you want to report only the first failure,
 but the test is set up to have a report flag of some sort, like a REPORT_NDIFF,
 the REPORT_ONLY_FIRST_FAILURE will be ignored. That's silly, so we patch that.
 
-XXX/TODO: Write tests for it.
+  >>> code = '''def fn():
+  ...     """This should fail:
+  ...     >>> assert 1 == 2
+  ...     True
+  ...
+  ...     >>> assert 2 == 1
+  ...     True
+  ...     """
+  ...     return None'''
+  >>> import imp
+  >>> newmodule = imp.new_module('newmodule')
+  >>> exec(code, newmodule.__dict__)
+  >>> suite = doctest.DocTestSuite(newmodule, optionflags=doctest.REPORT_NDIFF)
+  >>> doctest.set_unittest_reportflags(doctest.REPORT_ONLY_FIRST_FAILURE)
+  0
+  >>> runner = doctest.DocTestRunner()
+  >>> for case in suite: #doctest: +ELLIPSIS
+  ...   case.runTest()
+  Traceback (most recent call last):
+  ...
+      compileflags, 1) in test.globs
+    File "<doctest README.txt[25]>", line 2, in ...
+      case.runTest()
+  ...
+      raise self.failureException(self.format_failure(new.getvalue()))
+  AssertionError: Failed doctest test for newmodule.fn
+    File "newmodule", line 1, in fn
+  <BLANKLINE>
+  ----------------------------------------------------------------------
+  File "newmodule", line 3, in newmodule.fn
+  Failed example:
+      assert 1 == 2
+  Exception raised:
+      Traceback (most recent call last):
+  ...
+          compileflags, 1) in test.globs
+        File "<doctest newmodule.fn[0]>", line 1, in ...
+          assert 1 == 2
+      AssertionError
+  <BLANKLINE>
+  
