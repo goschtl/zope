@@ -7,5 +7,6 @@ Welcome to BlueBream!
    :numbered:
    :maxdepth: 2
 
+   download
    screencasts
    forum
