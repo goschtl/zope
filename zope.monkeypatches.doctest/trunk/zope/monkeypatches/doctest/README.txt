@@ -6,7 +6,11 @@ zope.testing.doctest had fixed. It's useful if you really can't work
 around those bugs other ways.
 
 It achieves the bugfixing via monkey-patches, which is horrid, so in general
-it's better if you don't use this product.
+it's better if you don't use this product. Of these bugs, the unicode bug
+is not relevant and the Windows lineending bug seems to be fixed. The 
+report flag issue is an issue in Python 3, and this module will run under
+Python 3.1 and fix that issue. However, the tests will fail. This may or
+may not change in the future. :)
 
 Bugfix: Unicode output
 ----------------------
@@ -41,7 +45,7 @@ some of the test files broken:
   >>> import tempfile
   >>> import os
   >>> fd, fn = tempfile.mkstemp()
-  >>> f = os.fdopen(fd, 'wb')
+  >>> f = os.fdopen(fd, 'w')
   >>> f.write('Test:\r\n\r\n  >>> x = 1 + 1\r\n\r\nDone.\r\n')
   >>> f.close()
 

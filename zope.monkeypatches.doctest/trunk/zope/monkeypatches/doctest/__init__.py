@@ -1,39 +1,46 @@
 # Patch to fix an error that makes subsequent tests fail after you have
 # returned unicode in a test.
 import doctest
+import sys
 
-_org_SpoofOut = doctest._SpoofOut
-class _patched_SpoofOut(_org_SpoofOut):
-    def truncate(self,   size=None):
-        _org_SpoofOut.truncate(self, size)
-        if not self.buf:
-            self.buf = ''
+if sys.version < '3': # This is obviously not an issue in Python 3
+    _org_SpoofOut = doctest._SpoofOut
+    class _patched_SpoofOut(_org_SpoofOut):
+        def truncate(self,   size=None):
+            _org_SpoofOut.truncate(self, size)
+            if not self.buf:
+                self.buf = ''
+    
+    doctest._SpoofOut = _patched_SpoofOut
 
-doctest._SpoofOut = _patched_SpoofOut
 
+if sys.version < '3': # This bug seems fixed in Python 3:
 
-# Patch to fix tests that has mixed line endings:
-import os
-
-def _patched_load_testfile(filename, package, module_relative):
-    if module_relative:
-        package = doctest._normalize_module(package, 3)
-        filename = doctest._module_relative_path(package, filename)
-        if hasattr(package, '__loader__'):
-            if hasattr(package.__loader__, 'get_data'):
-                file_contents = package.__loader__.get_data(filename)
-                # get_data() opens files as 'rb', so one must do the equivalent
-                # conversion as universal newlines would do.
-                return file_contents.replace(os.linesep, '\n'), filename
-    return open(filename, 'rU').read(), filename
-
-doctest._load_testfile = _patched_load_testfile
+    # Patch to fix tests that has mixed line endings:
+    import os
+    
+    def _patched_load_testfile(filename, package, module_relative):
+        if module_relative:
+            package = doctest._normalize_module(package, 3)
+            filename = doctest._module_relative_path(package, filename)
+            if hasattr(package, '__loader__'):
+                if hasattr(package.__loader__, 'get_data'):
+                    file_contents = package.__loader__.get_data(filename)
+                    # get_data() opens files as 'rb', so one must do the equivalent
+                    # conversion as universal newlines would do.
+                    return file_contents.replace(os.linesep, '\n'), filename
+        return open(filename, 'rU').read(), filename
+    
+    doctest._load_testfile = _patched_load_testfile
 
 
 # Patch so you can set REPORT_ONLY_FIRST_FAILURE even if you have a DIFF flag
 # on the test.
 import sys
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 def _patched_runTest(self):
     test = self._dt_test
