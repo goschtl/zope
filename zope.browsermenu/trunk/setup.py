@@ -19,7 +19,7 @@ long_description = (open('README.txt').read() + '\n\n' +
                     open('CHANGES.txt').read())
 
 setup(name='zope.browsermenu',
-      version = '3.9.1dev',
+      version = '3.9.1',
       url='http://pypi.python.org/pypi/zope.browsermenu/',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
@@ -31,7 +31,7 @@ setup(name='zope.browsermenu',
                      'Topic :: Internet :: WWW/HTTP',
                      'Framework :: Zope3',
                      ],
-      description='Browser menu implementation for Zope 3.',
+      description='Browser menu implementation for Zope.',
       long_description=long_description,
 
       packages=find_packages('src'),
