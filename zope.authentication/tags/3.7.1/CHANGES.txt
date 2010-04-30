@@ -1,0 +1,15 @@
+=======
+CHANGES
+=======
+
+3.7.1 (2010-04-30)
+------------------
+
+- Removed undeclared testing dependency on zope.testing.
+
+3.7.0 (2009-03-14)
+------------------
+
+Initial release. This package was split off from ``zope.app.security`` to
+provide a separate common interface definition for authentication utilities
+without extra dependencies.
