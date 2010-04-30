@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-from zope.app.testing import functional
-from grokui.base.tests import FunctionalLayer
+import unittest, doctest
+import grokui.base
+from zope.app.wsgi.testlayer import BrowserLayer
 
 
 def test_suite():
     suite = unittest.TestSuite()
-    readme = functional.FunctionalDocFileSuite('../README.txt')
-    readme.layer = FunctionalLayer
+    readme = doctest.DocFileSuite(
+        '../README.txt',
+        optionflags=(doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE|
+                     doctest.REPORT_NDIFF))
+    readme.layer = BrowserLayer(grokui.base)
     suite.addTest(readme)
     return suite
 

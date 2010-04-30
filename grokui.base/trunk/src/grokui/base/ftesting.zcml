@@ -6,7 +6,6 @@
    package="grokui.base">
 
   <include package="grokcore.message" file="ftesting.zcml" />
-
   <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.publisher" file="meta.zcml" />
@@ -28,6 +27,8 @@
 
   <include package="grokcore.view" />
   <include package="grokui.base" />
+
+  <grok:grok package="grokui.base.tests" />
 
  <browser:defaultView name="index.html" />
 

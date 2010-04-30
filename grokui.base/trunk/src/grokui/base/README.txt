@@ -5,9 +5,6 @@
 Detailed Description
 ********************
 
-.. :doctest:
-.. :layer: grokui.base.tests.FunctionalLayer
-
 ``grokui.base`` provides tools to assemble a coherent environment.
 
 
@@ -56,10 +53,9 @@ We grok this view to register it with the component architechture:
 
 Let's create a browser to lookup this view:
 
-    >>> from zope.testbrowser.testing import Browser
+    >>> from zope.app.wsgi.testlayer import Browser
     >>> browser = Browser()
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-    >>> browser.handleErrors = False
 
 We can get this screen when we ask for the correct namespace:
 
@@ -73,7 +69,7 @@ will not be found:
     >>> browser.open('http://localhost/@@helloadmin')
     Traceback (most recent call last):
     ...
-    NotFound: Object: <zope....Folder object at 0x...>, name: u'@@helloadmin'
+    HTTPError: HTTP Error 404: Not Found
 
 
 GrokUI Pages

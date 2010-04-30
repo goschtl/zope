@@ -3,19 +3,18 @@ from setuptools import setup, find_packages
 
 tests_require = [
     'zope.annotation',
+    'zope.app.wsgi',
     'zope.app.appsetup',
     'zope.app.pagetemplate',
     'zope.app.publication',
-    'zope.app.testing',
     'zope.browserpage',
     'zope.browserresource',
     'zope.container',
     'zope.contentprovider',
     'zope.password',
     'zope.principalregistry',
+    'zope.security',
     'zope.securitypolicy',
-    'zope.testbrowser',
-    'zope.testing',
     ]
 
 def read(*rnames):
@@ -66,7 +65,6 @@ setup(name='grokui.base',
           'zope.interface',
           'zope.location',
           'zope.publisher',
-          'zope.security',
           'zope.site',
           'zope.traversing',
           ],

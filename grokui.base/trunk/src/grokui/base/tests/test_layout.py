@@ -2,15 +2,9 @@
 Building panels using `GrokUIView`
 ===================================
 
-:doctest:
-:layer: grokui.base.tests.FunctionalLayer
-
-    >>> from grokcore.component import testing
-    >>> testing.grok(__file__)
-
 We create a browser to watch our views:
 
-    >>> from zope.testbrowser.testing import Browser
+    >>> from zope.app.wsgi.testlayer import Browser
     >>> browser = Browser()
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
     >>> browser.handleErrors = False
@@ -53,12 +47,12 @@ entry in the navigation bar:
     </html>
 
 """
-import grokcore.component as grok
+import grokui.base
 import unittest
+import doctest
+import grokcore.component as grok
 from grokui.base import GrokUIView
-from grokui.base.tests import FunctionalLayer
-from zope.testing import doctest
-from zope.app.testing import functional
+from zope.app.wsgi.testlayer import BrowserLayer
 
 
 class CaveAdminView(GrokUIView):
@@ -76,8 +70,8 @@ class CaveAdminView(GrokUIView):
 
 def test_suite():
     suite = unittest.TestSuite()
-    test = functional.FunctionalDocFileSuite(
+    test = doctest.DocTestSuite(
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
-    test.layer = FunctionalLayer
+    test.layer = BrowserLayer(grokui.base)
     suite.addTest(test)
     return suite
