@@ -12,6 +12,13 @@ report flag issue is an issue in Python 3, and this module will run under
 Python 3.1 and fix that issue. However, the tests will fail. This may or
 may not change in the future. :)
 
+The windows lineending bug has not been fixed for Python 2.4, because the
+Python 2.4's doctest would need patching in three different places, and I
+can't be bothered at the moment. The only reason for you to be on Python 2.4
+is if you are still running Zope 2.10, which probably means you are running
+Plone 3.x, which means you are using zope.testing.doctest anyway, so this 
+module is of no interest to you whatsoever.
+
 Bugfix: Unicode output
 ----------------------
 
