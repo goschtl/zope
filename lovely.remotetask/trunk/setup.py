@@ -61,7 +61,7 @@ setup(
                         'zope.app.xmlrpcintrospection',
                         'zope.component',
                         'zope.interface',
-                        'zope.publisher >= 3.12.0',
+                        'zope.publisher',
                         'zope.schema',
                         'zope.security',
                         'zope.traversing'

@@ -5,7 +5,7 @@ Changes for lovely.remotetask
 0.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed unnecessary version requirement for dependency zope.publisher.
 
 
 0.5.1 (2010-04-14)
