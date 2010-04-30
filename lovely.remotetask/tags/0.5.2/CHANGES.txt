@@ -1,0 +1,181 @@
+=============================
+Changes for lovely.remotetask
+=============================
+
+0.5.2 (2010-04-30)
+------------------
+
+- Removed unnecessary version requirement for dependency zope.publisher.
+
+
+0.5.1 (2010-04-14)
+------------------
+
+- Convert logged exceptions to str because log messages should be strings.
+
+
+0.5 (2009-09-10)
+----------------
+
+- Fixed a bug with SimpleProcessor: if the job aborted the transaction, it would
+  never be removed from the queue, but re-tried over and over again.
+
+2009/05/20 (0.4):
+-----------------
+
+- Randomized the generation of new job ids like intid does it: Try to allocate
+  sequential ids so they fall into the same BTree bucket, and randomize if
+  stumble upon a used one.
+
+2009/04/05 (0.3):
+-----------------
+
+- Use dropdown widget with available tasks in the cron job
+  adding form, instead of text input.
+
+- Remove dependency on zope.app.zapi by using its wrapped api directly.
+
+- Use ISite from zope.location instead of zope.app.component
+
+- Use zc.queue.Queue instead of zc.queue.PersistentQueue because
+  PersistentQueue is only to be used by the CompositeQueue.
+
+- Changed URL to pypi.
+
+- Using the correct plural form of status (which is status) in
+  ITaskService.clean
+
+
+2008/11/07 0.2.15a1:
+--------------------
+
+- running could cause an AttributeError. added handling for it
+
+2008/02/08 0.2.14:
+------------------
+
+- commiting after each 100 jobs during 'clearAll' to avoid browser timeouts
+  while canceling a huge amount of jobs
+
+
+2008/01/28 (new):
+-----------------
+
+- Some bugs smashed, improved tests.
+
+- Added ``startLater`` to ``TaskService.add``. See startlater.txt for more info.
+  This facilitates to separate jobb add and start timepoints. (Not cron-like)
+
+
+2007/12/?? (new):
+-----------------
+
+- Switched index to Zope 3.4 KGS, so that we agree on used package versions.
+
+- Made the sleep time of the processor variable; this is needed for testing,
+  so that the testing framework is not faster than the processor shutting
+  down.
+
+- Added a small optimization to ``isProcessing()`` to stop looking through the
+  threads once one with the correct name has been found.
+
+
+2007/11/12 0.2.13:
+------------------
+
+- added "cancel all" button
+- fixed bug in associating threads with task service instances
+
+
+2007/10/28 0.2.12:
+------------------
+
+- make the startup more robust
+  If an already registered task service is remove via ZMI it's registration is
+  not removed. If this happens zope can no longer be restarted if autostart is
+  used.
+
+
+2007/10/28 0.2.11:
+------------------
+
+- allow '*' to select all possible times in the cron job add/edit forms
+
+- allow to cancel a delayed job
+
+
+2007/10/24 0.2.10:
+------------------
+
+- avoided deprecation warnings
+
+
+2007/10/08 0.2.9:
+-----------------
+
+- don't push a cron job back into the queue if it's status is ERROR
+
+
+2007/10/08 0.2.8:
+-----------------
+
+- enhanced logging during startup
+
+
+2007/10/02 0.2.7:
+-----------------
+
+- added index to buildout.cfg
+- enhanced autostart behaviour: Services can be started like: site@*,
+  *@service and *@*
+
+
+2007/08/07 0.2.6:
+-----------------
+
+- fix bug in sorting that causes column headers to never be clickable
+
+
+2007/08/07 0.2.5:
+-----------------
+
+- no longer require session support for "Jobs" ZMI view
+
+
+2007/08/06 0.2.4:
+-----------------
+
+- fix bug that caused processing thread to keep the process alive unnecessarily
+
+
+2007/07/26 0.2.3:
+-----------------
+
+- Now handles the use-case where a task service is registered directly at the
+  root. References to such services in the product configuration must begin
+  with `@` instead of the `<sitename>@`.
+
+
+2007/07/02 0.2.2:
+-----------------
+
+- ZMI menu to add cron jobs to a task service
+- named detail views can be registered for jobs specific to the task
+- edit view for cron jobs
+- improved ZMI views
+- catch exception if a job was added for which there is no task registered
+- fixed tests to work in all timezones
+
+
+2007/06/12 0.2.1:
+-----------------
+
+- Do not raise IndexError because of performance problems with tracebacks when
+  using eggs.
+
+
+2007/06/12 0.2.0:
+-----------------
+
+ - added namespace declaration in lovely/__init__.py
+ - allow to delay a job
