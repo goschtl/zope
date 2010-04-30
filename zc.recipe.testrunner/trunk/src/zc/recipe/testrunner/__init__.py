@@ -40,7 +40,7 @@ class TestRunner:
     def install(self):
         options = self.options
         dest = []
-        eggs, ws = self.egg.working_set(('zope.testing', ))
+        eggs, ws = self.egg.working_set(('zope.testrunner', ))
 
         test_paths = [ws.find(pkg_resources.Requirement.parse(spec)).location
                       for spec in eggs]
@@ -80,7 +80,7 @@ class TestRunner:
             initialization += initialization_section
 
         dest.extend(zc.buildout.easy_install.scripts(
-            [(options['script'], 'zope.testing.testrunner', 'run')],
+            [(options['script'], 'zope.testrunner', 'run')],
             ws, options['executable'],
             self.buildout['buildout']['bin-directory'],
             extra_paths=self.egg.extra_paths,

@@ -175,14 +175,14 @@ We can run the test script to run our demo test:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv'),
     Running tests at level 1
-    Running zope.testing.testrunner.layer.UnitTests tests:
-      Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+    Running zope.testrunner.layer.UnitTests tests:
+      Set up zope.testrunner.layer.UnitTests in 0.001 seconds.
       Running:
      test (demo.tests.TestDemo)
      test2 (demo2.tests.Demo2Tests)
       Ran 2 tests with 0 failures and 0 errors in 0.000 seconds.
     Tearing down left over layers:
-      Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+      Tear down zope.testrunner.layer.UnitTests in 0.001 seconds.
 
 Note that we didn't run the demoneeded tests.  Tests are only run for
 the eggs listed, not for their dependencies.
@@ -211,11 +211,11 @@ script will get it's name from the part:
 We can run the test script to run our demo test:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -q'),
-    Running zope.testing.testrunner.layer.UnitTests tests:
-      Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+    Running zope.testrunner.layer.UnitTests tests:
+      Set up zope.testrunner.layer.UnitTests in 0.001 seconds.
       Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
     Tearing down left over layers:
-      Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+      Tear down zope.testrunner.layer.UnitTests in 0.001 seconds.
 
 If we need to include other paths in our test script, we can use the
 extra-paths option to specify them:
@@ -241,7 +241,7 @@ extra-paths option to specify them:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -253,10 +253,10 @@ extra-paths option to specify them:
     os.chdir('/sample-buildout/parts/testdemo')
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run([
+        zope.testrunner.run([
             '--test-path', '/sample-buildout/demo',
             ])
 
@@ -285,7 +285,7 @@ directory:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -297,10 +297,10 @@ directory:
     os.chdir('/foo/bar')
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run([
+        zope.testrunner.run([
             '--test-path', '/sample-buildout/demo',
             ])
 
@@ -341,7 +341,7 @@ using the -v option:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -353,10 +353,10 @@ using the -v option:
     os.chdir('/sample-buildout/parts/testdemo')
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
+        zope.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
             '--test-path', '/sample-buildout/demo',
@@ -389,8 +389,8 @@ Running them with the current buildout will produce a failure:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'), # doctest: +ELLIPSIS
     Running tests at level 1
-    Running zope.testing.testrunner.layer.UnitTests tests:
-      Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+    Running zope.testrunner.layer.UnitTests tests:
+      Set up zope.testrunner.layer.UnitTests in 0.001 seconds.
       Running:
      test (demo.tests.DemoTests) (0.000 s)
     <BLANKLINE>
@@ -403,7 +403,7 @@ Running them with the current buildout will produce a failure:
     <BLANKLINE>
       Ran 1 tests with 1 failures and 0 errors in 0.001 seconds.
     Tearing down left over layers:
-      Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+      Tear down zope.testrunner.layer.UnitTests in 0.001 seconds.
     <BLANKLINE>
     Tests with failures:
        test (demo.tests.DemoTests)
@@ -439,7 +439,7 @@ the environment variable. Also, the tests pass again:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -451,22 +451,22 @@ the environment variable. Also, the tests pass again:
     os.environ['zc.recipe.testrunner'] = '42'
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run([
+        zope.testrunner.run([
             '--test-path', '/sample-buildout/demo',
             ])
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'),
     Running tests at level 1
-    Running zope.testing.testrunner.layer.UnitTests tests:
-      Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+    Running zope.testrunner.layer.UnitTests tests:
+      Set up zope.testrunner.layer.UnitTests in 0.001 seconds.
       Running:
      test (demo.tests.DemoTests)
       Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
     Tearing down left over layers:
-      Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+      Tear down zope.testrunner.layer.UnitTests in 0.001 seconds.
 
 One can add initialization steps in the buildout.  These will be added to the
 end of the script:
@@ -496,7 +496,7 @@ end of the script:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -508,10 +508,10 @@ end of the script:
     os.chdir('/sample-buildout/parts/testdemo')
     print 'Hello all you egg-laying pythons!'
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
+        zope.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
             '--test-path', '/sample-buildout/demo',
@@ -545,7 +545,7 @@ This will also work with a multi-line initialization section:
     import sys
     sys.path[0:0] = [
       '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
       '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
@@ -558,10 +558,10 @@ This will also work with a multi-line initialization section:
     print 'Hello all you egg-laying pythons!'
     print 'I thought pythons were live bearers?'
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
+        zope.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
             '--test-path', '/sample-buildout/demo',
@@ -599,7 +599,7 @@ generated relative to the test script.
     import sys
     sys.path[0:0] = [
       join(base, 'demo'),
-      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+      join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
       join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
       join(base, 'eggs/zope.exceptions-3.5.2-linux-i686.egg'),
       join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
@@ -612,10 +612,10 @@ generated relative to the test script.
     os.chdir(join(base, 'parts/testdemo'))
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run([
+        zope.testrunner.run([
             '--test-path', join(base, 'demo'),
             ])
 
@@ -650,7 +650,7 @@ The relative-paths option can be specified at the buildout level:
     import sys
     sys.path[0:0] = [
       join(base, 'demo'),
-      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+      join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
       join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
       join(base, 'eggs/zope.exceptions-3.5.2-linux-i686.egg'),
       join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
@@ -663,10 +663,10 @@ The relative-paths option can be specified at the buildout level:
     os.chdir(join(base, 'parts/testdemo'))
     <BLANKLINE>
     <BLANKLINE>
-    import zope.testing.testrunner
+    import zope.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
-        zope.testing.testrunner.run([
+        zope.testrunner.run([
             '--test-path', join(base, 'demo'),
             ])
 

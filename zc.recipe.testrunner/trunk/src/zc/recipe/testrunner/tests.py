@@ -26,6 +26,7 @@ def setUp(test):
     zc.buildout.testing.install_develop('zc.recipe.testrunner', test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install('zope.testing', test)
+    zc.buildout.testing.install('zope.testrunner', test)
     zc.buildout.testing.install('zope.interface', test)
     zc.buildout.testing.install('zope.exceptions', test)
 
@@ -42,6 +43,7 @@ def test_suite():
                      (re.compile('#!\S+py\S*'), '#!python'),
                      (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
                      (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
+                     (re.compile('zope.testrunner-[^-]+-'), 'zope.testrunner-X-'),
                      (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
                      (re.compile('distribute-[^-]+-'), 'setuptools-X-'),
                      (re.compile('zope.interface-[^-]+-'), 'zope.interface-X-'),
