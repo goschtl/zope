@@ -14,41 +14,41 @@ Tutorial --- Part 2
 Introduction
 ------------
 
-This is the second part of tutorial.  In the first part, you learned
+This is the second part of the tutorial.  In the first part, you learned
 about project directory structure, Buildout configuration, content
 components and using the form library.  Content components are
-objects with a user visisble view.  A view could be a browser view
-(HTML/JS/CSS) or JSON or XMLRPC or any other view.  To exaplain the
+objects with a user visible view.  A view could be a browser view
+(HTML/JS/CSS) or JSON or XMLRPC or any other view.  To explain the
 idea of content components, the ticket collector project started in
 the first part of tutorial will be expanded with additional
-functionalities.  In fact, the collector object created in the last
+functionality.  In fact, the collector object created in the last
 chapter is a content component.  In this chapter, you will create new
-content objects like tickets and comments.  Another thing you might
-be noticed that, every content component, including container
-components has well defined interfaces.
+content objects like tickets and comments.  Another thing that should
+be noted is that every content component, including container
+components, has well defined interfaces.
 
-This chapter explore content components in more detail.  After
+This chapter explores content components in more detail.  After
 completing this chapter, you should be able to:
 
 - Define schema for content components
 - Create container objects
 - Use ZCML to configure various components
 
-Before proceeding further, here is an overview of sections:
+Before proceeding further, here is an overview of what we will cover:
 
-- **Adding tickets** -- This section shows creating a ticket
-  collector objects.  This section provide a detailed overview of
-  creating content object and demonstrate with a simple example.
+- **Adding tickets** -- In this section you will create a ticket
+  object. We provide a detailed overview of creating content objects
+  and demonstrate with a simple example.
 
-- **Listing tickets** -- This section shows displaying tickets from
-  the main collector page.
+- **Listing tickets** -- Next you will see how to display tickets
+  from the main collector page.
 
-- **Adding comments** -- This section explain about adding content
-  object inside other container objects.  Ticket objects will be
-  transformed to a container object.
+- **Adding comments** -- Here you will learn how to add content
+  objects inside other container objects. Ticket objects will be
+  transformed to container objects.
 
-- **Listing comments** -- This section shows displaying tickets from
-  the ticket page.
+- **Listing comments** -- In this section you will develop a comment
+  object and write the code needed to display comments on the ticket page.
 
 .. note::
 
@@ -63,9 +63,9 @@ Adding tickets
 Schema definition
 ~~~~~~~~~~~~~~~~~
 
-In this section, you will learn about adding tickets to collector.
+In this section, you will learn how to add tickets to a collector.
 In order to use ticket objects, first you need to create an interface
-for tickets.  Update the ``src/tc/collector/interfaces.py`` with the ticket
+for tickets.  Update ``src/tc/collector/interfaces.py`` with the ticket
 interface::
 
   from zope.container.interfaces import IContainer
@@ -86,25 +86,25 @@ interface::
           required=True)
 
 
-The ``TextLine`` and ``Text`` are already imported, if not, you can
-import it from these locations::
+The ``TextLine`` and ``Text`` should already have been imported, if not,
+you can import them thus::
 
   from zope.schema import TextLine
   from zope.schema import Text
 
 It would be good if you set a precondition to restrict what types of
-objects you want to add inside a collector.  Now you know that, you
-only expect tickets objects inside collector.  So, you can add a
-precondition for restricting only ticket objects inside collector.
-To do this, you need to add a ``__setitem__`` method to
-``ICollector`` interface definition (The ``__setitem__`` is part of
-``IContainer`` API).  Then below that, you can add ``precondition``
-attribute, which is an instance of ``ItemTypePrecondition`` class.
-You can pass the interfaces as arguments to ``ItemTypePrecondition``
+objects you want to add inside a collector.  If you know that you
+only expect ticket objects inside a collector object, you can add a
+precondition to ensure that no other types of object can be added to
+a collector. To do this, you need to add a ``__setitem__`` method to
+``ICollector`` the interface definition (The ``__setitem__`` is part of
+``IContainer`` API).  Then below that, you can add the ``precondition``
+attribute, which is an instance of the ``ItemTypePrecondition`` class.
+You can pass the interfaces as arguments to the ``ItemTypePrecondition``
 class.  Below, only one class (``ITicket``) is passed.  So, only
-ticket objects are allowed inside collector.  You need to move the
+ticket objects are allowed inside a collector.  You need to move the
 definition of ``ITicket`` above the ``IContainer`` as the ``ITicket``
-being used there.  Add the following method definition to
+is used by it.  Add the following method definition to the
 ``ICollector`` class::
 
     from zope.app.container.constraints import ItemTypePrecondition
@@ -116,7 +116,7 @@ being used there.  Add the following method definition to
 
 The ``ItemTypePrecondition`` provides a way to restrict the type of
 object which can be added inside a container.  You can also specify
-that ticket objects can be only added inside collector.  To do this,
+that ticket objects can be only added inside a collector.  To do this,
 you need to create another interface inheriting from
 ``zope.container.interfaces.IContained``.
 
@@ -133,7 +133,7 @@ you need to create another interface inheriting from
       __parent__ = Field(
           constraint = ContainerTypesConstraint(ICollector))
 
-Here you added a constraint for ``__parent__`` field using
+Here you added a constraint for ``__parent__`` field using the
 ``ContainerTypesConstraint`` class.
 
 Implementation
@@ -160,7 +160,7 @@ Next, you can implement this interface inside
 Configuration
 ~~~~~~~~~~~~~
 
-Then, register the interface & class.  Open the
+Then, register the interface & class.  Open
 ``src/tc/collector/configure.zcml`` and update it with these details::
 
   <interface
@@ -203,7 +203,7 @@ this::
   </html>
 
 When you click on this link, it expects a view. You can create an
-AddForm inside ``src/tc/collector/views.py``::
+AddForm in ``src/tc/collector/views.py``::
 
   from tc.collector.interfaces import ITicket
 
@@ -222,7 +222,7 @@ AddForm inside ``src/tc/collector/views.py``::
           self.context[number] = ticket
           self.request.response.redirect('.')
 
-You can register the view inside ``src/tc/collector/configure.zcml``::
+You can register the view in ``src/tc/collector/configure.zcml``::
 
   <browser:page
      for="tc.collector.interfaces.ICollector"
@@ -233,9 +233,9 @@ You can register the view inside ``src/tc/collector/configure.zcml``::
 
 You can add a ticket by visiting:
 http://localhost:8080/mycollector/@@add_ticket You can give the ticket
-number as '1' and provide summary as 'Test Summary'.
+number as '1' and provide 'Test Summary' as the summary.
 
-You can check the object from debug shell::
+You can then check the object from the debug shell::
 
   jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
   ...
@@ -250,7 +250,7 @@ You can check the object from debug shell::
 Default browser page for tickets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now there is no default browser page for tickets.  If you try to
+We do not yet have a default browser page for tickets.  If you try to
 access the ticket from the URL: http://localhost:8080/mycollector/1 ,
 you will get ``NotFound`` error like this::
 
@@ -258,14 +258,14 @@ you will get ``NotFound`` error like this::
   ...
   NotFound: Object: <tc.collector.ticketcollector.Ticket object at 0x8fe74ac>, name: u'@@index'
 
-This error is raised, because there is no view named ``index``
+This error is raised because there is no view named ``index``
 registered for ``ITicket``.  This section will show how to create a
 default view for ``ITicket`` interface.
 
 As you have already seen in the :ref:`started-getting` chapter, you
 can create a simple view and register it from ZCML.
 
-In the ``src/tc/collector/views.py`` add a new view like this::
+In ``src/tc/collector/views.py`` add a new view like this::
 
   class TicketMainView(form.DisplayForm):
 
@@ -273,8 +273,8 @@ In the ``src/tc/collector/views.py`` add a new view like this::
 
       template = ViewPageTemplateFile("ticketmain.pt")
 
-You can create the template file here:
-``src/tc/collector/ticketmain.pt`` with this content::
+You can create the template file ``src/tc/collector/ticketmain.pt``
+with this content::
 
   <html>
   <head>
@@ -292,7 +292,7 @@ You can create the template file here:
   </body>
   </html>
 
-Then, in the ``src/tc/collector/configure.zcml``::
+Then, in ``src/tc/collector/configure.zcml``::
 
   <browser:page
      for="tc.collector.interfaces.ITicket"
@@ -302,8 +302,8 @@ Then, in the ``src/tc/collector/configure.zcml``::
      />
 
 Now you can visit: http://localhost:8080/mycollector/1/@@index It
-should display the ticket number and summary.  If you open the HTML
-source from browser, it will look like this::
+should display the ticket number and summary.  If you view the HTML
+source with your browser, it will look like this::
 
   <html>
   <head>
@@ -323,10 +323,10 @@ source from browser, it will look like this::
 Listing tickets
 ---------------
 
-This section explain listing tickets in the main collector page, so
-that the user can navigate to ticket and see the details.
+This section explains how to list tickets on the main collector page, so
+that the user can navigate to a ticket and see its details.
 
-To list the tikets in the main collector page, you need to modify the
+To list the tickets on the main collector page, you need to modify
 ``src/tc/collector/collectormain.pt``::
 
   <html>
@@ -351,7 +351,7 @@ To list the tikets in the main collector page, you need to modify the
   </html>
 
 You need to change the ``TicketCollectorMainView`` defined in
-``src/tc/collector/views.py`` file::
+``src/tc/collector/views.py``::
 
     class TicketCollectorMainView(form.DisplayForm):
 
@@ -371,9 +371,9 @@ Adding Comments
 
 .. warning:: This section is incomplete
 
-In this section, you will create `comment` objects and add it to
-tickets.  As the first step, you need to define the interface for the
-comments.  You can add this interface definition inside
+In this section, you will create `comment` objects which can be added to
+tickets.  As the first step, you need to define the interface for a
+comment.  You can add this interface definition in
 ``src/tc/collector/interfaces.py``::
 
   class IComment(Interface):
@@ -392,7 +392,7 @@ comments.  You can add this interface definition inside
       __parent__ = Field(
           constraint = ContainerTypesConstraint(ITicket))
 
-Next, you can implement the comment like this.  You can create a new
+To implement the comment, you can create a new
 file for the implementation, ``src/tc/collector/comment.py``::
 
   from zope.interface import implements
@@ -427,7 +427,7 @@ Then, register the interface & class::
        />
   </class>
 
-You can add ``ItemTypePrecondition`` to ``ITicket``.  Open the
+You can add ``ItemTypePrecondition`` to ``ITicket``.  Open
 ``src/tc/collector/interfaces.py`` and update the interface definition::
 
   class ITicket(IContainer):
@@ -466,8 +466,8 @@ Update the ticket implementation at ``src/tc/collector/ticket.py``::
       number = u""
       summary = u""
 
-You can update the template file here:
-``src/tc/collector/ticketmain.pt`` with this content::
+You can update the template file ``src/tc/collector/ticketmain.pt``
+with this content::
 
   <html>
   <head>
@@ -507,7 +507,7 @@ given below::
           self.context[number] = comment
           self.request.response.redirect('.')
 
-You can register the view inside ``src/tc/collector/configure.zcml``::
+You can register the view in ``src/tc/collector/configure.zcml``::
 
   <browser:page
      for="tc.collector.interfaces.ITicket"
@@ -519,10 +519,10 @@ You can register the view inside ``src/tc/collector/configure.zcml``::
 Listing comments
 ----------------
 
-This section explain listing tickets in the ticket page, so that the
+This section covers listing comments on the ticket page, so that the
 user can see comments for the particular ticket.
 
-To list the comments in the ticket page, you need to modify the
+To list the comments on the ticket page, you need to modify
 ``src/tc/collector/ticketmain.pt``::
 
   <html>
