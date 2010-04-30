@@ -51,10 +51,6 @@ setup(name='zope.browser',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['zope',],
-    extras_require = dict(
-        test=[
-            'zope.testing',
-            ]),
     install_requires=[
         'setuptools',
         'zope.interface',
