@@ -9,4 +9,6 @@ Welcome to BlueBream!
 
    download
    screencasts
+   support
    forum
+   chat
