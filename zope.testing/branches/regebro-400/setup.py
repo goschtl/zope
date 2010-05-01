@@ -31,7 +31,6 @@ if sys.version > '3':
                              'src/zope/testing/module.txt',
                              'src/zope/testing/setupstack.txt',
                              ],
-    dependency_links = ['.'], # Only until zope.interface 3.6 and zope.exception 3.6 has been released.
     )
 else:
     extras = {}
@@ -81,9 +80,7 @@ setup(
               "zope.testing.renormalizing"],
     package_dir = {'': 'src'},
     namespace_packages=['zope',],
-    install_requires = ['setuptools',
-                        'zope.exceptions',
-                        'zope.interface'],
+    install_requires = ['setuptools',],
     include_package_data = True,
     zip_safe = False,
     test_suite = 'zope.testing.tests.test_suite',
