@@ -5,7 +5,7 @@ CHANGES
 2.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- works with zope.app.securitypolicy 3.5.2
 
 
 2.1.1 (2009-12-28)
