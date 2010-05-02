@@ -9,6 +9,9 @@ Changes
 
 - Added Python 3 support.
 
+- The dependency on zope.testing seemed spurious, possibly a rest of a real
+  dependency that is gone now. I removed it.
+
 
 3.5.2 (2008-04-30)
 ------------------
