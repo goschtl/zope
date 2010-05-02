@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2010-05-02)
 ------------------
 
 - Added support to bootstrap on Jython.
