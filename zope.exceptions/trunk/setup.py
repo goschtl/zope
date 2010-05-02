@@ -31,6 +31,8 @@ else:
         use_2to3=True,
         setup_requires=['zope.fixers'],
         use_2to3_fixers = ['zope.fixers'],
+        # Needed until zope.testing 4.0 with Python 3 support is released.
+        dependency_links = ['.'],
     )
 
 def read(*rnames):
@@ -72,6 +74,7 @@ setup(name='zope.exceptions',
       install_requires=['setuptools',
                         'zope.interface',
                        ],
+      tests_require=['zope.testing'],
       test_suite = 'zope.exceptions.tests',
       include_package_data = True,
       zip_safe = False,
