@@ -31,15 +31,13 @@ else:
         use_2to3=True,
         setup_requires=['zope.fixers'],
         use_2to3_fixers = ['zope.fixers'],
-        # Needed until zope.testing 4.0 with Python 3 support is released.
-        dependency_links = ['.'],
     )
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.exceptions',
-      version = '3.6.0dev',
+      version = '3.6.0',
       author='Zope Foundation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Zope Exceptions',
