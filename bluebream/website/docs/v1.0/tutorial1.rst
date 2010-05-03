@@ -914,10 +914,16 @@ configuration in ZCML.  Open the ``src/tc/collector/configure.zcml``
 file for editing and enter the following to declare ``ICollector`` a
 content component::
 
+  <configure
+     xmlns="http://namespaces.zope.org/zope"
+     xmlns:browser="http://namespaces.zope.org/browser">
+
   <interface
      interface="tc.collector.interfaces.ICollector"
      type="zope.app.content.interfaces.IContentType"
      />
+
+  </configure>
 
 The ``zope.app.content.interfaces.IContentType`` represents a content
 type.  If an **interface** provides the ``IContentType`` interface
@@ -933,7 +939,8 @@ are examples of marker interfaces, interfaces used to declare that a
 particular object belongs to a special type without requiring the
 presence of any attributes or methods.
 
-::
+In the same file (``src/tc/collector/configure.zcml``) before the
+``</configure>`` add these lines::
 
   <class class="tc.collector.ticketcollector.Collector">
     <implements
