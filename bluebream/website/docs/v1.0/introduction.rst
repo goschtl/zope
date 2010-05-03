@@ -101,15 +101,15 @@ community platforms:
 
 - Ohloh.net: https://www.ohloh.net/p/bluebream
 
-- PyPi home : http://pypi.python.org/pypi/bluebream
+- PyPI Page: http://pypi.python.org/pypi/bluebream
 
 The BlueBream developer community is an active community involved in
 the development of BlueBream itself and is looking for contributors.
 Development related information is documented in the `wiki
-<http://wiki.zope.org/bluebream>`_ wiki located at:
+<http://wiki.zope.org/bluebream>`_:
 http://wiki.zope.org/bluebream/ContributingToBlueBream
 
-We aim to provide high quality free online documentation for
+We aim to provide high quality, free online documentation for
 BlueBream.  If you would like to contribute, the RestructuredText
 source for this website is available from the zope.org repository
 (please replace ``USERNAME`` with your zope.org username.)::
