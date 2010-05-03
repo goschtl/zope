@@ -1,0 +1,18 @@
+zope.testrunner Changelog
+*************************
+
+4.0.0b2 (2010-05-03)
+====================
+
+- Having 'sampletests' in the MANIFEST.in gave warnings, but doesn't actually
+  seem to include any more files, so I removed it.
+  
+- Moved zope.testing.exceptions to zope.testrunner.exceptions. Now
+  zope.testrunner no longer requires zope.testing except for when running 
+  its own tests.
+  
+
+4.0.0b1 (2010-04-29)
+====================
+
+- Initial release of the testrunner from zope.testrunner as it's own module.
