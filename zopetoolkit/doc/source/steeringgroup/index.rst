@@ -3,11 +3,18 @@
 Steering Group
 ==============
 
-Development of the Zope Toolkit is managed by the Zope Toolkit
-Steering Group. The steering group is a body that operates in public
-and participates in discussions, contacting it should therefore typically be
-done through the zope-dev mailing list (:ref:`mailing-list`).
+The formation of the Zope Toolkit was facilitated by the Zope Toolkit
+Steering Group. It was influential in defining the scope of the ZTK and
+establishing community practices and policies around it.
 
+In early 2010 the steering group members stepped down, after succeeding in
+the creation of the toolkit concept and getting wide community support for it.
+
+After the steering group members stepped down, the Zope community agreed on
+the formation of the release team (:ref:`release-team`) with a much narrower
+focus around release management of the ZTK.
+
+The Zope project and community at large is self-organizing itself ever since.
 
 .. toctree::
     :maxdepth: 1
