@@ -376,6 +376,8 @@ tickets.  As the first step, you need to define the interface for a
 comment.  You can add this interface definition in
 ``src/tc/collector/interfaces.py``::
 
+  from zope.interface import Interface
+
   class IComment(Interface):
       """Comment for Ticket"""
 
@@ -450,22 +452,6 @@ You can add ``ItemTypePrecondition`` to ``ITicket``.  Open
 
       __setitem__.precondition = ItemTypePrecondition(IComment)
 
-Update the ticket implementation at ``src/tc/collector/ticket.py``::
-
-  from zope.interface import implements
-  from tc.collector.interfaces import ITicket
-  from tc.collector.interfaces import ITicketContained
-  from zope.container.contained import Contained
-  from zope.container.btree import BTreeContainer
-
-
-  class Ticket(BTreeContainer, Contained):
-
-      implements(ITicket, ITicketContained)
-
-      number = u""
-      summary = u""
-
 You can update the template file ``src/tc/collector/ticketmain.pt``
 with this content::
 
@@ -491,6 +477,7 @@ You need to create an ``AddForm`` like this.  Open the
 ``src/tc/collector/views.py`` file and update with the ``AddComment`` form
 given below::
 
+  from zope.container.interfaces import INameChooser
   from tc.collector.interfaces import IComment
   from tc.collector.comment import Comment
 
@@ -525,15 +512,21 @@ user can see comments for the particular ticket.
 To list the comments on the ticket page, you need to modify
 ``src/tc/collector/ticketmain.pt``::
 
+
   <html>
   <head>
   <title>Welcome to ticket collector!</title>
   </head>
   <body>
 
-  Welcome to ticket collector! <br/> <br/>
+  You are looking at ticket number:
+  <b tal:content="context/number">number</b>
 
-  <a href="@@add_ticket">Add Ticket</a> <br/> <br/>
+  <h3>Summary</h3>
+
+  <p tal:content="context/summary">Summary goes here</p>
+
+  <a href="@@add_comment">Add Comment</a>
 
   <p tal:repeat="ticket context/values">
     <span tal:content="ticket/body">Comment goes here</span>
