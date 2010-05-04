@@ -107,7 +107,7 @@ definition of ``ITicket`` above the ``IContainer`` as the ``ITicket``
 is used by it.  Add the following method definition to the
 ``ICollector`` class::
 
-    from zope.app.container.constraints import ItemTypePrecondition
+    from zope.container.constraints import ItemTypePrecondition
 
     def __setitem__(name, object):
         """Add an ICollector object."""
@@ -124,7 +124,7 @@ you need to create another interface inheriting from
 
   from zope.schema import Field
   from zope.container.interfaces import IContained
-  from zope.app.container.constraints import ContainerTypesConstraint
+  from zope.container.constraints import ContainerTypesConstraint
 
   class ITicketContained(IContained):
       """Interface that specifies the type of objects that can contain
