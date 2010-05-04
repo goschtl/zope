@@ -31,4 +31,5 @@ Documentation
    proposals/index
    process/index
    codingstyle/index
+   releaseteam/index
    steeringgroup/index
