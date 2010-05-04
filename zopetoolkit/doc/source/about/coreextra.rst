@@ -31,9 +31,9 @@ and which libraries are not? The set of Zope Toolkit libraries is
 not static; what is included continuously evolves. The project
 maintains a list of which libraries are considered core.
 
-The Zope Toolkit Steering Group is the final arbiter of which
-libraries are in Zope Toolkit or not. It will generally make decisions
-according to these loose guidelines:
+The Zope Toolkit Release Team is the final arbiter of which libraries are in
+Zope Toolkit or not. It will generally make decisions according to these
+loose guidelines:
 
 * if it's used widely in our community by the different consumer
   platforms, it's likely core.
@@ -92,7 +92,7 @@ formerly part of the core but still being maintained. In general some
 development philosophies and practices will be shared between the core
 and extra group of libraries.
 
-The Zope Toolkit steering group *does* not control the development
+The Zope Toolkit release team *does* not control the development
 of the extra libraries in the repository, except where such a library
 is considered for adoption within the Zope Toolkit itself as a core
 library.
