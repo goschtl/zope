@@ -46,8 +46,20 @@ Formlib defines a widget like this: "views on bound schema fields"
 Field
 ~~~~~
 
+Fields build on schema fields.
+
 Form
 ~~~~
+
+A form class can define ordered collections of "form fields" using
+the `Fields` constructor.  Form fields are distinct from and build on
+schema fields.  A schema field specifies attribute values.  Form
+fields specify how a schema field should be used in a form.  The
+simplest way to define a collection of form fields is by passing a
+schema to the `Fields` constructor.
+
+Action
+~~~~~~
 
 Creating an AddForm
 -------------------
