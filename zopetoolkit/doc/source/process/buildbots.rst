@@ -89,6 +89,12 @@ base.
       - 2.4, 2.5, 2.6
       - KGS (3.4/3.5), ZTK, grok, BFG (trunk), zc.buildout
 
+    * - EPY
+      - Stefan Holek
+      - Linux 64
+      - 2.6
+      - Zope 2, CMF, Plone
+
 
 Informing the Zope developer community about build results
 ----------------------------------------------------------
