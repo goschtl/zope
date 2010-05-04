@@ -10,6 +10,16 @@ bug in addition to the comment. If something is really broken and you
 want to indicate it with ``XXX``, consider instead not checking this
 into the trunk of a project but into a separate working branch.
 
+
+Bug days
+--------
+
+On a loose monthly schedule bug days are organized. The developer community
+gets together on these days to triage and resolve bugs in Zope projects.
+
+Bug days are announced on the zope-dev mailing list (:ref:`mailing-list`).
+
+
 Historical bugs
 ---------------
 
