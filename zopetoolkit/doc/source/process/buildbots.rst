@@ -129,7 +129,7 @@ The subject line should be formatted like this::
 Automated/nightly build effort coordination
 ===========================================
 
-Patrik Gerken (do3cc) is the voluntary coordinator for automated builds and
+Patrick Gerken (do3cc) is the voluntary coordinator for automated builds and
 nightly tests.
 
 The responsibility of the coordinator is to help the community reach our goals
