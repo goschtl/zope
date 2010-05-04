@@ -2,12 +2,12 @@ Communication
 =============
 
 Communication for the Zope Toolkit development itself happens both
-on IRC and in a mailinglist.
+on IRC and in a mailing list.
 
 IRC
 ---
 
-We use #zope3-dev on the IRC network provided by `freenode.net
+We use #zope on the IRC network provided by `freenode.net
 <http://www.freenode.net>`_.
 
 
