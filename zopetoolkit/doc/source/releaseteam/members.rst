@@ -1,8 +1,8 @@
 Members
 =======
 
-* Christophe Combelles
+* Christophe Combelles (representative for BlueBream)
 
-* Jan-Wijbrand Kolman
+* Jan-Wijbrand Kolman (representative for Grok)
 
-* Hanno Schlichting
+* Hanno Schlichting (representative for Zope 2)
