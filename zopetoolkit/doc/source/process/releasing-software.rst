@@ -8,7 +8,8 @@ When releasing software, the following steps should be taken:
    the package.
 
 2. Fill in the release date in ``CHANGES.txt``.  Make sure the
-   changelog is complete.
+   changelog is complete. Update the version number in ``setup.py`` and
+   remove the ``dev`` marker.
 
    Also consider the version number for the new release. If the API
    has been added to, or the behavior has otherwise changed in a way
@@ -48,33 +49,26 @@ When releasing software, the following steps should be taken:
      as package data.  Setuptools will only include them in the
      distribution if they are checked into subversion.
 
-   In the checkout of the tag perform the following steps:
+   In the checkout of the tag create a distribution and upload it to PyPI
+   using the following command::
 
-   a) Remove the "dev" marker from the version in ``setup.py``
+     python setup.py register sdist upload
 
-   b) Commit these changes.  It's acceptable that these changes modify
-      the tag since they're purely related to release management.
+   If the package contains C extensions, you need to upload a
+   binary Windows egg as well::
 
-   c) Create a distribution and upload it to PyPI using the following
-      command::
+     python setup.py bdist_egg upload
 
-        python setup.py register sdist upload
+   This may require the help from someone with a Windows
+   installation and proper tools (Visual C).
 
-      If the package contains C extensions, you need to upload a
-      binary Windows egg as well::
-
-        python setup.py bdist_egg upload
-
-      This may require the help from someone with a Windows
-      installation and proper tools (Visual C).
-
-      Binary eggs for Linux or MacOSX should **never** be uploaded
-      because those platforms vary too much to be binary-compatible
-      with each other, due to varying UCS support, different libc
-      versions and linking models (framework / non-framework).
+   Binary eggs for Linux or MacOSX should **never** be uploaded
+   because those platforms vary too much to be binary-compatible
+   with each other, due to varying UCS support, different libc
+   versions and linking models (framework / non-framework).
 
 6. Back on the trunk or the release branch, increase the version
-   number in ``setup.py`` to the *next* release while preserving the
+   number in ``setup.py`` to the *next* release and add back the
    ``dev`` marker.  The convention is that the trunk or release branch
    always points to the upcoming release, *not* the one that has been
    released already.  So if you've just released version 3.4.1, you
