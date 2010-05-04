@@ -1,6 +1,10 @@
 Proposals for new functionality
 ===============================
 
+.. note::
+    This part of the development process is not yet followed.
+
+
 Proposals are a semi-formal way to write down our ideas for new functionality
 and larger changes to the code base and process. They are discussed and then
 get accepted or denied by the developers. We keep them available for
