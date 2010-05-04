@@ -6,17 +6,15 @@ develop web applications or web frameworks. It is developed by the
 contributors of the Zope Foundation.
 
 The whole collection of ZTK libraries are used in various web
-frameworks and web application servers. Two of these are managed by
-the Zope project: BlueBream and Grok. If you install one of these
-systems, you will get the ZTK along with it automatically.
+frameworks and web application servers. Three of these are managed by
+the Zope project: BlueBream, Grok and Zope 2. If you install one of these
+systems, you will get a part of the ZTK along with it automatically.
 
-The :ref:`steering-group` is there to help guide the development
-of the ZTK.
+The :ref:`release-team` is there to coordinate the release of new versions
+of the ZTK and make sure the interests of the three Zope projects are
+respected.
 
 .. note::
-    Currently some of the ZTK libraries are more reusable 
-    than others, but we are working on getting them all in shape.
-
     The ZTK is not installable by itself directly, but its libraries
     are.
 
