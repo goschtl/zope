@@ -27,6 +27,7 @@ Welcome to BlueBream's documentation!
    reference/index
    zcml/index
    event
+   community/index
    glossary
    contributors
 
