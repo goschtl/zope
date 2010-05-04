@@ -25,12 +25,12 @@ Repoze
     a set of libraries that builds on Zope technology, reuse Zope concepts and
     expand on Zope technology.
 
-Plone
-    a CMS based on Zope 2 and the CMF.
-
 CMF
     The Content Management Framework for Zope 2, on which are based applications
     such as Plone or CPS.
+
+Plone
+    a CMS based on Zope 2 and the CMF.
 
 Zope Toolkit
     the collection of Zope Toolkit core libraries. Shouldn't include the ZMI
@@ -39,12 +39,7 @@ Zope Toolkit
 Zope Toolkit release
     a set of Zope Toolkit library versions that have been tested to work
     together. This set receives a collective version number ("Zope Toolkit
-    3.5"). A release could simply consist of a list of version numbers.
-
-Zope Toolkit Steering Group
-    the group responsible for the leading Zope Toolkit development, ensuring
-    its continued evolution driven by the concerns of the various consumers of
-    the toolkit (or particular libraries in the toolkit).
+    1.0"). A release could simply consist of a list of version numbers.
 
 Zope core library
     a library within the Zope Toolkit.

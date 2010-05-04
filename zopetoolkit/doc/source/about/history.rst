@@ -19,5 +19,3 @@ period. What was previously called "Zope 3" now consists in three parts :
 - the Zope Component Architecture (ZCA)
 - the set of libraries called the Zope Toolkit (ZTK)
 - the application server called BlueBream
-
-
