@@ -11,9 +11,10 @@ operating systems and packages and ensure everything works as expected.
 The automated test suite
 ========================
 
-The ZTK's automated test suite builds on the individual packages' unit and functional tests and creates 
-a combined test runner that runs each packages' test suite in isolation but
-ensures that the dependencies are satisfied using the ZTK versions under test.
+The ZTK's automated test suite builds on the individual packages' unit and
+functional tests and creates a combined test runner that runs each packages'
+test suite in isolation but ensures that the dependencies are satisfied using
+the ZTK versions under test.
 
 The combined test runner is created using `z3c.recipe.compattest
 <http://pypi.python.org/pypi/z3c.recipe.compattest>`_ -- check the

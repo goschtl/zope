@@ -1,8 +1,8 @@
 Bug tracking
 ============
 
-ZTK bugs are tracked in individual projects (one per package) using Launchpad's bugtracker at
-https://bugs.launchpad.net/zopetoolkit.
+ZTK bugs are tracked in individual projects (one per package) using Launchpad's
+bug tracker at https://bugs.launchpad.net/zopetoolkit.
 
 ``XXX``, ``FIXME`` or ``TODO`` comments in the source code are not
 considered bugs and therefore cannot block releases. Consider adding a
@@ -16,7 +16,7 @@ Historical bugs
 Historically, bugs have been tracked with the Zope 3 project
 (https://bugs.launchpad.net/zope3).
 
-Even longer ago, Zope 3 used its own bugtracker (which lived at
+Even longer ago, Zope 3 used its own bug tracker (which lived at
 http://www.zope.org/Collectors). Those were imported into the Launchpad bug
 database and have aliases of the form "zope3dev-NNN" where "NNN" is the old
 bug number, so they can be retrieved by searching for these on Launchpad.
