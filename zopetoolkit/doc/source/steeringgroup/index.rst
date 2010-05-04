@@ -14,8 +14,6 @@ After the steering group members stepped down, the Zope community agreed on
 the formation of the release team (:ref:`release-team`) with a much narrower
 focus around release management of the ZTK.
 
-The Zope project and community at large is self-organizing itself ever since.
-
 .. toctree::
     :maxdepth: 1
 
