@@ -132,6 +132,7 @@ with its own IPrincipalAnnotationUtility::
   >>> subsite = Folder()
   >>> root['subsite'] = subsite
   >>> subsm = LocalSiteManager(subsite)
+  >>> subsm.__bases__ = (rootsm,)
   >>> subsite.setSiteManager(subsm)
 
   >>> util2 = PrincipalAnnotationUtility()
