@@ -106,16 +106,16 @@ It would be good if you set a precondition to restrict what types of
 objects you want to add inside a collector.  If you know that you
 only expect ticket objects inside a collector object, you can add a
 precondition to ensure that no other types of object can be added to
-a collector. To do this, you need to add a ``__setitem__`` method to
-``ICollector`` the interface definition (The ``__setitem__`` is part of
-``IContainer`` API).  Then below that, you can add the ``precondition``
-attribute, which is an instance of the ``ItemTypePrecondition`` class.
-You can pass the interfaces as arguments to the ``ItemTypePrecondition``
-class.  Below, only one class (``ITicket``) is passed.  So, only
-ticket objects are allowed inside a collector.  You need to move the
-definition of ``ITicket`` above the ``IContainer`` as the ``ITicket``
-is used by it.  Add the following method definition to the
-``ICollector`` class::
+a collector.  To do this, you need to add a ``__setitem__`` method to
+``ICollector`` the interface definition (The ``__setitem__`` is part
+of ``IContainer`` API).  Then below that, you can add the
+``precondition`` attribute, which is an instance of the
+``ItemTypePrecondition`` class.  You can pass the interfaces as
+arguments to the ``ItemTypePrecondition`` class.  Below, only one
+class (``ITicket``) is passed.  So, only ticket objects are allowed
+inside a collector.  You need to move the definition of ``ITicket``
+above the ``IContainer`` as the ``ITicket`` is used by it.  Add the
+following method definition to the ``ICollector`` class::
 
     from zope.container.constraints import ItemTypePrecondition
 
@@ -126,8 +126,8 @@ is used by it.  Add the following method definition to the
 
 The ``ItemTypePrecondition`` provides a way to restrict the type of
 object which can be added inside a container.  You can also specify
-that ticket objects can be only added inside a collector.  To do this,
-you need to create another interface inheriting from
+that ticket objects can be only added inside a collector.  To do
+this, you need to create another interface inheriting from
 ``zope.container.interfaces.IContained``.
 
 ::
@@ -171,7 +171,8 @@ Configuration
 ~~~~~~~~~~~~~
 
 Then, register the interface & class.  Open
-``src/tc/collector/configure.zcml`` and update it with these details::
+``src/tc/collector/configure.zcml`` and update it with these
+details::
 
   <interface
      interface="tc.collector.interfaces.ITicket"
@@ -196,8 +197,8 @@ Then, register the interface & class.  Open
   </class>
 
 Now you can add a link to ``@@add_ticket`` in
-``src/tc/collector/collectormain.pt``.  Now the template will look like
-this::
+``src/tc/collector/collectormain.pt``.  Now the template will look
+like this::
 
   <html>
   <head>
@@ -242,8 +243,8 @@ You can register the view in ``src/tc/collector/configure.zcml``::
      />
 
 You can add a ticket by visiting:
-http://localhost:8080/mycollector/@@add_ticket You can give the ticket
-number as '1' and provide 'Test Summary' as the summary.
+http://localhost:8080/mycollector/@@add_ticket You can give the
+ticket number as '1' and provide 'Test Summary' as the summary.
 
 You can then check the object from the debug shell::
 
@@ -333,8 +334,8 @@ source with your browser, it will look like this::
 Listing tickets
 ---------------
 
-This section explains how to list tickets on the main collector page, so
-that the user can navigate to a ticket and see its details.
+This section explains how to list tickets on the main collector page,
+so that the user can navigate to a ticket and see its details.
 
 To list the tickets on the main collector page, you need to modify
 ``src/tc/collector/collectormain.pt``::
@@ -381,9 +382,9 @@ Adding Comments
 
 .. warning:: This section is incomplete
 
-In this section, you will create `comment` objects which can be added to
-tickets.  As the first step, you need to define the interface for a
-comment.  You can add this interface definition in
+In this section, you will create `comment` objects which can be added
+to tickets.  As the first step, you need to define the interface for
+a comment.  You can add this interface definition in
 ``src/tc/collector/interfaces.py``::
 
   from zope.interface import Interface
@@ -404,8 +405,8 @@ comment.  You can add this interface definition in
       __parent__ = Field(
           constraint = ContainerTypesConstraint(ITicket))
 
-To implement the comment, you can create a new
-file for the implementation, ``src/tc/collector/comment.py``::
+To implement the comment, you can create a new file for the
+implementation, ``src/tc/collector/comment.py``::
 
   from zope.interface import implements
   from tc.collector.interfaces import IComment
@@ -440,7 +441,8 @@ Then, register the interface & class::
   </class>
 
 You can add ``ItemTypePrecondition`` to ``ITicket``.  Open
-``src/tc/collector/interfaces.py`` and update the interface definition::
+``src/tc/collector/interfaces.py`` and update the interface
+definition::
 
   class ITicket(IContainer):
       """Ticket - the ticket content component"""
@@ -484,8 +486,8 @@ with this content::
   </html>
 
 You need to create an ``AddForm`` like this.  Open the
-``src/tc/collector/views.py`` file and update with the ``AddComment`` form
-given below::
+``src/tc/collector/views.py`` file and update with the ``AddComment``
+form given below::
 
   from zope.container.interfaces import INameChooser
   from tc.collector.interfaces import IComment

@@ -145,12 +145,12 @@ command-line wizard to create the project directory structure.
 
 This will bring a wizard asking details about the new project.  The
 user can choose the package name and version number in the wizard
-itself. These details can also be modified later.  Now, the user gets
-a working application with the project name as the name of the
-egg. The project name can be a dotted name, if the user wants his
-project to be part of a namespace. Any number of namespace levels can
-be used. The project can be called 'sample', 'sample.main' or
-'sample.app.main' or anything deeper if necessary. The subfolder
+itself.  These details can also be modified later.  Now, the user
+gets a working application with the project name as the name of the
+egg.  The project name can be a dotted name, if the user wants his
+project to be part of a namespace.  Any number of namespace levels
+can be used.  The project can be called 'sample', 'sample.main' or
+'sample.app.main' or anything deeper if necessary.  The subfolder
 structure will be created accordingly.
 
 Here is a screenshot of sample project creation:
@@ -284,9 +284,9 @@ used::
 
   $ ./bin/test
 
-Sometimes the user may want to get the debug shell. BlueBream provides a
-Python prompt with your application object.  You can invoke the debug
-shell in the following way::
+Sometimes the user may want to get the debug shell. BlueBream
+provides a Python prompt with your application object.  You can
+invoke the debug shell in the following way::
 
   $ ./bin/paster shell debug.ini
 
@@ -349,10 +349,11 @@ project template is as shown::
     `-- versions.cfg
 
 
-The name of the top-level directory will always be the project name as given in
-the wizard.  The name of the egg will also be the same as the package name by
-default. The user can change it to something else from ``setup.py``.  Here are
-the details about the other files in the project.
+The name of the top-level directory will always be the project name
+as given in the wizard.  The name of the egg will also be the same as
+the package name by default. The user can change it to something else
+from ``setup.py``.  Here are the details about the other files in the
+project.
 
 Files &  Purpose
 ~~~~~~~~~~~~~~~~
@@ -489,9 +490,9 @@ advertise it in the ``configure`` directive::
      xmlns="http://namespaces.zope.org/zope"
      xmlns:browser="http://namespaces.zope.org/browser">
 
-You can add this configuration to:
-``src/myproject/configure.zcml``.  Now you can access the view
-by visiting this URL: http://localhost:8080/@@hello
+You can add this configuration to: ``src/myproject/configure.zcml``.
+Now you can access the view by visiting this URL:
+http://localhost:8080/@@hello
 
 .. note:: The ``@@`` symbol for view
 
@@ -568,8 +569,8 @@ This section explain creating a dynamic hello world application.
 Python class
 ~~~~~~~~~~~~
 
-In the ``src/myproject/hello.py`` file, add a few lines of
-Python code like this::
+In the ``src/myproject/hello.py`` file, add a few lines of Python
+code like this::
 
   class Hello(object):
 
@@ -600,8 +601,9 @@ let's add a ``hello.pt`` in the ``src/myproject`` directory::
     </body>
   </html>
 
-The ``tal:content`` directive tells BlueBream to replace the fake content
-of the tag with the output of the ``getText`` method of the view class.
+The ``tal:content`` directive tells BlueBream to replace the fake
+content of the tag with the output of the ``getText`` method of the
+view class.
 
 ZCML registration
 ~~~~~~~~~~~~~~~~~
@@ -651,10 +653,10 @@ Conclusion
 ----------
 
 This chapter walked through the process of getting started with web
-application development with BlueBream.  It also introduced a few simple
-``Hello World`` example applications.  The :ref:`tut1-tutorial`
-chapter will go through a bigger application to introduce more
-concepts.
+application development with BlueBream.  It also introduced a few
+simple ``Hello World`` example applications.  The
+:ref:`tut1-tutorial` chapter will go through a bigger application to
+introduce more concepts.
 
 
 .. _Python: http://www.python.org
