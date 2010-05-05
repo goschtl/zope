@@ -2,6 +2,17 @@
 Change History
 **************
 
+1.0.6 (2010-05-05)
+==================
+
+- 1.0.5 missed the changelog update
+
+1.0.5 (2010-05-05)
+==================
+
+- unpin requirement, 'zope.testing<=3.4.9999' that collides with the
+  KGS 3.4.0 and 3.4.1
+
 1.0.4 (2010-05-05)
 ==================
 
