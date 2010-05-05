@@ -8,7 +8,7 @@ Subversion Web Interfaces
 The main Subversion Repository provides a
 `web interface <http://svn.zope.org>`_ allowing developers to browse the
 repository.  This interface uses the `ViewCVS software
-<http://viewcvs.sourceforge.net/>`_;  please consult the documentation there
+<http://www.viewvc.org/>`_;  please consult the documentation there
 for using its features.
 
 The `Programmers of Vilnius <http://pov.lt>`_ team maintains a `Trac-based
