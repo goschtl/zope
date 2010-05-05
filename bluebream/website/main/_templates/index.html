@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
     <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
     <link rel="stylesheet" href="{{ pathto('_static/mainpage.css', 1) }}" type="text/css" />
+    <style type="text/css">
+      @import url("http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css");
+    </style>
   </head>
 
   <body style="min-width: 750px; background-color: white">
@@ -26,8 +29,8 @@
       </div>
 
 	  <div style="margin:0 auto; width:800px; padding-top: 30px">
-        <img src="_static/img/logo.png" border="0px"/>
-        <img src="_static/img/title.png" border="0px"/>
+        <img src="_static/img/logo.png" border="0px" alt="BlueBream logo"/>
+        <img src="_static/img/title.png" border="0px" alt="The Zope Web Framework"/>
 	  </div>
 
 	  <div class="clearer"></div>
@@ -36,7 +39,9 @@
 	      <li>
 		    <a href="screencasts.html">
 		      <span class="linktitle"> Watch </span>
-		      <span class="linkimg"><img src="_static/img/watch.jpg" /></span>
+		      <span class="linkimg">
+                <img src="_static/img/watch.jpg"
+                     alt="Screencasts, Presentations etc." /></span>
 		      <span class="linkdesc">
 		        Screencasts, Presentations etc.
 		      </span>
@@ -45,7 +50,8 @@
 	      <li>
 		    <a href="doc/1.0/index.html">
 		      <span class="linktitle"> Read </span>
-		      <span class="linkimg"><img src="_static/img/read.jpg" /></span>
+		      <span class="linkimg">
+                <img src="_static/img/read.jpg" alt="Tutorials, Guides etc." /></span>
 		      <span class="linkdesc">
 		        Tutorials, Guides etc.
 		      </span>
@@ -54,7 +60,8 @@
 	      <li>
 		    <a href="http://wiki.zope.org/bluebream/ImportantLinks">
 		      <span class="linktitle"> Involve </span>
-		      <span class="linkimg"><img src="_static/img/involve.jpg" /></span>
+		      <span class="linkimg">
+                <img src="_static/img/involve.jpg" alt="Mailing list, Code etc." /></span>
 		      <span class="linkdesc">
 		        Mailing list, Code etc.
 		      </span>
@@ -79,9 +86,6 @@
       <!-- Dynamic Feed Control and Stylesheet -->
       <script src="http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js"
               type="text/javascript"></script>
-      <style type="text/css">
-        @import url("http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css");
-      </style>
 
       <script type="text/javascript">
         function LoadDynamicFeedControl() {
@@ -121,8 +125,9 @@
         </div>
 
 	    <div class="tweets" style="margin: 0pt auto; width: 270px;display: inline-block;">
-          <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-          <script> new TWTR.Widget({ version: 2, type: 'search', search:
+          <script src="http://widgets.twimg.com/j/2/widget.js"
+                  type="text/javascript"></script>
+          <script type="text/javascript"> new TWTR.Widget({ version: 2, type: 'search', search:
             'bluebream', interval: 6000, 
             subject: 'Tweets', width: 270, height: 300, theme: { shell: {
             background: '#8ec1da', color: '#ffffff' }, tweets: { background:
