@@ -5,6 +5,8 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Fixed a test failure in nested local site manager setup.
+
 - Removed dependency on zope.container.
 
 3.6.0 (2009-03-09)
