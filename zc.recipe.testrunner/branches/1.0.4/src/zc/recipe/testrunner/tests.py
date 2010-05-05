@@ -36,8 +36,13 @@ def test_suite():
                zc.buildout.testing.normalize_script,
                zc.buildout.testing.normalize_egg_py,
                (re.compile('#!\S+py\S*'), '#!python'),
+               #kill duration
                (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
+               #kill zope.testing version
                (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
+               #change distribute to setuptools:
+               (re.compile('/distribute-'), '/setuptools-'),
+               #kill setuptools version
                (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
                ])
             ),

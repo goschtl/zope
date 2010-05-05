@@ -22,7 +22,7 @@ extra-paths
 defaults
     The defaults option lets you specify testrunner default
     options. These are specified as Python source for an expression
-    yielding a list, typically a list literal. 
+    yielding a list, typically a list literal.
 
 working-directory
     The working-directory option lets to specify a directory where the
@@ -58,7 +58,7 @@ buildout::
     >>> write(sample_buildout, 'demo', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demo")
     ... """)
 
@@ -82,7 +82,7 @@ buildout::
     >>> write(sample_buildout, 'demo2', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demo2", install_requires= ['demoneeded'])
     ... """)
 
@@ -108,7 +108,7 @@ Demo 2 depends on demoneeded::
     >>> write(sample_buildout, 'demoneeded', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demoneeded")
     ... """)
 
@@ -126,7 +126,7 @@ develop egg and to create the test script::
     ...
     ... [testdemo]
     ... recipe = zc.recipe.testrunner
-    ... eggs = 
+    ... eggs =
     ...    demo
     ...    demo2
     ... script = test
@@ -311,14 +311,14 @@ using the -v option::
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... """)
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') 
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -376,8 +376,7 @@ Running them with the current buildout will produce a failure::
     <BLANKLINE>
     Failure in test test (demo.tests.DemoTests)
     Traceback (most recent call last):
-      ...
-        raise self.failureException, \
+    ...
     AssertionError: '42' != '23'
     <BLANKLINE>
     <BLANKLINE>
@@ -455,7 +454,7 @@ end of the script.
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... initialization = print 'Hello all you egg-laying pythons!'
@@ -501,7 +500,7 @@ This will also work with a multi-line initialization section.
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... initialization = print 'Hello all you egg-laying pythons!'
@@ -535,4 +534,3 @@ This will also work with a multi-line initialization section.
     ]) + [
       '--test-path', '/sample-buildout/demo',
       ])
-
