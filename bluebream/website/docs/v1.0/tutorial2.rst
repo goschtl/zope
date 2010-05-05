@@ -420,7 +420,7 @@ implementation, ``src/tc/collector/comment.py``::
       body = u""
 
 Then, register the interface & class, Upate the
-````src/tc/collector/configure.zcml`` file::
+``src/tc/collector/configure.zcml`` file::
 
   <interface
      interface="tc.collector.interfaces.IComment"
