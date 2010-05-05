@@ -96,8 +96,8 @@ interface::
           required=True)
 
 
-The ``TextLine`` and ``Text`` should already have been imported, if not,
-you can import them thus::
+The ``TextLine`` and ``Text`` should already have been imported, if
+not, you can import them::
 
   from zope.schema import TextLine
   from zope.schema import Text
