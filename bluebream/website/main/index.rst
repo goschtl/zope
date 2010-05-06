@@ -12,3 +12,4 @@ Welcome to BlueBream!
    support
    forum
    chat
+   community
