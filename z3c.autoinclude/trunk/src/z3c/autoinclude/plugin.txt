@@ -4,7 +4,7 @@ Automatic inclusion of extension packages
 
 There is additional functionality for registering and autoincluding
 extension packages for a particular platform.
-
+ 
 In this test environment, ``BasePackage`` provides the ``basepackage``
 module which we will treat as our platform.  ``FooPackage`` wants to
 broadcast itself as a plugin for ``basepackage`` and thereby register
@@ -15,7 +15,7 @@ Given a module name, we can ask for distributions which have been broadcast
 themselves as plugging into that module via entry points::
 
     >>> from z3c.autoinclude.plugin import find_plugins
-    >>> sorted(find_plugins('basepackage'))
+    >>> sorted(find_plugins('basepackage')) # doctest: +IGNORECASE
     [FooPackage 0.0 (...), TestDirective 0.0 (...)]
 
 Armed with a valid module name we can find the ZCML files within it
