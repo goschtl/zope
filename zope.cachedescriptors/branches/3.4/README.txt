@@ -1,4 +1,0 @@
-Cached Descriptors
-******************
-
-.. contents::
