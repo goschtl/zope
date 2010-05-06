@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -28,8 +28,9 @@ def read(*rnames):
 
 setup(name = 'zope.intid',
       version = '3.7.3dev',
-      author='Zope Corporation and Contributors',
-      author_email='zope-dev@zope.org',
+      author='Albertas Agejevas and Gintautas Miliauskas',
+      maintainer='Zope developers',
+      maintainer_email='zope-dev@zope.org',
       description='Integer Id Utility',
       long_description=(
           read('README.txt')
