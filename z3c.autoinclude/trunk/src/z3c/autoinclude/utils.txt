@@ -34,13 +34,14 @@ packages whose distribution name has no bearing on the name of the
 package contained within it::
 
     >>> import basepackage
-    >>> distributionForPackage(basepackage)
+    >>> # Ignoring whitespace in order to make tests pass on Windows.
+    >>> distributionForPackage(basepackage) # doctest: +IGNORECASE
     BasePackage 0.0 (...BasePackage-0.0...egg)
 
     >>> import foo
-    >>> distributionForPackage(foo)
+    >>> distributionForPackage(foo) # doctest: +IGNORECASE
     FooPackage 0.0 (...FooPackage-0.0...egg)
 
     >>> import F.G
-    >>> distributionForPackage(F.G)
+    >>> distributionForPackage(F.G) # doctest: +IGNORECASE
     SiblingPackage 0.0 (...SiblingPackage-0.0...egg)

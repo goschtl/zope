@@ -1,9 +1,11 @@
+import os
+import doctest
+import unittest
+
 from zc.buildout import testing
 
-import os
 projects_dir = os.path.dirname(__file__)
-
-
+    
 # this is the list of test packages that we'll temporarily install
 # for the duration of the tests; you MUST add your test package name
 # to this list if you want it to be available for import in doctests!
@@ -64,9 +66,15 @@ def testTearDown(test):
     testing.buildoutTearDown(test)
 
 
-import doctest
-import unittest
-    
+IGNORECASE = doctest.register_optionflag('IGNORECASE')
+
+class IgnoreCaseChecker(doctest.OutputChecker):
+    def check_output(self, want, got, optionflags):
+        if optionflags & IGNORECASE:
+            want, got = want.lower(), got.lower()
+            #print repr(want), repr(got), optionflags, IGNORECASE
+        return doctest.OutputChecker.check_output(self, want, got, optionflags)
+
 def test_suite():
 
     from pprint import pprint
@@ -76,6 +84,7 @@ def test_suite():
                                  setUp=testSetUp,
                                  tearDown=testTearDown,
                                  globs={'pprint':pprint},
+                                 checker=IgnoreCaseChecker(),
                                  optionflags=doctest.ELLIPSIS)
 
     return unittest.TestSuite((suite,))
