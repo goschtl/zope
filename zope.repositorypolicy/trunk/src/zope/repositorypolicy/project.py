@@ -81,28 +81,22 @@ class Checker(object):
                              env=environment)
         s.wait()
         s = subprocess.Popen([sys.executable, setup,
-                              '--license', '--author'],
+                              '--license'],
                              cwd=self.working_dir,
                              stdout=subprocess.PIPE,
                              env=environment)
         s.wait()
         metadata = s.stdout.readlines()
-        if len(metadata) < 2 or len(metadata) % 2:
+        if len(metadata) < 1 or len(metadata) % 1:
             self.log.append('setup.py: could not extract metadata')
             return
         while metadata:
-            license, author, metadata = metadata[0], metadata[1], metadata[2:]
+            license, metadata = metadata[0], metadata[1:]
             license = license.strip()
             if not license.startswith(self.license_name):
                 self.log.append(
                     'setup.py: license not declared as "%s" (found: "%s")' %
                     (self.license_name, license))
-            author = author.strip()
-            if author != self.copyright_holder:
-                self.log.append(
-                    'setup.py: author not declared as "%s" '
-                    '(found: "%s")' %
-                    (self.copyright_holder, author))
 
     def check_copyright(self):
         """Verifies the copyright assignment to the Zope Foundation
