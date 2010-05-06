@@ -1038,7 +1038,21 @@ and add this line before ``</configure>``::
 
   <include package="tc.collector" />
 
-Now you can access the URL:
+To add the ticket collector, first you need to login from:
+http://localhost:8080/@@login.html .  You can provide the credential
+information given in the ``src/tc/main/securitypolicy.zcml``::
+
+  <principal
+     id="zope.manager"
+     title="Manager"
+     login="admin"
+     password="admin"
+     password_manager="Plain Text"
+     />
+
+By default the username & password will be ``admin``, ``admin``.  You
+**must** change this to something else.  After successfully logged
+in, you can access the URL:
 http://localhost:8080/@@add_ticket_collector .  It should display a
 form where you can enter values for ``name`` and ``description``.
 You can enter the ``name`` as ``mycollector``. After entering your
