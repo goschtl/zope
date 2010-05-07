@@ -1,6 +1,0 @@
-AUTHORS
--------
-
-Jean-Paul Ladage <j.ladage@zestsoftware.nl>
-
-Godefroid Chapelle <gotcha@bubblenet.be>
