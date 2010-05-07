@@ -1,3 +1,5 @@
+# Copyright (c) 2007-2010 Zope Foundation and Contributors
+# See also LICENSE.txt
 import martian
 
 import grok

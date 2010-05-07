@@ -1,3 +1,5 @@
+# Copyright (c) 2007-2010 Zope Foundation and Contributors
+# See also LICENSE.txt
 import unittest
 from zope.testing import doctest
 from zope.configuration import xmlconfig
@@ -14,6 +16,6 @@ def setUp(test):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite('megrok.kss.tests.kss',
-                                        optionflags=doctest.NORMALIZE_WHITESPACE))
+        optionflags=doctest.NORMALIZE_WHITESPACE))
     suite.layer = IntegrationLayer
     return suite

@@ -1,3 +1,5 @@
+# Copyright (c) 2007-2010 Zope Foundation and Contributors
+# See also LICENSE.txt
 import grok
 from zope.interface import alsoProvides
 from zope.publisher.publish import mapply
@@ -10,6 +12,7 @@ except ImportError:
     # use a dummy instead.
     from megrok.kss.interfaces import (
         IGrokSecurityViewPlaceholder as IGrokSecurityView)
+
 
 class KSS(KSSView, grok.View):
     """This is the default KSS action class that binds to a content object.
@@ -25,7 +28,7 @@ class KSS(KSSView, grok.View):
     """
     grok.implements(IGrokSecurityView)
     grok.baseclass() # This is a baseclass. Create your own KSS views.
-    
+
     def __init__(self, context, request):
         self.view = context
         super(KSS, self).__init__(context, request)
@@ -42,5 +45,5 @@ class KSS(KSSView, grok.View):
     def __call__(self):
         view_name = self.__view_name__
         method = getattr(self, view_name)
-        method_result = mapply(method, (), self.request)
+        mapply(method, (), self.request)
         return self.render()

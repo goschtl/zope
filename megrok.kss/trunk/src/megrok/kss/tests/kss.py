@@ -1,3 +1,5 @@
+# Copyright (c) 2007-2010 Zope Foundation and Contributors
+# See also LICENSE.txt
 """
   >>> from zope.publisher.browser import TestRequest
   >>> from zope.component import getMultiAdapter
@@ -33,7 +35,7 @@ model into the ZODB to make it browsable::
 
 Now we start the test-browser and try to access our action as
 non-authenticated users::
-  
+
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
