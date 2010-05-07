@@ -1,0 +1,7 @@
+<html>
+ <body>
+  <h1> This is my nice Table renderd in a Templage</h1>
+
+  <div tal:replace="structure view/renderTable"/>
+ </body>
+</html> 

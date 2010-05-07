@@ -1,0 +1,49 @@
+Changelog
+=========
+
+1.4.1 (2010-02-21)
+------------------
+
+* Cleaned out all the zope.app dependencies. Removed unused imports
+  and re-structured the tests module. We are now using minimal
+  dependencies.
+
+* ``megrok.z3ctable`` now requires ``zope.component >= 3.9.1``. This
+  means you have to use the latest ZTK KGS in your buildout. This KGS
+  can be included via the groktoolkit.
+
+
+1.4.0 (2010-01-16)
+------------------
+
+* Now using ztk versions and fixed it for z3c.table >= 0.8
+
+
+1.3.0 (2009-09-24)
+------------------
+
+* Now Columns have their own grokker. Before that, they were treated
+  as basic multi adapters. We now use a dedicated grokking component
+  with explicit directives that can be auto-linked to context and
+  table components. Read the test "test_implicit" in the ftests for
+  more details. [trollfot]
+
+
+1.2.1 (2009-09-18)
+------------------
+
+* Add a new test for a template in a form [cklinger]
+
+
+1.2.0 (2009-09-17)
+------------------
+
+* Let megrok.z3ctable work with grokcore.view 1.12.2 [cklinger]
+
+
+1.1.0 (2009-09-19)
+------------------
+
+* Adapted megrok.z3ctable to the new version of megrok.layout and
+  grokcore.view [cklinger]
+
