@@ -4,6 +4,8 @@ Changes
 1.14.0 (unreleased)
 -------------------
 
+- Make package comply to zope.org repository policy.
+
 - Update tests not to require zope.app.testing anymore.
 
 - Update tsets not to require zope.app.zcmlfiles anymore.
