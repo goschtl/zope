@@ -4,6 +4,8 @@ Changes
 1.5 (unreleased)
 ----------------
 
+* Make package comply to zope.org repository policy.
+
 * Update functional tests to use Browser implementation of zope.app.wsgi
   instead of zope.app.testing.
 
