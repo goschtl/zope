@@ -1,0 +1,515 @@
+================
+Introducing ZODB
+================
+
+The ZODB provides an object-persistence facility for Python.  It
+provides many features, which we'll get into later, but first, let's
+take a very quick look at the basics.
+
+We start by creating a file-based database:
+
+    >>> import ZODB
+    >>> conn = ZODB.connection('data.fs')
+
+The connection function opens a database and returns a connection to it.
+Because the database didn't already exist, it's created automatically.
+
+Initially, the database contains a single object, the root object.
+Connections have a root method that retrieves the root object:
+
+    >>> conn.root
+    <root >
+
+When using the ZODB, we always start with the root object and use it
+to access other objects.  The root object is an object that you
+can add items to to store your own data.
+
+To store data in the database, you must use "persistent" objects.  To
+create a persistent object, start by creating a class that subclasses
+persistent.Persistent.  Let's create a database to manage books and
+authors. We'll start by creating a book module that defines the
+classes we'll use::
+
+    import persistent, BTrees.OOBTree
+
+    class Book(persistent.Persistent):
+        def __init__(self, title):
+            self.title = title
+
+    class Author(persistent.Persistent):
+        def __init__(self, id, name):
+            self.id = id
+            self.name = name
+            self.books = BTrees.OOBTree.OOBTree()
+
+        def new_book(self, title):
+            book = Book(title)
+            book.author = self
+            self.books[title] = book
+            return book
+
+The OOBTree class implements a persistent mapping object that keeps
+its keys sorted.
+
+Now, we'll use the book module we created to store books in our database:
+
+    >>> import book, BTrees.OOBTree
+    >>> conn.root.authors = BTrees.OOBTree.OOBTree()
+    >>> conn.root.books = BTrees.OOBTree.OOBTree()
+
+    >>> author = book.Author('tolkien', 'J.R.R. Tolkien')
+    >>> conn.root.authors[author.id] = author
+    >>> for title in ["The Fellowship of the Ring",
+    ...               "The Two Towers",
+    ...               "The return of the King"]:
+    ...     conn.root.books[title] = author.new_book[title]
+
+In the root of our database, we added a collection of authors
+arranged by author name, and a collection of books arranged by
+book title.
+
+So, now we have a small database with 3 books and an author.  We can
+query it by author or by book using Python as our query language:
+
+    >>> conn.books["The Two Towers"].author.name
+    'J.R.R. Tolkien'
+
+We used BTrees to implement the books and authors collections. BTrees
+have a number of advantages and limitations:
+
+- BTrees are highly scalable and are therefore appropriate for
+  collections containg large number of items.
+
+- BTrees manage their keys in sorted order and support range searches.
+
+- BTrees require that their keys be orderable and that the ordering is
+  stable. For example, the order must not change with new Python
+  versions. This generally implies that the keys be of a simple type.
+
+The database root object isn't a BTree, but is based on a persistent
+dictionary. It is a bit more flexible than BTrees but isn't very
+scalable.  For this reason, you don't want to use the database root
+object to implement a large collection of objects, but rather use a
+BTree stored in the root object (or in some other object reachable
+from the root object).
+
+We've made a number of changes to the database, but so far the changes
+exist only in memory. To make the changes permanent, we need to commit
+them. To do this, we use the transaction module:
+
+    >>> import transaction
+    >>> transaction.commit()
+
+We can close and reopen the database and see that our changes are
+permanent:
+
+    >>> conn.close()
+    >>> conn = ZODB.open('data.fs')
+    >>> conn.books["The Two Towers"].author.name
+    'J.R.R. Tolkien'
+
+Let's add another book to the database:
+
+    >>> author = conn.books["The Two Towers"].author
+    >>> conn.books['The Hobbit'] = author.new_book("The Hobit")
+    >>> conn.books["The Hobbit"].author.name
+    'J.R.R. Tolkien'
+
+We made a typo when we created the book.  We can fix it, or we can
+start over.  Remember that changes aren't permanent until we commit.
+We can discard changes at any time by aborting the transaction::
+
+    >>> transaction.abort()
+    >>> conn.books["The Hobbit"]
+    Traceback
+    ...
+    Key Error: ...
+
+Let's expand the initials in the author's name:
+
+    >>> conn.root.authors['tolkien'].name = 'John Ronald Reuel Tolkien'
+
+Note that we didn't use any specialized API to perform the update.  We
+simply set an object attribute as we normally would without a
+database.  In fact, almost all of the operations we've performed were
+accomplished through normal object operations.  The only exception has
+been the use of transaction comit and abort calls to indicate that changes
+made should be saved or discarded.  We didn't had to keep track of
+the changes made.  The ZODB did that for us.
+
+Persistence
+===========
+
+We saw above that the ZODB keeps track of object modifications for us.
+It turns out that applications have to provide some assistence.  In
+many cases it's sufficient to subclass ``persistent.Persistent``, but
+in some cases, some extra care is needed.  To see what's needed, we
+need to uderstand what the basic responsibilities of peristent objects
+are and how the ``Persistent`` base class helps implement those
+responsibilities.
+
+ZODB needs to know when objects are accessed so their state can be
+laoded, if necessary.  The ``Persistent`` base class tracks attribute
+access and causes an object's state to be loaded when needed.  For
+objects implemented in Python [#c]_, this is really all that's needed
+to get objects loaded.
+
+ZODB needs to know when objects are modified so that changes are
+saved.  The ``Persistent`` base class tracks attribute assignments and
+marks an object as needing to be changed when attributes are
+assigned. This strategy works for many persistent objects.
+
+Care is required when a persistent object changes subobjects. Consider
+an alternate, and naive auther class implemention::
+
+    class BrokenAuthor(persistent.Persistent):
+
+        def __init__(self, id, name):
+            self.id = id
+            self.name = name
+            self.books = {}
+
+        def new_book(self, title):
+            book = Book(title)
+            book.author = self
+            self.books[title] = book
+            return book
+
+In this implementation, the books attribute is a dictionary, rather
+than a BTree.  The ``new_book`` method modifies author instances,
+but doesn't assign an attribute, so the change isn't seen by
+ZODB. This leads to the change being lost when the affected author
+object is reloaded from its database.  There are 2 basic approaches
+for dealling with mutable subobjects:
+
+- Use persistent sub-objects.
+
+  This is the approach taken by the ``Author`` class shown earlier.
+  When we use a persistent subobject, the containing object isn't
+  responsible for managing the persistence of subobject changes; the
+  subobject is responsible.  In the (non-broken) ``Author`` class,
+  adding a book doesn't change the author, it changes the author's
+  books.
+
+- Tell ZODB about changes explicitly.
+
+  We can tell ZODB about object changes explicitly my assigning the
+  ``_p_changed`` attribute. Here's a non-broken author implementation::
+
+    class NonBrokenAuthor(persistent.Persistent):
+
+        def __init__(self, id, name):
+            self.id = id
+            self.name = name
+            self.books = {}
+
+        def new_book(self, title):
+            book = Book(title)
+            book.author = self
+            self.books[title] = book
+            self._p_changed = True
+            return book
+
+  Here we assigned ``_p_changed`` attribute to signal that the author
+  object has changed.
+
+Finally, ZODB needs to keep track of certain meta data for persistent
+objects.  The ``Persistent`` base class takes care of this too.  The
+standard meta data includes::
+
+``_p_oid``
+    Every persistent object that has been stored in a database as a
+    database-unique object identifier.  Before an object has been
+    added to a database, the value of this attribute is None.
+
+``_p_jar``
+    The ``_p_jar`` [#jar]_ attribute is the database connection
+    managing the object. If an object hasn't been stored in a
+    database, then the value of this attribute is None.
+
+``_p_serial``
+    The ``_p_serial`` attribute has the identifier of the last
+    transaction to update the object.  This acts as a revision
+    identitier for the object.  This has a value of None if the object
+    hasn't been stored yet.
+
+``_p_changed``
+    The _p_changed attribute provides access to and control of the
+    changed state of an object.  It can be have one of 3 values:
+
+    True
+       The object has changed.
+
+    False
+       The object hasn't been changed.
+
+    None
+       The object's state hasn't been loaded from the database.
+       (We call such objects "ghosts".)
+
+    Typically, this attribute is used to specifically signal that an
+    object has changed, as we saw earlier.
+
+Databases, connections, and storages
+====================================
+
+ZODB separates persistent data management from low-level storage.
+This allows storage implementations to vary independently from the
+core persistence support.  When we create database objects in Python,
+we have to supply a storage object to manage low-level database
+records.
+
+When using databases, we create database objects and then open
+connections to them.  Connections allow using multiple threads within
+a process to access the same database.  We'll say more about that
+later in the section on concurrency.
+
+When we began this introduction, we used a simplified API to access
+our database:
+
+    >>> conn = ZODB.connection('data.fs')
+
+The connection function actually did three things for us:
+
+- It instantiated a file storage
+
+- It instantiated a database object using the storage, and
+
+- It opened a connection to the database [#itdidmore]_.
+
+Here's what these steps would look like if we didn't use this API::
+
+    >>> import ZODB, ZODB.FileStorage
+    >>> storage = ZODB.FileStorage.FileStorage('data.fs')
+    >>> db = ZODB.DB(storage)
+    >>> conn = db.open()
+
+Why would we use the low-level APIs?  Doing so allows us greater
+control.  We can supply special storage and connection options not
+supported by the high-level API. The high-level API also supports only
+a few standard storages.
+
+If we want to open multipke connections, we can use a slightly
+lower-level API, by passing a database file name to ``ZODB.DB``:
+
+    >>> db = ZODB.DB('data.fs')
+
+Standard storages
+-----------------
+
+ZODB comes with some standard storages:
+
+FileStorage
+    File storages provide basic data storage in a single file
+    [#exceptforblobs]_.  Most ZODB installations use FileStorage,
+    sometimes in combination with other storages.
+
+    To use a file storage with the high-level APIs, just pass the
+    file-storage file name as a string::
+
+       >>> db = ZODB.DB('data.fs')
+
+ZEO
+    ZEO (Zope Enterprise Objects) provides a client-server facility
+    for ZODB.  ZEO allows multiple processes to share a single
+    storage.  When you use ZEO, you run a ZEO storage server and
+    configure your applications to use ZEO client storages to access
+    your storage server. The storage server uses some underlying
+    storage, such as a file storage to store data.
+
+    To use a ZEO client storage with the high-level APIs, just pass
+    the ZEO server address as a host and port tuple or as an integer
+    port on the local host::
+
+       >>> db = ZODB.DB(('storage.example.com', 8100))
+       >>> connection = ZODB.connection(8100) # localhost
+
+
+MappingStorage
+    Mapping storages store database records in memory.  Mapping
+    storages are typically used for testing or experimenting with
+    ZODB.
+
+    A goal of MappingStorage is to provide a fairly simple storage
+    implementation to study when learning how to implement storages.
+
+    To use a mapping storage with the high-level APIs, just pass
+    None::
+
+       >>> connection = ZODB.connection(None)
+
+DemoStorage
+    Demo storages allow you to take an unchanging base storage and
+    store changes in a separate changes storage.  They were originally
+    implemented to allow demonstrations of applications in which a
+    populated sample database was provided in CD and users could make
+    changes that were stored in memory.
+
+    Demo storages don't actually store anything themselves. They
+    delegate to 2 other storages, an unchanging base storage and a
+    storage that holds changes.  This is an example of a storage
+    wrapper.  It's common to compose storages from base storages and
+    one or more storage wrapper.
+
+3rd-party storages
+------------------
+
+There are a number of 3rd-party storages.  Writing additional storage
+implementations relatively straightforward.  Here are some examples of
+3rd-party storage implementations:
+
+RelStorage
+    RelStorage stores data in relational databases.
+
+zc.beforestorage
+    zc.beforestorage is a storage wrapper that provides a snapshot of
+    an underlying storage at a moment of time.  This is useful because
+    it can take changing storage, like a ZEO client storage and freeze
+    it at a point in time, allowing it to be used as a base for a demo
+    storage.
+
+zc.zrs and zeoraid
+    zc.zrs and zeoraid provide database replication.  zc.zrs is a
+    commercial storage implementation, while zeoraid is open source.
+
+Configuration strings
+---------------------
+
+ZODB supports the use of textual configuration files to define
+databases, storages, and ZEO servers.  Production applications
+typically create database objects by loading configuration strings
+from application configuration files [#zconfig]_.
+
+To create a database from a configuration string, use the
+``ZODB.config.databaseFromString`` function.  Here's an example that
+creates a database using a file storage::
+
+    >>> import ZODB.config
+    >>> db = ZODB.config.databaseFromString("""
+    ... <zodb>
+    ...     <filestorage>
+    ...         path data.fs
+    ...     </filestorage>
+    ... </zodb>
+    ... """)
+
+The configuration syntax was inspired by the Apache configuration
+syntax. Configuration sections are bracketed by opening and closing
+types tags and can be nested. Options are given as names and values
+separated by spaces.
+
+In the example above, a ``zodb`` tag defines a database object
+[#multipledbtags]_.  It contains a ``filestorage`` tag and this uses a
+file storage at the path ``data.fs``.
+
+To find out about the database options supported by the ``zodb`` tag,
+see the databse reference documentation. To find out about storage
+options, see the storage reference documentation.
+
+Concurrency
+===========
+
+ZODB supports accessing databases from multiple threads.  Each thread
+operates as if it has it's own copy of the database.  Threads are
+synchonized through transaction commit.
+
+Each thread opens a separate connection to a database.  Each
+connection has it's own object cache. If multiple connections access
+the same object, they each get their own copy. Let's look at an example:
+
+   >>> conn1 = db.open()
+   >>> author1 = conn1.root.authors['tolkien']
+
+   >>> conn2 = db.open()
+   >>> author2 = conn1.root.authors['tolkien']
+
+Here we've opened two connections and fetched the author object for
+J.R.R. Tolkien. From a database perspective, these are the same
+objects:
+
+    >>> author1._p_oid == author2._p_oid
+    True
+
+    >>> author1.name
+    'J.R.R. Tolkien'
+    >>> author2.name
+    'J.R.R. Tolkien'
+
+But they're different Python objects:
+
+    >>> author1 is author2
+    False
+
+If we modify one, we don't see the change in the other:
+
+    >>> author1.name = 'John Ronald Reuel Tolkien'
+    >>> author2.name
+    'J.R.R. Tolkien'
+
+Until we commit the change:
+
+    >>> transaction.commit()
+    >>> author2.name
+    'John Ronald Reuel Tolkien'
+
+Transaction managers
+--------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. [#c] Implementing objects in C requires a lot more care. It's
+   really hard. :) See "Implementing persistent objects in C" for more
+   details.
+
+.. [#jar] The name ``_p_jar`` comes from early implementations of ZODB
+   in which databases were called "pickle jars", becaise objects were
+   stored using the Python pickle format.  In those early versions,
+   there weren't separate database connections.
+
+.. [#itdidmore] It also arranged that when we closed the connection,
+   the the underlying database was closed.
+
+.. [#zconfig] ZODB uses the ``ZConfig`` configuration
+   system. Applications that use ``ZConfig`` can also merge the ZODB
+   configuration schemas with thier own configuration schemas.
+
+.. [#multipledbtags] You can define multiple databases, so there can
+   be multiple ``zodb`` tags. See "Using multiple databases."
