@@ -13,6 +13,9 @@
 ##############################################################################
 from setuptools import setup, find_packages
 
+README = open('README.txt').read()
+CHANGES = open('CHANGES.txt').read()
+
 setup(
     name='zope.repositorypolicy',
     version='0.1dev',
@@ -23,6 +26,7 @@ setup(
         Tools to verify and help sustain policy compliance for projects in
         svn.zope.org
     """,
+    long_description = '\n\n'.join([README, CHANGES]),
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,

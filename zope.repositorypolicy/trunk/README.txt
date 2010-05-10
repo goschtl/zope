@@ -72,8 +72,9 @@ as adding the miising required files.  E.g.::
   M src/someproject/adapters.py
   ...
 
-Don't forget to add the newly-generated boilerplate files before checking
-in the changes.
+**N.B.**
+    Don't forget to add the newly-generated boilerplate files before checking
+    in the changes.
 
 
 Non-Conforming Projects
