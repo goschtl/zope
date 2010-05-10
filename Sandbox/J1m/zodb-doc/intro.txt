@@ -78,7 +78,7 @@ We used BTrees to implement the books and authors collections. BTrees
 have a number of advantages and limitations:
 
 - BTrees are highly scalable and are therefore appropriate for
-  collections containg large number of items.
+  collections contain large number of items.
 
 - BTrees manage their keys in sorted order and support range searches.
 
@@ -141,15 +141,15 @@ Persistence
 ===========
 
 We saw above that the ZODB keeps track of object modifications for us.
-It turns out that applications have to provide some assistence.  In
+It turns out that applications have to provide some assistance.  In
 many cases it's sufficient to subclass ``persistent.Persistent``, but
 in some cases, some extra care is needed.  To see what's needed, we
-need to uderstand what the basic responsibilities of peristent objects
+need to understand what the basic responsibilities of peristent objects
 are and how the ``Persistent`` base class helps implement those
 responsibilities.
 
 ZODB needs to know when objects are accessed so their state can be
-laoded, if necessary.  The ``Persistent`` base class tracks attribute
+loaded, if necessary.  The ``Persistent`` base class tracks attribute
 access and causes an object's state to be loaded when needed.  For
 objects implemented in Python [#c]_, this is really all that's needed
 to get objects loaded.
@@ -160,7 +160,7 @@ marks an object as needing to be changed when attributes are
 assigned. This strategy works for many persistent objects.
 
 Care is required when a persistent object changes subobjects. Consider
-an alternate, and naive auther class implemention::
+an alternate, and naive author class implementation::
 
     class BrokenAuthor(persistent.Persistent):
 
@@ -180,7 +180,7 @@ than a BTree.  The ``new_book`` method modifies author instances,
 but doesn't assign an attribute, so the change isn't seen by
 ZODB. This leads to the change being lost when the affected author
 object is reloaded from its database.  There are 2 basic approaches
-for dealling with mutable subobjects:
+for dealing with mutable subobjects:
 
 - Use persistent sub-objects.
 
@@ -230,7 +230,7 @@ standard meta data includes::
 ``_p_serial``
     The ``_p_serial`` attribute has the identifier of the last
     transaction to update the object.  This acts as a revision
-    identitier for the object.  This has a value of None if the object
+    identifier for the object.  This has a value of None if the object
     hasn't been stored yet.
 
 ``_p_changed``
@@ -289,7 +289,7 @@ control.  We can supply special storage and connection options not
 supported by the high-level API. The high-level API also supports only
 a few standard storages.
 
-If we want to open multipke connections, we can use a slightly
+If we want to open multiple connections, we can use a slightly
 lower-level API, by passing a database file name to ``ZODB.DB``:
 
     >>> db = ZODB.DB('data.fs')
@@ -403,7 +403,7 @@ In the example above, a ``zodb`` tag defines a database object
 file storage at the path ``data.fs``.
 
 To find out about the database options supported by the ``zodb`` tag,
-see the databse reference documentation. To find out about storage
+see the database reference documentation. To find out about storage
 options, see the storage reference documentation.
 
 Concurrency
@@ -411,7 +411,7 @@ Concurrency
 
 ZODB supports accessing databases from multiple threads.  Each thread
 operates as if it has it's own copy of the database.  Threads are
-synchonized through transaction commit.
+synchronized through transaction commit.
 
 Each thread opens a separate connection to a database.  Each
 connection has it's own object cache. If multiple connections access
@@ -500,16 +500,16 @@ Transaction managers
    details.
 
 .. [#jar] The name ``_p_jar`` comes from early implementations of ZODB
-   in which databases were called "pickle jars", becaise objects were
+   in which databases were called "pickle jars", because objects were
    stored using the Python pickle format.  In those early versions,
    there weren't separate database connections.
 
 .. [#itdidmore] It also arranged that when we closed the connection,
-   the the underlying database was closed.
+   the underlying database was closed.
 
 .. [#zconfig] ZODB uses the ``ZConfig`` configuration
    system. Applications that use ``ZConfig`` can also merge the ZODB
-   configuration schemas with thier own configuration schemas.
+   configuration schemas with their own configuration schemas.
 
 .. [#multipledbtags] You can define multiple databases, so there can
    be multiple ``zodb`` tags. See "Using multiple databases."
