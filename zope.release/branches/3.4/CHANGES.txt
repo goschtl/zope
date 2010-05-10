@@ -7,6 +7,27 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 3.4.1 (unreleased)
 ------------------
 
+- Upgraded ZODB3 to 3.5.1
+- Upgraded mechanize to 0.1.9
+- Upgraded pytz to 2008c
+- Upgraded z3c.coverage to 1.1.3
+- Upgraded z3c.formdemo to 1.5.6
+- SECURITY Upgrade: z3c.layer to 0.2.4
+- Upgraded zc.buildout to 1.3.1
+- Upgraded zc.recipe.testrunner to 1.0.6
+- Added zc.sourcefactory 0.3.5
+- Upgraded zope.app.basicskin to 3.4.1
+- Upgraded zope.app.form to 3.5.0
+- Upgraded zope.app.http to 3.4.5
+- Upgraded zope.app.publication to 3.4.4
+- Upgraded zope.app.testing to 3.4.4
+- Upgraded zope.app.wsgi to 3.4.3
+- Upgraded zope.contenttype to 3.4.3
+- Upgraded zope.i18nmessageid to 3.5.1
+- Upgraded zope.publisher to 3.4.10
+- Upgraded zope.security to 3.4.3
+- Upgraded zope.securitypolicy to 3.4.4
+- Upgraded zope.sendmail to 3.5.1
 - Upgraded RestrictedPython to 3.5.1
 - Upgraded setuptools to 0.6c11
 - Upgraded zdaemon to 2.0.4
@@ -151,4 +172,3 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 - Upgraded zope.viewlet to 3.4.2
 
 No history was recorded before version 3.4.0c1
-
