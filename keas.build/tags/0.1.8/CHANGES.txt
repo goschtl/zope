@@ -1,0 +1,102 @@
+CHANGES
+=======
+
+0.1.8 (2010-05-11)
+------------------
+
+- Fix: Do NOT ``register`` with ``python setup.py``
+
+- Fix: bump setuptools and zc.buildout versions
+
+- Fix: 0.1.7 tar.gz was broken
+
+0.1.7 (2010-04-26)
+------------------
+
+- BUGFIX: the dependent config file gathering killed the version pins
+  in the master config file
+
+- Improvement: PYPI-like simple index support when checking package versions
+
+- Improvement: Check dependent configs, upload all to the server.
+
+- Improvement: Add ``--force-version`` option.
+
+- Improvement: Add version to svn log comment. That makes life easier (at least
+  with TortoiseSVN)
+
+- Improvement: Add ``--force-svnauth`` option.
+
+- Improvement: Add ``--directory`` option to ``install``.
+
+0.1.6 (2009-11-2)
+------------------
+
+- Improvement: When determining released versions of a branch, support
+  branch names ending with .x, as in MyProject-0.3.x
+
+0.1.5 (2009-10-16)
+------------------
+
+- Improvement: add username and password on install to the URL that buildout
+  gets for the .cfg file
+  Let's hope that buildout does not leave that password around.
+
+- Improvement(?) or fix: remove twisted dependency that was used in deploy
+  for SSH
+
+- Improvement: removed dependency on lxml.  Now we just use pythons
+  built-in xml library.
+
+- Improvement: added ``buildout-upload-type`` option.
+  See doc for further info
+
+- Bug Fix: multiline template option values crashed on parsing
+
+- Bug Fix: re did not like non-text parameters coming from BeautifulSoup
+
+- Improvement: added the ``--timeout`` option to install
+
+- Improvement: added mypypi buildout file upload support
+
+- Bug Fix: revert to checkout of the complete source tree
+
+0.1.4 (2009-10-01)
+------------------
+
+- Bug Fix: installer script would crash when -u option was missing a
+  trailing /
+
+- Bug Fix: installer script would crash when no variants were found.
+
+- Improvement: Building a package will no longer checkout the entire
+  branch just to update the setup.py file with the new version
+  number.  Instead only the top level directory is checked out.
+
+- Bug Fix: project build script would crash when variant
+  configuration was missing information required by its template. Now
+  a helpful error message is printed and no files will be uploaded
+  until all have been created successfully.
+
+- Bug Fix: Typing Ctrl+c on the command line no longer causes a
+  KeyboardInterrupt traceback to be spit out.
+
+- Bug Fix: when running the installer, if the buildout command prompts
+  the user for input, the installer will no longer eat up the prompt.
+
+0.1.3 (2009-09-30)
+------------------
+
+- Initial public release.
+
+0.1.1 (internal)
+----------------
+
+- Bug Fix: If a project variant is specified for which no release have
+  been made, the build script now exits nicely with a human readable
+  error message.
+
+0.1.0 (internal)
+----------------
+
+- Initial release.
