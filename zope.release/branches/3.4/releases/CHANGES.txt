@@ -1701,9 +1701,6 @@ Updated mime-type for .js to be application/javascript.
 
 First stable release as an independent package.
 
-Download
-********
-
 
 ==================
 zope.copypastemove
@@ -2103,9 +2100,6 @@ zope.rdb
 ---------------
 
 Initial release as an independent package
-
-Download
-********
 
 
 ===========
