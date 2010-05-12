@@ -3,7 +3,8 @@ Changelog
 
 In next release...
 
-- 
+- Correct binding of templates. This fixes problems handling args when
+  renderingn templates. [malthe]
 
 0.6 - 2009-10-25
 ----------------
