@@ -49,8 +49,8 @@ class FSPageTemplate(BaseTemplateFile, FSObject, Script):
             self.read()
 
     def __call__(self, *args, **kwargs):
-        kwargs['args'] = args
-        return BaseTemplateFile.__call__(self, self, **kwargs)    
+        bound = self.bind(self)
+        return bound(*args, **kwargs)
 
     def _exec(self, bound_names, *args, **kwargs):
         # execute the template in a new security context.
@@ -67,9 +67,9 @@ class FSPageTemplate(BaseTemplateFile, FSObject, Script):
 
 class FSControllerPageTemplate(FSPageTemplate, FSControllerBase, BaseCPT):
     def __init__(self, id, filepath, fullname=None, properties=None):
-        FSPageTemplate.__init__(self, id, filepath, fullname, properties)  
+        FSPageTemplate.__init__(self, id, filepath, fullname, properties)
         self.filepath = filepath
-      
+
         self._read_action_metadata(self.getId(), filepath)
         self._read_validator_metadata(self.getId(), filepath)
 
