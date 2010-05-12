@@ -9,9 +9,11 @@ default = %(name)s:Install
 deployment = %(name)s:Install
 configuration = %(name)s:Configuration
 crontab = %(name)s:Crontab
+sharedconfig = %(name)s:SharedConfig
 
 [zc.buildout.uninstall]
 default = %(name)s:uninstall
+sharedconfig = %(name)s:uninstall_shared_config
 
 ''' % globals()
 

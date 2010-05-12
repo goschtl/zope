@@ -564,3 +564,243 @@ but it doesn't have to.
 
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/cron.d/bar-cron'))
     False
+
+
+SharedConfig
+============
+
+This recipe can be used to update configuration files that are shared by
+multiple applications. The absolute path of the file must be specified. Also,
+the configuration files must accept comments that start with "#".
+
+Like the configuration recipe, the content to add in the configuration file can
+be provided using the "text" or the "file" option.
+
+First let's create a file that will be used as the shared configuration file.
+
+    >>> open('y.cfg', 'w').write(
+    ... '''Some
+    ... existing
+    ... configuration
+    ... ''')
+
+We now create our buildout configuration and use the "sharedconfig" recipe and
+run buildout.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo y.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [y.cfg]
+    ... recipe = zc.recipe.deployment:sharedconfig
+    ... path = y.cfg
+    ... deployment = foo
+    ... text = xxx
+    ...        yyy
+    ...        zzz
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Installing foo.
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
+    Installing y.cfg.
+
+    >>> print open('y.cfg', 'r').read()
+    Some
+    existing
+    configuration
+    <BLANKLINE>
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    xxx
+    yyy
+    zzz
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+Running buildout again without modifying the configuration leaves the file the
+same.
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Updating foo.
+    Updating y.cfg.
+
+    >>> print open('y.cfg', 'r').read()
+    Some
+    existing
+    configuration
+    <BLANKLINE>
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    xxx
+    yyy
+    zzz
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+If we add some more lines to the file
+
+    >>> open('y.cfg', 'a').write(
+    ... '''Some
+    ... additional
+    ... configuration
+    ... ''')
+
+and run buildout again, but this time after modifying the configuration for
+"y.cfg", the sections will be moved to the end of the file.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo y.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [y.cfg]
+    ... recipe = zc.recipe.deployment:sharedconfig
+    ... path = y.cfg
+    ... deployment = foo
+    ... text = 111
+    ...        222
+    ...        333
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling y.cfg.
+    Running uninstall recipe.
+    Updating foo.
+    Installing y.cfg.
+
+    >>> print open('y.cfg', 'r').read()
+    Some
+    existing
+    configuration
+    <BLANKLINE>
+    Some
+    additional
+    configuration
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    111
+    222
+    333
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+The text to append to the shared configuration file can also be provided via a
+file.
+
+    >>> write('x.cfg', '''
+    ... [foo]
+    ... a = 1
+    ... b = 2
+    ...
+    ... [log]
+    ... c = 1
+    ... ''')
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo y.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [y.cfg]
+    ... recipe = zc.recipe.deployment:sharedconfig
+    ... path = %s/etc/z.cfg
+    ... deployment = foo
+    ... file = x.cfg
+    ... ''' % (sample_buildout, user, user, sample_buildout))
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    While:
+      Installing.
+      Getting section y.cfg.
+      Initializing part y.cfg.
+    Error: Path 'PREFIX/etc/z.cfg' does not exist
+
+Oops. The path of the configuration file must exist. Let's create one.
+
+    >>> write(join(sample_buildout, 'etc', 'z.cfg'), '')
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling y.cfg.
+    Running uninstall recipe.
+    Updating foo.
+    Installing y.cfg.
+
+    >>> print open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read()
+    <BLANKLINE>
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    <BLANKLINE>
+    [foo]
+    a = 1
+    b = 2
+    <BLANKLINE>
+    [log]
+    c = 1
+    <BLANKLINE>
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+While uninstalling, only the lines that the recipe installed are removed.
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    Uninstalling y.cfg.
+    Running uninstall recipe.
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
+
+But the files are not deleted.
+
+    >>> os.path.exists('y.cfg')
+    True
+
+    >>> print open('y.cfg', 'r').read()
+    Some
+    existing
+    configuration
+    <BLANKLINE>
+    Some
+    additional
+    configuration
+
+    >>> os.path.exists(join(sample_buildout, 'etc', 'z.cfg'))
+    True
+
+    >>> print open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read()
+    <BLANKLINE>
