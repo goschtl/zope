@@ -11,6 +11,7 @@ import shutil
 from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
+from exceptions import ConversionError
 
 from tidy import tidyhtml
 
@@ -48,7 +49,8 @@ def html2calibre(html_filename, output_filename=None, **calibre_options):
     
     status, output = runcmd(cmd)
     if status != 0:
-        raise RuntimeError('Error executing: %s' % cmd)
+        raise ConversionError('Error executing: %s' % cmd, output)
+
     return dict(output_filename=output_filename,
                 status=status,
                 output=output)

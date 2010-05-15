@@ -12,6 +12,7 @@ from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
 
 from tidy import tidyhtml
+from exceptions import ConversionError
 
 def _check_prince():
     if not which('prince'):
@@ -43,7 +44,7 @@ def html2pdf(html_filename, output_filename=None, **options):
     
     status, output = runcmd(cmd)
     if status != 0:
-        raise RuntimeError('Error executing: %s' % cmd)
+        raise ConversionError('Error executing: %s' % cmd, output)
     return dict(output_filename=output_filename,
                 status=status,
                 output=output)
