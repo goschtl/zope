@@ -68,12 +68,13 @@ Some examples from the Python command-line::
 
   from zopyx.convert2 import Converter
   C = Converter('/path/to/some/file.html')
-  pdf_filename = C('pdf')         # using XINC
-  pdf2_filename = C('pdf2')       # using FOP
-  rtf_filename = C('rtf')
-  pdt_filename = C('odt')
-  wml_filename = C('wml')
-  docx_filename = C('docx')
+  pdf_filename = C('pdf-xinc')         # using XINC
+  pdf2_filename = C('pdf-fop')       # using FOP
+  pdf3_filename = C('pdf-printce')       # using FOP
+  rtf_filename = C('rtf-xfc')
+  pdt_filename = C('odt-xfc')
+  wml_filename = C('wml-xfc')
+  docx_filename = C('docx-xfc')
 
 A very simple command-line converter is also available::
 
