@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.6.6 (2010/05/15)
+------------------
+* include conversion result into ZIP file
+
 0.6.5 (2010/02/04)
 ------------------
 * fixed racing condition in cleanup code

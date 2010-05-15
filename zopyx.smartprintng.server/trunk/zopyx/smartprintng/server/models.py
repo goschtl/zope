@@ -140,6 +140,7 @@ class Server(object):
         zip_out = os.path.join(tempdir, '%s.zip' % ident)
         ZF = zipfile.ZipFile(zip_out, 'w')
         ZF.writestr('output%s' % ext, file(output_filename, 'rb').read())
+        ZF.writestr('conversion-output.txt', result['output'])
         ZF.close()
 
         LOG.info('Request end (%3.2lf seconds)' % (time.time() - ts))
