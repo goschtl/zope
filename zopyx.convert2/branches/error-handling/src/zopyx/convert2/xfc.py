@@ -10,6 +10,7 @@ import sys
 from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
+from exceptions import ConversionError
 
 xfc_dir = os.environ.get('XFC_DIR')
 
@@ -43,9 +44,10 @@ def fo2xfc(fo_filename, format='rtf', output_filename=None):
     else:	
         cmd = '"%s/fo2%s" "%s" "%s"' % (xfc_dir, format, fo_filename, output_filename)
 
+
     status, output = runcmd(cmd)
     if status != 0:
-        raise RuntimeError('Error executing: %s' % cmd)
+        raise ConversionError('Error executing: %s' % cmd, output)
 
     return dict(output_filename=output_filename,
                 status=status,

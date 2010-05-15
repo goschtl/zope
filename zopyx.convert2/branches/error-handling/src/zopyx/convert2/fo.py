@@ -12,6 +12,7 @@ from config import java
 from tidy import tidyhtml
 from util import newTempfile, runcmd, which, win32, checkEnvironment
 from logger import LOG
+from exceptions import ConversionError
 
 
 dirname = os.path.dirname(__file__)
@@ -51,7 +52,7 @@ class HTML2FO(object):
 
         status, output = runcmd(cmd)
         if status != 0:
-            raise RuntimeError('Error executing: %s' % cmd)
+            raise ConversionError('Error executing: %s' % cmd, output)
 
         # remove tidy-ed file
         if tidy:
