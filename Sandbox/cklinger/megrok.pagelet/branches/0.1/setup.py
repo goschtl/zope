@@ -5,7 +5,7 @@ long_description = (open("README.txt").read()
                     open("CHANGES.txt").read())
 
 setup(name='megrok.pagelet',
-      version='0.1',
+      version='0.1.1dev',
       description="z3c.template / z3c.layout support for Grok",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
