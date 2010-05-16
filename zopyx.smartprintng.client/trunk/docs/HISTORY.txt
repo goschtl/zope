@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.6.0 (2010-05-16)
+------------------
+- deprecated convertZIP() api method
+- added convertZIP2() api method
+
 0.5.4 (2010-03-28)
 ------------------
 * better output directory handling

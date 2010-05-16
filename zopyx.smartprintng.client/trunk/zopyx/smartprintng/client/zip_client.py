@@ -13,6 +13,7 @@ import xmlrpclib
 import zipfile
 import tempfile
 import zipfile
+import warnings
 
 
 class Proxy(object):
@@ -58,6 +59,12 @@ class Proxy(object):
         return server()
 
     def convertZIP(self, dirname, converter_name='pdf-prince'):
+        """ XMLRPC client to SmartPrintNG server (deprecated)"""
+
+        warnings.warn("convertZIP() is deprecated", DeprecationWarning)
+        return self.convertZIP2(dirname, converter_name)['output_filename']
+
+    def convertZIP2(self, dirname, converter_name='pdf-prince'):
         """ XMLRPC client to SmartPrintNG server """
 
         auth_token = self._authenticate()
@@ -72,14 +79,20 @@ class Proxy(object):
         # (it will contain only *one* file)
         zip_temp = tempfile.mktemp()
         file(zip_temp, 'wb').write(base64.decodestring(zip_data))
+
+        result = dict()
         ZF = zipfile.ZipFile(zip_temp, 'r')
-        names = ZF.namelist()
-        output_filename = os.path.join(self.output_directory, os.path.basename(names[0]))
-        file(output_filename, 'wb').write(ZF.read(names[0]))
+        for name in ZF.namelist():
+            fullname = os.path.join(self.output_directory, os.path.basename(name))
+            file(fullname, 'wb').write(ZF.read(name))
+            if name.startswith('output.'):
+                result['output_filename'] = fullname
+            elif name.startswith('conversion-output'):
+                result['conversion_output'] = fullname
         ZF.close()
         os.unlink(zip_filename)
         os.unlink(zip_temp)
-        return output_filename
+        return result
 
     def convertZIPandRedirect(self, dirname, converter_name='pdf-prince', prefix=None):
         """ XMLRPC client to SmartPrintNG server """
@@ -117,10 +130,11 @@ class Proxy(object):
 if __name__ == '__main__':
     # usage: convertZIP <dirname>
 
-    proxy = Proxy(host='zopyx.com', port=6543)
+    proxy = Proxy(host='localhost', port=6543)
     print proxy.ping()
     print proxy.availableConverters()
     print proxy.convertZIP(sys.argv[1])
+    print proxy.convertZIP2(sys.argv[1])
 #    print proxy.convertZIPEmail(sys.argv[1], 
 #                                sender='foo@bar.org', 
 #                                recipients='foo@bar.org', 
