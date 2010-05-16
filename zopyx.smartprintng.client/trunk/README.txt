@@ -2,7 +2,7 @@ zopyx.smartprintng.client
 =========================
 
 The zip-client-side implementation of the Produce & Publish server
-(aka ``zopyx.smartprintng.server``´).
+(aka ``zopyx.smartprintng.server``).
 
 
 License
