@@ -11,6 +11,7 @@ version = '0.6.0'
 
 setup(name='zopyx.smartprintng.client',
       version=version,
+      url='http://pypi.python.org/pypi/zopyx.smartprintng.client',
       description="ZOPYX SmartPrintNG Client Library",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
@@ -22,7 +23,6 @@ setup(name='zopyx.smartprintng.client',
       keywords='SmartPrintNG',
       author='Andreas Jung',
       author_email='info@zopyx.com',
-      url='',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['zopyx', 'zopyx.smartprintng'],
