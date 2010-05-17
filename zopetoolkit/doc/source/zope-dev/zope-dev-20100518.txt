@@ -1,0 +1,31 @@
+=============================
+Weekly Zope developer meeting
+=============================
+
+These are the agenda and summary of the weekly Zope developer meeting which
+happened on Tuesday, 2010-05-18 on #zope@irc.freenode.org from 15:00 to 15:30
+UTC.
+
+The IRC log is here:
+http://zope3.pov.lt
+
+Agenda
+======
+
+
+
+
+Topic proposals
+---------------
+
+* Lennart: Of course what applies to Hanno should apply to others making
+  releases of packages maintained by the Zope Toolkit project as well. I think
+  the ZTK leadership should figure out some kind of guidelines for this that
+  people can follow.
+
+Summary
+=======
+
+Present
+-------
+
