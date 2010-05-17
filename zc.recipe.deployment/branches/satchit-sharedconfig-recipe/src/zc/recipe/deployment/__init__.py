@@ -179,16 +179,21 @@ class SharedConfig:
 
     def install(self):
         options = self.options
-        mode = options.get('mode', '')
         if 'file' in options:
             if 'text' in options:
                 raise zc.buildout.UserError(
                     "Cannot specify both file and text options")
-            text = open(options['file'], 'r'+mode).read()
+            text = open(options['file'], 'r').read()
         else:
             text = options['text']
-        open(options['location'], 'a'+mode).write(
-            self._wrap_with_comments(options['entry_name'], text))
+        config_file = open(options['location'], 'r+')
+        current_data = config_file.read()
+        new_data = ''
+        if current_data and current_data[-1] != '\n':
+            new_data += '\n'
+        new_data += self._wrap_with_comments(options['entry_name'], text)
+        config_file.write(new_data)
+        config_file.close()
         return ()
 
     def _wrap_with_comments(self, entry_name, text):
@@ -198,15 +203,19 @@ class SharedConfig:
     def update(self):
         pass
 
+
 def uninstall_shared_config(name, options):
-    old_config = open(options['location'], 'r').read()
+    old_config = open(options['location'], 'r').readlines()
     new_config = []
     block_start = False
-    for line in old_config.splitlines():
+    for line in old_config:
         if line.startswith('#[%s' % options['entry_name']):
+            # remove the newline we have added
+            if new_config[-1] == '\n':
+                new_config = new_config[:-1]
             block_start = True
             continue
-        elif line.endswith('%s]#' % options['entry_name']):
+        elif line.strip().endswith('%s]#' % options['entry_name']):
             block_start = False
             continue
         else:
@@ -215,6 +224,5 @@ def uninstall_shared_config(name, options):
             else:
                 new_config.append(line)
 
-    mode = options.get('mode', '')
-    open(options['location'], 'w'+mode).write('\n'.join(new_config))
+    open(options['location'], 'w').write(''.join(new_config))
 

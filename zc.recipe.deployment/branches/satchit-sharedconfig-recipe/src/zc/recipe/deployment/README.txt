@@ -701,10 +701,10 @@ and run buildout again, but this time after modifying the configuration for
     Some
     existing
     configuration
-    <BLANKLINE>
     Some
     additional
     configuration
+    <BLANKLINE>
     #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
     111
     222
@@ -794,13 +794,127 @@ But the files are not deleted.
     Some
     existing
     configuration
-    <BLANKLINE>
     Some
     additional
     configuration
+    <BLANKLINE>
 
     >>> os.path.exists(join(sample_buildout, 'etc', 'z.cfg'))
     True
 
     >>> print open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read()
+    <BLANKLINE>
+
+
+Edgecases
+---------
+
+The SharedConfig recipe checks to see if the current data in the file ends with
+a new line. If it doesn't exist it adds one. This is in addition to the blank
+line the recipe adds before it adds the section to enhance readability.
+
+    >>> open('anotherconfig.cfg', 'w').write('one')
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo y.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [y.cfg]
+    ... recipe = zc.recipe.deployment:sharedconfig
+    ... path = anotherconfig.cfg
+    ... deployment = foo
+    ... text = I predict that there will be a blank line above this.
+    ... ''' % (sample_buildout, user, user))
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Installing foo.
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/log/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/run/foo',
+        mode 750, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/cron.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/init.d',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/logrotate.d',
+        mode 755, user 'USER', group 'GROUP'
+    Installing y.cfg.
+
+    >>> print open('anotherconfig.cfg').read()
+    one
+    <BLANKLINE>
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    I predict that there will be a blank line above this.
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+But the recipe doesn't add a new line if there was one already at the end.
+
+    >>> open('anotherconfig.cfg', 'w').write('ends with a new line\n')
+    >>> print open('anotherconfig.cfg').read()
+    ends with a new line
+    <BLANKLINE>
+
+We modify the buildout configuration so that "install" is invoked again:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo y.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [y.cfg]
+    ... recipe = zc.recipe.deployment:sharedconfig
+    ... path = anotherconfig.cfg
+    ... deployment = foo
+    ... text = there will still be only a single blank line above.
+    ... ''' % (sample_buildout, user, user))
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling y.cfg.
+    Running uninstall recipe.
+    Updating foo.
+    Installing y.cfg.
+
+    >>> print open('anotherconfig.cfg').read()
+    ends with a new line
+    <BLANKLINE>
+    #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
+    there will still be only a single blank line above.
+    #TILL HERE foo_y.cfg]#
+    <BLANKLINE>
+
+If we uninstall the file, the data will be the same as "original_data":
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    Uninstalling y.cfg.
+    Running uninstall recipe.
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
+
+    >>> print open('anotherconfig.cfg').read()
+    ends with a new line
     <BLANKLINE>
