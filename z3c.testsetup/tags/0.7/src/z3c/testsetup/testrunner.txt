@@ -1,0 +1,687 @@
+Setup examples
+==============
+
+Here we discuss complete test setups for the `cave` package contained
+in the `tests` directory. We will run the `zope.testing.testrunner`
+and examine their output.
+
+Short setups
+------------
+
+Using z3c.testsetup, we can define quite complex testsetups with only
+two lines of code::
+
+    >>> import os
+    >>> cavepath = os.path.join(os.path.dirname(__file__), 'tests', 'cave')
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short0.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    test_suite = z3c.testsetup.register_all_tests('z3c.testsetup.tests.cave')
+
+We clear the commandline, because all parameters passed to the
+commandline would otherwise be applied to the examples herein::
+
+    >>> import sys
+    >>> sys.argv = [sys.argv[0],]
+
+This means, that we want to register all tests (doctests and 'normal'
+python tests) from the ``cave`` package, whose name we passed in
+dotted name notation as a string. This is enough information for a
+testrunner::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short0$',
+    ...     ]
+    >>> from z3c.testsetup import testrunner
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.functional.doctesting.FunctionalLayer tests:
+      Set up z3c...functional.doctesting.FunctionalLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c...functional.doctesting.FunctionalLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+Of the four tests apparently run, there is one 'normal' python test
+and three doctests, of which two are functional doctests.
+
+Now, we only want to run the doctests in the ``cave`` package. A
+suitable setup is contained in `samplesetup_short1.py`` in the
+``cave`` package::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short1.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    <BLANKLINE>
+    test_suite = z3c.testsetup.register_doctests('z3c.testsetup.tests.cave')
+
+This means, that we want to register all doctests from the ``cave``
+package, whose name we passed in dotted name notation as a
+string. This is enough information for a testrunner::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short1$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.functional.doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup...doctesting.FunctionalLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup...doctesting.FunctionalLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 3 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+In the above setup the handled package was given as a string with
+dotted name notation. We can instead also pass the package itself, if
+it was loaded before. This results in a slight longer example::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short2.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    from z3c.testsetup.tests import cave
+    <BLANKLINE>
+    test_suite = z3c.testsetup.register_doctests(cave)
+
+
+Here we register all doctests from the ``cave`` module. Let's start a
+testrunner with this setup::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short2$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.functional.doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup...doctesting.FunctionalLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup...doctesting.FunctionalLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 3 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+Now let's run a suite of 'normal' python unit tests, i.e. tests, that
+are not doctests. An appropriate setup file might look like this::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short3.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    from z3c.testsetup.tests import cave
+    <BLANKLINE>
+    test_suite = z3c.testsetup.register_pytests(cave)
+
+The only difference to the example before is, that we use
+`register_pytests` instead of `register_doctests`. If we run this
+setup with the testrunner, one test should be found and executed. This
+time we pass the `-vv` option to the testrunner, to get some more
+information from the run::
+
+    >>> defaults = [
+    ...     '--path', cavepath, '-vv',
+    ...     '--tests-pattern', '^samplesetup_short3$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running tests at level 1
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Running:
+     testFoo (z3c.testsetup.tests.cave.file1.TestTest)
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
+    Tearing down left over layers:
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    False
+
+
+Modified short setups
+---------------------
+
+The default settings of test setups might serve for plain testing
+environments. Especially for functional tests, however, one often want
+to set some basic values not foreseeable by default. Here some hints,
+how default settings can be tweaked.
+
+Setting ZCML config file for functional tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Functional tests often require ZCML registration of components to make
+sense. For example one wants to register permissions etc. for use with
+a testbrowser. In other words: often one wants to register a custom
+ZCML layer when running functional doctests. This can be archieved as
+follows:
+
+We wrote a (more or less empty) ZCML config file in the ``cave``
+package, which we want to be registered with functional doctests. To
+do that, we use the now well-known ``register_all_tests`` function,
+but give a ZCML file path and a layer name as arguments::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short4.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        zcml_config='sampleftesting.zcml',
+        layer_name = 'SampleLayer')
+
+This will result in::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short4$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.tests.cave.SampleLayer tests:
+      Set up z3c.testsetup.tests.cave.SampleLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup.tests.cave.SampleLayer ... not supported
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+Apparently now the custom ZCML file in the ``cave`` package was used.
+
+We can add an allow_teardown=True option, this allows the test mechanism
+to tear down the functional layers:
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_teardown.py')
+    >>> print open(setupfile).read()
+    import z3c.testsetup
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        zcml_config='sampleftesting.zcml',
+        layer_name = 'SampleLayer',
+        allow_teardown=False)
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_teardown$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.tests.cave.SampleLayer tests:
+      Set up z3c.testsetup.tests.cave.SampleLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup.tests.cave.SampleLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+
+Setting output checkers for doctests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Output checkers modify the way, output of tests is recognized. This is
+important for output which can not be foreseen exactly, timestamps for
+example, or local file paths. In this case sometimes a regular
+expression would match every single expression, but how can I tell the
+testrunner, that all timestamps of the form 'N.NNN seconds' are
+acceptable? Easy: use a checker::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short5.py')
+    >>> print open(setupfile).read()
+    import re
+    from zope.testing import renormalizing
+    import z3c.testsetup
+    mychecker = renormalizing.RENormalizing([
+        (re.compile('[0-9]*[.][0-9]* seconds'),
+         '<SOME NUMBER OF> seconds'),
+        (re.compile('at 0x[0-9a-f]+'), 'at <SOME ADDRESS>'),
+        ])
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        checker = mychecker,
+        extensions = ['.chk',],
+        regexp_list = ['.*checker.*',],
+        )
+
+This setup will find exactly one testfile, the file
+``checkertest.chk`` in the ``cave`` package, that checks for output of
+the form 'N.NNN seconds', with an arbitrary number of numbers. The
+doctestfile will serve as both, a usual unit doctest and as a
+functional doctest too.
+
+The doctestfile looks like this:
+
+    >>> content = open(os.path.join(cavepath, 'checkertest.chk'), 'r').read()
+    >>> print '\n'.join(['| ' + x for x in content.split('\n')])
+    | ============
+    | Checker test
+    | ============
+    |
+    | :Test-Layer: checker
+    |
+    | First we check, whether the <SOME NUMBER OF> term is matched by the
+    | modified checker::
+    |
+    |   >>> print "%s seconds" % 0.123
+    |   <SOME NUMBER OF> seconds
+    |
+    | Then we check the <SOME ADDRESS> term::
+    |
+    |   >>> print "A memory address at 0x1a0322ff"
+    |   A memory address at <SOME ADDRESS>
+    |
+    | That's it.
+    |
+
+
+Running the testrunner with this setup will result in::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short5$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup...doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup...doctesting.FunctionalLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup...doctesting.FunctionalLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in 0.000 seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in 0.000 seconds.
+    Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+The same setup, but without a modified checker will deliver::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup_short6$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.functional.doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup...doctesting.FunctionalLayer in ... seconds.
+    <BLANKLINE>
+    <BLANKLINE>
+    Failure in test /.../z3c/testsetup/tests/cave/checkertest.chk
+    Failed doctest test for checkertest.chk
+      File "/.../z3c/testsetup/tests/cave/checkertest.chk", line 0
+    <BLANKLINE>
+    ----------------------------------------------------------------------
+    File "/.../tests/cave/checkertest.chk", line 10, in checkertest.chk
+    Failed example:
+        print "%s seconds" % 0.123
+    Differences (ndiff with -expected +actual):
+        - <SOME NUMBER OF> seconds
+        + 0.123 seconds
+    ----------------------------------------------------------------------
+    File "/.../tests/cave/checkertest.chk", line 15, in checkertest.chk
+    Failed example:
+        print "A memory address at 0x1a0322ff"
+    Differences (ndiff with -expected +actual):
+        - A memory address at <SOME ADDRESS>
+        + A memory address at 0x1a0322ff
+    <BLANKLINE>
+      Ran 2 tests with 1 failures and 0 errors in ... seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup...doctesting.FunctionalLayer ... not supported
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in ... seconds.
+    <BLANKLINE>
+    <BLANKLINE>
+    Failure in test /.../z3c/testsetup/tests/cave/checkertest.chk
+    Failed doctest test for checkertest.chk
+      File "/.../z3c/testsetup/tests/cave/checkertest.chk", line 0
+    <BLANKLINE>
+    ----------------------------------------------------------------------
+    File "/.../tests/cave/checkertest.chk", line 10, in checkertest.chk
+    Failed example:
+        print "%s seconds" % 0.123
+    Differences (ndiff with -expected +actual):
+        - <SOME NUMBER OF> seconds
+        + 0.123 seconds
+    ----------------------------------------------------------------------
+    File "/.../tests/cave/checkertest.chk", line 15, in checkertest.chk
+    Failed example:
+        print "A memory address at 0x1a0322ff"
+    Differences (ndiff with -expected +actual):
+        - A memory address at <SOME ADDRESS>
+        + A memory address at 0x1a0322ff
+    <BLANKLINE>
+      Ran 2 tests with 1 failures and 0 errors in ... seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in ... seconds.
+    Total: 4 tests, 2 failures, 0 errors in ... seconds.
+    True
+
+Note that in older versions of `z3c.testsetup` checkers were supported
+for functional doctests only.
+
+
+Setting globals for doctests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For a testsuite you can define a set of globals, which are applied to
+each test before it runs. Normally one uses such globals, to have
+certain functions or objects available, which are complex to setup
+during tests but useful.
+
+The objects and functions registered this way can then be used by
+their names in tests out-of-the-box.
+
+You can pass the globals for a testsetup by passing the ``globs``
+keyword parameter or ``fglobs``/``uglobs``, if you only want them to
+be applied to either functional or unit doctests.
+
+If you specify a `globs` parameter and a `fglobs` or `uglobs`
+parameter, the latter will shadow the `globs` values. So `globs` will
+have no effect, if you specify also both, `fglobs` and `uglobs`.
+
+An example of the ``globs`` usage can be found in
+``samplesetup_short7`` of the ``cave`` package::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short7.py')
+    >>> print open(setupfile).read()
+    import os
+    from zope.testing import renormalizing
+    import z3c.testsetup
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        extensions = ['.chk',],
+        fregexp_list = [':Test-Layer:.*globs.*',],
+        globs = {
+            'basename' : os.path.basename
+        }
+        )
+
+Here the ``os.path.basename`` function is registered under the name
+'basename' and should be usable in the doctest file
+``globstest.chk``::
+
+    >>> defaults = [
+    ...     '--path', cavepath, '-f',
+    ...     '--tests-pattern', '^samplesetup_short7$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup....doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup....doctesting.FunctionalLayer in ... seconds.
+      Ran 1 tests with 0 failures and 0 errors in ... seconds.
+    Tearing down left over layers:
+      Tear down z3c.testsetup....doctesting.FunctionalLayer ...
+    False
+
+The testrunner finished without any error. So the ``basename``
+function was indeed known to the doctest and could be used.
+
+The same should happen, if we use the ``fglobs`` argument instead of
+``globs``::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short8.py')
+    >>> print open(setupfile).read()
+    import os
+    ...
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        extensions = ['.chk',],
+        fregexp_list = [':Test-Layer:.*globs.*',],
+        fglobs = {
+            'basename' : os.path.basename
+        }
+        )
+
+    >>> defaults = [
+    ...     '--path', cavepath, '-f',
+    ...     '--tests-pattern', '^samplesetup_short8$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup....doctesting.FunctionalLayer tests:
+    ...
+      Ran 1 tests with 0 failures and 0 errors in ... seconds.
+    ...
+    False
+
+Finally, we can register the same doctestfile as unit doctest, such
+making sure, that also unit doctests globals can be set, using the
+``uglobs`` keyword parameter::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup_short9.py')
+    >>> print open(setupfile).read()
+    import os
+    ...
+    test_suite = z3c.testsetup.register_all_tests(
+        'z3c.testsetup.tests.cave',
+        extensions = ['.chk',],
+        uregexp_list = [':Test-Layer:.*globs.*',],
+        uglobs = {
+            'basename' : os.path.basename
+        }
+        )
+
+    >>> defaults = [
+    ...     '--path', cavepath, '-u',
+    ...     '--tests-pattern', '^samplesetup_short9$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Tearing down left over layers:
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    False
+
+
+
+
+Extended setups
+---------------
+
+Let's have a look at the test setup module `samplesetup1` in the
+`cave` package::
+
+    >>> setupfile = os.path.join(cavepath, 'samplesetup1.py')
+    >>> print open(setupfile).read()
+    import unittest
+    import z3c.testsetup
+    from z3c.testsetup.tests import cave # The package that contains
+                                         # the doctest files
+    def test_suite():
+        suite = unittest.TestSuite()
+        suite.addTest( # Add all unittests from `cave`
+            z3c.testsetup.UnitDocTestSetup(cave).getTestSuite())
+        suite.addTest( # Add all functional tests from `cave`
+            z3c.testsetup.FunctionalDocTestSetup(cave).getTestSuite())
+        return suite
+
+
+As we see, there is a unittest setup and a functional test setup
+initialized. Both collect one kind of tests and feed their collection
+in the same testsuite (where each kind of tests is setup differently,
+of course).
+
+Now let's run a testrunner and see the result. The testrunner will be
+configured such, that all files named 'samplesetup1.py' will be asked
+to return a testsuite::
+
+    >>> defaults = [
+    ...     '--path', cavepath,
+    ...     '--tests-pattern', '^samplesetup1$',
+    ...     ]
+    >>> from z3c.testsetup import testrunner
+    >>> testrunner.run(defaults)
+    Running z3c.testsetup.functional.doctesting.FunctionalLayer tests:
+      Set up z3c.testsetup...doctesting.FunctionalLayer in N.NNN seconds.
+      Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down z3c.testsetup...doctesting.FunctionalLayer ...
+      Running in a subprocess.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+    Total: 3 tests, 0 failures, 0 errors in N.NNN seconds.
+    False
+
+We ran one unittest and two functional tests.
+
+
+z3c.testsetup and layers
+------------------------
+
+Here we discuss complete testsetups that involve test layers. Test
+layers are a method to group several tests or test suites in groups.
+
+Layers are a method to do time-consuming setups like initializing
+databases or whatever only once for a whole bunch of tests. Such you
+can save time and make your testing setup less error-prone.
+
+See `layered_cave/layer.py` for examples of working layers. We will
+use the layers defined there in the following examples.
+
+Simple unit doctests with layers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using z3c.testsetup, we can define quite complex testsetups with only
+two lines of code::
+
+    >>> import os
+    >>> cavepath = os.path.join(os.path.dirname(__file__), 'tests',
+    ...   'layered_cave')
+    >>> setupfile = os.path.join(cavepath, 'layeredsetup01.py')
+    >>> print open(setupfile).read()
+    from z3c.testsetup import register_all_tests
+    test_suite = register_all_tests('z3c.testsetup.tests.layered_cave')
+
+This means, that we want to register all tests (doctests and 'normal'
+python tests) from the ``layered_cave`` package, whose name we passed in
+dotted name notation as a string. This is enough information for a
+testrunner.
+
+In one of the test files we declared, that a layer should be used::
+
+    >>> testfile = os.path.join(cavepath, 'adoctest.txt')
+    >>> print open(testfile, 'r').read()
+    This is a doctest
+    =================
+    <BLANKLINE>
+    This doctest will be applied to a layer.
+    <BLANKLINE>
+    :Test-Layer: unit
+    :Test-Layerdef: z3c.testsetup.tests.layered_cave.layer.UnitLayer1
+    ...
+
+The line saying `:Test-Layerdef:` tells, that we want the layer
+denoted by the trailing dotted name should be applied to the tests of
+the file. It is vital that the denoted object really exist. The format
+of the layer declaration is::
+
+  :test-layerdef: <dotted.name.of.layer.definition>
+
+where the marker string can be written in upper or lower or mixed
+case. Doing so, the testrunner will apply the declared layer to our
+tests.
+
+To make things more interesting we also created two subpackages in our
+package, named ``foo`` and ``bar``. Both contain functional doctests
+that need separate ZCML code for initialization and use the default
+layer. Although both ZCML files are called ``ftesting.zcml`` the
+setups will run isolated from each other::
+
+    >>> defaults = [
+    ...     '--path', cavepath, '-f',
+    ...     '--tests-pattern', '^layeredsetup01$',
+    ...     ]
+    >>> testrunner.run(defaults)
+    Running z3c....DefaultZCMLLayer [.../bar/ftesting.zcml] tests:
+      Set up z3c....DefaultZCMLLayer [.../bar/ftesting.zcml] in 0.027 seconds.
+      Ran 1 tests with 0 failures and 0 errors in 0.002 seconds.
+    Running z3c....DefaultZCMLLayer [.../foo/ftesting.zcml] tests:
+      Tear down z3c....DefaultZCMLLayer [.../bar/ftesting.zcml] ... not supported
+      Running in a subprocess.
+      Set up z3c....DefaultZCMLLayer [.../foo/ftesting.zcml] in 0.055 seconds.
+      Ran 1 tests with 0 failures and 0 errors in 0.015 seconds.
+      Tear down z3c....DefaultZCMLLayer [.../foo/ftesting.zcml] ... not supported
+    Running z3c....FunctionalLayer1 tests:
+      Running in a subprocess.
+      Set up z3c....FunctionalLayer1 in 0.040 seconds.
+      Ran 1 tests with 0 failures and 0 errors in 0.011 seconds.
+      Tear down z3c....FunctionalLayer1 in 0.000 seconds.
+    Running z3c....UnitLayer1 tests:
+      Running in a subprocess.
+      Set up z3c....UnitLayer1 in 0.000 seconds.
+        Running testSetUp of UnitLayer1
+        Running testTearDown of UnitLayer1
+      Ran 1 tests with 0 failures and 0 errors in 0.010 seconds.
+      Tear down z3c....UnitLayer1 in 0.000 seconds.
+    Total: 4 tests, 0 failures, 0 errors in 6.014 seconds.
+    False
+
+As we can see, the layer `UnitLayer1` was executed here.
+
+Convenience stuff for testers of z3c.testsetup
+==============================================
+
+Here we collect some convenience stuff, that might be useful for
+testers. Most people, however, won't need them.
+
+``z3c.testsetup.testrunner``
+----------------------------
+
+With `zope.testing`_ 3.7.3 the behaviour of
+`zope.testing.testrunner.run()` changed and now exits always with
+status. See http://svn.zope.org/zope.testing/?rev=99366&view=rev
+
+To run testrunners as part of tests, one now has to use
+`testrunner.run_internal()` instead of `testrunner.run()`. This makes
+it hard to test with packages, that sometimes use `zope.testing`_
+>= 3.7.3 but are also used with `zope.testing`_ < 3.7.3.
+
+For those cases (i.e. where testrunners are run as part of tests
+themselves) `z3c.testsetup` now offers the convenience functions
+`testrunner.run()` and `testrunner.run_internal()` that are wrappers
+guaranteed to be aliases for the same function of `zope.testing`:
+``zope.testing.testrunner.run_internal()`` if it exists or
+``zope.testing.testrunner.run()`` otherwise.
+
+In doctests you now can use
+
+   >>> from z3c.testsetup import testrunner
+
+call ``testrunner.run()`` afterwards and it will work, regardless of
+what version of `zope.testing` you are using.
+
+This is only interesting for people that run tests, which itself run
+testrunners (like `z3c.testsetup` itself in self-tests).
+
+The functions provided by the faked testrunners of z3c.testsetup refer
+to the same thing:
+
+    >>> from z3c.testsetup import testrunner
+    >>> testrunner.run is testrunner.run_internal
+    True
+
+If `zope.testing`_ >= 3.7.3 is running in background, both functions
+refer to `zope.testing.testrunner.run_internal`:
+
+    >>> import pkg_resources
+    >>> info = pkg_resources.get_distribution('zope.testing')
+    >>> version = tuple(info.version.split('.'))
+    >>> new_version = (version > ('3', '7', '2'))
+
+    >>> from zope.testing.testrunner import run
+    >>> not new_version or (testrunner.run is not run)
+    True
+
+Otherwise both functions refer to `zope.testing.testrunner.run()`:
+
+    >>> (run is testrunner.run_internal) or new_version
+    True
+
+.. _`zope.testing`: http://pypi.python.org/pypi/zope.testing

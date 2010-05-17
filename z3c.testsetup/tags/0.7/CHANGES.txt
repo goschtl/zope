@@ -1,0 +1,199 @@
+Changelog for z3c.testsetup
+***************************
+
+0.7 (2010-05-17)
+================
+
+- Fix NameError bug in the warning message in case zope.app.testing is not
+  availble when trying to run a functional doc test. This error presented
+  itself as a highly cryptic ImportError when actually running tests.
+
+0.6.1 (2009-11-19)
+==================
+
+- Test files that we attempt to read but that do not exist raise an error
+  instead of passing silently.
+
+- Internal refactoring: regex caching.
+
+0.6 (2009-11-19)
+================
+
+- Python unittest modules with an import error now result in a visible
+  warning.  Previously, such problems would be hidden.  Also the python
+  testrunner could not report them as broken as we did not pass those test
+  files to the testrunner.
+
+- Fixed regex for detecting the old ":test-layer: python" marker: it did not
+  work when prefixed with restructuredtext's ".." comment marker.
+
+0.5.1 (2009-10-22)
+==================
+
+* Reverted allow_teardown default back to False to prevent confusion.
+
+0.5 (2009-09-23)
+================
+
+Bug fixes
+---------
+
+* Checkers are now applied to non-functional doctests too. Thanks to
+  Jonathan Ballet for patches.
+
+* Normal UnitTest layers are now registered correctly.
+
+* ``:layer:`` now detects functional ZCML layers. If the defined layer is
+  derived from `zope.testing.functional.ZCMLLayer`, then the test is
+  set up with the same kind of testcase as ``:functional-zcml-layer:``.
+
+* Reordered and cleaned up the documentation.
+
+Feature changes
+---------------
+
+* By default, functional layer tests now use the allow_teardown=True option of
+  the ZCMLLayer.  This prevents the zcml layer from running in a subprocess
+  which throws off profiling and thus code coverage tools.  Running it in a
+  subprocess is only normally needed when you do things like adding an
+  interface to a class after the fact in your code.  You can overrid it in the
+  register_all_tests() call by setting allow_teardown=False.
+
+
+0.4 (2009-06-11)
+================
+
+Bug fixes
+---------
+
+* Made ``z3c.testsetup`` selftests work with ``zope.testing`` >=
+  3.7.3. Thanks to Jonathan Ballet for pointing to that problem.
+
+* Ignore \*nix hidden test files (i.e. such starting with a dot in
+  filename) by default. Thanks to Jonathan Ballet for patch.
+
+* ZCML files registered via the default layer are now separated from
+  each other, even if they own the same filename. Therefore you can now
+  register a default layer with an ``ftesting.zcml`` in one subpackage
+  while having another ``ftesting.zcml`` in another package. This was
+  not handled correctly before. Many thanks go to Jonathan Ballet who
+  contributed a patch.
+
+Feature Changes
+---------------
+
+* Added ``z3c.testsetup.testrunner`` that provides wrappers for
+  ``zope.testing.testrunner``s ``run()`` and ``run_internal()``
+  functions. Using it, one can make sure that running testrunners
+  inside tests will work regardless of which version of
+  ``zope.testing`` is used during testruns.
+
+0.3 (2009-02-23)
+================
+
+Bug fixes
+---------
+
+* Updated doctest examples to reflect new ``zope.testing`` behaviour.
+
+* ``z3c.testsetup`` really shouldn't require ``zope.app.testing`` any
+  more. If you use it in an environment without this package, then you
+  cannot register functional tests, which is determined when loading
+  ``register_all_tests`` from ``z3c.testsetup``.
+
+* Broken modules are ignored while scanning for tests.
+
+* Modules are not loaded anymore if their source code does not provide
+  a suitable marker string. For this to work, the default checker
+  method ``isTestModule`` now expects a ``martian.scan.ModuleInfo`` as
+  argument and not a real module. Module infos can be easily created
+  by using ``module_info_from_dotted_name`` and
+  ``module_info_from_package`` from the ``martian.scan`` package.
+
+Feature Changes
+---------------
+
+* New set of testfile markers:
+
+  - `:doctest:`
+
+    marks a testfile as a doctest.
+
+  - `:unittest:`
+
+    marks a testfile as a regular unittest.
+
+  - `:layer: dotted.name.to.layer.def`
+
+    applies the given layer definition to the tests in the doctest
+    file.
+
+  - `:zcml-layer: filename.zcml`
+
+    sets up a ZCML layer with the given filename and applies this
+    layer to the doctests in the doctest file.
+
+  - `:functional-zcml-layer: filename.zcml`
+
+    sets up a ZCML layer with the given filename and applies this
+    layer to the doctests in the doctest file. Furthermore the tests
+    are set up as functional doc tests.
+
+  - `:setup: dotted.name.to.setup.function`
+
+    applies the setUp function denoted by the dotted name to the tests
+    in the doctest file.
+
+  - `:teardown: dotted.name.to.teardown.function`
+
+    applies the tearDown function denoted by the dotted name to the
+    tests in the doctests file.
+
+  See the examples in `tests/othercave` and README.txt to learn more
+  about using these new directives.
+
+  The old `:test-layer:` marker is still supported but it is
+  deprecated now and will vanish at least with the 0.5 version of
+  `z3c.testsetup`.
+
+
+0.2.2 (2008-02-29)
+==================
+
+Bug fixes
+---------
+
+* ``z3c.testsetup`` now does not require ``zope.component`` nor
+  ``zope.app.testing`` for usage in other packages. You must take
+  care, that those packages are available during tests, for example by
+  adding those packages to your `setup.py`.
+
+0.2.1 (2008-02-18)
+==================
+
+Bug fixes
+---------
+
+* Fix faulty upload egg.
+
+
+0.2 (2008-02-17)
+================
+
+Feature Changes
+---------------
+
+* An `ftesting.zcml` in the root of a handled package is now taken as
+  default layer for functional doctests if it exists.
+
+Bug fixes
+---------
+
+
+0.1 (2008-02-15)
+================
+
+Feature changes
+---------------
+
+- Initial Release
