@@ -375,7 +375,7 @@ zc.zrs and zeoraid
 Configuration strings
 ---------------------
 
-ZODB supports the use of textual configuration files to define
+ZODB supports the use of textual configuration strings to define
 databases, storages, and ZEO servers.  Production applications
 typically create database objects by loading configuration strings
 from application configuration files [#zconfig]_.
@@ -395,7 +395,7 @@ creates a database using a file storage::
 
 The configuration syntax was inspired by the Apache configuration
 syntax. Configuration sections are bracketed by opening and closing
-types tags and can be nested. Options are given as names and values
+typed tags and can be nested. Options are given as names and values
 separated by spaces.
 
 In the example above, a ``zodb`` tag defines a database object
@@ -409,13 +409,16 @@ options, see the storage reference documentation.
 Concurrency
 ===========
 
-ZODB supports accessing databases from multiple threads.  Each thread
-operates as if it has it's own copy of the database.  Threads are
-synchronized through transaction commit.
+ZODB supports accessing databases from multiple threads, including
+threads in separate processes.  This is accomplished using per-thread
+database connections and transaction managers.  Each thread operates
+as if it has it's own copy of the database.  Threads are synchonized
+through transactions
 
-Each thread opens a separate connection to a database.  Each
-connection has it's own object cache. If multiple connections access
-the same object, they each get their own copy. Let's look at an example:
+In a typical application, each thread opens a separate connection to a
+database.  Each connection has it's own object cache. If multiple
+connections access the same object, they each get their own
+copy. Let's look at an example:
 
    >>> conn1 = db.open()
    >>> author1 = conn1.root.authors['tolkien']
@@ -455,23 +458,162 @@ Until we commit the change:
 Transaction managers
 --------------------
 
+When we use ``transaction.commit()`` to finish a transaction, we're
+interacting with a transaction manager. There is a transaction manager
+per thread, and by default ZODB uses the current thread's transaction
+manager.
 
+The example in the last section was a little odd, because the two
+connections shown were in the same thread and therefore used the same
+transaction manager.  That's why the transaction commit affected both
+connections.
 
+Applications can create and manage their own transaction managers.
+This isn't commonly done, except in tests, but we'll do it below to
+illustrate more carefully the normal isolation of application threads.
 
+We close the second connection and reopen it with a separate
+transaction manager:
 
+    >>> conn2.close()
+    >>> transaction_manager2 = transaction.TransactionManager()
+    >>> conn2 = db.open(transaction_manager2)
 
+Now, we'll change the author name back to what we had before:
 
+    >>> author1.name = 'J.R.R. Tolkien'
+    >>> transaction.commit()
 
+    >>> author2.name
+    'John Ronald Reuel Tolkien'
 
+Even though we committed the transaction, we didn't see the update
+reflected in the second connection.  This is because the second
+connection is now using a different transaction manager, as would
+be the case if it was runnning in a separate thread.
 
+To see the change in the second transaction, we need to end it's
+current transaction.  Because we didn't make any changes in the second
+connection, we can use abort or commit to end the transaction.
 
+    >>> transaction_manager2.commit()
+    >>> author2.name
+    'J.R.R. Tolkien'
 
+Conflicting changes
+-------------------
 
+When multiple threads modify the same object, this is considered a
+conflict. Generally, when there's a conflict, the first thread to
+commit it's changes will win and other threads will have to be redone.
+For example, let's look at what happens when we change the auther name
+in both connections:
 
+    >>> author1.name = 'John Ronald Reuel Tolkien'
+    >>> author2.name = 'John Tolkien'
+    >>> transaction.commit()
+    >>> transaction_manager2.commit()
 
+Here, we get a conflict error when we commit the changes made in the
+second connection, because the conflict with changes made in the
+first.  If we want to make the second change, we need to abort the
+transaction and redo it:
 
+    >>> transaction_manager2.abort()
+    >>> author2.name = 'John Tolkien'
+    >>> transaction_manager2.commit()
 
+Conflicts are troublesome for 2 reasons:
 
+- Application code has to anticipate conflicts and be prepared to
+  retry transactions.
+
+- Retrying transactions is ususally expensive, hurting application
+  responsiveness and throughput.
+
+There are a number of ways to avoid conflicts:
+
+- Organize application threads and data structures so that objects are
+  unlikely to be modified by multiple threads at the same time.
+
+- Use data structures that support conflict resolution.
+
+Conflict resolution
+-------------------
+
+An object can provide logic to sort out conflicting changes, allowing
+conflicting changes to be committed. This is one of the advantages of
+BTrees.  Usually, when different BTree keys are modified in different
+threads, the conflicting changes can be resolved.  This allows
+books to be added to authors at the same time:
+
+    >>> book1 = author1.new_book['The Silmarillion']
+    >>> conn1.root.books['The Silmarillion'] = book1
+
+    >>> book2 = author1.new_book['The Children of Hurin']
+    >>> conn2.root.books['The Children of Hurin'] = book2
+
+    >>> transaction.commit()
+    >>> transaction_manager2.commit()
+
+    >>> import pprint
+    >>> pprint.pprint(list(author2.books))
+
+Handling conflict errors and retrying transactions
+--------------------------------------------------
+
+When a conflict error arises, the current transaction must be
+aborted.  Generally, then, the transaction will need to be
+retried. The transaction package provides some facilities that help
+automate this process.
+
+Transaction managers and the transaction package itself can be used
+with the Python with statement, as in::
+
+    with transaction:
+        author2.name = 'John Tolkien'
+
+The suite inside the with statement is executed. If there is no error,
+the transaction is committed. If there is an exception, the
+transaction is automatically aborted.
+
+Transaction manager and the transaction package also provide an
+``attempts`` method.  The attempts method helps with handling
+transient errors, like conflict errors.  It returns an iterator that
+provides up to a given number of attempts to perform a transaction::
+
+    for attempt in transaction.attemps(5):
+        with attempt:
+            author2.name = 'John Tolkien'
+
+The example above trieds up to 5 times to set the author name.  If
+there are non-transient errors, the the loops exits with the error
+raised.  If the number of attempts is exhaused, the loops exits with
+the transient error raised.
+
+Memory management
+=================
+
+One of the advantages of using a database is that you can deal with
+more data than will fit in memory.  ZODB takes care of loading objects
+into memory when needed and removing them from memory when no-longer
+needed.  More precisely, ZODB moves persistent objects in and out of
+memory.  The persistent object is the unit of storage.
+
+In the book example, Each book and author is in it's own database
+record.  Because author's books are managed in BTrees, which are
+persistent objects, the book collections aren't contained in the
+author database records. Rather the author records contain persistent
+references to the BTree records.
+
+As they grow, BTrees spread their data over multiple persistent
+subobjects.  This makes BTrees highly scalable.  You can have BTrees
+that store many millions of items and load onkly a small fraction of
+the BTree into memory to look an item up.
+
+Each ZODB connection has an in-memory cache. You can set the size of
+this cache as a number of objects, a number of bytes, or both.  These
+sizes aren't limits.  .... explain
 
 
 
