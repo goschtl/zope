@@ -12,3 +12,4 @@ communicates on the zope-dev mailing list (:ref:`mailing-list`).
 
     members
     meeting-20100506.rst
+    meeting-201005018.rst
