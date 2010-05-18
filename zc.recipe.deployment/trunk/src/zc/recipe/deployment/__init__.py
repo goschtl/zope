@@ -162,3 +162,67 @@ class Crontab:
 
     update = install
 
+
+begin_marker = '#[%s DO NOT MODIFY LINES FROM HERE#'
+end_marker = '#TILL HERE %s]#'
+
+class SharedConfig:
+
+    def __init__(self, buildout, name, options):
+        self.options = options
+        deployment = options.get('deployment')
+        options['entry_name'] = '%s_%s' % (buildout[deployment]['name'], name)
+        if not os.path.exists(options['path']):
+            raise zc.buildout.UserError(
+                "Path '%s' does not exist" % options['path'])
+        options['location'] = options['path']
+
+    def install(self):
+        options = self.options
+        if 'file' in options:
+            if 'text' in options:
+                raise zc.buildout.UserError(
+                    "Cannot specify both file and text options")
+            text = open(options['file'], 'r').read()
+        else:
+            text = options['text']
+        config_file = open(options['location'], 'r+')
+        current_data = config_file.read()
+        new_data = ''
+        if current_data and current_data[-1] != '\n':
+            new_data += '\n'
+        new_data += self._wrap_with_comments(options['entry_name'], text)
+        config_file.write(new_data)
+        config_file.close()
+        return ()
+
+    def _wrap_with_comments(self, entry_name, text):
+        return '\n%s\n%s\n%s\n' % (
+            begin_marker % entry_name, text, end_marker % entry_name)
+
+    def update(self):
+        pass
+
+
+def uninstall_shared_config(name, options):
+    old_config = open(options['location'], 'r').readlines()
+    new_config = []
+    block_start = False
+    for line in old_config:
+        if line.startswith('#[%s' % options['entry_name']):
+            # remove the newline we have added
+            if new_config[-1] == '\n':
+                new_config = new_config[:-1]
+            block_start = True
+            continue
+        elif line.strip().endswith('%s]#' % options['entry_name']):
+            block_start = False
+            continue
+        else:
+            if block_start:
+                continue
+            else:
+                new_config.append(line)
+
+    open(options['location'], 'w').write(''.join(new_config))
+
