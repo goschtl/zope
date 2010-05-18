@@ -46,6 +46,15 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.8.0 (2010-05-18)
+==================
+
+Features Added
+--------------
+
+Added recipe for updating configuration files that may shared by
+multiple applications.
+
 0.7.1 (2010-03-05)
 ==================
 
