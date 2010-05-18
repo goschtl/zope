@@ -18,7 +18,7 @@ crontab-directory
 etc-directory
     The name of the directory where configuration files should be
     placed.  This is /etc/NAME, where NAME is the deployment
-    name. 
+    name.
 
 log-directory
     The name of the directory where application instances should write
@@ -39,7 +39,7 @@ rc-directory
     The name of the directory where run-control scripts should be
     installed.  This is /etc/init.d.
 
-The etc, log, and run directories are created in such a way that the 
+The etc, log, and run directories are created in such a way that the
 directories are owned by the user specified in the user option and are
 writable by the user and the user's group.
 
