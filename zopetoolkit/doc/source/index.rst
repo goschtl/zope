@@ -29,5 +29,6 @@ Documentation
    proposals/index
    process/index
    codingstyle/index
+   zope-dev/index
    releaseteam/index
    steeringgroup/index

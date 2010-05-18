@@ -1,6 +1,6 @@
-=============================
-Weekly Zope developer meeting
-=============================
+==========
+2010-04-06
+==========
 
 This is the summary of the weekly Zope developer meeting which happened on
 Tuesday, 2010-04-06 on #zope@irc.freenode.org from 3pm to 3:30pm (UTC).
