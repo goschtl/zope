@@ -811,7 +811,7 @@ Edgecases
 
 The SharedConfig recipe checks to see if the current data in the file ends with
 a new line. If it doesn't exist it adds one. This is in addition to the blank
-line the recipe adds before it adds the section to enhance readability.
+line the recipe adds before the section to enhance readability.
 
     >>> open('anotherconfig.cfg', 'w').write('one')
     >>> write('buildout.cfg',
