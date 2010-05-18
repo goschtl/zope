@@ -27,7 +27,7 @@ need to follow up on them eventually.
 
 - KGS 3.4.1 release
     - Document release procedure (Adam)
-    - Index view for downloads.zope.com
+    - Index view for download.zope.org
 
 - ZTK status
     - Towards a ZTK release
