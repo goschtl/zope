@@ -1,13 +1,17 @@
 # Map eggs to debian source packages
 BeautifulSoup                                   beautifulsoup
+Chameleon                                       python-chameleon
+ClientForm                                      python-clientform
 M2Crypto                                        m2crypto
+mechanize                                       python-mechanize
 PIL                                             python-imaging
+pyPdf                                           python-pypdf
+PyQt4                                           python-qt4
 pytz                                            python-tz
 Reportlab                                       python-reportlab
+RestrictedPython                                restrictedpython
+setuptools                                      python-setuptools
 SQLAlchemy                                      sqlalchemy
-ZConfig						zconfig
+xlrd                                            python-xlrd
+ZConfig                                         zconfig
 ZODB3                                           zodb
-RestrictedPython				restrictedpython
-PyQt4						python-qt4
-setuptools					python-setuptools
-Chameleon					python-chameleon
