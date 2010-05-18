@@ -64,11 +64,22 @@ Options
 --project-group, -g  Supply a named project group.  If no project names are
                      passed, use the project group to look up a list of project
                      names
+
+--mail, -m           Send report as e-mail. Must also supply at least a "to"
+                     and "from" address. Host will default to localhost if
+                     none is supplied here.
+
+--mail-from          Address sending an e-mail report
+
+--mail-to            Address e-mail report will be sent to
+
 """
 
 import datetime
 import getopt
 import sys
+import smtplib
+import StringIO
 
 from launchpadlib.launchpad import Launchpad
 from pytz import utc
@@ -139,20 +150,36 @@ class Rheostat:
         if level <= self.verbose:
             print message
 
+def mail_it(mail_host, mail_from, mail_to, subject, report):
+    """Send report as e-mail"""
+
+    mail = {}
+    mailserver = smtplib.SMTP(mail_host)
+    msg = ('From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s' %
+            (mail_from, mail_to, subject, report.getvalue()))
+    mailserver.sendmail(mail_from, [mail_to], msg)
+    mailserver.quit()
+
 def main():
     verbose = 1
     days = 14
     states = []
     project_group = None
+    sendmail = False
+    mail_to = None
+    mail_from = None
     try:
         options, args = getopt.gnu_getopt(sys.argv[1:],
-                                          '?hqvn:s:g:',
+                                          '?hqvn:s:g:m',
                                           ['help',
                                            'verbose',
                                            'quiet',
                                            'num-days=',
                                            'state=',
                                            'project-group=',
+                                           'mail=',
+                                           'mail-from=',
+                                           'mail-to='
                                           ])
     except getopt.GetoptError, e:
         print __doc__
@@ -174,9 +201,23 @@ def main():
             states.append(v)
         elif k in ('-g', '--project-group'):
             project_group = v
+        elif k in ('-m', '--mail'):
+            sendmail = True
+            mail_host = v or 'localhost'
+        elif k == '--mail-to':
+            mail_to = v
+        elif k == '--mail-from':
+            mail_from = v
         else:
             print __doc__
             sys.exit(1)
+    if sendmail is True:
+        if not (mail_to or mail_from):
+            print "Mail addresses must be supplied"
+            sys.exit(1)
+        else:
+            report = StringIO.StringIO()
+            sys.stdout = report
 
     today = datetime.date.today()
     delta = datetime.timedelta(days=days)
@@ -215,6 +256,9 @@ def main():
     rheostat(0, 'Total languishing bugs:  %d' % total)
     rheostat(1, '=' * 78)
 
+    if sendmail is True:
+        mail_it(mail_host, mail_from, mail_to, 
+                'Total languishing bugs:  %d' % total, report)
     if total > 0:
         sys.exit(-1)
 
