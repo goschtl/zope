@@ -11,5 +11,5 @@ communicates on the zope-dev mailing list (:ref:`mailing-list`).
     :maxdepth: 2
 
     members
-    meeting-20100506.rst
-    meeting-201005018.rst
+    meeting-20100506
+    meeting-20100518
