@@ -1,0 +1,18 @@
+Changelog of megrok.strictrequire
+=================================
+
+0.3 (2010-05-18)
+----------------
+
+- Test-requirements have been fixed. They formally include zope.app.testing for
+  the moment.
+
+0.2 (2009-06-22)
+----------------
+
+- Check ViewletManager and Viewlet components too.
+
+0.1 (2009-06-18)
+----------------
+
+- Initial release.
