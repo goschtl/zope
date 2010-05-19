@@ -20,7 +20,7 @@ import shutil
 import cStringIO
 
 from zope.mkzeoinstance import ZEOInstanceBuilder
-
+from zope.mkzeoinstance import mkdirs
 
 class ZeoInstanceParamsTest(unittest.TestCase):
 
@@ -69,7 +69,7 @@ class ZeoInstanceCreateTest(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
-        
+
     def test_create_folders_and_files(self):
         instance_home = self.instance_home
         orig_stdout = sys.stdout
@@ -197,10 +197,24 @@ exec "$PYTHON" "$ZEOCTL" -C "$CONFIG_FILE" ${1+"$@"}
        'executable': sys.executable}
 
         self.assertEqual(zeoctl, expected_out)
-                
+
+
+class UtilityFunctionsTest(unittest.TestCase):
+
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_mkdirs(self):
+        path = os.path.join(self.temp_dir, 'test')
+        mkdirs(path)
+        self.assertTrue(os.path.exists(path))
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZeoInstanceParamsTest))
     suite.addTest(unittest.makeSuite(ZeoInstanceCreateTest))
+    suite.addTest(unittest.makeSuite(UtilityFunctionsTest))
     return suite
