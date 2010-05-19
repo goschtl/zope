@@ -21,6 +21,10 @@ import cStringIO
 
 from zope.mkzeoinstance import ZEOInstanceBuilder
 from zope.mkzeoinstance import mkdirs
+from zope.mkzeoinstance import makedir
+from zope.mkzeoinstance import makefile
+from zope.mkzeoinstance import makexfile
+
 
 class ZeoInstanceParamsTest(unittest.TestCase):
 
@@ -209,8 +213,54 @@ class UtilityFunctionsTest(unittest.TestCase):
 
     def test_mkdirs(self):
         path = os.path.join(self.temp_dir, 'test')
+        orig_stdout = sys.stdout
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
         mkdirs(path)
+        sys.stdout = orig_stdout
+        self.assertEqual('Created directory %s\n'%path,
+                         temp_out_file.getvalue())
         self.assertTrue(os.path.exists(path))
+
+    def test_makedir(self):
+        path = os.path.join(self.temp_dir, 'test')
+        orig_stdout = sys.stdout
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
+        makedir(self.temp_dir, 'test')
+        sys.stdout = orig_stdout
+        self.assertEqual('Created directory %s\n'%path,
+                         temp_out_file.getvalue())
+        self.assertTrue(os.path.exists(path))
+
+    def test_makefile(self):
+        template = "KEY=%(key)s"
+        params = {'key': 'value'}
+
+        orig_stdout = sys.stdout
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
+        makefile(template, self.temp_dir, 'test.txt', **params)
+        sys.stdout = orig_stdout
+        path = os.path.join(self.temp_dir, 'test.txt')
+        self.assertEqual('Wrote file %s\n'%path,
+                         temp_out_file.getvalue())
+
+        self.assertEqual('KEY=value',
+                         open(path).read())
+
+    def test_makexfile(self):
+        orig_stdout = sys.stdout
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
+        params = {}
+        makexfile('', self.temp_dir, 'test.txt', **params)
+        sys.stdout = orig_stdout
+        path = os.path.join(self.temp_dir, 'test.txt')
+        expected_out = """Wrote file %(path)s
+Changed mode for %(path)s to 755\n"""
+        self.assertEqual(expected_out%{'path':path},
+                         temp_out_file.getvalue())
 
 def test_suite():
     suite = unittest.TestSuite()
