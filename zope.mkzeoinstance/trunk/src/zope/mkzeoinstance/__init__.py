@@ -130,6 +130,7 @@ def main():
     print "All done."
 
 class ZEOInstanceBuilder:
+
     def run(self):
         try:
             opts, args = getopt.getopt(sys.argv[1:], "h", ["help"])
