@@ -1,0 +1,60 @@
+Fixed Bugs
+==========
+
+Here are demonstrations of various bugs that have been fixed in Manuel.  If you
+encounter a bug in a previous version of Manuel, check here in the newest
+version to see if your bug has been addressed.
+
+
+Start and End Coinciding
+------------------------
+
+If a line of text matches both a "start" and "end" regular expression, no
+exception should be raised.
+
+    >>> source = """\
+    ... Blah, blah.
+    ...
+    ... xxx
+    ... some text
+    ... xxx
+    ...
+    ... """
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import re
+    >>> start = end = re.compile(r'^xxx$', re.MULTILINE)
+    >>> document.find_regions(start, end)
+    [<manuel.Region object at ...]
+
+
+Code-block Options
+------------------
+
+The code-block handler didn't originally allow reST options, so blocks like the
+one below would generate a syntax error during parsing.
+
+    .. code-block:: python
+       :linenos:
+
+       class Foo(object):
+           pass
+
+.. -> source
+
+.. code-block:: python
+
+    import manuel.codeblock
+    m = manuel.codeblock.Manuel()
+    manuel.Document(source).parse_with(m)
+
+
+Empty documents
+---------------
+
+While empty documents aren't useful, they are still documents containing
+no tests, and shouldn't break the test suite.
+
+    >>> document = manuel.Document('')
+    >>> document.source
+    '\n'
