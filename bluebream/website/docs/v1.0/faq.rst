@@ -448,8 +448,18 @@ defined in Python or XML.  Parts of your application are making
 assumptions that they are there, with very specific names, which are
 not type checked.
 
-How can I register a content provider without using viewlet managers?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How to set default skin ?
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``browser:defaultSkin`` directive::
+
+  <browser:defaultSkin name="skinname" />
+
+For more details about skinning, read the :ref:`man-browser-skinning`
+documentation.
+
+How can I register a content provider without using viewlet managers ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You need to create and register simple adapter for object, request
 and view that implements the ``IContentProvider`` interface::
