@@ -22,15 +22,11 @@
      tal:condition="status"
      tal:content="status" />
 
-  <p class="form-help" i18n:translate="">
-    Helpful message.
-  </p>
-
   <div tal:define="perm 
-         python:view.permissionForID(request.get('permission_to_manage'))">
+      python:view.permissionForID(request.get('permission_to_manage'))">
 
     <p class="form-text" i18n:translate="">
-      Roles assigned to the permission
+      Roles which are granted the permission
       <strong tal:content="perm/title" 
           i18n:name="perm_title" i18n:translate="">Change DTML Methods</strong>
       (id: <strong tal:content="perm/id"

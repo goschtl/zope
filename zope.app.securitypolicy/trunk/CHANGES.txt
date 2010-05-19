@@ -5,7 +5,8 @@ CHANGES
 3.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- LP: #161906: Remove superfluous "helpful" message. Improve wording of of the
+  relation between roles and permissions in the manage_permissionform.
 
 
 3.5.2 (2010-01-08)
