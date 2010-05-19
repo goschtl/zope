@@ -51,7 +51,7 @@ class ZeoInstanceCreateTest(unittest.TestCase):
         self.instance_home = os.path.join(self.temp_dir, 'instance')
 
         import zdaemon
-        zdaemon_home = os.path.split(zdaemon.__path__[0])[0]
+        self.zdaemon_home = os.path.split(zdaemon.__path__[0])[0]
 
         zodb3_home = None
         for entry in sys.path:
@@ -62,7 +62,7 @@ class ZeoInstanceCreateTest(unittest.TestCase):
         self.params = {'PACKAGE': 'ZEO',
                        'python': sys.executable,
                        'package': 'zeo',
-                       'zdaemon_home': zdaemon_home,
+                       'zdaemon_home': self.zdaemon_home,
                        'instance_home': self.instance_home,
                        'address': '99999',
                        'zodb3_home': zodb3_home}
@@ -101,6 +101,63 @@ Changed mode for %(instance_home)s/bin/runzeo to 755
         self.assertTrue(os.path.exists(os.path.join(instance_home, 'etc', 'zeo.conf')))
         self.assertTrue(os.path.exists(os.path.join(instance_home, 'bin', 'zeoctl')))
         self.assertTrue(os.path.exists(os.path.join(instance_home, 'bin', 'runzeo')))
+
+    def test_zeo_conf_content(self):
+        instance_home = self.instance_home
+        orig_stdout = sys.stdout
+
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
+        self.builder.create(instance_home, self.params)
+        sys.stdout = orig_stdout
+        zeo_conf_path = os.path.join(instance_home, 'etc', 'zeo.conf')
+        zeo_conf = open(zeo_conf_path).read()
+        expected_out = """# ZEO configuration file
+
+%%define INSTANCE %(instance_home)s
+
+<zeo>
+  address 99999
+  read-only false
+  invalidation-queue-size 100
+  # pid-filename $INSTANCE/var/ZEO.pid
+  # monitor-address PORT
+  # transaction-timeout SECONDS
+</zeo>
+
+<filestorage 1>
+  path $INSTANCE/var/Data.fs
+</filestorage>
+
+<eventlog>
+  level info
+  <logfile>
+    path $INSTANCE/log/zeo.log
+  </logfile>
+</eventlog>
+
+<runner>
+  program $INSTANCE/bin/runzeo
+  socket-name $INSTANCE/var/zeo.zdsock
+  daemon true
+  forever false
+  backoff-limit 10
+  exit-codes 0, 2
+  directory $INSTANCE
+  default-to-interactive true
+  # user zope
+  python %(executable)s
+  zdrun %(zdaemon_home)s/zdaemon/zdrun.py
+
+  # This logfile should match the one in the zeo.conf file.
+  # It is used by zdctl's logtail command, zdrun/zdctl doesn't write it.
+  logfile $INSTANCE/log/zeo.log
+</runner>
+""" % {'instance_home': self.instance_home,
+       'executable': sys.executable,
+       'zdaemon_home': self.zdaemon_home}
+
+        self.assertEqual(zeo_conf, expected_out)
 
 
 def test_suite():
