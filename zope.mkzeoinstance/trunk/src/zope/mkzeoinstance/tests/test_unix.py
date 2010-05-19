@@ -53,10 +53,10 @@ class ZeoInstanceCreateTest(unittest.TestCase):
         import zdaemon
         self.zdaemon_home = os.path.split(zdaemon.__path__[0])[0]
 
-        zodb3_home = None
+        self.zodb3_home = None
         for entry in sys.path:
             if os.path.exists(os.path.join(entry, 'ZODB')):
-                zodb3_home = entry
+                self.zodb3_home = entry
                 break
 
         self.params = {'PACKAGE': 'ZEO',
@@ -65,7 +65,7 @@ class ZeoInstanceCreateTest(unittest.TestCase):
                        'zdaemon_home': self.zdaemon_home,
                        'instance_home': self.instance_home,
                        'address': '99999',
-                       'zodb3_home': zodb3_home}
+                       'zodb3_home': self.zodb3_home}
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -159,6 +159,45 @@ Changed mode for %(instance_home)s/bin/runzeo to 755
 
         self.assertEqual(zeo_conf, expected_out)
 
+    def test_zeoctl_content(self):
+        instance_home = self.instance_home
+        orig_stdout = sys.stdout
+
+        temp_out_file = cStringIO.StringIO()
+        sys.stdout = temp_out_file
+        self.builder.create(instance_home, self.params)
+        sys.stdout = orig_stdout
+        zeoctl_path = os.path.join(instance_home, 'bin', 'zeoctl')
+        zeoctl = open(zeoctl_path).read()
+        expected_out = """#!/bin/sh
+# ZEO instance control script
+
+# The following two lines are for chkconfig.  On Red Hat Linux (and
+# some other systems), you can copy or symlink this script into
+# /etc/rc.d/init.d/ and then use chkconfig(8) to automatically start
+# ZEO at boot time.
+
+# chkconfig: 345 90 10
+# description: start a ZEO server
+
+PYTHON="%(executable)s"
+INSTANCE_HOME="%(instance_home)s"
+ZODB3_HOME="%(zodb3_home)s"
+
+CONFIG_FILE="%(instance_home)s/etc/zeo.conf"
+
+PYTHONPATH="$ZODB3_HOME"
+export PYTHONPATH INSTANCE_HOME
+
+ZEOCTL="$ZODB3_HOME/ZEO/zeoctl.py"
+
+exec "$PYTHON" "$ZEOCTL" -C "$CONFIG_FILE" ${1+"$@"}
+""" % {'zodb3_home': self.zodb3_home,
+       'instance_home': self.instance_home,
+       'executable': sys.executable}
+
+        self.assertEqual(zeoctl, expected_out)
+                
 
 def test_suite():
     suite = unittest.TestSuite()
