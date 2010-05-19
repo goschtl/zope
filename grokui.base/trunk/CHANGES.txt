@@ -6,6 +6,8 @@ CHANGES
 
 * Package modified to comply with repository policy (license, etc.).
 
+* Use own template dir for layout module in order not to provoke
+  (erraneous) warnings of template registry.
 
 0.2 (2010-03-06)
 ================
