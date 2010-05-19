@@ -486,13 +486,12 @@ to do this, read documentation in the zope.contentprovider.  If you
 want to bind some content provider to some skin, change
 IDefaultBrowserLayer to your skin interface.
 
-How do I serve out static content in zope3?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I serve out static content ?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2006-10-02.log.html
-
-See the ZCML directives <resource> and <resourceDirectory> they let
-you publish static files through Zope
+See the ZCML directives ``<resource>`` and ``<resourceDirectory>``
+they let you publish static files through Zope.  Refer the
+:ref:`man-browser-resource` documentation for more details.
 
 Is webdav source server available in BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
