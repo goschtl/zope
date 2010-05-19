@@ -1,0 +1,29 @@
+CHANGES
+*******
+
+0.2.1 (2010-05-19)
+==================
+
+* Package modified to comply with repository policy (license, etc.).
+
+* Use own template dir for layout module in order not to provoke
+  (erraneous) warnings of template registry.
+
+0.2 (2010-03-06)
+================
+
+* A minor CSS glitch has been corrected.
+
+* The messaging system is now registered via
+  ``grokcore.message``. ``grokui.base`` is no longer bound to
+  ``z3c.flashmessage``.
+
+* Dependencies have been cleaned up : ``grokui.base`` no longer
+  depends on ``zope.app.zcmlfiles`` and can now be used outside the
+  ``Grok`` suite. It uses only the `grokcore` packages.
+
+
+0.1 (2010-02-23)
+================
+
+Initial implementation.
