@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '0.6dev'
+version = '0.5.1dev'
 
 install_requires = [
     'setuptools',
