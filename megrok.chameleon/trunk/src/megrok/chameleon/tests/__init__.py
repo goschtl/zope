@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2006-2010 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,10 +12,9 @@
 #
 ##############################################################################
 # $Id$ $Rev$ $Author$ $Date$
-import os.path
+"""A functional test layer.
+"""
 import megrok.chameleon
-from zope.app.testing.functional import ZCMLLayer
+from zope.app.wsgi.testlayer import BrowserLayer
 
-ftesting_zcml = os.path.join(
-    os.path.dirname(megrok.chameleon.__file__), 'ftesting.zcml')
-FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
+FunctionalLayer = BrowserLayer(megrok.chameleon, 'ftesting.zcml')
