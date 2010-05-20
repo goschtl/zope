@@ -3,8 +3,6 @@ Detailed Description
 
 Grok-support for using chameleon driven templates.
 
-:Test-Layer: functional
-
 With `megrok.chameleon` you can use templates parsed and rendered by
 `Chameleon`_. Currently Zope page templates and Genshi templates are
 supported.

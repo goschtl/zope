@@ -1,10 +1,25 @@
-import z3c.testsetup
-import zope.testing.doctest
+"""Test setup for megrok.chameleon.
+"""
+import doctest
+import unittest
+import megrok.chameleon
 from megrok.chameleon.tests import FunctionalLayer
 
-flags = (zope.testing.doctest.ELLIPSIS |
-         zope.testing.doctest.NORMALIZE_WHITESPACE)
+FLAGS = (doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
 
-test_suite = z3c.testsetup.register_all_tests('megrok.chameleon',
-                                              optionflags=flags,
-                                              layer=FunctionalLayer)
+def test_suite():
+    """Get a testsuite of all doctests.
+    """
+    suite = unittest.TestSuite()
+    for name in ['README.txt']:
+        test = doctest.DocFileSuite(
+            name,
+            package=megrok.chameleon,
+            globs=dict(
+                getRootFolder=FunctionalLayer.getRootFolder,
+                ),
+            optionflags=FLAGS,
+            )
+        test.layer = FunctionalLayer
+        suite.addTest(test)
+    return suite

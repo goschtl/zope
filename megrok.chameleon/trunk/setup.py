@@ -18,11 +18,8 @@ install_requires = [
 tests_require = [
     'grokcore.component',
     'grokcore.viewlet',
-    'z3c.testsetup',
-    'zope.app.testing',
+    'zope.app.wsgi',
     'zope.app.zcmlfiles',
-    'zope.securitypolicy',
-    'zope.testing',
     ]
 
 long_description = (open('README.txt').read() +
