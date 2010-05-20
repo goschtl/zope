@@ -35,3 +35,7 @@ class Inline(grokcore.view.View):
 inline = components.ChameleonPageTemplate(
     "<html><body>ME GROK HAS INLINES!</body></html>")
 
+class Fake(grokcore.view.View):
+    # A fake view to stop faulty template registry from complaining about
+    # missing classes.
+    grokcore.view.template('berries')
