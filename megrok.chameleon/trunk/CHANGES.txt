@@ -10,6 +10,9 @@ CHANGES
   together with other packages that require z3c.pt like ``z3c.form``
   and dependent packages from grok-ecosphere.
 
+* Get rid of zope.testing, zope.app.testing and z3c.testsetup for
+  tests.
+
 0.5 (2010-03-03)
 ================
 
