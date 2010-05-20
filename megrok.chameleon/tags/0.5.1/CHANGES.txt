@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.5.1 (unreleased)
+0.5.1 (2010-05-20)
 ==================
 
 * Made registering of ITranslatorExpressions conditional: if
