@@ -13,8 +13,8 @@
 ##############################################################################
 """Template registry
 """
+import logging
 import os
-import warnings
 import zope.component
 import grokcore.component
 import grokcore.view
@@ -22,6 +22,28 @@ from martian.error import GrokError
 from grokcore.view.interfaces import ITemplateFileFactory, ITemplate
 from grokcore.view.components import PageTemplate
 
+def get_logger():
+    """Setup a 'grokcore.view' logger if none is already defined.
+
+    Return the defined one else.
+
+    We set the logger level to ``logging.ERROR``, which means that by
+    default warning messages will not be displayed.
+
+    Logger level is only set, if that not already happened
+    before. This way third-party components can determine the logging
+    options before grokking packages.
+    """
+    logger = logging.getLogger('grokcore.view')
+    if len(logger.handlers) > 0:
+        return logger
+    if logger.level == logging.NOTSET:
+        logger.setLevel(logging.ERROR)
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
 class TemplateRegistry(object):
 
@@ -71,9 +93,11 @@ class TemplateRegistry(object):
                 # Warning when importing files. This should be
                 # allowed because people may be using editors that generate
                 # '.bak' files and such.
-                warnings.warn("File '%s' has an unrecognized extension in "
-                              "directory '%s'" %
-                              (template_file, template_dir), UserWarning, 2)
+                logger = get_logger()
+                msg = ("File '%s' has an unrecognized extension in "
+                       "directory '%s'" %
+                       (template_file, template_dir))
+                logger.warn(msg)
                 continue
 
             inline_template = self.get(template_name)
@@ -104,7 +128,8 @@ class TemplateRegistry(object):
                 "grokking %r: %s.  Define view classes inheriting "
                 "from grok.View to enable the template(s)." % (
                 module_info.dotted_name, ', '.join(unassociated)))
-            warnings.warn(msg, UserWarning, 1)
+            logger = get_logger()
+            logger.warn(msg)
 
     def checkTemplates(self, module_info, factory, component_name,
                        has_render, has_no_render):
