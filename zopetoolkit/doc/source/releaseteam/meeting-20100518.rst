@@ -88,6 +88,10 @@ Open points
 - Decide on process for new feature versions and the process for going from
   1.1.0 alpha to a final
 
+- the list for "extra" packages still needs to be defined, we could have a
+  incoming.cfg and/or extra.cfg
+
+
 Next meeting
 ------------
 
