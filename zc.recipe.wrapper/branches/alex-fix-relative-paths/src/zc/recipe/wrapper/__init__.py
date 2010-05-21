@@ -12,8 +12,10 @@ env.update(os.environ)
 newenv = %(env)s
 env.update(newenv)
 target = '%(target)s'
+base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+base = os.path.dirname(base)
 path = os.path.join(
-    *([os.sep,] + '%(base)s'.split(os.sep) + target.split(os.sep)))
+    *([os.sep,] + base.split(os.sep) + target.split(os.sep)))
 args = [sys.executable] + [path] + sys.argv[1:]
 os.execve(sys.executable, args, env)"""
 
@@ -48,7 +50,6 @@ class Wrapper(object):
             self.options.update(options)
 
             parameters = dict(
-                base = path,
                 env = pprint.pformat(
                     self.buildout[self.options['environment']]),
                 interpreter = self.buildout['buildout']['executable'],
