@@ -4,6 +4,7 @@ CHANGES
 1.1.0 (unreleased)
 ------------------
 
+- Fixed tests
 - The wrapper now uses a path relative to its location to invoke a script
 
 
