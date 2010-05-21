@@ -132,8 +132,10 @@ We might desire to run `py` with an addition to the dynamic load path:
     newenv = {'LD_LIBRARY': 'some_library_I_like'}
     env.update(newenv)
     target = 'bin/basepy'
+    base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+    base = os.path.dirname(base)
     path = os.path.join(
-        *([os.sep,] + 'PREFIX'.split(os.sep) + target.split(os.sep)))
+        *([os.sep,] + base.split(os.sep) + target.split(os.sep)))
     args = [sys.executable] + [path] + sys.argv[1:]
     os.execve(sys.executable, args, env)
     >>> os.chdir(wrapper)

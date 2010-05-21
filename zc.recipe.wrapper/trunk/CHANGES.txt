@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.1.0 (unreleased)
+------------------
+
+- The wrapper now uses a path relative to its location to invoke a script
+
+
 1.0.1 (2009-12-15)
 ------------------
 
