@@ -23,6 +23,19 @@ Changes
 
 - Test fix: support windows paths.
 
+- Warnings are now emitted as log messages with level
+  `logging.WARNING` to a logger named ``grokcore.view`` with level
+  `logging.ERROR`.
+
+  That means that by default no warnings are emitted anymore (while
+  errors will still appear).
+
+  To get the warnings back, reduce the level of logger
+  ``grokcore.view`` to `logging.WARNING` or lower. This can be done in
+  Python or via a logging conf file, for instance in the .ini files of
+  regular grokprojects. See the Python standard lib `logging` module
+  for details.
+
 1.12.1 (2009-09-17)
 -------------------
 
