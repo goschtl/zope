@@ -1,0 +1,28 @@
+
+1.2.0 (1010-05-21)
+==================
+
+- Now (ZODB 3.10) that the filestorage packer option can take
+  expressions, expose a packer factory, ``Packer``.
+
+- In addition to a sleep argument, to control resting between
+  transactions, provide transform and untransform options to provide
+  record-transformation functions.  The primary use case for this is
+  to use packing to compress storages not previously compressed.
+
+1.1.0 (1010-03-10)
+==================
+
+- Improved use of posix_fadvise (where available)
+
+- Provided an option to rest between transactions to try to avoid
+  excessive stress on the storage server.
+
+- Provided some progress logging (every GIG) in the pack log.
+
+1.0.0 (2009-11-06)
+==================
+
+Updated to work with ZODB 3.9.
+
+Removed GC support, since that is now provided by zc.zodbdgc.
