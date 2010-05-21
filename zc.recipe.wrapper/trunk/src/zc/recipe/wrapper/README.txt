@@ -28,7 +28,7 @@ called `py`.
     ...
     ... [versions]
     ... zc.recipe.egg = 1.0.0
-    ... setuptools = 0.6c8
+    ... setuptools = 0.6c11
     ... zc.recipe.testrunner = 1.0.0
     ... zc.buildout = 1.0.0
     ... zope.testing = 3.5.0
@@ -74,7 +74,7 @@ We might desire to run `py` with an addition to the dynamic load path:
     ...
     ... [versions]
     ... zc.recipe.egg = 1.0.0
-    ... setuptools = 0.6c8
+    ... setuptools = 0.6c11
     ... zc.recipe.testrunner = 1.0.0
     ... zc.buildout = 1.0.0
     ... zope.testing = 3.5.0
@@ -162,7 +162,7 @@ gets the platform to ensure that this test runs on all platforms.
     ...
     ... [versions]
     ... zc.recipe.egg = 1.0.0
-    ... setuptools = 0.6c8
+    ... setuptools = 0.6c11
     ... zc.recipe.testrunner = 1.0.0
     ... zc.buildout = 1.0.0
     ... zope.testing = 3.5.0
