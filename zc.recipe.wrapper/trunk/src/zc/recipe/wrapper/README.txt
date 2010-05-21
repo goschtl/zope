@@ -40,7 +40,7 @@ called `py`.
     ... """ % wrapper)
     >>> os.chdir(sample_buildout)
     >>> buildout.install([])
-    Develop: '/.../USER/work/zc.recipe.wrapper'
+    Develop: '...'
     Installing interpreter.
     Getting distribution for 'zope.testing==3.5.0'.
     Got zope.testing 3.5.0.
@@ -56,7 +56,7 @@ called `py`.
                      'recipe': 'zc.recipe.egg'},
      'versions': {...}}
     >>> print ls(os.path.join(sample_buildout, 'bin/py'))
-    -rwxr-xr-x USER USER PREFIX/bin/py
+    -rwxr-xr-x USER GROUP PREFIX/bin/py
     >>> print ls(os.path.join(sample_buildout, 'bin/basepy'))
     Traceback (most recent call last):
         ...
@@ -94,7 +94,7 @@ We might desire to run `py` with an addition to the dynamic load path:
     ... """ % wrapper)
     >>> os.chdir(sample_buildout)
     >>> buildout.install([])
-    Develop: '/.../USER/work/zc.recipe.wrapper'
+    Develop: '...'
     Installing interpreter.
     Getting distribution for 'zope.testing==3.5.0'.
     Got zope.testing 3.5.0.
@@ -120,9 +120,9 @@ We might desire to run `py` with an addition to the dynamic load path:
      'py-environment': {'LD_LIBRARY': 'some_library_I_like'},
      'versions': {...}}
     >>> print ls(os.path.join(sample_buildout, 'bin/py'))
-    -rwxr-xr-x USER USER PREFIX/bin/py
+    -rwxr-xr-x USER GROUP PREFIX/bin/py
     >>> print ls(os.path.join(sample_buildout, 'bin/basepy'))
-    -rwxr-xr-x USER USER PREFIX/bin/basepy
+    -rwxr-xr-x USER GROUP PREFIX/bin/basepy
     >>> cat(sample_buildout, 'bin', 'py')
     #!...
     import os
@@ -184,7 +184,7 @@ gets the platform to ensure that this test runs on all platforms.
     >>> buildout = setupBuildout(sample_buildout, "buildout.cfg", buildout_cfg)
     >>> os.chdir(sample_buildout)
     >>> buildout.install([])
-    Develop: '/.../USER/work/zc.recipe.wrapper'
+    Develop: '...'
     Installing interpreter.
     Getting distribution for 'zope.testing==3.5.0'.
     Got zope.testing 3.5.0.
@@ -195,7 +195,7 @@ gets the platform to ensure that this test runs on all platforms.
     Generated interpreter 'PREFIX/bin/basepy'.
     Installing py.
     >>> print ls(os.path.join(sample_buildout, 'bin/py'))
-    -rwxr-xr-x USER USER PREFIX/bin/py
+    -rwxr-xr-x USER GROUP PREFIX/bin/py
     >>> os.chdir(wrapper)
 
 Now, suppose we were to run it on a Macintosh?
@@ -204,7 +204,7 @@ Now, suppose we were to run it on a Macintosh?
     >>> buildout = setupBuildout(sample_buildout, "buildout.cfg", buildout_cfg)
     >>> os.chdir(sample_buildout)
     >>> buildout.install([])
-    Develop: '/.../USER/work/zc.recipe.wrapper'
+    Develop: '...'
     Installing interpreter.
     Getting distribution for 'zope.testing==3.5.0'.
     Got zope.testing 3.5.0.

@@ -114,12 +114,12 @@ def test_suite():
             checker=renormalizing.RENormalizing([
                 (re.compile('\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
                 (re.compile(user), 'USER'),
+                (re.compile(group), 'GROUP'),
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
                ]),
             optionflags = (zope.testing.doctest.REPORT_NDIFF
                            | zope.testing.doctest.ELLIPSIS)
             ),
-        
         ))
 
 if __name__ == '__main__':
