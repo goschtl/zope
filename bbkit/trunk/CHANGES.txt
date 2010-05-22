@@ -1,6 +1,11 @@
 BlueBream Kit
 =============
 
+1.0b2 (unreleased)
+------------------
+
+- sync versions with the ZTK
+
 1.0b1 (2010-04-27)
 ------------------
 
