@@ -74,7 +74,7 @@
   <resourceLibrary name="ckeditor">
     <directory
         source="ckeditor"
-        include="3.0/ckeditor/ckeditor.js"
+        include="3.2.1/ckeditor/ckeditor.js"
         />
   </resourceLibrary>
 
