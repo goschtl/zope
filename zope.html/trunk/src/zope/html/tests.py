@@ -24,7 +24,7 @@ from zope.testing import doctest
 import pytz
 
 import zope.annotation.attribute
-import zope.app.form.browser.tests.test_textareawidget
+import zope.formlib.tests.test_textareawidget
 import zope.app.testing.placelesssetup
 import zope.component
 import zope.file.testing
@@ -38,7 +38,7 @@ import zope.html.widget
 
 
 class FckeditorWidgetTestCase(
-    zope.app.form.browser.tests.test_textareawidget.TextAreaWidgetTest):
+    zope.formlib.tests.test_textareawidget.TextAreaWidgetTest):
 
     _WidgetFactory = zope.html.widget.FckeditorWidget
 
