@@ -5,25 +5,12 @@ import os.path
 import grokcore.view
 
 from pkg_resources import resource_listdir
-from zope.testing import doctest, renormalizing
-#from zope.app.testing.functional import (HTTPCaller, getRootFolder,
-#                                         FunctionalTestSetup, sync, ZCMLLayer)
+
 from zope.app.wsgi.testlayer import BrowserLayer, http
-
-ftesting_zcml = os.path.join(os.path.dirname(grokcore.view.__file__),
-                             'ftesting.zcml')
-#FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer',
-#                            allow_teardown=True)
-FunctionalLayer = BrowserLayer(grokcore.view, 'ftesting.zcml')
-#FunctionalLayer = BrowserLayer(grokcore.view, ftesting_zcml)
-#FunctionalLayer = BrowserLayer(grokcore.view)
-#def setUp(test):
-#    FunctionalTestSetup().setUp()
-
-#def tearDown(test):
-#    FunctionalTestSetup().tearDown()
+from zope.testing import doctest, renormalizing
 
 
+FunctionalLayer = BrowserLayer(grokcore.view)
 
 checker = renormalizing.RENormalizing([
     # Accommodate to exception wrapping in newer versions of mechanize
@@ -42,12 +29,10 @@ def suiteFromPackage(name):
 
         dottedname = 'grokcore.view.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
-            dottedname, #setUp=setUp, tearDown=tearDown,
-            #checker=checker,
-            extraglobs=dict(#http=HTTPCaller(),
-                            http=http,
+            dottedname,
+            checker=checker,
+            extraglobs=dict(http=http,
                             getRootFolder=getRootFolder,
-                            #sync=sync),
                             ),
             optionflags=(doctest.ELLIPSIS+
                          doctest.NORMALIZE_WHITESPACE+
