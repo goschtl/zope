@@ -100,7 +100,7 @@ class StorageServer:
                 zdaemon_conf_path,
                 os.path.join(options['rc-directory'], rc),
                 )
-            
+
             logrotate = options['logrotate']
             if logrotate:
                 open(logrotate, 'w').write(logrotate_template % dict(
@@ -157,7 +157,7 @@ class StorageServer:
         if not 'address' in zeo_section:
             raise zc.buildout.UserError('No ZEO address was specified.')
 
-        storages = [s.name for s in zeo_conf.sections
+        storages = [s.name or '1' for s in zeo_conf.sections
                     if s.type not in ('zeo', 'eventlog', 'runner')
                     ]
 

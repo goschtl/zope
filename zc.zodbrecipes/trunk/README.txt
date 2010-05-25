@@ -9,6 +9,15 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.6.1 (2010-05-25)
+==================
+
+Bugs Fixed
+----------
+
+- Pack scripts were incorrectly generated for storages that weren't
+  named in their storage configurations.
+
 0.6.0 (2009-12-03)
 ==================
 

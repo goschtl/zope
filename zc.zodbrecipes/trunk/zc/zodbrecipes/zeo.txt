@@ -3,23 +3,23 @@ Defining ZEO Storage Servers
 
 The zc.zodbrecipes:server recipe can be used to define ZEO storage
 servers. To define a storage server, you define a part for the server
-and specify configuration data.  
+and specify configuration data.
 
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = server
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... ''')
@@ -30,9 +30,9 @@ to import the schema definition that defined the foo section.  Any
 imports are simply copied to the generated configuration file.  When
 we run the buildout:
 
-    >>> print system(buildout),
+    >>> print system(buildout), # doctest: +NORMALIZE_WHITESPACE
     Installing server.
-    zc.zodbrecipes: 
+    zc.zodbrecipes:
     A runzeo script couldn't be found at:
     <BLANKLINE>
       '/sample-buildout/bin/runzeo'
@@ -51,21 +51,21 @@ zc.recipe.egg:script recipe:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... ''')
@@ -102,7 +102,7 @@ Let's look at the configuration files:
       transaction-timeout 300
     </zeo>
     <BLANKLINE>
-    <foo main>
+    <foo>
       path /databases/Data.fs
     </foo>
     <BLANKLINE>
@@ -121,21 +121,21 @@ If we wish, we can specify a log file ourselves:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ...    <eventlog>
@@ -160,7 +160,7 @@ If we wish, we can specify a log file ourselves:
       transaction-timeout 300
     </zeo>
     <BLANKLINE>
-    <foo main>
+    <foo>
       path /databases/Data.fs
     </foo>
     <BLANKLINE>
@@ -176,21 +176,21 @@ But we'll stick with the default:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... ''')
@@ -250,29 +250,29 @@ process.
 Specifying additional eggs
 ==========================
 
-You can specify additional eggs to be installed for use by the 
+You can specify additional eggs to be installed for use by the
 zdaemon script:
 
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
     ... eggs = zope.event
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... ''')
@@ -283,7 +283,7 @@ zdaemon script:
     Installing server.
     Generated script '/sample-buildout/bin/server'.
 
-We can see the zope.event egg present in the control script 
+We can see the zope.event egg present in the control script
 generated in our bin directory:
 
     >>> cat('bin', 'server')
@@ -348,21 +348,21 @@ buildout:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -460,28 +460,28 @@ Note that different file names are used.  Since a deployment may be
 their part names.  Also note that the deployment user is set in the
 zdaemon configuration.
 
-If you want to manage your own log rotation, you can place "logrotate = false" 
+If you want to manage your own log rotation, you can place "logrotate = false"
 in your deployment section to prevent the logrotate config being generated:
 
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -515,21 +515,21 @@ If it's more convenient, this can be placed in the [server] section instead:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -570,21 +570,21 @@ Let's add a pack option:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -609,7 +609,49 @@ Let's add a pack option:
 Now, we'll get a crontab file:
 
     >>> cat(cron, 'pack-demo-server')
-    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S main -d 3
+    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S 1 -d 3
+
+.. Make sure it works to supply a storage name:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ...
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ...
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf =
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo x>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ... pack = 1 1 * * 0 3
+    ...
+    ... [demo]
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> _ = system(buildout+' -D'),
+
+    >>> cat(cron, 'pack-demo-server')
+    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S x -d 3
+
 
 In this example, we'll pack the databases every Sunday at 1:01 to 3
 days.
@@ -621,21 +663,21 @@ MAILTO variable will be added to the cron file:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -659,7 +701,7 @@ MAILTO variable will be added to the cron file:
 
     >>> cat(cron, 'pack-demo-server')
     MAILTO=jim@zope.com
-    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S main -d 3
+    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S 1 -d 3
 
 This causes email to be sent to the given address, rather than to the
 user specified in the crontab file.
@@ -682,25 +724,25 @@ value. We also need to cause a zdaemon script to be generated:
     ... '''
     ... [buildout]
     ... parts = zodb zdaemon server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [zdaemon]
     ... recipe = zc.recipe.egg:script
     ... eggs = zdaemon
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -740,26 +782,26 @@ parts. These names determine names of files generated.
     ... '''
     ... [buildout]
     ... parts = zodb zdaemon server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [zdaemon]
     ... recipe = zc.recipe.egg:script
     ... eggs = zdaemon
-    ... 
+    ...
     ... [server]
     ... name = Server
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <zeo>
     ...       address 8100
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
     ...    %%import foo
-    ...    <foo main>
+    ...    <foo>
     ...       path /databases/Data.fs
     ...    </foo>
     ... deployment = demo
@@ -807,14 +849,14 @@ simple, informative message being returned:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    nothing useful
     ... ''')
 
@@ -831,14 +873,14 @@ text and the message from the error:
     ... '''
     ... [buildout]
     ... parts = zodb server
-    ... 
+    ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
-    ... 
+    ...
     ... [server]
     ... recipe = zc.zodbrecipes:server
-    ... zeo.conf = 
+    ... zeo.conf =
     ...    <bad
     ... ''')
 
