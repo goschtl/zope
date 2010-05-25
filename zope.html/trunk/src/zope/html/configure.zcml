@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope.html"
     >
 
@@ -73,8 +74,14 @@
 
   <resourceLibrary name="ckeditor">
     <directory
+        zcml:condition="have devmode"
         source="ckeditor"
-        include="3.0/ckeditor/ckeditor.js"
+        include="3.2.1/ckeditor/ckeditor_source.js"
+        />
+    <directory
+        zcml:condition="not-have devmode"
+        source="ckeditor"
+        include="3.2.1/ckeditor/ckeditor.js"
         />
   </resourceLibrary>
 
