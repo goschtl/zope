@@ -5,7 +5,8 @@ Weekly Zope developer meetings
 
     :maxdepth: 2
 
-    irc_summary-20100407
-    zope-dev-20100504
-    zope-dev-20100511
+    zope-dev-20100525
     zope-dev-20100518
+    zope-dev-20100511
+    zope-dev-20100504
+    irc_summary-20100407
