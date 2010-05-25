@@ -1,0 +1,29 @@
+CHANGES
+=======
+
+0.8.1 (2010-05-25)
+------------------
+
+- replaced html entities with unicode entities since they are xthml valid.
+  [fRiSi]
+
+0.8.0 (2009-07-23)
+------------------
+
+- Updated tests to latest packages.
+
+
+0.7.0 (2008-05-20)
+------------------
+
+- Fixed HTML-encoding of cell contents for ``GetterColumn``.
+
+- Add ``href`` attributes (for MSIE) and fix up JavaScript on Next/Prev links
+  for batching.
+
+- Update packaging.
+
+0.6 (2006-09-22)
+----------------
+
+Initial release on Cheeseshop.
