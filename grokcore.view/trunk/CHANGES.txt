@@ -4,6 +4,10 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- ``grokcore.view`` no longer depends on ``zope.app.testing`` and
+  related packages. Instead we now use ``zope.app.wsgi.testlayer`` to
+  run functional tests.
+
 - Made package comply to zope.org repository policy.
 
 - Fixed launchpad bug #395061 : removed the default_fallback_to_name
