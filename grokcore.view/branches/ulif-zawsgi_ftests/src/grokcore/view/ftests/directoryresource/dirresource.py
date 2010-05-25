@@ -37,7 +37,7 @@ This resource is only available on the particular layer::
   ...     'anotherfile.txt')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 404: Not Found
+  HTTPError: HTTP Error 404: Not Found
 
 Directoryresources can be registered under an explicit name::
 

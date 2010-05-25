@@ -2,7 +2,7 @@
 If there is a static/ directory inside of a grokked package, its
 contents will be available as static resources under a URL:
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open(
