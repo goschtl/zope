@@ -3,7 +3,7 @@ A directory resource defined without an explicit name direective is available
 through the dotted name of the module in which the directoryresource is
 defined::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open(
@@ -37,7 +37,7 @@ This resource is only available on the particular layer::
   ...     'anotherfile.txt')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 404: Not Found
+  HTTPError: HTTP Error 404: Not Found
 
 Directoryresources can be registered under an explicit name::
 

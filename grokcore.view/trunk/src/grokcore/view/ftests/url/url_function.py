@@ -13,7 +13,7 @@ absolute URL of objects.
 
 Now let's use url on some things::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/herd/manfred/index")

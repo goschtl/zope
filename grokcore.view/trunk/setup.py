@@ -26,14 +26,12 @@ install_requires = [
     ]
 
 tests_require = [
-    'zope.app.testing',
+    'zope.app.wsgi',
     'zope.container',
     'zope.securitypolicy',
     'zope.site',
-    'zope.testbrowser',
     'zope.testing',
     'zope.login',
-    'zope.app.testing',
     'zope.configuration',
     'zope.app.appsetup',
     'zope.app.publication',
