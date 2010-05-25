@@ -3,7 +3,7 @@ A directory resource defined without an explicit name direective is available
 through the dotted name of the module in which the directoryresource is
 defined::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open(
