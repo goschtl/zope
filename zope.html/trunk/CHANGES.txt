@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+2.1.0 (2010-05-25)
+
+- Use CKEditor 3.2.1
+
+- Added configuration to use un-minified version of CKEditor when using dev
+  mode.
+
+- Fixed import that caused test failures.
+
+
 2.0.0 (2009-09-04)
 ------------------
 
