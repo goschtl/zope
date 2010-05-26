@@ -23,7 +23,7 @@ New Features
 Bugs Fixed
 ----------
 
-- Generated run scripts has trailing whitespace.
+- Generated run scripts had trailing whitespace.
 
 1.2.0 (2009/04/06)
 ==================
