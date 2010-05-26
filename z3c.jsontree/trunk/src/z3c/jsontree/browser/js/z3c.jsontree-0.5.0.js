@@ -31,8 +31,11 @@ $.fn.z3cJSONTree = function (settings) {
     function z3cJSONTreeToggleItem(img) {
         ele = img.parentNode;
         var uri = $(img).attr('longDesc');
-        if ($.className.has(ele, settings.z3cJSONTreeExpandedClass)) {
-            ele.className = settings.z3cJSONTreeCollapsedClass;
+        if ($(ele).hasClass(settings.z3cJSONTreeExpandedClass)) {
+            $(ele).removeClass(
+                settings.z3cJSONTreeExpandedClass).addClass(
+                settings.z3cJSONTreeCollapsedClass
+            );
             $(img).attr("src", settings.z3cJSONTreeCollapsedGif);
         }
         else {
@@ -42,7 +45,10 @@ $.fn.z3cJSONTree = function (settings) {
                 id = $(ele).attr('id');
                 z3cJSONTreeLoadItems(uri, id);
             }
-            ele.className = settings.z3cJSONTreeExpandedClass;
+            $(ele).removeClass(
+                settings.z3cJSONTreeCollapsedClass).addClass(
+                settings.z3cJSONTreeExpandedClass
+            );
             $(img).attr("src", settings.z3cJSONTreeExpandedGif);
         }
         return false;

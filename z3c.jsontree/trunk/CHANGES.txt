@@ -5,6 +5,9 @@ CHANGES
 0.5.2 (unreleased)
 ------------------
 
+- Fix className handling in javacsript, it seems that newer version of JQuery
+  can't handle $.className.has(ele, ...) use $(ele).hasClass(...) instead.
+
 - Fix: getParentsFromContextToObject, don't return a parent chain if an item 
   is a location proxied NotFound error object. It's possible that such a
   NotFound object will wrap a context which we don't allow in our parent
