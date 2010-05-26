@@ -103,8 +103,9 @@ Downloads
 - Zope 3.4 Versions:
     http://download.zope.org/zope3.4/3.4.1b2/versions.cfg
 
-- The classic Zope 3 source release can be downloaded from:
-    http://download.zope.org/zope3.4/3.4.1b2/Zope-3.4.1b2.tgz
+- The classic Zope 3 source release will be made only on request.
+
+- The Windows .exe installer will be made only on request.
 
 Installation instructions for both Windows and Un*x/Linux are now available in
 the top level `README.txt` file of the distribution. The binary installer is
