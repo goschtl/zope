@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.zlibstorage', '0'
+name, version = 'zc.zlibstorage', '0.1.1'
 
 install_requires = ['ZODB3 >=3.10.0b1', 'setuptools']
 extras_require = dict(test=['zope.testing', 'manuel'])
