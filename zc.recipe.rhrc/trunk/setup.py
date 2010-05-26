@@ -34,7 +34,7 @@ setup(
     long_description = long_description,
     license = 'ZPL 2.1',
     keywords = 'buildout',
-    
+
     entry_points=entry_points,
     packages = find_packages('src'),
     namespace_packages = ['zc', 'zc.recipe'],
