@@ -16,6 +16,10 @@ Changes
 New Features
 ------------
 
+- A new independent-processes option causes multiple processes to be
+  restarted independently, rather then stoping all of the and the
+  starting all of them.
+
 
 Bugs Fixed
 ----------

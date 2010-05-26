@@ -12,14 +12,13 @@
 #
 ##############################################################################
 
-import re, unittest
-from zope.testing import doctest, renormalizing
+import doctest, re, unittest
+from zope.testing import renormalizing
 import zc.buildout.testing
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.rhrc', test)
-    
 
 def test_suite():
     return unittest.TestSuite((
@@ -32,5 +31,4 @@ def test_suite():
                zc.buildout.testing.normalize_egg_py,
                ])
             ),
-        
         ))

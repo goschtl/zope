@@ -38,6 +38,14 @@ class Recipe:
         options['envs'] = '\n'.join([buildout[part].get('env', '')
                                      for part in options['parts'].split()
                                      ])
+        independent = options.get('independent-processes')
+        if independent:
+            if independent not in ('true', 'false'):
+                logger.error(
+                    "Invalid value for independent-processes. "
+                    " Use 'true' or 'false'")
+                raise zc.buildout.UserError(
+                    'Invalid value for independent-processes:', independent)
 
     def install(self):
         options = self.options
@@ -99,7 +107,10 @@ class Recipe:
                 script = '\n\n    '.join(cooked)
                 cooked.reverse()
                 rscript = '\n\n    '.join(cooked)
-                self.output(chkconfig, script, name, created, rscript)
+                self.output(
+                    chkconfig, script, name, created, rscript,
+                    independent=options.get('independent-processes') == 'true',
+                    )
             return created
         except:
             [os.remove(f) for f in created]
@@ -122,17 +133,27 @@ class Recipe:
 
         return script + ' "$@"'
 
-    def output(self, chkconfig, script, ctl, created, rscript=None):
-        if rscript is None:
-            rscript = script
-        rc = rc_template % dict(
-            rootcheck = self.options.get('user') and rootcheck or '',
-            CHKCONFIG = (chkconfig
-                         and (chkconfig_template % chkconfig)
-                         or non_chkconfig_template),
-            CTL_SCRIPT = script,
-            CTL_SCRIPT_R = rscript,
-            )
+    def output(self, chkconfig, script, ctl, created,
+               rscript=None, independent=False):
+        if independent:
+            rc = independent_template % dict(
+                rootcheck = self.options.get('user') and rootcheck or '',
+                CHKCONFIG = (chkconfig
+                             and (chkconfig_template % chkconfig)
+                             or non_chkconfig_template),
+                CTL_SCRIPT = script,
+                )
+        else:
+            if rscript is None:
+                rscript = script
+            rc = rc_template % dict(
+                rootcheck = self.options.get('user') and rootcheck or '',
+                CHKCONFIG = (chkconfig
+                             and (chkconfig_template % chkconfig)
+                             or non_chkconfig_template),
+                CTL_SCRIPT = script,
+                CTL_SCRIPT_R = rscript,
+                )
         dest = self.options.get('dest', '/etc/init.d')
         ctlpath = os.path.join(dest, ctl)
         open(ctlpath, 'w').write(rc)
@@ -196,4 +217,11 @@ case $1 in
     ;;
 esac
 
+"""
+
+independent_template = """#!/bin/sh
+
+%(CHKCONFIG)s
+%(rootcheck)s
+    %(CTL_SCRIPT)s
 """

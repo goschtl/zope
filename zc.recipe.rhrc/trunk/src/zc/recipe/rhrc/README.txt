@@ -575,6 +575,100 @@ the run-script option:
 
 The individual scripts don't have chkconfig information.
 
+Independent processes
+---------------------
+
+Normally, processes are assumed to be dependent and are started in
+order, stopped in referese order, and, on restart, are all stopped and
+then all started.
+
+If the independent-processes option is used, then the generated master
+run script will treat the processes as independent and restart
+processed individually. With lots of independent processes, this can
+reduce the amount of time individual processes are down.
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = instance1 instance2
+    ... dest = %(dest)s
+    ... chkconfig = 345 90 10
+    ... chkconfigcommand = echo
+    ... user = zope
+    ... independent-processes = true
+    ...
+    ... [instance1]
+    ... run-script = /opt/zope/bin/zopectl -C /etc/instance1.conf
+    ... env = LD_LIBRARY_PATH=/opt/foolib
+    ...
+    ... [instance2]
+    ... """ % dict(dest=demo))
+
+    >>> print system('bin/buildout'),
+    Uninstalling zoperc.
+    Running uninstall recipe.
+    --del zoperc
+    Installing zoperc.
+    --add zoperc
+
+    >>> cat(demo, 'zoperc')
+    #!/bin/sh
+    <BLANKLINE>
+    # the next line is for chkconfig
+    # chkconfig: 345 90 10
+    # description: please, please work
+    <BLANKLINE>
+    <BLANKLINE>
+    if [ $(whoami) != "root" ]; then
+      echo "You must be root."
+      exit 1
+    fi
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
+          </dev/null
+    <BLANKLINE>
+        echo instance2:
+    /demo/instance2 "$@" \
+          </dev/null
+
+.. check validation
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = instance1 instance2
+    ... dest = %(dest)s
+    ... chkconfig = 345 90 10
+    ... chkconfigcommand = echo
+    ... user = zope
+    ... independent-processes = yes
+    ...
+    ... [instance1]
+    ... run-script = /opt/zope/bin/zopectl -C /etc/instance1.conf
+    ... env = LD_LIBRARY_PATH=/opt/foolib
+    ...
+    ... [instance2]
+    ... """ % dict(dest=demo))
+
+    >>> print system('bin/buildout'),
+    zc.recipe.rhrc: Invalid value for independent-processes.  Use 'true' or 'false'
+    While:
+      Installing.
+      Getting section zoperc.
+      Initializing part zoperc.
+    Error: Invalid value for independent-processes: yes
+
+
 Deployments
 -----------
 
