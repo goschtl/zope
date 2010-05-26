@@ -65,6 +65,7 @@ For upgrading an existing SmartPrintNG server you should try the following insid
 your virtualenv environment::
 
     bin/easy_install -U zopyx.smartprintng.server
+    bin/easy_install -U zopyx.convert2
    
 
 XMLRPC API
