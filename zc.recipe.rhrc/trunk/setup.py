@@ -16,8 +16,6 @@ long_description=(
         '**********************\n'
         )
 
-open('doc.txt', 'w').write(long_description)
-
 entry_points = '''
 [zc.buildout]
 default=zc.recipe.rhrc:Recipe
