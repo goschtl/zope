@@ -11,10 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Create a system deployment for an application
-
-$Id: __init__.py 15402 2006-12-01 15:58:08Z jim $
-"""
 
 import logging, os, shutil, stat
 import zc.buildout
@@ -93,13 +89,13 @@ class Recipe:
 
                     else:
                         script = self.no_script(part)
-                                              
+
                     cooked.append(script)
 
                 if chkconfig:
                     cooked = [s + ' \\\n      </dev/null'
                               for s in cooked]
-                    
+
                 script = '\n\n    '.join(cooked)
                 cooked.reverse()
                 rscript = '\n\n    '.join(cooked)
@@ -114,10 +110,10 @@ class Recipe:
         name = options.get('deployment-name', self.name)
         if self.deployment:
             path = os.path.join(options['dest'], name+'-'+part)
-            script = 'echo %s: \n%s' % ( name+'-'+part, path)
+            script = 'echo %s:\n%s' % ( name+'-'+part, path)
         else:
             path = os.path.join(options['dest'], part)
-            script = 'echo %s: \n%s' % (part, path)
+            script = 'echo %s:\n%s' % (part, path)
         if not os.path.exists(path):
             logger.error("Part %s doesn't define run-script "
                          "and %s doesn't exist."
@@ -156,7 +152,7 @@ def uninstall(name, options):
     if options.get('chkconfig'):
         chkconfigcommand = options.get('chkconfigcommand', '/sbin/chkconfig')
         os.system(chkconfigcommand+' --del '+name)
-    
+
 
 chkconfig_template = '''\
 # the next line is for chkconfig
@@ -176,13 +172,13 @@ if [ $(whoami) != "root" ]; then
 fi
 """
 
-rc_template = """#!/bin/sh 
+rc_template = """#!/bin/sh
 
 %(CHKCONFIG)s
 %(rootcheck)s
-case $1 in 
+case $1 in
   stop)
-  
+
     %(CTL_SCRIPT_R)s
 
     ;;
@@ -193,8 +189,8 @@ case $1 in
     ${0} start
 
     ;;
-  *) 
-  
+  *)
+
     %(CTL_SCRIPT)s
 
     ;;

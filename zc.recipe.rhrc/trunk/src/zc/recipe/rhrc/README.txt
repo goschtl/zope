@@ -12,7 +12,7 @@ define run scripts.  They should either:
 
 - The file /etc/init.d/PART should exist, where PART is the part name.
 
-A simple example will, hopefully make this clearer. 
+A simple example will, hopefully make this clearer.
 
     >>> demo = tmpdir('demo')
 
@@ -46,15 +46,15 @@ We'll get a zoperc script in our demo directory:
 
     >>> ls(demo)
     -  zoperc
-    
+
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # This script is for adminstrator convenience.  It should
     # NOT be installed as a system startup script!
     <BLANKLINE>
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $*
@@ -67,7 +67,7 @@ We'll get a zoperc script in our demo directory:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $*
     <BLANKLINE>
@@ -77,7 +77,7 @@ We'll get a zoperc script in our demo directory:
 
 There are a couple of things to note about the generated script:
 
-- It uses $* to pass arguments, so arguments can't be quoted.  This is 
+- It uses $* to pass arguments, so arguments can't be quoted.  This is
   OK because the arguments will be simple verbs like start and stop.
 
 - It includes a comment saying that the script shouldn't be used as a
@@ -119,14 +119,14 @@ instead.
 Now the script contains a chkconfig comment:
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
     # description: please, please work
     <BLANKLINE>
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $* \
@@ -140,7 +140,7 @@ Now the script contains a chkconfig comment:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $* \
           </dev/null
@@ -179,7 +179,7 @@ Note the --del output.  If we hadn't set the chkconfigcommand to echo,
 then chkconfig --del would have been run on the zoperc script.
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -191,7 +191,7 @@ then chkconfig --del would have been run on the zoperc script.
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         su zope -c \
@@ -206,7 +206,7 @@ then chkconfig --del would have been run on the zoperc script.
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         su zope -c \
           "/opt/zope/bin/zopectl -C /etc/zope.conf $*" \
@@ -254,7 +254,7 @@ is running it:
     --add zoperc
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -266,7 +266,7 @@ is running it:
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $* \
@@ -280,7 +280,7 @@ is running it:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $* \
           </dev/null
@@ -318,7 +318,7 @@ settings to be used by the rc script by supplying an env option:
     --add zoperc
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -330,7 +330,7 @@ settings to be used by the rc script by supplying an env option:
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -346,7 +346,7 @@ settings to be used by the rc script by supplying an env option:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
@@ -361,7 +361,7 @@ Working with existing control scripts
 -------------------------------------
 
 In the example above, we generated a script based on a command line.
-If we have a part that creates a control script on it's own, ten it
+If we have a part that creates a control script on it's own, then it
 can ommit the run-script option and it's already created run script
 will be used.  Let's create a run script ourselves:
 
@@ -394,7 +394,7 @@ Now we can remove the run-script option from the Zope section:
     --add zoperc
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -406,10 +406,10 @@ Now we can remove the run-script option from the Zope section:
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
-        echo zope: 
+        echo zope:
     /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
@@ -421,9 +421,9 @@ Now we can remove the run-script option from the Zope section:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
-        echo zope: 
+        echo zope:
     /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
@@ -464,7 +464,7 @@ instances:
     ...
     ... [instance2]
     ... """ % dict(dest=demo))
-    
+
     >>> write(demo, 'instance2', '')
 
 Note that for instance 2, we are arranging for the script to pre-exist.
@@ -477,7 +477,7 @@ Note that for instance 2, we are arranging for the script to pre-exist.
     --add zoperc
 
     >>> cat(demo, 'zoperc')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -489,10 +489,10 @@ Note that for instance 2, we are arranging for the script to pre-exist.
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
-        echo instance2: 
+        echo instance2:
     /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
@@ -509,14 +509,14 @@ Note that for instance 2, we are arranging for the script to pre-exist.
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        echo instance2: 
+        echo instance2:
     /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
@@ -537,7 +537,7 @@ the run-script option:
     -  zoperc-instance1
 
     >>> cat(demo, 'zoperc-instance1')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # This script is for adminstrator convenience.  It should
     # NOT be installed as a system startup script!
@@ -548,7 +548,7 @@ the run-script option:
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -563,7 +563,7 @@ the run-script option:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
@@ -633,7 +633,7 @@ to reflect that:
     -  acme-instance2
 
     >>> cat(demo, 'acme')
-    #!/bin/sh 
+    #!/bin/sh
     <BLANKLINE>
     # the next line is for chkconfig
     # chkconfig: 345 90 10
@@ -645,10 +645,10 @@ to reflect that:
       exit 1
     fi
     <BLANKLINE>
-    case $1 in 
+    case $1 in
       stop)
     <BLANKLINE>
-        echo acme-instance2: 
+        echo acme-instance2:
     /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
@@ -665,20 +665,20 @@ to reflect that:
         ${0} start
     <BLANKLINE>
         ;;
-      *) 
+      *)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su acme -c \
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        echo acme-instance2: 
+        echo acme-instance2:
     /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
     esac
-    <BLANKLINE> 
+    <BLANKLINE>
 
   Edge case, when we remove the part, we uninstall acme:
 

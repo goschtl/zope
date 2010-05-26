@@ -10,6 +10,18 @@ compatible run-control scripts.
 Changes
 *******
 
+1.2.0 (2010/05/26)
+==================
+
+New Features
+------------
+
+
+Bugs Fixed
+----------
+
+- Generated run scripts has trailing whitespace.
+
 1.1.0 (2008/02/01)
 ==================
 
