@@ -58,6 +58,15 @@ Installation
 
     bin/paster serve server.ini  --daemon
 
+Upgrading
+=========
+
+For upgrading an existing SmartPrintNG server you should try the following inside
+your virtualenv environment::
+
+    bin/easy_install -U zopyx.smartprintng.server
+   
+
 XMLRPC API
 ==========
 
