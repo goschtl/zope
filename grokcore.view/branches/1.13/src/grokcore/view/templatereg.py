@@ -14,11 +14,16 @@ def get_logger():
 
     We set the logger level to ``logging.ERROR``, which means that by
     default warning messages will not be displayed.
+
+    Logger level is only set, if that not already happened
+    before. This way third-party components can determine the logging
+    options before grokking packages.
     """
     logger = logging.getLogger('grokcore.view')
     if len(logger.handlers) > 0:
         return logger
-    logger.setLevel(logging.ERROR)
+    if logger.level == logging.NOTSET:
+        logger.setLevel(logging.ERROR)
     handler = logging.StreamHandler()
     formatter = logging.Formatter("%(levelname)s: %(message)s")
     handler.setFormatter(formatter)
