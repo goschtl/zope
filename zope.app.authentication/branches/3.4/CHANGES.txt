@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.4.4 (unreleased)
+3.4.5 (2010-05-27)
 ------------------
 
 * Backport of the SSHAPasswordManager.
