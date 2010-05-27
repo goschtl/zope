@@ -10,6 +10,15 @@ Changes
 
 - Update tsets not to require zope.app.zcmlfiles anymore.
 
+- Warnings are now emitted as log messages with level
+  ``logging.WARNING`` to a logger named ``grokcore.view`` with level
+  ``logging.ERROR``. That means that by default no warnings are
+  emitted anymore (while errors will still appear).
+
+  You have to tweak the mentioned logger to get the warnings back. For
+  instance you can set its level to ``logging.INFO`` or similar. This
+  has to be done before code is grokked using `grokcore.view`.
+
 
 1.13.2 (2010-01-09)
 -------------------
