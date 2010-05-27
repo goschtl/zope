@@ -2,11 +2,10 @@
 Changes
 =======
 
-3.4.6 (unreleased)
+3.4.6 (2010-05-27)
 ------------------
 
-- Nothing changed yet.
-
+* Register the SSHAPasswordManager utilities.
 
 3.4.5 (2010-05-27)
 ------------------
