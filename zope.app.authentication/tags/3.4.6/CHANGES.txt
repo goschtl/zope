@@ -1,0 +1,48 @@
+=======
+Changes
+=======
+
+3.4.6 (2010-05-27)
+------------------
+
+* Register the SSHAPasswordManager utilities.
+
+3.4.5 (2010-05-27)
+------------------
+
+* Backport of the SSHAPasswordManager.
+
+3.4.4 (2008-12-12)
+------------------
+
+* Depend on zope.session instead of zope.app.session. The first one
+  currently has all functionality we need.
+
+* Fix deprecation warnings for ``md5`` and ``sha`` on Python 2.6.
+
+3.4.3 (2008-08-07)
+------------------
+
+* No changes. Retag for correct release on PyPI.
+
+3.4.2 (2008-07-09)
+-------------------
+
+* Make it compatible with zope.app.container 3.6.1 and 3.5.4 changes,
+  Changed ``super(BTreeContainer, self).__init__()`` to
+  ``super(GroupFolder, self).__init__()`` in ``GroupFolder`` class.
+
+3.4.1 (2007-10-24)
+------------------
+
+* Avoid deprecation warning.
+
+3.4.0 (2007-10-11)
+------------------
+
+* Updated package meta-data.
+
+3.4.0b1 (2007-09-27)
+--------------------
+
+* First release independent of Zope.
