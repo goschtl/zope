@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.2.2 (unreleased)
+0.2.2 (2010-05-28)
 ==================
 
 * Fix dependencies that got removed too early for this version.
