@@ -1,6 +1,19 @@
 CHANGES
 *******
 
+0.2.2 (unreleased)
+==================
+
+* Fix dependencies that got removed too early for this version.
+
+0.2.1 (2010-05-19)
+==================
+
+* Package modified to comply with repository policy (license, etc.).
+
+* Use own template dir for layout module in order not to provoke
+  (erraneous) warnings of template registry.
+
 0.2 (2010-03-06)
 ================
 

@@ -8,7 +8,6 @@ from megrok.layout import Layout, Page
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 grok.layer(GrokUILayer)
-grok.templatedir("templates")
 
 
 class GrokUILayout(Layout):
