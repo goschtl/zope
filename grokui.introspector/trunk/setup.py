@@ -2,6 +2,8 @@ from setuptools import setup, find_packages
 import os
 
 tests_require = ['z3c.testsetup',
+                 'zope.app.testing',
+                 'zope.testbrowser',
                 ]
 
 def read(*rnames):
