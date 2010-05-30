@@ -2,10 +2,10 @@ import os
 from setuptools import setup, find_packages
 
 tests_require = [
+    'z3c.testsetup',
     'zope.app.testing',
     'zope.testbrowser',
     'zope.testing',
-    'zope.security',
     'zope.securitypolicy'
     ]
 
@@ -43,23 +43,18 @@ setup(name='grokui.zodbbrowser',
       install_requires=[
           'ZODB3',
           'grok',
+          'grokcore.component',
           'grokui.base',
+          'megrok.layout >= 1.0.1',
           'setuptools',
-          'z3c.flashmessage',
-          'zope.applicationcontrol',
           'zope.component',
-          'zope.configuration',
-          'zope.contentprovider',
-          'zope.exceptions',
-          'zope.i18nmessageid',
           'zope.interface',
           'zope.location',
-          'zope.login',
+          'zope.proxy',
           'zope.schema',
+          'zope.security',
+          'zope.session',
           'zope.site',
-          'zope.size',
-          'zope.traversing',
-          'zope.app.debug',
           ],
       tests_require = tests_require,
       extras_require = dict(test=tests_require),
