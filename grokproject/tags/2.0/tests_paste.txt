@@ -1,0 +1,301 @@
+Grokproject tests
+=================
+
+Go to a fresh test directory:
+
+    >>> cd(testdir)
+
+Then use paster. Eggs are placed in our freshly created eggs directory:
+
+    >>> import os.path
+    >>> # Use a specific grok version, because 'current' will change at some
+    >>> # point in the future.
+    >>> executable = [os.path.join(current_dir, 'bin', 'grokproject')]
+    >>> opts = ['--user=a', '--passwd=a', '--eggs-dir=' + eggsdir]
+    >>> grokversion = ['--grokversion=1.1rc1']
+    >>> sh(executable + opts + grokversion + ['GrokExample'])
+    ['...grokproject', '--user=a', '--passwd=a',
+    '--eggs-dir=...grokproject-test-eggs',
+    '--grokversion=1.1rc1', 'GrokExample']
+    Creating directory ./GrokExample...
+    Invoking zc.buildout...
+    *************** PICKED VERSIONS ****************
+    [versions]
+    <BLANKLINE>
+    *************** /PICKED VERSIONS ***************
+    <BLANKLINE>
+
+Let's check the contents:
+
+    >>> package_dir = os.path.join(testdir, 'GrokExample')
+    >>> print open(os.path.join(package_dir, 'buildout.cfg')).read()
+    [buildout]
+    extends = http://grok.zope.org/releaseinfo/1.1rc1/versions.cfg
+    extends-cache = extends-cache
+    find-links = http://grok.zope.org/releaseinfo/1.1rc1/eggs/
+    ...
+
+    >>> ls(package_dir)
+    .installed.cfg
+    bin
+    bootstrap.py
+    buildout.cfg
+    develop-eggs
+    etc
+    extends-cache
+    parts
+    setup.py
+    src
+    var
+
+    >>> software_dir = os.path.join(package_dir, 'src', 'grokexample')
+    >>> ls(software_dir)
+    __init__.py
+    app.py
+    app.txt
+    app_templates
+    configure.zcml
+    ftesting.zcml
+    static
+    tests.py
+
+    >>> bin_dir = os.path.join(package_dir, 'bin')
+    >>> ls(bin_dir)
+    buildout
+    i18ncompile
+    i18nextract
+    i18nmergeall
+    i18nstats
+    interactive_debugger
+    paster
+    python-console
+    test
+    zpasswd
+
+    >>> etc_dir = os.path.join(package_dir, 'parts', 'etc')
+    >>> ls(etc_dir)
+    debug.ini
+    deploy.ini
+    site.zcml
+    zope.conf
+
+In the generated configuration files paths are set to local paths:
+
+    >>> cat(etc_dir, 'zope.conf')
+    # Identify the component configuration used to define the site:
+    site-definition /.../GrokExample/parts/etc/site.zcml
+    ...
+
+The eggs dir is filled now:
+
+    >>> len(os.listdir(eggsdir)) > 100
+    True
+
+The extends-cache directive results in cached versions of the referenced
+buildout files to support offline building. We know what the filename of the
+cached versions file for 1.1rc1 will look like:
+
+    >>> ls(os.path.join(package_dir, 'extends-cache'))
+    000739fbb1c7d540a2861c7476c5ec2d
+
+We used a projectname with uppercase letters. This is respected by
+configuration files:
+
+    >>> zope_conf = os.path.join(package_dir, 'parts', 'etc', 'zope.conf')
+    >>> print open(zope_conf, 'rb').read()
+    # Identify the component configuration used to define the site:
+    site-definition ...GrokExample/parts/etc/site.zcml
+    ...
+
+The password given is stored SSHA encoded:
+
+    >>> site_zcml_in = os.path.join(package_dir, 'etc',
+    ...                             'site.zcml.in')
+    >>> print open(site_zcml_in, 'rb').read()
+    <configure xmlns="http://namespaces.zope.org/zope"
+    ...
+        <principal id="zope.manager"
+                   title="Manager"
+                   login="a"
+                   password_manager="SSHA"
+                   password="{SSHA}..."
+                   />
+    ...
+
+
+Using i18n scripts
+------------------
+
+We can create a POT file out of our sources using the freshly
+generated `i18nextract`:
+
+    >>> cmd = os.path.join(bin_dir, 'i18nextract')
+    >>> output = read_sh(cmd)
+    >>> print output
+    domain:...'grokexample'
+    ...
+    output: '...grokexample.pot'
+
+The .pot file contains no specific entries right now. So let's add a
+source file with translatable content:
+
+    >>> source = """
+    ... from zope.i18nmessageid import MessageFactory
+    ... _ = MessageFactory('grokexample')
+    ...
+    ... class SomeClassWithI18nableContent(object):
+    ...   title = _(u'mytitle')
+    ...   description = _(u'description')
+    ...   name = _(u'name')
+    ... """
+    >>> source_path = os.path.join(software_dir, 'translatable.py')
+    >>> open(source_path, 'w').write(source)
+
+And rerun `bin/i18nextract`:
+
+    >>> cmd = os.path.join(bin_dir, 'i18nextract')
+    >>> output = read_sh(cmd)
+
+The translatable strings now appear in the generated .pot file:
+
+    >>> pot_file = os.path.join(software_dir, 'locales', 'grokexample.pot')
+    >>> print open(pot_file, 'r').read()
+    ####...
+    #: grokexample/translatable.py:6
+    msgid "mytitle"
+    msgstr ""
+    <BLANKLINE>
+    #: grokexample/translatable.py:7
+    msgid "description"
+    msgstr ""
+    <BLANKLINE>
+    #: grokexample/translatable.py:8
+    msgid "name"
+    msgstr ""
+
+Let's now create a translation for that (tiny) set of messages:
+
+    >>> trans_dir_de = os.path.join(software_dir, 'locales', 'de',
+    ...                            'LC_MESSAGES')
+    >>> os.makedirs(trans_dir_de)
+
+In this directory we create a copy of the original .pot file:
+
+    >>> po_file_path = os.path.join(trans_dir_de, 'grokexample.po')
+    >>> po_file = open(pot_file, 'r').read()
+
+We modify the translation to give some more interesting results:
+
+    >>> po_file = po_file.replace('translatable.py:6\n',
+    ...                           'translatable.py:6\n#, fuzzy\n')
+    >>> po_file = po_file.replace('"mytitle"\nmsgstr ""',
+    ...                           '"mytitle"\nmsgstr "Mein Titel"')
+    >>> po_file = po_file.replace('"name"\nmsgstr ""',
+    ...                           '"name"\nmsgstr "Name"')
+    >>> open(po_file_path, 'wb').write(po_file)
+
+We can merge all translations with bin/i18nmergeall:
+
+    >>> cmd = os.path.join(bin_dir, 'i18nmergeall')
+    >>> output = read_sh(cmd).split('\n')
+    >>> print output[1]
+    Merging language "de", domain "grokexample"
+
+We can see the status of translations calling bin/i18nstats:
+
+    >>> cmd = os.path.join(bin_dir, 'i18nstats')
+    >>> output = read_sh(cmd)
+    >>> print output
+    Language    Total    Done    Not Done    Fuzzy      Done %
+    ==========================================================
+    de              3       1           1        1     33.33 %
+
+
+Using the generated `test` script
+---------------------------------
+
+We can run tests:
+
+    >>> cmd = os.path.join(bin_dir, 'test')
+    >>> output = read_sh(cmd)
+    >>> print output
+    Running tests at level 1
+    Running grokexample.FunctionalLayer tests:
+      Set up grokexample.FunctionalLayer in ... seconds.
+      Running:
+    ...
+      Ran 3 tests with 0 failures and 0 errors in ... seconds.
+    Tearing down left over layers:
+      Tear down grokexample.FunctionalLayer ... not supported
+
+Using the generated `buildout` script
+-------------------------------------
+
+We can call the `buildout` script of the freshly generated
+project. For this to work, we have to switch to the project directory
+first:
+
+    >>> cd(package_dir)
+    >>> cmd = os.path.join(bin_dir, 'buildout')
+    >>> output = read_sh(cmd)
+    >>> print output
+    Develop: '...'
+    Updating app.
+    Generated script '...'.
+    Generated interpreter '...'.
+    Updating site_zcml.
+    Updating zope_conf.
+    Updating debug_ini.
+    Updating deploy_ini.
+    Updating i18n.
+    i18n: setting up i18n tools
+    Generated script '...'.
+    Generated script '...'.
+    Generated script '...'.
+    Generated script '...'.
+    Updating mkdirs.
+    Updating test.
+    Generated script '...'.
+    Updating zpasswd.
+    Generated script '...'.
+    Updating interactive_debugger.
+    Generated script '...'.
+    Updating data.
+    Updating log.
+    *************** PICKED VERSIONS ****************
+    [versions]
+    <BLANKLINE>
+    *************** /PICKED VERSIONS ***************
+    <BLANKLINE>
+
+We can influence the version of grok to be installed by using the
+``grokversion`` parameter.
+
+    >>> cd(testdir)
+    >>> package_dir = os.path.join(testdir, 'GrokExample2')
+    >>> grokversion = ['--grokversion=1.1a2']
+
+    >>> # WARNING: We know that running the buildout of grok 1.1a2 has
+    >>> # a buildout failure. That's OK for this test, as we just want
+    >>> # to show that we can point to a different version.
+
+    >>> sh(executable + opts + grokversion + ['GrokExample2'])
+    ['...grokproject', '--user=a', '--passwd=a',
+    '--eggs-dir=...grokproject-test-eggs',
+    '--grokversion=1.1a2', 'GrokExample2']
+    Creating directory ./GrokExample2...
+    While:
+      Installing app.
+    Error: There is a version conflict.
+    We already have: zope.publisher 3.9.3
+    but zope.app.container 3.8.2 requires 'zope.publisher>=3.12'...
+
+    >>> print open(os.path.join(package_dir, 'buildout.cfg')).read()
+    [buildout]
+    extends = http://grok.zope.org/releaseinfo/1.1a2/versions.cfg
+    extends-cache = extends-cache
+    find-links = http://grok.zope.org/releaseinfo/1.1a2/eggs/
+    ...
+
+    >>> ls(os.path.join(package_dir, 'extends-cache'))
+    eb77a071fb78a2da37cbe18aff8b2a5a
