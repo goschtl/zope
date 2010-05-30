@@ -1,0 +1,2422 @@
+=========
+Overview
+=========
+
+- Upgraded ZODB3 to 3.5.1
+- Upgraded mechanize to 0.1.9
+- Upgraded pytz to 2008c
+- Upgraded z3c.coverage to 1.1.3
+- Upgraded z3c.formdemo to 1.5.6
+- SECURITY Upgrade: z3c.layer to 0.2.4
+- Upgraded zc.buildout to 1.3.1
+- Upgraded zc.recipe.testrunner to 1.0.6
+- Added zc.sourcefactory 0.3.5
+- Upgraded zope.app.basicskin to 3.4.1
+- Upgraded zope.app.form to 3.5.0
+- Upgraded zope.app.http to 3.4.5
+- Upgraded zope.app.publication to 3.4.4
+- Upgraded zope.app.testing to 3.4.4
+- Upgraded zope.app.wsgi to 3.4.3
+- Upgraded zope.contenttype to 3.4.3
+- Upgraded zope.i18nmessageid to 3.5.1
+- Upgraded zope.publisher to 3.4.10
+- Upgraded zope.security to 3.4.3
+- Upgraded zope.securitypolicy to 3.4.4
+- Upgraded zope.sendmail to 3.5.1
+- Upgraded RestrictedPython to 3.5.1
+- Upgraded setuptools to 0.6c11
+- Upgraded zdaemon to 2.0.4
+- Upgraded zope.annotation to 3.4.2
+- Upgraded zope.app.catalog to 3.5.2
+- Upgraded zope.app.dav to 3.4.2
+- Upgraded zope.app.error to 3.5.2
+- Upgraded zope.app.exception to 3.4.2
+- Upgraded zope.app.file to 3.4.6
+- Upgraded zope.app.generations to 3.4.2
+- Upgraded zope.app.http to 3.4.4
+- Upgraded zope.app.session to 3.5.2
+- Upgraded zope.app.workflow to 3.4.2
+- Upgraded zope.configuration to 3.4.1
+- Upgraded zope.contenttype to 3.4.1
+- Upgraded zope.copypastemove to 3.4.1
+- Upgraded zope.documenttemplate to 3.4.2
+- Upgraded zope.dottedname to 3.4.5
+- Upgraded zope.dublincore to 3.4.2
+- Upgraded zope.event to 3.4.1
+- Upgraded zope.hookable to 3.4.1
+- Upgraded zope.pagetemplate to 3.4.2
+- Upgraded zope.securitypolicy to 3.4.2
+- Upgraded zope.size to 3.4.1
+
+
+==========
+ClientForm
+==========
+
+No changes or information not found.
+
+================
+RestrictedPython
+================
+
+3.5.1 (2009-03-17)
+------------------
+
+- Added tests for ``Utilities`` module.
+
+- Filtered DeprecationWarnings when importing Python's ``sets`` module.
+
+3.5.0 (2009-02-09)
+------------------
+
+- Dropped legacy support for Python 2.1 / 2.2 (``__future__`` imports
+  of ``nested_scopes`` / ``generators``.).
+
+3.4.3 (2008-10-26)
+------------------
+
+- Fixed deprecation warning: ``with`` is now a reserved keyword on
+  Python 2.6. That means RestrictedPython should run on Python 2.6
+  now. Thanks to Ranjith Kannikara, GSoC Student for the patch.
+
+- Added tests for ternary if expression and for 'with' keyword and
+  context managers.
+
+3.4.2 (2007-07-28)
+------------------
+
+- Changed homepage URL to the CheeseShop site
+
+- Greatly improved README.txt
+
+
+=======
+ZConfig
+=======
+
+No changes or information not found.
+
+=====
+ZODB3
+=====
+
+No changes or information not found.
+
+========
+docutils
+========
+
+No changes or information not found.
+
+=================
+jquery.javascript
+=================
+
+1.0.0 (2007-10-30)
+------------------
+
+- Initial release.
+
+
+============
+jquery.layer
+============
+
+1.0.0 (2007-10-30)
+------------------
+
+- Initial release.
+
+
+====
+lxml
+====
+
+1.3.6 (2007-10-29)
+------------------
+
+Bugs fixed
+
+* Backported decref crash fix from 2.0
+
+* Well hidden free-while-in-use crash bug in ObjectPath
+
+Other changes
+
+* The test suites now run ``gc.collect()`` in the ``tearDown()``
+  methods.  While this makes them take a lot longer to run, it also
+  makes it easier to link a specific test to garbage collection
+  problems that would otherwise appear in later tests.
+
+
+=========
+mechanize
+=========
+
+No changes or information not found.
+
+====
+pytz
+====
+
+No changes or information not found.
+
+==========
+setuptools
+==========
+
+No changes or information not found.
+
+============
+z3c.coverage
+============
+
+1.1.3 (2009-07-24)
+------------------
+
+- Bug: Doctest did not normalize the whitespace in `coveragediff.txt`. For
+  some reason it passes while testing independently, but when running all
+  tests, it failed.
+
+1.1.2 (2008-04-14)
+------------------
+
+- Bug: When a package path contained anywhere the word "test", it was ignored
+  from the coverage report. The intended behavior, however, was to ignore
+  files that relate to setting up tests.
+
+- Bug: Sort the results of `os.listdir()` in `README.txt` to avoid
+  non-deterministic failures.
+
+- Bug: The logic for ignoring unit and functional test modules also used to
+  ignore modules and packages called `testing`.
+
+- Change "Unit test coverage" to "Test coverage" in the title -- it works
+  perfectly fine for functional tests too.
+
+
+=================
+z3c.csvvocabulary
+=================
+
+No changes or information not found.
+
+================
+z3c.etestbrowser
+================
+
+1.0.4 (2007-11-01)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+========
+z3c.form
+========
+
+1.9.0 (2008-08-26)
+------------------
+
+- Feature: Use the ``query()`` method in the widget manager to try extract a
+  value. This ensures that the lookup is never failing, which is particularly
+  helpful for dictionary-based data managers, where dictionaries might not
+  have all keys.
+
+- Feature: Changed the ``get()`` method of the data manager to throw an error
+  when the data for the field cannot be found. Added ``query()`` method to
+  data manager that returns a default value, if no value can be found.
+
+- Feature: Deletion of widgets from field widget managers is now possible.
+
+- Feature: Groups now produce detailed `ObjectModifiedEvent` descriptions like
+  regular edit forms do. (Thanks to Carsten Senger for providing a patch.)
+
+- Feature: The widget manager's ``extract()`` method now supports an optional
+  ``setErrors`` (default value: True) flag that allows one to not set errors
+  on the widgets and widget manager during data extraction. Use case: You want
+  to inspect the entered data and handle errors manually.
+
+- Bug: The ``ignoreButtons`` flag of the ``z3c.form.form.extends()`` method
+  was not honored. (Thanks to Carsten Senger for providing a patch.)
+
+- Bug: Group classes now implement ``IGroup``. This also helps with the
+  detection of group instantiation. (Thanks to Carsten Senger for providing a
+  patch.)
+
+- Bug: The list of changes in a group were updated incorrectly, since it was
+  assumed that groups would modify mutually exclusive interfaces. Instead of
+  using an overwriting dictionary ``update()`` method, a purely additive merge
+  is used now. (Thanks to Carsten Senger for providing a patch.)
+
+- Bug: Added a widget for ``IDecimal`` field in testing setup.
+
+- Feature: The ``z3c.form.util`` module has a new function, ``createCSSId()``
+  method that generates readable ids for use with css selectors from any
+  unicode string.
+
+- Bug: The ``applyChanges()`` method in group forms did not return a changes
+  dictionary, but simply a boolean. This is now fixed and the group form
+  changes are now merged with the main form changes.
+
+- Bug: Display widgets did not set the style attribute if it was
+  available, even though the input widgets did set the style attribute.
+
+
+============
+z3c.formdemo
+============
+
+1.5.6 (2010-04-28)
+------------------
+
+- 1.5.5 tar.gz was broken
+
+1.5.5 (2010-04-28)
+------------------
+
+- 1.5.4 tar.gz was broken
+
+1.5.4 (2010-04-27)
+------------------
+
+- fixed security declarations for z3c.layer >= 0.2.4
+
+1.5.3 (2008-08-26)
+------------------
+
+- Refactoring: make links relative so it will work better with virtual
+  hosting.
+
+
+==========
+z3c.formjs
+==========
+
+0.4.0 (2008-08-26)
+------------------
+
+- Feature: There is now a special unique prefix generator that uses
+  `z3c.form`'s new ``createCSSId()`` function to generate css selectable
+  prefixes for ajax forms.
+
+- Feature: There is now a viewlet manager already registered with all
+  the viewlets necessary to use `z3c.formjs`.  You can now just do:
+
+    &lt;script tal:replace="structure
+                         provider:z3c.formjs.interfaces.IDynamicJavaScript"&gt;
+    &lt;/script&gt;
+
+- Feature: When AJAX handlers return complex data structures (dictionaries,
+  lists and tuples), the data is automatically converted into JSON
+  format before delivery.
+
+- Restructure: Make package run on latest z3c.form 1.9.0 release.
+
+- Bug: Widgets that were being updated multiple times were generating
+  duplicate javascript event subscriptions. This is now fixed.
+
+
+==============
+z3c.formjsdemo
+==============
+
+0.3.1 (2008-08-26)
+------------------
+
+- Restructure: Made links on index page relative to context so you can do
+  better virtual hosting.
+
+- Restructure: Changed dates to ISO-8601 format.
+
+- Restructure: Removed deprecations warnings for ``ISession`` and
+  ``ZopeSecurityPlicy``.
+
+
+==========
+z3c.formui
+==========
+
+1.4.2 (2008-08-26)
+------------------
+
+- Bug: Corrected typos and unwanted unicode characters.
+
+
+========
+z3c.i18n
+========
+
+0.1.1 (2007-11-01)
+------------------
+
+- Improve package meta-data.
+
+
+=========
+z3c.layer
+=========
+
+0.2.4 (2010-04-18)
+------------------
+
+- **Security issue:** The traversers defined for
+  ``IPageletBrowserLayer`` and ``IMinimalBrowserLayer`` was trusted adapters, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
+
+  Making this change might BREAK your application!
+  That means if security is not well declared.
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+=========
+z3c.macro
+=========
+
+1.1.0 (2007-11-01)
+------------------
+
+- Update package info data.
+
+- Add z3c namespace package declaration.
+
+
+================
+z3c.macroviewlet
+================
+
+1.0.0 (unknown)
+---------------
+
+- Initial Release
+
+
+========
+z3c.menu
+========
+
+0.2.0 (2007-11-01)
+------------------
+
+- Initial release.
+
+    * A simple menu implementation based on viewlets.
+
+
+=================
+z3c.optionstorage
+=================
+
+No changes or information not found.
+
+===========
+z3c.pagelet
+===========
+
+1.0.2 (2008-01-21)
+------------------
+
+* Added a `form.zcml` which can be included to have a template for
+  ``PageletAddForm``, ``PageletEditForm`` and ``PageletDisplayForm``.
+
+
+=======
+z3c.rml
+=======
+
+0.7.3 (2007-11-10)
+------------------
+
+- Make sure that the output dir is included in the distribution.
+
+
+================
+z3c.skin.pagelet
+================
+
+1.0.2 (2007-11-01)
+------------------
+
+- Add doctests to long description of package data.
+
+
+============
+z3c.template
+============
+
+1.1.0 (2007-10-08)
+------------------
+
+* Added an ``IContentTemplate`` interface which is used for
+  ``<z3c:template>``.
+
+
+===========
+z3c.testing
+===========
+
+0.2.0 (2007-10-31)
+------------------
+
+- Fix pacakge data.
+
+- Move functional tests to tests.
+
+- Remove deprecation warning.
+
+
+===========
+z3c.viewlet
+===========
+
+1.0.0 (2007-10-30)
+------------------
+
+- Initial release.
+
+  * Weight-ordered viewlet manager.
+
+
+================
+z3c.viewtemplate
+================
+
+0.3.2 (2007-11-01)
+------------------
+
+- Fix package meta-data.
+
+
+===============
+z3c.zrtresource
+===============
+
+1.0.1 (2007-10-30)
+------------------
+
+- Fix long description of package to be valid restructured text.
+
+
+===========
+zc.buildout
+===========
+
+No changes or information not found.
+
+==========
+zc.catalog
+==========
+
+1.2.0 (2007-11-03)
+------------------
+
+Features added
+~~~~~~~~~~~~~~
+
+* Updated package meta-data.
+
+* zc.catalog now can use 64-bit BTrees ("L") as provided by ZODB 3.8.
+
+* Albertas Agejavas (alga@pov.lt) included the new CallableWrapper, for
+  when the typical Zope 3 index-by-adapter story
+  (zope.app.catalog.attribute) is unnecessary trouble, and you just want
+  to use a callable.  See callablewrapper.txt.  This can also be used for
+  other indexes based on the zope.index interfaces.
+
+* Extents now have a __len__.  The current implementation defers to the
+  standard BTree len implementation, and shares its performance
+  characteristics: it needs to wake up all of the buckets, but if all of the
+  buckets are awake it is a fairly quick operation.
+
+* A simple ISelfPoulatingExtent was added to the extentcatalog module for
+  which populating is a no-op.  This is directly useful for catalogs that
+  are used as implementation details of a component, in which objects are
+  indexed explicitly by your own calls rather than by the usual subscribers.
+  It is also potentially slightly useful as a base for other self-populating
+  extents.
+
+
+=================
+zc.datetimewidget
+=================
+
+0.5.2 (2007-11-03)
+------------------
+
+- Improve package data.
+
+- Developed proper package dependencies.
+
+- Merged functional tests into ``tests.py``.
+
+
+=======
+zc.i18n
+=======
+
+0.5.2 (2007-11-03)
+------------------
+
+- Improve package data.
+
+
+=============
+zc.recipe.egg
+=============
+
+1.0.0 (2007-11-03)
+------------------
+
+- No code changes from last beta, just some small package meta-data
+  improvements.
+
+
+=====================
+zc.recipe.filestorage
+=====================
+
+1.0.0 (2007-11-03)
+------------------
+
+- Initial release.
+
+
+====================
+zc.recipe.testrunner
+====================
+
+1.0.6 (2010-05-05)
+------------------
+
+- 1.0.5 missed the changelog update
+
+1.0.5 (2010-05-05)
+------------------
+
+- unpin requirement, 'zope.testing<=3.4.9999' that collides with the
+  KGS 3.4.0 and 3.4.1
+
+1.0.4 (2010-05-05)
+------------------
+
+- fix tests for distribute and python stdlib
+
+1.0.3 (2008-09-10)
+------------------
+
+- fixed brown back release
+
+1.0.2 (2008-08-25)
+------------------
+
+- fixed version pinning
+
+1.0.1 (2008-08-25)
+------------------
+
+- pinning zope.testrunner to 3.4.X
+
+
+==================
+zc.resourcelibrary
+==================
+
+1.0.1 (2008-03-07)
+------------------
+
+Bugs fixed:
+
+- added the behavior from the standard Zope 3 response to guess that a body
+  that is not HTML without an explicit mimetype should have a
+  'text/plain' mimetype.  This means that, for instance, redirects with
+  a body of '' and no explicit content type will no longer cause an
+  exception in the resourcelibrary response code.
+
+
+================
+zc.sourcefactory
+================
+
+0.3.5 (2008-12-08)
+------------------
+
+- Fixed bug in __new__ of contexual factories that would disallow
+      subclasses to use constructors that expect a different
+      signature. [icemac]
+
+
+========
+zc.table
+========
+
+No changes or information not found.
+
+===============
+zc.zope3recipes
+===============
+
+0.6.2 (unknown)
+---------------
+
+Added the "newest=false" option in the SetUp to prevent upgrade during tests
+
+
+=======
+zdaemon
+=======
+
+2.0.4 (2009-04-20)
+------------------
+
+- Version 2.0.3 broke support for relative paths to the socket (``-s``
+  option and ``socket-name`` parameter), now relative paths work again
+  as in version 2.0.2.
+
+- Fixed change log format, made table of contents nicer.
+
+- Fixed author's email address.
+
+- Removed zpkg stuff.
+
+2.0.3 (2009-04-11)
+------------------
+
+- Added support to bootstrap on Jython.
+
+- If the run directory does not exist it will be created. This allow to use
+  `/var/run/mydaemon` as run directory when /var/run is a tmpfs (LP #318118).
+
+Bugs Fixed
+
+- No longer uses a hardcoded filename (/tmp/demo.zdsock) in unit tests.
+  This lets you run the tests on Python 2.4 and 2.5 simultaneously without
+  spurious errors.
+
+- make -h work again for both runner and control scripts.
+  Help is now taken from the __doc__ of the options class users by
+  the zdaemon script being run.
+
+2.0.2 (2008-04-05)
+------------------
+
+Bugs Fixed
+
+- Fixed backwards incompatible change in handling of environment option.
+
+
+========
+zodbcode
+========
+
+3.4.0 (2007-10-10)
+------------------
+
+- No changes since beta 2, but verified test success within the stable set.
+
+
+===============
+zope.annotation
+===============
+
+3.4.2 (2009-03-09)
+------------------
+
+- Clean up package description and documentation a bit.
+
+- Change mailing list address to zope-dev at zope.org, as
+  zope3-dev at zope.org is now retired.
+
+- Remove old zpkg-related files.
+
+3.4.1 (2008-08-26)
+------------------
+
+- Annotation factories take care not to store proxies in the database,
+  so adapting an object wrapped in a ``LocationProxy`` works correctly.
+  Fixes https://bugs.launchpad.net/zope3/+bug/261620
+
+
+===================
+zope.app.annotation
+===================
+
+3.4.0 (2007-10-10)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===============
+zope.app.apidoc
+===============
+
+3.4.3 (2007-11-10)
+------------------
+
+- Fix https://bugs.launchpad.net/zope3/+bug/161737: Misleading text in
+  the interface viewer.
+
+- Fix https://bugs.launchpad.net/zope3/+bug/161190: The zope3-dev
+  mailinglist has been retired, point to zope-dev.
+
+
+===========================
+zope.app.applicationcontrol
+===========================
+
+3.4.3 (2008-07-30)
+------------------
+
+- Make the test for the ZopeVersion bugfix in 3.4.2 not fail when run from an
+  egg rather than a checkout.
+
+
+=================
+zope.app.appsetup
+=================
+
+3.4.1 (2007-9-27)
+-----------------
+
+- egg was faulty, re-released
+
+
+=======================
+zope.app.authentication
+=======================
+
+No changes or information not found.
+
+==================
+zope.app.basicskin
+==================
+
+3.4.1 (2009-08-15)
+------------------
+
+- Added missing test dependency: zope.app.component.
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===============
+zope.app.boston
+===============
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===============
+zope.app.broken
+===============
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+==============
+zope.app.cache
+==============
+
+3.4.1 (2008-07-30)
+------------------
+
+- Remove find-links from buildout.cfg.
+
+- Get rid of zope.app.zapi as a dependency.  See http://launchpad.net/bugs/219302
+
+- Fixed deprecation warning in zope.app.cache.browser.cacheable: zope.app.i18n
+  became zope.i18nmessageid.
+
+
+================
+zope.app.catalog
+================
+
+3.5.2 (2008-12-28)
+------------------
+
+- Remove testing dependencies from install_requires.
+
+3.5.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==================
+zope.app.component
+==================
+
+3.4.2 (2009-07-15)
+------------------
+
+- Fix empty __bases__ on LocalSiteManager objects loaded from old databases,
+  which causes queryNextUtility to never see global utilites and therefore
+  broke minor things like the whole authentication framework.
+- Fix KeyError: 'base' on startup in zope/app/component/back35.py after
+  an inept attempt to fix the above error.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==================
+zope.app.container
+==================
+
+3.5.6 (2008-08-06)
+------------------
+
+- no changes. Retag for correct release on PyPI
+
+
+================
+zope.app.content
+================
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+============
+zope.app.dav
+============
+
+3.4.2 (2009-01-27)
+------------------
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302.
+
+3.4.1 (2007-10-30)
+------------------
+
+- Removed deprecation warnings for ``ZopeMessageFactory`` and
+  ``ZopeSecurityPolicy``.
+
+
+==============
+zope.app.debug
+==============
+
+3.4.1 (2008-02-02)
+------------------
+
+- Fix of 599 error on conflict error in request
+  see: http://mail.zope.org/pipermail/zope-dev/2008-January/030844.html
+
+
+==================
+zope.app.debugskin
+==================
+
+3.4.0 (2007-11-01)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===================
+zope.app.dependable
+===================
+
+3.4.0 (2007-10-23)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=================
+zope.app.dtmlpage
+=================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==============
+zope.app.error
+==============
+
+3.5.2 (2009-01-22)
+------------------
+
+- Removed zope.app.zapi from dependencies, replacing its
+  uses with direct imports.
+
+- Clean dependencies.
+
+- Changed mailing list address to zope-dev@zope.org, changed
+  url from cheeseshop to pypi.
+
+- Use zope.ManageServices permission instead of zope.ManageContent
+  for errorRedirect view and menu item, because all IErrorReportingUtility
+  views are registered for zope.ManageServices as well.
+
+- Fix package's README.txt
+
+3.5.1 (2007-09-27)
+------------------
+
+- rebumped to replace faulty egg
+
+
+==================
+zope.app.exception
+==================
+
+3.4.2 (2009-01-27)
+------------------
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See
+  bug 219302.
+
+- Fixed author email and home page.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+=======================
+zope.app.externaleditor
+=======================
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.file
+=============
+
+3.4.6 (2009-01-27)
+------------------
+
+- Remove zope.app.zapi dependency again. Previous release
+  was wrong. We removed the zope.app.zapi uses before, so
+  we don't need it anymore.
+
+3.4.5 (2009-01-27)
+------------------
+
+- added missing dependency: zope.app.zapi
+
+3.4.4 (2008-09-05)
+------------------
+
+- Bug: Get actual filename instead of full filesystem path when adding file/image
+  using Internet Explorer.
+
+
+===============
+zope.app.folder
+===============
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.form
+=============
+
+3.5.0 (2008-06-05)
+------------------
+
+- Translate the title on SequenceWidget's "Add <title>" button.
+- No longer uses zapi.
+
+3.4.2 (2008-02-07)
+------------------
+
+- Made display widgets for sources translate message IDs correctly.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+============
+zope.app.ftp
+============
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+====================
+zope.app.generations
+====================
+
+No changes or information not found.
+
+===================
+zope.app.homefolder
+===================
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.http
+=============
+
+3.4.5 (2010-01-28)
+------------------
+
+- Backport r108613 from trunk:
+  Fix for an edge case:
+  If someone does a defaultView for the context object and someone comes with
+  a not allowed method, the exception view fails on getAdapters
+
+3.4.4 (2009-01-29)
+------------------
+
+- Make tests compatible with new zope.traversing release.
+
+3.4.3 (2009-01-27)
+------------------
+
+- Added missing depencendy: zope.app.zcmlfiles
+
+3.4.2 (2009-01-26)
+------------------
+
+- Add a couple of tests to the OPTIONS verb.
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis and get
+  rid of zope.app.zapi as a dependency. See bug LP219302.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+=============
+zope.app.i18n
+=============
+
+3.4.4 (unknown)
+---------------
+
+- Fix deprecation warning.
+
+
+=================
+zope.app.i18nfile
+=================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==================
+zope.app.interface
+==================
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+====================
+zope.app.interpreter
+====================
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+==============
+zope.app.intid
+==============
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+=====================
+zope.app.keyreference
+=====================
+
+3.4.1 (2007-10-24)
+------------------
+
+- Fix long description of package.
+
+
+===============
+zope.app.layers
+===============
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+================
+zope.app.locking
+================
+
+3.4.0 (2007-10-25)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===============
+zope.app.module
+===============
+
+3.4.0 (2007-10-25)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===================
+zope.app.onlinehelp
+===================
+
+3.4.1 (2007-10-25)
+------------------
+
+- Package meta-data update.
+
+
+=====================
+zope.app.pagetemplate
+=====================
+
+3.4.1 (2008-07-30)
+------------------
+
+* Substitute zope.app.zapi by direct calls to its wrapped apis.
+  See http://launchpad.net/bugs/219302
+
+* Fix deprecation warning in ftesting.zcml: ZopeSecurityPolicy now lives in
+  zope.securitypolicy.
+
+
+======================
+zope.app.pluggableauth
+======================
+
+3.4.0 (2007-10-25)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===================
+zope.app.preference
+===================
+
+3.4.1 (2007-10-30)
+------------------
+
+- Avoid deprecation warnings for ``ZopeMessageFactory``.
+
+
+================
+zope.app.preview
+================
+
+3.4.0 (2007-10-26)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+============================
+zope.app.principalannotation
+============================
+
+3.4.0 (2007-10-26)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+====================
+zope.app.publication
+====================
+
+3.4.4 (2009-08-12)
+------------------
+
+- An abort within handleExceptions could have failed without logging what
+  caused the error. It now logs the original problem.  This is a back-port
+  from trunk (what is currently slated for 3.8.2).
+
+3.4.3 (2007-11-01)
+------------------
+
+- Removed unused imports.
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==================
+zope.app.publisher
+==================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+===================
+zope.app.pythonpage
+===================
+
+3.4.1 (2008-07-30)
+------------------
+
+- Get rid of zope.app.zapi as a dependency.
+  See https://bugs.launchpad.net/zope3/+bug/219302
+
+- Fix deprecation warning in zope/app/pythonpage/browser.py: zope.app.i18n
+  was moved to zope.i18nmessageid.
+
+
+=================
+zope.app.renderer
+=================
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+==================
+zope.app.rotterdam
+==================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+===============
+zope.app.schema
+===============
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=================
+zope.app.security
+=================
+
+3.5.2 (2008-07-31)
+------------------
+
+- Bug: It turned out that checking for regex was not much better of an idea,
+  since it causes deprecation warnings in Python 2.4. Thus let's look for a
+  library that was added in Python 2.5.
+
+
+=======================
+zope.app.securitypolicy
+=======================
+
+3.4.6 (2007-11-09)
+------------------
+
+- zope.app.securitypolicy needs at least zope.i18nmessageid 3.4.2, it
+  wasn't stating that in its dependencies.
+
+
+===============
+zope.app.server
+===============
+
+3.4.2 (2008-08-18)
+------------------
+
+- Moved a doctest into a unittest to fix failures in the KGS test suite
+  (see LP #257954)
+
+
+================
+zope.app.session
+================
+
+3.5.2 (2009-01-27)
+------------------
+
+- Fixed tearDown-Error in tests.
+
+3.5.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+==============
+zope.app.skins
+==============
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+==================
+zope.app.sqlscript
+==================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+================
+zope.app.testing
+================
+
+3.4.4 (2008-08-21)
+------------------
+
+- Repair memory leak fix released in 3.4.3 to be more sane in the presence of
+  generations.
+
+3.4.3 (2008-07-25)
+------------------
+
+- Fix memory leak in all functional tests.
+  see: https://bugs.launchpad.net/zope3/+bug/251273
+
+
+===================
+zope.app.traversing
+===================
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.tree
+=============
+
+3.4.0 (2007-10-28)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+================
+zope.app.twisted
+================
+
+3.4.1 (2008-02-02)
+------------------
+
+- Fix of 599 error on conflict error in request
+  see: http://mail.zope.org/pipermail/zope-dev/2008-January/030844.html
+
+
+=============
+zope.app.undo
+=============
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.wfmc
+=============
+
+0.1.2 (2007-11-02)
+------------------
+
+- Fix package meta-data.
+
+
+=================
+zope.app.workflow
+=================
+
+3.4.2 (2009-01-27)
+------------------
+
+- Fix broken tests,
+
+- Remove dependency on zope.app.zapi.
+
+3.4.1 (2007-11-04)
+------------------
+
+- Move functional tests to tests/ directory.
+
+- Remove find-links configuration in buildout.cfg.
+
+
+=============
+zope.app.wsgi
+=============
+
+3.4.3 (2010-04-19)
+------------------
+
+* Bugfix: initialize any <logger> defined in the config, as zope.app.server does
+
+3.4.2 (2009-09-10)
+------------------
+
+* Support product configuration sections in Zope configuration files.
+
+3.4.1 (2008-07-30)
+------------------
+
+* Added Trove classifiers.
+
+* Notify WSGIPublisherApplicationCreated event when WSGI application is
+  created.
+
+* Fixed deprecation warning in ftesting.zcml: ZopeSecurityPolicy moved to
+  zope.securitypolicy.
+
+
+============================
+zope.app.xmlrpcintrospection
+============================
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.app.zapi
+=============
+
+3.4.0 (2007-10-03)
+------------------
+
+Initial public release as an individual package.
+
+Zope Application Programming Interface
+
+This package provides a collection of commonly used APIs to make
+imports simpler.
+
+Mostly, the APIs provided here are imported from elsewhere. A few are
+provided here.
+
+principals()
+
+The principals method returns the authentication service. If no
+service is defined, a ComponentLookupError is raised:
+
+  >>> from zope.app import zapi
+  >>> zapi.principals() #doctest: +NORMALIZE_WHITESPACE
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError:
+  (<InterfaceClass zope.app.security.interfaces.IAuthentication>, '')
+
+
+But if we provide an authentication service:
+
+  >>> import zope.interface
+  >>> from zope.app.security.interfaces import IAuthentication
+  >>> class FakeAuthenticationUtility:
+  ...     zope.interface.implements(IAuthentication)
+  >>> fake = FakeAuthenticationUtility()
+
+  >>> from zope.app.testing import ztapi
+  >>> ztapi.provideUtility(IAuthentication, fake)
+
+Then we should be able to get the service back when we ask for the
+principals:
+
+  >>> zapi.principals() is fake
+  True
+
+
+
+
+Download
+
+
+==================
+zope.app.zcmlfiles
+==================
+
+3.4.3 (2007-11-01)
+------------------
+
+- Fix test failure due to missing ``zope.app.container.browser.ftests``
+   directory.  Now it is moved to ``zope.app.container.browser.tests``.
+
+
+===========================
+zope.app.zopeappgenerations
+===========================
+
+3.4.0 (2007-10-29)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+================
+zope.app.zptpage
+================
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+=====================
+zope.cachedescriptors
+=====================
+
+3.4.1 (2008-04-23)
+------------------
+
+- Backported changes from trunk which removes dependency to ZODB.
+
+
+==============
+zope.component
+==============
+
+3.4.0 (2007-09-29)
+------------------
+
+No further changes since 3.4.0a1.
+
+
+==================
+zope.configuration
+==================
+
+3.4.1 (2008-12-11)
+------------------
+
+- Use built-in 'set' type, rather than importin the 'sets' module,
+  which is deprecated in Python 2.6.
+
+- Added support to bootstrap on Jython.
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release as a standalone package.
+
+Before 3.4.0
+
+This package was part of the Zope 3 distribution and did not have its own
+CHANGES.txt. For earlier changes please refer to either our subversion log or
+the CHANGES.txt of earlier Zope 3 releases.
+
+
+====================
+zope.contentprovider
+====================
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+================
+zope.contenttype
+================
+
+3.4.3 (2009-12-28)
+------------------
+
+Updated mime-type for .js to be application/javascript.
+
+3.4.0 (2007-09-13)
+------------------
+
+First stable release as an independent package.
+
+==================
+zope.copypastemove
+==================
+
+3.4.1 (2009-01-26)
+------------------
+
+* Moved the test dependencies to a `test` extra requirement.
+
+3.4.0 (2007-09-28)
+------------------
+
+* No further changes since 3.4.0a1.
+
+
+=============
+zope.datetime
+=============
+
+No changes or information not found.
+
+==============
+zope.decorator
+==============
+
+3.4.0 (2007-11-04)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===================
+zope.deferredimport
+===================
+
+3.4.0 (unknown)
+---------------
+
+Finished release of zope.deferredimport.
+
+
+================
+zope.deprecation
+================
+
+3.4.0 (unknown)
+---------------
+
+Release 3.4 final, corresponding to Zope 3.4.
+
+
+=====================
+zope.documenttemplate
+=====================
+
+3.4.2 (unknown)
+---------------
+
+- Re-release 3.4.1
+
+3.4.1 (unknown)
+---------------
+
+- Fixed usage of 'with' as a variable name. It is now a keyword in
+  Python 2.6, causing a SyntaxError. ``zope.documenttemplate`` now
+  supports Python 2.6.
+
+3.4.0 (unknown)
+---------------
+
+- ``zope.documenttemplate`` now supports Python 2.5
+
+
+===============
+zope.dottedname
+===============
+
+3.4.5 (2009-01-27)
+------------------
+
+- Move README.txt in the egg, so tests works with the released egg as well.
+
+3.4.4 (2009-01-27)
+------------------
+
+- Fix ReST in README.txt, fix broken tests with recent zope.testing.
+
+3.4.3 (2008-12-02)
+------------------
+
+- More documentation and tests.
+
+3.4.2 (2007-10-02)
+------------------
+
+- Fix broken release.
+
+
+===============
+zope.dublincore
+===============
+
+3.4.2 (2009-01-31)
+------------------
+
+- Declare dependency on zope.datetime.
+
+3.4.1 (2009-01-26)
+------------------
+
+- Test dependencies are declared in a `test` extra now.
+
+- Fix: Make CreatorAnnotator not to fail if participation principal is None
+
+3.4.0 (2007-09-28)
+------------------
+
+No further changes since 3.4.0a1.
+
+
+==========
+zope.error
+==========
+
+3.5.1 (2007-09-27)
+------------------
+
+- rebumped to replace faulty egg
+
+
+==========
+zope.event
+==========
+
+No changes or information not found.
+
+===============
+zope.exceptions
+===============
+
+3.4.0 (2007-10-02)
+------------------
+
+- Updated package meta-data.
+
+
+=========
+zope.file
+=========
+
+0.3.0 (2007-11-01)
+------------------
+
+- Package data update.
+
+
+=======================
+zope.filerepresentation
+=======================
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial Zope-independent release.
+
+
+============
+zope.formlib
+============
+
+3.4.0 (2007-09-28)
+------------------
+
+No further changes since 3.4.0a1.
+
+
+=============
+zope.hookable
+=============
+
+No changes or information not found.
+
+=========
+zope.html
+=========
+
+1.0.1 (2007-11-02)
+------------------
+
+- Package data update.
+
+- Updated code to work with packages in Zope 3.4 release.
+
+
+=========
+zope.i18n
+=========
+
+3.4.0 (2007-10-02)
+------------------
+
+- Updated meta-data. No code changes.
+
+
+==================
+zope.i18nmessageid
+==================
+
+3.5.1 (2010-04-10)
+------------------
+
+- LP #257657 / 489529:  Fix memory leak in C extension.
+
+- Fixed the compilation of the C extension with python 2.6: refactored it as a
+  setuptools Feature.
+
+3.5.0 (2009-06-27)
+------------------
+
+- Made compilation of C extension optional.
+
+- Added support to bootstrap on Jython.
+
+- Changed package's mailing list address from zope3-dev at zope.org to
+  zope-dev at zope.org, because zope3-dev is now retired.
+
+- Reformatted change log to common formatting style.
+
+- Update package description and docs a little.
+
+- Remove old .cfg files for zpkg.
+
+3.4.3 (2007-09-26)
+------------------
+
+- Make PyPI the home URL.
+
+
+==========
+zope.index
+==========
+
+3.4.1 (2007-09-28)
+------------------
+
+Fixed bug in package metadata (wrong homepage URL).
+
+
+==============
+zope.interface
+==============
+
+3.4.1 (unknown)
+---------------
+
+Fixed a setup bug that prevented installation from source on systems
+without setuptools.
+
+
+===================
+zope.lifecycleevent
+===================
+
+3.4.0 (2007-09-01)
+------------------
+
+Initial release as an independent package
+
+3.4.0 (2007-09-01)
+------------------
+
+Initial release as an independent package
+
+
+=============
+zope.location
+=============
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=============
+zope.mimetype
+=============
+
+No changes or information not found.
+
+===========
+zope.minmax
+===========
+
+1.1 (2007-10-02)
+----------------
+
+- Refactored package setup.
+
+
+================
+zope.modulealias
+================
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+=================
+zope.pagetemplate
+=================
+
+3.4.2 (2009-03-17)
+------------------
+
+- Remove old zpkg-related DEPENDENCIES.cfg file.
+
+- Change package's mailing list address to zope-dev at zope.org, as
+  zope3-dev at zope.org is now retired.
+
+- Change `cheeseshop` to `pypi` in the packages' homepage url.
+
+3.4.1 (2009-01-27)
+------------------
+
+- Fix test due to recent changes in zope.tal.
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the Zope 3 tree.
+
+
+==========
+zope.proxy
+==========
+
+3.4.2 (unknown)
+---------------
+
+- Made C code compatible with Python 2.5 on 64bit architectures.
+
+
+==============
+zope.publisher
+==============
+
+3.4.10 (2010-04-06)
+-------------------
+
+* Removed ``finally``-clause from test to keep Python2.4 happy.
+
+* Backport r101467 from trunk.
+
+  Fix for https://bugs.launchpad.net/zope3/+bug/98337
+
+  Previously, when the Accept-Charset specified a charset that could not encode
+  the result, a system error appeared, now we fall back to UTF-8, as per
+  RFC 2616 section 10.4.7.
+
+3.4.9 (2009-07-13)
+------------------
+
+* Backport fix LP #332061 from trunk (rev 101967): publisher emitted
+  all exceptions to the outside world when running in
+  'handle_errors=False' mode. Introduced `IReRaiseException` interface
+  to adjust reraising of certain exceptions on a custom basis.
+
+3.4.8 (2009-07-03)
+------------------
+
+* Fix LP #332063 and LP #283089: XMLRPC is broken for paster.httpserver
+  replace readlines with readline
+
+* Backport fix from z.p 3.5.3: PUT is broken for paster.httpserver
+  (revision 87610)
+
+3.4.7 (2008-09-22)
+------------------
+
+* LP# 273296: better dealing with malformed HTTP_ACCEPT_LANGUAGE headers
+
+3.4.6 (2008-09-04)
+------------------
+
+* Better fix for LP #98440: restore only the default skin, not all interfaces
+
+
+========
+zope.rdb
+========
+
+3.4.0 (unknown)
+---------------
+
+Initial release as an independent package
+
+===========
+zope.schema
+===========
+
+3.4.0 (unknown)
+---------------
+
+Added BeforeObjectAssignedEvent that is triggered before the object
+field sets a value.
+
+
+=============
+zope.security
+=============
+
+3.4.3 (unknown)
+---------------
+
+- Backported a fix made by Gary Poster to the 3.4 branch:
+  Fix for LP bug 181833 (from Gustavo Niemeyer). Before "visiting" a
+  sub-object, a check should be made to ensure the object is still valid.
+  Because garbage collection may involve loops, if you garbage collect an
+  object, it is possible that the actions done on this object may modify the
+  state of other objects. This may cause another round of garbage collection,
+  eventually generating a segfault (see LP bug). The Py_VISIT macro does the
+  necessary checks, so it is used instead of the previous code.
+
+3.4.2 (unknown)
+---------------
+
+- Added dependency 'zope.thread' to setup.py, without the tests were
+  failing.
+
+- Backported a fix made by Albertas Agejevas to the 3.4 branch. He
+  fixed a bug in DecoratedSecurityCheckerDescriptor which made
+  security-wrapping location proxied exception instances throw
+  exceptions on Python 2.5.  See
+  https://bugs.launchpad.net/zope3/+bug/251848
+
+3.4.1 (unknown)
+---------------
+
+- Made C code compatible with Python 2.5 on 64bit architectures.
+
+
+===================
+zope.securitypolicy
+===================
+
+3.4.4 (2010-04-29)
+------------------
+
+- LP #564525: Revert the name used for the view permission exported by
+  ``zope.dublincore`` to one which matches the names in released versions
+  of that package (3.6.0 and earlier).
+
+3.4.3 (2010-04-16)
+------------------
+
+- LP #564525:  fix permission moved from ``zope.app.dublincore`` namespace
+  to ``zope.dublincore``, and make its grant conditional on the presence of
+  ``zope.dublincore``.
+
+3.4.2 (2009-01-28)
+------------------
+
+- Changed mailing list address to zope-dev at zope.org. Fix package
+  homepage to the pypi page.
+
+- Fix test in buildout which still depended on zope.app.securitypolicy
+  by mistake.
+
+- Remove explicit dependency on zope.app.form from ``setup.py``; nothing
+  in the code directly depends on this.
+
+3.4.1 (2008-06-02)
+------------------
+
+- Fix reference to deprecated security policy from ZCML.
+
+
+=============
+zope.sendmail
+=============
+
+3.5.1 (2009-01-26)
+------------------
+
+- Copied over the UtilityTerm and UtilityVocabulary implementation from
+  zope.app.component to avoid a dependency.
+
+- Work around a problem when smtp quit fails, the mail was considered not
+  delivered where just the quit failed.
+
+3.5.0 (2008-07-05)
+------------------
+
+- final release (identical with 3.5.0b2)
+
+3.5.0b2 (2007-12-19)
+--------------------
+
+- If the SMTP server rejects a message (for example, when the sender or
+  recipient address is malformed), that email stays in the queue forever
+  (https://bugs.launchpad.net/zope3/+bug/157104).
+
+3.5.0b1 (2007-11-08)
+--------------------
+
+- Added README.txt
+- Can now talk to servers that don't implement EHLO
+- Fix bug that caused files with very long names to be created
+- Fix for https://bugs.launchpad.net/zope3/+bug/157104: move aside mail that's
+  causing 5xx server responses.
+
+3.5.0a2 (2007-10-23)
+--------------------
+
+- Cleaned up ``does_esmtp`` in faux SMTP connection classes provided by the
+  tests.
+- If the ``QueueProcessorThread`` is asked to stop while sending messages, do
+  so after sending the current message; previously if there were many, many
+  messages to send, the thread could stick around for quite a while.
+
+3.5.0a1 (2007-10-23)
+--------------------
+
+- ``QueueProcessorThread`` now accepts an optional parameter *interval* for
+  defining how often to process the mail queue (default is 3 seconds)
+
+- Several ``QueueProcessorThreads`` (either in the same process, or multiple
+  processes) can now deliver messages from a single maildir without duplicates
+  being sent.
+
+3.4.0 (2007-08-20)
+------------------
+
+- Bugfix: Don't keep open files around for every email message
+  to be sent on transaction commit.  People who try to send many emails
+  in a single transaction now will not run out of file descriptors.
+
+
+=================
+zope.sequencesort
+=================
+
+3.4.0 (2007-10-03)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+===========
+zope.server
+===========
+
+3.4.3 (2008-08-18)
+------------------
+
+- Moved some imports from test modules to their setUp to prevent
+  failures when ZEO tests are run by the same testrunner
+
+
+============
+zope.session
+============
+
+3.4.1 (unknown)
+---------------
+
+- Fixed some meta data and switch to tgz release.
+
+
+=========
+zope.size
+=========
+
+3.4.1 (2009-09-10)
+------------------
+
+- Added support to bootstrap on Jython.
+
+- Added docstrings
+
+- Beautify package's README and include CHANGES into the description.
+
+- Changed package's url to PyPI instead of Subversion.
+
+3.4.0 (2006-09-29)
+------------------
+
+- First release as a separate egg
+
+
+===================
+zope.structuredtext
+===================
+
+3.4.0 (unknown)
+---------------
+
+Public release for completeness of Zope 3.4
+
+
+========
+zope.tal
+========
+
+3.4.1 (2007-11-16)
+------------------
+
+- Removed unnecessary ``dummyengine`` dependency on zope.i18n to
+  simplify distribution.  The ``dummyengine.DummyTranslationDomain``
+  class no longer implements
+  ``zope.i18n.interfaces.ITranslationDomain`` as a result.  Installing
+  zope.tal with easy_install or buildout no longer pulls in many
+  unrelated distributions.
+
+- Support ability to run tests using "setup.py test".
+
+- Stop pinning (no longer required) zope.traversing and
+  zope.app.publisher versions in buildout.cfg.
+
+
+==========
+zope.tales
+==========
+
+3.4.0 (2007-10-03)
+------------------
+
+- Updated package setup.
+
+- Initial release outside the Zope 3 trunk.
+
+
+================
+zope.testbrowser
+================
+
+No changes or information not found.
+
+============
+zope.testing
+============
+
+3.5.6 (unknown)
+---------------
+
+Bugs Fixed:
+
+- Open doctest files in universal mode, so that packages released in Windoes
+  can be tested in Linux, for example.
+
+
+=================
+zope.testrecorder
+=================
+
+0.3 (2007-11-04)
+----------------
+
+* Update package meta-data and first
+
+
+===========
+zope.thread
+===========
+
+No changes or information not found.
+
+===============
+zope.traversing
+===============
+
+3.4.1 (2008-07-30)
+------------------
+
+- Fixed deprecation warning caused by using an old module name for
+  ZopeSecurityPolicy in ftesting.zcml
+
+
+=========
+zope.ucol
+=========
+
+1.0.2 (2006-10-16)
+------------------
+
+Fixed setup file problems.
+
+
+============
+zope.viewlet
+============
+
+3.4.2 (2008-01-24)
+------------------
+
+- Re-release of 3.4.1 because of brown bag release.
+
+
+=========
+zope.wfmc
+=========
+
+3.4.0 (2007-11-02)
+------------------
+
+- Initial release independent of the main Zope tree.
+
+
+==============
+zope.xmlpickle
+==============
+
+3.4.0 (2007-11-03)
+------------------
+
+- Initial release independent of the main Zope tree.
