@@ -35,7 +35,7 @@ class Step(BaseStep):
         return self.render()
 
 
-class PageStep(PageForm, BaseStep):
+class PageStep(PageForm, Step):
     """A Step for the Wizard renderd in an ILayout component
     """
 
