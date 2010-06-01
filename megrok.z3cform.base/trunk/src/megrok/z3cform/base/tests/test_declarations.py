@@ -45,13 +45,27 @@ Check that fields have been created on the edition page:
               type="text" />
   ...
   </form>
+
+Buttons
+-------
+
+  >>> request = TestRequest()
+  >>> view = component.getMultiAdapter((otto, request), name='buttons')
+  >>> view.updateForm()
+  >>> print view.render()
+  <form...
+    <input id="form-buttons-add" name="form.buttons.add"
+           class="submit-widget button-field" value="EGON"
+           type="submit" />
+  ...
+  </form> 
 """
 import grokcore.component as grok
 
 from z3c.form import util
 from zope.interface import Invalid
 from zope import interface, schema
-from megrok.z3cform.base import Form, validator, invariant, default_value
+from megrok.z3cform.base import AddForm, Form, validator, invariant, default_value, button_label
 from zope.schema.fieldproperty import FieldProperty
 
 
@@ -97,6 +111,15 @@ class MyForm(Form):
 
 class ContextLess(Form):
     ignoreContext = True
+
+
+class Buttons(AddForm):
+    ignoreContext = True
+
+@button_label(form=Buttons)
+def get_widget(data):
+    return u"EGON" 
+    
 
 def test_suite():
     from zope.testing import doctest

@@ -9,6 +9,7 @@ from z3c.form.validator import SimpleFieldValidator
 from z3c.form.validator import WidgetValidatorDiscriminators
 from z3c.form.interfaces import IValidator, IManagerValidator
 from z3c.form.validator import WidgetsValidatorDiscriminators
+from z3c.form.button import ComputedButtonActionAttribute
 
 
 class DecoratedInvariantsValidator(InvariantsValidator):
@@ -112,7 +113,7 @@ class _computed_value(object):
         if adapters is None:
             frame.f_locals['__form_value_adapters__'] = adapters = []
         adapters.append(value_adapter)
-return ob
+        return ob
 
 
 class default_value(_computed_value):
@@ -142,3 +143,52 @@ class default_value(_computed_value):
                 field=field,
                 widget=widget,
             )
+        
+
+class button_label(_computed_value):
+    """Decorator for functions providing a computed button label::
+    
+        @button_label()
+        def get_widget(data):
+            return ...
+    
+    The 'data' object has attributes form (view), request (layer), context,
+    button, and manager. These are also the possible discriminators that can
+    be passed to the decorator.
+    """
+    
+    factory = ComputedButtonActionAttribute
+    
+    def __init__(self, 
+                 content=None, 
+                 request=None, 
+                 form=None, 
+                 manager=None, 
+                 button=None, 
+                 view=None, 
+                 layer=None, 
+                 context=None):
+        
+        if context and content:
+            raise TypeError(u"You cannot specify both 'content' and 'context' - one is an alias for the other")
+        elif context and not content:
+            content = context
+        
+        if form and view:
+            raise TypeError(u"You cannot specify both 'view' and 'form' - one is an alias for the other")
+        elif view and not form:
+            form = view
+            
+        if request and layer:
+            raise TypeError(u"You cannot specify both 'request' and 'layer' - one is an alias for the other")
+        elif layer and not request:
+            request = layer
+        
+        super(button_label, self).__init__('title', 
+                content=content,
+                request=request,
+                form=form,
+                manager=manager,
+                button=button,
+            )
+
