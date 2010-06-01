@@ -4,6 +4,9 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Fix the url() method to accept the "status" and "trusted" arguments, passed
+  on to the redirect method on the response object.
+
 - ``grokcore.view`` no longer depends on ``zope.app.testing`` and
   related packages. Instead we now use ``zope.app.wsgi.testlayer`` to
   run functional tests.
