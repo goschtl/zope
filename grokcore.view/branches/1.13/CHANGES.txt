@@ -1,11 +1,11 @@
 Changes
 =======
 
-1.14.0 (unreleased)
+1.13.4 (unreleased)
 -------------------
 
-- None yet.
-
+- Fix the url() method to accept the "status" and "trusted" arguments, passed
+  on to the redirect method on the response object.
 
 1.13.3 (2010-05-27)
 -------------------

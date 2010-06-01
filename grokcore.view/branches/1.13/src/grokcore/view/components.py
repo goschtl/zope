@@ -45,8 +45,9 @@ class ViewSupport(object):
     def body(self):
         return self.request.bodyStream.getCacheStream().read()
 
-    def redirect(self, url):
-        return self.request.response.redirect(url)
+    def redirect(self, url, status=None, trusted=False):
+        return self.request.response.redirect(
+            url, status=status, trusted=trusted)
 
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name.
