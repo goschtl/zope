@@ -2,9 +2,14 @@
 Introducing ZODB
 ================
 
-The ZODB provides an object-persistence facility for Python.  It
-provides many features, which we'll get into later, but first, let's
-take a very quick look at the basics.
+ZODB provides an object-persistence facility for Python.  It provides
+many features, which we'll get into later, but first, let's take a
+very quick look at the basics.
+
+.. contents::
+
+Getting started
+===============
 
 We start by creating a file-based database:
 
@@ -15,7 +20,7 @@ The connection function opens a database and returns a connection to it.
 Because the database didn't already exist, it's created automatically.
 
 Initially, the database contains a single object, the root object.
-Connections have a root method that retrieves the root object:
+Connections have a root attribute that retrieves the root object [#root_]:
 
     >>> conn.root
     <root >
@@ -133,9 +138,9 @@ Note that we didn't use any specialized API to perform the update.  We
 simply set an object attribute as we normally would without a
 database.  In fact, almost all of the operations we've performed were
 accomplished through normal object operations.  The only exception has
-been the use of transaction comit and abort calls to indicate that changes
-made should be saved or discarded.  We didn't had to keep track of
-the changes made.  The ZODB did that for us.
+been the use of transaction ``commit`` and ``abort`` calls to indicate
+that changes made should be saved or discarded.  We didn't have to keep
+track of the changes made.  The ZODB did that for us.
 
 Persistence
 ===========
@@ -184,12 +189,12 @@ for dealing with mutable subobjects:
 
 - Use persistent sub-objects.
 
-  This is the approach taken by the ``Author`` class shown earlier.
-  When we use a persistent subobject, the containing object isn't
-  responsible for managing the persistence of subobject changes; the
-  subobject is responsible.  In the (non-broken) ``Author`` class,
-  adding a book doesn't change the author, it changes the author's
-  books.
+  This is the recomended approach, and the approach taken by the
+  ``Author`` class shown earlier.  When we use a persistent subobject,
+  the containing object isn't responsible for managing the persistence
+  of subobject changes; the subobject is responsible.  In the
+  (non-broken) ``Author`` class, adding a book doesn't change the
+  author, it changes the author's books.
 
 - Tell ZODB about changes explicitly.
 
@@ -206,16 +211,21 @@ for dealing with mutable subobjects:
         def new_book(self, title):
             book = Book(title)
             book.author = self
-            self.books[title] = book
             self._p_changed = True
+            self.books[title] = book
             return book
 
   Here we assigned ``_p_changed`` attribute to signal that the author
   object has changed.
 
+  Note that we assigned the _p_changed attribute *before* we changed
+  the books dictionary [#whychangedbefore]_.  This is subtle and one
+  of the reasons we don't recommend using non-persistent mutable
+  subobjects.
+
 Finally, ZODB needs to keep track of certain meta data for persistent
 objects.  The ``Persistent`` base class takes care of this too.  The
-standard meta data includes::
+standard meta data includes:
 
 ``_p_oid``
     Every persistent object that has been stored in a database as a
@@ -290,7 +300,8 @@ supported by the high-level API. The high-level API also supports only
 a few standard storages.
 
 If we want to open multiple connections, we can use a slightly
-lower-level API, by passing a database file name to ``ZODB.DB``:
+lower-level API to create a database object by passing a database file
+name to ``ZODB.DB``:
 
     >>> db = ZODB.DB('data.fs')
 
@@ -317,13 +328,13 @@ ZEO
     your storage server. The storage server uses some underlying
     storage, such as a file storage to store data.
 
-    To use a ZEO client storage with the high-level APIs, just pass
-    the ZEO server address as a host and port tuple or as an integer
-    port on the local host::
+    The high-level API doesn't support ZEO yet, but ZEO provides its
+    own high-level API.  To use a ZEO client storage with the ZEO
+    high-level APIs, just pass the ZEO server address as a host and
+    port tuple or as an integer port on the local host::
 
-       >>> db = ZODB.DB(('storage.example.com', 8100))
-       >>> connection = ZODB.connection(8100) # localhost
-
+       >>> db = ZEO.DB(('storage.example.com', 8100))
+       >>> connection = ZEO.connection(8100) # localhost
 
 MappingStorage
     Mapping storages store database records in memory.  Mapping
@@ -342,8 +353,8 @@ DemoStorage
     Demo storages allow you to take an unchanging base storage and
     store changes in a separate changes storage.  They were originally
     implemented to allow demonstrations of applications in which a
-    populated sample database was provided in CD and users could make
-    changes that were stored in memory.
+    populated sample database was provided on Compact Disk and users
+    could make changes that were stored in memory.
 
     Demo storages don't actually store anything themselves. They
     delegate to 2 other storages, an unchanging base storage and a
@@ -367,6 +378,10 @@ zc.beforestorage
     it can take changing storage, like a ZEO client storage and freeze
     it at a point in time, allowing it to be used as a base for a demo
     storage.
+
+zc.zlibstorage
+    zc.zlibstoprage provides a wrapper storage to compress database
+    records.
 
 zc.zrs and zeoraid
     zc.zrs and zeoraid provide database replication.  zc.zrs is a
@@ -413,7 +428,7 @@ ZODB supports accessing databases from multiple threads, including
 threads in separate processes.  This is accomplished using per-thread
 database connections and transaction managers.  Each thread operates
 as if it has it's own copy of the database.  Threads are synchonized
-through transactions
+through transaction commits.
 
 In a typical application, each thread opens a separate connection to a
 database.  Each connection has it's own object cache. If multiple
@@ -523,7 +538,7 @@ transaction and redo it:
     >>> author2.name = 'John Tolkien'
     >>> transaction_manager2.commit()
 
-Conflicts are troublesome for 2 reasons:
+Conflicts are annoying for 2 reasons:
 
 - Application code has to anticipate conflicts and be prepared to
   retry transactions.
@@ -577,7 +592,7 @@ The suite inside the with statement is executed. If there is no error,
 the transaction is committed. If there is an exception, the
 transaction is automatically aborted.
 
-Transaction manager and the transaction package also provide an
+Transaction managers and the transaction package also provide an
 ``attempts`` method.  The attempts method helps with handling
 transient errors, like conflict errors.  It returns an iterator that
 provides up to a given number of attempts to perform a transaction::
@@ -586,10 +601,75 @@ provides up to a given number of attempts to perform a transaction::
         with attempt:
             author2.name = 'John Tolkien'
 
-The example above trieds up to 5 times to set the author name.  If
-there are non-transient errors, the the loops exits with the error
-raised.  If the number of attempts is exhaused, the loops exits with
-the transient error raised.
+The example above tries up to 5 times to set the author name.  If an
+attempt suceeds, the loop exits.  If there are non-transient errors,
+the the loops exits by raising the error.  If transient errors are
+raised, the attempts continue until an attempt suceeds, or until the
+number of attempts is exhaused, at which point the loops exits with by
+raising transient error.
+
+Object life cycle
+=================
+
+In-memory Persistent objects transition through a number of states, as
+shown in figure 1.
+
+.. image:: object-life-cycle.png
+
+Objects are created in the new state.  At this point, they behave like
+normal Python objects.
+
+To add an object to a database, you add a reference to it from an
+object that's already in the database and commit the change. At that
+point the object is in the saved state.
+
+If you modify the object, it transitions to the changed state until
+the transaction ends.
+
+The ghost state is a state in which an object exists in memory but
+lacks any data.  When an object hasn't been used in a while and ZODB
+needs to make room for new objects, it is deactivated and it's data is
+released. The object itself remains in memory as a ghost as long as it
+is refered to by other objects.
+
+When an object is no-longer referenced, it is removed from memory by
+the Python garbage collector.  Because object data may include
+references to other persistent objects, releasing an object's data may
+cause referenced objects to become collected by the Python garbage
+collector and removed from memort.
+
+When an object's data are loaded, references to other object's in the
+object's data cause those objects to be loaded. When an object is
+loaded, it is in the ghost state until it is accessed, at which point
+it's data are loaded and it transitions to the saved state.
+
+If an object is in the saved state, it can be deactivated at any
+time.  This is why care must be taken when tracking changes
+yourself. Consider another broken author implementation::
+
+    class SubtlyBrokenAuthor(persistent.Persistent):
+
+        def __init__(self, id, name):
+            self.id = id
+            self.name = name
+            self.books = {}
+
+        def new_book(self, title):
+            book = Book(title)
+            book.author = self
+            self.books[title] = book
+            self._p_changed = True
+            return book
+
+In this version of the author class, ``_p_changed`` is set after the
+books dictionary if modified.  In theory [#practicemorecomplicated]_,
+the author object could be deactivated after the ``books`` dictionary
+is modified and before ``_p_changed`` is set, in which case, the
+change to the ``books`` would be lost.
+
+Remember that the object life cycle described here refers to a single
+instance of a database object. There can be multiple instances of a
+single database object in memory, in different states, at once.
 
 Memory management
 =================
@@ -607,13 +687,155 @@ author database records. Rather the author records contain persistent
 references to the BTree records.
 
 As they grow, BTrees spread their data over multiple persistent
-subobjects.  This makes BTrees highly scalable.  You can have BTrees
-that store many millions of items and load onkly a small fraction of
+sub-objects.  This makes BTrees highly scalable.  You can have BTrees
+that store many millions of items and load only a small fraction of
 the BTree into memory to look an item up.
 
+It's important to choose data structures carefully to prevent
+individual persistent objects from becoming too large. A naive choice
+of object class can lead to a database in which all of the data
+resides in a single database object, im which case, the entire
+database must remain in memory.
+
 Each ZODB connection has an in-memory cache. You can set the size of
-this cache as a number of objects, a number of bytes, or both.  These
-sizes aren't limits.  .... explain
+this cache as a number of objects, a number of bytes, or both.  While
+these sizes are limits, they are only checked at certain times and, as
+a result, can be exceeded.
+
+Blobs: managing files in ZODB
+=============================
+
+ZODB was originally developed to support the Zope web application
+frameworks. Web applications often need to manage files of static
+data, such as images, movies, and other resource files.  Especially
+for large media files, loading data into memory just to hand it off to
+a web client is counter productive.  To address cases like these, ZODB
+provides blobs. "BLOB" is a term borrowed from other databases and
+is an acronyme for "binary large object".  A better term might have
+been something like, "persistent file".
+
+ZODB blobs are persistent objects that can be opened to obtain Python file
+objects to access their data. Like other persistent objects,
+modifications to blobs are managed transactionally.
+
+Blobs are created using the ``ZODB.blob.Blob`` class
+[#nosubclassingBlob].  Let's update our book class to hold electronic
+versions of the book::
+
+
+    import persistent, BTrees.OOBTree, ZODB.blob
+
+    class Book(persistent.Persistent):
+        def __init__(self, title):
+            self.title = title
+            self.electronic = BTrees.OOBTree()
+
+        def add_electronic(self, format, data):
+            version = self.electronic.get(format)
+            if version is None:
+                version = self.electronic[format] = ZODB.blob.Blob()
+            version.open('w')
+            version.write(data)
+            version.close()
+
+        def get_electronic(self, format):
+            return self.electronic[format].open()
+
+Now books manage electronic binary versions.  We add or update a
+version using the ``add_electronic`` method.  It checks to see if
+there is already an alectronic version of a book and, if there isn't,
+it creates one using ``ZODB.blob.Blob()``.
+
+The ``add_electronic`` method then opens the blob, passing the write
+flag, ``'w'``.  No file name is passed to the open method. The blob
+object itself identified the file to open. As with the built-in open
+function, the ``'w'`` flag causes any existing data to be
+overwritten. The open statement returns a file object that can be used
+with anything that expects a Python file object [#filesubclass]_.  The
+``add_electronic`` method simply calls it's ``write`` method to write
+the data passed in and then closes it.
+
+The ``get_electronic`` method is used to access a binary version. It
+simply opens the blob for the given format and returns the resulting
+file. No mode is passed, so the default mode, ``'r'`` is used.
+
+Several modes are supported by the open statement:
+
+``'r'``
+   Open for reading.  The file returned includes any changes made in
+   the current transaction.
+
+``'c'``
+   Open committed data for reading.  The file returned does *not*
+   reflect any changes made in the current transaction.
+
+``'w'``
+   Open for writing. Existing data are overridden.
+
+``'a'``
+   Open for appending. Existing data are preserved and data are
+   written at the end of the file.
+
+``'r+'``
+   Open for writing without overwriting existing data.  Depending on
+   file position, new writes may overwrite existing data.
+
+As mentioned at the beginning of this section, a motivation for blobs
+os to avoid loading large amounts of binary data into memory.  Our
+``add_electronic`` implementation requires that the entire file
+content be passes as a string. A better implemention would copy data
+from a file in blocks::
+
+        def add_electronic(self, format, source_file):
+            version = self.electronic.get(format)
+            if version is None:
+                version = self.electronic[format] = ZODB.blob.Blob()
+            version.open('w')
+            while 1:
+                data = source_file.read(4096)
+                if not data:
+                    break
+                version.write(data)
+
+            version.close()
+
+If the source file is a temporary file [#temporaryfiletobeconsumed]_,
+we can pass it's name to the blob ``consumeFile`` method::
+
+        def add_electronic(self, format, source_file_name):
+            version = self.electronic.get(format)
+            if version is None:
+                version = self.electronic[format] = ZODB.blob.Blob()
+            version.consumeFile(source_file_name)
+
+The advantage of ``consumeFile`` is that it can avoid copying the
+source file [#whencanitavoidcopying]_.
+
+To use blobs, you have to enable blobs when you configure your
+storage, generally by naming a blob directory::
+
+    >>> conn = ZODB.open('data.fs', blob_dir='data.blobs')
+
+database maintenamce
+====================
+
+Packing
+-------
+
+Garbage Collection
+------------------
+
+Multiple databases
+==================
+
+Indexing
+========
+
+Object-oriented versus relational designs
+=========================================
+
+time travel
+===========
 
 
 
@@ -631,15 +853,15 @@ sizes aren't limits.  .... explain
 
 
 
-
-
-
-
-
+.. [#root] The root attribute actually returns a convenience wrapper
+   around the root object.  See "More on the root object".
 
 .. [#c] Implementing objects in C requires a lot more care. It's
    really hard. :) See "Implementing persistent objects in C" for more
    details.
+
+.. [#whychangedbefore] We'll explain why this is important later,
+   when we talk about object lifecycles.
 
 .. [#jar] The name ``_p_jar`` comes from early implementations of ZODB
    in which databases were called "pickle jars", because objects were
@@ -649,9 +871,31 @@ sizes aren't limits.  .... explain
 .. [#itdidmore] It also arranged that when we closed the connection,
    the underlying database was closed.
 
+.. [#exceptforblobs] If blobs are used, each blob is stored in a
+   separate file.
+
 .. [#zconfig] ZODB uses the ``ZConfig`` configuration
    system. Applications that use ``ZConfig`` can also merge the ZODB
    configuration schemas with their own configuration schemas.
 
 .. [#multipledbtags] You can define multiple databases, so there can
    be multiple ``zodb`` tags. See "Using multiple databases."
+
+.. [#practicemorecomplicated] In fact, the object wouldn't be
+   deactivated unless some computation caused another object to be
+   loaded and maybe not even then, depending on other factors. Suffice
+   it to say that you don't want to have to think that hard.
+
+.. [#nosubclassingBlob] The Blob class can't be subclassed. To
+   associate behavior with blobs, use composition.
+
+.. [#filesubclass] The object returned is an instance of a subclass of
+   the standard Python file type.
+
+.. [#temporaryfiletobeconsumed] The file might be the result of a web
+   file upload. It must be named.
+
+.. [#whencanitavoidcopying] The blob will attempt to rename the file
+   to the blob directory.  This is generally only possible when the
+   file is in the same disk partition as the blob directory.
+
