@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.interface',
       version = '3.5.1dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Zope Interface Extensions',
       long_description=(
           read('README.txt')
