@@ -29,7 +29,7 @@ def read(*rnames):
 setup(name='zope.documenttemplate',
       version = '3.4.3dev',
       author='Zope Foundation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Document Templating Markup Language (DTML)',
       long_description=(
           read('README.txt')
