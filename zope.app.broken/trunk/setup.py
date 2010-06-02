@@ -29,7 +29,7 @@ def read(*rnames):
 setup(name='zope.app.broken',
       version = '3.5.1dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Zope Broken (ZODB) Object Support',
       long_description=(
           read('README.txt')
