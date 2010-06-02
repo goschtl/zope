@@ -1,16 +1,18 @@
 Changes
 =======
 
-1.13.5 (unreleased)
+1.13.5 (2010-06-03)
 -------------------
 
 - Fix the url() function to behave properly while passed an empty data dict.
+
 
 1.13.4 (2010-06-01)
 -------------------
 
 - Fix the url() method to accept the "status" and "trusted" arguments, passed
   on to the redirect method on the response object.
+
 
 1.13.3 (2010-05-27)
 -------------------
