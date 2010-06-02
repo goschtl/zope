@@ -24,7 +24,7 @@ def url(request, obj, name=None, data=None):
     if name is not None:
         url += '/' + urllib.quote(name.encode('utf-8'), SAFE_URL_CHARACTERS)
 
-    if data is None:
+    if not data:
         return url
 
     if not isinstance(data, dict):

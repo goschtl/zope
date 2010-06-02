@@ -4,6 +4,8 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Fix the url() function to behave properly while passed an empty data dict.
+
 - Fix the url() method to accept the "status" and "trusted" arguments, passed
   on to the redirect method on the response object.
 

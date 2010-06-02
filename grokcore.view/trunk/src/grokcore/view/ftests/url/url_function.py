@@ -78,6 +78,14 @@ argument or explicitely supplying 'None':
   >>> url(request, herd, None, data=dict(name="Peter"))
   'http://127.0.0.1/herd?name=Peter'
 
+Providing an empty dict gives the same result than giving None:
+
+  >>> url(request, herd, data={})
+  'http://127.0.0.1/herd'
+
+  >>> url(request, herd, data=None)
+  'http://127.0.0.1/herd'
+
 Since order in dictionairies is arbitrary we'll test the presence of multiple
 keywords by using find()
 
