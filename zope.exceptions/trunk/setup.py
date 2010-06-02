@@ -39,7 +39,7 @@ def read(*rnames):
 setup(name='zope.exceptions',
       version = '3.6.1dev',
       author='Zope Foundation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Zope Exceptions',
       long_description=(
           read('README.txt')
