@@ -29,7 +29,7 @@ def read(*rnames):
 setup(name='zope.app.interpreter',
       version = '3.5.0',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Safe Python Intrepeter Integration into Zope 3',
       long_description=(
           read('README.txt')
