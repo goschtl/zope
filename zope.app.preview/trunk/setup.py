@@ -29,7 +29,7 @@ def read(*rnames):
 setup(name = 'zope.app.preview',
       version = '3.4.0',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Object Preview Template',
       long_description=(
           read('README.txt')
