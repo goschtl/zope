@@ -4,8 +4,7 @@ Changes
 1.13.5 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix the url() function to behave properly while passed an empty data dict.
 
 1.13.4 (2010-06-01)
 -------------------
