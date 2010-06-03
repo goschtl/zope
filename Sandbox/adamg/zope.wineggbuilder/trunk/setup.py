@@ -48,7 +48,7 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'': 'src'},
-    namespace_packages = ['keas'],
+    namespace_packages = ['zope'],
     extras_require = dict(
       test = [
           'zope.testing',
