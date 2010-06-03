@@ -1,7 +1,4 @@
-"""
-Interfaces for the unique id utility.
-
-$Id$
+"""Interfaces for the unique id utility.
 """
 from zope.interface import Interface, Attribute, implements
 

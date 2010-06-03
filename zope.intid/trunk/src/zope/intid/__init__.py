@@ -17,8 +17,6 @@ This utility assigns unique integer ids to objects and allows lookups
 by object and by id.
 
 This functionality can be used in cataloging.
-
-$Id$
 """
 import random
 
