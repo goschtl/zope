@@ -13,8 +13,6 @@
 ##############################################################################
 """ITracebackSupplement interface definition.
 
-$Id$
-
 When zope.exceptionformatter generates a traceback, it looks for local
 variables named __traceback_info__ or __traceback_supplement__.  It
 includes the information provided by those local variables in the

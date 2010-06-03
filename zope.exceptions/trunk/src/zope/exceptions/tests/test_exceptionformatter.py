@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """ExceptionFormatter tests.
-
-$Id$
 """
 import sys
 from unittest import TestCase, main, makeSuite

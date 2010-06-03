@@ -15,8 +15,6 @@
 
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
-
-$Id$
 """
 from zope.exceptions.interfaces import DuplicationError, IDuplicationError
 from zope.exceptions.interfaces import UserError, IUserError

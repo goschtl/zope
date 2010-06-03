@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Log formatter that enhances tracebacks with extra information.
-
-$Id$
 """
 
 import logging

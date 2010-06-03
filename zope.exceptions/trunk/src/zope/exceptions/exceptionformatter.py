@@ -13,8 +13,6 @@
 ##############################################################################
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
-
-$Id$
 """
 import sys
 import cgi
