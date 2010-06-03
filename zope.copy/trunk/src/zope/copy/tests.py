@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Tests for the zope.copy package.
-
-$Id$
 """
 import unittest
 from zope.testing import doctest, module
