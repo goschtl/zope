@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Location framework interfaces
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 

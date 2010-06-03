@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Location copying/pickling support
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 

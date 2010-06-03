@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Classes to support implenting IContained
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 
