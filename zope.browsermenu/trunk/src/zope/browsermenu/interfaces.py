@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Menu-specific interfaces
-
-$Id$
 """
 from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.interface import Interface, directlyProvides

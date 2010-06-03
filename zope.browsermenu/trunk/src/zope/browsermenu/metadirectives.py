@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Menu ZCML directives
-
-$Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface

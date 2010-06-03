@@ -59,8 +59,6 @@
   ('',
    <InterfaceClass zope.publisher.interfaces.browser.IDefaultBrowserLayer>),
   {}))
-
-$Id$
 """
 
 import unittest

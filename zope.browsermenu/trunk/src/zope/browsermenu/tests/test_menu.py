@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Browser Menu Item Tests
-
-$Id$
 """
 import unittest
 import doctest

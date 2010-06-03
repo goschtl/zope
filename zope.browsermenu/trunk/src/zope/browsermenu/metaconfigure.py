@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Menu Directives Configuration Handlers
-
-$Id$
 """
 from zope.browser.interfaces import IAdding
 from zope.component import getGlobalSiteManager, getUtility

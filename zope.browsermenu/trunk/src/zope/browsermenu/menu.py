@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Menu implementation code
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 import sys
