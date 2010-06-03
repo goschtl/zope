@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Python implementations of document template some features
-
-$Id$
 """
 import sys
 from types import StringTypes, TupleType, ClassType

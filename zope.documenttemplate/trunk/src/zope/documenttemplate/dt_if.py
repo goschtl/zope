@@ -74,8 +74,6 @@
        - A variable if only evaluated once in an 'if' tag.  If the value
          is used inside the tag, including in enclosed tags, the
          variable is not reevaluated.
-
-$Id$
 """
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
 

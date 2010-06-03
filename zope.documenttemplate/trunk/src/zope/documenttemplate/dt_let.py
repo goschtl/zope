@@ -38,8 +38,6 @@
    Variables are processed in sequence, so later assignments can
    reference and/or overwrite the results of previous assignments,
    as desired.
-
-$Id$
 """
 from zope.documenttemplate.dt_util import render_blocks, Eval, ParseError
 

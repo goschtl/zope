@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Untrusted document template support
-
-$Id$
 """
 
 from zope.security.checker import ProxyFactory

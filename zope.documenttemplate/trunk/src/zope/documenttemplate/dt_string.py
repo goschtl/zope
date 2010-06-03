@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-
-$Id$
+"""Base DTML string class
 """
 import re, thread
 

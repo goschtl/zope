@@ -22,8 +22,6 @@
            The value you entered is not valid
        </dtml-raise>
     </dtml-if>
-
-$Id$
 '''
 from zope.documenttemplate.dt_util \
      import parse_params, name_param, render_blocks

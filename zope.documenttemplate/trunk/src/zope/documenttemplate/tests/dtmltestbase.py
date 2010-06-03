@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Document Template Tests
-
-$Id$
 """
 import os
 import unittest

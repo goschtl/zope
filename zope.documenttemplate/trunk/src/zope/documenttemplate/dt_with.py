@@ -31,8 +31,6 @@
    A 'mapping' attribute may be used to indicate that the given data
    should be treated as mapping object, rather than as an object with
    named attributes.
-
-$Id$
 """
 
 from zope.documenttemplate.dt_util import parse_params, name_param

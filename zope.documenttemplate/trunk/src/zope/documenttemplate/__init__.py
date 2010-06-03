@@ -15,8 +15,6 @@
 
 This wrapper allows the (now many) document template modules to be
 segregated in a separate package.
-
-$Id$
 """
 
 from zope.documenttemplate.documenttemplate import String, HTML

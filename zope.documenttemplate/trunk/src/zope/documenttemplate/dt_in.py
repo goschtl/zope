@@ -311,8 +311,6 @@
 
         - The 'next' attribute was used and their are no
           next batches, or
-
-$Id$
 """
 
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param

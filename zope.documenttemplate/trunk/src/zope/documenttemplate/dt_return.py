@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-
-$Id$
+"""dtml-return tag
 """
 from zope.documenttemplate.dt_util import parse_params, name_param
 

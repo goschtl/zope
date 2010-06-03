@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Document Template Tests
-
-$Id$
 """
 import unittest
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase

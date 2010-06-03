@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-
-$Id$
+"""dtml-try tag
 """
 
 import sys, traceback

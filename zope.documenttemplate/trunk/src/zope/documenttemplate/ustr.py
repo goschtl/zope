@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ustr function.
-
-$Id$
 """
 
 nasty_exception_str = getattr(Exception.__str__,"im_func",None)

@@ -78,8 +78,6 @@ Document Templates may be created 2 ways by default:
     documenttemplate.HTML -- Creates a document templated from a
         string using HTML server-side-include rather than
         python-format-string syntax.
-
-$Id$
 '''
 
 from zope.documenttemplate.dt_util import ParseError

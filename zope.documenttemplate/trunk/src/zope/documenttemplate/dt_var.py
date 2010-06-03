@@ -143,9 +143,6 @@ Evaluating expressions without rendering results
 
    A 'call' tag is provided for evaluating named objects or expressions
    without rendering the result.
-
-
-$Id$
 """
 from zope.documenttemplate.dt_util import parse_params, name_param, html_quote
 from zope.structuredtext import stx2htmlWithReferences

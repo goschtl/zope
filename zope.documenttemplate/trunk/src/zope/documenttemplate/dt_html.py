@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """HTML formated DocumentTemplates
-
-$Id$
 """
 import re
 from zope.documenttemplate.dt_string import String
