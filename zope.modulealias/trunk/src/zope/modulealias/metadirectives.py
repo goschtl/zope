@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """'zope:modulealias' directive interface
-
-$Id$
 """
 from zope.configuration.fields import PythonIdentifier
 from zope.interface import Interface

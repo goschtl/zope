@@ -19,8 +19,6 @@ e.g.::
   <modulealias
       module="some.existing.package"
       alias="some.nonexistent.package" />
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 import sys
