@@ -17,8 +17,6 @@
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
 """Setup for zope.html package
-
-$Id: setup.py 80818 2007-10-11 04:06:12Z srichter $
 """
 import os
 from setuptools import setup, find_packages
