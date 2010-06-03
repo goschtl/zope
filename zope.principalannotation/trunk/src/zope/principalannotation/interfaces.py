@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Utility for storing `IAnnotations` for principals.
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 

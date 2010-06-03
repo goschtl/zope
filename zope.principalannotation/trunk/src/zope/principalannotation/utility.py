@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Implementation of IPrincipalAnnotationUtility
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 from BTrees.OOBTree import OOBTree

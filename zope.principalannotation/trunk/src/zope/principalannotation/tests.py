@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Principal Annotation Tests
-
-$Id$
 """
 import unittest
 from zope.component import provideAdapter
