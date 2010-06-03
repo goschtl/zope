@@ -43,8 +43,6 @@ Here is the template::
   """One-line summary goes here.
 
   Module documentation goes here.
-
-  $Id$
   """
 
 .. note::
@@ -55,7 +53,8 @@ Here is the template::
     Guido (around 2002) pointed out the FSF's rules. Those should be
     re-evaluated.
 
-    Efge pointed out that in the US only the first year of publication needs to be given. (See http://www.loc.gov/copyright/circs/circ03.html).
+    Efge pointed out that in the US only the first year of publication
+    needs to be given. (See http://www.loc.gov/copyright/circs/circ03.html).
 
     This also points out that we need an understanding of when code is
     published the first time. Can checking into a public repository can
