@@ -19,11 +19,11 @@ done this::
 Render the inclusion::
 
   >>> from hurry.resource import NeededInclusions
-  >>> from hurry.jquerytools import jquerytools 
+  >>> from hurry.jquerytools import jquerytools
   >>> needed = NeededInclusions()
   >>> needed.need(jquerytools)
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery/jquery-1.3.2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/jquery/jquery-1...js"></script>
   <script type="text/javascript" src="http://localhost/static/JqueryToolsLibrary/jquery.tools.min.js"></script>
 
 """
