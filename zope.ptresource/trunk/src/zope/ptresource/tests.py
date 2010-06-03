@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Page Template based Resources Test
-
-$Id$
 """
 import os
 import tempfile

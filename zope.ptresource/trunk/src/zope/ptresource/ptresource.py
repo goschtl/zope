@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Page Template Resource
-
-$Id$
 """
 
 from zope.interface import implements, classProvides
