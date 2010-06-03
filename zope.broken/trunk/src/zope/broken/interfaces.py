@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """zope.broken interfaces.
-
-$Id: interfaces.py 72735 2007-02-21 05:02:33Z baijum $
 """
 
 __docformat__ = "reStructuredText"

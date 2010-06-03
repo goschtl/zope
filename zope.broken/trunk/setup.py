@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Setup for zope.broken package
-
-$Id: setup.py 96059 2009-02-04 08:09:40Z wosc $
 """
 import os
 from setuptools import setup, find_packages
