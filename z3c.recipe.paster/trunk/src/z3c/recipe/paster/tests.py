@@ -69,9 +69,12 @@ def setUp(test):
     zc.buildout.testing.install('zope.site', test)
     zc.buildout.testing.install('zope.size', test)
     zc.buildout.testing.install('zope.testing', test)
+    zc.buildout.testing.install('zope.testbrowser', test)
     zc.buildout.testing.install('zope.traversing', test)
     zc.buildout.testing.install('zope.contenttype', test)
     zc.buildout.testing.install('zope.app.debug', test)
+    zc.buildout.testing.install('wsgi_intercept', test)
+    zc.buildout.testing.install('mechanize', test)
     zc.buildout.testing.install_develop('z3c.recipe.paster', test)
 
 checker = renormalizing.RENormalizing([

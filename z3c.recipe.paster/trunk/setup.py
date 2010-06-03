@@ -98,6 +98,9 @@ setup(
             'zc.buildout',
             'zope.traversing',
             'zope.security',
+            'wsgi_intercept',
+            'mechanize',
+            'zope.testbrowser',
             ],
         ),
     install_requires = [
