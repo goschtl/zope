@@ -14,8 +14,6 @@
 """Utility Vocabulary.
 
 This vocabulary provides terms for all utilities providing a given interface.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 

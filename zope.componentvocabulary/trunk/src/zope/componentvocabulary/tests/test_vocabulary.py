@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Vocabulary tests
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 import doctest
