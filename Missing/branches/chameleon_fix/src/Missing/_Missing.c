@@ -187,6 +187,11 @@ Missing_getattr(PyObject *self, PyObject *name)
     }
   else legal=NULL;
 
+  if (strcmp(c,"__class__")==0)
+    {
+        return Py_FindAttrString(self, c);
+    }
+
   if(! legal)
     {
       if(strcmp(c,"__reduce__")==0)

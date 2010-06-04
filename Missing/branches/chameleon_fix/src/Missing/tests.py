@@ -32,6 +32,8 @@
 1
 >>> Value == Value + 1
 1
+>>> Value.__class__
+<type 'Missing'>
 
 $Id$
 """
