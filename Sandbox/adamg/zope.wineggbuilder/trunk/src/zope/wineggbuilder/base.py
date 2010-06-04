@@ -1,0 +1,130 @@
+"""base classes
+
+$Id$
+"""
+__docformat__ = 'ReStructuredText'
+import StringIO
+import base64
+import httplib
+import logging
+import optparse
+import os
+import pkg_resources
+import subprocess
+import sys
+import urllib2
+import urlparse
+
+LOGGER = logging.Logger('build')
+
+class Command(object):
+    def __init__(self, cwd=None, captureOutput=True, exitOnError=True):
+        self.cwd = cwd
+        self.captureOutput = captureOutput
+        self.exitOnError = exitOnError
+
+    def do(cmd):
+        LOGGER.debug('Command: ' + cmd)
+        if self.captureOutput:
+            stdout = stderr = subprocess.PIPE
+        else:
+            stdout = stderr = None
+        p = subprocess.Popen(
+            cmd, stdout=stdout, stderr=stderr,
+            shell=True, cwd=self.cwd)
+        stdout, stderr = p.communicate()
+        if stdout is None:
+            stdout = "See output above"
+        if stderr is None:
+            stderr = "See output above"
+        if p.returncode != 0:
+            LOGGER.error(u'An error occurred while running command: %s' %cmd)
+            LOGGER.error('Error Output: \n%s' % stderr)
+            if self.exitOnError:
+                sys.exit(p.returncode)
+            else:
+                raise OSError(p.returncode)
+        LOGGER.debug('Output: \n%s' % stdout)
+        return stdout
+
+class SVN(object):
+
+    user = None
+    passwd = None
+    forceAuth = False
+    #hook to enable testing
+    commandKlass = Command
+
+    #TODO: spaces in urls+folder names???
+
+    def __init__(self, user=None, passwd=None,
+                 forceAuth=False, exitOnError=True):
+        self.user = user
+        self.passwd = passwd
+        self.forceAuth = forceAuth
+        self.cmd = self.commandKlass(exitOnError=exitOnError)
+
+    def _addAuth(self, command):
+        auth = ''
+        if self.user:
+            auth = '--username %s --password %s' % (self.user, self.passwd)
+
+            if self.forceAuth:
+                auth += ' --no-auth-cache'
+
+        command = command.replace('##__auth__##', auth)
+        return command
+
+    def info(self, url):
+        command = 'svn info --non-interactive ##__auth__## --xml %s' % url
+        command = self._addAuth(command)
+        return self.cmd.do(command)
+
+    def ls(self, url):
+        command = 'svn ls --non-interactive ##__auth__## --xml %s' % url
+        command = self._addAuth(command)
+        return self.cmd.do(command)
+
+    def cp(self, fromurl, tourl, comment):
+        command = 'svn cp --non-interactive ##__auth__## -m "%s" %s %s' %(
+            comment, fromurl, tourl)
+        command = self._addAuth(command)
+        self.cmd.do(command)
+
+    def co(self, url, folder):
+        command = 'svn co --non-interactive ##__auth__## %s %s' % (url, folder)
+        command = self._addAuth(command)
+        self.cmd.do(command)
+
+    def ci(self, folder, comment):
+        command = 'svn ci --non-interactive ##__auth__## -m "%s" %s' % (
+            comment, folder)
+        command = self._addAuth(command)
+        self.cmd.do(command)
+
+def getInput(prompt, default, useDefaults):
+    if useDefaults:
+        return default
+    defaultStr = ''
+    if default:
+        defaultStr = ' [' + default + ']'
+    value = raw_input(prompt + defaultStr + ': ')
+    if not value:
+        return default
+    return value
+
+
+def checkRO(function, path, excinfo):
+    if (function == os.remove
+        and excinfo[0] == WindowsError
+        and excinfo[1].winerror == 5):
+        #Access is denied
+        #because it's a readonly file
+        os.chmod(path, stat.S_IWRITE)
+        os.remove(path)
+
+def rmtree(dirname):
+    if is_win32:
+        shutil.rmtree(dirname, ignore_errors=False, onerror=checkRO)
+    else:
+        shutil.rmtree(dirname)

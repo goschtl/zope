@@ -1,12 +1,17 @@
 TODOs on the server:
 
-- setup .buildout
-  - egg folder -> c:\eggs
-  - no DL cache
+- windows basics
+  - kill unneeded services
+  - windows firewall
 
 - setup python's 2.4 -> 2.7?
   - setuptools
   - pywin32
+  - add one more 'system' python for buildbot etc, keep the others CLEAN
+
+- setup .buildout
+  - egg folder -> c:\eggs
+  - no DL cache
 
 - setup mingw32
   - don't add to PATH
@@ -15,3 +20,9 @@ TODOs on the server:
   - check that build_ext works only with --compiler
 
 - buildbot
+
+- create user on PYPI
+  - setup .pypirc
+
+
+- setup some monitoring (mon.itor.us?)
