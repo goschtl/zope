@@ -1,0 +1,7 @@
+Changelog
+=========
+
+2.13.0 (2010-06-05)
+-------------------
+
+- Released as separate package.
