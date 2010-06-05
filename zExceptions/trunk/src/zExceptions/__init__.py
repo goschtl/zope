@@ -25,28 +25,35 @@ from zope.publisher.interfaces import INotFound
 from zope.security.interfaces import IForbidden
 from zExceptions.unauthorized import Unauthorized
 
+
 class BadRequest(Exception):
     implements(IException)
+
 
 class InternalError(Exception):
     implements(IException)
 
+
 class NotFound(Exception):
     implements(INotFound)
+
 
 class Forbidden(Exception):
     implements(IForbidden)
 
+
 class MethodNotAllowed(Exception):
     pass
+
 
 class Redirect(Exception):
     pass
 
+
 def convertExceptionType(name):
     import zExceptions
     etype = None
-    if __builtins__.has_key(name):
+    if name in __builtins__:
         etype = __builtins__[name]
     elif hasattr(zExceptions, name):
         etype = getattr(zExceptions, name)
@@ -54,6 +61,7 @@ def convertExceptionType(name):
         isinstance(etype, (type, ClassType)) and
         issubclass(etype, Exception)):
         return etype
+
 
 def upgradeException(t, v):
     # If a string exception is found, convert it to an equivalent

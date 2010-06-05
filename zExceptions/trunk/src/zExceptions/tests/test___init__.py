@@ -1,5 +1,6 @@
 import unittest
 
+
 class Test_convertExceptionType(unittest.TestCase):
 
     def _callFUT(self, name):
@@ -18,6 +19,7 @@ class Test_convertExceptionType(unittest.TestCase):
 
     def test_name_in_zExceptions_not_an_exception_returns_None(self):
         self.failUnless(self._callFUT('convertExceptionType') is None)
+
 
 class Test_upgradeException(unittest.TestCase):
 
@@ -46,6 +48,7 @@ class Test_upgradeException(unittest.TestCase):
         t, v = self._callFUT('Nonesuch', 'TEST')
         self.assertEqual(t, InternalError)
         self.assertEqual(v, ('Nonesuch', 'TEST'))
+
 
 def test_suite():
     return unittest.TestSuite((

@@ -18,7 +18,6 @@ optionally in HTML.
 import sys
 import cgi
 
-
 DEBUG_EXCEPTION_FORMATTER = 1
 
 
@@ -114,7 +113,7 @@ class TextExceptionFormatter:
         return None
 
     def formatTracebackInfo(self, tbi):
-        return self.formatSupplementLine('__traceback_info__: %s' % (tbi,))
+        return self.formatSupplementLine('__traceback_info__: %s' % (tbi, ))
 
     def formatLine(self, tb):
         f = tb.tb_frame
@@ -138,10 +137,10 @@ class TextExceptionFormatter:
         result.append(self.escape(s))
 
         # Output a traceback supplement, if any.
-        if locals.has_key('__traceback_supplement__'):
+        if '__traceback_supplement__' in locals:
             # Use the supplement defined in the function.
             tbs = locals['__traceback_supplement__']
-        elif globals.has_key('__traceback_supplement__'):
+        elif '__traceback_supplement__' in globals:
             # Use the supplement defined in the module.
             # This is used by Scripts (Python).
             tbs = globals['__traceback_supplement__']
@@ -197,7 +196,6 @@ class TextExceptionFormatter:
         return result
 
 
-
 class HTMLExceptionFormatter (TextExceptionFormatter):
 
     line_sep = '<br />\r\n'
@@ -230,7 +228,6 @@ class HTMLExceptionFormatter (TextExceptionFormatter):
             if extra:
                 return extra
         return None
-
 
 
 limit = 200

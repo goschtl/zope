@@ -15,15 +15,9 @@
 ExceptionFormatter tests.
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
-
-try:
-    from Testing.CleanUp import CleanUp # Base class w registry cleanup
-except ImportError:
-    class CleanUp:
-        pass
-
 import sys
+from unittest import TestCase, TestSuite, makeSuite
+
 from zExceptions.ExceptionFormatter import format_exception
 
 
@@ -35,9 +29,8 @@ def tb(as_html=0):
         del b
 
 
-class ExceptionForTesting (Exception):
+class ExceptionForTesting(Exception):
     pass
-
 
 
 class TestingTracebackSupplement:
@@ -51,8 +44,7 @@ class TestingTracebackSupplement:
         self.expression = expression
 
 
-
-class Test(CleanUp, TestCase):
+class Test(TestCase):
 
     def testBasicNamesText(self, as_html=0):
         try:
@@ -129,8 +121,10 @@ class Test(CleanUp, TestCase):
             self.fail('no exception occurred')
 
     def testQuoteLastLine(self):
-        class C: pass
-        try: raise TypeError, C()
+        class C:
+            pass
+        try:
+            raise TypeError, C()
         except:
             s = tb(1)
         else:
@@ -139,11 +133,7 @@ class Test(CleanUp, TestCase):
         self.assert_(s.find('&gt;') >= 0, s)
 
 
-
 def test_suite():
     return TestSuite((
         makeSuite(Test),
         ))
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')
