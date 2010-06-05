@@ -13,12 +13,7 @@
 ##############################################################################
 """
 ExceptionFormatter tests.
-
-Revision information:
-$Id$
 """
-
-from __future__ import nested_scopes
 
 from unittest import TestCase, TestSuite, main, makeSuite
 

@@ -14,8 +14,6 @@
 
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
-
-$Id$
 """
 
 from types import ClassType

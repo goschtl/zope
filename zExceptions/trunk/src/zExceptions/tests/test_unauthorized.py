@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Unit tests for unauthorized module.
-
-$Id$
 """
 
 import unittest

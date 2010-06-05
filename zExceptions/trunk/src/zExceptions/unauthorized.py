@@ -10,9 +10,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id$
-"""
 
 from zope.interface import implements
 from zope.security.interfaces import IUnauthorized
