@@ -15,6 +15,9 @@ class MockCommand(object):
     def __init__(self):
         pass
 
+    def __call__(self, cwd=None, captureOutput=True, exitOnError=True):
+        return self
+
     def do(cmd):
         global CommandIO
         next = CommandIO.pop(0)
@@ -27,9 +30,35 @@ class MockCommand(object):
 
         return next[1]
 
+PYPI_RELEASES = {
+    'zope.proxy': None,
+}
 
-    def __call__(self, cwd=None, captureOutput=True, exitOnError=True):
+class MockPYPI(object):
+    def __init__(self):
+        pass
+
+    def __call__(self):
         return self
+
+    #def list_packages(self):
+    #    pass
+
+    def package_releases(self, package_name, show_hidden=False):
+        return PYPI_RELEASES[package_name]
+
+    #def release_urls(self, package_name, version):
+    #    pass
+    #
+    #def release_data(self, package_name, version):
+    #    pass
+    #
+    #def search(self, spec, operator=None):
+    #    pass
+    #
+    #def changelog(self, since):
+    #    pass
+
 
 def test_suite():
     return unittest.TestSuite((

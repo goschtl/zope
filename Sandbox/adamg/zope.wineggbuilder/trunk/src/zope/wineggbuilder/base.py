@@ -14,8 +14,12 @@ import subprocess
 import sys
 import urllib2
 import urlparse
+import xmlrpclib
 
 LOGGER = logging.Logger('build')
+formatter = logging.Formatter('%(levelname)s - %(message)s')
+
+is_win32 = sys.platform == 'win32'
 
 class Command(object):
     def __init__(self, cwd=None, captureOutput=True, exitOnError=True):
@@ -102,6 +106,31 @@ class SVN(object):
         command = self._addAuth(command)
         self.cmd.do(command)
 
+class PYPI(object):
+    def __init__(self):
+        self.proxy = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+
+    def list_packages(self):
+        pass
+
+    def package_releases(self, package_name, show_hidden=False):
+        return self.proxy.package_releases(package_name, show_hidden)
+
+    def release_urls(self, package_name, version):
+        pass
+
+    def release_data(self, package_name, version):
+        pass
+
+    def search(self, spec, operator=None):
+        pass
+
+    def changelog(self, since):
+        pass
+
+class URLGetter(object):
+    pass
+
 def getInput(prompt, default, useDefaults):
     if useDefaults:
         return default
@@ -128,3 +157,14 @@ def rmtree(dirname):
         shutil.rmtree(dirname, ignore_errors=False, onerror=checkRO)
     else:
         shutil.rmtree(dirname)
+
+parser = optparse.OptionParser()
+parser.add_option(
+    "-q", "--quiet", action="store_true",
+    dest="quiet", default=False,
+    help="When specified, no messages are displayed.")
+
+parser.add_option(
+    "-v", "--verbose", action="store_true",
+    dest="verbose", default=False,
+    help="When specified, debug information is created.")
