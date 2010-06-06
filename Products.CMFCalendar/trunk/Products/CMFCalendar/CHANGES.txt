@@ -4,7 +4,10 @@ Products.CMFCalendar Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Deal with deprecation warnings for Zope 2.13.
+
 - Fixed ViewPageTemplateFile import to use the correct version from Five.
+
 
 2.2.0-beta (2009-12-06)
 -----------------------
