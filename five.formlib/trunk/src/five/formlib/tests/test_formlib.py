@@ -33,6 +33,7 @@ def test_get_widgets_for_schema_fields():
       ... except ImportError:
       ...     from Products.Five import zcml
 
+      >>> import Products.Five
       >>> zcml.load_config('configure.zcml', Products.Five)
 
     Now for some actual testing...
