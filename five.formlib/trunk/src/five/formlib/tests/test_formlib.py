@@ -35,6 +35,8 @@ def test_get_widgets_for_schema_fields():
 
       >>> import Products.Five
       >>> zcml.load_config('configure.zcml', Products.Five)
+      >>> import zope.app.form.browser
+      >>> zcml.load_config('configure.zcml', zope.app.form.browser)
 
     Now for some actual testing...
 
