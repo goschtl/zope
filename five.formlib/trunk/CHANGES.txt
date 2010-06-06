@@ -4,6 +4,7 @@ Changelog
 1.0.3 - unreleased
 ------------------
 
+* Avoid deprecation warnings under Zope 2.13.
 
 1.0.2 - 2009-12-30
 ------------------

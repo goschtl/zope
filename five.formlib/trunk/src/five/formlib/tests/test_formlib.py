@@ -27,8 +27,12 @@ def test_get_widgets_for_schema_fields():
 
     First, load the configuration files:
 
-      >>> import Products.Five
-      >>> from Products.Five import zcml
+      # BBB for Zope 2.12
+      >>> try:
+      ...     from Zope2.App import zcml
+      ... except ImportError:
+      ...     from Products.Five import zcml
+
       >>> zcml.load_config('configure.zcml', Products.Five)
 
     Now for some actual testing...

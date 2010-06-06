@@ -16,7 +16,12 @@ account:
 We need to configure all of Five and the necessary formlib components for
 this test:
 
-  >>> from Products.Five import zcml
+  # BBB for Zope 2.12
+  >>> try:
+  ...     from Zope2.App import zcml
+  ... except ImportError:
+  ...     from Products.Five import zcml
+
   >>> import Products.Five
   >>> zcml.load_config('meta.zcml', Products.Five)
   >>> import five.formlib
@@ -33,7 +38,12 @@ to to do its view lookup:
 
 Let's set up a testbrowser:
 
-  >>> from Products.Five.testbrowser import Browser
+  # BBB for Zope 2.12
+  >>> try:
+  ...     from Testing.testbrowser import Browser
+  ... except ImportError:
+  ...     from Products.Five.testbrowser import Browser
+
   >>> browser = Browser()
   >>> browser.addHeader('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
   >>> browser.addHeader('Accept-Language', 'en-US')
