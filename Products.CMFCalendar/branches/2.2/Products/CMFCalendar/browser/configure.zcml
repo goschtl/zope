@@ -4,6 +4,8 @@
 
   <adapter factory=".event.EventSchemaAdapter"/>
 
+  <include package="Products.CMFCore" file="permissions.zcml"/>
+
   <utility
       component=".event.EventTypeVocabularyFactory"
       name="cmf.calendar.AvailableEventTypes"
