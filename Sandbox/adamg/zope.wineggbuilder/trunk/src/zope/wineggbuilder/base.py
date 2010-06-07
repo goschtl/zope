@@ -21,6 +21,8 @@ formatter = logging.Formatter('%(levelname)s - %(message)s')
 
 is_win32 = sys.platform == 'win32'
 
+BUILD_SECTION = 'build'
+
 class Command(object):
     def __init__(self, cwd=None, captureOutput=True, exitOnError=True):
         self.cwd = cwd

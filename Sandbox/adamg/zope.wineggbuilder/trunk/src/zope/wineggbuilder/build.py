@@ -19,15 +19,60 @@ from zope.wineggbuilder import base
 
 LOGGER = base.LOGGER
 
+def getOption(config, section, name, default=None):
+    try:
+        return config.get(section, name)
+    except ConfigParser.NoOptionError:
+        self.uploadType = 'internal'
+
+
 class Compiler(object):
-    pass
+    def __init__(self, name, config, options):
+        self.name = name
+        self.options = options
+        self.read(config)
+
+    def read(self, config):
+        self.command = config.get(self.name, 'command')
+        self.fileEnding = config.get(self.name, 'fileEnding')
 
 class Package(object):
-    pass
+    def __init__(self, name, config, options, compilers):
+        self.name = name
+        self.options = options
+        self.read(config, compilers)
+
+    def read(self, config):
+        self.pypiurl = config.get(self.name, 'pypiurl')
+        self.tagurl = config.get(self.name, 'tagurl')
+        self.minVersion = getOption(config, self.name, 'minVersion')
+        self.maxVersion = getOption(config, self.name, 'maxVersion')
+        self.targets = []
+        for target in config.get(self.name, 'targets').split():
+            self.targets.append(compilers[target])
+
+    def build(self):
+        pass
+        #1 get versions from pypi
+        #2 get file list of the version
+        #3 check file endings
+        #4 build missing
 
 class Builder(object):
     def __init__(self, configFileName, options):
-        pass
+        config = ConfigParser.RawConfigParser()
+        config.read(configFileName)
+
+        self.compilers = {}
+        for cmp in config.get(base.BUILD_SECTION, 'compilers').split():
+            self.compilers[cmp] = Compiler(cmp, config, options)
+
+        self.packages = []
+        for pkg in config.get(base.BUILD_SECTION, 'packages').split():
+            self.packages.append(Package(pkg, config, options, self.compilers))
+
+        for pkg in self.packages:
+            pkg.build()
 
 
 def main(args=None):
@@ -70,4 +115,3 @@ def main(args=None):
 
     # Exit cleanly.
     sys.exit(0)
-
