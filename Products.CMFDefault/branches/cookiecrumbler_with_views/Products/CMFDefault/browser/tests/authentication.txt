@@ -10,9 +10,10 @@ Set up user.
 
 Create the browser object we'll be using.
 
+    # BBB for Zope 2.12
     >>> try:
     ...     from Testing.testbrowser import Browser
-    ... except ImportError: # BBB: for Zope 2.12
+    ... except ImportError:
     ...     from Products.Five.testbrowser import Browser
     >>> browser = Browser()
     >>> # XXX: browser has no API for disabling redirects
