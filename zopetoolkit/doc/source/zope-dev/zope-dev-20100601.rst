@@ -5,11 +5,6 @@
 This is the agenda and summary for the weekly Zope developer meeting of
 Tuesday, 2010-06-01 on #zope@irc.freenode.org from 15:00 to 15:30 UTC.
 
-.. toctree::
-    :glob:
-
-    *
-
 Agenda
 ======
 
