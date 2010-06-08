@@ -14,7 +14,6 @@ setup(name='plone.postpublicationhook',
         "Framework :: Zope2",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Zope Public License",
-        "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='',
       author='Wichert Akkerman',
@@ -35,4 +34,3 @@ setup(name='plone.postpublicationhook',
           'Zope2.10': ['ZPublisherEventsBackport'],
       },
       )
-

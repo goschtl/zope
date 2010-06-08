@@ -1,6 +1,7 @@
 from zope.interface import implements
 from zope.component.interfaces import ObjectEvent
 from zope.event import notify
+
 from plone.postpublicationhook.interfaces import IAfterPublicationEvent
 
 

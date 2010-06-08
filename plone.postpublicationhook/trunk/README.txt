@@ -16,7 +16,7 @@ Introduction
 ============
 
 This package provides a hook into Zope's ZPublisher that is run after the
-publisher has completed publication, but before the the transaction is commited
+publisher has completed publication, but before the the transaction is committed
 and the response is returned to the requesting browser. This is practical for
 caching purposes: it is the ideal place to determine and insert caching headers
 into the response.
@@ -82,4 +82,4 @@ Register it in zcml the same way::
 
 .. _zope.event: http://pypi.python.org/pypi/zope.event
 .. _zope.component: http://pypi.python.org/pypi/zope.component
-.. ZPublisherEventsBackport: http://pypi.python.org/pypi/ZPublisherEventsBackport
+.. _ZPublisherEventsBackport: http://pypi.python.org/pypi/ZPublisherEventsBackport
