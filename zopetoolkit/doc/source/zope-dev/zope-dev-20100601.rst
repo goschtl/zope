@@ -5,42 +5,22 @@
 This is the agenda and summary for the weekly Zope developer meeting of
 Tuesday, 2010-06-01 on #zope@irc.freenode.org from 15:00 to 15:30 UTC.
 
-Attendees
-=========
-Charlie Clark, Hanno Schilling, Adam Groszer, Tres Seaver
+.. toctree::
+    :glob:
 
-Summary
-=======
+    *
+
+Agenda
+======
 
 - Documentation
     - Consolidate "floating" documentation into Sphinx/docs.zope.org
-    
-    Lots of useful Zope documentation is spread around so that it is difficult 
-    to find. Tres suggested that we start with the wikis and that much of the
-    work is editorial - sifting, correcting, updating and deleting.
-    
-    http://sphinx.pocoo.org/ is a good starting place for learning about Sphinx
-    
+
 - Releases
     - How to find a good point when to cut a new release for a package for
       which fixed bugs where registered (or changes have been made)? Any
       automation possible to alert us when changes have been sitting around
       unreleased for a while?
-      
-      The current release process is documented at
-      http://docs.zope.org/zopetoolkit/process/releasing-software.html
-      zest.releaser and jarn.mkrelease are two tools that can be used to make
-      releasing easier.
-      
-      The zope.bugtracker script can be used to detect likely packages, eg.
-      $ bin/check-bugs -s "Fix Committed" -g zopetoolkit
-      
-      There was no agreement to get a cronjob to pester developers to make
-      releases for packages where fixes have been committed but it would seem
-      a useful practice after bug days.
-
-The IRC log is available here:
-  http://zope3.pov.lt/irclogs-zope/%23zope.2010-06-01.log.html#t2010-06-01T18:05:03
 
 Ongoing issues
 --------------
@@ -86,7 +66,6 @@ need to follow up on them eventually.
       Other tool? Continue text files?)
     - Find second person to run the weekly meetings
 
-
 Topic proposals
 ---------------
 
@@ -99,3 +78,45 @@ Topic proposals
   implementing new technologies together, like supporting HTML 5 in the
   various parts? I'd like to start putting in new code in the foreseeable
   future in the zope.* namespace.
+
+
+Summary
+=======
+
+The IRC log is available here:
+  http://zope3.pov.lt/irclogs-zope/%23zope.2010-06-01.log.html#t2010-06-01T18:05:03
+
+Attendees
+---------
+
+Charlie Clark, Hanno Schilling, Adam Groszer, Tres Seaver
+
+Documentation
+-------------
+
+Consolidate "floating" documentation into Sphinx/docs.zope.org
+
+Lots of useful Zope documentation is spread around so that it is difficult to
+find. Tres suggested that we start with the wikis and that much of the work is
+editorial - sifting, correcting, updating and deleting.
+
+http://sphinx.pocoo.org/ is a good starting place for learning about Sphinx
+
+Releases
+--------
+
+How to find a good point when to cut a new release for a package for which
+fixed bugs where registered (or changes have been made)? Any automation
+possible to alert us when changes have been sitting around unreleased for a
+while?
+
+The current release process is documented at
+http://docs.zope.org/zopetoolkit/process/releasing-software.html zest.releaser
+and jarn.mkrelease are two tools that can be used to make releasing easier.
+
+The zope.bugtracker script can be used to detect likely packages, eg.  $
+bin/check-bugs -s "Fix Committed" -g zopetoolkit
+
+There was no agreement to get a cronjob to pester developers to make releases
+for packages where fixes have been committed but it would seem a useful
+practice after bug days.
