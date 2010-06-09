@@ -7,7 +7,7 @@ def read(*rnames):
 name = "zc.recipe.testrunner"
 setup(
     name = name,
-    version = "1.3.0dev",
+    version = "1.3.0",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for creating test runners",
@@ -29,6 +29,9 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
+    extras_require = {
+        'tests': ['zope.testing'],
+        },
     install_requires = ['zc.buildout >=1.2.0',
                         'zope.testrunner',
                         'setuptools',
