@@ -47,32 +47,48 @@ class Compiler(object):
 
     def checkBuild(self, package, version, files):
         """check whether build is required"""
+        LOGGER.debug('Checking if build required for %s %s %s',
+                     package.name, version, self.name)
         needBuild = True
         fe = self.fileEnding.lower()
         for file in files:
             if file.lower().endswith(fe):
                 needBuild = False
                 break
+
+        if needBuild:
+            LOGGER.debug('Build required for %s %s %s',
+                     package.name, version, self.name)
+        else:
+            LOGGER.debug('Build not required for %s %s %s',
+                     package.name, version, self.name)
         return needBuild
 
     def build(self, package, version, files, sourceFolder):
-        if self.checkBuild(package, version, files):
-            #we really need to build
-            #we have the source in sourceFolder
-            cmd = self.commandKlass(cwd=sourceFolder, exitOnError=False)
+        LOGGER.info('Starting build for %s %s %s',
+                    package.name, version, self.name)
+        #we really need to build
+        #we have the source in sourceFolder
+        cmd = self.commandKlass(cwd=sourceFolder, exitOnError=False)
 
-            if len(self.command.splitlines()) > 1:
-                #in case there are more lines we got to do .bat file
-                tmpfile = tempfile.NamedTemporaryFile(suffix='.bat')
-                command = tmpfile.name
-                tmpfile.write(self.command)
-                tmpfile.file.flush()
-            else:
-                command = self.command
+        if len(self.command.splitlines()) > 1:
+            #in case there are more lines we got to do .bat file
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.bat')
+            command = tmpfile.name
+            tmpfile.write(self.command)
+            tmpfile.file.flush()
+        else:
+            command = self.command
 
-            cmd.do(command)
+        LOGGER.debug('Running: %s\nIn: %s', self.command, sourceFolder)
 
-            pass
+        #this ought to build and upload the egg
+        output = cmd.do(command)
+
+def versionToTuple(version):
+    parts = version.split('.')
+    parts = [int(v) for v in parts]
+    return tuple(parts)
 
 class Package(object):
     #hook to enable testing
@@ -102,9 +118,25 @@ class Package(object):
         versions = pypi.package_releases(self.name, show_hidden=True)
 
         #1.1 filter versions according to minVersion and maxVersion:
+        if self.minVersion:
+            minver = versionToTuple(self.minVersion)
+            versions = [v for v in versions
+                        if versionToTuple(v) >= minver]
 
+        if self.maxVersion:
+            maxver = versionToTuple(self.maxVersion)
+            versions = [v for v in versions
+                        if versionToTuple(v) <= maxver]
+
+        versions.sort()
+        if len(versions) == 0:
+            #nothing to do
+            LOGGER.info('%s no versions, nothing to do', self.name)
+            return
 
         #2 get file list of each version
+        LOGGER.debug('getting %s', self.pypiurl)
+
         verFiles = defaultdict(list)
         simple = self.urlGetterKlass().get(self.pypiurl)
         soup = BeautifulSoup.BeautifulSoup(simple)
@@ -117,19 +149,20 @@ class Package(object):
                 version = m.group(1)
                 if version not in versions:
                     continue
+                LOGGER.debug('Got a file: %s', cntnt)
                 verFiles[version].append(cntnt)
 
         svn = self.svnKlass()
         for version in versions:
             #3 check whether we need a build
-            needBuild = False
+            needs = []
             for target in self.targets:
                 needBuild = target.checkBuild(
                     self, version, verFiles.get(version, []))
                 if needBuild:
-                    break
+                    needs.append(target)
 
-            if needBuild:
+            if needs:
                 tmpfolder = tempfile.mkdtemp('wineggbuilder')
                 try:
                     #3.1 svn co tag
@@ -137,17 +170,17 @@ class Package(object):
                     svn.co(svnurl, tmpfolder)
 
                     #3.2 build missing
-                    for target in self.targets:
+                    for target in needs:
                         needBuild = target.build(
                             self, version, verFiles.get(version, []), tmpfolder)
                 finally:
                     #3.3 del temp folder
                     base.rmtree(tmpfolder)
 
-
-
 class Builder(object):
     def __init__(self, configFileName, options):
+        LOGGER.info('loading configuration from %s', configFileName)
+
         config = ConfigParser.RawConfigParser()
         config.read(configFileName)
 
@@ -160,8 +193,12 @@ class Builder(object):
             self.packages.append(Package(pkg, config, options, self.compilers))
 
     def runCLI(self):
+        LOGGER.info('Starting to build')
+
         for pkg in self.packages:
             pkg.build()
+
+        LOGGER.info('Done.')
 
 
 def main(args=None):

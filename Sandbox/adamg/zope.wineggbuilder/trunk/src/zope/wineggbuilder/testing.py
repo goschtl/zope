@@ -8,11 +8,15 @@ import unittest
 import doctest
 import pprint
 
+from zope.wineggbuilder import base
+
+LOGGER = base.LOGGER
+
 MOCKLOG = []
 
 #format is [(expected cmd, result)]
 CommandIO = [
-#svn co --non-interactive  svn://svn.zope.org/repos/main/zope.proxy/tags/3.6.0 /tmp/tmpgqt2dHwineggbuilder
+#svn co --non-interactive  svn://svn.zope.org/repos/main/zope.proxy/tags/3.4.0 /tmp/tmpgqt2dHwineggbuilder
 """A    /tmp/tmpgqt2dHwineggbuilder/bootstrap.py
 A    /tmp/tmpgqt2dHwineggbuilder/buildout.cfg
 A    /tmp/tmpgqt2dHwineggbuilder/CHANGES.txt
@@ -33,6 +37,9 @@ A    /tmp/tmpgqt2dHwineggbuilder/src/zope/__init__.py
 A    /tmp/tmpgqt2dHwineggbuilder/README.txt
  U   /tmp/tmpgqt2dHwineggbuilder
 Checked out revision 113298.""",
+#cmd: /tmp/tmp9pHarC.bat in /tmp/tmpWIuwvGwineggbuilder
+"""
+""",
 #svn co --non-interactive  svn://svn.zope.org/repos/main/zope.proxy/tags/3.4.1 /tmp/tmpKNdQxlwineggbuilder
 """A    /tmp/tmpKNdQxlwineggbuilder/bootstrap.py
 A    /tmp/tmpKNdQxlwineggbuilder/buildout.cfg
@@ -57,12 +64,11 @@ A    /tmp/tmpKNdQxlwineggbuilder/src/zope/__init__.py
 A    /tmp/tmpKNdQxlwineggbuilder/README.txt
  U   /tmp/tmpKNdQxlwineggbuilder
 Checked out revision 113298.""",
-'svn co',
-'svn co',
-'bat',
-'bat',
-'bat',
-'bat',
+#cmd: /tmp/tmpXhyppL.bat in /tmp/tmpIK6VMJwineggbuilder
+"""
+""",
+"""
+""",
 ]
 
 class MockCommand(object):
@@ -79,11 +85,15 @@ class MockCommand(object):
         global MOCKLOG
         MOCKLOG.append('cmd: %s in %s' % (cmd, self.cwd))
 
+        LOGGER.debug('Command: ' + cmd)
+
         global CommandIO
         next = CommandIO.pop(0)
 
         if isinstance(next, Exception):
             raise next
+
+        LOGGER.debug('Output: \n%s' % next)
 
         return next
 
@@ -142,7 +152,6 @@ RESPONSES = {
 <a href="../../packages/2.6/z/zope.proxy/zope.proxy-3.6.0-py2.6-win32.egg#md5=6984986850f74abdb3cd0c738579cb16">zope.proxy-3.6.0-py2.6-win32.egg</a><br/>
 <a href="../../packages/source/z/zope.proxy/zope.proxy-3.4.0.zip#md5=3fef9f29c8b920c9f20aa3a2f92afa70">zope.proxy-3.4.0.zip</a><br/>
 <a href="../../packages/2.4/z/zope.proxy/zope.proxy-3.3.0-py2.4-win32.egg#md5=554d10d694d7e5ea9468d88c1c078387">zope.proxy-3.3.0-py2.4-win32.egg</a><br/>
-<a href="../../packages/2.5/z/zope.proxy/zope.proxy-3.4.1-py2.5-win32.egg#md5=82c2d44d956ceaa1c838bf23be18fe95">zope.proxy-3.4.1-py2.5-win32.egg</a><br/>
 <a href="http://svn.zope.org/zope.proxy" rel="homepage">3.3.0 home_page</a><br/>
 <a href="http://docs.python.org/ref/sequence-methods.html">http://docs.python.org/ref/sequence-methods.html</a><br/>
 </body></html>""",
