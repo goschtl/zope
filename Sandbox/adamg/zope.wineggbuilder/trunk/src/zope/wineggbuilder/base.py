@@ -10,6 +10,7 @@ import logging
 import optparse
 import os
 import pkg_resources
+import shutil
 import subprocess
 import sys
 import urllib2
@@ -131,7 +132,9 @@ class PYPI(object):
         pass
 
 class URLGetter(object):
-    pass
+    def get(self, url):
+        req = urllib2.Request(url)
+        return urllib2.urlopen(req).read()
 
 def getInput(prompt, default, useDefaults):
     if useDefaults:
