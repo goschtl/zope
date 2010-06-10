@@ -19,7 +19,7 @@ Discussion
 
 Minutes of last meeting
 
-- The minutes were principly agreed on.
+- The minutes were principally agreed on.
 
 Buildslaves testing the ZTK on required platforms
 
@@ -32,10 +32,9 @@ Buildslaves testing the ZTK on required platforms
 
 - Note that the buildslaves set up by THA test the``released`` packages and
   thus should not need a compiler installed. So, an MSDN license is not
-  neccessary for these slaves.
+  necessary for these slaves.
 
-- Ccomb made sure Make sure we have a buildbot testing the ZTK releases (and
-  not SVN) is up and running.
+- Ccomb made sure we have a buildbot testing the ZTK releases (and not SVN).
 
 ZTK-layout
 
@@ -50,9 +49,9 @@ ZTK-layout
   benefit. They're in favor of a clearly defined set of packages that define
   the essence of a ZTK and nothing more.
 
-- After discussions a decission was made to remove the concept of the
+- After discussions a decision was made to remove the concept of the
   ``extras.cfg`` and go from there. If at some point in the future we think
-  such a list of extra package is needed after all, we can ressurect the
+  such a list of extra package is needed after all, we can resurrect the
   concept.
 
 - Since most of the ZTK-consumer frameworks will actually maintain lists of
@@ -61,10 +60,10 @@ ZTK-layout
   sense of coherence and stability. (see for example the "Grok Toolkit" that
   extends the ZTK).
 
-- Breakage of these ecospheres will be the resposibility of the respective
+- Breakage of these ecospheres will be the responsibility of the respective
   communities.
 
-- The ZTK contains sections refering to unresolved dependencies and other
+- The ZTK contains sections referring to unresolved dependencies and other
   questionable packages. These packages need to be reviewed.
 
 Tasks
@@ -72,7 +71,7 @@ Tasks
 
 - We want 64bit Linux and Windows tests for the ZTK. j-w is bugging janjaap to
   create those. Maybe contact ccomb for adding slaves to "afpy". We can resolve
-  this issue when the build reports are comming in on zope-test. [j-w]
+  this issue when the build reports are coming in on zope-test. [j-w]
 
 - Each of the representatives will review the list of packages all three
   frameworks use, as made by Tres. [ccomb, hannosch, j-w]
