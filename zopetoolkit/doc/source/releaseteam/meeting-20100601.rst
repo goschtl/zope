@@ -1,4 +1,4 @@
-ZTK meeting - 2010-05-18
+ZTK meeting - 2010-06-01
 ========================
 
 Attendance
@@ -11,7 +11,7 @@ Agenda
 
 - Minutes of last meeting
 - Follow-up on tasks, open points
-- New and ongoging tasks, open points.
+- New and ongoing tasks, open points.
 - Planning the next meeting
 
 Discussion
@@ -19,7 +19,7 @@ Discussion
 
 Minutes of last meeting
 
-- The minues were principly agreed on.
+- The minutes were principly agreed on.
 
 Buildslaves testing the ZTK on required platforms
 
@@ -41,8 +41,8 @@ ZTK-layout
 
 - ccomb started a ZTK branch where he made a new layout for the ZTK files.
 
-- ccomd suggested creating and maintaining an ``extras.cfg`` where packages
-  that make up "a common ecospehere" of software would be tested with and
+- ccomb suggested creating and maintaining an ``extras.cfg`` where packages
+  that make up "a common ecosphere" of software would be tested with and
   against the official ZTK.
 
 - hannosch and j-w didn't see the need for such an ``extras.cfg`` as it would
@@ -64,7 +64,7 @@ ZTK-layout
 - Breakage of these ecospheres will be the resposibility of the respective
   communities.
 
-- The ZTK contains sections refereing to unresolved depdencies and other
+- The ZTK contains sections refering to unresolved dependencies and other
   questionable packages. These packages need to be reviewed.
 
 Tasks
@@ -74,13 +74,13 @@ Tasks
   create those. Maybe contact ccomb for adding slaves to "afpy". We can resolve
   this issue when the build reports are comming in on zope-test. [j-w]
 
-- Each of the represenatives will review the list of packages all three
+- Each of the representatives will review the list of packages all three
   frameworks use, as made by Tres. [ccomb, hannosch, j-w]
 
 - Update the http://docs.zope.org/zopetoolkit/about/coreextra.html
   documentation. [hannosch]
 
-- Update the ccomb branch the reflect the ``extras.cfg`` decission. [ccomb]
+- Update the ccomb branch to reflect the ``extras.cfg`` decision. [ccomb]
 
 - Review the unresolved dependencies sections in the ZTK. [j-w]
 
