@@ -91,7 +91,6 @@ Open points
 - the list for "extra" packages still needs to be defined, we could have a
   incoming.cfg and/or extra.cfg
 
-
 Next meeting
 ------------
 
