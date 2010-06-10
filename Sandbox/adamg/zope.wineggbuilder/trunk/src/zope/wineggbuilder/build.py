@@ -82,8 +82,24 @@ class Compiler(object):
 
         LOGGER.debug('Running: %s\nIn: %s', self.command, sourceFolder)
 
-        #this ought to build and upload the egg
-        output = cmd.do(command)
+        try:
+            #this ought to build and upload the egg
+            output = cmd.do(command)
+            if 'failed' in output.lower():
+                LOGGER.info("Something was wrong with the command. Output: %s",
+                            output)
+
+            if 'running upload' in output \
+                and 'Submitting' in output \
+                and 'Server response (200): OK' in output:
+                LOGGER.info("Upload seems to be OK.\n%s",
+                            '\n'.join(output.splitlines()[-3:]))
+        except KeyboardInterrupt:
+            raise
+        except:
+            #prepare for the worst
+            LOGGER.exception("An error occurred while running the build command")
+            #continue without bailing out
 
 def versionToTuple(version):
     parts = version.split('.')
@@ -196,7 +212,15 @@ class Builder(object):
         LOGGER.info('Starting to build')
 
         for pkg in self.packages:
-            pkg.build()
+            try:
+                pkg.build()
+            except KeyboardInterrupt:
+                raise
+            except:
+                #prepare for the worst
+                LOGGER.exception("An error occurred while running the building %s",
+                                 pkg.name)
+                #continue without bailing out
 
         LOGGER.info('Done.')
 
