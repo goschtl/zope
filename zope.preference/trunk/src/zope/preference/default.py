@@ -27,7 +27,7 @@ from zope.location import locate
 
 import zope.app.component
 from zope.app.container.contained import Contained
-from zope.app.preference import preference, interfaces
+from zope.preference import preference, interfaces
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):
     zope.interface.implements(interfaces.IDefaultPreferenceProvider)
@@ -69,7 +69,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
         if group is default:
             return default
         return DefaultPreferenceGroup(group, self.provider).__bind__(self)
-    
+
     def items(self):
         return [
             (id, DefaultPreferenceGroup(group, self.provider).__bind__(self))
@@ -94,7 +94,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
                 self.provider, interfaces.IDefaultPreferenceProvider)
 
             # No more providers found, so return the schema's default
-            if nextProvider is None: 
+            if nextProvider is None:
                 return self.__schema__[key].default
 
             nextGroup = nextProvider.getDefaultPreferenceGroup(self.__id__)

@@ -6,7 +6,7 @@ Implementing user preferences is usually a painful task, since it requires a
 lot of custom coding and constantly changing preferences makes it hard to
 maintain the data and UI. The `preference` package
 
-  >>> from zope.app.preference import preference
+  >>> from zope.preference import preference
 
 eases this pain by providing a generic user preferences framework that uses
 schemas to categorize and describe the preferences.
@@ -68,7 +68,7 @@ and the id, schema and title of the group are directly available:
   >>> settings.__id__
   'ZMISettings'
   >>> settings.__schema__
-  <InterfaceClass zope.app.preference.README.IZMIUserSettings>
+  <InterfaceClass zope.preference.README.IZMIUserSettings>
   >>> settings.__title__
   u'ZMI User Settings'
 
@@ -138,7 +138,7 @@ assignment:
   >>> settings.skin = 'MySkin'
   Traceback (most recent call last):
   ...
-  ConstraintNotSatisfied: MySkin  
+  ConstraintNotSatisfied: MySkin
 
 
 Preference Group Trees
@@ -179,7 +179,7 @@ item on the parent group ...
 
 ... but not before we register the groups as utilities:
 
-  >>> from zope.app.preference import interfaces
+  >>> from zope.preference import interfaces
   >>> from zope.app.testing import ztapi
 
   >>> ztapi.provideUtility(interfaces.IPreferenceGroup, settings,
@@ -190,10 +190,10 @@ item on the parent group ...
 If we now try to lookup the sub-group again, we should be successful:
 
   >>> settings.Folder #doctest:+ELLIPSIS
-  <zope.app.preference.preference.PreferenceGroup object at ...>
+  <zope.preference.preference.PreferenceGroup object at ...>
 
   >>> settings['Folder'] #doctest:+ELLIPSIS
-  <zope.app.preference.preference.PreferenceGroup object at ...>
+  <zope.preference.preference.PreferenceGroup object at ...>
 
 While the registry of the preference groups is flat, the careful naming of the
 ids allows us to have a tree of preferences. Note that this pattern is very
@@ -218,19 +218,19 @@ Default Preferences
 It sometimes desirable to define default settings on a site-by-site basis,
 instead of just using the default value from the schema. The preferences
 package provides a module
- 
-  >>> from zope.app.preference import default
+
+  >>> from zope.preference import default
 
 that implements a default preferences provider that can be added as a unnamed
 utility for each site. So the first step is to create a site:
-  
+
   >>> root = setup.buildSampleFolderTree()
   >>> rsm = setup.createSiteManager(root, True)
 
 Now we can register the default preference provider with the root site:
 
-  >>> provider = setup.addUtility(rsm, '', 
-  ...                             interfaces.IDefaultPreferenceProvider, 
+  >>> provider = setup.addUtility(rsm, '',
+  ...                             interfaces.IDefaultPreferenceProvider,
   ...                             default.DefaultPreferenceProvider())
 
 So before we set an explicit default value for a preference, the schema field
@@ -245,7 +245,7 @@ But if we now set a new default value with the provider,
   >>> defaultFolder.sortedBy = 'size'
 
 then the default of the setting changes:
-  
+
   >>> settings.Folder.sortedBy
   'size'
 
@@ -257,8 +257,8 @@ parent sites. So if we make `folder1` a site and set it as the active site
 
 and add a default provider there,
 
-  >>> provider1 = setup.addUtility(sm1, '', 
-  ...                              interfaces.IDefaultPreferenceProvider, 
+  >>> provider1 = setup.addUtility(sm1, '',
+  ...                              interfaces.IDefaultPreferenceProvider,
   ...                              default.DefaultPreferenceProvider())
 
 then we still get the root's default values, because we have not defined any
@@ -317,8 +317,8 @@ manually setup the preference groups as we did above (of course). We will use
 ZCML instead. First, we need to register the directives:
 
   >>> from zope.configuration import xmlconfig
-  >>> import zope.app.preference
-  >>> context = xmlconfig.file('meta.zcml', zope.app.preference)
+  >>> import zope.preference
+  >>> context = xmlconfig.file('meta.zcml', zope.preference)
 
 Then the system sets up a root preference group:
 
@@ -329,7 +329,7 @@ Then the system sets up a root preference group:
   ...
   ...       <preferenceGroup
   ...           id=""
-  ...           title="User Preferences" 
+  ...           title="User Preferences"
   ...           />
   ...
   ...     </configure>''', context)
@@ -352,14 +352,14 @@ Let's register the ZMI settings again under a new name via ZCML:
   ...       <preferenceGroup
   ...           id="ZMISettings2"
   ...           title="ZMI Settings NG"
-  ...           schema="zope.app.preference.README.IZMIUserSettings"
+  ...           schema="zope.preference.README.IZMIUserSettings"
   ...           category="true"
   ...           />
   ...
   ...     </configure>''', context)
 
   >>> prefs.ZMISettings2 #doctest:+ELLIPSIS
-  <zope.app.preference.preference.PreferenceGroup object at ...>
+  <zope.preference.preference.PreferenceGroup object at ...>
 
   >>> prefs.ZMISettings2.__title__
   u'ZMI Settings NG'
@@ -379,13 +379,13 @@ And the tree can built again by carefully constructing the id:
   ...       <preferenceGroup
   ...           id="ZMISettings2.Folder"
   ...           title="Folder Settings"
-  ...           schema="zope.app.preference.README.IFolderSettings"
+  ...           schema="zope.preference.README.IFolderSettings"
   ...           />
   ...
   ...     </configure>''', context)
 
   >>> prefs.ZMISettings2 #doctest:+ELLIPSIS
-  <zope.app.preference.preference.PreferenceGroup object at ...>
+  <zope.preference.preference.PreferenceGroup object at ...>
 
   >>> prefs.ZMISettings2.Folder.__title__
   u'Folder Settings'
@@ -401,7 +401,7 @@ Simple Python-Level Access
 
 If a site is set, getting the user preferences is very simple:
 
-  >>> from zope.app.preference import UserPreferences
+  >>> from zope.preference import UserPreferences
   >>> prefs2 = UserPreferences()
   >>> prefs2.ZMISettings.Folder.sortedBy
   'size'
@@ -409,7 +409,7 @@ If a site is set, getting the user preferences is very simple:
 This function is also commonly registered as an adapter,
 
   >>> from zope.location.interfaces import ILocation
-  >>> ztapi.provideAdapter(ILocation, interfaces.IUserPreferences, 
+  >>> ztapi.provideAdapter(ILocation, interfaces.IUserPreferences,
   ...                      UserPreferences)
 
 so that you can adapt any location to the user preferences:
@@ -451,7 +451,7 @@ You might already wonder under which permissions the preferences are
 available. They are actually available publicly (`CheckerPublic`), but that
 is not a problem, since the available values are looked up specifically for
 the current user. And why should a user not have full access to his/her
-preferences? 
+preferences?
 
 Let's create a checker using the function that the security machinery is
 actually using:

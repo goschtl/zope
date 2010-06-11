@@ -31,9 +31,9 @@ import zope.app.component.hooks
 from zope.container.contained import Contained
 from zope.container.interfaces import IReadContainer
 
-from zope.app.preference.interfaces import IPreferenceGroup
-from zope.app.preference.interfaces import IPreferenceCategory
-from zope.app.preference.interfaces import IDefaultPreferenceProvider
+from zope.preference.interfaces import IPreferenceGroup
+from zope.preference.interfaces import IPreferenceCategory
+from zope.preference.interfaces import IDefaultPreferenceProvider
 
 pref_key = 'zope.app.user.UserPreferences'
 
