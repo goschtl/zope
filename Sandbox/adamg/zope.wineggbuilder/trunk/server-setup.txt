@@ -31,9 +31,17 @@
     - mingw32
     - MS Visual C++ 2008 Express Edition
       http://www.microsoft.com/express/downloads/
-  - install pythons
-    - c:\python24_32
-    - c:\python25_32
-    - c:\python26_32
-    - c:\python26_64
-    - c:\python25_sys (32bit)
+  - install pythons+pywin32+setuptools
+    - c:\python24_32 NOT default
+    - c:\python25_32 NOT default
+      - the trick is to install python25_sys+pywin32+setuptools first
+        then copy c:\python25_sys to python25_32
+    - c:\python26_32 NOT default
+    - c:\python26_64 NOT default
+      - setuptools trick:
+        get the source tgz, patch it with
+        http://bugs.python.org/setuptools/issue2
+    - c:\python25_sys (default, 32bit, add to path)
+  - install mingw32 to C:\MinGW
+  - collabnet svn client to C:\svn
+  - MSVC

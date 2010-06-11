@@ -23,6 +23,7 @@ TODOs on the server:
 
 - create user on PYPI
   - setup .pypirc
+  - grant perm to packages
 
 
 - setup some monitoring (mon.itor.us?)
