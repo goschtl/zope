@@ -82,6 +82,10 @@ class Compiler(object):
 
         LOGGER.debug('Running: %s\nIn: %s', self.command, sourceFolder)
 
+        if self.options.dryrun:
+            LOGGER.info("Dry run, no compile and upload")
+            return
+
         try:
             #this ought to build and upload the egg
             output = cmd.do(command)

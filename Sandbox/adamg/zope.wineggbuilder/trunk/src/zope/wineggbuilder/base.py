@@ -172,4 +172,9 @@ parser.add_option(
 parser.add_option(
     "-v", "--verbose", action="store_true",
     dest="verbose", default=False,
-    help="When specified, debug information is created.")
+    help="When specified, debug information is displayed.")
+
+parser.add_option(
+    "-d", "--dryrun", action="store_true",
+    dest="dryrun", default=False,
+    help="When specified, no upload is done.")

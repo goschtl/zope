@@ -23,7 +23,7 @@ Let's see:
 
     >>> import os.path
     >>> testininame = os.path.join(os.path.dirname(build.__file__), 'test.ini')
-    >>> build.main([testininame, '-v'])
+    >>> build.main([testininame, '-v']) # doctest: +REPORT_NDIFF
     INFO - loading configuration from ...zope.wineggbuilder\trunk\src\zope\wineggbuilder\test.ini
     INFO - Starting to build
     DEBUG - getting http://pypi.python.org/simple/zope.proxy/
