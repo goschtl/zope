@@ -1,0 +1,39 @@
+- windows basics
+  - kill unneeded services
+    - ALG
+    - Automatic Updates (yes!)
+    - Computer Browser
+    - DHCP Client
+    - Print Spooler
+    - Remote Registry
+    - Server
+    - TCP/IP NetBIOS Helper
+    - Wireless Configuration
+  - windows firewall
+    - kill file and printer sharing on ethernet
+    - allow only RDP, http, https
+  - time sync
+  - windows update (manual)
+    - we should have only security updates, no fancy IE8 etc
+    - better dont touch HW
+    - restart, repeat
+    - kill off all c:\windows\$NtUninstall*, $hf_mig too
+  - automatic windows update is OFF! (I hate when it f..s up the system)
+  - download:
+    - firefox
+    - freecommander (my personal stuff)
+    - programmers notepad (my personal stuff)
+    - mydefrag
+    - collabnet svn client
+    - pythons 2.4 ... 2.6
+    - pywin32
+    - setuptools
+    - mingw32
+    - MS Visual C++ 2008 Express Edition
+      http://www.microsoft.com/express/downloads/
+  - install pythons
+    - c:\python24_32
+    - c:\python25_32
+    - c:\python26_32
+    - c:\python26_64
+    - c:\python25_sys (32bit)
