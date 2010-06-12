@@ -15,8 +15,8 @@ We also have to do some additional setup beforehand:
 
   >>> from zope.app.testing import setup
 
-  >>> import zope.app.component.hooks
-  >>> zope.app.component.hooks.setHooks()
+  >>> import zope.component.hooks
+  >>> zope.component.hooks.setHooks()
   >>> setup.setUpTraversal()
   >>> setup.setUpSiteManagerLookup()
 
@@ -116,9 +116,9 @@ settings:
   ...     def __init__(self, principal, context):
   ...         pass
 
-  >>> from zope.app.testing import ztapi
-  >>> ztapi.provideAdapter((Principal, zope.interface.Interface), IAnnotations,
-  ...                      PrincipalAnnotations)
+  >>> from zope.component import provideAdapter
+  >>> provideAdapter(PrincipalAnnotations,
+  ...                (Principal, zope.interface.Interface), IAnnotations)
 
 Let's now try to access the settings again:
 
@@ -180,12 +180,12 @@ item on the parent group ...
 ... but not before we register the groups as utilities:
 
   >>> from zope.preference import interfaces
-  >>> from zope.app.testing import ztapi
+  >>> from zope.component import provideUtility
 
-  >>> ztapi.provideUtility(interfaces.IPreferenceGroup, settings,
-  ...                      name='ZMISettings')
-  >>> ztapi.provideUtility(interfaces.IPreferenceGroup, folderSettings,
-  ...                      name='ZMISettings.Folder')
+  >>> provideUtility(settings, interfaces.IPreferenceGroup,
+  ...                name='ZMISettings')
+  >>> provideUtility(folderSettings, interfaces.IPreferenceGroup,
+  ...                name='ZMISettings.Folder')
 
 If we now try to lookup the sub-group again, we should be successful:
 
@@ -279,7 +279,7 @@ then it is used instead:
 
 Of course, once the root site becomes our active site again
 
-  >>> zope.app.component.hooks.setSite(root)
+  >>> zope.component.hooks.setSite(root)
 
 the default value of the root provider is used:
 
@@ -409,8 +409,7 @@ If a site is set, getting the user preferences is very simple:
 This function is also commonly registered as an adapter,
 
   >>> from zope.location.interfaces import ILocation
-  >>> ztapi.provideAdapter(ILocation, interfaces.IUserPreferences,
-  ...                      UserPreferences)
+  >>> provideAdapter(UserPreferences, [ILocation], interfaces.IUserPreferences)
 
 so that you can adapt any location to the user preferences:
 
@@ -430,9 +429,8 @@ register all necessary traversal components and the special `preferences`
 namespace:
 
   >>> import zope.traversing.interfaces
-  >>> ztapi.provideAdapter(None,
+  >>> provideAdapter(preference.preferencesNamespace, [None],
   ...                      zope.traversing.interfaces.ITraversable,
-  ...                      preference.preferencesNamespace,
   ...                      'preferences')
 
 We can now access the preferences as follows:

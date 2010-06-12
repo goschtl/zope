@@ -7,3 +7,8 @@ CHANGES
 
 - Split out from `zope.app.preference`.
 
+- Removed dependency on `zope.app.component.hooks` by using
+  `zope.component.hooks`.
+
+- Removed dependency on `zope.app.container` by using
+  `zope.container`.

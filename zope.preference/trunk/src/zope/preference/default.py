@@ -25,8 +25,8 @@ from zope.security.checker import defineChecker
 from zope.traversing.interfaces import IContainmentRoot
 from zope.location import locate
 
-import zope.app.component
-from zope.app.container.contained import Contained
+import zope.component
+from zope.container.contained import Contained
 from zope.preference import preference, interfaces
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):
@@ -90,7 +90,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
 
             # There is currently no local entry, so let's go to the next
             # provider and lookup the group and value there.
-            nextProvider = zope.app.component.queryNextUtility(
+            nextProvider = zope.component.queryNextUtility(
                 self.provider, interfaces.IDefaultPreferenceProvider)
 
             # No more providers found, so return the schema's default

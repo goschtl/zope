@@ -27,7 +27,7 @@ from zope.traversing.interfaces import IContainmentRoot
 from zope.location import LocationProxy, locate, Location
 from zope.annotation.interfaces import IAnnotations
 
-import zope.app.component.hooks
+import zope.component.hooks
 from zope.container.contained import Contained
 from zope.container.interfaces import IReadContainer
 
@@ -74,7 +74,7 @@ class PreferenceGroup(Location):
     # ``__setattr__`` this is not possible anymore.
     __parent = None
     def __parent__(self):
-        return self.__parent or zope.app.component.hooks.getSite()
+        return self.__parent or zope.component.hooks.getSite()
     __parent__ = property(__parent__)
 
 
