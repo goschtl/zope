@@ -1,6 +1,5 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:apidoc="http://namespaces.zope.org/apidoc"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope"
@@ -34,24 +33,6 @@
       />
 
 
-  <!-- Preference Groups -->
-  <browser:page
-      name="index.html"
-      for=".interfaces.IPreferenceGroup"
-      class=".browser.EditPreferenceGroup"
-      template="index.pt"
-      permission="zope.Public"
-      />
-
-  <browser:page
-      name="editAsSubGroup"
-      for=".interfaces.IPreferenceGroup"
-      class=".browser.EditPreferenceGroup"
-      template="subgroup.pt"
-      permission="zope.Public"
-      />
-
-
   <!-- Default Preference Provider -->
   <class class=".default.DefaultPreferenceProvider">
     <implements
@@ -69,40 +50,6 @@
       type="*"
       provides="zope.interface.Interface"
       factory=".default.DefaultPreferences"
-      />
-
-  <browser:addMenuItem
-      class=".default.DefaultPreferenceProvider"
-      title="Default User Preferences Provider"
-      description="A Default User Preferences Provider"
-      permission="zope.ManageSite"
-      />
-
-  <!-- Preferences-specific macros -->
-  <browser:page
-      for="*"
-      name="preferences_macros"
-      permission="zope.View"
-      class=".browser.PreferencesMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping"
-      />
-
-  <browser:page
-      for="*"
-      name="preference_macro_definitions"
-      permission="zope.View"
-      template="macros.pt"
-      />
-
-
-  <!-- Preferences Tree -->
-
-  <browser:page
-      name="tree"
-      for=".interfaces.IPreferenceGroup"
-      class=".browser.PreferencesTree"
-      permission="zope.View"
-      attribute="tree"
       />
 
   <!-- Book Chapter -->
