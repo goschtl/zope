@@ -21,14 +21,13 @@ from BTrees.OOBTree import OOBTree
 import zope.interface
 import zope.component
 from zope.schema import getFields
-from zope.security.checker import CheckerPublic, Checker, defineChecker
+from zope.security.checker import CheckerPublic, Checker
 from zope.security.management import getInteraction
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location import LocationProxy, locate, Location
+from zope.location import Location
 from zope.annotation.interfaces import IAnnotations
 
 import zope.component.hooks
-from zope.container.contained import Contained
 from zope.container.interfaces import IReadContainer
 
 from zope.preference.interfaces import IPreferenceGroup
