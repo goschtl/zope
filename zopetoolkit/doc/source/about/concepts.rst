@@ -13,8 +13,8 @@ Zope 3 (preferred: Zope 3 application server)
   has been renamed to BlueBream.
 
 BlueBream
-    BlueBream is the new name of Zope 3 as an application server. It consists in
-    a project template and it uses the Zope Toolkit. It also provides a
+    BlueBream is the new name of Zope 3 as an application server. It consists
+    of a project template and it uses the Zope Toolkit. It also provides a
     migration path from Zope 3.4.
 
 Grok web framework
@@ -33,18 +33,10 @@ Plone
     a CMS based on Zope 2 and the CMF.
 
 Zope Toolkit
-    the collection of Zope Toolkit core libraries. Shouldn't include the ZMI
-    and doesn't include a particular way to create a project.
+    the collection of Zope Toolkit core libraries. Neither includes the ZMI
+    nor includes a particular way to create a project.
 
 Zope Toolkit release
     a set of Zope Toolkit library versions that have been tested to work
     together. This set receives a collective version number ("Zope Toolkit
     1.0"). A release could simply consist of a list of version numbers.
-
-Zope core library
-    a library within the Zope Toolkit.
-
-Zope extra library
-    a library not within the Zope Toolkit. Could be "just not" within the Zope
-    Toolkit, or "not yet", or "not anymore". These libraries are intended to
-    work with the Zope Toolkit and are maintained by the wider Zope community.
