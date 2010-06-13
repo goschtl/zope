@@ -68,7 +68,7 @@ your buildout::
   grokcore.view = 1.12.2
   grokcore.viewlet = 1.3
   five.localsitemanager = 2.0.3
-  martian = 0.11.1
+  martian = 0.11.2
 
 Zope 2.12 is required. If you wish to use a previous version of Zope
 2, look at the version 1.0 of five.grok.
