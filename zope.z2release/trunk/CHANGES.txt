@@ -4,6 +4,8 @@ Changelog
 0.3 - unreleased
 ----------------
 
+- Added support for inline comments in the versions section.
+
 - Readme style fixes.
 
 0.2 - 2010/04/05

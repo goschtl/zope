@@ -87,6 +87,8 @@ def main():
     write_index('Zope2', version, dirname)
     for package in CP.options('versions'):
         version = CP.get('versions', package)
+        if '#' in version:
+            version = version.split('#')[0].strip()
         write_index(package, version, dirname)
 
 if __name__ == '__main__':
