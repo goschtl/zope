@@ -5,5 +5,5 @@ About the Zope Toolkit
    :maxdepth: 1
 
    history
-   coreextra
+   libraries
    concepts

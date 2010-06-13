@@ -33,8 +33,8 @@ Plone
     a CMS based on Zope 2 and the CMF.
 
 Zope Toolkit
-    the collection of Zope Toolkit core libraries. Neither includes the ZMI
-    nor includes a particular way to create a project.
+    the collection of Zope Toolkit libraries. Neither includes the ZMI nor
+    includes a particular way to create a project.
 
 Zope Toolkit release
     a set of Zope Toolkit library versions that have been tested to work
