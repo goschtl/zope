@@ -116,20 +116,23 @@ class Package(object):
     urlGetterKlass = base.URLGetter
     svnKlass = base.SVN
 
-    def __init__(self, name, config, options, compilers):
-        self.name = name
+    def __init__(self, sectionName, config, options, compilers):
+        self.sectionNameName = sectionName
         self.options = options
-        self.read(config, compilers)
+        self.read(sectionName, config, compilers)
 
-    def read(self, config, compilers):
-        self.pypiurl = config.get(self.name, 'pypiurl')
-        self.tagurl = config.get(self.name, 'tagurl')
+    def read(self, sectionName, config, compilers):
+        self.name = config.get(sectionName, 'package')
+        self.pypiurl = getOption(config, sectionName, 'pypiurl',
+                                 'http://pypi.python.org/simple/%s/' % self.name)
+        self.tagurl = getOption(config, sectionName, 'tagurl',
+                                'svn://svn.zope.org/repos/main/%s/tags' % self.name)
         if self.tagurl.endswith('/'):
             self.tagurl = self.tagurl[:-1]
-        self.minVersion = getOption(config, self.name, 'minVersion')
-        self.maxVersion = getOption(config, self.name, 'maxVersion')
+        self.minVersion = getOption(config, sectionName, 'minVersion')
+        self.maxVersion = getOption(config, sectionName, 'maxVersion')
         self.targets = []
-        for target in config.get(self.name, 'targets').split():
+        for target in config.get(sectionName, 'targets').split():
             self.targets.append(compilers[target])
 
     def build(self):
@@ -209,8 +212,14 @@ class Builder(object):
             self.compilers[cmp] = Compiler(cmp, config, options)
 
         self.packages = []
-        for pkg in config.get(base.BUILD_SECTION, 'packages').split():
-            self.packages.append(Package(pkg, config, options, self.compilers))
+        for section in config.sections():
+            if section == base.BUILD_SECTION:
+                continue
+            if section in self.compilers:
+                continue
+
+            self.packages.append(Package(section, config,
+                                         options, self.compilers))
 
     def runCLI(self):
         LOGGER.info('Starting to build')
