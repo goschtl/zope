@@ -47,8 +47,8 @@ class Compiler(object):
 
     def checkBuild(self, package, version, files):
         """check whether build is required"""
-        LOGGER.debug('Checking if build required for %s %s %s',
-                     package.name, version, self.name)
+        LOGGER.debug('Checking if build required for [%s] %s %s %s',
+                     package.sectionName, package.name, version, self.name)
         needBuild = True
         fe = self.fileEnding.lower()
         for file in files:
@@ -57,34 +57,33 @@ class Compiler(object):
                 break
 
         if needBuild:
-            LOGGER.debug('Build required for %s %s %s',
-                     package.name, version, self.name)
+            LOGGER.debug('Build required for [%s] %s %s %s',
+                     package.sectionName, package.name, version, self.name)
         else:
-            LOGGER.debug('Build not required for %s %s %s',
-                     package.name, version, self.name)
+            LOGGER.debug('Build not required for [%s] %s %s %s',
+                     package.sectionName, package.name, version, self.name)
         return needBuild
 
     def build(self, package, version, files, sourceFolder):
-        LOGGER.info('Starting build for %s %s %s',
-                    package.name, version, self.name)
+        LOGGER.info('Starting build for [%s] %s %s %s',
+                    package.sectionName, package.name, version, self.name)
         #we really need to build
         #we have the source in sourceFolder
         cmd = self.commandKlass(cwd=sourceFolder, exitOnError=False)
-
-        if len(self.command.splitlines()) > 1:
-            #in case there are more lines we got to do .bat file
-            tmpfile = tempfile.NamedTemporaryFile(suffix='.bat')
-            command = tmpfile.name
-            tmpfile.write(self.command)
-            tmpfile.file.flush()
-        else:
-            command = self.command
-
-        LOGGER.debug('Running: %s\nIn: %s', self.command, sourceFolder)
+        command = self.command
 
         if self.options.dryrun:
-            LOGGER.info("Dry run, no compile and upload")
-            return
+            LOGGER.info("Dry run, no upload")
+            command = command.replace('upload', '')
+
+        LOGGER.debug('Running: %s\nIn: %s', command, sourceFolder)
+
+        if len(command.splitlines()) > 1:
+            #in case there are more lines we got to do .bat file
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.bat')
+            tmpfile.write(command)
+            tmpfile.file.flush()
+            command = tmpfile.name
 
         try:
             #this ought to build and upload the egg
@@ -117,7 +116,7 @@ class Package(object):
     svnKlass = base.SVN
 
     def __init__(self, sectionName, config, options, compilers):
-        self.sectionNameName = sectionName
+        self.sectionName = sectionName
         self.options = options
         self.read(sectionName, config, compilers)
 

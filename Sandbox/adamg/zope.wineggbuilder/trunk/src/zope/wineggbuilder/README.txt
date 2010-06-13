@@ -262,10 +262,10 @@ Let's see:
     build\temp.win32-2.5\Release\src\zope\proxy\_zope_proxy_proxy.o:_zope_proxy_proxy.c:(.text+0x3af): undefined reference to `_imp__PyUnicode_Type'
     collect2: ld returned 1 exit status
     error: command 'gcc' failed with exit status 1
-    DEBUG - Checking if build required for zope.proxy 3.4.2 py25_32
-    DEBUG - Build not required for zope.proxy 3.4.2 py25_32
-    DEBUG - Checking if build required for zope.proxy 3.4.2 py26_32
-    DEBUG - Build not required for zope.proxy 3.4.2 py26_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py25_32
+    DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py25_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
+    DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
     INFO - Done.
 
 Let's see what was executed on mocks:

@@ -19,7 +19,7 @@
     - restart, repeat
     - kill off all c:\windows\$NtUninstall*, $hf_mig too
   - automatic windows update is OFF! (I hate when it f..s up the system)
-  - download:
+  - download: (all downloaded stuf goes into c:\install)
     - firefox
     - freecommander (my personal stuff)
     - programmers notepad (my personal stuff)
@@ -45,3 +45,16 @@
   - install mingw32 to C:\MinGW
   - collabnet svn client to C:\svn
   - MSVC
+    - check that build_ext works only with --compiler:
+        - mingw32 fails because it's not on path
+        - MSVC fails because ENV vars are missing
+
+  - create buildbot user
+  - create own user/other devs
+    - setup .buildout
+      - c:\Documents and Settings\<username>\.buildout\default.cfg:
+
+[buildout]
+eggs-directory=c:\eggs
+
+        everyone, please SHARE c:\eggs, the disk is small
