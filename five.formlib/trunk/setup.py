@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.0.3'
+version = '1.0.4dev'
 
 setup(name='five.formlib',
       version=version,
