@@ -324,13 +324,11 @@ def handleCookieCrumblerEvent(ob, event):
 manage_addCCForm = HTMLFile('dtml/addCC', globals())
 manage_addCCForm.__name__ = 'addCC'
 
-def manage_addCC(dispatcher, id, create_forms=0, REQUEST=None):
+def manage_addCC(dispatcher, id, REQUEST=None):
     ' '
     ob = CookieCrumbler()
     ob.id = id
     dispatcher._setObject(ob.getId(), ob)
     ob = getattr(dispatcher.this(), ob.getId())
-    if create_forms:
-        _create_forms(ob)
     if REQUEST is not None:
         return dispatcher.manage_main(dispatcher, REQUEST)
