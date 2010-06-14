@@ -1,8 +1,7 @@
+..contents::
+
 Overview
 ========
-
-ZNagios provides the ability for Nagios and munin to tap into the Zope2 server
-and retrieve status and performance data.
 
 Nagios data
 -----------
