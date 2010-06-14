@@ -206,31 +206,6 @@ class CookieCrumblerTests(unittest.TestCase):
         self.assertEqual(
             req.response.headers.get('cache-control', ''), '')
 
-    def testDisableLoginDoesNotPreventPasswordShredding(self):
-        # Even if disable_cookie_login__ is set, read the cookies
-        # anyway to avoid revealing the password to the app.
-        # (disable_cookie_login__ does not mean disable cookie
-        # authentication, it only means disable the automatic redirect
-        # to the login page.)
-        root, cc, req, credentials = self._makeSite()
-        req.cookies['__ac_name'] = 'abraham'
-        req.cookies['__ac_password'] = 'pass-w'
-        req['disable_cookie_login__'] = 1
-        req.traverse('/')
-        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
-                         'abraham')
-        # Here is the real test: the password should have been shredded.
-        self.failIf( req.has_key('__ac_password'))
-
-    def testDisableLoginDoesNotPreventPasswordShredding2(self):
-        root, cc, req, credentials = self._makeSite()
-        req.cookies['__ac'] = credentials
-        req['disable_cookie_login__'] = 1
-        req.traverse('/')
-        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
-                         'abraham')
-        self.failIf( req.has_key('__ac'))
-
     def testLoginRatherThanResume(self):
         # When the user presents both a session resume and new
         # credentials, choose the new credentials (so that it's

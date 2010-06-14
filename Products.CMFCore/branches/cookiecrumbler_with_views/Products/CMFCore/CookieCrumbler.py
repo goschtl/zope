@@ -93,7 +93,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     auth_cookie = '__ac'
     name_cookie = '__ac_name'
-    pw_cookie = '__ac_password'
+    pw_cookie = '__ac_password' # not used as cookie, just as request key
     persist_cookie = '__ac_persistent'
     local_cookie_path = False
     cache_header_value = 'private'
@@ -245,8 +245,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         try:
             attempt = self.modifyRequest(req, resp)
         except CookieCrumblerDisabled:
-            return
-        if req.get('disable_cookie_login__', 0):
             return
 
         if attempt != ATTEMPT_NONE:
