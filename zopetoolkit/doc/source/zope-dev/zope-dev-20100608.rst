@@ -5,6 +5,61 @@
 This is the agenda and summary for the weekly Zope developer meeting of
 Tuesday, 2010-06-08 on #zope@irc.freenode.org from 15:00 to 15:30 UTC.
 
+Summary
+=======
+
+The IRC log is available here:
+  http://zope3.pov.lt/irclogs-zope/%23zope.2010-06-08.log.html#t2010-06-08T18:02:12
+
+Attendees
+---------
+
+Adam Groszer, Charlie Clark, Christian Theune
+
+
+KGS 3.4.1
+---------
+
+The KGS according to Adam only requires a version bump from release candidate
+to final. Along the way he updated the release process documentation for the
+KGS which can be found here: http://wiki.zope.org/zope3/MakingARelease.
+
+Adam will poke Jens about getting a better index view for download.zope.org.
+
+
+Test-runners/nightly builds
+---------------------------
+
+The funding for a VM at Rackspace was granted by the ZF for a testing period
+of two months. Adam reported that MS announced the MSDN licenses to be
+available around 2010-06-14.
+
+The activation of the VM is on hold as long as Adam is working on the
+software that automatically creates binary eggs for releases (wineggbuilder).
+He will also write documentation on how the VM was set up.
+
+
+Meta
+----
+
+Charlie Clark is now officially the second person organizing the weekly
+meetings. Christian and Charlie will coordinate directly to keep it going.
+
+A quick question for how people feel about the meeting showed general
+approvement while also pointing out declining participation. One reason seems
+to be that we've been treading maintenance issues in the last weeks (KGS
+3.4.1, test runners, bug tracking, ...) which may not be a very attractive
+topic.
+
+Christian expressed he is somewhat uncomfortable opening up more issues in
+parallel as long as we don't find a better way of managing them. Christian
+will ask the Launchpad folks whether they know about a way to using LP for
+managing our agenda.
+
+Additionally we will switch to preparing the agenda on mondays and making them
+more of an invitation style so that we have a higher chance of people actually
+stating their topic wishes.
+
 Agenda
 ======
 
@@ -36,6 +91,7 @@ need to follow up on them eventually.
         - Documentation
         - Release scope
 
+
 - Bug tracking
     - Monitoring tracker status (Charlie Clark, ctheune)
 
@@ -66,13 +122,3 @@ Topic proposals
   future in the zope.* namespace.
 
 
-Summary
-=======
-
-The IRC log is available here:
-  XXX
-
-Attendees
----------
-
-XXX

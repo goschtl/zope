@@ -84,7 +84,7 @@ The IRC log is available here:
 Attendees
 ---------
 
-Charlie Clark, Hanno Schilling, Adam Groszer, Tres Seaver
+Charlie Clark, Hanno Schlichting, Adam Groszer, Tres Seaver
 
 Documentation
 -------------
