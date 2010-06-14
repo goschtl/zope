@@ -65,8 +65,11 @@ class UnauthorizedView(BrowserView):
         except (AttributeError, ValueError):
             # re-raise the unhandled exception
             raise self.context
-
         req = self.request
+        if req.get('disable_cookie_login__', 0):
+            # re-raise the unhandled exception
+            raise self.context
+
         attempt = getattr(req, '_cookie_auth', ATTEMPT_NONE)
         if attempt == ATTEMPT_NONE:
             # An anonymous user was denied access to something.
