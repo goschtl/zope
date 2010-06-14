@@ -58,3 +58,7 @@
 eggs-directory=c:\eggs
 
         everyone, please SHARE c:\eggs, the disk is small
+
+  - create user on PYPI: zope.wineggbuilder
+    - grant perm to packages
+    - what's up with ZODB3??? ask Jim
