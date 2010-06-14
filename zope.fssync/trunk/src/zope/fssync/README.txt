@@ -3,7 +3,7 @@ Filesystem Synchronization
 ==========================
 
 This package provides an API for the synchronization of Python objects 
-with a serialized filesystem representation. This API does not adress 
+with a serialized filesystem representation. This API does not address 
 security issues. (See zope.app.fssync for a protected web-based API). 
 This API is Zope and ZODB independent.
 
