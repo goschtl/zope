@@ -173,71 +173,6 @@ class CookieCrumblerTests(unittest.TestCase):
         req.traverse('/')
         self.failIf( req.has_key('__ac'))
 
-#    def testAutoLoginRedirection(self):
-#        # Redirect unauthorized anonymous users to the login page
-#        from zExceptions import Redirect
-#
-#        root, cc, req, credentials = self._makeSite()
-#        self.assertRaises(Redirect, req.traverse, '/protected')
-
-    def testDisabledAutoLoginRedirection(self):
-        # When disable_cookie_login__ is set, don't redirect.
-        from zExceptions.unauthorized import Unauthorized
-
-        root, cc, req, credentials = self._makeSite()
-        req['disable_cookie_login__'] = 1
-        self.assertRaises(Unauthorized, req.traverse, '/protected')
-
-
-    def testNoRedirectAfterAuthenticated(self):
-        # Don't redirect already-authenticated users to the login page,
-        # even when they try to access things they can't get.
-        from zExceptions.unauthorized import Unauthorized
-
-        root, cc, req, credentials = self._makeSite()
-        req.cookies['__ac'] = credentials
-        self.assertRaises(Unauthorized, req.traverse, '/protected')
-
-#    def testRetryLogin(self):
-#        # After a failed login, CookieCrumbler should give the user an
-#        # opportunity to try to log in again.
-#        from zExceptions import Redirect
-#
-#        root, cc, req, credentials = self._makeSite()
-#        req.cookies['__ac_name'] = 'israel'
-#        req.cookies['__ac_password'] = 'pass-w'
-#        try:
-#            req.traverse('/protected')
-#        except Redirect, s:
-#            # Test passed
-#            if hasattr(s, 'args'):
-#                s = s.args[0]
-#            self.failUnless(s.find('came_from=') >= 0)
-#            self.failUnless(s.find('retry=1') >= 0)
-#            self.failUnless(s.find('disable_cookie_login__=1') >= 0)
-#        else:
-#            self.fail('Did not redirect')
-
-
-#    def testLoginRestoresQueryString(self):
-#        # When redirecting for login, the came_from form field should
-#        # include the submitted URL as well as the query string.
-#        import urllib
-#        from zExceptions import Redirect
-#
-#        root, cc, req, credentials = self._makeSite()
-#        req['PATH_INFO'] = '/protected'
-#        req['QUERY_STRING'] = 'a:int=1&x:string=y'
-#        try:
-#            req.traverse('/protected')
-#        except Redirect, s:
-#            if hasattr(s, 'args'):
-#                s = s.args[0]
-#            to_find = urllib.quote('/protected?' + req['QUERY_STRING'])
-#            self.failUnless(s.find(to_find) >= 0, s)
-#        else:
-#            self.fail('Did not redirect')
-
     def testCacheHeaderAnonymous(self):
         # Should not set cache-control
         root, cc, req, credentials = self._makeSite()
@@ -295,43 +230,6 @@ class CookieCrumblerTests(unittest.TestCase):
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'abraham')
         self.failIf( req.has_key('__ac'))
-
-#    def testMidApplicationAutoLoginRedirection(self):
-#        # Redirect anonymous users to login page if Unauthorized
-#        # occurs in the middle of the app
-#        from zExceptions.unauthorized import Unauthorized
-#
-#        root, cc, req, credentials = self._makeSite()
-#        req.traverse('/')
-#        try:
-#            raise Unauthorized
-#        except:
-#            req.response.exception()
-#            self.assertEqual(req.response.status, 302)
-
-    def testMidApplicationAuthenticationButUnauthorized(self):
-        # Don't redirect already-authenticated users to the login page,
-        # even when Unauthorized happens in the middle of the app.
-        from zExceptions.unauthorized import Unauthorized
-
-        root, cc, req, credentials = self._makeSite()
-        req.cookies['__ac'] = credentials
-        req.traverse('/')
-        try:
-            raise Unauthorized
-        except:
-            req.response.exception()
-            self.assertEqual(req.response.status, 401)
-
-#    def testRedirectOnUnauthorized(self):
-#        # Redirect already-authenticated users to the unauthorized
-#        # handler page if that's what the sysadmin really wants.
-#        from zExceptions import Redirect
-#
-#        root, cc, req, credentials = self._makeSite()
-#        cc.unauth_page = 'login_form'
-#        req.cookies['__ac'] = credentials
-#        self.assertRaises(Redirect, req.traverse, '/protected')
 
     def testLoginRatherThanResume(self):
         # When the user presents both a session resume and new
