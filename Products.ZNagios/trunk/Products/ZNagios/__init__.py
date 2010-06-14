@@ -8,6 +8,7 @@ import DateTime
 import OFS.Application
 import Zope2.App.startup
 import time
+from App.version_txt import getZopeVersion
 
 
 # Delta used for taking delta measurements and normalization
@@ -29,6 +30,20 @@ def get_activity(db):
                    chart_end=now)
     return db.getActivityChartData(200, request)
 
+def get_conflictInfo():
+    """from version 2.11 on conflict_errors are not global anymore
+    http://svn.zope.org/Zope/tags/2.10.9/lib/python/Zope2/App/startup.py?view=markup
+    http://svn.zope.org/Zope/tags/2.11.1/lib/python/Zope2/App/startup.py?view=markup
+    """
+    major, minor, micro = getZopeVersion()[:3]
+    assert major == 2, "ZNagios has been built for Zope2, " \
+        "your version seems to be %d" % major
+
+    if minor < 11:
+        return Zope2.App.startup
+    else:
+        #Zope >= 2.11 does not store conflict_errors globally
+        return Zope2.App.startup.zpublisher_exception_hook
 
 def nagios(self):
     """A method to allow nagios checks with a bit more information.
@@ -53,7 +68,7 @@ def nagios(self):
     size = get_refcount(self)
     result += "references: %s\n" % size
 
-    # error_log 
+    # error_log
     errors = self.error_log._getLog()
 
     i = 0
@@ -110,9 +125,9 @@ def munin(self):
     # ... number of errors in the log
     data['errors-total'] = len(self.error_log._getLog())
     # ... number of all conflict errors since startup
-    data['conflicts-total'] = Zope2.App.startup.conflict_errors
+    data['conflicts-total'] = get_conflictInfo().conflict_errors
     # ... number of all unresolved conflict errors since startup
-    data['conflicts-unresolved'] = Zope2.App.startup.unresolved_conflict_errors
+    data['conflicts-unresolved'] = get_conflictInfo().unresolved_conflict_errors
 
     # RRDTool: everything's a float
     for key, value in data.items():

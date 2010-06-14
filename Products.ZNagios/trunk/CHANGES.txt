@@ -4,6 +4,9 @@ Changelog
 after 0.4
 ---------
 
+- fixed ``Control_Panel/munin`` for Zope >= 2.11
+  (conflict_error are not global anymore)
+  [fRiSi]
 
 0.4 - 2009-11-19
 ----------------
