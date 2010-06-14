@@ -29,7 +29,7 @@ login_form. This works if raised by the object (here by the reconfig_form).
     >>> browser.contents
     ''
     >>> browser.headers['Location']
-    'http://localhost/site/login_form?came_from=http%3A//localhost/site/reconfig_form&retry=&disable_cookie_login__=1'
+    'http://localhost/site/login_form?came_from=http%3A//localhost/site/reconfig_form'
 
 And it works if raised by BaseRequest.traverse (here caused by manage_main).
 
@@ -40,7 +40,7 @@ And it works if raised by BaseRequest.traverse (here caused by manage_main).
     >>> browser.contents
     ''
     >>> browser.headers['Location']
-    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main&retry=&disable_cookie_login__=1'
+    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main'
 
 Same redirect with a query string. The query string is preserved.
 
@@ -51,7 +51,7 @@ Same redirect with a query string. The query string is preserved.
     >>> browser.contents
     ''
     >>> browser.headers['Location']
-    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main%3Fa%3Aint%3D1%26x%3Astring%3Dy&retry=&disable_cookie_login__=1'
+    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main%3Fa%3Aint%3D1%26x%3Astring%3Dy'
     >>> quote('manage_main?a:int=1&x:string=y') in browser.headers['Location']
     True
 
@@ -65,16 +65,7 @@ And requests are redirected to the login_form if a login attempt fails.
     >>> browser.contents
     ''
     >>> browser.headers['Location']
-    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main&retry=1&disable_cookie_login__=1'
-
-But requests with 'disable_cookie_login__=1' are not redirected.
-
-    >>> browser.open('http://localhost/site/manage_main?disable_cookie_login__=1')
-    Traceback (most recent call last):
-    ...
-    HTTPError: HTTP Error 401: Unauthorized
-    >>> browser.contents
-    '<strong>You are not authorized to access this resource.</strong>'
+    'http://localhost/site/login_form?came_from=http%3A//localhost/site/manage_main'
 
 The view for zExceptions.Unauthorized shows a Forbidden error if logged in.
 

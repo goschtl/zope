@@ -65,19 +65,10 @@ class UnauthorizedView(BrowserView):
         except (AttributeError, ValueError):
             # re-raise the unhandled exception
             raise self.context
-        req = self.request
-        if req.get('disable_cookie_login__', 0):
-            # re-raise the unhandled exception
-            raise self.context
 
+        req = self.request
         attempt = getattr(req, '_cookie_auth', ATTEMPT_NONE)
-        if attempt == ATTEMPT_NONE:
-            # An anonymous user was denied access to something.
-            retry = ''
-        elif attempt == ATTEMPT_LOGIN:
-            # The login attempt failed.  Try again.
-            retry = '1'
-        else:
+        if attempt not in (ATTEMPT_NONE, ATTEMPT_LOGIN):
             # An authenticated user was denied access to something.
             # XXX: hack context to get the right @@standard_macros/page
             #      why do we get the wrong without this hack?
@@ -94,8 +85,7 @@ class UnauthorizedView(BrowserView):
                 if not query.startswith('?'):
                     query = '?' + query
                 came_from = came_from + query
-        url = '%s?came_from=%s&retry=%s&disable_cookie_login__=1' % (
-            target, quote(came_from), retry)
+        url = '%s?came_from=%s' % (target, quote(came_from))
         raise Redirect(url)
 
 
