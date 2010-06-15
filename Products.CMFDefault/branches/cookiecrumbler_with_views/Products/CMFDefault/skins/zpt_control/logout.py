@@ -12,6 +12,6 @@ try:
     cctool = getToolByName(context, 'cookie_authentication')
     cctool.logout(REQUEST.RESPONSE)
 except AttributeError:
-    expireCookie('__ac', path='/')
+    REQUEST.RESPONSE.expireCookie('__ac', path='/')
 
 return REQUEST.RESPONSE.redirect(utool() + '/logged_out')
