@@ -112,9 +112,9 @@ def versionToTuple(version):
     for p in version.split('.'):
         try:
             # we try our best to convert to a comparable number
-            parts.append("%04d" % int(v))
+            parts.append("%04d" % int(p))
         except ValueError:
-            parts.append(v)
+            parts.append(p)
     return tuple(parts)
 
 class Package(object):

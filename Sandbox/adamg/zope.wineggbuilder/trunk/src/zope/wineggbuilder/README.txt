@@ -37,10 +37,10 @@ Let's see:
     DEBUG - Got a file: zope.proxy-3.4.2-py2.4-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.0-py2.5-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.0.zip
-    DEBUG - Checking if build required for zope.proxy 3.4.0 py25_32
-    DEBUG - Build not required for zope.proxy 3.4.0 py25_32
-    DEBUG - Checking if build required for zope.proxy 3.4.0 py26_32
-    DEBUG - Build required for zope.proxy 3.4.0 py26_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.0 py25_32
+    DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.0 py25_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.0 py26_32
+    DEBUG - Build required for [zope.proxy_34_to_35] zope.proxy 3.4.0 py26_32
     DEBUG - Command: svn co --non-interactive  svn://svn.zope.org/repos/main/zope.proxy/tags/3.4.0 ...wineggbuilder
     DEBUG - Output:
     A    /tmp/tmpgqt2dHwineggbuilder/bootstrap.py
@@ -63,7 +63,7 @@ Let's see:
     A    /tmp/tmpgqt2dHwineggbuilder/README.txt
      U   /tmp/tmpgqt2dHwineggbuilder
     Checked out revision 113298.
-    INFO - Starting build for zope.proxy 3.4.0 py26_32
+    INFO - Starting build for [zope.proxy_34_to_35] zope.proxy 3.4.0 py26_32
     DEBUG - Running: call c:\program files\msvc\msvcvars.bat
     c:\Python26\python setup.py build_ext --compiler msvc bdist_egg upload
     In: ...wineggbuilder
@@ -128,10 +128,10 @@ Let's see:
     running upload
     Submitting dist\zope.proxy-3.6.1dev.egg to http://pypi.refline.ch/eggs
     Server response (200): OK
-    DEBUG - Checking if build required for zope.proxy 3.4.1 py25_32
-    DEBUG - Build required for zope.proxy 3.4.1 py25_32
-    DEBUG - Checking if build required for zope.proxy 3.4.1 py26_32
-    DEBUG - Build required for zope.proxy 3.4.1 py26_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.1 py25_32
+    DEBUG - Build required for [zope.proxy_34_to_35] zope.proxy 3.4.1 py25_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.1 py26_32
+    DEBUG - Build required for [zope.proxy_34_to_35] zope.proxy 3.4.1 py26_32
     DEBUG - Command: svn co --non-interactive  svn://svn.zope.org/repos/main/zope.proxy/tags/3.4.1 ...wineggbuilder
     DEBUG - Output:
     A    /tmp/tmpKNdQxlwineggbuilder/bootstrap.py
@@ -157,7 +157,7 @@ Let's see:
     A    /tmp/tmpKNdQxlwineggbuilder/README.txt
      U   /tmp/tmpKNdQxlwineggbuilder
     Checked out revision 113298.
-    INFO - Starting build for zope.proxy 3.4.1 py25_32
+    INFO - Starting build for [zope.proxy_34_to_35] zope.proxy 3.4.1 py25_32
     DEBUG - Running: set PATH=%PATH%;c:\mingw32\bin
     c:\Python25\python setup.py build_ext --compiler mingw32 bdist_egg upload
     In: ...wineggbuilder
@@ -222,7 +222,7 @@ Let's see:
     running upload
     Submitting dist\zope.proxy-3.6.1dev.egg to http://pypi.refline.ch/eggs
     Server response (200): OK
-    INFO - Starting build for zope.proxy 3.4.1 py26_32
+    INFO - Starting build for [zope.proxy_34_to_35] zope.proxy 3.4.1 py26_32
     DEBUG - Running: call c:\program files\msvc\msvcvars.bat
     c:\Python26\python setup.py build_ext --compiler msvc bdist_egg upload
     In: ...wineggbuilder
