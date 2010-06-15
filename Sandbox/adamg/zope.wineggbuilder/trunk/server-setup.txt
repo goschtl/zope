@@ -48,6 +48,8 @@
     - check that build_ext works only with --compiler:
         - mingw32 fails because it's not on path
         - MSVC fails because ENV vars are missing
+    - x64 sucks, but:
+        - http://www.mathworks.com/support/solutions/en/data/1-6IJJ3L/index.html?solution=1-6IJJ3L
 
   - create buildbot user
   - create own user/other devs
