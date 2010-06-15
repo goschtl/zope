@@ -67,6 +67,22 @@ _CHANGED_EXPORT = """\
 </object>
 """
 
+_CMF22_IMPORT = """\
+<?xml version="1.0"?>
+<object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
+ <property name="auth_cookie">value1</property>
+ <property name="name_cookie">value3</property>
+ <property name="pw_cookie">value5</property>
+ <property name="persist_cookie">value4</property>
+ <property name="auto_login_page">value6</property>
+ <property name="logout_page">value8</property>
+ <property name="unauth_page">value7</property>
+ <property name="local_cookie_path">True</property>
+ <property name="cache_header_value">value2</property>
+ <property name="log_username">False</property>
+</object>
+"""
+
 
 class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
@@ -148,6 +164,25 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
 
         context = DummyImportContext(site)
         context._files['cookieauth.xml'] = _CHANGED_EXPORT
+        importCookieCrumbler(context)
+
+        self.assertEqual( cc.auth_cookie, 'value1' )
+        self.assertEqual( cc.cache_header_value, 'value2' )
+        self.assertEqual( cc.name_cookie, 'value3' )
+        self.assertEqual( cc.log_username, 0 )
+        self.assertEqual( cc.persist_cookie, 'value4' )
+        self.assertEqual( cc.pw_cookie, 'value5' )
+        self.assertEqual( cc.local_cookie_path, 1 )
+
+    def test_migration(self):
+        from Products.CMFCore.exportimport.cookieauth \
+                import importCookieCrumbler
+
+        site = self._initSite()
+        cc = site.cookie_authentication
+
+        context = DummyImportContext(site)
+        context._files['cookieauth.xml'] = _CMF22_IMPORT
         importCookieCrumbler(context)
 
         self.assertEqual( cc.auth_cookie, 'value1' )
