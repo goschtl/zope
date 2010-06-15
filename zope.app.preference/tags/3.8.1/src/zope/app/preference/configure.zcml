@@ -1,0 +1,71 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope"
+    >
+
+  <include package="zope.preference" />
+
+  <!-- Preference Groups -->
+  <browser:page
+      name="index.html"
+      for="zope.preference.interfaces.IPreferenceGroup"
+      class=".browser.EditPreferenceGroup"
+      template="index.pt"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      name="editAsSubGroup"
+      for="zope.preference.interfaces.IPreferenceGroup"
+      class=".browser.EditPreferenceGroup"
+      template="subgroup.pt"
+      permission="zope.Public"
+      />
+
+  <browser:addMenuItem
+      class="zope.preference.default.DefaultPreferenceProvider"
+      title="Default User Preferences Provider"
+      description="A Default User Preferences Provider"
+      permission="zope.ManageSite"
+      />
+
+  <!-- Preferences-specific macros -->
+  <browser:page
+      for="*"
+      name="preferences_macros"
+      permission="zope.View"
+      class=".browser.PreferencesMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
+  <browser:page
+      for="*"
+      name="preference_macro_definitions"
+      permission="zope.View"
+      template="macros.pt"
+      />
+
+
+  <!-- Preferences Tree -->
+
+  <browser:page
+      name="tree"
+      for="zope.preference.interfaces.IPreferenceGroup"
+      class=".browser.PreferencesTree"
+      permission="zope.View"
+      attribute="tree"
+      />
+
+  <!-- Book Chapter -->
+
+  <apidoc:bookchapter
+      id="preferences"
+      title="User Preferences API"
+      doc_path="README.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>
