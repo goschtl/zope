@@ -78,12 +78,12 @@ class Compiler(object):
 
         LOGGER.debug('Running: %s\nIn: %s', command, sourceFolder)
 
+        tmpfile = None
         if len(command.splitlines()) > 1:
             #in case there are more lines we got to do .bat file
-            tmpfile = tempfile.NamedTemporaryFile(suffix='.bat')
-            tmpfile.write(command)
-            tmpfile.file.flush()
-            command = tmpfile.name
+            tmpfile = tempfile.mktemp(suffix='.bat')
+            open(tmpfile, "w").write(command)
+            command = tmpfile
 
         try:
             #this ought to build and upload the egg
@@ -103,6 +103,9 @@ class Compiler(object):
             #prepare for the worst
             LOGGER.exception("An error occurred while running the build command")
             #continue without bailing out
+
+        if tmpfile:
+            os.remove(tmpfile)
 
 def versionToTuple(version):
     #tries to do "3.4.0" -> ('0003','0004','0000')
