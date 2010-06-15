@@ -105,8 +105,16 @@ class Compiler(object):
             #continue without bailing out
 
 def versionToTuple(version):
-    parts = version.split('.')
-    parts = [int(v) for v in parts]
+    #tries to do "3.4.0" -> ('0003','0004','0000')
+    #otherwise the problem starts with 3.10.0, that would be less than 3.4.0
+    #problems arise on the last digit when it has 'dev' or 'b'
+    parts = []
+    for p in version.split('.'):
+        try:
+            # we try our best to convert to a comparable number
+            parts.append("%04d" % int(v))
+        except ValueError:
+            parts.append(v)
     return tuple(parts)
 
 class Package(object):
