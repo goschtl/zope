@@ -13,6 +13,7 @@ import pkg_resources
 import shutil
 import subprocess
 import sys
+import stat
 import urllib2
 import urlparse
 import xmlrpclib
