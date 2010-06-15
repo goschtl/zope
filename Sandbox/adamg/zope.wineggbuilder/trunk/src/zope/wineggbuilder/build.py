@@ -29,7 +29,7 @@ def getOption(config, section, name, default=None):
     try:
         return config.get(section, name)
     except ConfigParser.NoOptionError:
-        self.uploadType = 'internal'
+        return default
 
 
 class Compiler(object):
