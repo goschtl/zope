@@ -210,12 +210,12 @@ class Package(object):
                         svn.co(svnurl, tmpfolder)
                     except OSError:
                         status.setStatus(self, version, "SVN error")
-
-                    #3.2 build missing
-                    for target in needs:
-                        needBuild = target.build(
-                            self, version, verFiles.get(version, []),
-                            tmpfolder, status)
+                    else:
+                        #3.2 build missing
+                        for target in needs:
+                            needBuild = target.build(
+                                self, version, verFiles.get(version, []),
+                                tmpfolder, status)
                 finally:
                     #3.3 del temp folder
                     base.rmtree(tmpfolder)
