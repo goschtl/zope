@@ -23,7 +23,7 @@ Let's see:
 
     >>> import os.path
     >>> testininame = os.path.join(os.path.dirname(build.__file__), 'test.ini')
-    >>> build.main([testininame, '-v']) # doctest: +REPORT_NDIFF
+    >>> build.main([testininame, '-v', '-s']) # doctest: +REPORT_NDIFF
     INFO - loading configuration from ...zope.wineggbuilder\trunk\src\zope\wineggbuilder\test.ini
     INFO - Starting to build
     DEBUG - getting http://pypi.python.org/simple/zope.proxy/
@@ -267,6 +267,16 @@ Let's see:
     DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
     DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
     INFO - Done.
+    INFO -
+    <BLANKLINE>
+    zope.proxy           py25_32    py24_32    py26_32    py26_64
+    ==================== ========== ========== ========== ==========
+                   3.3.0 n/a        n/a        n/a        n/a
+                   3.4.0 ex         n/a        done       n/a
+                   3.4.1 done       n/a        n/a        n/a
+                   3.4.2 ex         n/a        ex         n/a
+                   3.5.0 n/a        n/a        n/a        n/a
+                   3.6.0 n/a        n/a        n/a        n/a
 
 Let's see what was executed on mocks:
 

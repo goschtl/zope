@@ -179,3 +179,8 @@ parser.add_option(
     "-d", "--dryrun", action="store_true",
     dest="dryrun", default=False,
     help="When specified, no upload is done.")
+
+parser.add_option(
+    "-s", "--status", action="store_true",
+    dest="status", default=False,
+    help="When specified, detailed status is output at the end.")

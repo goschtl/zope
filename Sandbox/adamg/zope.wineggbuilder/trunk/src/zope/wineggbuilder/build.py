@@ -64,7 +64,7 @@ class Compiler(object):
                      package.sectionName, package.name, version, self.name)
         return needBuild
 
-    def build(self, package, version, files, sourceFolder):
+    def build(self, package, version, files, sourceFolder, status):
         LOGGER.info('Starting build for [%s] %s %s %s',
                     package.sectionName, package.name, version, self.name)
         #we really need to build
@@ -97,12 +97,14 @@ class Compiler(object):
                 and 'Server response (200): OK' in output:
                 LOGGER.info("Upload seems to be OK.\n%s",
                             '\n'.join(output.splitlines()[-3:]))
+                status.setStatus(package, version, "done", self)
         except KeyboardInterrupt:
             raise
         except:
             #prepare for the worst
             LOGGER.exception("An error occurred while running the build command")
             #continue without bailing out
+            status.setStatus(package, version, "err", self)
 
         if tmpfile:
             os.remove(tmpfile)
@@ -145,10 +147,12 @@ class Package(object):
         for target in config.get(sectionName, 'targets').split():
             self.targets.append(compilers[target])
 
-    def build(self):
+    def build(self, status):
         #1 get versions from pypi
         pypi = self.pypiKlass()
         versions = pypi.package_releases(self.name, show_hidden=True)
+
+        status.setVersions(self, versions)
 
         #1.1 filter versions according to minVersion and maxVersion:
         if self.minVersion:
@@ -185,7 +189,7 @@ class Package(object):
                 LOGGER.debug('Got a file: %s', cntnt)
                 verFiles[version].append(cntnt)
 
-        svn = self.svnKlass()
+        svn = self.svnKlass(exitOnError=False)
         for version in versions:
             #3 check whether we need a build
             needs = []
@@ -194,21 +198,71 @@ class Package(object):
                     self, version, verFiles.get(version, []))
                 if needBuild:
                     needs.append(target)
+                else:
+                    status.setStatus(self, version, "ex", target)
 
             if needs:
                 tmpfolder = tempfile.mkdtemp('wineggbuilder')
                 try:
-                    #3.1 svn co tag
-                    svnurl = "%s/%s" % (self.tagurl, version)
-                    svn.co(svnurl, tmpfolder)
+                    try:
+                        #3.1 svn co tag
+                        svnurl = "%s/%s" % (self.tagurl, version)
+                        svn.co(svnurl, tmpfolder)
+                    except OSError:
+                        status.setStatus(self, version, "SVN error")
 
                     #3.2 build missing
                     for target in needs:
                         needBuild = target.build(
-                            self, version, verFiles.get(version, []), tmpfolder)
+                            self, version, verFiles.get(version, []),
+                            tmpfolder, status)
                 finally:
                     #3.3 del temp folder
                     base.rmtree(tmpfolder)
+
+class Status(object):
+    def __init__(self, packages, targets):
+        self.data = {}
+        self.packages = packages
+        self.targets = targets
+
+        for p in packages:
+            self.data[p.name] = {}
+
+    def setVersions(self, package, versions):
+        for v in versions:
+            self.data[package.name][v]= {}
+            for t in self.targets:
+                self.data[package.name][v][t] = 'n/a'
+
+    def setStatus(self, package, version, status, target=None):
+        if target is None:
+            # this is a version general status
+            self.data[package.name][version] = status
+        else:
+            self.data[package.name][version][target.name] = status
+
+    def log(self):
+        text = ['\n']
+        for pname in sorted(self.data.keys()):
+            package = self.data[pname]
+            vs = ' '.join([target.ljust(10) for target in self.targets])
+            txt = "%s %s" % (pname.ljust(20), vs)
+            text.append(txt)
+            vs = ' '.join(['='*10 for target in self.targets])
+            txt = "%s %s" % ('='*20, vs)
+            text.append(txt)
+            for vname in sorted(package.keys()):
+                version = package[vname]
+                if isinstance(version, basestring):
+                    txt = "%20s %s" % (vname, version)
+                else:
+                    vs = ' '.join([version[target].ljust(10) for target in self.targets])
+                    txt = "%20s %s" % (vname, vs)
+                text.append(txt)
+        output = '\n'.join(text)
+        LOGGER.info(output)
+
 
 class Builder(object):
     def __init__(self, configFileName, options):
@@ -234,9 +288,11 @@ class Builder(object):
     def runCLI(self):
         LOGGER.info('Starting to build')
 
+        status = Status(self.packages, self.compilers)
+
         for pkg in self.packages:
             try:
-                pkg.build()
+                pkg.build(status)
             except KeyboardInterrupt:
                 raise
             except:
@@ -246,6 +302,8 @@ class Builder(object):
                 #continue without bailing out
 
         LOGGER.info('Done.')
+
+        status.log()
 
 
 def main(args=None):
