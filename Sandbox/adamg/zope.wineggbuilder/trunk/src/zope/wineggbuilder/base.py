@@ -30,7 +30,7 @@ class Command(object):
         self.captureOutput = captureOutput
         self.exitOnError = exitOnError
 
-    def do(cmd):
+    def do(self, cmd):
         LOGGER.debug('Command: ' + cmd)
         if self.captureOutput:
             stdout = stderr = subprocess.PIPE
