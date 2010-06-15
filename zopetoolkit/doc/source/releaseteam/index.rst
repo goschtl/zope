@@ -14,3 +14,4 @@ communicates on the zope-dev mailing list (:ref:`mailing-list`).
     todo
     meeting-20100506
     meeting-20100518
+    meeting-20100601
