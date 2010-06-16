@@ -75,6 +75,7 @@ class Compiler(object):
         if self.options.dryrun:
             LOGGER.info("Dry run, no upload")
             command = command.replace('upload', '')
+            status.setStatus(package, version, "dryrun", self)
 
         LOGGER.debug('Running: %s\nIn: %s', command, sourceFolder)
 
@@ -91,6 +92,7 @@ class Compiler(object):
             if 'failed' in output.lower():
                 LOGGER.info("Something was wrong with the command. Output: %s",
                             output)
+                status.setStatus(package, version, "failed", self)
 
             if 'running upload' in output \
                 and 'Submitting' in output \
@@ -104,7 +106,7 @@ class Compiler(object):
             #prepare for the worst
             LOGGER.exception("An error occurred while running the build command")
             #continue without bailing out
-            status.setStatus(package, version, "err", self)
+            status.setStatus(package, version, "error", self)
 
         if tmpfile:
             os.remove(tmpfile)
@@ -199,7 +201,7 @@ class Package(object):
                 if needBuild:
                     needs.append(target)
                 else:
-                    status.setStatus(self, version, "ex", target)
+                    status.setStatus(self, version, "existed", target)
 
             if needs:
                 tmpfolder = tempfile.mkdtemp('wineggbuilder')
@@ -303,7 +305,8 @@ class Builder(object):
 
         LOGGER.info('Done.')
 
-        status.log()
+        if self.options.status:
+            status.log()
 
 
 def main(args=None):
