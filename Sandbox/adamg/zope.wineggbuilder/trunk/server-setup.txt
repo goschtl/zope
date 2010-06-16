@@ -64,3 +64,8 @@ eggs-directory=c:\eggs
   - create user on PYPI: zope.wineggbuilder
     - grant perm to packages
     - what's up with ZODB3??? ask Jim
+    - setup .pypirc
+
+  - setup buildbot
+    - http://buildbot.net/trac/wiki/RunningBuildbotOnWindows
+    - grant permissions to user buildbot
