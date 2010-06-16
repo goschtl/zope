@@ -268,6 +268,7 @@ class Status(object):
 
 class Builder(object):
     def __init__(self, configFileName, options):
+        self.options = options
         LOGGER.info('loading configuration from %s', configFileName)
 
         config = ConfigParser.RawConfigParser()
