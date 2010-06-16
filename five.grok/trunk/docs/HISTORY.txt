@@ -4,7 +4,10 @@ Changelog
 1.1.2 (unreleased)
 ------------------
 
-- ...
+- Fixed problem with unrestrictedTraverse() and files in subfolders of grokked
+  resource directories. This fix also depends on fixes in Zope 2.12.6 or
+  later.
+  [optilude]
 
 1.1.1 (2010-02-04)
 ------------------

@@ -150,7 +150,10 @@ class ZopeTwoDirectoryResource(resource.DirectoryResource):
 
     # Allow traversal to contained resources from protected code
     __allow_access_to_unprotected_subobjects__ = True
-
+    
+    # Allow subdirectories to work with restrictedTraverse() (in Zope >= 2.12.6)
+    __roles__ = None
+    
     resource_factories = {}
     for type, factory in (resource.DirectoryResource.resource_factories.items()):
         if factory is resource.PageTemplateResourceFactory:

@@ -64,4 +64,15 @@ An absolute path to a directory with resources::
   >>> print browser.contents
   Baz resource file's content.
 
+We can restricted-traverse to resources in directories and subdirectories:
+
+  >>> app.restrictedTraverse('++resource++five.grok.ftests.directoryresource.fixture.resource/file.txt')
+  <Products.Five.browser.resource.FileResource object at ...>
+  
+  >>> app.restrictedTraverse('++resource++frupple/file.txt')
+  <Products.Five.browser.resource.FileResource object at ...>
+  
+  >>> app.restrictedTraverse('++resource++fropple/baz/file.txt')
+  <Products.Five.browser.resource.FileResource object at ...>
+
 """
