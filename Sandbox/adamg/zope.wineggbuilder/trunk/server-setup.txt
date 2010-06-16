@@ -69,3 +69,6 @@ eggs-directory=c:\eggs
   - setup buildbot
     - http://buildbot.net/trac/wiki/RunningBuildbotOnWindows
     - grant permissions to user buildbot
+    - beat it until it works (permissions, etc....)
+
+  - put an apache in front of the whole

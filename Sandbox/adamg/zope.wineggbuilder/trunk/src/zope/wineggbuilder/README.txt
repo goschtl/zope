@@ -272,9 +272,9 @@ Let's see:
     zope.proxy           py25_32    py24_32    py26_32    py26_64
     ==================== ========== ========== ========== ==========
                    3.3.0 n/a        n/a        n/a        n/a
-                   3.4.0 ex         n/a        done       n/a
-                   3.4.1 done       n/a        n/a        n/a
-                   3.4.2 ex         n/a        ex         n/a
+                   3.4.0 existed    n/a        done       n/a
+                   3.4.1 done       n/a        failed     n/a
+                   3.4.2 existed    n/a        existed    n/a
                    3.5.0 n/a        n/a        n/a        n/a
                    3.6.0 n/a        n/a        n/a        n/a
 
