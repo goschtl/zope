@@ -256,9 +256,14 @@ def main():
     rheostat(0, 'Total languishing bugs:  %d' % total)
     rheostat(1, '=' * 78)
 
+    if total == 0:
+        status = 'OK'
+    else:
+        status = 'FAILURE'
+
     if sendmail is True:
         mail_it(mail_host, mail_from, mail_to, 
-                'Total languishing bugs:  %d' % total, report)
+                '%s: Total languishing bugs:  %d' % (status, total), report)
     if total > 0:
         sys.exit(-1)
 
