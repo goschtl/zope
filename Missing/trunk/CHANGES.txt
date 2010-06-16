@@ -4,6 +4,7 @@ Changelog
 2.13.1 (unreleased)
 -------------------
 
+- Added a ``__class__`` to Missing.Value objects.
 
 2.13.0 (2010-03-30)
 -------------------

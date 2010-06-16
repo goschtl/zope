@@ -32,9 +32,27 @@
 1
 >>> Value == Value + 1
 1
+>>> Value.__class__
+<type 'Missing.Value'>
 
-$Id$
+>>> type(Value())
+<type 'Missing.Value'>
+
+>>> from Missing import MV
+
+>>> MV.__class__
+<type 'Missing.Value'>
+>>> type(MV())
+<type 'Missing.Value'>
+
+>>> from Missing import V
+
+>>> V.__class__
+<type 'Missing.Value'>
+>>> type(V())
+<type 'Missing.Value'>
 """
+
 import unittest
 from doctest import DocTestSuite
 
@@ -42,5 +60,3 @@ def test_suite():
     return unittest.TestSuite((
         DocTestSuite(),
         ))
-
-if __name__ == '__main__': unittest.main()

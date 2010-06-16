@@ -187,6 +187,11 @@ Missing_getattr(PyObject *self, PyObject *name)
     }
   else legal=NULL;
 
+  if (strcmp(c,"__class__")==0)
+    {
+        return Py_FindAttrString(self, c);
+    }
+
   if(! legal)
     {
       if(strcmp(c,"__reduce__")==0)
@@ -229,7 +234,7 @@ Missing_cmp(PyObject *m1, PyObject *m2)
 static PyExtensionClass MissingType = {
   PyObject_HEAD_INIT(NULL)
   0,					/*ob_size*/
-  "Missing",				/*tp_name*/
+  "Missing.Value",			/*tp_name*/
   sizeof(Missing),			/*tp_basicsize*/
   0,					/*tp_itemsize*/
   /* methods */
