@@ -9,12 +9,56 @@ Summary
 =======
 
 The IRC log is available here:
-  XXX
+  http://zope3.pov.lt/irclogs-zope/%23zope.2010-06-15.log.html#t2010-06-15T18:00:35
 
 Attendees
 ---------
 
-XXX
+Charlie Clark, Adam Groszer, Christian Theune, Jens Vagelpohl
+
+
+Test runners / nightly builds
+-----------------------------
+
+Adam received his MSDN license and was able to retrieve software. He pointed
+out that the license is valid for a year. After that we need to consider
+renewal (unless the VS express editions work out).
+
+A survey on zope-dev showed that the other developers who asked for a license
+didn't receive theirs, yet.
+
+Adam continues to work on the VM setup at rackspace, preparing the eggbuilder
+and buildout slaves. 
+
+Supporting Python 2.7
+---------------------
+
+Supporting Python 2.7 involves at least the following actions:
+
+- get buildbot owners to run with Python 2.7 additionally
+- review RestrictedPython
+
+Charlie Clark points out that he has been running installations using Python
+2.7 with no practical problems.
+
+Metrics for bug days
+---------------------
+
+2010-06-15 features a bug day and we'd like to get a better grasp on what we
+get out of the bug days. After some discussion on quantitative metrics the
+decision turned towards a qualitative assessment: Christian Theune will write
+another invitation to the zope-dev list asking every developer who
+participated in the bug day to write a short summary of what he did/achieved
+during the bug day.
+
+The sum of those summaries should provide a good overview to others of what
+happened.
+
+Index view for download.zope.org
+--------------------------------
+
+Jens turned download.zope.org into a standard auto-generated index page which
+Adam acknowledged as a solution to his (proxied) request.
 
 
 Agenda (draft)
