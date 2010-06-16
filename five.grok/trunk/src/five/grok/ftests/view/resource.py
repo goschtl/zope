@@ -21,7 +21,7 @@
   >>> print browser.contents
   <tal:test>This template should be considered as a file.</tal:test>
   >>> print browser.headers['content-type']
-  text/plain; charset=iso-8859-15
+  text/html; charset=iso-8859-15
 
   Set a content, and ask the view on it. In a view, you should be able
   to get the resource URL:
