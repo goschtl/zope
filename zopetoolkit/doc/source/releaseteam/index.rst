@@ -15,3 +15,4 @@ communicates on the zope-dev mailing list (:ref:`mailing-list`).
     meeting-20100506
     meeting-20100518
     meeting-20100601
+    meeting-20100615
