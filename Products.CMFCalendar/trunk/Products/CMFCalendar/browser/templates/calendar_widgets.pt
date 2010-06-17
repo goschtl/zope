@@ -4,7 +4,7 @@
 <metal:slot metal:fill-slot="body" i18n:domain="cmf_calendar">
  <div metal:define-macro="calendarBox"
      class="CalendarBox"
-     tal:define="calendar_box_view context/@@calendar_box_view;
+     tal:define="calendar_box_view nocall:context/@@calendar_box_view;
                  yearmonth calendar_box_view/getMonthAndYear;
                  year python:yearmonth[0];
                  month python:yearmonth[1];
