@@ -233,9 +233,9 @@ class Status(object):
 
     def setVersions(self, package, versions):
         for v in versions:
-            self.data[package.name][v]= {}
+            self.data[package.name].setdefault(v, {})
             for t in self.targets:
-                self.data[package.name][v][t] = 'n/a'
+                self.data[package.name][v].setdefault(t, 'n/a')
 
     def setStatus(self, package, version, status, target=None):
         if target is None:
