@@ -246,20 +246,24 @@ class Status(object):
 
     def log(self):
         text = ['\n']
+        targets = sorted(self.targets.keys())
+        vs = ' '.join(['='*10 for target in targets])
+        sep = "%s %s" % ('='*20, vs)
+
         for pname in sorted(self.data.keys()):
             package = self.data[pname]
-            vs = ' '.join([target.ljust(10) for target in self.targets])
+            vs = ' '.join([target.ljust(10) for target in targets])
             txt = "%s %s" % (pname.ljust(20), vs)
+            text.append(sep)
             text.append(txt)
-            vs = ' '.join(['='*10 for target in self.targets])
-            txt = "%s %s" % ('='*20, vs)
-            text.append(txt)
+            text.append(sep)
             for vname in sorted(package.keys()):
                 version = package[vname]
                 if isinstance(version, basestring):
                     txt = "%20s %s" % (vname, version)
                 else:
-                    vs = ' '.join([version[target].ljust(10) for target in self.targets])
+                    vs = ' '.join([version[target].ljust(10)
+                                   for target in targets])
                     txt = "%20s %s" % (vname, vs)
                 text.append(txt)
         output = '\n'.join(text)
