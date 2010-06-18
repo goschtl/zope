@@ -150,6 +150,8 @@ class Package(object):
             self.targets.append(compilers[target])
 
     def build(self, status):
+        LOGGER.info("Processing %s [%s]", self.name, self.sectionName)
+
         #1 get versions from pypi
         pypi = self.pypiKlass()
         versions = pypi.package_releases(self.name, show_hidden=True)
@@ -283,7 +285,7 @@ class Builder(object):
             self.compilers[cmp] = Compiler(cmp, config, options)
 
         self.packages = []
-        for section in config.sections():
+        for section in sorted(config.sections()):
             if section == base.BUILD_SECTION:
                 continue
             if section in self.compilers:

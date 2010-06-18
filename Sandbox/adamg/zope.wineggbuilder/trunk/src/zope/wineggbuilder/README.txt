@@ -26,6 +26,7 @@ Let's see:
     >>> build.main([testininame, '-v', '-s']) # doctest: +REPORT_NDIFF
     INFO - loading configuration from ...zope.wineggbuilder\trunk\src\zope\wineggbuilder\test.ini
     INFO - Starting to build
+    INFO - Processing zope.proxy [zope.proxy_34_to_35]
     DEBUG - getting http://pypi.python.org/simple/zope.proxy/
     DEBUG - Got a file: zope.proxy-3.4.0-py2.4-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.0.tar.gz
