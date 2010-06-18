@@ -28,9 +28,14 @@ Let's see:
     INFO - Starting to build
     INFO - Processing zope.proxy [zope.proxy_34_to_35]
     DEBUG - getting http://pypi.python.org/simple/zope.proxy/
+    DEBUG - Got a file: zope.proxy-3.5.0-py2.6-win-amd64.egg
+    DEBUG - Got a file: zope.proxy-3.5.0-py2.6-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.0-py2.4-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.0.tar.gz
+    DEBUG - Got a file: zope.proxy-3.5.0-py2.5-win32.egg
+    DEBUG - Got a file: zope.proxy-3.5.0.tar.gz
     DEBUG - Got a file: zope.proxy-3.4.2.zip
+    DEBUG - Got a file: zope.proxy-3.5.0-py2.4-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.2-py2.6-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.1-py2.4-win32.egg
     DEBUG - Got a file: zope.proxy-3.4.1.zip
@@ -267,6 +272,10 @@ Let's see:
     DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py25_32
     DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
     DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.4.2 py26_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.5.0 py25_32
+    DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.5.0 py25_32
+    DEBUG - Checking if build required for [zope.proxy_34_to_35] zope.proxy 3.5.0 py26_32
+    DEBUG - Build not required for [zope.proxy_34_to_35] zope.proxy 3.5.0 py26_32
     INFO - Done.
     INFO -
     <BLANKLINE>
@@ -277,7 +286,7 @@ Let's see:
                    3.4.0 n/a        existed    done       n/a
                    3.4.1 n/a        done       failed     n/a
                    3.4.2 n/a        existed    existed    n/a
-                   3.5.0 n/a        n/a        n/a        n/a
+                   3.5.0 n/a        existed    existed    n/a
                    3.6.0 n/a        n/a        n/a        n/a
 
 Let's see what was executed on mocks:

@@ -20,6 +20,7 @@ from collections import defaultdict
 
 import BeautifulSoup
 import ConfigParser
+from distutils.version import StrictVersion
 
 from zope.wineggbuilder import base
 
@@ -111,19 +112,6 @@ class Compiler(object):
         if tmpfile:
             os.remove(tmpfile)
 
-def versionToTuple(version):
-    #tries to do "3.4.0" -> ('0003','0004','0000')
-    #otherwise the problem starts with 3.10.0, that would be less than 3.4.0
-    #problems arise on the last digit when it has 'dev' or 'b'
-    parts = []
-    for p in version.split('.'):
-        try:
-            # we try our best to convert to a comparable number
-            parts.append("%04d" % int(p))
-        except ValueError:
-            parts.append(p)
-    return tuple(parts)
-
 class Package(object):
     #hook to enable testing
     pypiKlass = base.PYPI
@@ -160,14 +148,26 @@ class Package(object):
 
         #1.1 filter versions according to minVersion and maxVersion:
         if self.minVersion:
-            minver = versionToTuple(self.minVersion)
-            versions = [v for v in versions
-                        if versionToTuple(v) >= minver]
+            minver = StrictVersion(self.minVersion)
+            ov = []
+            for v in versions:
+                try:
+                    if StrictVersion(v) >= minver:
+                        ov.append(v)
+                except ValueError:
+                    pass
+            versions = ov
 
         if self.maxVersion:
-            maxver = versionToTuple(self.maxVersion)
-            versions = [v for v in versions
-                        if versionToTuple(v) <= maxver]
+            maxver = StrictVersion(self.maxVersion)
+            ov = []
+            for v in versions:
+                try:
+                    if StrictVersion(v) <= maxver:
+                        ov.append(v)
+                except ValueError:
+                    pass
+            versions = ov
 
         versions.sort()
         if len(versions) == 0:
