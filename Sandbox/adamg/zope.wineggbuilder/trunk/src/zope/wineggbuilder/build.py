@@ -134,6 +134,8 @@ class Package(object):
         self.minVersion = getOption(config, sectionName, 'minVersion')
         self.maxVersion = getOption(config, sectionName, 'maxVersion')
         self.needSource = bool(getOption(config, sectionName, 'needSource', 'True'))
+        self.excludeVersions = getOption(
+            config, sectionName, 'excludeVersions' ,'').split()
         self.targets = []
         for target in config.get(sectionName, 'targets').split():
             self.targets.append(compilers[target])
@@ -169,6 +171,9 @@ class Package(object):
                 except ValueError:
                     pass
             versions = ov
+
+        versions = [v for v in versions
+                    if v not in self.excludeVersions]
 
         versions.sort()
         if len(versions) == 0:
