@@ -133,6 +133,7 @@ class Package(object):
             self.tagurl = self.tagurl[:-1]
         self.minVersion = getOption(config, sectionName, 'minVersion')
         self.maxVersion = getOption(config, sectionName, 'maxVersion')
+        self.needSource = bool(getOption(config, sectionName, 'needSource', 'True'))
         self.targets = []
         for target in config.get(sectionName, 'targets').split():
             self.targets.append(compilers[target])
@@ -182,6 +183,7 @@ class Package(object):
         simple = self.urlGetterKlass().get(self.pypiurl)
         soup = BeautifulSoup.BeautifulSoup(simple)
         VERSION = re.compile(self.name+r'-(\d+\.\d+(\.\d+){0,2})')
+        gotSource = False
         for tag in soup('a'):
             cntnt = str(tag.contents[0]) # str: re does not like non-strings
 
@@ -192,6 +194,14 @@ class Package(object):
                     continue
                 LOGGER.debug('Got a file: %s', cntnt)
                 verFiles[version].append(cntnt)
+
+                if (cntnt.endswith('.zip')
+                    or cntnt.endswith('.tar.gz')
+                    or cntnt.endswith('tgz')):
+                    gotSource = True
+
+        if self.needSource and not gotSource:
+            LOGGER.info("No source release (.zip/.tar.gz/.tgz) found")
 
         svn = self.svnKlass(exitOnError=False)
         for version in versions:
