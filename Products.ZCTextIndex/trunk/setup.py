@@ -16,7 +16,7 @@ from os.path import join
 from setuptools import setup, find_packages, Extension
 
 setup(name='Products.ZCTextIndex',
-      version = '2.13.0',
+      version = '2.13.1dev',
       url='http://pypi.python.org/pypi/Products.ZCTextIndex',
       license='ZPL 2.1',
       description="Full text indexing for ZCatalog / Zope 2.",
