@@ -1,0 +1,12 @@
+Changelog
+=========
+
+2.13.1 (2010-06-19)
+-------------------
+
+- Restore security declarations for deprecated ``sets`` module.
+
+2.13.0 (2010-06-19)
+-------------------
+
+- Released as separate package.
