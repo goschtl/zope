@@ -1,0 +1,98 @@
+Building windows binary eggs
+============================
+
+This package will build missing binary eggs for specified platforms and package
+versions.
+
+A overview how it works::
+
+  - It gets all the released versions from pypi with an xmlrpc query
+    (with the method package_releases).
+
+  - Optionally filters the versions (See the specs for
+    version/platform constraints)
+
+  - Checks if there are binary eggs present for the various versions/platforms.
+
+  - If one is missing, builds it and uploads to pypi (setup.py bdist_egg),
+    taking the source from the svn tag.
+
+
+Config file
+-----------
+
+Standard ini file format is used.
+For samples see ``test.ini`` and ``rackspace.ini``.
+
+``build`` section
+..................
+
+- ``compilers`` - Specify the section names of the compilers (python
+                  interpreters) to be used.
+                  Multiple items, separated by whitespace
+
+Compiler section
+................
+
+The section name should match one of the ``compilers`` option entry.
+
+- ``command`` - Specify the command(s) needed to compile AND upload the package.
+                If there's only one line, it's executed directly.
+                More lines are accepted. They are written to a temp .bat file
+                and the .bat file is executed.
+
+- ``fileEnding`` - Specify the last characters of the egg filename for the
+                   given platform.
+
+Package section
+...............
+
+All the remaining sections are used as package specifications.
+A good idea is to name the section as the package plus some version info.
+
+- ``package`` - Specify the package name, as it is used on pypi.
+
+- ``minVersion`` - Specify the minimum version to be processed. (>=)
+
+- ``maxVersion`` - Specify the maximum version to be processed. (<=)
+
+- ``targets`` - Specify the target platforms/compilers.
+                Separate entries by whitespace.
+
+- ``pypiurl`` - Specify the location of the release files on pypi.
+                Default is: http://pypi.python.org/simple/<package>/
+
+- ``tagurl`` - Specify the location of the sourcecode.
+               Currently only svn is supported.
+               Default is: svn://svn.zope.org/repos/main/<package>/tags
+               The package version gets appended to the end for the
+               ``svn co`` command. The full url is then:
+               svn://svn.zope.org/repos/main/<package>/tags/<version>
+
+- ``needSource`` - Boolean switch. If true there must be a .zip/.tar.gz/.tgz
+                   release file present on pypi, otherwise nothing will be done.
+                   Default is: True
+
+- ``excludeVersions`` - Specify which exact versions to exclude from compiling.
+                        Separate multiple values by whitespace.
+
+Commandline options
+-------------------
+
+Deployment is the usual buildout way:
+
+  c:\eggbuild> python bootstrap.py
+  c:\eggbuild> bin\buildout.exe
+
+The script to start is then:
+
+  c:\eggbuild> bin\build.exe
+
+  Usage: build-script.py [options]
+
+  Options:
+    -h, --help     show this help message and exit
+    -q, --quiet    When specified, no messages are displayed.
+    -v, --verbose  When specified, debug information is displayed.
+    -d, --dryrun   When specified, no upload is done.
+    -s, --status   When specified, detailed status is output at the end.
