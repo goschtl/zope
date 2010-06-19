@@ -257,7 +257,8 @@ class Status(object):
     def setStatus(self, package, version, status, target=None):
         if target is None:
             # this is a version general status
-            self.data[package.name][version] = status
+            for t in self.targets:
+                self.data[package.name][version][t] = status
         else:
             self.data[package.name][version][target.name] = status
 
