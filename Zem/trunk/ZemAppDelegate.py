@@ -3,7 +3,7 @@
 #  Zem
 #
 #  Created by Zachery Bir on Thu Jun 10 2004.
-#  Copyright (c) 2004 Zope Corporation. All rights reserved.
+#  Copyright (c) 2004 Zope Foundation and Contributors.
 #
 
 # library imports

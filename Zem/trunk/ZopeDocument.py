@@ -3,7 +3,7 @@
 #  ZopeEditManager
 #
 #  Created by Zachery Bir on 2003-08-20.
-#  Copyright (c) 2004 Zope Corporation. All rights reserved.
+#  Copyright (c) 2004 Zope Foundation and Contributors.
 #
 
 # library imports

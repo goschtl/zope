@@ -6,8 +6,8 @@ plist = dict(
     CFBundleIdentifier = "com.urbanape.zopeeditmanager",
     CFBundleShortVersionString = "Version 0.9.8",
     CFBundleGetInfoString = ("Zem version 0.9.8, "
-                             "Copyright 2003-2006 Zope Corporation"),
-    NSHumanReadableCopyright = "Copyright 2003-2006 Zope Corporation",
+                             "Copyright 2003-2006 Zope Foundation"),
+    NSHumanReadableCopyright = "Copyright 2003-2006 Zope Foundation",
     CFBundleIconFile = "ZEM.icns",
     CFBundleInfoDictionaryVersion = "6.0",
     CFBundlePackageType = "APPL",
