@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2004-2006 gocept gmbh & co. kg
+# Copyright (c) 2004-2006 Zope Foundation and Contributors
 # See also LICENSE.txt
 # $Id: check_zope.py 3913 2006-04-05 06:01:15Z ctheune $
 #

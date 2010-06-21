@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
-# Copyright (c) 2008 gocept gmbh & co. kg
+# Copyright (c) 2008 Zope Foundation and Contributors
 # See also LICENSE.txt
 # $Id$
 """Munin client script for ZEO monitor servers.

@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2008 gocept gmbh & co. kg
+# Copyright (c) 2004-2008 Zope Foundation and Contributors
 # See also LICENSE.txt
 # $Id: __init__.py 5611 2008-02-29 09:43:31Z ctheune $
 #
