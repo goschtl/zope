@@ -1,0 +1,211 @@
+==================
+Upload WSGI Filter
+==================
+
+This wsgi filter replaces any multipart file upload with a hash by
+using the processor (see processor.txt).
+
+Our testing application runs through our extfile filter and returns the input
+stream.
+
+    >>> app.post('/', params=dict(x=1)).body
+    'x=1'
+
+We take the testfiles from z3c.filetype for
+this. We see that only the hash gets sent to the application.
+
+    >>> import z3c.filetype, os
+    >>> def testFile(name):
+    ...     return os.path.join(os.path.dirname(z3c.filetype.__file__),
+    ...                         'testdata', name)
+
+
+So let us upload a file. We need a specific header to be present
+otherwise the filter is disabled.
+
+    >>> print app.post('/', params=dict(x=1),
+    ...         upload_files=(('myfile',testFile('test.html')),),).body
+    ------------a_...$
+    Content-Disposition: form-data; name="x"
+    1
+    ------------a_...$
+    Content-Disposition: form-data; name="myfile"; filename="...test.html"
+    Content-Type: text/html
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+    <title>Title</title>
+    <BLANKLINE>
+    <body>
+     body
+    </body>
+    </html>
+    ------------a_...$--
+
+So let us set the header, this should be done by the frontend server normally.
+
+    >>> env = {'HTTP_X_EXTFILE_HANDLE':'on'}
+    >>> print app.post('/', params=dict(x=1), extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.png')),),).body
+    ------------a_...$
+    Content-Disposition: form-data; name="x"
+    1
+    ------------a_...$
+    Content-Disposition: form-data; name="myfile"; filename="...test.png"
+    Content-Type: application/x-z3c.extfile-info
+    z3c.extfile.digest:8154ea0062bc100c0de661cba37740863b34e79f
+    ------------...$--
+
+Filetype recognition
+====================
+
+When enabled the upload filter adds the content type and length to the
+uplaad data. We can enable this by setting an additional header.
+
+    >>> env['HTTP_X_EXTFILE_INFO'] = 'on'
+    >>> print app.post('/', params=dict(x=1), extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.png')),),).body
+    ---...
+    z3c.extfile.digest:8154ea0062bc100c0de661cba37740863b34e79f:image/png:4412
+    ...$--
+
+
+We can also restrict types by setting a regex in a header. If the type
+does not match a 400 is raised.
+
+    >>> env['HTTP_X_EXTFILE_TYPES'] = 'text/html'
+    >>> print app.post('/', params=dict(x=1), extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.png')),),).body
+    Traceback (most recent call last):
+    ...
+    AppError: Bad response: 400 Bad Request (not 200 OK or 3xx redirect for /)
+
+Let us upload a html file.
+
+    >>> print app.post('/', params=dict(x=1), extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.html')),),).body
+    -----...
+    Content-Type: application/x-z3c.extfile-info
+    z3c.extfile.digest:9a2e5260cd0001b96b623d25b01194ca7d8008db:text/html:126
+    ...
+
+For example we can allow only jpegs and pngs to be uploaded.
+
+    >>> env['HTTP_X_EXTFILE_TYPES'] = 'image/((jpe?g)|(png))'
+    >>> print app.post('/', extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.png')),),).status
+    200
+    >>> print app.post('/', extra_environ=env,
+    ...         upload_files=(('myfile',testFile('test.html')),),).status
+    Traceback (most recent call last):
+    ...
+    AppError: Bad response: 400 Bad Request (not 200 OK or 3xx redirect for /)
+
+    >>> del env['HTTP_X_EXTFILE_TYPES']
+    >>> print app.post('/', extra_environ=env,
+    ...         upload_files=(('myfile',testFile('ipod.mp4')),),).body
+    ---...
+    z3c.extfile.digest:4934828cf300711df0af9879b0b479c1c18e5707:video/mp4:1026603
+    ...
+
+Let us check the size of the file.
+
+    >>> from z3c.extfile.hashdir import HashDir
+    >>> path = os.environ['EXTFILE_STORAGEDIR']
+    >>> hd = HashDir(path)
+    >>> int(hd.getSize('4934828cf300711df0af9879b0b479c1c18e5707'))
+    1026603
+
+Some more type tests because the filter only looks at the first line,
+we have to make sure that the types are recognized.
+
+    >>> files = [(name, testFile(name)) for name in \
+    ...     ('IMG_0504.JPG', 'faces_gray.avi', 'jumps.mov', 'test.tgz')]
+
+    >>> print app.post('/', extra_environ=env, upload_files=files).body
+    ---...
+    z3c...:e641782f446534f6c4d8ae2ce2ae4e6ad0e13738:image/jpeg:511110
+    ...
+    z3c...:f53154408fec55e610a9d48e2ebe6f0eb981ce6c:video/x-msvideo:196608
+    ...
+    z3c...:27f8cd025077e08228ca34c37cc0c7536e592e0d:video/quicktime:77449
+    ...
+    z3c...:3641323866cd50dd809a926cee773849cb6c8a85:application/x-gzip:4552
+    ...
+
+GET Requests
+============
+
+The also replaces the extfile info with the real file. Our test
+application behind the filter returns the path on GET request, so we
+can just set the body we want.
+
+Here is an example.
+
+    >>> app.get('/abc').body
+    'abc'
+
+So let us request a file that we uploaded previously. If the header is
+not set nothing is done.
+
+
+    >>> info = 'z3c.extfile.digest:9a2e5260cd0001b96b623d25b01194ca7d8008db:text/html:126'
+    >>> app.get('/%s' % info).body == info
+    True
+
+Let us enable the filter by setting the environment.
+
+    >>> env = {'HTTP_X_EXTFILE_HANDLE':'on'}
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> print res.body
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+    <title>Title</title>
+    <BLANKLINE>
+    <body>
+     body
+    </body>
+    </html>
+    <BLANKLINE>
+    >>> res.headers
+    [('content-length', '126'), ('content-type', 'text/html')]
+
+    >>> info='z3c.extfile.digest:4934828cf300711df0af9879b0b479c1c18e5707:video/mp4:1026603'
+
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.headers
+    [('content-length', '1026603'), ('content-type', 'video/mp4')]
+    >>> len(res.body)
+    1026603
+
+If we have no info the content-type is not modified. The length is taken
+from the files size.
+
+    >>> info='z3c.extfile.digest:4934828cf300711df0af9879b0b479c1c18e5707'
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.headers
+    [('content-length', '1026603'), ('content-type', 'text/plain')]
+
+It needs to be an extfile info content, otherwise the original content
+is returned.
+
+    >>> info='noextfile:4934828cf300711df0af9879b0b479c1c18e5707'
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.body
+    'noextfile:4934828cf300711df0af9879b0b479c1c18e5707'
+
+Edge Cases
+==========
+
+The extfile storage directory needs to be created before the first
+request but not an initialization time.
+
+    >>> from z3c.extfile.filter import FSFilter
+    >>> f = FSFilter(None, 'nonexistent/path')
+
+The first request will try to get the lazy property .hd. This will
+fail because the directory needs to exist.
+
+    >>> f.hd
+    Traceback (most recent call last):
+    ...
+    OSError: ... No such file or directory: '.../nonexistent/path'

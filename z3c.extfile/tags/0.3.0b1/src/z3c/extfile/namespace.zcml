@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain='zope'
+    >
+
+  <view
+      name="static"
+      type="zope.interface.Interface"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.app.component.interfaces.ISite"
+      factory=".namespace.Static"
+      />
+
+  <adapter
+      name="static"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.app.component.interfaces.ISite"
+      factory=".namespace.Static"
+      />
+
+</configure>

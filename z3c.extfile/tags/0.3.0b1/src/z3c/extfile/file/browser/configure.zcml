@@ -1,0 +1,21 @@
+<configure
+ xmlns="http://namespaces.zope.org/zope"
+ xmlns:browser="http://namespaces.zope.org/browser"
+ i18n_domain='zope'
+ >
+
+ <browser:addMenuItem
+  class="..file.ExtFile"
+  title="Large File"
+  description="A Large File with content stored externally"
+  permission="zope.ManageContent"
+  />
+
+ <browser:page
+  name="upload.html"
+  class=".views.EditForm"
+  for="..interfaces.IExtFile"
+  permission="zope.ManageContent"
+  />
+ 
+</configure>

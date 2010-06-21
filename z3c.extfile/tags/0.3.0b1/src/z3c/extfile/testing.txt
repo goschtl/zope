@@ -1,0 +1,23 @@
+===============
+Extfile Testing
+===============
+
+The testing module set the extfile environment vaiable to a temporary
+directory.
+
+  >>> import os
+  >>> if 'EXTFILE_STORAGEDIR' in os.environ:
+  ...     oldEnv = os.environ['EXTFILE_STORAGEDIR']
+  ... else:
+  ...     oldEnv = 'I am not set'
+
+Simply import
+
+  >>> import z3c.extfile.testing
+
+and we have the environment vaiable set
+
+  >>> import os
+  >>> os.environ.get('EXTFILE_STORAGEDIR') == oldEnv
+  False
+
