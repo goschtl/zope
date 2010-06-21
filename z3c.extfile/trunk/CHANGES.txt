@@ -5,6 +5,9 @@ Changes for z3c.extfile
 unreleased
 ==========
 
+- allow fallbacks in IHashDir for read-only access to additional
+  digest files. see hashdir.txt for details.
+
 - removed zope.tread and use threading instead
 
 0.2.0b2 (2008-07-14)

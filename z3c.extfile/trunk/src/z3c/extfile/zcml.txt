@@ -9,7 +9,7 @@ provided.
   ...    xmlns='http://namespaces.zope.org/zope'
   ...    xmlns:test='http://www.zope.org/NS/Zope3/test'
   ...    i18n_domain='zope'>
-  ...    <hashDir path="%s"/>
+  ...    <hashDir path="%s" fallbacks="%s"/>
   ...   </configure>"""
 
   >>> from zope.configuration.xmlconfig import xmlconfig, XMLConfig
@@ -23,19 +23,19 @@ Let us register a hashdir util.
 
   >>> from StringIO import StringIO
   >>> path = "./its/not/there"
-  >>> xmlconfig(StringIO(baseTemplate % path))
+  >>> xmlconfig(StringIO(baseTemplate % (path, '')))
   Traceback (most recent call last):
   ...
   ZopeXMLConfigurationError: ...
         OSError: ... No such file or directory: '.../its/not/there'
 
-We need an existing path.
+We need an existing path. We also define some fallbacks.
 
   >>> from zope import component
   >>> from z3c.extfile.interfaces import IHashDir
   >>> import tempfile, os, shutil
   >>> tmp1 = tempfile.mkdtemp()
-  >>> xmlconfig(StringIO(baseTemplate % tmp1))
+  >>> xmlconfig(StringIO(baseTemplate % (tmp1, '/tmp some/relative/path')))
   >>> sorted(os.listdir(tmp1))
   ['tmp', 'var']
   >>> util = component.getUtility(IHashDir)
@@ -45,7 +45,10 @@ We need an existing path.
   >>> util.path == tmp1
   True
 
+The fallback paths.
 
+  >>> util.fallbacks
+  [u'/tmp', u'/.../parts/.../some/relative/path']
 
 Also the bootstrapsubscriber looks if the utility is already
 registered and issues a warning if so and returns without any action.

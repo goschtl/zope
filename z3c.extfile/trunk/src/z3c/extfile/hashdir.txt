@@ -145,10 +145,36 @@ If we provide a wrong digest a Value error is raised.
   ValueError: 'abc'
 
 If we have a valid digest but it is not there a KeyError is raised.
+
   >>> hd.getPath('da39a3ee5e6b4b0d3255bfef95601890afd80700')
   Traceback (most recent call last):
   ...
   KeyError: 'da39a3ee5e6b4b0d3255bfef95601890afd80700'
+
+Fallbacks
+=========
+
+It is possible to set additional fallback paths upon hashdir creation,
+in order to have read-only fallback access to other extfile
+direcotires. This is usefull to allow a read-only directory to act as
+a static shared store.
+
+Let's create a new hasdhdir, with the previous hashdir's var path as
+fallback.
+
+  >>> hdPath2 = os.path.join(tmp, 'testhashdir2')
+  >>> hd2 = hashdir.HashDir(hdPath2, fallbacks=(hd.var,))
+
+It is now possible to get all digests from the fallback.
+
+  >>> f = hd2.open('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
+  >>> f.read()
+  'Content 2'
+
+Note that the fallback digests are not listet in the digests.
+
+  >>> hd2.digests()
+  []
 
 Cleanup
 

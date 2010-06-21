@@ -21,7 +21,7 @@ import os
 from zope import interface
 from zope import schema
 from zope.component import zcml
-from zope.configuration.fields import Path
+from zope.configuration.fields import Path, Tokens
 from interfaces import IHashDir
 from z3c.extfile import hashdir
 
@@ -31,10 +31,14 @@ class IHashDirDirective(interface.Interface):
     path = Path(title = u'Path',
                 required=True)
 
-def hashDirDirective(_context, path, permission=None):
+    fallbacks = Tokens(title = u'Fallbacks',
+                       value_type=path,
+                       required=False)
+
+def hashDirDirective(_context, path, fallbacks=(), permission=None):
     """Function to create hashdir utility"""
 
-    util = hashdir.HashDir(path)
+    util = hashdir.HashDir(path, fallbacks=fallbacks)
     zcml.utility(_context,
                  provides=IHashDir,
                  component=util,

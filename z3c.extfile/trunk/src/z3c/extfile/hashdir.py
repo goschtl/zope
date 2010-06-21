@@ -16,8 +16,9 @@ class HashDir(Persistent):
     interface.implements(interfaces.IHashDir)
     _path = None
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, fallbacks=()):
         self.path = path
+        self.fallbacks = map(os.path.abspath, fallbacks)
 
     def _setPath(self, path):
         if path is None:
@@ -64,10 +65,11 @@ class HashDir(Persistent):
             raise ValueError, repr(digest)
         if type(self.var) is UnicodeType:
             digest = unicode(digest)
-        path = os.path.join(self.var, digest)
-        if not os.path.isfile(path):
-            raise KeyError, digest
-        return path
+        for base in [self.var] +  self.fallbacks:
+            path = os.path.join(base, digest)
+            if os.path.isfile(path):
+                return path
+        raise KeyError, digest
 
     def getSize(self, digest):
         return os.path.getsize(self.getPath(digest))
