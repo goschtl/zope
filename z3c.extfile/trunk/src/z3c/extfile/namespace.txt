@@ -42,7 +42,7 @@ A bad hash does not work:
   >>> ns.traverse(u'not a hash', None)
   Traceback (most recent call last):
   ...
-  TraversalError: (None, u'not a hash')
+  LocationError: (None, u'not a hash')
 
 Existing hashes return a ReadFile.
 
@@ -51,12 +51,12 @@ Existing hashes return a ReadFile.
   >>> ns.traverse(foo.data2.digest, None)
   <ReadFile named '8923e22aa8772e3525dc91f008fc10ce6812b39d'>
 
-A non existing hash also raises a traversal error.
+A non existing hash also raises a location error.
 
   >>> ns.traverse('b34d7a2ebbef51196b8db24f6233e750d6a30e10', None)
   Traceback (most recent call last):
   ...
-  TraversalError: (None, 'b34d7a2ebbef51196b8db24f6233e750d6a30e10')
+  LocationError: (None, 'b34d7a2ebbef51196b8db24f6233e750d6a30e10')
 
 Default Browserview
 ===================

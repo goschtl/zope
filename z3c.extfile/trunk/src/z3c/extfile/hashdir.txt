@@ -83,8 +83,8 @@ The seek and tell operations are supported.
   >>> f.read(10)
   'ontent 2'
 
-  >>> f.tell()
-  9L
+  >>> int(f.tell())
+  9
 
   >>> f.seek(2)
   >>> f.read(10)
@@ -123,15 +123,15 @@ We can get the size of the file via the hashdir.
   >>> for s in ['abc']*1024*500:
   ...     f.write(s)
   >>> d = f.commit()
-  >>> hd.getSize(d)
-  1536000L
+  >>> int(hd.getSize(d))
+  1536000
 
 Empty files are also allowed.
 
   >>> f = hd.new()
   >>> f.commit()
   'da39a3ee5e6b4b0d3255bfef95601890afd80709'
-  
+
 If no file is in progress the tmp dir of the hd should be empty.
 
   >>> os.listdir(hd.tmp)
@@ -153,4 +153,4 @@ If we have a valid digest but it is not there a KeyError is raised.
 Cleanup
 
   >>> import shutil
-  >>> shutil.rmtree(tmp) 
+  >>> shutil.rmtree(tmp)

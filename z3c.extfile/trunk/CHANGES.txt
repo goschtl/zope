@@ -2,6 +2,11 @@
 Changes for z3c.extfile
 =======================
 
+unreleased
+==========
+
+- removed zope.tread and use threading instead
+
 0.2.0b2 (2008-07-14)
 ====================
 

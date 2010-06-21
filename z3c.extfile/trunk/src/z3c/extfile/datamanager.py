@@ -1,11 +1,11 @@
-from zope import thread
+import threading
 from zope import interface
 from zope import component
 from transaction.interfaces import IDataManager
 import interfaces
 import transaction
 
-_storage = thread.local()
+_storage = threading.local()
 
 def getFile(digest):
     if not hasattr(_storage, 'dataManager'):

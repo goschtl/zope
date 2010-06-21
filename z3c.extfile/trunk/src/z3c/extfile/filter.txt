@@ -112,8 +112,8 @@ Let us check the size of the file.
     >>> from z3c.extfile.hashdir import HashDir
     >>> path = os.environ['EXTFILE_STORAGEDIR']
     >>> hd = HashDir(path)
-    >>> hd.getSize('4934828cf300711df0af9879b0b479c1c18e5707')
-    1026603L
+    >>> int(hd.getSize('4934828cf300711df0af9879b0b479c1c18e5707'))
+    1026603
 
 Some more type tests because the filter only looks at the first line,
 we have to make sure that the types are recognized.
