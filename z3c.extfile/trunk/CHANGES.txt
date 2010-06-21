@@ -2,8 +2,8 @@
 Changes for z3c.extfile
 =======================
 
-unreleased
-==========
+0.3.0b1 (2010-07-21)
+====================
 
 - allow fallbacks in IHashDir for read-only access to additional
   digest files. see hashdir.txt for details.

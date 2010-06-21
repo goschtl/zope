@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "z3c.extfile",
-    version = "0.2.0b2",
+    version = "0.3.0b1",
     author = "Zope Contributors",
     author_email = "zope3-dev@zope.org",
     description = "Large file handling for zope3",
