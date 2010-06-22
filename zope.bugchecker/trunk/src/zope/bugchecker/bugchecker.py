@@ -69,9 +69,11 @@ Options
                      and "from" address. Host will default to localhost if
                      none is supplied here.
 
---mail-from          Address sending an e-mail report
+--mail-port, -p      Port number of the mail server.  Default is 25.
 
---mail-to            Address e-mail report will be sent to
+--mail-from, -f      Address sending an e-mail report
+
+--mail-to, -t        Address e-mail report will be sent to
 
 """
 
@@ -150,11 +152,11 @@ class Rheostat:
         if level <= self.verbose:
             print message
 
-def mail_it(mail_host, mail_from, mail_to, subject, report):
+def mail_it(mail_host, mail_port, mail_from, mail_to, subject, report):
     """Send report as e-mail"""
 
     mail = {}
-    mailserver = smtplib.SMTP(mail_host)
+    mailserver = smtplib.SMTP(mail_host, mail_port)
     msg = ('From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s' %
             (mail_from, mail_to, subject, report.getvalue()))
     mailserver.sendmail(mail_from, [mail_to], msg)
@@ -166,11 +168,12 @@ def main():
     states = []
     project_group = None
     sendmail = False
+    mail_port = 25
     mail_to = None
     mail_from = None
     try:
         options, args = getopt.gnu_getopt(sys.argv[1:],
-                                          '?hqvn:s:g:m',
+                                          '?hqvn:s:g:m:p::f:t:',
                                           ['help',
                                            'verbose',
                                            'quiet',
@@ -178,6 +181,7 @@ def main():
                                            'state=',
                                            'project-group=',
                                            'mail=',
+                                           'mail-port=',
                                            'mail-from=',
                                            'mail-to='
                                           ])
@@ -204,9 +208,11 @@ def main():
         elif k in ('-m', '--mail'):
             sendmail = True
             mail_host = v or 'localhost'
-        elif k == '--mail-to':
+        elif k in ('-p' '--mail-port'):
+            mail_port = int(v)
+        elif k in ('-t' '--mail-to'):
             mail_to = v
-        elif k == '--mail-from':
+        elif k in ('-f' '--mail-from'):
             mail_from = v
         else:
             print __doc__
@@ -267,7 +273,8 @@ def main():
         else:
             subject = ', '.join(projects)
         mail_it(mail_host, mail_from, mail_to, 
-                '%s : Total languishing bugs for %s:  %d' % (status, subject, total), report)
+                '%s : Total languishing bugs for %s:  %d'
+                    % (status, subject, total), report)
     if total > 0:
         sys.exit(-1)
 
