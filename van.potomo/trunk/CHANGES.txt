@@ -4,7 +4,7 @@ Changes
 1.0.1 (unknown)
 ------------------
 
-- New Feature XXX
+- Conform to Zope repository policy.
 
 1.0.0 (2009-03-10)
 ------------------
