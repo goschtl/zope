@@ -10,7 +10,7 @@ Features:
 
 Bugfixes:
 
-- None.
+- Conform to Zope repository policy.
 
 1.1.0 (2010-01-20)
 ------------------
