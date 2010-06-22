@@ -4,6 +4,7 @@ Changes
 1.1.0 (unreleased)
 ------------------
 
+* Conform to Zope repository policy.
 * Use the tarfile module to extract only the data we need from the tarball.
   Probably a big optimization if the tarballs are large.
 * Use Phillip Eby's suggestion to parse the PKG-INFO file in the tarball rather
