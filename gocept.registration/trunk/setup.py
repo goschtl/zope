@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name = 'gocept.registration',
-    version = "0.3.0dev",
+    version='0.3.0',
     author = "Christian Theune, Stephan Richter and others",
     author_email = "mail@gocept.com",
     description = "User self-registration",

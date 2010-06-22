@@ -2,7 +2,7 @@ Changes
 =======
 
 
-0.3.0 (unreleased)
+0.3.0 (2010-06-22)
 ------------------
 
 - Feature: Allowing passing in a factory to the register of the
