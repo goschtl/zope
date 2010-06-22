@@ -262,8 +262,12 @@ def main():
         status = 'FAILED'
 
     if sendmail is True:
+        if project_group:
+            subject = project_group
+        else:
+            subject = ', '.join(projects)
         mail_it(mail_host, mail_from, mail_to, 
-                '%s : Total languishing bugs:  %d' % (status, total), report)
+                '%s : Total languishing bugs for %s:  %d' % (status, subject, total), report)
     if total > 0:
         sys.exit(-1)
 
