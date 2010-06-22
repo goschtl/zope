@@ -4,7 +4,7 @@ Changes
 3.0.1 (unknown)
 ------------------
 
-- ???
+- Conform to Zope repository policy.
 
 3.0.0 (2009-10-28)
 ------------------
