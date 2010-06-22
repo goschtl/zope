@@ -1,0 +1,16 @@
+__init__.py
+apt.py
+egg_metadata.txt
+setup.ex1.py
+setup.ex2.py
+simple.dsc
+test_doctest.py
+dummy/__init__.py
+dummy.FOO2.egg-info/PKG-INFO
+dummy.FOO2.egg-info/SOURCES.txt
+dummy.FOO2.egg-info/dependency_links.txt
+dummy.FOO2.egg-info/namespace_packages.txt
+dummy.FOO2.egg-info/requires.txt
+dummy.FOO2.egg-info/top_level.txt
+dummy/FOO2/__init__.py
+test_eggs/z3c.breadcrumb-1.0.2.tar.gz

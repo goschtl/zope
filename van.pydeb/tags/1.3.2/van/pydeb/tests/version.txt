@@ -1,0 +1,108 @@
+Setup
+-----
+
+    >>> from van.pydeb.tests import runit
+    >>> from van.pydeb import py_version_to_deb
+    >>> from pkg_resources import parse_version
+    >>> from subprocess import call
+
+Python API
+----------
+        
+    >>> py_version_to_deb('2.8.0')
+    '2.8.0'
+    >>> py_version_to_deb('2.8.0pre1')
+    '2.8.0~c~pre1'
+
+Command Line Interface
+----------------------
+
+Version comparison is also exposed via the command line interface, which prints
+out the result on stdout.
+
+    >>> runit('van-pydeb py_version_to_deb 2.8.0')
+    2.8.0
+    >>> runit('van-pydeb py_version_to_deb 2.8.0pre1')
+    2.8.0~c~pre1
+
+Sort Order
+----------
+
+Test conversion between setuptools and debian version numbers
+
+Setup a testing function:
+
+    >>> def dpkg_is_gt(v1, v2):
+    ...     return call(['dpkg', '--compare-versions', v1, '>>', v2]) == 0
+    >>> def test_gt(v1, v2):
+    ...     st_gt = parse_version(v1) > parse_version(v2)
+    ...     v1_c, v2_c = py_version_to_deb(v1), py_version_to_deb(v2)
+    ...     dpkg_gt = dpkg_is_gt(v1_c, v2_c)
+    ...     print "Dpkgized versions:", v1_c, v2_c
+    ...     if st_gt == dpkg_gt:
+    ...         if st_gt:
+    ...             print "Greater Than"
+    ...         else:
+    ...             print "Not Greater Than"
+    ...     else:
+    ...         print "ERROR: setuptools and dpkg do not agree."
+
+These are the cases we want to fix:
+
+    >>> test_gt('2.8.0', '2.8.0dev1')
+    Dpkgized versions: 2.8.0 2.8.0~~dev1
+    Greater Than
+
+    >>> test_gt('2.8.0pre1', '2.8.0a1')
+    Dpkgized versions: 2.8.0~c~pre1 2.8.0~a1
+    Greater Than
+
+    >>> test_gt('2.8.0d1', '2.8.0pre1')
+    Dpkgized versions: 2.8.0~d1 2.8.0~c~pre1
+    Greater Than
+
+    >>> test_gt('2.8.0a1', '2.8.0dev1')
+    Dpkgized versions: 2.8.0~a1 2.8.0~~dev1
+    Greater Than
+
+    >>> test_gt('2.8.0-1', '2.8.0rc1')
+    Dpkgized versions: 2.8.0-1 2.8.0~c~rc1
+    Greater Than
+
+    >>> test_gt('2.8.1', '2.8.0-1')
+    Dpkgized versions: 2.8.1 2.8.0-1
+    Greater Than
+
+    >>> test_gt('2.8.0', '2.8.0a1')
+    Dpkgized versions: 2.8.0 2.8.0~a1
+    Greater Than
+
+    >>> test_gt('2.8.0', '2.8.0pre1')
+    Dpkgized versions: 2.8.0 2.8.0~c~pre1
+    Greater Than
+
+    >>> test_gt('2.8.0preview1', '2.8.0a1')
+    Dpkgized versions: 2.8.0~c~preview1 2.8.0~a1
+    Greater Than
+
+    >>> test_gt('2.8.0', '2.8.0rc1')
+    Dpkgized versions: 2.8.0 2.8.0~c~rc1
+    Greater Than
+
+    >>> test_gt('2.8.0', '2.8.0RC1')
+    Dpkgized versions: 2.8.0 2.8.0~c~rc1
+    Greater Than
+
+    >>> test_gt('2.8.0possible', '2.8.0rc1') # even duplicate the bugs...
+    Dpkgized versions: 2.8.0~possible 2.8.0~c~rc1
+    Greater Than
+
+    >>> test_gt('2.8.0rc1', '2.8.0RC1')
+    Dpkgized versions: 2.8.0~c~rc1 2.8.0~c~rc1
+    Not Greater Than
+
+    >>> test_gt('2.8.0cat', '2.8.0rc1')
+    Dpkgized versions: 2.8.0~cat 2.8.0~c~rc1
+    Greater Than
+
+
