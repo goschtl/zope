@@ -7,6 +7,7 @@ Changes
 
 - Feature: Allowing passing in a factory to the register of the
   ``Registrations`` object.
+- Bug: Fixed missing import statement for Contained.
 
 0.2.0 (2008-05-10)
 ------------------

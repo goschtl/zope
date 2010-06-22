@@ -18,6 +18,7 @@ import gocept.registration.interfaces
 import persistent
 import sha
 import zope.app.container.btree
+import zope.app.container.contained
 import zope.interface
 
 
