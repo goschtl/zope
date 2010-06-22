@@ -40,6 +40,7 @@ def process_line(line):
     return bin_package, python_package
 
 packages = [process_line(l) for l in packages.splitlines()]
+packages = [(bin, py) for bin, py in packages if not bin.startswith('python3-')] # ignore python3 packages for now
 start_count = len(packages)
 
 bin_packages = {}
