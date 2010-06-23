@@ -1,0 +1,43 @@
+zope.testrunner Changelog
+*************************
+
+4.0.0b4 (2010-06-23)
+====================
+
+- Package as a zipefile to work around Python 2.4 distutils bug (no
+  feature changes or bugfixes in ``zope.testrunner`` itself).
+
+
+4.0.0b3 (2010-06-16)
+====================
+
+- LP #221151: keep ``unittest.TestCase.shortDescription`` happy by supplying
+  a ``_testMethodDoc`` attribute.
+
+- LP #595052: keep the distribution installable under Python 2.4:  its
+  distutils appears to munge the empty ``__init__.py`` file in the
+  ``foo.bar`` egg used for testing into a directory.
+
+- LP #580083: fix the ``bin/test`` script to run only tests from
+  ``zope.testrunner``.
+
+- LP #579019: When layers were run in parallel, their tearDown was
+  not called. Additionally, the first layer which was run in the main
+  thread did not have it's tearDown called either.
+
+
+4.0.0b2 (2010-05-03)
+====================
+
+- Having 'sampletests' in the MANIFEST.in gave warnings, but doesn't actually
+  seem to include any more files, so I removed it.
+
+- Moved zope.testing.exceptions to zope.testrunner.exceptions. Now
+  zope.testrunner no longer requires zope.testing except for when running
+  its own tests.
+
+
+4.0.0b1 (2010-04-29)
+====================
+
+- Initial release of the testrunner from zope.testrunner as it's own module.
