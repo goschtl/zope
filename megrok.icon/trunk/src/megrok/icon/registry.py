@@ -2,6 +2,7 @@
 
 import os
 import mimetypes
+import inspect
 from grokcore import view, component as grok
 from megrok.icon import log, ICONS_BASES
 from megrok.icon.interfaces import IIcon, IIconRegistry, IIconRegistryStorage
@@ -56,7 +57,7 @@ class IconRegistry(grok.GlobalUtility):
 
     def populate(self, path):
         if not os.path.isdir(path):
-            path = os.path.join(os.path.dirname(__file__), path)
+            path = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), path)
             if not os.path.isdir(path):
                 raise NotImplementedError
 
@@ -65,7 +66,8 @@ class IconRegistry(grok.GlobalUtility):
                 ipath = os.path.join(root, name)
                 iname = os.path.splitext(name)[0]
                 self.add(iname, ipath)
-            dirs.remove('.svn')
+            if '.svn' in dirs:
+                dirs.remove('.svn')
 
     def registered(self, name):
         return name in self.registry
