@@ -2,12 +2,9 @@
 CHANGES
 =======
 
-Before next release check why we load the old zope.app configure.zcml in 
-ftesting.zcml
 
-
-0.2.0dev (unreleased)
----------------------
+0.2.0 (2010-06-25)
+------------------
 
 - adjust zope.app.session to zope.session in ftesting.zcml
 
