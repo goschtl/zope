@@ -4,6 +4,8 @@ Changelog
 0.4 - unreleased
 ----------------
 
+- Update ``package_urls`` to ``release_urls`` as specified in
+  http://wiki.python.org/moin/PyPiXmlRpc.
 
 0.3 - 2010-06-13
 ----------------

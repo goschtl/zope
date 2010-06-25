@@ -36,7 +36,7 @@ def write_index(package, version, dirname):
 
     fp = file(index_html, 'w')
     print >>fp, '<html><body>'
-    lst = server.package_urls(package, version)
+    lst = server.release_urls(package, version)
     if lst:
         # package hosted on PyPI
         for d in lst:
