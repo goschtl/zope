@@ -23,7 +23,7 @@ def principalDataFactory(object):
              {'login':'srichter', 'password':'rethcirs'}]
 
 
-
+# XXX This setup seems to be not necessary as tests run fine without it.
 def setUp(test):
     site = functional.getRootFolder()
     sm = site.getSiteManager()
@@ -59,6 +59,3 @@ def test_suite():
         s.layer=TestLayer
         suite.addTest(s)
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

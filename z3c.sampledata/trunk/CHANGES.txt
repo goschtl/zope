@@ -6,7 +6,20 @@ CHANGES
 0.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Configured test runner to run functional tests.
+
+- Removed ZPKG and ZCML slugs.
+
+- Now requires `zope.app.pagetemplate` >= 3.6.0 as
+  `zope.formlib.namedtemplate` has been moved there an there is no
+  longer a BBB import  `zope.formlib` >= 4.0
+
+- Fixed tests to run with `zope.app.authentication` >= 3.7.0.
+
+- Fixed tests to run with `zope.publisher` >= 3.12.0.
+
+- Using python's `doctest` module instead of deprecated
+  `zope.testing.doctestunit`.
 
 
 0.2.0 (2010-06-25)
@@ -14,11 +27,13 @@ CHANGES
 
 - adjust zope.app.session to zope.session in ftesting.zcml
 
-- adjust zope.app.securitypolicy to zope.securitpolicy in ftesting.zcml
+- Adjusted `zope.app.securitypolicy` to `zope.securitpolicy` in ftesting.zcml.
 
-- fix test after zope packages refactoring. Update imports and dependencies.
+- Fixed tests after zope packages refactoring. Updated imports and
+  dependencies.
+
 
 0.1.0 (2008-02-14)
 ------------------
 
-- Initial Release
+- Initial release.

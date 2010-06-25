@@ -1,14 +1,12 @@
+from z3c.sampledata import _
+from z3c.sampledata.interfaces import ISampleDataPlugin, ISampleManager
 from zope import component
 from zope import interface
 from zope import schema
-
-from zope import formlib
-from zope.formlib import form
 from zope.app.pagetemplate import ViewPageTemplateFile
-
-from z3c.sampledata.interfaces import ISampleDataPlugin, ISampleManager
-
-from z3c.sampledata import _
+import zope.formlib.form
+import zope.app.pagetemplate.namedtemplate
+import zope.formlib.interfaces
 
 
 class Managers(object):
@@ -42,10 +40,10 @@ class IGenerateSchema(interface.Interface):
             )
 
 
-class Generate(form.EditForm):
+class Generate(zope.formlib.form.EditForm):
     """Edit all generator parameters for a given manager"""
 
-    base_template = form.EditForm.template
+    base_template = zope.formlib.form.EditForm.template
     template = ViewPageTemplateFile('generate.pt')
 
     workDone = False
@@ -54,13 +52,13 @@ class Generate(form.EditForm):
         managerName = self.request['manager']
         manager = component.getUtility(ISampleManager, name=managerName)
         plugins = manager.orderedPlugins()
-        self.form_fields = form.Fields()
+        self.form_fields = zope.formlib.form.Fields()
         self.subforms = []
         subform = Generator(context=self.context,
                             request=self.request,
                             schema=IGenerateSchema,
                             prefix='generator')
-        subform.form_fields = form.Fields(IGenerateSchema)
+        subform.form_fields = zope.formlib.form.Fields(IGenerateSchema)
         self.subforms.append(subform)
         for plugin in plugins:
             if plugin.generator.schema is None:
@@ -69,11 +67,12 @@ class Generate(form.EditForm):
                                 request=self.request,
                                 plugin=plugin.generator,
                                 prefix=plugin.name)
-            subform.form_fields = form.Fields(plugin.generator.schema)
+            subform.form_fields = zope.formlib.form.Fields(
+                plugin.generator.schema)
             self.subforms.append(subform)
         super(Generate, self).setUpWidgets(ignore_request=ignore_request)
 
-    @form.action(_("Generate"))
+    @zope.formlib.form.action(_("Generate"))
     def handle_generate_action(self, action, data):
         managerName = self.request['manager']
         manager = component.getUtility(ISampleManager, name=managerName)
@@ -81,9 +80,8 @@ class Generate(form.EditForm):
         for subform in self.subforms:
             subform.update()
             formData = {}
-            errors = form.getWidgetsData(subform.widgets,
-                                         subform.prefix,
-                                         formData)
+            errors = zope.formlib.form.getWidgetsData(
+                subform.widgets, subform.prefix, formData)
             generatorData[subform.prefix] = formData
         gen = generatorData.get('generator', {})
         seed = gen.get('seed', None)
@@ -97,11 +95,11 @@ class Generate(form.EditForm):
         return self.request['manager']
 
 
-class Generator(form.AddForm):
+class Generator(zope.formlib.form.AddForm):
     """An editor for a single generator"""
-    interface.implements(formlib.interfaces.ISubPageForm)
+    interface.implements(zope.formlib.interfaces.ISubPageForm)
 
-    template = formlib.namedtemplate.NamedTemplate('default')
+    template = zope.app.pagetemplate.namedtemplate.NamedTemplate('default')
 
     actions = []
 

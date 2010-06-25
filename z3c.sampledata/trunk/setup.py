@@ -57,6 +57,8 @@ setup (
     extras_require = dict(
         test = [
             'zope.app.testing',
+            'zope.app.security',
+            'zope.app.zcmlfiles',
             ],
         ),
     install_requires = [
@@ -68,6 +70,9 @@ setup (
         'zope.intid',
         'zope.schema',
         'zope.site',
+        'zope.viewlet',
+        'zope.app.pagetemplate>=3.6.0',
+        'zope.app.authentication>=3.7.0',
         ],
     zip_safe = False,
 )
