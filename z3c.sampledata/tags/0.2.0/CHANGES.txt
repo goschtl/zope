@@ -1,0 +1,18 @@
+=======
+CHANGES
+=======
+
+
+0.2.0 (2010-06-25)
+------------------
+
+- adjust zope.app.session to zope.session in ftesting.zcml
+
+- adjust zope.app.securitypolicy to zope.securitpolicy in ftesting.zcml
+
+- fix test after zope packages refactoring. Update imports and dependencies.
+
+0.1.0 (2008-02-14)
+------------------
+
+- Initial Release
