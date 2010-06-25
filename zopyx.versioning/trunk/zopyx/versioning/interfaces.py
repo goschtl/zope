@@ -1,6 +1,15 @@
 from zope.interface import Interface
 
 
+class IVersionSupport(Interface):
+
+    def getVersionableData():
+        """ Return versionable data """
+
+    def restoreFromVersion(version_data):
+        """ Restore object based on 'version_data' """
+
+
 class IVersionStorage(Interface):
 
     def store(id, version_data):
