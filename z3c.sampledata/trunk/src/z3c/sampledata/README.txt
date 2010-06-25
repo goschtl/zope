@@ -248,7 +248,7 @@ It is also possible to use adapters to act as a data source.
 How to setup configuration for the generator manager
 ----------------------------------------------------
 
-Configuration can be done using ZCML.
+Configuration can be done using ZCML::
 
   <configure xmlns="http://namespaces.zope.org/zope">
 
