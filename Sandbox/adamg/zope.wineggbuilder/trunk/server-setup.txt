@@ -1,4 +1,6 @@
-- windows basics
+windows basics
+==============
+
   - kill unneeded services
     - ALG
     - Automatic Updates (yes!)
@@ -72,3 +74,36 @@ eggs-directory=c:\eggs
     - beat it until it works (permissions, etc....)
 
   - put an apache in front of the whole
+
+Buildbot for tests
+==================
+
+  - for py24_32 and py25_32:
+    - Create a file called 'distutils.cfg' in "C:\Python_xxx\Lib\distutils".
+
+[build]
+compiler=mingw32
+
+  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python24_32".
+
+set PATH=%PATH%;c:\mingw\bin
+%*
+
+  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python25_32".
+
+set PATH=%PATH%;c:\mingw\bin
+%*
+
+  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python26_32".
+
+call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCVARSALL.bat" x86
+set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin"
+%*
+
+  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python25_64".
+
+call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\VCVARSX86_AMD64.bat"
+set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\x64"
+%*
+
+  - for the rest see master.cfg
