@@ -45,6 +45,7 @@ GENERATED_WARNING = """\
 DOAP_NS = 'http://usefulinc.com/ns/doap#'
 TAGS_DIR = os.path.join(os.pardir, 'tags')
 
+
 def package_list(packages, config, out,
                  line=PACKAGE_LINE):
     print >>out, TABLE_HEADER
@@ -65,7 +66,7 @@ def package_list(packages, config, out,
             # Wah.
             homepage = 'http://pypi.python.org'
         print >>output, line % dict(
-            name=package, homepage=homepage, 
+            name=package, homepage=homepage,
             description=description, version=version)
     print >>out
 
@@ -76,7 +77,9 @@ def packages(config, key):
     return result
 
 
-releases = [('trunk', os.path.join(os.pardir, 'trunk'))]
+releases = [
+    ('1.0dev', os.path.join(os.pardir, 'trunk')),
+]
 
 for tag in os.listdir(TAGS_DIR):
     if tag.startswith('.'):
