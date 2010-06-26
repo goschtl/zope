@@ -15,8 +15,7 @@ of the ZTK and make sure the interests of the three Zope projects are
 respected.
 
 .. note::
-    The ZTK is not installable by itself directly, but its libraries
-    are.
+    The ZTK is not installable by itself directly, but its libraries are.
 
 Documentation
 -------------
