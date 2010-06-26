@@ -19,4 +19,20 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     zip_safe=False,
+    install_requires = [
+        'setuptools',
+        'zc.resourcelibrary',
+        'zope.app.catalog',
+        'zope.app.intid',
+        'z3c.javascript',
+        ],
+    extras_require = {
+        'test': [
+            'z3c.sampledata',
+            'zope.app.keyreference',
+            'zope.app.testing',
+            'zope.app.zcmlfiles',
+            'zope.app.zptpage',
+            ],
+        }
     )

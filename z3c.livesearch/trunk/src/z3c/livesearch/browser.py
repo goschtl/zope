@@ -3,7 +3,7 @@ from zope import interface
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
-from zope.app.zapi import getUtility
+from zope.component import getUtility
 
 try:
     from zc import resourcelibrary
