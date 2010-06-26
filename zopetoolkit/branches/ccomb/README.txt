@@ -44,7 +44,7 @@ To help you transition your code, you can update your ``buildout.cfg`` to
 extend both ``ztk.cfg`` and ``zopeapp.cfg``.
 
 After doing this, we highly recommend you to change your code's
-imports from from ``zope.app.*`` to the new places in ``zope.*``
+imports from ``zope.app.*`` to the new places in ``zope.*``
 wherever possible. The package's changelogs should contain information
 as to where things are moved.  If not, try inspecting the module you
 are importing from - the equivalent imports to ``zope.*`` are likely
