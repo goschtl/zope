@@ -4,7 +4,6 @@ import ConfigParser
 import StringIO
 import os
 import os.path
-import shutil
 import socket
 import urllib2
 import xml.etree.ElementTree
@@ -90,6 +89,10 @@ for release, location in releases:
     config.optionxform = str
     config.read([os.path.join(location, 'ztk.cfg')])
 
+    versions = ConfigParser.RawConfigParser()
+    versions.optionxform = str
+    versions.read([os.path.join(location, 'ztk-versions.cfg')])
+
     output = open(os.path.join('source', 'releases',
                                'packages-%s.rst' % release), 'w')
 
@@ -99,18 +102,18 @@ for release, location in releases:
     print >>output, heading
     print >>output, '=' * len(heading)
     included = packages(config, 'included')
-    package_list(included, config, output)
+    package_list(included, versions, output)
 
-    print >>output, 'Under review'
-    print >>output, '------------'
-    review = packages(config, 'under-review')
-    package_list(review, config, output)
+    print >>output, 'Deprecating'
+    print >>output, '-----------'
+    review = packages(config, 'deprecating')
+    package_list(review, versions, output)
 
     print >>output, 'Dependencies'
     print >>output, '------------'
-    all = config.options('versions')
+    all = versions.options('versions')
     dependencies = set(all) - (set(included) | set(review))
-    package_list(dependencies, config, output, DEPENDENCY_PACKAGE_LINE)
+    package_list(dependencies, versions, output, DEPENDENCY_PACKAGE_LINE)
 
     output.close()
 
