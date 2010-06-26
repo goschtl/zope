@@ -23,7 +23,7 @@ Minutes of last meeting
 
 ZTK-layout
 
-- Hannosch updated http://docs.zope.org/zopetoolkit/about/libraries.html to
+- Hanno updated http://docs.zope.org/zopetoolkit/about/libraries.html to
   reflect the ztk release team's vision.
 
 - zope.file and zope.html will be removed from the ztk as they do not seem
