@@ -1,5 +1,3 @@
-.. _release-team:
-
 General todos
 =============
 
