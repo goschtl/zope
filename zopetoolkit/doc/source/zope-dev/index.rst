@@ -2,7 +2,6 @@ Weekly Zope developer meetings
 ==============================
 
 .. toctree::
-
     :maxdepth: 2
 
     zope-dev-20100621
