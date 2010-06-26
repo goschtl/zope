@@ -58,13 +58,7 @@ def package_list(packages, config, out,
         doap = xml.etree.ElementTree.ElementTree()
         doap.parse(doap_xml)
         description = doap.find('//{%s}shortdesc' % DOAP_NS).text
-        homepage = doap.find('//{%s}homepage' % DOAP_NS)
-        if homepage:
-            homepage = doap.find('//{%s}homepage' % DOAP_NS).get(
-                '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource', '')
-        else:
-            # Wah.
-            homepage = 'http://pypi.python.org'
+        homepage = 'http://pypi.python.org/pypi/%s/%s' % (package, version)
         print >>output, line % dict(
             name=package, homepage=homepage,
             description=description, version=version)
