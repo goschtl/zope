@@ -4,6 +4,8 @@ Changelog
 0.4 - unreleased
 ----------------
 
+- Added support for creating a Zope Toolkit index.
+
 - Update ``package_urls`` to ``release_urls`` as specified in
   http://wiki.python.org/moin/PyPiXmlRpc.
 

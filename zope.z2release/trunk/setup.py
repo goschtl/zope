@@ -4,15 +4,15 @@ version = '0.4'
 
 setup(name='zope.z2release',
       version=version,
-      description="Zope 2 release helper",
+      description="Zope release helper",
       long_description=open("README.txt").read() + "\n" +
                        open("CHANGES.txt").read(),
       classifiers=[
         "Programming Language :: Python",
         ],
       keywords='',
-      author='Andreas Jung',
-      author_email='info@zopyx.com',
+      author='Zope Foundation',
+      author_email='zope-dev@zope.org',
       url='http://pypi.python.org/pypi/zope.z2release',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
@@ -23,6 +23,7 @@ setup(name='zope.z2release',
           'setuptools',
       ],
       entry_points=dict(console_scripts=[
-        'z2_kgs=zope.z2release.cli:main'
+        'z2_kgs=zope.z2release.cli:main',
+        'ztk_kgs=zope.z2release.ztk:main'
         ]),
       )
