@@ -107,15 +107,16 @@ for release, location in releases:
     included = packages(config, 'included')
     package_list(included, versions, output)
 
-    print >>output, 'Deprecating'
-    print >>output, '-----------'
-    review = packages(config, 'deprecating')
-    package_list(review, versions, output)
+    deprecating = packages(config, 'deprecating')
+    if deprecating:
+        print >>output, 'Deprecating'
+        print >>output, '-----------'
+        package_list(deprecating, versions, output)
 
     print >>output, 'Dependencies'
     print >>output, '------------'
     all = versions.options('versions')
-    dependencies = set(all) - (set(included) | set(review))
+    dependencies = set(all) - (set(included) | set(deprecating))
     package_list(dependencies, versions, output, DEPENDENCY_PACKAGE_LINE)
 
     output.close()
