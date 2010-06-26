@@ -72,7 +72,7 @@ def packages(config, key):
 
 
 releases = [
-    ('1.0dev', os.path.join(os.pardir, 'trunk')),
+    ('trunk', os.path.join(os.pardir, 'trunk')),
 ]
 
 for tag in os.listdir(TAGS_DIR):

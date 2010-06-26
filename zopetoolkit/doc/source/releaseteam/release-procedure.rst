@@ -33,19 +33,6 @@ Steps for creating a new release
     svn cp svn+ssh://svn.zope.org/repos/main/zopetoolkit/trunk
     svn+ssh://svn.zope.org/repos/main/zopetoolkit/tags/1.0a1
 
-- update version information:
-
-  - Open zopetoolkit/doc/scripts/update-releaseinfo.py and search for
-    ``releases = [`` around line 74. Add a new entry, for example::
-
-      ('1.0a1', os.path.join(os.pardir, 'tags', '1.0a1')),
-
-  .. note::
-
-     We can automate this to look for all directories in tags. The Sphinx
-     documentation is updated automatically via a cron job and this script
-     is run as part of the job.
-
 - create the release specific download index on download.zope.org
   (requires login credentials on download.zope.org. In case of
   problems contact Jens Vagelpohl)
