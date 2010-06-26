@@ -184,9 +184,9 @@ quick way to note decisions first.
 
   The mailing list threads discusses various pros and cons::
 
-  https://mail.zope.org/pipermail/zope-dev/2009-September/037725.html
+    https://mail.zope.org/pipermail/zope-dev/2009-September/037725.html
 
-  https://mail.zope.org/pipermail/zope-dev/2009-September/037735.html
+    https://mail.zope.org/pipermail/zope-dev/2009-September/037735.html
 
 * We want to encourage narrative documentation for packages (doctested
   or not). Even though we do not require that this documentation is
