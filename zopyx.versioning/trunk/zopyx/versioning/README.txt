@@ -28,7 +28,7 @@ zc.fault
 - to be checked
 
 
-z3x.vcsync
+z3c.vcsync
 ++++++++++
 
 - to be checked
@@ -52,4 +52,8 @@ Basic concepts
   the content itself. If an object uses a complex internal data model then it is
   in responsible to serialize and deserialize the data to JSON.
 
+Author
+------
 
+| Andreas Jung
+| info@zopyx.com
