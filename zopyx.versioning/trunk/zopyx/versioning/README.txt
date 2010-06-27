@@ -1,8 +1,37 @@
 zopyx.versioning
 ================
 
-```zopyx.versioning`` is a generic versioning system for schema-oriented
+``zopyx.versioning`` is a generic versioning system for schema-oriented
 content-objects (zope.schema, Archetypes, Dexterity etc.).
+
+Why another versioning system?
+------------------------------
+
+Existing versioning approaches in the Zope world are:
+
+CMFEditions
+++++++++++++
+
+- widely used
+- very monolithic
+- too tight integration with CMF
+- fragile implementation
+- doing "too much"
+- doing "too much" in a very intransparent way
+- no backend serialization format other than Python pickles
+- only ZODB-based backed
+- backend not pluggable
+
+zc.fault
+++++++++
+
+- to be checked
+
+
+z3x.vcsync
+++++++++++
+
+- to be checked
 
 
 Basic concepts
