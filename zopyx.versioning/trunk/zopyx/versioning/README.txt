@@ -63,7 +63,7 @@ Basic concepts
 Open points
 -----------
 
-- should deduplication be handled on the storage layer or the versioning layer
+- should de-duplication be handled on the storage layer or the versioning layer
   (I assume on the storage layer as an optional feature in order to keep the
   overall complexity low)
 
