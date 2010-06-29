@@ -23,9 +23,21 @@ class IVersionSupport(Interface):
     def restoreFromVersion(version_data):
         """ Restore object based on 'version_data' (JSON format) """
 
+class ICollectionVersionSupport(Interface):
+    """ API for retrieving the objects of a collection
+        (a folder, a site, ...) to be versioned.
+    """
+
+    def getVersionableItems():
+        """ Returns a sequence of objects IDs to be versioned """
+
+    # XXX - no need for a getRestorableItems() method since the information
+    # about items to be restored are part of the information stored in the
+    # storage backend.
 
 class IVersionStorage(Interface):
 
+    # methods used for IVersionSupport
     def store(id, version_data, creator_id, comment):
         """ Store 'version_data' for a given 'id'.
             Returns revision number.
@@ -46,4 +58,15 @@ class IVersionStorage(Interface):
     def list_revisions(id):
         """ Return all revisions stored for a particular
             content piece by its 'id'.
+        """
+
+    # methods used for ICollectionVersionSupport
+    # XXX to be written#
+
+
+class ILookup(Interface):
+
+    def getObjectById(id):
+        """ Retrieve an object by its ids from a collection or 
+            "site" (whatever that means).
         """

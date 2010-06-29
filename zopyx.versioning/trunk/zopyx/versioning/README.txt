@@ -37,6 +37,8 @@ z3c.vcsync
 Basic concepts
 --------------
 
+- golden rule #1: keep it simple, keep it small
+
 - pluggable storage API (storing the versioned data)
 
 - using JSON as data exchange format between objects to be versioned 
@@ -49,8 +51,26 @@ Basic concepts
 
 - the solution does not claim to store and restore the complete state of
   an content object. Instead we focus on dealing with the metadata and
-  the content itself. If an object uses a complex internal data model then it is
-  in responsible to serialize and deserialize the data to JSON.
+  the content itself. If an object uses a complex internal data model then it
+  is in responsible to serialize and deserialize the data to JSON.
+
+- leave complex functionality (likely handling of references, object relations
+  etc.) out of the core versioning engine - this might be handled through
+  adapters implementing IVersionSupport.
+
+
+
+Open points
+-----------
+
+- should deduplication be handled on the storage layer or the versioning layer
+  (I assume on the storage layer as an optional feature in order to keep the
+  overall complexity low)
+
+- all versionable objects must provide a unique ID (``UID`` for
+  Archetypes-backed content). How about Dexterity? How about
+  ZTK/zope.schema-based content?
+   
 
 Author
 ------
