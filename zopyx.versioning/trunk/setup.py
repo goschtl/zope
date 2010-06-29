@@ -23,6 +23,8 @@ setup(name='zopyx.versioning',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'zope.component',
+          'pymongo',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
