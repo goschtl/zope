@@ -51,13 +51,16 @@ class IVersionStorage(Interface):
     def retrieve(id, revision):
         """ Return 'version_data' for a given 'id' and 'revision' """
 
+    def remove(id):
+        """ Remove all revisions for a given object 'id' """
+
     def has_revision(id, revision):
         """ Check if there is a revison 'revision' for a given object 'id' """
 
     def remove_revision(id, revision):
         """ Remove a particular 'revision' for a given object 'id' """
 
-    def remove_all(id):
+    def remove(id):
         """ Remove all revisions for a given object 'id' """
 
     def list_revisions(id):
