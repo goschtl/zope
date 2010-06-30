@@ -4,8 +4,7 @@ Changelog
 1.0b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Include zope.error & zope.principalregistry from site.zcml
 
 1.0b1 (2010-04-27)
 ------------------
