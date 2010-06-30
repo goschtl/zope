@@ -4,6 +4,7 @@ Changelog
 0.5 - unreleased
 ----------------
 
+- Disable the index building for a ZTK release.
 
 0.4 - 2010-06-26
 ----------------

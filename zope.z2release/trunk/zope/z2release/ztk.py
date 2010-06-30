@@ -43,16 +43,16 @@ def main():
     app_version_file = os.path.join(dirname, 'zopeapp-versions.cfg')
     file(app_version_file, 'w').write(data)
 
-    CP = CasePreservingConfigParser()
-    CP.read(version_file)
-
-    server = Server('http://pypi.python.org/pypi')
-
-    for package in CP.options('versions'):
-        version = CP.get('versions', package)
-        if '#' in version:
-            version = version.split('#')[0].strip()
-        write_index(server, package, version, dirname)
+    # CP = CasePreservingConfigParser()
+    # CP.read(version_file)
+    # 
+    # server = Server('http://pypi.python.org/pypi')
+    # 
+    # for package in CP.options('versions'):
+    #     version = CP.get('versions', package)
+    #     if '#' in version:
+    #         version = version.split('#')[0].strip()
+    #     write_index(server, package, version, dirname)
 
 if __name__ == '__main__':
     main()
