@@ -7,6 +7,7 @@ import pymongo
 
 from zope.interface import implements
 from zopyx.versioning.interfaces import IVersionStorage
+from zopyx.versioning import errors
 
 from pymongo.connection import Connection
 
@@ -19,6 +20,10 @@ class MongoDBStorage(object):
         self.db = getattr(self.conn, database)
         self.metadata = self.db.metadata
         self.revisions = self.db.revisions
+
+    def clear(self):
+        self.metadata.remove()
+        self.revisions.remove()
 
     def store(self, id, version_data, creator, comment=None):
 
@@ -37,12 +42,18 @@ class MongoDBStorage(object):
 
     def retrieve(self, id, revision):
 
+        count = self.revisions.find({'_oid' : id}).count()
+        if count == 0:
+            raise errors.NoDocumentFound('No document with ID %s found' % id)
+
         entry = self.revisions.find_one({'_oid' : id, '_rev' : revision})
         if entry:
             del entry['_oid']
             del entry['_rev']
             del entry['_id']
-        return json.dumps(entry)
+            return json.dumps(entry)
+
+        raise errors.NoRevisionFound('No revision %d found for document with ID %s found' % (revision, id))
 
     def remove(self, id):
         self.metadata.remove({'_oid' : id})

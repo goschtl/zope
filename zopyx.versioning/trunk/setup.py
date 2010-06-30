@@ -21,10 +21,13 @@ setup(name='zopyx.versioning',
       namespace_packages=['zopyx'],
       include_package_data=True,
       zip_safe=False,
+      test_runner='nose.testrunner',
       install_requires=[
           'setuptools',
           'zope.component',
           'pymongo',
+          'unittest2',
+          'nose',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
