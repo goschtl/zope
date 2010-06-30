@@ -1,0 +1,382 @@
+BlueBream
+=========
+
+The template supports any number namespace levels, depending on the
+provided project name.
+
+First try with a single flat package:
+-------------------------------------
+
+>>> import os
+>>> def print_dir(d):
+...     for dirpath, dirnames, filenames in sorted(os.walk(d)):
+...         for filename in sorted(filenames):
+...             # Hack for http://trac.pythonpaste.org/pythonpaste/ticket/414
+...             if not filename.endswith('.pyo'):
+...                 print os.path.join(dirpath,filename)
+
+>>> from paste.script import command
+>>> project = 'sample'
+>>> commands = command.get_commands()
+>>> cmd = commands['create'].load()
+>>> runner = cmd('create')
+>>> option_args = []
+>>> extra_args = [
+...            "python_package=sample",
+...            "interpreter=testpy",
+...            "version=0.1",
+...            "description=test_description",
+...            "long_description=test_long_description",
+...            "keywords=test_keyword",
+...            "author=test_author",
+...            "author_email=test_author_email",
+...            "url=http://example.com",
+...            "license_name=Test Public License",
+...            "zip_safe=False",
+...            ]
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sample
+  project:           sample
+  python_package:    sample
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sample
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
+
+>>> print_dir('sample')
+sample/bootstrap.py
+sample/buildout.cfg
+sample/debug.ini
+sample/deploy.ini
+sample/setup.py
+sample/versions.cfg
+sample/etc/site.zcml
+sample/etc/zope-debug.conf
+sample/etc/zope.conf
+sample/src/sample/__init__.py
+sample/src/sample/configure.zcml
+sample/src/sample/debug.py
+sample/src/sample/securitypolicy.zcml
+sample/src/sample/startup.py
+sample/src/sample/tests/__init__.py
+sample/src/sample/tests/ftesting.zcml
+sample/src/sample/tests/tests.py
+sample/src/sample/welcome/__init__.py
+sample/src/sample/welcome/app.py
+sample/src/sample/welcome/configure.zcml
+sample/src/sample/welcome/ftests.txt
+sample/src/sample/welcome/index.pt
+sample/src/sample/welcome/interfaces.py
+sample/src/sample/welcome/views.py
+sample/src/sample/welcome/static/logo.png
+sample/src/sample/welcome/static/style.css
+sample/var/filestorage/README.txt
+sample/var/log/README.txt
+
+>>> print open(os.path.join('sample', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      shell = sample.debug:Shell
+...
+
+We can also create a project with a namespace:
+----------------------------------------------
+
+>>> project = 'sample.main'
+>>> extra_args[0] = "python_package=sample.main"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample.main
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           samplemain
+  project:           sample.main
+  python_package:    sample.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sample.main
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
+>>> print_dir('sample.main')
+sample.main/bootstrap.py
+sample.main/buildout.cfg
+sample.main/debug.ini
+sample.main/deploy.ini
+sample.main/setup.py
+sample.main/versions.cfg
+sample.main/etc/site.zcml
+sample.main/etc/zope-debug.conf
+sample.main/etc/zope.conf
+sample.main/src/sample/__init__.py
+sample.main/src/sample/main/__init__.py
+sample.main/src/sample/main/configure.zcml
+sample.main/src/sample/main/debug.py
+sample.main/src/sample/main/securitypolicy.zcml
+sample.main/src/sample/main/startup.py
+sample.main/src/sample/main/tests/__init__.py
+sample.main/src/sample/main/tests/ftesting.zcml
+sample.main/src/sample/main/tests/tests.py
+sample.main/src/sample/main/welcome/__init__.py
+sample.main/src/sample/main/welcome/app.py
+sample.main/src/sample/main/welcome/configure.zcml
+sample.main/src/sample/main/welcome/ftests.txt
+sample.main/src/sample/main/welcome/index.pt
+sample.main/src/sample/main/welcome/interfaces.py
+sample.main/src/sample/main/welcome/views.py
+sample.main/src/sample/main/welcome/static/logo.png
+sample.main/src/sample/main/welcome/static/style.css
+sample.main/var/filestorage/README.txt
+sample.main/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample'],
+...
+shell = sample.main.debug:Shell
+...
+
+
+Another project with two levels of namespace:
+---------------------------------------------
+
+>>> project = 'sample.app.main'
+>>> extra_args[0] = "python_package=sample.app.main"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sample.app.main
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sampleappmain
+  project:           sample.app.main
+  python_package:    sample.app.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sample.app.main
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
+>>> print_dir('sample.app.main')
+sample.app.main/bootstrap.py
+sample.app.main/buildout.cfg
+sample.app.main/debug.ini
+sample.app.main/deploy.ini
+sample.app.main/setup.py
+sample.app.main/versions.cfg
+sample.app.main/etc/site.zcml
+sample.app.main/etc/zope-debug.conf
+sample.app.main/etc/zope.conf
+sample.app.main/src/sample/__init__.py
+sample.app.main/src/sample/app/__init__.py
+sample.app.main/src/sample/app/main/__init__.py
+sample.app.main/src/sample/app/main/configure.zcml
+sample.app.main/src/sample/app/main/debug.py
+sample.app.main/src/sample/app/main/securitypolicy.zcml
+sample.app.main/src/sample/app/main/startup.py
+sample.app.main/src/sample/app/main/tests/__init__.py
+sample.app.main/src/sample/app/main/tests/ftesting.zcml
+sample.app.main/src/sample/app/main/tests/tests.py
+sample.app.main/src/sample/app/main/welcome/__init__.py
+sample.app.main/src/sample/app/main/welcome/app.py
+sample.app.main/src/sample/app/main/welcome/configure.zcml
+sample.app.main/src/sample/app/main/welcome/ftests.txt
+sample.app.main/src/sample/app/main/welcome/index.pt
+sample.app.main/src/sample/app/main/welcome/interfaces.py
+sample.app.main/src/sample/app/main/welcome/views.py
+sample.app.main/src/sample/app/main/welcome/static/logo.png
+sample.app.main/src/sample/app/main/welcome/static/style.css
+sample.app.main/var/filestorage/README.txt
+sample.app.main/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sample.app.main', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample', 'sample.app'],
+...
+shell = sample.app.main.debug:Shell
+...
+
+
+An edge case:
+
+>>> project = 'foobar.foobar'
+>>> extra_args[0] = "python_package=foobar.foobar"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               foobar.foobar
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           foobarfoobar
+  project:           foobar.foobar
+  python_package:    foobar.foobar
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./foobar.foobar
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
+>>> print_dir('foobar.foobar')
+foobar.foobar/bootstrap.py
+foobar.foobar/buildout.cfg
+foobar.foobar/debug.ini
+foobar.foobar/deploy.ini
+foobar.foobar/setup.py
+foobar.foobar/versions.cfg
+foobar.foobar/etc/site.zcml
+foobar.foobar/etc/zope-debug.conf
+foobar.foobar/etc/zope.conf
+foobar.foobar/src/foobar/__init__.py
+foobar.foobar/src/foobar/foobar/__init__.py
+foobar.foobar/src/foobar/foobar/configure.zcml
+foobar.foobar/src/foobar/foobar/debug.py
+foobar.foobar/src/foobar/foobar/securitypolicy.zcml
+foobar.foobar/src/foobar/foobar/startup.py
+foobar.foobar/src/foobar/foobar/tests/__init__.py
+foobar.foobar/src/foobar/foobar/tests/ftesting.zcml
+foobar.foobar/src/foobar/foobar/tests/tests.py
+foobar.foobar/src/foobar/foobar/welcome/__init__.py
+foobar.foobar/src/foobar/foobar/welcome/app.py
+foobar.foobar/src/foobar/foobar/welcome/configure.zcml
+foobar.foobar/src/foobar/foobar/welcome/ftests.txt
+foobar.foobar/src/foobar/foobar/welcome/index.pt
+foobar.foobar/src/foobar/foobar/welcome/interfaces.py
+foobar.foobar/src/foobar/foobar/welcome/views.py
+foobar.foobar/src/foobar/foobar/welcome/static/logo.png
+foobar.foobar/src/foobar/foobar/welcome/static/style.css
+foobar.foobar/var/filestorage/README.txt
+foobar.foobar/var/log/README.txt
+
+>>> print open(os.path.join('foobar.foobar', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['foobar'],
+...
+shell = foobar.foobar.debug:Shell
+...
+
+Project with different project and package name:
+------------------------------------------------
+
+>>> project = 'sampleproject'
+>>> extra_args[0] = "python_package=sample.main"
+>>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
+Selected and implied templates:
+  bluebream#bluebream  A BlueBream project, base template
+<BLANKLINE>
+Variables:
+  author:            test_author
+  author_email:      test_author_email
+  description:       test_description
+  egg:               sampleproject
+  interpreter:       testpy
+  keywords:          test_keyword
+  license_name:      Test Public License
+  long_description:  test_long_description
+  package:           sampleproject
+  project:           sampleproject
+  python_package:    sample.main
+  url:               http://example.com
+  version:           0.1
+  zip_safe:          False
+Creating template bluebream
+Creating directory ./sampleproject
+<BLANKLINE>
+Your project has been created! Now, you want to:
+...
+
+>>> print_dir('sampleproject')
+sampleproject/bootstrap.py
+sampleproject/buildout.cfg
+sampleproject/debug.ini
+sampleproject/deploy.ini
+sampleproject/setup.py
+sampleproject/versions.cfg
+sampleproject/etc/site.zcml
+sampleproject/etc/zope-debug.conf
+sampleproject/etc/zope.conf
+sampleproject/src/sample/__init__.py
+sampleproject/src/sample/main/__init__.py
+sampleproject/src/sample/main/configure.zcml
+sampleproject/src/sample/main/debug.py
+sampleproject/src/sample/main/securitypolicy.zcml
+sampleproject/src/sample/main/startup.py
+sampleproject/src/sample/main/tests/__init__.py
+sampleproject/src/sample/main/tests/ftesting.zcml
+sampleproject/src/sample/main/tests/tests.py
+sampleproject/src/sample/main/welcome/__init__.py
+sampleproject/src/sample/main/welcome/app.py
+sampleproject/src/sample/main/welcome/configure.zcml
+sampleproject/src/sample/main/welcome/ftests.txt
+sampleproject/src/sample/main/welcome/index.pt
+sampleproject/src/sample/main/welcome/interfaces.py
+sampleproject/src/sample/main/welcome/views.py
+sampleproject/src/sample/main/welcome/static/logo.png
+sampleproject/src/sample/main/welcome/static/style.css
+sampleproject/var/filestorage/README.txt
+sampleproject/var/log/README.txt
+
+We check the namespace is ok:
+
+>>> print open(os.path.join('sampleproject', 'setup.py')).read()
+from setuptools import setup, find_packages
+...
+      namespace_packages=['sample'],
+...
+shell = sample.main.debug:Shell
+...
+
