@@ -59,6 +59,12 @@ Open points
 
 - Make an alpha release and document the release procedure.
 
+- Tres Seaver posted a matrix depicting what ZTK packages are in use by what
+  frameworks. Each of the representatives will review the list of packages all
+  three frameworks use. When putting the results together, this should result
+  in a cleaned up ztk.cfg and zopeapp.cfg.
+  [ccomb, hannosch, j-w]
+
 Next meeting
 ------------
 
