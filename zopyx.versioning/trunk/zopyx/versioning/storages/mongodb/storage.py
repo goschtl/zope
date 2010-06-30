@@ -14,34 +14,52 @@ class MongoDBStorage(object):
 
     implements(IVersionStorage)
 
-    def __init__(self, host, port, database, collection):
+    def __init__(self, host, port, database):
         self.conn = Connection(host, port)
         self.db = getattr(self.conn, database)
-        self.collection = getattr(self.db, collection)
+        self.metadata = self.db.metadata
+        self.revisions = self.db.revisions
 
     def store(self, id, version_data, creator, comment=None):
 
-        try:
-            rev = self.collection.find({'_oid' : id}, 
-                                 {'_rev' : 1} ).sort('_rev', pymongo.DESCENDING)[0]['_rev']
-        except IndexError:
-            rev = 0
+        id_entry = self.metadata.find_one({'_oid' : id})
+        if id_entry is None:
+            revision = 0
+            self.metadata.save({'_oid' : id, '_rev' : 0})
+        else:
+            revision = id_entry['_rev'] + 1
+            self.metadata.update({'_oid' : id}, {'$set' : {'_rev' : revision}} )
 
-        rev += 1 
-        data = dict(_oid=id, _rev=rev)
+        data = dict(_oid=id, _rev=revision)
         data.update(json.loads(version_data))
-        self.collection.save(data)
-        return rev
+        self.revisions.save(data)
+        return revision
 
+    def retrieve(self, id, revision):
+
+        entry = self.revisions.find_one({'_oid' : id, '_rev' : revision})
+        if entry:
+            del entry['_oid']
+            del entry['_rev']
+            del entry['_id']
+        return json.dumps(entry)
+
+    def remove(self, id):
+        self.metadata.remove({'_oid' : id})
+        self.revisions.remove({'_oid' : id})
+
+    def has_revision(self, id, revision):
+        return bool(self.revisions.find_one({'_oid' : id, '_rev' : revision}))
 
 
 if __name__ == '__main__':
 
-    storage = MongoDBStorage('localhost', 10200, 'zopyx-versioning', 'test')
+    storage = MongoDBStorage('localhost', 10200, 'zopyx-versioning')
 
-    version_data = json.dumps({'id' : '42', 'text' : 'blather' })
-    for i in range(1000):
+    storage.remove('42')
+    for i in range(10):
+        version_data = json.dumps({'id' : '42', 'text' : 'blather-%d' % i})
         print storage.store('42', version_data, 'ajung', 'versioning test')
-
-
-
+    print storage.retrieve('42', 9)
+    print storage.has_revision('42', 9)
+    print storage.has_revision('42', 42)
