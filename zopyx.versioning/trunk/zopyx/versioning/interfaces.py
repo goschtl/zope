@@ -38,8 +38,13 @@ class ICollectionVersionSupport(Interface):
 class IVersionStorage(Interface):
 
     # methods used for IVersionSupport
-    def store(id, version_data, creator_id, comment):
-        """ Store 'version_data' for a given 'id'.
+    def store(id, version_data, revision_metadata):
+        """ Store 'version_data' for a given 'id'.  'version_data' holds the
+            data to be versioned (JSON format).  'revision_metadata' holds
+            application-specific metadata for the particular version (e.g. 
+            revision date, creator uid, "revision is a major/minor 
+            revision) (JSON format).
+
             Returns revision number.
         """
 
@@ -56,8 +61,8 @@ class IVersionStorage(Interface):
         """ Remove all revisions for a given object 'id' """
 
     def list_revisions(id):
-        """ Return all revisions stored for a particular
-            content piece by its 'id'.
+        """ Return all revisions (and their stored revison_metadata) stored for
+            a particular content piece by its 'id'.
         """
 
     # methods used for ICollectionVersionSupport

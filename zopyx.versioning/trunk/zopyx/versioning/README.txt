@@ -19,7 +19,7 @@ CMFEditions
 - doing "too much"
 - doing "too much" in a very intransparent way
 - no backend serialization format other than Python pickles
-- only ZODB-based backed
+- only ZODB-based backend
 - backend not pluggable
 
 zc.fault
@@ -59,7 +59,6 @@ Basic concepts
   adapters implementing IVersionSupport.
 
 
-
 Open points
 -----------
 
@@ -70,7 +69,10 @@ Open points
 - all versionable objects must provide a unique ID (``UID`` for
   Archetypes-backed content). How about Dexterity? How about
   ZTK/zope.schema-based content?
-   
+
+- how deal with "large" content. E.g. a MongoDB-based backend has by default
+  a 4MB limit for embedded documents (usually enough for standard content but
+  not for binary content like images)   
 
 Author
 ------
