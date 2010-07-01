@@ -2,7 +2,7 @@ Zope integration for hurry.resource
 ***********************************
 
 This package provides Zope integration for hurry.resource. This means
-three taking care of three things:
+it's taking care of three things:
 
 * maintain the needed resources throughout the request/response cycle.
 
