@@ -2,9 +2,7 @@
 Interfaces related to the versioning API
 """
 
-
 from zope.interface import Interface
-
 
 class IVersionSupport(Interface):
     """ API for retrieving data to be versioned from an object
