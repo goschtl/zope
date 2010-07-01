@@ -63,7 +63,7 @@ a certain request cycle::
   >>> from hurry.resource import NeededInclusions
   >>> needed = NeededInclusions()
 
-We state that a resource is needed by calling the ``needed`` method on
+We state that a resource is needed by calling the ``need`` method on
 this object::
 
   >>> needed.need(y1)
@@ -387,7 +387,7 @@ By default we get ``k2.js``::
   [<ResourceInclusion 'k2.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
-``a2-debug.js``::
+``k2-debug.js``::
 
   >>> needed.mode('debug')
   >>> needed.inclusions()
@@ -721,7 +721,7 @@ resources as some static URL on localhost::
   >>> def get_library_url(library):
   ...    return 'http://localhost/static/%s' % library.name
 
-We should now register this function as a``ILibrarUrl`` adapter for
+We should now register this function as a``ILibraryUrl`` adapter for
 ``Library`` so the system can find it::
 
   >>> from hurry.resource.interfaces import ILibraryUrl
@@ -730,7 +730,7 @@ We should now register this function as a``ILibrarUrl`` adapter for
   ...     adapts=(Library,), 
   ...     provides=ILibraryUrl)
 
-Rendering the inclusions now will will result in the HTML fragments we
+Rendering the inclusions now will result in the HTML fragments we
 need to include on the top of our page (just under the ``<head>`` tag
 for instance)::
 
@@ -975,7 +975,7 @@ Generating resource code
 
 Sometimes it is useful to generate code that expresses a complex
 resource dependency structure. One example of that is in
-``hurry.yui``. We can the ``generate_cod`` function to render resource
+``hurry.yui``. We can use the ``generate_code`` function to render resource
 inclusions::
 
   >>> i1 = ResourceInclusion(foo, 'i1.js')
