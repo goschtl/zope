@@ -30,6 +30,7 @@ from z3c.table import batch
 
 
 class FakeContainer(object):
+
     def values(self):
         pass
 
@@ -151,6 +152,18 @@ def test_suite():
         doctest.DocFileSuite('README.txt',
             setUp=testing.setUp, tearDown=testing.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite('sequence.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite('sort.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite('batch.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS|doctest.REPORT_UDIFF,
             ),
         doctest.DocFileSuite('column.txt',
             setUp=testing.setUp, tearDown=testing.tearDown,

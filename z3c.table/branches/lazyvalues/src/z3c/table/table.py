@@ -140,7 +140,6 @@ class Table(zope.location.Location):
         append = cols.append
         colspanCounter = 0
         countdown = len(self.columns)
-        counter = 0
         for col in self.columns:
             countdown -= 1
             colspan = 0
