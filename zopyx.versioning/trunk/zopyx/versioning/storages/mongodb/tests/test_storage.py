@@ -2,8 +2,10 @@
 MongoDB storage tests
 """
 
+from cjson import encode as json_encode
+from cjson import decode as json_decode
+
 import unittest2
-import json
 
 from zope.interface.verify import verifyClass
 
@@ -27,7 +29,7 @@ class StorageTests(unittest2.TestCase):
     def testStore(self):
         version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
         for i in range(5):
-            self.storage.store('42', json.dumps(version_data), 'ajung')
+            self.storage.store('42', json_encode(version_data), 'ajung')
         revisions = self.storage.list_revisions('42')
         self.assertEqual(revisions, [0,1,2,3,4])
 
