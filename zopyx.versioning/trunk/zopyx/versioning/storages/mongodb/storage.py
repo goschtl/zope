@@ -2,10 +2,8 @@
 Prototype storage implementation for MongoDB
 """
 
+import anyjson
 from pymongo.connection import Connection
-
-from cjson import encode as json_encode
-from cjson import decode as json_decode
 
 from zope.interface import implements
 from zopyx.versioning.interfaces import IVersionStorage
@@ -37,7 +35,7 @@ class MongoDBStorage(object):
             self.metadata.update({'_oid' : id}, {'$set' : {'_rev' : revision}} )
 
         data = dict(_oid=id, _rev=revision)
-        data.update(json_decode(version_data))
+        data.update(anyjson.deserialize(version_data))
         self.revisions.save(data)
         return revision
 
@@ -52,7 +50,7 @@ class MongoDBStorage(object):
             del entry['_oid']
             del entry['_rev']
             del entry['_id']
-            return json_encode(entry)
+            return anyjson.serialize(entry)
 
         raise errors.NoRevisionFound('No revision %d found for document with ID %s found' % (revision, id))
 
