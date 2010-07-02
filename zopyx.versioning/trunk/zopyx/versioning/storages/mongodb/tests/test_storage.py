@@ -37,3 +37,14 @@ class StorageTests(unittest2.TestCase):
         with self.assertRaises(errors.NoDocumentFound):
             revisions = self.storage.list_revisions('do.such.document')
 
+    def testRemoveNonExistingDocument(self):
+        with self.assertRaises(errors.NoDocumentFound):
+            self.storage.remove('do.such.document')
+
+    def testRemoveExistingDocument(self):
+        version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
+        self.storage.store('42', json_encode(version_data), 'ajung')
+        self.storage.remove('42')
+        with self.assertRaises(errors.NoDocumentFound):
+            self.storage.remove('42')
+

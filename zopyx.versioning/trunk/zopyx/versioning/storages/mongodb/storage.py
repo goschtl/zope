@@ -57,6 +57,8 @@ class MongoDBStorage(object):
         raise errors.NoRevisionFound('No revision %d found for document with ID %s found' % (revision, id))
 
     def remove(self, id):
+        if self.revisions.find({'_oid' : id}).count() == 0:
+            raise errors.NoDocumentFound('No document with ID %s found' % id)
         self.metadata.remove({'_oid' : id})
         self.revisions.remove({'_oid' : id})
 
