@@ -51,11 +51,14 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = [
+            'z3c.macro',
             'z3c.table',
             'z3c.testing',
+            'zope.app.testing',
+            'zope.app.publisher',
+            'zope.browserpage',
             'zope.publisher',
             'zope.testing',
-            'z3c.form [test]',
             ],
         ),
     install_requires = [
