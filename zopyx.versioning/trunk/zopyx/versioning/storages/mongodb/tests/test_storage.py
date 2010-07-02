@@ -3,6 +3,7 @@ MongoDB storage tests
 """
 
 import unittest2
+import json
 
 from zope.interface.verify import verifyClass
 
@@ -22,4 +23,15 @@ class StorageTests(unittest2.TestCase):
     def testRetrievalNonExistingDocuments(self):
         with self.assertRaises(errors.NoDocumentFound):
             self.storage.retrieve('42', 42)
+
+    def testStore(self):
+        version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
+        for i in range(5):
+            self.storage.store('42', json.dumps(version_data), 'ajung')
+        revisions = self.storage.list_revisions('42')
+        self.assertEqual(revisions, [0,1,2,3,4])
+
+    def testListRevisionsNonExistingID(self):
+        with self.assertRaises(errors.NoDocumentFound):
+            revisions = self.storage.list_revisions('do.such.document')
 
