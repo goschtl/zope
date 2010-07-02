@@ -5,12 +5,21 @@ CHANGES
 0.5.3dev (unreleased)
 ---------------------
 
-- ...
+- ... 
+
+  there is still an issue in README.txt sample, the samples are using
+  nested <form> tags. Fix the sample and use real subform templates.
+
+- use registerType from zope.browserpage instead from zope.app.pagetemplate
+
+- adjust test output
+
 
 0.5.2 (2009-10-19)
 ------------------
 
 - Fix my bug introduced in 0.5.1
+
 
 0.5.1 (2009-10-19)
 ------------------

@@ -16,7 +16,7 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.pagetemplate import metaconfigure
+from zope.browserpage import metaconfigure
 from zope.app.testing import setup
 
 import z3c.macro.tales

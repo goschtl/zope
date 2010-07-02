@@ -197,70 +197,69 @@ set the relevant data in the request:
           <td valign="top">
             <div>
               <table class="contents">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
-                  </tr>
-                  <tr class="selected odd">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
-                  </tr>
-                  <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
-                  </tr>
-                </tbody>
-              </table>
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="even">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+      </tr>
+      <tr class="selected odd">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+      </tr>
+      <tr class="even">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+      </tr>
+    </tbody>
+  </table>
             </div>
           </td>
           <td valign="top">
             <div class="tableForm">
-  <form action="http://127.0.0.1" method="post"
+              <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
         name="form" id="form">
     <div class="viewspace">
         <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
+           <span class="required">*</span>&ndash; required
         </div>
-        <div>
+      <div>
             <div id="form-widgets-title-row" class="row">
-              <div class="label">
-                <label for="form-widgets-title">
-                  <span>Title</span>
-                  <span class="required">*</span>
-                </label>
-              </div>
-              <div class="widget">
-              <input id="form-widgets-title" name="form.widgets.title"
-                     class="text-widget required textline-field"
-                     value="Second" type="text" />
+                <div class="label">
+                  <label for="form-widgets-title">
+                    <span>Title</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-title" name="form.widgets.title"
+             class="text-widget required textline-field"
+             value="Second" type="text" />
+  </div>
             </div>
-          </div>
-          <div id="form-widgets-number-row" class="row">
-              <div class="label">
-                <label for="form-widgets-number">
-                  <span>Number</span>
-                  <span class="required">*</span>
-                </label>
-              </div>
-              <div class="widget">
-              <input id="form-widgets-number"
-                     name="form.widgets.number"
-                     class="text-widget required int-field" value="2"
-                     type="text" />
-          </div>
-        </div>
+            <div id="form-widgets-number-row" class="row">
+                <div class="label">
+                  <label for="form-widgets-number">
+                    <span>Number</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-number"
+             name="form.widgets.number"
+             class="text-widget required int-field" value="2"
+             type="text" />
+  </div>
+            </div>
       </div>
     </div>
     <div>
       <div class="buttons">
-        <input id="form-buttons-apply" name="form.buttons.apply"
-               class="submit-widget button-field" value="Apply"
-               type="submit" />
+  <input id="form-buttons-apply" name="form.buttons.apply"
+         class="submit-widget button-field" value="Apply"
+         type="submit" />
       </div>
     </div>
   </form>
@@ -272,18 +271,18 @@ set the relevant data in the request:
     </div>
     <div>
       <div class="buttons">
-        <input id="subFormTable-buttons-delete"
-               name="subFormTable.buttons.delete"
-               class="submit-widget button-field" value="Delete"
-               type="submit" />
-        <input id="subFormTable-buttons-edit"
-               name="subFormTable.buttons.edit"
-               class="submit-widget button-field" value="Edit"
-               type="submit" />
-        <input id="subFormTable-buttons-cancel"
-               name="subFormTable.buttons.cancel"
-               class="submit-widget button-field" value="Cancel"
-               type="submit" />
+  <input id="subFormTable-buttons-delete"
+         name="subFormTable.buttons.delete"
+         class="submit-widget button-field" value="Delete"
+         type="submit" />
+  <input id="subFormTable-buttons-edit"
+         name="subFormTable.buttons.edit"
+         class="submit-widget button-field" value="Edit"
+         type="submit" />
+  <input id="subFormTable-buttons-cancel"
+         name="subFormTable.buttons.cancel"
+         class="submit-widget button-field" value="Cancel"
+         type="submit" />
       </div>
     </div>
   </form>
@@ -299,7 +298,7 @@ Clicking the ``Edit`` button at the same time should hold the same result:
   >>> selectedItemTable.__name__ = 'view.html'
   >>> selectedItemTable.update()
   >>> print selectedItemTable.render()
-    <form action="http://127.0.0.1" method="post"
+  <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
         name="subFormTable" id="subFormTable">
     <div class="viewspace">
@@ -309,70 +308,69 @@ Clicking the ``Edit`` button at the same time should hold the same result:
           <td valign="top">
             <div>
               <table class="contents">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
-                  </tr>
-                  <tr class="selected odd">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
-                  </tr>
-                  <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
-                  </tr>
-                </tbody>
-              </table>
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="even">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+      </tr>
+      <tr class="selected odd">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+      </tr>
+      <tr class="even">
+        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+      </tr>
+    </tbody>
+  </table>
             </div>
           </td>
           <td valign="top">
             <div class="tableForm">
-  <form action="http://127.0.0.1" method="post"
+              <form action="http://127.0.0.1" method="post"
         enctype="multipart/form-data" class="edit-form"
         name="form" id="form">
     <div class="viewspace">
         <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
+           <span class="required">*</span>&ndash; required
         </div>
-        <div>
+      <div>
             <div id="form-widgets-title-row" class="row">
-              <div class="label">
-                <label for="form-widgets-title">
-                  <span>Title</span>
-                  <span class="required">*</span>
-                </label>
-              </div>
-              <div class="widget">
-              <input id="form-widgets-title" name="form.widgets.title"
-                     class="text-widget required textline-field"
-                     value="Second" type="text" />
+                <div class="label">
+                  <label for="form-widgets-title">
+                    <span>Title</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-title" name="form.widgets.title"
+             class="text-widget required textline-field"
+             value="Second" type="text" />
+  </div>
             </div>
-          </div>
-          <div id="form-widgets-number-row" class="row">
-              <div class="label">
-                <label for="form-widgets-number">
-                  <span>Number</span>
-                  <span class="required">*</span>
-                </label>
-              </div>
-              <div class="widget">
-              <input id="form-widgets-number"
-                     name="form.widgets.number"
-                     class="text-widget required int-field" value="2"
-                     type="text" />
-          </div>
-        </div>
+            <div id="form-widgets-number-row" class="row">
+                <div class="label">
+                  <label for="form-widgets-number">
+                    <span>Number</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+      <input id="form-widgets-number"
+             name="form.widgets.number"
+             class="text-widget required int-field" value="2"
+             type="text" />
+  </div>
+            </div>
       </div>
     </div>
     <div>
       <div class="buttons">
-        <input id="form-buttons-apply" name="form.buttons.apply"
-               class="submit-widget button-field" value="Apply"
-               type="submit" />
+  <input id="form-buttons-apply" name="form.buttons.apply"
+         class="submit-widget button-field" value="Apply"
+         type="submit" />
       </div>
     </div>
   </form>
@@ -384,18 +382,18 @@ Clicking the ``Edit`` button at the same time should hold the same result:
     </div>
     <div>
       <div class="buttons">
-        <input id="subFormTable-buttons-delete"
-               name="subFormTable.buttons.delete"
-               class="submit-widget button-field" value="Delete"
-               type="submit" />
-        <input id="subFormTable-buttons-edit"
-               name="subFormTable.buttons.edit"
-               class="submit-widget button-field" value="Edit"
-               type="submit" />
-        <input id="subFormTable-buttons-cancel"
-               name="subFormTable.buttons.cancel"
-               class="submit-widget button-field" value="Cancel"
-               type="submit" />
+  <input id="subFormTable-buttons-delete"
+         name="subFormTable.buttons.delete"
+         class="submit-widget button-field" value="Delete"
+         type="submit" />
+  <input id="subFormTable-buttons-edit"
+         name="subFormTable.buttons.edit"
+         class="submit-widget button-field" value="Edit"
+         type="submit" />
+  <input id="subFormTable-buttons-cancel"
+         name="subFormTable.buttons.cancel"
+         class="submit-widget button-field" value="Cancel"
+         type="submit" />
       </div>
     </div>
   </form>
