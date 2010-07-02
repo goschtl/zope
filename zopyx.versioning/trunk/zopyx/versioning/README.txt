@@ -77,5 +77,10 @@ Open points
 Author
 ------
 
-| Andreas Jung
+| ZOPYX Ltd.
+| c/o Andreas Jung
+| Charlottenstr. 37/1
+| D-72070 Tuebingen
+| Germany
 | info@zopyx.com
+| www.zopyx.com
