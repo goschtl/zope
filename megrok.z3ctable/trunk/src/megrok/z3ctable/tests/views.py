@@ -48,7 +48,7 @@ Now setup some items:
   >>> print tvwt()
   <html>
    <body>
-    <h1> This is my nice Table renderd in a Templage</h1>
+    <h1>This is my nice Table rendered in a template</h1>
     <table>
     <thead>
       <tr>
@@ -70,7 +70,7 @@ Now setup some items:
    </body>
   </html>
 
-table renderd in a layout with an template
+table rendered in a layout with a template
 
   >>> tpil = getMultiAdapter((cont, TestRequest()), name=u'tablepageinlayout')
   >>> print tpil()
@@ -105,7 +105,7 @@ table renderd in a layout with an template
   </html>
 
 
-table renderd in a layout with an render method
+table rendered in a layout with an render method
 
   >>> twr = getMultiAdapter((cont, TestRequest()), name=u'tablewithrender')
   >>> print twr()

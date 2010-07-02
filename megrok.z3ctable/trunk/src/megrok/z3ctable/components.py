@@ -101,7 +101,7 @@ class Values(grok.MultiAdapter):
     @property
     def values(self):
         return NotImplementedError(
-            """Your class must override the `Values` method.""")
+            """Your class must override the `values` method.""")
 
 
 __all__ = ('Table', 'TableView', 'TablePage',

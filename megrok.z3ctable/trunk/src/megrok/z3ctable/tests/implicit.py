@@ -2,7 +2,7 @@
 Implicit is sometimes readable
 ==============================
 
-In this exemple, we are going to demonstrate the implicit link between a table 
+In this example, we are going to demonstrate the implicit link between a table 
 and a column, using auto resolving directives. Instead of directly declaring
 the context and the table used to fetch a column, we resolve them by looking
 into the module. Here, the column will automatically be register for the table

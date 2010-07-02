@@ -15,10 +15,10 @@ components are available :
   - Value
 
 Beyond a simple wrapping, megrok.z3cform brings you new convenient
-ways to create pages displaying a table :
+ways to create pages displaying a table:
 
-  - TableView : a simple browser view displaying a table.
-  - TablePage : a table browser view included in a layout
+  - TableView: a simple browser view displaying a table.
+  - TablePage: a table browser view included in a layout
     (see megrok.layout)
 
 For more information and more detailed examples please look in the
@@ -103,7 +103,7 @@ We grok the MyValues Adapter::
 
 There is currently no output this is because the table itself contains
 no logic. The data is displayed by components called "Column". A
-Column is a multi adapter, adapting the view, the request and the
+Column is a multi adapter, adapting the context, the request and the
 table. It permits a very flexible handling of the tables and the data
 representations. Let's define a simple Column::
 

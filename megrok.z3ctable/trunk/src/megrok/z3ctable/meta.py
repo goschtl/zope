@@ -14,7 +14,7 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 class TableGrokker(martian.GlobalGrokker):
     """Grokker dedicated to find the table within a module.
-    This allows to set implicit relationships bewteen a table and a column.
+    This allows to set implicit relationships between a table and a column.
     """
     martian.priority(991)
 
