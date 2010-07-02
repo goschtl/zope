@@ -33,6 +33,11 @@ class ICollectionVersionSupport(Interface):
     # about items to be restored are part of the information stored in the
     # storage backend.
 
+class IVersionID(Interface):
+    
+    def getID():
+        """ Return a unique and stable ID for the object to be versioned """
+
 class IVersionStorage(Interface):
 
     # methods used for IVersionSupport
