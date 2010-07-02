@@ -9,7 +9,6 @@ from zope.interface import implements
 from zopyx.versioning.interfaces import IVersionStorage
 from zopyx.versioning import errors
 
-
 class MongoDBStorage(object):
 
     implements(IVersionStorage)
@@ -24,7 +23,7 @@ class MongoDBStorage(object):
         self.metadata.remove()
         self.revisions.remove()
 
-    def store(self, id, version_data, creator, comment=None):
+    def store(self, id, version_data, revision_metadata):
 
         id_entry = self.metadata.find_one({'_oid' : id})
         if id_entry is None:
@@ -36,6 +35,7 @@ class MongoDBStorage(object):
 
         data = dict(_oid=id, _rev=revision)
         data.update(anyjson.deserialize(version_data))
+        data.update(anyjson.deserialize(revision_metadata))
         self.revisions.save(data)
         return revision
 

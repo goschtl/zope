@@ -27,7 +27,7 @@ class StorageTests(unittest2.TestCase):
     def testStore(self):
         version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
         for i in range(5):
-            self.storage.store('42', anyjson.serialize(version_data), 'ajung')
+            self.storage.store('42', anyjson.serialize(version_data), anyjson.serialize({}))
         revisions = self.storage.list_revisions('42')
         self.assertEqual(revisions, [0,1,2,3,4])
 
@@ -41,7 +41,7 @@ class StorageTests(unittest2.TestCase):
 
     def testRemoveExistingDocument(self):
         version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
-        self.storage.store('42', anyjson.serialize(version_data), 'ajung')
+        self.storage.store('42', anyjson.serialize(version_data), anyjson.serialize({}))
         self.storage.remove('42')
         with self.assertRaises(errors.NoDocumentFound):
             self.storage.remove('42')
