@@ -72,6 +72,11 @@ class MongoDBStorage(object):
             raise errors.NoDocumentFound('No document with ID %s found' % id)
         return sorted([r['_rev'] for r in revisions])
 
+    def revision_metadata(self, id, revision):
+        revision = self.revisions.find_one({'_oid' : id, '_rev' : revision})
+        return revision
+
+
     def remove_revision(self, id, revision):
         if self.revisions.find({'_oid' : id}).count() == 0:
             raise errors.NoDocumentFound('No document with ID %s found' % id)
