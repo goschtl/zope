@@ -62,6 +62,16 @@ class MongoDBStorage(object):
     def has_revision(self, id, revision):
         return bool(self.revisions.find_one({'_oid' : id, '_rev' : revision}))
 
+    def list_revisions(self, id):
+
+        revisions = self.revisions.find({'_oid' : id})
+        if revisons.count == 0:
+            raise errors.NoDocumentFound('No document with ID %s found' % id)
+        return sorted([r['_rev'] for r in revisions])
+
+    def remove_revision(self, id, revision):
+        self.revisions.delete({'_oid' : id, '_rev' : revision})
+
 
 if __name__ == '__main__':
 
@@ -74,3 +84,5 @@ if __name__ == '__main__':
     print storage.retrieve('42', 9)
     print storage.has_revision('42', 9)
     print storage.has_revision('42', 42)
+
+    print storage.list_revisions('42')
