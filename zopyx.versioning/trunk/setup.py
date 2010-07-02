@@ -6,7 +6,7 @@ version = '0.1'
 setup(name='zopyx.versioning',
       version=version,
       description="A flexible and pluggable versioning system for schema-oriented documents",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("zopyx.versioning/zopyx/versioning/README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
