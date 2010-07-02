@@ -14,12 +14,24 @@
 
 """Windows Services installer/controller for Zope/ZEO/ZRS instance homes"""
 
-import sys, os, time, threading, signal
+import os
+import signal
+import sys
+import time
+import threading
 
 import pywintypes
-import winerror, win32con
-import win32api, win32event, win32file, win32pipe, win32process, win32security
-import win32service, win32serviceutil, servicemanager
+import win32api
+import win32con
+import win32event
+import win32file
+import win32pipe
+import win32process
+import win32security
+import win32service
+import win32serviceutil
+import winerror
+import servicemanager
 
 # the max seconds we're allowed to spend backing off
 BACKOFF_MAX = 300
@@ -41,6 +53,7 @@ CHILDCAPTURE_BLOCK_SIZE = 80
 # large as to prematurely fill the event log.
 CHILDCAPTURE_MAX_BLOCKS = 50
 
+
 class Service(win32serviceutil.ServiceFramework):
     """Base class for a Windows Server to manage an external process.
 
@@ -60,13 +73,13 @@ class Service(win32serviceutil.ServiceFramework):
         # ...and from that, we can look up the other needed bits
         # from the registry:
         self._svc_display_name_ = self.getReg('DisplayName')
-        self._svc_command_ = self.getReg('command',keyname='PythonClass')
-        
+        self._svc_command_ = self.getReg('command', keyname='PythonClass')
+
         win32serviceutil.ServiceFramework.__init__(self, args)
 
-        # Don't use the service name as the event source name:        
+        # Don't use the service name as the event source name:
         servicemanager.SetEventSourceName(self.evtlog_name)
-        
+
         # Create an event which we will use to wait on.
         # The "service stop" request will set this event.
         # We create it inheritable so we can pass it to the child process, so
@@ -75,8 +88,6 @@ class Service(win32serviceutil.ServiceFramework):
         sa.bInheritHandle = True
         self.hWaitStop = win32event.CreateEvent(sa, 0, 0, None)
 
-    ### ServiceFramework methods
-        
     def SvcDoRun(self):
         # indicate to Zope that the process is daemon managed (restartable)
         os.environ['ZMANAGED'] = '1'
@@ -101,7 +112,8 @@ class Service(win32serviceutil.ServiceFramework):
         self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
         self.logmsg(servicemanager.PYS_SERVICE_STARTED)
         while 1:
-            self.hZope, hThread, pid, tid = self.createProcess(self._svc_command_)
+            self.hZope, hThread, pid, tid = self.createProcess(
+                self._svc_command_)
             self.ReportServiceStatus(win32service.SERVICE_RUNNING)
             keep_running = self.run()
             if not keep_running:
@@ -125,8 +137,6 @@ class Service(win32serviceutil.ServiceFramework):
     # down, we also need to hook SvcShutdown.
     SvcShutdown = SvcStop
 
-    ### Helper methods
-    
     def run(self):
         """Monitor the daemon process.
 
@@ -166,8 +176,7 @@ class Service(win32serviceutil.ServiceFramework):
             return False
         self.warning(
             "Process died unexpectedly, will attempt restart after %s seconds."
-            % self.backoff_interval
-            )
+            % self.backoff_interval)
         if time.time() - self.start_time > BACKOFF_CLEAR_TIME:
             self.backoff_interval = BACKOFF_INITIAL_INTERVAL
             self.backoff_cumulative = 0
@@ -182,7 +191,7 @@ class Service(win32serviceutil.ServiceFramework):
 
     def createProcess(self, cmd):
         self.start_time = time.time()
-        
+
         hInputRead, hInputWriteTemp = self.newPipe()
         hOutReadTemp, hOutWrite = self.newPipe()
         pid = win32api.GetCurrentProcess()
@@ -220,8 +229,7 @@ class Service(win32serviceutil.ServiceFramework):
         # start a thread collecting output
         t = threading.Thread(
             target=self.outputCaptureThread,
-            args = (hOutRead,)
-            )
+            args = (hOutRead, ))
         t.start()
         self.output_thread = t
         return info
@@ -265,38 +273,35 @@ class Service(win32serviceutil.ServiceFramework):
         pipe.Close()
         return dup
 
-    def stop(self,pid):
+    def stop(self, pid):
         # call the method that any subclasses out there may implement:
         self.onStop()
-        
+
         winver = sys.getwindowsversion()
         # This is unfortunately needed because runzope.exe is a setuptools
         # generated .exe that spawns off a sub process, so pid would give us
         # the wrong event name.
         child_pid = int(
-            open(self.getReg('pid_filename',keyname='PythonClass')).read()
-            )
-        
+            open(self.getReg('pid_filename', keyname='PythonClass')).read())
+
         # Stop the child process by sending signals to the special named event.
+        # We give it 90 seconds to shutdown normally. If that doesn't stop
+        # things, we give it 30 seconds to do a "fast" shutdown.
         for sig, timeout in (
-            (signal.SIGINT, 30), # We give it 90 seconds to shutdown normally.
-            (signal.SIGTERM, 10) # If that doesn't stop things, we give it 30
-                                 # seconds to do a "fast" shutdown.
-            ):
+            (signal.SIGINT, 30),
+            (signal.SIGTERM, 10)):
             # See the Signals.WinSignalHandler module for
             # the source of this event name
-            event_name = "Zope-%d-%d" % (child_pid,sig)
-            # sys.getwindowsversion() -> major, minor, build, platform_id, ver_string
-            # for platform_id, 2==VER_PLATFORM_WIN32_NT
+            event_name = "Zope-%d-%d" % (child_pid, sig)
             if winver[0] >= 5 and winver[3] == 2:
                 event_name = "Global\\" + event_name
             try:
                 he = win32event.OpenEvent(win32event.EVENT_MODIFY_STATE, 0,
                                           event_name)
-            except win32event.error, details:
+            except win32event.error:
                 # no other expected error - report it.
                 self.warning("Failed to open child shutdown event %s"
-                             % (event_name,))
+                             % (event_name, ))
                 continue
 
             win32event.SetEvent(he)
@@ -314,48 +319,40 @@ class Service(win32serviceutil.ServiceFramework):
         if win32process.GetExitCodeProcess(self.hZope)==win32con.STILL_ACTIVE:
             # None of the signals worked, so kill the process
             self.warning(
-                "Terminating process as it could not be gracefully ended"
-                )
+                "Terminating process as it could not be gracefully ended")
             win32api.TerminateProcess(self.hZope, 3)
 
         output = self.getCapturedOutput()
         if output:
             self.info("Process terminated with output:\n"+output)
-                
-    ### Overridable subclass methods
 
     def onStop(self):
         # A hook for subclasses to override.
         # Called just before the service is stopped.
         pass
 
-    ### Registry interaction methods
-    
     @classmethod
-    def openKey(cls,serviceName,keyname=None):
+    def openKey(cls, serviceName, keyname=None):
         keypath = "System\\CurrentControlSet\\Services\\"+serviceName
         if keyname:
             keypath += ('\\'+keyname)
         return win32api.RegOpenKey(
-            win32con.HKEY_LOCAL_MACHINE,keypath,0,win32con.KEY_ALL_ACCESS
-            )
-    
+            win32con.HKEY_LOCAL_MACHINE, keypath, 0, win32con.KEY_ALL_ACCESS)
+
     @classmethod
-    def setReg(cls,name,value,serviceName=None,keyname='PythonClass'):
+    def setReg(cls, name, value, serviceName=None, keyname='PythonClass'):
         if not serviceName:
             serviceName = cls._svc_name_
-        key = cls.openKey(serviceName,keyname)
+        key = cls.openKey(serviceName, keyname)
         try:
             win32api.RegSetValueEx(key, name, 0, win32con.REG_SZ, value)
         finally:
             win32api.RegCloseKey(key)
 
-    def getReg(self,name,keyname=None):
-        key = self.openKey(self._svc_name_,keyname)
-        return win32api.RegQueryValueEx(key,name)[0]
-    
-    ### Logging methods
-        
+    def getReg(self, name, keyname=None):
+        key = self.openKey(self._svc_name_, keyname)
+        return win32api.RegQueryValueEx(key, name)[0]
+
     def logmsg(self, event):
         # log a service event using servicemanager.LogMsg
         try:
@@ -395,4 +392,3 @@ class Service(win32serviceutil.ServiceFramework):
 
     def error(self, s):
         self._dolog(servicemanager.LogErrorMsg, s)
-
