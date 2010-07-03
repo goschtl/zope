@@ -27,6 +27,7 @@ setup(name='zopyx.versioning',
           'zope.component',
           'pymongo',
           'unittest2',
+          'py-riparse',
           'anyjson',
           'nose',
           # -*- Extra requirements: -*-
