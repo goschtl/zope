@@ -6,8 +6,8 @@ import anyjson
 from pymongo.connection import Connection
 
 from zope.interface import implements
-from zopyx.versioning.interfaces import IVersionStorage
 from zopyx.versioning import errors
+from zopyx.versioning.interfaces import IVersionStorage
 
 class MongoDBStorage(object):
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     storage.remove('42')
     for i in range(10):
-        version_data = json.dumps({'id' : '42', 'text' : 'blather-%d' % i})
+        version_data = anyjson.serialize({'id' : '42', 'text' : 'blather-%d' % i})
         print storage.store('42', version_data, 'ajung', 'versioning test')
     print storage.retrieve('42', 9)
     print storage.has_revision('42', 9)
