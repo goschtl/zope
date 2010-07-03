@@ -74,7 +74,7 @@ class MongoDBStorage(object):
 
     def revision_metadata(self, id, revision):
         revision = self.revisions.find_one({'_oid' : id, '_rev' : revision})
-        return revision._metadata
+        return revision['_metadata']
 
     def remove_revision(self, id, revision):
         if self.revisions.find({'_oid' : id}).count() == 0:
