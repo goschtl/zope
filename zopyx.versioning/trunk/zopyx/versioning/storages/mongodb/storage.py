@@ -51,7 +51,7 @@ class MongoDBStorage(object):
             raise errors.NoDocumentFound('No document with ID %s found' % id)
         entry = self.revisions.find_one({'_oid' : id, '_rev' : revision})
         if entry:
-            return anyjson.serialize(entry._data)
+            return anyjson.serialize(entry['_data'])
         raise errors.NoRevisionFound('No revision %d found for document '
                                      'with ID %s found' % (revision, id))
 
