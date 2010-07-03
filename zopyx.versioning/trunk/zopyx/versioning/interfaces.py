@@ -75,6 +75,12 @@ class IVersionStorage(Interface):
     # XXX to be written#
 
 
+class IVersioning(Interface):
+
+    def getStorage(dsn):
+        """ Provide access to a version storage based on a DSN """
+
+
 class ILookup(Interface):
 
     def getObjectById(id):
