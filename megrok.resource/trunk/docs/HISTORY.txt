@@ -1,10 +1,13 @@
 Changelog
 =========
 
-0.4.2 (unreleased)
-------------------
+0.5 (unreleased)
+----------------
 
-* ...
+* Removed specific ILibrary interface and now use the one from hurry.resource
+  so the ILibraryUrl adapter found is the same for megrok.resource.Library and
+  hurry.resource.Library. You need hurry.zoperesource 0.5 to have hashed
+  resource for hurry.resource.Library instances.
 
 0.4.1 (2010-02-19)
 ------------------

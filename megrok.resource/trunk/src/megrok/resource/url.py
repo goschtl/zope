@@ -7,13 +7,13 @@ from zope.component import getAdapter
 from zope.site.hooks import getSite
 from zope.traversing.browser.absoluteurl import absoluteURL
 
-from hurry.resource.interfaces import ILibraryUrl
+from hurry.resource.interfaces import ILibrary, ILibraryUrl
 from hurry.zoperesource.zopesupport import getRequest
 from z3c.hashedresource.interfaces import IResourceContentsHash
 
 
+@grok.adapter(ILibrary)
 @grok.implementer(ILibraryUrl)
-@grok.adapter(megrok.resource.ILibrary)
 def library_url(library):
     request = getRequest()
     use_hash = megrok.resource.use_hash.bind().get(library)
