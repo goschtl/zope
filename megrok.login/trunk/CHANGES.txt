@@ -1,7 +1,7 @@
 megrok.login changes
 ********************
 
-0.3 (unreleased)
+0.3 (2010-07-03)
 ================
 
 * Support for Grok >= 1.1. 
