@@ -1,0 +1,13 @@
+``zope.optionalextension`` Changelog
+=====================================
+
+1.1 (2010-07-03)
+----------------
+
+- Make the package work as a distutils ``command_packages`` plugin.
+
+
+1.0 (2010-07-03)
+----------------
+
+- Extracted from ``zope.i18nmessageid`` 3.5.0.
