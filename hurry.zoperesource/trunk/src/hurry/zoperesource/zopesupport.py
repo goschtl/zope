@@ -10,8 +10,9 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.browser import BrowserRequest, BrowserResponse, isHTML
 from zope.app.publication.interfaces import IBrowserRequestFactory
 
-from hurry.resource import NeededInclusions, Library, render_topbottom_into_html
-from hurry.resource.interfaces import ICurrentNeededInclusions, ILibraryUrl
+from hurry.resource import NeededInclusions, render_topbottom_into_html
+from hurry.resource.interfaces import (
+    ICurrentNeededInclusions, ILibrary, ILibraryUrl)
 
 class CurrentNeededInclusions(grok.GlobalUtility):
     grok.implements(ICurrentNeededInclusions)
@@ -32,7 +33,7 @@ class CurrentNeededInclusions(grok.GlobalUtility):
             request.hurry_resource_needed = NeededInclusions()
         return request.hurry_resource_needed
 
-@grok.adapter(Library)
+@grok.adapter(ILibrary)
 @grok.implementer(ILibraryUrl)
 def library_url(library):
     request = getRequest()

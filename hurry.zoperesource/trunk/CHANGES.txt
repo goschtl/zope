@@ -4,6 +4,9 @@ CHANGES
 0.5 (unreleased)
 ================
 
+* Register the ILibraryUrl adapter for ILibrary instead of Library,
+  to be less specific for the adapter lookup.
+
 * Clearly specify license as ZPL.
 
 0.4 (2009-12-16)
