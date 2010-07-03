@@ -31,7 +31,7 @@ README = open('README.txt').read()
 CHANGES = open('CHANGES.txt').read()
 
 setup(name='zope.optionalextension',
-      version = '1.1',
+      version = '1.2dev',
       url='http://pypi.python.org/pypi/zope.optionalextension',
       license='ZPL 2.1',
       description='Optional compilation of C extensions',
