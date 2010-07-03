@@ -14,7 +14,7 @@
       />
 
   <z3c:jsonrpc
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       class="z3c.jsontree.jsonrpc.JSONTreeItems"
       permission="zope.Public"
       methods="loadJSONTreeItems"

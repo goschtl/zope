@@ -2,8 +2,12 @@
 CHANGES
 =======
 
-0.5.2 (unreleased)
+0.6.0 (unreleased)
 ------------------
+
+- reflect changes in zope packages, use new package externals
+
+- fix broken tests
 
 - Fix className handling in javacsript, it seems that newer version of JQuery
   can't handle $.className.has(ele, ...) use $(ele).hasClass(...) instead.
@@ -13,12 +17,14 @@ CHANGES
   NotFound object will wrap a context which we don't allow in our parent
   chain at all.
 
+
 0.5.1 (2009-03-10)
 ------------------
 
 - Fix: use imports from newest packages e.g. zope.site.folder.Folder
 
 - Fix: be smart to NotFound error objects. NotFound errors are not locatable.
+
 
 0.5.0 (2008-04-16)
 ------------------

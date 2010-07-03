@@ -19,17 +19,19 @@ __docformat__ = 'restructuredtext'
 import unittest
 
 import zope.component
-import zope.app.security
-from zope.app.component import hooks
+import zope.principalregistry
+import zope.security
+from zope.app.component import testing
+from zope.component import hooks
 from zope.configuration.xmlconfig import XMLConfig
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
-from zope.app.component import testing
 from zope.site.folder import Folder
 
 from z3c.testing import TestCase
 from z3c.jsontree.browser.tests import util
 from z3c.jsontree.browser import tree
+from z3c.jsontree import tests
 
 
 class SimpleJSONTreeView(tree.SimpleJSONTree):
@@ -51,18 +53,29 @@ class TestJSONTreeView(testing.PlacefulSetup, TestCase):
         testing.PlacefulSetup.setUp(self, site=True)
         self.rootFolder.__name__ = 'rootFolder'
         hooks.setSite(self.rootFolder)
-        import zope.app.publication
-        import zope.app.publisher.browser
-        import z3c.template
-        import z3c.jsontree
         import z3c.jsonrpc
-        XMLConfig('meta.zcml', zope.component)()
-        XMLConfig('meta.zcml', zope.app.security)()
-        XMLConfig('meta.zcml', zope.app.publication)()
-        XMLConfig('meta.zcml', zope.app.publisher.browser)()
-        XMLConfig('meta.zcml', z3c.template)()
+        import z3c.jsontree
+        import z3c.template
+        import zope.app.publication
+        import zope.browsermenu
+        import zope.browserpage
+        import zope.browserresource
+        import zope.publisher
         XMLConfig('meta.zcml', z3c.jsonrpc)()
+        XMLConfig('meta.zcml', z3c.template)()
+        XMLConfig('meta.zcml', zope.app.publication)()
+        XMLConfig('meta.zcml', zope.browsermenu)()
+        XMLConfig('meta.zcml', zope.browserpage)()
+        XMLConfig('meta.zcml', zope.browserresource)()
+        XMLConfig('meta.zcml', zope.component)()
+        XMLConfig('meta.zcml', zope.principalregistry)()
+        XMLConfig('meta.zcml', zope.publisher)()
+        XMLConfig('meta.zcml', zope.security)()
         XMLConfig('configure.zcml', z3c.jsontree)()
+
+    def tearDown(self):
+        testing.PlacefulSetup.tearDown(self)
+        hooks.setSite(None)
 
     def test_simple_tree_view_1(self):
         context = self.rootFolder['folder1']

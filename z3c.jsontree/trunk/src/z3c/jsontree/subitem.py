@@ -23,7 +23,7 @@ import zope.i18n
 from zope.security.interfaces import Unauthorized
 from zope.security.interfaces import Forbidden
 from zope.traversing import api
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 
 from z3c.jsontree import interfaces
 

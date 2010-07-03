@@ -80,7 +80,7 @@ class TreeProvider(base.ProviderBase, base.IdGenerator):
 
 class GenericJSONTree(base.TreeBase, base.TemplateRenderer, 
     base.IdGenerator):
-    """IntId base object lookup and template base rendering.
+    """Template base tree.
     
     This implementation uses IContentProvider for element tag rendering.
     This content provider are resonsible for represent a node. This allows us 

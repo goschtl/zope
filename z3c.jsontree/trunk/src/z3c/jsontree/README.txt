@@ -54,11 +54,6 @@ If we call our JSON-RPC tree item method, we can see the different JSON data
 on the different contexts:
 
   >>> from z3c.jsonrpc.testing import JSONRPCTestProxy
-  >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser()
-  >>> browser.handleErrors = False
-  >>> browser.addHeader('Accept-Language', 'en')
-  >>> browser.addHeader('Content-Type', 'application/json')
   >>> siteURL = 'http://localhost/++skin++JSONRPCTestSkin'
   >>> proxy = JSONRPCTestProxy(siteURL)
   >>> proxy.loadJSONTreeItems('z3cJSONTree')

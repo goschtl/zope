@@ -96,7 +96,7 @@ $.fn.z3cJSONTree = function (settings) {
             li.attr("id", itemInfo['id']);
 
             /* create toggle image */
-            var img = $('<img></img>');;
+            var img = $('<img></img>');
             img.attr("width", "16");
             img.attr("height", "16");
             if (hasChilds) {

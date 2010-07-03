@@ -23,7 +23,7 @@ from zope.traversing import api
 from zope.traversing.browser import absoluteURL
 from zope.traversing.namespace import getResource
 from zope.contentprovider.interfaces import IContentProvider
-from zope.app.component import hooks
+from zope.component import hooks
 
 from z3c.template.template import getPageTemplate
 
