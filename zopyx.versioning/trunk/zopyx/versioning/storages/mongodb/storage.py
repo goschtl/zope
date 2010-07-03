@@ -33,9 +33,11 @@ class MongoDBStorage(object):
             revision = id_entry['_rev'] + 1
             self.metadata.update({'_oid' : id}, {'$set' : {'_rev' : revision}} )
 
-        data = dict(_oid=id, _rev=revision)
-        data.update(anyjson.deserialize(version_data))
-        data.update(anyjson.deserialize(revision_metadata))
+        data = dict(_oid=id, 
+                    _rev=revision,
+                    _data=anyjson.deserialize(version_data),
+                    _metadata=anyjson.deserialize(revision_metadata),
+                    )
         self.revisions.save(data)
         return revision
 
@@ -47,10 +49,7 @@ class MongoDBStorage(object):
 
         entry = self.revisions.find_one({'_oid' : id, '_rev' : revision})
         if entry:
-            del entry['_oid']
-            del entry['_rev']
-            del entry['_id']
-            return anyjson.serialize(entry)
+            return anyjson.serialize(entry._data)
 
         raise errors.NoRevisionFound('No revision %d found for document with ID %s found' % (revision, id))
 
@@ -74,7 +73,7 @@ class MongoDBStorage(object):
 
     def revision_metadata(self, id, revision):
         revision = self.revisions.find_one({'_oid' : id, '_rev' : revision})
-        return revision
+        return revision._metadata
 
 
     def remove_revision(self, id, revision):
