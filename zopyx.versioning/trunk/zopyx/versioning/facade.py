@@ -20,7 +20,5 @@ class VersioningFacade(object):
 
 
 if __name__ == '__main__':
-
     print VersioningFacade().getStorage('mongo://localhost:10200/foo')
     print VersioningFacade().getStorage('zodb://localhost:10200/foo')
-        
