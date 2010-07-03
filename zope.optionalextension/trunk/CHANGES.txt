@@ -1,7 +1,7 @@
 ``zope.optionalextension`` Changelog
 =====================================
 
-1.1 (unreleased)
+1.1 (2010-07-03)
 ----------------
 
 - Make the package work as a distutils ``command_packages`` plugin.
