@@ -12,11 +12,21 @@
 #
 ##############################################################################
 
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
+try:
+    from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+except ImportError:
+    # BBB
+    from zope.app.authentication.interfaces import IAuthenticatorPlugin
+
 from zope.app.authentication.interfaces import IQuerySchemaSearch
-from zope.app.authentication.principalfolder import (PrincipalInfo,
-                                                     PrincipalFolder,
-                                                     InternalPrincipal)
+try:
+    from zope.pluggableauth.factories import PrincipalInfo
+except ImportError:
+    # BBB
+    from zope.app.authentication.principalfolder import PrincipalInfo
+from zope.app.authentication.principalfolder import (
+    PrincipalFolder, InternalPrincipal
+    )
 from zope.app.authentication.principalfolder import ISearchSchema
 from zope.app.container.interfaces import DuplicateIDError
 from zope.app.security.principalregistry import principalRegistry
@@ -115,6 +125,8 @@ class AutoRegisteringPrincipalFolder(PrincipalFolder):
                     perm_mgr.grantPermissionToPrincipal(
                         perm, self.prefix + id)
             except DuplicateIDError:
+                pass
+            except KeyError:
                 pass
         internal = self[id]
         if not internal.checkPassword(credentials["password"]):

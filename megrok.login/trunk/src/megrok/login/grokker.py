@@ -2,11 +2,22 @@ import martian
 import grok
 import megrok.login
 from zope import component
-
-from zope.app.authentication import PluggableAuthentication
+try:
+    from zope.pluggableauth import PluggableAuthentication
+except ImportError:
+    # BBB
+    from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.authentication.session import SessionCredentialsPlugin
-from zope.app.security.interfaces import IAuthentication
+try:
+    from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
+except ImportError:
+    # BBB
+    from zope.app.authentication.session import SessionCredentialsPlugin
+try:
+    from zope.authentication.interfaces import IAuthentication
+except ImportError:
+    # BBB
+    from zope.app.security.interfaces import IAuthentication
 from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
                                       AutoRegisteringPrincipalFolder)
 
@@ -43,8 +54,6 @@ def authenticationSubscriber(site, event):
     setupUtility(site, PluggableAuthentication(), IAuthentication,
                  setup=setupPAU,
                  name_in_container='megrok_login_pau')
-        
-
 
 def setupPAU(pau):
     """Callback to setup the Pluggable Authentication Utility """
@@ -71,6 +80,9 @@ def setupPAU(pau):
         pau.authenticatorPlugins = ('principals', 'readonly_principals')
 
     pau['session'] = session = SessionCredentialsPlugin()
-    pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    # If we use this, already authenticated users will get no login
+    # screen when they enter a forbidden page.
+    #pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    pau.credentialsPlugins = ('session',)
     session.loginpagename = viewname
     return None

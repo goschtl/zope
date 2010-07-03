@@ -5,6 +5,7 @@
 
   <include package="grok" />
   <include package="megrok.login" file="meta.zcml" />
+  <include package="megrok.login" file="configure.zcml" />
   <grok:grok package="megrok.login.tests" />
 
   <securityPolicy

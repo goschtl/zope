@@ -78,9 +78,9 @@ folder, for example, which is handled by a different PAU::
 import grok
 import megrok.login
 
-from zope.app.authentication import PluggableAuthentication
+from zope.pluggableauth import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.authentication.session import SessionCredentialsPlugin
+from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
                                       AutoRegisteringPrincipalFolder)
