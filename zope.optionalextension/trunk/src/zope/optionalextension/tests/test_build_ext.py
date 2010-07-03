@@ -3,7 +3,7 @@ import unittest
 class Test_optional_build_ext(unittest.TestCase):
 
     def _getTargetClass(self):
-        from zope.optionalextension import optional_build_ext
+        from zope.optionalextension.build_ext import optional_build_ext
         return optional_build_ext
 
     def _makeOne(self, dist=None, stream=None):
