@@ -28,17 +28,23 @@ class IVersionSupport(Interface):
     def restoreFromVersion(version_data):
         """ Restore object based on 'version_data' (JSON format) """
 
-class ICollectionVersionSupport(Interface):
-    """ API for retrieving the objects of a collection
-        (a folder, a site, ...) to be versioned.
+class IVersionableCollection(Interface):
+    """ Marker interface for an object collection with
+        versionable content.
     """
 
-    def getVersionableItems():
-        """ Returns a sequence of objects IDs to be versioned """
+class IVersionableCollectionPolicy(Interface):
+    """ Interface used for implementing arbitrary
+        versioning policies for object collections.
+        (implemented through an adapter implementing
+        IVersionableCollectionPolicy and adapting to
+        IVersionableCollection.
+    """
 
-    # XXX - no need for a getRestorableItems() method since the information
-    # about items to be restored are part of the information stored in the
-    # storage backend.
+    def getVersionableObjects(self):
+        """ Returns a sequence (or a generator) of objects
+            from the collection to be versioned .
+        """
 
 class IVersionID(Interface):
     
@@ -47,7 +53,6 @@ class IVersionID(Interface):
 
 class IVersionStorage(Interface):
 
-    # methods used for IVersionSupport
     def store(id, version_data, revision_metadata):
         """ Store 'version_data' for a given 'id'.  'version_data' holds the
             data to be versioned (JSON format).  'revision_metadata' holds
@@ -78,9 +83,6 @@ class IVersionStorage(Interface):
             a particular content piece by its 'id'.
         """
 
-    # methods used for ICollectionVersionSupport
-    # XXX to be written#
-
 
 class IVersioning(Interface):
 
@@ -88,9 +90,4 @@ class IVersioning(Interface):
         """ Provide access to a version storage based on a DSN """
 
 
-class ILookup(Interface):
-
-    def getObjectById(id):
-        """ Retrieve an object by its ids from a collection or 
-            "site" (whatever that means).
-        """
+class 
