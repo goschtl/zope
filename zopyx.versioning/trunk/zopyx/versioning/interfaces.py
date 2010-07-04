@@ -90,4 +90,3 @@ class IVersioning(Interface):
         """ Provide access to a version storage based on a DSN """
 
 
-class 
