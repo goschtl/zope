@@ -27,8 +27,7 @@ class MongoDBStorage(object):
         self.revisions = self.db.revisions
 
     def __del__(self):
-        self.db.logout()
-        self.conn.disconnect()
+        self.conn.end_request()
 
     def clear(self):
         self.metadata.remove()
