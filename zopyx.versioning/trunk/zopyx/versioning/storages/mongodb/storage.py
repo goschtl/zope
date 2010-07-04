@@ -9,6 +9,7 @@ Prototype storage implementation for MongoDB
 """
 
 import anyjson
+from datetime import datetime
 from pymongo.connection import Connection
 
 from zope.interface import implements
@@ -43,10 +44,12 @@ class MongoDBStorage(object):
             self.metadata.update({'_oid' : id}, 
                                  {'$set' : {'_rev' : revision}} )
 
+        revision_metadata = anyjson.deserialize(revision_metadata)
+        revision_metadata['created'] = datetime.utcnow().isoformat()
         data = dict(_oid=id, 
                     _rev=revision,
                     _data=anyjson.deserialize(version_data),
-                    _metadata=anyjson.deserialize(revision_metadata),
+                    _metadata=revision_metadata,
                     )
         self.revisions.save(data)
         return revision
