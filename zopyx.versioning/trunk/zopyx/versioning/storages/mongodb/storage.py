@@ -33,7 +33,7 @@ class MongoDBStorage(object):
         self.metadata.remove()
         self.revisions.remove()
 
-    def store(self, id, version_data, revision_metadata):
+    def store(self, id, version_data, revision_metadata, collection_content=[]):
         id_entry = self.metadata.find_one({'_oid' : id})
         if id_entry is None:
             revision = 0
