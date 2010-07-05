@@ -1,7 +1,7 @@
 Database layout of the MongoDB storage
 ======================================
 
-We use three collections:
+The MongoDB-backed version storage uses three collections:
 
 metadata
 --------
