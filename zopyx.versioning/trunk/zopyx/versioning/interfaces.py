@@ -5,7 +5,7 @@
 ################################################################
 
 
-""" 
+"""
 Interfaces related to the versioning API
 """
 
@@ -47,21 +47,26 @@ class IVersionableCollectionPolicy(Interface):
         """
 
 class IVersionID(Interface):
-    
+
     def getID():
         """ Return a unique and stable ID for the object to be versioned """
 
 class IVersionStorage(Interface):
 
-    def store(id, version_data, revision_metadata):
+    def store(id, version_data, revision_metadata, collection_content=[]):
         """ Store 'version_data' for a given 'id'.  'version_data' holds the
             data to be versioned (JSON format).  'revision_metadata' holds
             application-specific metadata for the particular version (e.g. 
             revision date, creator uid, "revision is a major/minor 
             revision) (JSON format).
 
+            If 'collection_content' is used then we assume that we version
+            a collection of objects where the versioned objects are given
+            as a list of tuples (object_id, object_revision).
+
             Returns revision number.
         """
+
 
     def retrieve(id, revision):
         """ Return 'version_data' for a given 'id' and 'revision' """
@@ -83,10 +88,8 @@ class IVersionStorage(Interface):
             a particular content piece by its 'id'.
         """
 
-
 class IVersioning(Interface):
 
     def getStorage(dsn):
         """ Provide access to a version storage based on a DSN """
-
 
