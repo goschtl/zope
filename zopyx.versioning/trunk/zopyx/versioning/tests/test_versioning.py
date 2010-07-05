@@ -1,8 +1,8 @@
 import unittest2
 from zope.interface.verify import verifyClass
 
-from interfaces import IVersioning
-import facade
+from zopyx.versioning.interfaces import IVersioning
+from zopyx.versioning import facade
 
 
 class VersioningTests(unittest2.TestCase):
