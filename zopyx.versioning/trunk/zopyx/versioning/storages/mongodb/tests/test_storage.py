@@ -23,6 +23,11 @@ class StorageTests(unittest2.TestCase):
         self.storage = MongoDBStorage('localhost', 10200, 'test-db')
         self.storage.clear()
 
+    def testClear(self):
+        self.assertEqual(self.storage.metadata.find().count(), 0)
+        self.assertEqual(self.storage.revisions.find().count(), 0)
+        self.assertEqual(self.storage.collections.find().count(), 0)
+
     def testInterface(self):
         verifyClass(IVersionStorage, MongoDBStorage)
 
@@ -52,3 +57,25 @@ class StorageTests(unittest2.TestCase):
         with self.assertRaises(errors.NoDocumentFound):
             self.storage.remove('42')
 
+    def testStoreCollection(self):
+
+        # two objects first
+        no_data = anyjson.serialize({})
+        rev1 = self.storage.store('child1', no_data, no_data)
+        rev2 = self.storage.store('child2', no_data, no_data)
+        rev3 = self.storage.store('child3', no_data, no_data)
+
+        self.assertEqual(self.storage.revisions.find().count(), 3)
+
+        version_data = {'text' : u'hello world', 'subject' : [u'kw1', u'kw2']}
+        self.storage.store('folder',
+                           anyjson.serialize(version_data),
+                           anyjson.serialize({}),
+                           [dict(_oid='child1', _rev=rev1),
+                            dict(_old='child2', _rev=rev2),
+                            dict(_old='child3', _rev=rev3),
+                           ]) 
+        self.assertEqual(self.storage.collections.find().count(), 1)
+
+        self.storage.remove('folder')
+        self.assertEqual(self.storage.collections.find().count(), 0)
