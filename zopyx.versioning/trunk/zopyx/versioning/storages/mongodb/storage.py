@@ -25,6 +25,7 @@ class MongoDBStorage(object):
         self.db = getattr(self.conn, database)
         self.metadata = self.db.metadata
         self.revisions = self.db.revisions
+        self.collections = self.db.collections
 
     def __del__(self):
         self.conn.end_request()
@@ -32,6 +33,7 @@ class MongoDBStorage(object):
     def clear(self):
         self.metadata.remove()
         self.revisions.remove()
+        self.collections.remove()
 
     def store(self, id, version_data, revision_metadata, collection_content=[]):
         id_entry = self.metadata.find_one({'_oid' : id})
@@ -40,12 +42,17 @@ class MongoDBStorage(object):
             self.metadata.save({'_oid' : id, '_rev' : 0})
         else:
             revision = id_entry['_rev'] + 1
-            self.metadata.update({'_oid' : id}, 
+            self.metadata.update({'_oid' : id},
                                  {'$set' : {'_rev' : revision}} )
+
+        if collection_content:
+            self.collections.save({'_oid' : id,
+                                   '_rev' : revision,
+                                   'collection_content' : collection_content})
 
         revision_metadata = anyjson.deserialize(revision_metadata)
         revision_metadata['created'] = datetime.utcnow().isoformat()
-        data = dict(_oid=id, 
+        data = dict(_oid=id,
                     _rev=revision,
                     _data=anyjson.deserialize(version_data),
                     _metadata=revision_metadata,
@@ -68,6 +75,7 @@ class MongoDBStorage(object):
             raise errors.NoDocumentFound('No document with ID %s found' % id)
         self.metadata.remove({'_oid' : id})
         self.revisions.remove({'_oid' : id})
+        self.collections.remove({'_oid' : id})
 
     def has_revision(self, id, revision):
         return bool(self.revisions.find_one({'_oid' : id, '_rev' : revision}))
