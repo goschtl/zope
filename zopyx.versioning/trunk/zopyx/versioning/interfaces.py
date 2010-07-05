@@ -91,7 +91,7 @@ class IVersionStorage(Interface):
 class IVersioning(Interface):
     """ Basically marker interface or an interface for implementing a facade or
         an application specific versioning layer for hiding the storage layer.
-    """ 
+    """
 
     def getStorage(dsn):
         """ Provide access to a version storage based on a DSN """
