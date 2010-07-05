@@ -24,6 +24,7 @@ class MongoDBStorage(object):
     def __init__(self, host, port, database):
         self.conn = Connection(host, port)
         self.db = getattr(self.conn, database)
+        # 3 collections: see README.txt
         self.metadata = self.db.metadata
         self.revisions = self.db.revisions
         self.collections = self.db.collections
@@ -32,6 +33,7 @@ class MongoDBStorage(object):
         self.conn.end_request()
 
     def clear(self):
+        """ Clear all collections """
         self.metadata.remove()
         self.revisions.remove()
         self.collections.remove()
@@ -89,6 +91,11 @@ class MongoDBStorage(object):
         if revisions.count == 0:
             raise errors.NoDocumentFound('No document with ID %s found' % id)
         return sorted([r['_rev'] for r in revisions])
+
+
+    def objects_in_revison(self, id, revision):
+        row = self.collections.find_one({'_oid' : id, '_rev' : revision})
+        return row['collection_content']
 
     def revision_metadata(self, id, revision):
         revision = self.revisions.find_one({'_oid' : id, '_rev' : revision})
