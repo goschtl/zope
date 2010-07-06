@@ -5,6 +5,8 @@ Changes
 3.6.1 (unreleased)
 ------------------
 
+- Fixed tests to work under Python 2.7.
+
 - PEP8 cleanup and removed obsolete build infrastructure files.
 
 

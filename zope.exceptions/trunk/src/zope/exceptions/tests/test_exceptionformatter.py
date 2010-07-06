@@ -144,20 +144,13 @@ class Test(TestCase):
 
     def testMultilineException(self):
         try:
-            exec 'syntax error'
+            exec 'syntax error\n'
         except Exception:
             s = tb()
-        # Traceback (most recent call last):
-        #   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testMultilineException
-        #     exec \'syntax error\'
-        #   File "<string>", line 1
-        #     syntax error
-        #            ^
-        # SyntaxError: unexpected EOF while parsing
         self.assertEquals(s.splitlines()[-3:],
                           ['    syntax error',
                            '               ^',
-                           'SyntaxError: unexpected EOF while parsing'])
+                           'SyntaxError: invalid syntax'])
 
 
 def test_suite():
