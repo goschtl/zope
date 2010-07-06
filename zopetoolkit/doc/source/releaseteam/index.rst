@@ -17,3 +17,4 @@ communicates on the zope-dev mailing list (:ref:`mailing-list`).
     meeting-20100601
     meeting-20100615
     meeting-20100630
+    package-usage
