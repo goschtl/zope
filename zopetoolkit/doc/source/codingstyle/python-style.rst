@@ -23,7 +23,13 @@ Python files should always contain the most actual license comment at the top fo
 module documentation string.
 
 The docstring should contain a reference about version control status.
-The example given is valid for at least CVS and Subversion.
+The example given is valid for Subversion.
+
+.. note::
+
+   The community has decided not to continue the use of the CVS keyword
+   expansion feature, e.g., the ``$Id`` tag.  Any keywords can be removed as
+   they are found during module cleanup.
 
 Here is the template::
 
