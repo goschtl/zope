@@ -64,7 +64,7 @@ base.
 
     * - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
       - Jan-Jaap Driessen
-      - OS X, Ubuntu 32/64, Windows 
+      - OS X, Ubuntu 32/64, Windows
       - 2.4, 2.5, 2.6
       - ZTK, Zope 2, zc.buildout, many grok packages
 
@@ -95,6 +95,12 @@ base.
       - 2.6
       - Zope 2, CMF, Plone
 
+    * - `winbot <http://winbot.zope.org/>`_ (project sponsored by the Zope foundation)
+      - Adam Groszer
+      - Windows 32 and 64 bits
+      - 2.4, 2.5, 2.6, 2.7
+      - ZTK (trunks and releases), BlueBream template, ZODB,
+
 
 Informing the Zope developer community about build results
 ----------------------------------------------------------
@@ -116,6 +122,7 @@ To ensure that your build output is correctly picked up, you need to
   build server quickly, and
 - subscribe your sender email address to `zope-tests@zope.org
   <https://mail.zope.org/mailman/listinfo/zope-tests>`_
+- you can bug Jens to add the address if you can't receive mails with it
 
 The subject line should be formatted like this::
 
