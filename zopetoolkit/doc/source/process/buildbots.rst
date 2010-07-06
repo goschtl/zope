@@ -132,6 +132,62 @@ The subject line should be formatted like this::
     FAILED: Zope 2.6 on Windows XP 32-bit with Python 2.5
     UNKNOWN: zope.interface on Linux 64-bit
 
+Here is a sample message_formatter function for the buildbot ``MailNotifier`` ::
+
+    def message_formatter(mode, name, build, results, master_status):
+        """Provide a customized message to BuildBot's MailNotifier.
+        The last 80 lines of the log are provided as well as the changes
+        relevant to the build.
+        """
+        result = Results[results]
+
+        limit_lines = 80
+        text = list()
+
+        # status required by zope-tests list
+        # http://docs.zope.org/zopetoolkit/process/buildbots.html
+        status = 'UNKNOWN'
+        if result == 'success':
+            status = 'OK'
+        if result == 'failure':
+            status = 'FAILED'
+
+        subject = '%s : %s / %s' % (status, master_status.getProjectName(), name)
+        text.append(subject)
+        text.append("Build: %s" % master_status.getURLForThing(build))
+        text.append('\n')
+        text.append("Build Reason: %s" % build.getReason())
+        text.append('\n')
+
+        source = ""
+        ss = build.getSourceStamp()
+        if ss.branch:
+            source += "[branch %s] " % ss.branch
+        if ss.revision:
+            source +=  ss.revision
+        else:
+            source += "HEAD"
+        if ss.patch:
+            source += " (plus patch)"
+        text.append("Build Source Stamp: %s" % source)
+        text.append('\n')
+        text.append("Blamelist: %s" % ", ".join(build.getResponsibleUsers()))
+        text.append('\n')
+        text.append("Buildbot: %s" % master_status.getBuildbotURL())
+        return {
+            'body': "\n".join(text),
+            'type': 'plain',
+            'subject': subject,
+            }
+
+Some links to sample configs::
+
+    http://buildbot.afpy.org/ztk1.0/master.cfg
+    http://buildbot.afpy.org/ztk1.0dev/master.cfg
+    http://buildbot.afpy.org/bluebream/master.cfg
+    http://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder/trunk/master.cfg
+    http://zope3.pov.lt/master.cfg
+
 
 Automated/nightly build effort coordination
 ===========================================
