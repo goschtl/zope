@@ -18,6 +18,11 @@ We do not differentiate the type of dependency (direct or transitive). At this
 point we are only interested if a package is required by a framework in some
 way or not.
 
+In a ``zopepy`` interpreter one can get all active distributions with::
+
+  import pprint, pkg_resources
+  pprint(sorted([p.project_name for p in pkg_resources.working_set.by_key.values()]))
+
 ZTK
 ---
 
