@@ -21,7 +21,7 @@
 import os
 from setuptools import setup, find_packages
 import sys
-if sys.version_info < (3,):
+if sys.version_info < (3, ):
     extra = {}
 else:
     # Python 3 support:
@@ -31,20 +31,19 @@ else:
         use_2to3_fixers = ['zope.fixers'],
     )
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 
 setup(name='zope.exceptions',
       version = '3.6.1dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Exceptions',
-      long_description=(
-          read('README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
-          ),
-      keywords = 'zope3 exceptions',
+      long_description=(read('README.txt') + '\n\n' +
+                        read('CHANGES.txt')),
+      keywords = 'zope exceptions',
       classifiers = [
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -71,5 +70,4 @@ setup(name='zope.exceptions',
       test_suite = 'zope.exceptions.tests',
       include_package_data = True,
       zip_safe = False,
-      **extra
-      )
+      **extra)

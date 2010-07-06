@@ -30,16 +30,20 @@ ITracebackSupplement.
 """
 from zope.interface import Interface, Attribute, implements
 
+
 class IDuplicationError(Interface):
     pass
+
 
 class DuplicationError(Exception):
     """A duplicate registration was attempted"""
     implements(IDuplicationError)
 
+
 class IUserError(Interface):
     """User error exceptions
     """
+
 
 class UserError(Exception):
     """User errors
@@ -48,6 +52,7 @@ class UserError(Exception):
     they are handled.
     """
     implements(IUserError)
+
 
 class ITracebackSupplement(Interface):
     """Provides valuable information to supplement an exception traceback.
@@ -64,8 +69,7 @@ class ITracebackSupplement(Interface):
         Normally this generates a URL in the traceback that the user
         can visit to manage the object.  Set to None if unknown or
         not available.
-        """
-        )
+        """)
 
     line = Attribute(
         'line',
@@ -73,8 +77,7 @@ class ITracebackSupplement(Interface):
         occurred.
 
         Set to 0 or None if the line number is unknown.
-        """
-        )
+        """)
 
     column = Attribute(
         'column',
@@ -82,16 +85,14 @@ class ITracebackSupplement(Interface):
         occurred.
 
         Set to None if the column number is unknown.
-        """
-        )
+        """)
 
     expression = Attribute(
         'expression',
         """Optional.  Set to the expression that was being evaluated.
 
         Set to None if not available or not applicable.
-        """
-        )
+        """)
 
     warnings = Attribute(
         'warnings',
@@ -99,9 +100,7 @@ class ITracebackSupplement(Interface):
 
         Set to None if not available, not applicable, or if the exception
         itself provides enough information.
-        """
-        )
-
+        """)
 
     def getInfo(as_html=0):
         """Optional.  Returns a string containing any other useful info.

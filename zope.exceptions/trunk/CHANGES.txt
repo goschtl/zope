@@ -2,6 +2,12 @@
 Changes
 =======
 
+3.6.1 (unreleased)
+------------------
+
+- PEP8 cleanup and removed obsolete build infrastructure files.
+
+
 3.6.0 (2010-05-02)
 ------------------
 

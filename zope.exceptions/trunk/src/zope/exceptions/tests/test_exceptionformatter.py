@@ -13,10 +13,12 @@
 ##############################################################################
 """ExceptionFormatter tests.
 """
+
 import sys
-from unittest import TestCase, main, makeSuite
+from unittest import TestCase, makeSuite
 
 from zope.exceptions.exceptionformatter import format_exception
+
 
 def tb(as_html=0):
     t, v, b = sys.exc_info()
@@ -30,7 +32,6 @@ class ExceptionForTesting (Exception):
     pass
 
 
-
 class TestingTracebackSupplement(object):
 
     source_url = '/somepath'
@@ -40,7 +41,6 @@ class TestingTracebackSupplement(object):
 
     def __init__(self, expression):
         self.expression = expression
-
 
 
 class Test(TestCase):
@@ -131,8 +131,10 @@ class Test(TestCase):
             self.fail('no exception occurred')
 
     def testQuoteLastLine(self):
-        class C(object): pass
-        try: raise TypeError(C())
+        class C(object):
+            pass
+        try:
+            raise TypeError(C())
         except:
             s = tb(1)
         else:
@@ -143,7 +145,7 @@ class Test(TestCase):
     def testMultilineException(self):
         try:
             exec 'syntax error'
-        except:
+        except Exception:
             s = tb()
         # Traceback (most recent call last):
         #   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testMultilineException
@@ -160,6 +162,3 @@ class Test(TestCase):
 
 def test_suite():
     return makeSuite(Test)
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')

@@ -16,7 +16,9 @@
 
 import logging
 import cStringIO
+
 from zope.exceptions.exceptionformatter import print_exception
+
 
 class Formatter(logging.Formatter):
 

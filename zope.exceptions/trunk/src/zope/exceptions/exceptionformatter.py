@@ -21,6 +21,7 @@ import traceback
 
 DEBUG_EXCEPTION_FORMATTER = 1
 
+
 class TextExceptionFormatter(object):
 
     line_sep = '\n'
@@ -90,7 +91,6 @@ class TextExceptionFormatter(object):
                     result.append(extra)
             except:
                 if DEBUG_EXCEPTION_FORMATTER:
-                    import traceback
                     traceback.print_exc()
                 # else just swallow the exception.
         return result
