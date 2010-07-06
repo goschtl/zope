@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2010-07-06)
 ------------------
 
 - Fixed tests to work under Python 2.7.
