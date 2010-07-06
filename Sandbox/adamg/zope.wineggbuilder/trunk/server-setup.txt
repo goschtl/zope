@@ -33,17 +33,24 @@ windows basics
     - mingw32
     - MS Visual C++ 2008 Express Edition
       http://www.microsoft.com/express/downloads/
-  - install pythons+pywin32+setuptools
-    - c:\python24_32 NOT default
-    - c:\python25_32 NOT default
-      - the trick is to install python25_sys+pywin32+setuptools first
-        then copy c:\python25_sys to python25_32
-    - c:\python26_32 NOT default
-    - c:\python26_64 NOT default
-      - setuptools trick:
-        get the source tgz, patch it with
-        http://bugs.python.org/setuptools/issue2
-    - c:\python25_sys (default, 32bit, add to path)
+
+pythons+pywin32+setuptools
+==========================
+
+  - c:\python24_32 NOT default
+  - c:\python25_32 NOT default
+    - the trick is to install python25_sys+pywin32+setuptools first
+      then copy c:\python25_sys to python25_32
+  - c:\python26_32 NOT default
+  - c:\python26_64 NOT default
+    - setuptools trick:
+      get the source tgz, patch it with
+      http://bugs.python.org/setuptools/issue2
+  - c:\python27_32 NOT default
+  - c:\python27_64 NOT default
+    - setuptools trick:
+      - install setuptools from the patched source with setup.py install
+  - c:\python25_sys (default, 32bit, add to path)
   - install mingw32 to C:\MinGW
   - collabnet svn client to C:\svn
   - MSVC
@@ -94,16 +101,11 @@ set PATH=%PATH%;c:\mingw\bin
 set PATH=%PATH%;c:\mingw\bin
 %*
 
-  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python26_32".
+  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python26_32",
+  "C:\Python26_64", "C:\Python27_32", "C:\Python27_64".
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCVARSALL.bat" x86
 set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin"
-%*
-
-  - Create a file called 'setupcompilerandexecute.bat' in "C:\Python25_64".
-
-call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\VCVARSX86_AMD64.bat"
-set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\x64"
 %*
 
   - for the rest see master.cfg
