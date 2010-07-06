@@ -1,5 +1,5 @@
 ==========
-2010-06-29
+2010-07-06
 ==========
 
 This is the agenda and summary for the weekly Zope developer meeting of
