@@ -236,6 +236,9 @@ arguments
   All the string will be copied to the script 1:1.
   So what you enter here is what you get.
 
+environment
+  The environement if needed by your script
+
 
 Test
 ~~~~

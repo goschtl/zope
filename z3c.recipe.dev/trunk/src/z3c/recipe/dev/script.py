@@ -60,7 +60,13 @@ class ScriptSetup:
 
         wd = options.get('working-directory', options['location'])
 
+        # setup environment
         initialization = initialization_template
+        env_section = self.options.get('environment', '').strip()
+        if env_section:
+            env = self.buildout[env_section]
+            for key, value in env.items():
+                initialization += env_template % (key, value)
 
         return zc.buildout.easy_install.scripts(
             [(options['script'], module, method)],
@@ -77,4 +83,7 @@ class ScriptSetup:
 
 initialization_template = """import os
 sys.argv[0] = os.path.abspath(sys.argv[0])
+"""
+
+env_template = """os.environ['%s'] = %r
 """
