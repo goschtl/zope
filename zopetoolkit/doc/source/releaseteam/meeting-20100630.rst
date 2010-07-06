@@ -68,11 +68,11 @@ Open points
 - The upgrade versions buildbot updates to non-final releases, it shouldn't.
   Example: zc.recipe.egg=1.2.3b2 # was: 1.2.2 [ccomb?]
 
-- Tres Seaver posted a matrix depicting what ZTK packages are in use by what
-  frameworks. Each of the representatives will review the list of packages all
-  three frameworks use. When putting the results together, this should result
-  in a cleaned up ztk.cfg and zopeapp.cfg.
-  [ccomb, hannosch, j-w]
+- Tres Seaver `posted a matrix <https://mail.zope.org/pipermail/zope-dev/2010-April/040337.html>`_
+  depicting what ZTK packages are in use by what frameworks. Each of the
+  representatives will review the list of packages all three frameworks use.
+  When putting the results together, this should result in a cleaned up ztk.cfg
+  and zopeapp.cfg. [ccomb, hannosch, j-w]
 
 Next meeting
 ------------
