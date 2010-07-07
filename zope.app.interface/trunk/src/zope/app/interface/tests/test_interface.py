@@ -92,8 +92,10 @@ class PersistentInterfaceTest(util.TestCase):
         transaction.commit()
 
     def tearDown(self):
-        util.tearDown(self)
         transaction.abort() # just in case
+        self.conn.close()
+        self.db.close()
+        util.tearDown(self)
 
     def test_creation(self):
         class IFoo(PersistentInterface):
@@ -119,7 +121,7 @@ class PersistentInterfaceTest(util.TestCase):
 
     def test_provides(self):
         """Provides are persistent."""
-        
+
         self.registry.newModule("barmodule", bar_code)
         barmodule = self.registry.findModule("barmodule")
 
@@ -159,6 +161,8 @@ class PersistentInterfaceTest(util.TestCase):
         blah = root['blah']
         self.assertTrue(barmodule.IBlah.providedBy(blah))
 
+        db.close()
+
     def test_persistentWeakref(self):
         """Verify interacton of declaration weak refs with ZODB
 
@@ -195,6 +199,6 @@ class PersistentInterfaceTest(util.TestCase):
         transaction.commit()
         barmodule = self.registry.findModule("barmodule")
         self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
-        
+
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)

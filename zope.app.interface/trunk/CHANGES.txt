@@ -5,7 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed tests and test tearDown to actually close the DB.
 
 
 3.5.0 (2009-05-21)
