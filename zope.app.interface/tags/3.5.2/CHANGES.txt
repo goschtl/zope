@@ -1,0 +1,27 @@
+=======
+CHANGES
+=======
+
+3.5.2 (2010-07-08)
+------------------
+
+- 3.5.1 was a bad release
+
+
+3.5.1 (2010-07-07)
+------------------
+
+- Fixed tests and test tearDown to actually close the DB.
+
+
+3.5.0 (2009-05-21)
+------------------
+
+- Factor out ObjectInterfacesVocabulary into zope.componentvocabulary.
+
+- Remove various test dependencies.
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
