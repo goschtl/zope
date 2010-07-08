@@ -5,7 +5,7 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- 3.5.1 was a bad release
 
 
 3.5.1 (2010-07-07)
