@@ -21,7 +21,7 @@ way or not.
 In a ``zopepy`` interpreter one can get all active distributions with::
 
   import pprint, pkg_resources
-  pprint(sorted([p.project_name for p in pkg_resources.working_set.by_key.values()]))
+  pprint.pprint(sorted([p.project_name for p in pkg_resources.working_set.by_key.values()]))
 
 ZTK
 ---
