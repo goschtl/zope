@@ -1,0 +1,18 @@
+[buildout]
+develop = .
+extends = versions.cfg
+parts = app
+        test 
+
+[app]
+recipe = zc.recipe.egg
+eggs = ${project}
+       z3c.evalexception>=2.0
+       Paste
+       PasteScript
+       PasteDeploy
+interpreter = ${interpreter}
+
+[test]
+recipe = zc.recipe.testrunner
+eggs = ${project}
