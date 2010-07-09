@@ -86,7 +86,7 @@ x x _ x zope.securitypolicy
 _ _ x x zope.sendmail
 _ _ x x zope.sequencesort
 _ _ _ _ zope.server
-_ x _ x zope.session
+x x _ x zope.session
 x x x x zope.site
 x x x x zope.size
 x x x x zope.structuredtext
@@ -132,7 +132,7 @@ _ _ _ _ zope.app.interpreter
 _ _ _ _ zope.app.intid
 _ _ _ _ zope.app.keyreference
 x x _ x zope.app.locales
-_ x _ x zope.app.localpermission
+x x _ x zope.app.localpermission
 _ _ _ _ zope.app.locking
 _ _ _ _ zope.app.onlinehelp
 x x _ x zope.app.pagetemplate
@@ -163,7 +163,7 @@ _ _ _ _ zope.file
 _ _ _ _ zope.html
 _ _ _ _ zope.modulealias
 _ _ _ _ zope.preference
-_ x x x zope.testbrowser
+x x x x zope.testbrowser
 _ _ _ _ zope.thread
 _ _ _ _ zope.xmlpickle
 _ _ _ _ zope.rdb
