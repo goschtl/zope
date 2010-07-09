@@ -30,7 +30,7 @@ ZTK
 B G 2 P Package name
 = = = = =============================
 x x x x zope.annotation
-x x _ _ zope.applicationcontrol
+x _ _ _ zope.applicationcontrol
 x x _ x zope.authentication
 x x x x zope.broken
 x x x x zope.browser
@@ -85,7 +85,7 @@ x x x x zope.security
 x x _ x zope.securitypolicy
 _ _ x x zope.sendmail
 _ _ x x zope.sequencesort
-_ x _ _ zope.server
+_ _ _ _ zope.server
 _ x _ x zope.session
 x x x x zope.site
 x x x x zope.size
@@ -146,12 +146,12 @@ x x _ _ zope.app.rotterdam
 x x _ _ zope.app.schema
 x x _ x zope.app.security
 _ _ _ _ zope.app.securitypolicy
-_ x _ _ zope.app.server
+_ _ _ _ zope.app.server
 _ _ _ _ zope.app.session
 _ _ _ _ zope.app.skins
-x _ _ _ zope.app.testing
+x x _ _ zope.app.testing
 _ _ _ _ zope.app.tree
-_ x _ _ zope.app.twisted
+_ _ _ _ zope.app.twisted
 _ _ _ _ zope.app.undo
 x x _ _ zope.app.wsgi
 x x _ _ zope.app.zcmlfiles
