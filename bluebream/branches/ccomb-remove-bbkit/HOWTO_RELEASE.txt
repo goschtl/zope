@@ -26,7 +26,11 @@ or manually with the following steps:
 - update the `CHANGELOG.txt`
 - commit and create a tag for this new version
 - change `setup.py` and the `CHANGELOG.txt` to point to the next dev version
-- upload `versions.cfg` with the correct name to http://download.zope.org/bluebream/
 
+- create a clean checkout of the tag in a new directory and run::
+
+    $ python setup.py register sdist upload
+
+- upload `versions.cfg` with the correct name to http://download.zope.org/bluebream/
 
 
