@@ -4,7 +4,9 @@ Changelog
 1.0b3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Directly depend on the ZTK!
+- Removed the bbkit package
+- Ask the version of BlueBream at project creation
 
 
 1.0b2 (2010-06-30)

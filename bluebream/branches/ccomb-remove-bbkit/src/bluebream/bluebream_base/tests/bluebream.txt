@@ -24,6 +24,7 @@ First try with a single flat package:
 >>> extra_args = [
 ...            "python_package=sample",
 ...            "interpreter=testpy",
+...            "bluebream=1.0",
 ...            "version=0.1",
 ...            "description=test_description",
 ...            "long_description=test_long_description",
@@ -32,7 +33,6 @@ First try with a single flat package:
 ...            "author_email=test_author_email",
 ...            "url=http://example.com",
 ...            "license_name=Test Public License",
-...            "zip_safe=False",
 ...            ]
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
@@ -41,6 +41,7 @@ Selected and implied templates:
 Variables:
   author:            test_author
   author_email:      test_author_email
+  bluebream:         1.0
   description:       test_description
   egg:               sample
   interpreter:       testpy
@@ -52,7 +53,6 @@ Variables:
   python_package:    sample
   url:               http://example.com
   version:           0.1
-  zip_safe:          False
 Creating template bluebream
 Creating directory ./sample
 <BLANKLINE>
@@ -66,7 +66,6 @@ sample/buildout.cfg
 sample/debug.ini
 sample/deploy.ini
 sample/setup.py
-sample/versions.cfg
 sample/etc/site.zcml
 sample/etc/zope-debug.conf
 sample/etc/zope.conf
@@ -108,6 +107,7 @@ Selected and implied templates:
 Variables:
   author:            test_author
   author_email:      test_author_email
+  bluebream:         1.0
   description:       test_description
   egg:               sample.main
   interpreter:       testpy
@@ -119,7 +119,6 @@ Variables:
   python_package:    sample.main
   url:               http://example.com
   version:           0.1
-  zip_safe:          False
 Creating template bluebream
 Creating directory ./sample.main
 <BLANKLINE>
@@ -132,7 +131,6 @@ sample.main/buildout.cfg
 sample.main/debug.ini
 sample.main/deploy.ini
 sample.main/setup.py
-sample.main/versions.cfg
 sample.main/etc/site.zcml
 sample.main/etc/zope-debug.conf
 sample.main/etc/zope.conf
@@ -180,6 +178,7 @@ Selected and implied templates:
 Variables:
   author:            test_author
   author_email:      test_author_email
+  bluebream:         1.0
   description:       test_description
   egg:               sample.app.main
   interpreter:       testpy
@@ -191,7 +190,6 @@ Variables:
   python_package:    sample.app.main
   url:               http://example.com
   version:           0.1
-  zip_safe:          False
 Creating template bluebream
 Creating directory ./sample.app.main
 <BLANKLINE>
@@ -204,7 +202,6 @@ sample.app.main/buildout.cfg
 sample.app.main/debug.ini
 sample.app.main/deploy.ini
 sample.app.main/setup.py
-sample.app.main/versions.cfg
 sample.app.main/etc/site.zcml
 sample.app.main/etc/zope-debug.conf
 sample.app.main/etc/zope.conf
@@ -252,6 +249,7 @@ Selected and implied templates:
 Variables:
   author:            test_author
   author_email:      test_author_email
+  bluebream:         1.0
   description:       test_description
   egg:               foobar.foobar
   interpreter:       testpy
@@ -263,7 +261,6 @@ Variables:
   python_package:    foobar.foobar
   url:               http://example.com
   version:           0.1
-  zip_safe:          False
 Creating template bluebream
 Creating directory ./foobar.foobar
 <BLANKLINE>
@@ -276,7 +273,6 @@ foobar.foobar/buildout.cfg
 foobar.foobar/debug.ini
 foobar.foobar/deploy.ini
 foobar.foobar/setup.py
-foobar.foobar/versions.cfg
 foobar.foobar/etc/site.zcml
 foobar.foobar/etc/zope-debug.conf
 foobar.foobar/etc/zope.conf
@@ -321,6 +317,7 @@ Selected and implied templates:
 Variables:
   author:            test_author
   author_email:      test_author_email
+  bluebream:         1.0
   description:       test_description
   egg:               sampleproject
   interpreter:       testpy
@@ -332,7 +329,6 @@ Variables:
   python_package:    sample.main
   url:               http://example.com
   version:           0.1
-  zip_safe:          False
 Creating template bluebream
 Creating directory ./sampleproject
 <BLANKLINE>
@@ -345,7 +341,6 @@ sampleproject/buildout.cfg
 sampleproject/debug.ini
 sampleproject/deploy.ini
 sampleproject/setup.py
-sampleproject/versions.cfg
 sampleproject/etc/site.zcml
 sampleproject/etc/zope-debug.conf
 sampleproject/etc/zope.conf
