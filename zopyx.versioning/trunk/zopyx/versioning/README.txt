@@ -22,18 +22,6 @@ CMFEditions
 - only ZODB-based backend
 - backend not pluggable
 
-zc.fault
-++++++++
-
-- to be checked
-
-
-z3c.vcsync
-++++++++++
-
-- to be checked
-
-
 Basic concepts
 --------------
 

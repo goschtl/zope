@@ -16,7 +16,6 @@ from zope.interface import implements
 from zopyx.versioning import errors
 from zopyx.versioning.interfaces import IVersionStorage
 
-
 class MongoDBStorage(object):
 
     implements(IVersionStorage)
