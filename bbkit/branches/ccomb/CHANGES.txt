@@ -1,0 +1,95 @@
+BlueBream Kit
+=============
+
+1.0b2 (unreleased)
+------------------
+
+- sync versions with the ZTK
+
+1.0b1 (2010-04-27)
+------------------
+
+- Changed versions: ztk.cfg
+
+  - zope.i18nmessageid (3.5.0 -> 3.5.1)
+  - zope.publisher (3.12.1 -> 3.12.2)
+
+1.0a5 (2010-03-27)
+------------------
+
+- Changed versions: ztk.cfg
+
+  - zope.component (3.9.2 -> 3.9.3)
+  - zope.contenttype (3.5.0 -> 3.5.1)
+  - zc.resourcelibrary (1.3.0 -> 1.3.1)
+
+- Changed versions: zopeapp.cfg
+
+  - zope.app.localpermission (3.7.1 -> 3.7.2)
+  - zope.app.dav (3.5.2 -> 3.5.3)
+
+1.0a4 (2010-03-07)
+------------------
+
+- Changed versions: ztk.cfg
+
+  - zope.formlib (4.0 -> 4.0.2)
+
+1.0a3 (2010-03-07)
+------------------
+
+- Changed versions: ztk.cfg
+
+  - zope.component (3.9.1 -> 3.9.2)
+  - zope.publisher (3.12.0 -> 3.12.1)
+
+- Changed versions: zopeapp.cfg (r107993 -> r108937)
+
+  - zope.app.apidoc (3.7.1 -> 3.7.2)
+  - zope.app.form (4.0.1 -> 4.0.2)
+  - zope.app.keyreference (3.6.0 -> 3.6.1)
+  - zope.app.localpermission (3.7.0 -> 3.7.1)
+
+- Use local copies of ztk.cfg & zopeapp.cfg
+
+1.0a2 (2010-03-06)
+------------------
+
+- Use bluebream 1.0a2 release
+
+- Added zope.pluggableauth (1.0.1) to ztk.cfg
+
+- Changed versions: ztk.cfg (r107997 -> r108937)
+
+  - zope.pluggableauth (1.0.1)
+  - zope.component (3.8.0 -> 3.9.1)
+  - zope.configuration (3.7.0 -> 3.7.1)
+  - zope.mimetype (1.1.2 -> 1.2.0)
+  - zope.minmax (1.1.1 -> 1.1.2)
+  - zope.schema (3.6.0 -> 3.6.1)
+  - zope.sendmail (3.6.1 -> 3.7.1)
+  - zope.testing (3.8.6 -> 3.8.7)
+  - zope.traversing (3.11.0 -> 3.12.0)
+  - Jinja2 (2.1.1 -> 2.2.1)
+  - Pygments (1.1 -> 1.2.2)
+  - pytz (2009r -> 2010b)
+  - Sphinx (0.6.3 -> 0.6.4)
+
+- Added zope.app.session (3.6.1) to zopeapp.cfg
+
+- Removed zope.app.session (3.6.1) from bluebream.cfg
+
+- Changed versions: zopeapp.cfg (r107993 -> r108937)
+
+  - zope.app.authentication (3.6.2 -> 3.7.1)
+  - zope.app.locales (3.5.2 -> 3.6.0)
+  - zope.app.pagetemplate (3.10.0 -> 3.10.1)
+  - zope.app.principalannotation (3.6.1 -> 3.7.0)
+  - zope.app.wsgi (3.6.0 -> 3.6.1)
+  - zope.app.zcmlfiles (3.6.1 -> 3.7.0)
+  - zope.app.session (3.6.1)
+
+1.0a1 (2010-02-06)
+------------------
+
+- Initial release
