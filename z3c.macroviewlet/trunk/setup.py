@@ -30,9 +30,7 @@ setup (
     long_description=(
         read('README.txt')
         + '\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
-        + '\n\n' +
+        '.. contents::\n\n' +
         read('src', 'z3c', 'macroviewlet', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
@@ -65,7 +63,7 @@ setup (
     install_requires = [
         'setuptools',
         'zope.app.component',
-        'zope.app.pagetemplate',
+        'zope.browserpage',
         'zope.app.publisher',
         'zope.app.testing',
         'zope.component',
