@@ -24,26 +24,27 @@ class BlueBream(templates.Template):
 
     vars = [
         var('python_package',
-            'Main Python package (with namespace, if any)'),
+            u'Main Python package (with namespace, if any)'),
         var('interpreter',
-            'Name of custom Python interpreter',
+            u'Name of custom Python interpreter',
             default='breampy'),
-        var('version', 'Version (like 0.1)', default='0.1'),
-        var('description', 'One-line description of the package'),
-        var('long_description', 'Multi-line description (in reST)'),
-        var('keywords', 'Space-separated keywords/tags'),
-        var('author', 'Author name'),
-        var('author_email', 'Author email'),
-        var('url', 'URL of homepage'),
-        var('license_name', 'License name'),
-        var('zip_safe',
-            'True/False: if the package can be distributed as a .zip file',
-            default=False),
+        var('bluebream', u'Which version of BlueBream?',
+            default=pkg_resources.get_distribution('bluebream').version),
+        var('version', u'Version of your project', default='0.1'),
+        var('description', u'One-line description of the package'),
+        var('long_description', u'Multi-line description (in reST)'),
+        var('keywords', u'Space-separated keywords/tags'),
+        var('author', u'Author name'),
+        var('author_email', u'Author email'),
+        var('url', u'URL of homepage'),
+        var('license_name', u'License name'),
         ]
 
     def check_vars(self, vars, cmd):
         """This method checks the variables and ask for missing ones
         """
+        # todo: detect available versions online, and suggest the latest
+
         # suggest what Paste chose
         for var in self.vars:
             if var.name == 'python_package':
@@ -66,6 +67,7 @@ class BlueBream(templates.Template):
                 "package name: %s." % name
             print "Please choose a different project name."
             sys.exit(1)
+        vars['zip_safe'] = False
         return vars
 
     def pre(self, command, output_dir, vars):
