@@ -25,6 +25,7 @@ setup(name='Products.ZCTextIndex',
       long_description=open('README.txt').read() + '\n' +
                        open('CHANGES.txt').read(),
       packages=find_packages('src'),
+      namespace_packages=['Products'],
       package_dir={'': 'src'},
       ext_modules=[
         Extension(
