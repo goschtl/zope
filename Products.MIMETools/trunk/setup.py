@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='Products.MIMETools',
-      version = '2.13.0dev',
+      version = '2.13.0',
       url='http://pypi.python.org/pypi/Products.MIMETools',
       license='ZPL 2.1',
       description="MIMETools provides the &lt;!--#mime--&gt; tag for "
