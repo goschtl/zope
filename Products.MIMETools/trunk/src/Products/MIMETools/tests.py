@@ -13,6 +13,7 @@
 
 import unittest
 
+
 class MimeTest(unittest.TestCase):
 
     def _getTargetClass(self):
