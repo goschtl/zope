@@ -30,6 +30,8 @@ setup (
         + '\n\n.. contents::\n\n' +
         read('src', 'z3c', 'preference', 'README.txt')
         + '\n\n' +
+        read('TODO.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",

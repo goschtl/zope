@@ -61,7 +61,7 @@ the preferences are stored in the principal annotations:
 
 
 Editing preferences
--------------------
+===================
 
 There is a name space to access the preferences. On the page a form is
 displayed which show the default values:
