@@ -1,0 +1,12 @@
+Changelog
+=========
+
+2.13.1 (unreleased)
+-------------------
+
+- Added missing namespace_packages declaration to setup.py.
+
+2.13.0 (2010-06-19)
+-------------------
+
+- Released as separate package.
