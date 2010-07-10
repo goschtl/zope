@@ -1,12 +1,9 @@
 Changelog
 =========
 
-2.13.1 (unreleased)
+2.13.0 (unreleased)
 -------------------
 
-- Added missing namespace_packages declaration to setup.py.
-
-2.13.0 (2010-06-19)
--------------------
+- PEP8 cleanup and added basic tests.
 
 - Released as separate package.

@@ -14,7 +14,6 @@
 from cStringIO import StringIO
 import mimetools
 
-from DocumentTemplate.DT_Util import _tm
 from DocumentTemplate.DT_Util import Eval
 from DocumentTemplate.DT_Util import parse_params
 from DocumentTemplate.DT_Util import ParseError
@@ -29,7 +28,7 @@ ENCODINGS = ('base64', 'quoted-printable', 'uuencode', 'x-uuencode', 'uue',
              'x-uue', '7bit')
 
 
-class MIMETag:
+class MIMETag(object):
     ''''''
 
     name='mime'
@@ -38,6 +37,7 @@ class MIMETag:
 
     def __init__(self, blocks):
         self.sections = []
+        self.multipart = 'mixed'
 
         for tname, args, section in blocks:
             if tname == 'mime':
@@ -127,6 +127,7 @@ class MIMETag:
         mw = MimeWriter(IO)
         outer = mw.startmultipartbody(self.multipart)
 
+        last = None
         for x in self.sections:
             a, b = x
             if 'skip_expr' in a and a['skip_expr'].eval(md):
@@ -200,9 +201,11 @@ class MIMETag:
                 output.seek(0)
                 innerfile.write(output.read())
 
+            last = x
+
         # XXX what if self.sections is empty ??? does it matter that
         # mw.lastpart() is called right after mw.startmultipartbody() ?
-        if x is self.sections[-1]:
+        if last is not None and last is self.sections[-1]:
             mw.lastpart()
 
         outer.seek(0)
