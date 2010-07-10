@@ -1,0 +1,9 @@
+Changelog
+=========
+
+2.13.0 (2010-07-10)
+-------------------
+
+- PEP8 cleanup and added basic tests.
+
+- Released as separate package.
