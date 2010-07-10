@@ -1,0 +1,2 @@
+This package is obsolete, and its features have been moved into the bluebream
+package. It should eventually be removed.
