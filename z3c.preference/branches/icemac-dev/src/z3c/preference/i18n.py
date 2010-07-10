@@ -10,9 +10,8 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+#############################################################################
 
-import z3c.preference
-import zope.app.wsgi.testlayer
+import zope.i18nmessageid
 
-Layer = zope.app.wsgi.testlayer.BrowserLayer(z3c.preference)
+_ = MessageFactory = zope.i18nmessageid.MessageFactory('z3c')

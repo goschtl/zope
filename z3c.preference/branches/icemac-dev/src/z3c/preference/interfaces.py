@@ -10,9 +10,16 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+#############################################################################
 
-import z3c.preference
-import zope.app.wsgi.testlayer
+import z3c.form.interfaces
+import z3c.formui.interfaces
 
-Layer = zope.app.wsgi.testlayer.BrowserLayer(z3c.preference)
+
+class IPreferenceLayer(z3c.form.interfaces.IFormLayer):
+    """Layer for z3c.preference."""
+
+
+class IPreferenceSkin(z3c.formui.interfaces.IDivFormLayer,
+                      IPreferenceLayer):
+    """Skin for z3c.preference."""
