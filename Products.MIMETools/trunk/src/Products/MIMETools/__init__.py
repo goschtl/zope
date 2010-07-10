@@ -10,8 +10,5 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-__doc__='''MIMETools Product Initialization
-$Id$'''
-__version__='$Revision: 1.3 $'[11:-2]
 
 import MIMETag
