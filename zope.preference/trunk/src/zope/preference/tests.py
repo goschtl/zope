@@ -15,19 +15,19 @@
 
 $Id$
 """
-from zope.app.testing import setup
-from zope.component import testing
 import doctest
+import zope.component.testing
+import zope.testing.module
 
 
 def setUp(test):
-    testing.setUp(test)
-    setup.setUpTestAsModule(test, 'zope.preference.README')
+    zope.component.testing.setUp(test)
+    zope.testing.module.setUp(test, 'zope.preference.README')
 
 
 def tearDown(test):
-    testing.tearDown(test)
-    setup.tearDownTestAsModule(test)
+    zope.component.testing.tearDown(test)
+    zope.testing.module.tearDown(test)
 
 
 def test_suite():
