@@ -23,6 +23,7 @@
   <include package="zope.app.principalannotation" file="bootstrap.zcml"/>
 
   <include package="z3c.form" />
+  <include package="zope.i18n" />
   <include package="z3c.formui" />
   <include package="z3c.macro" />
   <include package="z3c.pagelet" />
