@@ -18,7 +18,8 @@ setup(name='Products.MIMETools',
       version = '2.13.0dev',
       url='http://pypi.python.org/pypi/Products.MIMETools',
       license='ZPL 2.1',
-      description="MIMETools provides the &lt;!--#mime--&gt; DTML tag for Zope 2.",
+      description="MIMETools provides the &lt;!--#mime--&gt; tag for "
+                  "DocumentTemplate.",
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       long_description=open('README.txt').read() + '\n' +
@@ -28,7 +29,7 @@ setup(name='Products.MIMETools',
       package_dir={'': 'src'},
       install_requires=[
         'setuptools',
-        'Zope2 >= 2.13.0a1',
+        'DocumentTemplate',
       ],
       include_package_data=True,
       zip_safe=False,

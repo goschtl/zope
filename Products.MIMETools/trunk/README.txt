@@ -2,7 +2,7 @@ Overview
 ========
 
 Currently, the MIMETools product's only function is to provide the
-``<!--#mime-->`` DTML tag.
+``<!--#mime-->`` DTML tag for the DocumentTemplate distribution.
 
 The ``<!--#mime-->`` tag is used to construct MIME containers. The syntax of the
 ``<!--#mime-->`` tag is::
