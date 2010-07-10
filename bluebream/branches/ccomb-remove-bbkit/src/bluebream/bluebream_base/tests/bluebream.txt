@@ -33,6 +33,7 @@ First try with a single flat package:
 ...            "author_email=test_author_email",
 ...            "url=http://example.com",
 ...            "license_name=Test Public License",
+...            "offline=1",
 ...            ]
 >>> exit_code = runner.run(option_args + ['-t', 'bluebream', project] + extra_args)
 Selected and implied templates:
@@ -48,6 +49,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
+  offline:           1
   package:           sample
   project:           sample
   python_package:    sample
@@ -114,6 +116,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
+  offline:           1
   package:           samplemain
   project:           sample.main
   python_package:    sample.main
@@ -185,6 +188,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
+  offline:           1
   package:           sampleappmain
   project:           sample.app.main
   python_package:    sample.app.main
@@ -256,6 +260,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
+  offline:           1
   package:           foobarfoobar
   project:           foobar.foobar
   python_package:    foobar.foobar
@@ -324,6 +329,7 @@ Variables:
   keywords:          test_keyword
   license_name:      Test Public License
   long_description:  test_long_description
+  offline:           1
   package:           sampleproject
   project:           sampleproject
   python_package:    sample.main

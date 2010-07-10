@@ -11,10 +11,31 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import re, os, sys, shutil
-import pkg_resources
+from HTMLParser import HTMLParser
 from paste.script import templates
 from paste.script.templates import var
+from urllib2 import urlopen
+import pkg_resources
+import re, os, sys
+
+DOWNLOAD_URL = 'http://download.zope.org/bluebream/'
+
+class FindLatest(HTMLParser):
+    """html parser used to find the latest version file on download.zope.org
+    """
+    def reset(self):
+        """initialize a regexp and a version set"""
+        HTMLParser.reset(self)
+        self.regexp = re.compile('.*bluebream-(.*).cfg$')
+        self.versions = set()
+
+    def handle_starttag(self, tag, attrs):
+        """extract the version from each link"""
+        if tag != 'a':
+            return
+        for attr in attrs:
+            if attr[0] == 'href' and self.regexp.match(attr[1]):
+                self.versions.add(self.regexp.sub('\\1', attr[1]))
 
 
 class BlueBream(templates.Template):
@@ -28,8 +49,8 @@ class BlueBream(templates.Template):
         var('interpreter',
             u'Name of custom Python interpreter',
             default='breampy'),
-        var('bluebream', u'Which version of BlueBream?',
-            default=pkg_resources.get_distribution('bluebream').version),
+        var('bluebream', (u'Which version of BlueBream?\n'
+                          u'Check on %s' % DOWNLOAD_URL)),
         var('version', u'Version of your project', default='0.1'),
         var('description', u'One-line description of the package'),
         var('long_description', u'Multi-line description (in reST)'),
@@ -43,10 +64,27 @@ class BlueBream(templates.Template):
     def check_vars(self, vars, cmd):
         """This method checks the variables and ask for missing ones
         """
-        # todo: detect available versions online, and suggest the latest
+        # Find the latest versions.cfg online
+        latest = pkg_resources.get_distribution('bluebream').version
+        try:
+            if 'offline' not in vars:  #offline is used in tests
+                print 'Searching the latest version...'
+                # parse the download html page and store versions
+                parser = FindLatest()
+                parser.feed(urlopen(DOWNLOAD_URL).read())
+                # return the highest version
+                latest = sorted(parser.versions,
+                              key=lambda v: pkg_resources.parse_version(v))[-1]
+                print 'Latest version found: %s' % latest
+        except IOError:
+            # if something wrong occurs, we keep the current version
+            print u'Error while getting the latest version online'
+            print u'Please check that you can access %s' % DOWNLOAD_URL
 
         # suggest what Paste chose
         for var in self.vars:
+            if var.name == 'bluebream':
+                var.default = latest
             if var.name == 'python_package':
                 var.default = vars['package']
                 # but keep the user's input if there are dots in the middle
@@ -64,7 +102,7 @@ class BlueBream(templates.Template):
         if vars['package'] in ('bluebream', 'bream', 'zope'):
             print
             print "Error: The chosen project name results in an invalid " \
-                "package name: %s." % name
+                "package name: %s." % vars['package']
             print "Please choose a different project name."
             sys.exit(1)
         vars['zip_safe'] = False
