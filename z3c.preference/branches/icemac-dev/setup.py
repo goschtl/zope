@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup (
     name='z3c.preference',
-    version = '0.1.0dev',
+    version='0.1.0',
     author = "Michael Howitz",
     author_email = "zope-dev@zope.org",
     description = "UI for zope.preference using z3c.pagelet and z3c.form.",
