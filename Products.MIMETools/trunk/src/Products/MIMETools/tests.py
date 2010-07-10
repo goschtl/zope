@@ -15,9 +15,19 @@ import unittest
 
 class MimeTest(unittest.TestCase):
 
-    def _makeOne(self, blocks=[]):
+    def _getTargetClass(self):
         from Products.MIMETools import MIMETag
-        return MIMETag.MIMETag(blocks)
+        return MIMETag.MIMETag
+
+    def _makeOne(self, blocks=[]):
+        klass = self._getTargetClass()
+        return klass(blocks)
+
+    def test_registered(self):
+        klass = self._getTargetClass()
+        from DocumentTemplate.DT_String import String
+        self.failUnless('mime' in String.commands)
+        self.failUnless(String.commands['mime'] is klass)
 
     def test_init(self):
         tag = self._makeOne()
