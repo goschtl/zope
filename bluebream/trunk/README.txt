@@ -119,7 +119,9 @@ give the values from the command line, if required:
 
 - ``interpreter`` -- Name of the custom Python interpreter
 
-- ``version`` -- Version (like 0.1)
+- ``bluebream`` -- The version of BlueBream
+
+- ``version`` -- The version of your project
 
 - ``description`` -- One-line description of the package
 
@@ -134,9 +136,6 @@ give the values from the command line, if required:
 - ``url`` -- URL of the homepage
 
 - ``license_name`` -- License name
-
-- ``zip_safe`` -- ``True``, if the package can be distributed as a .zip
-  file otherwise ``False``.
 
 If you are in a hurry, you can simply press *Enter/Return* key and
 change the values later.  But it would be a good idea, if you provide

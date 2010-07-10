@@ -1,8 +1,8 @@
 [buildout]
 develop = .
-extends = versions.cfg
+extends = http://download.zope.org/bluebream/bluebream-${bluebream}.cfg
 parts = app
-        test 
+        test
 
 [app]
 recipe = zc.recipe.egg
