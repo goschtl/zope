@@ -1,0 +1,36 @@
+Releasing a new version of BlueBream
+====================================
+
+First run the buildout in an isolated virtualenv::
+
+    $ virtualenv --distribute --no-site-packages sandbox
+    $ ./sandbox/bin/python bootstrap.py
+    $ ./bin/buildout
+
+
+Then update the version of packages in `versions.cfg`.
+You should probably extend the latest version of the ZTK
+You can discover new package versions by running::
+
+    $ ./bin/checkversions buildout.cfg # (use the -l option if needed))
+
+Run the compatibility tests for the additional BlueBream packages::
+
+    $ ./bin/buildout
+    $ ./bin/test
+
+If all tests pass, release a new version using the included `zest.releaser`,
+or manually with the following steps:
+
+- set the correct version number in `setup.py`
+- update the `CHANGELOG.txt`
+- commit and create a tag for this new version
+- change `setup.py` and the `CHANGELOG.txt` to point to the next dev version
+
+- create a clean checkout of the tag in a new directory and run::
+
+    $ python setup.py register sdist upload
+
+- upload `versions.cfg` with the correct name to http://download.zope.org/bluebream/
+
+
