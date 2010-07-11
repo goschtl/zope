@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.0b3 (unreleased)
+1.0b3 (2010-07-11)
 ------------------
 
 - Directly depend on the ZTK!
