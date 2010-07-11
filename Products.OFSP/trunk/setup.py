@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='Products.OFSP',
-      version = '2.13.1dev',
+      version = '2.13.1',
       url='http://pypi.python.org/pypi/Products.OFSP',
       license='ZPL 2.1',
       description="General Zope 2 help screens.",

@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.13.1 (unreleased)
+2.13.1 (2010-07-11)
 -------------------
 
 - Added a ``configure.zcml`` to automatically load the OFS package.
