@@ -1,16 +1,16 @@
 Releasing a new version of BlueBream
 ====================================
 
-First run the buildout in an isolated virtualenv::
+First, run the buildout in an isolated virtualenv::
 
     $ virtualenv --distribute --no-site-packages sandbox
     $ ./sandbox/bin/python bootstrap.py
     $ ./bin/buildout
 
-
-Then update the version of packages in `versions.cfg`.
-You should probably extend the latest version of the ZTK
-You can discover new package versions by running::
+Then, update the versions of packages in `versions.cfg`.
+You should probably check and extend the latest version of the ZTK.
+Check it here: http://download.zope.org/zopetoolkit/
+For the additional packages, you can discover new versions by running::
 
     $ ./bin/checkversions buildout.cfg # (use the -l option if needed))
 
@@ -19,18 +19,32 @@ Run the compatibility tests for the additional BlueBream packages::
     $ ./bin/buildout
     $ ./bin/test
 
-If all tests pass, release a new version using the included `zest.releaser`,
-or manually with the following steps:
+If all tests pass, release a new version using the included `zest.releaser`::
 
-- set the correct version number in `setup.py`
-- update the `CHANGELOG.txt`
-- commit and create a tag for this new version
-- change `setup.py` and the `CHANGELOG.txt` to point to the next dev version
+    $ ./bin/prerelease
+    $ ./bin/release
+    $ ./bin/postrelease
 
-- create a clean checkout of the tag in a new directory and run::
+:: 
 
-    $ python setup.py register sdist upload
+    If you want to do the same manually, it corresponds to the following steps:
 
-- upload `versions.cfg` with the correct name to http://download.zope.org/bluebream/
+    - set the correct version number in `setup.py`
+    - update the `CHANGELOG.txt`
+    - commit, and create a svn tag for this new version
+    - change `setup.py` and the `CHANGELOG.txt` to point to the next dev version
+    - create a clean checkout of the tag in a new directory and run::
 
+        $ python setup.py register sdist upload
+
+Then update the http://download.zope.org/zopetoolkit/ site by copying the
+versions.cfg file from the tag to the ``download-site`` folder with the correct
+versionned name, and by updating the ``download-site/index.html`` with the new
+release. The download site will be updated automatically in less than 15min.
+
+Create an announcement on the bluebream mailing list (based on a previous
+announcement), and update the ``download-site/index.html`` with this
+announcement.
+
+Then spread the word!
 
