@@ -1,6 +1,9 @@
 from setuptools import setup, find_packages
 
 JQUERYUI_VERSION = '1.8.2'
+version = '1.8.2.1'
+# version named after JQUERYUI_VERSION + .suffix. Can't do this
+# automatically as it'd confuse zest.releaser
 
 import sys, os
 
@@ -18,7 +21,7 @@ long_description = (
 
 setup(
     name='hurry.jqueryui',
-    version=JQUERYUI_VERSION + '.1' + 'dev',
+    version=version,
     description="hurry.resource style resources for jQuery UI.",
     long_description = long_description,
     classifiers=[],
