@@ -9,17 +9,12 @@ from hurry.resource import generate_code, ResourceInclusion, Library
 from hurry.jquery import jquery
 
 BASEURL = 'http://ajax.googleapis.com/ajax/libs/jqueryui/'
+VERSION = '1.8.2'
 MINIFIED = "jquery-ui.min.js"
 FULL = "jquery-ui.js"
-THEME_URL = 'http://jquery-ui.googlecode.com/files/jquery-ui-themes-%s.0.zip'
+THEME_URL = 'http://jquery-ui.googlecode.com/files/jquery-ui-themes-%s.zip' % VERSION
 
-def main():
-    try:
-        version = sys.argv[1]
-    except IndexError:
-        print "Usage: jqueryuiprepare <jQuery UI version>"
-        return
-
+def prepare_jqueryui():
     package_dir = py.path.local(os.path.dirname(__file__))
     jquery_dest_path = package_dir.join('jqueryui-build')
 
@@ -31,7 +26,7 @@ def main():
     jquery_dest_path.ensure(dir=True)
     
     for filename in [MINIFIED, FULL]:
-        url = urlparse.urljoin(BASEURL + version + '/', filename)
+        url = urlparse.urljoin(BASEURL + VERSION + '/', filename)
         print 'downloading "%s"' % url
         f = urllib2.urlopen(url)
         file_data = f.read()
@@ -47,8 +42,7 @@ def main():
         themes_dest_path.remove()
  
     print "downloading themes"
-    theme_url = THEME_URL % version
-    f = urllib2.urlopen(theme_url)
+    f = urllib2.urlopen(THEME_URL)
     file_data = f.read()
     f.close()
 

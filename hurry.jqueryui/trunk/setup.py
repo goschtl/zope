@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-JQUERYUI_VERSION = '1.7.2'
+JQUERYUI_VERSION = '1.8.2'
 
 import sys, os
 
@@ -18,7 +18,7 @@ long_description = (
 
 setup(
     name='hurry.jqueryui',
-    version=JQUERYUI_VERSION + '.2' + 'dev',
+    version=JQUERYUI_VERSION + '.1' + 'dev',
     description="hurry.resource style resources for jQuery UI.",
     long_description = long_description,
     classifiers=[],
@@ -34,12 +34,19 @@ setup(
     install_requires=[
         'setuptools',
         'hurry.resource > 0.2',
-        'hurry.jquery',
+        'hurry.jquery >= 1.4',
         ],
     entry_points= {
         'console_scripts': [
-            'jqueryuiprepare = hurry.jqueryui.prepare:main',
-            ]
+            'jqueryuiprepare = hurry.jqueryui.prepare:prepare_jqueryui',
+            ],
+        'zest.releaser.prereleaser.middle': [
+            'prepare = hurry.jqueryui.prepare:prepare_jqueryui',
+            ],
+        # ALSO grab jqueryui in the separate tag checkout
+        'zest.releaser.releaser.middle': [
+            'prepare = hurry.jqueryui.prepare:prepare_jqueryui',
+            ],
     },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],
