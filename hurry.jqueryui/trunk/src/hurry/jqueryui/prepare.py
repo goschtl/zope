@@ -14,7 +14,7 @@ MINIFIED = "jquery-ui.min.js"
 FULL = "jquery-ui.js"
 THEME_URL = 'http://jquery-ui.googlecode.com/files/jquery-ui-themes-%s.zip' % VERSION
 
-def prepare_jqueryui():
+def prepare_jqueryui(data):
     package_dir = py.path.local(os.path.dirname(__file__))
     jquery_dest_path = package_dir.join('jqueryui-build')
 
@@ -86,4 +86,7 @@ def prepare_jqueryui():
     module = py_path.open('w')
     module.write(code)
     module.close()
+
+def main():
+    prepare_jqueryui(None)
 

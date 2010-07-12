@@ -41,7 +41,7 @@ setup(
         ],
     entry_points= {
         'console_scripts': [
-            'jqueryuiprepare = hurry.jqueryui.prepare:prepare_jqueryui',
+            'jqueryuiprepare = hurry.jqueryui.prepare:main',
             ],
         'zest.releaser.prereleaser.middle': [
             'prepare = hurry.jqueryui.prepare:prepare_jqueryui',
