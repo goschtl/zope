@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.resource',
-    version='0.9',
+    version='1.0dev',
     description="Flexible resources for web applications.",
     long_description=long_description,
     classifiers=[],
@@ -23,6 +23,7 @@ setup(
     author='Martijn Faassen',
     author_email='faassen@startifact.com',
     license='ZPL 2.1',
+    url='http://pypi.python.org/pypi/hurry.resource',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     namespace_packages=['hurry'],
