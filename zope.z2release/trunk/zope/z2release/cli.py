@@ -25,12 +25,21 @@ def fetch_cfg(url, version_file):
     file(version_file, 'w').write(data)
 
 
-def write_versions(CP, server, dirname):
+def write_versions(version_file, server, dirname):
+    CP = CasePreservingConfigParser()
+    CP.read(version_file)
     for package in CP.options('versions'):
         version = CP.get('versions', package)
         if '#' in version:
             version = version.split('#')[0].strip()
         write_index(server, package, version, dirname)
+    return CP
+
+
+def build_version_file(name, dirname, url, server):
+    version_file = os.path.join(dirname, name)
+    fetch_cfg(url, version_file)
+    return write_versions(version_file, server, dirname)
 
 
 def main():
@@ -47,24 +56,15 @@ def main():
 
     server = Server('http://pypi.python.org/pypi')
 
-    versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
-    version_file = os.path.join(dirname, 'versions.cfg')
-    fetch_cfg(versions_url, version_file)
-
-    CP = CasePreservingConfigParser()
-    CP.read(version_file)
-    write_versions(CP, server, dirname)
+    url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
+    CP = build_version_file('versions.cfg', dirname, url, server)
 
     buildout = CP.options('buildout')
     if 'extends' in buildout:
-        extends = CP.get('buildout', 'extends')
-        if 'http' in extends and extends.endswith('ztk-versions.cfg'):
-            ztk_version_file = os.path.join(dirname, 'ztk-versions.cfg')
-            fetch_cfg(extends, ztk_version_file)
-
-            CP2 = CasePreservingConfigParser()
-            CP2.read(ztk_version_file)
-            write_versions(CP2, server, dirname)
+        url = CP.get('buildout', 'extends')
+        name = 'ztk-versions.cfg'
+        if 'http' in url and not '\n' in url and url.endswith(name):
+            build_version_file(name, dirname, url, server)
 
 
 if __name__ == '__main__':
