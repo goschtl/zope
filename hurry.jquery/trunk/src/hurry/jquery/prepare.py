@@ -30,7 +30,7 @@ def prepare_jquery():
     jquery_dest_path = os.path.join(package_dir, 'jquery-build')
 
     # remove previous jquery library build
-    print 'recursivly removing "%s"' % jquery_dest_path
+    print 'recursively removing "%s"' % jquery_dest_path
     shutil.rmtree(jquery_dest_path, ignore_errors=True)
     print 'create new "%s"' % jquery_dest_path
     os.mkdir(jquery_dest_path)
