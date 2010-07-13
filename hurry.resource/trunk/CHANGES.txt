@@ -1,11 +1,10 @@
 CHANGES
 *******
 
-1.0 (unreleased)
+0.9.1 (unreleased)
 ================
 
-- Nothing changed yet.
-
+* Nothing changed yet.
 
 0.9 (2010-07-13)
 ================
