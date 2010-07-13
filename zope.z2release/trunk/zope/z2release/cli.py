@@ -47,14 +47,12 @@ def main():
 
     server = Server('http://pypi.python.org/pypi')
 
-    version = tag.split('/')[-1]
     versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
     version_file = os.path.join(dirname, 'versions.cfg')
     fetch_cfg(versions_url, version_file)
 
     CP = CasePreservingConfigParser()
     CP.read(version_file)
-    write_index(server, 'Zope2', version, dirname)
     write_versions(CP, server, dirname)
 
     buildout = CP.options('buildout')
