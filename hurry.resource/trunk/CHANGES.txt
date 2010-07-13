@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.5 (unreleased)
+0.9 (unreleased)
 ================
 
 * WSGI support: ``hurry.resource.Middleware`` can be used to wrap WSGI
