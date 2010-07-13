@@ -50,5 +50,23 @@ def main():
             version = version.split('#')[0].strip()
         write_index(server, package, version, dirname)
 
+    buildout = CP.options('buildout')
+    if 'extends' in buildout:
+        extends = CP.get('buildout', 'extends')
+        if 'http' in extends and extends.endswith('ztk-versions.cfg'):
+            print >>sys.stderr, 'Fetching %s' % extends
+            data = urllib.urlopen(extends).read()
+            ztk_version_file = os.path.join(dirname, 'ztk-versions.cfg')
+            file(ztk_version_file, 'w').write(data)
+
+            CP2 = CasePreservingConfigParser()
+            CP2.read(ztk_version_file)
+            for package in CP2.options('versions'):
+                version = CP2.get('versions', package)
+                if '#' in version:
+                    version = version.split('#')[0].strip()
+                write_index(server, package, version, dirname)
+
+
 if __name__ == '__main__':
     main()
