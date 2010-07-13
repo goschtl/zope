@@ -25,6 +25,14 @@ def fetch_cfg(url, version_file):
     file(version_file, 'w').write(data)
 
 
+def write_versions(CP, server, dirname):
+    for package in CP.options('versions'):
+        version = CP.get('versions', package)
+        if '#' in version:
+            version = version.split('#')[0].strip()
+        write_index(server, package, version, dirname)
+
+
 def main():
     if len(sys.argv) != 3:
         print 'Usage: z2_kgs <tag-name> <destination-dirname>'
@@ -37,6 +45,8 @@ def main():
         print >>sys.stderr, 'Creating index directory: %s' % dirname
         os.makedirs(dirname)
 
+    server = Server('http://pypi.python.org/pypi')
+
     version = tag.split('/')[-1]
     versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
     version_file = os.path.join(dirname, 'versions.cfg')
@@ -44,15 +54,8 @@ def main():
 
     CP = CasePreservingConfigParser()
     CP.read(version_file)
-
-    server = Server('http://pypi.python.org/pypi')
-
     write_index(server, 'Zope2', version, dirname)
-    for package in CP.options('versions'):
-        version = CP.get('versions', package)
-        if '#' in version:
-            version = version.split('#')[0].strip()
-        write_index(server, package, version, dirname)
+    write_versions(CP, server, dirname)
 
     buildout = CP.options('buildout')
     if 'extends' in buildout:
@@ -63,11 +66,7 @@ def main():
 
             CP2 = CasePreservingConfigParser()
             CP2.read(ztk_version_file)
-            for package in CP2.options('versions'):
-                version = CP2.get('versions', package)
-                if '#' in version:
-                    version = version.split('#')[0].strip()
-                write_index(server, package, version, dirname)
+            write_versions(CP2, server, dirname)
 
 
 if __name__ == '__main__':
