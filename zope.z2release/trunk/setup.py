@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.6'
+version = '0.7dev'
 
 setup(name='zope.z2release',
       version=version,
