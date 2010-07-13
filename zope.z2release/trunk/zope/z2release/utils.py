@@ -12,6 +12,11 @@ class CasePreservingConfigParser(ConfigParser):
 
 
 def write_index(server, package, version, dirname):
+    if '-' in package:
+        exists = server.search(dict(name=package))
+        if not exists:
+            package = package.replace('-', '_')
+
     print >>sys.stderr, 'Package %s==%s' % (package, version)
     dest_dir = os.path.join(dirname, package)
     if not os.path.exists(dest_dir):

@@ -48,8 +48,6 @@ def main():
         version = CP.get('versions', package)
         if '#' in version:
             version = version.split('#')[0].strip()
-        if '_' in package:
-            package = package.replace('_', '-')
         write_index(server, package, version, dirname)
 
 if __name__ == '__main__':
