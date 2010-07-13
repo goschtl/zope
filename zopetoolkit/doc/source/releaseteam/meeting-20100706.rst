@@ -24,14 +24,14 @@ Minutes of last meeting
 ZTK alpha release.
 
 - Not much feedback from "direct consumers", Hanno will ask for in direct
-  communication with some of the know "consumers".
+  communication with some of the known "consumers".
 
 - Grok works with the released alpha(!).
 
 - Both Grok and Zope2 use their own "toolkits", that are extending the ZTK.
   Bluebream does not (yet) have a "bbkit".
 
-- The roadmap for the 1.0 release is: 1.0b1 arround August 15th, 1.0 final in
+- The roadmap for the 1.0 release is: 1.0b1 around August 15th, 1.0 final in
   September. Dates will be more precise after the holidays of ccomb and j-w.
 
 Tasks
