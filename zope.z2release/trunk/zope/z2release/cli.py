@@ -19,6 +19,12 @@ from zope.z2release.utils import CasePreservingConfigParser
 from zope.z2release.utils import write_index
 
 
+def fetch_cfg(url, version_file):
+    print >>sys.stderr, 'Fetching %s' % url
+    data = urllib.urlopen(url).read()
+    file(version_file, 'w').write(data)
+
+
 def main():
     if len(sys.argv) != 3:
         print 'Usage: z2_kgs <tag-name> <destination-dirname>'
@@ -33,10 +39,8 @@ def main():
 
     version = tag.split('/')[-1]
     versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
-    print >>sys.stderr, 'Fetching %s' % versions_url
-    data = urllib.urlopen(versions_url).read()
     version_file = os.path.join(dirname, 'versions.cfg')
-    file(version_file, 'w').write(data)
+    fetch_cfg(versions_url, version_file)
 
     CP = CasePreservingConfigParser()
     CP.read(version_file)
@@ -54,10 +58,8 @@ def main():
     if 'extends' in buildout:
         extends = CP.get('buildout', 'extends')
         if 'http' in extends and extends.endswith('ztk-versions.cfg'):
-            print >>sys.stderr, 'Fetching %s' % extends
-            data = urllib.urlopen(extends).read()
             ztk_version_file = os.path.join(dirname, 'ztk-versions.cfg')
-            file(ztk_version_file, 'w').write(data)
+            fetch_cfg(extends, ztk_version_file)
 
             CP2 = CasePreservingConfigParser()
             CP2.read(ztk_version_file)
