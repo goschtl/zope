@@ -942,7 +942,7 @@ Using WSGI middleware to insert into HTML
 
 There is also a WSGI middleware available to insert the top (and bottom)
 into the HTML. We are using WebOb to create a response object that will
-serve as our WSGI application::
+serve as our WSGI application.
 
 We create a simple WSGI application. In our application we declare that
 we need a resource (``y1``) and put that in the WSGI ``environ`` under the
