@@ -1,8 +1,16 @@
 CHANGES
 *******
 
-0.4.2 (unreleased)
-==================
+0.5 (unreleased)
+================
+
+* WSGI support: ``hurry.resource.Middleware`` can be used to wrap WSGI
+  applications. If the application supplies a ``NeededInclusions``
+  object in ``environ`` with the key ``hurry.resource.needed``, the
+  middleware will pick up on this and insert the needed inclusions.
+  
+  The WebOb library is needed to make this work and depending on
+  ``hurry.resource [wsgi]`` will pull in the required dependency.
 
 * Fixed some typos in README.txt.
 

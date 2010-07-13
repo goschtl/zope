@@ -33,5 +33,7 @@ setup(
         'zope.interface',
         'zope.component',
         ],
+    extras_require = dict(test=['WebOb'],
+                          wsgi=['WebOb']),
     entry_points={},
     )

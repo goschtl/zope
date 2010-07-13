@@ -937,6 +937,58 @@ resources::
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
   <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script></body></html>
 
+Using WSGI middleware to insert into HTML
+=========================================
+
+There is also a WSGI middleware available to insert the top (and bottom)
+into the HTML. We are using WebOb to create a response object that will
+serve as our WSGI application::
+
+We create a simple WSGI application. In our application we declare that
+we need a resource (``y1``) and put that in the WSGI ``environ`` under the
+key ``hurry.resource.needed``::
+ 
+  >>> def app(environ, start_response):
+  ...    start_response('200 OK', [])
+  ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
+  ...    needed.need(y1)
+  ...    return ['<html><head></head><body</body></html>']
+
+We now wrap this in our middleware, so that the middleware is activated::
+
+  >>> from hurry.resource import Middleware
+  >>> wrapped_app = Middleware(app)
+
+Now we make a request (using webob for convenience)::
+
+  >>> import webob
+  >>> req = webob.Request.blank('/')
+  >>> res = req.get_response(wrapped_app) 
+
+We can now see that the resources are added to the HTML by the middleware::
+
+  >>> print res.body
+  <html><head>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  </head><body</body></html>
+
+When we set the response Content-Type to non-HTML, the middleware
+won't be active even if we need things and the body appears to contain
+HTML::
+
+  >>> def app(environ, start_response):
+  ...    start_response('200 OK', [('Content-Type', 'text/plain')])
+  ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
+  ...    needed.need(y1)
+  ...    return ['<html><head></head><body</body></html>']
+  >>> wrapped_app = Middleware(app)
+  >>> req = webob.Request.blank('/')
+  >>> res = req.get_response(wrapped_app)
+  >>> res.body
+  '<html><head></head><body</body></html>'
+
 bottom convenience
 ==================
 
