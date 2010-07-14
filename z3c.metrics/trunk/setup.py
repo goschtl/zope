@@ -30,7 +30,16 @@ setup(name='z3c.metrics',
           'zope.interface',
           'zope.component',
           'ZODB3',
-      ],
+          ],
+      extras_require=dict(
+          test=[
+              'zope.testing',
+              'zope.configuration',
+              ],
+          test_zope2=[
+              'Zope2',
+              ]),
+
       entry_points="""
       # -*- Entry points: -*-
       """)
