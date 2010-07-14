@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.macroviewlet',
-    version='1.0.0',
+    version='1.1.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Viewlets based on ZPT macros.",
