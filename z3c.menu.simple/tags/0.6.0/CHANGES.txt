@@ -1,0 +1,30 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2010-07-14)
+------------------
+
+- Depend on `zope.browserpage` instead of `zope.app.pagetemplate` as
+  needed code has been moved there.
+
+- No longer use deprecated `zope.testing.doc[unit]test`, use python's
+  `doctest` instead.
+
+
+0.5.2 (2009-11-19)
+------------------
+
+- Removed zope.app.zapi dependency.
+
+
+0.5.1 (2008-01-25)
+------------------
+
+- Bug: Updated meta-data and documentation.
+
+
+0.5.0 (2008-01-21)
+------------------
+
+- Initial Release.

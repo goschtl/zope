@@ -1,0 +1,6 @@
+<div class="actionMenuWrapper">
+  <ul class="actionMenu">
+    <tal:block repeat="viewlet view/viewlets" replace="structure viewlet/render" />
+  </ul>
+</div>
+<div class="clearActionMenu" />
