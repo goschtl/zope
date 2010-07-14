@@ -1,0 +1,24 @@
+=======
+Changes
+=======
+
+1.1.0 (2010-07-14)
+------------------
+
+- Fixed tests to run with current package versions
+  (``metaconfigure.registerType`` moved from ``zope.app.pagetemplate``
+  to ``zope.browserpage``). Thus requiring ``zope.browserpage`` now.
+
+- No longer use depreacted ``zope.testing.doctest`` and
+  ``zope.testing.doctestunit``.
+
+- Removed ZPKG and ZCML slugs.
+
+- Fixed RST formatting in README.
+
+
+
+1.0.0 (2007-09-21)
+------------------
+
+- Initial Release
