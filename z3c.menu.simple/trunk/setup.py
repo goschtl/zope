@@ -66,7 +66,7 @@ setup (
         'setuptools',
         'z3c.i18n',
         'zope.app.component',
-        'zope.app.pagetemplate',
+        'zope.browserpage',
         'zope.schema',
         'zope.traversing',
         'zope.viewlet',

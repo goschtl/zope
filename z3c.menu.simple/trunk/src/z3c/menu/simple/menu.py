@@ -24,7 +24,7 @@ from zope.viewlet import manager
 from zope.app.component import hooks
 from zope.app.publisher.browser import menu
 from zope.app.publisher.interfaces.browser import IBrowserMenu
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from z3c.i18n import MessageFactory as _
@@ -133,12 +133,12 @@ class TabMenu(object):
     def update(self):
         """See zope.contentprovider.interfaces.IContentProvider"""
         self.tabs = zope.component.queryMultiAdapter(
-            (self.context, self.request, self.__parent__), IContentProvider, 
+            (self.context, self.request, self.__parent__), IContentProvider,
             'ITab')
         if self.tabs is not None:
             self.tabs.update()
         self.actions = zope.component.queryMultiAdapter(
-            (self.context, self.request, self.__parent__), IContentProvider, 
+            (self.context, self.request, self.__parent__), IContentProvider,
             'IAction')
         if self.actions is not None:
             self.actions.update()

@@ -18,8 +18,7 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 import zope.security
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import doctest
 from zope.app.testing import setup, ztapi
 from zope.app.testing import functional
 
@@ -40,7 +39,7 @@ def setUp(test):
     ztapi.provideAdapter(None, ITraversable, resource, name="resource")
     ztapi.provideView(None, None, ITraversable, "resource", resource)
 
-    from zope.app.pagetemplate import metaconfigure
+    from zope.browserpage import metaconfigure
     from zope.contentprovider import tales
     metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
@@ -53,12 +52,9 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
+        doctest.DocFileSuite(
+            'README.txt',
             setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

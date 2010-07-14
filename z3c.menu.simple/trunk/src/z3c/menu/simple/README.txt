@@ -144,7 +144,7 @@ So initially no menu get rendered:
 
 Now we register a menu tab which is also a viewlet manager:
 
-  >>> from zope.app.pagetemplate import viewpagetemplatefile
+  >>> from zope.browserpage import viewpagetemplatefile
   >>> from z3c.menu.simple import ITab
   >>> from z3c.menu.simple.menu import Tab
   >>> class MyTabs(Tab):
