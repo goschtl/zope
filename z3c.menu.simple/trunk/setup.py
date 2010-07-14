@@ -23,16 +23,14 @@ def read(*rnames):
 
 setup (
     name='z3c.menu.simple',
-    version='0.5.3dev',
+    version='0.6.0',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A simple menu system for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************'
-        + '\n\n' +
+        '.. contents ::\n\n' +
         read('src', 'z3c', 'menu', 'simple', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
