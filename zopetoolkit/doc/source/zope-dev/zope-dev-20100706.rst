@@ -9,12 +9,72 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-07-06.log.html#t2010-07-06T18:00:42
 
 Attendees
 ---------
 
-XXX
+Tres Seaver, Adam Groszer, Hanno Schlichting, Charlie Clark, Wichert
+Akkermann, Jens Vagelpohl, d2m, davisagli
+
+VCS properties
+--------------
+
+In a recent discussion on the CMF mailinglist the question was raised what our
+ruleso n using VCS properties (especially $Id$) are.
+
+The discussion traced the origin back to CVS and generally argued that the
+need for the IDs does not exist anymore but actually obstruct diffs in SVN.
+The suggestion was to change the policy to ask for not adding properties in
+the future anymore and opportunistically remove IDs whenever we stumble over
+them.
+
+A poll showed 7 people in favor of this action, none against it.  Tres updated
+the ZTK documentation to reflect the decision.
+
+
+Expectations for the summit
+---------------------------
+
+We had a round of people expressing what interest and expectations they have
+on topics that we might deal with at the summit. Here's the assorted list of
+topics that came up:
+
+- more compelling stories for Zope
+- better documentation
+- developer portraits/company profiles/product use-cases on zope.org
+- opening up for experimentation and then folding together common experiences
+  into common code (like HTML 5)
+- higher quality code versus more code
+- actively find and describe use cases
+
+Optional C-optimisations
+------------------------
+
+Some projects (like i18nmessageid) have optional C-code and in general would
+work on Non-CPython-platforms (GAE, Jython, IronPython, Windows) if the build
+process would support it. Unfortunately neither setuptools nor distributes
+helps with spelling optional extensions, thus Tres started working on
+zope.optionalextension which is intended to work together with bare distutils,
+setuptools and distribute.
+
+Meta
+----
+
+Today we had a surprising large number of participants, compared to previous
+weeks with only the same three people.
+
+A member from US West Coast reported that he has a hard time joining at the
+current time the meeting takes place at.
+
+Hanno pointed out that we might want to take some topics explicitly to the
+mailing list if attendance is low and topics need to be driven forward.
+Charlie pointed out that to get to decisions real-time meetings (like IRC) may
+be more productive. There was no conclusion on the issue and Hanno withdrew
+his suggestion.
+
+Christian Theune asked for input about managing ongoing issues, but no ideas
+came up.
 
 
 Agenda
