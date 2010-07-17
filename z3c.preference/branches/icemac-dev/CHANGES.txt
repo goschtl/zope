@@ -3,7 +3,7 @@ Changes
 =======
 
 
-0.1.1 (unreleased)
+0.1.1 (2010-07-17)
 ==================
 
 - Documented preconditions to use this package, see `Using
