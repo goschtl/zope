@@ -63,8 +63,9 @@ Layers versus skins
 * In fact, the distinction of layers defining the "feel" and skins
   the "look" is a convention. You may not want to follow the
   convention, if it is too abstract for you, but if you are
-  developing application with multiple look and feel, I strongly
-  suggest using this convention, since it cleanly separates concerns.
+  developing application with multiple look and feel, it is strongly
+  suggested using this convention, since it cleanly separates
+  concerns.
 
 * Both support inheritance/acquisition
 
@@ -82,12 +83,12 @@ A new skin
 ----------
 
 * Views registered for default layer by default
-  zope.publisher.interfaces.browser.IDefaultBrowserLayer
+  ``zope.publisher.interfaces.browser.IDefaultBrowserLayer``
 
 * Default layer contains a lot of things you do not need (security
   concerns)
 
-* Since pretty much everything in zope.app is registered into the
+* Since pretty much everything in ``zope.app`` is registered into the
   default layer, it has an uncontrollable amount of junk in it.  It
   is very hard to verify that all those registrations fulfill your
   security needs.  Another problem is that views might be available
@@ -177,7 +178,7 @@ sample ``configure.zcml``::
       />
 
 As a shortcut, you can also just use the ``interface`` directive and
-pass the new name parameter.  The following one directive has the
+pass the ``name`` parameter.  The following one directive has the
 same effect as the two above regarding the skin registration::
 
   <interface
@@ -194,20 +195,22 @@ Register all templates for this skin by adding the layer attribute::
 Using the skin
 ~~~~~~~~~~~~~~
 
-Access it via: http://localhost:8080/++skin++BasicSkin
+To access a skin, you need to use ``++skin++`` in the begining of the
+path followed by the skin name.  For example, if the skin name is
+``BasicSkin``, the site can be accessed like this:
+``http://localhost:8080/++skin++BasicSkin``
 
-Hide skin traversal step by using Apache's Virtual Hosting feature
+You can hide the skin traversal step by using Apache's virtual
+hosting feature.
 
-To change the default skin to something else use::
+To change the default skin to something else use the
+``browser:defaultSkin`` directive.  You can set ``BasicSkin`` as the
+default skin like this::
 
   <browser:defaultSkin name="BasicSkin" />
 
-Simply specifying the browser:defaultSkin directive in your
-configuration file will not work, since it has been specified in
-zope/app/zcmlfiles/browser.zcml already.  You can either change the
-skin at this location or use the zope:includeOverrides directive,
-which will override the any included directives.
-
+You can add this declaration in the ZCML file where you are defining
+the skin & layer interfaces.
 
 Summary
 -------
