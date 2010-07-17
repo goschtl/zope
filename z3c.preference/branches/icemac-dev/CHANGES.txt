@@ -6,8 +6,8 @@ Changes
 0.1.1 (unreleased)
 ==================
 
-- Nothing changed yet.
-
+- Documented preconditions to use this package, see `Using
+  z3c.preference`_.
 
 0.1.0 (2010-07-10)
 ==================

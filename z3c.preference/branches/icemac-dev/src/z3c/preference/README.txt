@@ -2,12 +2,28 @@
 z3c.preference
 ==============
 
-``z3c.preference`` renders forms for the preferences defined using
-``zope.preference``.
+``z3c.preference`` renders forms in the browser for the preference
+sets which were defined using zope.preference_.
+
+.. _zope.preference: http://pypi.python.org/pypi/zope.preference
+
+Using z3c.preference
+====================
+
+There are some preconditions to use `z3c.preference`:
+
+* The views for the ``++preferences++`` namespace are registered for
+  the layer ``z3c.preference.interfaces.IPreferenceLayer``. So you
+  have to add this interface to the browser layer of your application.
+
+* Only users having the permission ``z3c.preference.EditPreference``
+  are allowed to access the the preference views. So you have to add this
+  permission to the users resp. roles which should be able to access
+  the preferences views.
 
 
-Set up
-======
+Set up for tests
+================
 
 At first we have to define a preference interface:
 
