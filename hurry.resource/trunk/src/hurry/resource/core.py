@@ -109,8 +109,7 @@ class ResourceInclusion(object):
         return self.library.name, self.relpath
 
     def need(self):
-        needed = component.getUtility(
-            interfaces.ICurrentNeededInclusions)()
+        needed = get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -121,6 +120,18 @@ class ResourceInclusion(object):
             result.extend(depend.inclusions())
         result.append(self)
         return result
+
+def register_get_current_needed_inclusions(func):
+    pass
+
+def register_get_library_url(library):
+    pass
+
+def get_current_needed_inclusions():
+    return component.getUtility(interfaces.ICurrentNeededInclusions)()
+
+def get_library_url(library):
+    return interfaces.ILibraryUrl(library)
 
 class GroupInclusion(object):
     """An inclusion used to group resources together.
@@ -133,8 +144,7 @@ class GroupInclusion(object):
         self.depends = depends
 
     def need(self):
-        needed = component.getUtility(
-            interfaces.ICurrentNeededInclusions)()
+        needed = get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -246,40 +256,33 @@ class NeededInclusions(object):
 def mode(mode):
     """Set the mode for the currently needed resources.
     """
-    needed = component.getUtility(
-            interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     needed.mode(mode)
 
 def bottom(force=False, disable=False):
     """Try to include resources at the bottom of the page, not just on top.
     """
-    needed = component.getUtility(
-            interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     needed.bottom(force, disable)
 
 def rollup(disable=False):
-    needed = component.getUtility(
-        interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     needed.rollup(disable)
 
 def render():
-    needed = component.getUtility(
-        interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     return needed.render()
 
 def render_into_html(html):
-    needed = component.getUtility(
-        interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     return needed.render_into_html(html)
 
 def render_topbottom():
-    needed = component.getUtility(
-        interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     return needed.render_topbottom()
 
 def render_topbottom_into_html(html):
-    needed = component.getUtility(
-        interfaces.ICurrentNeededInclusions)()
+    needed = get_current_needed_inclusions()
     return needed.render_topbottom_into_html(html)
 
 def apply_mode(inclusions, mode):
@@ -394,7 +397,7 @@ def render_inclusions(inclusions, library_urls=None):
         library_url = library_urls.get(library.name)
         if library_url is None:
             # if we can't find it, recalculate it
-            library_url = interfaces.ILibraryUrl(library)
+            library_url = get_library_url(library)
             if not library_url.endswith('/'):
                 library_url += '/'
             library_urls[library.name] = library_url
