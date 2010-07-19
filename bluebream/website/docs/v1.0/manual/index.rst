@@ -17,7 +17,6 @@ Manual
    browserpage
    zpt
    interface
-   contentcomponent
    schema
    form
    unittesting
