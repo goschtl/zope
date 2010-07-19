@@ -13,17 +13,19 @@ Introduction
 ------------
 
 In the last chapter we have seen how to use resources HTML.  The
-resource HTML will be only available on site-level with the `\@\@`
-prefix.
+resource HTML will be only available on site-level with the ``@@``
+prefix.  Where as browser pages are accessed with a single ``@`` just
+before the page name.
 
 Browser page (or more generically views) are representations for
 particular objects/components.
 
-If you have a template like this (helloworld.pt)::
+If you have a template like this (``helloworld.pt``)::
 
   Hello, World !
 
-Here is how to register a page for ``IFolder`` interface::
+To register a page with the above template for an ``IFolder``
+interface::
 
   <browser:page
     name="helloworld.html"
@@ -32,6 +34,10 @@ Here is how to register a page for ``IFolder`` interface::
     permission="zope.Public"
     /> 
 
+The ``browser:page`` directive is used to register browser pages.
+The `name` attribute specify the name of page which is used in the
+URL.  The above page can be accessed like this:
+``http://localhost:8080/@helloworld.html``
 
 View components
 ---------------
@@ -67,8 +73,10 @@ by the template, they should return simple iterable objects
 (e.g. lists, tuples, generators) or mappings (e.g. dicts).
 
 
-View components - integration
------------------------------
+Conclusion
+----------
+
+This chapter created introduced Browser pages (or views).
 
 .. raw:: html
 
