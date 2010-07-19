@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment, newTempfile
+from util import runcmd, which, win32, checkEnvironment, newTempfile, execution_shell
 from logger import LOG
 from exceptions import ConversionError
 
@@ -38,7 +38,8 @@ def fo2pdf(fo_filename, output_filename=None):
     if sys.platform == 'win32':
         cmd = '%s\\fop.bat -fo "%s" -pdf "%s"' % (fop_home, fo_filename, output_filename)
     else:
-        cmd = 'sh "%s/fop" -fo "%s" -pdf "%s"' % (fop_home, fo_filename, output_filename)
+        cmd = '%s "%s/fop" -fo "%s" -pdf "%s"' % \
+              (execution_shell, fop_home, fo_filename, output_filename)
 
     status, output = runcmd(cmd)
     if status != 0:

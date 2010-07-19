@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment, newTempfile
+from util import runcmd, which, win32, checkEnvironment, newTempfile, execution_shell
 from logger import LOG
 
 from tidy import tidyhtml
@@ -40,7 +40,8 @@ def html2pdf(html_filename, output_filename=None, **options):
     if sys.platform == 'win32':
         raise NotImplementedError('No support for PrinceXML on Windows available')
     else:
-        cmd = 'sh "prince" "%s" %s -o "%s"' % (html_filename, ' '.join(cmd_options), output_filename)
+        cmd = '%s "prince" "%s" %s -o "%s"' % \
+              (execution_shell, html_filename, ' '.join(cmd_options), output_filename)
     
     status, output = runcmd(cmd)
     if status != 0:

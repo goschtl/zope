@@ -109,6 +109,20 @@ How zopyx.convert2 works internally
 - all converters are based on Java technology make the conversion solution
   highly portable across operating system (including Windows)
 
+Environment variables
+=====================
+
+The following environment variables can be used to resolve OS or distribution
+specific problems:
+
+``ZOPYX_CONVERT_SHELL`` - defaults to ``sh`` and is used to as shell command to
+execute external converters
+
+``ZOPYX_CONVERT_EXECUTION_MODE`` - default to ``process`` and refers to the
+method of Python executing external command (by default using the ``process`` module.
+Other value: ``system``, ``commands``
+
+
 Known issues
 ============
 

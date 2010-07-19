@@ -6,11 +6,11 @@
 
 import os
 import sys
-from elementtree.ElementTree import parse, tostring, SubElement        
+from elementtree.ElementTree import parse, tostring, SubElement
 
 from config import java
 from tidy import tidyhtml
-from util import newTempfile, runcmd, which, win32, checkEnvironment
+from util import newTempfile, runcmd, which, win32, checkEnvironment, execution_shell
 from logger import LOG
 from exceptions import ConversionError
 
