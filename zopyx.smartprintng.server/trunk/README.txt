@@ -133,7 +133,7 @@ Support for SmartPrintNG server is currently only available on a project basis.
 Contact
 =======
 
-| ZOPYX Ltd. & Co. KG
+| ZOPYX Limited
 | c/o Andreas Jung, 
 | Charlottenstr. 37/1
 | D-72070 Tuebingen, Germany
