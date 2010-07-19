@@ -180,13 +180,13 @@ Here is a sample message_formatter function for the buildbot ``MailNotifier`` ::
             'subject': subject,
             }
 
-Some links to sample configs::
+Some links to sample configs:
 
-    http://buildbot.afpy.org/ztk1.0/master.cfg
-    http://buildbot.afpy.org/ztk1.0dev/master.cfg
-    http://buildbot.afpy.org/bluebream/master.cfg
-    http://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder/trunk/master.cfg
-    http://zope3.pov.lt/master.cfg
+* http://buildbot.afpy.org/ztk1.0/master.cfg
+* http://buildbot.afpy.org/ztk1.0dev/master.cfg
+* http://buildbot.afpy.org/bluebream/master.cfg
+* http://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder/trunk/master.cfg
+* http://zope3.pov.lt/master.cfg
 
 
 Automated/nightly build effort coordination
