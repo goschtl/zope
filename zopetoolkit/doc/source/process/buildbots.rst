@@ -135,13 +135,9 @@ The subject line should be formatted like this::
 Here is a sample message_formatter function for the buildbot ``MailNotifier`` ::
 
     def message_formatter(mode, name, build, results, master_status):
-        """Provide a customized message to BuildBot's MailNotifier.
-        The last 80 lines of the log are provided as well as the changes
-        relevant to the build.
-        """
+        """Provide a customized message to BuildBot's MailNotifier."""
         result = Results[results]
 
-        limit_lines = 80
         text = list()
 
         # status required by zope-tests list
@@ -164,7 +160,7 @@ Here is a sample message_formatter function for the buildbot ``MailNotifier`` ::
         if ss.branch:
             source += "[branch %s] " % ss.branch
         if ss.revision:
-            source +=  ss.revision
+            source += ss.revision
         else:
             source += "HEAD"
         if ss.patch:
