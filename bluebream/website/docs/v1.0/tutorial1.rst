@@ -83,6 +83,8 @@ Python sub-package.  Let's create the project directory layout for
     project:  ticketcollector
   Enter python_package (Main Python package (with namespace, if any)) ['ticketcollector']: tc.main
   Enter interpreter (Name of custom Python interpreter) ['breampy']:
+  Enter bluebream (Which version of BlueBream?
+  Check on http://download.zope.org/bluebream/) ['1.0b3']: 
   Enter version (Version (like 0.1)) ['0.1']:
   Enter description (One-line description of the package) ['']: Ticket Collector
   Enter long_description (Multi-line description (in reST)) ['']: An issue tracking application
