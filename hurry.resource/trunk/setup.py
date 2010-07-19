@@ -31,10 +31,9 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'zope.interface',
-        'zope.component',
         ],
     extras_require = dict(test=['WebOb'],
-                          wsgi=['WebOb']),
+                          wsgi=['WebOb'],
+                          zca=['zope.interface', 'zope.component']),
     entry_points={},
     )

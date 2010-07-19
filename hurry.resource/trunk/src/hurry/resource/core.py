@@ -1,9 +1,13 @@
 import os
 from types import TupleType
 
-from zope.interface import implements
-from zope import component
-
+try:
+    from zope.interface import implements
+except ImportError:
+    # fallback in case zope.interface isn't present
+    def implements(iface):
+        pass
+    
 from hurry.resource import interfaces
 
 EXTENSIONS = ['.css', '.kss', '.js']
@@ -14,7 +18,10 @@ class Library(object):
     def __init__(self, name):
         self.name = name
 
-class ResourceInclusion(object):
+class InclusionBase(object):
+    implements(interfaces.IInclusion)
+
+class ResourceInclusion(InclusionBase):
     """Resource inclusion
     
     A resource inclusion specifies how to include a single resource in
@@ -109,7 +116,7 @@ class ResourceInclusion(object):
         return self.library.name, self.relpath
 
     def need(self):
-        needed = get_current_needed_inclusions()
+        needed = _plugin.get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -121,30 +128,16 @@ class ResourceInclusion(object):
         result.append(self)
         return result
 
-def register_get_current_needed_inclusions(func):
-    pass
-
-def register_get_library_url(library):
-    pass
-
-def get_current_needed_inclusions():
-    return component.getUtility(interfaces.ICurrentNeededInclusions)()
-
-def get_library_url(library):
-    return interfaces.ILibraryUrl(library)
-
-class GroupInclusion(object):
+class GroupInclusion(InclusionBase):
     """An inclusion used to group resources together.
 
     It doesn't define a resource itself.
     """
-    implements(interfaces.IInclusion)
-
     def __init__(self, depends):
         self.depends = depends
 
     def need(self):
-        needed = get_current_needed_inclusions()
+        needed = _plugin.get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -160,7 +153,9 @@ def normalize_inclusions(library, inclusions):
             for inclusion in inclusions]
 
 def normalize_inclusion(library, inclusion):
-    if interfaces.IInclusion.providedBy(inclusion):
+    # XXX we don't want dependency on zope.interface but
+    # it'd be better to say IInclusion.providedBy
+    if isinstance(inclusion, InclusionBase):
         return inclusion
     assert isinstance(inclusion, basestring)
     return ResourceInclusion(library, inclusion)
@@ -253,36 +248,63 @@ class NeededInclusions(object):
             html = html.replace('</body>', '%s</body>' % bottom, 1)
         return html
 
+
+class PluginNotImplemented(object):
+    """Plug-in point for hurry.resource.
+
+    Frameworks that want to plug into hurry.resource need to
+    implement these two methods.
+
+    There's no need to subclass this in your own code; just implement
+    the methods.
+    """
+    def get_current_needed_inclusions(self):
+        raise NotImplementedError(
+            "need to implement plugin.get_current_needed_inclusions()")
+
+    def get_library_url(self, library):
+        raise NotImplementedError(
+            "need to implement plugin.get_library_url()")
+
+_plugin = PluginNotImplemented()
+
+def register_plugin(plugin):
+    global _plugin
+    _plugin = plugin
+
+def get_current_needed_inclusions():
+    return _plugin.get_current_needed_inclusions()
+
 def mode(mode):
     """Set the mode for the currently needed resources.
     """
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     needed.mode(mode)
 
 def bottom(force=False, disable=False):
     """Try to include resources at the bottom of the page, not just on top.
     """
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     needed.bottom(force, disable)
 
 def rollup(disable=False):
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     needed.rollup(disable)
 
 def render():
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     return needed.render()
 
 def render_into_html(html):
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     return needed.render_into_html(html)
 
 def render_topbottom():
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     return needed.render_topbottom()
 
 def render_topbottom_into_html(html):
-    needed = get_current_needed_inclusions()
+    needed = _plugin.get_current_needed_inclusions()
     return needed.render_topbottom_into_html(html)
 
 def apply_mode(inclusions, mode):
@@ -397,7 +419,7 @@ def render_inclusions(inclusions, library_urls=None):
         library_url = library_urls.get(library.name)
         if library_url is None:
             # if we can't find it, recalculate it
-            library_url = get_library_url(library)
+            library_url = _plugin.get_library_url(library)
             if not library_url.endswith('/'):
                 library_url += '/'
             library_urls[library.name] = library_url

@@ -123,22 +123,23 @@ So let's try out this spelling to see it fail::
   >>> y1.need()
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass hurry.resource.interfaces.ICurrentNeededInclusions>, '')
+  NotImplementedError: need to implement plugin.get_current_needed_inclusions()
 
 We get an error because we haven't configured the framework yet. The
-system says it cannot find the utility component
-``ICurrentNeededInclusions``. This is the utility we need to define
-and register so we can tell the system how to obtain the current
-``NeededInclusions`` object. Our task is therefore to provide a
-``ICurrentNeededInclusions`` utility that can give us the current
-needed inclusions object.
+system says we need to implement
+``plugin.get_current_needed_inclusions()`` first. This is a method
+that we need to implement so we can tell the system how to obtain the
+current ``NeededInclusions`` object.
 
 This needed inclusions should be maintained on an object that is going
 to be present throughout the request/response cycle that generates the
-web page that has the inclusions on them. The most obvious place where
+web page that has the inclusions on them. One place where
 we can maintain the needed inclusions is the request object
-itself. Let's introduce such a simple request object (your mileage may
-vary in your own web framework)::
+itself, if we indeed have global access to it. Alternatively you could
+store the currently needed inclusions in a thread local variable. 
+
+Let's introduce a simple request object (your mileage may vary in your
+own web framework)::
 
   >>> class Request(object):
   ...    def __init__(self):
@@ -149,26 +150,24 @@ request/response cycle in a web framework::
 
   >>> request = Request()
 
-We should define a ``ICurrentNeededInclusion`` utility that knows how
-to get the current needed inclusions from that request::
+We now define a plugin class that implements the
+``get_current_needed_inclusions()`` method by obtaining it from the
+request::
 
-  >>> def currentNeededInclusions():
-  ...    return request.needed
+  >>> class Plugin(object):
+  ...   def get_current_needed_inclusions(self):
+  ...       return request.needed
 
-  >>> c = currentNeededInclusions
+We now need to register this plugin with the framework::
 
-We need to register the utility to complete plugging into the
-``INeededInclusions`` pluggability point of the ``hurry.resource``
-framework::
+  >>> from hurry.resource import register_plugin
+  >>> register_plugin(Plugin())
 
-  >>> from zope import component
-  >>> from hurry.resource.interfaces import ICurrentNeededInclusions
-  >>> component.provideUtility(currentNeededInclusions, 
-  ...     ICurrentNeededInclusions)
-
-Let's check which resources our request needs currently::
-
-  >>> c().inclusions()
+There is an API to retrieve the current needed inclusions, so let's
+check which resources our request needs currently::
+  
+  >>> from hurry.resource import get_current_needed_inclusions
+  >>> get_current_needed_inclusions().inclusions()
   []
 
 Nothing yet. We now make ``y1`` needed using our simplified spelling::
@@ -177,19 +176,10 @@ Nothing yet. We now make ``y1`` needed using our simplified spelling::
 
 The resource inclusion will now indeed be needed::
 
-  >>> c().inclusions()
+  >>> get_current_needed_inclusions().inclusions()
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
-
-In this document we already have a handy reference to ``c`` to obtain
-the current needed inclusions, but that doesn't work in a larger
-codebase. How do we get this reference back, for instance to obtain those
-resources needed? Here is how you can obtain a utility by hand::
-
-  >>> c_retrieved = component.getUtility(ICurrentNeededInclusions)
-  >>> c_retrieved is c
-  True
 
 Let's go back to the original spelling of ``needed.need(y)``
 now. While this is a bit more cumbersome to use in application code, it is
@@ -446,8 +436,8 @@ Let's set up a resource and need it::
 
 Let's look at the resources needed by default::
 
-  >>> c = component.getUtility(ICurrentNeededInclusions)
-  >>> c().inclusions()
+  >>> c = get_current_needed_inclusions()
+  >>> c.inclusions()
   [<ResourceInclusion 'l1.js' in library 'foo'>]
 
 Let's now change the mode using the convenience
@@ -458,7 +448,7 @@ Let's now change the mode using the convenience
 
 When we request the resources now, we get them in the ``debug`` mode::
 
-  >>> c().inclusions()
+  >>> c.inclusions()
   [<ResourceInclusion 'l1-debug.js' in library 'foo'>]
 
 "Rollups"
@@ -708,27 +698,25 @@ Now let's try to render these inclusions::
   >>> print needed.render()
   Traceback (most recent call last):
     ...
-  TypeError: ('Could not adapt', <hurry.resource.core.Library object at ...>, <InterfaceClass hurry.resource.interfaces.ILibraryUrl>)
+  AttributeError: 'Plugin' object has no attribute 'get_library_url'
 
 That didn't work. In order to render an inclusion, we need to tell
 ``hurry.resource`` how to get the URL for a resource inclusion. We
 already know the relative URL, so we need to specify how to get a URL
 to the library itself that the relative URL can be added to.
 
-For the purposes of this document, we define a function that renders
-resources as some static URL on localhost::
+We'll extend the existing plugin that already knows how to obtain the
+current needed inclusions. For the purposes of this document, we
+define a function that renders resources as some static URL on
+localhost::
 
-  >>> def get_library_url(library):
-  ...    return 'http://localhost/static/%s' % library.name
+  >>> class NewPlugin(Plugin):
+  ...   def get_library_url(self, library):
+  ...     return 'http://localhost/static/%s' % library.name
 
-We should now register this function as a``ILibraryUrl`` adapter for
-``Library`` so the system can find it::
+Let's register the plugin::
 
-  >>> from hurry.resource.interfaces import ILibraryUrl
-  >>> component.provideAdapter(
-  ...     factory=get_library_url,
-  ...     adapts=(Library,), 
-  ...     provides=ILibraryUrl)
+  >>> register_plugin(NewPlugin())
 
 Rendering the inclusions now will result in the HTML fragments we
 need to include on the top of our page (just under the ``<head>`` tag
@@ -1001,8 +989,8 @@ Like for ``need`` and ``mode``, there is also a convenience spelling for
 
 Let's look at the resources needed by default::
 
-  >>> c = component.getUtility(ICurrentNeededInclusions)
-  >>> top, bottom = c().render_topbottom()
+  >>> c = get_current_needed_inclusions()
+  >>> top, bottom = c.render_topbottom()
   >>> print top
   <script type="text/javascript" src="http://localhost/static/foo/l1.js"></script>
   >>> print bottom
@@ -1016,7 +1004,7 @@ Let's now change the bottom mode using the convenience
 
 Re-rendering will show it's honoring the bottom setting::
 
-  >>> top, bottom = c().render_topbottom()
+  >>> top, bottom = c.render_topbottom()
   >>> print top
   <BLANKLINE>
   >>> print bottom

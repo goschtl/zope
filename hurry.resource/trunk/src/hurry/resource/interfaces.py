@@ -1,4 +1,12 @@
-from zope.interface import Interface, Attribute
+try:
+    from zope.interface import Interface, Attribute
+except ImportError:
+    # fallback in case zope.interface isn't present
+    class Interface(object):
+        pass
+    class Attribute(object):
+        def __init__(s):
+            pass
 
 class ILibrary(Interface):
     """A library contains one or more resources.
