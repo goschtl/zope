@@ -10,12 +10,13 @@ Configuration
 Introduction
 ------------
 
-Developing components alone does not make a framework.  There must be some
-configuration utility that tells the system how the components work together to
-create the application server framework.  This is done using the Zope
-Configuration Markup Language (ZCML) for all filesystem-based code.  Therefore
-it is very important that a developer knows how to use ZCML to hook up his/her
-components to the framework.
+Developing components alone does not make a framework.  There must be
+some configuration utility that tells the system how the components
+work together to create the application server framework.  This is
+done using the Zope Configuration Markup Language (ZCML) for all
+filesystem-based code.  Therefore it is very important that a
+developer knows how to use ZCML to hook up his/her components to the
+framework.
 
 As stated above, it became necessary to develop a method to setup and
 configure the components that make up the application server.  While
@@ -82,22 +83,22 @@ A typical configuration file would be::
 All configuration files are wrapped by the configure tag, which
 represents the beginning of the configuration.  In the opening of
 this tag, we always list the namespaces we wish to use in this
-configuration file.  Here we only want to use the generic Zope 3
+configuration file.  Here we only want to use the generic BlueBream
 namespace, which is used as the default.  Then we register an adapter
 with the system on line 4-7.  The interfaces and classes are referred
 to by a proper Python dotted name.  The configure tag might also
 contain an i18n_domain attribute that contains the domain that is
 used for all the translatable strings in the configuration.
 
-As everywhere in Zope 3, there are several naming and coding
+As everywhere in BlueBream, there are several naming and coding
 conventions for ZCML inside a package.  By default you should name
 the configuration file configure.zcml.  Inside the file you should
 only declare namespaces that you are actually going to use.  When
 writing the directives make sure to logically group directives
 together and use comments as necessary.  Comments are written using
-the common XML syntax: <!--...-->.  For more info see Steve's
-detailed ZCML Style Guide at http://dev.zope.org/Zope3/ZCMLStyleGuide
-for more info.
+the common XML syntax: ``<!--...-->``.  For more info see Steve's
+detailed ZCML Style Guide at
+http://wiki.zope.org/zope3/ZCMLStyleGuide for more info.
 
 To satisfy our fourth requirement, it is possible to easily extend
 ZCML through itself using the meta namespace.  A directive can be
@@ -114,30 +115,31 @@ belongs to, the schema and the directive handler::
 These meta-directives are commonly placed in a file called meta.zcml.
 
 The schema of a directive, which commonly lives in a file called
-metadirectives.py, is a simple Zope 3 schema whose fields describe
-the available attributes for the directive.  The configuration system
-uses the fields to convert and validate the values of the
-configuration for use.  For example, dotted names are automatically
-converted to Python objects.  There are several specialized fields
-specifically for the configuration machinery:
+``metadirectives.py``, is a simple BlueBream schema whose fields
+describe the available attributes for the directive.  The
+configuration system uses the fields to convert and validate the
+values of the configuration for use.  For example, dotted names are
+automatically converted to Python objects.  There are several
+specialized fields specifically for the configuration machinery:
 
-- PythonIndentifier - This field describes a python identifier, for
-  example a simple variable name.
+- ``PythonIndentifier`` - This field describes a python identifier,
+  for example a simple variable name.
 
-- GlobalObject - An object that can be accessed as a module global,
-  such as a class, function or constant.
+- ``GlobalObject`` - An object that can be accessed as a module
+  global, such as a class, function or constant.
 
-- Tokens - A sequence that can be read from a space-separated string.
-  The value_type of the field describes token type.
+- ``Tokens`` - A sequence that can be read from a space-separated
+  string.  The value_type of the field describes token type.
 
-- Path - A file path name, which may be input as a relative path.
+- ``Path`` - A file path name, which may be input as a relative path.
   Input paths are converted to absolute paths and normalized.
 
-- Bool - An extended boolean value.  Values may be input (in upper or
-  lower case) as any of: yes, no, y, n, true, false, t, or f.
+- ``Bool`` - An extended boolean value.  Values may be input (in
+  upper or lower case) as any of: yes, no, y, n, true, false, t, or
+  f.
 
-- MessageID - Text string that should be translated.  Therefore the
-  directive schema is the only place that needs to deal with
+- ``MessageID`` - Text string that should be translated.  Therefore
+  the directive schema is the only place that needs to deal with
   internationalization.  This satisfies part of requirement 2 above.
 
 The handler, which commonly lives in a file called metaconfigure.py,
@@ -172,7 +174,7 @@ args argument is a list of arguments that is passed to the callable
 and the kw contains the callable's keywords.
 
 As you can see, there is nothing inheritly difficult about ZCML.
-Still, people coming to Zope 3 often experience ZCML as the most
+Still, people coming to BlueBream often experience ZCML as the most
 difficult part to understand.  This often created huge discussions
 about the format of ZCML.  However, I believe that the problem lies
 not within ZCML itself, but the task it tries to accomplish.  The
@@ -188,32 +190,34 @@ configuration files can help you understand the processes of the Zope
 interactions are defined right there.
 
 Furthermore, ZCML is well documented at many places, including the
-Zope 3 API documentation tool at http://localhost:8080/++apidoc++/.
-Here is a short list of the most important namespaces:
+BlueBream API documentation tool at
+http://localhost:8080/++apidoc++/.  Here is a short list of the most
+important namespaces:
 
-- zope - This is the most generic and fundamental namespace of all, since
-  it allows you to register all basic components with the component
-  architecture.
+- ``zope`` - This is the most generic and fundamental namespace of all,
+  since it allows you to register all basic components with the
+  component architecture.
 
-- browser - This namespace contains all of the directives that deal with
+- ``browser`` - This namespace contains all of the directives that deal with
   HTML output, including managing skins and layer, declare new views
   (pages) and resources as well as setup auto-generated forms.
 
-- meta - As discussed above, you can use this namespace to extend
+- ``meta`` - As discussed above, you can use this namespace to extend
   available directives.
 
-- xmlrpc - This is the equivalent to browser, except that allows one to
-  specify methods of components that should be available via XML-RPC.
+- ``xmlrpc`` - This is the equivalent to browser, except that allows
+  one to specify methods of components that should be available via
+  XML-RPC.
 
-- i18n - This namespace contains all internationalization- and
-  localization-specific configuration. Using registerTranslations you can
-  register new message catalogs with a translation domain.
+- ``i18n`` - This namespace contains all internationalization- and
+  localization-specific configuration. Using registerTranslations you
+  can register new message catalogs with a translation domain.
 
-- help - Using the register directive, you can register new help pages with
-  the help system. This will give you context-sensitive help for the ZMI
-  screens of your products.
+- ``help`` - Using the register directive, you can register new help
+  pages with the help system. This will give you context-sensitive
+  help for the ZMI screens of your products.
 
-- mail - Using the directives of this namespace you can setup mailing
+- ``mail`` - Using the directives of this namespace you can setup mailing
   components that your application can use to
 
 .. raw:: html
