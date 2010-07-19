@@ -43,7 +43,6 @@ Changelog
 ------------------
 * adjusted to newest zopyx.convert2 version
 
->>>>>>> .merge-right.r103965
 0.5.1 (2009/08/01)
 ------------------
 
