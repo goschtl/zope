@@ -14,7 +14,7 @@ IObjectEvent
 Import location: ``zope.component.interfaces.IObjectEvent``
 
 The ``IObjectEvent`` is the base event triggered for all events on an
-object.  The ``IObjectEvent`` is the base interface inheritted by for
+object.  The ``IObjectEvent`` is the base interface inherited by for
 all other events.  The object that generated this event is not
 necessarily the object referred to by location.
 
@@ -22,72 +22,101 @@ necessarily the object referred to by location.
 IObjectCreatedEvent
 -------------------
 
-triggered when an object is created;
+Import location: ``zope.lifecycleevent.interfaces.IObjectCreatedEvent``
+
+This event is triggered when an object is created.
 
 IObjectCopiedEvent
 ------------------
 
-triggered when an object is copied;
+Import location: ``zope.lifecycleevent.interfaces.IObjectCopiedEvent``
+
+This event is triggered when an object is copied.
 
 IObjectModifiedEvent
 --------------------
 
-triggered when an object is modified;
+Import location: ``zope.lifecycleevent.interfaces.IObjectModifiedEvent``
+
+This event is triggered when an object is modified.
 
 IObjectAnnotationsModifiedEvent
 -------------------------------
 
-triggered when an object annotation is changed;
+This event is triggered when an object annotation is changed.
 
 IObjectContentModifiedEvent
 ---------------------------
 
-triggered when an object content is modified;
+This event is triggered when an object content is modified.
 
 IRegistrationEvent
 ------------------
 
-base interface, triggered fro register events;
+Import location: ``zope.component.interfaces.IRegistrationEvent``
 
-IRegistrationActivatedEvent
----------------------------
+This is base interface for all registration related events.  This
+event is triggered for register events.
 
-triggered when a register is activated;
+IRegistered
+-----------
 
-IRegistrationDeactivatedEvent
------------------------------
+Import location: ``zope.component.interfaces.IRegistered``
 
-triggered when a register is deactivated;
+This event is triggered when a component or factory was registered.
+
+IUnregistered
+-------------
+
+Import location: ``zope.component.interfaces.IUnregistered``
+
+This event is triggered when a component or factory was unregistered.
 
 IObjectMovedEvent
 -----------------
 
-triggered when an object has move in a container;
+Import location: ``zope.lifecycleevent.interfaces.IObjectMovedEvent``
+
+This event is triggered when an object has move in a container.
 
 IObjectAddedEvent
 -----------------
 
-triggered when an object has been added into a container;
+Import location: ``zope.lifecycleevent.interfaces.IObjectAddedEvent``
+
+This event is triggered when an object has been added into a
+container.
 
 IObjectRemovedEvent
 -------------------
 
-triggered when an object has been removed from a container;
+Import location: ``zope.lifecycleevent.interfaces.IObjectRemovedEvent``
+
+This event is triggered when an object has been removed from a
+container.
 
 IContainerModifiedEvent
 -----------------------
 
-triggered when a reordering, deletion or adding occurs in a container;
+Import location: ``zope.container.interfaces.IContainerModifiedEvent``
+
+This event is triggered when a reordering, deletion or adding occurs
+in a container.
 
 IBeforeTraverseEvent
 --------------------
 
-triggered when the publisher starts the traversal;
+Import location: ``zope.traversing.interfaces.IBeforeTraverseEvent``
+
+This event is triggered when the publisher starts the traversal.
 
 IEndRequestEvent
 ----------------
 
-triggered when the publisher has finished the request calculation.
+Import location: ``zope.publisher.interfaces.IEndRequestEvent``
+
+This event is triggered when the publisher has finished the request
+calculation.
 
 .. raw:: html
 
