@@ -11,7 +11,13 @@ Standard Events
 IObjectEvent
 ------------
 
-base interface, triggered for all events on an object;
+Import location: ``zope.component.interfaces.IObjectEvent``
+
+The ``IObjectEvent`` is the base event triggered for all events on an
+object.  The ``IObjectEvent`` is the base interface inheritted by for
+all other events.  The object that generated this event is not
+necessarily the object referred to by location.
+
 
 IObjectCreatedEvent
 -------------------
