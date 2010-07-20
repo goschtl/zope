@@ -1,7 +1,12 @@
 Browser Resource
 ================
 
-Package: z3c.zrtresource
+Package: `z3c.zrtresource <http://pypi.python.org/pypi/z3c.zrtresource>`_
+
+Zope Resource Templates (ZRT) allows for locally working resources to
+work with BlueBream as well.  It will rewrite text segments in a
+resource.  It is a 3rd party package developed by Stephan Richter for
+Lovely Systems.
 
 ZRT Resource
 ------------
@@ -25,12 +30,7 @@ register the logo with the system like this::
 Now try again, after restarting Zope 3, you can see that it is still
 broken!.  So, relative path is not correct.
 
-Zope Resource Templates (ZRT) allows for locally working resources to
-work with Zope 3 as well.  It will rewrite text segments in a
-resource.  It is a 3rd party package developed by Stephan Richter for
-Lovely Systems. The package is available from here:
-http://pypi.python.org/pypi/z3c.zrtresource Add the following lines
-to the HTML resource::
+Add the following lines to the HTML resource::
 
      <!--
       /* zrt-replace: "./images/logo.png" \
