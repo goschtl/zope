@@ -5,7 +5,7 @@ from zope import interface
 from zope import component
 import zope.security.management
 from zope.publisher.interfaces import IRequest
-from zope.app.component.hooks import getSite
+from zope.site.hooks import getSite
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.browser import BrowserRequest, BrowserResponse, isHTML
 from zope.app.publication.interfaces import IBrowserRequestFactory
@@ -14,10 +14,11 @@ from hurry.resource import NeededInclusions, render_topbottom_into_html
 from hurry.resource.interfaces import (
     ICurrentNeededInclusions, ILibrary, ILibraryUrl)
 
+
 class CurrentNeededInclusions(grok.GlobalUtility):
     grok.implements(ICurrentNeededInclusions)
     grok.provides(ICurrentNeededInclusions)
-    
+
     def __call__(self):
         try:
             request = getRequest()
@@ -28,10 +29,11 @@ class CurrentNeededInclusions(grok.GlobalUtility):
             # silently assume that this is all right and return
             # an empty NeededInclusions
             return NeededInclusions()
-        
+
         if not hasattr(request, 'hurry_resource_needed'):
             request.hurry_resource_needed = NeededInclusions()
         return request.hurry_resource_needed
+
 
 @grok.adapter(ILibrary)
 @grok.implementer(ILibraryUrl)
@@ -40,11 +42,13 @@ def library_url(library):
     return str(component.getMultiAdapter((getSite(), request),
                                          IAbsoluteURL)) + '/@@/' + library.name
 
+
 class Request(BrowserRequest):
     interface.classProvides(IBrowserRequestFactory)
 
     def _createResponse(self):
         return Response()
+
 
 class Response(BrowserResponse):
     def _implicitResult(self, body):
@@ -56,7 +60,7 @@ class Response(BrowserResponse):
                 content_type = 'text/plain'
             self.setHeader('x-content-type-warning', 'guessed from content')
             self.setHeader('content-type', content_type)
-        
+
         # check the content type disregarding parameters and case
         if content_type and content_type.split(';', 1)[0].lower() in (
             'text/html', 'text/xml'):
@@ -65,12 +69,14 @@ class Response(BrowserResponse):
 
         return super(Response, self)._implicitResult(body)
 
+
 class NoRequestError(Exception):
     pass
 
+
 def getRequest():
     try:
-        i = zope.security.management.getInteraction() # raises NoInteraction
+        i = zope.security.management.getInteraction()  # raises NoInteraction
     except zope.security.interfaces.NoInteraction:
         raise NoRequestError()
 
