@@ -87,14 +87,14 @@ configuration file.  Here we only want to use the generic BlueBream
 namespace, which is used as the default.  Then we register an adapter
 with the system on line 4-7.  The interfaces and classes are referred
 to by a proper Python dotted name.  The configure tag might also
-contain an i18n_domain attribute that contains the domain that is
+contain an ``i18n_domain`` attribute that contains the domain that is
 used for all the translatable strings in the configuration.
 
 As everywhere in BlueBream, there are several naming and coding
 conventions for ZCML inside a package.  By default you should name
-the configuration file configure.zcml.  Inside the file you should
-only declare namespaces that you are actually going to use.  When
-writing the directives make sure to logically group directives
+the configuration file, ``configure.zcml``.  Inside the file you
+should only declare namespaces that you are actually going to use.
+When writing the directives make sure to logically group directives
 together and use comments as necessary.  Comments are written using
 the common XML syntax: ``<!--...-->``.  For more info see Steve's
 detailed ZCML Style Guide at
@@ -112,7 +112,8 @@ belongs to, the schema and the directive handler::
       handler=".metaconfigure.adapterDirective" 
       />
 
-These meta-directives are commonly placed in a file called meta.zcml.
+These meta-directives are commonly placed in a file called
+``meta.zcml``.
 
 The schema of a directive, which commonly lives in a file called
 ``metadirectives.py``, is a simple BlueBream schema whose fields
@@ -142,10 +143,11 @@ specialized fields specifically for the configuration machinery:
   the directive schema is the only place that needs to deal with
   internationalization.  This satisfies part of requirement 2 above.
 
-The handler, which commonly lives in a file called metaconfigure.py,
-is a function or another callable object that knows what needs to be
-done with the given information of the directive.  Here is a simple
-(simplified to the actual code) example::
+The handler, which commonly lives in a file called
+``metaconfigure.py``, is a function or another callable object that
+knows what needs to be done with the given information of the
+directive.  Here is a simple (simplified to the actual code)
+example::
 
 
   def adapter(_context, factory, provides, for_, name=''):
@@ -165,18 +167,18 @@ the example, then an underscore is appended to the attribute name.
 
 The handler should also not directly execute an action, since the
 system should first go through all the configuration and detect
-possible conflicts and overrides.  Therefore the _context object has
-a method called action that registers an action to be executed at the
-end of the configuration process.  The first argument is the
+possible conflicts and overrides.  Therefore the ``_context`` object
+has a method called action that registers an action to be executed at
+the end of the configuration process.  The first argument is the
 discriminator, which uniquely defines a specific directive.  The
 callable is the function that is executed to provoke the action, the
-args argument is a list of arguments that is passed to the callable
-and the kw contains the callable's keywords.
+``args`` argument is a list of arguments that is passed to the
+callable and the kw contains the callable's keywords.
 
 As you can see, there is nothing inheritly difficult about ZCML.
 Still, people coming to BlueBream often experience ZCML as the most
 difficult part to understand.  This often created huge discussions
-about the format of ZCML.  However, I believe that the problem lies
+about the format of ZCML.  However, we believe that the problem lies
 not within ZCML itself, but the task it tries to accomplish.  The
 components themselves always seem so clean in implementation; and
 then you get to the configuration.  There you have to register this
@@ -185,14 +187,14 @@ in itself seems overwhelming at first sight.  When I look at a
 configuration file after a long time I often have this feeling too,
 but reading directive for directive often helps me to get a quick
 overview of the functionality of the package.  In fact, the
-configuration files can help you understand the processes of the Zope
-3 framework without reading the code, since all of the interesting
-interactions are defined right there.
+configuration files can help you understand the processes of the
+BlueBream framework without reading the code, since all of the
+interesting interactions are defined right there.
 
 Furthermore, ZCML is well documented at many places, including the
 BlueBream API documentation tool at
-http://localhost:8080/++apidoc++/.  Here is a short list of the most
-important namespaces:
+http://apidoc.zope.org/++apidoc++/ .  Here is a short list of the
+most important namespaces:
 
 - ``zope`` - This is the most generic and fundamental namespace of all,
   since it allows you to register all basic components with the
