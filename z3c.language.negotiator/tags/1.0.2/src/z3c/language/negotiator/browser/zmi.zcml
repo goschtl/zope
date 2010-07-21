@@ -1,0 +1,22 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.language">
+
+  <!-- local negotiator -->
+  <addMenuItem
+      title="Negotiator"
+      description="Negotiator returns the i18n language for translation."
+      class="z3c.language.negotiator.app.Negotiator"
+      permission="zope.ManageSite"
+      />
+
+  <editform
+      name="edit.html"
+      label="Negotiator for i18n language lookup."
+      schema="..INegotiatorManager"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+</configure>
