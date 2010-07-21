@@ -120,8 +120,7 @@ The ``template/title`` *path expression* fetches the *title*
 attribute of the *template*.  Here are some other common path
 expressions:
 
-- ``context/__name__``: A list of the sub-objects of the folder
-  on which the template is called.
+- ``context/__name__``: The name of the context object.
 
 - ``request/URL``: The URL of the current web request.
 
@@ -142,17 +141,18 @@ variables defined within the *Page Template* using TAL.
 
 If the variable itself returns the value you want, you are done.
 Otherwise, you add a slash ('/') and the name of a sub-object or
-attribute.  You may need to work your way through several
-sub-objects to get to the value you're looking for.
+attribute.  You may need to work your way through several sub-objects
+to get to the value you're looking for.
 
 Python Expressions
 ~~~~~~~~~~~~~~~~~~
 
-A good rule of thumb is that if you need Python to express your logic,
-you better factor out the code into a script.  But Zope is a good tool
-for prototyping and sometimes it would be overkill to write a script
-for one line of code.  And looking at existing products you will see
-quite often 'Python expressions', so it's better to know them.
+A good rule of thumb is that if you need Python to express your
+logic, you better factor out the code into a method inside the view
+class.  But BlueBream is a good tool for prototyping and sometimes it
+would be overkill to write a method for one line of code.  And
+looking at existing packages you will see quite often *Python
+expressions*, so it's better to know them.
 
 Recall the first example of this chapter::
 
@@ -175,15 +175,16 @@ The most common are comparing values like in::
 
 ... or passing arguments to methods, e.g.::
 
-  "python: context.objectValues(['Folder'])"
+  "python: view.gettValues('test')"
 
 *TAL* Attributes
 ----------------
 
-*Page Templates* are example pages or snippets.  *TAL* statements define
-how to convert them dynamically.  Depending on the used *TAL* attribute
-they substitute example content or attributes by dynamic values, or
-remove or repeat example elements depending on dynamic values.
+*Page Templates* are example pages or snippets.  *TAL* statements
+define how to convert them dynamically.  Depending on the used *TAL*
+attribute they substitute example content or attributes by dynamic
+values, or remove or repeat example elements depending on dynamic
+values.
 
 Inserting Text
 ~~~~~~~~~~~~~~
