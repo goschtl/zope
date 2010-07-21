@@ -8,7 +8,7 @@ Zope Page Templates
    in wiki for the current status and timeline.
 
 Introduction
-~~~~~~~~~~~~
+------------
 
 *Page Templates* are a web page generation tool.  They help
 programmers and designers collaborate in producing dynamic web pages
@@ -41,7 +41,7 @@ In particular, it is parseable by most HTML tools.
 
 
 How Page Templates Work
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 *Page Templates* use the *Template Attribute Language* (*TAL*).  *TAL*
 consists of special tag attributes.  For example, a dynamic page
@@ -106,7 +106,7 @@ row.  It would not be used to create the invoice record in a database
 or to interact with a credit card processing facility.
 
 *TALES* Expressions
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 The expression ``template/title`` in your simple Page Template is a
 *path expression*.  This is the most common type of expression.
@@ -114,39 +114,31 @@ There are several other types of expressions defined by the *TAL
 Expression Syntax* (*TALES*) specification.
 
 Path Expressions
-%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~
 
 The ``template/title`` *path expression* fetches the *title*
 attribute of the *template*.  Here are some other common path
 expressions:
 
-- ``context/objectValues``: A list of the sub-objects of the folder
+- ``context/__name__``: A list of the sub-objects of the folder
   on which the template is called.
 
 - ``request/URL``: The URL of the current web request.
 
-- ``user/getUserName``: The authenticated user's login name.
-
-From the last chapter you should already be familiar with the context
-variable that is also available in *Python-based Scripts* and the
-attribute ``objectValues`` that specifies an API method.  The other
-two examples are just to show you the pattern.  You will learn more
-about them later in the book.
 
 To see what these examples return, just copy the following lines into
 a *Page Template* and select the *Test* tab.  You'll notice that
 ``context/objectValues`` returns a list that needs further treatment
 to be useful.  We'll come back to that later in this chapter::
 
-  <p tal:content="context/objectValues"></p>
+  <p tal:content="context/__name__"></p>
   <p tal:content="request/URL"></p>
-  <p tal:content="user/getUserName"></p>
+  <p tal:replace="structure view/widgets/name"></p>
 
 Every *path expression* starts with a variable name.  The available
 variable names refer either to objects like *context*, *request* or
-*user* that are bound to every *Page Template* by default or variables
-defined within the *Page Template* using TAL.  Note that *here* is an
-old alias of *context* and still used in many places.
+*view* that are bound to every *Page Template* by default or
+variables defined within the *Page Template* using TAL.
 
 If the variable itself returns the value you want, you are done.
 Otherwise, you add a slash ('/') and the name of a sub-object or
@@ -154,7 +146,7 @@ attribute.  You may need to work your way through several
 sub-objects to get to the value you're looking for.
 
 Python Expressions
-%%%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~~~
 
 A good rule of thumb is that if you need Python to express your logic,
 you better factor out the code into a script.  But Zope is a good tool
@@ -186,7 +178,7 @@ The most common are comparing values like in::
   "python: context.objectValues(['Folder'])"
 
 *TAL* Attributes
-~~~~~~~~~~~~~~~~
+----------------
 
 *Page Templates* are example pages or snippets.  *TAL* statements define
 how to convert them dynamically.  Depending on the used *TAL* attribute
@@ -194,7 +186,7 @@ they substitute example content or attributes by dynamic values, or
 remove or repeat example elements depending on dynamic values.
 
 Inserting Text
-%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~
 
 In your "simple_page" template, you used the 'tal:content' statement
 on a *bold* tag.  When you tested it, Zope replaced the content of
@@ -261,7 +253,7 @@ browser or editor also ignores these tags, the designer will have
 less trouble with *TAL* elements than with additional HTML elements.
 
 Repeating Structures
-%%%%%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~~~~~
 
 Let's start with a simple three-liner::
 
@@ -320,7 +312,7 @@ folder as the template.  Try adding or deleting objects from the
 folder and notice how the page reflects these changes.
 
 Conditional Elements
-%%%%%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~~~~~
 
 Using Page Templates you can dynamically query your environment and
 selectively insert text depending on conditions.  For example, you
@@ -393,7 +385,7 @@ below::
   3           Folder
 
 Changing Attributes
-%%%%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~~~~
 
 Most, if not all, of the objects listed by your template have an
 *icon* attribute that contains the path to the icon for that kind of
@@ -435,7 +427,7 @@ To browse the source of an XML template you go to ``source.xml``
 rather than ``source.html``.
 
 Debugging and Testing
-%%%%%%%%%%%%%%%%%%%%%
+~~~~~~~~~~~~~~~~~~~~~
 
 Zope helps you find and correct problems in your *Page Templates*.
 Zope notices problems at two different times: when you're editing a
@@ -530,7 +522,7 @@ header or footer.  After you define one or more macros in one *Page
 Template*, you can use them in other *Page Templates*.
 
 Using Macros
-~~~~~~~~~~~~
+------------
 
 You can define macros with tag attributes similar to *TAL*
 statements.  Macro tag attributes are called *Macro Expansion Tag
@@ -575,7 +567,7 @@ Notice how the macro is identified by a *path expression* using the
 replaces the statement element with the named macro.
 
 Macro Details
-~~~~~~~~~~~~~
+-------------
 
 The ``metal:define-macro`` and ``metal:use-macro`` statements are
 pretty simple.  However there are a few subtleties to using them
@@ -638,7 +630,7 @@ Template* *Edit* view, then any macros that you use will be expanded
 in your template's source.
 
 Using Slots
-~~~~~~~~~~~
+-----------
 
 Macros are much more useful if you can override parts of them when
 you use them.  You can do this by defining *slots* in the macro that
@@ -698,7 +690,7 @@ Notice how the ``span`` element that defines the slot is replaced
 with the ``b`` element that fills the slot.
 
 Customizing Default Presentation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 A common use of slot is to provide default presentation which you can
 customize.  In the slot example in the last section, the slot
@@ -749,7 +741,7 @@ If you wish to customize the sidebar links you can either fill the
 default links.  You can nest slots as deeply as you wish.
 
 Combining METAL and TAL
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 You can use both *METAL* and *TAL* statements on the same elements.
 For example::
@@ -782,7 +774,7 @@ probably provide a more flexible solution, especially if your site
 includes link content objects.
 
 Whole Page Macros
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Rather than using macros for chunks of presentation shared between
 pages, you can use macros to define entire pages.  Slots make this
