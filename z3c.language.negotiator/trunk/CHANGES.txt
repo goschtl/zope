@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1.1 (unreleased)
+1.1.1 (2010-07-21)
 ------------------
 
 - added language choice caching, is by default turned off
