@@ -189,17 +189,18 @@ values.
 Inserting Text
 ~~~~~~~~~~~~~~
 
-In your "simple_page" template, you used the 'tal:content' statement
-on a *bold* tag.  When you tested it, Zope replaced the content of
-the HTML *bold* element with the title of the template.
+In your ``ticketmain.pt`` template created in the ticket collector
+example, you used the ``tal:content`` statement on a *bold* tag.
+When you tested it, BlueBream replaced the content of the HTML *bold*
+element with the number of the ticket.
 
 This is easy as long as we want to replace the complete content of an
 HTML element.  But what if we want to replace only some words within
 an element?
 
 In order to place dynamic text inside of other text, you typically
-use 'tal:replace' on an additional 'span' tag.  For example, add the
-following lines to your example::
+use ``tal:replace`` on an additional ``span`` tag.  For example, add
+the following lines to your example::
 
   <p>The URL is
     <span tal:replace="request/URL">
@@ -210,7 +211,7 @@ URL is http://www.example.com.``, when you view the source in an
 editor or browser.  When you view the rendered version, however, it
 may look something like::
 
-  The URL is http://localhost:8080/template_test/simple_page.
+  The URL is http://localhost:8080/test/simple_page.
 
 If you look at the source code of the rendered version, the *span*
 tags are removed.
@@ -218,12 +219,10 @@ tags are removed.
 To see the difference between ``tal:replace`` and ``tal:content``,
 create a page template and include the following in the body::
 
-  <b tal:content="template/title"></b>
+  <b tal:content="context/__name__"></b>
   <b tal:content="request/URL"></b>
-  <b tal:content="user/getUserName"></b>
-  <b tal:replace="template/title"></b>
+  <b tal:replace="context/__name__"></b>
   <b tal:replace="request/URL"></b>
-  <b tal:replace="user/getUserName"></b>
 
 There are two other ways to add elements that are only needed for
 *TAL* attributes and that are removed again in the rendered version::
