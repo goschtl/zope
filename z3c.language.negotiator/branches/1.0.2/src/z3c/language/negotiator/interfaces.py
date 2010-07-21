@@ -25,10 +25,11 @@ from zope.i18n.interfaces import INegotiator
 from z3c.i18n import MessageFactory as _
 
 
-language_policies = ['server', 'session', 'browser', 
-    'browser --> session --> server', 'browser --> server', 
+language_policies = ['server', 'session', 'browser',
+    'browser --> session --> server', 'browser --> server',
     'session --> browser --> server', 'session --> server']
 
+LANGUAGE_CACHE_KEY = 'z3c.language.negotiator.cache'
 
 class INegotiatorManager(zope.interface.Interface):
     """Local negotiator utility manager interface."""
@@ -58,6 +59,15 @@ class INegotiatorManager(zope.interface.Interface):
         required=False,
         )
 
+    cacheEnabled = zope.schema.Bool(
+        title=_(u"Language caching enabled"),
+        description=_(u"Language caching enabled (per request)"),
+        default=False,
+        )
+
+    def clearCache(request):
+        """Clear the cached language value"""
+
 
 class IOfferedLanguages(zope.interface.Interface):
 
@@ -74,7 +84,7 @@ class IOfferedLanguagesVocabulary(IVocabularyTokenized):
 
 class IAvailableTranslationDomainLanguagesVocabulary(IVocabularyTokenized):
     """Available translation domain languages.
-    
+
     If you use this, take care on that you use the right translation domain.
     So you probably have to implement your own vocabulary for your ``correct``
     translation domain.

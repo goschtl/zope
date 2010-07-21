@@ -31,6 +31,7 @@ from z3c.language.session.interfaces import ILanguageSession
 
 from z3c.language.negotiator.interfaces import INegotiatorManager
 from z3c.language.negotiator.interfaces import language_policies
+from z3c.language.negotiator.interfaces import LANGUAGE_CACHE_KEY
 
 
 
@@ -38,7 +39,7 @@ class Negotiator(persistent.Persistent, contained.Contained):
     """Loacal negotiator implementation.
 
     The negotiator let you change the policy, which is a alias
-    for the lookup mechanism. 
+    for the lookup mechanism.
 
     'server' -- The server defines the language
 
@@ -62,6 +63,7 @@ class Negotiator(persistent.Persistent, contained.Contained):
 
     serverLanguage = FieldProperty(INegotiatorManager['serverLanguage'])
     offeredLanguages = FieldProperty(INegotiatorManager['offeredLanguages'])
+    cacheEnabled = FieldProperty(INegotiatorManager['cacheEnabled'])
 
     def __init__(self):
         self._policy = 'session --> browser --> server'
@@ -71,7 +73,7 @@ class Negotiator(persistent.Persistent, contained.Contained):
         def get(self):
             """Returns the language policy."""
             return self._policy
-    
+
         def set(self, policy):
             """Set the language policy."""
             if policy not in language_policies:
@@ -80,18 +82,18 @@ class Negotiator(persistent.Persistent, contained.Contained):
             self._policy = policy
         return property(get, set)
 
-    def getLanguage(self, languages, request):
+    def _getLanguage(self, languages, request):
         """Returns the language dependent on the policy."""
         policyList = self._policy.split(' --> ')
 
         for policy in policyList:
-            
+
             # the server is handling the language
             if policy == 'server':
                 if self.serverLanguage:
                     return self.serverLanguage
 
-            # the language is handled by a session 
+            # the language is handled by a session
             elif policy == 'session':
                 session = ILanguageSession(request)
                 lang = session.getLanguage()
@@ -105,3 +107,20 @@ class Negotiator(persistent.Persistent, contained.Contained):
                     return lang
 
         return None
+
+    def getLanguage(self, languages, request):
+        if self.cacheEnabled:
+            try:
+                return request.annotations[LANGUAGE_CACHE_KEY]
+            except KeyError:
+                lang = self._getLanguage(languages, request)
+                request.annotations[LANGUAGE_CACHE_KEY] = lang
+                return lang
+        else:
+            return self._getLanguage(languages, request)
+
+    def clearCache(self, request):
+        try:
+            del request.annotations[LANGUAGE_CACHE_KEY]
+        except KeyError:
+            pass

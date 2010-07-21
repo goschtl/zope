@@ -27,6 +27,7 @@ from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISessionDataContainer
 from zope.session.http import CookieClientIdManager
 from zope.session import session
+from zope.publisher.base import TestRequest
 
 from z3c import testing
 from z3c.language.session.interfaces import ILanguageSession
@@ -48,7 +49,7 @@ class TestClientId(object):
 
 
 class LanguageSessionStub(object):
-    
+
     zope.interface.implements(ILanguageSession)
     zope.component.adapts(IUserPreferredLanguages)
 
@@ -59,11 +60,12 @@ class LanguageSessionStub(object):
         return 'fr'
 
 
-class EnvStub(object):
+class EnvStub(TestRequest):
     zope.interface.implements(IUserPreferredLanguages)
 
     def __init__(self, langs=()):
         self.langs = langs
+        TestRequest.__init__(self, '/')
 
     def getPreferredLanguages(self):
         return self.langs
