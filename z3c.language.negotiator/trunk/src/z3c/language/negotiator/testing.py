@@ -21,6 +21,7 @@ import zope.interface
 import zope.component
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import INegotiator
+from zope.publisher.base import TestRequest
 
 import z3c.testing
 from z3c.language.session.interfaces import ILanguageSession
@@ -33,7 +34,7 @@ from z3c.language.session.interfaces import ILanguageSession
 ###############################################################################
 
 class LanguageSessionStub(object):
-    
+
     zope.interface.implements(ILanguageSession)
     zope.component.adapts(IUserPreferredLanguages)
 
@@ -44,11 +45,12 @@ class LanguageSessionStub(object):
         return 'fr'
 
 
-class EnvStub(object):
+class EnvStub(TestRequest):
     zope.interface.implements(IUserPreferredLanguages)
 
     def __init__(self, langs=()):
         self.langs = langs
+        TestRequest.__init__(self, '/')
 
     def getPreferredLanguages(self):
         return self.langs
