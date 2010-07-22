@@ -122,7 +122,7 @@ form
 
 :directive: ``form``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``<include package="zope.app.form.browser" />``
 :distribution: ``zope.app.form``
 
 **Description**
@@ -143,7 +143,7 @@ form/widget
 :directive: ``form``
 :sub-directive: ``widget``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -153,7 +153,7 @@ editform
 
 :directive: ``editform``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -164,7 +164,7 @@ editform/widget
 :directive: ``editform``
 :sub-directive: ``widget``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -174,7 +174,7 @@ subeditform
 
 :directive: ``subeditform``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -185,7 +185,7 @@ subeditform/widbrowserget
 :directive: ``subeditform``
 :sub-directive: ``widget``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -195,7 +195,7 @@ addform
 
 :directive: ``addform``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -206,7 +206,7 @@ addform/widget
 :directive: ``addform``
 :sub-directive: ``widget``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -217,7 +217,7 @@ schemadisplay
 
 :directive: ``schemadisplay``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -228,7 +228,7 @@ schemadisplay/widget
 :directive: ``schemadisplay``
 :sub-directive: ``widget``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.form.browser``
+:include: ``zope.app.form.browser``
 :distribution: ``zope.app.form``
 
 **Examples**
@@ -238,7 +238,7 @@ view
 
 :directive: ``view``
 :namespace: ``http://namespaces.zope.org/xmlrpc``
-:module: ``zope.app.publisher.xmlrpc``
+:include: ``zope.app.publisher.xmlrpc``
 :distribution: ``zope.app.publisher``
 
 **Examples**
@@ -248,7 +248,7 @@ defaultView
 
 :directive: ``defaultView``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.publisher``
+:include: ``zope.publisher``
 
 **Examples**
 
@@ -257,7 +257,7 @@ defaultSkin
 
 :directive: ``defaultSkin``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.publisher``
+:include: ``zope.publisher``
 
 **Examples**
 
@@ -266,7 +266,7 @@ publisher
 
 :directive: ``publisher``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.app.publication``
+:include: ``zope.app.publication``
 
 **Examples**
 
@@ -275,7 +275,7 @@ containerViews
 
 :directive: ``containerViews``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.app.container.browser``
+:include: ``zope.app.container.browser``
 :distribution: ``zope.app.container``
 
 **Examples**
@@ -285,7 +285,7 @@ permission
 
 :directive: ``permission``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -294,7 +294,7 @@ securityPolicy
 
 :directive: ``securityPolicy``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -303,7 +303,7 @@ redefinePermission
 
 :directive: ``redefinePermission``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -312,7 +312,7 @@ class
 
 :directive: ``class``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -322,7 +322,7 @@ class/implements
 :directive: ``class``
 :sub-directive: ``implements``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -332,7 +332,7 @@ class/require
 :directive: ``class``
 :sub-directive: ``require``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -342,7 +342,7 @@ class/allow
 :directive: ``class``
 :sub-directive: ``allow``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -352,7 +352,7 @@ class/factory
 :directive: ``class``
 :sub-directive: ``factory``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -361,7 +361,7 @@ module
 
 :group-directive: ``module``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -371,7 +371,7 @@ module/allow
 :group-directive: ``module``
 :directive: ``allow``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -381,7 +381,7 @@ module/require
 :group-directive: ``module``
 :directive: ``require``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.security``
+:include: ``zope.security``
 
 **Examples**
 
@@ -390,7 +390,7 @@ register
 
 :directive: ``register``
 :namespace: ``http://namespaces.zope.org/help``
-:module: ``zope.app.onlinehelp``
+:include: ``zope.app.onlinehelp``
 
 **Examples**
 
@@ -399,7 +399,7 @@ resourceLibrary
 
 :directive: ``resourceLibrary``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zc.resourcelibrary``
+:include: ``zc.resourcelibrary``
 
 **Examples**
 
@@ -409,7 +409,7 @@ resourceLibrary/directory
 :directive: ``resourceLibrary``
 :sub-directive: ``directory``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zc.resourcelibrary``
+:include: ``zc.resourcelibrary``
 
 **Examples**
 
@@ -418,7 +418,7 @@ menu
 
 :directive: ``menu``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -427,7 +427,7 @@ menuItems
 
 :directive: ``menuItems``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -437,7 +437,7 @@ menuItems/menuItem
 :directive: ``menuItems``
 :sub-directive: ``menuItem``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -447,7 +447,7 @@ menuItems/subMenuItem
 :directive: ``menuItems``
 :sub-directive: ``subMenuItem``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -456,7 +456,7 @@ menuItem
 
 :directive: ``menuItem``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -465,7 +465,7 @@ subMenuItem
 
 :directive: ``subMenuItem``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -474,7 +474,7 @@ addMenuItem
 
 :directive: ``addMenuItem``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.browsermenu``
+:include: ``zope.browsermenu``
 
 **Examples**
 
@@ -483,7 +483,7 @@ interface
 
 :directive: ``interface``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.component``
+:include: ``zope.component``
 
 **Examples**
 
@@ -492,7 +492,7 @@ adapter
 
 :directive: ``adapter``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.component``
+:include: ``zope.component``
 
 **Examples**
 
@@ -501,7 +501,7 @@ subscriber
 
 :directive: ``subscriber``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.component``
+:include: ``zope.component``
 
 **Examples**
 
@@ -510,7 +510,7 @@ view
 
 :directive: ``view``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.component``
+:include: ``zope.component``
 
 **Examples**
 
@@ -519,7 +519,7 @@ resource
 
 :directive: ``resource``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.component``
+:include: ``zope.component``
 
 **Examples**
 
@@ -528,7 +528,7 @@ page
 
 :directive: ``page``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -537,7 +537,7 @@ pages
 
 :directive: ``pages``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -547,7 +547,7 @@ pages/page
 :directive: ``pages``
 :sub-directive: ``page``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -556,7 +556,7 @@ view
 
 :directive: ``view``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -566,7 +566,7 @@ view/page
 :directive: ``view``
 :sub-directive: ``page``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -576,7 +576,7 @@ defaultPage
 :directive: ``view``
 :sub-directive: ``defaultPage``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -585,7 +585,7 @@ expressiontype
 
 :directive: ``expressiontype``
 :namespace: ``http://namespaces.zope.org/tales``
-:module: ``zope.browserpage``
+:include: ``zope.browserpage``
 
 **Examples**
 
@@ -594,7 +594,7 @@ registerTranslations
 
 :directive: ``registerTranslations``
 :namespace: ``http://namespaces.zope.org/i18n``
-:module: ``zope.i18n``
+:include: ``zope.i18n``
 
 **Examples**
 
@@ -603,7 +603,7 @@ provideInterface
 
 :directive: ``provideInterface``
 :namespace: ``http://namespaces.zope.org/dav``
-:module: ``zope.app.dav``
+:include: ``zope.app.dav``
 
 **Examples**
 
@@ -612,7 +612,7 @@ viewlet
 
 :directive: ``viewlet``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.viewlet``
+:include: ``zope.viewlet``
 
 **Examples**
 
@@ -621,7 +621,7 @@ viewletManager
 
 :directive: ``viewletManager``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.viewlet``
+:include: ``zope.viewlet``
 
 **Examples**
 
@@ -630,7 +630,7 @@ codec
 
 :directive: ``codec``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.mimetype``
+:include: ``zope.mimetype``
 
 **Examples**
 
@@ -640,7 +640,7 @@ codec/charset
 :directive: ``codec``
 :sub-directive: ``charset``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.mimetype``
+:include: ``zope.mimetype``
 
 **Examples**
 
@@ -649,7 +649,7 @@ mimeTypes
 
 :directive: ``mimeTypes``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.mimetype``
+:include: ``zope.mimetype``
 
 **Examples**
 
@@ -658,7 +658,7 @@ queuedDelivery
 
 :directive: ``queuedDelivery``
 :namespace: ``http://namespaces.zope.org/mail``
-:module: ``zope.sendmail``
+:include: ``zope.sendmail``
 
 **Examples**
 
@@ -667,7 +667,7 @@ directDelivery
 
 :directive: ``directDelivery``
 :namespace: ``http://namespaces.zope.org/mail``
-:module: ``zope.sendmail``
+:include: ``zope.sendmail``
 
 **Examples**
 
@@ -676,7 +676,7 @@ smtpMailer
 
 :directive: ``smtpMailer``
 :namespace: ``http://namespaces.zope.org/mail``
-:module: ``zope.sendmail``
+:include: ``zope.sendmail``
 
 **Examples**
 
@@ -685,7 +685,7 @@ grant
 
 :directive: ``grant``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.securitypolicy``
+:include: ``zope.securitypolicy``
 
 **Examples**
 
@@ -694,7 +694,7 @@ grantAll
 
 :directive: ``grantAll``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.securitypolicy``
+:include: ``zope.securitypolicy``
 
 **Examples**
 
@@ -703,7 +703,7 @@ preferenceGroup
 
 :directive: ``preferenceGroup``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.app.preference``
+:include: ``zope.app.preference``
 
 **Examples**
 
@@ -712,7 +712,7 @@ bookchapter
 
 :directive: ``bookchapter``
 :namespace: ``http://namespaces.zope.org/apidoc``
-:module: ``zope.app.apidoc.bookmodule``
+:include: ``zope.app.apidoc.bookmodule``
 :distribution: ``zope.app.apidoc``
 
 **Examples**
@@ -722,7 +722,7 @@ moduleImport
 
 :directive: ``moduleImport``
 :namespace: ``http://namespaces.zope.org/apidoc``
-:module: ``zope.app.apidoc.codemodule ``
+:include: ``zope.app.apidoc.codemodule``
 :distribution: ``zope.app.apidoc``
 
 **Examples**
@@ -732,7 +732,7 @@ rootModule
 
 :directive: ``rootModule``
 :namespace: ``http://namespaces.zope.org/apidoc``
-:module: ``zope.app.apidoc.codemodule ``
+:include: ``zope.app.apidoc.codemodule``
 :distribution: ``zope.app.apidoc``
 
 **Examples**
@@ -742,7 +742,7 @@ modulealias
 
 :directive: ``modulealias``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.modulealias``
+:include: ``zope.modulealias``
 
 **Examples**
 
@@ -751,7 +751,7 @@ principal
 
 :directive: ``principal``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.principalregistry``
+:include: ``zope.principalregistry``
 
 **Examples**
 
@@ -760,7 +760,7 @@ unauthenticatedPrincipal
 
 :directive: ``unauthenticatedPrincipal``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.principalregistry``
+:include: ``zope.principalregistry``
 
 **Examples**
 
@@ -769,7 +769,7 @@ unauthenticatedGroup
 
 :directive: ``unauthenticatedGroup``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.principalregistry``
+:include: ``zope.principalregistry``
 
 **Examples**
 
@@ -778,7 +778,7 @@ authenticatedGroup
 
 :directive: ``authenticatedGroup``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.principalregistry``
+:include: ``zope.principalregistry``
 
 **Examples**
 
@@ -787,25 +787,91 @@ everybodyGroup
 
 :directive: ``everybodyGroup``
 :namespace: ``http://namespaces.zope.org/zope``
-:module: ``zope.principalregistry``
+:include: ``zope.principalregistry``
 
 **Examples**
 
 resource
 --------
 
-:directive: ``resource``
+:directive: ``browser:resource``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserresource``
+:include: ``zope.browserresource``
+:distribution: ``zope.browserresource``
+
+**Description**
+
+Certain presentation, like images and style sheets are not associated
+with any other component, so that one cannot create a view.  To solve
+this problem, resources were developed, which are presentation
+components that do not require any context.
+
+**Attributes**
+
+- **name** - The name of the resource
+
+  This is the name used in resource urls. Resource urls are of the
+  form ``site/@@/resourcename``, where site is the url of ``site``, a
+  folder with a site manager.
+
+  We make resource urls site-relative (as opposed to
+  content-relative) so as not to defeat caches.
+
+- ``factory`` - Resource Factory
+
+  The factory used to create the resource. The factory should only
+  expect to get the request passed when called.
+
+- ``file`` - File
+
+  The file containing the resource data.
+
+
+- ``image`` - Image
+
+  If the image attribute is used, then an image resource, rather than
+  a file resource will be created.
+
+- ``layer`` - The layer the resource should be found in
+
+  For information on layers, see the documentation for the skin
+  directive.  Defaults to *default*.
+
+- ``permission`` - The permission needed to access the resource.
+
+  If a permission isn't specified, the resource will always be
+  accessible.
+
+- ``template`` - Template
+
+  If the template attribute is used, then a page template resource,
+  rather than a file resource will be created.
 
 **Examples**
+
+::
+
+  <browser:resource
+      name="resource.txt"
+      file="resource.txt"
+      layer="default" />
+
+Once you hook up the configuration file to the main configuration
+path and restart BlueBream, you should be able to access the resource
+now via a Browser at: http://localhost:8080/@@/resource.txt.  The
+``@@/`` in the URL tells the traversal mechanism that the following
+object is a resource.
+
+**See Also**
+
+- `resourceDirectory`_
 
 resourceDirectory
 -----------------
 
 :directive: ``resourceDirectory``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserresource``
+:include: ``zope.browserresource``
 
 **Examples**
 
@@ -814,7 +880,7 @@ i18n-resource
 
 :directive: ``i18n-resource``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserresource``
+:include: ``zope.browserresource``
 
 **Examples**
 
@@ -824,7 +890,7 @@ i18n-resource/translation
 :directive: ``i18n-resource``
 :sub-directive: ``translation``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserresource``
+:include: ``zope.browserresource``
 
 **Examples**
 
@@ -833,7 +899,7 @@ icon
 
 :directive: ``icon``
 :namespace: ``http://namespaces.zope.org/browser``
-:module: ``zope.browserresource``
+:include: ``zope.browserresource``
 
 **Examples**
 
@@ -842,7 +908,7 @@ provideConnection
 
 :directive: ``provideConnection``
 :namespace: ``http://namespaces.zope.org/rdb``
-:module: ``zope.rdb``
+:include: ``zope.rdb``
 
 **Examples**
 
@@ -851,7 +917,7 @@ gadflyRoot
 
 :directive: ``gadflyRoot``
 :namespace: ``http://namespaces.zope.org/rdb``
-:module: ``zope.rdb``
+:include: ``zope.rdb``
 
 **Examples**
 
