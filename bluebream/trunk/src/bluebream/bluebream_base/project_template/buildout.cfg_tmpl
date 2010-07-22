@@ -4,6 +4,16 @@ extends = http://download.zope.org/bluebream/bluebream-${bluebream}.cfg
 parts = app
         test
 
+versions = versions
+
+# Don't let Buildout choose itself the versions, and make it repeatable.
+# You should pin down versions in the [versions] section.
+allow-picked-versions = false
+
+# To discover dependencies, comment the line above, uncomment the line below,
+# relaunch the buildout, then copy/paste the output to the [versions] section.
+#extensions = buildout.dumppickedversions
+
 [app]
 recipe = zc.recipe.egg
 eggs = ${project}
@@ -16,3 +26,6 @@ interpreter = ${interpreter}
 [test]
 recipe = zc.recipe.testrunner
 eggs = ${project}
+
+[versions]
+# pin versions of your additional ipackages here
