@@ -271,11 +271,10 @@ numbers of our list.
 
 In most cases we want to iterate over more complex sequences.  Our
 next example shows how to use a sequence of (references to) objects.
-The ``simple_page`` template could be improved by adding an item
-list, in the form of a list of the objects that are in the same
-*Folder* as the template.  You will make a table that has a row for
-each object, and columns for the id, meta-type and title.  Add these
-lines to the bottom of your example template::
+A template could be created with an item list, in the form of a list
+of the objects.  You will make a table that has a row for each
+object, and columns for the id, meta-type and title.  Add these lines
+to the bottom of your example template::
 
   <table border="1" width="100%">
     <tr>
@@ -283,7 +282,7 @@ lines to the bottom of your example template::
       <th>Meta-Type</th>
       <th>Title</th>
     </tr>
-    <tr tal:repeat="item context/objectValues">
+    <tr tal:repeat="item view/getValues">
       <td tal:content="item/getId">Id</td>
       <td tal:content="item/meta_type">Meta-Type</td>
       <td tal:content="item/title">Title</td>
@@ -306,10 +305,6 @@ below the *tr* tag you will get an error.
 
 You can also use the repeat variable name to get information about
 the current repetition.
-
-Now view the page and notice how it lists all the objects in the same
-folder as the template.  Try adding or deleting objects from the
-folder and notice how the page reflects these changes.
 
 Conditional Elements
 ~~~~~~~~~~~~~~~~~~~~
@@ -451,11 +446,6 @@ This diagnostic message lets you know that you mistakenly used
 template.  Other diagnostic messages will tell you about problems
 with your template expressions and macros.
 
-When you're using the Zope management interface to edit *Page
-Templates* it's easy to spot these diagnostic messages, because they
-are shown in the "Errors" header of the management interface page
-when you save the *Page Template*.
-
 If you don't notice the diagnostic message and try to render a
 template with problems you'll see a message like this::
 
@@ -589,7 +579,7 @@ wish so long as it returns a macro.  For example::
 In this case the path expression returns a macro defined dynamically
 by the 'getMacro' script.  Using *Python expressions* to locate
 macros lets you dynamically vary which macro your template uses.  An
-example of the body of a "getMacro" Script (Python) is as follows::
+example of the body of a ``getMacro`` Script (Python) is as follows::
 
   return container.ptMacros.macros['amacroname']
 
