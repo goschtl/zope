@@ -8,7 +8,7 @@ by the Zope Foundation, but is instead provided as a public service.
 This list is in no way a complete listing of the many organizations
 providing either free or for cost support for BlueBream.  If you
 would like to be added to this list, or removed, please contact
-**baiju.m.mail AT gmail.org**.
+**baiju.m.mail AT gmail.com**.
 
 +-----------------------+-----------------+----------------+--------------------------------+
 | Company (E-mail)      | Phone,Fax       | Location       | Comments                       |
