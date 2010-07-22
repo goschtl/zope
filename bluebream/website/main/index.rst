@@ -12,4 +12,5 @@ Welcome to BlueBream!
    support
    forum
    chat
+   commercial
    community
