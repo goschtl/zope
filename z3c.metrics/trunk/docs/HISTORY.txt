@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-0.2 (unreleased)
+0.2 (2010-07-22)
 ================
 
 * Fixed imports and tests to run with current Zope packages.
