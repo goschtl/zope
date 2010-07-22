@@ -1,0 +1,41 @@
+;-*-Doctest-*-
+
+====================
+ZCatalog Integration
+====================
+
+In order to support scoring ZCatalog queries, metric indexes must use
+docids from the ZCatalog.  Since the OFS events that CMF uses to index
+objects in the ZCatalog can't be counted on to run before our events,
+scores are initialized when the object is first indexed in the catalog.
+
+Create a catalog.
+
+    >>> from zope import component
+    >>> from Products.ZCatalog import ZCatalog
+    >>> ZCatalog.manage_addZCatalog(app, 'catalog', 'Catalog')
+    >>> catalog = app.catalog
+
+Add a metrics index to the catalog.
+
+    >>> catalog.addIndex(name='index', type='MetricsIndex')
+
+The index is registered as a utility.
+
+    >>> from z3c.metrics import interfaces
+    >>> index = catalog._catalog.getIndex('index')
+    >>> component.getUtility(interfaces.IIndex) is index.aq_base
+    True
+
+Ctalog the object so that it will have a docid.
+
+    >>> catalog.catalog_object(folder)
+
+Initialize the object's score.
+
+    >>> index.initScoreFor(folder)
+
+Get the object's score.
+
+    >>> index.getScoreFor(folder)
+    0.0

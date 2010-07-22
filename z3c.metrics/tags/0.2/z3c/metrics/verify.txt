@@ -1,0 +1,152 @@
+;-*-Doctest-*-
+
+======================
+Verify Implementations
+======================
+
+Verify that the component implementations fulfill their interfaces.
+
+    >>> from zope.interface import verify
+    >>> from z3c.metrics import interfaces
+
+Scale
+=====
+
+    >>> from z3c.metrics import scale
+
+    >>> verify.verifyClass(
+    ...     interfaces.IScale, scale.ExponentialScale)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IScale, scale.ExponentialScale())
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.IScale, scale.ExponentialDatetimeScale)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IScale, scale.ExponentialDatetimeScale())
+    True
+
+Index
+=====
+
+    >>> from z3c.metrics import index
+
+    >>> verify.verifyClass(
+    ...     interfaces.IIndex, index.Index)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IIndex, index.Index())
+    True
+
+Metric
+======
+
+    >>> from zope import interface 
+    >>> from z3c.metrics import metric
+
+    >>> verify.verifyClass(
+    ...     interfaces.IMetric, metric.InitMetric)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IMetric, metric.InitMetric())
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.IMetric, metric.AttributeMetric)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IMetric, metric.AttributeMetric(
+    ...         interface=interface.Interface, field_name='foo'))
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.IMetric, metric.SelfMetric)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IMetric, metric.SelfMetric(
+    ...         interface=interface.Interface, field_name='foo'))
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.IMetric, metric.OtherMetric)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IMetric, metric.OtherMetric(
+    ...         interface=interface.Interface, field_name='foo'))
+    True
+
+Subscriptions
+=============
+
+    >>> from z3c.metrics import subscription
+
+    >>> verify.verifyClass(
+    ...     interfaces.ISubscription,
+    ...     subscription.UtilitySubscription)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.ISubscription,
+    ...     subscription.UtilitySubscription(utility_interface=None))
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.ISubscription,
+    ...     subscription.LocalSubscription)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.ISubscription,
+    ...     subscription.LocalSubscription(index=None))
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.IWeightedSubscription,
+    ...     subscription.WeightedSubscription)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IWeightedSubscription,
+    ...     subscription.WeightedSubscription())
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.ISubscription,
+    ...     subscription.UtilityWeightedSubscription)
+    True
+    >>> sub = subscription.UtilityWeightedSubscription(
+    ...         utility_interface=None)
+    >>> verify.verifyObject(interfaces.ISubscription, sub)
+    True
+    >>> verify.verifyClass(
+    ...     interfaces.IWeightedSubscription,
+    ...     subscription.UtilityWeightedSubscription)
+    True
+    >>> verify.verifyObject(interfaces.IWeightedSubscription, sub)
+    True
+
+    >>> verify.verifyClass(
+    ...     interfaces.ISubscription,
+    ...     subscription.LocalWeightedSubscription)
+    True
+    >>> sub = subscription.LocalWeightedSubscription(
+    ...     index=index.Index())
+    >>> verify.verifyObject(interfaces.ISubscription, sub)
+    True
+    >>> verify.verifyClass(
+    ...     interfaces.IWeightedSubscription,
+    ...     subscription.LocalWeightedSubscription)
+    True
+    >>> verify.verifyObject(interfaces.IWeightedSubscription, sub)
+    True
+
+Engines
+=======
+
+    >>> from z3c.metrics import engine
+    >>> verify.verifyClass(
+    ...     interfaces.IEngine, engine.WeightedEngine)
+    True
+    >>> verify.verifyObject(
+    ...     interfaces.IEngine, engine.WeightedEngine(
+    ...         metric=None, subscription=sub, context=None))
+    True

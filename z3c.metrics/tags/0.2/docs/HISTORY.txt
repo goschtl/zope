@@ -1,0 +1,16 @@
+===========
+ Changelog
+===========
+
+0.2 (2010-07-22)
+================
+
+* Fixed imports and tests to run with current Zope packages.
+
+* Added extras_require `zope2` for Zope 2 requirements.
+
+
+0.1 (2009-04-08)
+================
+
+* Initial release.

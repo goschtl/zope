@@ -1,0 +1,37 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <adapter factory=".dispatch.getAncestors" />
+
+  <subscriber 
+     handler=".dispatch.dispatchToAncestors" 
+     />
+  <subscriber 
+     handler=".dispatch.dispatchToDescendants" 
+     />
+  <subscriber 
+     handler=".dispatch.dispatchToDescendants" 
+     for="zope.app.container.interfaces.IContainer
+          .interfaces.IBuildScoreEvent"
+     />
+
+  <adapter factory=".dispatch.CreatorLookup" />
+
+  <subscriber
+     handler=".dispatch.dispatchToCreators" 
+     />
+  <subscriber
+     handler=".dispatch.dispatchToSiteCreated" 
+     />
+  <subscriber 
+     handler=".dispatch.dispatchToDescendants" 
+     for="zope.app.container.interfaces.IContainer
+          .interfaces.IBuildScoreEvent
+          .dispatch.ICreatedDispatchEvent"
+     />
+  <subscriber
+     handler=".dispatch.dispatchToCreated" 
+     />
+
+</configure>

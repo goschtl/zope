@@ -1,0 +1,19 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:five="http://namespaces.zope.org/five"
+   i18n_domain="zope">
+
+  <permission
+    id="zope2.AddPluggableIndex"
+    title="Add Pluggable Index"
+    />
+
+  <five:registerClass
+      class=".index.MetricsIndex"
+      meta_type="MetricsIndex"
+      permission="zope2.AddPluggableIndex"
+      />
+
+  <adapter factory=".index.MetricsIndexNodeAdapter" />
+
+</configure>
