@@ -346,7 +346,7 @@ Python object, like and integer or a date.
   that the Publisher already takes care of the encoding issues).
 
 - ``BytesWidget``, ``BytesAreaWidget``: Direct descendents from
-  ``TextWidget`` and ``TextAreaWidget, the only difference is that
+  ``TextWidget`` and ``TextAreaWidget``, the only difference is that
   these widgets expect bytes as input and not a unicode string, which
   means they must be valid ASCII encodable.
 

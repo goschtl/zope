@@ -23,15 +23,17 @@ validating user input data.  Form library automatically convert the
 user submitted form data into Python objects.
 
 The formlib provides some base classes for creating view classes.
-The most used base classes are DisplayForm, AddForm and EditForm.
-The DisplayForm is not really a web form to submit, but a convenience
-for displaying values based on particular context/interface.
+The most used base classes are *DisplayForm*, *AddForm* and
+*EditForm*.  The *DisplayForm* is not really a web form to submit,
+but a convenience for displaying values based on particular
+context/interface.
 
 .. note::
 
-  There is another community supported library called `z3c.form
-  <http://docs.zope.org/z3c.form>`_.  Many projects are using this
-  library, and it is very well documented.
+  There is a popular community supported library called `z3c.form
+  <http://docs.zope.org/z3c.form>`_ with more functionality &
+  features compared to *zope.formlib*.  Many projects are using
+  *z3c.form* library, and it is very well documented.
 
 Concepts
 --------
@@ -41,7 +43,7 @@ Before proceeding further let's look into some Form concepts.
 Widget
 ~~~~~~
 
-Formlib defines a widget like this: "views on bound schema fields"
+Formlib defines a widget like this: *views on bound schema fields*
 
 Field
 ~~~~~
@@ -51,12 +53,12 @@ Fields build on schema fields.
 Form
 ~~~~
 
-A form class can define ordered collections of "form fields" using
-the `Fields` constructor.  Form fields are distinct from and build on
+A form class can define ordered collections of *form fields* using
+the *Fields* constructor.  Form fields are distinct from and build on
 schema fields.  A schema field specifies attribute values.  Form
 fields specify how a schema field should be used in a form.  The
 simplest way to define a collection of form fields is by passing a
-schema to the `Fields` constructor.
+schema to the *Fields* constructor.
 
 Action
 ~~~~~~
@@ -99,10 +101,10 @@ You need a schema definition as explain in the previous chapter::
 Creating an EditForm
 --------------------
 
-The usage of ``EditForm`` is very similar to ``AddForm``.
+The usage of *EditForm* is very similar to *AddForm*.
 
 Conclusion
 ----------
 
-This chapter introduced zope.formlib library to generate HTML forms
+This chapter introduced *zope.formlib* library to generate HTML forms
 and widgets.
