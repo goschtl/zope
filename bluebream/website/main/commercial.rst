@@ -10,13 +10,28 @@ providing either free or for cost support for BlueBream.  If you
 would like to be added to this list, or removed, please contact
 **baiju.m.mail AT gmail.com**.
 
-+-----------------------+-----------------+----------------+--------------------------------+
-| Company (E-mail)      | Phone,Fax       | Location       | Comments                       |
-+-----------------------+-----------------+----------------+--------------------------------+
+----
 
-+-----------------------+-----------------+----------------+--------------------------------+
-| Contractor (E-mail)   | Phone,Fax       | Location       | Comments                       |
-+-----------------------+-----------------+----------------+--------------------------------+
+:Company: `gocept gmbh & co. kg <http://gocept.com/>`_
+:E-mail: mail AT gocept.com
+:Phone: +49 345 12298890
+:Fax: +49 345 12298891
+:Location: Halle, Germany
+:Comments: We provide high-end consulting, development and hosting
+  based on various Zope technologies.  Our developers are
+  core-contributors to the Zope ecosystem including the ZTK, ZODB,
+  Grok and other parts.
+
+----
+
+:Company/Contractor:
+:E-mail:
+:Phone:
+:Fax:
+:Location:
+:Comments:
+
+----
 
 .. note::
 
