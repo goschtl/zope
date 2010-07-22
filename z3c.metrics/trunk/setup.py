@@ -7,6 +7,7 @@ setup(name='z3c.metrics',
       version=version,
       description="Index arbitrary values as scores for object metrics.",
       long_description=(
+          '.. contents::\n\n' +
           open(os.path.join("z3c", "metrics", "README.txt")).read() +
           "\n" + open(os.path.join("docs", "HISTORY.txt")).read()),
       # Get more strings from
@@ -15,7 +16,7 @@ setup(name='z3c.metrics',
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='zope zop3 index',
+      keywords='zope zope3 index',
       author='Ross Patterson',
       author_email='me@rpatterson.net',
       url='http://pypi.python.org/pypi/z3c.metrics',
@@ -32,12 +33,15 @@ setup(name='z3c.metrics',
           'ZODB3',
           ],
       extras_require=dict(
+          zope2=[
+              'Zope2',
+              'Products.GenericSetup',
+              ],
           test=[
               'zope.testing',
               'zope.configuration',
-              ],
-          test_zope2=[
-              'Zope2',
+              'zope.app.component >= 3.9.0',
+              'zope.app.folder',
               ]),
 
       entry_points="""

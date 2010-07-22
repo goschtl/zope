@@ -84,13 +84,13 @@ TODO
 Infinity
 ========
 
-Pickle protocol 1 raises an error on infinite values.
+Pickle protocol 1 raises an error on infinite values. (No longer true
+for Python 2.5.)
 
     >>> import pickle
     >>> foo_index._scores[id(0)] = scale.inf
     >>> pickle.dumps(foo_index, 1)
-    Traceback (most recent call last):
-    SystemError: frexp() result out of range
+    'ccopy_reg...'
 
 As such, trying the change the score by a value that will result in
 the infinite float will raise an error.

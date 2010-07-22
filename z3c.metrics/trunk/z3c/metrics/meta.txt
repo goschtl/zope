@@ -43,7 +43,7 @@ for the document.
     ...    i18n_domain="zope">
     ...   <include package="zope.app.component" file="meta.zcml" />
     ...   <include package="z3c.metrics" file="meta.zcml" />
-    ... 
+    ...
     ...   <utility
     ...      factory="z3c.metrics.testing.FooDocIndex"
     ...      provides="z3c.metrics.testing.IFooDocIndex" />
@@ -53,18 +53,18 @@ for the document.
     ...   <utility
     ...      factory="z3c.metrics.testing.CreatorIndex"
     ...      provides="z3c.metrics.testing.ICreatorIndex" />
-    ... 
+    ...
     ...   <metrics:self
     ...      for="z3c.metrics.testing.IDocument"
     ...      interface="z3c.metrics.interfaces.ICreated"
     ...      field_name="created">
     ...     <metrics:weighted
-    ...        utility_interface="z3c.metrics.testing.IFooDocIndex" /> 
+    ...        utility_interface="z3c.metrics.testing.IFooDocIndex" />
     ...     <metrics:weighted
     ...        utility_interface="z3c.metrics.testing.IBarDocIndex"
     ...        weight="2" />
     ...   </metrics:self>
-    ... 
+    ...
     ...   <metrics:other
     ...      for="z3c.metrics.testing.IDocument
     ...           z3c.metrics.testing.IDescendant"
@@ -74,7 +74,7 @@ for the document.
     ...     <metrics:weighted
     ...        utility_interface="z3c.metrics.testing.IBarDocIndex" />
     ...   </metrics:other>
-    ... 
+    ...
     ...   <metrics:other
     ...      for="zope.app.security.interfaces.IPrincipal
     ...           z3c.metrics.testing.IDocument"
@@ -84,7 +84,7 @@ for the document.
     ...        utility_interface="z3c.metrics.testing.ICreatorIndex"
     ...        weight="2" />
     ...   </metrics:other>
-    ... 
+    ...
     ...   <metrics:other
     ...      for="zope.app.security.interfaces.IPrincipal
     ...           z3c.metrics.testing.IDescendant"
@@ -94,13 +94,13 @@ for the document.
     ...     <metrics:weighted
     ...        utility_interface="z3c.metrics.testing.ICreatorIndex" />
     ...   </metrics:other>
-    ... 
+    ...
     ...   <metrics:init
     ...     for="zope.app.security.interfaces.IPrincipal">
     ...     <metrics:weighted
-    ...        utility_interface="z3c.metrics.testing.ICreatorIndex" /> 
+    ...        utility_interface="z3c.metrics.testing.ICreatorIndex" />
     ...   </metrics:init>
-    ... 
+    ...
     ... </configure>
     ... """)
 

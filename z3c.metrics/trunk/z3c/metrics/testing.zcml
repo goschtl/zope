@@ -5,13 +5,13 @@
   <include package="zope.app.component" file="meta.zcml" />
 
   <adapter
-      for="zope.interface.Interface" 
-      provides="zope.component.interfaces.ISiteManager"
+      for="zope.interface.Interface"
+      provides="zope.component.interfaces.IComponentLookup"
       factory="zope.app.component.site.SiteManagerAdapter"
       />
 
   <adapter
-      provides="zope.app.location.interfaces.ISublocations"
+      provides="zope.location.interfaces.ISublocations"
       for="zope.app.container.interfaces.IReadContainer"
       factory="zope.app.container.contained.ContainerSublocations"
       />

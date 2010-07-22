@@ -1,7 +1,12 @@
 import unittest
 from zope.testing import doctest, cleanup
 
-from Testing import ZopeTestCase
+try:
+    from Testing import ZopeTestCase
+except ImportError:
+    have_zope2 = False
+else:
+    have_zope2 = True
 
 from zope.configuration import xmlconfig
 
@@ -17,15 +22,16 @@ def tearDown(test):
     cleanup.tearDown()
 
 
-def test_suite():
-    return ZopeTestCase.ZopeDocFileSuite(
-        'catalog.txt',
-        setUp=setUp, tearDown=tearDown,
-        optionflags=(
-            doctest.REPORT_NDIFF |
-            #doctest.REPORT_ONLY_FIRST_FAILURE |
-            doctest.NORMALIZE_WHITESPACE |
-            doctest.ELLIPSIS))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+if have_zope2:
+    def test_suite():
+        return ZopeTestCase.ZopeDocFileSuite(
+            'catalog.txt',
+            setUp=setUp, tearDown=tearDown,
+            optionflags=(
+                doctest.REPORT_NDIFF |
+                #doctest.REPORT_ONLY_FIRST_FAILURE |
+                doctest.NORMALIZE_WHITESPACE |
+                doctest.ELLIPSIS))
+else:
+    def test_suite():
+        return unittest.TestSuite()

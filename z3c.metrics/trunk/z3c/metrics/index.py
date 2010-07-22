@@ -3,7 +3,7 @@ from BTrees import family64, Length
 
 from zope import interface
 import zope.event
-from zope.app.event import objectevent
+import zope.component.interfaces
 
 from z3c.metrics import interfaces, scale
 
@@ -12,7 +12,7 @@ class ScoreError(Exception):
     pass
 
 
-class IndexesScoreEvent(objectevent.ObjectEvent):
+class IndexesScoreEvent(zope.component.interfaces.ObjectEvent):
     interface.implements(interfaces.IIndexesScoreEvent)
 
     def __init__(self, obj, indexes=()):

@@ -1,6 +1,6 @@
 from zope import interface, component
 from zope.app.component import hooks
-from zope.app.location import interfaces as location_ifaces
+from zope.location import interfaces as location_ifaces
 from zope.app.container import interfaces as container_ifaces
 from zope.app.security import interfaces as security_ifaces
 

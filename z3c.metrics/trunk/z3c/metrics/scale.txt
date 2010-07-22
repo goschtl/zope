@@ -87,15 +87,19 @@ A ratio of 10 over a year means a very narrow range of years for
 integer values.
 
     >>> import sys
-    >>> (datetime_scale.toValue(sys.maxint)-scale.epoch
+    >>> result = (datetime_scale.toValue(sys.maxint)-scale.epoch
     ...  ).days/365
-    7
+    >>> if sys.maxint > 2147483647:
+    ...    result == 16 # 64-Bit system
+    ... else:
+    ...    result == 7 # 32-Bit system
+    True
 
 We can calculate the maximum ratio we can use if we project some
 maximums for the application:
 
   - maximum total count of dates across all metrics for an object
-    
+
     If we assume one metric may record the dates of all posts in a
     forum, then the maximum for that one metric might be 100,000
     posts.  Assuming the rest of the metrics record an insignificant
@@ -103,7 +107,7 @@ maximums for the application:
     our maximum here.
 
     >>> count_max = 100000
- 
+
   - maximum average metric weight across all the metrics
 
     If we assume that we have a maximum metric that we need to be 1000
@@ -168,7 +172,7 @@ It doesn't, however, work with with a ratio of 2.
     >>> _ = IIBTree.IIBTree({0: int(
     ...      max_datetime_num*count_max*weight_max_avg)})
     Traceback (most recent call last):
-    TypeError: expected integer value
+    OverflowError: 10240000000
 
 Furthermore, in the cases above the absense of a minimum guaranteed
 granularity means that dates close to the beginning date will have the

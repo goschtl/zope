@@ -6,7 +6,6 @@ import Acquisition
 from OFS import SimpleItem
 from Products.ZCatalog import interfaces as zcatalog_ifaces
 from Products.PluginIndexes import interfaces as plugidx_ifaces
-from Products.PluginIndexes.TextIndex import Vocabulary
 from Products.GenericSetup import interfaces as gs_ifaces
 from Products.GenericSetup.PluginIndexes import exportimport
 
@@ -39,6 +38,9 @@ class IMetricsIndex(interfaces.IIndex,
     """sro"""
 
 
+class _extra: pass
+
+
 class MetricsIndex(index.Index, SimpleItem.SimpleItem):
     """A Metrics Index in a ZCatalog"""
     interface.implements(IMetricsIndex)
@@ -48,7 +50,7 @@ class MetricsIndex(index.Index, SimpleItem.SimpleItem):
         self.__catalog_path = caller.getPhysicalPath()
 
         if extra is None:
-            extra = Vocabulary._extra()
+            extra = _extra()
 
         # TODO: the utility registration should be moved to an INode
         # GS handler to be run after the index is added
