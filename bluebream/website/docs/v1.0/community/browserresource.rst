@@ -1,3 +1,5 @@
+.. _commu-browser-resource:
+
 Browser Resource
 ================
 

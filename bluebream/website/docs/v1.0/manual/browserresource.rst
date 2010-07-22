@@ -123,8 +123,10 @@ Two resource files (``style.css`` and ``logo.png``) will be already
 available inside ``src/tc/main/static`` directory.
 
 There is a community supported package named `z3c.zrtresource
-<http://pypi.python.org/pypi/z3c.zrtresource>`_ which is documented
-here: http://wiki.zope.org/bluebream/BrowserResource
+<http://pypi.python.org/pypi/z3c.zrtresource>`_ which provides a
+better way to register & use resources.  For more information, look
+at the documentation: :ref:`commu-browser-resource`.
+
 
 .. raw:: html
 
