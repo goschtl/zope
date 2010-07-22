@@ -18,11 +18,10 @@ Technical Decisions
 - All the framework code is using "zope" or "zope.app" namespace
   packages. Although "bb" could be used as a namespace in future.
 
-- "bluebream the project" consists of project templates.
+- "bluebream the project" consists of project templates and KGS
+  infrastructure.
 
 - "bluebream_website" is the location where web content is stored.
-
-- "bbkit" is where KGS infrastructure located.
 
 - BlueBream 1.0 should provide an upgrade path from Zope 3.4 KGS.
 
