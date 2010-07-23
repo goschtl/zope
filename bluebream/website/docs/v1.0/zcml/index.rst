@@ -526,9 +526,81 @@ resource
 page
 ----
 
-:directive: ``page``
+:directive: ``browser:page``
 :namespace: ``http://namespaces.zope.org/browser``
 :include: ``zope.browserpage``
+:distribution: ``zope.browserpage``
+
+**Attributes**
+
+- **for** - Specifications of the objects to be viewed.
+
+  This should be a list of interfaces or classes.
+
+- ``permission`` - Permission
+
+  The permission needed to use the view.
+
+- ``class`` - Class
+
+  A class that provides attributes used by the view.
+
+- ``layer`` - The layer the view is in.
+
+  A skin is composed of layers.  It is common to put skin specific
+  views in a layer named after the skin.  If the ``layer`` attribute
+  is not supplied, it defaults to ``default``.
+
+- ``allowed_interface`` - Interface that is also allowed if user has
+  permission.
+
+  By default, ``permission`` only applies to viewing the view and any
+  possible sub views.  By specifying this attribute, you can make the
+  permission also apply to everything described in the supplied
+  interface.
+
+  Multiple interfaces can be provided, separated by whitespace.
+
+- ``allowed_attributes`` - View attributes that are also allowed if
+  the user has permission
+
+  By default, ``permission`` only applies to viewing the view and any
+  possible sub views.  By specifying ``allowed_attributes``, you can
+  make the permission also apply to the extra attributes on the view
+  object
+
+- **name** - The name of the page (view)
+
+  The name shows up in URLs/paths.  For example ``foo`` or
+  ``foo.html``. This attribute is required unless you use the
+  subdirective ``page`` to create sub views.  If you do not have sub
+  pages, it is common to use an extension for the view name such as
+  ``.html``.  If you do have sub pages and you want to provide a view
+  name, you shouldn't use extensions.
+
+- ``attribute`` - The name of the view attribute implementing the page.
+
+  This refers to the attribute (method) on the view that is
+  implementing a specific sub page.
+
+- ``template`` - The name of a template that implements the page.
+
+  Refers to a file containing a page template (should end in
+  extension ``.pt`` or ``.html``.
+
+- ``menu`` - The browser menu to include the page (view) in.
+
+  Many views are included in menus.  It's convenient to name the menu
+  in the page directive, rather than having to give a separate
+  menuItem directive.
+
+  This attribute will only work if zope.browsermenu is installed.
+
+- ``title`` - The browser menu label for the page (view)
+
+  This attribute must be supplied if a menu attribute is supplied.
+
+  This attribute will only work if *zope.browsermenu* is installed.
 
 **Examples**
 
