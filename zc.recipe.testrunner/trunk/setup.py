@@ -37,6 +37,7 @@ setup(
                         'setuptools',
                         'zc.recipe.egg  >=1.2.0',
                         ],
+    tests_require = ['zope.testing'],
     test_suite = name+'.tests.test_suite',
     entry_points = {'zc.buildout': ['default = %s:TestRunner' % name]},
     classifiers = [
