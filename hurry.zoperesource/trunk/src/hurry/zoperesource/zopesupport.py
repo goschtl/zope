@@ -3,9 +3,9 @@ from grokcore import component as grok
 
 from zope import interface
 from zope import component
+from zope.component.hooks import getSite
 import zope.security.management
 from zope.publisher.interfaces import IRequest
-from zope.site.hooks import getSite
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.browser import BrowserRequest, BrowserResponse, isHTML
 from zope.app.publication.interfaces import IBrowserRequestFactory

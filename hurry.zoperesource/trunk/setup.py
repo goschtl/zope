@@ -39,7 +39,6 @@ setup(
         'zope.publisher',
         'zope.security',
         'zope.securitypolicy',
-        'zope.site',
         'zope.traversing',
         ],
   extras_require = {

@@ -4,7 +4,7 @@ CHANGES
 0.5 (unreleased)
 ================
 
-* Drop the zope.app.component dependency, use zope.site instead.
+* Drop the zope.app.component dependency.
 
 * Register the ILibraryUrl adapter for ILibrary instead of Library,
   to be less specific for the adapter lookup.
