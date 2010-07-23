@@ -217,6 +217,6 @@ Resources
 
     svn co svn://svn.zope.org/repos/main/bluebream/trunk bluebream
 
-  You can also `become a contributor after signing a contributor
-  agreement
-  <http://docs.zope.org/developer/becoming-a-contributor.html>`_
+  You can also `become a source code contributor after signing a
+  contributor agreement
+  <http://docs.zope.org/developer/becoming-a-committer.html>`_
