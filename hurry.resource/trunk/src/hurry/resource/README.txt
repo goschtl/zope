@@ -31,10 +31,17 @@ libraries, inclusion and inclusion requirements.
 A resource library
 ==================
 
-We define a library ``foo``::
+We define a library ``foo``. It takes two arguments, the name of the library
+as it should be published under in a URL and uniquely identify it, and a path
+to the root of the resources that this library publishes::
 
   >>> from hurry.resource import Library
-  >>> foo = Library('foo')
+  >>> foo = Library('foo', 'dummy')
+
+The full path to the directory with the resources is reconstructed::
+
+  >>> foo.path #doctest: +ELLIPSIS
+  '.../hurry.resource/src/hurry/resource/dummy'
 
 Inclusion
 =========

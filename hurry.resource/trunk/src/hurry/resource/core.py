@@ -1,5 +1,6 @@
 import os
 from types import TupleType
+import pkg_resources
 
 try:
     from zope.interface import implements
@@ -17,8 +18,9 @@ EXTENSIONS = ['.css', '.kss', '.js']
 class Library(object):
     implements(interfaces.ILibrary)
     
-    def __init__(self, name):
+    def __init__(self, name, rootpath):
         self.name = name
+        self.path = pkg_resources.resource_filename(__name__, rootpath)
 
 class InclusionBase(object):
     implements(interfaces.IInclusion)
