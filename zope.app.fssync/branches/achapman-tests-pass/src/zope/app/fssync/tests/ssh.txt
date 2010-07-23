@@ -63,15 +63,39 @@ The connection class should be tested here. This will be hard since it
 requires lots of stuff like having ssh agent running, host keys, and
 having an ssh server running. For now let's just do what we can.
 
+We need to make a stub paramiko.SSHClient for this to work correctly.
+
+    >>> import paramiko
+    >>> old_pclient = paramiko.SSHClient
+    >>> class new_pclient(object):
+    ...     def set_missing_host_key_policy(self, policy):
+    ...         self.policy = policy
+    ...
+    ...     def load_system_host_keys(self, keys):
+    ...         self.keys = keys
+    ...
+    ...     def load_host_keys(self, key_fn):
+    ...         pass
+    ...
+    ...     def connect(self, host, port, remote_user_name):
+    ...         pass
+
+    >>> paramiko.SSHClient = new_pclient
+
     >>> from zope.app.fssync.ssh import SSHConnection
     >>> c = SSHConnection('localhost:12345')
     >>> c.putrequest('GET', '/')
     Traceback (most recent call last):
-    ...
-    error: (111, 'Connection refused')
+     ...
+    AttributeError: 'new_pclient' object has no attribute 'get_transport'
 
 We get an error here because we're not running an ssh server on port
 12345.
+
+    >>> paramiko.SSHClient = old_pclient
+    >>> new_client = paramiko.SSHClient()
+    >>> c.client.set_missing_host_key_policy(c.client.policy)
+    >>> c.client.load_system_host_keys(c.client.keys)
 
 Even though we don't have a real encrypted network connection, let's
 see what the connection object would send over the ssh channel.
