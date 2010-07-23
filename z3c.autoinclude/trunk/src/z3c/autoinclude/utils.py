@@ -2,7 +2,6 @@ import os
 from pkg_resources import find_distributions
 from pprint import pformat
 import sys
-from zope.dottedname.resolve import resolve
 
 class DistributionManager(object):
     def __init__(self, dist):
