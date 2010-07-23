@@ -9,12 +9,52 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-07-20.log.html#t2010-07-20T17:58:02
 
 Attendees
 ---------
 
-XXX
+Jens Vagelpohl, Adam Groszer, Christian Theune, Leo Rochael
+
+
+Bugday review and planning
+--------------------------
+
+Jens Vagelpohl worked on fixing Zope 2 bugs (fixed 5 and worked on 4 others)
+and Tres Seaver tried fixing an issue with zope.testing under Python 2.7.
+
+The last bug day has been relatively silent because only few participants
+signed up some of them didn't make it. It appears that both holiday season and
+scheduling issues kept people from joining.
+
+Jens noted that the wiki page is cumbersome to deal with due to the ReST table
+layout. Christian agreed to adapt to a regular list for the next wiki page.
+
+Christian will doodle the next bug day for the week of August 16-20.
+
+Languishing bug review
+----------------------
+
+Unfortunately this part of the agenda didn't work out as expected. I tried to
+take some time so that everyone present would review some bugs, not talking
+about reviewing bugs. I miscommunicated here and talked about some things
+while I reviewed bugs thinking everyone did the same ...
+
+Jens reported that Hanno has been and is triaging the Zope 2 bugs and he is
+working on the things that can be fixed, too.
+
+We also noted that the term "languish" is not understood the same: the current
+meaning in the way the test scripts use it is "new bugs that nobody triaged".
+The goal for avoiding languishing bugs is to give feedback to bug reporters in
+a timely manner. That doesn't necessarily mean we fix them right away but we
+can respond whether it is indeed a bug, or misunderstanding or a feature
+request. This should give our users a better feeling on how we are going to
+deal with an issue in the long run.
+
+I asked for a reminder of whether we agreed to put minimum version dependency
+requirements into setup.py or not. Nobody could remember and we couldn't
+produce reference material on a decision but we think that minimum
+requirements were agreed upon to be ok.
 
 
 Agenda
