@@ -24,6 +24,19 @@ would like to be added to this list, or removed, please contact
 
 ----
 
+:Company: Alter Way
+:E-mail: contact AT alterway.fr
+:Phone: +33 1 78 15 24 00
+:Fax: +33 1 46 02 44 04
+:Location: Saint Cloud, France
+:Comments: Alter Way, french open source services provider, supports companies
+  and administrations in the implementation and usage of their information system.
+  The company offers a 360 ° industrial offer, structured around five activities:
+  IT Consulting; Communication Consulting; Solutions (integration - development -
+  outsourcing), Hosting and Training.
+
+----
+
 :Company/Contractor:
 :E-mail:
 :Phone:
