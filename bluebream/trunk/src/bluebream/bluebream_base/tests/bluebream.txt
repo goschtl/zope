@@ -71,6 +71,7 @@ sample/setup.py
 sample/etc/site.zcml
 sample/etc/zope-debug.conf
 sample/etc/zope.conf
+sample/extends-cache/README.txt
 sample/src/sample/__init__.py
 sample/src/sample/configure.zcml
 sample/src/sample/debug.py
@@ -137,6 +138,7 @@ sample.main/setup.py
 sample.main/etc/site.zcml
 sample.main/etc/zope-debug.conf
 sample.main/etc/zope.conf
+sample.main/extends-cache/README.txt
 sample.main/src/sample/__init__.py
 sample.main/src/sample/main/__init__.py
 sample.main/src/sample/main/configure.zcml
@@ -209,6 +211,7 @@ sample.app.main/setup.py
 sample.app.main/etc/site.zcml
 sample.app.main/etc/zope-debug.conf
 sample.app.main/etc/zope.conf
+sample.app.main/extends-cache/README.txt
 sample.app.main/src/sample/__init__.py
 sample.app.main/src/sample/app/__init__.py
 sample.app.main/src/sample/app/main/__init__.py
@@ -281,6 +284,7 @@ foobar.foobar/setup.py
 foobar.foobar/etc/site.zcml
 foobar.foobar/etc/zope-debug.conf
 foobar.foobar/etc/zope.conf
+foobar.foobar/extends-cache/README.txt
 foobar.foobar/src/foobar/__init__.py
 foobar.foobar/src/foobar/foobar/__init__.py
 foobar.foobar/src/foobar/foobar/configure.zcml
@@ -350,6 +354,7 @@ sampleproject/setup.py
 sampleproject/etc/site.zcml
 sampleproject/etc/zope-debug.conf
 sampleproject/etc/zope.conf
+sampleproject/extends-cache/README.txt
 sampleproject/src/sample/__init__.py
 sampleproject/src/sample/main/__init__.py
 sampleproject/src/sample/main/configure.zcml

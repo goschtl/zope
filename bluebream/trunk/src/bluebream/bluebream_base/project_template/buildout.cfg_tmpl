@@ -6,6 +6,10 @@ parts = app
 
 versions = versions
 
+# This option enable caching of extended configuration files.
+# Cached configuration files will be saved inside `extends-cache`
+extends-cache = extends-cache
+
 # Don't let Buildout choose itself the versions, and make it repeatable.
 # You should pin down versions in the [versions] section.
 allow-picked-versions = false

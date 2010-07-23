@@ -4,8 +4,9 @@ Changelog
 1.0b4 (unreleased)
 ------------------
 
-- fixed the generated buildout and make it repeatable
-
+- Fixed the generated buildout and make it repeatable
+- Added the "extends-cache" Buildout option to cache
+  the extended configuration files
 
 1.0b3 (2010-07-11)
 ------------------
