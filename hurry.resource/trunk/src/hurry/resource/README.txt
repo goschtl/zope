@@ -1,6 +1,7 @@
 hurry.resource
 **************
 
+
 Introduction
 ============
 
@@ -70,7 +71,7 @@ this object::
 
 Let's now see what resources are needed by this inclusion::
 
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -90,7 +91,7 @@ When we need a group, we'll get all inclusions referenced in it::
 
   >>> needed = NeededInclusions()
   >>> needed.need(group)
-  >>> group.inclusions()
+  >>> group.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'b.css' in library 'foo'>]
 
@@ -98,7 +99,7 @@ A group can also be depended on; it won't show up in the list of
 inclusions directly::
 
   >>> more_stuff = ResourceInclusion(foo, 'more_stuff.js', depends=[group])
-  >>> more_stuff.inclusions()
+  >>> more_stuff.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'b.css' in library 'foo'>,
    <ResourceInclusion 'more_stuff.js' in library 'foo'>]
@@ -176,7 +177,7 @@ Nothing yet. We now make ``y1`` needed using our simplified spelling::
 
 The resource inclusion will now indeed be needed::
 
-  >>> get_current_needed_inclusions().inclusions()
+  >>> get_current_needed_inclusions().inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -238,7 +239,7 @@ We create a new set of needed inclusions::
 We need ``y1`` again::
 
   >>> needed.need(y1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -248,7 +249,7 @@ resources needed. So when we need ``y1`` again, we see no difference
 in the needed resources::
 
   >>> needed.need(y1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -257,12 +258,12 @@ Needing ``x1`` or ``x2`` won't make any difference either, as ``y1``
 already required ``x1`` and ``x2``::
 
   >>> needed.need(x1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
   >>> needed.need(x2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -274,7 +275,7 @@ before we need those in ``y1``. Again this makes no difference::
   >>> needed.need(x1)
   >>> needed.need(x2)
   >>> needed.need(y1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>,
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -287,12 +288,12 @@ Let's try it with more complicated dependency structures now::
   >>> a3 = ResourceInclusion(foo, 'a3.js', depends=[a2])
   >>> a4 = ResourceInclusion(foo, 'a4.js', depends=[a1])
   >>> needed.need(a3)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>,
    <ResourceInclusion 'a2.js' in library 'foo'>,
    <ResourceInclusion 'a3.js' in library 'foo'>]
   >>> needed.need(a4)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>,
    <ResourceInclusion 'a2.js' in library 'foo'>,
    <ResourceInclusion 'a3.js' in library 'foo'>,
@@ -304,7 +305,7 @@ inclusion structure, based on the order in which need was expressed::
   >>> needed = NeededInclusions()
   >>> needed.need(a4)
   >>> needed.need(a3)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>,
    <ResourceInclusion 'a4.js' in library 'foo'>,
    <ResourceInclusion 'a2.js' in library 'foo'>,
@@ -316,7 +317,7 @@ something that ends up depending on everything::
   >>> a5 = ResourceInclusion(foo, 'a5.js', depends=[a4, a3])
   >>> needed = NeededInclusions()
   >>> needed.need(a5)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>,
    <ResourceInclusion 'a4.js' in library 'foo'>,
    <ResourceInclusion 'a2.js' in library 'foo'>,
@@ -330,7 +331,7 @@ though the sorting order is different::
   >>> needed = NeededInclusions()
   >>> needed.need(a3)
   >>> needed.need(a5)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>, 
    <ResourceInclusion 'a2.js' in library 'foo'>, 
    <ResourceInclusion 'a3.js' in library 'foo'>, 
@@ -353,14 +354,14 @@ Let's need this resource::
 
 By default, we get ``k.js``::
 
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'k.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
 ``k-debug.js``::
 
   >>> needed.mode('debug')
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'k-debug.js' in library 'foo'>]
 
 Modes can also be specified fully with a resource inclusion, which allows
@@ -373,14 +374,14 @@ you to specify a different ``library`` argumnent::
 
 By default we get ``k2.js``::
 
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'k2.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
 ``k2-debug.js``::
 
   >>> needed.mode('debug')
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'k2-debug.js' in library 'foo'>]
 
 Note that modes are assumed to be identical in dependency structure;
@@ -392,7 +393,7 @@ return its default resource instead::
   >>> needed = NeededInclusions()
   >>> needed.mode('minified')
   >>> needed.need(k1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'k.js' in library 'foo'>]
 
 ``hurry.resource`` suggests resource libraries follow the following
@@ -437,7 +438,7 @@ Let's set up a resource and need it::
 Let's look at the resources needed by default::
 
   >>> c = get_current_needed_inclusions()
-  >>> c.inclusions()
+  >>> c.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'l1.js' in library 'foo'>]
 
 Let's now change the mode using the convenience
@@ -448,7 +449,7 @@ Let's now change the mode using the convenience
 
 When we request the resources now, we get them in the ``debug`` mode::
 
-  >>> c.inclusions()
+  >>> c.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'l1-debug.js' in library 'foo'>]
 
 "Rollups"
@@ -474,7 +475,7 @@ Without rollups enabled nothing special happens::
   >>> needed = NeededInclusions()
   >>> needed.need(b1)
   >>> needed.need(b2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b1.js' in library 'foo'>, <ResourceInclusion 'b2.js' in library 'foo'>]
 
 Let's enable rollups::
@@ -492,7 +493,7 @@ consolidation, the system automatically collapses them::
 
   >>> needed.need(b1)
   >>> needed.need(b2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giant.js' in library 'foo'>]
 
 The system will by default only consolidate exactly. That is, if only a single
@@ -501,7 +502,7 @@ resource out of two is present, the consolidation will not be triggered::
   >>> needed = NeededInclusions()
   >>> needed.rollup()
   >>> needed.need(b1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b1.js' in library 'foo'>]
 
 Let's look at this with a larger consolidation of 3 resources::
@@ -516,7 +517,7 @@ It will not roll up one resource::
   >>> needed = NeededInclusions()
   >>> needed.rollup()
   >>> needed.need(c1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'c1.css' in library 'foo'>]
 
 Neither will it roll up two resources::
@@ -525,7 +526,7 @@ Neither will it roll up two resources::
   >>> needed.rollup()
   >>> needed.need(c1)
   >>> needed.need(c2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'c1.css' in library 'foo'>,
    <ResourceInclusion 'c2.css' in library 'foo'>]
   
@@ -536,7 +537,7 @@ It will however roll up three resources::
   >>> needed.need(c1)
   >>> needed.need(c2)
   >>> needed.need(c3)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantc.css' in library 'foo'>]
 
 The default behavior is to play it safe: we cannot be certain that we
@@ -566,7 +567,7 @@ We will see ``giantd.js`` kick in even if we only require ``d1`` and
   >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.need(d2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantd.js' in library 'foo'>]
 
 In fact even if we only need a single resource the eager superseder will
@@ -575,7 +576,7 @@ show up instead::
   >>> needed = NeededInclusions()
   >>> needed.rollup()
   >>> needed.need(d1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantd.js' in library 'foo'>]
 
 If there are two potential eager superseders, the biggest one will
@@ -588,7 +589,7 @@ be taken::
   >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.need(d2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantd-bigger.js' in library 'foo'>]
 
 If there is a potential non-eager superseder and an eager one, the eager one
@@ -602,7 +603,7 @@ will be taken::
   >>> needed.need(d2)
   >>> needed.need(d3)
   >>> needed.need(d4)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantd-bigger.js' in library 'foo'>]
 
 A resource can be part of multiple rollups. In this case the rollup
@@ -622,7 +623,7 @@ resources will be used::
   >>> needed.need(e1)
   >>> needed.need(e2)
   >>> needed.need(e3)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giante-three.js' in library 'foo'>]
 
 Consolidation also works with modes::
@@ -636,10 +637,10 @@ Consolidation also works with modes::
   >>> needed.rollup()
   >>> needed.need(f1)
   >>> needed.need(f2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantf.js' in library 'foo'>]
   >>> needed.mode('debug')
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantf-debug.js' in library 'foo'>]
 
 What if the rolled up resources have no mode but the superseding resource
@@ -654,10 +655,10 @@ modes have no effect::
   >>> needed.rollup()
   >>> needed.need(g1)
   >>> needed.need(g2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
   >>> needed.mode('debug')
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
 
 What if the rolled up resources have a mode but the superseding resource
@@ -670,14 +671,14 @@ does not? Let's look at that scenario::
   >>> needed.rollup()
   >>> needed.need(h1)
   >>> needed.need(h2)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'gianth.js' in library 'foo'>]
 
 Since there is no superseder for the debug mode, we will get the two 
 resources, not rolled up::
 
   >>> needed.mode('debug')
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'h1-debug.js' in library 'foo'>,
    <ResourceInclusion 'h2-debug.js' in library 'foo'>]
 
@@ -688,7 +689,7 @@ Let's define some needed resource inclusions::
 
   >>> needed = NeededInclusions()
   >>> needed.need(y1)
-  >>> needed.inclusions()
+  >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>, 
    <ResourceInclusion 'a.js' in library 'foo'>, 
    <ResourceInclusion 'c.js' in library 'foo'>]
@@ -1084,7 +1085,7 @@ sense, you can use ``sort_inclusions_topological``::
 Let's make a list of resource inclusions not sorted by dependency::
 
   >>> i = [a5, a3, a1, a2, a4]
-  >>> sort_inclusions_topological(i)
+  >>> sort_inclusions_topological(i) #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'a1.js' in library 'foo'>, 
    <ResourceInclusion 'a4.js' in library 'foo'>, 
    <ResourceInclusion 'a2.js' in library 'foo'>, 
@@ -1114,7 +1115,7 @@ Let's create an inclusion of unknown resource:
   >>> a6 = ResourceInclusion(foo, 'nothing.unknown')
 
   >>> from hurry.resource.core import render_inclusions
-  >>> render_inclusions([a6])
+  >>> render_inclusions([a6]) #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
   Traceback (most recent call last):
   ...
   UnknownResourceExtension: Unknown resource extension .unknown for resource

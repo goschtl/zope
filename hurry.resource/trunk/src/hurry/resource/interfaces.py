@@ -5,7 +5,7 @@ except ImportError:
     class Interface(object):
         pass
     class Attribute(object):
-        def __init__(s):
+        def __init__(self, s):
             pass
 
 class ILibrary(Interface):

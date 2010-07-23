@@ -3,10 +3,12 @@ from types import TupleType
 
 try:
     from zope.interface import implements
+    ZCA = True
 except ImportError:
     # fallback in case zope.interface isn't present
     def implements(iface):
         pass
+    ZCA = False
     
 from hurry.resource import interfaces
 
@@ -153,8 +155,8 @@ def normalize_inclusions(library, inclusions):
             for inclusion in inclusions]
 
 def normalize_inclusion(library, inclusion):
-    # XXX we don't want dependency on zope.interface but
-    # it'd be better to say IInclusion.providedBy
+    if ZCA and interfaces.IInclusion.providedBy(inclusion):
+        return inclusion
     if isinstance(inclusion, InclusionBase):
         return inclusion
     assert isinstance(inclusion, basestring)
