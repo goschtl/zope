@@ -873,7 +873,61 @@ resourceDirectory
 :namespace: ``http://namespaces.zope.org/browser``
 :include: ``zope.browserresource``
 
+**Description**
+
+**Attributes**
+
+- **name** - The name of the resource
+
+  This is the name used in resource urls. Resource urls are of the
+  form ``site/@@/resourcename``, where site is the url of ``site``, a
+  folder with a site manager.
+
+  We make resource urls site-relative (as opposed to
+  content-relative) so as not to defeat caches.
+
+- **directory** - Directory
+
+  The directory containing the resource data.
+
+- ``factory`` - Resource Factory
+
+  The factory used to create the resource. The factory should only
+  expect to get the request passed when called.
+
+- ``file`` - File
+
+  The file containing the resource data.
+
+
+- ``image`` - Image
+
+  If the image attribute is used, then an image resource, rather than
+  a file resource will be created.
+
+- ``layer`` - The layer the resource should be found in
+
+  For information on layers, see the documentation for the skin
+  directive.  Defaults to *default*.
+
+- ``permission`` - The permission needed to access the resource.
+
+  If a permission isn't specified, the resource will always be
+  accessible.
+
+- ``template`` - Template
+
+  If the template attribute is used, then a page template resource,
+  rather than a file resource will be created.
+
 **Examples**
+
+::
+
+  <browser:resourceDirectory
+    name="resource"
+    directory="resource"
+    />
 
 i18n-resource
 -------------
