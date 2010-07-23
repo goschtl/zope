@@ -24,7 +24,7 @@ would like to be added to this list, or removed, please contact
 
 ----
 
-:Company: Alter Way
+:Company: `Alter Way <http://alterway.fr/>`_
 :E-mail: contact AT alterway.fr
 :Phone: +33 1 78 15 24 00
 :Fax: +33 1 46 02 44 04
