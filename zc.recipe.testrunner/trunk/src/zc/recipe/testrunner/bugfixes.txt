@@ -91,4 +91,7 @@ Running bugfix1.tests.Layer2 tests:
   Running in a subprocess.
   Set up bugfix1.tests.Layer2 in 0.000 seconds.
   Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+  Tear down bugfix1.tests.Layer2 in 0.001 seconds.
+Tearing down left over layers:
+  Tear down bugfix1.tests.Layer1 in 0.001 seconds.
 Total: 2 tests, 0 failures, 0 errors in 0.261 seconds.
