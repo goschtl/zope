@@ -20,6 +20,7 @@ class Library(object):
     
     def __init__(self, name, rootpath):
         self.name = name
+        self.rootpath = rootpath
         self.path = pkg_resources.resource_filename(__name__, rootpath)
 
 def libraries():
@@ -462,7 +463,8 @@ def generate_code(**kw):
     result.append("")
     # define libraries
     for library in libraries:
-        result.append("%s = Library('%s')" % (library.name, library.name))
+        result.append("%s = Library('%s', '%s')" %
+                      (library.name, library.name, library.rootpath))
     result.append("")
 
     # sort inclusions in the order we want them to be

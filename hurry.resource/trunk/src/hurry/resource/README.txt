@@ -1066,7 +1066,7 @@ inclusions::
   >>> print generate_code(i1=i1, i2=i2, i3=i3, i4=i4, i5=i5)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
-  foo = Library('foo')
+  foo = Library('foo', 'dummy')
   <BLANKLINE>
   i1 = ResourceInclusion(foo, 'i1.js')
   i2 = ResourceInclusion(foo, 'i2.js', depends=[i1])
@@ -1084,7 +1084,7 @@ Let's look at a more complicated example with modes and superseders::
   >>> print generate_code(j1=j1, j2=j2, giantj=giantj)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
-  foo = Library('foo')
+  foo = Library('foo', 'dummy')
   <BLANKLINE>
   j1 = ResourceInclusion(foo, 'j1.js', debug='j1-debug.js')
   j2 = ResourceInclusion(foo, 'j2.js', debug='j2-debug.js')
@@ -1096,14 +1096,14 @@ using keyword parameters::
   >>> print generate_code(hoi=i1)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
-  foo = Library('foo')
+  foo = Library('foo', 'dummy')
   <BLANKLINE>
   hoi = ResourceInclusion(foo, 'i1.js')
 
   >>> print generate_code(hoi=i1, i2=i2)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
-  foo = Library('foo')
+  foo = Library('foo', 'dummy')
   <BLANKLINE>
   hoi = ResourceInclusion(foo, 'i1.js')
   i2 = ResourceInclusion(foo, 'i2.js', depends=[hoi])
