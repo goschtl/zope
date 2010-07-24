@@ -1,0 +1,24 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:grok="http://namespaces.zope.org/grok">
+
+  <include package="z3c.autoinclude" file="meta.zcml" />
+
+  <includeDependencies package="." />
+
+  <grok:grok package="."/>
+
+  <utility
+      component=".zopesupport.Request"
+      provides="zope.app.publication.interfaces.IBrowserRequestFactory"
+      />
+
+  <class class=".zopesupport.Request">
+    <require like_class="zope.publisher.browser.BrowserRequest" />
+  </class>
+
+  <class class=".zopesupport.Response">
+    <require like_class="zope.publisher.browser.BrowserResponse" />
+  </class>
+
+</configure>
