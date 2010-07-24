@@ -38,7 +38,11 @@ setup(
     entry_points= {
     'console_scripts': [
       'yuiprepare = hurry.yui.prepare:main',
-      ]
+      ],
+    'hurry.resource.libraries': [
+      'yui = hurry.yui:yui',
+      ],
+           
     },
 
     )
