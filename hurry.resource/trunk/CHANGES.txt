@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.10 (unreleased)
+0.10 (2010-07-24)
 =================
 
 * The WSGI Middleware depends on WebOb, which is an optional
