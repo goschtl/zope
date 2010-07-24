@@ -22,6 +22,9 @@ class Library(object):
         self.name = name
         self.path = pkg_resources.resource_filename(__name__, rootpath)
 
+def libraries():
+    return pkg_resources.iter_entry_points('hurry.resource.libraries')
+
 class InclusionBase(object):
     implements(interfaces.IInclusion)
 

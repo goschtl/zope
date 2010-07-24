@@ -1,4 +1,5 @@
 from hurry.resource.core import (Library,
+                                 libraries,
                                  ResourceInclusion,
                                  GroupInclusion,
                                  NeededInclusions)

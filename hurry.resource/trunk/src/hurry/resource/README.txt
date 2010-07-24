@@ -43,6 +43,36 @@ The full path to the directory with the resources is reconstructed::
   >>> foo.path #doctest: +ELLIPSIS
   '.../hurry.resource/src/hurry/resource/dummy'
 
+Entry points
+============
+
+Libraries can be exposed for registration by whatever web framework
+that hurry.resource is integrated with. This web framework can then
+expose the library path on a URL somewhere. This is done using the
+``hurry.resource.libraries`` entry point. To register ``Library``
+instances ``foo`` and ``bar`` in your package as entry points include
+a section like this in your ``setup.py``::
+
+      entry_points={
+        'hurry.resource.libraries': [
+            'foo = mypackage.foomodule:foo',
+            'bar = mypackage.barmodule:bar',
+            ],
+        }
+
+There is an API to help you obtain all registered libraries::
+
+  >>> from hurry.resource import libraries
+
+Nothing is registered however::
+
+  >>> list(libraries())
+  []
+
+It would be nice to now have some tests that see whether entry points
+actually get picked up so, but that would require an involved test
+setup that we find difficult to construct.
+
 Inclusion
 =========
 
