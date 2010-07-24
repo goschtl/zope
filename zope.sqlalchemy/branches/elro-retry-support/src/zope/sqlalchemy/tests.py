@@ -471,8 +471,10 @@ class RetryTests(unittest.TestCase):
 
         self.tm1 = transaction.TransactionManager()
         self.tm2 = transaction.TransactionManager()
-        e1 = sa.create_engine(TEST_DSN, isolation_level='SERIALIZABLE', echo=True)
-        e2 = sa.create_engine(TEST_DSN, isolation_level='SERIALIZABLE', echo=True)
+        # With psycopg2 you might supply isolation_level='SERIALIZABLE' here,
+        # unfortunately that is not supported by cx_Oracle.
+        e1 = sa.create_engine(TEST_DSN)
+        e2 = sa.create_engine(TEST_DSN)
         self.s1 = orm.sessionmaker(
             bind=e1,
             extension=tx.ZopeTransactionExtension(transaction_manager=self.tm1),
@@ -494,6 +496,7 @@ class RetryTests(unittest.TestCase):
         orm.clear_mappers()
 
     def testRetry(self):
+        # sqlite is unable to run this test as the databse is locked
         tm1, tm2, s1, s2 = self.tm1, self.tm2, self.s1, self.s2
         # make sure we actually start a session.
         tm1.begin()
@@ -519,6 +522,7 @@ class RetryTests(unittest.TestCase):
         tm1.begin()
         self.failUnless(len(s1.query(User).all())==1, "Users table should have one row")
         tm2.begin()
+        s2.connection().execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
         self.failUnless(len(s2.query(User).all())==1, "Users table should have one row")
         s1.query(User).delete()
         raised = False
@@ -576,8 +580,10 @@ def test_suite():
     import doctest
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     suite = TestSuite()
-    for cls in (ZopeSQLAlchemyTests, MultipleEngineTests, RetryTests):
-        suite.addTest(makeSuite(cls))
+    suite.addTest(makeSuite(ZopeSQLAlchemyTests))
+    suite.addTest(makeSuite(MultipleEngineTests))
+    if TEST_DSN.startswith('postgres') or TEST_DSN.startswith('oracle'):
+        suite.addTest(makeSuite(RetryTests))
     suite.addTest(doctest.DocFileSuite('README.txt', optionflags=optionflags, tearDown=tearDownReadMe,
         globs={'TEST_DSN': TEST_DSN, 'TEST_TWOPHASE': TEST_TWOPHASE}))
     return suite
