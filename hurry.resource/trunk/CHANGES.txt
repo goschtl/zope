@@ -13,10 +13,12 @@ CHANGES
   argument as the second argument. This is a path to the actual
   resource directory that the library represents, relative to the
   directory of the package. This is needed to make `` hurry.resource``
-  useful for frameworks not based on ``zope.configuration``. This
-  breaks backwards compatibility with previous versions of
+  useful for frameworks not based on ``zope.configuration``. 
+
+  This breaks backwards compatibility with previous versions of
   ``hurry.resource``; all code that uses ``Library`` should be
-  adjusted.
+  adjusted. Please also update their ``setup.py`` to depend on
+  ``hurry.resource >= 0.10``.
 
 * Packages should register their ``Library`` instances with
   ``hurry.resource`` using the ``hurry.resource.libraries`` entry
