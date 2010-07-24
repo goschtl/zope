@@ -1,10 +1,26 @@
 CHANGES
 *******
 
-0.9.1 (unreleased)
-================
+0.10 (unreleased)
+=================
 
-* Added a path attribute to Library.
+* The WSGI Middleware depends on WebOb, which is an optional
+  dependency. Don't expose it into the ``__init__.py`` therefore, as
+  that needs to be independent of WebOb. To use the middleware import
+  it directly from ``hurry.resource.wsgi``.
+  
+* The ``Library`` factory now has to be called with a rootpath
+  argument as the second argument. This is a path to the actual
+  resource directory that the library represents, relative to the
+  directory of the package. This is needed to make `` hurry.resource``
+  useful for frameworks not based on ``zope.configuration``. This
+  breaks backwards compatibility with previous versions of
+  ``hurry.resource``; all code that uses ``Library`` should be
+  adjusted.
+
+* Packages should register their ``Library`` instances with
+  ``hurry.resource`` using the ``hurry.resource.libraries`` entry
+  point.
 
 0.9 (2010-07-13)
 ================
