@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.5 (unreleased)
+0.5 (2010-07-24)
 ================
 
 * Drop the zope.app.component dependency.
