@@ -15,7 +15,7 @@ def depend(version):
     return convert_to_inclusions(d)
 
 def convert_to_inclusions(d):
-    yui = Library('yui')
+    yui = Library('yui', 'yui-build')
     inclusion_map = {}
     for name, value in d.items():
         name = normalize_name(name)

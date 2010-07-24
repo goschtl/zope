@@ -32,7 +32,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource > 0.2',
+        'hurry.resource > 0.9',
         'simplejson',
         ],
     entry_points= {
