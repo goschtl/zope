@@ -14,5 +14,3 @@ from hurry.resource.core import (sort_inclusions_topological,
 
 from hurry.resource.core import (register_plugin,
                                  get_current_needed_inclusions)
-
-from hurry.resource.wsgi import Middleware
