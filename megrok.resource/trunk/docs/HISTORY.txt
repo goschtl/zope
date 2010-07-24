@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5 (unreleased)
+0.5 (2010-07-24)
 ----------------
 
 * Removed specific ILibrary interface and now use the one from hurry.resource
