@@ -45,13 +45,6 @@ the package that the Library is defined in::
   >>> foo.path #doctest: +ELLIPSIS
   '.../hurry.resource/src/hurry/resource/dummy'
 
-You can also give a package that contains the rootpath explicitly::
-
-  >>> import hurry.resource
-  >>> bar = Library('foo', 'dummy', package=hurry.resource)
-  >>> bar.path #doctest: +ELLIPSIS
-  '.../hurry.resource/src/hurry/resource/dummy'
-
 Entry points
 ============
 

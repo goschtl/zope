@@ -1,4 +1,4 @@
-import os
+import os, sys
 from types import TupleType
 import pkg_resources
 
@@ -18,17 +18,19 @@ EXTENSIONS = ['.css', '.kss', '.js']
 class Library(object):
     implements(interfaces.ILibrary)
     
-    def __init__(self, name, rootpath, package=None):
+    def __init__(self, name, rootpath):
         self.name = name
         self.rootpath = rootpath
-        if package is not None:
-            name = package.__name__
-        else:
-            name = __name__
-        self.path = pkg_resources.resource_filename(name, rootpath)
+        self.path = os.path.join(caller_dir(), rootpath)
+
+# total hack to be able to get the dir the resources will be in
+def caller_dir():
+    return os.path.dirname(sys._getframe(2).f_globals['__file__'])
 
 def libraries():
-    return pkg_resources.iter_entry_points('hurry.resource.libraries')
+    for entry_point in pkg_resources.iter_entry_points(
+        'hurry.resource.libraries'):
+        yield entry_point.load()
 
 class InclusionBase(object):
     implements(interfaces.IInclusion)
