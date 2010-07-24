@@ -18,10 +18,14 @@ EXTENSIONS = ['.css', '.kss', '.js']
 class Library(object):
     implements(interfaces.ILibrary)
     
-    def __init__(self, name, rootpath):
+    def __init__(self, name, rootpath, package=None):
         self.name = name
         self.rootpath = rootpath
-        self.path = pkg_resources.resource_filename(__name__, rootpath)
+        if package is not None:
+            name = package.__name__
+        else:
+            name = __name__
+        self.path = pkg_resources.resource_filename(name, rootpath)
 
 def libraries():
     return pkg_resources.iter_entry_points('hurry.resource.libraries')
