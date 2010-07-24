@@ -1,7 +1,0 @@
-<html>
-<head>
-</head>
-<body>
-<p tal:content="view/widget"></p>
-</body>
-</html>
