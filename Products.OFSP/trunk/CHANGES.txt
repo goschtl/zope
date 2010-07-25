@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.13.2 (unreleased)
+2.13.2 (2010-07-25)
 -------------------
 
 - Moved the registration of OFS types back into this packages `initialize`
