@@ -59,8 +59,10 @@ Creating template bluebream
 Creating directory ./sample
 <BLANKLINE>
 Your project has been created! Now, you want to:
-...
-
+1) put the generated files under version control
+2) run: python bootstrap.py
+3) run: ./bin/buildout
+<BLANKLINE>
 
 >>> print_dir('sample')
 sample/bootstrap.py
