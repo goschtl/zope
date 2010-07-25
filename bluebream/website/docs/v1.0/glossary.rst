@@ -38,7 +38,7 @@ Glossary
   Distribute
     A `community developed fork`_ of the :term:`Setuptools` project.
 
-  Zope Toolkit
+  Zope Tool Kit
     The `Zope Tool Kit`_ (ZTK) is a set of libraries intended for
     reuse by projects to develop web applications or web frameworks.
 
