@@ -4,6 +4,8 @@ Changelog
 2.13.2 (unreleased)
 -------------------
 
+- Moved the registration of OFS types back into this packages `initialize`
+  function to avoid test setup problems with installPackage in ZopeTestCase.
 
 2.13.1 (2010-07-11)
 -------------------
