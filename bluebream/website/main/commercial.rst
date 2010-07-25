@@ -37,6 +37,16 @@ would like to be added to this list, or removed, please contact
 
 ----
 
+:Company/Contractor: `Adam Groszer <http://hu.linkedin.com/in/agroszer/>`_
+  `pyte <http://www.pyte.hu/>`_
+:E-mail: agroszer AT gmail.com
+:Phone: +36 20 4023050
+:Location: Hungary
+:Comments: We do custom application development, consulting, hosting in the Zope
+  technology field.
+
+----
+
 :Company/Contractor:
 :E-mail:
 :Phone:
