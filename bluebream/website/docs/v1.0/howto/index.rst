@@ -16,6 +16,7 @@ HOWTOs
    absoluteurl
    dynamicfields
    testingpersistent
+   localsitemanager
 
 .. raw:: html
 
