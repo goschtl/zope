@@ -47,6 +47,16 @@ would like to be added to this list, or removed, please contact
 
 ----
 
+:Company: `Programmers of Vilnius (POV) <http://pov.lt>`_
+:E-mail: info AT pov.lt
+:Phone: +37065636462
+:Fax: +3705265190
+:Location: Vilnius, Lithuania
+:Comments: An experienced team of developers can bootstrap a project or provide
+  consulting and support for an existing one.
+
+----
+
 :Company/Contractor:
 :E-mail:
 :Phone:
