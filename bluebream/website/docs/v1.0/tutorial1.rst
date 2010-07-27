@@ -3,12 +3,6 @@
 Tutorial --- Part 1
 ===================
 
-.. warning::
-
-   This documentation is under construction.  See the `Documentation
-   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
-   in wiki for the current status and timeline.
-
 .. _tut1-introduction:
 
 Introduction

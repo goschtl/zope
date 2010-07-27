@@ -1,12 +1,6 @@
 Dynamic fields in forms
 =======================
 
-.. warning::
-
-   This documentation is under construction.  See the `Documentation
-   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
-   in wiki for the current status and timeline.
-
 .. based on: http://wiki.zope.org/zope3/HowDoIUseDynamicFieldsInFormlib
 
 To add fields dynamically using ``zope.formlib`` machinery, one

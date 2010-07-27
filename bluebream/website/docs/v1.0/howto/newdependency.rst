@@ -1,12 +1,6 @@
 Adding new package dependency
 =============================
 
-.. warning::
-
-   This documentation is under construction.  See the `Documentation
-   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
-   in wiki for the current status and timeline.
-
 .. based on: http://wiki.zope.org/zope3/HowDoIAddAnEggDependency
 
 You are working in your instance or developing your package and then

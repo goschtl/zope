@@ -3,12 +3,6 @@
 Default view for objects
 ========================
 
-.. warning::
-
-   This documentation is under construction.  See the `Documentation
-   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
-   in wiki for the current status and timeline.
-
 In BlueBream, a browser view can be accessed using ``@@`` symbols
 before the view name.  For example, if you have registered a view
 named ``testview`` for a container object named ``myobject``, that

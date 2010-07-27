@@ -1,18 +1,12 @@
 What's new in BlueBream 1.0 ?
 =============================
 
-.. warning::
-
-   This documentation is under construction.  See the `Documentation
-   Status <http://wiki.zope.org/bluebream/DocumentationStatus>`_ page
-   in wiki for the current status and timeline.
-
 Migration issues
 ----------------
 
-.. note: based on ZTK documentation.
-         We should find a way to import this doc from the zopetoolkit instead of
-         duplicating it here.
+.. note: This is based on ZTK documentation.  We should find a way to
+         import this doc from the zopetoolkit instead of duplicating
+         it here.
 
 
 zope.app.keyreference -> zope.keyreference
@@ -119,8 +113,8 @@ should be preferred for new developments.
 zope.app.security refactoring
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``zope.app.security`` package was finally refactored into a few small parts
-with less dependencies and more clear purpose.
+The ``zope.app.security`` package was finally refactored into a few
+small parts with less dependencies and more clear purpose.
 
 The implementation of the ``<module>`` ZCML directive moved from this
 package to ``zope.security``.  Packages that relied on
@@ -155,13 +149,15 @@ supported much by Zope Toolkit and Application anymore, so it can be
 considered deprecated.  However, it can serve as a great example of
 TTW-related component.
 
-The `Permission vocabularies` and standard protections for Message objects and
-`__name__`, `__parent__` attributes as well as some common permissions, like `zope.View`
-and `zope.ManageContent` were merged into `zope.security`.
+The `Permission vocabularies` and standard protections for Message
+objects and `__name__`, `__parent__` attributes as well as some
+common permissions, like `zope.View` and `zope.ManageContent` were
+merged into `zope.security`.
 
-The adapters from ``zope.publisher``'s `IHTTPCredentials` and `IFTPCredentials`
-to the `ILoginPassword` were moved into ``zope.publisher``, thus making
-``zope.authentication`` a dependency for ``zope.publisher``.
+The adapters from ``zope.publisher``'s `IHTTPCredentials` and
+`IFTPCredentials` to the `ILoginPassword` were moved into
+``zope.publisher``, thus making ``zope.authentication`` a dependency
+for ``zope.publisher``.
 
 The original ``zope.app.security`` package now only contains several
 deprecated or application-specific permission definitions, python
@@ -173,8 +169,9 @@ and/or standard ZMI browser views, you probably should review update
 your imports to a new places and drop dependency on
 ``zope.app.security`` to reduce package dependencies count.
 
-Other packages, that used ``zope.app.security``, like ``zope.securitypolicy`` are
-either already adapted to the changes or will be adapted soon.
+Other packages, that used ``zope.app.security``, like
+``zope.securitypolicy`` are either already adapted to the changes or
+will be adapted soon.
 
 zope.app.publisher refactoring
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -7853,8 +7850,9 @@ zope.traversing
 3.5.2 (2009-02-04)
 ******************
 
-- The RootPhysicallyLocatable is not the same as LocationPhysicallyLocatable
-  now in zope.location. Fix the import and testing setups.
+- The RootPhysicallyLocatable is not the same as
+  LocationPhysicallyLocatable now in zope.location. Fix the import
+  and testing setups.
 
 3.5.1 (2009-02-02)
 ******************
@@ -7967,9 +7965,9 @@ zope.viewlet
 3.5.0 (2009-01-26)
 ******************
 
-- Removed the dependency on `zope.app.publisher` by moving four simple helper
-  functions into this package and making the interface for describing the
-  ZCML content provider directive explicit.
+- Removed the dependency on `zope.app.publisher` by moving four
+  simple helper functions into this package and making the interface
+  for describing the ZCML content provider directive explicit.
 
 - Typo fix in CSSViewlet docstring.
 
