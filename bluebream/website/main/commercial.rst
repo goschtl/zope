@@ -57,6 +57,15 @@ would like to be added to this list, or removed, please contact
 
 ----
 
+:Company: `Sterch Ltd. <http://sterch.net>`_
+:Email: info AT sterch.net
+:Phone: +38 (044) 502-61-28
+:Location: Kyiv, Ukraine
+:Comments: We provide web applications development and hosting based
+  on Zope3 and Bluebream technologies.
+
+----
+
 :Company/Contractor:
 :E-mail:
 :Phone:
