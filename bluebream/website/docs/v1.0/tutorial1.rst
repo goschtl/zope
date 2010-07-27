@@ -312,6 +312,8 @@ the ``bin`` directory.
 Now we have a project structure which will allow us to continue
 developing our application.
 
+.. _tut1-pastedeploy-configuration:
+
 PasteDeploy configuration
 -----------------------------
 
@@ -455,8 +457,10 @@ sections.  The Zope configuration file specified here
 (``etc/zope-debug.conf``) is different from the deployment
 configuration.
 
+.. _tut1-zope-configuration:
+
 Zope configuration
-----------------------
+------------------
 
 Similar to PasteDeploy configuration, there are two Zope
 configuration files: ``etc/zope.conf`` and ``etc/zope-debug.conf``.
@@ -503,6 +507,8 @@ This is the content of ``etc/zope.conf``::
 From the ``zope.conf`` file, you can specify the main ZCML file to be
 loaded (site definition).  All paths are specified as relative to the
 top-level directory where the PasteDeploy configuration file resides.
+
+.. _tut1-site-definition:
 
 The site definition
 -------------------
@@ -626,7 +632,7 @@ the configuration file, it will include ``configure.zcml``.
 .. _tut1-package-meta-data:
 
 Package meta-data
----------------------
+-----------------
 
 BlueBream uses :term:`Setuptools` to distribute the application
 package.  However, you could easily replace it with
@@ -704,6 +710,8 @@ keyword argument, you can list all dependencies for the package.
 There are two entry points, the first one is used by PasteDeploy to
 find the WSGI application factory.  The second entry point registers
 a sub-command for ``paster`` script named ``shell``.
+
+.. _tut1-running-tests:
 
 Running Tests
 -------------
