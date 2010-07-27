@@ -388,3 +388,14 @@ from setuptools import setup, find_packages
 shell = sample.main.debug:Shell
 ...
 
+The version file should contain a special marker to define the last version in
+which the template significantly changed:
+
+>>> import bluebream, os
+>>> from os.path import join, dirname
+>>> version_file = open(join(dirname(dirname(dirname(bluebream.__file__))), 'versions.cfg')).read()
+>>> 'LAST_TEMPLATE_CHANGE' in version_file
+True
+
+
+

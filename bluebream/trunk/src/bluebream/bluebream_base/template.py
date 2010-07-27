@@ -39,7 +39,8 @@ class FindLatest(HTMLParser):
 
 
 class BlueBream(templates.Template):
-
+    """ The main paster template for Bluebream
+    """
     _template_dir = 'project_template'
     summary = "A BlueBream project, base template"
 
@@ -65,21 +66,39 @@ class BlueBream(templates.Template):
         """This method checks the variables and ask for missing ones
         """
         # Find the latest versions.cfg online
-        latest = pkg_resources.get_distribution('bluebream').version
+        current = pkg_resources.get_distribution('bluebream').version
+        latest = current
         try:
             if 'offline' not in vars:  #offline is used in tests
-                print 'Searching the latest version...'
+                sys.stdout.write('Searching the latest version... ')
+                parse_version = pkg_resources.parse_version
+
                 # parse the download html page and store versions
                 parser = FindLatest()
                 parser.feed(urlopen(DOWNLOAD_URL).read())
+
                 # return the highest version
+                if not len(parser.versions):
+                    raise IOError('No versions found')
                 latest = sorted(parser.versions,
-                              key=lambda v: pkg_resources.parse_version(v))[-1]
-                print 'Latest version found: %s' % latest
+                              key=lambda v: parse_version(v))[-1]
+                print str(latest) + '\n'
+                # warn the user if there is a change in latest template
+                last_change = '1.0b4' # feature introduced for 1.0b4
+                for line in urlopen(DOWNLOAD_URL
+                                    + 'bluebream-%s.cfg' % latest).readlines():
+                    if 'LAST_TEMPLATE_CHANGE' in line:
+                        last_change = line.split('=')[1].strip()
+                        break
+                if parse_version(last_change) > parse_version(current):
+                    print ('**WARNING**: the project template for Bluebream '
+                           'has changed since version %s.\n'
+                           'You should upgrade to this version.\n' % last_change)
+
         except IOError:
             # if something wrong occurs, we keep the current version
-            print u'Error while getting the latest version online'
-            print u'Please check that you can access %s' % DOWNLOAD_URL
+            print u'**WARNING**: error while getting the latest version online'
+            print u'Please check that you can access %s\n' % DOWNLOAD_URL
 
         # suggest what Paste chose
         for var in self.vars:
@@ -121,7 +140,6 @@ class BlueBream(templates.Template):
         vars['ns_prefix'] = '.'.join(self.ns_split[:-1]) + '.'
         if len(self.ns_split) == 1:
             vars['ns_prefix'] = ''
-
 
     def post(self, command, output_dir, vars):
         """Add namespace packages and move the main package to the last level
