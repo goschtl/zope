@@ -177,6 +177,8 @@ projects listed.
 .. _PyPi: http://pypi.python.org/pypi
 .. _intro-organization:
 
+.. _intro-more-about-project:
+
 More about the project
 ----------------------
 
@@ -217,6 +219,8 @@ on top.  This development led to the following logical steps:
 
 BlueBream can thus be seen as the successor of Zope 3 web application
 server that like Grok relies on the ZTK.
+
+.. _intro-organization-doc:
 
 Organization of the documentation
 ---------------------------------
@@ -291,6 +295,8 @@ development, including one *Guido Van Rossum*.  For more than 10 years
 contributions have come from a world-wide community.  We thank you
 all.  Please help us add more names to the list of contributor as we
 move forward from January 2010.
+
+.. _intro-translations:
 
 Translations
 ------------
