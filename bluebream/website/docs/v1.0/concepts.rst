@@ -1,8 +1,14 @@
+.. _concepts:
+
 Concepts and Technologies
 =========================
 
+.. _concepts-concepts:
+
 Concepts
 --------
+
+.. _concepts-interface:
 
 Interface
 ~~~~~~~~~
@@ -28,6 +34,8 @@ Some of the motivations for using interfaces are:
 
 - Document the API
 
+.. _concepts-zca:
+
 Zope Component Architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -47,6 +55,8 @@ component architecture we can spread the complexity of systems over
 multiple cooperating components.  Zope component architecture help us
 to create two basic kinds of components, adapters and utilities.
 
+.. _concepts-event:
+
 Event
 ~~~~~
 
@@ -58,6 +68,8 @@ package also provides a very simple event-dispatching system on which
 more sophisticated event dispatching systems can be built.  For
 example, a type-based event dispatching system that builds on
 ``zope.event`` can be found in zope.component.
+
+.. _concepts-adapter:
 
 Adapter
 ~~~~~~~
@@ -96,6 +108,8 @@ Adapters can be seen as a formalized duck typing and where proposed
 some years ago in PEP 246.  There are also Python implementations of
 it, like PyProtocols.
 
+.. _concepts-utility:
+
 Utility
 ~~~~~~~
 
@@ -119,12 +133,16 @@ registry by which instances can be registered and accessed by
 different parts of your application, with no need to pass the
 instances around as parameters.
 
+.. _concepts-subscriber:
+
 Subscriber
 ~~~~~~~~~~
 
 Unlike regular adapters, subscription adapters (subscriber) are used
 when we want all of the adapters that adapt an object to a particular
 interface.  Subscription adapter is also known as subscriber.
+
+.. _concepts-handler:
 
 Handler
 ~~~~~~~
@@ -141,6 +159,8 @@ expect to get any return value.  Because subscribers don't need to
 provide an API to their callers, it is more natural to define them
 with functions, rather than classes.
 
+.. _concepts-registry:
+
 Component Registry
 ~~~~~~~~~~~~~~~~~~
 
@@ -151,6 +171,8 @@ implements a global component registry.  The ``zope.site`` package
 provides a local and persistent component registry called site
 manager, so that one can register local utilities and adapters.
 
+.. _concepts-object-publishing:
+
 Object Publishing
 ~~~~~~~~~~~~~~~~~
 
@@ -160,6 +182,8 @@ allows you to walk up to your objects and call methods on them with
 simple URLs.  In addition to HTTP, BlueBream makes your objects
 available to other network protocols including FTP, WebDAV and
 XML-RPC.
+
+.. _concepts-view:
 
 View
 ~~~~
@@ -223,6 +247,8 @@ Core Developer Reference that provides information on how BlueBream
 Views are being used in Plone:
 http://plone.org/documentation/manual/plone-developer-reference/patterns/views
 
+.. _concepts-content-object:
+
 Content Object
 ~~~~~~~~~~~~~~
 
@@ -232,10 +258,14 @@ If an **interface** provides ``zope.app.content.interfaces.IContentType``
 interface type, then all objects providing the **interface** are considered
 content objects.
 
+.. _concepts-container:
+
 Container
 ~~~~~~~~~
 
 Containers are content objects which hold content objects.
+
+.. _concepts-schema:
 
 Schema
 ~~~~~~
@@ -253,6 +283,8 @@ Schemas provide:
 2. Data input validation and conversion
 3. Automated GUI form generation (mainly for the Web browser)
 
+.. _concepts-widget:
+
 Widget
 ~~~~~~
 
@@ -265,6 +297,8 @@ Display widgets are often very simply and only show a text
 representation of the Python object.  The input widgets, however, are
 more complex and display a greater variety of choices.
 
+.. _concepts-layer:
+
 Layer
 ~~~~~
 
@@ -272,6 +306,8 @@ Layer
 - Contain presentation logic
 - Common artifacts: pages, content providers, viewlet managers, and viewlets
 - Developed by BlueBream application developers
+
+.. _concepts-skin:
 
 Skin
 ~~~~
@@ -303,6 +339,7 @@ directly provided by a request.
 
     - Both support inheritance/acquisition
 
+.. _concepts-annotation:
 
 Annotation
 ~~~~~~~~~~
@@ -353,6 +390,8 @@ should use ``zope.app.dublincore.ZopeDublinCore``.  Some people also
 use a URI-based namespace notation:
 ``http://namespace.zope.org/dublincore/ZopeDublinCore/1.0.``
 
+.. _concepts-content-provider:
+
 Content Provider
 ~~~~~~~~~~~~~~~~
 
@@ -368,14 +407,20 @@ rendering design.  In the first phase the state of the content
 provider is prepared and, if applicable, any data, the provider is
 responsible for, is updated.
 
+.. _concepts-viewlet:
+
 Viewlet
 ~~~~~~~
 
 Viewlets provide a generic framework for building pluggable user
 interfaces.
 
+.. _concepts-technologies:
+
 Technologies
 ------------
+
+.. _concepts-zodb:
 
 ZODB
 ~~~~
@@ -413,6 +458,8 @@ Some of the features that ZODB brings to you:
 - Pluggable storages
 - Scalable architecture
 
+.. _concepts-zcml:
+
 ZCML
 ~~~~
 
@@ -427,6 +474,8 @@ components in ZCML, you can configure certain policies of the overall
 application.  If you don't enable it explicitly, it will not be
 found.
 
+.. _concepts-wsgi:
+
 WSGI
 ~~~~
 
@@ -435,6 +484,8 @@ specification for web servers and application servers to communicate
 with web applications (though it can also be used for more than
 that).  It is a Python standard, described in detail in `PEP 333
 <http://www.python.org/dev/peps/pep-0333/>`_.
+
+.. _concepts-pastescript:
 
 PasteScript
 ~~~~~~~~~~~
@@ -448,6 +499,8 @@ create``.
 The ``paster serve`` command loads and serves a WSGI application
 defined in a Paste Deploy config file.  The ``paster create`` command
 creates directory layout for packages from a template.
+
+.. _concepts-pastedeploy:
 
 PasteDeploy
 ~~~~~~~~~~~
