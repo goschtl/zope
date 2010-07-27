@@ -1,4 +1,4 @@
-.. _man-browser-skinning:
+.. _man-skinning:
 
 Skinning
 ========

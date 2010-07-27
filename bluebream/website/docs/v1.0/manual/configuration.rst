@@ -1,3 +1,5 @@
+.. _man-configuration:
+
 Configuration
 *************
 

@@ -1,3 +1,5 @@
+.. _man-unittesting:
+
 Unit Testing
 ============
 

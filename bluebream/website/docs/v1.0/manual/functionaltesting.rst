@@ -1,3 +1,5 @@
+.. _man-functional-testing:
+
 Functional Testing
 ==================
 

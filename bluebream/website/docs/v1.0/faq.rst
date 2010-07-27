@@ -449,7 +449,7 @@ Use the ``browser:defaultSkin`` directive::
 
   <browser:defaultSkin name="skinname" />
 
-For more details about skinning, read the :ref:`man-browser-skinning`
+For more details about skinning, read the :ref:`man-skinning`
 documentation.
 
 How can I register a content provider without using viewlet managers ?

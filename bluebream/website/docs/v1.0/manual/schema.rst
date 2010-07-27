@@ -1,3 +1,5 @@
+.. _man-schema:
+
 Schemas and Widgets
 ===================
 

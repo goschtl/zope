@@ -62,6 +62,8 @@ Understanding those distinctions is very important, since other
 programming languages do not necessarily use all three of these
 notions.  In fact, often only the first one is used.
 
+.. _man-interface-defining:
+
 Defining Interfaces
 -------------------
 
@@ -78,6 +80,8 @@ An interface from the zope.interface package, on the other hand,
 defines the interface by implementing a meta-class, a core concept of
 Python.  Thus, interfaces are merely using an existing Python
 pattern.
+
+.. _man-interface-example:
 
 An example
 ----------
@@ -120,6 +124,8 @@ As you can see, the interface inherits from zope.interface.Interface.
 This use (abuse?) of Python's class statement is how Zope defines an
 interface.  The I prefix for the interface name is a useful
 convention.
+
+.. _man-interface-declaring:
 
 Declaring interfaces
 --------------------
@@ -186,6 +192,8 @@ interfaces directly, in addition to what their classes implement.
     "factories".  Since functions are callable objects, a function
     can be an implementer of an interface.
 
+.. _man-interface-implementing:
+
 Implementing interfaces
 -----------------------
 
@@ -223,6 +231,8 @@ the class statement, you can write like this::
 
   >>> from zope.interface import classImplements
   >>> classImplements(Host, IHost)
+
+.. _man-interface-marker:
 
 Marker interfaces
 -----------------

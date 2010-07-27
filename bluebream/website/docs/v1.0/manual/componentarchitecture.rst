@@ -1,3 +1,5 @@
+.. _man-zca:
+
 Zope Component Architecture
 ===========================
 
