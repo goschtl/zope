@@ -325,6 +325,8 @@ source with your browser, it will look like this::
   </body>
   </html>
 
+.. _tut2-listing-tickets:
+
 Listing tickets
 ---------------
 
@@ -370,6 +372,8 @@ You need to change the ``TicketCollectorMainView`` defined in
                 tickets.append({'url': ticket.number+"/@@index",
                                 'summary': ticket.summary})
             return tickets
+
+.. _tut2-adding-comments:
 
 Adding Comments
 ---------------
@@ -510,6 +514,8 @@ You can register the view in ``src/tc/collector/configure.zcml``::
      class="tc.collector.views.AddComment"
      />
 
+.. _tut2-listing-comments:
+
 Listing comments
 ----------------
 
@@ -541,6 +547,8 @@ To list the comments on the ticket page, you need to modify
 
   </body>
   </html>
+
+.. _tut2-conclusion:
 
 Conclusion
 ----------
