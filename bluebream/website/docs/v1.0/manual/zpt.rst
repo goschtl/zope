@@ -1,5 +1,9 @@
+.. _man-zpt:
+
 Zope Page Templates
 ===================
+
+.. _man-zpt-intro:
 
 Introduction
 ------------
@@ -33,6 +37,7 @@ by the programmer, the designer will not disrupt the application.
 A Page Template is like a model of the pages that it will generate.
 In particular, it is parseable by most HTML tools.
 
+.. _man-zpt-how-work:
 
 How Page Templates Work
 -----------------------
@@ -98,6 +103,8 @@ invoice page, generating one row for each line item, and inserting
 the description, quantity, price, and so on into the text for each
 row.  It would not be used to create the invoice record in a database
 or to interact with a credit card processing facility.
+
+.. _man-zpt-expressions:
 
 *TALES* Expressions
 -------------------
@@ -170,6 +177,8 @@ The most common are comparing values like in::
 ... or passing arguments to methods, e.g.::
 
   "python: view.gettValues('test')"
+
+.. _man-zpt-attributes:
 
 *TAL* Attributes
 ----------------
@@ -396,6 +405,8 @@ Notice that we've replaced the ``tal:content`` attribute on the table
 cell with a ``tal:replace`` statement on a ``span`` tag.  This change
 allows you to have both an image and text in the table cell.
 
+.. _man-zpt-xml:
+
 XML Page Templates
 ------------------
 
@@ -487,6 +498,8 @@ is that you wanted to apply the template to a folder that had a
 *unicorn* property, but the root on which you called the template
 hasn't such a property.
 
+.. _man-zpt-macros:
+
 Macros
 ------
 
@@ -504,6 +517,8 @@ Macros define a section of a page that can be reused in other pages.
 A macro can be an entire page, or just a chunk of a page such as a
 header or footer.  After you define one or more macros in one *Page
 Template*, you can use them in other *Page Templates*.
+
+.. _man-zpt-using-xmacros:
 
 Using Macros
 ------------
@@ -549,6 +564,8 @@ automatically reflect the change.
 Notice how the macro is identified by a *path expression* using the
 ``metal:use-macro`` statement.  The ``metal:use-macro`` statement
 replaces the statement element with the named macro.
+
+.. _man-zpt-macro-details:
 
 Macro Details
 -------------
@@ -613,6 +630,8 @@ If you check the *Expand macros when editing* option on the *Page
 Template* *Edit* view, then any macros that you use will be expanded
 in your template's source.
 
+.. _man-zpt-slots:
+
 Using Slots
 -----------
 
@@ -673,6 +692,8 @@ information that you provided in the slot::
 Notice how the ``span`` element that defines the slot is replaced
 with the ``b`` element that fills the slot.
 
+.. _man-zpt-customizing-presentation:
+
 Customizing Default Presentation
 --------------------------------
 
@@ -724,6 +745,8 @@ If you wish to customize the sidebar links you can either fill the
 ``additional_links`` slot to insert some extra links after the
 default links.  You can nest slots as deeply as you wish.
 
+.. _man-zpt-metal-and-tal:
+
 Combining METAL and TAL
 -----------------------
 
@@ -756,6 +779,8 @@ to provide content dynamically.  In the case of the links example,
 it's arguable whether links are content or presentation.  Scripts
 probably provide a more flexible solution, especially if your site
 includes link content objects.
+
+.. _man-zpt-page-macros:
 
 Whole Page Macros
 -----------------

@@ -3,6 +3,8 @@
 Browser Resource
 ================
 
+.. _man-browser-resource-file:
+
 File Resource
 -------------
 
@@ -47,6 +49,8 @@ now via a Browser at: http://localhost:8080/@@/resource.txt.  The
 ``@@/`` in the URL tells the traversal mechanism that the following
 object is a resource.
 
+.. _man-browser-resource-image:
+
 Image Resource
 --------------
 
@@ -74,6 +78,7 @@ it as follows::
   administrator/manager to be able to view it.  The default of the
   attribute is ``zope.Public`` so that everyone can see the resource.
 
+.. _man-browser-resource-directory:
 
 Directory Resource
 ------------------

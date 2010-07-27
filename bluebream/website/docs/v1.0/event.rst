@@ -1,3 +1,5 @@
+.. _std-events:
+
 Standard Events
 ===============
 

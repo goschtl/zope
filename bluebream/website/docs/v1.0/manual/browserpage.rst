@@ -3,6 +3,8 @@
 Browser Page
 ============
 
+.. _man-browser-intro:
+
 Introduction
 ------------
 
@@ -32,6 +34,8 @@ The ``browser:page`` directive is used to register browser pages.
 The `name` attribute specify the name of page which is used in the
 URL.  The above page can be accessed like this:
 ``http://localhost:8080/@helloworld.html``
+
+.. _man-browser-view:
 
 View components
 ---------------
@@ -66,6 +70,7 @@ Since methods and attributes of the view component are directly used
 by the template, they should return simple iterable objects
 (e.g. lists, tuples, generators) or mappings (e.g. dicts).
 
+.. _man-browser-conclusion:
 
 Conclusion
 ----------

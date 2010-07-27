@@ -3,6 +3,8 @@
 Interface
 =========
 
+.. _man-interface-intro:
+
 Introduction
 ------------
 
