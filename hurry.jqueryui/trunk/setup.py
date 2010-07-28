@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 JQUERYUI_VERSION = '1.8.2'
-version = '1.8.2.1'
+version = '1.8.2.2dev'
 # version named after JQUERYUI_VERSION + .suffix. Can't do this
 # automatically as it'd confuse zest.releaser
 
