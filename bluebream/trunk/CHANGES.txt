@@ -4,6 +4,7 @@ Changelog
 1.0b4 (unreleased)
 ------------------
 
+- Change custom interpreter name: s/breampy/bbpy
 - Fixed the generated buildout and make it repeatable
 - Added the "extends-cache" Buildout option to cache
   the extended configuration files

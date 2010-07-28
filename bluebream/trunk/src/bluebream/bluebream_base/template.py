@@ -49,7 +49,7 @@ class BlueBream(templates.Template):
             u'Main Python package (with namespace, if any)'),
         var('interpreter',
             u'Name of custom Python interpreter',
-            default='breampy'),
+            default='bbpy'),
         var('bluebream', (u'Which version of BlueBream?\n'
                           u'Check on %s' % DOWNLOAD_URL)),
         var('version', u'Version of your project', default='0.1'),
