@@ -38,18 +38,10 @@ class FunctionalLayer(FunctionalZCMLLayer):
         import Products.CMFCalendar
         import Products.CMFDefault
         import Products.DCWorkflow
-        import OFS
 
         zcml.load_config('configure.zcml', Products.CMFCalendar)
         zcml.load_config('configure.zcml', Products.CMFDefault)
         zcml.load_config('configure.zcml', Products.DCWorkflow)
-
-        try:
-            zcml.load_config('meta.zcml', OFS)
-            zcml.load_config('configure.zcml', OFS)
-        except IOError:  # Zope <= 2.13.0a2
-            pass
-        ZopeTestCase.installPackage('OFS')
 
         app = ZopeTestCase.app()
         addConfiguredSite(app, 'site', 'Products.CMFDefault:default',
@@ -65,3 +57,4 @@ class FunctionalLayer(FunctionalZCMLLayer):
         app._delObject('site')
         transaction.commit()
         ZopeTestCase.close(app)
+
