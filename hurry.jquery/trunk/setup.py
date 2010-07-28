@@ -41,11 +41,10 @@ setup(
             'jqueryprepare = hurry.jquery.prepare:main',
             ],
         'zest.releaser.prereleaser.middle': [
-            'prepare = hurry.jquery.prepare:entrypoint',
+            'prepare = hurry.jquery.prepare:working_entrypoint',
             ],
-        # ALSO grab jquery in the separate tag checkout...
         'zest.releaser.releaser.after_checkout': [
-            'prepare = hurry.jquery.prepare:entrypoint',
+            'prepare = hurry.jquery.prepare:tag_entrypoint',
             ],
         'hurry.resource.libraries': [
             'jquery = hurry.jquery:jquery_lib',

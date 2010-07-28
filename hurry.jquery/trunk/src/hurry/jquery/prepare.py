@@ -25,8 +25,7 @@ MINIFIED = "jquery-%s.min.js" % VERSION
 FULL = "jquery-%s.js" % VERSION
 
 
-def prepare_jquery():
-    package_dir = os.path.dirname(__file__)
+def prepare_jquery(package_dir):
     jquery_dest_path = os.path.join(package_dir, 'jquery-build')
 
     # remove previous jquery library build
@@ -62,13 +61,11 @@ def prepare_jquery():
 
 def main():
     # Commandline tool
-    prepare_jquery()
+    prepare_jquery(os.path.dirname(__file__))
 
+def working_entrypoint(data):
+    prepare_jquery(os.path.dirname(__file__))
 
-def entrypoint(data):
-    """Entry point for zest.releaser's prerelease script"""
-    # We could grab data['new_version'] and omit the .1 suffix from it to get
-    # the jquery version.  Could do away with a bit of version number
-    # duplication.
-    # And grab the tagdir or workingdir as base, perhaps.
-    prepare_jquery()
+def tag_entrypoint(data):
+    prepare_jquery(data['tagdir'])
+    
