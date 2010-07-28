@@ -93,4 +93,4 @@ def working_entrypoint(data):
     prepare_jqueryui(py.path.local(os.path.dirname(__file__)))
 
 def tag_entrypoint(data):
-    prepare_jquery(data['tagdir'] + '/src/hurry/jqueryui')
+    prepare_jqueryui(data['tagdir'] + '/src/hurry/jqueryui')
