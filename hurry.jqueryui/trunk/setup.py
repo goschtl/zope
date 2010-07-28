@@ -44,11 +44,13 @@ setup(
             'jqueryuiprepare = hurry.jqueryui.prepare:main',
             ],
         'zest.releaser.prereleaser.middle': [
-            'prepare = hurry.jqueryui.prepare:prepare_jqueryui',
+            'prepare = hurry.jqueryui.prepare:working_entrypoint',
             ],
-        # ALSO grab jqueryui in the separate tag checkout
-        'zest.releaser.releaser.middle': [
-            'prepare = hurry.jqueryui.prepare:prepare_jqueryui',
+        'zest.releaser.releaser.after_checkout': [
+            'prepare = hurry.jqueryui.prepare:tag_entrypoint',
+            ],
+        'hurry.resource.libraries': [
+            'jqueryui = hurry.jqueryui:jqueryui_lib',
             ],
     },
     extras_require={

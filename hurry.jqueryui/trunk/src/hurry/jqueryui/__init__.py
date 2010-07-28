@@ -5,7 +5,7 @@ try:
 except ImportError:
     pass
 
-jqueryui = Library('jqueryui')
+jqueryui_lib = Library('jqueryui', 'jqueryui-build')
 
 jqueryui = ResourceInclusion(jqueryui, 'jquery-ui.js', depends=[jquery],
                              minified='jquery-ui.min.js')

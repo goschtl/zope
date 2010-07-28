@@ -14,8 +14,7 @@ MINIFIED = "jquery-ui.min.js"
 FULL = "jquery-ui.js"
 THEME_URL = 'http://jquery-ui.googlecode.com/files/jquery-ui-themes-%s.zip' % VERSION
 
-def prepare_jqueryui(data):
-    package_dir = py.path.local(os.path.dirname(__file__))
+def prepare_jqueryui(package_dir):
     jquery_dest_path = package_dir.join('jqueryui-build')
 
     # remove previous jquery library build
@@ -70,7 +69,7 @@ def prepare_jqueryui(data):
     py_path = package_dir.join('_themes.py')
     print 'Generating inclusion module "%s"' % py_path
 
-    library = Library('jqueryui_themes')
+    library = Library('jqueryui_themes', 'jqueryui-themes')
     inclusion_map = {}
     for theme in themes_dest_path.listdir():
         if not theme.check(dir=True):
@@ -88,5 +87,10 @@ def prepare_jqueryui(data):
     module.close()
 
 def main():
-    prepare_jqueryui(None)
+    prepare_jqueryui(py.path.local(os.path.dirname(__file__)))
 
+def working_entrypoint(data):    
+    prepare_jqueryui(py.path.local(os.path.dirname(__file__)))
+
+def tag_entrypoint(data):
+    prepare_jquery(data['tagdir'] + '/src/hurry/jqueryui')
