@@ -1,11 +1,13 @@
 CHANGES
 *******
 
-1.4.2.3 (unreleased)
+1.4.2.3 (2010-07-28)
 ====================
 
-- Nothing changed yet.
-
+* We needed to do some safety checks in the zest.releaser entry points
+  as otherwise these entry points would be triggered even for the
+  release process of packages that depend on this (such as
+  hurry.jqueryui).
 
 1.4.2.2 (2010-07-28)
 ====================

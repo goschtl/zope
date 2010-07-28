@@ -64,8 +64,12 @@ def main():
     prepare_jquery(os.path.dirname(__file__))
 
 def working_entrypoint(data):
+    if data['name'] != 'hurry.resource':
+        return
     prepare_jquery(os.path.dirname(__file__))
 
 def tag_entrypoint(data):
+    if data['name'] != 'hurry.resource':
+        return
     prepare_jquery(data['tagdir'] + '/src/hurry/jquery')
     
