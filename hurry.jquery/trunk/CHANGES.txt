@@ -1,11 +1,16 @@
 CHANGES
 *******
 
-1.4.2.2 (unreleased)
+1.4.2.2 (2010-07-28)
 ====================
 
-- Nothing changed yet.
+* Relying on new hurry.resource 0.10, which needs an entry point.
 
+* Export ``jquery_lib`` as the library. Before this change library was
+  not accessible as it was immediately overwritten by the ``jquery``
+  ResourceInclusion. This means that jquery resources will now be
+  published under ``jquery_lib`` in the URL instead of ``jquery``, but
+  since these URLs are automatically generated this should be okay.
 
 1.4.2.1 (2010-03-14)
 ====================

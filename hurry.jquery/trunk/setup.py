@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 JQUERY_VERSION = '1.4.2'
-version = '1.4.2.2dev'
+version = '1.4.2.2'
 # Name version after JQUERY_VERSION + .suffix
 
 
@@ -34,7 +34,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource > 0.2',
+        'hurry.resource >= 0.10',
         ],
     entry_points={
         'console_scripts': [
@@ -44,8 +44,11 @@ setup(
             'prepare = hurry.jquery.prepare:entrypoint',
             ],
         # ALSO grab jquery in the separate tag checkout...
-        'zest.releaser.releaser.middle': [
+        'zest.releaser.releaser.after_checkout': [
             'prepare = hurry.jquery.prepare:entrypoint',
+            ],
+        'hurry.resource.libraries': [
+            'jquery = hurry.jquery:jquery_lib',
             ],
         },
     extras_require={

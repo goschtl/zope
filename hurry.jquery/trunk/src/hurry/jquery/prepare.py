@@ -50,7 +50,7 @@ def prepare_jquery():
     py_path = os.path.join(package_dir, '_lib.py')
     print 'Generating inclusion module "%s"' % py_path
 
-    library = Library('jquery')
+    library = Library('jquery_lib', 'jquery-build')
     inclusion_map = {}
     inclusion = inclusion_map['jquery'] = ResourceInclusion(library, FULL)
     inclusion.modes['minified'] = ResourceInclusion(library, MINIFIED)
