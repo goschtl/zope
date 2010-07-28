@@ -106,7 +106,10 @@ def py_to_bin_default(setuptools_project):
     
     This function is the fallback and represents the "default" naming schema.
     """
-    return 'python-%s' % setuptools_project.lower()
+    name = setuptools_project.lower()
+    if name.startswith('python-'):
+        return name
+    return 'python-%s' % name
 
 def py_to_src(setuptools_project):
     """Convert a setuptools project name to a debian source package name"""
