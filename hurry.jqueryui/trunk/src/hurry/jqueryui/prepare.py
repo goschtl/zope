@@ -89,8 +89,12 @@ def prepare_jqueryui(package_dir):
 def main():
     prepare_jqueryui(py.path.local(os.path.dirname(__file__)))
 
-def working_entrypoint(data):    
+def working_entrypoint(data):
+    if data['name'] != 'hurry.jqueryui':
+        return
     prepare_jqueryui(py.path.local(os.path.dirname(__file__)))
 
 def tag_entrypoint(data):
+    if data['name'] != 'hurry.jqueryui':
+        return
     prepare_jqueryui(py.path.local(data['tagdir'] + '/src/hurry/jqueryui'))
