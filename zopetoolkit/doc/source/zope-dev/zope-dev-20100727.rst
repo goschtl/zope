@@ -9,13 +9,33 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-07-27.log.html#t2010-07-27T17:59:11
 
 Attendees
 ---------
 
+Leonardo Rochael, Wichert Akkerman, Jens Vagelpohl, Adam Groszer, Christian
+Theune
 
+Review EuroPython
+-----------------
 
+Unfortunately no EP participant was around and I'd like to encourage those who
+visited EP to give an update to the non-attending Zope developers on what
+happened from a Zope perspective. Talks? Sprints? Interesting discussions?
+
+Christian agreed to send a mail inviting participants to write up their
+experience.
+
+Review languishing bugs
+-----------------------
+
+I retried the experiment inviting the other participants for reviewing
+languishing bugs. Instead of the misunderstanding of last week a more in-depth
+discussion about expectations WRT communication via bug trackers,
+responsiveness, process occured. The discussion was undirected and relatively
+general but raised some concerns that might be good input for the upcoming
+summit, too.  Please see the IRC log if you're interested in the details.
 
 
 Agenda
