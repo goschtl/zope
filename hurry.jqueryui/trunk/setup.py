@@ -36,7 +36,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource > 0.10',
+        'hurry.resource >= 0.10',
         'hurry.jquery >= 1.4.2.2',
         ],
     entry_points= {
