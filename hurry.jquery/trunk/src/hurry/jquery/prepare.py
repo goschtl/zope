@@ -67,5 +67,5 @@ def working_entrypoint(data):
     prepare_jquery(os.path.dirname(__file__))
 
 def tag_entrypoint(data):
-    prepare_jquery(data['tagdir'])
+    prepare_jquery(data['tagdir'] + '/src/hurry/jquery')
     
