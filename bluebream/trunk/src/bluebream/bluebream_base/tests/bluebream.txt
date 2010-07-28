@@ -65,6 +65,7 @@ Your project has been created! Now, you want to:
 <BLANKLINE>
 
 >>> print_dir('sample')
+sample/README.txt
 sample/bootstrap.py
 sample/buildout.cfg
 sample/debug.ini
@@ -132,6 +133,7 @@ Your project has been created! Now, you want to:
 ...
 
 >>> print_dir('sample.main')
+sample.main/README.txt
 sample.main/bootstrap.py
 sample.main/buildout.cfg
 sample.main/debug.ini
@@ -205,6 +207,7 @@ Your project has been created! Now, you want to:
 ...
 
 >>> print_dir('sample.app.main')
+sample.app.main/README.txt
 sample.app.main/bootstrap.py
 sample.app.main/buildout.cfg
 sample.app.main/debug.ini
@@ -278,6 +281,7 @@ Your project has been created! Now, you want to:
 ...
 
 >>> print_dir('foobar.foobar')
+foobar.foobar/README.txt
 foobar.foobar/bootstrap.py
 foobar.foobar/buildout.cfg
 foobar.foobar/debug.ini
@@ -348,6 +352,7 @@ Your project has been created! Now, you want to:
 ...
 
 >>> print_dir('sampleproject')
+sampleproject/README.txt
 sampleproject/bootstrap.py
 sampleproject/buildout.cfg
 sampleproject/debug.ini

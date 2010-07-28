@@ -125,6 +125,8 @@ class BlueBream(templates.Template):
             print "Please choose a different project name."
             sys.exit(1)
         vars['zip_safe'] = False
+        # remember the version of bluebream used to create the project
+        vars['created_with'] = current
         return vars
 
     def pre(self, command, output_dir, vars):

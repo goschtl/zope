@@ -1,3 +1,4 @@
+# ${created_with}
 [buildout]
 develop = .
 extends = http://download.zope.org/bluebream/bluebream-${bluebream}.cfg
