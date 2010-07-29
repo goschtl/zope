@@ -1,0 +1,17 @@
+
+Migrating to RelStorage version 1.4
+-----------------------------------
+
+Before following these directions, first upgrade to the schema of
+RelStorage version 1.1.2 by following the directions in "migrate-to-1.1.2.txt".
+
+Only Oracle needs a change for this release.  The Oracle adapter
+now requires the EXECUTE permission on the DBMS_LOCK package.
+In the example below, "zodb" is the name of the account::
+
+    GRANT EXECUTE ON DBMS_LOCK TO zodb;
+
+Also, the Oracle adapter in RelStorage no longer uses the commit_lock
+table, so you can drop it.  It contains no data.
+
+    DROP TABLE commit_lock;
