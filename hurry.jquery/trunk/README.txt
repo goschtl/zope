@@ -40,10 +40,9 @@ Preparing hurry.jquery before release
 
 This section is only relevant to release managers of ``hurry.jquery``.
 
-When releasing ``hurry.jquery``, an extra step should be taken. Follow the
-regular package `release instructions`_, but before egg generation (``python
-setup.py register sdist upload``) first execute ``bin/jqueryprepare``. This
-will download the jQuery library and place it in the egg.  (The version number
-is currently hardcoded in the hurry.jquery.prepare module).
-
-.. _`release instructions`: http://grok.zope.org/documentation/how-to/releasing-software
+The javascript code that this package relies on is not checked into
+subversion to sidestep the copyright policy of svn.zope.org. Instead,
+just before release to pypi, an entry point is triggered that
+downloads the appropriate javascript code. To trigger this automated
+behavior you should do the release using ``bin/fullrelease``, which
+uses zest.releaser configured with the appropriate entry points.
