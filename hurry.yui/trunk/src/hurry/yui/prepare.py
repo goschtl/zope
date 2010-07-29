@@ -22,19 +22,19 @@ def main():
     # download YUI library into package
     package_dir = os.path.dirname(__file__)
 
-    prepare(YUI_DOWNLOAD_VERSION, package_dir)
+    prepare(package_dir)
 
 def working_entrypoint(data):
     if data['name'] != 'hurry.yui':
         return
-    prepare(YUI_DOWNLOAD_VERSION, os.path.dirname(__file__))
+    prepare(os.path.dirname(__file__))
 
 def tag_entrypoint(data):
     if data['name'] != 'hurry.yui':
         return
-    prepare(YUI_DOWNLOAD_VERSION, data['tagdir'] + 'src/hurry/yui')
+    prepare(data['tagdir'] + 'src/hurry/yui')
     
-def prepare(download_version, package_dir):
+def prepare(package_dir):
     yui_dest_path = os.path.join(package_dir, 'yui-build')
 
     # remove previous yui library
@@ -45,10 +45,10 @@ def prepare(download_version, package_dir):
         yui_build_path = os.path.join(ex_path, 'yui', 'build')
         shutil.copytree(yui_build_path, yui_dest_path)
 
-    download(download_version, copy_yui)
+    download(YUI_DOWNLOAD_VERSION, copy_yui)
 
     # get dependency structure and create 'yui.py' into package
-    code = depend(version)
+    code = depend(YUI_VERSION)
     yui_py_path = os.path.join(package_dir, 'yui.py')
     f = open(yui_py_path, 'w')
     f.write(code)
