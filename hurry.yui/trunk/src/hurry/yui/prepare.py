@@ -32,7 +32,7 @@ def working_entrypoint(data):
 def tag_entrypoint(data):
     if data['name'] != 'hurry.yui':
         return
-    prepare(data['tagdir'] + 'src/hurry/yui')
+    prepare(data['tagdir'] + '/src/hurry/yui')
     
 def prepare(package_dir):
     yui_dest_path = os.path.join(package_dir, 'yui-build')
