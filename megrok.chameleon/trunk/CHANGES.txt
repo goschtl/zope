@@ -1,10 +1,11 @@
 CHANGES
 *******
 
-0.5.2 (unreleased)
+0.5.2 (2010-07-19)
 ==================
 
-* none yet
+* Remove dependency on chameleon.genshi as this is now included 
+  into Chameleon itself.
 
 0.5.1 (2010-05-20)
 ==================
