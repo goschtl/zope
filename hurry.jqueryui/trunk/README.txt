@@ -44,13 +44,9 @@ Preparing hurry.jqueryui before release
 =======================================
 
 This section is only relevant to release managers of ``hurry.jqueryui``.
-
-When releasing ``hurry.jqueryui``, an extra step should be
-taken. Follow the regular package `release instructions`_, but before
-egg generation (``python setup.py register sdist upload``) first
-execute ``bin/jqueryuiprepare <version number>``, where version number
-is the version of the YUI release, such as ``1.7.2``. This will
-download the jQuery UI library of that version and place it in the
-egg.
-
-.. _`release instructions`: http://grok.zope.org/documentation/how-to/releasing-software
+The javascript code that this package relies on is not checked into subversion
+to sidestep the copyright policy of svn.zope.org. Instead, just before
+release to pypi, an entry point is triggered that downloads the appropriate
+javascript code. To trigger this automated behavior you should do the
+release using ``bin/fullrelease``, which uses zest.releaser configured
+with the appropriate entry points.
