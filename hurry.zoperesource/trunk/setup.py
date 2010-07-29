@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.zoperesource',
-    version='0.6',
+    version='0.7dev',
     description="hurry.resource integration for Zope.",
     long_description=long_description,
     classifiers=['Framework :: Zope3'],
