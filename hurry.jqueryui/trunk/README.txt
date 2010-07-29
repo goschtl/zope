@@ -43,10 +43,12 @@ to depend on the `hurry.zoperesource`_ package in your ``setup.py``.
 Preparing hurry.jqueryui before release
 =======================================
 
-This section is only relevant to release managers of ``hurry.jqueryui``.
-The javascript code that this package relies on is not checked into subversion
-to sidestep the copyright policy of svn.zope.org. Instead, just before
-release to pypi, an entry point is triggered that downloads the appropriate
-javascript code. To trigger this automated behavior you should do the
-release using ``bin/fullrelease``, which uses zest.releaser configured
-with the appropriate entry points.
+This section is only relevant to release managers of
+``hurry.jqueryui``.  
+
+The javascript code that this package relies on is not checked into
+subversion to sidestep the copyright policy of svn.zope.org. Instead,
+just before release to pypi, an entry point is triggered that
+downloads the appropriate javascript code. To trigger this automated
+behavior you should do the release using ``bin/fullrelease``, which
+uses zest.releaser configured with the appropriate entry points.
