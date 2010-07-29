@@ -9,8 +9,9 @@ CHANGES
 
   Note that this needs hurry.resource-based packages that themselves
   have been updated to hurry.resource 0.10's way of defining an entry
-  point and including the resource path in the library. See the hurry.resource
-  documentation for more information.
+  point and including the resource path in the library. See the
+  `hurry.resource documentation
+  <http://pypi.python.org/pypi/hurry.resource>`_ for more information.
 
 0.5 (2010-07-24)
 ================
