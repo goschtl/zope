@@ -7,7 +7,6 @@ install_requires = [
     'setuptools',
     'grokcore.view',
     'Chameleon',
-    'chameleon.genshi',
     'lxml', # Needed by chameleon.genshi
     'zope.component',
     'zope.contentprovider',
