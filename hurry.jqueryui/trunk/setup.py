@@ -51,6 +51,8 @@ setup(
             ],
         'hurry.resource.libraries': [
             'jqueryui = hurry.jqueryui:jqueryui_lib',
+            'jqueryui_themes = hurry.jqueryui:jqueryui_themes',
+
             ],
     },
     extras_require={
