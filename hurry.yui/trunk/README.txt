@@ -53,27 +53,14 @@ depend on the `hurry.zoperesource`_ package in your ``setup.py``.
 Preparing hurry.yui before release
 ==================================
 
-This section is only relevant to release managers of ``hurry.yui``; if 
-you don't know whether you are, you aren't.
+This section is only relevant to release managers of ``hurry.yui``.
 
-When releasing ``hurry.yui``, an extra step should be taken. Follow
-the regular package `release instructions`_, but before egg generation
-(``python setup.py register sdist upload``) first execute
-``bin/yuiprepare <version number>``, where version number is the
-version of the YUI release, such as ``2.6.0``. This will do two
-things:
+The javascript code that this package relies on is not checked into
+subversion to sidestep the copyright policy of svn.zope.org. Instead,
+just before release to pypi, an entry point is triggered that
+downloads the appropriate javascript code. To trigger this automated
+behavior you should do the release using ``bin/fullrelease``, which
+uses zest.releaser configured with the appropriate entry points.
 
-* download the YUI of that version and place it in the egg
-
-* download the YUI dependency structure of that YUI version and generate
-  a ``yui.py`` file in the package that reflects this.
-
-In some cases it is possible that the filename of the ZIP file is
-different than the actual official name of the release.  For instance,
-in the case of YUI 2.7.0 the ZIP file is named ``YUI_2.7.0b.zip``. In
-this case, you can give a second argument to the ``bin/yuiprepare``
-script to supply it with a separate ZIP file version number. For instance::
-  
-  $ bin/yuiprepare 2.7.0 2.7.0b
-
-.. _`release instructions`: http://docs.zope.org/zopetoolkit/process/releasing-software.html
+To update to a newer version of YUI, adjust the constants in
+``hurry/yui/prepare.py``.
