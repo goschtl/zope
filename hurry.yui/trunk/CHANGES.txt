@@ -6,6 +6,8 @@ CHANGES
 
 * Compatibility with hurry.resource 0.10 and up.
 
+* Automate YUI download during release with zest.releaser.
+
 2.7.0 (2009-09-07) (YUI version 2.7.0)
 ======================================
 
