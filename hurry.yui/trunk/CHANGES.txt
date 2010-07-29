@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-2.7.0.1 (unreleased)
+2.7.0.1 (2010-07-29)
 ====================
 
 * Compatibility with hurry.resource 0.10 and up.
