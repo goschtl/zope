@@ -24,7 +24,7 @@ def main():
 
     prepare(YUI_DOWNLOAD_VERSION, package_dir)
 
-def working_entry_point(data):
+def working_entrypoint(data):
     if data['name'] != 'hurry.yui':
         return
     prepare(YUI_DOWNLOAD_VERSION, os.path.dirname(__file__))
