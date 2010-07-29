@@ -1,2 +1,0 @@
-recursive-include src/hurry/yui/yui-build *
-include src/hurry/yui/yui.py
