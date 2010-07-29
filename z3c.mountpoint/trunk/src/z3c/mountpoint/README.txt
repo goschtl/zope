@@ -12,7 +12,7 @@ Let's start by creating two databases in the typical Zope 3 application layout:
 
   >>> from ZODB.tests.test_storage import MinimalMemoryStorage
   >>> from ZODB import DB
-  >>> from zope.app.folder import rootFolder, Folder
+  >>> from zope.site.folder import rootFolder, Folder
   >>> import transaction
 
   >>> dbmap = {}
@@ -51,7 +51,7 @@ Now we can add the mount point to the first database:
 We can now access the mounted object as follows:
 
   >>> conn1.root()['Application']['mp'].object
-  <zope.app.folder.folder.Folder object at ...>
+  <zope.site.folder.Folder object at ...>
 
 Note that the object name is not yet used; it is for traversal only.
 
@@ -70,10 +70,10 @@ We should now be able to traverse to the mounted object now:
   >>> from zope.publisher.browser import TestRequest
   >>> req = TestRequest()
 
-  >>> from zope.app.publication.publicationtraverse import PublicationTraverser
+  >>> from zope.traversing.publicationtraverse import PublicationTraverser
   >>> traverser = PublicationTraverser()
   >>> traverser.traversePath(req, conn1.root()['Application'], 'mp/F2-1')
-  <zope.app.folder.folder.Folder object at ...>
+  <zope.site.folder.Folder object at ...>
 
 When we add a new object remotely, it available via the mount point as well:
 

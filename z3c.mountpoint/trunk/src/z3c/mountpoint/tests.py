@@ -16,17 +16,17 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-import unittest
-import zope.component
-import zope.interface
-from zope.app.folder import folder
-from zope.app.folder.interfaces import IFolder
 from zope.app.publication import traversers
 from zope.app.testing import placelesssetup, setup
 from zope.publisher.interfaces.browser import IBrowserPublisher, IBrowserRequest
 from zope.security import checker
-from zope.testing import doctest
+from zope.site import folder
+from zope.site.interfaces import IFolder
 from zope.traversing.testing import setUp as traversalSetUp
+import doctest
+import unittest
+import zope.component
+import zope.interface
 
 from z3c.mountpoint import interfaces, mountpoint
 
