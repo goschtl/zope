@@ -32,9 +32,10 @@ setup(
     install_requires=[
         'setuptools',
         'grokcore.component',
-        'hurry.resource >= 0.4',
+        'hurry.resource >= 0.10',
         'z3c.autoinclude',
         'zope.app.publication',
+        'zope.browserresource',
         'zope.component',
         'zope.interface',
         'zope.publisher',

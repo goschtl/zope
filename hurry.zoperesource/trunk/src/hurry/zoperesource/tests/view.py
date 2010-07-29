@@ -1,7 +1,7 @@
 from hurry.resource import Library, ResourceInclusion, bottom
 
 
-foo = Library("foo")
+foo = Library("foo", "foo_dir")
 
 a = ResourceInclusion(foo, "a.js")
 

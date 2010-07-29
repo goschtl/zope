@@ -11,7 +11,7 @@ it's taking care of three things:
 * make so that resource references are automatically inserted in the
   HTML header.
 
-This library fulfills these conditions for a Zope 3/Grok setup.
+This library fulfills these conditions for a Zope Toolkit/Grok setup.
 
 We'll run through a few tests to demonstrate it. Note that the real
 code being tested is not in this document itself, but in the views described
