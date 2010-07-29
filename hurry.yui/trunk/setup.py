@@ -36,13 +36,18 @@ setup(
         'simplejson',
         ],
     entry_points= {
-    'console_scripts': [
-      'yuiprepare = hurry.yui.prepare:main',
-      ],
-    'hurry.resource.libraries': [
-      'yui = hurry.yui:yui',
-      ],
-           
-    },
-
+        'console_scripts': [
+            'yuiprepare = hurry.yui.prepare:main',
+            ],
+        'zest.releaser.prereleaser.middle': [
+            'prepare = hurry.yui.prepare:working_entrypoint',
+            ],
+        'zest.releaser.releaser.after_checkout': [
+            'prepare = hurry.yui.prepare:tag_entrypoint',
+            ],
+        'hurry.resource.libraries': [
+            'yui = hurry.yui:yui',
+            ],    
+        },
+    
     )

@@ -1,6 +1,9 @@
 import os, sys
 import shutil
 
+YUI_VERSION = '2.7.0'
+YUI_DOWNLOAD_VERSION = '2.7.0b' # argh, download file version isn't actual version
+
 from hurry.yui.depend import depend
 from hurry.yui.download import download
 
@@ -15,9 +18,23 @@ def main():
         download_version = sys.argv[2]
     except IndexError:
         download_version = version
-    
+
     # download YUI library into package
     package_dir = os.path.dirname(__file__)
+
+    prepare(YUI_DOWNLOAD_VERSION, package_dir)
+
+def working_entry_point(data):
+    if data['name'] != 'hurry.yui':
+        return
+    prepare(YUI_DOWNLOAD_VERSION, os.path.dirname(__file__))
+
+def tag_entrypoint(data):
+    if data['name'] != 'hurry.yui':
+        return
+    prepare(YUI_DOWNLOAD_VERSION, data['tagdir'] + 'src/hurry/yui')
+    
+def prepare(download_version, package_dir):
     yui_dest_path = os.path.join(package_dir, 'yui-build')
 
     # remove previous yui library
