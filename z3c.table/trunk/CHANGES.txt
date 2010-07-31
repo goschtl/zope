@@ -5,7 +5,7 @@ CHANGES
 0.8.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added translation for the link title in the column header.
 
 
 0.8.0 (2009-12-29)

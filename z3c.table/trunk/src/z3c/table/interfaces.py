@@ -11,18 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
+from z3c.table.i18n import _
+import zope.contentprovider.interfaces
 import zope.interface
 import zope.schema
-import zope.i18nmessageid
-
-from zope.contentprovider.interfaces import IContentProvider
-
-_ = zope.i18nmessageid.MessageFactory('z3c')
 
 
 class IValues(zope.interface.Interface):
@@ -31,7 +23,7 @@ class IValues(zope.interface.Interface):
     values = zope.interface.Attribute('Iterable table row data sequence.')
 
 
-class ITable(IContentProvider):
+class ITable(zope.contentprovider.interfaces.IContentProvider):
     """Table provider"""
 
     columnCounter = zope.schema.Int(
@@ -237,7 +229,7 @@ class INoneCell(IColumn):
     """None cell used for colspan."""
 
 
-class IBatchProvider(IContentProvider):
+class IBatchProvider(zope.contentprovider.interfaces.IContentProvider):
     """Batch content provider"""
 
     def renderBatchLink(batch, cssClass=None):
@@ -245,6 +237,7 @@ class IBatchProvider(IContentProvider):
 
     def render():
         """Plain render method without keyword arguments."""
+
 
 class IColumnHeader(zope.interface.Interface):
     """Multi-adapter for header rendering."""
