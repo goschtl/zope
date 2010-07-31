@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.8.1 (unreleased)
+0.8.1 (2010-07-31)
 ------------------
 
 - Added translation for the link title in the column header.
