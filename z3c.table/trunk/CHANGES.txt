@@ -11,7 +11,8 @@ CHANGES
 0.8.1 (2010-07-31)
 ------------------
 
-- Added translation for the link title in the column header.
+- Added translation for the link title in the column header of the
+  sortable table.
 
 
 0.8.0 (2009-12-29)
