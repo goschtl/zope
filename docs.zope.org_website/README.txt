@@ -10,13 +10,40 @@ following:
 * Build an index file showing the documented packages
 
 
-How do I add or remove a package from a package list?
------------------------------------------------------
-Find the respective buildout stanza and remove or add the 
-Subversion URLs in the ``sources`` list. The URL must use 
+How do remove a package from a package list?
+--------------------------------------------
+Find the respective buildout stanza and remove the 
+Subversion URL in the ``sources`` list. 
+
+
+How do I add a package to a package list?
+-----------------------------------------
+If your newly added package has a standard Sphinx setup with 
+a ``doc`` or ``docs`` folder in the package root containing 
+the `Sphinx` documentation and configuration then this is 
+easy. Find the respective buildout stanza and add the Subversion
+URL to the list of URLs in ``sources``.  The URL must use 
 a protocol understood by Subversion, and it must point to 
-the `main` package location which has the package's 
+the main package location which has the package's 
 ``trunk`` folder in it.
+
+If your new package relies on the ``z3c.recipe.sphinxbuild``
+way of doing things it's a little more complicated. You should 
+consider converting it to the standard setup described above 
+with documentation and a Sphinx configuration stored in the 
+package root.
+
+First, you need to visit the ``z3c.recipe.sphinxbuild`` buildout 
+configuration at ``/home/zope/z3c.sphinxdocs``. Add your package 
+name to its buildout configuration, following the conventions 
+for the other packages. Make sure you create a trunk checkout 
+of your package underneath ``/home/zope/z3c.sphinxdocs`` 
+as well. Then re-run ``bin/buildout`` and ``bin/docs`` to build
+the documentation.
+
+When your ``z3c.recipe.sphinxbuild``-based documentation is built 
+you can add the package URL to the site buildout as explained in 
+the first paragraph.
 
 
 How do I add another packages set page?
