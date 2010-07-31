@@ -13,7 +13,9 @@ following:
 How do remove a package from a package list?
 --------------------------------------------
 Find the respective buildout stanza and remove the 
-Subversion URL in the ``sources`` list. 
+Subversion URL in the ``sources`` list.  Afterwards run 
+``bin/buildout`` to regenerate the documentation build 
+scripts for the stanzas you changed and re-run them.
 
 
 How do I add a package to a package list?
@@ -45,6 +47,10 @@ When your ``z3c.recipe.sphinxbuild``-based documentation is built
 you can add the package URL to the site buildout as explained in 
 the first paragraph.
 
+When you're done changing the buildout configuration re-run
+``bin/buildout`` to regenerate the documentation build 
+scripts for the stanzas you changed and re-run them.
+
 
 How do I add another packages set page?
 ---------------------------------------
@@ -57,9 +63,14 @@ The main site index is built from the file ``templates/index.rst``
 and should be maintaind by hand. Simply add another section or 
 link as needed for your new package set page and rebuild.
 
+When you're done changing the buildout configuration re-run
+``bin/buildout`` to generate the documentation build scripts for 
+the stanzas you added and run them.
+
 
 How do I change the site styling or layout?
 -------------------------------------------
 The site root is built from the Sphinx configuration in 
 the ``templates`` folder. You can adjust the main page content 
 (the ``index.rst`` file) and the configuration as you like.
+
