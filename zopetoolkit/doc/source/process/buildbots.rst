@@ -184,6 +184,8 @@ Some links to sample configs:
 * http://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder/trunk/master.cfg
 * http://zope3.pov.lt/master.cfg
 
+See also :ref:`winbotsetup`
+
 
 Automated/nightly build effort coordination
 ===========================================
