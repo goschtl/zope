@@ -1,0 +1,182 @@
+======================
+Hashdir implementation
+======================
+
+The hashdir module provides a way to store files based on the sha
+digest of their contents.
+
+  >>> from z3c.extfile import hashdir, interfaces
+  >>> import tempfile, os
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+
+We can get a new file from the hashdir instance.
+
+  >>> f1 = hd.new()
+  >>> f1
+  <z3c.extfile.hashdir.WriteFile object at ...>
+
+  >>> f1.write("Content 1")
+
+After writing we get a sha digest back, when we commit it.
+
+  >>> d1 = f1.commit()
+  >>> d1
+  'ab8366d7206c431e6e15a625a04d0fbe5510984d'
+
+We cannot commit twice!
+
+  >>> f1.commit()
+  Traceback (most recent call last):
+  ...
+  OSError: [Errno 9] Bad file descriptor
+
+We can get all digests stored by using the digests method.
+
+  >>> hd.digests()
+  ['ab8366d7206c431e6e15a625a04d0fbe5510984d']
+
+If we store the same content twice we only have one digest, so each
+unique content is only stored once.
+
+  >>> f1 = hd.new()
+  >>> f1.write("Content 1")
+  >>> d1 = f1.commit()
+  >>> hd.digests()
+  ['ab8366d7206c431e6e15a625a04d0fbe5510984d']
+
+  >>> f2 = hd.new()
+  >>> f2.write("Content 2")
+  >>> d2 = f2.commit()
+  >>> print '\n'.join(sorted(hd.digests()))
+  0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d
+  ab8366d7206c431e6e15a625a04d0fbe5510984d
+
+We can get an open file for reading by issuing the open method.
+
+  >>> f = hd.open('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
+  >>> f.read()
+  'Content 2'
+
+This object implemnts the IReadFile interface
+  >>> interfaces.IReadFile.providedBy(f)
+  True
+
+We can get the digest of the object
+
+  >>> f.digest
+  '0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
+
+We can get the creation- and access time of the file as timestamp. For
+testing we just look if it is smaller than now.
+
+  >>> import time
+  >>> f.ctime < time.time()
+  True
+  >>> f.atime >= f.ctime
+  True
+
+The seek and tell operations are supported.
+
+  >>> f.seek(1)
+  >>> f.read(10)
+  'ontent 2'
+
+  >>> int(f.tell())
+  9
+
+  >>> f.seek(2)
+  >>> f.read(10)
+  'ntent 2'
+
+Readfiles are sized
+
+  >>> len(f)
+  9
+
+You also can get the filedescriptor for the Readfile.
+
+  >>> type(f.fileno())==type(1)
+  True
+
+If an IReadFile is closed it can still be read but it is then a new file.
+
+  >>> f.close()
+  >>> f.read()
+  'Content 2'
+
+Readfiles can be iterated over.
+
+  >>> f.seek(0)
+  >>> [line for line in f]
+  ['Content 2']
+
+We can also get the path of the file.
+
+  >>> hd.getPath('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
+  '...0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
+
+We can get the size of the file via the hashdir.
+
+  >>> f = hd.new()
+  >>> for s in ['abc']*1024*500:
+  ...     f.write(s)
+  >>> d = f.commit()
+  >>> int(hd.getSize(d))
+  1536000
+
+Empty files are also allowed.
+
+  >>> f = hd.new()
+  >>> f.commit()
+  'da39a3ee5e6b4b0d3255bfef95601890afd80709'
+
+If no file is in progress the tmp dir of the hd should be empty.
+
+  >>> os.listdir(hd.tmp)
+  []
+
+If we provide a wrong digest a Value error is raised.
+
+  >>> hd.getPath('abc')
+  Traceback (most recent call last):
+  ...
+  ValueError: 'abc'
+
+If we have a valid digest but it is not there a KeyError is raised.
+
+  >>> hd.getPath('da39a3ee5e6b4b0d3255bfef95601890afd80700')
+  Traceback (most recent call last):
+  ...
+  KeyError: 'da39a3ee5e6b4b0d3255bfef95601890afd80700'
+
+Fallbacks
+=========
+
+It is possible to set additional fallback paths upon hashdir creation,
+in order to have read-only fallback access to other extfile
+direcotires. This is usefull to allow a read-only directory to act as
+a static shared store.
+
+Let's create a new hasdhdir, with the previous hashdir's var path as
+fallback.
+
+  >>> hdPath2 = os.path.join(tmp, 'testhashdir2')
+  >>> hd2 = hashdir.HashDir(hdPath2, fallbacks=(hd.var,))
+
+It is now possible to get all digests from the fallback.
+
+  >>> f = hd2.open('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
+  >>> f.read()
+  'Content 2'
+
+Note that the fallback digests are not listet in the digests.
+
+  >>> hd2.digests()
+  []
+
+Cleanup
+
+  >>> import shutil
+  >>> shutil.rmtree(tmp)

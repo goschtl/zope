@@ -1,0 +1,21 @@
+=======
+ TODOs
+=======
+
+Functional Tests
+
+Further Improvements
+====================
+
+zope.publisher.browser.BrowserRequest uses FieldStorage directly which
+creates a tempflile for each multipart boundary upon upload. We have
+to make the FieldStorage implementation pluggable by creating some
+IFieldStorageFactory utilities.
+
+If we are able to replace the FieldStorage implementation we can
+provide an implemntation which stores the files as hashdir files, so
+upon upload the file only has to be moved instead of iterated over in
+python. This results in much faster handling of huge files upon
+upload.
+
+

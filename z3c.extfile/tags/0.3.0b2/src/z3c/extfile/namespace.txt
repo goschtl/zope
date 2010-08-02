@@ -1,0 +1,112 @@
+=========================
+Static Readfile Namespace
+=========================
+
+The static namespace returns an IReadFiel object like the
+ExtBytesProperty does. The name is the digest of the file.
+
+Security Warning! Note that this namespace reveals content, that might
+be protected in other cases. It is not enabled by default. If you want
+to enable it include the 'namespace.zcml' file.
+
+At first we need some setup.
+
+  >>> from z3c.extfile import hashdir
+  >>> import tempfile, os
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+  >>> from zope import component
+  >>> from z3c.extfile.interfaces import IHashDir
+  >>> component.provideUtility(hd, provides=IHashDir)
+
+Let us make a test object whith an ExtBytesProperty in order to get
+some content into our hash directory.
+
+  >>> from z3c.extfile.property import ExtBytesProperty
+  >>> from cStringIO import StringIO
+  >>> class Foo(object):
+  ...     data1 = ExtBytesProperty('data1')
+  ...     data2 = ExtBytesProperty('data2')
+  >>> foo = Foo()
+  >>> foo.data1 = StringIO('contents of foo.data1')
+  >>> foo.data2 = StringIO('contents of foo.data2')
+
+Now our namespace should return a readfile.
+
+  >>> from z3c.extfile.namespace import Static
+  >>> ns = Static(None, None)
+
+A bad hash does not work:
+
+  >>> ns.traverse(u'not a hash', None)
+  Traceback (most recent call last):
+  ...
+  LocationError: (None, u'not a hash')
+
+Existing hashes return a ReadFile.
+
+  >>> ns.traverse(foo.data1.digest, None)
+  <ReadFile named 'b34d7a2ebbef51196b8db24f6233e750d6a30e18'>
+  >>> ns.traverse(foo.data2.digest, None)
+  <ReadFile named '8923e22aa8772e3525dc91f008fc10ce6812b39d'>
+
+A non existing hash also raises a location error.
+
+  >>> ns.traverse('b34d7a2ebbef51196b8db24f6233e750d6a30e10', None)
+  Traceback (most recent call last):
+  ...
+  LocationError: (None, 'b34d7a2ebbef51196b8db24f6233e750d6a30e10')
+
+Default Browserview
+===================
+
+When we use the namespace with a browser, we will get the default view
+implementation of Readfile.
+
+  >>> from z3c.extfile.browser import views
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> view = views.ReadFileView(foo.data1, request)
+
+The view returns the readfile directly, which is actually a file and
+will be directly and efficiently published by the publisher.
+
+  >>> view()
+  <ReadFile named 'b34d7a2ebbef51196b8db24f6233e750d6a30e18'>
+
+The view sets various headers. Note that the we can cache this view
+forever, so the cache time is set to 360 days. Also the
+"Last-Modified" header is set to the creation date of the file. The
+content type is guessed by using the z3c.filetype package, which uses
+magic numbers to get the type. For our sample content it can't find a
+type so it uses the fallback 'application/octet-stream'.
+
+  >>> request.response.getHeaders()
+  [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)'),
+   ('Last-Modified', '...'), ('Content-Length', '21'),
+   ('Content-Type', 'application/octet-stream'),
+   ('Cache-Control', 's-max-age=31104000; max-age=31104000')]
+
+Absolute URLs
+=============
+
+With this namespace we now have an absolute url for each
+readfile. There is an absolute url view implemented for this.
+
+  >>> request = TestRequest()
+  >>> view = views.ReadFileAbsoluteURL(foo.data1, request)
+  >>> view()
+  'http://127.0.0.1/++static++b34d7a2ebbef51196b8db24f6233e750d6a30e18'
+  >>> str(view)
+  'http://127.0.0.1/++static++b34d7a2ebbef51196b8db24f6233e750d6a30e18'
+  >>> unicode(view)
+  u'http://127.0.0.1/++static++b34d7a2ebbef51196b8db24f6233e750d6a30e18'
+
+Cleanup
+
+  >>> import z3c.extfile.datamanager
+  >>> z3c.extfile.datamanager._storage.dataManager._close()
+  >>> import shutil
+  >>> shutil.rmtree(tmp)
+

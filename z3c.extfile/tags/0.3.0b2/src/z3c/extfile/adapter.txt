@@ -1,0 +1,17 @@
+=================
+ IResult adapter
+=================
+
+The IResult adapter is used by the publisher to get the right wrapper
+around objects.
+
+  >>> from z3c.extfile import adapter
+  >>> from zope.publisher.browser import TestRequest
+  >>> from z3c.extfile.hashdir import ReadFile
+  >>> rf = ReadFile(adapter.__file__)
+  >>> request = TestRequest()
+  >>> result = adapter.ReadFileResult(rf, request)
+  >>> result
+  <zope.publisher.http.DirectResult object at ...>
+
+

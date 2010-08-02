@@ -1,0 +1,37 @@
+=============
+ File widget
+=============
+
+At first we need a hashdir as a utility.
+
+  >>> from z3c.extfile import hashdir
+  >>> import tempfile, os
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+  >>> from zope import component
+  >>> from z3c.extfile.interfaces import IHashDir
+  >>> component.provideUtility(hd, provides=IHashDir)
+
+
+  >>> from z3c.extfile.browser.widget import ExtBytesWidget
+  >>> from zope.publisher.browser import TestRequest
+  >>> from z3c.extfile.schema import ExtBytesField
+  >>> from cStringIO import StringIO
+  >>> si = StringIO('file contents')
+  >>> field = ExtBytesField(__name__='foo', title=u'Foo')
+  >>> request = TestRequest(form={'field.foo': si})
+  >>> widget = ExtBytesWidget(field, request)
+  >>> widget.hasInput()
+  True
+  >>> widget.getInputValue()
+  <cStringIO.StringI object at ...>
+
+
+  
+Cleanup
+
+  >>> import shutil
+  >>> shutil.rmtree(tmp) 
+
+

@@ -1,0 +1,80 @@
+==================
+ZCML Configuration
+==================
+
+In order to register a global hashdir utility a zcml directive is
+provided.
+
+  >>> baseTemplate = """<configure
+  ...    xmlns='http://namespaces.zope.org/zope'
+  ...    xmlns:test='http://www.zope.org/NS/Zope3/test'
+  ...    i18n_domain='zope'>
+  ...    <hashDir path="%s" fallbacks="%s"/>
+  ...   </configure>"""
+
+  >>> from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+
+Do the meta stuff.
+
+  >>> import z3c.extfile
+  >>> XMLConfig('meta.zcml', z3c.extfile)()
+
+Let us register a hashdir util.
+
+  >>> from StringIO import StringIO
+  >>> path = "./its/not/there"
+  >>> xmlconfig(StringIO(baseTemplate % (path, '')))
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...
+        OSError: ... No such file or directory: '.../its/not/there'
+
+We need an existing path. We also define some fallbacks.
+
+  >>> from zope import component
+  >>> from z3c.extfile.interfaces import IHashDir
+  >>> import tempfile, os, shutil
+  >>> tmp1 = tempfile.mkdtemp()
+  >>> xmlconfig(StringIO(baseTemplate % (tmp1, '/tmp some/relative/path')))
+  >>> sorted(os.listdir(tmp1))
+  ['tmp', 'var']
+  >>> util = component.getUtility(IHashDir)
+  >>> util
+  <z3c.extfile.hashdir.HashDir object at ...>
+
+  >>> util.path == tmp1
+  True
+
+The fallback paths.
+
+  >>> util.fallbacks
+  [u'/tmp', u'/.../parts/.../some/relative/path']
+
+Also the bootstrapsubscriber looks if the utility is already
+registered and issues a warning if so and returns without any action.
+Let us enable the logger.
+
+  >>> import logging, sys
+  >>> log = logging.getLogger('z3c.extfile')
+  >>> logStream = sys.stdout
+  >>> log.setLevel(logging.WARN)
+  >>> logHandler = logging.StreamHandler(sys.stdout)
+  >>> log.addHandler(logHandler)
+
+Now let us call the bootstrap subscriber.
+
+  >>> tmp2 = tempfile.mkdtemp()
+  >>> os.environ['EXTFILE_STORAGEDIR'] = tmp2
+
+Now we should get a log output.
+
+  >>> from z3c.extfile.utility import bootStrapSubscriber
+  >>> bootStrapSubscriber(None)
+  Ignoring hashdir path '...' using already registered IHashDir Utility at u'...'
+
+Some cleanup.
+
+  >>> log.removeHandler(logHandler)
+  >>> del os.environ['EXTFILE_STORAGEDIR']
+  >>> shutil.rmtree(tmp1)
+  >>> shutil.rmtree(tmp2)

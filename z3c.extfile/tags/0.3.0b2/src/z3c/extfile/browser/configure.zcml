@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="..interfaces.IExtBytesField"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.ExtBytesWidget"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="..interfaces.IReadFile"
+      name="index.html"
+      permission="zope.View"
+      class=".views.ReadFileView"/>
+
+  <view
+      for="..interfaces.IReadFile"
+      name="absolute_url"
+      factory=".views.ReadFileAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <view
+      for="..interfaces.IReadFile"
+      factory=".views.ReadFileAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+</configure>
+
+
+

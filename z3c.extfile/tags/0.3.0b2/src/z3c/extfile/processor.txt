@@ -1,0 +1,66 @@
+==================
+ Upload Processor
+==================
+
+The upload processor takes a hashdir for initialization and creates
+files with the filedata fields in the input stream. It replaces the
+actual file content with the digest of the contents.
+
+  >>> from z3c.extfile import hashdir, processor
+  >>> import tempfile, os
+  >>> testDir = os.path.join(os.path.dirname(hashdir.__file__),'testdata')
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+
+  >>> from cStringIO import StringIO
+  >>> out = StringIO()
+  >>> proc = processor.Processor(hd)
+  >>> fp = open(os.path.join(testDir,'input1.inp'))
+  >>> proc.pushInput(fp, out)
+
+  >>> print '\n'.join(sorted(hd.digests()))
+  28a33adad3dbce5d72ec8012c9e0563b8ef1eb17
+  3ac60068645f651bf2e528e15402a32daecb6873
+
+So now we should have two files.
+
+  >>> d2, d1 = sorted(hd.digests())
+
+  >>> f = hd.open(d1)
+  >>> print f.read()
+  first line of 1
+  second line of 1
+
+  >>> f.close()
+  >>> f = hd.open(d2)
+  >>> print f.read()
+  first line of 2
+  second line of 2
+  >>> f.close()
+
+And the output only contains the digests as content.
+
+  >>> out.seek(0)
+  >>> print out.read()
+  -----------------------------100323068321119442571506749230
+  Content-Disposition: form-data; filename="test1.txt"; name="test1"
+  Content-Type: application/x-z3c.extfile-info
+  <BLANKLINE>
+  z3c.extfile.digest:3ac60068645f651bf2e528e15402a32daecb6873
+  -----------------------------100323068321119442571506749230
+  Content-Disposition: form-data; filename="test2.txt"; name="test2"
+  Content-Type: application/x-z3c.extfile-info
+  <BLANKLINE>
+  z3c.extfile.digest:28a33adad3dbce5d72ec8012c9e0563b8ef1eb17
+  -----------------------------100323068321119442571506749230
+  Content-Disposition: form-data; name="submit"
+  <BLANKLINE>
+  submit data
+  -----------------------------100323068321119442571506749230--
+  <BLANKLINE>
+
+Cleanup
+
+  >>> import shutil
+  >>> shutil.rmtree(tmp)

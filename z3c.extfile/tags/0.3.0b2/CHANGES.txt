@@ -1,0 +1,80 @@
+=======================
+Changes for z3c.extfile
+=======================
+
+0.3.0b2 (2010-08-02)
+====================
+
+- moved paste dependency to test extra
+
+0.3.0b1 (2010-07-21)
+====================
+
+- allow fallbacks in IHashDir for read-only access to additional
+  digest files. see hashdir.txt for details.
+
+- removed zope.tread and use threading instead
+
+0.2.0b2 (2008-07-14)
+====================
+
+- fixed a bug in the extfile wsgi filter that returned an empty string
+  if content-lenth is below 100 and the returned object is an
+  iterator.
+
+0.2.0b1 (2008-06-05)
+====================
+
+- initialize hashdir lazy in filter to allow deferred hashdir
+  creation.
+
+0.2.0a3 (2008-04-23)
+====================
+
+- if path in hashdir utility is given as unicode, keep the path
+  unicode and convert only digests of files to strings. Fixes a bug
+  reported by Yuang Hong.
+
+0.2.0a2 (2008-02-16)
+====================
+
+- chmod to 440 on created hash files to let the group read and to make
+  sure that files are not modified by owner.
+
+0.2.0a1 (2008-02-05)
+====================
+
+- added the hashDir zcml directive
+
+- renamed environ variables to make it work with a server that sets
+  the HTTP_ prefix
+
+- set content-type and length in wsgi filter if info is present when
+  delivering files
+
+- tell and abort methods on WriteFile
+
+- content type recognition/restrictions in wsgi filter see filter.txt
+
+- allow relative paths in directory argument for wsgi filter
+
+- updated config example in README.txt for paste deployment
+
+- make filter and processor handle locking sockets correctly which are
+  used by paste
+
+0.1.1 (2007-11-22)
+==================
+
+- added testing.py for simpler use of extfile in tests
+
+- Use product config z3c.extfile:storagedir to set the storage directory
+
+- Registration of utility is now logged on INFO
+
+- New ++static++ namespace and index.html view for IReadFile, see
+  namespace.txt. This adds a dependency to z3c.filetype.
+
+- delete datamanager on transaction boundaries. this is needed if
+  running multiple tests with different hashdirs
+
