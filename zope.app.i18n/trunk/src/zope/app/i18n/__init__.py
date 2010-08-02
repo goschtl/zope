@@ -12,16 +12,7 @@
 #
 ##############################################################################
 """Customization of zope.i18n for the Zope application server
-
-$Id$
 """
-__docformat__ = 'restructuredtext'
 
-import zope.deferredimport
-
-
-zope.deferredimport.deprecated(
-    "It has moved to zope.i18nmessageid  This reference will be gone "
-    "in Zope 3.6",
-    ZopeMessageFactory = 'zope.i18nmessageid:ZopeMessageFactory',
-    )
+# BBB
+from zope.i18nmessageid import ZopeMessageFactory

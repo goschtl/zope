@@ -5,8 +5,7 @@ CHANGES
 3.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Remove undeclared dependency on zope.deferredimport.
 
 3.6.2 (2009-10-07)
 ------------------
