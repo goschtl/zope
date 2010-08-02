@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "z3c.extfile",
-    version = "0.3.0b1",
+    version = "0.3.0b2",
     author = "Zope Contributors",
     author_email = "zope3-dev@zope.org",
     description = "Large file handling for zope3",
@@ -11,8 +11,7 @@ setup(
     url = 'http://svn.zope.org/z3c.extfile',
     classifiers = [
         'Development Status :: 4 - Beta',
-        "License :: OSI Approved :: Zope Public License",
-        "Framework :: Zope :: UI"],
+        "License :: OSI Approved :: Zope Public License"],
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -20,6 +19,8 @@ setup(
     zip_safe = False,
     extras_require={"test":['zope.testing',
                             'zope.app.testing',
+                            'Paste',
+                            'PasteDeploy',
                             ]},
     install_requires = ['setuptools',
                         'z3c.filetype',
@@ -37,7 +38,5 @@ setup(
                         'zope.schema',
                         'zope.security',
                         'zope.traversing',
-                        'Paste',
-                        'PasteDeploy',
                         ],
     )

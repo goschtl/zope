@@ -2,6 +2,11 @@
 Changes for z3c.extfile
 =======================
 
+0.3.0b2 (2010-08-02)
+====================
+
+- moved paste dependency to test extra
+
 0.3.0b1 (2010-07-21)
 ====================
 
