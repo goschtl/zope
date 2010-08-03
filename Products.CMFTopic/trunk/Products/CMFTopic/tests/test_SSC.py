@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for SimpleStringCriterion module.
-
-$Id$
 """
 
 import unittest
@@ -57,6 +55,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(SimpleStringCriterionTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

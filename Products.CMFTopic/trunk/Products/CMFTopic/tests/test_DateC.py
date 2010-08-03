@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for DateCriteria module.
-
-$Id$
 """
 
 import unittest
@@ -392,7 +390,3 @@ def test_suite():
         unittest.makeSuite(FriendlyDateCriterionTests),
         unittest.makeSuite(FriendlyDateCriterionFunctionalTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

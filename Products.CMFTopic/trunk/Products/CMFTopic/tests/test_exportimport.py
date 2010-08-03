@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for GenericSetup export / import support for topics / criteria.
-
-$Id$
 """
 
 import unittest
@@ -516,7 +514,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TopicExportImportTests),
         ))
-
-if __name__ == '__main__':
-    from Products.GenericSetup.testing import run
-    run(test_suite())

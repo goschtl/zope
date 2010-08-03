@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for Topic module.
-
-$Id$
 """
 
 import unittest
@@ -349,7 +347,3 @@ def test_suite():
         unittest.makeSuite(TestTopic),
         unittest.makeSuite(TestTopicFunctional),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())
