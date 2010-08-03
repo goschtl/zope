@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <addform
+      name="addMounPoint.html"
+      schema=".interfaces.IMountPoint"
+      label="Add a Mount Point"
+      content_factory=".mountpoint.MountPoint"
+      fields="connectionName objectPath objectName"
+      set_before_add="connectionName objectPath objectName"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class=".mountpoint.MountPoint"
+      title="Mount Point"
+      description="A Mount Point"
+      permission="zope.ManageContent"
+      view="addMounPoint.html"
+      />
+
+  <editform
+      name="edit.html"
+      schema=".interfaces.IMountPoint"
+      label="Edit Mount Point"
+      fields="connectionName objectPath objectName"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <zope:adapter
+      factory=".browser.ObjectMenuItem"
+      for=".interfaces.IMountPoint
+           zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+      provides="zope.app.menus.zmi_views"
+      name="Object"
+      />
+
+</configure>
