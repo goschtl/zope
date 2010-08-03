@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for Event module.
-
-$Id$
 """
 
 import unittest
@@ -167,6 +165,3 @@ def test_suite():
         unittest.makeSuite(TestEvent),
         unittest.makeSuite(EventPUTTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

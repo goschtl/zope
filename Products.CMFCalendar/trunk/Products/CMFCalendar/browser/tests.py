@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for browser module.
-
-$Id$
 """
 
 import unittest
@@ -42,7 +40,3 @@ def test_suite():
     s.layer = FunctionalLayer
     suite.addTest(s)
     return suite
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())
