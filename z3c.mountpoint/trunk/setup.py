@@ -55,30 +55,13 @@ setup(
     extras_require = dict(
         test = [
             'zope.app.testing',
-            'zope.app.publication',
-                # 'zope.testing',
-                # 'zope.traversing',
-                # 'lxml>=2.1.1',
-                # 'z3c.pt>=1.0b4',
-                # 'z3c.ptcompat',
-                # 'zope.app.security',
-                # 'zope.formlib',
-                ],
+            ],
         ),
     install_requires = [
         'setuptools',
-        # 'z3c.template>=1.2.0',
-        # 'z3c.ptcompat',
-        #  # TODO: this is only needed for ZCML directives, so can copy
-        # 'zope.app.publisher', # things we use from there and get rid of the dependencies.
-        'zope.component',
         'zope.app.container',
-        # 'zope.configuration',
-        # 'zope.contentprovider',
-        # 'zope.interface',
-        # 'zope.publisher',
-        # 'zope.schema',
-        # 'zope.security',
+        'zope.app.publication',
+        'zope.component',
         ],
     include_package_data = True,
     zip_safe = False,
