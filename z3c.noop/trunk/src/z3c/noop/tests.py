@@ -16,7 +16,7 @@
 $Id$
 """
 
-from zope.testing import doctest
+import doctest
 import pkg_resources
 import zope.app.testing.functional
 
@@ -27,7 +27,6 @@ layer = zope.app.testing.functional.ZCMLLayer(
 
 def test_suite():
     suite = zope.app.testing.functional.FunctionalDocFileSuite(
-        'README.txt',
-        optionflags=doctest.INTERPRET_FOOTNOTES)
+        'README.txt')
     suite.layer = layer
     return suite

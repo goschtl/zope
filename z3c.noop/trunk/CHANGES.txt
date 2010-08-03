@@ -5,10 +5,13 @@ CHANGES
 1.1 (unreleased)
 ================
 
-- Nothing changed yet.
+- Reworked tests as ``INTERPRET_FOOTNOTES`` no longer works.
+
+- Now used python's `doctest` instead of deprecated
+  `zope.testing.doctest`.
 
 
 1.0 (2009-06-15)
 ================
 
-- first released version
+- First released version.
