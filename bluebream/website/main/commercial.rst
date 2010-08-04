@@ -66,6 +66,15 @@ would like to be added to this list, or removed, please contact
 
 ----
 
+:Contractor: `Ilshad Khabibullin <http://astoon.zwiki.org>`_
+:E-mail: astoon AT bluebream.ru
+:Location: Yekaterinburg, Russia
+:Comments: An experienced Russian team does custom application
+  development for business using BlueBream and Zope Toolkit or
+  support for an existing applications.
+
+----
+
 :Company/Contractor:
 :E-mail:
 :Phone:
