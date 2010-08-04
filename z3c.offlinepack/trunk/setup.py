@@ -1,13 +1,20 @@
 from setuptools import setup, find_packages
 import sys, os
 
+def read(filename):
+    return open(os.path.join(os.path.dirname(__file__),
+                             filename)).read() + "\n\n"
+
+
 version = '0.2'
+
 
 setup(name='z3c.offlinepack',
       version=version,
       description="Pack ZODB databases without running Zope or ZEO",
-      long_description=open(os.path.join(os.path.dirname(__file__),
-                                         'README.txt')).read(),
+      long_description=(
+          read('README.txt') +
+          read('CHANGES.txt')),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
@@ -16,7 +23,7 @@ setup(name='z3c.offlinepack',
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='',
+      keywords='zodb pack',
       author='Ross Patterson',
       author_email='me@rpatterson.net',
       url='http://pypi.python.org/pypi/z3c.offlinepack',
@@ -30,7 +37,12 @@ setup(name='z3c.offlinepack',
           # -*- Extra requirements: -*-
           'ZODB3', 'zope.dottedname'
       ],
-      extras_require=dict(test=['zc.buildout', 'zc.recipe.egg']),
+      extras_require=dict(
+          test=[
+              'zc.buildout',
+              'zc.recipe.egg',
+              'zope.testing',
+              ]),
       entry_points="""
       # -*- Entry points: -*-
       [console_scripts]
