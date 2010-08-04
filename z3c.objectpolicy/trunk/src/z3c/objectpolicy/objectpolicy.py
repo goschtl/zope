@@ -13,7 +13,7 @@
 ##############################################################################
 """
 The objectpolicy package makes it easy to override the default
-zope.app.securitypolicy.zopepolicy on an object by object basis.
+zope.securitypolicy.zopepolicy on an object by object basis.
 
 By default all objects use the zopepolicy. Objects that want to have
 their own policy should have a marker interface `IObjectPolicyMarker`
@@ -24,7 +24,7 @@ and have an adapter to `IObjectPolicy`.
 import zope.interface
 import zope.component
 
-from zope.app.securitypolicy.zopepolicy import ZopeSecurityPolicy
+from zope.securitypolicy.zopepolicy import ZopeSecurityPolicy
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import removeSecurityProxy
 from zope.security.management import system_user
@@ -32,12 +32,13 @@ from zope.security.management import system_user
 from z3c.objectpolicy.interfaces import IObjectPolicyMarker
 from z3c.objectpolicy.interfaces import IObjectPolicy
 
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
 
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.principalpermission import AnnotationPrincipalPermissionManager
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.rolepermission import AnnotationRolePermissionManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.principalpermission import AnnotationPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
+
 
 class ObjectPolicy(ZopeSecurityPolicy):
 

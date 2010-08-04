@@ -16,7 +16,7 @@ from zope import component
 from zope.app.testing import placelesssetup
 from zope.configuration import xmlconfig
 from zope.testing import module
-from zope.app.securitypolicy.tests.test_zopepolicy import setUp
+from zope.securitypolicy.tests.test_zopepolicy import setUp
 
 from z3c.objectpolicy.objectpolicy import ObjectPrincipalPermissionManager
 from z3c.objectpolicy.objectpolicy import ObjectRolePermissionManager
@@ -50,6 +50,3 @@ def test_suite():
             setUp=setUpOP, tearDown=tearDown,
             ),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

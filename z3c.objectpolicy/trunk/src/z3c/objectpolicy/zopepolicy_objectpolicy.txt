@@ -1,4 +1,4 @@
-THIS IS A COPY of zope.app.securitypolicy.zopepolicy.txt
+THIS IS A COPY of zope.securitypolicy.zopepolicy.txt
 Because all test there have to pass with the objectpolicy installed.
 
 This one uses ObjectPolicy as the security policy.
@@ -44,7 +44,7 @@ the purposes of the security policy, only string `ids` are used.
 
 The security policy provides a factory for creating interactions:
 
-  >>> import zope.app.securitypolicy.zopepolicy
+  >>> import zope.securitypolicy.zopepolicy
   >>> import z3c.objectpolicy.objectpolicy
   >>> interaction = z3c.objectpolicy.objectpolicy.ObjectPolicy()
 
@@ -88,10 +88,10 @@ Note, however, that we always have the CheckerPublic permission:
   True
 
 We make grants and denials on objects by adapting them to various
-granting interfaces.  The objects returned from the adaptation are 
+granting interfaces.  The objects returned from the adaptation are
 object-specific manager objects:
 
-  >>> from zope.app.securitypolicy import interfaces
+  >>> from zope.securitypolicy import interfaces
   >>> roleper  = interfaces.IRolePermissionManager(ob)
   >>> prinrole = interfaces.IPrincipalRoleManager(ob)
   >>> prinper  = interfaces.IPrincipalPermissionManager(ob)
@@ -175,11 +175,11 @@ Global grants
 Grants made to an object are said to be "local".  We can also make
 global grants:
 
-  >>> from zope.app.securitypolicy.rolepermission \
+  >>> from zope.securitypolicy.rolepermission \
   ...     import rolePermissionManager as roleperG
-  >>> from zope.app.securitypolicy.principalpermission \
+  >>> from zope.securitypolicy.principalpermission \
   ...     import principalPermissionManager as prinperG
-  >>> from zope.app.securitypolicy.principalrole \
+  >>> from zope.securitypolicy.principalrole \
   ...     import principalRoleManager as prinroleG
 
 And the same rules apply to global grants and denials.
@@ -513,7 +513,6 @@ authentication service:
 
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IAuthentication, auth)
-  >>> from zope.app import zapi
 
 Let's define a group:
 

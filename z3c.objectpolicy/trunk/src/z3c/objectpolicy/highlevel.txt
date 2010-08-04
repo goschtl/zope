@@ -7,8 +7,8 @@ it's own properties` problem.
 
   >>> from zope import interface, component
   >>> from zope.annotation.interfaces import IAttributeAnnotatable
-  >>> from zope.app.container.interfaces import IContained
-  >>> from zope.app.container.contained import Contained
+  >>> from zope.container.interfaces import IContained
+  >>> from zope.container.contained import Contained
   >>> from z3c.objectpolicy.interfaces import IObjectPolicy
   >>> from z3c.objectpolicy.interfaces import IObjectPolicyMarker
   >>> class IPerson(interface.Interface):
@@ -53,7 +53,7 @@ Watch out, this is just a little bit different from the lowlevel example!
   ...     def __init__(self, context):
   ...         #context is a Person
   ...         self.context = context
-  ...     
+  ...
   ...     def checkPermission(self, manager, permissionid):
   ...         #print permissionid, str(self.context)
   ...         return self.checkPermissionForParticipation(manager, permissionid)
@@ -71,7 +71,7 @@ Watch out, this is just a little bit different from the lowlevel example!
   ...         #return the Z3 default permissions
   ...         return super(PersonPolicy, self).checkPermissionForParticipant(
   ...             manager, principal, permissionid)
-  ...     
+  ...
   >>> component.provideAdapter(PersonPolicy)
 
 Install the ObjectPolicy, setup for testing.
@@ -79,13 +79,13 @@ Install the ObjectPolicy, setup for testing.
   >>> from z3c.objectpolicy.objectpolicy import ObjectPrincipalPermissionManager
   >>> from z3c.objectpolicy.objectpolicy import ObjectRolePermissionManager
   >>> from z3c.objectpolicy.objectpolicy import ObjectPolicy
-  
+
   >>> component.provideAdapter(ObjectPrincipalPermissionManager)
   >>> component.provideAdapter(ObjectRolePermissionManager)
 
   >>> bela = Person('b-id', 'bela')
   >>> joe = Person('j-id', 'joe')
-  
+
   >>> class Participation:
   ...     interaction = None
   >>> participation = Participation()
@@ -121,7 +121,7 @@ in ALLOW_FOR_SELF
   >>> TRIP_WIRE
   3
 
-  >>> from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
+  >>> from zope.securitypolicy.interfaces import IPrincipalPermissionManager
   >>> prinperBela = IPrincipalPermissionManager(bela)
   >>> prinperJoe = IPrincipalPermissionManager(joe)
   >>> prinperBela.grantPermissionToPrincipal('zope.ManageContent', 'j-id')
@@ -151,7 +151,7 @@ Without granting -- no permission
   False
   >>> TRIP_WIRE
   5
-  
+
   >>> prinperOther.grantPermissionToPrincipal('zope.ManageContent', 'j-id')
   >>> interaction.checkPermission('zope.ManageContent', otherObject)
   True
@@ -177,7 +177,7 @@ No permission, maybe something should be written to the log?
 Now a more complicated, parent-child setup
 ------------------------------------------
 
-  >>> from zope.app.container.sample import SampleContainer
+  >>> from zope.container.sample import SampleContainer
   >>> from zope.location.location import locate
   >>> class IPersonContainer(interface.Interface):
   ...     """a person container interface"""
@@ -189,7 +189,7 @@ Now a more complicated, parent-child setup
   ...     def __init__(self, id):
   ...         self.id = id
   ...         super(PersonContainer, self).__init__()
-  ...     
+  ...
   >>> class BrowserView(object):
   ...     interface.implements(
   ...         IContained)
@@ -209,7 +209,7 @@ The layout is:
   >>> jane = Person('jane-id','jane')
   >>> users['jane'] = jane
   >>> locate(jane, users, 'jane')
-  
+
   >>> editJack = BrowserView()
   >>> locate(editJack, jack, None)
   >>> editJane = BrowserView()
@@ -218,7 +218,7 @@ The layout is:
   >>> prinperUsers = IPrincipalPermissionManager(users)
   >>> prinperJack = IPrincipalPermissionManager(jack)
   >>> prinperJane = IPrincipalPermissionManager(jane)
-  
+
   >>> participation = Participation()
 
 The principal acting is jack

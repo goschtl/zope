@@ -52,7 +52,6 @@ setup (
     extras_require = dict(
         test = [
             'z3c.coverage',
-            'zope.app.securitypolicy',
             'zope.app.testing',
             'zope.configuration',
             'zope.testing',
@@ -62,7 +61,8 @@ setup (
         'setuptools',
         'zope.component',
         'zope.interface',
-        'zope.app.securitypolicy',
+        'zope.securitypolicy',
+        'zope.app.security',
         ],
     zip_safe = False,
 )
