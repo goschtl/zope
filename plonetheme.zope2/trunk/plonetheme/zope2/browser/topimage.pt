@@ -1,9 +1,10 @@
 
 <div class="topimage" tal:define="portal_url python: context.portal_url.getPortalObject().absolute_url()">
-    <a tal:attributes="href string:$portal_url/about-zope-2/six-reasons-for-using-zope"
+    <a tal:condition="python: not 'calendar.zope.org' in request.ACTUAL_URL"
+       tal:attributes="href string:$portal_url/about-zope-2/six-reasons-for-using-zope"
        i18n:domain="plone">
-       <img tal:condition="python: not 'calendar.zope.org' in request.ACTUAL_URL"
-            tal:attributes="src string:$portal_url/sixtop.jpg" alt="Six top reaons for using Zope" width="605" /></a>
+       <img  tal:attributes="src string:$portal_url/sixtop.jpg" alt="Six top reaons for using Zope" width="605" /></a>
+
        <img tal:condition="python: 'calendar.zope.org' in request.ACTUAL_URL"
-            tal:attributes="src string:$portal_url/logo_calendar.gif" alt="Zope Events" width="605" /></a>
+            tal:attributes="src string:$portal_url/logo_calendar.gif" alt="Zope Events" width="605" />
 </div>
