@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """Setup
-
-$Id:$
 """
 import os
 from setuptools import setup, find_packages
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup (
+
+setup(
     name='z3c.table',
     version='0.8.2dev',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
@@ -32,13 +32,20 @@ setup (
         + '\n\n' +
         read('src', 'z3c', 'table', 'README.txt')
         + '\n\n' +
+        read('src', 'z3c', 'table', 'sort.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'table', 'batch.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'table', 'sequence.txt')
+        + '\n\n' +
         read('src', 'z3c', 'table', 'column.txt')
         + '\n\n' +
-        read('CHANGES.txt')
-        ),
-    license = "ZPL 2.1",
-    keywords = "zope3 z3c table content provider",
-    classifiers = [
+        read('src', 'z3c', 'table', 'miscellaneous.txt')
+        + '\n\n' +
+        read('CHANGES.txt')),
+    license="ZPL 2.1",
+    keywords="zope3 z3c table content provider",
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -48,13 +55,13 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://pypi.python.org/pypi/z3c.table',
-    packages = find_packages('src'),
-    include_package_data = True,
-    package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
-    extras_require = dict(
-        test = [
+    url='http://pypi.python.org/pypi/z3c.table',
+    packages=find_packages('src'),
+    include_package_data=True,
+    package_dir={'': 'src'},
+    namespace_packages=['z3c'],
+    extras_require=dict(
+        test=[
             'z3c.testing',
             'zope.app.testing',
             'zope.publisher',
@@ -62,7 +69,7 @@ setup (
             'zope.testing',
             ],
         ),
-    install_requires = [
+    install_requires=[
         'setuptools',
         'z3c.batching>=1.1.0',
         'zope.component',
@@ -76,5 +83,5 @@ setup (
         'zope.security',
         'zope.traversing',
         ],
-    zip_safe = False,
+    zip_safe=False,
 )
