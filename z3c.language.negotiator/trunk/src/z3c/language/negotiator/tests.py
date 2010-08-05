@@ -142,6 +142,16 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
         self.negotiator.clearCache(env)
         self.negotiator.clearCache(env)
 
+        #edge case, cache has a more specific language than available
+        self.negotiator.policy = 'browser'
+        env = testing.EnvStub(('de-de','de'))
+
+        self.assertEqual(self.negotiator.getLanguage(('de-de', 'de'), env), 'de-de')
+
+        self.assertEqual(self.negotiator.getLanguage(('de', 'en'), env), 'de')
+
+        self.negotiator.clearCache(env)
+
 
 def test_suite():
     return unittest.TestSuite((

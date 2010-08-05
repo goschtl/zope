@@ -5,7 +5,12 @@ CHANGES
 1.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed an issue with the cache:
+  The cache just ignored the ``languages`` parameter.
+  The first request saved a specific language (e.g. ``de-de``) to the cache,
+  but the second did not have that available in ``languages``, still the cached
+  value was returned.
+  Worst case the uncached method is called.
 
 
 1.1.1 (2010-07-21)

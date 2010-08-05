@@ -109,13 +109,26 @@ class Negotiator(persistent.Persistent, contained.Contained):
     def getLanguage(self, languages, request):
         if self.cacheEnabled:
             try:
-                return request.annotations[LANGUAGE_CACHE_KEY]
+                cached = request.annotations[LANGUAGE_CACHE_KEY]
+                if cached in languages:
+                    return cached
+
+                # If the user asked for a specific variation, but we don't
+                # have it available we may serve the most generic one,
+                # according to the spec (eg: user asks for ('en-us',
+                # 'de'), but we don't have 'en-us', then 'en' is preferred
+                # to 'de').
+                parts = cached.split('-')
+                if len(parts) > 1 and parts[0] in languages:
+                    return parts[0]
+
+                #if there's still no match, we have to run through _getLanguage
             except KeyError:
                 lang = self._getLanguage(languages, request)
                 request.annotations[LANGUAGE_CACHE_KEY] = lang
                 return lang
-        else:
-            return self._getLanguage(languages, request)
+
+        return self._getLanguage(languages, request)
 
     def clearCache(self, request):
         try:
