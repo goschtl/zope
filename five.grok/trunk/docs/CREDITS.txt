@@ -18,3 +18,5 @@ The following people helped five.grok development:
 * Frederic Tedesco
 
 * Adrien Di Dio
+
+* David Glick
