@@ -9,14 +9,39 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-08-03.log.html#t2010-08-03T17:59:16
 
 Attendees
 ---------
 
-XXX
+Stephan Richter, Adam Groszer, Patrick Gerken, Charlie Clark, Christian
+Theune, davisagli, Marius Gedminas, Baiju Muthudakan
 
+Documentation
+-------------
 
+Christian pointed out that Jens has been working on including the packages'
+documentation on doc.zope.org and that it would be good to pick up the other
+end (improving existing documentation) now. Christian has little time
+currently to write the blueprints/bugs to coordinate that effort and is asking
+for help.
+
+Charlie suggested that working on documentation may be a good sprint topic
+because people may not want to do it on their own.
+
+Marius asked whether we can have a unified index of our code base ("Were does
+method `getAdapter` come from?").
+
+Test runners
+------------
+
+Christian asked whether all developers that were supposed to get an MSDN
+license have received it by now. Adam did but doesn't know about the others.
+We need to ask around, maybe Tres knows.
+
+Adam considers the Windows egg builder and its documentation to be finished.
+Due to issues with doc.zope.org and PyPI being down we couldn't have a look at
+it right now.  We'll wait for next week.
 
 Agenda
 ======
@@ -32,6 +57,7 @@ Agenda
         - write bug and assign to toolkit projects (Theuni)
     - Provide package documentation under docs.zope.org/<packagename> and keep
       updated based on the projects' trunks. (Jens)
+    - Unified index?
 
 - Test runners / nightly builds
     - Windows
