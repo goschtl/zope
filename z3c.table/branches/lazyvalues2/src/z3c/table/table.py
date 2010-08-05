@@ -37,13 +37,17 @@ def getWeight(column):
 
 def getSortMethod(idx):
 
-    def getSortKey(item):
-        sublist = item[idx]
+    def getSortKey(row):
+        # a row is a list of tuples, one tuple for each column
+        # each tuple holds value, column, colspan
+        colTuple = row[idx]
 
-        def getColumnSortKey(sublist):
-            return sublist[1].getSortKey(sublist[0])
+        def getColumnSortKey(colTuple):
+            return colTuple[1].getSortKey(colTuple[0])
+            # IOW
+            # return column.getSortKey(row)
 
-        return getColumnSortKey(sublist)
+        return getColumnSortKey(colTuple)
 
     return getSortKey
 
