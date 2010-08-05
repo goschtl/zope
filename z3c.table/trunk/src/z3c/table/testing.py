@@ -19,11 +19,68 @@ __docformat__ = "reStructuredText"
 import datetime
 import zope.interface
 import zope.component
+from zope.container import btree
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security import checker
 from zope.app.testing import setup
 
+from z3c.table import column, table
 import z3c.table.value
+
+
+class TitleColumn(column.Column):
+
+    weight = 10
+    header = u'Title'
+
+    def renderCell(self, item):
+        return u'Title: %s' % item.title
+
+
+class NumberColumn(column.Column):
+
+    header = u'Number'
+    weight = 20
+
+    def getSortKey(self, item):
+        return item.number
+
+    def renderCell(self, item):
+        return 'number: %s' % item.number
+
+
+class Container(btree.BTreeContainer):
+    """Sample container."""
+    __name__ = u'container'
+
+
+class Content(object):
+    """Sample content."""
+
+    def __init__(self, title, number):
+        self.title = title
+        self.number = number
+
+
+class SimpleTable(table.Table):
+
+    def setUpColumns(self):
+        return [
+            column.addColumn(self, TitleColumn, u'title',
+                             cellRenderer=cellRenderer,
+                             headCellRenderer=headCellRenderer,
+                             weight=1),
+            column.addColumn(self, NumberColumn, name=u'number',
+                             weight=2, header=u'Number')]
+
+
+def headCellRenderer():
+    return u'My items'
+
+
+def cellRenderer(item):
+    return u'%s item' % item.title
+
 
 class DublinCoreAdapterStub(object):
     """Dublin core adapter stub."""
