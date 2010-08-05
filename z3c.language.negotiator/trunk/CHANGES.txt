@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1.2 (unreleased)
+1.1.2 (2010-08-05)
 ------------------
 
 - Fixed an issue with the cache:
