@@ -75,6 +75,7 @@ class Table(zope.location.Location):
 
     # sort attributes
     sortOn = 0
+    sortColumn = None
     sortOrder = u'ascending'
     reverseSortOrderNames = [u'descending', u'reverse', u'down']
 
@@ -128,6 +129,8 @@ class Table(zope.location.Location):
     def updateColumns(self):
         for col in self.columns:
             col.update()
+            if col.id == self.sortOn:
+                self.sortColumn = col
 
     def orderColumns(self):
         self.columnCounter = 0
