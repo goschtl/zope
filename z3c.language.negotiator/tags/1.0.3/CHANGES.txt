@@ -1,0 +1,40 @@
+=======
+CHANGES
+=======
+
+1.0.3 (2010-08-05)
+------------------
+
+- Fixed an issue with the cache:
+  The cache just ignored the ``languages`` parameter.
+  The first request saved a specific language (e.g. ``de-de``) to the cache,
+  but the second did not have that available in ``languages``, still the cached
+  value was returned.
+  Worst case the uncached method is called.
+
+1.0.2 (2010-07-21)
+------------------
+
+- backport from 1.1.1:
+
+  - added language choice caching, is by default turned off
+
+  - test coverage is now 100%
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Corrected meta data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Removed the two vocabularies
+  ``AvailableTranslationDomainLanguagesVocabulary`` and
+  ``AvailableTranslationDomainLanguagesVocabularyForZ3C`` which depend on the
+  ``zope.app.i18n`` implementation. Note these vocabularies are not persistent
+  and if you will need it, let's implement this in another package. This
+  allows us to skip all dependencies to ``zope.app.i18n``.
+
+- Restructure: Moved ``zope.language.negotiator`` to it's namespace package.
