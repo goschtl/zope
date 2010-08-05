@@ -22,6 +22,19 @@ class IValues(zope.interface.Interface):
 
     values = zope.interface.Attribute('Iterable table row data sequence.')
 
+    def __len__():
+        """Count of rows"""
+
+    isSorted = zope.schema.Bool(
+        title=_(u'isSorted'),
+        description=_(u'True if values are sorted.'),
+        default=False)
+
+    sortOn = zope.schema.TextLine(
+        title=_(u'Sort on table column id'),
+        description=_(u'Sort on table column id'),
+        default=u'')
+
 
 class ITable(zope.contentprovider.interfaces.IContentProvider):
     """Table provider"""
@@ -72,10 +85,10 @@ class ITable(zope.contentprovider.interfaces.IContentProvider):
         required=False)
 
     # sort attributes
-    sortOn = zope.schema.Int(
-        title=_(u'Sort on table index'),
-        description=_(u'Sort on table index'),
-        default=0)
+    sortOn = zope.schema.TextLine(
+        title=_(u'Sort on table column id'),
+        description=_(u'Sort on table column id'),
+        default=u'')
 
     sortOrder = zope.schema.TextLine(
         title=_(u'Sort order'),

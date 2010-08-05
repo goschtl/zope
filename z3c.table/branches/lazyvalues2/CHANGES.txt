@@ -2,10 +2,22 @@
 CHANGES
 =======
 
-0.8.2 (unreleased)
+0.9.0 (unreleased)
 ------------------
 
-- Split single doctest file (README.txt) into different files
+
+- ``IValues`` conform to ``len`` protocol. ``table.Table`` has new
+  ``allRowsCount`` attribute that surfaces the total number of rows.
+
+- ``table.Table`` modified to use the new ``IValues`` attributes.
+
+- ``IValues`` has two new attributes: ``isSorted`` and ``sortOn``.  
+  They can be queried by tables to avoid to sort again when values where 
+  initially sorted (for example, values coming from a sorted SQL query). 
+
+- Add tests that verify interfaces for classes in ``value.py``
+
+- Split single doctest file (``README.txt``) into different files
 
 
 0.8.1 (2010-07-31)

@@ -18,6 +18,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.fieldproperty import FieldProperty
 
 from z3c.table import interfaces
 
@@ -27,10 +28,16 @@ class ValuesMixin(object):
 
     zope.interface.implements(interfaces.IValues)
 
+    isSorted = FieldProperty(interfaces.IValues['isSorted'])
+    sortOn = FieldProperty(interfaces.IValues['sortOn'])
+
     def __init__(self, context, request, table):
         self.context = context
         self.request = request
         self.table = table
+
+    def __len__(self):
+        return len(self.context)
 
 
 class ValuesForContainer(ValuesMixin):

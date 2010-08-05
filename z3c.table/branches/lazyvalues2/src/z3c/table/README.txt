@@ -76,10 +76,18 @@ Create a test request and represent the table:
   >>> request = TestRequest()
   >>> plainTable = table.Table(container, request)
 
-Now we can update and render the table. As you can see with an empty container
-we will not get anything that looks like a table. We just get an empty string:
 
   >>> plainTable.update()
+
+We can check the number of rows in the container.
+
+  >>> plainTable.allRowsCount
+  3
+
+Now we render the table. As there are no columns,
+we will not get anything that looks like a table. 
+We just get an empty string:
+
   >>> plainTable.render()
   u''
 

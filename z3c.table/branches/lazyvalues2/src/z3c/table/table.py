@@ -78,6 +78,8 @@ class Table(zope.location.Location):
     sortColumn = None
     sortOrder = u'ascending'
     reverseSortOrderNames = [u'descending', u'reverse', u'down']
+    hasSortedValues = False
+    valuesSortedOn = 0
 
     # batch attributes
     batchProviderName = 'batch'
@@ -116,6 +118,9 @@ class Table(zope.location.Location):
     def values(self):
         adapter = zope.component.getMultiAdapter(
             (self.context, self.request, self), interfaces.IValues)
+        self.allRowsCount = len(adapter)
+        self.hasSortedValues = adapter.isSorted
+        self.valuesSortedOn = adapter.sortOn
         return adapter.values
 
 # setup
@@ -185,8 +190,20 @@ class Table(zope.location.Location):
         return self.request.get(self.prefix + '-sortOrder',
             self.sortOrder)
 
+    def _mustSort(self):
+        return (
+            # There is data to sort
+            (self.rows and self.columns)
+            # and there is a sort criteria
+            and (self.sortOn is not None)
+            # and, or values are not sorted
+            and (not self.hasSortedValues
+            # or, even though values are sorted,
+            # they are not sorted on the right criteria
+            or (self.hasSortedValues and self.valuesSortedOn != self.sortOn)))
+
     def sortRows(self):
-        if self.sortOn is not None and self.rows and self.columns:
+        if self._mustSort():
             sortOnIdx = self.columnIndexById.get(self.sortOn, 0)
             sortKeyGetter = getSortMethod(sortOnIdx)
             rows = sorted(self.rows, key=sortKeyGetter)

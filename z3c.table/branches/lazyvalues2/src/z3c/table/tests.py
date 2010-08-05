@@ -18,7 +18,11 @@ __docformat__ = "reStructuredText"
 
 import unittest
 import doctest
+
+from zope.interface import Interface
+from zope.component import getSiteManager
 from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import z3c.testing
 from z3c.batching.batch import Batch
@@ -27,12 +31,16 @@ from z3c.table import interfaces
 from z3c.table import table
 from z3c.table import column
 from z3c.table import batch
+from z3c.table import value
 
 
 class FakeContainer(object):
 
     def values(self):
         pass
+
+    def __len__(self):
+        return 0
 
 
 # table
@@ -63,7 +71,44 @@ class TestSequenceTable(z3c.testing.InterfaceBaseTest):
         return table.SequenceTable
 
     def getTestPos(self):
-        return (None, TestRequest())
+        return ([], TestRequest())
+
+
+# values
+class TestValuesForContainer(z3c.testing.InterfaceBaseTest):
+
+    def setUp(test):
+        testing.setUpAdapters()
+
+    def getTestInterface(self):
+        return interfaces.IValues
+
+    def getTestClass(self):
+        return value.ValuesForContainer
+
+    def getTestPos(self):
+        container = FakeContainer()
+        request = TestRequest()
+        tableInstance = table.Table(container, request)
+        return (container, request, tableInstance)
+
+
+class TestValuesForSequence(z3c.testing.InterfaceBaseTest):
+
+    def setUp(test):
+        testing.setUpAdapters()
+
+    def getTestInterface(self):
+        return interfaces.IValues
+
+    def getTestClass(self):
+        return value.ValuesForSequence
+
+    def getTestPos(self):
+        container = FakeContainer()
+        request = TestRequest()
+        tableInstance = table.Table(container, request)
+        return (container, request, tableInstance)
 
 
 # column
@@ -147,6 +192,80 @@ class TestBatchProvider(z3c.testing.InterfaceBaseTest):
         return ({}, TestRequest(), t)
 
 
+class NumberColumn(column.Column):
+
+    weight = 10
+    header = u'Number'
+
+    def renderCell(self, item):
+        return item
+
+
+SORT_ON_ID = "table-number-1"
+
+
+def sortedValues(valuesAreSorted):
+
+    class SortedValues(value.ValuesForSequence):
+
+        sortOn = SORT_ON_ID
+        isSorted = valuesAreSorted
+
+    return SortedValues
+
+
+def withIValuesAdapter(klass):
+
+    def decorator(func):
+
+        def decorated(self):
+            self.sm.registerAdapter(klass,
+                (Interface, IBrowserRequest, interfaces.ISequenceTable),
+                interfaces.IValues)
+            func(self)
+            self.sm.unregisterAdapter(klass,
+                (Interface, IBrowserRequest, interfaces.ISequenceTable),
+                interfaces.IValues)
+        return decorated
+    return decorator
+
+
+class TestSortedValues(unittest.TestCase):
+
+    def setUp(self):
+        self.sm = sm = getSiteManager()
+        sm.registerAdapter(NumberColumn,
+            (None, None, interfaces.ITable),
+            interfaces.IColumn, name='number')
+
+    @withIValuesAdapter(sortedValues(True))
+    def testHasSortedValuesRightCriteria(self):
+        request = TestRequest(form={'table-sortOn': 'table-number-1'})
+        tableInstance = table.SequenceTable([1], request)
+        tableInstance.update()
+        self.failUnless(tableInstance.hasSortedValues)
+        self.assertEquals(tableInstance.valuesSortedOn, SORT_ON_ID)
+        self.failIf(tableInstance._mustSort())
+
+    @withIValuesAdapter(sortedValues(True))
+    def testHasSortedValuesWrongCriteria(self):
+        request = TestRequest(form={'table-sortOn': 'table-number-2'})
+        tableInstance = table.SequenceTable([1], request)
+        tableInstance.update()
+        self.failUnless(tableInstance.hasSortedValues)
+        self.assertNotEquals(tableInstance.sortOn, SORT_ON_ID)
+        self.assertEquals(tableInstance.valuesSortedOn, SORT_ON_ID)
+        self.failUnless(tableInstance._mustSort())
+
+    @withIValuesAdapter(sortedValues(False))
+    def testHasNoSortedValues(self):
+        request = TestRequest(form={'table-sortOn': 'table-number-2'})
+        tableInstance = table.SequenceTable([1], request)
+        tableInstance.update()
+        self.failIf(tableInstance.hasSortedValues)
+        self.failUnless(tableInstance._mustSort())
+
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
@@ -176,6 +295,9 @@ def test_suite():
             ),
         unittest.makeSuite(TestTable),
         unittest.makeSuite(TestSequenceTable),
+        unittest.makeSuite(TestValuesForContainer),
+        unittest.makeSuite(TestValuesForSequence),
+        unittest.makeSuite(TestSortedValues),
         unittest.makeSuite(TestColumn),
         unittest.makeSuite(TestNoneCell),
         unittest.makeSuite(TestNameColumn),
