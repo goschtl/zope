@@ -151,11 +151,11 @@ class Table(zope.location.Location):
                 colspan = colspanCounter = col.getColspan(item)
                 # adjust colspan because we define 0, 2, 3, etc.
                 if colspanCounter > 0:
-                    colspanCounter -=1
+                    colspanCounter -= 1
 
             if colspan == 0 and colspanCounter > 0:
                 # override col if colspan is 0 and colspan coutner not 0
-                colspanCounter -=1
+                colspanCounter -= 1
                 colspan = 0
                 # now we are ready to setup dummy colspan cells
                 col = column.NoneCell(self.context, self.request, self)
@@ -175,11 +175,11 @@ class Table(zope.location.Location):
 
     def getSortOn(self):
         """Returns sort on column id."""
-        return self.request.get(self.prefix +'-sortOn', self.sortOn)
+        return self.request.get(self.prefix + '-sortOn', self.sortOn)
 
     def getSortOrder(self):
         """Returns sort order criteria."""
-        return self.request.get(self.prefix +'-sortOrder',
+        return self.request.get(self.prefix + '-sortOrder',
             self.sortOrder)
 
     def sortRows(self):
@@ -194,11 +194,11 @@ class Table(zope.location.Location):
 # batch
 
     def getBatchSize(self):
-        return int(self.request.get(self.prefix +'-batchSize',
+        return int(self.request.get(self.prefix + '-batchSize',
             self.batchSize))
 
     def getBatchStart(self):
-        return int(self.request.get(self.prefix +'-batchStart',
+        return int(self.request.get(self.prefix + '-batchStart',
             self.batchStart))
 
     def batchRows(self):
@@ -261,7 +261,7 @@ class Table(zope.location.Location):
         append = rows.append
         for row in self.rows:
             append(self.renderRow(row, cssClasses[counter % 2]))
-            counter +=1
+            counter += 1
         return u''.join(rows)
 
     def renderRow(self, row, cssClass=None):

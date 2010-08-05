@@ -50,7 +50,6 @@ class ValuesForSequence(ValuesMixin):
     zope.component.adapts(zope.interface.Interface, IBrowserRequest,
         interfaces.ISequenceTable)
 
-
     @property
     def values(self):
         return self.context

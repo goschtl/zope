@@ -31,7 +31,7 @@ _ = zope.i18nmessageid.MessageFactory('z3c')
 
 
 def addColumn(self, class_, name, cellRenderer=None, headCellRenderer=None,
-    colspan= None, weight=None, header=None, cssClasses=None, **kws):
+    colspan=None, weight=None, header=None, cssClasses=None, **kws):
     if not interfaces.IColumn.implementedBy(class_):
         raise ValueError('class_ %s must implement IColumn.' % class_)
     column = class_(self.context, self.request, self)
@@ -60,7 +60,7 @@ def getName(item):
     # probably not IPhysicallyLocatable but still could have a __name__
     try:
         return api.getName(item)
-    except TypeError, e:
+    except TypeError:
         return item.__name__
 
 
@@ -151,10 +151,12 @@ class RadioColumn(Column):
 
     @apply
     def selectedItem():
+
         # use the items form the table
         def get(self):
             if len(self.table.selectedItems):
                 return list(self.table.selectedItems).pop()
+
         def set(self, value):
             self.table.selectedItems = [value]
         return property(get, set)
@@ -178,8 +180,8 @@ class RadioColumn(Column):
     def renderCell(self, item):
         selected = u''
         if item == self.selectedItem:
-            selected='checked="checked"'
-        return u'<input type="radio" class="%s" name="%s" value="%s" %s />' %(
+            selected = 'checked="checked"'
+        return u'<input type="radio" class="%s" name="%s" value="%s" %s />' % (
             'radio-widget', self.getItemKey(item), self.getItemValue(item),
             selected)
 
@@ -192,9 +194,11 @@ class CheckBoxColumn(Column):
 
     @apply
     def selectedItems():
+
         # use the items form the table
         def get(self):
             return self.table.selectedItems
+
         def set(self, values):
             self.table.selectedItems = values
         return property(get, set)
@@ -224,10 +228,10 @@ class CheckBoxColumn(Column):
     def renderCell(self, item):
         selected = u''
         if item in self.selectedItems:
-            selected='checked="checked"'
-        return u'<input type="checkbox" class="%s" name="%s" value="%s" %s />' \
-            %('checkbox-widget', self.getItemKey(item), self.getItemValue(item),
-            selected)
+            selected = 'checked="checked"'
+        html = u'<input type="checkbox" class="%s" name="%s" value="%s" %s />'
+        return html % ('checkbox-widget', self.getItemKey(item),
+            self.getItemValue(item), selected)
 
 
 class GetAttrColumn(Column):

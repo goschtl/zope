@@ -99,4 +99,3 @@ class SortingColumnHeader(ColumnHeader):
             queryString,
             zope.i18n.translate(_('Sort'), context=self.request),
             zope.i18n.translate(self.column.header, context=self.request))
-

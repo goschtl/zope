@@ -87,7 +87,7 @@ class ITable(zope.contentprovider.interfaces.IContentProvider):
         description=(u'CSS class for selected rows.'),
         value_type=zope.schema.TextLine(
             title=_(u'Reverse sort order name'),
-            description=_(u'Reverse sort order name')
+            description=_(u'Reverse sort order name'),
         ),
         default=[u'descending', u'reverse', u'down'],
         required=False)
@@ -193,27 +193,28 @@ class IColumn(zope.interface.Interface):
     """Column provider"""
 
     id = zope.schema.TextLine(
-        title = _(u'Id'),
-        description = _(u'The column id'),
-        default = None)
+        title=_(u'Id'),
+        description=_(u'The column id'),
+        default=None)
 
     # customize this part if needed
     colspan = zope.schema.Int(
-        title = _(u'Colspan'),
-        description = _(u'The colspan value'),
-        default = 0)
+        title=_(u'Colspan'),
+        description=_(u'The colspan value'),
+        default=0)
 
     weight = zope.schema.Int(
-        title = _(u'Weight'),
-        description = _(u'The column weight'),
-        default = 0)
+        title=_(u'Weight'),
+        description=_(u'The column weight'),
+        default=0)
 
     header = zope.schema.TextLine(
-        title = _(u'Header name'),
-        description = _(u'The header name'),
-        default = u'')
+        title=_(u'Header name'),
+        description=_(u'The header name'),
+        default=u'')
 
-    cssClasses = zope.interface.Attribute('Dict of element name and CSS classes')
+    cssClasses = zope.interface.Attribute(
+        'Dict of element name and CSS classes')
 
     def getColspan(item):
         """Colspan value based on the given item."""

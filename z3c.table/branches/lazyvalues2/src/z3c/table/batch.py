@@ -36,20 +36,20 @@ class BatchProvider(object):
     This batch provider offers a batch presentation for a given table. The
     batch provides different configuration options which can be overriden in
     custom implementations:
-    
+
     The batch acts like this. If we have more batches than
     (prevBatchSize + nextBatchSize + 3) then the advanced batch subset is used.
-    Otherwise, we will render all batch links.    
+    Otherwise, we will render all batch links.
     Note, the additional factor 3 is the placeholder for the first, current and
     last item.
 
     Such a batch looks like:
 
-    Renders the link for the first batch, spacers, the amount of links for 
-    previous batches, the current batch link, spacers, the amount of links for 
+    Renders the link for the first batch, spacers, the amount of links for
+    previous batches, the current batch link, spacers, the amount of links for
     previous batches and the link for the last batch.
-    
-    Sample for 1000 items with 100 batches with batchSize of 10 and a     
+
+    Sample for 1000 items with 100 batches with batchSize of 10 and a
     prevBatchSize of 3 and a nextBatchSize of 3:
 
     For the first item:
@@ -79,14 +79,13 @@ class BatchProvider(object):
         self.batches = table.rows.batches
 
     def renderBatchLink(self, batch, cssClass=None):
-        query = '%s=%s&%s=%s' % (self.table.prefix +'-batchStart', batch.start,
-            self.table.prefix +'-batchSize', batch.size)
+        query = '%s=%s&%s=%s' % (self.table.prefix + '-batchStart',
+            batch.start, self.table.prefix + '-batchSize', batch.size)
         tableURL = absoluteURL(self.table, self.request)
-        idx = batch.index +1
+        idx = batch.index + 1
         css = ' class="%s"' % cssClass
         cssClass = cssClass and css or u''
         return '<a href="%s?%s"%s>%s</a>' % (tableURL, query, cssClass, idx)
-
 
     def update(self):
         # 3 is is the placeholder for the first, current and last item.
@@ -118,7 +117,7 @@ class BatchProvider(object):
                 cssClasses.append('first')
             if idx == lastIdx:
                 cssClasses.append('last')
-            
+
             if cssClasses:
                 css = ' '.join(cssClasses)
             else:
