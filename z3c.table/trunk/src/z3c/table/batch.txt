@@ -258,7 +258,7 @@ we have ``4`` batched row data available:
 
 We can set such a batch as row values, then this batch data are used for
 rendering. But take care, if we update the table, our rows get overriden
-and reset to the previous values. this means you can set any bath as rows
+and reset to the previous values. this means you can set any batch as rows
 data and only render them. This is possible since the update method sorted all
 items and all batch contain ready-to-use data. This concept could be important
 if you need to cache batches etc. :
