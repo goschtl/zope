@@ -257,7 +257,7 @@ we have ``4`` batched row data available:
   4
 
 We can set such a batch as row values, then this batch data are used for
-rendering. But take care, if we update the table, our rows get overriden
+rendering. But take care, if we update the table, our rows get overridden
 and reset to the previous values. this means you can set any batch as rows
 data and only render them. This is possible since the update method sorted all
 items and all batch contain ready-to-use data. This concept could be important
@@ -332,8 +332,8 @@ reset:
     </tbody>
   </table>
 
-This means you can probably update all batches, cache them and use them alter.
-but this is not usefull for normal usage in a page without an enhanced concept
+This means you can probably update all batches, cache them and use them after.
+But this is not useful for normal usage in a page without an enhanced concept
 which is not a part of this implementation. This also means, there must be
 another way to set the batch index. Yes there is, there are two other ways how
 we can set the batch position. We can set a batch position by setting the
@@ -383,13 +383,13 @@ the sorting concept:
   ...                                     'table-sortOn': 'table-number-1'})
   >>> requestBatchingTable = SimpleTable(container, batchingRequest)
 
-We also need to give the table a location and a name like we normaly setup
+We also need to give the table a location and a name like we normally set up
 in traversing:
 
   >>> requestBatchingTable.__parent__ = container
   >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
 
-Note; our table needs to start batching at smaller amount of items than we
+Note: our table needs to start batching at smaller amount of items than we
 have by default otherwise we don't get a batch:
 
   >>> requestBatchingTable.startBatchingAt = 5

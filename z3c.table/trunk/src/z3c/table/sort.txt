@@ -22,7 +22,7 @@ value for sorting:
   ...         return 'number: %s' % item.number
 
 
-Now let's setup a table:
+Now let's set up a table:
 
   >>> from z3c.table.testing import TitleColumn
   >>> class SortingTable(table.Table):

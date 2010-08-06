@@ -467,7 +467,7 @@ GetAttrColumn
 
 The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and
 in ``ModifiedColumn``. Not all code get used if everything is fine. So let's
-test the column itself and force some usecase:
+test the column itself and force some use case:
 
 
   >>> class GetTitleColumn(column.GetAttrColumn):
