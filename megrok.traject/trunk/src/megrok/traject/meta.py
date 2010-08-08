@@ -14,13 +14,14 @@ class TrajectGrokker(martian.ClassGrokker):
     def execute(self, factory, config, context, **kw):
         pattern_str = factory.pattern
         model = factory.model
-        factory_func = factory.factory.im_func
-        arguments_func = factory.arguments.im_func
+
+        factory_func = _get_func(factory, 'factory')
+        arguments_func = _get_func(factory, 'arguments')
 
         _register_traject(config, context, pattern_str, model,
                           factory_func, arguments_func)
         return True
-    
+
 class ModelGrokker(martian.ClassGrokker):
     martian.component(components.Model)
 
@@ -30,12 +31,21 @@ class ModelGrokker(martian.ClassGrokker):
     def execute(self, factory, config, context, pattern, **kw):
         pattern_str = pattern
         model = factory
-        factory_func = factory.factory.im_func
-        arguments_func = factory.arguments.im_func
+
+        factory_func = _get_func(factory, 'factory')
+        arguments_func = _get_func(factory, 'arguments')
 
         _register_traject(config, context, pattern_str, model,
                           factory_func, arguments_func)
         return True
+
+def _get_func(cls, name):
+    f = getattr(cls, name)
+    # detect a @classmethod (XXX is this correct?)
+    if f.im_self is not None:
+        return f
+    # return function underlying method implementation
+    return f.im_func
 
 def _register_traject(config, context,
                       pattern_str, model, factory_func, arguments_func):

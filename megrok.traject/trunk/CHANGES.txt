@@ -1,11 +1,12 @@
 CHANGES.txt
 ***********
 
-0.10.2 (unreleased)
--------------------
+1.0 (unreleased)
+----------------
 
-- Nothing changed yet.
-
+- Can now also use @classmethod for ``factory`` and
+  ``arguments``. This is useful if these functions depend on
+  information on the class they are defined on.
 
 0.10.1 (2010-01-25)
 -------------------
