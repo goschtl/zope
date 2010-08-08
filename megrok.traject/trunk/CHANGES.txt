@@ -1,7 +1,7 @@
 CHANGES.txt
 ***********
 
-1.0 (unreleased)
+1.0 (2010-08-08)
 ----------------
 
 - Can now also use @classmethod for ``factory`` and

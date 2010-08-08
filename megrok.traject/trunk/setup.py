@@ -14,7 +14,7 @@ long_description = (
     )
 
 setup(name='megrok.traject',
-      version = '1.0dev',
+      version='1.0',
       description="Traject integration for Grok applications",
       long_description=long_description,
       # Use classifiers that are already listed at:
