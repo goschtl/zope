@@ -126,7 +126,7 @@ Tips
 
 * Instead of normal methods (which get interpreted as functions) for
   ``factory`` and ``arguments``, you can also turn them into class
-  methods using the ``@@classmethod`` decorator. They now take a
+  methods using the ``@classmethod`` decorator. They now take a
   ``cls`` argument as the first argument which is the class they are
   defined on. This can be useful if you want to make the
   implementations of these functions depend on information on its
