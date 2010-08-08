@@ -124,6 +124,15 @@ Tips
   to using ``megrok.traject`` already this isn't necessary. This is
   a simple import alias for ``traject.locate``.
 
+* Instead of normal methods (which get interpreted as functions) for
+  ``factory`` and ``arguments``, you can also turn them into class
+  methods using the ``@@classmethod`` decorator. They now take a
+  ``cls`` argument as the first argument which is the class they are
+  defined on. This can be useful if you want to make the
+  implementations of these functions depend on information on its
+  class (such as the value of ``model``), and this in turn can be
+  useful to implement more declarative traject base classes.
+
 For more information see the traject_ documentation.
 
 .. _traject: http://pypi.python.org/pypi/traject
