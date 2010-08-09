@@ -351,6 +351,28 @@ class LinkColumn(Column):
             self.getLinkContent(item))
 
 
+class EMailColumn(LinkColumn, GetAttrColumn):
+    "Column to display mailto links."
+
+    header = _(u'E-Mail')
+    attrName = None # attribute name which contains the mail address
+    defaultValue = u'' # value which is rendered when no value is found
+    linkContent = None
+
+    def getLinkURL(self, item):
+        return 'mailto:%s' % self.getValue(item)
+
+    def getLinkContent(self, item):
+        if self.linkContent:
+            return zope.i18n.translate(self.linkContent, context=self.request)
+        return self.getValue(item)
+
+    def renderCell(self, item):
+        value = self.getValue(item)
+        if value is self.defaultValue or value is None:
+            return self.defaultValue
+        return super(EMailColumn, self).renderCell(item)
+
 class SelectedItemColumn(LinkColumn):
     """Link which can set an item."""
 
