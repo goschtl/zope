@@ -66,7 +66,7 @@ We can traverse to the IResource:
   >>> traverser.traverse(None, None).__name__ == u'++resource++'
   True
 
-And we can traverse to the resource item by it's name:
+And we can traverse to the resource item by its name:
 
   >>> traverser.traverse('item', None)
   <Item object at ...>
