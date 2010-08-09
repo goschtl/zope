@@ -1,0 +1,214 @@
+Sorting Table
+-------------
+
+Another table feature is the support for sorting data given from columns. Since
+sorting table data is an important feature, we offer this by default. But it
+only gets used if there is a ``sortOn`` value set. You can set this value at
+class level by adding a ``defaultSortOn`` value or set it as a request value.
+We show you how to do this later. We also need a columns which allows us to do
+a better sort sample. Our new sorting column will use the content items number
+value for sorting:
+
+  >>> from z3c.table import column, table
+  >>> class NumberColumn(column.Column):
+  ...
+  ...     header = u'Number'
+  ...     weight = 20
+  ...
+  ...     def getSortKey(self, item):
+  ...         return item.number
+  ...
+  ...     def renderCell(self, item):
+  ...         return 'number: %s' % item.number
+
+
+Now let's set up a table:
+
+  >>> from z3c.table.testing import TitleColumn
+  >>> class SortingTable(table.Table):
+  ...
+  ...     def setUpColumns(self):
+  ...         firstColumn = TitleColumn(self.context, self.request, self)
+  ...         firstColumn.__name__ = u'title'
+  ...         firstColumn.__parent__ = self
+  ...         secondColumn = NumberColumn(self.context, self.request, self)
+  ...         secondColumn.__name__ = u'number'
+  ...         secondColumn.__parent__ = self
+  ...         return [firstColumn, secondColumn]
+
+Create a container:
+
+  >>> from z3c.table.testing import Container
+  >>> container = Container()
+
+We also need some container items that we can use for sorting:
+
+  >>> from z3c.table.testing import Content
+  >>> container[u'first'] = Content('First', 1)
+  >>> container[u'second'] = Content('Second', 2)
+  >>> container[u'third'] = Content('Third', 3)
+  >>> container[u'fourth'] = Content('Fourth', 4)
+  >>> container[u'zero'] = Content('Zero', 0)
+
+And render them without set a ``sortOn`` value:
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> sortingTable = SortingTable(container, request)
+  >>> sortingTable.update()
+  >>> print sortingTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Title: First</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Title: Fourth</td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td>Title: Second</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Title: Third</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Title: Zero</td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+As you can see this table doesn't provide any explicit order. Let's find out
+the index of our column that we like to sort on:
+
+  >>> sortOnId = sortingTable.rows[0][1][1].id
+  >>> sortOnId
+  u'table-number-1'
+
+And let's use this id as ``sortOn`` value:
+
+  >>> sortingTable.sortOn = sortOnId
+
+An important thing is to update the table after set an ``sortOn`` value:
+
+  >>> sortingTable.update()
+  >>> print sortingTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Title: Zero</td>
+        <td>number: 0</td>
+      </tr>
+      <tr>
+        <td>Title: First</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Title: Second</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Title: Third</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Title: Fourth</td>
+        <td>number: 4</td>
+      </tr>
+    </tbody>
+  </table>
+
+We can also reverse the sorting order:
+
+  >>> sortingTable.sortOrder = 'reverse'
+  >>> sortingTable.update()
+  >>> print sortingTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Title: Fourth</td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td>Title: Third</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Title: Second</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Title: First</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Title: Zero</td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+The table implementation is also able to get the sorting criteria given from a
+request. Let's setup such a request:
+
+  >>> sorterRequest = TestRequest(form={'table-sortOn': 'table-number-1',
+  ...                                   'table-sortOrder':'descending'})
+
+and another time, update and render. As you can see the new table gets sorted
+by the second column and ordered in reverse order:
+
+  >>> requestSortedTable = SortingTable(container, sorterRequest)
+  >>> requestSortedTable.update()
+  >>> print requestSortedTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Title: Fourth</td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td>Title: Third</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Title: Second</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Title: First</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Title: Zero</td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
