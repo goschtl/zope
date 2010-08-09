@@ -5,6 +5,10 @@ CHANGES
 0.8.2 (unreleased)
 ------------------
 
+- Fixed the default BatchProvider not to lose table sorting query arguments
+  from the generated links; now batching and sorting play with each other
+  nicely.
+
 - Split single doctest file (README.txt) into different files
 
 
