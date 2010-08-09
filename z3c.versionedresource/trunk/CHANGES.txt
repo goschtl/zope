@@ -30,7 +30,7 @@ Version 0.3.0 (2008-08-09)
 
 * Feature: Print an error before exiting with exit code 1.
 
-* Feature: Files in a directory ending in *.html are now converted to regular
+* Feature: Files in a directory ending in ``.html`` are now converted to regular
   file resources and not as page template resources.
 
 Version 0.2.0 (2008-08-09)
