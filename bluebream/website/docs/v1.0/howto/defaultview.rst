@@ -12,7 +12,7 @@ view can be accessed like this: ``myobject/@@testview``.
 
   Container object -- Any object implementing
   ``zope.content.interfaces.IContainer`` interface is called a
-  content object.
+  contenter object.
 
 The view could be accessed without using the ``@@`` symbols also,
 provided there is no content object with the same same exist inside
