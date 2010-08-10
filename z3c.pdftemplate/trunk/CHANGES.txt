@@ -9,6 +9,8 @@ CHANGES
 
 - Fixed tests to run with current package versions.
 
+- Using python's `doctest` module instead of the deprecated
+  `zope.testing.doctest`.
 
 
 0.1.0 (2008-02-15)

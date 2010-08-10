@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 
 from zope.app.testing import placelesssetup, setup, ztapi
 from zope.copypastemove import PrincipalClipboard
-from zope.testing import doctest, doctestunit
+import doctest
 import unittest
 import zope.component
 import zope.principalannotation.interfaces
