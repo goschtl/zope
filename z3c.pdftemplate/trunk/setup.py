@@ -57,15 +57,21 @@ setup (
     extras_require = dict(
         test = [
             'zope.app.testing',
+            'zope.principalannotation',
+            'zope.copypastemove',
+            'zope.app.container',
+            'zope.app.folder',
             ],
         ),
     install_requires = [
         'setuptools',
         'z3c.rml',
-        'zope.interface',
+        'zope.app.pagetemplate',
+        'zope.app.publisher',
         'zope.component',
-        'zope.schema',
+        'zope.interface',
         'zope.publisher',
+        'zope.schema',
         ],
     zip_safe = False,
 )

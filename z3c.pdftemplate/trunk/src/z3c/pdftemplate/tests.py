@@ -17,13 +17,14 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
+from zope.app.testing import placelesssetup, setup, ztapi
+from zope.copypastemove import PrincipalClipboard
+from zope.testing import doctest, doctestunit
 import unittest
 import zope.component
-
-from zope.testing import doctest, doctestunit
-from zope.app import principalannotation
-from zope.copypastemove import PrincipalClipboard
-from zope.app.testing import placelesssetup, setup, ztapi
+import zope.principalannotation.interfaces
+import zope.principalannotation.utility
 
 
 def setUp(test):
@@ -31,10 +32,10 @@ def setUp(test):
     setup.setUpTraversal()
 
     zope.component.provideUtility(
-        principalannotation.PrincipalAnnotationUtility(),
-        principalannotation.IPrincipalAnnotationUtility)
+        zope.principalannotation.utility.PrincipalAnnotationUtility(),
+        zope.principalannotation.interfaces.IPrincipalAnnotationUtility)
     zope.component.provideAdapter(
-        principalannotation.annotations,
+        zope.principalannotation.utility.annotations,
         adapts=(None,))
     zope.component.provideAdapter(
         PrincipalClipboard)

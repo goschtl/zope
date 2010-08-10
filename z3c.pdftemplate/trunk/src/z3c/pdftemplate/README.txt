@@ -13,7 +13,7 @@ below.
 
 But first we have to load the directives' meta configuration:
 
-  >>> from zope.app import zapi
+  >>> import zope.component
   >>> from zope.publisher.browser import TestRequest
   >>> from zope.configuration import xmlconfig
   >>> context = xmlconfig.file('meta.zcml', package=z3c.pdftemplate)
@@ -122,8 +122,8 @@ we can can look up the view
   >>> request = TestRequest()
   >>> request.setPrincipal(Principal())
 
-  >>> contents = zapi.getMultiAdapter((folder, request),
-  ...                                 name="rmlsample.pdf")
+  >>> contents = zope.component.getMultiAdapter((folder, request),
+  ...                                           name="rmlsample.pdf")
 
 and create the PDF:
 

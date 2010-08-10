@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+0.2.0 (unreleased)
+------------------
+
+- Added missing install dependencies and test dependencies.
+
+- Fixed tests to run with current package versions.
+
+
+
 0.1.0 (2008-02-15)
 ------------------
 
