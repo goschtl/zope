@@ -1,0 +1,280 @@
+----------------------------------
+Basic Setup (for high level tests)
+----------------------------------
+
+Good but not perfect example is the `the user needs to be able to modify
+it's own properties` problem.
+
+  >>> from zope import interface, component
+  >>> from zope.annotation.interfaces import IAttributeAnnotatable
+  >>> from zope.container.interfaces import IContained
+  >>> from zope.container.contained import Contained
+  >>> from z3c.objectpolicy.interfaces import IObjectPolicy
+  >>> from z3c.objectpolicy.interfaces import IObjectPolicyMarker
+  >>> class IPerson(interface.Interface):
+  ...     """a person interface for a person class"""
+  ...
+  >>> class Person(Contained):
+  ...     interface.implements(
+  ...         IObjectPolicyMarker,
+  ...         IAttributeAnnotatable,
+  ...         IPerson)
+  ...     def __init__(self, id, name):
+  ...         self.id = id
+  ...         self.name = name
+  ...         self.groups = []
+  ...
+  >>> class otherKlass(object):
+  ...     #This class does NOT implement IObjectPolicyMarker
+  ...     interface.implements(
+  ...         IAttributeAnnotatable)
+  ...     def __init__(self, id):
+  ...         self.id = id
+
+These permissions will be allowed for the principal on the Person object
+if the current principal == Person
+
+  >>> ALLOW_FOR_SELF = ["zope.View",
+  ...                   "zope.app.dublincore.view",
+  ...                   "zope.ManageContent"]
+
+Counter to see how many times the adapter fires
+
+  >>> TRIP_WIRE = 0
+
+This is the custom policy adapter which determines the permission.
+Watch out, this is just a little bit different from the lowlevel example!
+
+  >>> from z3c.objectpolicy.objectpolicy import DefaultObjectPolicyAdapter
+  >>> class PersonPolicy(DefaultObjectPolicyAdapter):
+  ...     component.adapts(IPerson)
+  ...     interface.implements(IObjectPolicy)
+  ...
+  ...     def __init__(self, context):
+  ...         #context is a Person
+  ...         self.context = context
+  ...
+  ...     def checkPermission(self, manager, permissionid):
+  ...         #print permissionid, str(self.context)
+  ...         return self.checkPermissionForParticipation(manager, permissionid)
+  ...
+  ...     def checkPermissionForParticipant(self, manager, principal, permissionid):
+  ...         global TRIP_WIRE
+  ...         TRIP_WIRE += 1
+  ...         if principal.id == self.context.id:
+  ...             #we have the same Person in the participation
+  ...             if permissionid in ALLOW_FOR_SELF:
+  ...                 #we have the Person and the Permission
+  ...                 return True
+  ...
+  ...         #no Person or Permission found
+  ...         #return the Z3 default permissions
+  ...         return super(PersonPolicy, self).checkPermissionForParticipant(
+  ...             manager, principal, permissionid)
+  ...
+  >>> component.provideAdapter(PersonPolicy)
+
+Install the ObjectPolicy, setup for testing.
+
+  >>> from z3c.objectpolicy.objectpolicy import ObjectPrincipalPermissionManager
+  >>> from z3c.objectpolicy.objectpolicy import ObjectRolePermissionManager
+  >>> from z3c.objectpolicy.objectpolicy import ObjectPolicy
+
+  >>> component.provideAdapter(ObjectPrincipalPermissionManager)
+  >>> component.provideAdapter(ObjectRolePermissionManager)
+
+  >>> bela = Person('b-id', 'bela')
+  >>> joe = Person('j-id', 'joe')
+
+  >>> class Participation:
+  ...     interaction = None
+  >>> participation = Participation()
+  >>> participation.principal = joe
+  >>> import zope.security.management
+  >>> oldPolicy = zope.security.management.setSecurityPolicy(ObjectPolicy)
+  >>> zope.security.management.endInteraction()
+  >>> zope.security.management.newInteraction(participation)
+  >>> interaction = zope.security.management.getInteraction()
+
+Let's see a simple permission check
+-----------------------------------
+
+`joe` has `ManageContent` access to `joe` without granting any permission
+
+  >>> interaction.checkPermission('zope.ManageContent', joe)
+  True
+  >>> TRIP_WIRE
+  1
+
+`joe` has no `SomePermission` access to `joe` because that's not listed
+in ALLOW_FOR_SELF
+
+  >>> interaction.checkPermission('myapp.SomePermission', joe)
+  False
+  >>> TRIP_WIRE
+  2
+
+`joe` has NO `ManageContent` access to `bela`
+
+  >>> interaction.checkPermission('zope.ManageContent', bela)
+  False
+  >>> TRIP_WIRE
+  3
+
+  >>> from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+  >>> prinperBela = IPrincipalPermissionManager(bela)
+  >>> prinperJoe = IPrincipalPermissionManager(joe)
+  >>> prinperBela.grantPermissionToPrincipal('zope.ManageContent', 'j-id')
+
+When we grant permission `joe` to `bela`,
+`joe` has `ManageContent` access to `bela`
+
+  >>> interaction.checkPermission('zope.ManageContent', bela)
+  True
+  >>> TRIP_WIRE
+  4
+
+Granting permission works for any arbitrary permission also
+
+  >>> prinperJoe.grantPermissionToPrincipal('myapp.SomePermission', 'j-id')
+  >>> interaction.checkPermission('myapp.SomePermission', joe)
+  True
+  >>> TRIP_WIRE
+  5
+
+Objects without IObjectPolicyMarker behave as before.
+Without granting -- no permission
+
+  >>> otherObject = otherKlass('o-id')
+  >>> prinperOther = IPrincipalPermissionManager(otherObject)
+  >>> interaction.checkPermission('zope.ManageContent', otherObject)
+  False
+  >>> TRIP_WIRE
+  5
+
+  >>> prinperOther.grantPermissionToPrincipal('zope.ManageContent', 'j-id')
+  >>> interaction.checkPermission('zope.ManageContent', otherObject)
+  True
+  >>> TRIP_WIRE
+  5
+
+Check what's up when the marker is there, but no adapter
+
+  >>> class otherKlassWOadapter(object):
+  ...     #This class does NOT implement IObjectPolicyMarker
+  ...     interface.implements(
+  ...         IAttributeAnnotatable,
+  ...         IObjectPolicyMarker)
+  ...     def __init__(self, id):
+  ...         self.id = id
+
+  >>> otherObjectWO = otherKlassWOadapter('oa-id')
+  >>> interaction.checkPermission('zope.ManageContent', otherObjectWO)
+  False
+
+No permission, maybe something should be written to the log?
+
+Now a more complicated, parent-child setup
+------------------------------------------
+
+  >>> from zope.container.sample import SampleContainer
+  >>> from zope.location.location import locate
+  >>> class IPersonContainer(interface.Interface):
+  ...     """a person container interface"""
+  ...
+  >>> class PersonContainer(SampleContainer):
+  ...     interface.implements(
+  ...         IAttributeAnnotatable,
+  ...         IPersonContainer)
+  ...     def __init__(self, id):
+  ...         self.id = id
+  ...         super(PersonContainer, self).__init__()
+  ...
+  >>> class BrowserView(object):
+  ...     interface.implements(
+  ...         IContained)
+  ...
+
+The layout is:
+  users(PersonContainer)
+    jack(Person)
+      editJack(BrowserView)
+    jane(Person)
+      editJane(BrowserView)
+
+  >>> users = PersonContainer('users')
+  >>> jack = Person('jack-id','jack')
+  >>> users['jack'] = jack
+  >>> locate(jack, users, 'jack')
+  >>> jane = Person('jane-id','jane')
+  >>> users['jane'] = jane
+  >>> locate(jane, users, 'jane')
+
+  >>> editJack = BrowserView()
+  >>> locate(editJack, jack, None)
+  >>> editJane = BrowserView()
+  >>> locate(editJane, jane, None)
+
+  >>> prinperUsers = IPrincipalPermissionManager(users)
+  >>> prinperJack = IPrincipalPermissionManager(jack)
+  >>> prinperJane = IPrincipalPermissionManager(jane)
+
+  >>> participation = Participation()
+
+The principal acting is jack
+
+  >>> participation.principal = jack
+  >>> zope.security.management.endInteraction()
+  >>> zope.security.management.newInteraction(participation)
+  >>> interaction = zope.security.management.getInteraction()
+
+When we don't grant permission, only jack has permission to itself and to it's
+editView.
+
+  >>> interaction.checkPermission('zope.ManageContent', users)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', jack)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', editJack)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', jane)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', editJane)
+  False
+
+When we grant jane permission, jack still has the same.
+
+  >>> prinperUsers.grantPermissionToPrincipal('zope.ManageContent', 'jane-id')
+  >>> interaction.checkPermission('zope.ManageContent', users)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', jack)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', editJack)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', jane)
+  False
+  >>> interaction.checkPermission('zope.ManageContent', editJane)
+  False
+
+When we grant jack permission, he will have permission for the whole pack.
+
+  >>> prinperUsers.grantPermissionToPrincipal('zope.ManageContent', 'jack-id')
+  >>> interaction.checkPermission('zope.ManageContent', users)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', jack)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', editJack)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', jane)
+  True
+  >>> interaction.checkPermission('zope.ManageContent', editJane)
+  True
+
+
+Cleanup
+-------
+
+We clean up the changes we made in these examples:
+
+  >>> zope.security.management.endInteraction()
+  >>> ignore = zope.security.management.setSecurityPolicy(oldPolicy)
