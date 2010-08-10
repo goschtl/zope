@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup (
     name='z3c.objectpolicy',
-    version = '0.1.0dev',
+    version='0.1',
     author = "Zope Foundation and Contributors",
     author_email = "zope-dev@zope.org",
     description = "objectpolicy for Zope3",
