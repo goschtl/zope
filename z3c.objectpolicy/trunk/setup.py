@@ -19,7 +19,9 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return (
+        open(os.path.join(os.path.dirname(__file__), *rnames)).read() +
+        '\n\n')
 
 setup (
     name='z3c.objectpolicy',
@@ -28,8 +30,11 @@ setup (
     author_email = "zope-dev@zope.org",
     description = "objectpolicy for Zope3",
     long_description=(
-        read('README.txt')
-        + '\n\n' +
+        read('README.txt')+
+        '.. contents::\n\n' +
+        read('src', 'z3c', 'objectpolicy', 'README.txt') +
+        read('src', 'z3c', 'objectpolicy', 'highlevel.txt') +
+        read('src', 'z3c', 'objectpolicy', 'lowlevel.txt') +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
