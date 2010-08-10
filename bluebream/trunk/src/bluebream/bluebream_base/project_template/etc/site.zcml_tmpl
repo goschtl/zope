@@ -47,6 +47,7 @@
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.schema" />
 
+  <includeOverrides file="overrides.zcml" />
   <include package="${ns_prefix}${package}" />
 
 </configure>

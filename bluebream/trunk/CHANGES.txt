@@ -9,6 +9,7 @@ Changelog
 - Added the "extends-cache" Buildout option to cache
   the extended configuration files
 - warn the user if the project template has significant changes
+- Added empty overrides.zcml - show best practices to developers
 
 1.0b3 (2010-07-11)
 ------------------
