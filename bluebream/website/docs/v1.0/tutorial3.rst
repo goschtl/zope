@@ -295,6 +295,9 @@ manipulate objects.  (Of course you have to log in as one.)
 Conclusion
 ----------
 
+This chapter introduced BlueBream security concepts and explained how to use
+it.
+
 .. raw:: html
 
   <div id="disqus_thread"></div><script type="text/javascript"
