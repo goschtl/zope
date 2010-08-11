@@ -19,7 +19,6 @@ Welcome to BlueBream's documentation!
    howto/index
    dev/index
    reference/index
-   zcml/index
    event
    community/index
    glossary
