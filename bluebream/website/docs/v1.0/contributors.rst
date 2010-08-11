@@ -39,3 +39,4 @@ directly.
 - Paul Harouff
 - Saket Srivastav
 - Garry Steedman (IRC nick: birlinn)
+- Justin Ryan (IRC nick: bitmonk)
