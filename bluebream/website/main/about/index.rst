@@ -2,7 +2,6 @@ About
 =====
 
 .. toctree::
-   :numbered:
    :maxdepth: 1
 
    whatis

@@ -75,12 +75,12 @@ would like to be added to this list, or removed, please contact
 
 ----
 
-:Company/Contractor:
-:E-mail:
-:Phone:
-:Fax:
-:Location:
-:Comments:
+.. :Company/Contractor:
+.. :E-mail:
+.. :Phone:
+.. :Fax:
+.. :Location:
+.. :Comments:
 
 ----
 
