@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.4 (unreleased)
+----------------
+
+* Added `test` extra to ``setup.py``, as the tests need ``zope.testing``.
+
+
 0.3 - 2008-04-10
 ----------------
 
