@@ -11,16 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""z3c.profiler Test Module
-
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
-import unittest
-from zope.testing import doctest
+"""z3c.profiler Test Module"""
 
 from z3c.profiler import testing
+import doctest
+import unittest
 
 
 def test_suite():
