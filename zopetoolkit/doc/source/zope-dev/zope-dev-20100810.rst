@@ -9,12 +9,64 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-08-10.log.html#t2010-08-10T17:57:52
 
 Attendees
 ---------
 
-XXX
+Charlie Clark, Christian Theune, Adam Groszer, Matthew Wilkes, Patrick Gerken, 
+
+DZUG conference / summit preparation
+------------------------------------
+
+Charlie mentioned that the conference could use a bit more publicity. He 
+volunteered to ensure we geta link from pycon.org  to the conference homepage. 
+Christian Theune agreed to send mails to the related mailing lists that were
+mentioned.
+
+We also pointed out the programme to the others present at the meeting and
+answered some specific questions including that some parts of the programme
+will be in English but the major part is held in German. We won't make video
+recordings of the talk as we aren't prepared to deal with neither the
+technology nor the legal implications.
+
+The summit preparation is getting along: we're currently making sure every
+participant has a hotel room and is getting his travels and maybe
+participation with the DZUG conference sorted out. Christian is hoping to get
+a rough list of topics within the next days.
+
+Test runners vs. noise
+----------------------
+
+Christian feels that the test aggregator currently contains too much noise and
+is thus disregarded at times. A two-fold improvement was suggested: make the
+mail body contain less information (only the subjects of the failed tests) and
+provide a single link to an HTML page that displays the results of all tests
+in a stable sorting. Christian agreed to contact Stefan Holek to find out
+about the existing code so we can improve it.
+
+Charlie also recommended looking at a talk that was held at EP this year:
+http://wiki.europython.eu/Talks/Visualizing%20Software%20Quality
+
+Wineggbuilder
+-------------
+
+Adam has published documentation about the windows buildbot/wineggbuilder that
+is paid for by the foundation:
+http://docs.zope.org/zopetoolkit/process/winbotsetup.html 
+
+In addition to the technical details Adam agreed to provide some introductory
+information that tells developers what this service is for and how to deal
+with it.
+
+The egg builder currently runs once a day. As it takes only 40 seconds during
+an empty run we decided to increase the frequency to every 30 minutes.
+
+Documentation
+-------------
+
+Christian noted that he managed to write the bug for cleaning up documentation
+and the blueprint for gathering floating documentation.
 
 
 Agenda
