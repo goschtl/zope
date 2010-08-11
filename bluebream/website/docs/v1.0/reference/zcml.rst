@@ -1030,7 +1030,9 @@ provideConnection
 :namespace: ``http://namespaces.zope.org/rdb``
 :include: ``zope.rdb``
 
-**Examples**
+This directive and ``zope.rdb`` is not actively used by the community.  If
+you want relational database connectivily, look at `z3c.sqlalchemy
+<http://pypi.python.org/pypi/z3c.sqlalchemy>`_.
 
 gadflyRoot
 ----------
