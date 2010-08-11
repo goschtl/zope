@@ -7,6 +7,7 @@ Welcome to BlueBream!
    :numbered:
    :maxdepth: 2
 
+   about/index
    download
    screencasts
    support
