@@ -27,10 +27,6 @@ A few features distinguish BlueBream from other Python web frameworks.
   (:term:`ZCML`), an XML based configuration language, providing limitless
   flexibility.
 
-- BlueBream can also register components using :term:`GROK`, which adds a
-  layer replacing the declarative configuration of ZCML with conventions and
-  declarations in standard Python.
-
 - BlueBream features the :term:`Zope Component Architecture` (ZCA) which
   implements :term:`Separation of concerns` to create highly cohesive
   reusable components (zope.component_).
@@ -160,8 +156,8 @@ situations which would otherwise stand to benefit from the distilled wisdom
 of the ZCA.  The Zope community has responded to this in with several
 rapidly deployable ZCA-derived frameworks, which implement Convention over
 configuration while maintaining the power of ZCA under the hood.  Notable
-among these are Grok and Repoze.  Take a look at the recent uploads to the
-PyPi site, it is rare to not see several zca projects listed.
+among these are :term:Grok: and Repoze.  Take a look at the recent uploads
+to the PyPi site, it is rare to not see several zca projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
 
