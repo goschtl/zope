@@ -131,16 +131,8 @@ form
 
 **See Also**
 
-form/widget
------------
-
-:directive: ``form``
-:sub-directive: ``widget``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.app.form.browser``
-:distribution: ``zope.app.form``
-
-**Examples**
+Subdirective: widget
+~~~~~~~~~~~~~~~~~~~~
 
 editform
 --------
@@ -152,16 +144,8 @@ editform
 
 **Examples**
 
-editform/widget
----------------
-
-:directive: ``editform``
-:sub-directive: ``widget``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.app.form.browser``
-:distribution: ``zope.app.form``
-
-**Examples**
+Subdirective: widget
+~~~~~~~~~~~~~~~~~~~~
 
 subeditform
 -----------
@@ -173,16 +157,8 @@ subeditform
 
 **Examples**
 
-subeditform/widbrowserget
--------------------------
-
-:directive: ``subeditform``
-:sub-directive: ``widget``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.app.form.browser``
-:distribution: ``zope.app.form``
-
-**Examples**
+Subdirective: widbrowserget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 addform
 -------
@@ -194,16 +170,8 @@ addform
 
 **Examples**
 
-addform/widget
---------------
-
-:directive: ``addform``
-:sub-directive: ``widget``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.app.form.browser``
-:distribution: ``zope.app.form``
-
-**Examples**
+Subdirective: widget
+~~~~~~~~~~~~~~~~~~~~
 
 
 schemadisplay
@@ -216,16 +184,8 @@ schemadisplay
 
 **Examples**
 
-schemadisplay/widget
---------------------
-
-:directive: ``schemadisplay``
-:sub-directive: ``widget``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.app.form.browser``
-:distribution: ``zope.app.form``
-
-**Examples**
+Subdirective: widget
+~~~~~~~~~~~~~~~~~~~~
 
 view
 ----
@@ -310,45 +270,17 @@ class
 
 **Examples**
 
-class/implements
-----------------
+Subdirective: implements
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-:directive: ``class``
-:sub-directive: ``implements``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
+Subdirective: require
+~~~~~~~~~~~~~~~~~~~~~
 
-**Examples**
+Subdirective: allow
+~~~~~~~~~~~~~~~~~~~
 
-class/require
--------------
-
-:directive: ``class``
-:sub-directive: ``require``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
-
-**Examples**
-
-class/allow
------------
-
-:directive: ``class``
-:sub-directive: ``allow``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
-
-**Examples**
-
-class/factory
--------------
-
-:directive: ``class``
-:sub-directive: ``factory``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
-
-**Examples**
+Subdirective: factory
+~~~~~~~~~~~~~~~~~~~~~
 
 module
 ------
@@ -359,25 +291,11 @@ module
 
 **Examples**
 
-module/allow
-------------
+Subdirective: allow
+~~~~~~~~~~~~~~~~~~~
 
-:group-directive: ``module``
-:directive: ``allow``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
-
-**Examples**
-
-module/require
---------------
-
-:group-directive: ``module``
-:directive: ``require``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.security``
-
-**Examples**
+Subdirective: require
+~~~~~~~~~~~~~~~~~~~~~
 
 register
 --------
@@ -397,15 +315,8 @@ resourceLibrary
 
 **Examples**
 
-resourceLibrary/directory
--------------------------
-
-:directive: ``resourceLibrary``
-:sub-directive: ``directory``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zc.resourcelibrary``
-
-**Examples**
+Subdirective: directory
+~~~~~~~~~~~~~~~~~~~~~~~
 
 menu
 ----
@@ -425,25 +336,11 @@ menuItems
 
 **Examples**
 
-menuItems/menuItem
-------------------
+Subdirective: menuItem
+~~~~~~~~~~~~~~~~~~~~~~
 
-:directive: ``menuItems``
-:sub-directive: ``menuItem``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.browsermenu``
-
-**Examples**
-
-menuItems/subMenuItem
----------------------
-
-:directive: ``menuItems``
-:sub-directive: ``subMenuItem``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.browsermenu``
-
-**Examples**
+Subdirective: subMenuItem
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 menuItem
 --------
@@ -607,15 +504,8 @@ pages
 
 **Examples**
 
-pages/page
-----------
-
-:directive: ``pages``
-:sub-directive: ``page``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.browserpage``
-
-**Examples**
+Subdirective: page
+~~~~~~~~~~~~~~~~~~
 
 view
 ----
@@ -626,15 +516,8 @@ view
 
 **Examples**
 
-view/page
----------
-
-:directive: ``view``
-:sub-directive: ``page``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.browserpage``
-
-**Examples**
+Subdirective: page
+~~~~~~~~~~~~~~~~~~
 
 defaultPage
 -----------
@@ -700,15 +583,8 @@ codec
 
 **Examples**
 
-codec/charset
--------------
-
-:directive: ``codec``
-:sub-directive: ``charset``
-:namespace: ``http://namespaces.zope.org/zope``
-:include: ``zope.mimetype``
-
-**Examples**
+Subdirective: charset
+~~~~~~~~~~~~~~~~~~~~~
 
 mimeTypes
 ---------
@@ -1002,17 +878,64 @@ i18n-resource
 :namespace: ``http://namespaces.zope.org/browser``
 :include: ``zope.browserresource``
 
-**Examples**
+**Attributes**
 
-i18n-resource/translation
--------------------------
+- ``name`` - This is the name used in resource urls. Resource urls are of
+  the form site/@@/resourcename, where site is the url of "site", a folder
+  with a site manager.
 
-:directive: ``i18n-resource``
-:sub-directive: ``translation``
-:namespace: ``http://namespaces.zope.org/browser``
-:include: ``zope.browserresource``
+  We make resource urls site-relative (as opposed to content-relative) so as
+  not to defeat caches.
 
-**Examples**
+- ``defaultLanguage`` - Defines the default language
+
+- ``layer`` - The layer the resource should be found in
+
+  For information on layers, see the documentation for the skin
+  directive.  Defaults to *default*.
+
+- ``permission`` - The permission needed to access the resource.
+
+  If a permission isn't specified, the resource will always be
+  accessible.
+
+Subdirective: translation
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Attributes**
+
+- ``language`` - TextLine (default = None)
+
+  Language
+
+  Language of this translation of the resource
+
+- ``file`` - Path (default = None)
+
+  File
+
+  The file containing the resource data.
+
+- ``image`` - Path (default = None)
+
+  Image
+
+  If the image attribute is used, then an image resource, rather than a file
+  resource will be created.
+
+- ``layer`` - LayerField (default = None)
+
+  The layer the resource should be found in
+
+  For information on layers, see the documentation for the skin
+  directive. Defaults to "default".
+
+- ``permission`` - Permission (default = None)
+
+  The permission needed to access the resource.
+
+  If a permission isn't specified, the resource will always be accessible.
+
 
 icon
 ----
@@ -1044,4 +967,3 @@ gadflyRoot
 This directive and ``zope.rdb`` is not actively used by the community.  If
 you want relational database connectivily, look at `z3c.sqlalchemy
 <http://pypi.python.org/pypi/z3c.sqlalchemy>`_.
-
