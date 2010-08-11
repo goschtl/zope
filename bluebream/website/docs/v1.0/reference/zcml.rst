@@ -1039,5 +1039,7 @@ gadflyRoot
 :namespace: ``http://namespaces.zope.org/rdb``
 :include: ``zope.rdb``
 
+This directive and ``zope.rdb`` is not actively used by the community.
+
 **Examples**
 
