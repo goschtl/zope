@@ -2,11 +2,16 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:i18n="http://namespaces.zope.org/i18n"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
    i18n_domain="z3ext.controlpanel">
+
+  <!--permission
+     id="z3ext.Configure"
+     title="Configure control panel's configlets." /-->
 
   <permission
      id="z3ext.Configure"
-     title="Configure control panel's configlets." />
+     title="View" />
 
   <utility
      provides=".interfaces.IConfiglet"
@@ -25,15 +30,15 @@
   <adapter factory=".storage.DefaultConfigletDataFactory" />
 
   <class class=".storage.ConfigletData">
-    <require
+    <!--require
        permission="zope.ManageServices"
-       interface="zope.container.interfaces.IContainer" />
+       interface="zope.container.interfaces.IContainer" /-->
   </class>
 
   <class class=".storage.ConfigletDataStorage">
-    <require
+    <!--require
        permission="zope.ManageServices"
-       interface="zope.container.interfaces.IContainer" />
+       interface="zope.container.interfaces.IContainer" /-->
   </class>
 
   <!-- default categories -->
@@ -71,7 +76,7 @@
   <!-- settings view -->
   <adapter
      name="settings"
-     for="zope.component.interfaces.ISite *"
+     for="zope.app.component.interfaces.ISite *"
      provides="zope.interface.Interface"
      factory=".root.getSettings" />
 
@@ -91,7 +96,6 @@
   <!-- Registering documentation with API doc -->
   <configure
      xmlns:apidoc="http://namespaces.zope.org/apidoc"
-     xmlns:zcml="http://namespaces.zope.org/zcml"
      zcml:condition="have apidoc">
 
     <apidoc:bookchapter
@@ -105,7 +109,8 @@
   <utility
      name="z3ext.controlpanel"
      provides="zope.app.generations.interfaces.ISchemaManager"
-     component=".generations.schemaManager" />
+     component=".generations.schemaManager"
+     zcml:condition="installed zope.app.generations" />
 
   <!-- translations -->
   <i18n:registerTranslations directory="locales"/>

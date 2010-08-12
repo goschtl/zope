@@ -17,7 +17,7 @@ $Id$
 """
 from zope import interface, component
 from zope.component import getUtility
-from zope.component.interfaces import ISite
+from zope.app.component.interfaces import ISite
 from zope.security import checkPermission
 from zope.security.interfaces import Unauthorized
 from zope.site.hooks import getSite

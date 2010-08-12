@@ -11,10 +11,10 @@
      for="..interfaces.IRootConfiglet"
      template="layout.pt" />
 
-  <browser:icon
+  <!--browser:icon
      name="zmi_icon"
      for="..interfaces.IConfiglet"
-     file="preferences-system.png" />
+     file="preferences-system.png" /-->
 
   <browser:defaultView
      name="index.html"
@@ -74,10 +74,10 @@
   </zcml:configure>
 
   <!-- css styles -->
-  <z3ext:resourceinclude
+  <!--z3ext:resourceinclude
      name="z3ext-controlpanel.css"
      library="z3ext"
      type="stylesheet"
-     file="styles.css" filetype="zrt" />
+     file="styles.css" filetype="zrt" /-->
 
 </configure>
