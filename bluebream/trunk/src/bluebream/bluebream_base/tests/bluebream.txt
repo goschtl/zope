@@ -71,6 +71,7 @@ sample/buildout.cfg
 sample/debug.ini
 sample/deploy.ini
 sample/setup.py
+sample/etc/overrides.zcml
 sample/etc/site.zcml
 sample/etc/zope-debug.conf
 sample/etc/zope.conf
@@ -139,6 +140,7 @@ sample.main/buildout.cfg
 sample.main/debug.ini
 sample.main/deploy.ini
 sample.main/setup.py
+sample.main/etc/overrides.zcml
 sample.main/etc/site.zcml
 sample.main/etc/zope-debug.conf
 sample.main/etc/zope.conf
@@ -213,6 +215,7 @@ sample.app.main/buildout.cfg
 sample.app.main/debug.ini
 sample.app.main/deploy.ini
 sample.app.main/setup.py
+sample.app.main/etc/overrides.zcml
 sample.app.main/etc/site.zcml
 sample.app.main/etc/zope-debug.conf
 sample.app.main/etc/zope.conf
@@ -287,6 +290,7 @@ foobar.foobar/buildout.cfg
 foobar.foobar/debug.ini
 foobar.foobar/deploy.ini
 foobar.foobar/setup.py
+foobar.foobar/etc/overrides.zcml
 foobar.foobar/etc/site.zcml
 foobar.foobar/etc/zope-debug.conf
 foobar.foobar/etc/zope.conf
@@ -358,6 +362,7 @@ sampleproject/buildout.cfg
 sampleproject/debug.ini
 sampleproject/deploy.ini
 sampleproject/setup.py
+sampleproject/etc/overrides.zcml
 sampleproject/etc/site.zcml
 sampleproject/etc/zope-debug.conf
 sampleproject/etc/zope.conf
