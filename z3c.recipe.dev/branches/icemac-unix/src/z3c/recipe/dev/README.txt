@@ -71,6 +71,7 @@ We'll create a `buildout.cfg` file that defines our application:
   ... [buildout]
   ... develop = demo1 demo2
   ... parts = myapp var
+  ... newest = false
   ...
   ... [myapp]
   ... recipe = z3c.recipe.dev:app
@@ -274,6 +275,7 @@ We'll create a `buildout.cfg` file that defines our script:
   ... [buildout]
   ... develop = hello
   ... parts = helloworld
+  ... newest = false
   ...
   ... [helloworld]
   ... recipe = z3c.recipe.dev:script
@@ -333,6 +335,7 @@ We'll create a ``buildout.cfg`` file that defines our script:
   ... [buildout]
   ... develop = hello
   ... parts = helloworld
+  ... newest = false
   ...
   ... [helloworld]
   ... recipe = z3c.recipe.dev:script
@@ -386,6 +389,7 @@ Creating Directories
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -415,6 +419,7 @@ If we change the directory name the old directory ('mystuff') is not deleted.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -445,6 +450,7 @@ We can also create a full path.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -465,6 +471,7 @@ But we need to activate this function explicitely.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -501,6 +508,7 @@ permissions.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile
@@ -550,6 +558,7 @@ If we change the filename the old file is deleted.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile
@@ -584,6 +593,7 @@ We can also specify to create the path for the file.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile
