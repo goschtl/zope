@@ -217,11 +217,11 @@ Consider this example, here Host implements IHost::
 
 .. note::
 
-  If you wonder how implements function works, refer the blog post by
+  If you wonder how ``implements`` function works, refer the blog post by
   James Henstridge
-  (http://blogs.gnome.org/jamesh/2005/09/08/python-class-advisors/)
-  . In the adapter section, you will see an adapts function, it is
-  also working similarly.
+  (http://blogs.gnome.org/jamesh/2005/09/08/python-class-advisors/) . In the
+  adapter section, you will see an ``adapts`` function, that is also working
+  similarly.
 
 Since Host implements IHost, instances of Host provide IHost.  There
 are some utility methods to introspect the declarations.  The

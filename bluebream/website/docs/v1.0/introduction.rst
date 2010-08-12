@@ -156,8 +156,8 @@ situations which would otherwise stand to benefit from the distilled wisdom
 of the ZCA.  The Zope community has responded to this in with several
 rapidly deployable ZCA-derived frameworks, which implement Convention over
 configuration while maintaining the power of ZCA under the hood.  Notable
-among these are :term:Grok: and Repoze.  Take a look at the recent uploads
-to the PyPi site, it is rare to not see several zca projects listed.
+among these are :term:`Grok`: and Repoze.  Take a look at the recent uploads
+to the PyPI site, it is rare to not see several ZCA projects listed.
 
 .. _Convention over configuration: http://en.wikipedia.org/wiki/Convention_over_configuration
 
@@ -282,14 +282,14 @@ Corporation alumni is a *Who's Who* of Python development, including one
 world-wide community.  We thank you all.  Please help us add more names to
 the list of contributor as we move forward from January 2010.
 
+:ref:`List of contributors <contributors-start>`
+
 .. _intro-translations:
 
 Translations
 ------------
 
 - `Russian <http://bit.ly/92jl9Q>`_
-
-:ref:`contributors-start`
 
 .. raw:: html
 
