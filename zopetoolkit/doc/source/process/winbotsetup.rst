@@ -1,4 +1,57 @@
-.. _winbotsetup:
+.. _winbotdetails:
+
+winbot details
+==============
+
+The whole service is a buildbot, reachable at http://winbot.zope.org.
+
+It's tasks are:
+
+  * Build windows binary eggs
+
+    * Build is scheduled now every 30 minutes.
+
+  * Test projects on windows
+
+    * Nightly builds only
+
+
+Building windows binary eggs
+============================
+
+A overview how it works:
+
+* It gets all the released versions from pypi with an xmlrpc query
+  (with the method package_releases).
+
+* Optionally filters the versions (See the specs for
+  version/platform constraints)
+
+* Checks if there are binary eggs present for the various versions/platforms.
+
+* If one is missing, builds it and uploads to pypi (setup.py bdist_egg),
+  taking the source from the svn tag.
+
+Developers interaction
+----------------------
+
+* Just upload your package version to pypi with `python setup.py sdist`,
+  winbot is going to take care of the rest.
+
+* Results can be checked either on pypi (that the eggs appear), or directly with
+  winbot.
+  Sample results: http://winbot.zope.org/builders/wineggbuilder/builds/60/steps/release%20eggs/logs/stdio
+  Scroll to the bottom to see the summary table.
+
+If you need a NEW package to be processed contact:
+
+* Adam Groszer (agroszer-at-gmail-dot-com) or
+
+* Hanno Schlichting (hannosch-at-hannosch-dot-eu)
+
+The package that creates the eggs is here:
+svn://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder
+
 
 Detailed winbot configuration description
 =========================================
@@ -104,37 +157,6 @@ pythons + pywin32 + setuptools
     * beat it until it works (permissions, etc....)
 
   * put an apache in front of the whole
-
-Creating eggs
--------------
-
-The whole process is launched in a nightly buildbot task.
-
-The package that creates the eggs is here:
-svn://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder
-
-This package will build missing binary eggs for specified platforms and package
-versions.
-
-A overview how it works:
-
-* It gets all the released versions from pypi with an xmlrpc query
-  (with the method package_releases).
-
-* Optionally filters the versions (See the specs for
-  version/platform constraints)
-
-* Checks if there are binary eggs present for the various versions/platforms.
-
-* If one is missing, builds it and uploads to pypi (setup.py bdist_egg),
-  taking the source from the svn tag.
-
-If you need a package to be processed contact:
-
-* Adam Groszer (agroszer-at-gmail-dot-com) or
-
-* Hanno Schlichting (hannosch-at-hannosch-dot-eu)
-
 
 Buildbot for tests
 ------------------
