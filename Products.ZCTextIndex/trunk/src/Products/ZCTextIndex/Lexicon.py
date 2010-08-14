@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Lexicon.
-
-$Id$
 """
 
 import re
@@ -46,9 +44,10 @@ class Lexicon(Persistent):
         self._pipeline = pipeline
 
     def length(self):
-        """Return the number of unique terms in the lexicon."""
-        # Overridden in instances
-        return len(self._wids)
+        """Return the number of unique terms in the lexicon.
+        """
+        # Overridden in instances with a BTrees.Length.Length
+        raise NotImplementedError
 
     def words(self):
         return self._wids.keys()
@@ -63,9 +62,6 @@ class Lexicon(Persistent):
         last = _text2list(text)
         for element in self._pipeline:
             last = element.process(last)
-        if not hasattr(self.length, 'change'):
-            # Make sure length is overridden with a BTrees.Length.Length
-            self.length = Length(self.length())        
         # Strategically unload the length value so that we get the most
         # recent value written to the database to minimize conflicting wids
         # Because length is independent, this will load the most

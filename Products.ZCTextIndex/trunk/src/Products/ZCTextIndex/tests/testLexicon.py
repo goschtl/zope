@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Lexicon unit tests.
-
-$Id$
 """
 
 import unittest
@@ -71,7 +69,7 @@ class StopWordPipelineElement:
 
 class Test(unittest.TestCase):
 
-    def test_z3interfaces(self):
+    def test_interfaces(self):
         from Products.ZCTextIndex.interfaces import ILexicon
         from zope.interface.verify import verifyClass
 
@@ -171,16 +169,10 @@ class Test(unittest.TestCase):
         words = HTMLWordSplitter().process(words)
         self.assertEqual(words, expected)
         locale.setlocale(locale.LC_ALL, loc) # restore saved locale
-        
-    def testUpgradeLength(self):
-        from BTrees.Length import Length
-        lexicon = Lexicon(Splitter())
-        del lexicon.length # Older instances don't override length
-        lexicon.sourceToWordIds('how now brown cow')
-        self.assert_(lexicon.length.__class__ is Length)        
-        
+
+
 class TestLexiconConflict(unittest.TestCase):
-    
+
     db = None
 
     def tearDown(self):
@@ -226,6 +218,3 @@ def test_suite():
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestLexiconConflict))
     return suite
-
-if __name__=='__main__':
-    unittest.main(defaultTest='test_suite')
