@@ -16,15 +16,15 @@
 
 import unittest
 
-import os, sys
+import os
+import sys
 
-import ZODB
 import transaction
+import ZODB
 
-from Products.ZCTextIndex.Lexicon import Lexicon
-from Products.ZCTextIndex.Lexicon import Splitter, CaseNormalizer
 
 class StupidPipelineElement:
+
     def __init__(self, fromword, toword):
         self.__fromword = fromword
         self.__toword = toword
@@ -38,7 +38,9 @@ class StupidPipelineElement:
                 res.append(term)
         return res
 
+
 class WackyReversePipelineElement:
+
     def __init__(self, revword):
         self.__revword = revword
 
@@ -53,7 +55,9 @@ class WackyReversePipelineElement:
                 res.append(term)
         return res
 
+
 class StopWordPipelineElement:
+
     def __init__(self, stopdict={}):
         self.__stopdict = stopdict
 
@@ -67,73 +71,100 @@ class StopWordPipelineElement:
         return res
 
 
-class Test(unittest.TestCase):
+class LexiconTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from Products.ZCTextIndex.Lexicon import Lexicon
+        return Lexicon
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
         from Products.ZCTextIndex.interfaces import ILexicon
         from zope.interface.verify import verifyClass
 
-        verifyClass(ILexicon, Lexicon)
+        verifyClass(ILexicon, self._getTargetClass())
 
     def testSourceToWordIds(self):
-        lexicon = Lexicon(Splitter())
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         self.assertEqual(wids, [1, 2, 3])
 
     def testTermToWordIds(self):
-        lexicon = Lexicon(Splitter())
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('dogs')
         self.assertEqual(wids, [3])
 
     def testMissingTermToWordIds(self):
-        lexicon = Lexicon(Splitter())
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('boxes')
         self.assertEqual(wids, [0])
 
     def testTermToWordIdsWithProcess_post_glob(self):
         """This test is for added process_post_glob"""
+        from Products.ZCTextIndex.Lexicon import Splitter
+
         class AddedSplitter(Splitter):
             def process_post_glob(self, lst):
                 assert lst == ['dogs']
                 return ['dogs']
-        lexicon = Lexicon(AddedSplitter())
+        lexicon = self._makeOne(AddedSplitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('dogs')
         self.assertEqual(wids, [3])
 
     def testMissingTermToWordIdsWithProcess_post_glob(self):
         """This test is for added process_post_glob"""
+        from Products.ZCTextIndex.Lexicon import Splitter
+
         class AddedSplitter(Splitter):
             def process_post_glob(self, lst):
                 assert lst == ['dogs']
                 return ['fox']
-        lexicon = Lexicon(AddedSplitter())
+        lexicon = self._makeOne(AddedSplitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('dogs')
         self.assertEqual(wids, [0])
 
     def testOnePipelineElement(self):
-        lexicon = Lexicon(Splitter(), StupidPipelineElement('dogs', 'fish'))
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter(),
+                                StupidPipelineElement('dogs', 'fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('fish')
         self.assertEqual(wids, [3])
 
     def testSplitterAdaptorFold(self):
-        lexicon = Lexicon(Splitter(), CaseNormalizer())
+        from Products.ZCTextIndex.Lexicon import CaseNormalizer
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter(), CaseNormalizer())
         wids = lexicon.sourceToWordIds('CATS and dogs')
         wids = lexicon.termToWordIds('cats and dogs')
         self.assertEqual(wids, [1, 2, 3])
 
     def testSplitterAdaptorNofold(self):
-        lexicon = Lexicon(Splitter())
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('CATS and dogs')
         wids = lexicon.termToWordIds('cats and dogs')
         self.assertEqual(wids, [0, 2, 3])
 
     def testTwoElementPipeline(self):
-        lexicon = Lexicon(Splitter(),
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter(),
                           StupidPipelineElement('cats', 'fish'),
                           WackyReversePipelineElement('fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
@@ -141,17 +172,21 @@ class Test(unittest.TestCase):
         self.assertEqual(wids, [1])
 
     def testThreeElementPipeline(self):
-        lexicon = Lexicon(Splitter(),
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne(Splitter(),
                           StopWordPipelineElement({'and':1}),
                           StupidPipelineElement('dogs', 'fish'),
                           WackyReversePipelineElement('fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('hsif')
         self.assertEqual(wids, [2])
-        
+
     def testSplitterLocaleAwareness(self):
-        from Products.ZCTextIndex.HTMLSplitter import HTMLWordSplitter
         import locale
+        from Products.ZCTextIndex.Lexicon import Splitter
+        from Products.ZCTextIndex.HTMLSplitter import HTMLWordSplitter
+
         loc = locale.setlocale(locale.LC_ALL) # get current locale
          # set German locale
         try:
@@ -171,9 +206,16 @@ class Test(unittest.TestCase):
         locale.setlocale(locale.LC_ALL, loc) # restore saved locale
 
 
-class TestLexiconConflict(unittest.TestCase):
+class LexiconConflictTests(unittest.TestCase):
 
     db = None
+
+    def _getTargetClass(self):
+        from Products.ZCTextIndex.Lexicon import Lexicon
+        return Lexicon
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def tearDown(self):
         if self.db is not None:
@@ -181,31 +223,34 @@ class TestLexiconConflict(unittest.TestCase):
             self.storage.cleanup()
 
     def openDB(self):
-        from ZODB.FileStorage import FileStorage
         from ZODB.DB import DB
+        from ZODB.FileStorage import FileStorage
+
         n = 'fs_tmp__%s' % os.getpid()
         self.storage = FileStorage(n)
         self.db = DB(self.storage)
-        
+
     def testAddWordConflict(self):
-        self.l = Lexicon(Splitter())
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        self.l = self._makeOne(Splitter())
         self.openDB()
         r1 = self.db.open().root()
         r1['l'] = self.l
         transaction.commit()
-        
+
         r2 = self.db.open().root()
         copy = r2['l']
         # Make sure the data is loaded
         list(copy._wids.items())
         list(copy._words.items())
         copy.length()
-        
+
         self.assertEqual(self.l._p_serial, copy._p_serial)
-        
+
         self.l.sourceToWordIds('mary had a little lamb')
         transaction.commit()
-        
+
         copy.sourceToWordIds('whose fleece was')
         copy.sourceToWordIds('white as snow')
         transaction.commit()
@@ -215,6 +260,6 @@ class TestLexiconConflict(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test))
-    suite.addTest(unittest.makeSuite(TestLexiconConflict))
+    suite.addTest(unittest.makeSuite(LexiconTests))
+    suite.addTest(unittest.makeSuite(LexiconConflictTests))
     return suite
