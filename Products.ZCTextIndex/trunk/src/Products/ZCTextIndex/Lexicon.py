@@ -33,6 +33,13 @@ class Lexicon(Persistent):
     implements(ILexicon)
 
     def __init__(self, *pipeline):
+        self.clear()
+        self._pipeline = pipeline
+
+    def clear(self):
+        """Empty the lexicon.
+        """
+        self.length = Length()
         self._wids = OIBTree()  # word -> wid
         self._words = IOBTree() # wid -> word
         # wid 0 is reserved for words that aren't in the lexicon (OOV -- out
@@ -40,8 +47,6 @@ class Lexicon(Persistent):
         # we never saw before, and that isn't a known stopword (or otherwise
         # filtered out).  Returning a special wid value for OOV words is a
         # way to let clients know when an OOV word appears.
-        self.length = Length()
-        self._pipeline = pipeline
 
     def length(self):
         """Return the number of unique terms in the lexicon.

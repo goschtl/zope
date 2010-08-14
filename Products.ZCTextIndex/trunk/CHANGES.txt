@@ -4,6 +4,8 @@ Changelog
 2.13.1 (unreleased)
 -------------------
 
+- Lexicon: Added clear method.
+
 - Lexicon: Removed BBB code for instances created with Zope < 2.6.2.
 
 - Added missing namespace_packages declaration to setup.py.

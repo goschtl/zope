@@ -86,6 +86,20 @@ class LexiconTests(unittest.TestCase):
 
         verifyClass(ILexicon, self._getTargetClass())
 
+    def test_clear(self):
+        from Products.ZCTextIndex.Lexicon import Splitter
+
+        lexicon = self._makeOne()
+        wids = lexicon.sourceToWordIds('foo')
+        self.assertEqual(len(lexicon._wids), 1)
+        self.assertEqual(len(lexicon._words), 1)
+        self.assertEqual(lexicon.length(), 1)
+
+        lexicon.clear()
+        self.assertEqual(len(lexicon._wids), 0)
+        self.assertEqual(len(lexicon._words), 0)
+        self.assertEqual(lexicon.length(), 0)
+
     def testSourceToWordIds(self):
         from Products.ZCTextIndex.Lexicon import Splitter
 

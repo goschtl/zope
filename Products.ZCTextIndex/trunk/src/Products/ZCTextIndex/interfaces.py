@@ -10,9 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZCTextIndex z3 interfaces.
-
-$Id$
+"""ZCTextIndex interfaces.
 """
 
 from zope.interface import Interface
@@ -28,6 +26,10 @@ class ILexicon(Interface):
 
     """Object responsible for converting text to word identifiers.
     """
+
+    def clear():
+        """Empty the lexicon.
+        """
 
     def termToWordIds(text):
         """Return a sequence of ids of the words parsed from the text.
@@ -59,7 +61,7 @@ class ILexicon(Interface):
         """
 
     def length():
-        """Return the number of unique term in the lexicon.
+        """Return the number of unique terms in the lexicon.
         """
 
     def get_word(wid):
