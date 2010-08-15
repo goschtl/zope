@@ -1,3 +1,7 @@
+2.2.2 (2010-08-15)
+==================
+- pdf-fop converter not registered properly
+
 2.2.1 (2010-07-19)
 ==================
 - support $ZOPYX_CONVERT_SHELL 

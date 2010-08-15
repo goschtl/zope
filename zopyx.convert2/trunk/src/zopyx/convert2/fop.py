@@ -69,3 +69,4 @@ class HTML2PDF(BaseConverter):
 fop_available = _check_fop()
 
 from registry import registerConverter
+registerConverter(HTML2PDF)
