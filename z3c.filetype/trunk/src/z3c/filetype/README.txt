@@ -167,7 +167,7 @@ factory.
   >>> notify(ObjectCreatedEvent(foo))
   >>> sorted(eventtesting.getEvents())
   [<z3c.filetype.event.FileTypeModifiedEvent object at ...>,
-   <zope.app.event.objectevent.ObjectCreatedEvent object at ...>]
+   <zope.lifecycleevent.ObjectCreatedEvent object at ...>]
 
 The object now implements the according interface. This is achieved by
 the evennthandler which calls applyInterfaces.
@@ -189,13 +189,13 @@ an IObjectModifiedevent. Which is normally done by the implementation.
 
   >>> foo.data = file(os.path.join(testData,'test.flv'), 'rb')
   >>> eventtesting.clearEvents()
-  >>> 
+  >>>
   >>> notify(ObjectModifiedEvent(foo))
 
 Now we have two events, one we fired and one from our handler.
 
   >>> eventtesting.getEvents()
-  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
+  [<zope.lifecycleevent.ObjectModifiedEvent object at ...>,
    <z3c.filetype.event.FileTypeModifiedEvent object at ...>]
 
 Now the file should implement another filetype.

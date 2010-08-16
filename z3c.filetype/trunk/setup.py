@@ -16,7 +16,11 @@
 $Id: setup.py 82381 2007-12-21 10:08:32Z jukart $
 """
 
+import os.path
 from setuptools import setup, find_packages
+
+def read(*path_elements):
+    return "\n\n" + file(os.path.join(*path_elements)).read()
 
 setup(
     name="z3c.filetype",
@@ -25,6 +29,16 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
+    license='ZPL 2.1',
+    description="Get interfaces for objects based on their content, "\
+                "filename or mime-type.",
+    long_description=(
+        '.. contents::' +
+        read('src', 'z3c', 'filetype', 'README.txt') +
+        read('src', 'z3c', 'filetype', 'magic.txt') +
+        read('src', 'z3c', 'filetype', 'TODO.txt') +
+        read('CHANGES.txt')
+        ),
     install_requires=[
         "setuptools",
         "zope.cachedescriptors",
