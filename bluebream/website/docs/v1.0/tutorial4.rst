@@ -8,12 +8,6 @@ Tutorial --- Part 4
 Introduction
 ------------
 
-Security
-========
-
-Introduction
-------------
-
 BlueBream comes with a flexible security mechanism.  The two fundamental
 concepts are **permissions** and **principals**.  Permission is a kind of
 access, i.e. *permission to READ* vs. *permission to WRITE*.  Fundamentally
@@ -25,7 +19,7 @@ detail screen.  Principals, on the other hand, are agents of the system that
 execute actions.  The most common example of a principal is a user of the
 system.  Principal is a generalization of the user concept.  The goal is now
 to grant permissions to principals, which is the duty of another sub-system
-known as the **securitypolicy*.
+known as the **securitypolicy**.
 
 BlueBream does not enforce any particular security policy.  In contrary, it
 encourages developers to carefully choose the security policy and use one
