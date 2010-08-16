@@ -7,3 +7,4 @@ Reference
    appwsgi
    zcml
    event
+   error
