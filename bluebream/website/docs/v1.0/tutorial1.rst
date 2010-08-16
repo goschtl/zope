@@ -849,8 +849,11 @@ container.  In order to add a site manager later, it is recommend to inherit
 from ``zope.site.interfaces.IFolder`` interface.  The ``IFolder`` inherits
 from ``IContainer``.
 
-Let's create a new Python package named ``collector`` inside
-``src/tc``::
+To organize project source code in a better way, it is reccomended to use
+namespace packages.  You have already created a namespace package named
+``tc``.  The ticket collector code can be distributed under different
+packages inside ``tc`` namespace.  Let's create a new Python package named
+``collector`` inside ``src/tc`` to write the collector related components::
 
   $ mkdir src/tc/collector
   $ echo "# Python Package" > src/tc/collector/__init__.py
@@ -923,10 +926,10 @@ component::
      xmlns="http://namespaces.zope.org/zope"
      xmlns:browser="http://namespaces.zope.org/browser">
 
-  <interface
-     interface="tc.collector.interfaces.ICollector"
-     type="zope.app.content.interfaces.IContentType"
-     />
+    <interface
+       interface="tc.collector.interfaces.ICollector"
+       type="zope.app.content.interfaces.IContentType"
+       />
 
   </configure>
 
