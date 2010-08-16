@@ -186,7 +186,31 @@ Also update the default ``index`` page for ``ICollector`` with new layer in
      layer="tc.skin.interfaces.ITCSkin"
      />
 
-You can do the same thing for all other views.
+You can do the same thing for all other views::
+
+  <browser:page
+     for="tc.collector.interfaces.ICollector"
+     name="add_ticket"
+     permission="zope.Public"
+     class="tc.collector.views.AddTicket"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+  <browser:page
+     for="tc.collector.interfaces.ITicket"
+     name="index"
+     permission="zope.Public"
+     class="tc.collector.views.TicketMainView"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+  <browser:page
+     for="tc.collector.interfaces.ITicket"
+     name="add_comment"
+     permission="zope.Public"
+     class="tc.collector.views.AddComment"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
 
 Using the skin
 --------------
