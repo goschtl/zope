@@ -14,7 +14,7 @@ from BeautifulSoup import BeautifulSoup
 
 LOG = logging.getLogger('zopyx.convert2')
 
-def tidyhtml(filename, encoding='utf-8'):
+def tidyhtml(filename, encoding='utf-8', strip_base=False):
 
     html = file(filename, 'rb').read()
 
@@ -56,6 +56,11 @@ def tidyhtml(filename, encoding='utf-8'):
     
     entity_reg = re.compile('(&.*?;)')
     html = entity_reg.sub(handler, html)
+
+    # replace BASE tag
+    if strip_base:
+        base_reg = re.compile('(<base.*?>)', re.I)
+        html = base_reg.sub('', html)
 
     filename = newTempfile()
     file(filename, 'wb').write(str(html))

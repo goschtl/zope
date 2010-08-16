@@ -62,6 +62,7 @@ class HTML2PDF(BaseConverter):
         return fop_available
 
     def convert(self, output_filename=None, **options):
+        options['strip_base'] = True
         self.convert2FO(**options)
         result = fo2pdf(self.fo_filename, output_filename)
         return result
