@@ -107,8 +107,7 @@ If you change directory to ``ticketcollector`` you can see a few directories
 and files::
 
   jack@computer:/projects/ticketcollector$ ls -CF
-  bootstrap.py  debug.ini   etc/      src/  versions.cfg
-  buildout.cfg  deploy.ini  setup.py  var/
+  bootstrap.py  buildout.cfg  debug.ini  deploy.ini  etc/  setup.py  src/  var/
 
 Once the project directory layout is ready you can add it to your version
 control system.  You **should not** add the ``src/ticketcollector.egg-info``
@@ -191,7 +190,7 @@ application, but before doing this, let's have a look at the content of
 
   [buildout]
   develop = .
-  extends = versions.cfg
+  extends = http://download.zope.org/bluebream/bluebream-1.0b3.cfg
   parts = app
           test
 
@@ -218,7 +217,7 @@ Let's look at the main ``[buildout]`` part::
 
   [buildout]
   develop = .
-  extends = versions.cfg
+  extends = http://download.zope.org/bluebream/bluebream-1.0b3.cfg
   parts = app
           test
 
@@ -233,11 +232,10 @@ directory.  You can also add multiple lines to the ``develop`` option with
 different paths.
 
 The ``extends`` option tells buildout to include the full content of the
-``versions.cfg`` file as part the configuration.  The ``versions.cfg`` is
-another Buildout configuration file of the same format as buildout.cfg and
-contains the release numbers of different dependencies.  You can add
-multiple lines to the ``extends`` option to include multiple configuration
-files.
+``http://download.zope.org/bluebream/bluebream-1.0b3.cfg`` file as part the
+configuration.  You can add multiple lines to the ``extends`` option to
+include multiple configuration files.  You can also specify a file in the
+local filesystem.
 
 The ``parts`` option lists all the parts to be built by Buildout.  Buildout
 expects a recipe for each of the parts listed here.
@@ -313,7 +311,7 @@ BlueBream use WSGI to run the server using PasteDeploy.  There are two
 PasteDeploy configuration files: one for deployment (``deploy.ini``),
 another for development (``debug.ini``).
 
-We will now examine the contents of ``debug.ini``::
+We will now examine the contents of ``deploy.ini``::
 
   [app:main]
   use = egg:ticketcollector
@@ -337,15 +335,15 @@ expects a ``paste.app_factory`` entry point to be defined in the egg.  If
 you look at the ``setup.py`` file, you can see that it is defined like
 this::
 
-      [paste.app_factory]
-      main = tc.main.startup:application_factory
+  [paste.app_factory]
+  main = tc.main.startup:application_factory
 
 The name of entry point should be ``main``.  Otherwise, it should be
 explicitly mentioned in configuration file (``debug.ini`` & ``deploy.ini``).
 For example, if the definition is::
 
-      [paste.app_factory]
-      testapp = tc.main.startup:application_factory
+  [paste.app_factory]
+  testapp = tc.main.startup:application_factory
 
 The PasteDeploy configuration should be changed like this::
 
@@ -496,7 +494,7 @@ This is the content of ``etc/zope.conf``::
   </eventlog>
 
 From the ``zope.conf`` file, you can specify the main ZCML file to be loaded
-(site definition).  All paths are specified as relative to the top-level
+(``site-definition``).  All paths are specified as relative to the top-level
 directory where the PasteDeploy configuration file resides.
 
 .. _tut1-site-definition:
@@ -535,6 +533,7 @@ is the default listing::
     <include package="zope.traversing" />
     <include package="zope.site" />
     <include package="zope.annotation" />
+    <include package="zope.principalregistry" />
     <include package="zope.container" />
     <include package="zope.componentvocabulary" />
     <include package="zope.formlib" />
@@ -549,6 +548,7 @@ is the default listing::
     <include package="zope.securitypolicy" />
     <include package="zope.login" />
     <include package="zope.session" />
+    <include package="zope.error" />
     <include package="zope.app.zcmlfiles" file="menus.zcml" />
     <include package="zope.app.authentication" />
     <include package="zope.app.security.browser" />
@@ -564,8 +564,8 @@ The main configuration, ``site.zcml`` contains references to other
 configuration files specific to packages.  The ZCML has some directives like
 `include``, ``page``, ``defaultView`` etc. available through various
 XML-namespaces.  In the ``site.zcml`` the default XML-namespace is
-``http://namespaces.zope.org/zope``.  If you look at the top of site.zcml,
-you can see the XML-namespace refered to like this::
+``http://namespaces.zope.org/zope``.  If you look at the top of
+``etc/site.zcml``, you can see the XML-namespace refered to like this::
 
   <configure
    xmlns="http://namespaces.zope.org/zope">
@@ -624,18 +624,19 @@ file, it will include ``configure.zcml``.
 Package meta-data
 -----------------
 
-BlueBream uses :term:`Setuptools` to distribute the application package.
-However, you could easily replace it with :term:`Distribute`.
+BlueBream uses :term:`Distribute` to distribute the application package.
+The :term:`Distribute` distribution contains the ``setuptools`` module.
 
 Your ticketcollector package's setup.py will look like this::
 
   from setuptools import setup, find_packages
 
+
   setup(name='ticketcollector',
         version='0.1',
         description='Ticket Collector',
         long_description="""\
-  A ticket collector application""",
+  An issue tracking application""",
         # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
         classifiers=[],
         keywords='',
@@ -645,13 +646,14 @@ Your ticketcollector package's setup.py will look like this::
         license='ZPL',
         package_dir={'': 'src'},
         packages=find_packages('src'),
-        namespace_packages=['tc',],
+        namespace_packages=['tc'],
         include_package_data=True,
         zip_safe=False,
         install_requires=['setuptools',
                           'zope.securitypolicy',
                           'zope.component',
                           'zope.annotation',
+                          'zope.browserresource',
                           'zope.app.dependable',
                           'zope.app.appsetup',
                           'zope.app.content',
