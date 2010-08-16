@@ -81,7 +81,7 @@ include error views, traversal registrations, and widgets.
 
 
 Setting up a layer
-~~~~~~~~~~~~~~~~~~
+------------------
 
 You can create a new package named *skin* inside *tc* namespace.  All the
 skin related things will be added here.  First create the ``skin`` directory
@@ -119,7 +119,7 @@ directives to specify this layer::
 
 
 Setting up a skin
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Skins are also interfaces defined using ``zope.interface`` package.  You can
 created skin interfaces by inheritting from the layer interface.  For
@@ -133,12 +133,12 @@ To register this you can use ``interface`` and ``utility`` directives in
 ``zope`` namespace.  Add this to ``src/tc/skin/configure.zcml``::
 
   <interface
-      interface=".interfaces.ITCSkin"
+      interface="tc.skin.interfaces.ITCSkin"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       />
 
   <utility
-      component=".interfaces.ITCSkin"
+      component="tc.skin.interfaces.ITCSkin"
       provides="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="TCSkin"
       />
@@ -148,21 +148,48 @@ pass the ``name`` parameter.  The following one directive has the
 same effect as the two above regarding the skin registration::
 
   <interface
-      interface=".interfaces.ITCSkin"
+      interface="tc.skin.interfaces.ITCSkin"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="TCSkin"
       />
 
 You can register all templates for this skin by adding the layer attribute::
 
-  layer=".interfaces.ITCSkin"
+  layer="tc.skin.interfaces.ITCSkin"
 
 As you can see, you don't have to create an extra layer just to create a
 custom skin.  But it is not reccommended to declare any views for the skin
 directly, rather you can register for the layer.
 
+Updating various views
+----------------------
+
+Update the ``add_ticket_collector`` view in
+``src/tc/collector/configure.zcml`` with ::
+
+  <browser:page
+     for="zope.site.interfaces.IRootFolder"
+     name="add_ticket_collector"
+     permission="zope.Public"
+     class="tc.collector.views.AddTicketCollector"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+Also update the default ``index`` page for ``ICollector`` with new layer in
+``src/tc/collector/configure.zcml``::
+
+  <browser:page
+     for="tc.collector.interfaces.ICollector"
+     name="index"
+     permission="zope.Public"
+     class="tc.collector.views.TicketCollectorMainView"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+You can do the same thing for all other views.
+
 Using the skin
-~~~~~~~~~~~~~~
+--------------
 
 To access a skin, you need to use ``++skin++`` in the begining of the path
 followed by the skin name.  For example, if the skin name is ``TCSkin``, the
