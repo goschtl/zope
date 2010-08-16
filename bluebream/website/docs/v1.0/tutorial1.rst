@@ -31,20 +31,20 @@ should be able to:
 - Create content objects and interfaces
 - Use the form generation tool (zope.formlib)
 
-.. note::
+.. .. note::
 
-   The examples in this documentation can be downloaded from here:
-   http://download.zope.org/bluebream/examples/ticketcollector-1.0.0.tar.bz2
+..    The examples in this documentation can be downloaded from here:
+..    http://download.zope.org/bluebream/examples/ticketcollector-1.0.0.tar.bz2
 
-   The source code is available in different stages corresponding to
-   sections.
+..    The source code is available in different stages corresponding to
+..    sections.
 
-   - Stage 1 : Section 5.2 to 5.7
-   - Stage 2 : Section 5.8
-   - Stage 3 : Section 5.9
-   - Stage 4 : Section 6.2
-   - Stage 5 : Section 6.3
-   - Stage 6 : Section 6.4 & 6.5
+..    - Stage 1 : Section 5.2 to 5.7
+..    - Stage 2 : Section 5.8
+..    - Stage 3 : Section 5.9
+..    - Stage 4 : Section 6.2
+..    - Stage 5 : Section 6.3
+..    - Stage 6 : Section 6.4 & 6.5
    
 
 .. _tut1-new-project:
