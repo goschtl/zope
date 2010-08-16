@@ -20,7 +20,6 @@ Welcome to BlueBream's documentation!
    howto/index
    dev/index
    reference/index
-   event
    community/index
    glossary
    contributors
