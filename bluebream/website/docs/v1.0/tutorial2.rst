@@ -374,8 +374,6 @@ You need to change the ``TicketCollectorMainView`` defined in
 Adding Comments
 ---------------
 
-.. warning:: This section is incomplete
-
 In this section, you will create `comment` objects which can be added to
 tickets.  As the first step, you need to define the interface for a comment.
 You can add this interface definition in
