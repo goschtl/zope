@@ -8,11 +8,11 @@ Tutorial --- Part 1
 Introduction
 ------------
 
-In the :ref:`started-getting` chapter you learned how to install
-BlueBream and create a new project using the ``bluebream`` project
-template.  In this tutorial, you will learn how to create a simple
-ticket collector application.  This will help you to get more
-familiar with the concepts of BlueBream.
+In the :ref:`started-getting` chapter you learned how to install BlueBream
+and create a new project using the ``bluebream`` project template.  In this
+tutorial, you will learn how to create a simple ticket collector
+application.  This will help you to get more familiar with the concepts of
+BlueBream.
 
 Here are the user stories for the ticket collector application:
 
@@ -23,8 +23,8 @@ Here are the user stories for the ticket collector application:
 
 3. Additional comments can be added to tickets.
 
-This is the first part of the tutorial.  After completing this
-chapter, you should be able to:
+This is the first part of the tutorial.  After completing this chapter, you
+should be able to:
 
 - Understand the project directory structure
 - Use Buildout and edit Buildout configuration
@@ -55,15 +55,14 @@ Starting a new project
 Using the *bluebream* project template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this section we will create the directory layout for our ticket
-collector application.  I will assume that you have already installed
-``bluebream`` using the ``easy_install bluebream`` command as
-mentioned in the :ref:`started-getting` chapter.  We are going to use
-the project name ``ticketcollector`` and the Python package name
-``tc.main``.  This will create a project with egg/distribution name
-``ticketcollector``, ``tc`` as a namespace package and ``main`` as a
-Python sub-package.  Let's create the project directory layout for
-``ticketcollector``::
+In this section we will create the directory layout for our ticket collector
+application.  I will assume that you have already installed ``bluebream``
+using the ``easy_install bluebream`` command as mentioned in the
+:ref:`started-getting` chapter.  We are going to use the project name
+``ticketcollector`` and the Python package name ``tc.main``.  This will
+create a project with egg/distribution name ``ticketcollector``, ``tc`` as a
+namespace package and ``main`` as a Python sub-package.  Let's create the
+project directory layout for ``ticketcollector``::
 
   $ paster create -t bluebream
 
@@ -87,7 +86,6 @@ Python sub-package.  Let's create the project directory layout for
   Enter author_email (Author email) ['']: baiju@example.com
   Enter url (URL of homepage) ['']:
   Enter license_name (License name) ['']: ZPL
-  Enter zip_safe (True/False: if the package can be distributed as a .zip file) [False]:
   Creating template bluebream
   Creating directory ./ticketcollector
 
@@ -97,27 +95,25 @@ Python sub-package.  Let's create the project directory layout for
   3) run: ./bin/buildout
 
 
-As you can see above, we have provided most of the project details.
-The values you provided here may be changed later, however changing
-the Python package name may not be as easy as changing other values,
-because the Python package name might be referred to in many places
-in our code later.
+As you can see above, we have provided most of the project details.  The
+values you provided here may be changed later, however changing the Python
+package name may not be as easy as changing other values, because the Python
+package name might be referred to in many places in our code later.
 
 Organize the new package
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you change directory to ``ticketcollector`` you can see a few
-directories and files::
+If you change directory to ``ticketcollector`` you can see a few directories
+and files::
 
   jack@computer:/projects/ticketcollector$ ls -CF
   bootstrap.py  debug.ini   etc/      src/  versions.cfg
   buildout.cfg  deploy.ini  setup.py  var/
 
-Once the project directory layout is ready you can add it to your
-version control system.  You **should not** add the
-``src/ticketcollector.egg-info`` directory as it is generated
-automatically by setuptools.  Here is an example using `bzr
-<http://bazaar.canonical.com/en/>`_::
+Once the project directory layout is ready you can add it to your version
+control system.  You **should not** add the ``src/ticketcollector.egg-info``
+directory as it is generated automatically by setuptools.  Here is an
+example using `bzr <http://bazaar.canonical.com/en/>`_::
 
   jack@computer:/projects/ticketcollector$ rm -fr src/ticketcollector.egg-info/
   jack@computer:/projects/ticketcollector$ bzr init
@@ -135,22 +131,22 @@ automatically by setuptools.  Here is an example using `bzr
   Committed revision 1.
 
 Adding the project to a version control system is an optional but
-recommended step.  You now have a valid source code distribution of
-your project that, after building, will produce a running
-application.  The project is now completely independent of the
-``bluebream`` distribution, it's only purpose is to help us get to
-this point.  The project now contains everything required to install
-the dependencies from the Internet and to set-up the application.
+recommended step.  You now have a valid source code distribution of your
+project that, after building, will produce a running application.  The
+project is now completely independent of the ``bluebream`` distribution,
+it's only purpose is to help us get to this point.  The project now contains
+everything required to install the dependencies from the Internet and to
+set-up the application.
 
 Bootstrapping the project
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The next step is to install Buildout.  The purpose of Buildout is to
-automate the building of Python applications from their bare source
-code form.  The only basic requirement for Buildout is a Python
-installation.  BlueBream provides a bootstrapping script to install
-Buildout and to set up the project directory for running it.  This
-bootstrap script is named ``bootstrap.py`` and will do these things:
+automate the building of Python applications from their bare source code
+form.  The only basic requirement for Buildout is a Python installation.
+BlueBream provides a bootstrapping script to install Buildout and to set up
+the project directory for running it.  This bootstrap script is named
+``bootstrap.py`` and will do these things:
 
 - Download and install the ``distribute`` distribution from PyPI which
   contains the forked ``setuptools`` Python package inside.
@@ -161,8 +157,8 @@ bootstrap script is named ``bootstrap.py`` and will do these things:
 
 - Create a script inside the ``bin`` directory named ``buildout``
 
-When you run ``bootstrap.py`` you can see that it creates a few
-directories and the ``bin/buildout`` script as mentioned earlier::
+When you run ``bootstrap.py`` you can see that it creates a few directories
+and the ``bin/buildout`` script as mentioned earlier::
 
   jack@computer:/projects/ticketcollector$ python bootstrap.py
   Creating directory '/projects/ticketcollector/bin'.
@@ -177,8 +173,8 @@ directories and the ``bin/buildout`` script as mentioned earlier::
 - The ``eggs`` directory is where Buildout installs Python eggs
 
 - The ``parts`` is where Buildout saves all output generated by buildout.
-  Buildout expects you to not change anything inside the parts directory
-  as it is auto generated by Buildout.
+  Buildout expects you to not change anything inside the parts directory as
+  it is auto generated by Buildout.
 
 - The ``develop-eggs`` directory is where Buildout saves links to all
   locally developed Python eggs.
@@ -186,12 +182,12 @@ directories and the ``bin/buildout`` script as mentioned earlier::
 Buildout configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 
-After bootstrapping the project you can build your application.  All
-the steps you done so far are only required once per project, but
-running buildout is required whenever you make changes to the
-buildout configuration.  You are now ready to run ``bin/buildout`` to
-build the application, but before doing this, let's have a look at
-the content of ``buildout.cfg``::
+After bootstrapping the project you can build your application.  All the
+steps you done so far are only required once per project, but running
+buildout is required whenever you make changes to the buildout
+configuration.  You are now ready to run ``bin/buildout`` to build the
+application, but before doing this, let's have a look at the content of
+``buildout.cfg``::
 
   [buildout]
   develop = .
@@ -212,12 +208,11 @@ the content of ``buildout.cfg``::
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
-The buildout configuration file is divided into multiple sections
-called *parts*.  The main part is called ``[buildout]``, and it
-appears as the first part in the listing above.  Each part will be
-handled by the Buildout plugin mechanism, called recipes, except for
-``[buildout]``.  ``[buildout]`` is handled as a special case by
-Buildout since it contains general settings.
+The buildout configuration file is divided into multiple sections called
+*parts*.  The main part is called ``[buildout]``, and it appears as the
+first part in the listing above.  Each part will be handled by the Buildout
+plugin mechanism, called recipes, except for ``[buildout]``.  ``[buildout]``
+is handled as a special case by Buildout since it contains general settings.
 
 Let's look at the main ``[buildout]`` part::
 
@@ -227,26 +222,25 @@ Let's look at the main ``[buildout]`` part::
   parts = app
           test
 
-The first option (``develop``) tells buildout that the current
-directory is a Python distribution source, i.e., it contains a
-``setup.py`` file.  Buildout will inspect the ``setup.py`` and create
-a develop egg link inside the ``develop-eggs`` directory.  The link
-file should contain the path to the location where the Python package
-is residing.  So buildout will make sure that the packages are always
-importable.  The value of the ``develop`` option could be a relative
-path, as given above, or absolute path to some directory.  You can
-also add multiple lines to the ``develop`` option with different
-paths.
+The first option (``develop``) tells buildout that the current directory is
+a Python distribution source, i.e., it contains a ``setup.py`` file.
+Buildout will inspect the ``setup.py`` and create a develop egg link inside
+the ``develop-eggs`` directory.  The link file should contain the path to
+the location where the Python package is residing.  So buildout will make
+sure that the packages are always importable.  The value of the ``develop``
+option could be a relative path, as given above, or absolute path to some
+directory.  You can also add multiple lines to the ``develop`` option with
+different paths.
 
-The ``extends`` option tells buildout to include the full content of
-the ``versions.cfg`` file as part the configuration.  The
-``versions.cfg`` is another Buildout configuration file of the same
-format as buildout.cfg and contains the release numbers of different
-dependencies.  You can add multiple lines to the ``extends`` option
-to include multiple configuration files.
+The ``extends`` option tells buildout to include the full content of the
+``versions.cfg`` file as part the configuration.  The ``versions.cfg`` is
+another Buildout configuration file of the same format as buildout.cfg and
+contains the release numbers of different dependencies.  You can add
+multiple lines to the ``extends`` option to include multiple configuration
+files.
 
-The ``parts`` option lists all the parts to be built by Buildout.
-Buildout expects a recipe for each of the parts listed here.
+The ``parts`` option lists all the parts to be built by Buildout.  Buildout
+expects a recipe for each of the parts listed here.
 
 Now let's look at the ``app`` part::
 
@@ -260,16 +254,15 @@ Now let's look at the ``app`` part::
   interpreter = breampy
 
 This part takes care of all the eggs required for the application to
-function.  The `zc.recipe.egg
-<http://pypi.python.org/pypi/zc.recipe.egg>`_ is an advanced Buildout
-recipe with many features for dealing with eggs.  Most of the
-dependencies will come as part of the main application egg.  The
-option ``eggs`` lists all the eggs.  The first egg,
-``ticketcollector`` is the main locally developed egg.  The last
-option, ``interpreter`` specifies the name of the custom interpreter
-created by this part.  The custom interpreter contains the paths to
-all eggs listed here and their dependencies, so that you can import
-any module which is listed as a dependency.
+function.  The `zc.recipe.egg <http://pypi.python.org/pypi/zc.recipe.egg>`_
+is an advanced Buildout recipe with many features for dealing with eggs.
+Most of the dependencies will come as part of the main application egg.  The
+option ``eggs`` lists all the eggs.  The first egg, ``ticketcollector`` is
+the main locally developed egg.  The last option, ``interpreter`` specifies
+the name of the custom interpreter created by this part.  The custom
+interpreter contains the paths to all eggs listed here and their
+dependencies, so that you can import any module which is listed as a
+dependency.
 
 The last part creates the test runner::
 
@@ -277,16 +270,16 @@ The last part creates the test runner::
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
-The testrunner recipe creates a test runner using the
-``zope.testing`` module.  The only mandatory option is ``eggs`` where
-you can specify the eggs.
+The testrunner recipe creates a test runner using the ``zope.testing``
+module.  The only mandatory option is ``eggs`` where you can specify the
+eggs.
 
 Building the project
 ~~~~~~~~~~~~~~~~~~~~
 
-Now you can run the ``bin/buildout`` command.  It will take some time
-to download all packages from PyPI.  When you run buildout, it will
-show something like this::
+Now you can run the ``bin/buildout`` command.  It will take some time to
+download all packages from PyPI.  When you run buildout, it will show
+something like this::
 
   jack@computer:/projects/ticketcollector$ ./bin/buildout
   Develop: '/projects/ticketcollector/.'
@@ -297,10 +290,9 @@ show something like this::
   Installing test.
   Generated script '/projects/ticketcollector/bin/test'.
 
-In the above example, all eggs are already available in the eggs
-folder. If they are not already available, they will be downloaded
-and installed.  The buildout also created three more scripts inside
-the ``bin`` directory.
+In the above example, all eggs are already available in the eggs folder. If
+they are not already available, they will be downloaded and installed.  The
+buildout also created three more scripts inside the ``bin`` directory.
 
 - The ``paster`` command can be used to run a web server.
 
@@ -309,17 +301,17 @@ the ``bin`` directory.
 
 - The ``test`` command can be used to run the test runner.
 
-Now we have a project structure which will allow us to continue
-developing our application.
+Now we have a project structure which will allow us to continue developing
+our application.
 
 .. _tut1-pastedeploy-configuration:
 
 PasteDeploy configuration
 -----------------------------
 
-BlueBream use WSGI to run the server using PasteDeploy.  There are
-two PasteDeploy configuration files: one for deployment
-(``deploy.ini``), another for development (``debug.ini``).
+BlueBream use WSGI to run the server using PasteDeploy.  There are two
+PasteDeploy configuration files: one for deployment (``deploy.ini``),
+another for development (``debug.ini``).
 
 We will now examine the contents of ``debug.ini``::
 
@@ -341,16 +333,16 @@ First let's look at the ``[app:main]`` section::
   use = egg:ticketcollector
 
 The ``[app:main]`` section specifies the egg to be used.  PasteDeploy
-expects a ``paste.app_factory`` entry point to be defined in the egg.
-If you look at the ``setup.py`` file, you can see that it is defined
-like this::
+expects a ``paste.app_factory`` entry point to be defined in the egg.  If
+you look at the ``setup.py`` file, you can see that it is defined like
+this::
 
       [paste.app_factory]
       main = tc.main.startup:application_factory
 
 The name of entry point should be ``main``.  Otherwise, it should be
-explicitly mentioned in configuration file (``debug.ini`` &
-``deploy.ini``).  For example, if the definition is::
+explicitly mentioned in configuration file (``debug.ini`` & ``deploy.ini``).
+For example, if the definition is::
 
       [paste.app_factory]
       testapp = tc.main.startup:application_factory
@@ -367,9 +359,9 @@ The second section (``[server:main]``) specifies the WSGI server::
   host = 127.0.0.1
   port = 8080
 
-You can change host name, port and the WSGI server itself from this
-section.  In oder to use any other WSGI server, it should be included
-in the dependency list in your Buildoout configuration.
+You can change host name, port and the WSGI server itself from this section.
+In oder to use any other WSGI server, it should be included in the
+dependency list in your Buildoout configuration.
 
 The last section (``[DEFAULT]``) is where you specify default
 values::
@@ -379,10 +371,10 @@ values::
   zope_conf = %(here)s/etc/zope.conf
 
 The WSGI application defined in ``tc.main.startup`` expects the
-``zope_conf`` option defined in the ``[DEFAULT]`` section.  So, this
-option is mandatory.  This option specifies the path of the main zope
-configuration file. We will look at zope configuration in greater
-detail in the next section.
+``zope_conf`` option defined in the ``[DEFAULT]`` section.  So, this option
+is mandatory.  This option specifies the path of the main zope configuration
+file. We will look at zope configuration in greater detail in the next
+section.
 
 The ``debug.ini`` contains configuration options which are useful for
 debugging::
@@ -449,21 +441,20 @@ debugging::
   # set the name of the debug zope.conf file
   zope_conf = %(here)s/etc/zope-debug.conf
 
-The debug configuration uses ``filter-app`` instead of ``app`` to
-include WSGI middlewares.  Currently only one middleware
-(``z3c.evalexception#ajax``) is included.  You can look into
-PastDeploy documentation for more information about the other
-sections.  The Zope configuration file specified here
-(``etc/zope-debug.conf``) is different from the deployment
-configuration.
+The debug configuration uses ``filter-app`` instead of ``app`` to include
+WSGI middlewares.  Currently only one middleware
+(``z3c.evalexception#ajax``) is included.  You can look into PastDeploy
+documentation for more information about the other sections.  The Zope
+configuration file specified here (``etc/zope-debug.conf``) is different
+from the deployment configuration.
 
 .. _tut1-zope-configuration:
 
 Zope configuration
 ------------------
 
-Similar to PasteDeploy configuration, there are two Zope
-configuration files: ``etc/zope.conf`` and ``etc/zope-debug.conf``.
+Similar to PasteDeploy configuration, there are two Zope configuration
+files: ``etc/zope.conf`` and ``etc/zope-debug.conf``.
 
 This is the content of ``etc/zope.conf``::
 
@@ -504,19 +495,19 @@ This is the content of ``etc/zope.conf``::
     </logfile>
   </eventlog>
 
-From the ``zope.conf`` file, you can specify the main ZCML file to be
-loaded (site definition).  All paths are specified as relative to the
-top-level directory where the PasteDeploy configuration file resides.
+From the ``zope.conf`` file, you can specify the main ZCML file to be loaded
+(site definition).  All paths are specified as relative to the top-level
+directory where the PasteDeploy configuration file resides.
 
 .. _tut1-site-definition:
 
 The site definition
 -------------------
 
-BlueBream use ZCML for application specific configuration.  ZCML is
-an XML-based declarative configuration language.  As you have seen
-already in ``zope.conf`` the main configuration is located at
-``etc/site.zcml``.  Here is the default listing::
+BlueBream use ZCML for application specific configuration.  ZCML is an
+XML-based declarative configuration language.  As you have seen already in
+``zope.conf`` the main configuration is located at ``etc/site.zcml``.  Here
+is the default listing::
 
   <configure
      xmlns="http://namespaces.zope.org/zope"
@@ -570,12 +561,11 @@ already in ``zope.conf`` the main configuration is located at
   </configure>
 
 The main configuration, ``site.zcml`` contains references to other
-configuration files specific to packages.  The ZCML has some
-directives like `include``, ``page``, ``defaultView`` etc. available
-through various XML-namespaces.  In the ``site.zcml`` the default
-XML-namespace is ``http://namespaces.zope.org/zope``.  If you look at
-the top of site.zcml, you can see the XML-namespace refered to like
-this::
+configuration files specific to packages.  The ZCML has some directives like
+`include``, ``page``, ``defaultView`` etc. available through various
+XML-namespaces.  In the ``site.zcml`` the default XML-namespace is
+``http://namespaces.zope.org/zope``.  If you look at the top of site.zcml,
+you can see the XML-namespace refered to like this::
 
   <configure
    xmlns="http://namespaces.zope.org/zope">
@@ -583,8 +573,8 @@ this::
 The ``include`` directive is available in
 ``http://namespaces.zope.org/zope`` namespace.  If you look at other
 configuration files you can see some other namespaces, like
-``http://namespaces.zope.org/browser``, which contains directives
-like ``page``.
+``http://namespaces.zope.org/browser``, which contains directives like
+``page``.
 
 At the end of ``site.zcml``, project specific configuration files are
 included.  For example, the following directive::
@@ -595,8 +585,8 @@ will ensure that the file ``src/tc/collector/configure.zcml`` file is
 loaded.
 
 You can define common configuration for your entire application in
-``site.zcml``.  The content of ``src/tc/collector/configure.zcml``
-will look like this::
+``site.zcml``.  The content of ``src/tc/collector/configure.zcml`` will look
+like this::
 
   <configure
      xmlns="http://namespaces.zope.org/zope"
@@ -624,19 +614,18 @@ will look like this::
 
   </configure>
 
-The file ``securitypolicy.zcml`` is where you can define your
-security policies.  As you can see in ``configure.zcml``, it includes
-``welcome``.  By default, if you include a package without mentioning
-the configuration file, it will include ``configure.zcml``.
+The file ``securitypolicy.zcml`` is where you can define your security
+policies.  As you can see in ``configure.zcml``, it includes ``welcome``.
+By default, if you include a package without mentioning the configuration
+file, it will include ``configure.zcml``.
 
 .. _tut1-package-meta-data:
 
 Package meta-data
 -----------------
 
-BlueBream uses :term:`Setuptools` to distribute the application
-package.  However, you could easily replace it with
-:term:`Distribute`.
+BlueBream uses :term:`Setuptools` to distribute the application package.
+However, you could easily replace it with :term:`Distribute`.
 
 Your ticketcollector package's setup.py will look like this::
 
@@ -705,40 +694,39 @@ Your ticketcollector package's setup.py will look like this::
         )
 
 Most of the details in ``setup.py`` are derived from user input when
-creating the project from a template.  In the ``install_requires``
-keyword argument, you can list all dependencies for the package.
-There are two entry points, the first one is used by PasteDeploy to
-find the WSGI application factory.  The second entry point registers
-a sub-command for ``paster`` script named ``shell``.
+creating the project from a template.  In the ``install_requires`` keyword
+argument, you can list all dependencies for the package.  There are two
+entry points, the first one is used by PasteDeploy to find the WSGI
+application factory.  The second entry point registers a sub-command for
+``paster`` script named ``shell``.
 
 .. _tut1-running-tests:
 
 Running Tests
 -------------
 
-BlueBream use `zope.testing
-<http://pypi.python.org/pypi/zope.testing>`_ as the main framework
-for automated testing.  Along with **zope.testing**, you can use
-Python's ``unittest`` and ``doctest`` modules.  Also there is a
+BlueBream use `zope.testing <http://pypi.python.org/pypi/zope.testing>`_ as
+the main framework for automated testing.  Along with **zope.testing**, you
+can use Python's ``unittest`` and ``doctest`` modules.  Also there is a
 functional testing module called `zope.testbrowser
-<http://pypi.python.org/pypi/zope.testbrowser>`_ . To set-up the test
-cases, layers etc. BlueBream use the `z3c.testsetup
+<http://pypi.python.org/pypi/zope.testbrowser>`_ . To set-up the test cases,
+layers etc. BlueBream use the `z3c.testsetup
 <http://pypi.python.org/pypi/z3c.testsetup>`_ package.
 
 BlueBream use the Buildout recipe called `zc.recipe.testrunner
-<http://pypi.python.org/pypi/zc.recipe.testrunner>`_ to generate a
-test runner script.
+<http://pypi.python.org/pypi/zc.recipe.testrunner>`_ to generate a test
+runner script.
 
-If you look at the buildout configuration, you can see the test
-runner part::
+If you look at the buildout configuration, you can see the test runner
+part::
 
   [test]
   recipe = zc.recipe.testrunner
   eggs = ticketcollector
 
-The testrunner recipe creates a test runner using the
-``zope.testing`` module.  The only mandatory option is ``eggs`` where
-you can specify the eggs.
+The testrunner recipe creates a test runner using the ``zope.testing``
+module.  The only mandatory option is ``eggs`` where you can specify the
+eggs.
 
 To run all test cases, use the ``bin/test`` command::
 
@@ -754,12 +742,11 @@ Creating the application object
 Container objects
 ~~~~~~~~~~~~~~~~~
 
-In this section we will explore one of the main concepts in
-BlueBream: **container objects**.  As mentioned earlier BlueBream
-uses an object database called ZODB to store your Python objects.
-You can think of an object database as a container which contains
-objects; the inner object may be another container which contains
-other objects.
+In this section we will explore one of the main concepts in BlueBream:
+**container objects**.  As mentioned earlier BlueBream uses an object
+database called ZODB to store your Python objects.  You can think of an
+object database as a container which contains objects; the inner object may
+be another container which contains other objects.
 
 The object hierarchy may look like this::
 
@@ -773,24 +760,24 @@ The object hierarchy may look like this::
   |                  +--+ |
   +-----------------------+
 
-BlueBream will take care of the persistence of the objects.  In order
-to make a custom object persistent the object class will have to
-inherit from ``persistent.Persistent``.
+BlueBream will take care of the persistence of the objects.  In order to
+make a custom object persistent the object class will have to inherit from
+``persistent.Persistent``.
 
-Some classes in BlueBream that inherit from ``persistent.Persistent`` include:
+Some classes in BlueBream that inherit from ``persistent.Persistent``
+include:
 
 - ``zope.container.btree.BTreeContainer``
 - ``zope.container.folder.Folder``
 - ``zope.site.folder.Folder``
 
-When you inherit from any of these classes the instances of that
-class will be persistent.  The second thing you need to do to make
-objects persistent is to add the object to an existing container
-object.  You can experiment with this from the debug shell provided
-by BlueBream.  But before you try that out create a container class
-somewhere in your code which can be imported later.  You can add this
-definition to the ``src/tc/collector/__init__.py`` file (Delete it
-after the experiment)::
+When you inherit from any of these classes the instances of that class will
+be persistent.  The second thing you need to do to make objects persistent
+is to add the object to an existing container object.  You can experiment
+with this from the debug shell provided by BlueBream.  But before you try
+that out create a container class somewhere in your code which can be
+imported later.  You can add this definition to the
+``src/tc/collector/__init__.py`` file (Delete it after the experiment)::
 
   from zope.container.btree import BTreeContainer
 
@@ -806,16 +793,16 @@ Then open the debug shell as given below::
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
   >>>
 
-The name ``root`` refers to the top-level container in the database.
-You can import your own container class, create an instance and add
-it to the root folder::
+The name ``root`` refers to the top-level container in the database.  You
+can import your own container class, create an instance and add it to the
+root folder::
 
   >>> from tc.main import MyContainer
   >>> root['c1'] = MyContainer()
 
-ZODB is a transactional database so you will have to commit your
-changes in order for them to be performed.  To commit your changes
-use the function ``transaction.commit`` as described below::
+ZODB is a transactional database so you will have to commit your changes in
+order for them to be performed.  To commit your changes use the function
+``transaction.commit`` as described below::
 
   >>> import transaction
   >>> transaction.commit()
@@ -831,12 +818,11 @@ can access the persistent object::
   >>> root['c1']
   <tc.main.MyContainer object at 0x96091ac>
 
-Persisting random objects like this is not a particulary good idea.
-The next section will explain how to create a formal schema for your
-objects.  Now you can delete the object and remove the
-``MyContainer`` class definition from
-``src/tc/collector/__init__.py``.  You can delete the object like
-this::
+Persisting random objects like this is not a particulary good idea.  The
+next section will explain how to create a formal schema for your objects.
+Now you can delete the object and remove the ``MyContainer`` class
+definition from ``src/tc/collector/__init__.py``.  You can delete the object
+like this::
 
   >>> del(root['c1'])
   >>> import transaction
@@ -847,19 +833,18 @@ Declaring an Interface
 
 .. note::
 
-   If you have never worked with ``zope.interface`` before, we
-   recommend that you read through the :ref:`man-interface` chapter
-   in the manual before proceding.
+   If you have never worked with ``zope.interface`` before, we recommend
+   that you read through the :ref:`man-interface` chapter in the manual
+   before proceding.
 
-As the first step for creating the main application container object
-which is going to hold all other objects, you need to create an
-interface.  We will name the main application container interface
-``ICollector``.  To make this interface describe a container object
-have it inherit ``zope.container.interfaces.IContainer`` or any
-interface derived from it.  It is recommended to add a site manager
-inside the main application container.  In order to add a site
-manager later, it is recommend to inherit from
-``zope.site.interfaces.IFolder`` interface.  The ``IFolder`` inherits
+As the first step for creating the main application container object which
+is going to hold all other objects, you need to create an interface.  We
+will name the main application container interface ``ICollector``.  To make
+this interface describe a container object have it inherit
+``zope.container.interfaces.IContainer`` or any interface derived from it.
+It is recommended to add a site manager inside the main application
+container.  In order to add a site manager later, it is recommend to inherit
+from ``zope.site.interfaces.IFolder`` interface.  The ``IFolder`` inherits
 from ``IContainer``.
 
 Let's create a new Python package named ``collector`` inside
@@ -868,8 +853,8 @@ Let's create a new Python package named ``collector`` inside
   $ mkdir src/tc/collector
   $ echo "# Python Package" > src/tc/collector/__init__.py
 
-You can now create a file named ``src/tc/collector/interfaces.py`` to
-add our interfaces::
+You can now create a file named ``src/tc/collector/interfaces.py`` to add
+our interfaces::
 
   from zope.site.interfaces import IFolder
   from zope.schema import TextLine
@@ -890,23 +875,22 @@ add our interfaces::
           default=u"",
           required=False)
 
-The interface defined here is your schema for the main application
-object.  There are two fields defined in the schema.  The first one
-is ``name`` and the second one is ``description``.  This schema can
-later can be used to auto-generate web forms.
+The interface defined here is your schema for the main application object.
+There are two fields defined in the schema.  The first one is ``name`` and
+the second one is ``description``.  This schema can later can be used to
+auto-generate web forms.
 
 Implementing Interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-A schema can be described as a blueprint for your objects as it
-defines the fields that the object must implement and the contracts
-that it must fulfil.  Once written you can create some concrete
-classes which implement your schema.
+A schema can be described as a blueprint for your objects as it defines the
+fields that the object must implement and the contracts that it must fulfil.
+Once written you can create some concrete classes which implement your
+schema.
 
-Next, you need to implement this interface.  To implement
-``IContainer``, you can inherit from ``zope.site.folder.Folder``.
-You can create the implementation in
-``src/tc/collector/ticketcollector.py``::
+Next, you need to implement this interface.  To implement ``IContainer``,
+you can inherit from ``zope.site.folder.Folder``.  You can create the
+implementation in ``src/tc/collector/ticketcollector.py``::
 
   from zope.interface import implements
   from zope.site.folder import Folder
@@ -922,16 +906,16 @@ You can create the implementation in
       name = u""
       description = u""
 
-To declare that a class implements a particular interface you can use
-the ``implements`` function from ``zope.interface``.
+To declare that a class implements a particular interface you can use the
+``implements`` function from ``zope.interface``.
 
 Registering components
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Once the interfaces and their implementations are ready you can do
-the configuration in ZCML.  Open the
-``src/tc/collector/configure.zcml`` file for editing and enter the
-following to declare ``ICollector`` a content component::
+Once the interfaces and their implementations are ready you can do the
+configuration in ZCML.  Open the ``src/tc/collector/configure.zcml`` file
+for editing and enter the following to declare ``ICollector`` a content
+component::
 
   <configure
      xmlns="http://namespaces.zope.org/zope"
@@ -944,19 +928,18 @@ following to declare ``ICollector`` a content component::
 
   </configure>
 
-The ``zope.app.content.interfaces.IContentType`` represents a content
-type.  If an **interface** provides the ``IContentType`` interface
-type, then all objects providing the **interface** are considered to
-be content objects.
+The ``zope.app.content.interfaces.IContentType`` represents a content type.
+If an **interface** provides the ``IContentType`` interface type, then all
+objects providing the **interface** are considered to be content objects.
 
 To set annotations for collector objects we need to configure it as
 implementing the ``zope.annotation.interfaces.IAttributeAnnotatable``
 interface.  The example configuration below also declares that our
 ``Collector`` class implements
-``zope.container.interfaces.IContentContainer``.  These two classes
-are examples of marker interfaces, interfaces used to declare that a
-particular object belongs to a special type without requiring the
-presence of any attributes or methods.
+``zope.container.interfaces.IContentContainer``.  These two classes are
+examples of marker interfaces, interfaces used to declare that a particular
+object belongs to a special type without requiring the presence of any
+attributes or methods.
 
 In the same file (``src/tc/collector/configure.zcml``) before the
 ``</configure>`` add these lines::
@@ -978,18 +961,18 @@ In the same file (``src/tc/collector/configure.zcml``) before the
        />
   </class>
 
-The ``class`` directive is a complex directive.  There are
-subdirectives like ``implements`` and ``require`` below the ``class``
-directive.  The ``class`` directive listed above also declares
-permission settings for ``Collector``.
+The ``class`` directive is a complex directive.  There are subdirectives
+like ``implements`` and ``require`` below the ``class`` directive.  The
+``class`` directive listed above also declares permission settings for
+``Collector``.
 
 A view for adding collectors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now the content component is ready to use but you will need a web
-page which lets us add a ticket collector object.  You can use the
-``zope.formlib`` package to create a form view.  You can add the view
-class definition inside ``src/tc/collector/views.py`` like this::
+Now the content component is ready to use but you will need a web page which
+lets us add a ticket collector object.  You can use the ``zope.formlib``
+package to create a form view.  You can add the view class definition inside
+``src/tc/collector/views.py`` like this::
 
   from zope.site import LocalSiteManager
   from zope.formlib import form
@@ -1012,15 +995,14 @@ class definition inside ``src/tc/collector/views.py`` like this::
           collector.setSiteManager(LocalSiteManager(collector))
           self.request.response.redirect(".")
 
-The ``createAndAdd`` function will be called when the user presses
-the *Add* button from the web form.  The second last line is very
-important::
+The ``createAndAdd`` function will be called when the user presses the *Add*
+button from the web form.  The second last line is very important::
 
   collector.setSiteManager(LocalSiteManager(collector))
 
-This line adds a site manager to the collector so that it can be used
-as a persistent component registry to register local components like
-local utilities.
+This line adds a site manager to the collector so that it can be used as a
+persistent component registry to register local components like local
+utilities.
 
 As you have already seen in the previous chapter the ``browser:page``
 directive is used for registering pages.  You can use the name
@@ -1035,10 +1017,10 @@ directive is used for registering pages.  You can use the name
      class="tc.collector.views.AddTicketCollector"
      />
 
-The package development is complete now, but it is not yet included
-from the main package.  To include this package in the main package
-(``tc.main``) you need to modify the ``src/tc/main/configure.zcml``
-and add this line before ``</configure>``::
+The package development is complete now, but it is not yet included from the
+main package.  To include this package in the main package (``tc.main``) you
+need to modify the ``src/tc/main/configure.zcml`` and add this line before
+``</configure>``::
 
   <include package="tc.collector" />
 
@@ -1055,21 +1037,19 @@ information given in the ``src/tc/main/securitypolicy.zcml``::
      />
 
 By default the username & password will be ``admin``, ``admin``.  You
-**must** change this to something else.  After successfully logged
-in, you can access the URL:
-http://localhost:8080/@@add_ticket_collector .  It should display a
-form where you can enter values for ``name`` and ``description``.
-You can enter the ``name`` as ``mycollector``. After entering your
-data, submit the form.
+**must** change this to something else.  After successfully logged in, you
+can access the URL: http://localhost:8080/@@add_ticket_collector .  It
+should display a form where you can enter values for ``name`` and
+``description``.  You can enter the ``name`` as ``mycollector``. After
+entering your data, submit the form.
 
-You can see that the file size of ``var/filestorage/Data.fs``
-increases as objects are added.  ``Data.fs`` is where the persisted
-objects are physically stored.
+You can see that the file size of ``var/filestorage/Data.fs`` increases as
+objects are added.  ``Data.fs`` is where the persisted objects are
+physically stored.
 
-You can also confirm that the object is actually saved into the
-database from the Python shell.  If you go to the Python shell and
-try to access the root object you can see that it has the object you
-added::
+You can also confirm that the object is actually saved into the database
+from the Python shell.  If you go to the Python shell and try to access the
+root object you can see that it has the object you added::
 
   jack@computer:/projects/ticketcollector$ ./bin/paster shell debug.ini
   ...
@@ -1079,26 +1059,26 @@ added::
   >>> list(root.keys())
   [u'mycollector']
 
-Through this debug shell you can introspect, add, update or delete
-Python objects and attributes.
+Through this debug shell you can introspect, add, update or delete Python
+objects and attributes.
 
 A default view for collector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you try to access the collector from the URL
-http://localhost:8080/mycollector you will get a ``NotFound`` error
-like this::
+http://localhost:8080/mycollector you will get a ``NotFound`` error like
+this::
 
   URL: http://localhost:8080/mycollector
   ...
   NotFound: Object: <tc.collector.ticketcollector.Collector object at 0x9fe44ac>, name: u'@@index'
 
-This error is raised because there is no view named ``index``
-registered for ``ICollector``.  This section will show you how to
-create a default view for the ``ICollector`` interface.
+This error is raised because there is no view named ``index`` registered for
+``ICollector``.  This section will show you how to create a default view for
+the ``ICollector`` interface.
 
-As you have already seen in the :ref:`started-getting` chapter, you
-can create a simple view and register it from ZCML.
+As you have already seen in the :ref:`started-getting` chapter, you can
+create a simple view and register it from ZCML.
 
 In ``src/tc/collector/views.py`` add a new view like this::
 
@@ -1116,8 +1096,8 @@ Then add the following in ``src/tc/collector/configure.zcml``::
      class="tc.collector.views.TicketCollectorMainView"
      />
 
-Now you can visit: http://localhost:8080/mycollector It should
-display a message like this::
+Now you can visit: http://localhost:8080/mycollector It should display a
+message like this::
 
   Hello ticket collector!
 
@@ -1133,10 +1113,10 @@ Browser Page
 ~~~~~~~~~~~~
 
 The browser page can be created using a page template.  The
-``form.DisplayForm`` supports a ``template`` and ``form_fields``
-attributes.  You can also remove the ``__call__`` method from
-``TicketCollectorMainView``.  Update the ``TicketCollectorMainView``
-class inside ``src/tc/collector/views.py`` like this::
+``form.DisplayForm`` supports a ``template`` and ``form_fields`` attributes.
+You can also remove the ``__call__`` method from
+``TicketCollectorMainView``.  Update the ``TicketCollectorMainView`` class
+inside ``src/tc/collector/views.py`` like this::
 
   from zope.browserpage import ViewPageTemplateFile
 
@@ -1147,8 +1127,8 @@ class inside ``src/tc/collector/views.py`` like this::
       template = ViewPageTemplateFile("collectormain.pt")
 
 
-You can create ``src/tc/collector/collectormain.pt`` with the
-following content::
+You can create ``src/tc/collector/collectormain.pt`` with the following
+content::
 
   <html>
   <head>
@@ -1161,22 +1141,21 @@ following content::
   </body>
   </html>
 
-Now you can visit: http://localhost:8080/mycollector .  It should
-display "Welcome to ticket collector!".
+Now you can visit: http://localhost:8080/mycollector .  It should display
+"Welcome to ticket collector!".
 
 .. _tut1-conclusions:
 
 Conclusions
 -----------
 
-This part of the tutorial covered the basics of creating a web
-application using BlueBream.  We have described in detail how to use
-the ``bluebream`` paster project template to create a new project. We
-have discussed the process of building an application using
-Buildout. We have created an application container. Finally, a
-default view for the application container was created.
-:ref:`tut2-tutorial` will expand the application with additional
-functionality.
+This part of the tutorial covered the basics of creating a web application
+using BlueBream.  We have described in detail how to use the ``bluebream``
+paster project template to create a new project. We have discussed the
+process of building an application using Buildout. We have created an
+application container. Finally, a default view for the application container
+was created.  :ref:`tut2-tutorial` will expand the application with
+additional functionality.
 
 .. raw:: html
 
