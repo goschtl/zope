@@ -88,7 +88,7 @@ skin related things will be added here.  First create the ``skin`` directory
 and ``__init__.py`` file to make it a Python package::
 
   $ mkdir src/tc/skin
-  $ echo "#Python Package\n" > src/tc/skin/__init__.py
+  $ echo "#Python Package" > src/tc/skin/__init__.py
 
 The skin definition will be placed in ``src/tc/skin/interfaces.py`` and the
 registration in ``src/tc/skin/configure.zcml``.  To create a new layer, you
