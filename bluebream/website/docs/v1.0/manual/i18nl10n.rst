@@ -14,10 +14,10 @@ do they mean? This includes preparing and marking strings for translation,
 provide utilities to represent data (like dates/times and numbers) in
 regional formats and to be able to recognize the region/language setting of
 the user.  The last section of this chapter will deal in detail on how to
-internationalize the various components of your Zope 3 code.  Localization,
-on the other hand, is the process to translate the software to a particular
-language/region.  For this task, one needs a tool to extract all
-translatable strings and another one to aid the translation process.
+internationalize the various components of your BlueBream code.
+Localization, on the other hand, is the process to translate the software to
+a particular language/region.  For this task, one needs a tool to extract
+all translatable strings and another one to aid the translation process.
 Localization data for number formatting, currencies, timezones and much more
 are luckily already compiled in large volumes of XML-locale files.
 
@@ -65,15 +65,15 @@ encodings).  The discussion and decision of this subject are immortalized in
 the proposal at http://dev.zope.org/Zope3/UnicodeForText.
 
 Since the ICU framework is simply too massive to be ported to Python for
-Zope 3, we decided to adopt the locales support from ICU (using the XML
+BlueBream, we decided to adopt the locales support from ICU (using the XML
 files as data) and support the gettext message catalogs for translation,
 simply because the gettext tools are available as standard libraries in
 Python.  From the XML locale files we mainly use the date/time and number
 patterns for formatting and parsing these data types.  Two generic pattern
 parsing classes have been written respectively and can be used independently
-of Zope 3's I18n framework.  On top of these pattern parsing classes are the
-formatter and parser class for each corresponding data type.  But all this
-is hidden behind the Locale object, which makes all of the locale data
+of BlueBream's I18n framework.  On top of these pattern parsing classes are
+the formatter and parser class for each corresponding data type.  But all
+this is hidden behind the Locale object, which makes all of the locale data
 available and provides some convenience functions.
 
 Locales
@@ -159,11 +159,11 @@ Python Code
 As mentioned before, BlueBream is not a simple application, and therefore we
 cannot translate a text message directly in the Python code (since we do not
 know the user's locale), but must mark them as translatable strings, which
-are known as MessageIds.  Message Ids are created using Message Id
-factories.  The factory takes the domain as argument to the constructor:
+are known as MessageIds.  Message Ids are created using Message factories.
+The factory takes the domain as argument to the constructor:
 
-  >>> from zope.i18nmessageid import MessageIDFactory 
-  >>> _ = MessageIDFactory('demo')
+  >>> from zope.i18nmessageid import MessageFactory
+  >>> _ = MessageFactory('demo')
 
 Note: The _ (underscore) is a convention used by gettext to mark text as
 translatable.  Now you can simply mark up translatable strings using the _
