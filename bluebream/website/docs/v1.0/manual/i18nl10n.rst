@@ -1,4 +1,205 @@
-Internationalization and Localization
--------------------------------------
+.. _man-i18nl10n:
 
-(not started)
+Internationalization and Localization
+======================================
+
+.. highlight:: python
+   :linenothreshold: 5
+
+Introduction
+------------
+
+You may often hear the terms internationalization and localization, but what
+do they mean? This includes preparing and marking strings for translation,
+provide utilities to represent data (like dates/times and numbers) in
+regional formats and to be able to recognize the region/language setting of
+the user.  The last section of this chapter will deal in detail on how to
+internationalize the various components of your Zope 3 code.  Localization,
+on the other hand, is the process to translate the software to a particular
+language/region.  For this task, one needs a tool to extract all
+translatable strings and another one to aid the translation process.
+Localization data for number formatting, currencies, timezones and much more
+are luckily already compiled in large volumes of XML-locale files.
+
+There are three goals which the BlueBream I18n support tries to accomplish:
+
+1. The support will only deal with the translation of software, not content.
+   Internationalizing and localizing content requires very custom software
+   that implements very specific workflows.
+
+2. Since BlueBream is a network application server, instead of a simple
+   application, the I18n solution should be flexible enough to support
+   changing locale settings among different users.  This is appreciably more
+   difficult to implement than the I18n for an application that runs on a
+   client.
+
+3. It should be very simple and transparent to internationalize 3rd party
+   add-on products.
+
+In the Open Source world, there are two established solutions for providing
+I18n libraries and L10n utilities, GNU Gettext and ICU .  The latter was
+primarily developed to replace the original Java I18n support.  However,
+Gettext is the defacto standard for the Free Software world (for example KDE
+and Gnome), but it has some major shortcomings.  Gettext only does the
+translation of messages (human readable strings) okay - not even well.  On
+the other hand, there are many translation tools that support the gettext
+format, such as KBabel, a true power tool for translating message catalogs.
+Therefore, it is important to support the gettext message catalog format,
+even if it is only through import and export facilities.
+
+ICU, in contrast, is a very extensive and well-developed framework that
+builds upon the experience of the Java I18n libraries.  ICU provides objects
+for everything that you could ever imagine, including locales, object
+formatting and transliteration rules.  The best of all is that the
+information of over 220 locales is available in XML files.  These files
+contain complete translations of all countries and languages, date/time
+formatting/parsing rules for three different formats (follow standard
+specification) - including all month/weekday names/abbreviations, timezone
+specifications (city names inclusive) - and number formatting/parsing rules
+for decimal, scientific, monetary, percent and per-mille numbers.
+
+The first decision made concerning I18n was to make all human-readable text
+unicode, so that we would not run into the same issues as Zope 2.  Only the
+publisher would convert the unicode to ASCII (using UTF-8 or other
+encodings).  The discussion and decision of this subject are immortalized in
+the proposal at http://dev.zope.org/Zope3/UnicodeForText.
+
+Since the ICU framework is simply too massive to be ported to Python for
+Zope 3, we decided to adopt the locales support from ICU (using the XML
+files as data) and support the gettext message catalogs for translation,
+simply because the gettext tools are available as standard libraries in
+Python.  From the XML locale files we mainly use the date/time and number
+patterns for formatting and parsing these data types.  Two generic pattern
+parsing classes have been written respectively and can be used independently
+of Zope 3's I18n framework.  On top of these pattern parsing classes are the
+formatter and parser class for each corresponding data type.  But all this
+is hidden behind the Locale object, which makes all of the locale data
+available and provides some convenience functions.
+
+Locales
+-------
+
+The Locale instance for a user is available via the request object, which is
+always available from a view.  However, one can easily test the
+functionality of Locale instances using the interactive Python prompt.  Go
+to the directory ZOPE3/src and start Python.  You can now use the following
+code to get a locale:
+
+  >>> from zope.i18n.locales import LocaleProvider 
+  >>> provider = LocaleProvider('./zope/i18n/locales/data') 
+  >>> locale = provider.getLocale('en', 'US')
+
+You can now, for example, retrieve the currency that is used in the US and
+get the symbol and name of the currency:
+
+  >>> numbers = locale.numbers 
+  >>> currency = numbers.currencies['USD'] 
+  >>> currency.symbol 
+  u'$' 
+  >>> currency.type 
+  u'USD' 
+  >>> currency.displayName 
+  u'US Dollar'
+
+The more interesting tasks are formatting and parsing dates/times.  There
+are four predefined date/time formatters that you can choose from: (short,)
+(medium), (full), and (long).  Here we just use (short):
+
+  >>> formatter = locale.dates.getFormatter('dateTime', length='short') 
+  >>> formatter.parse(u'1/25/80 4:07 AM') 
+  datetime.datetime(1980, 1, 25, 4, 7) 
+  >>> from datetime import datetime 
+  >>> dt = datetime(1980, 1, 25, 4, 7, 8) 
+  >>> formatter.format(dt) 
+  u'1/25/80 4:07 AM'
+
+For numbers you can choose between (decimal), (percent), (scientific), and
+(currency):
+
+  >>> formatter = locale.numbers.getFormatter('decimal') 
+  >>> formatter.parse(u'4,345.03') 
+  4345.0299999999997 
+  >>> formatter.format(34000.45) 
+  u'34,000.45'
+
+Messages and Message Catalogs
+-----------------------------
+
+While the object formatting is the more interesting task, the more common
+one is the markup and translation of message strings.  In order to manage
+translations better, message strings are categorized in domains.  There is
+currently only one domain for all of the Zope core called (zope).  Products,
+such as ZWiki, would use a different domain, such as (zwiki).  Translatable
+messages are particularly marked in the code (see the section below) and are
+translated before their final output.
+
+All message translations for a particular language of one domain are stored
+in a message catalog.  Therefore we have a message catalog for each language
+and domain pair.  We differentiate between filesystem (global) and ZODB
+(local) product development.  Global message catalogs are standard gettext
+PO files.  The PO files for the (zope) domain are located in
+ZOPE3/src/zope/app/locales/<REGION>/LC_MESSAGES/zope.po, where REGION can be
+de, en or pt_BR.
+
+Local message catalogs, on the other hand, are managed via the ZMI through
+local translation domains.  In such a utility you can create new languages,
+domains and message strings, search through existing translations and make
+changes, import/export external message catalogs (Gettext PO files), and
+synchronize this translation domain with another one.  Especially the
+synchronization between translation domain utilities is very powerful, since
+it allows easy translation upgrades between development and production
+environments.
+
+Internationalizing Message Strings
+----------------------------------
+
+Python Code
+~~~~~~~~~~~
+
+As mentioned before, BlueBream is not a simple application, and therefore we
+cannot translate a text message directly in the Python code (since we do not
+know the user's locale), but must mark them as translatable strings, which
+are known as MessageIds.  Message Ids are created using Message Id
+factories.  The factory takes the domain as argument to the constructor:
+
+  >>> from zope.i18nmessageid import MessageIDFactory 
+  >>> _ = MessageIDFactory('demo')
+
+Note: The _ (underscore) is a convention used by gettext to mark text as
+translatable.  Now you can simply mark up translatable strings using the _
+function:
+
+  >>> title = _('This is the title of the object.')
+
+But this is the simple case.  What if you want to include some data? Then
+you can use:
+
+  text = _('You have $x items.') 
+  text.mapping = {'x': x}
+
+In this case the number is inserted after the translation.  This way you can
+avoid having a translation for every different value of x.
+
+ZPT (Page Templates)
+~~~~~~~~~~~~~~~~~~~~
+
+For Page Templates we developed a special i18n namespace (as mentioned
+before), which can be used to translate messages.  The namespace is well
+documented at http://dev.zope.org/Zope3/ZPTInternationalizationSupport and
+some examples can be found at
+http://dev.zope.org/Zope3/ZPTInternationalizationExamples.
+
+ZCML
+~~~~
+
+I briefly described ZCML's way of internationalizing text in the previous
+chapter.  In the schema of each ZCML directive you can declare translatable
+attributes simply by making them MessageId fields.  The domain for the
+message strings is provided by the i18n_domain attribute in the configure
+tag.  Therefore the user only has to specify this attribute to do the I18n
+in ZCML.
+
+Once the code is marked up, you must extract these strings from the code and
+compile message catalogs.  For this task there is a tool called
+ZOPE3/utilities/i18nextract.py.  Its functionality and options are discussed
+in Internationalizing a Product.
