@@ -160,6 +160,13 @@ same effect as the two above regarding the skin registration::
       name="TCSkin"
       />
 
+The skin definition is complete now, but it is not yet included from the
+main package.  To include this package in the main package (``tc.main``) you
+need to modify the ``src/tc/main/configure.zcml`` and add this line before
+``</configure>``::
+
+  <include package="tc.skin" />
+
 You can register all templates for this skin by adding the layer attribute::
 
   layer="tc.skin.interfaces.ITCSkin"
