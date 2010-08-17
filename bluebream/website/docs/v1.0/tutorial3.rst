@@ -244,11 +244,6 @@ directive.  You can set ``TCSkin`` as the default skin like this::
 You can add this declaration in the ``etc/overrides.zcml`` file.  So that it
 will be overridden by the previous declaration, if there is any.
 
-Using CSS resource files
-------------------------
-
-.. note:: This section should explain using browser resources to work with
-   CSS files.  For more details refer: :ref:`man-browser-resource`
 
 Registraions of useful views
 ----------------------------
@@ -256,6 +251,14 @@ Registraions of useful views
 There are few basic views which are useful for any application.  This
 section document all the use useful views available in BlueBream.  You can
 use this tird party package: http://pypi.python.org/pypi/z3c.layer.minimal
+
+
+Using CSS resource files
+------------------------
+
+.. note:: This section should explain using browser resources to work with
+   CSS files.  For more details refer: :ref:`man-browser-resource`
+
 
 Summary
 -------
