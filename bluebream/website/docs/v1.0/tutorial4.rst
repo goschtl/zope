@@ -79,28 +79,28 @@ file.  Open ``src/tc/main/configure.zcml`` and this at the beginning of
 file, just before including ``securitypolicy.zcml``:
 
   <permission
-      id="tc.View"
-      title="View tickets and comments"
-      description="View the tickets and all its comments."
-      />
+     id="tc.View"
+     title="View tickets and comments"
+     description="View the tickets and all its comments."
+     />
 
   <permission
-      id="tc.Add"
-      title="Add tickets and comments"
-      description="Add tickets and comment on them."
-      />
+     id="tc.Add"
+     title="Add tickets and comments"
+     description="Add tickets and comment on them."
+     />
 
   <permission
-      id="tc.Edit"
-      title="Edit tickets and comments"
-      description="Edit tickets and comment on them."
-      />
+     id="tc.Edit"
+     title="Edit tickets and comments"
+     description="Edit tickets and comment on them."
+     />
 
   <permission
-      id="tc.Delete"
-      title="Delete tickets and comments"
-      description="Delete tickets and comment on them."
-      />
+     id="tc.Delete"
+     title="Delete tickets and comments"
+     description="Delete tickets and comment on them."
+     />
 
 The ``zope:permission`` directive defines and creates a new permission in
 the global permission registry.  The *id* should be a unique name for the
@@ -238,10 +238,10 @@ place to put the declarations.
 Assigning Roles to Principals
 -----------------------------
 
-To make our package work again, we now have to connect the roles to
-some principals. We are going to create two new principals called
-boarduser and boardeditor. To do that, go to the Zope 3 root
-directory and add the following lines to principals.zcml:
+To make our package work again, we now have to connect the roles to some
+principals.  We are going to create two new principals called boarduser and
+boardeditor.  To do that, go to the BlueBream root directory and add the
+following lines to principals.zcml:
 
 
   <principal
