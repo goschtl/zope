@@ -214,6 +214,8 @@ When you click on this link, it expects a view. You can create an AddForm in
 
       form_fields = form.Fields(ITicket)
 
+      template = ViewPageTemplateFile("addticket.pt")
+
       def createAndAdd(self, data):
           number = data['number']
           summary = data['summary']
@@ -222,6 +224,41 @@ When you click on this link, it expects a view. You can create an AddForm in
           ticket.summary = summary
           self.context[number] = ticket
           self.request.response.redirect('.')
+
+Next you need to create the template file: ``src/tc/collector/addticket.pt``
+
+  <html>
+  <head>
+  <title>Add ticket</title>
+  </head>
+  <body>
+  
+  Add ticket<br/> <br/>
+  
+  <form action="." 
+        tal:attributes="action request/URL" method="post"
+        class="tc.browser_form" enctype="multipart/form-data"
+        id="tc.browser_form">
+  
+    <span tal:content="view/widgets/number/label" /> <br />
+    <span tal:content="structure view/widgets/number" /> <br />
+  
+    <span tal:content="view/widgets/summary/label" /> <br />
+    <span tal:content="structure view/widgets/summary" /> <br />
+  
+    <div id="actionsView">
+      <span class="actionButtons"
+            tal:condition="view/availableActions">
+        <input tal:repeat="action view/actions"
+               tal:replace="structure action/render"
+               />
+      </span>
+    </div>
+  
+  </form>
+  
+  </body>
+  </html>
 
 You can register the view in ``src/tc/collector/configure.zcml``::
 
@@ -489,6 +526,8 @@ given below::
 
       form_fields = form.Fields(IComment)
 
+      template = ViewPageTemplateFile("addcomment.pt")
+
       def createAndAdd(self, data):
           body = data['body']
           comment = Comment()
@@ -497,6 +536,38 @@ given below::
           number = namechooser.chooseName('c', comment)
           self.context[number] = comment
           self.request.response.redirect('.')
+
+Next you need to create the template file: ``src/tc/collector/addticket.pt``
+
+  <html>
+  <head>
+  <title>Add comment</title>
+  </head>
+  <body>
+  
+  Add comment<br/> <br/>
+  
+  <form action="." 
+        tal:attributes="action request/URL" method="post"
+        class="tc.browser_form" enctype="multipart/form-data"
+        id="tc.browser_form">
+  
+    <span tal:content="view/widgets/body/label" /> <br />
+    <span tal:content="structure view/widgets/body" /> <br />
+  
+    <div id="actionsView">
+      <span class="actionButtons"
+            tal:condition="view/availableActions">
+        <input tal:repeat="action view/actions"
+               tal:replace="structure action/render"
+               />
+      </span>
+    </div>
+  
+  </form>
+  
+  </body>
+  </html>
 
 You can register the view in ``src/tc/collector/configure.zcml``::
 

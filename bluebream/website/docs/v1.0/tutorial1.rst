@@ -990,6 +990,8 @@ package to create a form view.  You can add the view class definition inside
 
       form_fields = form.Fields(ICollector)
 
+      template = ViewPageTemplateFile("addcollector.pt")
+
       def createAndAdd(self, data):
           name = data['name']
           description = data.get('description', u'')
@@ -1008,6 +1010,41 @@ button from the web form.  The second last line is very important::
 This line adds a site manager to the collector so that it can be used as a
 persistent component registry to register local components like local
 utilities.
+
+Next you need to create the template file: ``src/tc/collector/addcollector.pt``
+
+  <html>
+  <head>
+  <title>Add ticket collector!</title>
+  </head>
+  <body>
+  
+  Add ticket collector!<br/> <br/>
+  
+  <form action="." 
+        tal:attributes="action request/URL" method="post"
+        class="tc.browser_form" enctype="multipart/form-data"
+        id="tc.browser_form">
+  
+    <span tal:content="view/widgets/name/label" /> <br />
+    <span tal:content="structure view/widgets/name" /> <br />
+  
+    <span tal:content="view/widgets/description/label" /> <br />
+    <span tal:content="structure view/widgets/description" /> <br />
+  
+    <div id="actionsView">
+      <span class="actionButtons"
+            tal:condition="view/availableActions">
+        <input tal:repeat="action view/actions"
+               tal:replace="structure action/render"
+               />
+      </span>
+    </div>
+  
+  </form>
+  
+  </body>
+  </html>
 
 As you have already seen in the previous chapter the ``browser:page``
 directive is used for registering pages.  You can use the name
