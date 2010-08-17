@@ -212,13 +212,12 @@ while the editor is allowed to execute all permission.
        role="book.messageboard.Editor"
        />
 
-The zope:grant directive is fairly complex, since it permits all
-three different types of security mappings. It allows you to assign a
-permission to a principal, a role to a principal, and a permission to
-a role. Therefore the directive has three optional arguments:
-permission, role, and principal. Exactly two of the three arguments
-have to be specified to make it a valid directive. All three security
-objects are specified by their id.
+The ``zope:grant`` directive is fairly complex, since it permits all three
+different types of security mappings.  It allows you to assign a permission
+to a principal, a role to a principal, and a permission to a role.
+Therefore the directive has three optional arguments: permission, role, and
+principal.  Exactly two of the three arguments have to be specified to make
+it a valid directive.  All three security objects are specified by their id.
 
 Finally, you have to include the security.zcml file into your other
 configuration. This is simply done by adding the following inclusion
@@ -226,11 +225,11 @@ directive in the ZOPE3/principals.zcml file::
 
   <include package="book.messageboard" file="security.zcml" />
 
-The reason we put it here is to make it obvious that this file
-depends on the security policy. Also, when assigning permissions to
-roles we want all possible permissions the system can have to be
-defined. Since the principals.zcml file is the last ZCML to be
-evaluated, this is the best place to put the declarations.
+The reason we put it here is to make it obvious that this file depends on
+the security policy.  Also, when assigning permissions to roles we want all
+possible permissions the system can have to be defined.  Since the
+principals.zcml file is the last ZCML to be evaluated, this is the best
+place to put the declarations.
 
 Assigning Roles to Principals
 -----------------------------
@@ -265,25 +264,24 @@ directory and add the following lines to principals.zcml:
        principal="book.messageboard.boardeditor"
        />
 
-The zope:principal directive creates and registers a new
-principal/user in the system.  Like for all security object
-directives, the id and title attributes are required.  We could also
-specify a description as well.  In addition to these three
-attributes, the developer must specify a login and password (plain
-text) for the user, which is used for authentication of course.
+The zope:principal directive creates and registers a new principal/user in
+the system.  Like for all security object directives, the id and title
+attributes are required.  We could also specify a description as well.  In
+addition to these three attributes, the developer must specify a login and
+password (plain text) for the user, which is used for authentication of
+course.
 
-Note that you might want to grant the book.messageboard.User role to
-the zope.anybody principal, so that everyone can view and add
-messages.
+Note that you might want to grant the book.messageboard.User role to the
+``zope.anybody`` principal, so that everyone can view and add messages.
 
-The zope.anybody principal is an unauthenticated principal, which is
-defined using the zope:unauthenticatedPrincipal directive, which has
-the same three basic attributes the zope:principal directive had, but
-does not accept the login and password attribute.
+The ``zope.anybody`` principal is an unauthenticated principal, which is
+defined using the ``zope:unauthenticatedPrincipal`` directive, which has the
+same three basic attributes the ``zope:principal`` directive had, but does
+not accept the login and password attribute.
 
-Now your system should be secure and usable.  If you restart Zope 3
-now, you will see that only the message board's Editor can freely
-manipulate objects.  (Of course you have to log in as one.)
+Now your system should be secure and usable.  If you restart Zope 3 now, you
+will see that only the message board's Editor can freely manipulate objects.
+(Of course you have to log in as one.)
 
 
 Conclusion
