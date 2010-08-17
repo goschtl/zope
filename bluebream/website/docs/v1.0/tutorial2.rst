@@ -225,7 +225,8 @@ When you click on this link, it expects a view. You can create an AddForm in
           self.context[number] = ticket
           self.request.response.redirect('.')
 
-Next you need to create the template file: ``src/tc/collector/addticket.pt``
+Next you need to create the template file:
+``src/tc/collector/addticket.pt``::
 
   <html>
   <head>
@@ -537,7 +538,8 @@ given below::
           self.context[number] = comment
           self.request.response.redirect('.')
 
-Next you need to create the template file: ``src/tc/collector/addticket.pt``
+Next you need to create the template file:
+``src/tc/collector/addcomment.pt``::
 
   <html>
   <head>
