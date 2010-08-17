@@ -24,15 +24,15 @@ known as the **securitypolicy**.
 BlueBream does not enforce any particular security policy.  In contrary, it
 encourages developers to carefully choose the security policy and use one
 that fits their needs best.  The default BlueBream distribution comes with a
-default security policy (``securitypolicy.zcml``) that supports the concept
-of roles.  Roles are like hats people wear, as Jim Fulton would say, and can
-be seen as a collection of permissions.  A single user can have several
-hats, but only wear one at a time.  Prominent examples of roles include
-*editor* and *administrator*.  Therefore, the default security policy
-supports mappings from permissions to principals, permissions to roles, and
-roles to principals.  This chapter will use the default security policy to
-setup the security, but will clearly mark the sections that are security
-policy specific.
+default security policy (``src/tc/main/securitypolicy.zcml``) that supports
+the concept of roles.  Roles are like hats people wear, as Jim Fulton would
+say, and can be seen as a collection of permissions.  A single user can have
+several hats, but only wear one at a time.  Prominent examples of roles
+include *editor* and *administrator*.  Therefore, the default security
+policy supports mappings from permissions to principals, permissions to
+roles, and roles to principals.  This chapter will use the default security
+policy to setup the security, but will clearly mark the sections that are
+security policy specific.
 
 The first task will be to define a sensible set of permissions and change
 the existing directives to use these new permissions.  This is a bit
@@ -75,27 +75,31 @@ Let's define the permissions now.  Note that they must appear at the very
 beginning of the configuration file, so that they will be defined by the
 time the other directives (that will use the permissions) are executed.
 Here are the four directives you should add to your main ``configure.zcml``
-file:
+file.  Open ``src/tc/main/configure.zcml`` and this at the beginning of
+file, just before including ``securitypolicy.zcml``:
 
   <permission
       id="tc.View"
       title="View tickets and comments"
       description="View the tickets and all its comments."
       />
+
   <permission
       id="tc.Add"
       title="Add tickets and comments"
       description="Add tickets and comment on them."
       />
+
   <permission
       id="tc.Edit"
-      title="Edit tickets"
-      description="Edit tickets."
+      title="Edit tickets and comments"
+      description="Edit tickets and comment on them."
       />
+
   <permission
       id="tc.Delete"
-      title="Delete ticket"
-      description="Delete ticket."
+      title="Delete tickets and comments"
+      description="Delete tickets and comment on them."
       />
 
 The ``zope:permission`` directive defines and creates a new permission in
@@ -113,14 +117,14 @@ Using the Permissions
 ---------------------
 
 Now that we have defined these permissions, we also have to use them; let's
-start with the main ticket collector configuration file
-(``src/tc/main/configure.zcml``).  In the following walk-through we are only
-going to use the last part of the permission name to refer to the
+start with the ticket collector configuration file
+(``src/tc/collector/configure.zcml``).  In the following walk-through we are
+only going to use the last part of the permission name to refer to the
 permission, leaving off ``tc.``.  However, the full *id* has to be specified
 for the configuration to execute.
 
 Change the first `require` statement of in the ticket collector content
-directive to use the `View` permission (line 42).  This makes the
+directive to use the `View` permission (line 18 & 22).  This makes the
 description and the items accessible to all users.  Similarly, change line
 64 for the ticket.
 
@@ -159,14 +163,14 @@ permission. The same is true for the message's add menu item on line 68.
 On line 78 make sure that a user can only access the edit screen if he has
 the `Edit` permission.
 
-That's it.  If you would restart Zope 3 at this point, you could not even
-access the MessageBoard and/or Message instances. Therefore we need to
+That's it.  If you would restart BlueBream at this point, you could not even
+access the TicketCollector and/or Ticket instances. Therefore we need to
 create some roles next and assign permissions to them.
 
 Declaration of Roles
 --------------------
 
-The declaration of roles is specific to Zope 3's default security policy.
+The declaration of roles is specific to BlueBream's default security policy.
 Another security policy might not even have the concept of roles at all.
 Therefore, the role declaration and grants to the permissions should not
 even be part of your package.  For simplicity and keeping it all at one
