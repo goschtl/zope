@@ -132,16 +132,23 @@ application layer (``ITCLayer``)::
 To register this you can use ``interface`` and ``utility`` directives in
 ``zope`` namespace.  Add this to ``src/tc/skin/configure.zcml``::
 
-  <interface
-      interface="tc.skin.interfaces.ITCSkin"
-      type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      />
+  <configure
+     xmlns="http://namespaces.zope.org/zope"
+     xmlns:browser="http://namespaces.zope.org/browser"
+     i18n_domain="ticketcollector">
 
-  <utility
-      component="tc.skin.interfaces.ITCSkin"
-      provides="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="TCSkin"
-      />
+    <interface
+        interface="tc.skin.interfaces.ITCSkin"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+    <utility
+        component="tc.skin.interfaces.ITCSkin"
+        provides="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="TCSkin"
+        />
+
+  </configure>
 
 As a shortcut, you can also just use the ``interface`` directive and
 pass the ``name`` parameter.  The following one directive has the
