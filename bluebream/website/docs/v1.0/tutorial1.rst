@@ -1011,7 +1011,8 @@ This line adds a site manager to the collector so that it can be used as a
 persistent component registry to register local components like local
 utilities.
 
-Next you need to create the template file: ``src/tc/collector/addcollector.pt``
+Next you need to create the template file:
+``src/tc/collector/addcollector.pt``::
 
   <html>
   <head>
