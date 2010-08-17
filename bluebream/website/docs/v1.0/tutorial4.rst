@@ -14,7 +14,7 @@ access, i.e. *permission to READ* vs. *permission to WRITE*.  Fundamentally
 the whole security framework is organized around checking permissions on
 objects.  Permissions are like keys to doors that open to a particular
 functionality.  For example, in the issue tracker application used in the
-tutorial, we might need the permission `zope.View` to look at a tickets's
+tutorial, we might need the permission ``zope.View`` to look at a tickets'
 detail screen.  Principals, on the other hand, are agents of the system that
 execute actions.  The most common example of a principal is a user of the
 system.  Principal is a generalization of the user concept.  The goal is now
@@ -28,11 +28,11 @@ default security policy (``src/tc/main/securitypolicy.zcml``) that supports
 the concept of roles.  Roles are like hats people wear, as Jim Fulton would
 say, and can be seen as a collection of permissions.  A single user can have
 several hats, but only wear one at a time.  Prominent examples of roles
-include *editor* and *administrator*.  Therefore, the default security
-policy supports mappings from permissions to principals, permissions to
-roles, and roles to principals.  This chapter will use the default security
-policy to setup the security, but will clearly mark the sections that are
-security policy specific.
+include *member*, *editor* and *administrator*.  Therefore, the default
+security policy supports mappings from permissions to principals,
+permissions to roles, and roles to principals.  This chapter will use the
+default security policy to setup the security, but will clearly mark the
+sections that are security policy specific.
 
 The first task will be to define a sensible set of permissions and change
 the existing directives to use these new permissions.  This is a bit
@@ -64,12 +64,12 @@ every regular user is allowed to do this, since adding tickets and
 commenting must be possible.
 
 *Edit* - Editing ticket details (after it is created) is only a permission
-given to the Admin possesses (for moderation), since we would not want a
-regular user to be able to manipulate tickets after creation.
+given to the admin user (for moderation), since we would not want a regular
+user to be able to manipulate tickets after creation.
 
-*Delete* - The Admin must be able to get rid of messages, of course.
-Therefore the Delete permission is assigned to her.  Note that this
-permission does not allow the Admin to delete ticket collector objects.
+*Delete* - The admin must be able to get rid of comments, of course.
+Therefore the delete permission is assigned to her.  Note that this
+permission does not allow the admin to delete ticket collector objects.
 
 Let's define the permissions now.  Note that they must appear at the very
 beginning of the configuration file, so that they will be defined by the
@@ -123,10 +123,9 @@ only going to use the last part of the permission name to refer to the
 permission, leaving off ``tc.``.  However, the full *id* has to be specified
 for the configuration to execute.
 
-Change the first `require` statement of in the ticket collector content
-directive to use the `View` permission (line 18 & 22).  This makes the
-description and the items accessible to all users.  Similarly, change line
-64 for the ticket.
+Change the first `require` statement of the ticket content directive to use
+the `View` permission.  This makes the description and the items accessible
+to all users.  Similarly, change permission for the comment.
 
 Change the permission of line 46 to `Edit`, since only the message board
 administrator should be able to change any of the properties of the
@@ -176,17 +175,17 @@ Therefore, the role declaration and grants to the permissions should not
 even be part of your package.  For simplicity and keeping it all at one
 place, we are going to store the policy-specific security configuration in
 security.zcml.  For our message board package we really only need two roles,
-*User* and *Editor*, which are declared as follows::
+*User* and *Admin*, which are declared as follows::
 
   <role
       id="tc.User"
-      title="Ticket collector User"
-      description="Users that actually use the Message Board."/>
+      title="Ticket collector user"
+      description="Users that actually use the ticket collector."/>
   
   <role
-      id="tc.Editor"
-      title="Message Board Editor"
-      description="The Editor can edit and delete Messages."/>
+      id="tc.Admin"
+      title="Ticket collector administrator"
+      description="The administrator can edit and delete tickets."/>
 
 Equivalently to the zope:permission directive, the zope:role directive
 creates and registers a new role with the global role registry.  Again, the
@@ -203,18 +202,21 @@ while the editor is allowed to execute all permission.
       permission="book.messageboard.View"
       role="book.messageboard.User"
       />
+
   <grant
       permission="book.messageboard.Add"
       role="book.messageboard.User"
       />
+
   <grant
        permission="book.messageboard.Edit"
        role="book.messageboard.Editor"
        />
-   <grant
-       permission="book.messageboard.Delete"
-       role="book.messageboard.Editor"
-       />
+
+  <grant
+      permission="book.messageboard.Delete"
+      role="book.messageboard.Editor"
+      />
 
 The ``zope:grant`` directive is fairly complex, since it permits all three
 different types of security mappings.  It allows you to assign a permission
@@ -243,30 +245,30 @@ principals.  We are going to create two new principals called boarduser and
 boardeditor.  To do that, go to the BlueBream root directory and add the
 following lines to principals.zcml:
 
-
   <principal
       id="book.messageboard.boarduser"
       title="Message Board User"
       login="boarduser" password="book"
       />
+
   <grant
       role="book.messageboard.User"
       principal="book.messageboard.boarduser"
       />
    
-   <principal
-       id="book.messageboard.boardeditor"
-       title="Message Board Editor"
-       login="boardeditor" password="book"
-       />
-   <grant
-       role="book.messageboard.User"
-       principal="book.messageboard.boardeditor"
-       />
-   <grant
-       role="book.messageboard.Editor"
-       principal="book.messageboard.boardeditor"
-       />
+  <principal
+      id="book.messageboard.boardeditor"
+      title="Message Board Editor"
+      login="boardeditor" password="book"
+      />
+  <grant
+      role="book.messageboard.User"
+      principal="book.messageboard.boardeditor"
+      />
+  <grant
+      role="book.messageboard.Editor"
+      principal="book.messageboard.boardeditor"
+      />
 
 The zope:principal directive creates and registers a new principal/user in
 the system.  Like for all security object directives, the id and title
