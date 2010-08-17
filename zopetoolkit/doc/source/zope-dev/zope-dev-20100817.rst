@@ -23,7 +23,7 @@ Agenda
 
 - Upcoming bug day
 - Reduce noise from test runs (try getting to a green bar)
-
+- How to choose topics
 
 Ongoing issues
 --------------
