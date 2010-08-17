@@ -76,7 +76,7 @@ beginning of the configuration file, so that they will be defined by the
 time the other directives (that will use the permissions) are executed.
 Here are the four directives you should add to your main ``configure.zcml``
 file.  Open ``src/tc/main/configure.zcml`` and this at the beginning of
-file, just before including ``securitypolicy.zcml``:
+file, just before including ``securitypolicy.zcml``::
 
   <permission
      id="tc.View"
@@ -243,7 +243,7 @@ Assigning Roles to Principals
 To make our package work again, we now have to connect the roles to some
 principals.  We are going to create two new principals called boarduser and
 boardeditor.  To do that, go to the BlueBream root directory and add the
-following lines to ``src/tc/main/principals.zcml``:
+following lines to ``src/tc/main/principals.zcml``::
 
   <principal
       id="tc.jack"
