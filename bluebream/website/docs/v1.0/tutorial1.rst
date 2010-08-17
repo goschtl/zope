@@ -1000,7 +1000,7 @@ package to create a form view.  You can add the view class definition inside
           collector.description = description
           self.context[name] = collector
           collector.setSiteManager(LocalSiteManager(collector))
-          self.request.response.redirect(".")
+          self.request.response.redirect(name)
 
 The ``createAndAdd`` function will be called when the user presses the *Add*
 button from the web form.  The second last line is very important::
