@@ -546,8 +546,8 @@ To list the comments on the ticket page, you need to modify
 Conclusion
 ----------
 
-This chapter explored creating content components.  You can learn more about
-BlueBream from the :ref:`manual`.
+This chapter explored creating content components.  The :ref:`3rd part of
+tutorial<tut3-tutorial>` cover skinning.
 
 .. raw:: html
 
