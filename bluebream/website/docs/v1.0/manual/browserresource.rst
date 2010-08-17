@@ -1,5 +1,8 @@
 .. _man-browser-resource:
 
+.. highlight:: xml
+   :linenothreshold: 2
+
 Browser Resource
 ================
 
