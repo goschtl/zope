@@ -15,6 +15,7 @@ Welcome to BlueBream's documentation!
    tutorial1
    tutorial2
    tutorial3
+   tutorial4
    manual/index
    faq
    howto/index

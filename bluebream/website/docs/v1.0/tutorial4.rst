@@ -248,7 +248,8 @@ following lines to ``src/tc/main/principals.zcml``::
   <principal
       id="tc.jack"
       title="Ticket collector member"
-      login="jack" password="jack"
+      login="jack"
+      password="jack"
       />
 
   <grant
@@ -259,7 +260,8 @@ following lines to ``src/tc/main/principals.zcml``::
   <principal
       id="tc.jill"
       title="Ticket collector admin"
-      login="jill" password="jill"
+      login="jill"
+      password="jill"
       />
 
   <grant
