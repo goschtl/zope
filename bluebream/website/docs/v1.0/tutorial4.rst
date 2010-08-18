@@ -50,24 +50,26 @@ configured via ZCML.  Therefore security can be completely configured using
 ZCML, leaving the Python code untouched, which is another advantage of using
 BlueBream.
 
+.. _tut4-delcare-permissions:
+
 Delcarations of Permissions
 ---------------------------
 
 Permissions have to be explicitly defined.  For our ticket collector it will
 suffice to define the following four basic permissions:
 
-*View* - Allow users to access the data for tickets and comments.  Every
+**View** - Allow users to access the data for tickets and comments.  Every
 regular ticket collector user is going to have this permission.
 
-*Add* - Allows someone to add a ticket or comment on tickets.  Note that
+**Add** - Allows someone to add a ticket or comment on tickets.  Note that
 every regular user is allowed to do this, since adding tickets and
 commenting must be possible.
 
-*Edit* - Editing ticket details (after it is created) is only a permission
+**Edit** - Editing ticket details (after it is created) is only a permission
 given to the admin user (for moderation), since we would not want a regular
 user to be able to manipulate tickets after creation.
 
-*Delete* - The admin must be able to get rid of comments, of course.
+**Delete** - The admin must be able to get rid of comments, of course.
 Therefore the delete permission is assigned to her.  Note that this
 permission does not allow the admin to delete ticket collector objects.
 
@@ -112,6 +114,8 @@ steps.  The *title* of the permissions is a short description that will be
 used in web interfaces to identify the permission, while the description is
 a longer explanation that serves more or less as documentation.  Both the
 *id* and *title* are required attributes.
+
+.. _tut4-use-permissions:
 
 Using the Permissions
 ---------------------
@@ -175,6 +179,8 @@ That's it.  If you would restart BlueBream at this point, you could not even
 access the TicketCollector and/or Ticket instances. Therefore we need to
 create some roles next and assign permissions to them.
 
+.. _tut4-delcare-roles:
+
 Declaration of Roles
 --------------------
 
@@ -236,6 +242,8 @@ Therefore the directive has three optional arguments: *permission*, *role*,
 and *principal*.  Exactly two of the three arguments have to be specified to
 make it a valid directive.  All three security objects are specified by
 their id.
+
+.. _tut4-roles-principals:
 
 Assigning Roles to Principals
 -----------------------------
