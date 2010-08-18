@@ -234,27 +234,29 @@ after finishing tutorials.
 Tutorial --- Part 1
 ~~~~~~~~~~~~~~~~~~~
 
-This chapter presents a tutorial exercise demonstrating how to build a
-simple ticket collector application using BlueBream.  Part 1 introduces
-basic BlueBream concepts.
+This :ref:`chapter <tut1-tutorial>` presents a tutorial exercise
+demonstrating how to build a simple ticket collector application using
+BlueBream.  Part 1 introduces basic BlueBream concepts.
 
 Tutorial --- Part 2
 ~~~~~~~~~~~~~~~~~~~
 
-This chapter is a continuation of the ticket collector application tutorial
-excercises, providing more detail regarding forms and schemas.
+This :ref:`chapter <tut2-tutorial>` is a continuation of the ticket
+collector application tutorial excercises, providing more detail regarding
+forms and schemas.
 
 Tutorial --- Part 3
 ~~~~~~~~~~~~~~~~~~~
 
-This chapter is a continuation of the ticket collector application tutorial.
-This chapter cover skinning with BlueBream.
+This :ref:`chapter <tut3-tutorial>` is a continuation of the ticket
+collector application tutorial.  This chapter cover skinning with BlueBream.
 
 Tutorial --- Part 4
 ~~~~~~~~~~~~~~~~~~~
 
-This chapter is a continuation of the ticket collector application tutorial.
-This chapter cover Security related things like users, roles & permissions.
+This :ref:`chapter <tut4-tutorial>` is a continuation of the ticket
+collector application tutorial.  This chapter cover Security related things
+like users, roles & permissions.
 
 Manual
 ~~~~~~
@@ -265,33 +267,34 @@ into various chapters which cover different topics in BlueBream.
 FAQ
 ~~~
 
-This is a Frequently Asked Questions (FAQs) with answers! collected from
-mailing lists, blogs and other on-line resources.
+This is the :ref:`Frequently Asked Questions <faq-faq>` (FAQs) with answers!
+collected from mailing lists, blogs and other on-line resources.
 
 HOWTOs
 ~~~~~~
 
-This part contains brief explanations of special topics with step-by-step
-solutions.
+These :ref:`HOWTO documents <howto>` contains brief explanations of special
+topics with step-by-step solutions.
 
 Core Development
 ~~~~~~~~~~~~~~~~
 
-This chapter contains explanations written for the core development team.
-Developers should always consult the latest documentation site for changes
-to the documentation in this section.
+This :ref:`part <core-development>` contains explanations written for the
+core development team.  Developers should always consult the latest
+documentation site for changes to the documentation in this section.
 
 Reference
 ~~~~~~~~~
 
-This part provides a complete reference to BlueBream packages and important
-features.  This part also has reference documentation for ZCML, standard
-events & common errors.
+This :ref:`part <reference>` provides a complete reference to BlueBream
+packages and important features.  This part also has reference documentation
+for ZCML, standard events & common errors.
 
 Documentation for Community Packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This part cover documentation for various community packages.
+This :ref:`part <community-docs>` cover documentation for various community
+packages.
 
 
 .. _intro-thanks:

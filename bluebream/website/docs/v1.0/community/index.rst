@@ -1,3 +1,5 @@
+.. _community-docs:
+
 Documentation for Community Packages
 ====================================
 
