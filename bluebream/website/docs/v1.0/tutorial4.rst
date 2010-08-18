@@ -172,11 +172,44 @@ All the container functionality will only require the view permission, so
 change the permissions to `View`.  This is unsecure, since this includes
 read and write methods, but it will suffice for this demonstration.
 
-Now let's go to the browser configuration file
-(``src/tc/main/configure.zcml``) and fix the permissions there.
+Now let's go to the browser view configurations and fix the permissions
+there::
+
+  <browser:page
+     for="tc.collector.interfaces.ICollector"
+     name="index"
+     permission="tc.View"
+     class="tc.collector.views.TicketCollectorMainView"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+  <browser:page
+     for="tc.collector.interfaces.ICollector"
+     name="add_ticket"
+     permission="tc.Add"
+     class="tc.collector.views.AddTicket"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+  <browser:page
+     for="tc.collector.interfaces.ITicket"
+     name="index"
+     permission="tc.View"
+     class="tc.collector.views.TicketMainView"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+  <browser:page
+     for="tc.collector.interfaces.ITicket"
+     name="add_comment"
+     permission="tc.Add"
+     class="tc.collector.views.AddComment"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
 
 That's it.  If you would restart BlueBream at this point, you could not even
-access the TicketCollector and/or Ticket instances. Therefore we need to
+access the TicketCollector and/or Ticket instances.  Therefore we need to
 create some roles next and assign permissions to them.
 
 .. _tut4-delcare-roles:
@@ -289,8 +322,8 @@ well.  In addition to these three attributes, the developer must specify a
 login and password (plain text) for the user, which is used for
 authentication of course.
 
-Note that you might want to grant the tc.Member role to the ``zope.anybody``
-principal, so that everyone can view and add tickets.
+Note that you might want to grant the ``tc.Member`` role to the
+``zope.anybody`` principal, so that everyone can view and add tickets.
 
 The ``zope.anybody`` principal is an unauthenticated principal, which is
 defined using the ``zope:unauthenticatedPrincipal`` directive, which has the
