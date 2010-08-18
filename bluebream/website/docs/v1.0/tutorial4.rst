@@ -289,9 +289,30 @@ defined using the ``zope:unauthenticatedPrincipal`` directive, which has the
 same three basic attributes the ``zope:principal`` directive had, but does
 not accept the login and password attribute.
 
+You also need to register a default view for ``IUnauthorized`` exception as
+given below.  Here the and implementation available in ``zope.app.http``
+package is included: ``zope.app.http.exception.unauthorized.Unauthorized``::
+
+  <view
+      for="zope.security.interfaces.IUnauthorized"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      name="index"
+      permission="zope.Public"
+      factory="zope.app.http.exception.unauthorized.Unauthorized"
+      />
+
+  <browser:defaultView
+      for="zope.security.interfaces.IUnauthorized"
+      layer="zope.publisher.interfaces.http.IHTTPRequest"
+      name="index"
+      />
+
 Now your system should be secure and usable.  If you restart BlueBream now,
 you will see that only the ticket collector's Admin can freely manipulate
 objects.  (Of course you have to log in as one.)
+
+Important Note: While testing security related things use ``deploy.ini``.
+Otherwise you can remove ``z3c.evalexception`` middleware from ``debug.ini``.
 
 
 Conclusion
