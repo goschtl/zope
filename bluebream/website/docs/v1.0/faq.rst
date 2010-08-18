@@ -181,14 +181,16 @@ What is the component architecture ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It's similar to other component architectures in that it lets you fit small
-pieces of functionality together.
+pieces of functionality together.  The Zope component architecture is built
+on top of :ref:`interface <man-interface>` concept.  You can read more about
+component architecture in the :ref:`manual <man-zca>`.
 
 Where can I find pointers to resources ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- `Official Site <http://bluebream.zope.org>`_ (Updated once in a day)
+- `Official Site <http://bluebream.zope.org>`_
 
-- `Mirror Site <http://bluebream.muthukadan.net>`_ (Updated every 30 minutes)
+- `Wiki <http://wiki.zope.org/bluebream>`_.
 
 - `PyPI Page <http://pypi.python.org/pypi/bluebream>`_
 
@@ -204,7 +206,6 @@ Where can I find pointers to resources ?
 
 - Buildbots: http://buildbot.afpy.org/bluebream/ http://bluebream.buildbot.securactive.org/
 
-- [[Community]] wiki pages
 
 
 What's the deal with the ``/@@`` syntax ?
@@ -375,58 +376,6 @@ You need to include ``zope.login`` package in your ZCML configuration file
 User Interface
 --------------
 
-How do I set up z3c.traverser and zope.contentprovider?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-z3c.traverser and zope.contentprovider are helpful packages with good and
-clear doctests. It takes not too much time to get up and running with them.
-However the packages do not include an example of how to configure your new
-useful code into your project. It is clear from the doctests (and from your
-own doctests written while making and testing your own code) **what** needs
-to be configured. But if you are like me and it all isn't yet quite
-second-nature, it isn't clear **how** it can be configured. So, for
-z3c.traverser::
-
-  <!-- register traverser for app -->
-  <view
-    for=".IMallApplication"
-    type="zope.publisher.interfaces.browser.IBrowserRequest"
-    provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-    factory="z3c.traverser.browser.PluggableBrowserTraverser"
-    permission="zope.Public"
-    />
-
-  <!-- register traverser plugins -->
-  <!-- my own plugin -->
-  <subscriber
-    for=".IMallApplication
-         zope.publisher.interfaces.browser.IBrowserRequest"
-    provides="z3c.traverser.interfaces.ITraverserPlugin"
-    factory=".traverser.MallTraverserPlugin"
-  />
-  <!-- and traverser package container traverser -->
-  <subscriber
-    for=".IMallApplication
-         zope.publisher.interfaces.browser.IBrowserRequest"
-    provides="z3c.traverser.interfaces.ITraverserPlugin"
-    factory="z3c.traverser.traverser.ContainerTraverserPlugin"
-  />
-
-And for zope.contentprovider::
-
-  <!-- register named adapter for menu provider -->
-  <adapter
-    provides="zope.contentprovider.interfaces.IContentProvider"
-    factory="tfws.menu.provider.MenuProvider"
-    name="tfws.menu"
-    />
-
-  <!-- this does the directlyProvides -->
-  <interface
-    interface="tfws.menu.provider.IMenu"
-    type="zope.contentprovider.interfaces.ITALNamespaceData"
-    />
-
 
 How to set default skin ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -435,7 +384,8 @@ Use the ``browser:defaultSkin`` directive::
 
   <browser:defaultSkin name="skinname" />
 
-For more details about skinning, read the :ref:`man-skinning` documentation.
+For more details about skinning, read the third part of :ref:`tutorial
+<tut3-tutorial>` and :ref:`man-skinning` documentation.
 
 .. _faq-programming:
 
@@ -461,8 +411,11 @@ Please look at: http://docs.zope.org/developer/noncommitter-svn.html
 How do I upgrade from one minor release to another?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Update the ``versions.cfg`` and point the URL of BB version file to new
-release and run buildout.
+Update the ``bluebream.cfg`` and point the URL of BB version file to new
+release and run buildout.  To do this open the ``bluebream.cfg`` file and go
+to `[buildout]` part definition (mostly at the beginning).  You can see a
+``versions`` option pointing to a URL.  Change the URL to point to the new
+release.
 
 Must I always restart the BlueBream server, when I modify my code ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,11 +511,11 @@ How do I set content type header for a HTTP request?
 
 From IRC (http://zope3.pov.lt/irclogs/%23zope3-dev.2006-06-20.log.html)::
 
-  Is there any way using the browser:page directive, that I can specify that
-  the Type of a page rendered is not "text/html" but rather
+  Is there any way using the ``browser:page`` directive, that I can specify
+  that the Type of a page rendered is not "text/html" but rather
   "application/vnd.mozilla.xul+xml"?
 
-Use ``request.response.setHeader('content-type', ...)``
+Use ``request.response.setHeader('content-type', "application/vnd.mozilla.xul+xml")``
 
 How do I give unique names to objects added to a container?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -698,8 +651,8 @@ Why isn't my object getting added to the catalog?
 
 Ref: http://mail.zope.org/pipermail/zope3-users/2006-May/003392.html
 
-Is it adaptable to IKeyReference?  If you're using the ZODB, deriving from
-Persistent is enough.
+Is it adaptable to ``IKeyReference`` ?  If you're using the ZODB, deriving
+from ``Persistent`` is enough.
 
 
 How do I add custom interfaces to pre-existing components/classes?
@@ -710,7 +663,7 @@ Ref: http://mail.zope.org/pipermail/zope3-users/2006-November/004918.html
 You can do so with a little zcml::
 
     <class class="zope.app.file.Image">
-        <implements interface=".interfaces.IBloggable" />
+        <implements interface="mypkg.interfaces.IBloggable" />
     </class>
 
 How do I get IRequest object in event handler ?
@@ -949,8 +902,9 @@ How do I serve out static content in zope3?
 
 Ref: http://zope3.pov.lt/irclogs/%23zope3-dev.2006-10-02.log.html
 
-See the ZCML directives <resource> and <resourceDirectory> they let
-you publish static files through Zope
+See the ZCML directives ``<resource>`` and ``<resourceDirectory>`` they let
+you publish static files through BlueBream.  :ref:`More
+info. <man-browser-resource>`
 
 
 Is webdav source server available in BlueBream ?
