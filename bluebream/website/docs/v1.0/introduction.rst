@@ -214,8 +214,8 @@ that like Grok relies on the ZTK.
 Organization of the documentation
 ---------------------------------
 
-This documentation has divided into multiple chapters.  A summary of
-each remaining chapters is given below.
+This documentation has divided into multiple parts and chapters.  A summary
+of each parts and chapters is given below.
 
 Getting Started
 ~~~~~~~~~~~~~~~
@@ -227,7 +227,9 @@ demonstrate the basic concepts of BlueBream.
 Concepts
 ~~~~~~~~
 
-This chapter discuss important concepts and technologies used in BlueBream.
+The :ref:`concepts` chapter provides an overview of important concepts and
+technologies used in BlueBream.  It recommended to re-visit this chapter
+after finishing tutorials.
 
 Tutorial --- Part 1
 ~~~~~~~~~~~~~~~~~~~
@@ -242,21 +244,35 @@ Tutorial --- Part 2
 This chapter is a continuation of the ticket collector application tutorial
 excercises, providing more detail regarding forms and schemas.
 
+Tutorial --- Part 3
+~~~~~~~~~~~~~~~~~~~
+
+This chapter is a continuation of the ticket collector application tutorial.
+This chapter cover skinning with BlueBream.
+
+Tutorial --- Part 4
+~~~~~~~~~~~~~~~~~~~
+
+This chapter is a continuation of the ticket collector application tutorial.
+This chapter cover Security related things like users, roles & permissions.
+
 Manual
 ~~~~~~
 
-This chapter contains a comprehensive guide to BlueBream.
+This part contains a comprehensive manual to BlueBream.  Manual is divided
+into various chapters which cover different topics in BlueBream.
 
 FAQ
 ~~~
 
-These chapter presents Frequently Asked Questions (FAQs) collected
-from mailing lists, blogs and other on-line resources.
+This is a Frequently Asked Questions (FAQs) with answers! collected from
+mailing lists, blogs and other on-line resources.
 
 HOWTOs
 ~~~~~~
 
-This chapter contains brief explanations of special topics.
+This part contains brief explanations of special topics with step-by-step
+solutions.
 
 Core Development
 ~~~~~~~~~~~~~~~~
@@ -268,7 +284,15 @@ to the documentation in this section.
 Reference
 ~~~~~~~~~
 
-This chapter contains a complete reference to BlueBream.
+This part provides a complete reference to BlueBream packages and important
+features.  This part also has reference documentation for ZCML, standard
+events & common errors.
+
+Documentation for Community Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This part cover documentation for various community packages.
+
 
 .. _intro-thanks:
 
