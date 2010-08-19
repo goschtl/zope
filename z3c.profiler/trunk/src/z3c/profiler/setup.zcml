@@ -8,14 +8,8 @@
   <!-- Turn on the devmode -->
   <meta:provides feature="devmode" />
 
-  <!-- exclude will prevent from include -->
-  <exclude package="zope.dublincore.browser" />
-  <exclude package="zope.app.generations.browser" />
-
-
   <!-- meta configure -->
   <include package="zope.component" file="meta.zcml" />
-  <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.publisher" file="meta.zcml" />
   <include package="zope.i18n" file="meta.zcml" />
@@ -35,10 +29,6 @@
 
   <!-- bootstrap Database -->
   <include package="zope.app.appsetup" />
-  <include package="zope.app.generations" />
-
-  <!-- zope server -->
-  <include package="zope.app.server" />
 
   <!-- zope packages -->
   <include package="zope.password" />
@@ -46,7 +36,6 @@
   <include package="zope.component" />
   <include package="zope.container" />
   <include package="zope.contentprovider" />
-  <include package="zope.dublincore" />
   <include package="zope.error" />
   <include package="zope.location" />
   <include package="zope.publisher" />
@@ -61,9 +50,9 @@
   <include package="zope.principalregistry" />
   <include package="zope.session" />
   <include package="zope.browserresource" />
+  <include package="zope.login" />
 
   <!-- zope app package configuration -->
-  <include package="zope.app.generations" file="subscriber.zcml" />
   <include package="zope.app.publication" />
 
   <include package="z3c.layer.pagelet" />

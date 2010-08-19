@@ -58,11 +58,13 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = [
-            'z3c.coverage',
             'z3c.etestbrowser',
             'zope.app.testing',
-            'zope.app.generations',
             ],
+        app = [
+            'zope.app.server',
+            'zope.dublincore >= 3.7',
+            ]
         ),
     install_requires = [
         'setuptools',
@@ -71,8 +73,7 @@ setup (
         'z3c.pagelet',
         'z3c.template',
         'z3c.zrtresource',
-        'zope.app.pagetemplate',
-        'zope.app.server',
+        'zope.app.wsgi',
         'zope.browserpage',
         'zope.component >= 3.8.0',
         'zope.componentvocabulary',
@@ -81,6 +82,7 @@ setup (
         'zope.i18n',
         'zope.i18nmessageid',
         'zope.interface',
+        'zope.login',
         'zope.principalregistry',
         'zope.schema',
         'zope.security >= 3.6.0',
