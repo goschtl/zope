@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.9.1dev'
+version = '0.10.0'
 
 setup (
     name='z3c.profiler',
