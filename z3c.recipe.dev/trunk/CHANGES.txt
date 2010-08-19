@@ -9,7 +9,7 @@ CHANGES
 
 - Fixed tests to run with current package versions.
 
-- Fixed tests to run on *nix systems (not only win).
+- Fixed tests to run on \*nix systems (not only win).
 
 
 0.5.4 (2009-02-22)
@@ -26,7 +26,7 @@ CHANGES
 ------------------
 
 - Bug: ``script`` ``defaults`` had a bug that prevented it from use
-       renamed it to ``arguments``, now it's working
+  renamed it to ``arguments``, now it's working
 
 
 0.5.2 (unreleased)
