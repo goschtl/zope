@@ -1,0 +1,34 @@
+====
+TODO
+====
+
+- remove z3c.pagelet dependency, use only z3c.template
+
+- use separate templates for profile output presentation
+
+- store profile calls in a global none persistent way and allow to show them 
+  later till we restart the server
+
+- implement a better data to table conversion
+
+- implement javascript based client side table sorting 
+
+- offer a input field for urls which allows us to start profile calls.
+  Store such urls in a session and offer a list for a easy recall.
+
+- implement profile comparsion, allow to comapre profile calls based
+  on the timing
+
+- implement export for profile call data. Probaly implement a export for 
+  more then one profile call data as a zip. Check what tools are available
+  for reporting such profile data.
+
+- implement profile data file download (csv formated)
+  
+- implement import profile call data for comparsion
+
+- implement i18n translation support
+
+- add more documentation
+
+- add help page text

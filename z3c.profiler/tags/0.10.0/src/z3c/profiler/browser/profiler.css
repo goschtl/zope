@@ -1,0 +1,188 @@
+/* zrt-replace: "../img" tal"string:${context/++resource++img}" */
+
+body {
+    font-family: Verdana, sans-serif;
+    font-size: 100%;
+    width: 100%;
+    background-color: #F3F3EE;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* [ html ]---------------------------------------------------------------- */
+
+form {
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    border: 0;
+}
+
+a:link {
+    color: #D91813;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #A68E8E;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #8C100D;
+}
+
+pre {
+    background-color: #F8F8F8;
+}
+
+
+/* [ layout ]---------------------------------------------------------------- */
+
+div#layoutWrapper {
+    font-size: 80%;
+    background-color: #F3F3EE;
+    text-align: left;
+    padding: 0px;
+    border-top: solid white 1px;
+    border-right: solid white 1px;
+    border-left: solid white 1px;
+}
+
+#logo {
+    padding-top: 10px;
+}
+
+
+/* [ header ]-------------------------------------------------------------- */
+
+div#headerContainer {
+    height: 75px;
+    margin: 0px;
+    padding: 0px;
+    background: #3112C2 url(../img/topBG.gif) repeat-x top left;
+}
+
+/*---[ menu ]----------------------------------------------------------------*/
+
+#menuContainer {
+    width: 100%;
+    height: 33px;
+    background: #3112C2 url(../img/menuBG.jpg) repeat-x top left;
+    margin: 0;
+    padding: 0;
+}
+
+#menuContainer ul {
+    margin: 0;
+    padding: 0;
+}
+
+
+#menuContainer li {
+    float: left;
+    margin: 0;
+    padding: 0 1px 0 0;
+    list-style: none;
+    background: url(../img/menuSeparator.gif) no-repeat top right;
+}
+
+#menuContainer a {
+    float: left;
+    padding: 9px 9px;
+    height: 15px;
+    text-decoration: none;
+    border-bottom: none;
+    color: #ffffff;
+}
+
+#menuContainer a:hover {
+    color: #ffffff;
+    background: #230D8C;
+}
+
+#menuContainer a.selected {
+    color: #8C100D;
+    background: #230D8C;
+}
+
+
+/*---[ content ]-------------------------------------------------------------*/
+
+#contentContainer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    clear: both;
+}
+
+#content {
+    margin: 0px;
+    padding: 10px;
+}
+
+div.title {
+    font-weight: bold;
+    padding: 10px 0px;
+}
+
+div.description {
+    padding-bottom: 10px;
+}
+
+
+/*---[ table ]---------------------------------------------------------------*/
+
+table.output {
+    width: 100%;
+}
+
+table.output tr th {
+    text-align: left;
+    font-weight: normal;
+    padding: 4px;
+    background: url(../img/buttonBG.gif) repeat-x left top;
+    border-right: 1px solid #FFFFFF;
+}
+
+table.output tr td {
+    padding: 2px;
+    white-space: pre;
+}
+
+table.output tr td.path {
+    width: 500px;
+}
+
+table.output tr td.smallColumn {
+    width: 50px;
+    white-space: nowrap;
+}
+
+
+/* ---[ form tags ]-------------------------------------------------------- */
+
+form {
+    display: inline;
+}
+
+div.buttons {
+    padding: 10px 0px 10px 0px;
+}
+
+input, textarea, select {
+    margin: 0px;
+    padding: 0px;
+}
+
+.button {
+  cursor: pointer;
+  border: outset 1px #ccc;
+  background: #999999;
+  color: #666666;
+  font-weight: bold;
+  padding: 1px 2px;
+  background: url(../img/buttonBG.gif) repeat-x left top;
+}
