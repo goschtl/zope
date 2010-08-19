@@ -14,6 +14,7 @@
 """Tests for the zope.copy package.
 """
 import unittest
+import zope.component.testing
 from zope.testing import doctest, module
 
 def setUp(test):
@@ -21,6 +22,7 @@ def setUp(test):
 
 def tearDown(test):
     module.tearDown(test)
+    zope.component.testing.tearDown()
 
 def test_suite():
     return unittest.TestSuite((

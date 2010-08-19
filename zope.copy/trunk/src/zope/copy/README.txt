@@ -186,7 +186,7 @@ Resuming recursive copy
 -----------------------
 
 One thing we didn't examine yet is the use of ResumeCopy exception in
-the copy hooks. For example, when copying located objects we want
+the copy hooks. For example, when copying located objects we don't want
 to copy referenced subobjects that are not located in the object that
 is being copied. Imagine, we have a content object that has an image object,
 referenced by the ``cover`` attribute, but located in an independent
@@ -202,14 +202,16 @@ place.
 
     >>> content.cover = image
   
-With the standard hook from zope.location the image object will be copied:
+Without any hooks, the image object will be cloned as well:
 
     >>> new = zope.copy.copy(content)
-    >>> new.cover is not image
+    >>> new.cover is image
     False
 
-Now we can see how the ResumeCopy exception works, by creating a copy hook
-from scratch.
+That's not what we'd expect though, so, let's provide a copy hook
+to deal with that. The copy hook for this case is provided by zope.location
+package, but we'll create one from scratch as we want to check out the
+usage of the ResumeCopy. 
 
     >>> @zope.component.adapter(zope.location.interfaces.ILocation)
     ... @zope.interface.implementer(zope.copy.interfaces.ICopyHook)
