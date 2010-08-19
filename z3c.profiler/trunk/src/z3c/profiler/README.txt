@@ -34,3 +34,10 @@ page and show the profile by clicking on the ``Show Profile`` button:
 If we whould not call this form within this test, we whould see the
 profile data table. But we do not see the profile data table. Probably
 the testrunner conflicts with the monkey call.
+
+  >>> print user.contents
+  <!DOCTYPE ...
+      <div>
+        No data available.
+      </div>
+  ...
