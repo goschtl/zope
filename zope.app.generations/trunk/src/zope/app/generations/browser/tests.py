@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+import doctest
 from zope.app.generations.testing import GenerationsLayer
 from zope.app.testing import ztapi, functional
 from zope.app.generations.generations import SchemaManager, generations_key
@@ -82,8 +82,8 @@ class TestDatabaseSchema(functional.BrowserTestCase):
 def test_suite():
     TestDatabaseSchema.layer = GenerationsLayer
     return unittest.TestSuite((
-        DocTestSuite('zope.app.generations.browser.managers'),
-        DocTestSuite('zope.app.generations.browser.managerdetails'),
+        doctest.DocTestSuite('zope.app.generations.browser.managers'),
+        doctest.DocTestSuite('zope.app.generations.browser.managerdetails'),
         unittest.makeSuite(TestDatabaseSchema),
         ))
 

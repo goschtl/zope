@@ -16,9 +16,9 @@
 $Id$
 """
 
-import unittest
-from zope.testing import doctest
 from zope.app.testing import placelesssetup
+import doctest
+import unittest
 
 
 def tearDownREADME(test):

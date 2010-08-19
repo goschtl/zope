@@ -2,10 +2,15 @@
 CHANGES
 =======
 
-3.5.2 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- ``zope.app.generations`` depended on ``zope.app.applicationcontrol`` but
+  did not declare it. Modernized dependecy to ``zope.applicationcontrol`` as
+  the needed interface has been moved there.
+
+- Using python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest[unit]``.
 
 
 3.5.1 (2010-01-08)

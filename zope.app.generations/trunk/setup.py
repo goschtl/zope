@@ -27,7 +27,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.generations',
-      version = '3.5.2dev',
+      version = '3.6.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Application Schema Generations',
@@ -70,6 +70,7 @@ setup(name='zope.app.generations',
                         'zope.app.publication',
                         'ZODB3',
                         'zope.processlifetime',
+                        'zope.applicationcontrol',
                         ],
       include_package_data = True,
       zip_safe = False,
