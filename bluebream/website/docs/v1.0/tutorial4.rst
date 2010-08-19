@@ -139,7 +139,7 @@ declaration like::
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
     <implements
-       interface="zope.container.interfaces.IContentContainer" 
+       interface="zope.container.interfaces.IContentContainer"
        />
     <require
        permission="tc.View"
@@ -230,7 +230,7 @@ follows::
       id="tc.Member"
       title="Ticket collector member"
       description="Users that actually use the ticket collector."/>
-  
+
   <role
       id="tc.Admin"
       title="Ticket collector administrator"
@@ -297,7 +297,7 @@ following lines to ``src/tc/main/principals.zcml``::
       role="tc.Member"
       principal="tc.jack"
       />
-   
+
   <principal
       id="tc.jill"
       title="Ticket collector admin"
@@ -332,7 +332,8 @@ not accept the login and password attribute.
 
 You also need to register a default view for ``IUnauthorized`` exception as
 given below.  Here the and implementation available in ``zope.app.http``
-package is included: ``zope.app.http.exception.unauthorized.Unauthorized``::
+package is included: ``zope.app.http.exception.unauthorized.Unauthorized``.
+Add these registrations to ``src/tc/main/configure.zcml``::
 
   <view
       for="zope.security.interfaces.IUnauthorized"
@@ -355,6 +356,191 @@ objects.  (Of course you have to log in as one.)
 Important Note: While testing security related things use ``deploy.ini``.
 Otherwise you can remove ``z3c.evalexception`` middleware from ``debug.ini``.
 
+Persistent principals
+---------------------
+
+In the example given above, principals are stored in ZCML.  You can store
+principals in ZODB using some plugins mechanism provided by the pluggable
+authentication utility using `zope.pluggableauth` package.
+
+While adding ticket collector, it is registered as a site.  A site provides
+a persistent component registry.  To add site to the collector object, you
+are doing like this in ``src/tc/collector/views.py`` file (class:
+``AddTicketCollector``)::
+
+         collector.setSiteManager(LocalSiteManager(collector))
+
+Repplace this line with this function call::
+
+         setup_site_manager(context)
+
+Here is the definition of this function, you can write this function in the
+same file, ``src/tc/collector/views.py``::
+
+  from zope.site import LocalSiteManager
+  from zope.pluggableauth.authentication import PluggableAuthentication
+  from zope.authentication.interfaces import IAuthentication
+  from zope.app.authentication.principalfolder import PrincipalFolder
+  from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+
+  from zope.securitypolicy.interfaces import (IPrincipalRoleManager,
+                                              IPrincipalPermissionManager)
+  from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+  from zope.principalannotation.utility import PrincipalAnnotationUtility
+  from zope.session.interfaces import ISessionDataContainer
+  from zope.session.session import PersistentSessionDataContainer
+
+  from zope.event import notify
+  from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+  from zope.session.http import CookieClientIdManager
+  from zope.session.http import ICookieClientIdManager
+  from zope.app.authentication.principalfolder import InternalPrincipal
+
+  def setup_site_manager(context):
+      context.setSiteManager(LocalSiteManager(context))
+      sm = context.getSiteManager()
+      pau = PluggableAuthentication(prefix='hello.pau.')
+      notify(ObjectCreatedEvent(pau))
+      sm[u'authentication'] = pau
+      sm.registerUtility(pau, IAuthentication)
+
+      annotation_utility = PrincipalAnnotationUtility()
+      sm.registerUtility(annotation_utility, IPrincipalAnnotationUtility)
+      session_data = PersistentSessionDataContainer()
+      sm.registerUtility(session_data, ISessionDataContainer)
+
+      client_id_manager = CookieClientIdManager()
+      notify(ObjectCreatedEvent(client_id_manager))
+      sm[u'CookieClientIdManager'] = client_id_manager
+      sm.registerUtility(client_id_manager, ICookieClientIdManager)
+
+      principals = PrincipalFolder(prefix='pf.')
+      notify(ObjectCreatedEvent(principals))
+      pau[u'pf'] = principals
+      pau.authenticatorPlugins += (u"pf", )
+      notify(ObjectModifiedEvent(pau))
+
+      pau.credentialsPlugins += (u'Session Credentials',)
+
+      p1 = InternalPrincipal('admin1', 'admin1', "Admin 1",
+                             passwordManagerName="Plain Text")
+      principals['p1'] = p1
+
+      role_manager = IPrincipalRoleManager(context)
+      login_name = principals.getIdByLogin(p1.login)
+      pid = unicode('hello.pau.' + login_name)
+      role_manager.assignRoleToPrincipal('tc.Admin', pid)
+
+Now you need to create a new factory class for
+``zope.security.interfaces.IUnauthorized`` exception.  Create a file
+``src/tc/main/unauthorized.py`` with this content::
+
+  from zope.authentication.interfaces import IAuthentication
+  from zope.publisher.browser import BrowserPage
+  from zope.component import getUtility
+  from zope.browserpage import ViewPageTemplateFile
+
+  class Unauthorized(BrowserPage):
+
+      template = ViewPageTemplateFile('unauthorized.pt')
+
+      def __call__(self):
+          # Set the error status to 403 (Forbidden) in the case when we don't
+          # challenge the user
+          self.request.response.setStatus(403)
+
+          # make sure that squid does not keep the response in the cache
+          self.request.response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+          self.request.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+          self.request.response.setHeader('Pragma', 'no-cache')
+
+          principal = self.request.principal
+          auth = getUtility(IAuthentication)
+          auth.unauthorized(principal.id, self.request)
+          if self.request.response.getStatus() not in (302, 303):
+              return self.template()
+
+Create the ``src/tc/main/unauthorized.pt`` with this content::
+
+  <html>
+  <body>
+
+  <h1>Unauthorized</h1>
+
+  <p>You are not authorized</p>
+
+  </body>
+  </html>
+
+You can change the ``zope.security.interfaces.IUnauthorized`` exception view
+registration like this in the file: ``src/tc/main/configure.zcml``::
+
+  <view
+     for="zope.security.interfaces.IUnauthorized"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index"
+     permission="zope.Public"
+     factory=".unauthorized.Unauthorized"
+     />
+
+Finally you need a login form, create a template file in
+``src/tc/main/loginform.html``::
+
+  <html>
+    <head><title>Sign in</title></head>
+  <body>
+  
+    <div tal:define="principal python:request.principal.id">
+      <p tal:condition="python: principal == 'zope.anybody'">
+        Please provide Login Information</p>
+      <p tal:condition="python: principal != 'zope.anybody'">
+        You are not authorized to perform this action. However, you may login
+        as a different user who is authorized.</p>
+      <form action="" method="post">
+        <div tal:omit-tag=""
+             tal:condition="python:principal != 'zope.anybody' and 'SUBMIT' in request">
+          <span
+             tal:define="dummy python:request.response.redirect(request.get('camefrom', ''))" />
+        </div>
+  
+        <div class="row">
+          <div class="label">
+            <label for="login" i18n:translate="">User Name</label></div>
+          <div class="field">
+            <input type="text" name="login" id="login" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="label">
+            <label for="password" i18n:translate="">Password</label></div>
+          <div class="field">
+            <input type="password" name="password" id="password" />
+          </div>
+        </div>
+      
+        <div class="row">
+          <input class="form-element" type="submit" 
+                 name="SUBMIT" value="Log in" i18n:attributes="value login-button" />
+        </div>
+        <input type="hidden" name="camefrom" tal:attributes="value request/camefrom | nothing" />
+      </form>
+    </div>
+  </body>
+  </html>
+
+And register a browser page with the above template::
+
+  <browser:page
+     name="loginForm.html"
+     for="*"
+     template="loginform.pt"
+     permission="zope.Public"
+     layer="tc.skin.interfaces.ITCSkin"
+     />
+
+Now you should be able access the site with new authentication details.  The
+``admin1`` user has the Admin role.
 
 Conclusion
 ----------
