@@ -1,0 +1,21 @@
+Changelog
+=========
+
+2.13.3 (unreleased)
+-------------------
+
+
+2.13.2 (2010-07-16)
+-------------------
+
+- Added ``override_existing_protection`` parameter to the protectName helper.
+
+2.13.1 (2010-06-19)
+-------------------
+
+- Restore security declarations for deprecated ``sets`` module.
+
+2.13.0 (2010-06-19)
+-------------------
+
+- Released as separate package.
