@@ -305,6 +305,25 @@ How do I setup authentication (using a PAU)?
 
 Call this function to setup a site manager with PAU ::
 
+  from zope.site import LocalSiteManager
+  from zope.pluggableauth.authentication import PluggableAuthentication
+  from zope.authentication.interfaces import IAuthentication
+  from zope.app.authentication.principalfolder import PrincipalFolder
+  from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+
+  from zope.securitypolicy.interfaces import (IPrincipalRoleManager,
+                                              IPrincipalPermissionManager)
+  from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+  from zope.principalannotation.utility import PrincipalAnnotationUtility
+  from zope.session.interfaces import ISessionDataContainer
+  from zope.session.session import PersistentSessionDataContainer
+
+  from zope.event import notify
+  from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+  from zope.session.http import CookieClientIdManager
+  from zope.session.http import ICookieClientIdManager
+  from zope.app.authentication.principalfolder import InternalPrincipal
+
   def setup_site_manager(context):
       context.setSiteManager(LocalSiteManager(context))
       sm = context.getSiteManager()
@@ -343,12 +362,10 @@ Call this function to setup a site manager with PAU ::
 How do I logout from BlueBream ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FIXME: Is this valid ?
-
 Logout is available from Zope 3.3 onwards, but it is disabled by
 default.  To enable add this line to: ``etc/site.zcml``::
 
-  <adapter factory="zope.app.security.LogoutSupported" />
+  <adapter factory="zope.authentication.logout.LogoutSupported" />
 
 Why I am getting ILoginPassword adaptation error when accessing login.html ?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
