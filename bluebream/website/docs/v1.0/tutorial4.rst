@@ -505,7 +505,7 @@ Finally you need a login form, create a template file in
   
         <div class="row">
           <div class="label">
-            <label for="login" i18n:translate="">User Name</label></div>
+            <label for="login">User Name</label></div>
           <div class="field">
             <input type="text" name="login" id="login" />
           </div>
@@ -513,7 +513,7 @@ Finally you need a login form, create a template file in
   
         <div class="row">
           <div class="label">
-            <label for="password" i18n:translate="">Password</label></div>
+            <label for="password">Password</label></div>
           <div class="field">
             <input type="password" name="password" id="password" />
           </div>
@@ -521,7 +521,7 @@ Finally you need a login form, create a template file in
       
         <div class="row">
           <input class="form-element" type="submit" 
-                 name="SUBMIT" value="Log in" i18n:attributes="value login-button" />
+                 name="SUBMIT" value="Log in" />
         </div>
         <input type="hidden" name="camefrom" tal:attributes="value request/camefrom | nothing" />
       </form>
