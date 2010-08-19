@@ -71,6 +71,7 @@ We'll create a `buildout.cfg` file that defines our application:
   ... [buildout]
   ... develop = demo1 demo2
   ... parts = myapp var
+  ... newest = false
   ...
   ... [myapp]
   ... recipe = z3c.recipe.dev:app
@@ -171,7 +172,7 @@ The bin folder contains the start script:
 
 The myapp-scrip.py contains the start code for our zope setup:
 
-  >>> cat('bin', 'myapp-script.py')
+  >>> cat('bin', 'myapp')
   #!"C:\Python24\python.exe"
   <BLANKLINE>
   import sys
@@ -182,10 +183,11 @@ The myapp-scrip.py contains the start code for our zope setup:
     '/sample-buildout/eggs/zope.testing-3.7.1-py2.4.egg',
     '/sample-buildout/eggs/zc.recipe.egg-1.1.0-py2.4.egg',
     '/sample-buildout/eggs/zc.buildout-1.1.1-py2.4.egg',
-    '/site-packages',
+    '/sample-pyN.N.egg',
     '/sample-buildout/eggs/zconfig-2.6.1-py2.4.egg',
     '/sample-buildout/demo1',
     '/sample-buildout/eggs/zope.interface-3.5.0-py2.4-win32.egg',
+    '/sample-pyN.N.egg',
     ]
   <BLANKLINE>
   import os
@@ -249,7 +251,7 @@ Lets define a egg that we can use in our application:
   >>> write('hello', 'setup.py',
   ... '''
   ... from setuptools import setup
-  ... setup(name = 'hello')
+  ... setup(name='hello')
   ... ''')
 
 And let's define a python module which we use for our test:
@@ -273,11 +275,12 @@ We'll create a `buildout.cfg` file that defines our script:
   ... [buildout]
   ... develop = hello
   ... parts = helloworld
+  ... newest = false
   ...
   ... [helloworld]
   ... recipe = z3c.recipe.dev:script
   ... eggs = hello
-  ... module = hello.helloworld
+  ... module = helloworld
   ... method = helloWorld
   ...
   ... ''' % globals())
@@ -293,7 +296,7 @@ Let's run buildout again:
 
 And check the script again. Now we see the `helloWorld()` method is used:
 
-  >>> cat('bin', 'helloworld-script.py')
+  >>> cat('bin', 'helloworld')
   #!C:\Python24\python.exe
   <BLANKLINE>
   import sys
@@ -305,10 +308,10 @@ And check the script again. Now we see the `helloWorld()` method is used:
   sys.argv[0] = os.path.abspath(sys.argv[0])
   <BLANKLINE>
   <BLANKLINE>
-  import hello.helloworld
+  import helloworld
   <BLANKLINE>
   if __name__ == '__main__':
-      hello.helloworld.helloWorld()
+      helloworld.helloWorld()
 
 Now we can call the script:
 
@@ -332,11 +335,12 @@ We'll create a ``buildout.cfg`` file that defines our script:
   ... [buildout]
   ... develop = hello
   ... parts = helloworld
+  ... newest = false
   ...
   ... [helloworld]
   ... recipe = z3c.recipe.dev:script
   ... eggs = hello
-  ... module = hello.helloworld
+  ... module = helloworld
   ... method = helloWorld
   ... arguments = 'foo', 'bar'
   ...
@@ -352,7 +356,7 @@ Let's run buildout again:
 
 And check the script again. Now we see the `helloWorld()` method is used:
 
-  >>> cat('bin', 'helloworld-script.py')
+  >>> cat('bin', 'helloworld')
   #!C:\Python24\python.exe
   <BLANKLINE>
   import sys
@@ -364,10 +368,10 @@ And check the script again. Now we see the `helloWorld()` method is used:
   sys.argv[0] = os.path.abspath(sys.argv[0])
   <BLANKLINE>
   <BLANKLINE>
-  import hello.helloworld
+  import helloworld
   <BLANKLINE>
   if __name__ == '__main__':
-      hello.helloworld.helloWorld('foo', 'bar')
+      helloworld.helloWorld('foo', 'bar')
 
 Now we can call the script:
 
@@ -385,6 +389,7 @@ Creating Directories
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -414,6 +419,7 @@ If we change the directory name the old directory ('mystuff') is not deleted.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -444,6 +450,7 @@ We can also create a full path.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -464,6 +471,7 @@ But we need to activate this function explicitely.
   ... [buildout]
   ... parts = data-dir
   ... find-links = http://download.zope.org/distribution
+  ... newest = false
   ...
   ... [data-dir]
   ... recipe = z3c.recipe.dev:mkdir
@@ -500,6 +508,7 @@ permissions.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile
@@ -549,6 +558,7 @@ If we change the filename the old file is deleted.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile
@@ -583,6 +593,7 @@ We can also specify to create the path for the file.
   ... """
   ... [buildout]
   ... parts = script
+  ... newest = false
   ...
   ... [script]
   ... recipe = z3c.recipe.dev:mkfile

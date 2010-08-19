@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,14 +12,11 @@
 #
 ##############################################################################
 
-import os, re, shutil, sys, tempfile
-import pkg_resources
-
-import zc.buildout.testing
-
+from zope.testing import renormalizing
+import doctest
+import re
 import unittest
-import zope.testing
-from zope.testing import doctest, renormalizing
+import zc.buildout.testing
 
 
 def test_start_error():
@@ -44,6 +41,7 @@ def setUp(test):
     zc.buildout.testing.install_develop('z3c.recipe.dev', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.interface', test)
+    zc.buildout.testing.install('zope.exceptions', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
     zc.buildout.testing.install('ZConfig', test)
     zc.buildout.testing.install('zc.recipe.filestorage', test)
@@ -64,6 +62,7 @@ checker = renormalizing.RENormalizing([
     (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'),
      '-pyN.N.egg',
     ),
+    (re.compile('install_dir .*'), ''),
     zc.buildout.testing.normalize_path,
     zc.buildout.testing.normalize_script,
     zc.buildout.testing.normalize_egg_py,
@@ -72,11 +71,9 @@ checker = renormalizing.RENormalizing([
 
 def test_suite():
     return unittest.TestSuite(
-        doctest.DocFileSuite('README.txt',
+        doctest.DocFileSuite(
+            'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE,
             checker=checker),
         )
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
