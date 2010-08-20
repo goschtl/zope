@@ -16,6 +16,8 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+from urllib import urlencode
+
 import zope.interface
 import zope.i18nmessageid
 from zope.traversing.browser import absoluteURL
@@ -70,6 +72,8 @@ class BatchProvider(object):
     nextBatchSize = 3
     batchSpacer = u'...'
 
+    _request_args = ['%(prefix)s-sortOn', '%(prefix)s-sortOrder']
+
     def __init__(self, context, request, table):
         self.__parent__ = context
         self.context = context
@@ -78,9 +82,24 @@ class BatchProvider(object):
         self.batch = table.rows
         self.batches = table.rows.batches
 
+    def getQueryStringArgs(self):
+        """Collect additional terms from the request to include in links.
+
+        API borrowed from z3c.table.header.ColumnHeader.
+        """
+        args = {}
+        for key in self._request_args:
+            key = key % dict(prefix=self.table.prefix)
+            value = self.request.get(key, None)
+            if value:
+                args.update({key: value})
+        return args
+
     def renderBatchLink(self, batch, cssClass=None):
-        query = '%s=%s&%s=%s' % (self.table.prefix + '-batchStart',
-            batch.start, self.table.prefix + '-batchSize', batch.size)
+        args = self.getQueryStringArgs()
+        args[self.table.prefix +'-batchStart'] = batch.start
+        args[self.table.prefix +'-batchSize'] = batch.size
+        query = urlencode(sorted(args.items()))
         tableURL = absoluteURL(self.table, self.request)
         idx = batch.index + 1
         css = ' class="%s"' % cssClass

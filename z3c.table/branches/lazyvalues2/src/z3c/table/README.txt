@@ -599,7 +599,7 @@ sorting header implementation:
   ...     provides=interfaces.IColumnHeader)
 
 Now we can render the table and we shall see a link in the header. Note that it
-is set to switch to descending as the the table initially will display the first
+is set to switch to descending as the table initially will display the first
 column as ascending:
 
   >>> myTable.update()

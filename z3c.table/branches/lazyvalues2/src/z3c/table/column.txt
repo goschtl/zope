@@ -21,17 +21,18 @@ and create a sample content object that we use as container item:
 
   >>> class Content(object):
   ...     """Sample content."""
-  ...     def __init__(self, title, number):
+  ...     def __init__(self, title, number, email):
   ...         self.title = title
   ...         self.number = number
+  ...         self.email = email
 
 Now setup some items:
 
-  >>> container[u'zero'] = Content('Zero', 0)
-  >>> container[u'first'] = Content('First', 1)
-  >>> container[u'second'] = Content('Second', 2)
-  >>> container[u'third'] = Content('Third', 3)
-  >>> container[u'fourth'] = Content('Fourth', 4)
+  >>> container[u'zero'] = Content('Zero', 0, 'zero@example.com')
+  >>> container[u'first'] = Content('First', 1, 'first@example.com')
+  >>> container[u'second'] = Content('Second', 2, 'second@example.com')
+  >>> container[u'third'] = Content('Third', 3, 'third@example.com')
+  >>> container[u'fourth'] = Content('Fourth', 4, None)
 
 Let's also create a simple number sortable column:
 
@@ -467,7 +468,7 @@ GetAttrColumn
 
 The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and
 in ``ModifiedColumn``. Not all code get used if everything is fine. So let's
-test the column itself and force some usecase:
+test the column itself and force some use case:
 
 
   >>> class GetTitleColumn(column.GetAttrColumn):
@@ -712,6 +713,105 @@ Render and update the table:
       </tr>
       <tr>
         <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+EMailColumn
+-----------
+
+The ``EMailColumn`` column is ``GetAttrColumn`` which is used to
+display a mailto link. By default in the link content the e-mail
+address is displayed, too.
+
+
+  >>> class EMailColumn(column.EMailColumn):
+  ...
+  ...     attrName = 'email'
+  ...     defaultValue = u'missing'
+
+  >>> class EMailColumnTable(table.Table):
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, EMailColumn, u'email'),
+  ...             ]
+
+When a cell does not contain an e-mail address, the ``defaultValue``
+is rendered:
+
+  >>> request = TestRequest()
+  >>> eMailColumnTable = EMailColumnTable(container, request)
+  >>> eMailColumnTable.update()
+  >>> print eMailColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>E-Mail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="mailto:first@example.com">first@example.com</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:second@example.com">second@example.com</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:third@example.com">third@example.com</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:zero@example.com">zero@example.com</a></td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+    </tbody>
+  </table>
+
+The link content can be overwriten by setting the ``linkContent`` attribute:
+
+  >>> class StaticEMailColumn(column.EMailColumn):
+  ...
+  ...     attrName = 'email'
+  ...     defaultValue = u'missing'
+  ...     linkContent = 'Mail me'
+
+  >>> class StaticEMailColumnTable(table.Table):
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, StaticEMailColumn, u'mail'),
+  ...             ]
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> staticEMailColumnTable = StaticEMailColumnTable(container, request)
+  >>> staticEMailColumnTable.update()
+  >>> print staticEMailColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>E-Mail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="mailto:first@example.com">Mail me</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:second@example.com">Mail me</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:third@example.com">Mail me</a></td>
+      </tr>
+      <tr>
+        <td><a href="mailto:zero@example.com">Mail me</a></td>
+      </tr>
+      <tr>
+        <td>missing</td>
       </tr>
     </tbody>
   </table>

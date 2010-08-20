@@ -53,7 +53,7 @@ Now we can create our table adapting our sequence:
   ...                                     'table-sortOn': 'table-number-1'})
   >>> sequenceTable = SequenceTable(dataSequence, sequenceRequest)
 
-We also need to give the table a location and a name like we normaly setup
+We also need to give the table a location and a name like we normally setup
 in traversing:
 
   >>> from z3c.table.testing import Container

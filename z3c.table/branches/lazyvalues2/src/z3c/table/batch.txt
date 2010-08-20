@@ -257,8 +257,8 @@ we have ``4`` batched row data available:
   4
 
 We can set such a batch as row values, then this batch data are used for
-rendering. But take care, if we update the table, our rows get overriden
-and reset to the previous values. this means you can set any bath as rows
+rendering. But take care, if we update the table, our rows get overridden
+and reset to the previous values. this means you can set any batch as rows
 data and only render them. This is possible since the update method sorted all
 items and all batch contain ready-to-use data. This concept could be important
 if you need to cache batches etc. :
@@ -332,8 +332,8 @@ reset:
     </tbody>
   </table>
 
-This means you can probably update all batches, cache them and use them alter.
-but this is not usefull for normal usage in a page without an enhanced concept
+This means you can probably update all batches, cache them and use them after.
+But this is not useful for normal usage in a page without an enhanced concept
 which is not a part of this implementation. This also means, there must be
 another way to set the batch index. Yes there is, there are two other ways how
 we can set the batch position. We can set a batch position by setting the
@@ -383,13 +383,13 @@ the sorting concept:
   ...                                     'table-sortOn': 'table-number-1'})
   >>> requestBatchingTable = SimpleTable(container, batchingRequest)
 
-We also need to give the table a location and a name like we normaly setup
+We also need to give the table a location and a name like we normally set up
 in traversing:
 
   >>> requestBatchingTable.__parent__ = container
   >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
 
-Note; our table needs to start batching at smaller amount of items than we
+Note: our table needs to start batching at smaller amount of items than we
 have by default otherwise we don't get a batch:
 
   >>> requestBatchingTable.startBatchingAt = 5
@@ -462,10 +462,10 @@ We use our previous batching table and render the batch with the built-in
 
   >>> requestBatchingTable.update()
   >>> print requestBatchingTable.renderBatch()
-  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
-  <a href="...html?table-batchStart=5&table-batchSize=5">2</a>
-  <a href="...html?table-batchStart=11&table-batchSize=5" class="current">3</a>
-  <a href="...html?table-batchStart=15&table-batchSize=5" class="last">4</a>
+  <a href="...html?table-batchSize=5&table-batchStart=0&..." class="first">1</a>
+  <a href="...html?table-batchSize=5&table-batchStart=5&...">2</a>
+  <a href="...html?table-batchSize=5&table-batchStart=11&..." class="current">3</a>
+  <a href="...html?table-batchSize=5&table-batchStart=15&..." class="last">4</a>
 
 Now let's add more items so that we can test the skipped links in large
 batches:
@@ -527,17 +527,17 @@ And test the batch. Note the three dots between the links are rendered by the
 batch provider and are not a part of the doctest:
 
   >>> print requestBatchingTable.renderBatch()
-  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="...html?table-batchSize=5&table-batchStart=0&table-sortOn=table-number-1" class="first">1</a>
   ...
-  <a href="...html?table-batchStart=85&table-batchSize=5">18</a>
-  <a href="...html?table-batchStart=90&table-batchSize=5">19</a>
-  <a href="...html?table-batchStart=95&table-batchSize=5">20</a>
-  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
-  <a href="...html?table-batchStart=105&table-batchSize=5">22</a>
-  <a href="...html?table-batchStart=110&table-batchSize=5">23</a>
-  <a href="...html?table-batchStart=115&table-batchSize=5">24</a>
+  <a href="...html?table-batchSize=5&table-batchStart=85&table-sortOn=table-number-1">18</a>
+  <a href="...html?table-batchSize=5&table-batchStart=90&table-sortOn=table-number-1">19</a>
+  <a href="...html?table-batchSize=5&table-batchStart=95&table-sortOn=table-number-1">20</a>
+  <a href="...html?table-batchSize=5&table-batchStart=100&table-sortOn=table-number-1" class="current">21</a>
+  <a href="...html?table-batchSize=5&table-batchStart=105&table-sortOn=table-number-1">22</a>
+  <a href="...html?table-batchSize=5&table-batchStart=110&table-sortOn=table-number-1">23</a>
+  <a href="...html?table-batchSize=5&table-batchStart=115&table-sortOn=table-number-1">24</a>
   ...
-  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+  <a href="...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
 
 You can change the spacer in the batch provider if you set the ``batchSpacer``
 value:
@@ -567,17 +567,17 @@ As you can see the spacer get changed now:
   >>> requestBatchingTable.batchProvider
   <XBatchProvider object at ...>
   >>> print requestBatchingTable.renderBatch()
-  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="...html?table-batchSize=5&table-batchStart=0&table-sortOn=table-number-1" class="first">1</a>
   xxx
-  <a href="...html?table-batchStart=85&table-batchSize=5">18</a>
-  <a href="...html?table-batchStart=90&table-batchSize=5">19</a>
-  <a href="...html?table-batchStart=95&table-batchSize=5">20</a>
-  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
-  <a href="...html?table-batchStart=105&table-batchSize=5">22</a>
-  <a href="...html?table-batchStart=110&table-batchSize=5">23</a>
-  <a href="...html?table-batchStart=115&table-batchSize=5">24</a>
+  <a href="...html?table-batchSize=5&table-batchStart=85&table-sortOn=table-number-1">18</a>
+  <a href="...html?table-batchSize=5&table-batchStart=90&table-sortOn=table-number-1">19</a>
+  <a href="...html?table-batchSize=5&table-batchStart=95&table-sortOn=table-number-1">20</a>
+  <a href="...html?table-batchSize=5&table-batchStart=100&table-sortOn=table-number-1" class="current">21</a>
+  <a href="...html?table-batchSize=5&table-batchStart=105&table-sortOn=table-number-1">22</a>
+  <a href="...html?table-batchSize=5&table-batchStart=110&table-sortOn=table-number-1">23</a>
+  <a href="...html?table-batchSize=5&table-batchStart=115&table-sortOn=table-number-1">24</a>
   xxx
-  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+  <a href="...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
 
 
 Now test the extremities, need to define a new batchingRequest:
@@ -591,14 +591,14 @@ Beginning by the left end point:
   >>> leftRequestBatchingTable.__name__ = u'leftRequestBatchingTable.html'
   >>> leftRequestBatchingTable.update()
   >>> print leftRequestBatchingTable.renderBatch()
-  <a href="http://...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
-  <a href="http://...html?table-batchStart=5&table-batchSize=5">2</a>
-  <a href="http://...html?table-batchStart=10&table-batchSize=5" class="current">3</a>
-  <a href="http://...html?table-batchStart=15&table-batchSize=5">4</a>
-  <a href="http://...html?table-batchStart=20&table-batchSize=5">5</a>
-  <a href="http://...html?table-batchStart=25&table-batchSize=5">6</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=0&table-sortOn=table-number-1" class="first">1</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=5&table-sortOn=table-number-1">2</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=10&table-sortOn=table-number-1" class="current">3</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=15&table-sortOn=table-number-1">4</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=20&table-sortOn=table-number-1">5</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=25&table-sortOn=table-number-1">6</a>
   xxx
-  <a href="http://...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
 
 Go on with the right extremity:
 
@@ -610,14 +610,14 @@ Go on with the right extremity:
   >>> rightRequestBatchingTable.__name__ = u'rightRequestBatchingTable.html'
   >>> rightRequestBatchingTable.update()
   >>> print rightRequestBatchingTable.renderBatch()
-  <a href="http://...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=0&table-sortOn=table-number-1" class="first">1</a>
   xxx
-  <a href="http://...html?table-batchStart=990&table-batchSize=5">199</a>
-  <a href="http://...html?table-batchStart=995&table-batchSize=5">200</a>
-  <a href="http://...html?table-batchStart=1000&table-batchSize=5">201</a>
-  <a href="http://...html?table-batchStart=1005&table-batchSize=5" class="current">202</a>
-  <a href="http://...html?table-batchStart=1010&table-batchSize=5">203</a>
-  <a href="http://...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=990&table-sortOn=table-number-1">199</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=995&table-sortOn=table-number-1">200</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=1000&table-sortOn=table-number-1">201</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=1005&table-sortOn=table-number-1" class="current">202</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=1010&table-sortOn=table-number-1">203</a>
+  <a href="http://...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
 
 
 None previous and next batch size. Probably it doesn't make sense but let's
@@ -642,8 +642,9 @@ Update the table and render the batch:
 
   >>> requestBatchingTable.update()
   >>> print requestBatchingTable.renderBatch()
-  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="...html?table-batchSize=5&table-batchStart=0&table-sortOn=table-number-1" class="first">1</a>
   xxx
-  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
+  <a href="...html?table-batchSize=5&table-batchStart=100&table-sortOn=table-number-1" class="current">21</a>
   xxx
-  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+  <a href="...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
+
