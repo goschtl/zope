@@ -73,7 +73,7 @@ class Batch(object):
     @property
     def number(self):
         """See interfaces.IBatch"""
-        return self.start / self.size + 1
+        return self.index + 1
 
     @property
     def total(self):
