@@ -233,6 +233,9 @@ class TestSortedValues(unittest.TestCase):
 
     def setUp(self):
         self.sm = sm = getSiteManager()
+        sm.registerAdapter(table.RowsSetUp,
+            (interfaces.ITable, None),
+            interfaces.IRowsSetUp)
         sm.registerAdapter(NumberColumn,
             (None, None, interfaces.ITable),
             interfaces.IColumn, name='number')

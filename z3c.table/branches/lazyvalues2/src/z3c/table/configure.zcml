@@ -21,4 +21,7 @@
            z3c.table.interfaces.ITable"
       />
 
+  <adapter
+      factory="z3c.table.table.RowsSetUp" />
+
 </configure>

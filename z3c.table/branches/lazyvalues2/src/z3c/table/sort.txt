@@ -50,6 +50,13 @@ We also need some container items that we can use for sorting:
   >>> container[u'fourth'] = Content('Fourth', 4)
   >>> container[u'zero'] = Content('Zero', 0)
 
+We need to register the default rows setup:
+  
+  >>> import zope.component
+  >>> from z3c.table import interfaces
+  >>> zope.component.provideAdapter(table.RowsSetUp,
+  ...     (interfaces.ITable, None), provides=interfaces.IRowsSetUp)
+
 And render them without set a ``sortOn`` value:
 
   >>> from zope.publisher.browser import TestRequest

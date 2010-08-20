@@ -21,6 +21,7 @@ from xml.sax.saxutils import quoteattr
 import zope.interface
 import zope.component
 from zope.component import createObject
+from zope.component import getMultiAdapter
 import zope.location
 
 from z3c.batching.interfaces import IBatch
@@ -177,7 +178,8 @@ class Table(zope.location.Location):
         return cols
 
     def setUpRows(self):
-        return [self.setUpRow(item) for item in self.values]
+        adapter = getMultiAdapter((self, self.values), interfaces.IRowsSetUp)
+        return adapter.rows
 
 # sort
 
@@ -358,3 +360,16 @@ class SequenceTable(Table):
     """
 
     zope.interface.implements(interfaces.ISequenceTable)
+
+
+class RowsSetUp(object):
+    zope.interface.implements(interfaces.IRowsSetUp)
+    zope.component.adapts(interfaces.ITable, zope.interface.Interface)
+
+    def __init__(self, table, values):
+        self.table = table
+        self.values = values
+
+    @property
+    def rows(self):
+        return [self.table.setUpRow(item) for item in self.values]

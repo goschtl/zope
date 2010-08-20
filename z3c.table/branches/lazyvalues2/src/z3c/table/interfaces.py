@@ -36,6 +36,12 @@ class IValues(zope.interface.Interface):
         default=u'')
 
 
+class IRowsSetUp(zope.interface.Interface):
+    """Computes table rows from table and values"""
+
+    rows = zope.interface.Attribute('Iterable table row/column data sequence.')
+
+
 class ITable(zope.contentprovider.interfaces.IContentProvider):
     """Table provider"""
 

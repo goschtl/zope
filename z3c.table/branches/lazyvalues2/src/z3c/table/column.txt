@@ -65,6 +65,13 @@ Let's define a table using the NameColumn:
   ...                              weight=2, header=u'Number')
   ...             ]
 
+We need to register the default rows setup:
+  
+  >>> import zope.component
+  >>> from z3c.table import interfaces
+  >>> zope.component.provideAdapter(table.RowsSetUp,
+  ...     (interfaces.ITable, None), provides=interfaces.IRowsSetUp)
+
 Now create, update and render our table and you can see that the NameColumn
 renders the name of the item using the zope.traversing.api.getName() concept:
 

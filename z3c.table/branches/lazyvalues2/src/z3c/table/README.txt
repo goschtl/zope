@@ -76,6 +76,12 @@ Create a test request and represent the table:
   >>> request = TestRequest()
   >>> plainTable = table.Table(container, request)
 
+We need to register the default rows setup:
+  
+  >>> import zope.component
+  >>> from z3c.table import interfaces
+  >>> zope.component.provideAdapter(table.RowsSetUp,
+  ...     (interfaces.ITable, None), provides=interfaces.IRowsSetUp)
 
   >>> plainTable.update()
 
@@ -97,8 +103,6 @@ Column Adapter
 
 We can create a column for our table:
 
-  >>> import zope.component
-  >>> from z3c.table import interfaces
   >>> from z3c.table import column
 
   >>> class TitleColumn(column.Column):

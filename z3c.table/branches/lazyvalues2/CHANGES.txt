@@ -5,8 +5,12 @@ CHANGES
 0.10.0 (unreleased)
 ------------------
 
-- Use a batch factory instead of instantiating ``z3c.batching.Batch`` class directly,
-  (``z3c.batching.Batch`` registered as default factory in ``z3c.batching==1.2.0``)
+- Refactored ``table.Table.setUpRows`` to compute the rows with a multi-adapter
+  on the table and its values.
+
+- Use a batch factory instead of instantiating ``z3c.batching.Batch`` 
+  class directly, (``z3c.batching.Batch`` registered as default factory in
+  ``z3c.batching==1.2.0``).
 
 - ``IValues`` conform to ``len`` protocol. ``table.Table`` has new
   ``allRowsCount`` attribute that surfaces the total number of rows.
