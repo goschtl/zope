@@ -65,7 +65,9 @@ Changes
 * Split password manager functionality off to the new ``zope.password``
   package. Backward-compatibility imports are left in place.
 
-* Use ``zope.site`` instead of ``zope.app.component``.
+* Use ``zope.site`` instead of ``zope.app.component``. (Browser code still
+  needs ``zope.app.component`` as it depends on view classes of this
+  package.)
 
 3.5.0a2 (2009-02-01)
 --------------------
@@ -75,7 +77,9 @@ Changes
 3.5.0a1 (2009-01-31)
 --------------------
 
-* Use ``zope.container`` instead of ``zope.app.container``.
+* Use ``zope.container`` instead of ``zope.app.container``. (Browser code
+  still needs ``zope.app.container`` as it depends on view classes of this
+  package.)
 
 * Encoded passwords are now stored with a prefix ({MD5}, {SHA1},
   {SSHA}) indicating the used encoding schema. Old (encoded) passwords

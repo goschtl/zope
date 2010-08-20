@@ -63,7 +63,7 @@ setup(name='zope.app.authentication',
       package_dir = {'': 'src'},
       extras_require=dict(test=[
           'zope.app.testing',
-          'zope.app.securitypolicy',
+          'zope.app.securitypolicy', # needed in browser tests
           'zope.app.zcmlfiles',
           'zope.securitypolicy',
           'zope.testbrowser',
@@ -78,9 +78,9 @@ setup(name='zope.app.authentication',
       install_requires=[
           'ZODB3',
           'setuptools',
-          'zope.app.form',
-          'zope.app.container',
-          'zope.app.component',
+          'zope.app.form',# needed by browser code
+          'zope.app.container', # needed for browser code
+          'zope.app.component', # needed for browser code
           'zope.authentication',
           'zope.component',
           'zope.container',
