@@ -25,14 +25,14 @@ CHANGES
 1.6.0 (2009-11-30)
 ------------------
 
-- change view for zope.publisher.interfaces.ITraversalException from system
-  error pagelet to not found pagelet
+- Changed view for ``zope.publisher.interfaces.ITraversalException`` from
+  system error pagelet to not found pagelet.
 
-- move authentication viewlets to z3c.authviewlet.
+- Moved authentication viewlets to `z3c.authviewlet`.
 
-- cleanup dependencies, reflect changes in zope packages
+- Cleaned up dependencies, reflecting changes in zope packages.
 
-- cleanup test dependencies
+- Cleaned up test dependencies.
 
 
 1.5.0 (2009-05-28)
