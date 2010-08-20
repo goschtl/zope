@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.7.1 (unreleased)
+1.8.0 (2010-08-20)
 ------------------
 
 - Requiring `zope.login` so tests run with `zope.publisher` >= 3.12.
