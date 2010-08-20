@@ -203,13 +203,12 @@ class Table(zope.location.Location):
             or (self.hasSortedValues and self.valuesSortedOn != self.sortOn)))
 
     def sortRows(self):
-        if self._mustSort():
-            sortOnIdx = self.columnIndexById.get(self.sortOn, 0)
-            sortKeyGetter = getSortMethod(sortOnIdx)
-            rows = sorted(self.rows, key=sortKeyGetter)
-            if self.sortOrder in self.reverseSortOrderNames:
-                rows.reverse()
-            self.rows = rows
+        sortOnIdx = self.columnIndexById.get(self.sortOn, 0)
+        sortKeyGetter = getSortMethod(sortOnIdx)
+        rows = sorted(self.rows, key=sortKeyGetter)
+        if self.sortOrder in self.reverseSortOrderNames:
+            rows.reverse()
+        self.rows = rows
 
 # batch
 
@@ -220,6 +219,9 @@ class Table(zope.location.Location):
     def getBatchStart(self):
         return int(self.request.get(self.prefix + '-batchStart',
             self.batchStart))
+
+    def _mustBatch(self):
+        return not IBatch.providedBy(self.rows)
 
     def batchRows(self):
         if len(self.rows) > self.startBatchingAt:
@@ -327,10 +329,12 @@ class Table(zope.location.Location):
         self.rows = self.setUpRows()
 
         # sort items on columns
-        self.sortRows()
+        if self._mustSort():
+            self.sortRows()
 
         # batch sorted rows
-        self.batchRows()
+        if self._mustBatch():
+            self.batchRows()
 
         self.updateBatch()
 
