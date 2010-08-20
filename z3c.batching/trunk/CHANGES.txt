@@ -5,6 +5,11 @@ CHANGES
 1.2.0 (unreleased)
 ------------------
 
+- New feature: Subset batch.
+  Sometimes (for performance reasons), even though the user needs
+  a batched UI, we want to limit the computation to the
+  subset of values actually shown to the user.
+
 - Register `batch.Batch` as named (``"z3c.batching.batch"``) factory.
 
 1.1.0 (2008-11-12)

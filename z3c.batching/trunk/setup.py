@@ -37,6 +37,8 @@ setup(name='z3c.batching',
           + '\n\n'
           + read('src', 'z3c', 'batching', 'README.txt')
           + '\n\n'
+          + read('src', 'z3c', 'batching', 'subset.txt')
+          + '\n\n'
           + read('CHANGES.txt')),
       keywords="zope3 batching",
       classifiers=[

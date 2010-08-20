@@ -27,6 +27,9 @@ def test_suite():
         doctest.DocFileSuite(
                 'README.txt',
                 optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
+        doctest.DocFileSuite(
+                'subset.txt',
+                optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         doctest.DocTestSuite(batch,
                 optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         ))
