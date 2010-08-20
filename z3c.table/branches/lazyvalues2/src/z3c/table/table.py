@@ -228,7 +228,7 @@ class Table(zope.location.Location):
             self.rows = createObject("z3c.batching.batch", self.rows,
                 start=self.batchStart, size=self.batchSize)
 
-    def updateBatch(self):
+    def updateBatchProvider(self):
         if IBatch.providedBy(self.rows):
             self.batchProvider = zope.component.getMultiAdapter((self.context,
                 self.request, self), interfaces.IBatchProvider,
@@ -336,7 +336,7 @@ class Table(zope.location.Location):
         if self._mustBatch():
             self.batchRows()
 
-        self.updateBatch()
+        self.updateBatchProvider()
 
     def render(self):
 
