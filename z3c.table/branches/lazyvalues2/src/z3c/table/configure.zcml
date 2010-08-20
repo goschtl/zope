@@ -2,6 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c">
 
+  <include package="z3c.batching" />
+
   <!-- IValues-->
   <adapter
       factory=".value.ValuesForContainer"

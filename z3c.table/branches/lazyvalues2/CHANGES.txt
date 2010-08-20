@@ -2,23 +2,11 @@
 CHANGES
 =======
 
-0.9.1 (unreleased)
+0.10.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
-
-0.9.0 (2010-08-09)
-------------------
-
-- Added ``EMailColumn`` which can be used to display mailto links.
-
-- Fixed the default BatchProvider not to lose table sorting query arguments
-  from the generated links; now batching and sorting play with each other
-  nicely.
-
-- Split single doctest file (README.txt) into different files
->>>>>>> .merge-right.r115818
+- Use a batch factory instead of instantiating ``z3c.batching.Batch`` class directly,
+  (``z3c.batching.Batch`` registered as default factory in ``z3c.batching==1.2.0``)
 
 - ``IValues`` conform to ``len`` protocol. ``table.Table`` has new
   ``allRowsCount`` attribute that surfaces the total number of rows.
@@ -31,7 +19,17 @@ CHANGES
 
 - Add tests that verify interfaces for classes in ``value.py``
 
-- Split single doctest file (``README.txt``) into different files
+
+0.9.0 (2010-08-09)
+------------------
+
+- Added ``EMailColumn`` which can be used to display mailto links.
+
+- Fixed the default BatchProvider not to lose table sorting query arguments
+  from the generated links; now batching and sorting play with each other
+  nicely.
+
+- Split single doctest file (README.txt) into different files
 
 
 0.8.1 (2010-07-31)

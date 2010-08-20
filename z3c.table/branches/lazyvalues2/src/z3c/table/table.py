@@ -20,10 +20,10 @@ from xml.sax.saxutils import quoteattr
 
 import zope.interface
 import zope.component
+from zope.component import createObject
 import zope.location
 
 from z3c.batching.interfaces import IBatch
-from z3c.batching.batch import Batch
 from z3c.table import interfaces
 from z3c.table import column
 
@@ -223,8 +223,8 @@ class Table(zope.location.Location):
 
     def batchRows(self):
         if len(self.rows) > self.startBatchingAt:
-            self.rows = Batch(self.rows, start=self.batchStart,
-                size=self.batchSize)
+            self.rows = createObject("z3c.batching.batch", self.rows,
+                start=self.batchStart, size=self.batchSize)
 
     def updateBatch(self):
         if IBatch.providedBy(self.rows):

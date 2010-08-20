@@ -23,10 +23,10 @@ def read(*rnames):
 
 setup(
     name='z3c.table',
-    version='0.9.1dev',
-    author = "Stephan Richter, Roger Ineichen and the Zope Community",
-    author_email = "zope-dev@zope.org",
-    description = "Modular table rendering implementation for Zope3",
+    version='0.10.0dev',
+    author="Stephan Richter, Roger Ineichen and the Zope Community",
+    author_email="zope-dev@zope.org",
+    description="Modular table rendering implementation for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -71,7 +71,7 @@ setup(
         ),
     install_requires=[
         'setuptools',
-        'z3c.batching>=1.1.0',
+        'z3c.batching>=1.2.0',
         'zope.component',
         'zope.contentprovider',
         'zope.dublincore',
