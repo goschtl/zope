@@ -7,3 +7,14 @@ TODO
 
 - implement render methods for each batch status, e.g. renderFirstBatch,
   renderLastBatch.
+
+lazyvalues
+----------
+
+- instead of instantiating z3c.batching.Batch class directly,
+  use a Batch factory; register z3c.batching.Batch as default class
+
+- in z3c.batching, write other batch class that converts 'user side batchstart' 
+  to 'table side batchstart' to play well with subset of values computed with
+  LIMIT and OFFSET from RDB.
+
