@@ -18,11 +18,13 @@ $Id$
 import os
 from setuptools import setup, find_packages
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+
 setup(name='z3c.batching',
-      version = '1.1.1dev',
+      version='1.2.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Batching',
@@ -35,10 +37,9 @@ setup(name='z3c.batching',
           + '\n\n'
           + read('src', 'z3c', 'batching', 'README.txt')
           + '\n\n'
-          + read('CHANGES.txt')
-          ),
-      keywords = "zope3 batching",
-      classifiers = [
+          + read('CHANGES.txt')),
+      keywords="zope3 batching",
+      classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
@@ -51,12 +52,12 @@ setup(name='z3c.batching',
       url='http://pypi.python.org/pypi/z3c.batching',
       license='ZPL 2.1',
       packages=find_packages('src'),
-      package_dir = {'': 'src'},
+      package_dir={'': 'src'},
       namespace_packages=['z3c'],
-      install_requires = ['setuptools',
+      install_requires=['setuptools',
                           'zope.interface',
                           'zope.schema',
                           ],
-      include_package_data = True,
-      zip_safe = False,
+      include_package_data=True,
+      zip_safe=False,
       )
