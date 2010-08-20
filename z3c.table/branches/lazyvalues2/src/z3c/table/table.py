@@ -162,11 +162,11 @@ class Table(zope.location.Location):
                     colspanCounter -= 1
 
             if colspan == 0 and colspanCounter > 0:
-                # override col if colspan is 0 and colspan coutner not 0
+                # override col if colspan is 0 and colspan counter not 0
                 colspanCounter -= 1
                 colspan = 0
                 # now we are ready to setup dummy colspan cells
-                col = column.NoneCell(self.context, self.request, self)
+                col = column.NoneCell()
 
             # we reached the end of the table and have still colspan
             if (countdown - colspan) < 0:

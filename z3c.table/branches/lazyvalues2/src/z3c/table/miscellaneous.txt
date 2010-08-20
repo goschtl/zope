@@ -93,7 +93,7 @@ Let's get an container item first:
 
   >>> from z3c.table.testing import Content
   >>> firstItem = Content('First', 1)
-  >>> noneCellColumn = column.addColumn(simpleTable, column.NoneCell, u'none')
+  >>> noneCellColumn = column.NoneCell()
   >>> noneCellColumn.renderCell(firstItem)
   u''
 

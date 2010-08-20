@@ -124,6 +124,9 @@ class NoneCell(Column):
 
     zope.interface.implements(interfaces.INoneCell)
 
+    def __init__(self):
+        pass
+
     def getColspan(self, item):
         return 0
 
@@ -376,6 +379,7 @@ class EMailColumn(LinkColumn, GetAttrColumn):
         if value is self.defaultValue or value is None:
             return self.defaultValue
         return super(EMailColumn, self).renderCell(item)
+
 
 class SelectedItemColumn(LinkColumn):
     """Link which can set an item."""

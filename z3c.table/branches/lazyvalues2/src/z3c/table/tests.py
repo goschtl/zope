@@ -134,8 +134,7 @@ class TestNoneCell(z3c.testing.InterfaceBaseTest):
         return column.NoneCell
 
     def getTestPos(self):
-        t = table.Table(None, TestRequest())
-        return ({}, TestRequest(), t)
+        return ()
 
 
 class TestNameColumn(z3c.testing.InterfaceBaseTest):
