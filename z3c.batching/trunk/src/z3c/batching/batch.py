@@ -37,9 +37,12 @@ class Batch(object):
         self.sequence = sequence
 
         length = len(sequence)
-        self._length = length
+        self.update(length, start, size)
+        self.updateBatches(batches)
 
+    def update(self, length, start, size):
         # See interfaces.IBatch
+        self._length = length
         self.start = start
         if length == 0:
             self.start = -1
@@ -49,7 +52,6 @@ class Batch(object):
         # See interfaces.IBatch
         self.size = size
         self._trueSize = size
-
         if start + size >= length:
             self._trueSize = length - start
 
@@ -59,6 +61,7 @@ class Batch(object):
         else:
             self.end = start + self._trueSize - 1
 
+    def updateBatches(self, batches):
         if batches is None:
             batches = Batches(self)
 
