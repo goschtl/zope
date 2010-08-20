@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import time
 import unittest
 from zope.testing import doctest
 import samplelayers
@@ -44,6 +45,7 @@ class TestA(unittest.TestCase):
         self.assertEqual(z, 0)
         self.assertEqual(samplelayers.layer, layer.layer)
         self.assertEqual(samplelayers.layerx, layer.layerx)
+        time.sleep(0.01)
 
 class TestB(unittest.TestCase):
     layer = layername
