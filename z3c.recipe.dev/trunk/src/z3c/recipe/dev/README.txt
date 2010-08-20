@@ -27,7 +27,7 @@ eggs
   be included in the Python path of the generated scripts.
 
 server
-  The ``zserver`` or ``twisted`` server otpion.
+  The ``zserver`` or ``twisted`` server option.
 
 zope.conf
   The contents of zope.conf.
