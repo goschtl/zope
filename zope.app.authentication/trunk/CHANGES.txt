@@ -5,7 +5,8 @@ Changes
 3.7.2 (unreleased)
 ------------------
 
-* ...
+* Using python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest[unit]``.
 
 
 3.7.1 (2010-02-11)
@@ -50,7 +51,7 @@ Changes
 
 * Fix login form redirection failure in some cases with Python 2.6.
 
-* Use the new ``zope.authentication`` package instead of ``zope.app.security``. 
+* Use the new ``zope.authentication`` package instead of ``zope.app.security``.
 
 * The "Password Manager Names" vocabulary and simple password manager registry
   were moved to the ``zope.password`` package.
@@ -102,7 +103,7 @@ Changes
 -------------------
 
 * Make it compatible with zope.app.container 3.6.1 and 3.5.4 changes,
-  Changed ``super(BTreeContainer, self).__init__()`` to 
+  Changed ``super(BTreeContainer, self).__init__()`` to
   ``super(GroupFolder, self).__init__()`` in ``GroupFolder`` class.
 
 3.4.1 (2007-10-24)

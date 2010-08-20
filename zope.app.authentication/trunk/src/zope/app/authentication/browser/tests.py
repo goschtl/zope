@@ -20,7 +20,8 @@ __docformat__ = "reStructuredText"
 
 import re
 import unittest
-from zope.testing import renormalizing, doctest
+import doctest
+from zope.testing import renormalizing
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 import transaction
 from zope.interface import directlyProvides
