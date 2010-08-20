@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface.common import sequence
 import zope.schema
 
+
 class IBatch(sequence.IFiniteSequence):
     """A Batch represents a sub-list of the full sequence.
 

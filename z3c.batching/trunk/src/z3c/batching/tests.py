@@ -17,17 +17,16 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import doctest, unittest
+import doctest
+import unittest
 from z3c.batching import batch
 
-def test_suite():
 
+def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
                 'README.txt',
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-                ),
+                optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         doctest.DocTestSuite(batch,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-                )
+                optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS),
         ))

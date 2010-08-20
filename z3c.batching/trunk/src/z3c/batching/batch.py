@@ -26,7 +26,6 @@ from z3c.batching import interfaces
 
 class Batch(object):
     """Batch implementation. See IBatch"""
-    
     zope.interface.implements(interfaces.IBatch)
 
     start = FieldProperty(interfaces.IBatch['start'])
@@ -112,11 +111,11 @@ class Batch(object):
         """See zope.interface.common.sequence.IMinimalSequence"""
         if key >= self._trueSize:
             raise IndexError('batch index out of range')
-        return self.sequence[self.start+key]
+        return self.sequence[self.start + key]
 
     def __iter__(self):
         """See zope.interface.common.sequence.IMinimalSequence"""
-        return iter(self.sequence[self.start: self.end+1])
+        return iter(self.sequence[self.start: self.end + 1])
 
     def __len__(self):
         """See zope.interface.common.sequence.IFiniteSequence"""
@@ -154,14 +153,12 @@ class Batches(object):
     """A sequence object representing all the batches.
        Used by a Batch.
     """
-    
     zope.interface.implements(IFiniteSequence)
-    
+
     def __init__(self, batch):
         self.size = batch.size
         self.total = batch.total
         self.sequence = batch.sequence
-        
         self._batches = {batch.index: batch}
 
     def __len__(self):
@@ -173,7 +170,7 @@ class Batches(object):
                 key = self.total + key
 
             batch = Batch(
-                self.sequence, key*self.size, self.size, self)
+                self.sequence, key * self.size, self.size, self)
             self._batches[batch.index] = batch
 
         try:
@@ -221,7 +218,7 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
       [0, 1, 2, 3, 4, 5, None, 99]
       [0, None, 2, 3, 4, 5, 6, None, 99]
       [0, None, 3, 4, 5, 6, 7, None, 99]
-  
+
       >>> for i in range(93, 99):
       ...    f_n_l(batches, i, 2, 2)
       [0, None, 91, 92, 93, 94, 95, None, 99]
@@ -306,4 +303,3 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
     if currentBatchIdx < lastIdx:
         sublist.append(lastBatch)
     return sublist
-
