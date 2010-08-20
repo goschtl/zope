@@ -25,7 +25,7 @@ setup(
     version = '1.7.1dev',
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
-    description = "Pagelet layer setup for Zope3",
+    description = "Pagelet layer setup for Zope 3",
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -74,7 +74,8 @@ setup(
         'zope.browserresource',
         'zope.component',
         'zope.interface',
-        'zope.publisher',
+        'zope.login',
+        'zope.publisher>=3.12',
         ],
     zip_safe = False,
 )

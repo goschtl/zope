@@ -5,7 +5,7 @@ CHANGES
 1.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Requiring `zope.login` so tests run with `zope.publisher` >= 3.12.
 
 
 1.7.0 (2009-12-24)

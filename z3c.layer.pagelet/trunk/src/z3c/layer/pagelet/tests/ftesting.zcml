@@ -47,6 +47,7 @@
   <include package="zope.traversing" />
   <include package="zope.session" />
   <include package="zope.security" file="permissions.zcml" />
+  <include package="zope.login" />
 
 
   <!-- z3c component -->
