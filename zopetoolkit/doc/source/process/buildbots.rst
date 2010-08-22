@@ -54,6 +54,179 @@ Build servers
 This is a list of servers that run regular builds of various parts of the code
 base.
 
+MAC OS X
+~~~~~~~~
+
+The software currently being tested is not compatible with python 2.4
+
+.. list-table::
+
+    * - **Project**
+      - **OS X / Python2.4**
+      - **OS X / Python2.5**
+      - **OS X / Python2.6**
+      - **OS X / Python2.7**
+
+    * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`_
+      - unsupported
+      - unsupported
+      - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
+      - unsupported
+
+    * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`_
+      - unsupported
+      - unsupported
+      - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
+      - 
+
+    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
+      - 
+      - 
+      - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
+      - 
+
+Windows
+~~~~~~~
+
+.. list-table::
+
+    * - **Project**
+      - **Win32 / Py2.4**
+      - **Win32 / Py2.5**
+      - **Win32 / Py2.6**
+      - **Win32 / Py2.7**
+      - **Win64 / Py2.4**
+      - **Win64 / Py2.5**
+      - **Win64 / Py2.6**
+      - **Win64 / Py2.7**
+
+    * - `ZODB trunk <http://svn.zope.org/ZODB/trunk>`_
+      - unsupported
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_
+      - unsupported
+      - 
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_
+
+    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`_
+      - 
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_
+      - 
+      - 
+      - 
+      - `winbot <http://winbot.zope.org/>`_
+      - 
+
+    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_
+      - `winbot <http://winbot.zope.org/>`_, `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_ ?
+      - 
+      - `winbot <http://winbot.zope.org/>`_
+      - 
+      - `winbot <http://winbot.zope.org/>`_
+      - 
+
+Linux
+~~~~~
+    
+.. list-table::
+
+    * - **Project**
+      - **Linux32 / Py2.4**
+      - **Linux32 / Py2.5**
+      - **Linux32 / Py2.6**
+      - **Linux32 / Py2.7**
+      - **Linux64 / Py2.4**
+      - **Linux64 / Py2.5**
+      - **Linux64 / Py2.6**
+      - **Linux64 / Py2.7**
+
+    * - `Zope 2.10 <http://svn.zope.org/Zope/branches/2.10>`_
+      - 
+      - unsupported
+      - unsupported
+      - unsupported
+      - EPY
+      - unsupported
+      - unsupported
+      - unsupported
+
+    * - `Zope 2.11 <http://svn.zope.org/Zope/branches/2.11>`_
+      - 
+      - unsupported
+      - unsupported
+      - unsupported
+      - EPY
+      - unsupported
+      - unsupported
+      - unsupported
+
+    * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`_
+      - unsupported
+      - unsupported
+      - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
+      - unsupported
+      - unsupported
+      - unsupported
+      - EPY, `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
+      - unsupported
+
+    * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`_
+      - unsupported
+      - unsupported
+      - 
+      - 
+      - unsupported
+      - unsupported
+      - EPY
+      - 
+
+    * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`_
+      - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
+      - 
+      - 
+      - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
+      - 
+      - 
+
+    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+
+    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
+      - 
+      - 
+      - 
+      - 
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+
+    * - `Bluebream <http://svn.zope.org/bluebream/trunk>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+      - `AFPY <http://buildbot.afpy.org/>`_
+      - 
+
+We would like to thank all providers of automated test facilities:
+
 .. list-table::
 
     * - **Buildbot**
