@@ -50,7 +50,7 @@ If you need a NEW package to be processed contact:
 * Hanno Schlichting (hannosch-at-hannosch-dot-eu)
 
 The package that creates the eggs is here:
-svn://svn.zope.org/repos/main/Sandbox/adamg/zope.wineggbuilder
+svn://svn.zope.org/repos/main/zope.wineggbuilder
 
 
 Detailed winbot configuration description
