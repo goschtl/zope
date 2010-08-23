@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2010-08-23)
+------------------
+
+- Replaced ``zope.app.container`` by ``zope.container``.
+
+- Using Python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctestunit``.
+
+0.5.0 (2008-04-12)
+------------------
+
+- Initial Release
