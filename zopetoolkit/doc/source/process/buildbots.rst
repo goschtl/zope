@@ -77,19 +77,21 @@ The software currently being tested is not compatible with python 2.4
       - unsupported
       - unsupported
       - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
-      - 
+      -
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
-      - 
-      - 
+      -
+      -
       - `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_
-      - 
+      -
 
 Windows
 ~~~~~~~
 
 The winbot is configured to compile C-Extensions, while the ztk
 environment isn't.
+A rumour is that pythons before 2.6 are unstable on Win64, therefore
+no testing support for those
 
 .. list-table::
 
@@ -98,8 +100,6 @@ environment isn't.
       - **Win32 / Py2.5**
       - **Win32 / Py2.6**
       - **Win32 / Py2.7**
-      - **Win64 / Py2.4**
-      - **Win64 / Py2.5**
       - **Win64 / Py2.6**
       - **Win64 / Py2.7**
 
@@ -108,34 +108,28 @@ environment isn't.
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_
-      - unsupported
-      - 
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`_
-      - 
+      -
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_
-      - 
-      - 
-      - 
+      -
       - `winbot <http://winbot.zope.org/>`_
-      - 
+      -
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_
       - `winbot <http://winbot.zope.org/>`_, `The Health Agency <http://dev.thehealthagency.com/buildbot/>`_ ?
-      - 
+      -
       - `winbot <http://winbot.zope.org/>`_
-      - 
-      - `winbot <http://winbot.zope.org/>`_
-      - 
+      -
 
 Linux
 ~~~~~
-    
+
 .. list-table::
 
     * - **Project**
@@ -149,7 +143,7 @@ Linux
       - **Linux64 / Py2.7**
 
     * - `Zope 2.10 <http://svn.zope.org/Zope/branches/2.10>`_
-      - 
+      -
       - unsupported
       - unsupported
       - unsupported
@@ -159,7 +153,7 @@ Linux
       - unsupported
 
     * - `Zope 2.11 <http://svn.zope.org/Zope/branches/2.11>`_
-      - 
+      -
       - unsupported
       - unsupported
       - unsupported
@@ -181,52 +175,52 @@ Linux
     * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`_
       - unsupported
       - unsupported
-      - 
-      - 
+      -
+      -
       - unsupported
       - unsupported
       - EPY
-      - 
+      -
 
     * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`_
       - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
       - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
-      - 
-      - 
+      -
+      -
       - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
       - `AFPY <http://buildbot.afpy.org/>`_, `POV <http://zope3.pov.lt/buildbot/>`_
-      - 
-      - 
+      -
+      -
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
-      - 
-      - 
-      - 
-      - 
+      -
+      -
+      -
+      -
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
       - `AFPY <http://buildbot.afpy.org/>`_
-      - 
+      -
 
 We would like to thank all providers of automated test facilities:
 
