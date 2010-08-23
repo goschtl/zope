@@ -29,9 +29,9 @@ def test_suite():
         tearDown=zc.buildout.testing.buildoutTearDown,
         optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
         checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,
                 zc.buildout.testing.normalize_endings,
                 zc.buildout.testing.normalize_script,
                 zc.buildout.testing.normalize_egg_py,
                 (re.compile('Running .*python.* setup.py'), 'Running python setup.py'),
+                (re.compile(r'\\'), '/') #windows path happiness
                 ]))
