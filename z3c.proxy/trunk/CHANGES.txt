@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-0.6.1 (unreleased)
+0.6.1 (2010-08-23)
 ------------------
 
-- Nothing changed yet.
+- Added doctest to `long_description` to render on PyPI.
 
 
 0.6.0 (2010-08-23)
