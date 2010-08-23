@@ -252,7 +252,7 @@ We would like to thank all providers of automated test facilities:
 
     * - `AFPY <http://buildbot.afpy.org/>`_
       - Christophe Combelles
-      - Linux 32
+      - Linux 64
       - 2.4, 2.5, 2.6, 2.7, 3.1
       - ZTK (trunks and releases), BlueBream template
 
