@@ -16,14 +16,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import unittest
-from zope.testing.doctestunit import DocTestSuite
-from zope.testing.doctestunit import DocFileSuite
-from zope.app.container.sample import SampleContainer
+from z3c.proxy import testing
 from zope.app.testing.placelesssetup import setUp
 from zope.app.testing.placelesssetup import tearDown
-
-from z3c.proxy import testing
+from zope.container.sample import SampleContainer
+import doctest
+import unittest
 
 
 class SampleContainerTest(testing.BaseTestIContainerLocationProxy):
@@ -33,7 +31,7 @@ class SampleContainerTest(testing.BaseTestIContainerLocationProxy):
         return testing.ISampleContainerProxy
 
     def getTestClass(self):
-        return testing.SampleContainerProxy 
+        return testing.SampleContainerProxy
 
     def makeTestObject(self):
         obj = SampleContainer()
@@ -42,7 +40,7 @@ class SampleContainerTest(testing.BaseTestIContainerLocationProxy):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt',
                      setUp=setUp, tearDown=tearDown),
         unittest.makeSuite(SampleContainerTest),
         ))

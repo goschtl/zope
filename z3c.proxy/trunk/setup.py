@@ -59,7 +59,7 @@ setup (
         ),
     install_requires = [
         'setuptools',
-        'zope.app.container',
+        'zope.container',
         'zope.copypastemove',
         'zope.interface',
         'zope.location',

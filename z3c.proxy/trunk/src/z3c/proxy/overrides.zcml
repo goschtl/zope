@@ -1,9 +1,9 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c">
 
   <!-- TODO: This adapter should be regsitred to the the LocationProxy class
-       and not use overrides.zcml. But this doesn't work. Find a way where we 
+       and not use overrides.zcml. But this doesn't work. Find a way where we
        can register this adapters without overrides.zcml. -->
 
   <!-- support move for LocationProxy items -->
@@ -11,7 +11,7 @@
       factory="z3c.proxy.container.ProxyAwareObjectMover"
       provides="zope.copypastemove.interfaces.IObjectMover"
       permission="zope.ManageContent"
-      for="zope.app.container.interfaces.IContained"
+      for="zope.container.interfaces.IContained"
       trusted="True"
       />
 
@@ -21,7 +21,7 @@
       factory="z3c.proxy.container.ProxyAwareObjectCopier"
       provides="zope.copypastemove.interfaces.IObjectCopier"
       permission="zope.ManageContent"
-      for="zope.app.container.interfaces.IContained"
+      for="zope.container.interfaces.IContained"
       trusted="True"
       />
 
@@ -31,7 +31,7 @@
       factory="z3c.proxy.container.ProxyAwareContainerItemRenamer"
       provides="zope.copypastemove.interfaces.IContainerItemRenamer"
       permission="zope.ManageContent"
-      for="zope.app.container.interfaces.IContainer"
+      for="zope.container.interfaces.IContainer"
       trusted="True"
       />
 

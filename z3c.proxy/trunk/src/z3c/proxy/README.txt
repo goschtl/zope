@@ -2,11 +2,11 @@
 README
 ======
 
-We can proxy a regular container derived from zope's btree container for 
+We can proxy a regular container derived from zope's btree container for
 example:
 
-  >>> from zope.app.container.interfaces import IContainer
-  >>> from zope.app.container.btree import BTreeContainer
+  >>> from zope.container.interfaces import IContainer
+  >>> from zope.container.btree import BTreeContainer
   >>> container = BTreeContainer()
   >>> container.__name__, container.__parent__ = u'c1', u'p1'
 
@@ -66,7 +66,7 @@ First we check the empty proxy:
   ...
   KeyError: 'x'
 
-  >>> from zope.app.container.contained import Contained
+  >>> from zope.container.contained import Contained
   >>> proxy['x'] = x = Contained()
 
 Now we added our first item. This item should be added to the container.
@@ -168,7 +168,7 @@ Finaly we check all other methods of the proxy:
   >>> iterator.next() in proxy
   True
 
-  >>> iterator.next()     
+  >>> iterator.next()
   Traceback (most recent call last):
   ...
   StopIteration
@@ -188,21 +188,21 @@ Finaly we check all other methods of the proxy:
 ObjectMover
 -----------
 
-To use an object mover, pass a contained ``object`` to the class. The 
-contained ``object`` should implement ``IContained``.  It should be contained 
+To use an object mover, pass a contained ``object`` to the class. The
+contained ``object`` should implement ``IContained``.  It should be contained
 in a container that has an adapter to ``INameChooser``.
 
 Setup test container and proxies:
 
   >>> from zope.interface import implements
-  >>> from zope.app.container.interfaces import INameChooser
+  >>> from zope.container.interfaces import INameChooser
   >>> from zope.copypastemove import ExampleContainer
   >>> from z3c.proxy.container import ProxyAwareObjectMover
-  
+
   >>> class ContainerLocationProxyStub(ContainerLocationProxy):
-  ... 
+  ...
   ...     implements(INameChooser)
-  ... 
+  ...
   ...     def chooseName(self, name, ob):
   ...        while name in self:
   ...            name += '_'
@@ -217,14 +217,14 @@ Setup test container and proxies:
   >>> ob = proxy[u'foo']
   >>> mover = ProxyAwareObjectMover(ob)
 
-In addition to moving objects, object movers can tell you if the object is 
+In addition to moving objects, object movers can tell you if the object is
 movable:
 
   >>> mover.moveable()
   1
 
-which, at least for now, they always are.  A better question to ask is whether 
-we can move to a particular container. Right now, we can always move to a 
+which, at least for now, they always are.  A better question to ask is whether
+we can move to a particular container. Right now, we can always move to a
 container of the same class:
 
   >>> proxy2 = ContainerLocationProxyStub(container2)
@@ -236,7 +236,7 @@ container of the same class:
   ...
   TypeError: Container is not a valid Zope container.
 
-Of course, once we've decided we can move an object, we can use the mover to 
+Of course, once we've decided we can move an object, we can use the mover to
 do so:
 
   >>> mover.moveTo(proxy2)
@@ -293,17 +293,17 @@ If we try to move to an invalid container, we'll get an error:
 ObjectCopier
 ------------
 
-To use an object copier, pass a contained ``object`` to the class. The 
-contained ``object`` should implement ``IContained``.  It should be contained 
+To use an object copier, pass a contained ``object`` to the class. The
+contained ``object`` should implement ``IContained``.  It should be contained
 in a container that has an adapter to `INameChooser`.
 
 Setup test container and proxies:
 
   >>> from z3c.proxy.container import ProxyAwareObjectCopier
   >>> class ContainerLocationProxyStub(ContainerLocationProxy):
-  ... 
+  ...
   ...     implements(INameChooser)
-  ... 
+  ...
   ...     def chooseName(self, name, ob):
   ...        while name in self:
   ...            name += '_'
@@ -318,14 +318,14 @@ Setup test container and proxies:
   >>> ob = proxy[u'foo']
   >>> copier = ProxyAwareObjectCopier(ob)
 
-In addition to moving objects, object copiers can tell you if the object is 
+In addition to moving objects, object copiers can tell you if the object is
 movable:
 
   >>> copier.copyable()
   1
 
-which, at least for now, they always are.  A better question to ask is whether 
-we can copy to a particular container. Right now, we can always copy to a 
+which, at least for now, they always are.  A better question to ask is whether
+we can copy to a particular container. Right now, we can always copy to a
 container of the same class:
 
   >>> proxy2 = ContainerLocationProxyStub(container2)
@@ -337,7 +337,7 @@ container of the same class:
   ...
   TypeError: Container is not a valid Zope container.
 
-Of course, once we've decided we can copy an object, we can use the copier to 
+Of course, once we've decided we can copy an object, we can use the copier to
 do so:
 
   >>> copier.copyTo(proxy2)
@@ -408,31 +408,31 @@ If we try to copy to an invalid container, we'll get an error:
 ProxyAwareContainerItemRenamer
 ------------------------------
 
-This adapter uses IObjectMover to move an item within the same container to 
+This adapter uses IObjectMover to move an item within the same container to
 a different name. We need to first setup an adapter for IObjectMover:
 
 Setup test container and proxies:
 
-  >>> from zope.app.container.sample import SampleContainer
+  >>> from zope.container.sample import SampleContainer
   >>> from zope.copypastemove import ContainerItemRenamer
   >>> from zope.copypastemove import IObjectMover
   >>> from z3c.proxy.container import ProxyAwareContainerItemRenamer
 
   >>> import zope.component
-  >>> from zope.app.container.interfaces import IContained
-  >>> zope.component.provideAdapter(ProxyAwareObjectMover, [IContained], 
+  >>> from zope.container.interfaces import IContained
+  >>> zope.component.provideAdapter(ProxyAwareObjectMover, [IContained],
   ...     IObjectMover)
-  
+
   >>> class ContainerLocationProxyStub(ContainerLocationProxy):
-  ... 
+  ...
   ...     implements(INameChooser)
-  ... 
+  ...
   ...     def chooseName(self, name, ob):
   ...        while name in self:
   ...            name += '_'
   ...        return name
 
-To rename an item in a container, instantiate a ContainerItemRenamer with the 
+To rename an item in a container, instantiate a ContainerItemRenamer with the
 container:
 
   >>> container = SampleContainer()

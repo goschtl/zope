@@ -17,9 +17,9 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
-from zope.app.container.interfaces import IContainer
-from zope.app.container.tests.test_icontainer import BaseTestIContainer as BT
-from zope.app.container.tests.test_icontainer import DefaultTestData
+from zope.container.interfaces import IContainer
+from zope.container.tests.test_icontainer import BaseTestIContainer as BT
+from zope.container.tests.test_icontainer import DefaultTestData
 
 from z3c.testing.app import InterfaceBaseTest
 from z3c.proxy import interfaces

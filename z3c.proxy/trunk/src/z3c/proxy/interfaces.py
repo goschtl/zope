@@ -18,7 +18,7 @@ __docformat__ = 'restructuredtext'
 
 
 from zope.location.interfaces import ILocation
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 
 
 

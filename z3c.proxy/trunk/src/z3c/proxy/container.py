@@ -25,7 +25,7 @@ from zope.proxy import getProxiedObject
 from zope.proxy import non_overridable
 from zope.proxy import isProxy
 
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 from z3c.proxy import interfaces
 
 
