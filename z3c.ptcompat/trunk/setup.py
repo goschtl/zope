@@ -8,14 +8,16 @@ def read(*rnames):
 
 version = '0.5.6'
 
-tests_require = ['z3c.pt',
-                 'zope.tal',
-                 'zope.viewlet',
-                 'zope.app.form',
-                 'zope.app.publisher',
-                 'zope.app.pagetemplate',
-                 'lxml',
-                 ],
+tests_require = [
+    'lxml',
+    'z3c.pt',
+    'zope.app.form',
+    'zope.app.pagetemplate',
+    'zope.app.publisher',
+    'zope.tal',
+    'zope.testing',
+    'zope.viewlet',
+    ],
 
 
 setup(name='z3c.ptcompat',
