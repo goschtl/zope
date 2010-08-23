@@ -23,12 +23,14 @@ def read(*rnames):
 
 setup (
     name='z3c.proxy',
-    version='0.6.0',
+    version='0.6.1dev',
     author = "Roger Ineichen, Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Container proxy implementation for Zope3",
     long_description=(
         read('README.txt')
+        + '\n\n.. contents::\n\n' +
+        read('src', 'z3c', 'proxy', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),

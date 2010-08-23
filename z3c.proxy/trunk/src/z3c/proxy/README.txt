@@ -1,6 +1,6 @@
-======
-README
-======
+=========
+z3c.proxy
+=========
 
 We can proxy a regular container derived from zope's btree container for
 example:
