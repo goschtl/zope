@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.proxy',
-    version='0.5.1dev',
+    version='0.6.0',
     author = "Roger Ineichen, Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Container proxy implementation for Zope3",
