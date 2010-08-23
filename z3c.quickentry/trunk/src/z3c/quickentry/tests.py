@@ -17,20 +17,15 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import unittest
-from zope.testing import doctest
-from zope.testing import doctestunit
 from zope.app.testing import placelesssetup
+import doctest
+import unittest
 
 def test_suite():
     return unittest.TestSuite((
-        doctestunit.DocFileSuite(
+        doctest.DocFileSuite(
             'README.txt',
-            globs={'pprint': doctestunit.pprint},
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

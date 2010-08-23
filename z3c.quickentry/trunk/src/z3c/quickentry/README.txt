@@ -133,6 +133,7 @@ Let's now make sure that the plugin can handle several strings:
 
 Let's also make sure it is processed correctly:
 
+  >>> from pprint import pprint
   >>> pprint(AgeGenderPlugin('27M').process(None))
   {'age': 27, 'gender': u'M'}
   >>> pprint(AgeGenderPlugin('8F').process(None))
