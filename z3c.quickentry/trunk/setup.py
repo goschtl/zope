@@ -31,6 +31,7 @@ setup(
     description = (
         "Allows a user to efficiently specify multiple values in one larger text block."),
     long_description=(
+        '.. contents ::\n\n' +
         read('src', 'z3c', 'quickentry', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
