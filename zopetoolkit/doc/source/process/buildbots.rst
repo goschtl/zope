@@ -88,6 +88,9 @@ The software currently being tested is not compatible with python 2.4
 Windows
 ~~~~~~~
 
+The winbot is configured to compile C-Extensions, while the ztk
+environment isn't.
+
 .. list-table::
 
     * - **Project**
