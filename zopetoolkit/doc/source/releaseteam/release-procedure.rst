@@ -47,4 +47,5 @@ Steps for creating a new release
 
     /var/zope/zope2index/bin/ztk_kgs tags/1.0a1 /var/www/download.zope.org/zopetoolkit/index/1.0a1
 
-- Launchpad tasks (none yet)
+- Send an announcement on the zope-dev list (based on previous ones), and spread
+  the info.
