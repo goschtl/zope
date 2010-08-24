@@ -73,7 +73,7 @@ class BlueBream(templates.Template):
                 sys.stdout.write('Searching the latest version... ')
                 parse_version = pkg_resources.parse_version
 
-                # parse the download html page and store versions
+                # download and parse the html page and store versions
                 parser = FindLatest()
                 parser.feed(urlopen(DOWNLOAD_URL).read())
 
@@ -144,7 +144,8 @@ class BlueBream(templates.Template):
             vars['ns_prefix'] = ''
 
     def post(self, command, output_dir, vars):
-        """Add namespace packages and move the main package to the last level
+        """Add nested namespace levels
+           and move the main package to the last level
         """
         # if we have a namespace package
         if len(self.ns_split) > 1:
