@@ -2,6 +2,13 @@
 Change History
 **************
 
+1.2.1 (unreleased)
+==================
+
+- Fixed a lot of windows issues
+- Nailed versions to ZTK 1.0a2 (oh well, we have to have at least some stability)
+- Fixed some other test failures that seemed to come from other packages
+
 1.2.0 (2009-03-23)
 ==================
 
@@ -57,14 +64,14 @@ Bugs fixed
 
 - When:
 
-  + the working-directory option was used, 
+  + the working-directory option was used,
   + and the test runner needed to restart itself
   + and the test runner was run with a relative path (e.g. bin/test)
 
   then the testrunner could not restart itself successfully because the
   relative path in sys.argv[0] was no-longer valid.
 
-  Now we convert sys.argv[0] to an absolute path. 
+  Now we convert sys.argv[0] to an absolute path.
 
 1.0.0b4 (2006-10-24)
 ====================
