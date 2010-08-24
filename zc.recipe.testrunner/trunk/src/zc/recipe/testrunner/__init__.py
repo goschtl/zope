@@ -111,6 +111,11 @@ env_template = """os.environ['%s'] = %r
 
 def _relativize(base, path):
     base += os.path.sep
+    if sys.platform == 'win32':
+        #windoze paths are case insensitive, but startswith is not
+        base = base.lower()
+        path = path.lower()
+
     if path.startswith(base):
         path = 'join(base, %r)' % path[len(base):]
     else:

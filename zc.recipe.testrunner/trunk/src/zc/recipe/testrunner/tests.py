@@ -40,6 +40,7 @@ def test_suite():
                     [zc.buildout.testing.normalize_path,
                      zc.buildout.testing.normalize_script,
                      zc.buildout.testing.normalize_egg_py,
+                     zc.buildout.testing.normalize_endings,
                      (re.compile('#!\S+py\S*'), '#!python'),
                      (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
                      (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
@@ -48,6 +49,17 @@ def test_suite():
                      (re.compile('distribute-[^-]+-'), 'setuptools-X-'),
                      (re.compile('zope.interface-[^-]+-'), 'zope.interface-X-'),
                      (re.compile('zope.exceptions-[^-]+-.*\.egg'), 'zope.exceptions-X-pyN.N.egg'),
+                     #windows happiness for ``extra-paths``:
+                     (re.compile(r'[a-zA-Z]:\\\\usr\\\\local\\\\zope\\\\lib\\\\python'),
+                                '/usr/local/zope/lib/python'),
+                     #windows happiness for ``working-directory``:
+                     (re.compile(r'[a-zA-Z]:\\\\foo\\\\bar'),
+                                '/foo/bar'),
+                     #more windows happiness:
+                     (re.compile(r'eggs\\\\'),
+                                'eggs/'),
+                     (re.compile(r'parts\\\\'),
+                                'parts/'),
                      ]),
             ),
         ))
