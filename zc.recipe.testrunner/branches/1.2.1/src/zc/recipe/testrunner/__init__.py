@@ -40,7 +40,7 @@ class TestRunner:
     def install(self):
         options = self.options
         dest = []
-        eggs, ws = self.egg.working_set(('zope.testing', ))
+        eggs, ws = self.egg.working_set(('zope.testing <3.10.0', ))
 
         test_paths = [ws.find(pkg_resources.Requirement.parse(spec)).location
                       for spec in eggs]
@@ -111,6 +111,11 @@ env_template = """os.environ['%s'] = %r
 
 def _relativize(base, path):
     base += os.path.sep
+    if sys.platform == 'win32':
+        #windoze paths are case insensitive, but startswith is not
+        base = base.lower()
+        path = path.lower()
+
     if path.startswith(base):
         path = 'join(base, %r)' % path[len(base):]
     else:

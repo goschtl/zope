@@ -243,6 +243,7 @@ extra-paths option to specify them:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
@@ -286,6 +287,7 @@ directory:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
@@ -341,6 +343,7 @@ using the -v option:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
@@ -395,7 +398,6 @@ Running them with the current buildout will produce a failure:
     Failure in test test (demo.tests.DemoTests)
     Traceback (most recent call last):
       ...
-        raise self.failureException, \
     AssertionError: '42' != '23'
     <BLANKLINE>
     <BLANKLINE>
@@ -439,6 +441,7 @@ the environment variable. Also, the tests pass again:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       ]
     <BLANKLINE>
@@ -495,6 +498,7 @@ end of the script:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
@@ -543,6 +547,7 @@ This will also work with a multi-line initialization section:
       '/sample-buildout/demo',
       '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
       '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+      '/sample-buildout/eggs/zope.exceptions-3.6.1-py2.4.egg',
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
@@ -588,7 +593,7 @@ generated relative to the test script.
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(__file__)
+    base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
     base = os.path.dirname(base)
     <BLANKLINE>
     import sys
@@ -596,6 +601,7 @@ generated relative to the test script.
       join(base, 'demo'),
       join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
       join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+      join(base, 'eggs/zope.exceptions-3.6.1-py2.4.egg'),
       join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
       '/usr/local/zope/lib/python',
       join(base, 'sources'),
@@ -638,7 +644,7 @@ The relative-paths option can be specified at the buildout level:
     import os
     <BLANKLINE>
     join = os.path.join
-    base = os.path.dirname(__file__)
+    base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
     base = os.path.dirname(base)
     <BLANKLINE>
     import sys
@@ -646,6 +652,7 @@ The relative-paths option can be specified at the buildout level:
       join(base, 'demo'),
       join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
       join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+      join(base, 'eggs/zope.exceptions-3.6.1-py2.4.egg'),
       join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
       '/usr/local/zope/lib/python',
       join(base, 'sources'),
@@ -662,4 +669,3 @@ The relative-paths option can be specified at the buildout level:
         zope.testing.testrunner.run([
             '--test-path', join(base, 'demo'),
             ])
-

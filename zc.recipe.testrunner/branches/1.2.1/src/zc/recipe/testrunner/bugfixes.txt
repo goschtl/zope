@@ -47,7 +47,7 @@ To illustrate this, we'll create a project with two layers:
 >>> write(sample_buildout, 'bugfix1', 'setup.py',
 ... """
 ... from setuptools import setup
-... 
+...
 ... setup(name = "bugfix1")
 ... """)
 >>> write(sample_buildout, 'bugfix1', 'README.txt', '')
@@ -64,7 +64,7 @@ and to create the test script using the working-directory parameter:
 ...
 ... [testbugfix1]
 ... recipe = zc.recipe.testrunner
-... eggs = 
+... eggs =
 ...    bugfix1
 ... script = test
 ... working-directory = sample_working_dir
@@ -77,14 +77,17 @@ Now when we run the buildout:
 >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
 We can run the test script now:
+(somehow zc.buildout.testing.normalize_endings does not work here...)
 
->>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv -j2'),
+>>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv -j2').replace('\r\n','\n'),
 Running tests at level 1
 Running bugfix1.tests.Layer1 tests:
   Set up bugfix1.tests.Layer1 in 0.000 seconds.
   Running:
  test (bugfix1.tests.TestDemo1)
   Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+[Parallel tests running in bugfix1.tests.Layer2:
+  . LAYER FINISHED]
 Running bugfix1.tests.Layer2 tests:
   Running in a subprocess.
   Set up bugfix1.tests.Layer2 in 0.000 seconds.
