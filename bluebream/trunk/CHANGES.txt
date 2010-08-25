@@ -11,6 +11,7 @@ Changelog
 - warn the user if the project template has significant changes
 - Added empty overrides.zcml - show best practices to developers
 - updated to ZTK 1.0a3
+- Automatically find and suggest the latest *minor* version online
 
 1.0b3 (2010-07-11)
 ------------------
