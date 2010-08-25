@@ -5,7 +5,8 @@ CHANGES
 0.13 (unreleased)
 =================
 
-- Nothing changed yet.
+- Updated test set up, to run with newer ``zope.testing`` version which no
+  longer includes testrunner.
 
 
 0.12.2 (2010-02-24)
