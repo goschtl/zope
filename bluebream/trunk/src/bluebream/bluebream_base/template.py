@@ -71,6 +71,7 @@ class BlueBream(templates.Template):
         try:
             if 'offline' not in vars:  #offline is used in tests
                 sys.stdout.write('Searching the latest version... ')
+                sys.stdout.flush()
                 parse_version = pkg_resources.parse_version
 
                 # download and parse the html page and store versions
