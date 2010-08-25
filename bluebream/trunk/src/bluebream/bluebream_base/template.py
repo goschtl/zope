@@ -77,13 +77,27 @@ class BlueBream(templates.Template):
                 parser = FindLatest()
                 parser.feed(urlopen(DOWNLOAD_URL).read())
 
-                # return the highest version
+                # return the highest minor version
                 if not len(parser.versions):
                     raise IOError('No versions found')
-                latest = sorted(parser.versions,
-                              key=lambda v: parse_version(v))[-1]
+                all_versions = sorted(parser.versions,
+                                      key=lambda v: parse_version(v),
+                                      reverse=True)
+                for v in all_versions:
+                    trunked_v = [x for x in parse_version(v)[:2] if not x.startswith('*')]
+                    trunked_current = [x for x in parse_version(current)[:2] if not x.startswith('*')]
+                    while len(trunked_v) < 2:
+                        trunked_v.append('00000000')
+                    while len(trunked_current) < 2:
+                        trunked_current.append('00000000')
+                    if trunked_v > trunked_current:
+                        continue
+                    latest = v
+                    break
+
                 print str(latest) + '\n'
-                # warn the user if there is a change in latest template
+
+                # warn the user if there is a change in the latest template
                 last_change = '1.0b4' # feature introduced for 1.0b4
                 for line in urlopen(DOWNLOAD_URL
                                     + 'bluebream-%s.cfg' % latest).readlines():
