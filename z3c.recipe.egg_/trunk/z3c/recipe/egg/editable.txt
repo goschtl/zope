@@ -48,6 +48,7 @@ installed in develop mode.
     >>> ls(sample_buildout, 'develop-eggs')
     -  demoneeded.egg-link
     -  z3c.recipe.egg.egg-link
+    -  z3c.recipe.scripts.egg-link
     -  zc.recipe.egg.egg-link
 
 Multiple distributions can be specified.
@@ -135,6 +136,7 @@ non-newest mode, the recipe does nothing.
     Installing demoneeded.
 
     >>> ls(sample_buildout, 'parts')
+    d  buildout
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -153,6 +155,7 @@ non-newest mode, the recipe does nothing.
     Installing demoneeded.
 
     >>> ls(sample_buildout, 'parts')
+    d  buildout
 
 If build-directory is specified, the source distributions will be
 extracted there.
@@ -177,6 +180,7 @@ extracted there.
     Installing demoneeded.
 
     >>> ls(sample_buildout, 'parts')
+    d  buildout
     >>> ls(sample_buildout, 'src')
     d  demoneeded
     d  extdemo

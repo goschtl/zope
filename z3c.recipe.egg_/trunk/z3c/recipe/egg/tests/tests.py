@@ -1,7 +1,12 @@
-import unittest, os, shutil
-from zope.testing import doctest, renormalizing
+from zope.testing import renormalizing
+import doctest
+import os
+import re
+import shutil
+import unittest
 import zc.buildout.testing
 import zc.recipe.egg.tests
+
 
 def setUp(test):
     zc.recipe.egg.tests.setUp(test)
@@ -16,9 +21,8 @@ def test_suite():
         '../setup.txt',
         '../editable.txt',
         setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-        optionflags=doctest.REPORT_NDIFF,
+        optionflags=doctest.REPORT_NDIFF|doctest.NORMALIZE_WHITESPACE,
         checker=renormalizing.RENormalizing([
-                zc.buildout.testing.normalize_path,]))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+            zc.buildout.testing.normalize_path,
+            (re.compile('install_dir .*'), ''),
+            ]))

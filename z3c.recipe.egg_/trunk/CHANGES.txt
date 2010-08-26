@@ -1,0 +1,30 @@
+=========
+ Changes
+=========
+
+0.3 (unreleased)
+----------------
+
+* Updated tests and requirements to zc.buildout 1.5.
+
+* Added not declared test dependency on ``zope.testing``.
+
+* Using python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest``.
+
+* Fixed home page URL.
+
+* Added change log.
+
+
+0.2 (2008-06-07)
+----------------
+
+* ???
+
+0.1 (2007-10-01)
+----------------
+
+* Initial release.
+
+

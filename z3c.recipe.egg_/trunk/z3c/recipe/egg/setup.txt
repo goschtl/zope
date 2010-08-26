@@ -54,7 +54,7 @@ The seupt script is run with the specified arguments.
     -  foo-0.0.0.tar.gz
 
     >>> remove(sample_buildout, 'foo', 'dist', 'foo-0.0.0.tar.gz')
-    
+
 The setup script is also run on update.
 
     >>> print system(buildout),
@@ -190,4 +190,5 @@ installed in develop mode.
     -  bar.egg-link
     -  foo.egg-link
     -  z3c.recipe.egg.egg-link
+    -  z3c.recipe.scripts.egg-link
     -  zc.recipe.egg.egg-link
