@@ -1,0 +1,36 @@
+# ${created_with}
+[buildout]
+develop = .
+extends = http://download.zope.org/bluebream/bluebream-${bluebream}.cfg
+parts = app
+        test
+
+versions = versions
+
+# This option enable caching of extended configuration files.
+# Cached configuration files will be saved inside `extends-cache`
+extends-cache = extends-cache
+
+# Don't let Buildout choose itself the versions, and make it repeatable.
+# You should pin down versions in the [versions] section.
+allow-picked-versions = false
+
+# To discover dependencies, comment the line above, uncomment the line below,
+# relaunch the buildout, then copy/paste the output to the [versions] section.
+#extensions = buildout.dumppickedversions
+
+[app]
+recipe = zc.recipe.egg
+eggs = ${project}
+       z3c.evalexception>=2.0
+       Paste
+       PasteScript
+       PasteDeploy
+interpreter = ${interpreter}
+
+[test]
+recipe = zc.recipe.testrunner
+eggs = ${project}
+
+[versions]
+# pin versions of your additional ipackages here
