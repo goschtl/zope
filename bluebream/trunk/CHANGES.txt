@@ -1,7 +1,7 @@
 Changelog
 *********
 
-1.0b4 (unreleased)
+1.0b4 (2010-08-26)
 ------------------
 
 - Change custom interpreter name: s/breampy/bbpy
