@@ -46,6 +46,7 @@
   <include package="zope.traversing.browser" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.schema" />
+  <include package="zope.app.http" />
 
   <includeOverrides file="overrides.zcml" />
   <include package="${ns_prefix}${package}" />

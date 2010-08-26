@@ -12,6 +12,7 @@ Changelog
 - Added empty overrides.zcml - show best practices to developers
 - updated to ZTK 1.0a3
 - Automatically find and suggest the latest *minor* version online
+- added zope.app.http registrations to get the correct unauthorized view
 
 1.0b3 (2010-07-11)
 ------------------
