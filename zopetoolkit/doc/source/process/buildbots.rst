@@ -116,17 +116,33 @@ no testing support for those
       - `winbot <http://winbot.zope.org/builders/ztk_10%20py_244_win32>`__
       - `winbot <http://winbot.zope.org/builders/ztk_10%20py_254_win32>`__
       - `winbot <http://winbot.zope.org/builders/ztk_10%20py_265_win32>`__
-      -
+      - notyet
       - `winbot <http://winbot.zope.org/builders/ztk_10%20py_265_win32>`__
-      -
+      - notyet
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
       - `winbot <http://winbot.zope.org/builders/ztk_dev%20py_244_win32>`__
       - `winbot <http://winbot.zope.org/builders/ztk_dev%20py_254_win32>`__
       - `winbot <http://winbot.zope.org/builders/ztk_dev%20py_265_win32>`__, `The Health Agency <http://dev.thehealthagency.com/buildbot/builders/ztk_win%20slave-win>`__
-      -
+      - notyet
       - `winbot <http://winbot.zope.org/builders/ztk_dev%20py_265_win64>`__
-      -
+      - notyet
+
+    * - `zc.buildout trunk <http://svn.zope.org/zc.buildout/trunk>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_244_win32>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_254_win32>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win32>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win32>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win64>`__
+      - `winbot <http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win64>`__
+
+    * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_244_win32>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_254_win32>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_265_win32>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_270_win32>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_265_win64>`__
+      - `winbot <http://winbot.zope.org/builders/BlueBream_dev%20py_270_win64>`__
 
 Linux
 ~~~~~
@@ -194,9 +210,9 @@ Linux
       -
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`__
-      - 
-      - 
-      - 
+      -
+      -
+      -
       -
       - `AFPY <http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit>`__
       - `AFPY <http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit>`__
