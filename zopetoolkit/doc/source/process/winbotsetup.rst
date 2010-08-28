@@ -94,7 +94,7 @@ Windows basics
     * programmers notepad (my personal preferred stuff)
     * mydefrag
     * collabnet svn client
-    * pythons 2.4 ... 2.6
+    * pythons 2.4 ... 2.7
     * pywin32
     * setuptools
     * mingw32
@@ -124,6 +124,17 @@ pythons + pywin32 + setuptools
       with setup.py install
 
   * c:\\python25_sys (default, 32bit, add to path)
+  * clean versions of all the various pythons:
+
+    * make a copy of the folder with the name `_clean` added
+    * remove all traces of setuptools
+
+      * from `site-packages`
+      * from `scripts`
+
+    * (or make a copy before installing setuptools -- I had all installed
+      and did not want to install from scratch again)
+
   * install mingw32 to C:\\MinGW
   * collabnet svn client to C:\\svn
   * MSVC
@@ -187,6 +198,16 @@ Create a file called 'setupcompilerandexecute.bat' in
 
   call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\VCVARSX86_AMD64.bat"
   set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\x64"
+  %*
+
+For `clean` pythons such 'setupcompilerandexecute.bat' is created ::
+
+  call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\VCVARSALL.bat" x86
+  set PATH=%PATH%;"C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin"
+  rem make zc.buildout happy:
+  set PYTHON2.4=c:\Python24_32_clean\python.exe
+  set PYTHON2.5=c:\Python25_32_clean\python.exe
+  set PYTHON2.7=c:\Python27_32_clean\python.exe
   %*
 
 for the rest see master.cfg
