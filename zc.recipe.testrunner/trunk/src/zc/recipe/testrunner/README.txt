@@ -750,9 +750,8 @@ The relative-paths option can be specified at the buildout level:
             '--test-path', join(base, 'demo'),
             ])
 
--------------------------
 Support for system Python
--------------------------
+=========================
 
 zc.recipe.testrunner 1.4.0 added support for zc.buildout 1.5's system Python
 support.
