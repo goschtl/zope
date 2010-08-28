@@ -32,10 +32,10 @@ setup(
     extras_require = {
         'tests': ['zope.testing'],
         },
-    install_requires = ['zc.buildout >=1.2.0',
+    install_requires = ['zc.buildout >=1.5.0',
                         'zope.testrunner',
                         'setuptools',
-                        'zc.recipe.egg  >=1.2.0',
+                        'z3c.recipe.scripts  >=1.0.0',
                         ],
     tests_require = ['zope.testing'],
     test_suite = name+'.tests.test_suite',

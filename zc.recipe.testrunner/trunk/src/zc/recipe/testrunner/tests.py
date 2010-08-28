@@ -25,6 +25,7 @@ def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.testrunner', test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
+    zc.buildout.testing.install_develop('z3c.recipe.scripts', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.testrunner', test)
     zc.buildout.testing.install('zope.interface', test)

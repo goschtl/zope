@@ -40,6 +40,53 @@ initialization
 relative-paths
     Use egg, test, and working-directory paths relative to the test script.
 
+include-site-packages
+    You can choose to have the site-packages of the underlying Python
+    available to your script or interpreter, in addition to the packages
+    from your eggs.  See `the z3c.recipe.scripts documentation`_ for
+    motivations and warnings.
+
+allowed-eggs-from-site-packages
+    Sometimes you need or want to control what eggs from site-packages are
+    used. The allowed-eggs-from-site-packages option allows you to specify a
+    whitelist of project names that may be included from site-packages.  You
+    can use globs to specify the value.  It defaults to a single value of '*',
+    indicating that any package may come from site-packages.
+
+    Here's a usage example::
+
+        [buildout]
+        ...
+
+        allowed-eggs-from-site-packages =
+            demo
+            bigdemo
+            zope.*
+
+    This option interacts with the ``include-site-packages`` option in the
+    following ways.
+
+    If ``include-site-packages`` is true, then
+    ``allowed-eggs-from-site-packages`` filters what eggs from site-packages
+    may be chosen.  Therefore, if ``allowed-eggs-from-site-packages`` is an
+    empty list, then no eggs from site-packages are chosen, but site-packages
+    will still be included at the end of path lists.
+
+    If ``include-site-packages`` is false, the value of
+    ``allowed-eggs-from-site-packages`` is irrelevant.
+
+extends
+    You can extend another section using this value.  It is intended to help
+    you avoid repeating yourself.
+
+exec-sitecustomize
+    Normally the Python's real sitecustomize module is not processed.
+    If you want it to be processed, set this value to 'true'.  This will
+    be honored irrespective of the setting for include-site-packages.
+
+.. _`the z3c.recipe.scripts documentation`:
+    http://pypi.python.org/pypi/z3c.recipe.scripts#including-site-packages-and-sitecustomize
+
 (Note that, at this time, due to limitations in the Zope test runner, the
 distributions cannot be zip files. TODO: Fix the test runner!)
 
@@ -155,20 +202,27 @@ We get a test script installed in our bin directory:
     -  buildout
     -  test
 
-We also get a part directory for the tests to run in:
+We also get a "testdemo" parts directory:
 
     >>> ls(sample_buildout, 'parts')
+    d  buildout
     d  testdemo
 
+The testdemo directory has a "working-directory," in which tests are run.
+(The site-packages directory is support for the test script.)
 
-And updating leaves its contents intact:
+    >>> ls(sample_buildout, 'parts', 'testdemo')
+    d  site-packages
+    d  working-directory
+
+Updating leaves its contents intact:
 
     >>> _ = system(os.path.join(sample_buildout, 'bin', 'test') +
     ...            ' -q --coverage=coverage')
-    >>> ls(sample_buildout, 'parts', 'testdemo')
+    >>> ls(sample_buildout, 'parts', 'testdemo', 'working-directory')
     d  coverage
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
-    >>> ls(sample_buildout, 'parts', 'testdemo')
+    >>> ls(sample_buildout, 'parts', 'testdemo', 'working-directory')
     d  coverage
 
 We can run the test script to run our demo test:
@@ -235,30 +289,22 @@ extra-paths option to specify them:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages', 'site.py')
+    ... # doctest: +ELLIPSIS
+    "...
+    def addsitepackages(known_paths):
+        """Add site packages, as determined by zc.buildout.
     <BLANKLINE>
-    import sys
-    sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
-    <BLANKLINE>
-    import os
-    sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir('/sample-buildout/parts/testdemo')
-    <BLANKLINE>
-    <BLANKLINE>
-    import zope.testrunner
-    <BLANKLINE>
-    if __name__ == '__main__':
-        zope.testrunner.run([
-            '--test-path', '/sample-buildout/demo',
-            ])
+        See original_addsitepackages, below, for the original version."""
+        buildout_paths = [
+            '/sample-buildout/demo',
+            '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
+            '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
+            '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
+            '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+            '/usr/local/zope/lib/python'
+            ]
+    ...
 
 We can use the working-directory option to specify a working
 directory:
@@ -280,22 +326,23 @@ directory:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
     <BLANKLINE>
+    <BLANKLINE>
+    import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/foo/bar')
-    <BLANKLINE>
     <BLANKLINE>
     import zope.testrunner
     <BLANKLINE>
@@ -304,10 +351,12 @@ directory:
             '--test-path', '/sample-buildout/demo',
             ])
 
-Now that out tests use a specified working directory, their designated
+Now that our tests use a specified working directory, their designated
 part directory is gone:
 
-    >>> ls(sample_buildout, 'parts')
+    >>> ls(sample_buildout, 'parts', 'testdemo')
+    d  site-packages
+
 
 If we need to specify default options, we can use the defaults
 option. For example, Zope 3 applications typically define test suites
@@ -336,22 +385,23 @@ using the -v option:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir('/sample-buildout/parts/testdemo')
-    <BLANKLINE>
+    os.chdir('/sample-buildout/parts/testdemo/working-directory')
     <BLANKLINE>
     import zope.testrunner
     <BLANKLINE>
@@ -361,6 +411,7 @@ using the -v option:
     ]) + [
             '--test-path', '/sample-buildout/demo',
             ])
+
 
 Some things to note from this example:
 
@@ -434,22 +485,24 @@ the environment variable. Also, the tests pass again:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      ]
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir('/sample-buildout/parts/testdemo')
+    os.chdir('/sample-buildout/parts/testdemo/working-directory')
     os.environ['zc.recipe.testrunner'] = '42'
-    <BLANKLINE>
     <BLANKLINE>
     import zope.testrunner
     <BLANKLINE>
@@ -491,21 +544,23 @@ end of the script:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir('/sample-buildout/parts/testdemo')
+    os.chdir('/sample-buildout/parts/testdemo/working-directory')
     print 'Hello all you egg-laying pythons!'
     <BLANKLINE>
     import zope.testrunner
@@ -540,21 +595,23 @@ This will also work with a multi-line initialization section:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/demo',
-      '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-      '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
-      '/sample-buildout/eggs/zope.exceptions-3.5.2-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
-      '/usr/local/zope/lib/python',
-      ]
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir('/sample-buildout/parts/testdemo')
+    os.chdir('/sample-buildout/parts/testdemo/working-directory')
     print 'Hello all you egg-laying pythons!'
     print 'I thought pythons were live bearers?'
     <BLANKLINE>
@@ -588,7 +645,7 @@ generated relative to the test script.
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import os
     <BLANKLINE>
@@ -598,19 +655,19 @@ generated relative to the test script.
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      join(base, 'demo'),
-      join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
-      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-      join(base, 'eggs/zope.exceptions-3.5.2-linux-i686.egg'),
-      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
-      '/usr/local/zope/lib/python',
-      join(base, 'sources'),
-      ]
+        join(base, 'parts/testdemo/site-packages'),
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir(join(base, 'parts/testdemo'))
-    <BLANKLINE>
+    os.chdir(join(base, 'parts/testdemo/working-directory'))
     <BLANKLINE>
     import zope.testrunner
     <BLANKLINE>
@@ -618,6 +675,29 @@ generated relative to the test script.
         zope.testrunner.run([
             '--test-path', join(base, 'demo'),
             ])
+
+    >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages', 'site.py')
+    ... # doctest: +ELLIPSIS
+    "...
+    def addsitepackages(known_paths):
+        """Add site packages, as determined by zc.buildout.
+    <BLANKLINE>
+        See original_addsitepackages, below, for the original version."""
+        join = os.path.join
+        base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+        base = os.path.dirname(base)
+        base = os.path.dirname(base)
+        base = os.path.dirname(base)
+        buildout_paths = [
+            join(base, 'demo'),
+            join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
+            join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+            join(base, 'eggs/zope.exceptions-3.5.2-linux-i686.egg'),
+            join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+            '/usr/local/zope/lib/python',
+            join(base, 'sources')
+            ]
+    ...
 
 The relative-paths option can be specified at the buildout level:
 
@@ -639,7 +719,7 @@ The relative-paths option can be specified at the buildout level:
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
     >>> cat(sample_buildout, 'bin', 'testdemo')
-    #!/usr/local/bin/python2.4
+    #!/usr/local/bin/python2.4 -S
     <BLANKLINE>
     import os
     <BLANKLINE>
@@ -649,19 +729,19 @@ The relative-paths option can be specified at the buildout level:
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      join(base, 'demo'),
-      join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
-      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
-      join(base, 'eggs/zope.exceptions-3.5.2-linux-i686.egg'),
-      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
-      '/usr/local/zope/lib/python',
-      join(base, 'sources'),
-      ]
+        join(base, 'parts/testdemo/site-packages'),
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
-    os.chdir(join(base, 'parts/testdemo'))
-    <BLANKLINE>
+    os.chdir(join(base, 'parts/testdemo/working-directory'))
     <BLANKLINE>
     import zope.testrunner
     <BLANKLINE>
@@ -669,4 +749,369 @@ The relative-paths option can be specified at the buildout level:
         zope.testrunner.run([
             '--test-path', join(base, 'demo'),
             ])
+
+-------------------------
+Support for system Python
+-------------------------
+
+zc.recipe.testrunner 1.4.0 added support for zc.buildout 1.5's system Python
+support.
+
+By default, this means that, if the buildout is set up as described in the
+`pertinent section of the zc.buildout documentation`_ then the scripts
+generated by this recipe will be safe to use with a system Python.
+
+You can also use the same options as provided by z3c.recipe.scripts (and
+the functionality is delegated to code from this package).  That package
+is well-tested, so this merely quickly demonstrates usage.
+
+include-site-packages
+---------------------
+
+Use this to include site-packages from the Python you are using.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... include-site-packages = true
+    ... """)
+
+.. ReST comment: Hide the rest of the test from PyPI readers.
+
+    >>> ignore = system(
+    ...     os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages', 'site.py')
+    ... # doctest: +ELLIPSIS
+    "...
+    def addsitepackages(known_paths):
+        """Add site packages, as determined by zc.buildout.
+    <BLANKLINE>
+        See original_addsitepackages, below, for the original version."""
+        setuptools_path = '...'
+        sys.path.append(setuptools_path)
+        known_paths.add(os.path.normcase(setuptools_path))
+        import pkg_resources
+        buildout_paths = [
+            '/sample-buildout/demo',
+            '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
+            '/sample-buildout/eggs/zope.exceptions-3.4.1-py2.4.egg'
+            ]
+        for path in buildout_paths:
+            sitedir, sitedircase = makepath(path)
+            if not sitedircase in known_paths and os.path.exists(sitedir):
+                sys.path.append(sitedir)
+                known_paths.add(sitedircase)
+                pkg_resources.working_set.add_entry(sitedir)
+        sys.__egginsert = len(buildout_paths) # Support distribute.
+        original_paths = [
+            ...
+            ]
+        for path in original_paths:
+            if path == setuptools_path or path not in known_paths:
+                addsitedir(path, known_paths)
+        return known_paths
+    ...
+
+Note that a setting in the buildout section will also be honored, if it is
+not overridden locally.
+
+.. ReST comment: Hide the test from PyPI readers.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ... include-site-packages = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... """)
+
+    >>> ignore = system(
+    ...     os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages', 'site.py')
+    ... # doctest: +ELLIPSIS
+    "...
+    def addsitepackages(known_paths):
+        """Add site packages, as determined by zc.buildout.
+    <BLANKLINE>
+        See original_addsitepackages, below, for the original version."""
+        setuptools_path = '...'
+        sys.path.append(setuptools_path)
+        known_paths.add(os.path.normcase(setuptools_path))
+        import pkg_resources
+        buildout_paths = [
+            '/sample-buildout/demo',
+            '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
+            '/sample-buildout/eggs/zope.exceptions-3.4.1-py2.4.egg'
+            ]
+        for path in buildout_paths:
+            sitedir, sitedircase = makepath(path)
+            if not sitedircase in known_paths and os.path.exists(sitedir):
+                sys.path.append(sitedir)
+                known_paths.add(sitedircase)
+                pkg_resources.working_set.add_entry(sitedir)
+        sys.__egginsert = len(buildout_paths) # Support distribute.
+        original_paths = [
+            ...
+            ]
+        for path in original_paths:
+            if path == setuptools_path or path not in known_paths:
+                addsitedir(path, known_paths)
+        return known_paths
+    ...
+
+allowed-eggs-from-site-packages
+-------------------------------
+
+allowed-eggs-from-site-packages is described at the start of this document.
+It is a whitespace-delineated list of eggs that may be obtained from the
+filesystem.  It may use wildcards, and it defaults to "*", accepting all
+eggs.
+
+Here's a demonstration of how you would use
+allowed-eggs-from-sitepackages to allow no eggs to come from the
+filesystem, but still let you import other packages (like PIL) from the
+filesystem. (Note that the eggs-directory and the executable are only
+part of making this documentation testable, and not necessary to use
+this option.)
+
+Imagine that the system Python has demo installed.  If
+allowed-eggs-from-site-packages were its default value of '*', an
+installation would succeed, because it would be found in site-packages.
+However, this example would fail, because the site-packages version
+would not be allowed.
+
+.. ReST comment: unimportant for PyPI (comment ends at next "..")
+
+    >>> py_path, site_packages_path = make_py(initialization='''\
+    ... import os
+    ... os.environ['zc.buildout'] = 'foo bar baz shazam'
+    ... ''')
+    >>> from zc.buildout.tests import create_sample_sys_install
+    >>> create_sample_sys_install(site_packages_path)
+    >>> new_buildout = tmpdir('new_buildout')
+    >>> cd(new_buildout)
+    >>> mkdir(new_buildout, 'altdemo')
+    >>> mkdir(new_buildout, 'altdemo', 'demo')
+    >>> write(new_buildout, 'altdemo', 'demo', '__init__.py', '')
+    >>> write(new_buildout, 'altdemo', 'setup.py',
+    ... """
+    ... from setuptools import setup
+    ...
+    ... setup(name = "altdemo")
+    ... """)
+    >>> write(new_buildout, 'altdemo', 'README.txt', '')
+    >>> from zc.buildout.testing import install_develop, make_buildout
+    >>> make_buildout()
+    >>> install_develop(
+    ...     'zc.recipe.testrunner', os.path.join(new_buildout, 'develop-eggs'))
+    >>> install_develop(
+    ...     'zope.testrunner', os.path.join(new_buildout, 'develop-eggs'))
+    >>> install_develop(
+    ...     'zope.interface', os.path.join(new_buildout, 'develop-eggs'))
+    >>> install_develop(
+    ...     'zope.exceptions', os.path.join(new_buildout, 'develop-eggs'))
+    >>> install_develop(
+    ...     'zc.recipe.egg', os.path.join(new_buildout, 'develop-eggs'))
+    >>> install_develop(
+    ...     'z3c.recipe.scripts', os.path.join(new_buildout, 'develop-eggs'))
+
+..
+
+    >>> write(new_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = altdemo
+    ... parts = testdemo
+    ... eggs-directory = tmpeggs
+    ... executable = %(py_path)s
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... include-site-packages = true
+    ... allowed-eggs-from-site-packages =
+    ... """ % dict(py_path=py_path))
+
+.. ReST comment: Hide the rest of the test from PyPI readers.
+
+   This will fail, because we cannot find demo anywhere (notice we are no
+   longer developing it in the buildout configuration above):
+
+    >>> print system(
+    ...     os.path.join(new_buildout, 'bin', 'buildout') + ' -q'),
+    While:
+      Installing testdemo.
+      Getting distribution for 'demo'.
+    Error: Couldn't find a distribution for 'demo'.
+
+   However, if we allow all eggs through, it works, because demo has been
+   installed in the "system Python".
+
+    >>> write(new_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = altdemo
+    ... parts = testdemo
+    ... eggs-directory = tmpeggs
+    ... executable = %(py_path)s
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... include-site-packages = true
+    ... """ % dict(py_path=py_path))
+
+    >>> print system(
+    ...     os.path.join(new_buildout, 'bin', 'buildout') + ' -q'),
+
+
+Like include-site-packages, it is also honored in the main buildout
+section if it is not overridden.
+
+.. ReST comment: hide from PyPI.  This will fail again, showing we have
+   blocked the eggs.
+
+    >>> write(new_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = testdemo
+    ... eggs-directory = tmpeggs
+    ... allowed-eggs-from-site-packages =
+    ... executable = %(py_path)s
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... include-site-packages = true
+    ... """ % dict(py_path=py_path))
+
+    >>> print system(
+    ...     os.path.join(new_buildout, 'bin', 'buildout') + ' -q'),
+    While:
+      Installing testdemo.
+      Getting distribution for 'demo'.
+    Error: Couldn't find a distribution for 'demo'.
+
+extends
+-------
+
+The extends option lets you inherit options from other sections.  This can
+keep you from repeating yourself.  For instance, in this example, the
+testdemo section gets all of its configuration from the source section, except
+it overrides the initialization.
+
+.. ReST comment: we'll move back to the sample_buildout.
+
+    >>> cd(sample_buildout)
+
+..
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [source]
+    ... eggs = demo
+    ... extra-paths = /usr/local/zope/lib/python
+    ... defaults = ['--tests-pattern', '^f?tests$',
+    ...             '-v'
+    ...            ]
+    ... initialization = print 'Hello all you egg-laying pythons!'
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... extends = source
+    ... initialization = print 'Hello all you egg-laying pythons!'
+    ...                  print 'I thought pythons were live bearers?'
+    ... """)
+
+.. ReST comment: PyPI readers don't need to see the proof, but here it is.
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo')
+    #!/usr/local/bin/python2.4 -S
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+        '/sample-buildout/parts/testdemo/site-packages',
+        ]
+    <BLANKLINE>
+    <BLANKLINE>
+    import os
+    path = sys.path[0]
+    if os.environ.get('PYTHONPATH'):
+        path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['PYTHONPATH'] = path
+    import site # imports custom buildout-generated site.py
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo/working-directory')
+    print 'Hello all you egg-laying pythons!'
+    print 'I thought pythons were live bearers?'
+    <BLANKLINE>
+    import zope.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testrunner.run((['--tests-pattern', '^f?tests$',
+    '-v'
+    ]) + [
+            '--test-path', '/sample-buildout/demo',
+            ])
+
+exec-sitecustomize
+------------------
+
+This option lets you choose to execute the sitecustomize file of the Python
+you are using.  It is usually false.
+
+.. ReST comment: here's the demo.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... executable = %(py_path)s
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... exec-sitecustomize = true
+    ... """ % dict(py_path=py_path))
+
+    >>> ignored = system(buildout),
+
+    >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages',
+    ...     'sitecustomize.py') # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    <BLANKLINE>
+    # The following is from
+    # /executable_buildout/parts/py/sitecustomize.py
+    ...
+    import os
+    os.environ['zc.buildout'] = 'foo bar baz shazam'
+
+.. _`pertinent section of the zc.buildout documentation`:
+    http://pypi.python.org/pypi/zc.buildout/1.5.0#working-with-a-system-python
+
+
 

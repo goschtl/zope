@@ -5,6 +5,10 @@ Change History
 1.4.0 (unreleased)
 ==================
 
+- Update to using zc.buildout 1.5.0 script generation.  This adds the
+  following options: include-site-packages, allowed-eggs-from-site-packages,
+  extends, and exec-sitecustomize.
+
 - Merge fixes from 1.2.1 (svn://svn.zope.org/repos/main/zc.recipe.testrunner/tags/1.2.1)
   Excluding nailing zope.testing version. That fixes a bunch of windows issues
 
@@ -13,7 +17,7 @@ Change History
 
 - Updated tests to run with the last versions of all modules.
 
-- Removed the usage of the deprecated zope.testing.doctest, therby also
+- Removed the usage of the deprecated zope.testing.doctest, thereby also
   dropping Python 2.3 support.
 
 - Started using zope.testrunner instead of zope.testing.testrunner.
