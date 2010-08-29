@@ -337,6 +337,7 @@ directory:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -396,6 +397,7 @@ using the -v option:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -496,6 +498,7 @@ the environment variable. Also, the tests pass again:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -555,6 +558,7 @@ end of the script:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -606,6 +610,7 @@ This will also work with a multi-line initialization section:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -662,6 +667,7 @@ generated relative to the test script.
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -736,6 +742,7 @@ The relative-paths option can be specified at the buildout level:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
@@ -790,6 +797,8 @@ Use this to include site-packages from the Python you are using.
     >>> cat(sample_buildout, 'parts', 'testdemo', 'site-packages', 'site.py')
     ... # doctest: +ELLIPSIS
     "...
+
+
     def addsitepackages(known_paths):
         """Add site packages, as determined by zc.buildout.
     <BLANKLINE>
@@ -800,8 +809,7 @@ Use this to include site-packages from the Python you are using.
         import pkg_resources
         buildout_paths = [
             '/sample-buildout/demo',
-            '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-            '/sample-buildout/eggs/zope.exceptions-3.4.1-py2.4.egg'
+            ...
             ]
         for path in buildout_paths:
             sitedir, sitedircase = makepath(path)
@@ -853,8 +861,7 @@ not overridden locally.
         import pkg_resources
         buildout_paths = [
             '/sample-buildout/demo',
-            '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
-            '/sample-buildout/eggs/zope.exceptions-3.4.1-py2.4.egg'
+            ...
             ]
         for path in buildout_paths:
             sitedir, sitedircase = makepath(path)
@@ -1059,6 +1066,7 @@ it overrides the initialization.
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
+        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
