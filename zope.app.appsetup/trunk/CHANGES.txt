@@ -6,6 +6,8 @@ Changelog
 
 - update tests according to zope.testrunner changes
 
+- switch IErrorReportingUtility copy_to_zlog field to ``True``
+
 
 3.14.0 (2010-04-13)
 -------------------
