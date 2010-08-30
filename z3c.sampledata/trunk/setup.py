@@ -63,6 +63,7 @@ setup (
     install_requires = [
         'setuptools',
         'ZODB3',
+        'zope.authentication',
         'zope.component',
         'zope.i18nmessageid',
         'zope.interface',
@@ -73,9 +74,7 @@ setup (
         'zope.traversing',
         'zope.viewlet',
         'zope.app.pagetemplate>=3.6.0',
-        'zope.app.authentication>=3.7.0',
-        'zope.app.component',
-        'zope.app.security',
+        'zope.pluggableauth',
         ],
     zip_safe = False,
 )

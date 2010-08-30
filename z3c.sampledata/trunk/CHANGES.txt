@@ -6,7 +6,7 @@ CHANGES
 0.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use current pacakges.
 
 
 0.3.1 (2010-08-30)

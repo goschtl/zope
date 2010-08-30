@@ -24,7 +24,7 @@ import zope.schema
 import zope.lifecycleevent
 from zope.interface import implements
 from zope.app.authentication import principalfolder
-from zope.app.component import hooks
+from zope.site import hooks
 
 from z3c.sampledata.interfaces import ISampleDataPlugin
 

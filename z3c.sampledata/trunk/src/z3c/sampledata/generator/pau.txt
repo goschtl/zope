@@ -36,7 +36,6 @@ Now that everything is set up we can generate the intids utility-
   >>> 'pau' in site.getSiteManager()['default']
   True
   >>> from zope import component
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> component.getUtility(IAuthentication)
   <zope.pluggableauth.authentication.PluggableAuthentication object at ...>
-

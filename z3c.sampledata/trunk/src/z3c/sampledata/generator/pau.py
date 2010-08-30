@@ -21,9 +21,9 @@ import zope.event
 import zope.lifecycleevent
 from zope.interface import implements
 
-from zope.app.authentication.authentication import PluggableAuthentication
-from zope.app.security.interfaces import IAuthentication
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth import PluggableAuthentication
+from zope.authentication.interfaces import IAuthentication
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import PrincipalFolder
 
 from z3c.sampledata.interfaces import ISampleDataPlugin

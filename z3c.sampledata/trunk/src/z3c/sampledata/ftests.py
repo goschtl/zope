@@ -6,10 +6,10 @@ import zope.event
 from zope.lifecycleevent import ObjectCreatedEvent
 
 from zope.app.testing import functional
-from zope.app.authentication.authentication import PluggableAuthentication
+from zope.pluggableauth import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
 
 
 functional.defineLayer('TestLayer', 'ftesting.zcml')
