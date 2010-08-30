@@ -13,7 +13,7 @@ version = '0.4.4dev'
 long_description = (
     'Change history\n'
     '**************\n'
-    + '\n' + 
+    + '\n' +
     read('CHANGES.txt')
     + '\n' +
     'Detailed Documentation\n'
@@ -21,7 +21,7 @@ long_description = (
     + '\n' +
     read('z3c', 'recipe', 'eggbasket', 'README.txt')
     + '\n' +
-    'Contributors\n' 
+    'Contributors\n'
     '************\n'
     + '\n' +
     read('CONTRIBUTORS.txt')
@@ -29,6 +29,12 @@ long_description = (
     'Download\n'
     '********\n'
     )
+
+
+tests_require = [
+    'zope.testing',
+    'zc.recipe.egg'
+    ]
 
 
 setup(name='z3c.recipe.eggbasket',
@@ -56,7 +62,10 @@ setup(name='z3c.recipe.eggbasket',
                         'zc.buildout',
                         'zc.recipe.egg',
                         ],
-      tests_require=['zope.testing', 'zc.recipe.egg'],
+      extras_require = dict(
+          test=tests_require
+          ),
+      tests_require=tests_require,
       test_suite='z3c.recipe.eggbasket.tests.test_docs.test_suite',
       entry_points={
         "zc.buildout":
