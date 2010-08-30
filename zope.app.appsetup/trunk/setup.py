@@ -66,7 +66,8 @@ setup(
         test=[
             'zope.componentvocabulary',
             'zope.principalregistry',
-            'zope.testing',
+            'zope.testing>=3.10.0',
+            'zope.testrunner',
             ]
         ),
     namespace_packages=['zope', 'zope.app'],

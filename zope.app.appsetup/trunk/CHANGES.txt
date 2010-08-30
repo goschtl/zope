@@ -4,7 +4,7 @@ Changelog
 3.14.1 (unreleased)
 -------------------
 
-- update according to zope.testrunner changes
+- update tests according to zope.testrunner changes
 
 
 3.14.0 (2010-04-13)
