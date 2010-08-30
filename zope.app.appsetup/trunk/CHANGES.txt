@@ -4,7 +4,7 @@ Changelog
 3.14.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- update according to zope.testrunner changes
 
 
 3.14.0 (2010-04-13)
@@ -12,7 +12,7 @@ Changelog
 
 - make zope.testing an optional (test) dependency.
 
-- remove test dependency zope.app.testing. 
+- remove test dependency zope.app.testing.
 
 
 3.13.0 (2009-12-24)
