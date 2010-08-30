@@ -57,7 +57,6 @@ setup (
     extras_require = dict(
         test = [
             'zope.app.testing',
-            'zope.app.security',
             'zope.app.zcmlfiles',
             ],
         ),
@@ -68,11 +67,15 @@ setup (
         'zope.i18nmessageid',
         'zope.interface',
         'zope.intid',
+        'zope.lifecycleevent',
         'zope.schema',
         'zope.site',
+        'zope.traversing',
         'zope.viewlet',
         'zope.app.pagetemplate>=3.6.0',
         'zope.app.authentication>=3.7.0',
+        'zope.app.component',
+        'zope.app.security',
         ],
     zip_safe = False,
 )

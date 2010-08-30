@@ -17,10 +17,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
-import zope.component
 import zope.event
-import zope.schema
 import zope.lifecycleevent
 from zope.interface import implements
 
@@ -30,8 +27,6 @@ from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import PrincipalFolder
 
 from z3c.sampledata.interfaces import ISampleDataPlugin
-
-from z3c.sampledata import _
 
 
 class SamplePau(object):
@@ -69,4 +64,3 @@ class SamplePau(object):
             return pau
         else:
             return default['pau']
-

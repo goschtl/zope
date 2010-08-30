@@ -26,7 +26,6 @@ $Id: $
 """
 __docformat__ = "reStructuredText"
 
-import unittest
 import os
 import transaction
 
@@ -44,7 +43,7 @@ from z3c.sampledata.interfaces import ISampleManager
 
 class BufferedDatabaseTestLayer(object):
     """A test layer which creates a sample database.
-    
+
     The created database is later used without the need to run through the
     sample generation again.
     This speeds up functional tests.
@@ -115,4 +114,3 @@ class BufferedDatabaseTestLayer(object):
                 for name, field in schema.getFieldsInOrder(iface):
                     data[name] = field.default or field.missing_value
         return ret
-

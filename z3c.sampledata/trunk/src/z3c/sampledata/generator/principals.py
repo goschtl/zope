@@ -23,8 +23,6 @@ import zope.event
 import zope.schema
 import zope.lifecycleevent
 from zope.interface import implements
-from zope.security.proxy import removeSecurityProxy
-from zope.app.security.interfaces import IAuthentication
 from zope.app.authentication import principalfolder
 from zope.app.component import hooks
 
@@ -85,7 +83,7 @@ class ISamplePrincipalParameters(zope.interface.Interface):
 
 class SamplePrincipals(object):
     """Create principals inside a site manager.
-    
+
     context : site
     return  : pau in which the principals where created
     """
@@ -163,4 +161,3 @@ class SamplePrincipals(object):
 
     def _createDummyPrincipalInfo(self, site, i):
         return ['login%i'%i, 'name%i'%i, '%i'%i]
-

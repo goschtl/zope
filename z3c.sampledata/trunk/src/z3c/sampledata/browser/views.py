@@ -1,9 +1,10 @@
 from z3c.sampledata import _
-from z3c.sampledata.interfaces import ISampleDataPlugin, ISampleManager
+from z3c.sampledata.interfaces import ISampleManager
 from zope import component
 from zope import interface
 from zope import schema
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.traversing.browser import absoluteURL
 import zope.formlib.form
 import zope.app.pagetemplate.namedtemplate
 import zope.formlib.interfaces
@@ -25,7 +26,7 @@ class Managers(object):
         if 'manager' in self.request:
             managerName = self.request['manager']
             self.request.response.redirect(
-                zapi.absoluteURL(self.context, self.request)+
+                absoluteURL(self.context, self.request)+
                 '/@@generatesample.html?manager="%s"'%(managerName))
 
 
@@ -108,4 +109,3 @@ class Generator(zope.formlib.form.AddForm):
         self.schema = schema
         self.prefix = prefix
         super(Generator, self).__init__(context, request)
-

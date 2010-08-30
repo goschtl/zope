@@ -1,4 +1,3 @@
-from zope import component
 from zope.component.zcml import utility
 
 from manager import Manager
@@ -33,4 +32,3 @@ class sampleManager(object):
 
     def __call__(self):
         return
-

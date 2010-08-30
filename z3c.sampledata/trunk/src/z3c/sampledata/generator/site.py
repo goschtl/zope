@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.component
 import zope.event
 import zope.interface
 import zope.lifecycleevent
