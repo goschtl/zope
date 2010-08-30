@@ -65,3 +65,23 @@ based on the input directory.
   >>> finder.find_files(os.path.join(repos, 'dir1'))
   ['data1.txt',
    'dir11/data1.txt']
+
+Buildout 1.5 and higher
+-----------------------
+
+When one uses zc.buildout 1.5 or higher, the system's environment is
+manipulated. In particular, the PYTHONPATH OS environment variable is
+rewritten. In that case it should be deleted:
+
+  >>> import os
+  >>> bo_orig_path = os.environ.pop('BUILDOUT_ORIGINAL_PYTHONPATH', None)
+  >>> orig_path = os.environ.get('PYTHONPATH')
+  >>> os.environ['PYTHONPATH'] = '/bogus'
+
+  >>> finder.find_files(os.path.join(repos, 'dir1'))
+  ['data1.txt', 'dir11/data1.txt']
+
+  >>> if bo_orig_path:
+  ...     os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = bo_orig_path
+  >>> if orig_path:
+  ...     os.environ['PYTHONPATH'] = orig_path

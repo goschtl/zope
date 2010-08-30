@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-1.1.1 (2010-??-??)
+1.1.1 (2010-08-30)
 ------------------
 
-- ...
+- Bug: Improve the Buildout support. Thanks to Gary Poster for helping me out.
 
 1.1.0 (2010-08-30)
 ------------------

@@ -16,32 +16,38 @@
 import logging
 import os
 import os.path
+import pkg_resources
 import subprocess
+
+def get_buildout_version():
+    pkg = pkg_resources.working_set.find(
+        pkg_resources.Requirement.parse('zc.buildout'))
+    if pkg is None:
+        return ('00000000',)
+    return pkg_resources.parse_version(pkg.version)
 
 def find_files(dirname="."):
     """Find all files checked into a mercurial repository."""
     dirname = os.path.abspath(dirname)
     # Support for zc.buildout 1.5 and higher.
-    python_path = None
+    env = os.environ.copy()
     if 'BUILDOUT_ORIGINAL_PYTHONPATH' in os.environ:
-        python_path = os.environ['PYTHONPATH']
-        os.environ['PYTHONPATH'] = os.environ['BUILDOUT_ORIGINAL_PYTHONPATH']
+        env['PYTHONPATH'] = os.environ['BUILDOUT_ORIGINAL_PYTHONPATH']
+    elif 'PYTHONPATH' in env:
+        if get_buildout_version() >= pkg_resources.parse_version('1.5.0'):
+            del env['PYTHONPATH']
     try:
         # List all files of the repository as absolute paths.
         proc = subprocess.Popen(['hg', 'locate', '-f'],
                                 stderr=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                cwd=dirname)
+                                cwd=dirname,
+                                env=env)
         stdout, stderr = proc.communicate()
     except Exception, err:
         logging.error(str(err))
-        if python_path:
-            os.environ['PYTHONPATH'] = python_path
         # If anything happens, return an empty list.
         return []
-
-    if python_path:
-        os.environ['PYTHONPATH'] = python_path
 
     # The process finished, but returned an error code.
     if proc.returncode != 0:
