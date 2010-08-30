@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.setuptools_mercurial',
-    version='1.0.2dev',
+    version='1.1.0',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Mercurial File Finder Plugin for Setuptools",
@@ -55,8 +55,7 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
-        test = [
-            'zope.testing',],
+        test = [],
         ),
     install_requires = [
         'setuptools',

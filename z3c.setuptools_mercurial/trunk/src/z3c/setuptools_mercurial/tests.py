@@ -18,8 +18,7 @@ __docformat__ = "reStructuredText"
 import logging
 import os
 import unittest
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import doctest
 
 class TestingHandler(logging.Handler):
 
@@ -39,7 +38,7 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite(
+        doctest.DocFileSuite(
             'README.txt',
             globs={'cmd': do_cmd},
             setUp=setUp, tearDown=tearDown,

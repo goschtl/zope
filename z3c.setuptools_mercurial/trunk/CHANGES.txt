@@ -2,10 +2,17 @@
 CHANGES
 =======
 
-1.0.2 (2009-??-??)
+1.1.0 (2010-08-30)
 ------------------
 
-- ...
+- Feature: Make ``z3c.setuptools_mercurial`` compatible with Buildout 1.5,
+  which does not include the standard PYTHONPATH by default anymore. This
+  caused mercurial not to find its library.
+
+- Feature: Use ``doctest`` instead of ``zope.testing.doctest``.
+
+- Feature: Update coverage setup.
+
 
 1.0.1 (2009-12-16)
 ------------------

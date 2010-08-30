@@ -12,16 +12,20 @@
 #
 ##############################################################################
 """Find all files checked into a mercurial repository.
-
-$Id$
 """
 import logging
+import os
 import os.path
 import subprocess
 
 def find_files(dirname="."):
     """Find all files checked into a mercurial repository."""
     dirname = os.path.abspath(dirname)
+    # Support for zc.buildout 1.5 and higher.
+    python_path = None
+    if 'BUILDOUT_ORIGINAL_PYTHONPATH' in os.environ:
+        python_path = os.environ['PYTHONPATH']
+        os.environ['PYTHONPATH'] = os.environ['BUILDOUT_ORIGINAL_PYTHONPATH']
     try:
         # List all files of the repository as absolute paths.
         proc = subprocess.Popen(['hg', 'locate', '-f'],
@@ -31,8 +35,14 @@ def find_files(dirname="."):
         stdout, stderr = proc.communicate()
     except Exception, err:
         logging.error(str(err))
+        if python_path:
+            os.environ['PYTHONPATH'] = python_path
         # If anything happens, return an empty list.
         return []
+
+    if python_path:
+        os.environ['PYTHONPATH'] = python_path
+
     # The process finished, but returned an error code.
     if proc.returncode != 0:
         logging.error(stderr+ ' (code %i)' %proc.returncode)
