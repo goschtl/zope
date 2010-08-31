@@ -9,13 +9,50 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-08-24.log.html
 
 Attendees
 ---------
 
-XXX
+Hanno Schlichting, Charlie Clark, Christian Theune, Patrick Gerken, Adam
+Groszer
 
+Last bug day
+------------
+
+Although many people answered the Doodle for the bug day in August the actual
+participation was quite low. It seems that most people had unexpected urgent
+customer issues to deal with on that specific day.
+
+Only Michael Howitz and Jens Vagelpohl responded to the request for reports on
+the mailing list.
+
+As September will feature the DZUG conference and the Zope summit the next bug
+day will be scheduled a little further down the calendar to avoid clashes with
+travel plans and people needing to catch up with everyday business after
+travelling.
+
+
+Buildbot organization
+---------------------
+
+Adam asked for talking about organizing the buildbots more so that people can
+get a better overview of all the builds.
+
+Patrick already experimented with a script that fetches data from the
+buildbots and creates an overarching display (screenshot:
+http://picasaweb.google.de/lh/photo/jUOVCcnJEV2KeYI9R_pUCMdjTw5Dqg3R_WEjti4Vahk?feat=twitter)
+
+A small terminology debate occured where Patrick noted that people tend to use
+both 'dev' and 'trunk' in the buildbots. Hanno brought the argument that 'dev'
+is what we suffix development releases with when denoting a version and thus
+'dev'. In comparison to 'trunk', 'dev' is also agnostic to the VCS and was
+thus being favored in general.
+
+Christian got the code for the aggregator script that fetches information from
+mail.zope.org and assembles the daily messages to zope-dev. It has been
+checked into his sandbox in Subversion. We can now work on an improved version
+of that script.
 
 
 Agenda
