@@ -285,12 +285,9 @@ def _get_debian_dependencies(file, extras=None, exclude_extras=None):
                     pydeps.add('%s (%s %s)' % (pkg, op, dpkg_version))
             else:
                 pydeps.add(pkg)
-    # Let's depend on the namespace pacakges as well.
-    # this is a pretty ugly way to get __init__.py into the namespace packages
-    # which seems to be necessary.
-    # though testing it out on ubuntu gutsy said it wasnt, it was on Debian etch
-    #
-    # Perhaps we could remove this a bit later
+    # Let's depend on the namespace packages as well.
+    # This is needed to get __init__.py into the namespace packages.
+    # See https://bugs.launchpad.net/van.pydeb/+bug/619294
     namespace_pkgs = dist._get_metadata('namespace_packages.txt')
     for pkg in namespace_pkgs:
         bin_pkg = py_to_bin(pkg)
