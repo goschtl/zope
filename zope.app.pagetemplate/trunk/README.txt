@@ -5,16 +5,6 @@ server.  In particular, it provides:
 * a TALES engine implementation that uses Zope's security system for
   checking access,
 
-* a ``ViewPageTemplateFile`` class that can be put on a browser page
-  class as an attribute and will function as a callable method whose
-  result is the rendered template, e.g.::
-
-    from zope.publisher import BrowserPage
-    from zope.browserpage import ViewPageTemplateFile
-
-    class HelloWorldPage(BrowserPage):
-        __call__ = ViewPageTemplateFile('helloworld.pt')
-
 * TALES namespace adapters for easy access to DublinCore metadata
   (e.g. ``obj/zope:title``) and URL quoting
   (e.g. ``obj/@@absolute_url/url:quote``).

@@ -22,7 +22,7 @@ import os.path
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.11.1dev'
+version = '3.11.1'
 
 
 setup(name='zope.app.pagetemplate',
@@ -56,7 +56,6 @@ setup(name='zope.app.pagetemplate',
           'zope.i18nmessageid',
           'zope.interface',
           'zope.pagetemplate>=3.5.0',
-          'zope.publisher',
           'zope.schema',
           'zope.security [untrustedpython]',
           'zope.size',
@@ -64,7 +63,8 @@ setup(name='zope.app.pagetemplate',
           'zope.traversing',
           ],
       extras_require={
-          "test": ['zope.container'],
+          "test": ['zope.container',
+                   'zope.publisher'],
           },
       zip_safe=False,
       )
