@@ -16,6 +16,7 @@
 $Id$
 """
 import unittest
+import doctest
 
 from zope.component import getGlobalSiteManager
 from zope.component.interfaces import IFactory
@@ -27,7 +28,6 @@ from zope.i18n.translationdomain \
      import TranslationDomain as GlobalTranslationDomain
 from zope.interface import implements, classImplements
 from zope.interface.verify import verifyObject
-from zope.testing.doctestunit import DocTestSuite
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.traversing.api import traverse
 
@@ -278,7 +278,7 @@ class TestTranslationDomainInAction(unittest.TestCase):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestTranslationDomain),
-        DocTestSuite('zope.app.i18n.translationdomain'),
+        doctest.DocTestSuite('zope.app.i18n.translationdomain'),
         unittest.makeSuite(TestTranslationDomainInAction),
         ))
 
