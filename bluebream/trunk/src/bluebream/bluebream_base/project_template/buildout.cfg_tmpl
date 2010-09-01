@@ -1,4 +1,4 @@
-# ${created_with}
+# Created with BlueBream ${created_with}
 [buildout]
 develop = .
 extends = http://download.zope.org/bluebream/bluebream-${bluebream}.cfg
@@ -33,4 +33,4 @@ recipe = zc.recipe.testrunner
 eggs = ${project}
 
 [versions]
-# pin versions of your additional ipackages here
+# pin versions of your additional packages here
