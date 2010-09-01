@@ -6,6 +6,7 @@ Changes
 -------------------
 
 - Add metaconfigure.registerType BBB import because some packages use it.
+- Use doctest from standard library instead of zope.testing.doctest.
 
 
 3.11.0 (2010-04-26)

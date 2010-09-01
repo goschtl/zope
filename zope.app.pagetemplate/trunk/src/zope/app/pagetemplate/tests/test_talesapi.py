@@ -16,7 +16,7 @@
 $Id$
 """
 from datetime import datetime
-from zope.testing.doctest import DocTestSuite
+from doctest import DocTestSuite
 from zope.interface import implements
 from zope.size.interfaces import ISized
 from zope.traversing.interfaces import IPhysicallyLocatable
