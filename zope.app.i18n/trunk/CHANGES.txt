@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - Remove undeclared dependency on zope.deferredimport.
+- Use zope.publisher >= 3.9 instead of zope.app.publisher.
 
 3.6.2 (2009-10-07)
 ------------------

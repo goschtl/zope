@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.publisher.xmlrpc import XMLRPCView
+from zope.publisher.xmlrpc import XMLRPCView
 
 class Methods(XMLRPCView):
 
