@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.3 (unreleased)
+3.5.3 (2010-09-01)
 ------------------
 
 - Removed the dependency on zope.app.publisher, added missing dependencies.
