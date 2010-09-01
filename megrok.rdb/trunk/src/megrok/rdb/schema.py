@@ -56,7 +56,7 @@ def field_from_sa_float(i):
 @grokcore.component.adapter(sqlalchemy.types.DateTime)
 @grokcore.component.implementer(IField)
 def field_from_sa_datetime(i):
-    return zope.schema.DateTime(__name__ = u'__dummy__',
+    return zope.schema.Datetime(__name__ = u'__dummy__',
                 title = u'__dummy__')
 
 @grokcore.component.adapter(sqlalchemy.types.Date)
