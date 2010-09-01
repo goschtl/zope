@@ -189,6 +189,11 @@ class CookieAuthHelper(Folder, BasePlugin):
         url = self.getLoginURL()
         if url is not None:
             came_from = req.get('came_from', None)
+            if isinstance(came_from, list):
+                try:
+                    came_from = came_from.pop()
+                except IndexError:
+                    came_from = None
 
             if came_from is None:
                 came_from = req.get('ACTUAL_URL', '')
@@ -210,8 +215,7 @@ class CookieAuthHelper(Folder, BasePlugin):
                     # the only sane thing to do is to give up because we are
                     # in an endless redirect loop.
                     return 0
-            if isinstance(came_from, list):
-                came_from = came_from[:1]
+
             url = url + '?came_from=%s' % quote(came_from)
             resp.redirect(url, lock=1)
             return 1
