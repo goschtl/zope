@@ -12,19 +12,14 @@
 #
 ##############################################################################
 """Error Reporting Utility Tests
-
-$Id$
 """
 
 import unittest
-
-from zope.testing import doctest
-from zope.testing import doctestunit
-
+import doctest
 
 def test_suite():
     return unittest.TestSuite((
-        doctestunit.DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         ))
