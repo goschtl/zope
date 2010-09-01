@@ -99,14 +99,18 @@ class IntIds(Persistent):
         same BTree bucket, and randomizes if it stumbles upon a
         used one.
         """
+        nextid = getattr(self, '_v_nextid', None)
         while True:
-            if self._v_nextid is None:
-                self._v_nextid = self._randrange(0, self.family.maxint)
-            uid = self._v_nextid
-            self._v_nextid += 1
+            if nextid is None:
+                nextid = self._randrange(0, self.family.maxint)
+            uid = nextid
             if uid not in self.refs:
+                nextid += 1
+                if nextid > self.family.maxint:
+                    nextid = None
+                self._v_nextid = nextid
                 return uid
-            self._v_nextid = None
+            nextid = None
 
     def register(self, ob):
         # Note that we'll still need to keep this proxy removal.

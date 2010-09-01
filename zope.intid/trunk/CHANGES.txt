@@ -5,6 +5,8 @@ CHANGES
 3.7.3 (unreleased)
 ------------------
 
+- Bug fix: ensure that the IntId utility never generates ids greater
+  than the maxint of the BTree family being used.
 
 3.7.2 (2009-12-27)
 ------------------

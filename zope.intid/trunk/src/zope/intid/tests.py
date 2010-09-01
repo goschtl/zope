@@ -13,6 +13,7 @@
 ##############################################################################
 """Tests for the unique id utility.
 """
+import random
 import unittest
 
 import BTrees
@@ -156,17 +157,36 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         # This is a somewhat arkward test, that *simulates* the border case
         # behaviour of the _generateId method
         u = self.createIntIds()
-        u._randrange = lambda x,y:int(2**31-1)
+        maxint = u.family.maxint
+        u._randrange = lambda x,y: maxint-1
 
-        # The chosen int is exactly the largest number possible that is
+        conn = ConnectionStub()
+
+        obj = P()
+        conn.add(obj)
+        uid = u.register(obj)
+        self.assertEquals(maxint-1, uid)
+        self.assertEquals(maxint, u._v_nextid)
+
+        # The next chosen int is exactly the largest number possible that is
         # delivered by the randint call in the code
         obj = P()
-        obj._p_jar = ConnectionStub()
+        conn.add(obj)
         uid = u.register(obj)
-        self.assertEquals(2**31-1, uid)
-        # Make an explicit tuple here to avoid implicit type casts on 2**31-1
+        self.assertEquals(maxint, uid)
+        # Make an explicit tuple here to avoid implicit type casts
         # by the btree code
-        self.failUnless(2**31-1 in tuple(u.refs.keys()))
+        self.failUnless(maxint in tuple(u.refs.keys()))
+
+        # _v_nextid is now set to None, since the last id generated was
+        # maxint.
+        self.assertEquals(u._v_nextid, None)
+        # make sure the next uid generated is less than maxint
+        obj = P()
+        conn.add(obj)
+        u._randrange = random.randrange
+        uid = u.register(obj)
+        self.failUnless(uid < maxint)
 
     def test_len_items(self):
         u = self.createIntIds()
