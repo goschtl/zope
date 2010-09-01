@@ -12,23 +12,8 @@
 #
 ##############################################################################
 """Error Reporting Utility interfaces
-
-$Id$
 """
-__docformat__ = 'restructuredtext'
-import zope.deferredimport
-import zope.deprecation
-zope.deprecation.moved(
-    'zope.error.error',
-    "Zope 3.6",
-    )
 
-zope.deferredimport.deprecated(
-    "IErrorReportingUtility has moved to zope.error.interfaces",
-    IErrorReportingUtility = 'zope.error.interfaces:IErrorReportingUtility',
-    )
-
-zope.deferredimport.deprecated(
-    "ILocalErrorReportingUtility has moved to zope.error.interfaces",
-    ILocalErrorReportingUtility = 'zope.error.interfaces:ILocalErrorReportingUtility',
-    )
+# BBB
+from zope.error.interfaces import (IErrorReportingUtility,
+                                   ILocalErrorReportingUtility)

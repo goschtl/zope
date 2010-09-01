@@ -6,6 +6,8 @@ CHANGES
 ------------------
 
 - Removed the dependency on zope.app.publisher, added missing dependencies.
+- Replaced the use of zope.deferredimport with direct imports.
+
 
 3.5.2 (2009-01-22)
 ------------------
@@ -23,6 +25,7 @@ CHANGES
   views are registered for zope.ManageServices as well. 
 
 - Fix package's README.txt
+
 
 3.5.1 (2007-09-27)
 ------------------

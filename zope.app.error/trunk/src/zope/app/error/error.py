@@ -14,39 +14,11 @@
 """Error Reporting Utility
 
 This is a port of the Zope 2 error reporting object
-
-$Id$
 """
-__docformat__ = 'restructuredtext'
 
-import zope.deferredimport
-import zope.deprecation
-zope.deprecation.moved(
-    'zope.error.error',
-    "Zope 3.6",
-    )
-zope.deferredimport.deprecated(
-    "It has moved to zope.error.error  This reference will be gone "
-    "in Zope 3.6",
-    printedreplace = 'zope.error.error:printedreplace',
-    )
-zope.deferredimport.deprecated(
-    "It has moved to zope.error.error  This reference will be gone "
-    "in Zope 3.6",
-    getFormattedException = 'zope.error.error:getFormattedException',
-    )
-zope.deferredimport.deprecated(
-    "It has moved to zope.error.error  This reference will be gone "
-    "in Zope 3.6",
-    ErrorReportingUtility = 'zope.error.error:ErrorReportingUtility',
-    )
-zope.deferredimport.deprecated(
-    "It has moved to zope.error.error.  This reference will be gone "
-    "in Zope 3.6",
-    RootErrorReportingUtility = 'zope.error.error:RootErrorReportingUtility',
-    )
-zope.deferredimport.deprecated(
-    "It has moved to zope.error.error  This reference will be gone "
-    "in Zope 3.6",
-    globalErrorReportingUtility = 'zope.error.error:globalErrorReportingUtility',
-    )
+# BBB
+from zope.error.error import (printedreplace,
+                              getFormattedException,
+                              ErrorReportingUtility,
+                              RootErrorReportingUtility,
+                              globalErrorReportingUtility)
