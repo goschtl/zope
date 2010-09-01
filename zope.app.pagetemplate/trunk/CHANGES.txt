@@ -5,7 +5,7 @@ Changes
 3.11.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add metaconfigure.registerType BBB import because some packages use it.
 
 
 3.11.0 (2010-04-26)
