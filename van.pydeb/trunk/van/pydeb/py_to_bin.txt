@@ -105,13 +105,13 @@ dctrl2xml                               dctrl2xml
 debomatic                               debomatic
 debpartial-mirror                       debpartial-mirror
 DebTorrent                              debtorrent
-decompyle                               decompyle
 deluge                                  deluge-common
 DenyHosts                               denyhosts
 dissy                                   dissy
 include-server                          distcc-pump
 DITrack                                 ditrack
 djagios                                 djagios
+django-ajax-selects                     django-ajax-selects
 Dosage                                  dosage
 dot2tex                                 dot2tex
 DouF00                                  douf00
@@ -130,11 +130,13 @@ eLyXer                                  elyxer
 emesene                                 emesene
 emma                                    emma
 epigrass                                epigrass
+episoder                                episoder
 bzr-etckeeper                           etckeeper
 euca2ools                               euca2ools
 quodlibet                               exfalso
 Fabric                                  fabric
 fail2ban                                fail2ban
+flashbake                               flashbake
 flickrfs                                flickrfs
 Fnorb                                   fnorb
 foff                                    foff
@@ -168,6 +170,7 @@ gnome-app-install                       gnome-codec-install
 gnomecatalog                            gnomecatalog
 GNS3                                    gns3
 go2                                     go2
+googlecl                                googlecl
 gourmet                                 gourmet
 gozerbot                                gozerbot
 gozerplugs                              gozerbot-plugins
@@ -196,11 +199,11 @@ ipython                                 ipython
 jack                                    jack
 JCC                                     jcc
 keymapper                               keymapper
-kphotobymail                            kphotobymail
 lastfmsubmitd                           lastfmsubmitd
 lazygal                                 lazygal
 lfm                                     lfm
 mod-python                              libapache2-mod-python
+Pyste                                   libboost-python1.42-dev
 netsnmp-python                          libsnmp-python
 live-magic                              live-magic
 vcs-load-dirs                           load-dirs-common
@@ -235,6 +238,7 @@ symserv                                 mgltools-symserv
 ViewerFramework                         mgltools-viewerframework
 Vision                                  mgltools-vision
 Volume                                  mgltools-volume
+mic                                     mic2
 mimms                                   mimms
 mini-dinstall                           mini-dinstall
 Mirage                                  mirage
@@ -256,6 +260,8 @@ oggconvert                              oggconvert
 oidua                                   oidua
 ooo2dbk                                 ooo2dbk
 openbmap-logger                         openbmap-logger
+openerp-client                          openerp-client
+openerp-server                          openerp-server
 openshot                                openshot
 OpenSTV                                 openstv
 osc                                     osc
@@ -302,6 +308,7 @@ pyneighborhood                          pyneighborhood
 PyPI-Browser                            pypibrowser
 pyqonsole                               pyqonsole
 Pyragua                                 pyragua
+pyrit                                   pyrit
 pyrite-publisher                        pyrite-publisher
 Pyro                                    pyro
 PyRoom                                  pyroom
@@ -327,8 +334,10 @@ Beaker                                  python-beaker
 BeautifulSoup                           python-beautifulsoup
 python-bibtex                           python-bibtex
 PyBluez                                 python-bluez
+Box2D                                   python-box2d
 Brlapi                                  python-brlapi
 cx-bsdiff                               python-bsdiff
+Camelot                                 python-camelot
 Catwalk                                 python-catwalk
 python-cdb                              python-cdb
 python-cdd                              python-cdd
@@ -344,6 +353,7 @@ python-cjson                            python-cjson
 pyclamav                                python-clamav
 ClientForm                              python-clientform
 python-cloudservers                     python-cloudservers
+CMOR                                    python-cmor
 Coherence                               python-coherence
 CouchDB                                 python-couchdb
 Creoleparser                            python-creoleparser
@@ -354,6 +364,7 @@ python-dateutil                         python-dateutil
 python-debian                           python-debian
 DecoratorTools                          python-decoratortools
 DeliciousAPI                            python-deliciousapi
+pydicom                                 python-dicom
 RuleDispatch                            python-dispatch
 python-distutils-extra                  python-distutils-extra
 Django                                  python-django
@@ -375,6 +386,7 @@ EditObj                                 python-editobj
 python-edje                             python-edje
 pyelemental                             python-elemental
 python-elementary                       python-elementary
+Elements                                python-elements
 Elixir                                  python-elixir
 Enable                                  python-enable
 pyenchant                               python-enchant
@@ -400,16 +412,19 @@ fuse-python                             python-fuse
 gdmodule                                python-gd
 GDAL                                    python-gdal
 pygdchart                               python-gdchart2
+python-libgearman                       python-gearman.libgearman
 Genetic                                 python-genetic
 Genshi                                  python-genshi
 python-geoclue                          python-geoclue
 GeoIP-Python                            python-geoip
+python-gflags                           python-gflags
 GitPython                               python-git
 GnuPGInterface                          python-gnupginterface
 gnuplot-py                              python-gnuplot
 python-gnutls                           python-gnutls
 pygpiv                                  python-gpiv
 python-gtkmvc                           python-gtkmvc
+HijriApplet                             python-hijra
 Ifeffit                                 python-ifeffit
 PIL                                     python-imaging
 pysane                                  python-imaging-sane
@@ -423,7 +438,9 @@ Jinja2                                  python-jinja2
 JPype                                   python-jpype
 json-py                                 python-json
 python-jswebkit                         python-jswebkit
+python-keyczar                          python-keyczar
 KWWidgets                               python-kwwidgets
+python-kzorp                            python-kzorp
 python-ldap                             python-ldap
 python-Levenshtein                      python-levenshtein
 apache-libcloud                         python-libcloud
@@ -438,6 +455,7 @@ Magic-file-extensions                   python-magic
 Mako                                    python-mako
 MapScript                               python-mapscript
 Markdown                                python-markdown
+MarkupSafe                              python-markupsafe
 MDP                                     python-mdp
 mecab-python                            python-mecab
 python-memcached                        python-memcache
@@ -472,6 +490,7 @@ python-openid                           python-openid
 openoffice-python                       python-openoffice
 pyOpenSSL                               python-openssl
 python-oss                              python-oss
+Othman                                  python-othman
 python-otr                              python-otr
 PAM                                     python-pam
 pyparallel                              python-parallel
@@ -492,6 +511,7 @@ python-ptrace                           python-ptrace
 Babel                                   python-pybabel
 python2-biggles                         python-pybiggles
 PyChart                                 python-pychart
+Pyevolve                                python-pyevolve
 PyGLEW                                  python-pyglew
 Pygments                                python-pygments
 PyGreSQL                                python-pygresql
@@ -512,6 +532,7 @@ PyWavelets                              python-pywt
 PyX                                     python-pyx
 Rabbyt                                  python-rabbyt
 Radicale                                python-radicale
+RBTools                                 python-rbtools
 recaptcha-client                        python-recaptcha
 pyremctl                                python-remctl
 renpy-module                            python-renpy
@@ -543,6 +564,8 @@ yum-metadata-parser                     python-sqlitecachec
 SQLObject                               python-sqlobject
 SSSDConfig                              python-sss
 pystatgrab                              python-statgrab
+python-stdnum                           python-stdnum
+Strongwind                              python-strongwind
 pysubnettree                            python-subnettree
 cwm                                     python-swap
 pytcpwrap                               python-tcpwrap
@@ -564,8 +587,12 @@ TurboGears2                             python-turbogears2
 TurboJson                               python-turbojson
 TurboKid                                python-turbokid
 TurboMail                               python-turbomail
+Twisted                                 python-twisted
 Twisted-Conch                           python-twisted-conch
 Twisted-Core                            python-twisted-core
+Twisted-Lore                            python-twisted-lore
+Twisted-Names                           python-twisted-names
+Twisted-News                            python-twisted-news
 TwistedSNMP                             python-twisted-snmp
 python-twitter                          python-twitter
 pytz                                    python-tz
@@ -610,6 +637,7 @@ rdiff-backup                            rdiff-backup
 rebuildd                                rebuildd
 rednotebook                             rednotebook
 relational-gui                          relational
+relational-readline                     relational-cli
 remuco                                  remuco-base
 roundup                                 roundup
 rpl                                     rpl
@@ -619,6 +647,7 @@ sapgui-package                          sapgui-package
 scanerrlog                              scanerrlog
 scons                                   scons
 screenlets                              screenlets
+series60-remote                         series60-remote
 sessioninstaller                        sessioninstaller
 sixpack                                 sixpack
 smart-notifier                          smart-notifier
@@ -628,6 +657,7 @@ Sonata                                  sonata
 Songwrite                               songwrite
 spambayes                               spambayes
 spe                                     spe
+spectacle                               spectacle
 specto                                  specto
 spf-milter-python                       spf-milter-python
 spyder                                  spyder
@@ -703,6 +733,7 @@ trytond-product-cost-fifo               tryton-modules-product-cost-fifo
 trytond-product-cost-history            tryton-modules-product-cost-history
 trytond-product-price-list              tryton-modules-product-price-list
 trytond-project                         tryton-modules-project
+trytond-project-plan                    tryton-modules-project-plan
 trytond-project-revenue                 tryton-modules-project-revenue
 trytond-purchase                        tryton-modules-purchase
 trytond-purchase-invoice-line-standalon tryton-modules-purchase-invoice-line-standalone
@@ -721,6 +752,7 @@ trytond                                 tryton-server
 ttb                                     ttb
 TTCN3Parser                             ttcn3parser
 turnin-ng                               turnin-ng
+Turtle-Art                              turtleart
 ubuntu-dev-tools                        ubuntu-dev-tools
 ufw                                     ufw
 unattended-upgrades                     unattended-upgrades
