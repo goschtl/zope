@@ -1,0 +1,18 @@
+============
+ Change log
+============
+
+0.2 (unreleased)
+================
+
+- Fixed namespace declaration in ``setup.py``.
+
+- Created change log.
+
+
+0.1 (2008-01-25)
+================
+
+- Initial release.
+
+
