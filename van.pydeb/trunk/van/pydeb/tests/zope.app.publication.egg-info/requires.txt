@@ -4,7 +4,7 @@ zope.authentication
 zope.component [zcml]
 zope.deprecation
 zope.error
-zope.i18n
+zope.i18n [zcml] >= 3.7
 zope.browser>=1.2
 zope.publisher>=3.8.0
 zope.traversing>=3.7.0

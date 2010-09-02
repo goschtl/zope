@@ -4,7 +4,8 @@ Changes
 1.3.3 (unreleased)
 ------------------
 
-* None yet.
+* Generate separate dependencies when both extra and version requirements are
+  specified (https://bugs.launchpad.net/bugs/628560)
 
 1.3.2 (2010-06-22)
 ------------------

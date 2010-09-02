@@ -63,10 +63,17 @@ And make a "Provides" list for that:
 Packages that depend on extras
 ------------------------------
 
-Depend on the provides list:
+If package requires an extra, one dependency is added:
 
-    >>> runit('van-pydeb depends --egg-info %s' % zope_app_publication) # doctest: +ELLIPSIS
-    python-..., python-zope.component-zcml, ...
+    >>> runit('van-pydeb depends --egg-info %s' % zope_app_publication) # doctest: +ELLIPSIS +REPORT_NDIFF
+    python-..., python-zope.browser (>= 1.2), python-zope.component-zcml, python-zope.deprecation...
+
+But if both a version and an extra are specified, separate dependencies are
+added -- first the base package with version requirements, then extras (virtual
+packages do not have versions):
+
+    >>> runit('van-pydeb depends --egg-info %s' % zope_app_publication) # doctest: +ELLIPSIS +REPORT_NDIFF
+    python-..., python-zope.error, python-zope.i18n (>= 3.7), python-zope.i18n-zcml, python-zope.interface...
 
 But packages that don't, get the original dependency:
 

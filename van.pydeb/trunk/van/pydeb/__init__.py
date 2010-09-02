@@ -272,19 +272,17 @@ def _get_debian_dependencies(file, extras=None, exclude_extras=None):
         pkgs = []
         for extra in req.extras:
             pkgs.append('%s-%s' % (bin_pkg, extra))
-        if not pkgs:
+        if req.specs:
+            for spec in req.specs:
+                op, version = spec
+                op = _setuptools_debian_operators[op]
+                if op is None:
+                    continue
+                dpkg_version = py_version_to_deb(version)
+                pkgs.append('%s (%s %s)' % (bin_pkg, op, dpkg_version))
+        elif not pkgs:
             pkgs = [bin_pkg]
-        for pkg in pkgs:
-            if req.specs:
-                for spec in req.specs:
-                    op, version = spec
-                    op = _setuptools_debian_operators[op]
-                    if op is None:
-                        continue
-                    dpkg_version = py_version_to_deb(version)
-                    pydeps.add('%s (%s %s)' % (pkg, op, dpkg_version))
-            else:
-                pydeps.add(pkg)
+        pydeps.update(pkgs)
     # Let's depend on the namespace packages as well.
     # This is needed to get __init__.py into the namespace packages.
     # See https://bugs.launchpad.net/van.pydeb/+bug/619294
