@@ -32,7 +32,9 @@ Defaults
 --------
 
 If no special rules are specified, defaults that are (hopefully) intelligent
-will take effect. For converting the binary package name to the python package
+will take effect.
+
+For converting the binary package name to the python package
 name they look like:
 
     * If the package name starts with python- remove it:
@@ -46,6 +48,17 @@ name they look like:
         
         >>> print pydeb.bin_to_py("foo")
         foo
+
+For converting from python package name to binary, the name is lowercased, and
+python- is prepended:
+
+    >>> print pydeb.py_to_bin("Foo")
+    python-foo
+
+Unless it already starts with python:
+
+    >>> print pydeb.py_to_bin("python-foo")
+    python-foo
 
 Overriding binary package translations
 --------------------------------------
