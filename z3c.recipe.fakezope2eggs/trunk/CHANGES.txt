@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+Version 0.5.1 (unreleased)
+--------------------------
+
+ - Added undeclared but necessary test dependency on `zope.testing` in a
+   test extra.
+
+
 Version 0.5 (2008-07-21)
 --------------------------
 

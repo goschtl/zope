@@ -39,5 +39,14 @@ setup(
     package_dir = {'': 'src'},
     zip_safe = False,
     namespace_packages = ['z3c', 'z3c.recipe'],
-    install_requires = ['zc.buildout', 'setuptools'],
-    entry_points = {'zc.buildout': ['default = %s:Recipe' % name]})
+    install_requires = [
+        'setuptools',
+        'zc.buildout',
+        ],
+    extras_require = dict(
+        test = [
+            'zope.testing',
+            ]
+        ),
+    entry_points = {'zc.buildout': ['default = %s:Recipe' % name]},
+    )
