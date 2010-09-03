@@ -11,10 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.reloadmonitor', '0'
 
-install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
+install_requires = ['setuptools', 'zope.component', 'zc.monitor',
+                    'zope.configuration']
+extras_require = dict(test=['zope.testing', 'zc.ngi'])
 
 entry_points = """
 """
