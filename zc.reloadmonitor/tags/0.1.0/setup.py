@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.reloadmonitor', '0'
+name, version = 'zc.reloadmonitor', '0.1.0'
 
 install_requires = ['setuptools', 'zope.component', 'zc.monitor',
                     'zope.configuration']
