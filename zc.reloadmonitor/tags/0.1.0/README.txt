@@ -20,7 +20,7 @@ To configure from ZCML, use::
 Changes
 *******
 
-0.1 (2010-09-03)
-================
+0.1.0 (2010-09-03)
+==================
 
 Initial release
