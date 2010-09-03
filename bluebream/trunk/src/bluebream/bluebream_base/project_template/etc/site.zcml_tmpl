@@ -48,6 +48,8 @@
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.schema" />
   <include package="zope.app.http" />
+  <include package="zope.keyreference" />
+  <include package="zope.intid" />
 
   <includeOverrides file="overrides.zcml" />
   <include package="${ns_prefix}${package}" />
