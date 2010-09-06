@@ -11,7 +11,7 @@ Recipe Options
 
 * ``paths``
     Contains the path(s) of directories created in normalized,
-    absolute form. I.e.:: 
+    absolute form. I.e.::
 
       mydir/../foo/bar
 
@@ -54,7 +54,9 @@ Now we can run buildout:
 The directory was indeed created in the ``parts`` directory:
 
   >>> ls('parts')
+  d  buildout
   d  mydir
+
 
 As we did not specify a special path, the name of the created
 directory is like the section name ``mydir``.
@@ -89,6 +91,7 @@ Now we can run buildout:
 The directory was indeed created:
 
   >>> ls('parts')
+  d  buildout
   d  mydir
   d  myotherdir
 
@@ -196,6 +199,7 @@ buildout directory:
   The old directories will **not** vanish:
 
   >>> ls('parts')
+  d  buildout
   d  mydir
   d  myotherdir
 

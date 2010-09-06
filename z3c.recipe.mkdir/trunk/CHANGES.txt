@@ -4,6 +4,10 @@ Changes
 0.4 (unreleased)
 ================
 
+* Updated tests to run with `zc.buildout` 1.5, thus requiring at least this
+  version.
+
+
 0.3.1 (2009-08-21)
 ==================
 

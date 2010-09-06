@@ -28,7 +28,7 @@ setup(name='z3c.recipe.mkdir',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'zc.buildout',
+          'zc.buildout >= 1.5',
       ],
       extras_require=dict(
         test = [
