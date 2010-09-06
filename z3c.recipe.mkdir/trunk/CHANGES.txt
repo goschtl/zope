@@ -7,6 +7,9 @@ Changes
 * Updated tests to run with `zc.buildout` 1.5, thus requiring at least this
   version.
 
+* Using python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
 
 0.3.1 (2009-08-21)
 ==================

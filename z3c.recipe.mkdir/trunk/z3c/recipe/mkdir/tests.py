@@ -14,9 +14,10 @@
 
 import re
 import unittest
+import doctest
 
 import zc.buildout.testing
-from zope.testing import doctest, renormalizing
+from zope.testing import renormalizing
 
 
 def setUp(test):
