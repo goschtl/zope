@@ -3,9 +3,12 @@ CHANGES
 =======
 
 0.5.4dev (unreleased)
-------------------
+---------------------
 
-- ...
+- Fixed tests to run with current package versions and ``distribute``.
+
+- Using python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest``.
 
 0.5.3 (2010-02-08)
 ------------------

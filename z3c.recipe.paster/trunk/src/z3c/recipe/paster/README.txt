@@ -96,7 +96,6 @@ Now, Let's run the buildout and see what we get:
 
   >>> print system(join('bin', 'buildout')),
   Develop: '/sample-buildout/demo'
-  Couldn't find index page for 'wsgi_intercept' (maybe misspelled?)
   Installing var.
   Installing myapp.
   Generated script '/sample-buildout/bin/myapp'.

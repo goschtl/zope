@@ -74,7 +74,6 @@ Now, Let's run the buildout and see what we get:
 
   >>> print system(join('bin', 'buildout')),
   Develop: '/sample-buildout/sample'
-  Couldn't find index page for 'wsgi_intercept' (maybe misspelled?)
   Installing mypaster.
   Generated script '/sample-buildout/bin/mypaster'.
 

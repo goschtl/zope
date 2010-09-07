@@ -11,15 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests
-
-$Id:$
-"""
-
+from zope.testing import renormalizing
+import doctest
 import re
 import unittest
-from zope.testing import doctest
-from zope.testing import renormalizing
 import zc.buildout.testing
 
 
@@ -89,9 +84,12 @@ checker = renormalizing.RENormalizing([
      "'/z3c.recipe.paster',"),
     (re.compile('#![^\n]+\n'), ''),
     (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'), '-pyN.N.egg'),
+    # distribute prints the install_dir which pollutes the test output:
+    (re.compile('install_dir .*'), ''),
     # the following are for compatibility with Windows
     (re.compile('-  .*\.exe\n'), ''),
     (re.compile('-script.py'), ''),
+
     ])
 
 
