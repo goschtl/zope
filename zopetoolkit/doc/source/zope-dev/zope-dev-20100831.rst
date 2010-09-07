@@ -9,12 +9,12 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-08-31.log.html#t2010-08-31T18:00:25
 
 Attendees
 ---------
 
-XXX
+Charlie Clark, Adam Groszer, Patrick Gerken
 
 
 
@@ -23,11 +23,22 @@ Agenda
 
 - Supporting Python 2.7
     - Needs help from the buildbots
+  Patrick reported that ZODB + Windows is still struggling with Python 2.7. Windows support remains problem for Zope with apparently few core developers using it.
+  
+  It was agreed that full support for Python 2.7 is still some way away, probably ZTK 1.1 but this is a matter for the ZTK team.
 
 - Abandoned projects (Tres)
+  
+  Charlie suggested that to avoid overly subjective project dropping, criteria for being included need defining "I don't use XYZ so I don't care about it". Such criteria might be the quality and scope of test coverage and technical documentation, an area where Zope traditionally compares unfavourably with other frameworks.
+  
+  It was agreed that no projects should be dumped unceremoniously and that a period of grace should be given to allow consumers of projects that have no maintainer to raise their concerns.
+  
+  Improvements in the presentation of test results should hopefully make it easier to identify potentiatlly "weak" projects and maybe even inspire developers to improve their tests. Any inclusion criteria should be fairly strictly applied for new projects in the hope of establishing a virtuous spiral. This topic should be continued at the Zope summit in Halle on 13th September.
 
 - Windows
-    - Compiler licenses (Tres, postponed until after 2010-06-14)
+    - Compiler licenses
+    
+    Everyone has now received the MS Visual Studio compiler licences.
 
 Ongoing issues
 --------------
