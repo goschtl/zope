@@ -24,7 +24,7 @@ FILENAME = "jquery.tools.min.js"
 
 def prepare_jquerytools():
     jquerytools_dest_path = os.path.dirname(__file__)
-    library_path = os.path.join(jquerytools_dest_path, "jquery-build")
+    library_path = os.path.join(jquerytools_dest_path, "jquerytools-build")
 
     # remove previous slimbox library
     print 'recursivly removing "%s"' % library_path
