@@ -1,3 +1,5 @@
+.. _howto-local-site-manager:
+
 Creating a Local Site Manager
 =============================
 
