@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 import os
 
-JQUERYTOOLS_VERSION = '1.1.2'
-version = '1.1.2'
+JQUERYTOOLS_VERSION = '1.2.4'
+version = '1.2.4'
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -29,8 +29,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.jquery',
-        'hurry.resource >= 0.4.1',
+        'hurry.jquery == 1.4.2.1',
+        'hurry.resource == 0.4.1',
         ],
     entry_points={
         'console_scripts': [

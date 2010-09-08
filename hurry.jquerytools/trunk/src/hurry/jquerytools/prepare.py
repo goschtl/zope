@@ -18,8 +18,8 @@ import urllib2
 import urlparse
 import zipfile
 
-VERSION = '1.1.2'
-BASEURL = "http://cdn.jquerytools.org/%s/tiny/jquery.tools.min.js" %VERSION
+VERSION = '1.2.4'
+BASEURL = "http://cdn.jquerytools.org/%s/all/jquery.tools.min.js" %VERSION
 FILENAME = "jquery.tools.min.js"
 
 def prepare_jquerytools():

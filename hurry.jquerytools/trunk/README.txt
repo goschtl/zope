@@ -5,7 +5,7 @@ hurry.jquerytools
 Introduction
 ============
 
-This library packages Slimbox_ for `hurry.resource`_. It relies on
+This library packages jquerytools_ for `hurry.resource`_. It relies on
 hurry.jquery for the dependency.
 
 .. _jquerytools: http://flowplayer.org/tools/index.html 
@@ -47,7 +47,7 @@ This section is only relevant to release managers of ``hurry.jquerytools``.
 When releasing ``hurry.jquerytools``, an extra step should be taken. Follow the
 regular package `release instructions`_, but before egg generation (``python
 setup.py register sdist upload``) first execute ``bin/jquerytoolsprepare``. This
-will download the Slimbox library and place it in the egg. (The version number
+will download the jquerytools library and place it in the egg. (The version number
 is currently hardcoded in the hurry.jquerytools.prepare module).
 
 .. _`release instructions`: http://grok.zope.org/documentation/how-to/releasing-software
