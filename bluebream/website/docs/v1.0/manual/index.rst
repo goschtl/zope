@@ -17,3 +17,4 @@ Manual
    startup
    functionaltesting
    skinning
+   deployment
