@@ -4,6 +4,9 @@ Changelog
 0.8 - unreleased
 ----------------
 
+- Do not override existing version pins defined in the ``versions.cfg`` by
+  versions from the extends lines. This refs
+  https://bugs.launchpad.net/zope2/+bug/623428.
 
 0.7 - 2010-07-13
 ----------------

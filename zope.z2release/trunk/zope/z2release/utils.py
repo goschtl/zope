@@ -19,8 +19,11 @@ def write_index(server, package, version, dirname):
 
     print >>sys.stderr, 'Package %s==%s' % (package, version)
     dest_dir = os.path.join(dirname, package)
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
+    if os.path.exists(dest_dir):
+        print >>sys.stderr, "Don't override package %s==%s" % (package, version)
+        return
+
+    os.makedirs(dest_dir)
     index_html = os.path.join(dest_dir, 'index.html')
 
     fp = file(index_html, 'w')
