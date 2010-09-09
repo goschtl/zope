@@ -465,14 +465,27 @@ ZCML
 
 .. based on http://worldcookery.com/files/ploneconf05-five/step2.html
 
-BlueBream separates all the policy from the actual code and moves it
-out to separate configuration files.  The Zope Configuration Markup
-Language (ZCML), the XML-based configuration language that is used
+BlueBream separates all the policies from the actual code and moves it out
+to separate configuration files.  The term **configuration** might be a bit
+misleading here.  You can think of it as **wiring**.  The Zope Configuration
+Markup Language (ZCML), the XML-based configuration language that is used
 for this, is tailored to do component registration and security
 declarations, for the most part.  By enabling or disabling certain
 components in ZCML, you can configure certain policies of the overall
-application.  If you don't enable it explicitly, it will not be
-found.
+application.  If you don't enable it explicitly in ZCML, it will not be
+found in the application.
+
+When you are using Zope Component Architecture, you will have many
+components hanging around in your software.  ZCML provides a mechanism for
+wiring these components together to form an actual application.
+
+Few useful links:
+
+- `Component Wiring and ZCML <http://plone.org/documentation/manual/theme-reference/buildingblocks/components/wiring>`_
+
+- `ZCML introduction for Zope 2 developers <http://worldcookery.com/files/ploneconf05-five/step2.html>`_
+
+- `ZCML Style Guide <http://wiki.zope.org/zope3/ZCMLStyleGuide>`_
 
 .. _concepts-wsgi:
 
