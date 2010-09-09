@@ -336,8 +336,8 @@ template is as shown::
 
 The name of the top-level directory will always be the project name as given
 in the wizard.  The name of the egg will also be the same as the package
-name by default. The user can change it to something else from ``setup.py``.
-Here are the details about the other files in the project.
+name by default.  The user can change it to something else from
+``setup.py``.  Here are the details about the other files in the project.
 
 Files &  Purpose
 ~~~~~~~~~~~~~~~~
