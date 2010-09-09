@@ -5,7 +5,11 @@ CHANGES
 0.6.5 (unreleased)
 ------------------
 
-- No changes.
+- Fix tests using a newer zope.publisher that requires zope.login.
+- No longer using deprecated ``zope.testing.doctestunit``. Use python's
+  build-in ``doctest`` instead.
+- Remove dependency on ``zope.app.securitypolicy``.
+
 
 0.6.4 (2009-10-20)
 ------------------
