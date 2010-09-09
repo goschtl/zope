@@ -121,7 +121,7 @@ give the values from the command line, if required:
 
 - ``bluebream`` -- The version of BlueBream
 
-- ``version`` -- The version of your project
+- ``version`` -- The version of your project (eg:- 0.1)
 
 - ``description`` -- One-line description of the package
 
@@ -217,6 +217,9 @@ Resources
 
     svn co svn://svn.zope.org/repos/main/bluebream/trunk bluebream
 
-  You can also `become a source code contributor after signing a
+  You can also `become a source code contributor (committer) after signing a
   contributor agreement
   <http://docs.zope.org/developer/becoming-a-committer.html>`_
+
+  You can see `more details about contributing in wiki
+  <http://wiki.zope.org/bluebream/ContributingToBlueBream>`_.
