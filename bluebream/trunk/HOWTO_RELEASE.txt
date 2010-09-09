@@ -40,21 +40,23 @@ Releasing a new version of BlueBream
     - set the correct version number in `setup.py`
     - update the `CHANGES.txt`
     - commit, and create a svn tag for this new version
-    - change `setup.py` and the `CHANGELOG.txt` to point to the next dev version
+    - change `setup.py` and the `CHANGES.txt` to point to the next dev version
     - create a clean checkout of the tag in a new directory and run:
     $ python setup.py register sdist upload
 
-#. Update the http://download.zope.org/zopetoolkit/ site:
+#. Update the http://download.zope.org/bluebream/ site:
 
-   - copy the ``versions.cfg`` file from the tag folder to the ``download-site``
+   - copy the ``versions.cfg`` file from the tag folder to the ``downloadsite``
      folder with the correct versionned name
-   - update the ``download-site/index.html`` page with the new release. The
+     (Subversion URL for downloadsite:
+      svn://svn.zope.org/repos/main/bluebream/downloadsite/ )
+   - update the ``downloadsite/index.html`` page with the new release. The
      download site will be updated automatically in less than 15min.
 
 #. Create an announcement on the bluebream mailing list (based on a previous
    announcements)
 
-#. Update the ``download-site/index.html`` with this announcement when the link
+#. Update the ``downloadsite/index.html`` with this announcement when the link
    is available in the `list archive
    <https://mail.zope.org/pipermail/bluebream/>`_
 
