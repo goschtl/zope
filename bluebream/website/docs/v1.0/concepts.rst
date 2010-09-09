@@ -412,8 +412,13 @@ responsible for, is updated.
 Viewlet
 ~~~~~~~
 
-Viewlets provide a generic framework for building pluggable user
-interfaces.
+Viewlets provide a generic framework for building pluggable user interfaces.
+The ``ViewletManager`` is a content provider.  Viewlets are registered with
+a ``ViewletManager``.  The ``ViewletManager`` will filter, sort, update, and
+render each viewlets.
+
+- `An introduction to viewlets and content providers
+  <http://griddlenoise.blogspot.com/2005/12/glance-at-zope-32-content-providers.html>`_
 
 .. _concepts-technologies:
 
