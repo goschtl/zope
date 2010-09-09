@@ -1,6 +1,6 @@
 from persistent import Persistent
 from zope.interface import implements
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.schema.fieldproperty import FieldProperty
 from interfaces import IDemoContent
 from datetime import datetime

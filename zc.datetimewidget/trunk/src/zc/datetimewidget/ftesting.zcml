@@ -12,10 +12,8 @@
       zcml:condition="not-installed zope.app.zcmlfiles"
       package="zope.app"
       />
-
-  <include package="zope.app.server" />
-  <include package="zope.app.authentication" />
   <include package="zope.login" />
+  <include package="zope.password" />
   <include package="zope.securitypolicy" file="meta.zcml" />
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
