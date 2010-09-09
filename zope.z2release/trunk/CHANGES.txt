@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.8 - unreleased
+0.8 - 2010-09-09
 ----------------
 
 - Do not override existing version pins defined in the ``versions.cfg`` by
