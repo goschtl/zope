@@ -161,7 +161,9 @@ values from the command line, if required:
 
 - ``interpreter`` -- Name of the custom Python interpreter
 
-- ``version`` -- Version (like 0.1)
+- ``bluebream`` -- The version of BlueBream
+
+- ``version`` -- The version of your project (eg:- 0.1)
 
 - ``description`` -- One-line description of the package
 
