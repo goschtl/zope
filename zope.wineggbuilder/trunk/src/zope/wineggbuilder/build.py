@@ -198,14 +198,11 @@ class Package(object):
         verFiles = defaultdict(list)
         simple = self.urlGetterKlass().get(self.pypiurl)
         soup = BeautifulSoup.BeautifulSoup(simple)
-        VERSION = re.compile(self.name+r'-(\d+\.\d+(\.\d+\w+){0,2})')
+        VERSION = re.compile(self.name+r'-(\d+\.\d+(\.\d+\w*){0,2})')
         gotSource = False
 
         for tag in soup('a'):
             cntnt = str(tag.contents[0]) # str: re does not like non-strings
-
-            if self.sectionName == 'ZODB3_2664' and '3.10' in cntnt:
-                from pub.dbgpclient import brk; brk('192.168.32.1')
 
             m = VERSION.search(cntnt)
             if m:
