@@ -42,9 +42,9 @@ def getRequest():
 
 class I18n(persistent.Persistent, object):
     """Mixin implementation of II18n.
-    
-    Set a factory class in our implementation. The _create method will initalize 
-    this class and use it as a child object providing the attributes without 
+
+    Set a factory class in our implementation. The _create method will initalize
+    this class and use it as a child object providing the attributes without
     languages.
 
     You can use this class as mixin for i18n implementations:
@@ -73,13 +73,13 @@ class I18n(persistent.Persistent, object):
     'Bob'
     >>> i18n.getAttribute('lastname')
     'Miller'
-    
+
     That is the same as accessing the attribute using a language parameter:
 
     >>> i18n.getAttribute('firstname', 'en')
     'Bob'
 
-    If an attribute is not available a AttributeError is raised. The 
+    If an attribute is not available a AttributeError is raised. The
     queryAttribute method offers a save way for unsecure access:
 
     >>> i18n.getAttribute('name')
@@ -88,6 +88,17 @@ class I18n(persistent.Persistent, object):
     AttributeError: 'Person' object has no attribute 'name'
 
     >>> i18n.queryAttribute('name') is None
+    True
+
+    If the given language is not available a KeyError is raised. The
+    queryAttribute method offers a save way for unsecure access:
+
+    >>> i18n.getAttribute('firstname', 'zh') is None
+    Traceback (most recent call last):
+    ...
+    KeyError: 'zh'
+
+    >>> i18n.queryAttribute('firstname', 'zh') is None
     True
 
     You can set the attributes an other time:
@@ -100,7 +111,7 @@ class I18n(persistent.Persistent, object):
 
     You can initialize the default translation using a specific language:
 
-    >>> i18n = I18nPerson(defaultLanguage='fr', firstname='Robert', 
+    >>> i18n = I18nPerson(defaultLanguage='fr', firstname='Robert',
     ...                   lastname='Moulin')
     >>> i18n.getDefaultLanguage()
     'fr'
@@ -150,7 +161,7 @@ class I18n(persistent.Persistent, object):
     # private method: access self._data only using this method
     def _getData(self):
         return self._data
-        
+
     # z3c.langauge.switch.IReadI18n
     def getAvailableLanguages(self):
         """See `z3c.langauge.switch.interfaces.IReadI18n`"""
@@ -168,7 +179,7 @@ class I18n(persistent.Persistent, object):
         request = getRequest()
         negotiator = None
         try:
-            negotiator = zope.component.queryUtility(INegotiator, 
+            negotiator = zope.component.queryUtility(INegotiator,
                 name='', context=self)
         except zope.component.ComponentLookupError:
             # can happens during tests without a site and sitemanager
@@ -193,7 +204,7 @@ class I18n(persistent.Persistent, object):
         # essentials
         data = self._getData()[language]
         return getattr(data, name)
-        
+
     def queryAttribute(self, name, language=None, default=None):
         try:
             return self.getAttribute(name, language)
@@ -224,7 +235,7 @@ class I18n(persistent.Persistent, object):
         if language == self.getDefaultLanguage():
             raise ValueError('cannot remove default language (%s)' % language)
         elif language not in data:
-            raise ValueError('cannot remove nonexistent language (%s)' 
+            raise ValueError('cannot remove nonexistent language (%s)'
                 % language)
         else:
             del data[language]
@@ -238,7 +249,7 @@ class I18n(persistent.Persistent, object):
 
         data = self._getData()
         obj = data[language]
-        
+
         for key in kws:
             if not hasattr(obj, key):
                 raise KeyError(key)
@@ -247,7 +258,7 @@ class I18n(persistent.Persistent, object):
         for key in kws:
             setattr(obj, key, kws[key])
         else:
-            self._p_changed = True           
+            self._p_changed = True
         zope.event.notify(zope.lifecycleevent.ObjectModifiedEvent(self))
 
     # private helper methods
