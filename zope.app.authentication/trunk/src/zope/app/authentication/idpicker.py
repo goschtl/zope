@@ -72,19 +72,19 @@ class IdPicker(NameChooser):
         >>> IdPicker({}).checkName(u'bob', None)
         True
 
-        >>> IdPicker({}).checkName(u'bob\xfa', None)
-        ... # doctest: +NORMALIZE_WHITESPACE
-        Traceback (most recent call last):
-        ...
-        UserError: Ids must contain only printable
-        7-bit non-space ASCII characters
+        >>> try:
+        ...     IdPicker({}).checkName(u'bob\xfa', None)
+        ... except UserError, e:
+        ...     print e
+        ...     # doctest: +NORMALIZE_WHITESPACE
+        Ids must contain only printable 7-bit non-space ASCII characters
 
-        >>> IdPicker({}).checkName(u'big bob', None)
-        ... # doctest: +NORMALIZE_WHITESPACE
-        Traceback (most recent call last):
-        ...
-        UserError: Ids must contain only printable
-        7-bit non-space ASCII characters
+        >>> try:
+        ...     IdPicker({}).checkName(u'big bob', None)
+        ... except UserError, e:
+        ...     print e
+        ...     # doctest: +NORMALIZE_WHITESPACE
+        Ids must contain only printable 7-bit non-space ASCII characters
 
         Ids also can't be over 100 characters long:
 
