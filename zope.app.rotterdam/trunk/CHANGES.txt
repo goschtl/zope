@@ -7,6 +7,9 @@ CHANGES
 
 - Removed not needed test dependency on ``zope.app.zptpage``.
 
+- Replaced test dependency on ``zope.app.securitypolicy`` by
+  ``zope.securitypolicy``.
+
 
 3.5.1 (2010-01-08)
 ------------------
