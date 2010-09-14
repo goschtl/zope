@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""zope.app.zptpage common test related classes/functions/objects.
+"""zope.app.generations common test related classes/functions/objects.
 
 $Id$
 """
