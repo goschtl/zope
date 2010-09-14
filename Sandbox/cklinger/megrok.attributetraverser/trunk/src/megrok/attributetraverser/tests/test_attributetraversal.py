@@ -7,7 +7,7 @@ Let's setup some basic infrastructure for running the tests.
   >>> root = getRootFolder() 
   >>> root['app'] = app = MyApp()
   >>> root['app']
-  <megrok.attributetraverser.tests.test_browser.MyApp object at ...>
+  <megrok.attributetraverser.tests.test_attributetraversal.MyApp object at ...>
 
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
@@ -88,7 +88,7 @@ def test_suite():
     from megrok.attributetraverser import tests
     from zope.testing import doctest
 
-    layer = tests.AttributeTraverserLayer(tests.test_browser)
+    layer = tests.AttributeTraverserLayer(tests.test_attributetraversal)
     suite = unittest.TestSuite()
     mytest = doctest.DocTestSuite(
         extraglobs={"getRootFolder": layer.getRootFolder},
