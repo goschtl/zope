@@ -44,6 +44,8 @@ def process_buildbot_nodes(app, doctree, fromdocname):
             socket.setdefaulttimeout(socket_timeout)
 
 def getBuildbotResult(url):
+    # url should end with '/buildbot/builders/$buildername'
+    url = url.rstrip('/') # make sure trailing slashes don't cause failures
     try:
         xmlrpc_url = '/'.join(url.split('/')[:-2] + ['xmlrpc'])
         builder = urllib.unquote(url.split('/')[-1])
