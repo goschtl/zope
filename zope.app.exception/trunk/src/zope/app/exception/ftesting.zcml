@@ -12,9 +12,15 @@
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
-  <include package="zope.app.zptpage"/>
   <include package="zope.app.securitypolicy" />
   <include package="zope.login" />
+
+  <browser:page
+      for="zope.app.folder.interfaces.IFolder"
+      name="error.html"
+      class="zope.app.exception.browser.tests.test_error.RaiseError"
+      permission="zope.Public"
+      />
 
   <browser:page
       for="zope.app.folder.interfaces.IFolder"

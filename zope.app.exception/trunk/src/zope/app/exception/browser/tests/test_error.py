@@ -20,6 +20,12 @@ from zope.app.testing import functional
 from zope.component.interfaces import ComponentLookupError
 from zope.app.exception.testing import AppExceptionLayer
 
+class RaiseError(object):
+
+    def __call__(self):
+        raise Exception()
+
+
 class RaiseComponentLookupError(object):
 
     def __call__(self):
@@ -45,6 +51,3 @@ def test_suite():
         unittest.makeSuite(TestComponentLookupError),
         systemerror,
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

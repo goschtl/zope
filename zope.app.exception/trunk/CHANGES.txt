@@ -4,7 +4,7 @@ CHANGES
 3.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- No longer depend on ``zope.app.zptpage`` for tests.
 
 
 3.6.1 (2010-01-08)
