@@ -10,6 +10,8 @@ CHANGES
 - Replaced test dependency on ``zope.app.securitypolicy`` by
   ``zope.securitypolicy``.
 
+- Using Python's ``doctest`` instead of deprecated ``zope.testing.doctest``.
+
 
 3.5.1 (2010-01-08)
 ------------------

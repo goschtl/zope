@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.testing.doctest import DocTestSuite
+import doctest
 
 def test_suite():
-    return DocTestSuite("zope.app.rotterdam.editingwidgets")
+    return doctest.DocTestSuite("zope.app.rotterdam.editingwidgets")
