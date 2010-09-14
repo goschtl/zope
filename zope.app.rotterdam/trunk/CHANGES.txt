@@ -5,7 +5,7 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed not needed test dependency on ``zope.app.zptpage``.
 
 
 3.5.1 (2010-01-08)
