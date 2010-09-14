@@ -5,7 +5,7 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Moved a test here from ``zope.app.exception``.
 
 
 3.5.1 (2010-01-08)

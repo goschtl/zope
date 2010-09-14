@@ -208,7 +208,10 @@ checker = renormalizing.RENormalizing([
 def test_suite():
     from zope.app.testing.functional import FunctionalDocFileSuite
     collector = FunctionalDocFileSuite(
-        'collector266.txt', 'collector269.txt', checker=checker)
+        'collector266.txt',
+        'collector269.txt',
+        'errorview.txt',
+        checker=checker)
     url = FunctionalDocFileSuite('url.txt', checker=checker)
     collector.layer = ZPTPageLayer
     ZPTPageTest.layer = ZPTPageLayer
