@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.2 (unreleased)
+3.5.2 (2010-09-14)
 ------------------
 
 - Removed not needed test dependency on ``zope.app.zptpage``.
