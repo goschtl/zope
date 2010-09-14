@@ -103,6 +103,23 @@ CHANGES
 - Cleaned up dependencies.
 
 
+1.0.2 (2009-04-03)
+------------------
+
+- backport release, see release date
+
+- **Security issue:** The traverser defined for
+  ``IPageletBrowserLayer`` was a trusted adapter, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
+
+  Making this change might BREAK your application!
+  That means if security is not well declared.
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered
+
+
 1.0.1 (2008-01-24)
 ------------------
 
