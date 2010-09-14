@@ -10,3 +10,23 @@ div.body li {
 table.packagelist {
     width: 100%;
 }
+
+div#build-servers table ul {
+    padding-left: 0px;
+}
+
+div#build-servers table li {
+    list-style: none inside none;
+}
+
+.tests_passed {
+    background-image: url("../_static/success.png");
+    background-repeat: no-repeat;
+    padding-left: 18px;
+}
+
+.tests_not_passed {
+    background-image: url("../_static/nosuccess.png");
+    background-repeat: no-repeat;
+    padding-left: 18px;
+}

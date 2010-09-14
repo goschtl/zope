@@ -18,6 +18,7 @@ all: releaseinfo html
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html      to make standalone HTML files"
+	@echo "  quickhtml to make standalone HTML files without buildbot data"
 	@echo "  pickle    to make pickle files"
 	@echo "  json      to make JSON files"
 	@echo "  htmlhelp  to make HTML files and a HTML help project"
@@ -34,6 +35,12 @@ releaseinfo:
 html:
 	mkdir -p build/html build/doctrees
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) build/html
+	@echo
+	@echo "Build finished. The HTML pages are in build/html."
+
+quickhtml:
+	mkdir -p build/html build/doctrees
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) -D buildbot_check=False build/html
 	@echo
 	@echo "Build finished. The HTML pages are in build/html."
 
