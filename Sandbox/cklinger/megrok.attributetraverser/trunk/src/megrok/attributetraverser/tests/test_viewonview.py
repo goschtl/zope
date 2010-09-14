@@ -23,12 +23,38 @@ As result we receive the normal output of grok.View
   >>> browser.open('http://127.0.0.1/app1/simpleview/@@getfoo')
   >>> print browser.contents
   fooBAR
+
+
+Testing with the ZCA
+--------------------
+
+  >>> from zope.component import getMultiAdapter
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> view = getMultiAdapter((app, request), name=u"simpleview")
+  >>> view
+  <megrok.attributetraverser.tests.test_viewonview.SimpleView object at ...>
+  >>> print view()
+  HELLO
+
+  >>> getfoo = getMultiAdapter((view, request), name=u"getfoo")
+  >>> getfoo 
+  <megrok.attributetraverser.meta.AjaxMethods object at ...>
+  >>> print getfoo()
+  fooBAR
+
+  >>> getbar = getMultiAdapter((view, request), name=u"getbar")
+  >>> getbar
+  <megrok.attributetraverser.meta.AjaxMethods object at ...>
+  >>> print getbar()
+  EGEO
+
 """
 
 
 import grok
 import simplejson
-from megrok.attributetraverser.components import ViewExtension
+from megrok.attributetraverser.components import ViewExtension, jsonify
 
 
 class MyApp(grok.Context):
@@ -48,6 +74,9 @@ class AjaxMethods(ViewExtension):
 
     def getfoo(self):
         return self.view.foo + self.context.bar 
+    
+    def getbar(self):
+        return "EGEO"
 
 
 def test_suite():

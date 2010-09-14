@@ -29,3 +29,10 @@ class ViewExtension(grokcore.view.View):
     def render(self):
         return "BLA"
 
+
+def jsonify(method):
+    def wrapper(self, *args, **kwargs):
+        import simplejson
+        data = method(self, *args, **kwargs)
+        return simplejson.dumps(data) 
+    return wrapper
