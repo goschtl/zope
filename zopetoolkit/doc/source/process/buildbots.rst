@@ -207,7 +207,7 @@ Linux
       -
       -
       - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.4.6%2064bit%20linux AFPY 
-        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux/ POV 
+        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV 
       - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.5%2064bit%20linux AFPY 
         * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux POV 
       -
