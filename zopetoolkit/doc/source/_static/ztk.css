@@ -30,3 +30,9 @@ div#build-servers table li {
     background-repeat: no-repeat;
     padding-left: 18px;
 }
+
+.tests_could_not_determine {
+    background-image: url("../_static/unknown.png");
+    background-repeat: no-repeat;
+    padding-left: 18px;
+}

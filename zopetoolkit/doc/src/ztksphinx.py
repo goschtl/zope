@@ -37,8 +37,12 @@ def process_buildbot_nodes(app, doctree, fromdocname):
             for node in doctree.traverse(BuildbotColor):
                 buildbot_url = node.buildbot_url
                 buildbot_result = getBuildbotResult(buildbot_url)
-                css_class = buildbot_result and 'tests_passed' or \
-                    'tests_not_passed'
+                if buildbot_result is None:
+                    css_class = 'tests_could_not_determine'
+                elif buildbot_result:
+                    css_class = 'tests_passed'
+                else:
+                    css_class = 'tests_not_passed'
                 node.css_class = css_class
         finally:
             socket.setdefaulttimeout(socket_timeout)
@@ -52,7 +56,7 @@ def getBuildbotResult(url):
         xmlrpc = ServerProxy(xmlrpc_url)
         return xmlrpc.getLastBuildResults(builder) == 'success'
     except:
-        return False
+        return None
 
 class BuildbotColor(nodes.Inline, nodes.TextElement):
     pass
