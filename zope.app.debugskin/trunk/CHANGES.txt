@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.4.1 (2010-09-16)
+------------------
+
+- Made tests compatible with current package versions.
+
+
 3.4.0 (2007-11-01)
 ------------------
 
