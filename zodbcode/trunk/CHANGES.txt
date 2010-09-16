@@ -7,6 +7,8 @@ CHANGES
 
 - Added test extra to declare test dependency on `zope.testing`.
 
+- Declared that this package is not compatible with ZODB 3.10, yet.
+
 
 3.4.0 (2007-10-10)
 ------------------
