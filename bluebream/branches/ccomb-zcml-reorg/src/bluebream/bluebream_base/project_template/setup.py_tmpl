@@ -53,6 +53,8 @@ ${long_description|nothing}""",
                         'zope.app.testing',
                         'zope.testbrowser',
                         'zope.login',
+                        'zope.keyreference',
+                        'zope.intid',
                         'zope.app.zcmlfiles',
                         ],
       entry_points = """

@@ -4,8 +4,6 @@
 
   <!-- This file contains sample security policy definition -->
 
-  <include package="zope.securitypolicy" />
-
   <securityPolicy 
      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 

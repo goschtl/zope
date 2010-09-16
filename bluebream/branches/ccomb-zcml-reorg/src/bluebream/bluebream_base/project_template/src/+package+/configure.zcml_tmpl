@@ -3,7 +3,13 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="${project}">
 
-  <include file="securitypolicy.zcml" />
+  <include file="require.zcml" />
+
+  <!-- Overrides -->
+  <includeOverrides package="${ns_prefix}${package}" file="overrides.zcml" />
+
+  <!-- Security Policy -->
+  <include package="${ns_prefix}${package}" file="securitypolicy.zcml" />
 
   <!-- The following registration (defaultView) register 'index' as
        the default view for a container.  The name of default view
