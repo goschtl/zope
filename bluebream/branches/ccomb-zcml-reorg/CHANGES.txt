@@ -1,11 +1,12 @@
 Changelog
 *********
 
-1.0b5 (unreleased)
+1.0c1 (unreleased)
 ------------------
 
 - Include `zope.location`, `zope.keyreference` and `zope.intid`
   from `site.zcml` file.
+- Reorganized zcml files (for deploy, debug and testing)
 
 1.0b4 (2010-08-26)
 ------------------
