@@ -71,13 +71,13 @@ The tests run on OS X 10.6
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-osx The Health Agency 
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-osx The Health Agency
       - unsupported
 
     * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`__
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2%20slave-osx The Health Agency 
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2%20slave-osx The Health Agency
       -
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
@@ -106,28 +106,28 @@ no testing support for those
 
     * - `ZODB trunk <http://svn.zope.org/ZODB/trunk>`__
       - unsupported
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_254_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win64 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win64 winbot 
+      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_254_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win64 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win64 winbot
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`__
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot 
-      - notyet
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot 
-      - notyet
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
+      - unsupported
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
+      - unsupported
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_244_win32 winbot 
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot 
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot 
+      - unsupported
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot
+      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
         * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk_win%20slave-win The Health Agency
-      - notyet
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot 
-      - notyet
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
 
     * - `zc.buildout trunk <http://svn.zope.org/zc.buildout/trunk>`__
       - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_244_win32 winbot
@@ -183,7 +183,7 @@ Linux
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-ubuntu32 The Health Agency 
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-ubuntu32 The Health Agency
       - unsupported
       - unsupported
       - unsupported
@@ -202,14 +202,14 @@ Linux
       -
 
     * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`__
-      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux POV 
-      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux POV 
+      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux POV
+      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux POV
       -
       -
-      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.4.6%2064bit%20linux AFPY 
-        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV 
-      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.5%2064bit%20linux AFPY 
-        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux POV 
+      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.4.6%2064bit%20linux AFPY
+        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV
+      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.5%2064bit%20linux AFPY
+        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux POV
       -
       -
 
@@ -218,30 +218,30 @@ Linux
       -
       -
       -
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.7.0%20Linux%2064bit AFPY 
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.7.0%20Linux%2064bit AFPY
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       -
       -
       -
       -
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.4.6%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.5%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.5%20Linux%2064bit AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.7.0%20Linux%2064bit AFPY 
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.4.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.7.0%20Linux%2064bit AFPY
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       -
       -
       -
       -
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.4.6%2064bit%20linux AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY 
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.0%2064bit%20linux AFPY 
+      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.4.6%2064bit%20linux AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.0%2064bit%20linux AFPY
 
 The Buildbot Maintainers
 ~~~~~~~~~~~~~~~~~~~~~~~~
