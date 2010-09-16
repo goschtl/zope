@@ -54,7 +54,10 @@ setup (
     include_package_data = True,
     package_dir = {'':'src'},
     install_requires = [
-        'ZODB3',
+        'ZODB3 < 3.10dev',
         'zope.interface'],
+    extras_require=dict(test=[
+        'zope.testing',
+        ]),
     zip_safe = False,
     )
