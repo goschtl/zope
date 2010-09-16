@@ -22,9 +22,9 @@ from zope.app.wsgi.testlayer import http, BrowserLayer
 import zope.app.http
 
 class TestPUT(TestCase):
-    
+
     layer = BrowserLayer(zope.app.http)
-    
+
     def test_put(self):
         # PUT something for the first time
         response = http(r"""PUT /testfile.txt HTTP/1.1
@@ -33,7 +33,7 @@ Content-Length: 20
 Content-Type: text/plain
 
 This is just a test.""")
- 
+
         self.assertEquals(response.getStatus(), 201)
         self.assertEquals(response.getHeader("Location"),
                           "http://localhost/testfile.txt")
@@ -55,8 +55,8 @@ And now it is modified.""")
         response = http(r"""GET /testfile.txt HTTP/1.1
 Authorization: Basic globalmgr:globalmgrpw""")
         self.assertEquals(response.getBody(), "And now it is modified.")
-        
-        
+
+
 def test_suite():
     return TestSuite((
         makeSuite(TestPUT),
