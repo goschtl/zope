@@ -5,7 +5,7 @@ CHANGES
 3.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added test extra to declare test dependency on `zope.testing`.
 
 
 3.5.2 (2010-07-08)
@@ -23,7 +23,7 @@ CHANGES
 3.5.0 (2009-05-21)
 ------------------
 
-- Factor out ObjectInterfacesVocabulary into zope.componentvocabulary.
+- Factor out ObjectInterfacesVocabulary into `zope.componentvocabulary`.
 
 - Remove various test dependencies.
 
