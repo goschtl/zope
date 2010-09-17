@@ -71,7 +71,7 @@ setup(
     extras_require={
         "test": ["zope.testing",
                  "zope.app.testing",
-                 "zope.app.keyreference",
+                 "zope.keyreference",
                  "zope.app.zcmlfiles",
                  ]},
     zip_safe=False,
