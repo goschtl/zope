@@ -8,6 +8,10 @@ CHANGES
 - Replaced a testing dependency on `zope.app.securitypolicy` with one on
   `zope.securitypolicy`.
 
+- Removed test dependency on `zope.app.file` by moving the test which needs
+  this package to `zope.app.file`.
+
+
 3.8 (2010-04-19)
 ----------------
 

@@ -54,7 +54,6 @@ setup(name='zope.app.http',
       namespace_packages=['zope', 'zope.app'],
       extras_require=dict(
           test=['zope.app.testing',
-                'zope.app.file',
                 'zope.app.zcmlfiles',
                 'zope.app.wsgi >= 3.9.0',
                 'zope.securitypolicy',
