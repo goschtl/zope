@@ -17,10 +17,10 @@
 """
 __docformat__ = "reStructuredText"
 
+import doctest
 import os.path
 import unittest
 
-from zope.testing import doctest
 import zope.app.testing.functional
 from zope.app.testing.functional import FunctionalDocFileSuite
 

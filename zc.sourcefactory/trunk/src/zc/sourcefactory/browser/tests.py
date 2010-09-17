@@ -16,9 +16,8 @@
 """
 __docformat__ = "reStructuredText"
 
+import doctest
 import unittest
-
-from zope.testing import doctest
 import zope.app.testing.functional
 
 from zc.sourcefactory.tests import SourceFactoryLayer
