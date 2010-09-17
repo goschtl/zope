@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """DCWorkflow export / import unit tests.
-
-$Id$
 """
 
 import unittest
@@ -1331,7 +1329,7 @@ _EMPTY_WORKFLOW_EXPORT = """\
     description="%s"
     state_variable="state"
     initial_state="%s"
-    manager_bypass="0">
+    manager_bypass="False">
 </dc-workflow>
 """
 
@@ -1344,7 +1342,7 @@ _OLD_WORKFLOW_EXPORT = """\
     title="%(title)s"
     state_variable="state"
     initial_state="%(initial_state)s"
-    manager_bypass="0">
+    manager_bypass="False">
  <permission>Open content for modifications</permission>
  <permission>Modify content</permission>
  <permission>Query history</permission>
@@ -1589,7 +1587,7 @@ _NORMAL_WORKFLOW_EXPORT = """\
     description="%(description)s"
     state_variable="state"
     initial_state="%(initial_state)s"
-    manager_bypass="0">
+    manager_bypass="False">
  <permission>Open content for modifications</permission>
  <permission>Modify content</permission>
  <permission>Query history</permission>
@@ -1839,7 +1837,7 @@ _CREATION_GUARD_WORKFLOW_EXPORT = """\
     description="%s"
     state_variable="state"
     initial_state="%s"
-    manager_bypass="1">
+    manager_bypass="True">
  <instance-creation-conditions>
   <guard>
    <guard-permission>Add portal content</guard-permission>
@@ -2549,13 +2547,10 @@ class Test_importWorkflow(_WorkflowSetup, _GuardChecker):
         self.assertEqual(scripts['doc'].meta_type, 'DTML Document')
         self.assertEqual(scripts['bar'].meta_type, 'Script (Python)')
 
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite( WorkflowDefinitionConfiguratorTests ),
         unittest.makeSuite( Test_exportWorkflow ),
         unittest.makeSuite( Test_importWorkflow ),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())
