@@ -47,7 +47,7 @@ class Container(object):
 
     __name__ = None
     __parent__ = None
-    
+
     def __init__(self, path):
         self.path = path
 
@@ -66,7 +66,7 @@ class Container(object):
 class TestNullPUT(TestCase):
 
     layer = BrowserLayer(zope.app.http)
-    
+
     def test(self):
         self.rootFolder = rootFolder()
 
@@ -77,21 +77,21 @@ class TestNullPUT(TestCase):
                               {'CONTENT_TYPE': 'test/foo',
                                'CONTENT_LENGTH': str(len(content)),
                                })
-        null = zope.app.http.put.NullResource(container, 'spam')
+        null = zope.app.http.put.NullResource(container, 'spam.txt')
         put = zope.app.http.put.NullPUT(null, request)
         self.assertEqual(getattr(container, 'spam', None), None)
         self.assertEqual(put.PUT(), '')
         request.response.setResult('')
-        file = container.spam
+        file = getattr(container, 'spam.txt')
         self.assertEqual(file.__class__, File)
-        self.assertEqual(file.name, 'spam')
+        self.assertEqual(file.name, 'spam.txt')
         self.assertEqual(file.content_type, 'test/foo')
         self.assertEqual(file.data, content)
 
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 201)
         self.assertEqual(request.response.getHeader("Location"),
-                         "http://127.0.0.1/put/spam")
+                         "http://127.0.0.1/put/spam.txt")
 
     def test_bad_content_header(self):
         ## The previous behavour of the PUT method was to fail if the request
