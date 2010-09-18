@@ -1,278 +1,16 @@
 What's new in BlueBream 1.0 ?
 =============================
 
-Migration issues
-----------------
+Introduction
+------------
 
-.. note: This is based on ZTK documentation.  We should find a way to
-         import this doc from the zopetoolkit instead of duplicating
-         it here.
+BlueBream is based on ZTK, so you can look at the `ZTK documentation for
+major changes and migration issues
+<http://docs.zope.org/zopetoolkit/releases/overview-1.0c1.html>`_.
 
-
-zope.app.keyreference -> zope.keyreference
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This package was renamed to ``zope.keyreference`` and all its
-functionality was moved to the new one.  The new package contains a
-little workaround for making old persistent keyrerefences loadable
-without ``zope.app.keyreference`` installed, so the latter one is not
-needed at all anymore.  Still review your code for any imports coming
-from ``zope.app.keyreference`` and modify it to use
-``zope.keyreference`` instead.
-
-zope.app.intid -> zope.intid
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The non-UI functionality of these packages was moved to
-``zope.intid`` with backwards compatibility imports left in place.
-Review your imports from ``zope.app.intid`` to see whether they
-cannot come directly from ``zope.intid`` instead.
-
-zope.app.catalog -> zope.catalog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The non-UI functionality of these packages was moved to
-``zope.catalog``.  Review your imports from ``zope.app.catalog`` to
-see whether they cannot come directly from ``zope.catalog`` instead.
-
-zope.app.container -> zope.container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The non-UI functionality of these packages was moved to
-``zope.container``.  Review your imports from ``zope.app.container``
-to see whether they cannot come directly from ``zope.container``
-instead.
-
-In addition, the exceptions used by ``zope.container`` were changed,
-so if your code catches them, you need to review it:
-
-* The ``DuplicationError`` in ``setitem`` was changed to ``KeyError``.
-
-* The ``UserError`` in ``NameChooser`` was changed to ``ValueError``.
-
-zope.app.component -> zope.security, zope.site
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The implementation of the ``<class>`` ZCML directive moved from this
-package to ``zope.security``.  Packages that relied on
-``zope.app.component`` to obtain this directive should declare a
-direct dependency on ``zope.security``, and it may be possible to
-lose the dependency on ``zope.app.component`` altogether.
-
-Non-UI site related functionality has been moved to the ``zope.site``
-package.  with backwards compatibility imports left in place. Review
-your imports from ``zope.app.component`` to see whether they cannot
-come directly from ``zope.site`` instead.
-
-zope.app.folder -> zope.site, zope.container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The implementation of the ``zope.app.folder.Folder`` class has moved
-to ``zope.site.folder`` instead, with backwards compatibility imports
-left in place.  Review your imports from ``zope.app.folder`` to see
-whether they cannot come directly from ``zope.site`` instead.  In
-addition, ``Folder`` is an ``IContainer`` implementation that also
-mixes in site management functionality.  If such site management
-support is not necessary, in some cases your code does not need
-``Folder`` but may be able to rely on a ``Container`` implementation
-from ``zope.container`` instead.
-
-A base class with the implementation of the container-like behavior
-of ``Folder`` has moved to ``zope.container`` (and ``zope.site`` uses
-this for its implementation of ``Folder``).  This is not normally
-something you should need to retain backwards compatibility.
-
-zc.copy -> zope.copy, zope.copypastemove, zope.location
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The pluggable object copying mechanism once developed in the
-``zc.copy`` package was merged back into ``zope.location``,
-``zope.copypastemove`` and the new ``zope.copy`` package.  The
-``zope.copy`` package now provides a pluggable mechanism for copying
-objects from ``zc.copy`` and doesn't depend on anything but
-``zope.interface``.  The ``zope.copypastemove`` uses the ``copy``
-function from ``zope.copy`` in its ``ObjectCopier``.
-
-The ``zope.location`` now provides an ``ICopyHook`` adapter that
-implements conditional copy functionality based on object locations,
-that old ``zope.location.pickling.CopyPersistent`` used to provide.
-Note, that if you don't use ZCML configuration of ``zope.location``,
-you may need to register ``zope.location.pickling.LocationCopyHook``
-yourself.
-
-The ``zope.location.pickling.locationCopy`` and
-``zope.location.pickling.CopyPersistent`` are now deprecated in favor
-of ``zope.copy`` and were replaced by backward-compatibility imports.
-See ``zope.copy`` package documentation for information on how to use
-the new mechanism.
-
-The new version of the ``zc.copy`` package now only contains
-backward-compatibility imports and is deprecated.  ``zope.copy``
-should be preferred for new developments.
-
-zope.app.security refactoring
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``zope.app.security`` package was finally refactored into a few
-small parts with less dependencies and more clear purpose.
-
-The implementation of the ``<module>`` ZCML directive moved from this
-package to ``zope.security``.  Packages that relied on
-``zope.app.security`` to obtain this directive should declare a
-direct dependency on ``zope.security``, and it may be possible to
-lose the dependency on ``zope.app.security`` altogether.
-
-The ``protectclass`` module in this package has moved to
-``zope.security``, with backwards compatibility imports left in
-place.  Review your imports from ``zope.app.security`` to see whether
-they cannot come directly from ``zope.security`` instead.
-
-All interfaces (`IAuthentication`, `IUnauthenticatedPrincipal`,
-`ILoginPassword` and so on.) were moved into a new
-``zope.authentication`` package, as well as several utility things,
-like `PrincipalSource` and `checkPrincipal` function.  The new
-package has much less dependencies and defines an abstract contracts
-for implementing authentication within Zope Framewowk.  While
-backward compatibility imports are left in place, it's strongly
-reccommended to update your imports to the ``zope.authentication``.
-
-The `global principal registry` and its ZCML directives are moved
-into a new ``zope.principalregistry`` package with
-backward-compatibility imports left in place.  If your application
-uses global principals, review your code and ZCML configuration to
-update it to the new place.
-
-The `local permission` functionality was moved into a new
-``zope.app.localpermission`` package.  This functionality is a part
-of Through-The-Web development pattern that seems not to be used and
-supported much by Zope Toolkit and Application anymore, so it can be
-considered deprecated.  However, it can serve as a great example of
-TTW-related component.
-
-The `Permission vocabularies` and standard protections for Message
-objects and `__name__`, `__parent__` attributes as well as some
-common permissions, like `zope.View` and `zope.ManageContent` were
-merged into `zope.security`.
-
-The adapters from ``zope.publisher``'s `IHTTPCredentials` and
-`IFTPCredentials` to the `ILoginPassword` were moved into
-``zope.publisher``, thus making ``zope.authentication`` a dependency
-for ``zope.publisher``.
-
-The original ``zope.app.security`` package now only contains several
-deprecated or application-specific permission definitions, python
-module protections, that are only likely to be needed with deprecated
-Through-The-Web development pattern, and ZMI-related browser views
-(login.html, zope.app.form view for PrincipalSource and so on), as
-well as backward-compatibility imports.  So, if you're not using TTW
-and/or standard ZMI browser views, you probably should review update
-your imports to a new places and drop dependency on
-``zope.app.security`` to reduce package dependencies count.
-
-Other packages, that used ``zope.app.security``, like
-``zope.securitypolicy`` are either already adapted to the changes or
-will be adapted soon.
-
-zope.app.publisher refactoring
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``zope.app.publisher`` package was also refactored into smaller parts
-with less dependencies and clearer purpose.
-
-The browser resources mechanism (mostly used for serving static files
-and directories) was factored out to the new ``zope.browserresource``
-package.  It was also made more pluggable, so you can register
-specific resource classes for some file extensions, if you need
-special processing.  One of the example is the new
-``zope.ptresource`` package, where the PageTemplateResource was
-moved, another example is ``z3c.zrtresource`` package that was
-adapted to automatically use ZRT resource class for files with
-``.zrt`` extensions.
-
-Browser menu mechanism was moved into a new ``zope.browsermenu`` package with
-no further changes.
-
-ZCML directives for easy creation of browser views (the ``browser:page``
-directive and friends) was moved into a new small package, ``zope.browserpage``.
-Also, the directives don't depend the menu mechanism now and will simply ignore
-"menu" and "title" arguments if ``zope.browsermenu`` package is not installed.
-
-The ``IModifiableBrowserLanguages`` adapter was moved into ``zope.publisher``
-along with several ZCML security declarations for ``zope.publisher`` classes
-that used to be in ``zope.app.publisher``.
-
-ZCML registrations for ``IXMLRPCPublisher`` adapter for containers was moved
-into the ``zope.container``, because the actual adapters code were already in
-``zope.container`` and registered there as ``IBrowserPublisher`` adapters.
-However, both adapters and their ZCML registrations will probably move elsewhere
-when we'll be refactoring ``zope.container``.
-
-Several parts are left in ``zope.app.publisher`` untouched:
-
- * ``Browser Skins`` vocabulary.
- * ``date`` field converter for ``zope.publisher``'s form values conversion
-   mechanism.
- * ``ManagementViewSelector`` browser view (ZMI-related part).
- * ``xmlrpc:view`` directive for publishing XML-RPC methods.
-
-The latter, ``xmlrpc:view`` directive is generally useful, so it may be moved
-into a separate package in future, however there are no clear decision about
-how to move XML-RPC and FTP-related things currently.
-
-Password managers extracted from zope.app.authentication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The `IPasswordManager` interface and its implementations were extracted from
-``zope.app.authentication`` into a new ``zope.password`` package to make them
-usable with other authentication systems, like ``z3c.authenticator`` or
-``zope.principalregistry`` or any custom one.
-
-It basically depends only on ``zope.interface``, so it can be really useful even
-in non-Zope environments, like ``Pylons``, for example.
-
-The `Password Manager Names` vocabulary is also moved into
-``zope.password``, however, it's only useful with ``zope.schema`` and
-``zope.component``, so you need them installed to work with them.
-They're listed in the "vocabulary" extra requirement specification.
-
-ZODB 3.9 FileStorage native blob support
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The FileStorage component of ZODB 3.9 used in Zope Toolkit 1.0 now
-supports blobs natively, so you don't need to use BlobStorage proxy
-for it anymore.
-
-Thus, you can specify blob directory directly to FileStorage.  If you
-use ZConfig, that means something like this::
-
-  <filestorage>
-    path var/Data.fs
-    blob-dir var/blobs
-  </filestorage>
-
-instead of::
-
-  <blobstorage>
-    blob-dir var/blobs
-    <filestorage>
-      path var/Data.fs
-    </filestorage>
-  </blobstorage>
-
-If you creating a storage from python, that means something like this:
-
-.. code-block:: python
-
-  storage = FileStorage('var/Data.fs', blob_dir='var/blobs')
-
-instead of:
-
-.. code-block:: python
-
-  storage = BlobStorage('var/blobs', FileStorage('var/Data.fs'))
 
 Package version comparison
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 +------------------------------+------------+-----------------+
 |         Package Name         | Zope 3.4.0 | BlueBream 1.0.0 |
@@ -691,6 +429,33 @@ ChangeLog of individual packages
 bluebream
 ~~~~~~~~~
 
+1.0b4 (2010-08-26)
+******************
+
+- Change custom interpreter name: s/breampy/bbpy
+- Fixed the generated buildout and make it repeatable
+- Added the "extends-cache" Buildout option to cache
+  the extended configuration files
+- warn the user if the project template has significant changes
+- Added empty overrides.zcml - show best practices to developers
+- updated to ZTK 1.0a3
+- Automatically find and suggest the latest *minor* version online
+- added zope.app.http registrations to get the correct unauthorized view
+
+1.0b3 (2010-07-11)
+******************
+
+- Directly depend on the ZTK!
+- Removed the bbkit package
+- Ask the version of BlueBream at project creation
+- Automatically find and suggest the latest version online
+
+
+1.0b2 (2010-06-30)
+******************
+
+- Include zope.error & zope.principalregistry from site.zcml
+
 1.0b1 (2010-04-27)
 ******************
 
@@ -879,6 +644,29 @@ bluebream
 RestrictedPython
 ~~~~~~~~~~~~~~~~
 
+3.6.0 (2010-07-09)
+******************
+
+- Added name check for names assigned during imports using the
+  "from x import y" format.
+
+- Added test for name check when assigning an alias using multiple-context with
+  statements in Python 2.7.
+
+- Added tests for protection of the iterators for dict and set comprehensions
+  in Python 2.7.
+
+3.6.0a1 (2010-06-05)
+********************
+
+- Removed support for DocumentTemplate.sequence - this is handled in the
+  DocumentTemplate package itself.
+
+3.5.2 (2010-04-30)
+******************
+
+- Removed a testing dependency on zope.testing.
+
 3.5.1 (2009-03-17)
 ******************
 
@@ -905,6 +693,63 @@ RestrictedPython
 transaction
 ~~~~~~~~~~~
 
+1.1.1 (2010-09-16)
+******************
+
+Bug Fixes:
+
+- Code in ``_transaction.py`` held on to local references to traceback
+  objects after calling ``sys.exc_info()`` to get one, causing
+  potential reference leakages.
+
+- Fixed ``hexlify`` NameError in ``transaction._transaction.oid_repr``
+  and add test.
+
+1.1.0 (1010-05-12)
+******************
+
+New Features:
+
+- Transaction managers and the transaction module can be used with the
+  with statement to define transaction boundaries, as in::
+
+     with transaction:
+         ... do some things ...
+
+  See transaction/tests/convenience.txt for more details.
+
+- There is a new iterator function that automates dealing with
+  transient errors (such as ZODB confict errors). For example, in::
+
+     for attempt in transaction.attempts(5):
+         with attempt:
+             ... do some things ..
+
+  If the work being done raises transient errors, the transaction will
+  be retried up to 5 times.
+
+  See transaction/tests/convenience.txt for more details.
+
+Bugs fixed:
+
+- Fixed a bug that caused extra commit calls to be made on data
+  managers under certain special circumstances.
+
+  https://mail.zope.org/pipermail/zodb-dev/2010-May/013329.html
+
+- When threads were reused, transaction data could leak accross them,
+  causing subtle application bugs.
+
+  https://bugs.launchpad.net/zodb/+bug/239086
+
+1.0.1 (2010-05-07)
+******************
+
+- LP #142464:  remove double newline between log entries:  it makes doing
+  smarter formatting harder.
+
+- Updated tests to remove use of deprecated ``zope.testing.doctest``.
+
 1.0.0 (2009-07-24)
 ******************
 
@@ -929,6 +774,50 @@ transaction
 
 z3c.testsetup
 ~~~~~~~~~~~~~
+
+0.8.3 (2010-09-15)
+******************
+
+- Fixed tests on windows related to testrunner problems with multiple
+  layers run in subprocesses.
+
+- Fixed some tests on windows, mostly because of path separator issues
+
+
+0.8.2 (2010-07-30)
+******************
+
+- Fixed tests not to fail when some buildbot takes minutes to run the
+  tests.
+
+- Fix tests to work also under Python 2.7.
+
+0.8.1 (2010-07-25)
+******************
+
+- The ``encoding`` parameter is ignored under Python 2.4. This was
+  already true for the 0.8 release, but now we silently ignore it
+  instead of raising exceptions. For Python >= 2.5 nothing changed.
+
+0.8 (2010-07-24)
+****************
+
+- Use standard lib doctest instead of zope.testing.doctest.
+
+- `z3c.testsetup` now looks in `zope.testrunner` for testrunner first
+  (which was ripped out of `zope.testing`). Using testrunner from
+  `zope.testing` is still supported. See bottom of ``testrunner.txt``
+  in sources for details.
+
+- Fix tests to stay compatible with more recent zope testrunners. This
+  should us keep compatible with ZTK 1.0a2.
+
+0.7 (2010-05-17)
+****************
+
+- Fix NameError bug in the warning message in case zope.app.testing is not
+  availble when trying to run a functional doc test. This error presented
+  itself as a highly cryptic ImportError when actually running tests.
 
 0.6.1 (2009-11-19)
 ******************
@@ -1272,6 +1161,14 @@ Initial release
 ZConfig
 ~~~~~~~
 
+2.8.0 (2010-04-13)
+******************
+
+- Fix relative path recognition.
+  https://bugs.launchpad.net/zconfig/+bug/405687
+
+- Added SMTP authentication support for email logger on Python 2.6.
+
 2.7.1 (2009-06-13)
 ******************
 
@@ -1313,6 +1210,13 @@ ZConfig
 
 zc.recipe.testrunner
 ~~~~~~~~~~~~~~~~~~~~
+
+1.2.1 (2010-08-24)
+******************
+
+- Fixed a lot of windows issues
+- Nailed versions to ZTK 1.0a2 (oh well, we have to have at least some stability)
+- Fixed some other test failures that seemed to come from other packages
 
 1.2.0 (2009-03-23)
 ******************
@@ -1511,6 +1415,33 @@ Bugs Fixed
 
 ZODB3
 ~~~~~
+
+3.9.5 (2010-04-23)
+******************
+
+Bugs Fixed
+++++++++++
+
+- Fixed bug in cPickleCache's byte size estimation logic.
+  (https://bugs.launchpad.net/zodb/+bug/533015)
+
+- Fixed a serious bug that caused cache failures when run
+  with Python optimization turned on.
+
+  https://bugs.launchpad.net/zodb/+bug/544305
+
+- Fixed a bug that caused savepoint rollback to not properly
+  set object state when objects implemented _p_invalidate methods
+  that reloaded ther state (unghostifiable objects).
+
+  https://bugs.launchpad.net/zodb/+bug/428039
+
+- cross-database wekrefs weren't handled correctly.
+
+  https://bugs.launchpad.net/zodb/+bug/435547
+
+- The mkzeoinst script was fixed to tell people to
+  install and use the mkzeoinstance script. :)
 
 3.9.4 (2009-12-14)
 ******************
@@ -2075,6 +2006,24 @@ zope.annotation
 
 zope.app.apidoc
 ~~~~~~~~~~~~~~~
+
+3.7.5 (2010-09-12)
+******************
+
+- Define ``__file__`` in doctests to make them pass under Python 2.4.
+
+3.7.4 (2010-09-01)
+******************
+
+- Prefer the standard libraries doctest module to the one from zope.testing.
+
+- Remove unneeded dependencies zope.app.component and zope.app.container
+
+3.7.3 (2010-07-14)
+******************
+
+- Apply refactoring from #153309.
+- Fix LP bug 605057: ZCML links were no longer working (Guilherme Salgado)
 
 3.7.2 (2010-03-07)
 ******************
