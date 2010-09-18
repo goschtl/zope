@@ -19,7 +19,7 @@ setup(name='z3c.suds',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['z3c'],
       include_package_data=True,
-      zip_safe=False,
+      zip_safe=True,
       install_requires=[
           'setuptools',
           'suds',
