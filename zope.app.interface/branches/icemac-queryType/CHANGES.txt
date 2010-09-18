@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-3.5.3 (unreleased)
+
+3.6.0 (unreleased)
 ------------------
 
 - Added test extra to declare test dependency on `zope.testing`.
+
+- Moved ``zope.app.interfaces.queryType`` to `zope.app.content` to inverse
+  dependency.
 
 
 3.5.2 (2010-07-08)
