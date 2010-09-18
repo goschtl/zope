@@ -24,7 +24,7 @@ from zope import component
 from zope.app.component.interfaces import ISite
 from zope.app.zopeappgenerations import getRootFolder
 
-from zope.app.generations.utility import findObjectsProviding
+from zope.generations.utility import findObjectsProviding
 
 from zope.app.component import registration
 import zope.app.authentication.interfaces

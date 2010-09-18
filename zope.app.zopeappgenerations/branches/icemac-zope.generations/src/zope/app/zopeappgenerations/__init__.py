@@ -17,9 +17,9 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.generations.generations import SchemaManager
+from zope.generations.generations import SchemaManager
 # BBB import
-from zope.app.generations.utility import getRootFolder
+from zope.generations.utility import getRootFolder
 
 
 key = 'zope.app.zopeappgenerations'

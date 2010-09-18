@@ -20,7 +20,7 @@ from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.annotatableadapter import DCkey
-from zope.app.generations.utility import findObjectsProviding
+from zope.generations.utility import findObjectsProviding
 from zope.app.zopeappgenerations import getRootFolder
 
 generation = 5
