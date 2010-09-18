@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.6.0 (2010-09-18)
 ------------------
 
-- Nothing changed yet.
+- Now depends on ``zope.generations`` instead of ``zope.app.generations``.
 
 
 3.5.0 (2009-04-05)
