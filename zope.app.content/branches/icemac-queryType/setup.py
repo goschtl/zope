@@ -54,10 +54,12 @@ setup(name='zope.app.content',
       namespace_packages=['zope', 'zope.app'],
       install_requires=['setuptools',
                         'zope.app.component',
-                        'zope.app.interface',
                         'zope.interface',
                         'zope.schema',
                         ],
+      extras_require=dict(test=[
+          'zope.testing',
+          ]),
       include_package_data = True,
       zip_safe = False,
       )
