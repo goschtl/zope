@@ -2131,6 +2131,17 @@ zope.app.apidoc
 zope.app.applicationcontrol
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+3.5.7 (2010-07-08)
+******************
+
+- 3.5.6 was a bad egg release.
+
+3.5.6 (2010-07-07)
+******************
+
+- Bugfix: Launching ``svn`` replaced the whole environment instead of just
+  appending ``LANG``.
+
 3.5.5 (2010-01-09)
 ******************
 
@@ -2173,6 +2184,13 @@ zope.app.applicationcontrol
 
 zope.app.appsetup
 ~~~~~~~~~~~~~~~~~
+
+3.14.0 (2010-04-13)
+*******************
+
+- make zope.testing an optional (test) dependency.
+
+- remove test dependency zope.app.testing.
 
 3.13.0 (2009-12-24)
 *******************
@@ -2438,6 +2456,22 @@ zope.app.catalog
 zope.app.component
 ~~~~~~~~~~~~~~~~~~
 
+3.9.1 (2010-09-01)
+******************
+
+- No longer using deprecated ``zope.testing.doctest``. Use python's build-in
+  ``doctest`` instead.
+
+- Replaced the dependency on ``zope.deferredimport`` with BBB imports.
+
+3.9.0 (2010-07-19)
+******************
+
+- Added missing BBB import in ``zope.app.component.metaconfigure``.
+
+- Requiring at least ``zope.component`` 3.8 where some modules have
+  moved which are BBB imported here.
+
 3.8.4 (2010-01-08)
 ******************
 
@@ -2544,6 +2578,20 @@ zope.app.component
 
 zope.app.container
 ~~~~~~~~~~~~~~~~~~
+
+3.9.1 (2010-09-14)
+******************
+
+- Removed a testing dependency on zope.app.file.
+
+- Replaced a testing dependency on zope.app.securitypolicy with one on the base
+  zope.securitypolicy distribution.
+
+3.9.0 (2010-08-19)
+******************
+
+- Updated ``ftesting.zcml`` to use the new permission names exported by
+  ``zope.dublincore`` 3.7.
 
 3.8.2 (2010-01-08)
 ******************
@@ -2787,6 +2835,14 @@ zope.app.exception
 zope.app.file
 ~~~~~~~~~~~~~
 
+3.6.0 (2010-08-19)
+******************
+
+- Updated ``ftesting.zcml`` to use the new permission names exported by
+  ``zope.dublincore`` 3.7.
+
+- Using python's `doctest` instead of deprecated `zope.testing.doctest`.
+
 3.5.1 (2010-01-08)
 ******************
 
@@ -3028,7 +3084,6 @@ zope.app.generations
 
 - Removed not necessary install dependency on ``zope.app.testing``.
 
-
 3.4.2 (2009-01-27)
 ******************
 
@@ -3045,6 +3100,25 @@ zope.app.generations
 
 zope.app.http
 ~~~~~~~~~~~~~
+
+3.8.0 (2010-04-19)
+******************
+
+- Remove dependency on `zope.app.testing` by using the
+  `zope.app.wsgi.testlayer` support instead.
+
+  At the time of this writing the test dependency on
+  `zope.app.zcmlfiles` cannot be removed however, because there is a
+  dependency on `zope.app.file` for testing, which pulls in the world.
+
+3.7.0 (2010-04-13)
+******************
+
+- Remove unnecessary dependency on `zope.app.publisher`.
+
+- Fix for an edge case:
+  If someone does a ``defaultView`` for the context object and someone comes with
+  a not allowed method, the exception view fails on ``getAdapters``.
 
 3.6.1 (2010-01-08)
 ******************
@@ -3109,6 +3183,12 @@ zope.app.http
 zope.app.i18n
 ~~~~~~~~~~~~~
 
+3.6.3 (2010-09-01)
+******************
+
+- Remove undeclared dependency on zope.deferredimport.
+- Use zope.publisher >= 3.9 instead of zope.app.publisher.
+
 3.6.2 (2009-10-07)
 ******************
 
@@ -3160,6 +3240,16 @@ zope.app.i18n
 
 zope.app.interface
 ~~~~~~~~~~~~~~~~~~
+
+3.5.2 (2010-07-08)
+******************
+
+- 3.5.1 was a bad release
+
+3.5.1 (2010-07-07)
+******************
+
+- Fixed tests and test tearDown to actually close the DB.
 
 3.5.0 (2009-05-21)
 ******************
@@ -3266,6 +3356,21 @@ zope.applicationcontrol
 zope.app.locales
 ~~~~~~~~~~~~~~~~
 
+3.6.2 (2010-07-31)
+******************
+
+- Updated copyright to `Zope Foundation`, even in pot template.
+
+- Updated e-mail address in pot template to current address of zope
+  mailing list.
+
+- Added missing test dependency on `zope.i18n`.
+
+3.6.1 (2010-05-17)
+******************
+
+- Updated Dutch and German translations.
+
 3.6.0 (2009-12-28)
 ******************
 
@@ -3350,13 +3455,24 @@ zope.app.onlinehelp
 zope.app.pagetemplate
 ~~~~~~~~~~~~~~~~~~~~~
 
+3.11.1 (2010-09-01)
+*******************
+
+- Add metaconfigure.registerType BBB import because some packages use it.
+- Use doctest from standard library instead of zope.testing.doctest.
+
+3.11.0 (2010-04-26)
+*******************
+
+- Move tales:expressiontype directive down into zope.browserpage.
+
 3.10.1 (2010-01-04)
 *******************
 
 - Fixed the zope.browserpage imports in the namedtemplate module.
 
 3.10.0 (2009-12-22)
-(******************
+*******************
 
 - Moved named template implementation to zope.browserpage.
 
@@ -3411,6 +3527,26 @@ zope.app.pagetemplate
 
 zope.app.preference
 ~~~~~~~~~~~~~~~~~~~
+
+3.8.1 (2010-06-15)
+******************
+
+- Fixed BBB imports which pointed to a not existing `zope.preferences`
+  package.
+
+3.8.0 (2010-06-12)
+******************
+
+- Depend on split out `zope.preference`.
+
+3.7.0 (2010-06-11)
+******************
+
+- Added HTML labels to ZMI forms.
+
+- Removed `edit.pt` as it seems to be unused.
+
+- Added tests for the ZMI views.
 
 3.6.0 (2009-02-01)
 ******************
@@ -3483,6 +3619,17 @@ zope.app.principalannotation
 
 zope.app.publication
 ~~~~~~~~~~~~~~~~~~~~
+
+3.11.1 (2010-04-19)
+*******************
+
+- Fix up tests to work with newer zope.app.wsgi release (3.9.0).
+
+3.11.0 (2010-04-13)
+*******************
+
+- Don't depend on zope.app.testing and zope.app.zcmlfiles anymore in
+  the tests.
 
 3.10.2 (2010-01-08)
 *******************
@@ -4004,6 +4151,11 @@ zope.app.server
 zope.app.session
 ~~~~~~~~~~~~~~~~
 
+3.6.2 (2010-09-01)
+******************
+
+- Remove undeclared dependency on ``zope.deferredimport``.
+
 3.6.1 (2010-02-06)
 ******************
 
@@ -4026,6 +4178,12 @@ zope.app.skins
 
 zope.app.testing
 ~~~~~~~~~~~~~~~~
+
+3.7.5 (2010-04-10)
+******************
+
+- Switch doctests to use the stdlib ``doctest`` module, rather than the
+  deprecated ``zope.testing.doctest`` variant.
 
 3.7.4 (2010-01-08)
 ******************
@@ -4213,6 +4371,75 @@ zope.app.undo
 zope.app.wsgi
 ~~~~~~~~~~~~~
 
+3.9.2 (2010-05-23)
+******************
+
+- Fixed test breakage due to changes in mechanize 0.2.0.
+
+3.9.1 (2010-04-24)
+******************
+
+- Add support for testing XMLRPC using zope.app.wsgi.testlayer.
+
+- Fix a bug in the status string handling in zope.app.wsgi.testlayer's
+  FakeResponse.
+
+3.9.0 (2010-04-19)
+******************
+
+- Return a FakeResponse object in zope.app.wsgi.testlayer.http,
+  so it becomes easier to port over tests from zope.app.testing's
+  HTTPCaller.
+
+- X-Powered-By header is now stripped by zope.app.wsgi.testlayer as
+  it is by zope.app.testing.
+
+- Bugfix: initialize any <logger> defined in the config, as
+  zope.app.server does. (Fixes #291147)
+
+3.8.0 (2010-04-14)
+******************
+
+- zope.app.wsgi.testlayer is now a lot more compatible with
+  the HTTPCaller() functionality in zope.app.testing, which it can
+  replace:
+
+  - same transaction behavior - pending transactions are committed
+    before request and synchronized afterwards.
+
+  - support for browser.handleErrors (for zope.testbrowser).
+
+  - support for clear-text (non-base64) Basic authentication headers,
+    which are easier to read in the tests (though not correct in
+    actual HTTP traffic).
+
+3.7.0 (2010-04-13)
+******************
+
+- Rewrite tests in order not to dependent on ``zope.app.testing`` and
+  ``zope.app.zcmlfiles``.
+
+- ``zope.app.wsgi.testlayer`` introduces new testing functionality that
+  can replace the old functionality in ``zope.app.testing``. In addition,
+  it supports using ``zope.testbrowser`` with WSGI directly (instead of
+  relying on ``zope.app.testing``, which pulls in a lot of dependencies).
+
+  The interesting parts are:
+
+  * ``zope.app.wsgi.testlayer.BrowserLayer``: this sets up a minimal layer
+    that allows you to use the new WSGI-enabled Browser.
+
+  * ``zope.app.wsgi.testlayer.Browser``: this is a subclass of Browser from
+    ``zope.testbrowser.browser``. Use it instead of
+    ``zope.testbrowser.browser`` directly to use the test browser with WSGI.
+    You need to use ``BrowserLayer`` with your tests for this to work.
+
+  * ``zope.app.wsgi.testlayer.http``: this is the equivalent to the ``http()``
+    function in ``zope.app.testing``. It allows low-level HTTP access
+    through WSGI. You need to use ``BrowserLayer`` with your tests for
+    this to work.
+
+
 3.6.1 (2010-01-29)
 ******************
 
@@ -4382,6 +4609,11 @@ zope.app.zptpage
 zope.authentication
 ~~~~~~~~~~~~~~~~~~~
 
+3.7.1 (2010-04-30)
+******************
+
+- Removed undeclared testing dependency on zope.testing.
+
 3.7.0 (2009-03-14)
 ******************
 
@@ -4407,6 +4639,33 @@ zope.broken
 zope.browser
 ~~~~~~~~~~~~
 
+1.3 (2010-04-30)
+****************
+
+- Removed test extra and zope.testing dependency.
+
+1.2 (2009-05-18)
+****************
+
+- Moved ``ISystemErrorView`` interface here from
+  ``zope.app.exception`` to break undesirable dependencies.
+
+- Fixed home page and author's e-mail address.
+
+- Added doctests to long_description.
+
+1.1 (2009-05-13)
+****************
+
+- Moved ``IAdding`` interface here from ``zope.app.container.interfaces``
+  to break undesirable dependencies.
+
+1.0 (2009-05-13)
+****************
+
+- Moved ``IView`` and ``IBrowserView`` interfaces here from
+  ``zope.publisher.interfaces`` to break undesirable dependencies.
+
 0.5.0 (2008-12-11)
 ******************
 
@@ -4416,6 +4675,11 @@ zope.browser
 zope.browsermenu
 ~~~~~~~~~~~~~~~~
 
+3.9.1 (2010-04-30)
+******************
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's 'doctest.
+
 3.9.0 (2009-08-27)
 ******************
 
@@ -4423,6 +4687,24 @@ Initial release. This package was splitted off zope.app.publisher.
 
 zope.browserpage
 ~~~~~~~~~~~~~~~~
+
+3.12.2 (2010-05-24)
+*******************
+
+- Fixed unit tests broken under Python 2.4 by the switch to the standard
+  library ``doctest`` module.
+
+3.12.1 (2010-04-30)
+*******************
+
+- Prefer the standard library's ``doctest`` module to the one from
+  ``zope.testing``.
+
+3.12.0 (2010-04-26)
+*******************
+
+- Move the implementation of ``tales:expressiontype`` here from
+  ``zope.app.pagetemplate``.
 
 3.11.0 (2009-12-22)
 *******************
@@ -4448,6 +4730,11 @@ zope.browserpage
 
 zope.browserresource
 ~~~~~~~~~~~~~~~~~~~~
+
+3.10.3 (2010-04-30)
+*******************
+
+- Prefer the standard libraries doctest module to the one from zope.testing.
 
 3.10.2 (2009-11-25)
 *******************
@@ -4521,6 +4808,11 @@ Additional changes that are made during refactoring:
 zope.cachedescriptors
 ~~~~~~~~~~~~~~~~~~~~~
 
+3.5.1 (2010-04-30)
+******************
+
+- Removed undeclared testing dependency on zope.testing.
+
 3.5.0 (2009-02-10)
 ******************
 
@@ -4558,6 +4850,16 @@ zope.catalog
 
 zope.component
 ~~~~~~~~~~~~~~
+
+3.9.5 (2010-07-09)
+******************
+
+- Fix test requirements specification.
+
+3.9.4 (2010-04-30)
+******************
+
+- Prefer the standard libraries doctest module to the one from zope.testing.
 
 3.9.3 (2010-03-08)
 ******************
@@ -4696,6 +4998,11 @@ zope.componentvocabulary
 
 zope.configuration
 ~~~~~~~~~~~~~~~~~~
+
+3.7.2 (2010-04-30)
+******************
+
+- Prefer the standard libraries doctest module over zope.testing.doctest.
 
 3.7.1 (2010-01-05)
 ******************
