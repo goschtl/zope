@@ -3,7 +3,7 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="${project}">
 
-  <include file="require.zcml" />
+  <include file="bluebream.zcml" />
 
   <!-- Overrides -->
   <includeOverrides package="${ns_prefix}${package}" file="overrides.zcml" />
