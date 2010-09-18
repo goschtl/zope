@@ -5,7 +5,7 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Depends now on the extracted ``zope.generations``.
 
 
 3.6.0 (2010-09-17)

@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.component
 
-from zope.app.generations.interfaces import ISchemaManager
+from zope.generations.interfaces import ISchemaManager
 from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
 
 class ManagerDetails(object):
@@ -32,9 +32,9 @@ class ManagerDetails(object):
 
     We need to define some schema managers.  We'll define just one:
 
-      >>> from zope.app.generations.generations import SchemaManager
+      >>> from zope.generations.generations import SchemaManager
       >>> from zope.app.testing import ztapi
-      >>> app1 = SchemaManager(0, 3, 'zope.app.generations.demo')
+      >>> app1 = SchemaManager(0, 3, 'zope.generations.demo')
       >>> ztapi.provideUtility(ISchemaManager, app1, 'foo.app1')
 
     Now let's create the view:

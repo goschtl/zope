@@ -21,8 +21,8 @@ import transaction
 
 import zope.component
 
-from zope.app.generations.interfaces import ISchemaManager
-from zope.app.generations.generations import generations_key, Context
+from zope.generations.interfaces import ISchemaManager
+from zope.generations.generations import generations_key, Context
 
 request_key_format = "evolve-app-%s"
 
@@ -63,16 +63,16 @@ class Managers(object):
            We need to define some schema managers.  We'll define two
            using the demo package:
 
-             >>> from zope.app.generations.generations import SchemaManager
+             >>> from zope.generations.generations import SchemaManager
              >>> from zope.app.testing import ztapi
-             >>> app1 = SchemaManager(0, 1, 'zope.app.generations.demo')
+             >>> app1 = SchemaManager(0, 1, 'zope.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app1, 'foo.app1')
-             >>> app2 = SchemaManager(0, 0, 'zope.app.generations.demo')
+             >>> app2 = SchemaManager(0, 0, 'zope.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app2, 'foo.app2')
 
            And we need to record some data for them in the database.
 
-             >>> from zope.app.generations.generations import evolve
+             >>> from zope.generations.generations import evolve
              >>> evolve(db)
 
            This sets up the data and actually evolves app1:
@@ -108,13 +108,13 @@ class Managers(object):
 
            The demo evolver just writes the generation to a database key:
 
-             >>> from zope.app.generations.demo import key
+             >>> from zope.generations.demo import key
              >>> conn.root()[key]
              ('installed', 'installed', 2)
 
            Note that, because the demo package has an install script,
            we have entries for that script.
-             
+
            Which the returned status should indicate:
 
              >>> status['app']
@@ -132,7 +132,7 @@ class Managers(object):
              2
              >>> conn.root()[key]
              ('installed', 'installed', 2)
-             
+
            as the status will indicate by returning a 'to' generation
            of 0:
 
@@ -214,16 +214,16 @@ class Managers(object):
            We need to define some schema managers.  We'll define two
            using the demo package:
 
-             >>> from zope.app.generations.generations import SchemaManager
+             >>> from zope.generations.generations import SchemaManager
              >>> from zope.app.testing import ztapi
-             >>> app1 = SchemaManager(0, 1, 'zope.app.generations.demo')
+             >>> app1 = SchemaManager(0, 1, 'zope.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app1, 'foo.app1')
-             >>> app2 = SchemaManager(0, 0, 'zope.app.generations.demo')
+             >>> app2 = SchemaManager(0, 0, 'zope.generations.demo')
              >>> ztapi.provideUtility(ISchemaManager, app2, 'foo.app2')
 
            And we need to record some data for them in the database.
 
-             >>> from zope.app.generations.generations import evolve
+             >>> from zope.generations.generations import evolve
              >>> evolve(db)
 
            This sets up the data and actually evolves app1:
