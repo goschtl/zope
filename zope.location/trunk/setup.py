@@ -64,7 +64,6 @@ setup(name='zope.location',
                         ],
       extras_require={
         'zcml': ['zope.configuration'],
-        'test': ['zope.location [zcml]'],
         },
       include_package_data = True,
       zip_safe = False,
