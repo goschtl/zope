@@ -6800,6 +6800,30 @@ zope.rdb
 zope.schema
 ~~~~~~~~~~~
 
+3.7.0 (2010-09-12)
+******************
+
+- Improve error messages when term tokens or values are duplicates.
+
+- Fix the buildout so the tests run.
+
+3.6.4 (2010-06-08)
+******************
+
+- fix validation of schema with Object Field that specify Interface schema.
+
+3.6.3 (2010-04-30)
+******************
+
+- Prefer the standard libraries doctest module to the one from zope.testing.
+
+3.6.2 (2010-04-30)
+******************
+
+- Avoid maximum recursion when validating Object field that points to cycles
+
+- Made the dependency on ``zope.i18nmessageid`` optional.
+
 3.6.1 (2010-01-05)
 ******************
 
@@ -6906,6 +6930,20 @@ zope.schema
 
 zope.security
 ~~~~~~~~~~~~~
+
+3.7.3 (2010-04-30)
+******************
+
+- Prefer the standard libraries doctest module to the one from zope.testing.
+
+- Fixed directlyProvides IVocabularyFactory for PermissionIdsVocabulary in
+  Python code, even if it's unnecessary because IVocabularyFactory is provided
+  in zcml.
+
+- Removed the dependency on the zope.exceptions package: zope.security.checker
+  now imports ``DuplicationError`` from zope.exceptions if available, otherwise
+  it defines a package-specific ``DuplicationError`` class which inherits from
+  Exception.
 
 3.7.2 (2009-11-10)
 ******************
@@ -7192,6 +7230,16 @@ zope.securitypolicy
 zope.sendmail
 ~~~~~~~~~~~~~
 
+3.7.2 (2010-04-30)
+******************
+
+- Removed no longer required testing dependency on zope.testing.
+
+- Maildir storage for queue can now handle unicode passed in for message or
+  to/from addresses (change backported from repoze.sendmail).
+
+- Tests use stdlib doctest instead of zope.testing.doctest.
+
 3.7.1 (2010-01-13)
 ******************
 
@@ -7296,6 +7344,12 @@ zope.sequencesort
 
 zope.server
 ~~~~~~~~~~~
+
+3.6.2 (2010-06-11)
+******************
+
+- The log message "Exception during task" is no longer logged to the root
+  logger but to zope.server.taskthreads.
 
 3.6.1 (2009-10-07)
 ******************
@@ -7465,6 +7519,13 @@ New features:
 zope.site
 ~~~~~~~~~
 
+3.9.1 (2010-04-30)
+******************
+
+- Removed use of 'zope.testing.doctest' in favor of stdlib's 'doctest.
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's 'doctest.
+
 3.9.0 (2009-12-29)
 ******************
 
@@ -7578,7 +7639,12 @@ zope.size
 zope.structuredtext
 ~~~~~~~~~~~~~~~~~~~
 
-(No changes)
+3.5.0 (2010-04-30)
+******************
+
+- Updated docs to conform to ZTK / Sphinx usage.
+
+- LP #120376:  Output valid html for non-ASCII characters.
 
 zope.tal
 ~~~~~~~~
@@ -7608,6 +7674,11 @@ zope.tal
 zope.tales
 ~~~~~~~~~~
 
+3.5.1 (2010-04-30)
+******************
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's 'doctest.
+
 3.5.0 (2010-01-01)
 ******************
 
@@ -7615,6 +7686,33 @@ zope.tales
 
 zope.testbrowser
 ~~~~~~~~~~~~~~~~
+
+3.9.0 (2010-05-17)
+******************
+
+- LP #568806: Update dependency ``mechanize >= 0.2.0``, which now includes
+  the ``ClientForm`` APIs.  Remove use of ``urllib2`` APIs (incompatible
+  with ``mechanize 0.2.0``) in favor of ``mechanize`` equivalents.
+  Thanks to John J. Lee for the patch.
+
+- Use stdlib ``doctest`` module, instead of ``zope.testing.doctest``.
+
+- **Caution:** This version is no longer fully compatible with Python 2.4:
+  ``handleErrors = False`` no longer works.
+
+
+3.8.1 (2010-04-19)
+******************
+
+- Pinned dependency on mechanize to prevent use of the upcoming
+  0.2.0 release before we have time to adjust to its API changes.
+
+- LP #98396: testbrowser resolves relative URLs incorrectly.
+
+3.8.0 (2010-03-05)
+******************
+
+- Added ``follow`` convenience method which gets and follows a link.
 
 3.7.0 (2009-12-17)
 ******************
@@ -7708,6 +7806,77 @@ zope.testbrowser
 
 zope.testing
 ~~~~~~~~~~~~
+
+3.9.5 (2010-05-19)
+******************
+
+- LP #579019: When layers were run in parallel, their tearDown was not
+  called. Additionally, the first layer which was run in the main
+  thread did not have it's tearDown called either.
+
+- Deprecated zope.testing.testrunner and zope.testing.exceptions. They have
+  been moved to a separate zope.testrunner module, and will be removed from
+  zope.testing in 4.0.0, together with zope.testing.doctest.
+
+3.9.4 (2010-04-13)
+******************
+
+- LP #560259: Fix subunit output formatter to handle layer setup
+  errors.
+
+- LP #399394:  Added a ``--stop-on-error`` / ``--stop`` / ``-x`` option to
+  the testrunner.
+
+- LP #498162:  Added a ``--pdb`` alias for the existing ``--post-mortem``
+  / ``-D`` option to the testrunner.
+
+- LP #547023:  Added a ``--version`` option to the testrunner.
+
+- Added tests for LP #144569 and #69988.
+
+  https://bugs.launchpad.net/bugs/69988
+
+  https://bugs.launchpad.net/zope3/+bug/144569
+
+3.9.3 (2010-03-26)
+******************
+
+- zope.testing.renormalizer no longer imports zope.testing.doctest, which
+  caused deprecation warnings.
+
+- Fix testrunner-layers-ntd.txt to suppress output to sys.stderr.
+
+- Suppress zope.testing.doctest deprecation warning when running
+  zope.testing's own test suite.
+
+3.9.2 (2010-03-15)
+******************
+
+- Fixed broken ``from zope.testing.doctest import *``
+
+3.9.1 (2010-03-15)
+******************
+
+- No changes; reuploaded to fix broken 3.9.0 release on PyPI.
+
+3.9.0 (2010-03-12)
+******************
+
+- Modified the testrunner to use the standard Python doctest module instead of
+  the deprecated zope.testing.doctest.
+
+- Fix testrunner-leaks.txt to use the run_internal helper, so that
+  sys.exit() isn't triggered during the test run.
+
+- Added support for conditionally using a subunit-based output
+  formatter upon request if subunit and testtools are available. Patch
+  contributed by Jonathan Lange.
+
+3.8.7 (2010-01-26)
+******************
+
+- Downgraded the zope.testing.doctest deprecation warning into a
+  PendingDeprecationWarning.
 
 3.8.6 (2009-12-23)
 ******************
@@ -8002,6 +8171,24 @@ zope.thread
 zope.traversing
 ~~~~~~~~~~~~~~~
 
+3.13 (2010-07-09)
+*****************
+
+- When a ``__parent__`` attribute is available on an object, it is
+  always used for absolute URL construction, and no ILocation adapter
+  lookup is performed for it. This was the previous behavior but was
+  broken (around 3.5?) due to dependency refactoring. 
+ 
+  If the object provides no ``__parent__`` then an ILocation adapter
+  lookup will be performed. This will always succeed as zope.location
+  provides a default LocationProxy for everything, but more specific
+  ILocation adapters can also be provided.
+
+3.12.1 (2010-04-30)
+*******************
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's doctest.
+
 3.12.0 (2009-12-29)
 *******************
 
@@ -8197,6 +8384,20 @@ from Zope 3.4.0a1
 
 zope.viewlet
 ~~~~~~~~~~~~
+
+3.7.2 (2010-05-25)
+******************
+
+- Fixed unit tests broken under Python 2.4 by the switch to the standard
+  library ``doctest`` module.
+
+3.7.1 (2010-04-30)
+******************
+
+- Removed use of 'zope.testing.doctest' in favor of stdlib's 'doctest.
+
+- Fixed dubious quoting in metadirectives.py. Closes
+  https://bugs.launchpad.net/zope2/+bug/143774.
 
 3.7.0 (2009-12-22)
 ******************
