@@ -62,6 +62,10 @@ setup(name='zope.location',
                         'zope.component>=3.8.0',
                         'zope.proxy>3.3',
                         ],
+      extras_require={
+        'zcml': ['zope.configuration'],
+        'test': ['zope.location [zcml]'],
+        },
       include_package_data = True,
       zip_safe = False,
       )

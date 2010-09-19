@@ -21,5 +21,6 @@ import unittest
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('location.txt'),
+        doctest.DocFileSuite('configure.txt'),
         doctest.DocTestSuite('zope.location.traversing'),
     ))
