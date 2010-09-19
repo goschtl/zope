@@ -265,67 +265,67 @@ Package version comparison
 +------------------------------+------------+-----------------+
 | zope.login                   |            | 1.0.0           |
 +------------------------------+------------+-----------------+
-| zope.mimetype                | 0.3.0      | 1.2.0           |
+| zope.mimetype                | 0.3.0      | 1.3.0           |
 +------------------------------+------------+-----------------+
 | zope.minmax                  | 1.1.0      | 1.1.2           |
 +------------------------------+------------+-----------------+
 | zope.modulealias             | 3.4.0      | 3.4.0           |
 +------------------------------+------------+-----------------+
-| zope.pagetemplate            | 3.4.0      | 3.5.0           |
+| zope.pagetemplate            | 3.4.0      | 3.5.2           |
 +------------------------------+------------+-----------------+
-| zope.password                |            | 3.5.1           |
+| zope.password                |            | 3.6.1           |
 +------------------------------+------------+-----------------+
 | zope.pluggableauth           |            | 1.0.1           |
 +------------------------------+------------+-----------------+
-| zope.principalannotation     |            | 3.6.0           |
+| zope.principalannotation     |            | 3.6.1           |
 +------------------------------+------------+-----------------+
 | zope.principalregistry       |            | 3.7.0           |
 +------------------------------+------------+-----------------+
 | zope.processlifetime         |            | 1.0             |
 +------------------------------+------------+-----------------+
-| zope.proxy                   | 3.4.2      | 3.5.0           |
+| zope.proxy                   | 3.4.2      | 3.6.1           |
 +------------------------------+------------+-----------------+
 | zope.ptresource              |            | 3.9.0           |
 +------------------------------+------------+-----------------+
-| zope.publisher               | 3.4.6      | 3.12.2          |
+| zope.publisher               | 3.4.6      | 3.12.4          |
 +------------------------------+------------+-----------------+
 | zope.ramcache                |            | 1.0             |
 +------------------------------+------------+-----------------+
 | zope.rdb                     | 3.4.0      | 3.5.0           |
 +------------------------------+------------+-----------------+
-| zope.schema                  | 3.4.0      | 3.6.1           |
+| zope.schema                  | 3.4.0      | 3.7.0           |
 +------------------------------+------------+-----------------+
 | zope.security                | 3.4.1      | 3.7.2           |
 +------------------------------+------------+-----------------+
 | zope.securitypolicy          | 3.4.1      | 3.6.1           |
 +------------------------------+------------+-----------------+
-| zope.sendmail                | 3.4.0      | 3.7.1           |
+| zope.sendmail                | 3.4.0      | 3.7.2           |
 +------------------------------+------------+-----------------+
 | zope.sequencesort            | 3.4.0      | 3.4.0           |
 +------------------------------+------------+-----------------+
-| zope.server                  | 3.4.3      | 3.6.1           |
+| zope.server                  | 3.4.3      | 3.6.2           |
 +------------------------------+------------+-----------------+
 | zope.session                 | 3.4.1      | 3.9.2           |
 +------------------------------+------------+-----------------+
-| zope.site                    |            | 3.9.0           |
+| zope.site                    |            | 3.9.1           |
 +------------------------------+------------+-----------------+
 | zope.size                    | 3.4.0      | 3.4.1           |
 +------------------------------+------------+-----------------+
-| zope.structuredtext          | 3.4.0      | 3.4.0           |
+| zope.structuredtext          | 3.4.0      | 3.5.0           |
 +------------------------------+------------+-----------------+
 | zope.tal                     | 3.4.1      | 3.5.2           |
 +------------------------------+------------+-----------------+
-| zope.tales                   | 3.4.0      | 3.5.0           |
+| zope.tales                   | 3.4.0      | 3.5.1           |
 +------------------------------+------------+-----------------+
-| zope.testbrowser             | 3.4.2      | 3.7.0           |
+| zope.testbrowser             | 3.4.2      | 3.9.0           |
 +------------------------------+------------+-----------------+
-| zope.testing                 | 3.5.6      | 3.8.7           |
+| zope.testing                 | 3.5.6      | 3.9.5           |
 +------------------------------+------------+-----------------+
 | zope.thread                  | 3.4        | 3.4             |
 +------------------------------+------------+-----------------+
-| zope.traversing              | 3.4.1      | 3.12.0          |
+| zope.traversing              | 3.4.1      | 3.13            |
 +------------------------------+------------+-----------------+
-| zope.viewlet                 | 3.4.2      | 3.7.0           |
+| zope.viewlet                 | 3.4.2      | 3.7.2           |
 +------------------------------+------------+-----------------+
 | zope.xmlpickle               | 3.4.0      | 3.4.0           |
 +------------------------------+------------+-----------------+
@@ -6329,6 +6329,15 @@ zope.login
 zope.mimetype
 ~~~~~~~~~~~~~
 
+1.3.0 (2010-06-26)
+******************
+
+- Added testing dependency on ``zope.component [test]``.
+
+- Use zope.formlib instead of zope.app.form.browser for select widget.
+
+- Conform to repository policy.
+
 1.2.0 (2009-12-26)
 ******************
 
@@ -6407,8 +6416,25 @@ zope.minmax
 zope.modulealias
 ~~~~~~~~~~~~~~~~
 
+(no changes)
+
 zope.pagetemplate
 ~~~~~~~~~~~~~~~~~
+
+3.5.2 (2010-07-08)
+******************
+
+- Fixed PTRuntimeError exception messages to be consistent across Python
+  versions, and compatibile with the output under Python 2.4.  (More
+  readable than the previous output under Python 2.6 as well.)
+
+3.5.1 (2010-04-30)
+******************
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's doctest.
+
+- Added dependency on "zope.security [untrustedpython]" because the 'engine'
+  module uses it.
 
 3.5.0 (2009-05-25)
 ******************
@@ -6437,6 +6463,25 @@ zope.pagetemplate
 zope.password
 ~~~~~~~~~~~~~
 
+3.6.1 (2010-05-27)
+******************
+
+- The SSHAPasswordManager.checkPassword() would not handle unicode input
+  (even if the string would only contain ascii characters). Now, the
+  encoded_password input will be encoded to ascii, which is deemed safe as it
+  should not contain non-ascii characters anyway.
+
+3.6.0 (2010-05-07)
+******************
+
+- Removed zope.testing dependency for tests.
+
+- Updated some copyright headers to comply to repository policy.
+
+- Added zpasswd script formerly hold in zope.app.server. Contrary to
+  former zpasswd script, which used "Plain Text" as default password
+  manager, now SSHA is used as default.
+
 3.5.1 (2009-03-14)
 ******************
 
@@ -6460,6 +6505,20 @@ any bit of ``zope.app.authentication`` and to reduce its dependencies.
 zope.pluggableauth
 ~~~~~~~~~~~~~~~~~~
 
+1.0.3 (2010-07-09)
+******************
+
+* Fixed dependency declaration.
+
+1.0.2 (2010-07-90)
+******************
+
+* Added persistent.Persistent and zope.container.contained.Contained as
+  bases zope.pluggableauth.plugins.session.SessionCredentialsPlugin, so
+  instances of zope.app.authentication.session.SessionCredentialsPlugin
+  won't be changed.
+  (https://mail.zope.org/pipermail/zope-dev/2010-July/040898.html)
+
 1.0.1 (2010-02-11)
 ******************
 
@@ -6474,6 +6533,13 @@ zope.pluggableauth
 
 zope.principalannotation
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+3.6.1 (2010-05-05)
+******************
+
+- Fixed a test failure in nested local site manager setup.
+
+- Removed dependency on zope.container.
 
 3.6.0 (2009-03-09)
 ******************
@@ -6515,6 +6581,18 @@ zope.processlifetime
 zope.proxy
 ~~~~~~~~~~
 
+3.6.1 (2010-07-06)
+******************
+
+- Make tests compatible with Python 2.7.
+
+3.6.0 (2010-04-30)
+******************
+
+- Removed test extra and the remaining dependency on zope.testing.
+
+- Removed use of 'zope.testing.doctestunit' in favor of stdlib's 'doctest.
+
 3.5.0 (2009/01/31)
 ******************
 
@@ -6542,6 +6620,29 @@ Other changes:
 
 zope.publisher
 ~~~~~~~~~~~~~~
+
+3.12.4 (2010-07-15)
+*******************
+
+- LP #131460: Make principal logging unicode safe.
+- Remove use of string exceptions in tests, http://bugs.debian.org/585343
+- Add IStartRequestEvent and StartRequestEvent for using in
+  zope.app.publication (matching up with IEndRequestEvent and EndRequestEvent).
+  This included refactoring to produce one definition of 'event with a request'
+  - IRequestEvent.
+
+3.12.3 (2010-04-30)
+*******************
+
+- LP #209440: Don't obscure original exception when handling retries
+  in ``publish.publish()`` with ``handleErrors == False``.   This change
+  makes debugging such exception in unit tests easier.
+  Thanks to James Henstridge for the patch.
+
+- LP #98395: allow unicode output of XML content whose mimetype does not
+  begin with ``text/``, per RFC 3023 as well as for content types ending
+  in ``+xml`` such as Mozilla XUL's ``application/vnd+xml``.  Thanks to
+  Justin Ryan for the patch.
 
 3.12.2 (2010-04-16)
 *******************
