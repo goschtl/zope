@@ -5,7 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Replace ``zope.app.component`` dependency with ``zope.componentvocabulary``.
 
 
 3.5.0 (2010-09-20)

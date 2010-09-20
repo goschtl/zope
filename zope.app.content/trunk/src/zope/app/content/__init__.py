@@ -14,11 +14,11 @@
 """Content Type convenience lookup functions."""
 
 from zope.interface import classProvides
+from zope.interface import providedBy
 from zope.schema.interfaces import IVocabularyFactory
 from zope.app.content.interfaces import IContentType
-from zope.app.component.vocabulary import UtilityVocabulary
+from zope.componentvocabulary.vocabulary import UtilityVocabulary
 from zope.security.proxy import removeSecurityProxy
-from zope.interface.declarations import providedBy
 
 
 def queryType(object, interface):
