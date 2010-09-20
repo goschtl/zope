@@ -1,0 +1,37 @@
+=======
+CHANGES
+=======
+
+
+3.6.0 (2010-09-20)
+------------------
+
+- Added test extra to declare test dependency on `zope.testing`.
+
+- Moved ``zope.app.interfaces.queryType`` to `zope.app.content` to inverse
+  dependency, leaving BBB import here.
+
+
+3.5.2 (2010-07-08)
+------------------
+
+- 3.5.1 was a bad release
+
+
+3.5.1 (2010-07-07)
+------------------
+
+- Fixed tests and test tearDown to actually close the DB.
+
+
+3.5.0 (2009-05-21)
+------------------
+
+- Factor out ObjectInterfacesVocabulary into `zope.componentvocabulary`.
+
+- Remove various test dependencies.
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
