@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-3.6.0 (unreleased)
+3.6.0 (2010-09-20)
 ------------------
 
 - Added test extra to declare test dependency on `zope.testing`.
