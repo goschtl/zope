@@ -27,7 +27,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.content',
-      version = '3.4.0',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Content Type',
@@ -54,10 +54,12 @@ setup(name='zope.app.content',
       namespace_packages=['zope', 'zope.app'],
       install_requires=['setuptools',
                         'zope.app.component',
-                        'zope.app.interface',
                         'zope.interface',
                         'zope.schema',
                         ],
+      extras_require=dict(test=[
+          'zope.testing',
+          ]),
       include_package_data = True,
       zip_safe = False,
       )

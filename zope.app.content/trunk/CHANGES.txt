@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Moved ``zope.app.interface.queryType`` to ``zope.app.content.queryType``
+  to inverse dependency.
+
+
 3.4.0 (2007-10-11)
 ------------------
 
