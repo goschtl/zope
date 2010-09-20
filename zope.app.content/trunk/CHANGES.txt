@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2010-09-20)
 ------------------
 
 - Moved ``zope.app.interface.queryType`` to ``zope.app.content.queryType``
