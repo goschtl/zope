@@ -12,19 +12,20 @@
 #
 ##############################################################################
 """z3c.recipe.runscript test setup."""
+import doctest
 import unittest
 import zc.buildout.testing
-from zope.testing import doctest
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('z3c.recipe.runscript', test)
 
+
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
-            '../README.txt',
-            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-            ),
-        ))
+    return doctest.DocFileSuite(
+        '../README.txt',
+        setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        )
+

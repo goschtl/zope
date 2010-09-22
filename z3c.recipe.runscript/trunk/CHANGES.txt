@@ -2,13 +2,22 @@
 CHANGES
 =======
 
-Version 0.1.1 (2008-04-18)
---------------------------
+0.1.2 (unreleased)
+------------------
+
+- Added test extra to declare test dependency on ``zope.testing``.
+
+- Using Pyhton's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+
+0.1.1 (2008-04-18)
+------------------
 
 - Bug: Fix release to include CHANGES.txt.
 
 
-Version 0.1.0 (2007-07-30)
---------------------------
+0.1.0 (2007-07-30)
+------------------
 
-- Initial Release
+- Initial Release.

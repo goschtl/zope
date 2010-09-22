@@ -58,6 +58,10 @@ setup (
         'setuptools',
         'zc.buildout'
         ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
     entry_points = {'zc.buildout':
                     ['default = z3c.recipe.runscript:Recipe']},
     dependency_links = ['http://download.zope.org/distribution'],
