@@ -1,0 +1,10 @@
+.. testcase:: zope.testing.doctest.DocFileSuite
+
+=================
+ Doctest example
+=================
+
+This file should be picked up automatically by the DocFileFind feature.
+
+>>> 1 + 1
+2

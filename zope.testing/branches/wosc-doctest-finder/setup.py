@@ -28,6 +28,7 @@ try:
     extra = dict(
         namespace_packages=['zope',],
         install_requires = ['setuptools',
+                            'zope.dottedname',
                             'zope.exceptions',
                             'zope.interface'],
         entry_points = {'console_scripts': ['zope-testrunner = zope.testing.testrunner:run',]},

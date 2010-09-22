@@ -189,6 +189,7 @@ class Runner(object):
                 zope.testing.testrunner.garbagecollection.Debug(self))
 
         self.features.append(zope.testing.testrunner.find.Find(self))
+        self.features.append(zope.testing.testrunner.doctest.DocFileFind(self))
         self.features.append(zope.testing.testrunner.process.SubProcess(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
         self.features.append(zope.testing.testrunner.listing.Listing(self))

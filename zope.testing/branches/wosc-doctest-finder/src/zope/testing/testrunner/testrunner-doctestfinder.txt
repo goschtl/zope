@@ -69,10 +69,14 @@ Finding files
     >>> directory_with_tests = os.path.join(this_directory, 'testrunner-ex')
     >>> defaults = [
     ...     '--path', directory_with_tests,
-    ...     '--tests-pattern', '^sampletestsf?$',
+    ...     '--tests-pattern', '^nothing$',
     ...     '--doctests-pattern', '\.txt$',
+    ...     '--list-tests'
     ...     ]
 
     >>> sys.argv = 'test -u'.split()
     >>> from zope.testing import testrunner
     >>> testrunner.run_internal(defaults)
+    Listing zope.testing.testrunner.layer.UnitTests tests:
+      /home/wosc/gocept/zope/zope.testing/src/zope/testing/doctest.txt
+    False

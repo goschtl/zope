@@ -17,8 +17,13 @@ $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 """
 
 from zope.testing import doctest
+from zope.testing.testrunner.find import (
+    name_from_layer, test_dirs, walk_with_symlinks)
+import os.path
 import re
+import zope.dottedname.resolve
 import zope.testing.testrunner.feature
+import zope.testing.testrunner.layer
 
 
 class DocTest(zope.testing.testrunner.feature.Feature):
@@ -59,11 +64,34 @@ class DocFileFind(zope.testing.testrunner.feature.Feature):
     active = True
 
     def global_setup(self):
-        tests = self._find_doctest_files()
-        #self.runner.register_tests(tests)
+        unittest_layer = name_from_layer(
+            zope.testing.testrunner.layer.UnitTests)
+        tests = {}
+        for (package, testfile, factory) in self._find_doctest_files():
+            test = factory(testfile, package=package)
+            layer = getattr(test, 'layer', unittest_layer)
+            tests[layer] = test
+        self.runner.register_tests(tests)
 
     def _find_doctest_files(self):
-        pass
+        options = self.runner.options
+
+        for (path, given_package) in test_dirs(options, {}):
+            for dirname, dirs, files in walk_with_symlinks(options, path):
+                if given_package:
+                    package = given_package
+                else:
+                    package = dirname.replace(path + os.path.sep, '')
+                    package = package.replace(os.path.sep, '.')
+
+                for f in files:
+                    if options.doctests_pattern(f):
+                        f = os.path.join(dirname, f)
+                        factory = parse_directive_from_file('testcase', f)
+                        if not factory:
+                            continue
+                        factory = zope.dottedname.resolve.resolve(factory)
+                        yield (package, f, factory)
 
 
 def parse_directive_from_string(directive, text):
