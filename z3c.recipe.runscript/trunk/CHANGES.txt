@@ -13,7 +13,7 @@ CHANGES
 
 - Added test extra to declare test dependency on ``zope.testing``.
 
-- Using Pyhton's ``doctest`` module instead of depreacted
+- Using Python's ``doctest`` module instead of depreacted
   ``zope.testing.doctest``.
 
 
