@@ -1,6 +1,9 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:zcml="http://namespaces.zope.org/zcml">
 
+  <!-- This file is used in debug mode (paster serve debug.ini)
+       and can be customized for this purpose -->
+
   <include package="${ns_prefix}${package}" />
 
   <principal
