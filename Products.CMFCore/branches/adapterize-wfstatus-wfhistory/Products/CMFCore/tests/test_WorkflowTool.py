@@ -28,6 +28,7 @@ from Products.CMFCore.interfaces import IActionSucceededEvent
 from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IWorkflowDefinition
+from Products.CMFCore.testing import TraversingEventZCMLLayer
 
 
 class Dummy( SimpleItem ):
@@ -153,6 +154,8 @@ class DummyTypesTool( SimpleItem ):
 
 
 class WorkflowToolTests(unittest.TestCase):
+
+    layer = TraversingEventZCMLLayer
 
     def _makeOne( self, workflow_ids=() ):
         from Products.CMFCore.WorkflowTool import WorkflowTool
