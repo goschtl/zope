@@ -130,21 +130,21 @@ checker = renormalizing.RENormalizing([
 def test_suite():
     FunkTest.layer = AppAuthenticationLayer
     principalfolder = functional.FunctionalDocFileSuite(
-        'principalfolder.txt', checker=checker)
+        '../principalfolder.txt', checker=checker)
     principalfolder.layer = AppAuthenticationLayer
     groupfolder = functional.FunctionalDocFileSuite(
-        'groupfolder.txt', checker=checker)
+        '../groupfolder.txt', checker=checker)
     groupfolder.layer = AppAuthenticationLayer
     pau_prefix_and_searching = functional.FunctionalDocFileSuite(
-        'pau_prefix_and_searching.txt', checker=checker)
+        '../pau_prefix_and_searching.txt', checker=checker)
     pau_prefix_and_searching.layer = AppAuthenticationLayer
     group_searching_with_empty_string = functional.FunctionalDocFileSuite(
-        'group_searching_with_empty_string.txt', checker=checker)
+        '../group_searching_with_empty_string.txt', checker=checker)
     group_searching_with_empty_string.layer = AppAuthenticationLayer
     special_groups = functional.FunctionalDocFileSuite(
-        'special-groups.txt', checker=checker)
+        '../special-groups.txt', checker=checker)
     special_groups.layer = AppAuthenticationLayer
-    issue663 = functional.FunctionalDocFileSuite('issue663.txt')
+    issue663 = functional.FunctionalDocFileSuite('../issue663.txt')
     issue663.layer = AppAuthenticationLayer
     return unittest.TestSuite((
         principalfolder,
@@ -154,9 +154,5 @@ def test_suite():
         special_groups,
         unittest.makeSuite(FunkTest),
         issue663,
-        doctest.DocFileSuite('schemasearch.txt'),
+        doctest.DocFileSuite('../schemasearch.txt'),
         ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
