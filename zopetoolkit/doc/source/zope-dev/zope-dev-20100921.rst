@@ -9,13 +9,52 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+   http://zope3.pov.lt/irclogs-zope/%23zope.2010-09-21.log.html#t2010-09-21T18:00:27 
 
 Attendees
 ---------
 
-XXX
+Charlie Clark, Adam Groszer, Christian Theune, Hanno Schlichting, Fred Drake,
 
+Post-summit thoughts
+--------------------
+
+Charlie thanked Christian for the organization of the [gocept] party, Zope
+summit and DZUG conference.
+
+Hanno noted that he shared his thoughts with the rest of Jarn. Publicly
+they're happy to have not used Zope 3 and grok but find Plone and repoze.bfg
+being good choices as their "platforms".
+
+Christian reported that he started an experiment together with Wolfgang 
+to take what we have with the ZCA and apply this and other patterns
+(specifically the "Ports and adapters" pattern) to form a set of procedures and software to help
+developers to better model their applications and stay flexible with the
+technical environment their application lives in.
+
+The summit also produced a couple of specific smaller goals that people signed
+up for dealing with in the near future. They are listed in the wiki page:
+http://wiki.zope.org/ztk/ZopeSummit2010Summary
+
+Bug day organization
+--------------------
+
+The next bug day will be 2010-09-29 and was announced on the list by mail
+during the meeting.
+
+Meta
+----
+
+Charlie noticed that this meeting was unstructured but we still got good
+discussions out of it. The defined time-slot seems to help. Going forward we
+need to deal with the outcome of the summit.
+
+Christian noted that he feels uncomfortable just randomly picking topics. As
+long as nobody complains the choices are probably fine, though.
+
+As the reminders get dropped every now and then the goal for sending them out
+is moved to Friday: giving people more time to think about the agenda and
+Christian more time to procrastinate but still make it ... ;)
 
 Agenda
 ======
