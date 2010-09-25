@@ -1,25 +1,7 @@
 ============
 CMF.buildout
 ============
--------------------------
-Build CMF 2.2 + Zope 2.12
--------------------------
 
-Introduction
-============
+CMF.buildout/branches/zope213-cmf22 is deprecated and will be deleted in 2011.
 
-Builds CMF 2.2 with Zope 2.12 from develop eggs located in ``src``.
-
-Dependencies
-============
-
-Requires Python 2.6
-
-Usage
-=====
-::
-
-  $ python2.6 bootstrap/bootstrap.py
-  $ ./bin/buildout
-  $ ./bin/test
-  $ ./bin/instance
+Please use CMF/branches/2.2 with "-c buildout-zope213.cfg" instead.
