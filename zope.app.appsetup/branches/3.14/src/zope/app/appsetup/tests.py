@@ -16,16 +16,16 @@
 $Id$
 """
 import ZConfig
-import doctest
 import os
 import sys
-import transaction
 import unittest
 import urllib
+import transaction
 
 import zope.component
 
 from ZODB.tests.util import DB
+from zope.testing import doctest
 from zope.traversing.api import traverse, getPath
 from zope.error.interfaces import IErrorReportingUtility
 from zope.error.error import ErrorReportingUtility

@@ -30,7 +30,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.appsetup',
-    version='3.15.0',
+    version = '3.14.1dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description="Zope app setup helper",
@@ -66,8 +66,7 @@ setup(
         test=[
             'zope.componentvocabulary',
             'zope.principalregistry',
-            'zope.testing >= 3.10',
-            'zope.testrunner',
+            'zope.testing',
             ]
         ),
     namespace_packages=['zope', 'zope.app'],
