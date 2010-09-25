@@ -60,6 +60,10 @@ setup(name='zope.app.broken',
                         'zope.broken',
                         'zope.processlifetime',
                         'ZODB3'],
+      extras_require=dict(
+          test=[
+              'zope.testing',
+              ]),
       include_package_data = True,
       zip_safe = False,
       )

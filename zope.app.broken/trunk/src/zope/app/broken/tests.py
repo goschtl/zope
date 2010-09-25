@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from doctest import DocTestSuite
 
 def test_annotations():
     """Broken objects may have attribute annotations

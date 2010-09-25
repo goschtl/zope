@@ -5,9 +5,13 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- Depend on new ``zope.processlifetime`` interfaces and
-  implementations instead of using BBB imports from
-  ``zope.app.appsetup``.
+- Depend on new ``zope.processlifetime`` interfaces and implementations
+  instead of using BBB imports from ``zope.app.appsetup``.
+
+- Added test extra to declare test dependency on ``zope.testing``.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 
 3.5.0 (2009-02-05)
