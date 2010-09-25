@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.14.1 (unreleased)
+3.15.0 (2010-09-25)
 -------------------
 
 - Updated tests to run with `zope.testing >= 3.10`, requiring at least this
