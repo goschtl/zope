@@ -29,7 +29,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.securitypolicy',
-    version='3.6.0',
+    version='3.6.1dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description="ZMI-based management views for zope.securitypolicy",
