@@ -5,7 +5,9 @@ CHANGES
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added not declared but needed dependency on ``zope.component``.
+
+- Added test extra to declare test dependency on ``zope.component [test]``.
 
 
 1.0 (2009-05-19)

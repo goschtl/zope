@@ -47,11 +47,16 @@ setup(name='zope.componentvocabulary',
       namespace_packages=['zope'],
       install_requires=[
           'setuptools',
+          'zope.component',
           'zope.i18nmessageid',
           'zope.interface',
           'zope.schema',
           'zope.security',
           ],
+      extras_require=dict(
+          test=[
+              'zope.component [test]',
+              ]),
       include_package_data=True,
       zip_safe=False,
       )
