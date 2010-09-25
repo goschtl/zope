@@ -2,11 +2,20 @@
 CHANGES
 =======
 
-3.5.3 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
 - LP: #161906: Remove superfluous "helpful" message. Improve wording of of the
   relation between roles and permissions in the manage_permissionform.
+
+- Moved the following views to `zope.app.authentication` to inverse
+  dependency between these two packages, as `zope.app.securitypolicy` is
+  deprecated in ZTK 1.0 (leaving BBB imports in place):
+
+  - ``@@grant.html``
+  - ``@@AllRolePermissions.html``
+  - ``@@RolePermissions.html``
+  - ``@@RolesWithPermission.html``
 
 
 3.5.2 (2010-01-08)
