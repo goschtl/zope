@@ -57,6 +57,10 @@ setup(name='zope.app.basicskin',
                         'zope.interface',
                         'zope.publisher',
                         ],
+      extras_require=dict(
+          test=[
+              'zope.component [test]',
+              ]),
       include_package_data = True,
       zip_safe = False,
       )

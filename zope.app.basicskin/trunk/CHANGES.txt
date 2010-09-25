@@ -5,6 +5,8 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
+- Added test extra to declare test dependency on ``zope.component [test]``.
+
 
 3.5.0 (2009-12-16)
 ------------------
