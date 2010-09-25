@@ -66,7 +66,7 @@ setup(
         test=[
             'zope.componentvocabulary',
             'zope.principalregistry',
-            'zope.testing>=3.10.0',
+            'zope.testing >= 3.10',
             'zope.testrunner',
             ]
         ),
