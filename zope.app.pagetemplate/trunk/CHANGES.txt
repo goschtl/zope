@@ -5,25 +5,24 @@ Changes
 3.11.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Declared test dependency on ``zope.component [test]`` as it is needed to
+  run the tests.
 
 3.11.1 (2010-09-01)
 -------------------
 
-- Add metaconfigure.registerType BBB import because some packages use it.
-- Use doctest from standard library instead of zope.testing.doctest.
-
+- Added metaconfigure.registerType BBB import because some packages use it.
+- Using doctest from standard library instead of `zope.testing.doctest`.
 
 3.11.0 (2010-04-26)
 -------------------
 
-- Move tales:expressiontype directive down into zope.browserpage.
+- Moved tales:expressiontype directive down into zope.browserpage.
 
 3.10.1 (2010-01-04)
 -------------------
 
-- Fixed the zope.browserpage imports in the namedtemplate module.
+- Fixed the `zope.browserpage` imports in the ``namedtemplate`` module.
 
 3.10.0 (2009-12-22)
 -------------------

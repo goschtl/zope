@@ -63,8 +63,11 @@ setup(name='zope.app.pagetemplate',
           'zope.traversing',
           ],
       extras_require={
-          "test": ['zope.container',
-                   'zope.publisher'],
+          "test": [
+              'zope.component [hook,test]',
+              'zope.container',
+              'zope.publisher',
+              ],
           },
       zip_safe=False,
       )
