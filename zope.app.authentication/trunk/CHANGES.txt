@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.8.0 (unreleased)
+3.8.0 (2010-09-25)
 ------------------
 
 * Using python's ``doctest`` module instead of deprecated
