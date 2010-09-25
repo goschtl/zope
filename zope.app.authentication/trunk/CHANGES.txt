@@ -2,11 +2,20 @@
 Changes
 =======
 
-3.7.2 (unreleased)
+3.8.0 (unreleased)
 ------------------
 
 * Using python's ``doctest`` module instead of deprecated
   ``zope.testing.doctest[unit]``.
+
+* Moved the following views from `zope.app.securitypolicy` here, to inverse
+  dependency between these two packages, as `zope.app.securitypolicy`
+  deprecated in ZTK 1.0:
+
+  - ``@@grant.html``
+  - ``@@AllRolePermissions.html``
+  - ``@@RolePermissions.html``
+  - ``@@RolesWithPermission.html``
 
 
 3.7.1 (2010-02-11)

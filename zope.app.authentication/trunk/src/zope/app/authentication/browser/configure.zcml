@@ -35,7 +35,7 @@
       for="..interfaces.IPluggableAuthentication"
       name="addRegistration.html"
       permission="zope.ManageSite"
-      class=".register.AddAuthenticationRegistration" 
+      class=".register.AddAuthenticationRegistration"
       />
 
   <editform
@@ -87,5 +87,7 @@
       provides="zope.app.form.browser.interfaces.ISourceQueryView"
       factory=".schemasearch.QuerySchemaSearchView"
       />
+
+  <include file="grant.zcml" />
 
 </configure>

@@ -27,17 +27,14 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.authentication',
-      version = '3.7.2dev',
+      version = '3.8.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description=('Principals and groups management for '
                    'the pluggable authentication utility'),
       long_description=(
         read('README.txt')
-        + '\n\n' +
-        'Detailed Documentation\n' +
-        '----------------------\n'
-        + '\n' +
+        + '\n\n.. contents::\n\n' +
         read('src', 'zope', 'app', 'authentication', 'README.txt')
         + '\n\n' +
         read('src', 'zope', 'app', 'authentication', 'principalfolder.txt')
@@ -63,7 +60,7 @@ setup(name='zope.app.authentication',
       package_dir = {'': 'src'},
       extras_require=dict(test=[
           'zope.app.testing',
-          'zope.app.securitypolicy', # needed in browser tests
+          'zope.securitypolicy',
           'zope.app.zcmlfiles',
           'zope.securitypolicy',
           'zope.testbrowser',
