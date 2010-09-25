@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2010-09-25)
 ------------------
 
-- Nothing changed yet.
+- Added missing minimum version declaration for `zope.app.authentication`,
+  namely 3.8.
 
 
 3.6.0 (2010-09-25)

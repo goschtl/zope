@@ -29,7 +29,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.securitypolicy',
-    version='3.6.1dev',
+    version='3.6.1',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description="ZMI-based management views for zope.securitypolicy",
@@ -64,7 +64,7 @@ setup(name='zope.app.securitypolicy',
               ]),
     install_requires=['setuptools',
                       'zope.annotation',
-                      'zope.app.authentication',
+                      'zope.app.authentication >= 3.8',
                       'zope.app.form',
                       'zope.app.security',
                       'zope.browser',
