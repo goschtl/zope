@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.11.2 (unreleased)
+3.11.2 (2010-09-25)
 -------------------
 
 - Declared test dependency on ``zope.component [test]`` as it is needed to
