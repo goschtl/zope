@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2010-09-25)
 ------------------
 
 - LP: #161906: Remove superfluous "helpful" message. Improve wording of of the
