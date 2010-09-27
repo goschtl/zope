@@ -352,6 +352,7 @@ class OnlineRecovery(unittest.TestCase):
         self.target.close()
         raid = self.setup_raid()
         self.assertEquals('degraded', raid.raid_status())
+        raid._join()
         raid.raid_recover('target')
         for i in xrange(10):
             time.sleep(1)

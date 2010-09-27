@@ -182,10 +182,7 @@ class RAIDStorage(object):
 
     def close(self):
         """Close the storage."""
-        for thread in self._threads:
-            # We give all the threads a chance to get done quickly.
-            # This is mostly a convenience for the tests to not annoy.
-            thread.join(5)
+        self._join(5)
 
         if self.closed:
             # Storage may be closed more than once, e.g. by tear-down methods
@@ -201,10 +198,7 @@ class RAIDStorage(object):
             self.closed = True
             del self.storages_optimal[:]
 
-        for thread in self._threads:
-            # We give all the threads a chance to get done quickly.
-            # This is mostly a convenience for the tests to not annoy.
-            thread.join(5)
+        self._join(5)
 
     def getName(self):
         """The name of the storage."""
@@ -617,7 +611,7 @@ class RAIDStorage(object):
         return 'disabled %r' % (name,)
 
     @ensure_open_storage
-    def raid_recover(self, name):
+    def raid_recover(self, name, sync=False):
         self._write_lock.acquire()
         try:
             if self.storage_recovering is not None:
@@ -631,10 +625,13 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-        t = threading.Thread(target=self._recover_impl, args=(name,))
-        self._threads.add(t)
-        t.setDaemon(True)
-        t.start()
+        if sync:
+            self._recover_impl(name)
+        else:
+            t = threading.Thread(target=self._recover_impl, args=(name,))
+            self._threads.add(t)
+            t.setDaemon(True)
+            t.start()
 
         return 'recovering %r' % (name,)
 
@@ -999,6 +996,12 @@ class RAIDStorage(object):
                          "Clients waiting: %d" % n)
             else:
                 zeo_storage.log("Blocked transaction restarted.")
+
+    def _join(self, timeout=None):
+        # We give all the threads a chance to get done quickly.
+        # This is mostly a convenience for the tests to not annoy.
+        for x in self._threads:
+            x.join(timeout)
 
 
 def optimistic_copy(source, target):

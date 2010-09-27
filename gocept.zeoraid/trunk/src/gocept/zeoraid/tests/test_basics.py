@@ -1173,7 +1173,8 @@ class FailingStorageTestBase(object):
         self._disable_storage(0)
         self._dostore()
         self._dostore()
-        self._storage._recover_impl(self._storage.storages_degraded[0])
+        self._storage.raid_recover(
+            self._storage.storages_degraded[0], sync=True)
         self.assertEquals('optimal', self._storage.raid_status())
         gocept.zeoraid.tests.test_recovery.compare(
             self, self._backend(0), self._backend(1))
@@ -1517,7 +1518,7 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         self._dostore(oid=oid, data='0', already_pickled=True)
 
         # recover the newly added backend
-        self._storage._recover_impl('5')
+        self._storage.raid_recover('5', sync=True)
         self.assertEquals([], self._storage.storages_degraded)
 
         # ensure that we can still write to the RAID
