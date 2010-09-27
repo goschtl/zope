@@ -27,6 +27,7 @@ from Products.CMFCore.interfaces import IActionRaisedExceptionEvent
 from Products.CMFCore.interfaces import IActionSucceededEvent
 from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import IWorkflowAware
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.testing import TraversingEventZCMLLayer
 
@@ -125,7 +126,7 @@ def notifyExceptionHandler(evt):
 
 class DummyContent( Dummy ):
 
-    implements(IContentish)
+    implements(IContentish, IWorkflowAware)
     meta_type = 'Dummy'
 
     def getPortalTypeName(self):

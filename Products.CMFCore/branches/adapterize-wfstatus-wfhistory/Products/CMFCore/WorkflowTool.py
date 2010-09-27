@@ -34,8 +34,8 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import IWorkflowAware
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.interfaces import IWorkflowHistory
 from Products.CMFCore.interfaces import IWorkflowStatus
@@ -621,7 +621,7 @@ InitializeClass(WorkflowTool)
 
 class DefaultWorkflowStatus(object):
     implements(IWorkflowStatus)
-    adapts(IContentish, IWorkflowDefinition)
+    adapts(IWorkflowAware, IWorkflowDefinition)
 
     def __init__(self, context, workflow):
         self.context = aq_base(context)
@@ -644,7 +644,7 @@ class DefaultWorkflowStatus(object):
 
 
 @implementer(IWorkflowHistory)
-@adapter(IContentish, IWorkflowDefinition)
+@adapter(IWorkflowAware, IWorkflowDefinition)
 def default_workflow_history(context, workflow):
         history = getattr(aq_base(context), 'workflow_history', {})
         return history.get(workflow.getId(), ())
