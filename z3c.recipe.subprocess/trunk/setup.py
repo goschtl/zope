@@ -7,12 +7,12 @@ from setuptools import setup, find_packages
 
 version = '0.1'
 
-README = os.path.join(os.path.dirname(__file__), 
+README = os.path.join(os.path.dirname(__file__),
                       'z3c',
                       'recipe',
                       'subprocess', 'docs', 'README.txt')
 
-long_description = open(README).read() + '\n\n' 
+long_description = open(README).read() + '\n\n'
 
 entry_point = 'z3c.recipe.subprocess:Recipe'
 
@@ -33,7 +33,7 @@ setup(name='z3c.recipe.subprocess',
       url='http://cheeseshop.python.org/pypi/z3c.recipe.subprocess',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['z3c.recipe'],
+      namespace_packages=['z3c', 'z3c.recipe'],
       include_package_data=True,
       zip_safe=True,
       install_requires=['setuptools',

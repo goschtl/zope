@@ -9,7 +9,6 @@ import doctest
 import sys
 import os
 
-from zope.testing import doctest
 
 current_dir = os.path.dirname(__file__)
 
@@ -20,7 +19,7 @@ def doc_suite(test_dir, setUp=None, tearDown=None, globs=None):
         globs = globals()
 
     globs['test_dir'] = current_dir
-    
+
     flags = (doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE |
              doctest.REPORT_ONLY_FIRST_FAILURE)
 
@@ -35,8 +34,8 @@ def doc_suite(test_dir, setUp=None, tearDown=None, globs=None):
             os.listdir(doctest_dir) if doc.endswith('.txt')]
 
     for test in docs:
-        suite.append(doctest.DocFileSuite(test, optionflags=flags, 
-                                          globs=globs, setUp=setUp, 
+        suite.append(doctest.DocFileSuite(test, optionflags=flags,
+                                          globs=globs, setUp=setUp,
                                           tearDown=tearDown,
                                           module_relative=False))
 
