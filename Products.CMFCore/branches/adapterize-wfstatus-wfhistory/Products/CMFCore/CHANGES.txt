@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Adapterize workflow storage lookups.
+
 - tests base: Removed obsolete test utils.
 
 - testing: Removed broken run function.
