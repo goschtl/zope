@@ -182,6 +182,11 @@ class RAIDStorage(object):
 
     def close(self):
         """Close the storage."""
+        for thread in self._threads:
+            # We give all the threads a chance to get done quickly.
+            # This is mostly a convenience for the tests to not annoy.
+            thread.join(5)
+
         if self.closed:
             # Storage may be closed more than once, e.g. by tear-down methods
             # of tests.
@@ -613,12 +618,24 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def raid_recover(self, name):
-        if name not in self.storages_degraded:
-            return
+        self._write_lock.acquire()
+        try:
+            if self.storage_recovering is not None:
+                return
+            if name not in self.storages_degraded:
+                return
+
+            self.storages_degraded.remove(name)
+            del self.degrade_reasons[name]
+            self.storage_recovering = name
+        finally:
+            self._write_lock.release()
+
         t = threading.Thread(target=self._recover_impl, args=(name,))
         self._threads.add(t)
         t.setDaemon(True)
         t.start()
+
         return 'recovering %r' % (name,)
 
     @ensure_open_storage
@@ -874,9 +891,6 @@ class RAIDStorage(object):
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
     def _recover_impl(self, name):
-        self.storages_degraded.remove(name)
-        del self.degrade_reasons[name]
-        self.storage_recovering = name
         try:
             target = self.openers[name].open()
         except Exception:
