@@ -33,9 +33,12 @@ setup(
     include_package_data=True,
     package_dir={'': 'src'},
     namespace_packages=['gocept'],
-    install_requires=['setuptools',
-                      'zc.zodbrecipes',
-                      'ZODB3>=3.9dev'],
+    install_requires=[
+        'mock',
+        'setuptools',
+        'zc.zodbrecipes',
+        'ZODB3>=3.9dev',
+        ],
     entry_points="""
         [zc.buildout]
         server = gocept.zeoraid.scripts.recipe:ZEORAIDServer

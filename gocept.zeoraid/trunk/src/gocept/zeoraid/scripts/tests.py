@@ -22,6 +22,7 @@ import zc.buildout.testing
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('gocept.zeoraid', test)
+    zc.buildout.testing.install('mock', test)
     zc.buildout.testing.install('zc.lockfile', test)
     zc.buildout.testing.install('zc.zodbrecipes', test)
     zc.buildout.testing.install('zope.event', test)

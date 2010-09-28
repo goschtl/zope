@@ -54,6 +54,15 @@ this into a stateless RAID server that can be made HA easily (hot-standby).
             </description>
         </key>
 
+        <key name="cluster-mode" required="no"
+             datatype=".cluster_mode" default="coop">
+          <description>
+            Whether the RAID server expects to be the only RAID server in the
+            set-up ("single") or to expect other RAID servers to use the same
+            back-end storages ("coop").
+          </description>
+        </key>
+
         <multisection 
             type="ZODB.storage" 
             name="+"

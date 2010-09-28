@@ -146,6 +146,7 @@ We have an additional RAID control script:
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
+      '/sample-pyN.N.egg',
       ]
     <BLANKLINE>
     import gocept.zeoraid.scripts.controller
@@ -159,6 +160,7 @@ We have an additional RAID control script:
     import sys
     sys.path[0:0] = [
       '.../src',
+      '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
@@ -259,6 +261,7 @@ Instead, the control script will be in the rc directory:
     import sys
     sys.path[0:0] = [
       '.../src',
+      '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',
       '/sample-pyN.N.egg',

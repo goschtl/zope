@@ -20,6 +20,13 @@ import ZODB.config
 import gocept.zeoraid.storage
 
 
+def cluster_mode(value):
+    if value not in ('single', 'coop'):
+        raise ValueError(
+            "Only valid cluster modes: 'single', 'coop', found %r" % value)
+    return value
+
+
 class Storage(ZODB.config.BaseConfig):
 
     def open(self):
@@ -35,5 +42,6 @@ class Storage(ZODB.config.BaseConfig):
             self.config.storages,
             blob_dir=self.config.blob_dir,
             read_only=self.config.read_only,
+            cluster_mode=self.config.cluster_mode,
             shared_blob_dir=self.config.shared_blob_dir,
             zeo=zeo)

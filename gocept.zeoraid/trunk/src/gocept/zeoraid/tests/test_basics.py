@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007-2008 Zope Foundation and Contributors.
+# Copyright (c) 2007-2010 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -22,10 +22,12 @@ from ZODB.tests import Synchronization, ConflictResolution, HistoryStorage
 from ZODB.tests import TransactionalUndoStorage, PackableStorage
 from gocept.zeoraid.tests.loggingstorage import LoggingStorage
 import ZEO.runzeo
+import ZODB.MappingStorage
 import ZODB.config
 import ZODB.interfaces
 import gocept.zeoraid.storage
 import gocept.zeoraid.tests.test_recovery
+import mock
 import os
 import random
 import shutil
@@ -39,6 +41,11 @@ import zc.lockfile
 import zope.interface.verify
 
 
+# import logging
+# logging.getLogger().setLevel(0)
+# logging.getLogger().addHandler(logging.StreamHandler())
+
+
 def fail(obj, name):
     old_method = getattr(obj, name)
 
@@ -46,6 +53,27 @@ def fail(obj, name):
         setattr(obj, name, old_method)
         raise Exception()
     setattr(obj, name, failing_method)
+
+
+class MockStorage(ZODB.MappingStorage.MappingStorage):
+
+    def __init__(self, undo):
+        super(MockStorage, self).__init__()
+        self.undo = undo
+
+    def supportsUndo(self):
+        return self.undo
+
+
+class Opener(object):
+
+    name = 'foo'
+
+    def __init__(self, undo=True):
+        self.undo = undo
+
+    def open(self):
+        return MockStorage(self.undo)
 
 
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
@@ -214,7 +242,7 @@ class FailingStorageTestBase(object):
         backend_storage = self._storage.storages[backend_name]
         backend_storage.close()
 
-        reliable, oid = self._storage._RAIDStorage__apply_storage(
+        reliable, oid = self._storage._apply_storage(
             backend_name, 'new_oid')
         self.assertEquals(False, reliable)
         self.assertEquals([backend_name], self._storage.storages_degraded)
@@ -934,16 +962,9 @@ class FailingStorageTestBase(object):
         storage.close()
 
     def test_supportsUndo_required(self):
-
-        class Opener(object):
-            name = 'foo'
-
-            def open(self):
-                return ZODB.MappingStorage.MappingStorage()
-
         self.assertRaises(RuntimeError,
                           gocept.zeoraid.storage.RAIDStorage,
-                          'name', [Opener()])
+                          'name', [Opener(undo=False)])
 
     def test_supportsUndo(self):
         self.assertEquals(True, self._storage.supportsUndo())
@@ -1415,39 +1436,24 @@ class LoggingStorageOpener(object):
         return LoggingStorage(self.name, self.file_name)
 
 
-class LoggingStorageDistributedTests(StorageTestBase.StorageTestBase):
-
-    # The backend and call counts have been chosen such that the probability
-    # of all calls being served by the same backend is about 1:10^6.
-    backend_count = 10
-    call_count = 6
-
-    def _backend(self, index):
-        return self._storage.storages[
-            self._storage.storages_optimal[index]]
-
-    def setUp(self):
-        self._storages = []
-        for i in xrange(self.backend_count):
-            self._storages.append(LoggingStorageOpener(str(i)))
-        self._storage = gocept.zeoraid.storage.RAIDStorage(
-            'teststorage', self._storages)
-
-    def tearDown(self):
-        self._storage.close()
+class LoggingStorageDistributedTests(unittest.TestCase):
 
     def test_distributed_single_calls(self):
-        for i in xrange(self.call_count):
-            self._storage.getSize()
-
-        # assert that at least two storages gets called at least one time
-        storages_called = [x for x in xrange(self.backend_count)
-                           if len(self._backend(x)._log) >= 1]
-        self.assertEquals(storages_called >= 2, True)
-
-        # assert that six calls were made
-        self.assertEquals(6, sum([len(self._backend(x)._log)
-                                  for x in xrange(self.backend_count)]))
+        raid = mock.Mock()
+        raid.closed = False
+        raid.storages_optimal = ['1', '2']
+        raid._apply_storage = mock.Mock(return_value=(True, 5))
+        op = gocept.zeoraid.storage.SingleStorageOperation(raid)
+        for i in xrange(20):
+            op.getSize()
+        self.assertEqual(20, raid._apply_storage.call_count)
+        counts = {}
+        for item in raid._apply_storage.call_args_list:
+            storage = item[0][0]
+            counts[storage] = counts.get(storage, 0) + 1
+        self.assertEqual(['1', '2'], sorted(counts.keys()))
+        self.assert_(counts['1'] > 2)
+        self.assert_(counts['2'] > 2)
 
 
 class ExtensionMethodsTests(ZEOStorageBackendTests):
@@ -1653,6 +1659,26 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                           self._storage.raid_details())
 
 
+class ClusterModeTests(unittest.TestCase):
+
+    def setUp(self):
+        self.storage = gocept.zeoraid.storage.RAIDStorage(
+            'test', [Opener('1'), Opener('2')])
+        self.storage._apply_storage = mock.Mock()
+
+    def test_single_mode_read(self):
+        self.storage.cluster_mode = 'single'
+        self.assert_(
+            isinstance(self.storage._reader,
+                       gocept.zeoraid.storage.SingleStorageOperation))
+
+    def test_coop_mode_read(self):
+        self.storage.cluster_mode = 'coop'
+        self.assert_(
+            isinstance(self.storage._reader,
+                       gocept.zeoraid.storage.AllStoragesOperation))
+
+
 def test_suite():
 
     suite = unittest.TestSuite()
@@ -1661,4 +1687,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
     suite.addTest(unittest.makeSuite(LoggingStorageDistributedTests))
     suite.addTest(unittest.makeSuite(ExtensionMethodsTests))
+    suite.addTest(unittest.makeSuite(ClusterModeTests))
     return suite
