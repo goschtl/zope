@@ -19,6 +19,7 @@ import ZODB.POSException
 import ZODB.broken
 import ZODB.utils
 import cStringIO
+import datetime
 import logging
 import pickle
 import pickletools
@@ -59,6 +60,9 @@ class Updater(object):
             self.storage.tpc_finish(t)
 
     def __call__(self):
+        startTime = datetime.datetime.now()
+        logger.debug('Started at %s' % startTime.isoformat())
+
         try:
             count = 0
             t = self.__new_transaction()
@@ -88,6 +92,9 @@ class Updater(object):
             pdb.post_mortem(traceback)
             del traceback
             raise e
+
+        logger.debug('Finished at %s' % datetime.datetime.now().isoformat())
+        logger.debug('%s seconds' % (datetime.datetime.now() - startTime).seconds)
 
     @property
     def records(self):

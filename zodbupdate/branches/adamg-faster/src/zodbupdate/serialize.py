@@ -193,7 +193,9 @@ class ObjectRenamer(object):
 
         unpickler = self.__unpickler(input_file)
         class_meta = unpickler.load()
-        data = unpickler.load()
+        if hasattr(unpickler, 'need_repickle'):
+            #repickle depends on the unpickle process
+            data = unpickler.load()
 
         class_meta = self.__update_class_meta(class_meta)
 
@@ -206,6 +208,9 @@ class ObjectRenamer(object):
         pickler = self.__pickler(output_file)
         try:
             pickler.dump(class_meta)
+            if not hasattr(unpickler, 'need_repickle'):
+                #load data as late as possible
+                data = unpickler.load()
             pickler.dump(data)
         except cPickle.PicklingError:
             # Could not pickle that record, likely due to a broken
