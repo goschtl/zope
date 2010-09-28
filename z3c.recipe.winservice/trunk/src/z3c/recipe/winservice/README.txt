@@ -186,7 +186,7 @@ The winservice.py contains the service setup for our zope windows service:
   import win32process
   <BLANKLINE>
   # these are replacements from winservice recipe
-  PYTHON = r'U:\Python24\python.exe'
+  PYTHON = r'...'
   PYTHONDIR = os.path.split(PYTHON)[0]
   PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
   TOSTART = r'/sample-buildout/bin/app-script.py'

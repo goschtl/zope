@@ -14,7 +14,7 @@
 
 import re
 import unittest
-from zope.testing import doctest
+import doctest
 from zope.testing import renormalizing
 
 import zc.buildout.testing
@@ -64,7 +64,10 @@ def test_suite():
     return unittest.TestSuite(
         doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            optionflags=(
+                doctest.NORMALIZE_WHITESPACE|
+                doctest.ELLIPSIS|
+                doctest.REPORT_NDIFF),
             checker=checker),
         )
 
