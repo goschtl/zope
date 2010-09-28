@@ -5,12 +5,15 @@ CHANGES
 Version 0.7.0 (unreleased)
 --------------------------
 
-- ...
+- Updated tests to be more tolerant to different Python versions.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 Version 0.6.3 (2009-11-02)
 --------------------------
 
-- do nothing on a non windows platform instead of failing
+- Do nothing on a non windows platform instead of failing.
 
 Version 0.6.2 (2009-05-13)
 --------------------------
