@@ -7,6 +7,9 @@ Changes
 - More debug logging shows now the currently processed OID
   (that is helpful to determine which object misses the factory)
 
+- Unpickle payload with the C pickler only if there's a rename
+  required. That makes it a lot faster when there are not so many changes.
+
 0.4 (2010-07-14)
 ----------------
 
