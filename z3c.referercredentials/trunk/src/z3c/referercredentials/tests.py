@@ -20,8 +20,8 @@ import unittest
 import zope.component
 from zope.app.session import session, http, interfaces
 from zope.app.testing import placelesssetup
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import doctest
+
 
 def setUp(test):
     placelesssetup.setUp()
@@ -33,13 +33,11 @@ def setUp(test):
         session.PersistentSessionDataContainer(),
         interfaces.ISessionDataContainer)
 
+
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite(
+        doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
