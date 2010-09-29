@@ -2,6 +2,14 @@
 Changes for z3c.reference
 =========================
 
+unreleased 1.0.4:
+=================
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+- Updated to run with ZTK 1.0.
+
 2008/03/17 1.0.3:
 =================
 

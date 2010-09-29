@@ -22,7 +22,7 @@ import unittest
 import zope
 from zope.traversing.interfaces import ITraverser, ITraversable
 
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+from doctest import DocFileSuite, DocTestSuite
 from zope.app.testing import setup
 from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds

@@ -21,7 +21,7 @@ import unittest
 from zope import component
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IWriteZopeDublinCore
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+from doctest import DocFileSuite, DocTestSuite
 from zope.app.testing import setup
 from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds

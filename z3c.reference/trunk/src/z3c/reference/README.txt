@@ -22,7 +22,7 @@ a relation. The reference is an annotation for a data relation.
   >>> viewRef.view = u'@resize?w=50&h=100'
   Traceback (most recent call last):
   ...
-  WrongType: (u'@resize?w=50&h=100', <type 'str'>)
+  WrongType: (u'@resize?w=50&h=100', <type 'str'>, 'view')
   >>> viewRef.view = '@resize?w=50&h=100'
   >>> viewRef.view
   '@resize?w=50&h=100'

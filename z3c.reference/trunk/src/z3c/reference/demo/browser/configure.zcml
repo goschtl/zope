@@ -37,7 +37,7 @@
   <!-- test -->
   <pages
       for="zope.annotation.interfaces.IAnnotatable"
-      permission="zope.app.dublincore.change"
+      permission="zope.dublincore.change"
       class=".views.Meta">
     <page name="change.html" template="change.pt"
           menu="zmi_views" title="Metadata" />
@@ -82,6 +82,6 @@
   <editform schema="z3c.reference.demo.interfaces.IDemoFolder"
   label="Edit" name="editdemofolder.html" menu="zmi_views"
   title="Edit" permission="zope.ManageContent" />
- -->  
+ -->
 
 </configure>
