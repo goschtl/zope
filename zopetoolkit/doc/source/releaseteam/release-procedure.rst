@@ -30,8 +30,8 @@ Steps for creating a new release
 
 - tag the release. For example::
 
-    svn cp svn+ssh://svn.zope.org/repos/main/zopetoolkit/trunk
-    svn+ssh://svn.zope.org/repos/main/zopetoolkit/tags/1.0a1
+    svn cp svn+ssh://svn.zope.org/repos/main/zopetoolkit/branches/1.0
+    svn+ssh://svn.zope.org/repos/main/zopetoolkit/tags/1.0.1
 
 - create the release specific download index on download.zope.org
   (requires login credentials on download.zope.org. In case of
