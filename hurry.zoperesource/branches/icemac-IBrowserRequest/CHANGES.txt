@@ -4,7 +4,10 @@ CHANGES
 0.7 (unreleased)
 ================
 
-- Nothing changed yet.
+- Created ResourceDirectories now are registered for ``IBrowserRequest`` the
+  base class of the previously used ``IDefaultBrowserLayer``. So this
+  package can be used when the layer used by the application does not extend
+  ``IDefaultBrowserLayer``, as e. g. `z3c.layer.pagelet` does.
 
 
 0.6 (2010-07-29)
