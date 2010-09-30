@@ -9,4 +9,4 @@ Weekly Zope developer meetings
     zope-dev-20100831
     zope-dev-20100824
     zope-dev-20100817
-    vnrchive
+    archive
