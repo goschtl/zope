@@ -9,12 +9,24 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-09-28.log.html#t2010-09-28T18:01:27
 
 Attendees
 ---------
 
-XXX
+Charlie Clark, cwarner, Adam Groszer, Marius Gedminas, Patrick Gerken
+
+Follow-up on summit topics
+--------------------------
+
+Charlie asked for the progress on the post-summit tasks. The summary provided
+by Christian doesn't reflect all the information given during the summit and
+haven't been compiled into the summary wiki page
+(http://wiki.zope.org/ztk/ZopeSummit2010Summary), but only state the
+headlines. This leaves both detailed explanation of the goals as well as the
+deadlines missing.
+
+Charlie offered to ask Christian about the missing data.
 
 Agenda
 ======
