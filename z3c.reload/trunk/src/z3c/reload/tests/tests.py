@@ -15,10 +15,10 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+from zope.app.testing import functional
+import doctest
 import os
 import unittest
-from zope.testing import doctest
-from zope.app.testing import functional
 
 ReloadLayer = functional.ZCMLLayer(
     os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),

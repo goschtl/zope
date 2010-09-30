@@ -49,7 +49,11 @@ class Reloader(object):
         # This is generally not the right thing to do, but should work in this
         # limited case.
         for base in self.__class__.__bases__[1:]:
-            base.__init__(self, *args, **kw)
+            try:
+                base.__init__(self, *args, **kw)
+            except TypeError:
+                # Needed as object.__init__() does not accept any arguments in py26.
+                base.__init__(self)
 
     def __sanitize_bases(self, cls):
         """Make sure that the bases of a class are in the scope.
