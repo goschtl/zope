@@ -40,7 +40,7 @@ html:
 
 quickhtml:
 	mkdir -p build/html build/doctrees
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) -D buildbot_check=False build/html
+	$(SPHINXBUILD) -b html -D buildbot_check= $(ALLSPHINXOPTS) build/html
 	@echo
 	@echo "Build finished. The HTML pages are in build/html."
 
