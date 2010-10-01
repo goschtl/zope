@@ -204,24 +204,24 @@ Linux
     * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`__
       - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux POV
       - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux POV
-      -
-      -
+      - unsupported
+      - unsupported
       - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.4.6%2064bit%20linux AFPY
         * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV
       - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.5%2064bit%20linux AFPY
         * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux POV
-      -
-      -
+      - unsupported
+      - unsupported
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`__
       -
       -
       -
-      -
+      - unsupported
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.7.0%20Linux%2064bit AFPY
+      - unsupported
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       -
