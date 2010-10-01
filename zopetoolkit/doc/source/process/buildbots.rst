@@ -265,7 +265,7 @@ We would like to thank all providers of automated test facilities:
     * - `POV <http://zope3.pov.lt/buildbot/>`_
       - Marius Gedminas
       - Linux 32/64
-      - 2.4, 2.5
+      - 2.4, 2.5, 2.6, 2.7, 3.1
       - KGS for Zope 3.4
 
     * - `AFPY <http://buildbot.afpy.org/>`_
