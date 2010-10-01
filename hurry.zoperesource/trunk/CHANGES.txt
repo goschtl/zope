@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.7 (unreleased)
+0.7 (2010-10-01)
 ================
 
 - Created ResourceDirectories now are registered for ``IBrowserRequest`` the
