@@ -213,7 +213,7 @@ Linux
       - unsupported
       - unsupported
 
-    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/trunk>`__
+    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
       -
       -
       -
@@ -223,15 +223,25 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
       - unsupported
 
-    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
+    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`_ dev
       -
       -
       -
-      -
+      - unsupported
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.4.6%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.5%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.7.0%20Linux%2064bit AFPY
+      - unsupported
+
+    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
+      -
+      -
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk%20slave-ubuntu32 The Health Agency
+      -
+      -
+      -
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk%20slave-ubuntu64 The Health Agency
+      -
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       -
@@ -242,6 +252,7 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.0%2064bit%20linux AFPY
+
 
 The Buildbot Maintainers
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,7 +283,7 @@ We would like to thank all providers of automated test facilities:
       - Christophe Combelles
       - Linux 64
       - 2.4, 2.5, 2.6, 2.7, 3.1
-      - ZTK (trunks and releases), BlueBream template
+      - ZTK 1.0 (trunks and releases), BlueBream template
 
     * - Securactive `Zope <http://zope.buildbot.securactive.org/>`_
                     `grok <http://grok.buildbot.securactive.org/>`_
