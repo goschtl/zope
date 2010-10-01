@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.language.negotiator',
-    version='1.0.4dev',
+    version='1.0.4',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Zope3 i18n language negotiator.",
