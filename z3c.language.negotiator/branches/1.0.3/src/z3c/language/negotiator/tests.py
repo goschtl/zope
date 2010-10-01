@@ -125,7 +125,7 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
 
         self.negotiator.serverLanguage = u'en'
 
-        self.assertEqual(self.negotiator.getLanguage(('en', 'de'), env), 'de')
+        self.assertEqual(self.negotiator.getLanguage(('en', 'de'), env), 'en')
 
         env = testing.EnvStub(('pt-br','en'))
 
@@ -133,7 +133,7 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
 
         self.negotiator.serverLanguage = u'de'
 
-        self.assertEqual(self.negotiator.getLanguage(('en', 'de'), env), 'en')
+        self.assertEqual(self.negotiator.getLanguage(('en', 'de'), env), 'de')
 
         self.negotiator.clearCache(env)
 
