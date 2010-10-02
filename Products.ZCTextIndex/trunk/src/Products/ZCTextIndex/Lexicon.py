@@ -14,6 +14,7 @@
 """Lexicon.
 """
 
+from random import randrange
 import re
 
 from BTrees.IOBTree import IOBTree
@@ -32,6 +33,9 @@ class Lexicon(Persistent):
 
     implements(ILexicon)
 
+    _v_nextid = None
+    _wid_length_based = True # Flag to distinguish new and old lexica
+
     def __init__(self, *pipeline):
         self.clear()
         self._pipeline = pipeline
@@ -40,6 +44,7 @@ class Lexicon(Persistent):
         """Empty the lexicon.
         """
         self.length = Length()
+        self._wid_length_based = False
         self._wids = OIBTree()  # word -> wid
         self._words = IOBTree() # wid -> word
         # wid 0 is reserved for words that aren't in the lexicon (OOV -- out
@@ -67,11 +72,6 @@ class Lexicon(Persistent):
         last = _text2list(text)
         for element in self._pipeline:
             last = element.process(last)
-        # Strategically unload the length value so that we get the most
-        # recent value written to the database to minimize conflicting wids
-        # Because length is independent, this will load the most
-        # recent value stored, regardless of whether MVCC is enabled
-        self.length._p_deactivate()
         return map(self._getWordIdCreate, last)
 
     def termToWordIds(self, text):
@@ -141,22 +141,37 @@ class Lexicon(Persistent):
     def _getWordIdCreate(self, word):
         wid = self._wids.get(word)
         if wid is None:
-            wid = self._new_wid()
+            # WidCode requires us to use at least 0x4000 as a base number.
+            # The algorithm in versions before 2.13 used the length as a base
+            # number. So we don't even try to generate numbers below the
+            # length as they are likely all taken
+            minimum = 0x4000
+            if self._wid_length_based:
+                minimum = max(self.length(), 0x4000)
+
+            while True:
+                if self._v_nextid is None:
+                    self._v_nextid = randrange(minimum, 0x10000000)
+
+                wid = self._v_nextid
+                self._v_nextid += 1
+
+                if wid not in self._words:
+                    break
+
+                self._v_nextid = None
+
+            self.length.change(1)
             self._wids[word] = wid
             self._words[wid] = word
         return wid
 
-    def _new_wid(self):
-        self.length.change(1)
-        while self._words.has_key(self.length()): # just to be safe
-            self.length.change(1)
-        return self.length()
 
 def _text2list(text):
     # Helper: splitter input may be a string or a list of strings
     try:
         text + ""
-    except:
+    except Exception:
         return text
     else:
         return [text]

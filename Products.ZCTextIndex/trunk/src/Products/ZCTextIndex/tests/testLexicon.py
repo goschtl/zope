@@ -20,7 +20,6 @@ import os
 import sys
 
 import transaction
-import ZODB
 
 
 class StupidPipelineElement:
@@ -87,10 +86,8 @@ class LexiconTests(unittest.TestCase):
         verifyClass(ILexicon, self._getTargetClass())
 
     def test_clear(self):
-        from Products.ZCTextIndex.Lexicon import Splitter
-
         lexicon = self._makeOne()
-        wids = lexicon.sourceToWordIds('foo')
+        lexicon.sourceToWordIds('foo')
         self.assertEqual(len(lexicon._wids), 1)
         self.assertEqual(len(lexicon._words), 1)
         self.assertEqual(lexicon.length(), 1)
@@ -105,7 +102,9 @@ class LexiconTests(unittest.TestCase):
 
         lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
-        self.assertEqual(wids, [1, 2, 3])
+        self.assertEqual(len(wids), 3)
+        first = wids[0]
+        self.assertEqual(wids, [first, first+1, first+2])
 
     def testTermToWordIds(self):
         from Products.ZCTextIndex.Lexicon import Splitter
@@ -113,7 +112,8 @@ class LexiconTests(unittest.TestCase):
         lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('dogs')
-        self.assertEqual(wids, [3])
+        self.assertEqual(len(wids), 1)
+        self.assert_(wids[0] > 0)
 
     def testMissingTermToWordIds(self):
         from Products.ZCTextIndex.Lexicon import Splitter
@@ -134,7 +134,8 @@ class LexiconTests(unittest.TestCase):
         lexicon = self._makeOne(AddedSplitter())
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('dogs')
-        self.assertEqual(wids, [3])
+        self.assertEqual(len(wids), 1)
+        self.assert_(wids[0] > 0)
 
     def testMissingTermToWordIdsWithProcess_post_glob(self):
         """This test is for added process_post_glob"""
@@ -156,7 +157,8 @@ class LexiconTests(unittest.TestCase):
                                 StupidPipelineElement('dogs', 'fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('fish')
-        self.assertEqual(wids, [3])
+        self.assertEqual(len(wids), 1)
+        self.assert_(wids[0] > 0)
 
     def testSplitterAdaptorFold(self):
         from Products.ZCTextIndex.Lexicon import CaseNormalizer
@@ -165,7 +167,9 @@ class LexiconTests(unittest.TestCase):
         lexicon = self._makeOne(Splitter(), CaseNormalizer())
         wids = lexicon.sourceToWordIds('CATS and dogs')
         wids = lexicon.termToWordIds('cats and dogs')
-        self.assertEqual(wids, [1, 2, 3])
+        self.assertEqual(len(wids), 3)
+        first = wids[0]
+        self.assertEqual(wids, [first, first+1, first+2])
 
     def testSplitterAdaptorNofold(self):
         from Products.ZCTextIndex.Lexicon import Splitter
@@ -173,7 +177,9 @@ class LexiconTests(unittest.TestCase):
         lexicon = self._makeOne(Splitter())
         wids = lexicon.sourceToWordIds('CATS and dogs')
         wids = lexicon.termToWordIds('cats and dogs')
-        self.assertEqual(wids, [0, 2, 3])
+        self.assertEqual(len(wids), 3)
+        second = wids[1]
+        self.assertEqual(wids, [0, second, second+1])
 
     def testTwoElementPipeline(self):
         from Products.ZCTextIndex.Lexicon import Splitter
@@ -183,7 +189,8 @@ class LexiconTests(unittest.TestCase):
                           WackyReversePipelineElement('fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('hsif')
-        self.assertEqual(wids, [1])
+        self.assertEqual(len(wids), 1)
+        self.assert_(wids[0] > 0)
 
     def testThreeElementPipeline(self):
         from Products.ZCTextIndex.Lexicon import Splitter
@@ -194,7 +201,8 @@ class LexiconTests(unittest.TestCase):
                           WackyReversePipelineElement('fish'))
         wids = lexicon.sourceToWordIds('cats and dogs')
         wids = lexicon.termToWordIds('hsif')
-        self.assertEqual(wids, [2])
+        self.assertEqual(len(wids), 1)
+        self.assert_(wids[0] > 0)
 
     def testSplitterLocaleAwareness(self):
         import locale
