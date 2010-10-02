@@ -3,8 +3,8 @@
 The history of BlueBream
 ========================
 
-Our story begins in 1996.  `Jim Fulton` was technical director at digital
-creations.  At the International Python Conference (IPC) that year, Jim gave
+Our story begins in 1996.  `Jim Fulton` was technical director at Digital
+Creations.  At the International Python Conference (IPC) that year, Jim gave
 a presentation on `CGI`: `Python and Internet Programming`_.  Jim,
 considering CGI less than elegant, envisioned a better way to program for
 the internet in Python.  According to legend, Jim learned CGI on the plane
