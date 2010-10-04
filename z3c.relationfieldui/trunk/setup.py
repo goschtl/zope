@@ -35,8 +35,10 @@ setup(
         'zc.sourcefactory',
         'grokcore.component',
         'grokcore.view',
-        'hurry.resource',
-        'hurry.zoperesource >= 0.3', # for testing
+        'hurry.resource < 0.9',
+        # for testing:
+        'hurry.zoperesource >= 0.3, <0.6',
+        'zope.app.testing',
         ],
     entry_points={},
     )

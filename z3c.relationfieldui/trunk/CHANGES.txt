@@ -6,6 +6,12 @@ CHANGES
 
 * Clearly specify license as ZPL.
 
+* Added previously not declared test dependency on `zope.app.testing`.
+
+* Updated tests to run with current Grok version.
+
+* Pinned hurry.resouce to a compatible version.
+
 0.5 (2009-02-10)
 ================
 
