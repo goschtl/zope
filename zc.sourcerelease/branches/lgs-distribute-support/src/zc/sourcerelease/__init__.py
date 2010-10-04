@@ -57,6 +57,12 @@ def source_release(args=None):
     parser = optparse.OptionParser()
     parser.add_option("-n", "--name", dest="filename",
         help="create custom named files", default="None")
+    parser.add_option("-d", "--use-distribute", dest="use_distribute",
+        help="Use distribute to bootstrap the buildout (default)",
+        action="store_true", default=True)
+    parser.add_option("-s", "--use-setuptools", dest="use_distribute",
+        help="Use setuptools to bootstrap the buildout",
+        action="store_false")
 
     # retrieve options
     (options, args) = parser.parse_args(args)
@@ -103,7 +109,11 @@ def source_release(args=None):
                 eggs_directory
             sys.exit(0)
 
-        buildout.bootstrap([])
+        bootstrap_args = []
+        if options.use_distribute:
+            bootstrap_args.append('--distribute')
+
+        buildout.bootstrap(bootstrap_args)
 
         buildargs = args[:]+[
             '-Uvc', os.path.join(co1, config),
@@ -114,9 +124,13 @@ def source_release(args=None):
 
         os.chdir(here)
 
+        core_dependency = 'setuptools'
+        if options.use_distribute:
+            core_dependency = 'distribute'
+
         env = pkg_resources.Environment([eggs_directory])
         dists = [env[project][0].location
-                 for project in ('zc.buildout', 'setuptools')]
+                 for project in ('zc.buildout', core_dependency)]
 
         eggs = os.path.join(co2, reggs)
         os.mkdir(eggs)
