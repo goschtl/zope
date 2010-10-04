@@ -19,7 +19,6 @@ __docformat__ = "reStructuredText"
 
 import doctest
 import unittest
-from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing.placelesssetup import setUp
 from zope.app.testing.placelesssetup import tearDown
 
@@ -38,7 +37,7 @@ def test_suite():
         unittest.makeSuite(TestResource),
         doctest.DocTestSuite('z3c.resource.resource'),
         doctest.DocTestSuite('z3c.resource.namespace'),
-        DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown,
+        doctest.DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
 
