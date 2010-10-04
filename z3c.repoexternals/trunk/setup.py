@@ -28,7 +28,7 @@ setup(name='z3c.repoexternals',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          # 'pysvn',
+          #'pysvn',
       ],
       extras_require=dict(test=['zc.buildout', 'zc.recipe.egg']),
       entry_points="""
