@@ -11,40 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id$
-"""
-__docformat__ = 'restructuredtext'
 
-import unittest
-
-from zope import component
-
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
-from zope.publisher.interfaces.browser import IBrowserView
-
-from zope.app.testing import setup
 from zope.app.publication.interfaces import IBeforeTraverseEvent
-
+from zope.publisher.interfaces.browser import IBrowserView
+import doctest
 import setter
+import zope.app.testing.setup
+import zope.component
+
 
 def setUp(test):
-    root = setup.placefulSetUp()
-    component.provideHandler(setter.onBrowserViewBeforeTraverse,
-                             (IBrowserView, IBeforeTraverseEvent))
+    zope.app.testing.setup.placefulSetUp()
+    zope.component.provideHandler(setter.onBrowserViewBeforeTraverse,
+                                  (IBrowserView, IBeforeTraverseEvent))
 
 def tearDown(test):
-    setup.placefulTearDown()
+    zope.app.testing.setup.placefulTearDown()
+
 
 def test_suite():
-    return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp, tearDown=tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        )

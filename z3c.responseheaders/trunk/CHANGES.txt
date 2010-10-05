@@ -2,8 +2,15 @@
 Changes
 =======
 
-2007/07/14 0.1.0
-================
+0.1.1 (unreleased)
+==================
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+
+0.1.0 (2007/07/14)
+==================
 
 - First egg release
 
