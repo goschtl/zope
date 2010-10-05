@@ -90,6 +90,7 @@ setup (
         'z3c.traverser>=0.2.2', # BasePluggableTraverser only available
                                 # in 0.2.2 and higher
         'zope.publisher',
+        'zope.app.http',
         ],
     zip_safe = False,
     )

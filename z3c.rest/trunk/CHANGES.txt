@@ -5,8 +5,7 @@ CHANGES
 0.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Added undeclared but necessary install dependency on `zope.app.http`.
 
 0.3.0 (2010-10-05)
 ------------------
