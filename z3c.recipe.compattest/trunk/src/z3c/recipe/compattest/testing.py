@@ -24,6 +24,7 @@ def DocFileSuite(*args, **kw):
         # environment
         zc.buildout.testing.install('zc.recipe.testrunner', test)
         zc.buildout.testing.install('zc.recipe.egg', test)
+        zc.buildout.testing.install('z3c.recipe.scripts', test)
         zc.buildout.testing.install('zope.testing', test)
         zc.buildout.testing.install('zope.testrunner', test)
         zc.buildout.testing.install('zope.interface', test)

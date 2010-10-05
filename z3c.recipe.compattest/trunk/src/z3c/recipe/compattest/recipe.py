@@ -3,6 +3,7 @@ import pkg_resources
 import re
 import zc.buildout.easy_install
 import zc.recipe.egg
+from zc.recipe.egg.egg import _BackwardsSupportOption
 import zc.recipe.testrunner
 
 
@@ -34,6 +35,7 @@ class Recipe(object):
 
         # gather options to be passed to the underlying testrunner
         self.testrunner_options = {}
+
         for opt in self.options:
             if opt.startswith(RUNNER_PREFIX):
                 runner_opt = opt[len(RUNNER_PREFIX):]
@@ -60,6 +62,11 @@ class Recipe(object):
             options['eggs'] = package + extras
             if self.extra_paths:
                 options['extra-paths'] = self.extra_paths
+
+            # The testrunner recipe that we are going to pass these options to
+            # expects the 'query_bool' attribute to be accessible.
+            # See also zc.recipe.egg:Eggs (v1.3.2)
+            options = _BackwardsSupportOption(options)
 
             recipe = zc.recipe.testrunner.TestRunner(
                 self.buildout, '%s-%s' % (self.name, package), options)

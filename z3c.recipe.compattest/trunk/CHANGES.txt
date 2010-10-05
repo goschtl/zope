@@ -8,6 +8,9 @@ CHANGES
 - Updated test set up, to run with newer ``zope.testing`` version which no
   longer includes testrunner.
 
+- The z3c.recipe.scripts.scripts recipe behind zc.recipe.testrunner.TestRunner
+  does not accept plain dicts, so we wrap the options in a
+  _BackwardsSupportOptions object.
 
 0.12.2 (2010-02-24)
 ===================

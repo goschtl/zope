@@ -54,8 +54,8 @@ We take care about installing the test dependencies for the packages
 declared a (superfluous) test dependency on ``zope.dottedname``, which is
 picked up:
 
->>> cat('bin', 'compattest-z3c.recipe.compattest')
-#!...python...
+>>> cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
+"""Append module ...
 ...zope.dottedname...
 
 If we use ``include-dependencies`` instead of just ``include``, our direct
@@ -153,6 +153,6 @@ that depends on zope2 < 2.12:
 ... extra-paths = zope2location/lib/python
 ... """)
 >>> ignore = system(buildout)
->>> cat('bin', 'compattest-z3c.recipe.compattest')
-#!...python...
+>>> cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
+"""Append module ...
 ...zope2location/lib/python...
