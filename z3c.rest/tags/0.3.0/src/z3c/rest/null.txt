@@ -1,0 +1,103 @@
+==============
+Null Resources
+==============
+
+It is sometimes necessary to traverse to resources that do not yet exist. In
+particular, this is needed when creating resources using "PUT" or "POST". It
+is the responsibility of the traverser to handle those cases correctly and
+produce the null resources. This document only describes their behavior.
+
+A null resource is easily instantiated using the container and the name of the
+resource:
+
+  >>> class Folder(object):
+  ...     __parent__ = __name__ = None
+  ...     child = None
+  ...
+  ...     def __init__(self, name=''):
+  ...         self.name = self.__name__ = name
+  ...
+  ...     def __repr__(self):
+  ...         return '<Folder %r>' %self.name
+  >>> folder = Folder()
+
+  >>> from z3c.rest import null
+  >>> resource = null.NullResource(folder, 'resource')
+
+  >>> from zope.app.http.interfaces import INullResource
+  >>> INullResource.providedBy(resource)
+  True
+
+Null resources are locations, so security is available:
+
+  >>> from zope.location.interfaces import ILocation
+  >>> ILocation.providedBy(resource)
+  True
+
+The container is also the parent:
+
+  >>> resource.container
+  <Folder ''>
+  >>> resource.__parent__
+  <Folder ''>
+
+The name of the resource is available at:
+
+  >>> resource.name
+  'resource'
+  >>> resource.__name__
+  'resource'
+
+There is a special implementation of "PUT" for null resources. It works by
+looking up a view called "NullPUT" for the container. This way, one null
+resource implementation can be used for all container implementations.
+
+  >>> import StringIO
+  >>> from z3c.rest import rest
+  >>> request = rest.RESTRequest(StringIO.StringIO(), {})
+
+  >>> nullPut = null.NullPUT(resource, request)
+  >>> nullPut.PUT()
+
+Since no view called "NullPUT" exists for our `Folder` class, we get a 501
+return status:
+
+  >>> request.response.getStatusString()
+  '501 Not Implemented'
+
+Let's now register a simple NullPUT view:
+
+  >>> class FolderAPI(rest.RESTView):
+  ...
+  ...     def NullPUT(self, resource):
+  ...         self.context.child = Folder(resource.name)
+  ...         self.context.child.__parent__ = self.context
+  ...         return self.context.child
+
+  >>> import zope.component
+  >>> from z3c.rest import interfaces
+  >>> zope.component.provideAdapter(
+  ...     FolderAPI, (Folder, interfaces.IRESTRequest), name='NullPUT')
+
+Let's make sure our location structure is correctly setup, so that absolute
+URL will work:
+
+  >>> from zope.traversing.interfaces import IContainmentRoot
+  >>> import zope.interface
+  >>> zope.interface.alsoProvides(folder, IContainmentRoot)
+
+Now we are ready to PUT the new resource:
+
+  >>> request = rest.RESTRequest(
+  ...     StringIO.StringIO(), {'SERVER_URL': 'http://localhost/'})
+
+  >>> nullPut = null.NullPUT(resource, request)
+  >>> nullPut.PUT()
+
+  >>> request.response.getStatusString()
+  '201 Created'
+  >>> request.response.getHeader('Location')
+  'http://localhost/resource'
+
+  >>> folder.child
+  <Folder 'resource'>

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<error
+    xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <name tal:content="view/name">
+    NameError
+  </name>
+  <explanation tal:content="view/explanation">
+    'Foo' object has no attribute 'bar'
+  </explanation>
+</error>

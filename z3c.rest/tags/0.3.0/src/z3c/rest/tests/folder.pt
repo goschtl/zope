@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<folder xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <name tal:content="context/__name__">folder</name>
+  <title tal:content="context/zope:title"
+         tal:condition="not: request/notitle|nothing">Folder</title>
+  <items
+      tal:condition="not: request/noitems|nothing">
+    <item xlink:type="simple" xlink:href="" xlink:title=""
+          tal:repeat="item context/values"
+          tal:attributes="xlink:href item/@@absolute_url;
+                          xlink:title item/__name__" />
+  </items>
+  <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL" />
+</folder>
