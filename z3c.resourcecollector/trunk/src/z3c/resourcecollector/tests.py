@@ -13,22 +13,18 @@
 ##############################################################################
 __docformat__ = "reStructuredText"
 
-import os
+from zope.testing import renormalizing
 import doctest
-import unittest
-
-from zope.testing import doctest
-
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+import re
 
 
 def test_suite():
-    return unittest.TestSuite(
-        (DocFileSuite('zcml.txt',
-                  optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                  ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+    return doctest.DocFileSuite(
+        'zcml.txt',
+        checker=renormalizing.RENormalizing([
+            (re.compile(
+                "<class 'zope.component.interfaces.ComponentLookupError'>"),
+             'zope.component.interfaces.ComponentLookupError')
+            ]),
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        )

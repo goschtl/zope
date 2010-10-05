@@ -17,7 +17,6 @@ import zope.configuration.fields
 import zope.component
 import zope.schema
 
-from zope.app import zapi
 from zope.app.publisher.browser import metaconfigure
 
 from interfaces import ICollectorUtility
@@ -48,7 +47,8 @@ class ICollectorDirective(zope.interface.Interface):
 
 def handleCollector(_context, name, type, content_type = None):
 
-    zapi.getGlobalSiteManager().registerUtility(CollectorUtility(content_type),name=name)
+    zope.component.getGlobalSiteManager().registerUtility(
+        CollectorUtility(content_type),name=name)
     class_=CollectorResource
     for_ = (zope.interface.Interface,)
     provides = zope.interface.Interface

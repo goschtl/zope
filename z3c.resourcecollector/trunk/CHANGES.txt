@@ -5,6 +5,19 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+unreleased 1.1.4
+----------------
+
+- Made tests compatible with Python 2.5 and newer.
+
+- Added not declared but necessary dependencies.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+- Got rid of even undeclared `zope.app.zapi` dependency.
+
+
 2008/07/30 1.1.3
 ----------------
 
