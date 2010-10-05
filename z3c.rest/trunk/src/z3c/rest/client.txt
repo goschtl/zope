@@ -106,7 +106,7 @@ the Python exception will propagate through the publisher:
   >>> client.get('http://localhost/unknown')
   Traceback (most recent call last):
   ...
-  NotFound: Object: <zope.app.folder.folder.Folder ...>, name: u'unknown'
+  NotFound: Object: <zope.site.folder.Folder ...>, name: u'unknown'
 
   >>> client.handleErrors = True
 
@@ -179,10 +179,10 @@ is propagated, but the error number and message are recorded:
   >>> realClient.open('http://localhost:65000')
   Traceback (most recent call last):
   ...
-  error: (111, 'Connection refused')
+  error: (61, 'Connection refused')
 
   >>> realClient.fullStatus
-  '111 Connection refused'
+  '61 Connection refused'
 
 
 Creating new resources

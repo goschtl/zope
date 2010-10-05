@@ -77,9 +77,12 @@ setup (
                'zope.app.zcmlfiles',
                'zope.contentprovider',
                ],
-        test = ['z3c.coverage',
-                'z3c.etestbrowser',
-                'zope.app.testing'],
+        test = [
+            'z3c.coverage',
+            'z3c.etestbrowser',
+            'zope.app.container',
+            'zope.app.testing',
+            ],
         ),
     install_requires = [
         'lxml>=2.0.0', # Changes in API, since 1.3.6.

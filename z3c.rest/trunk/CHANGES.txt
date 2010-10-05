@@ -2,6 +2,17 @@
 CHANGES
 =======
 
+0.2.6 (unreleased)
+------------------
+
+- Added not declared test dependencies.
+
+- Updated test set up and fixed tests to run with ZTK 1.0.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+
 0.2.5 (2008-09-16)
 ------------------
 

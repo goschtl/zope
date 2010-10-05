@@ -11,29 +11,36 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""REST Tests
+"""REST Tests"""
 
-$Id$
-"""
-__docformat__ = "reStructuredText"
+from z3c.rest import interfaces
+from zope.app.testing import functional, placelesssetup
+from zope.testing import renormalizing
+from zope.traversing.browser import absoluteurl
+from zope.traversing.interfaces import IContainmentRoot
+import doctest
 import os
+import pprint
+import re
 import unittest
 import zope.component
 import zope.traversing.testing
-from zope.testing import doctest, doctestunit
-from zope.traversing.browser import absoluteurl
-from zope.traversing.interfaces import IContainmentRoot
-from zope.app.testing import functional, placelesssetup
-from z3c.rest import interfaces
+
 
 RESTLayer = functional.ZCMLLayer(
     os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
     __name__, 'RESTLayer', allow_teardown=True)
 
+
+def compatible_pprint(dict):
+    """Compatible output for Python 2.4 till 2.6."""
+    return pprint.pprint(dict, width=1)
+
+
 def setUp(test):
     placelesssetup.setUp(test)
     zope.traversing.testing.setUp()
-    
+
     # XXX: This really needs a REST equivalent w/o breadcrumbs.
 
     zope.component.provideAdapter(
@@ -60,13 +67,18 @@ def setUp(test):
 
 
 def test_suite():
-    client = functional.FunctionalDocFileSuite('../client.txt')
+    client = functional.FunctionalDocFileSuite(
+        '../client.txt',
+        checker=renormalizing.RENormalizing([
+            (re.compile('\[Errno 61\] Connection refused'),
+             "(61, 'Connection refused')")
+            ]))
     client.layer = RESTLayer
     return unittest.TestSuite((
         client,
         doctest.DocFileSuite(
             '../rest.txt',
-            globs={'pprint': doctestunit.pprint},
+            globs={'pprint': compatible_pprint},
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         doctest.DocFileSuite(

@@ -4,14 +4,14 @@
     i18n_domain="rest">
 
   <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.component.browser" file="meta.zcml" />
+  <!-- <include package="zope.app.component.browser" file="meta.zcml" /> -->
   <include package="zope.app.container.browser" file="meta.zcml" />
   <include package="zope.app.form.browser" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
 
   <browser:menu id="zmi_views" title="Views" />
   <browser:menu id="zmi_actions" title="Actions" />
@@ -27,8 +27,8 @@
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.publication" />
   <include package="zope.app.security" />
-  <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
+  <!-- <include package="zope.app.securitypolicy" /> -->
+  <!-- <include package="zope.app.session" /> -->
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
   <include package="zope.annotation" />
@@ -39,6 +39,7 @@
   <include package="zope.publisher" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
+  <include package="zope.login" />
 
 
   <include file="configure.zcml" />
@@ -50,7 +51,7 @@
   <role id="zope.Anonymous" title="Everybody" />
   <grant permission="zope.View"
          role="zope.Anonymous" />
-  <grant permission="zope.app.dublincore.view"
+  <grant permission="zope.dublincore.view"
          role="zope.Anonymous" />
 
   <role id="zope.Manager" title="Site Manager" />

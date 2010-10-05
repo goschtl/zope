@@ -75,11 +75,11 @@ class RESTResponse(HTTPResponse):
 
     errorTemplate = PageTemplateFile("baseerror.pt")
 
-    def handleException(self, exc_info):
+    def handleException(self, exc_info, trusted=False):
         errorClass, error = exc_info[:2]
         if isinstance(errorClass, (types.ClassType, type)):
             if issubclass(errorClass, Redirect):
-                self.redirect(error.getLocation())
+                self.redirect(error.getLocation(), trusted=trusted)
                 return
             title = tname = errorClass.__name__
         else:
