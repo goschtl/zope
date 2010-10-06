@@ -27,6 +27,13 @@ def cluster_mode(value):
     return value
 
 
+def fail_mode(value):
+    if value not in ('read-only', 'close'):
+        raise ValueError(
+            "Only valid fail modes: 'read-only', 'close', found %r" % value)
+    return value
+
+
 class Storage(ZODB.config.BaseConfig):
 
     def open(self):
@@ -42,6 +49,7 @@ class Storage(ZODB.config.BaseConfig):
             self.config.storages,
             blob_dir=self.config.blob_dir,
             read_only=self.config.read_only,
+            fail_mode=self.config.fail_mode,
             cluster_mode=self.config.cluster_mode,
             shared_blob_dir=self.config.shared_blob_dir,
             zeo=zeo)

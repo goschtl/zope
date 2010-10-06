@@ -116,9 +116,11 @@ class RAIDStorage(object):
     timeout = 6000
 
     def __init__(self, name, openers, read_only=False, cluster_mode='coop',
-                 blob_dir=None, shared_blob_dir=False, zeo=None):
+                 blob_dir=None, shared_blob_dir=False, zeo=None,
+                 fail_mode='close'):
         self.__name__ = name
         self.read_only = read_only
+        self.fail_mode = fail_mode
         self.cluster_mode = cluster_mode
         self.shared_blob_dir = shared_blob_dir
         self.zeo = zeo
@@ -748,8 +750,12 @@ class RAIDStorage(object):
             if len(self.storages_optimal) <= len(self.openers) * 0.5:
                 fail = 'Less than 50% of the configured storages remain optimal.'
         if fail:
-            self.close()
-            raise gocept.zeoraid.interfaces.RAIDClosedError(fail)
+            if self.fail_mode == 'close':
+                self.close()
+                raise gocept.zeoraid.interfaces.RAIDClosedError(fail)
+            elif self.fail_mode == 'read-only':
+                self.read_only = True
+                raise ZODB.POSException.ReadOnlyError(fail)
 
     def _apply_storage(self, storage_name, method_name, args=(), kw={},
                         expect_connected=True):
@@ -1009,6 +1015,8 @@ class AllStoragesOperation(StorageOperation):
                                if storage not in self.exclude]
 
         if not applicable_storages:
+            if self.ignore_noop:
+                return
             raise gocept.zeoraid.interfaces.RAIDError(
                 'No applicable storages for operation %s available.' %
                 method_name)

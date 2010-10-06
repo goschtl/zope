@@ -63,6 +63,17 @@ this into a stateless RAID server that can be made HA easily (hot-standby).
           </description>
         </key>
 
+        <key name="fail-mode" required="no"
+             datatype=".fail_mode" default="close">
+          <description>
+            How the RAID server should behave when too few optimal storages are
+            available. The default option ('close') will close the storage,
+            rendering it unusable for clients and thus allow clients to
+            possibly fail-over to another RAID server.  The 'read-only' option
+            will keep the storage open but will only allow reading operations.
+          </description>
+        </key>
+
         <multisection 
             type="ZODB.storage" 
             name="+"

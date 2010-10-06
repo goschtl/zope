@@ -21,6 +21,7 @@ from ZODB.tests import StorageTestBase, BasicStorage
 from ZODB.tests import Synchronization, ConflictResolution, HistoryStorage
 from ZODB.tests import TransactionalUndoStorage, PackableStorage
 from gocept.zeoraid.tests.loggingstorage import LoggingStorage
+import ZConfig
 import ZEO.runzeo
 import ZODB.MappingStorage
 import ZODB.config
@@ -39,7 +40,7 @@ import transaction
 import unittest
 import zc.lockfile
 import zope.interface.verify
-
+import StringIO
 
 # import logging
 # logging.getLogger().setLevel(0)
@@ -1680,7 +1681,7 @@ class ClusterModeTests(unittest.TestCase):
 
     def setUp(self):
         self.raid = gocept.zeoraid.storage.RAIDStorage(
-            'test', [Opener('%s' % s) for s in range(5)])
+            'test', [Opener('%s' % s) for s in range(5)], fail_mode='close')
         self.raid._apply_storage = mock.Mock(return_value=(True, None))
 
 
@@ -1700,6 +1701,16 @@ class ClusterModeCoopTests(ClusterModeTests):
         self.raid._degrade_storage('1', 'test')
         self.assertRaises(ZEO.Exceptions.ClientStorageError,
                           lambda: self.raid._degrade_storage('2', 'test'))
+        self.assertTrue(self.raid.closed)
+
+    def test_degrade_turns_readonly(self):
+        self.raid.fail_mode = 'read-only'
+        self.raid._degrade_storage('0', 'test')
+        self.raid._degrade_storage('1', 'test')
+        self.assertRaises(ZODB.POSException.ReadOnlyError,
+                          lambda: self.raid._degrade_storage('2', 'test'))
+        self.assert_(self.raid.isReadOnly())
+        self.assertFalse(self.raid.closed)
 
 class ClusterModeSingleTests(ClusterModeTests):
 
@@ -1800,6 +1811,32 @@ class OperationExceptionResultTests(unittest.TestCase):
         else:
             self.fail('No exception raised')
 
+
+class ConfigTests(unittest.TestCase):
+
+    @mock.patch('gocept.zeoraid.storage.RAIDStorage')
+    def test_raid_storage_schema(self, raid_class):
+        config, handle = ZConfig.loadConfigFile(
+            ZODB.config.getStorageSchema(),
+            StringIO.StringIO('''\
+%import gocept.zeoraid
+<raidstorage 1>
+    cluster-mode single
+    fail-mode read-only
+    <mappingstorage 1>
+    </mappingstorage>
+</raidstorage>
+'''))
+        self.assertEqual('single', config.storage.config.cluster_mode)
+        self.assertEqual('read-only', config.storage.config.fail_mode)
+
+        raid = config.storage.open()
+        args, kwargs= raid_class.call_args
+        self.assertEqual('1', args[0])
+        self.assertEqual('read-only', kwargs['fail_mode'])
+        self.assertEqual('single', kwargs['cluster_mode'])
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
@@ -1813,4 +1850,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ClusterModeCoopTests))
     suite.addTest(unittest.makeSuite(AllStorageConsistencyCheck))
     suite.addTest(unittest.makeSuite(OperationExceptionResultTests))
+    suite.addTest(unittest.makeSuite(ConfigTests))
     return suite
