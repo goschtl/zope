@@ -11,22 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test harness for z3c.rmldocument
+"""Test harness for z3c.rmldocument."""
 
-$Id: interfaces.py 74195 2007-04-16 22:41:24Z srichter $
-"""
-
+import doctest
 import os.path
 import unittest
-from zope.testing import doctest
 
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(doctest.DocFileSuite(
+    return doctest.DocFileSuite(
         'README.txt',
-        optionflags=doctest.ELLIPSIS|doctest.REPORT_NDIFF|doctest.NORMALIZE_WHITESPACE,
-        globs={'EXAMPLE': 
+        optionflags=(doctest.ELLIPSIS|
+                     doctest.REPORT_NDIFF|
+                     doctest.NORMALIZE_WHITESPACE),
+        globs={'EXAMPLE':
                os.path.join(os.path.dirname(__file__), 'examples',
-                            'example%s.rml')}))
-    return suite
+                            'example%s.rml')})
