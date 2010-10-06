@@ -31,7 +31,7 @@ class Job(object):
     def start(self):
         self.start = time.time()
         self.process = subprocess.Popen(
-            [sys.executable, self.script, '--exit-with-status'] + self.args,
+            [sys.executable, '-S', self.script, '--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
