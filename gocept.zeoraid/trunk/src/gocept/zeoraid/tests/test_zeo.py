@@ -70,6 +70,7 @@ class ZEOServedTests(StorageTestBase.StorageTestBase):
         config = """\
         %%import gocept.zeoraid
         <raidstorage 1>
+            cluster-mode single
             <filestorage 1>
             path %s
             </filestorage>

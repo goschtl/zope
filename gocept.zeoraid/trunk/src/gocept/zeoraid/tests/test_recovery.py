@@ -205,7 +205,7 @@ class OnlineRecovery(unittest.TestCase):
 
         return gocept.zeoraid.storage.RAIDStorage(
             'raid',
-            [self.source_opener, self.target_opener],
+            [self.source_opener, self.target_opener], cluster_mode='single',
             blob_dir=blob_dir, shared_blob_dir=self.shared)
 
     def test_verify_both_empty(self):

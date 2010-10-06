@@ -20,6 +20,7 @@ import ZODB.POSException
 import ZODB.blob
 import ZODB.interfaces
 import ZODB.utils
+import cPickle
 import gocept.zeoraid.interfaces
 import gocept.zeoraid.recovery
 import logging
@@ -51,6 +52,7 @@ def ensure_open_storage(method):
 
 def ensure_writable(method):
 
+    @ensure_open_storage
     def check_writable(self, *args, **kw):
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
@@ -148,8 +150,13 @@ class RAIDStorage(object):
         # Remember the openers so closed storages can be re-opened as needed.
         self.openers = dict((opener.name, opener) for opener in openers)
 
+        # Do not fail the whole storage while opening storages the first time
+        # as we have intermittent states that would never allow a RAID to
+        # bootstrap.
+        self._fail_after_degrade = False
         for name in self.openers:
             self._open_storage(name)
+        self._fail_after_degrade = True
 
         # Evaluate the consistency of the opened storages. We compare the last
         # known TIDs of all storages. All storages whose TID equals the newest
@@ -193,6 +200,7 @@ class RAIDStorage(object):
             try:
                 AllStoragesOperation(self, expect_connected=False).close()
             except Exception, e:
+                logging.exception('asdf')
                 if not zeoraid_exception(e):
                     raise e
         finally:
@@ -225,8 +233,6 @@ class RAIDStorage(object):
 
     def lastTransaction(self):
         """Return the id of the last committed transaction."""
-        if self.raid_status() == 'failed':
-            raise gocept.zeoraid.interfaces.RAIDError('RAID is failed.')
         # Although this is a read operation we apply it to all storages as a
         # safety belt to ensure consistency.
         return AllStoragesOperation(self).lastTransaction()
@@ -235,7 +241,7 @@ class RAIDStorage(object):
         """The approximate number of objects in the storage."""
         try:
             return self._reader.__len__()
-        except RuntimeError, e:
+        except ZEO.Exceptions.ClientStorageError, e:
             if zeoraid_exception(e):
                 return 0
             raise e
@@ -269,9 +275,6 @@ class RAIDStorage(object):
             reliable, oid = self._apply_storage(storage, 'new_oid')
             if reliable:
                 oids.append((oid, storage))
-        if not oids:
-            raise gocept.zeoraid.interfaces.RAIDError(
-                "RAID storage is failed.")
 
         min_oid = sorted(oids)[0][0]
         for oid, storage in oids:
@@ -584,7 +587,6 @@ class RAIDStorage(object):
 
     # IRAIDStorage
 
-    @ensure_open_storage
     def raid_status(self):
         if self.storage_recovering:
             return 'recovering'
@@ -613,8 +615,10 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def raid_disable(self, name):
-        self._degrade_storage(
-            name, reason='disabled by controller', fail=False)
+        try:
+            self._degrade_storage(name, reason='disabled by controller')
+        except ZEO.Exceptions.ClientStorageError:
+            pass
         return 'disabled %r' % (name,)
 
     @ensure_open_storage
@@ -709,8 +713,7 @@ class RAIDStorage(object):
             # We were trying to open a storage. Even if we fail we can't be
             # more broke than before, so don't ever fail due to this.
             self._degrade_storage(
-                name, reason='an error occured opening the storage',
-                fail=False)
+                name, reason='an error occured opening the storage')
             if storage is not None:
                 try:
                     storage.close()
@@ -729,14 +732,24 @@ class RAIDStorage(object):
             t.setDaemon(True)
             t.start()
 
-    def _degrade_storage(self, name, reason, fail=True):
+    def _degrade_storage(self, name, reason):
         self._close_storage(name)
         self.storages_degraded.append(name)
         self.degrade_reasons[name] = reason
-        logger.critical('RAID %r degraded due failure of back-end %r. '
+        logger.critical('RAID %r degraded due to failure of back-end %r. '
                         'Reason: %s' % (self.__name__, name, reason))
-        if not self.storages_optimal and fail:
-            raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
+        if not self._fail_after_degrade:
+            return
+        fail = False
+        if self.cluster_mode == 'single':
+            if not self.storages_optimal:
+                fail = 'No storages remain optimal'
+        elif self.cluster_mode == 'coop':
+            if len(self.storages_optimal) <= len(self.openers) * 0.5:
+                fail = 'Less than 50% of the configured storages remain optimal.'
+        if fail:
+            self.close()
+            raise gocept.zeoraid.interfaces.RAIDClosedError(fail)
 
     def _apply_storage(self, storage_name, method_name, args=(), kw={},
                         expect_connected=True):
@@ -811,9 +824,8 @@ class RAIDStorage(object):
         except Exception:
             logger.exception('Error opening storage %s' % name)
             self.storage_recovering = None
-            self.storages_degraded.append(name)
-            self.degrade_reasons[name] = (
-                'an error occured opening the storage')
+            self._degrade_storage(name,
+                'An error occurred while opening the storage.')
             raise
         self.storages[name] = target
         recovery = gocept.zeoraid.recovery.Recovery(
@@ -826,9 +838,8 @@ class RAIDStorage(object):
         except Exception:
             logger.exception('Error recovering storage %s' % name)
             self.storage_recovering = None
-            self.storages_degraded.append(name)
-            self.degrade_reasons[name] = (
-                'an error occured recovering the storage')
+            self._degrade_storage(name,
+                'An error occured recovering the storage')
             raise
 
     def _finalize_recovery(self, storage):
@@ -928,6 +939,8 @@ class StorageOperation(object):
         self.raid = raid
 
     def __getattr__(self, name):
+        if name.startswith('_') and name not in ['__len__']:
+            raise AttributeError(name)
         return lambda *args, **kw: self(name, args, kw)
 
     @property
@@ -995,6 +1008,10 @@ class AllStoragesOperation(StorageOperation):
         applicable_storages = [storage for storage in applicable_storages
                                if storage not in self.exclude]
 
+        if not applicable_storages:
+            raise gocept.zeoraid.interfaces.RAIDError(
+                'No applicable storages for operation %s available.' %
+                method_name)
         # Run _apply_storage on all applicable storages in parallel.
         threads = []
         for storage_name in applicable_storages:
@@ -1007,7 +1024,6 @@ class AllStoragesOperation(StorageOperation):
 
         # Wait for threads to finish and pick up results.
         results = {}
-        exceptions = []
         for thread in threads:
             # XXX The timeout should be calculated such that the total time
             # spent in this loop doesn't grow with the number of storages.
@@ -1021,49 +1037,52 @@ class AllStoragesOperation(StorageOperation):
                 self.raid._threads.add(thread)
                 continue
             if thread.exception:
-                exceptions.append(thread.exception)
+                results[thread.storage_name] = OperationExceptionResult(
+                    thread.exception)
             elif thread.reliable:
-                results[thread.storage_name] = thread.result
+                results[thread.storage_name] = OperationResult(
+                    thread.result,
+                    self.filter_results(thread.result,
+                                        self.raid.storages.get(thread.storage_name)))
 
-        # Analyse result consistency.
-        consistent = True
-        if exceptions and results:
-            consistent = False
-        elif exceptions:
-            # Since we can only get one kind of exceptions at the moment, they
-            # must be consistent anyway.
-            pass
-        elif results:
-            consistent = self._check_result_consistency(results)
-        if not consistent:
-            self.raid.close()
-            raise gocept.zeoraid.interfaces.RAIDError(
-                "RAID is inconsistent and was closed.")
+        try:
+            result = self._extract_result(results)
+        except RuntimeError:
+            logger.debug(
+                'Received inconsistent results for method %s: %r' %
+                (method_name, results))
+            raise
 
-        # Select result.
-        if exceptions:
-            raise exceptions[0]
-        if results:
-            return results.values()[0]
+        return result()
 
-        # We did not get any reliable result, making this call effectively a
-        # no-op.
-        if self.ignore_noop:
-            return
-        raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
+    def _extract_result(self, results):
+        """Extract a consistent result from a set of results.
 
-    def _check_result_consistency(self, results):
-        filtered_results = [
-            self.filter_results(result, self.raid.storages[storage])
-            for storage, result in results.items()]
-        ref = filtered_results[0]
-        for test in filtered_results[1:]:
-            if test != ref:
-                logger.debug(
-                    'Got inconsistent results for method %s: %r' %
-                    (method_name, results))
-                return False
-        return True
+        We select the result that was returned by the most storages and rely
+        on the implementation of _degrade_storage to disable the RAID
+        completely if too few storages were involved delivering that result.
+
+        We expect _degrade_storage to raise an exception in the latter case.
+
+        """
+        result_classes = NonHashingDict()
+        # Classify results by their value, keep track of the storages that
+        # returned the respective result.
+        for storage, result in results.items():
+            storages = result_classes.setdefault(result, [])
+            storages.append(storage)
+        # Select the result that was returned most.
+        max_same_result = 0
+        for result, storages in result_classes.items():
+            if len(storages) > max_same_result:
+                max_same_result = len(storages)
+                extracted_result = result
+        # Degrade all storages with different results.
+        for result, storages in result_classes.items():
+            if result != extracted_result:
+                for storage in storages:
+                    self.raid._degrade_storage(storage, 'inconsistent result')
+        return extracted_result
 
 
 def optimistic_copy(source, target):
@@ -1119,3 +1138,51 @@ def zeoraid_exception(e):
 
     """
     return bool(getattr(e, 'created_by_zeoraid', False))
+
+
+class NonHashingDict(object):
+
+    def __init__(self):
+        self.data = []
+
+    def setdefault(self, key, default=None):
+        for candidate_key, value in self.data:
+            if key == candidate_key:
+                return value
+        self.data.append((key, default))
+        return default
+
+    def items(self):
+        return self.data[:]
+
+
+class OperationResult(object):
+
+    def __init__(self, original, filtered):
+        self.original = original
+        self.filtered = filtered
+
+    def __eq__(self, other):
+        if isinstance(other, OperationResult):
+            return self.filtered == other.filtered
+        return NotImplemented
+
+    def __call__(self):
+        return self.original
+
+
+class OperationExceptionResult(object):
+
+    def __init__(self, exception):
+        self.exception = exception
+
+    def __eq__(self, other):
+        if not isinstance(other, OperationExceptionResult):
+            return NotImplemented
+        try:
+            return cPickle.dumps(self.exception) == cPickle.dumps(other.exception)
+        except cPickle.PicklingError:
+            return False
+
+    def __call__(self):
+        raise self.exception
