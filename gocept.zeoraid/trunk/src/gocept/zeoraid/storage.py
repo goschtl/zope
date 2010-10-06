@@ -945,10 +945,7 @@ class SingleStorageOperation(StorageOperation):
         # Try to find a storage that we can talk to. Stop after we found a
         # reliable result.
         storages = self.raid.storages_optimal[:]
-        reliable = False
-        while not reliable:
-            if not storages:
-                break
+        while storages:
             name = random.choice(storages)
             storages.remove(name)
             reliable, result = self.raid._apply_storage(
@@ -1037,17 +1034,7 @@ class AllStoragesOperation(StorageOperation):
             # must be consistent anyway.
             pass
         elif results:
-            filtered_results = [
-                self.filter_results(result, self.raid.storages[storage])
-                for storage, result in results.items()]
-            ref = filtered_results[0]
-            for test in filtered_results[1:]:
-                if test != ref:
-                    logger.debug(
-                        'Got inconsistent results for method %s: %r' %
-                        (method_name, results))
-                    consistent = False
-                    break
+            consistent = self._check_result_consistency(results)
         if not consistent:
             self.raid.close()
             raise gocept.zeoraid.interfaces.RAIDError(
@@ -1064,6 +1051,19 @@ class AllStoragesOperation(StorageOperation):
         if self.ignore_noop:
             return
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
+
+    def _check_result_consistency(self, results):
+        filtered_results = [
+            self.filter_results(result, self.raid.storages[storage])
+            for storage, result in results.items()]
+        ref = filtered_results[0]
+        for test in filtered_results[1:]:
+            if test != ref:
+                logger.debug(
+                    'Got inconsistent results for method %s: %r' %
+                    (method_name, results))
+                return False
+        return True
 
 
 def optimistic_copy(source, target):
