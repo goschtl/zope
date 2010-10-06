@@ -23,7 +23,7 @@ setup (
     name='z3c.rmldocument',
     version = '1.1dev',
     author = "Christian Theune and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "User-editable RML documents",
     long_description=(
         read('README.txt')
@@ -38,7 +38,7 @@ setup (
         'Programming Language :: Python',
         'Natural Language :: English',
         'Operating System :: OS Independent'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.rmldocument',
+    url = 'http://pypi.python.org/pypi/z3c.rmldocument',
     packages = find_packages('src'),
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
