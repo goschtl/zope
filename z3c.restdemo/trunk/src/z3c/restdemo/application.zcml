@@ -7,12 +7,11 @@
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zc.configuration" file="meta.zcml" />
 
   <exclude package="zope.app.error.browser" />
   <exclude package="zope.app.securitypolicy.browser" />
-  <exclude package="zope.app.session" file="browser.zcml" />
 
   <include package="zope.app.appsetup" />
   <include package="zope.app.component" />
@@ -21,7 +20,7 @@
   <include package="zope.app.publication" />
   <include package="zope.app.security" />
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
+  <include package="zope.session" />
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
   <include package="zope.annotation" />
