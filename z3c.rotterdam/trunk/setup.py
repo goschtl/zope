@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0.2'
+version = '1.0.3dev'
 
 setup(name='z3c.rotterdam',
       version=version,
@@ -31,29 +31,27 @@ setup(name='z3c.rotterdam',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'zope.app.rotterdam',
-          'z3c.pagelet',
-          'z3c.formui',
-          'z3c.layer',
-          'jquery.layer',
-          'z3c.template',
-          'zope.viewlet',
-          'z3c.viewlet',
-          'z3c.form',
-          'z3c.formjs',
-          'z3c.zrtresource',
           'jquery.javascript',
           'jquery.layer',
-
+          'z3c.form',
+          'z3c.formjs',
+          'z3c.formui',
+          'z3c.layer.pagelet',
+          'z3c.pagelet',
+          'z3c.template',
+          'z3c.viewlet',
+          'z3c.zrtresource',
+          'zope.app.rotterdam',
+          'zope.viewlet',
       ],
       extras_require = dict(
             test = [
-                'zope.app.testing',
-                'zope.testbrowser',
                 'zope.app.dtmlpage',
                 'zope.app.onlinehelp',
                 'zope.app.securitypolicy',
-                'zope.app.zcmlfiles'
+                'zope.app.testing',
+                'zope.app.zcmlfiles',
+                'zope.testbrowser',
           ]
       ),
       entry_points="""

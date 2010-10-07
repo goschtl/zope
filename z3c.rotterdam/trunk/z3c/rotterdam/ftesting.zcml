@@ -10,7 +10,7 @@
   <!-- used for functional testing setup -->
 
   <include package="zope.app.onlinehelp" file="meta.zcml"/>
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.viewlet" file="meta.zcml" />
 
   <include package="zope.app.zcmlfiles" />
@@ -18,10 +18,12 @@
   <include package="zope.app.authentication" />
   <include package="zope.contentprovider" />
   <include package="zope.app.dtmlpage" />
+  <include package="zope.login" />
+
 
   <include package="z3c.rotterdam" />
 
-  <include package="zope.app.securitypolicy" />
+  <include package="zope.securitypolicy" />
 
   <z3c:pagelet
       name="demo.html"
@@ -77,8 +79,6 @@
 
   <grantAll role="zope.Manager" />
 
-  <include package="zope.app.securitypolicy.tests" file="functional.zcml" />
-
   <!-- Principal that tests generally run as -->
   <principal
       id="zope.mgr"
@@ -86,13 +86,6 @@
       login="mgr"
       password="mgrpw" />
 
-  <!-- Bootstrap principal used to make local grant to the principal above -->
-  <principal
-      id="zope.globalmgr"
-      title="Manager"
-      login="globalmgr"
-      password="globalmgrpw" />
-
-  <grant role="zope.Manager" principal="zope.globalmgr" />
+  <grant role="zope.Manager" principal="zope.mgr" />
 
 </configure>

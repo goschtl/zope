@@ -1,8 +1,26 @@
 Changelog
 =========
 
-1.0.1dev - Unreleased
----------------------
+1.0.3 (unreleased)
+------------------
+
+- Updated tests to run with ZTK 1.0.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+- Using ``z3c.layer.pagelet`` instead of deprecated ``z3c.layer``.
+
+
+
+1.0.2 (2008-10-21)
+------------------
+
+* Changes not recorded.
+
+
+1.0.1 (2008-10-21)
+------------------
 
 * Initial release
 

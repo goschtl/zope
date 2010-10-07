@@ -15,11 +15,11 @@
 
 $Id$
 """
+from z3c.rotterdam.testing import RotterdamLayer
+from zope.app.testing.functional import FunctionalDocFileSuite
+import doctest
 import unittest
 
-from zope.testing import doctest
-from zope.app.testing.functional import FunctionalDocFileSuite
-from z3c.rotterdam.testing import RotterdamLayer
 
 def test_suite():
     rotterdam_doctest = FunctionalDocFileSuite(
@@ -29,6 +29,3 @@ def test_suite():
     return unittest.TestSuite((
         rotterdam_doctest,
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

@@ -10,6 +10,7 @@ Inclusion is condition on z3c.rotterdam:dependencies not being defined.
     xmlns:meta="http://namespaces.zope.org/meta"
     >
 
+
   <!-- Include the Rotterdam Skin and its dependencies -->
   <include package="zope.app.rotterdam" />
 
@@ -23,6 +24,7 @@ Inclusion is condition on z3c.rotterdam:dependencies not being defined.
 
   <include package="zope.contentprovider"/>
   <include package="z3c.pagelet" />
+  <include package="z3c.macro" />
   <include package="z3c.formui" />
   <include package="z3c.form" />
   <include package="jquery.layer" />
