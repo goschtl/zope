@@ -286,7 +286,8 @@ We would like to thank all providers of automated test facilities:
       - 2.4, 2.5, 2.6, 2.7, 3.1
       - ZTK 1.0 (trunks and releases), BlueBream template
 
-    * - Securactive `Zope <http://zope.buildbot.securactive.org/>`_
+    * - Securactive
+                    `Zope <http://zope.buildbot.securactive.org/>`_
                     `grok <http://grok.buildbot.securactive.org/>`_
                     `bfg <http://bfg.buildbot.securactive.org/>`_
                     `misc <http://misc.buildbot.securactive.org/>`_
