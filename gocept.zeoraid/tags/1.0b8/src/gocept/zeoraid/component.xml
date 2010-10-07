@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<!-- RAID storage ZConfig section setup.
+
+To create a RAID storage, add the following to zope.conf:
+
+%import gocept.zeoraid
+<zodb>
+    <raidstorage>
+        blob-dir /foo/bar
+        <zeoclient>
+            server localhost:8100
+            storage 1
+        </zeoclient>
+        <zeoclient>
+            server localhost:8101
+            storage 1
+        </zeoclient>
+    </raidstorage>
+</zodb>
+
+Alternatively you can use the raidstorage as a storage on a ZEO server to turn
+this into a stateless RAID server that can be made HA easily (hot-standby).
+
+-->
+
+<component prefix="gocept.zeoraid.datatypes">
+
+    <sectiontype
+        name="raidstorage"
+        implements="ZODB.storage"
+        datatype=".Storage">
+
+        <key name="blob-dir" required="no">
+            <description>
+                Path name to the area where uploaded blobs are temporarily
+                stored. Must be on the same partition as each of the back-end
+                storages' blob directories.
+            </description>
+        </key>
+
+        <key name="shared-blob-dir" required="no"
+             datatype="boolean" default="false">
+            <description>
+                Whether the blob directory is shared with the back end
+                storages.
+            </description>
+        </key>
+
+        <key name="read-only" required="no"
+             datatype="boolean" default="false">
+            <description>
+                Whether the RAID should be opened in read-only mode.
+            </description>
+        </key>
+
+        <key name="cluster-mode" required="no"
+             datatype=".cluster_mode" default="coop">
+          <description>
+            Whether the RAID server expects to be the only RAID server in the
+            set-up ("single") or to expect other RAID servers to use the same
+            back-end storages ("coop").
+          </description>
+        </key>
+
+        <key name="fail-mode" required="no"
+             datatype=".fail_mode" default="close">
+          <description>
+            How the RAID server should behave when too few optimal storages are
+            available. The default option ('close') will close the storage,
+            rendering it unusable for clients and thus allow clients to
+            possibly fail-over to another RAID server.  The 'read-only' option
+            will keep the storage open but will only allow reading operations.
+          </description>
+        </key>
+
+        <multisection 
+            type="ZODB.storage" 
+            name="+"
+            attribute="storages"
+            required="yes">
+            <description>
+                One ore more storages that are combined into a RAID array.
+            </description>
+        </multisection>
+
+    </sectiontype>
+
+</component>
