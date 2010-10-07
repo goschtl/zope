@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 name = "gocept.zeoraid"
 setup(
     name=name,
-    version='1.0b8',
+    version='1.0b9dev',
     author="Zope Foundation and Contributors",
     author_email="ct@gocept.com",
     description="A ZODB storage for replication using RAID techniques.",
