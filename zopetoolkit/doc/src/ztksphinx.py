@@ -2,7 +2,6 @@ from docutils import nodes
 from sphinx.util.compat import Directive
 from xmlrpclib import ServerProxy
 
-import time
 import urllib
 import socket
 import threading
@@ -89,7 +88,6 @@ def get_buildbot_results(xmlrpc_url, builders):
     Returns a dictionary mapping builder names to True/False or exception
     objects, in case of errors.
     """
-    start = time.time()
     try:
         xmlrpc = ServerProxy(xmlrpc_url)
     except Exception, e:
@@ -100,7 +98,6 @@ def get_buildbot_results(xmlrpc_url, builders):
             results[builder] = (xmlrpc.getLastBuildResults(builder) == 'success')
         except Exception, e:
             results[builder] = e
-    print xmlrpc_url, '%.3fs' % (time.time() - start)
     return results
 
 
