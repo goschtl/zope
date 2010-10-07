@@ -1,11 +1,11 @@
 CHANGES
 *******
 
-1.2.5 (unreleased)
+1.2.5 (2010-10-07)
 ==================
 
-- Nothing changed yet.
-
+* upgrade to use hurry.jquery 0.10
+* upgrade to jquerytools-1.2.5
 
 1.2.4 (2010-09-08)
 ==================

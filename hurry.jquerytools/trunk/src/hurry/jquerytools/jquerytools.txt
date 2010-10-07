@@ -7,14 +7,13 @@ Here are some basic tests for hurry.slimbox.
 Let's set up a way to render URLs; typically the framework has already
 done this::
 
-  >>> def get_library_url(library):
-  ...    return 'http://localhost/static/%s' % (library.name)
-  >>> from hurry.resource import Library
-  >>> from hurry.resource.interfaces import ILibraryUrl
-  >>> from zope import component
-  >>> # register the ILibraryUrl adaptation for the tests.
-  >>> component.provideAdapter(
-  ...     factory=get_library_url, adapts=(Library,), provides=ILibraryUrl)
+  >>> class Plugin(object):
+  ...   def get_library_url(self, library):
+  ...     return 'http://localhost/static/%s' % (library.name)
+  >>> from hurry.resource import register_plugin
+  >>> register_plugin(Plugin())
+
+
 
 Render the inclusion::
 
@@ -23,7 +22,7 @@ Render the inclusion::
   >>> needed = NeededInclusions()
   >>> needed.need(jquerytools)
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery/jquery-1...js"></script>
+  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-1...js"></script>
   <script type="text/javascript" src="http://localhost/static/JqueryToolsLibrary/jquery.tools.min.js"></script>
 
 """

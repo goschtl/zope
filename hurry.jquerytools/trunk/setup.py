@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 import os
 
-JQUERYTOOLS_VERSION = '1.2.4'
-version = '1.2.5dev'
+JQUERYTOOLS_VERSION = '1.2.5'
+version = '1.2.5'
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -29,20 +29,25 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.jquery == 1.4.2.1',
-        'hurry.resource == 0.4.1',
+        'py',
+        'hurry.jquery',
+        'hurry.resource',
         ],
     entry_points={
         'console_scripts': [
             'jquerytoolsprepare = hurry.jquerytools.prepare:main',
             ],
         'zest.releaser.prereleaser.middle': [
-            'prepare = hurry.jquerytools.prepare:entrypoint',
+            'prepare = hurry.jquerytools.prepare:working_entrypoint',
             ],
         # ALSO grab jquerytools in the separate tag checkout...
-        'zest.releaser.releaser.middle': [
-            'prepare = hurry.jquerytools.prepare:entrypoint',
+        'zest.releaser.releaser.after_checkout': [
+            'prepare = hurry.jquerytools.prepare:tag_entrypoint',
             ],
+        'hurry.resource.libraries': [
+            'jqueryui = hurry.jquerytools:jquerytools_lib',
+            ],
+
         },
     extras_require={
         'zopesupport': ['hurry.zoperesource'],

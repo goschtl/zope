@@ -12,41 +12,45 @@
 #
 ##############################################################################
 
+import py
 import os
 import shutil
 import urllib2
 import urlparse
 import zipfile
 
-VERSION = '1.2.4'
+VERSION = '1.2.5'
 BASEURL = "http://cdn.jquerytools.org/%s/all/jquery.tools.min.js" %VERSION
 FILENAME = "jquery.tools.min.js"
 
-def prepare_jquerytools():
-    jquerytools_dest_path = os.path.dirname(__file__)
-    library_path = os.path.join(jquerytools_dest_path, "jquerytools-build")
+def prepare_jquerytools(package_path):
+    library_path = package_path.join("jquerytools-build")
 
     # remove previous slimbox library
     print 'recursivly removing "%s"' % library_path
-    shutil.rmtree(library_path, ignore_errors=True)
+    if library_path.check():
+        library_path.remove()
+    print 'create new "%s"' % library_path 
+    library_path.ensure(dir=True)
 
     url = BASEURL
     print 'downloading "%s"' % url
     f = urllib2.urlopen(url)
     file_data = f.read()
     f.close()
-    dest_filename = os.path.join(jquerytools_dest_path, FILENAME)
-    dest = open(dest_filename, 'wb')
+    dest_filename = library_path.join(FILENAME)
     print 'writing data to "%s"' % dest_filename
-    dest.write(file_data)
-    dest.close()
-    os.mkdir(library_path)
-    shutil.move(dest_filename, library_path)
+    dest_filename.write(file_data)
 
 def main():
-    prepare_jquerytools()
+    prepare_jquerytools(os.path.dirname(__file__))
 
+def working_entrypoint(data):
+    if data['name'] != 'hurry.jquerytools':
+        return
+    prepare_jquerytools(py.path.local(os.path.dirname(__file__)))
 
-def entrypoint(data):
-    """Entry point for zest.releaser's prerelease script"""
-    prepare_jquerytools()
+def tag_entrypoint(data):
+    if data['name'] != 'hurry.jquertools':
+        return
+    prepare_jquerytools(py.path.local(data['tagdir'] + '/src/hurry/jquerytools'))
