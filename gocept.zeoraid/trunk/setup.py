@@ -26,7 +26,7 @@ setup(
     long_description=open('README.txt').read(),
     license="ZPL 2.1",
     keywords="zodb buildout",
-    classifiers=["Framework :: Buildout"],
+    classifiers=["Framework :: Buildout", "Framework :: ZODB"],
     url='http://pypi.python.org/pypi/gocept.zeoraid',
     zip_safe=False,
     packages=find_packages('src'),
