@@ -1,8 +1,8 @@
 from hurry.resource import Library, ResourceInclusion, GroupInclusion
 from hurry.jquery import jquery
 
-JqueryToolsLibrary = Library('JqueryToolsLibrary', 'JqueryTools-build')
+jquerytools_lib = Library('JqueryToolsLibrary', 'JqueryTools-build')
 
 jquerytools = ResourceInclusion(
-    JqueryToolsLibrary, 'jquery.tools.min.js', depends=[jquery])
+    jquerytools_lib, 'jquery.tools.min.js', depends=[jquery])
 

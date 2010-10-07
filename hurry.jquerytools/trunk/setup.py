@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 JQUERYTOOLS_VERSION = '1.2.5'
-version = '1.2.6dev'
+version = '1.2.5.1'
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
