@@ -17,7 +17,6 @@ import zope.component
 import zope.interface
 import zc.monitor.interfaces
 
-@zope.interface.provider(zc.monitor.interfaces.IMonitorPlugin)
 def reloadmonitor(connection, name):
     """reload an already-imported module
 
@@ -28,6 +27,9 @@ def reloadmonitor(connection, name):
     """
     reload(sys.modules[name])
     print >>connection, 'done'
+
+zope.interface.directlyProvides(
+    reloadmonitor, zc.monitor.interfaces.IMonitorPlugin)
 
 def configure(name='reload'):
     zope.component.provideUtility(reloadmonitor, name=name)

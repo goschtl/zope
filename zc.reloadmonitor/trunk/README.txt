@@ -20,6 +20,11 @@ To configure from ZCML, use::
 Changes
 *******
 
+0.2.0 (2010-10-07)
+==================
+
+- Make the reload monitor compatible with zope.interface 3.5.
+
 0.1.0 (2010-09-03)
 ==================
 
