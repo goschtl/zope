@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 JQUERYTOOLS_VERSION = '1.2.5'
-version = '1.2.5'
+version = '1.2.6dev'
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -14,6 +14,7 @@ long_description = (
 
 setup(
     name='hurry.jquerytools',
+    url="http://pypi.python.org/hurry.jquerytools",
     version=version,
     description="hurry.resource style resources for jquerytools.",
     long_description=long_description,

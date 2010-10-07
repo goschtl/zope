@@ -43,7 +43,7 @@ def prepare_jquerytools(package_path):
     dest_filename.write(file_data)
 
 def main():
-    prepare_jquerytools(os.path.dirname(__file__))
+    prepare_jquerytools(py.path.local(os.path.dirname(__file__)))
 
 def working_entrypoint(data):
     if data['name'] != 'hurry.jquerytools':
