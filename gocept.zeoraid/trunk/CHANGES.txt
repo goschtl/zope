@@ -4,6 +4,12 @@ Change History
 1.0b8 (unreleased)
 ------------------
 
+- Implement cluster-mode option with the two modes 'single' and 'coop' to
+  allow multiple RAID servers to work with the same back-ends and handle
+  split-brain situations gracefully. Allow to pick whether failure situations
+  should result in the RAID becoming read-only or close the storage (option
+  'fail-mode').
+
 - #484437: Recipe handles address in zeo.conf incorrectly. When giving the ZEO
   address on the server only as a port that port would be ignored resulting in
   127.0.0.1:8100 to be assumed for the management scripts.
