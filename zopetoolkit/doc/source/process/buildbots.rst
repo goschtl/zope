@@ -70,20 +70,20 @@ The tests run on OS X 10.6
 
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-osx The Health Agency
-      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.5%20slave-osx The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.6%20slave-osx The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.7%20slave-osx The Health Agency
 
     * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`__
       - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2%20slave-osx The Health Agency
-      -
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2-py2.5%20slave-osx The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2-py2.6%20slave-osx The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2-py2.7%20slave-osx The Health Agency
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
+      - unsupported
       -
-      -
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk%20slave-osx The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit%20slave-osx The Health Agency
       -
 
 Windows
@@ -124,7 +124,7 @@ no testing support for those
       - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot
       - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk_win%20slave-win The Health Agency
+        * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit_trunk%20slave-win The Health Agency
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
@@ -182,14 +182,14 @@ Linux
 
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.5%20slave-ubuntu32 The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.6%20slave-ubuntu32 The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.7%20slave-ubuntu32 The Health Agency
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-ubuntu32 The Health Agency
-      - unsupported
-      - unsupported
-      - unsupported
-      - * EPY,
-        * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12%20slave-ubuntu64 The Health Agency
-      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.5%20slave-ubuntu64 The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.6%20slave-ubuntu64 The Health Agency
+        EPY
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12-py2.7%20slave-ubuntu64 The Health Agency
 
     * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`__
       - unsupported
@@ -236,11 +236,11 @@ Linux
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       -
       -
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk%20slave-ubuntu32 The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit%20slave-ubuntu32 The Health Agency
       -
       -
       -
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/ztk%20slave-ubuntu64 The Health Agency
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit%20slave-ubuntu64 The Health Agency
       -
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
