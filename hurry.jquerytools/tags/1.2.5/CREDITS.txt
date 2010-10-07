@@ -1,0 +1,4 @@
+Credit due where credit is due
+******************************
+
+Inspiration by hurry.jquery from Martijn Faasen. 

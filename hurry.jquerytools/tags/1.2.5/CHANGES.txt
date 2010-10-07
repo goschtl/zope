@@ -1,0 +1,13 @@
+CHANGES
+*******
+
+1.2.5 (2010-10-07)
+==================
+
+* upgrade to use hurry.jquery 0.10
+* upgrade to jquerytools-1.2.5
+
+1.2.4 (2010-09-08)
+==================
+
+* Initial public release, using jquerytools-1.2.4
