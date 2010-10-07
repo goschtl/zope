@@ -5,12 +5,16 @@ CHANGES
 0.13 (unreleased)
 =================
 
+- Depend on and use the new features of the zc.buildout 1.5 line. At the same
+  time support for zc.buildout <= 1.5.1 has been dropped.
+
 - Updated test set up, to run with newer ``zope.testing`` version which no
   longer includes testrunner.
 
 - The z3c.recipe.scripts.scripts recipe behind zc.recipe.testrunner.TestRunner
-  does not accept plain dicts, so we wrap the options in a
-  _BackwardsSupportOptions object.
+  does not accept plain dicts anymore, so we wrap the options in a
+  _BackwardsSupportOptions object. Ideally this should've use an official
+  API though.
 
 0.12.2 (2010-02-24)
 ===================
