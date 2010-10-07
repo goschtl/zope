@@ -36,27 +36,26 @@ def process_buildbot_nodes(app, doctree, fromdocname):
             socket.setdefaulttimeout(min(socket_timeout, 5))
             for node in doctree.traverse(BuildbotColor):
                 buildbot_url = node.buildbot_url
-                buildbot_result = getBuildbotResult(buildbot_url)
-                if buildbot_result is None:
-                    css_class = 'tests_could_not_determine'
-                elif buildbot_result:
-                    css_class = 'tests_passed'
+                try:
+                    buildbot_result = getBuildbotResult(buildbot_url)
+                except Exception, e:
+                    node.css_class = 'tests_could_not_determine'
+                    node.title = '%s: %s' % (e.__class__.__name__, e)
                 else:
-                    css_class = 'tests_not_passed'
-                node.css_class = css_class
+                    if buildbot_result:
+                        node.css_class = 'tests_passed'
+                    else:
+                        node.css_class = 'tests_not_passed'
         finally:
             socket.setdefaulttimeout(socket_timeout)
 
 def getBuildbotResult(url):
     # url should end with '/buildbot/builders/$buildername'
     url = url.rstrip('/') # make sure trailing slashes don't cause failures
-    try:
-        xmlrpc_url = '/'.join(url.split('/')[:-2] + ['xmlrpc'])
-        builder = urllib.unquote(url.split('/')[-1])
-        xmlrpc = ServerProxy(xmlrpc_url)
-        return xmlrpc.getLastBuildResults(builder) == 'success'
-    except:
-        return None
+    xmlrpc_url = '/'.join(url.split('/')[:-2] + ['xmlrpc'])
+    builder = urllib.unquote(url.split('/')[-1])
+    xmlrpc = ServerProxy(xmlrpc_url)
+    return xmlrpc.getLastBuildResults(builder) == 'success'
 
 class BuildbotColor(nodes.Inline, nodes.TextElement):
     pass
@@ -65,7 +64,10 @@ def visit_buildbot_node(self, node):
     kwargs = {'href' : node.buildbot_url}
     css_class = getattr(node, 'css_class', '')
     if css_class:
-        kwargs['CLASS'] = css_class
+        kwargs['class'] = css_class
+    title = getattr(node, 'title', '')
+    if title:
+        kwargs['title'] = title
     self.body.append(self.starttag(node, 'a', **kwargs))
     self.body.append(node.text)
 
