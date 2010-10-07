@@ -1,7 +1,7 @@
 Change History
 ==============
 
-1.0b8 (unreleased)
+1.0b8 (2010-10-07)
 ------------------
 
 - Implement cluster-mode option with the two modes 'single' and 'coop' to
