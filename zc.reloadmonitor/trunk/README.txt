@@ -20,6 +20,11 @@ To configure from ZCML, use::
 Changes
 *******
 
+0.3.0 (2010-10-07)
+==================
+
+- Fixed setup.py so that `configure.zcml` gets properly included on install.
+
 0.2.0 (2010-10-07)
 ==================
 
