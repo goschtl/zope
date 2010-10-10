@@ -5,7 +5,7 @@ Changelog
 ------------------
 
 - Include `zope.location`, `zope.keyreference`, `zope.intid` and
-  `zope.contentprovider`
+  `zope.contentprovider`, `zope.i18n`
   from `site.zcml` file.
 - Reorganized zcml files (for deploy, debug and testing)
 

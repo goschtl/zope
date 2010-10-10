@@ -48,6 +48,7 @@
   <include package="zope.keyreference" />
   <include package="zope.intid" />
   <include package="zope.contentprovider" />
+  <include package="zope.i18n" />
 
   <!-- enable the apidoc -->
   <!-- enable this when apidoc works
