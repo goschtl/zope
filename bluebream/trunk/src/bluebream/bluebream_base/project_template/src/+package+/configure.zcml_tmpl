@@ -3,9 +3,10 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="${project}">
 
+  <!-- default bluebream libraries -->
   <include file="bluebream.zcml" />
 
-  <!-- Overrides -->
+  <!-- Override registrations -->
   <includeOverrides package="${ns_prefix}${package}" file="overrides.zcml" />
 
   <!-- Security Policy -->
