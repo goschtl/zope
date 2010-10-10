@@ -54,6 +54,7 @@ ${long_description|nothing}""",
                         'zope.login',
                         'zope.keyreference',
                         'zope.intid',
+                        'zope.contentprovider',
                         'zope.app.zcmlfiles',
                         ],
       entry_points = """
