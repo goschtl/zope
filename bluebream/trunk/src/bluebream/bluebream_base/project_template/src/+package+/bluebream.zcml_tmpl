@@ -47,6 +47,7 @@
   <include package="zope.app.http" />
   <include package="zope.keyreference" />
   <include package="zope.intid" />
+  <include package="zope.contentprovider" />
 
   <!-- enable the apidoc -->
   <!-- enable this when apidoc works

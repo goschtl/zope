@@ -4,7 +4,8 @@ Changelog
 1.0c1 (unreleased)
 ------------------
 
-- Include `zope.location`, `zope.keyreference` and `zope.intid`
+- Include `zope.location`, `zope.keyreference`, `zope.intid` and
+  `zope.contentprovider`
   from `site.zcml` file.
 - Reorganized zcml files (for deploy, debug and testing)
 
