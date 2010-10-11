@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.8.1 (unreleased)
+1.8.1 (2010-10-11)
 ------------------
 
 - Doing redirect in ``UnauthorizedPagelet`` now in ``update`` method instead
