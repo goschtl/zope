@@ -38,14 +38,15 @@ except ImportError:
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.contained import contained
 
-from zc.table import column, table
-from zc.table.interfaces import ISortableColumn
-from lovely.remotetask import interfaces
+from z3c.table import column, table
+from z3c.table.interfaces import IColumn as ISortableColumn
+from z3c.taskqueue import interfaces
 
 SORTED_ON_KEY = 'lovely.remotetask.service.table.sorted-on'
 
 
 from zope.interface.common.mapping import IItemMapping
+
 
 class IBatch(IItemMapping):
     """A Batch represents a sub-list of the full enumeration.
@@ -104,9 +105,9 @@ class Batch(object):
             raise IndexError('start index key out of range')
         self.size = size
         self.trueSize = size
-        if start+size >= len(list):
-            self.trueSize = len(list)-start
-        self.end = start+self.trueSize-1
+        if start + size >= len(list):
+            self.trueSize = len(list) - start
+        self.end = start + self.trueSize - 1
 
     def __len__(self):
         return self.trueSize
@@ -114,10 +115,10 @@ class Batch(object):
     def __getitem__(self, key):
         if key >= self.trueSize:
             raise IndexError('batch index out of range')
-        return self.list[self.start+key]
+        return self.list[self.start + key]
 
     def __iter__(self):
-        return iter(self.list[self.start:self.end+1])
+        return iter(self.list[self.start:self.end + 1])
 
     def __contains__(self, item):
         return item in self.__iter__()
@@ -144,10 +145,10 @@ class Batch(object):
         return len(self.list)
 
     def startNumber(self):
-        return self.start+1
+        return self.start + 1
 
     def endNumber(self):
-        return self.end+1
+        return self.end + 1
 
 
 class CheckboxColumn(column.Column):
@@ -155,7 +156,7 @@ class CheckboxColumn(column.Column):
 
     def renderCell(self, item, formatter):
         widget = (u'<input type="checkbox" name="jobs:list" value="%i">')
-        return widget %item.id
+        return widget % item.id
 
 
 class TaskNameColumn(column.Column):
@@ -167,7 +168,7 @@ class TaskNameColumn(column.Column):
                                                 name='editjob')
         if view:
             url = absoluteURL(formatter.context, formatter.request)
-            return '<a href="%s/%s/editjob">%s</a>'% (
+            return '<a href="%s/%s/editjob">%s</a>' % (
                                                 url, item.id, item.task)
         else:
             return item.task
@@ -178,14 +179,14 @@ class JobDetailColumn(column.Column):
 
     def renderCell(self, item, formatter):
         view = zope.component.queryMultiAdapter((item, formatter.request),
-                                              name='%s_detail'% item.task)
+                                              name='%s_detail' % item.task)
         if view is None:
             view = zope.component.getMultiAdapter((item, formatter.request),
                                                   name='detail')
         return view()
 
 
-class StatusColumn(column.GetterColumn):
+class StatusColumn(column.Column):
     zope.interface.implements(ISortableColumn)
 
     def renderCell(self, item, formatter):
@@ -197,7 +198,7 @@ class StatusColumn(column.GetterColumn):
         return self.getter(item, formatter)
 
 
-class DatetimeColumn(column.GetterColumn):
+class DatetimeColumn(column.Column):
     zope.interface.implements(ISortableColumn)
 
     def renderCell(self, item, formatter):
@@ -209,11 +210,10 @@ class DatetimeColumn(column.GetterColumn):
     def getSortKey(self, item, formatter):
         return self.getter(item, formatter)
 
-class ListFormatter(table.SortingFormatterMixin,
-    table.AlternatingRowFormatter):
+
+class ListFormatter(table.Table):
     """Provides a width for each column."""
 
-    sortedHeaderTemplate = ViewPageTemplateFile('table_header.pt')
     widths = None
     columnCSS = None
     sortable = False
@@ -274,13 +274,12 @@ class ListFormatter(table.SortingFormatterMixin,
         width = ''
         if self.widths:
             idx = list(self.visible_columns).index(column)
-            width = ' width="%i"' %self.widths[idx]
+            width = ' width="%i"' % self.widths[idx]
         klass = self.cssClasses.get('tr', '')
         if column.name in self.columnCSS:
             klass += klass and ' ' or '' + self.columnCSS[column.name]
         return '      <th%s class=%s>\n        %s\n      </th>\n' % (
             width, quoteattr(klass), self.getHeader(column))
-
 
     def renderCell(self, item, column):
         klass = self.cssClasses.get('tr', '')
@@ -300,24 +299,24 @@ class JobsOverview(BrowserPage):
     status = None
 
     columns = (
-        CheckboxColumn(u'Sel'),
-        column.GetterColumn(u'Id', lambda x, f: str(x.id), name='id'),
-        TaskNameColumn(u'Task', name='task'),
-        StatusColumn(u'Status', lambda x, f: x.status, name='status'),
-        JobDetailColumn(u'Detail', name='detail'),
-        DatetimeColumn(u'Creation',
-                       lambda x, f: x.created, name='created'),
-        DatetimeColumn(u'Start',
-                       lambda x, f: x.started, name='start'),
-        DatetimeColumn(u'End',
-                       lambda x, f: x.completed, name='end'),
+#        CheckboxColumn(u'Sel'),
+#        column.Column(u'Id', lambda x, f: str(x.id), name='id'),
+#        TaskNameColumn(u'Task', name='task'),
+#        StatusColumn(u'Status', lambda x, f: x.status, name='status'),
+#        JobDetailColumn(u'Detail', name='detail'),
+#        DatetimeColumn(u'Creation',
+#                       lambda x, f: x.created, name='created'),
+#        DatetimeColumn(u'Start',
+#                       lambda x, f: x.started, name='start'),
+#        DatetimeColumn(u'End',
+#                       lambda x, f: x.completed, name='end'),
         )
 
     def table(self):
         formatter = ListFormatter(
             self.context, self.request, self.jobs(),
             prefix='zc.table', columns=self.columns)
-        formatter.widths=[25, 50, 100, 75, 250, 120, 120, 120]
+        formatter.widths = [25, 50, 100, 75, 250, 120, 120, 120]
         formatter.cssClasses['table'] = 'list'
         formatter.columnCSS['id'] = 'tableId'
         formatter.columnCSS['task'] = 'tableTask'
@@ -386,7 +385,7 @@ class JobsOverview(BrowserPage):
         elif 'CANCEL_ALL' in self.request:
             jobs = list(self.context.jobs.keys())
             for index, job in enumerate(jobs):
-                if index%100 == 99:
+                if index % 100 == 99:
                     transaction.commit()
                 self.context.cancel(job)
             self.status = u'All jobs cancelled'
@@ -396,6 +395,7 @@ class JobsOverview(BrowserPage):
         return self.template()
 
 from zope.publisher.interfaces import IPublishTraverse
+
 
 class ServiceJobTraverser(object):
     zope.interface.implements(IPublishTraverse)
@@ -416,4 +416,3 @@ class ServiceJobTraverser(object):
         if view is not None:
             return view
         raise NotFound(self.context, name, request)
-
