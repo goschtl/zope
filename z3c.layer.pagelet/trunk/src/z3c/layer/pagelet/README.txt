@@ -56,6 +56,7 @@ Check if we can access the ``page.html`` view which is registred in the
 ``ftesting.zcml`` file with our skin:
 
   >>> skinURL = 'http://localhost/++skin++PageletTestSkin'
+  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> manager.open(skinURL + '/page.html')
   >>> manager.url
   'http://localhost/++skin++PageletTestSkin/page.html'

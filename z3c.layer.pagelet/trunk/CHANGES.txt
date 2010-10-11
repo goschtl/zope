@@ -5,7 +5,8 @@ CHANGES
 1.8.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed tests: Using manager account, so anonymous user does not need to get
+  all permissions for running tests successfully.
 
 
 1.8.0 (2010-08-20)

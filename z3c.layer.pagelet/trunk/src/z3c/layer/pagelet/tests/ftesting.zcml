@@ -163,6 +163,5 @@
       />
 
   <grantAll role="zope.Manager" />
-  <grantAll role="zope.Anonymous" />
 
 </configure>
