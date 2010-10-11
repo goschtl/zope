@@ -56,7 +56,7 @@ setup(
         test = [
             'zope.testbrowser',
             'zope.app.authentication',
-            'zope.app.testing',
+            'zope.app.wsgi >= 3.8',
             'zope.exceptions',
             'zope.principalregistry',
             'zope.publisher',

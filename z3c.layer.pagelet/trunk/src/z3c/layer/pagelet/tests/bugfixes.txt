@@ -13,7 +13,7 @@ contents using a view:
   >>> import zope.site.folder
   >>> getRootFolder()['test'] = zope.site.folder.Folder()
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> skinURL = 'http://localhost/++skin++PageletTestSkin'

@@ -49,7 +49,7 @@ in the minimal package and it's testing views defined in tests.
 
 Login as manager first:
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> manager = Browser()
 
 Check if we can access the ``page.html`` view which is registred in the

@@ -15,22 +15,26 @@
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
+import doctest
 import re
 import unittest
-from zope.testing import renormalizing
-from zope.app.testing import functional
+import z3c.layer.pagelet.tests
+import zope.app.wsgi.testlayer
+import zope.testing.renormalizing
 
 
-functional.defineLayer('TestLayer', 'ftesting.zcml')
+TestLayer = zope.app.wsgi.testlayer.BrowserLayer(z3c.layer.pagelet.tests)
 
 
-checker = renormalizing.RENormalizing([
+checker = zope.testing.renormalizing.RENormalizing([
     (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
     ])
 
 
 def create_suite(*args, **kw):
-    suite = functional.FunctionalDocFileSuite(*args, **kw)
+    kw['optionflags'] = doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
+    kw['globs'] = dict(getRootFolder=TestLayer.getRootFolder)
+    suite = doctest.DocFileSuite(*args, **kw)
     suite.layer = TestLayer
     return suite
 

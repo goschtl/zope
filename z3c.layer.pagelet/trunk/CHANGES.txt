@@ -8,6 +8,8 @@ CHANGES
 - Fixed tests: Using manager account, so anonymous user does not need to get
   all permissions for running tests successfully.
 
+- Got rid of `zope.app.testing` test dependency by using `zope.app.wsgi`.
+
 
 1.8.0 (2010-08-20)
 ------------------
