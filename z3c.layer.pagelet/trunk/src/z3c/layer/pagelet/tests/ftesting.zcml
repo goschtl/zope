@@ -3,17 +3,7 @@
     xmlns:meta="http://namespaces.zope.org/meta"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
-    i18n_domain="zope">
-
-  <!-- exclude will prevent from include -->
-  <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
-  <exclude package="zope.app.authentication" file="groupfolder.zcml" />
-  <exclude package="zope.app.authentication.browser" />
-  <exclude package="zope.app.authentication.browser" file="configure.zcml" />
-  <exclude package="zope.app.authentication.browser" file="groupfolder.zcml" />
-  <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
-  <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
-  <exclude package="zope.app.authentication.browser" file="session.zcml" />
+    i18n_domain="z3c">
 
   <!-- meta configure -->
   <include package="zope.component" file="meta.zcml" />
@@ -38,7 +28,6 @@
   <include package="zope.site" />
   <include package="zope.container" />
   <include package="zope.app.publication" />
-  <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.component" />
   <include package="zope.contentprovider" />
@@ -48,6 +37,8 @@
   <include package="zope.session" />
   <include package="zope.security" file="permissions.zcml" />
   <include package="zope.login" />
+  <include package="zope.password" />
+
 
 
   <!-- z3c component -->

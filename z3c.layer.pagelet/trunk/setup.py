@@ -55,7 +55,6 @@ setup(
     extras_require = dict(
         test = [
             'zope.testbrowser',
-            'zope.app.authentication',
             'zope.app.wsgi >= 3.8',
             'zope.exceptions',
             'zope.principalregistry',
