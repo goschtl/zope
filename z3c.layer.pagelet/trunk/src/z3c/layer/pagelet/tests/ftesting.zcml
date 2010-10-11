@@ -145,10 +145,6 @@
       />
 
   <!-- default users -->
-  <role
-      id="zope.Manager"
-      title="Manager"
-      />
 
   <principal
       id="zope.manager"
@@ -157,11 +153,6 @@
       password="mgrpw"
       />
 
-  <grant
-      role="zope.Manager"
-      principal="zope.manager"
-      />
-
-  <grantAll role="zope.Manager" />
+  <grantAll principal="zope.manager" />
 
 </configure>
