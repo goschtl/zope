@@ -38,7 +38,7 @@ class UnauthorizedPagelet(z3c.pagelet.browser.BrowserPagelet):
 
     zope.interface.implements(interfaces.IUnauthorizedPagelet)
 
-    def render(self):
+    def update(self):
         # Set the error status to 403 (Forbidden) in the case when we don't
         # challenge the user
         self.request.response.setStatus(403)
@@ -54,6 +54,8 @@ class UnauthorizedPagelet(z3c.pagelet.browser.BrowserPagelet):
         auth = zope.component.getUtility(
             zope.authentication.interfaces.IAuthentication)
         auth.unauthorized(principal.id, self.request)
+
+    def render(self):
         if self.request.response.getStatus() not in (302, 303):
             template = zope.component.getMultiAdapter(
                 (self, self.request), z3c.template.interfaces.IContentTemplate)
