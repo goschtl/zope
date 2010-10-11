@@ -1,0 +1,47 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           i18n_domain="zope">
+
+  <include package="zope.securitypolicy" file="meta.zcml" />
+
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+
+  <include package="zope.login" />
+  <include package="zope.app.authentication" />
+  <include package="zope.app.session" />
+  <include package="lovely.remotetask" />
+  <include package="zope.app.xmlrpcintrospection" />
+
+  <utility
+      factory="lovely.remotetask.testing.ExceptionTask"
+      name="exception" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <include package="zope.app.securitypolicy" />
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
+  <grantAll role="zope.Manager" />
+
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+
+</configure>
