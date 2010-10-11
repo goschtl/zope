@@ -10,6 +10,7 @@ CHANGES
 
 - Got rid of `zope.app.testing` test dependency by using `zope.app.wsgi`.
 
+- Added a test for ``403 Forbidden``.
 
 1.8.0 (2010-08-20)
 ------------------

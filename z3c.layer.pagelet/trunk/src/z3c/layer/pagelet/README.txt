@@ -182,7 +182,6 @@ show up otherwise:
   >>> unauthorized = Browser()
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
-  ...
   HTTPError: HTTP Error 401: Unauthorized
 
   >>> print unauthorized.contents
@@ -199,7 +198,36 @@ show up otherwise:
     <br />
     <b>You are not authorized.</b>
   </div>
-  <BLANKLINE>
   </body>
   </html>
-  <BLANKLINE>
+
+Forbidden
+~~~~~~~~~
+
+When an authorized user tries to access a URL where he does not have enough
+permissions he gets a ``403 Forbidden``, the displayed page contents are the
+same like ``401 Unauthorized``. When an authentication utility is registered
+it might display a log-in form:
+
+  >>> authorized = Browser()
+  >>> authorized.addHeader('Authorization', 'Basic tester:tester')
+  >>> authorized.open(skinURL + '/@@forbidden.html')
+  Traceback (most recent call last):
+  HTTPError: HTTP Error 403: Forbidden
+
+  >>> print authorized.contents
+    <!DOCTYPE ...
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+    <title>PageletTestLayout</title>
+    </head>
+    <body>
+      <div>
+      <br />
+      <br />
+      <h3>Unauthorized</h3>
+      <br />
+      <b>You are not authorized.</b>
+    </div>
+    </body>
+    </html>

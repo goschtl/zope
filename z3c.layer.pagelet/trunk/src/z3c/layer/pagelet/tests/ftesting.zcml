@@ -155,4 +155,11 @@
 
   <grantAll principal="zope.manager" />
 
+  <principal
+      id="zope.tester"
+      title="Tester"
+      login="tester"
+      password="tester"
+      />
+
 </configure>
