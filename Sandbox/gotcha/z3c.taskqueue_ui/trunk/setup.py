@@ -23,6 +23,7 @@ setup(name='z3c.taskqueue_ui',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'z3c.taskqueue',
           'z3c.table',
       ],
       entry_points="""
