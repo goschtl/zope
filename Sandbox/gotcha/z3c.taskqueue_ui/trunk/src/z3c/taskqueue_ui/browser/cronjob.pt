@@ -1,0 +1,9 @@
+<div metal:use-macro="view/base_template/macros/main" >
+  <div metal:fill-slot="above_buttons"
+       tal:define="inputForm view/inputForm | nothing"
+       tal:condition="inputForm">
+    <p>Job input parameter</p>
+    <div tal:replace="structure inputForm" /><hr/>
+  </div>
+</div>
+

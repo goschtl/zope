@@ -1,0 +1,11 @@
+<html tal:omit-tag="">
+  <a href=""
+     tal:attributes="href string:${request/URL}?sort-on=${options/name}"
+     tal:content="options/header" />
+  <img src="" width="7" height="4" style="vertical-align: middle"
+       tal:condition="options/isAscending"
+       tal:attributes="src context/++resource++lovely-remotetask-icons/ascending.gif" />
+  <img src="" width="7" height="4" style="vertical-align: middle"
+       tal:condition="options/isDecending"
+       tal:attributes="src context/++resource++lovely-remotetask-icons/decending.gif" />
+</html>
