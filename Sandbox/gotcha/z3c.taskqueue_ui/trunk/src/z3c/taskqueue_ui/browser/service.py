@@ -17,8 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from xml.sax.saxutils import quoteattr
-
 import transaction
 import zope.interface
 import zope.component
@@ -26,14 +24,6 @@ from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser.absoluteurl import absoluteURL
-
-try:
-    # Newer versions of zope.app.session have deprecated IClientId,
-    # so prefer to new location:
-    from zope.session.interfaces import ISession
-except ImportError:
-    # But still support the old location if we can't get it from the new:
-    from zope.app.session.interfaces import ISession
 
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.contained import contained
@@ -105,86 +95,8 @@ class DatetimeColumn(column.Column):
         return self.getter(item, formatter)
 
 
-class ListFormatter(table.Table):
-    """Provides a width for each column."""
-
-    widths = None
-    columnCSS = None
-    sortable = False
-
-    def __init__(self, *args, **kw):
-        # Figure out sorting situation
-        kw['ignore_request'] = True
-
-        request = args[1]
-        prefix = kw.get('prefix')
-
-        session = zope.component.queryAdapter(request, ISession)
-        if session is not None:
-            self.sortable = True
-            session = session[SORTED_ON_KEY]
-
-            if 'sort-on' in request:
-                name = request['sort-on']
-                if prefix and name.startswith(prefix):
-                    name = name[len(prefix):]
-                    oldName, oldReverse = session.get(prefix, (None, None))
-                    if oldName == name:
-                        session[prefix] = (name, not oldReverse)
-                    else:
-                        session[prefix] = (name, False)
-
-            # Now get the sort-on data from the session
-            if prefix in session:
-                kw['sort_on'] = [session[prefix]]
-
-        super(ListFormatter, self).__init__(*args, **kw)
-        self.columnCSS = {}
-
-        self.sortOn = (None, None)
-        if 'sort_on' in kw:
-            for name, reverse in kw['sort_on']:
-                self.columnCSS[name] = 'sorted-on'
-            self.sortOn = kw['sort_on'][0]
-
-    # sortable table support via session
-    def getHeader(self, column):
-        contents = column.renderHeader(self)
-        if self.sortable and ISortableColumn.providedBy(column):
-            contents = self._wrapInSortUI(contents, column)
-        return contents
-
-    def _wrapInSortUI(self, header, column):
-        name = column.name
-        if self.prefix:
-            name = self.prefix + name
-        isAscending = self.sortOn[0] == column.name and not self.sortOn[1]
-        isDecending = self.sortOn[0] == column.name and self.sortOn[1]
-        return self.sortedHeaderTemplate(
-            header=header, name=name,
-            isAscending=isAscending, isDecending=isDecending)
-
-    def renderHeader(self, column):
-        width = ''
-        if self.widths:
-            idx = list(self.visible_columns).index(column)
-            width = ' width="%i"' % self.widths[idx]
-        klass = self.cssClasses.get('tr', '')
-        if column.name in self.columnCSS:
-            klass += klass and ' ' or '' + self.columnCSS[column.name]
-        return '      <th%s class=%s>\n        %s\n      </th>\n' % (
-            width, quoteattr(klass), self.getHeader(column))
-
-    def renderCell(self, item, column):
-        klass = self.cssClasses.get('tr', '')
-        if column.name in self.columnCSS:
-            klass += klass and ' ' or '' + self.columnCSS[column.name]
-        return '    <td class=%s>\n      %s\n    </td>\n' % (
-            quoteattr(klass), self.getCell(item, column))
-
-    def renderExtra(self):
-        """Avoid use of resourcelibrary in original class."""
-        return ''
+class Jobs(table.Table):
+    pass
 
 
 class JobsOverview(BrowserPage):
@@ -207,30 +119,11 @@ class JobsOverview(BrowserPage):
         )
 
     def table(self):
-        formatter = ListFormatter(
-            self.context, self.request, self.jobs(),
-            prefix='zc.table', columns=self.columns)
-        formatter.widths = [25, 50, 100, 75, 250, 120, 120, 120]
-        formatter.cssClasses['table'] = 'list'
-        formatter.columnCSS['id'] = 'tableId'
-        formatter.columnCSS['task'] = 'tableTask'
-        formatter.columnCSS['status'] = 'tableStatus'
-        formatter.columnCSS['detail'] = 'tableDetail'
-        formatter.columnCSS['created'] = 'tableCreated'
-        formatter.columnCSS['start'] = 'tableStart'
-        formatter.columnCSS['end'] = 'tableEnd'
-        return formatter()
+        return Jobs()
 
     def jobs(self):
         if hasattr(self, '_jobs'):
             return self._jobs
-
-        start = int(self.request.get('start', 0))
-        sval = self.request.get('size', 10)
-        if sval:
-            size = int(sval)
-        else:
-            size = 10
 
         jobs = list(self.context.jobs.values())
         jobs.reverse()
