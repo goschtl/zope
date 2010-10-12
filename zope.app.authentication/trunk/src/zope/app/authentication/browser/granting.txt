@@ -71,13 +71,13 @@ principals. The view unfortunately depends on a lot of other components:
   - Vocabulary Choice Widgets
 
     >>> from zope.schema.interfaces import IChoice
-    >>> from zope.app.form.browser import ChoiceInputWidget
-    >>> from zope.app.form.interfaces import IInputWidget
+    >>> from zope.formlib.interfaces import IInputWidget
+    >>> from zope.formlib.widgets import ChoiceInputWidget
     >>> ztapi.browserViewProviding(IChoice, ChoiceInputWidget, IInputWidget)
 
     >>> from zope.schema.interfaces import IVocabularyTokenized
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
-    >>> from zope.app.form.browser import DropdownWidget
+    >>> from zope.formlib.widgets import DropdownWidget
     >>> ztapi.provideMultiView((IChoice, IVocabularyTokenized),
     ...                        IBrowserRequest, IInputWidget, '',
     ...                        DropdownWidget)
@@ -90,14 +90,14 @@ principals. The view unfortunately depends on a lot of other components:
     >>> ztapi.browserViewProviding(IPrincipalSource, PrincipalTerms, ITerms)
 
     >>> from zope.app.security.browser.auth import AuthUtilitySearchView
-    >>> from zope.app.form.browser.interfaces import ISourceQueryView
+    >>> from zope.formlib.interfaces import ISourceQueryView
     >>> ztapi.browserViewProviding(IAuthentication,
     ...                            AuthUtilitySearchView,
     ...                            ISourceQueryView)
 
 
     >>> from zope.schema.interfaces import ISource
-    >>> from zope.app.form.browser.source import SourceInputWidget
+    >>> from zope.formlib.source import SourceInputWidget
     >>> ztapi.provideMultiView((IChoice, ISource), IBrowserRequest,
     ...                        IInputWidget, '', SourceInputWidget)
 

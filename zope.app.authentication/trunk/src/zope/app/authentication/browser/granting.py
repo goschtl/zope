@@ -28,11 +28,11 @@ from zope.securitypolicy.interfaces import IRole
 from zope.securitypolicy.vocabulary import GrantVocabulary
 
 from zope.authentication.principal import PrincipalSource
-from zope.app.form.utility import setUpWidget
-from zope.app.form.browser import RadioWidget
-from zope.app.form.browser.widget import renderElement
-from zope.app.form.interfaces import MissingInputError
-from zope.app.form.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget
+from zope.formlib.interfaces import MissingInputError
+from zope.formlib.utility import setUpWidget
+from zope.formlib.widget import renderElement
+from zope.formlib.widgets import RadioWidget
 from zope.security.interfaces import IPermission
 
 
@@ -68,7 +68,7 @@ class GrantWidget(RadioWidget):
 
 
     def renderItem(self, index, text, value, name, cssClass):
-        """Render an item of the list. 
+        """Render an item of the list.
 
         Revert the order of label and text. Added field id to the lable
         attribute.
@@ -89,7 +89,7 @@ class GrantWidget(RadioWidget):
         return self._tdTemplate % (tdClass, id, text, elem)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
-        """Render a selected item of the list. 
+        """Render a selected item of the list.
 
         Revert the order of label and text. Added field id to the lable
         attribute.

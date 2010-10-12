@@ -18,9 +18,10 @@ $Id$
 __docformat__ = "reStructuredText"
 
 from zope.app.authentication.i18n import ZopeMessageFactory as _
-from zope.app.form.browser.interfaces import ISourceQueryView
-from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.formlib.interfaces import IInputWidget
+from zope.formlib.interfaces import IInputWidget, InputErrors
+from zope.formlib.interfaces import ISourceQueryView
+from zope.formlib.interfaces import WidgetsError, MissingInputError
+from zope.formlib.utility import setUpWidgets
 from zope.i18n import translate
 from zope.interface import implements
 from zope.schema import getFieldsInOrder
@@ -106,5 +107,21 @@ class QuerySchemaSearchView(object):
             return None
         schema = self.context.schema
         setUpWidgets(self, schema, IInputWidget, prefix=name+'.field')
-        data = getWidgetsData(self, schema)
+        # XXX inline the original getWidgetsData call in
+        # zope.app.form.utility to lift the dependency on zope.app.form.
+        data = {}
+        errors = []
+        for name, field in getFieldsInOrder(schema):
+            widget = getattr(self, name + '_widget')
+            if IInputWidget.providedBy(widget):
+                if widget.hasInput():
+                    try:
+                        data[name] = widget.getInputValue()
+                    except InputErrors, error:
+                        errors.append(error)
+                elif field.required:
+                    errors.append(MissingInputError(
+                        name, widget.label, 'the field is required'))
+        if errors:
+            raise WidgetsError(errors, widgetsData=data)
         return self.context.search(data)

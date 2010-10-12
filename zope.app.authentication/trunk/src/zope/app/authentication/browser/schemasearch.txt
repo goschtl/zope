@@ -6,8 +6,8 @@ Placefull setup for making the search plugin IPhysicallyLocatable::
   >>> from zope.component import provideAdapter
   >>> from zope.schema.interfaces import ITextLine
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-  >>> from zope.app.form.browser import TextWidget
-  >>> from zope.app.form.interfaces import IInputWidget
+  >>> from zope.formlib.interfaces import IInputWidget
+  >>> from zope.formlib.widgets import TextWidget
   >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
   >>> provideAdapter(TextWidget, (ITextLine, IDefaultBrowserLayer),
@@ -46,7 +46,7 @@ If a plugin supports `IQuerySchemaSearch`::
 then we can get a view::
 
   >>> from zope.app.authentication.browser.schemasearch \
-  ...     import QuerySchemaSearchView 
+  ...     import QuerySchemaSearchView
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> view = QuerySchemaSearchView(MySearchPlugin(), request)
