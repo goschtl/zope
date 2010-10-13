@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-1.8.3 (unreleased)
+1.9.0 (2010-10-13)
 ------------------
 
-- Nothing changed yet.
+- Re-release of 1.8.1 as the changes in it require a new major release
+  because they broke `z3c.authviewlet`.
 
 
 1.8.2 (2010-10-13)
