@@ -2,10 +2,17 @@
 CHANGES
 =======
 
-1.8.2 (unreleased)
+1.8.3 (unreleased)
 ------------------
 
 - Nothing changed yet.
+
+
+1.8.2 (2010-10-13)
+------------------
+
+- Re-release of 1.8.0 as the changes in 1.8.1 require a new major
+  release because they break `z3c.authviewlet`.
 
 
 1.8.1 (2010-10-11)
@@ -23,6 +30,7 @@ CHANGES
 - Got rid of `zope.app.authentication` test dependency.
 
 - Added a test for ``403 Forbidden``.
+
 
 1.8.0 (2010-08-20)
 ------------------
