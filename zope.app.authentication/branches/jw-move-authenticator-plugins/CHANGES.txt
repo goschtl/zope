@@ -5,6 +5,9 @@ Changes
 3.9 (unreleased)
 ----------------
 
+* Move concrete IAuthenticatorPlugin implementations to
+  zope.pluggableauth.plugins. Leave backwards compatibility imports.
+
 * Use zope.formlib throughout to lift the dependency on zope.app.form. As it
   turns out, zope.app.form is still a indirect test dependency though.
 
