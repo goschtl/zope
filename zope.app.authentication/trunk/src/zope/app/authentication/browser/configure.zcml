@@ -16,7 +16,7 @@
 
     <widget
         field="prefix"
-        class="zope.app.form.browser.TextWidget"
+        class="zope.formlib.widgets.TextWidget"
         required="False"
         convert_missing_value="False"
         />
@@ -84,7 +84,7 @@
   <zope:adapter
       for="..interfaces.IQuerySchemaSearch
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.ISourceQueryView"
+      provides="zope.fornlib.browser.interfaces.ISourceQueryView"
       factory=".schemasearch.QuerySchemaSearchView"
       />
 

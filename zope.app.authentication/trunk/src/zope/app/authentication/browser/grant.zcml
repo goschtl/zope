@@ -46,7 +46,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
            zope.securitypolicy.interfaces.IGrantVocabulary"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".granting.GrantWidget"
       permission="zope.Public"
       />
