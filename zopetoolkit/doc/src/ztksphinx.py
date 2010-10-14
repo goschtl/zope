@@ -44,11 +44,15 @@ def process_buildbot_nodes(app, doctree, fromdocname):
             by_url.setdefault(url, []).append((node, builder))
         jobs = []
         for url, nodes in by_url.items():
-            thread = threading.Thread(target=update_buildbot_nodes,
-                                      args=(url, nodes),
-                                      name=url)
-            thread.start()
-            jobs.append(thread)
+            pieces = [nodes[0::2], nodes[1::2]]
+            for n, nodes in enumerate(pieces):
+                if not nodes:
+                    continue
+                thread = threading.Thread(target=update_buildbot_nodes,
+                                          args=(url, nodes),
+                                          name='%s-%d' % (url, n+1))
+                thread.start()
+                jobs.append(thread)
         for thread in jobs:
             thread.join()
     finally:
