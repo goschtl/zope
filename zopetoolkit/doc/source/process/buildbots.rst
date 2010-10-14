@@ -128,14 +128,6 @@ no testing support for those
       - **Win64 / Py2.6**
       - **Win64 / Py2.7**
 
-    * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zope2.12_win-py2.6%20slave-win THA
-      - unsupported
-      - unsupported
-      - unsupported
-
     * - `Zope 2.13 <http://svn.zope.org/Zope/branches/2.13>`__
       - unsupported
       - unsupported
