@@ -97,6 +97,45 @@ def get_buildbot_results(xmlrpc_url, builders):
         try:
             results[builder] = (xmlrpc.getLastBuildResults(builder) == 'success')
         except Exception, e:
+            # If the builder is currently running a build, you'll get an
+            # generic "Fault 8002: error".  The server's twistd.log contains
+            # something like:
+            #   2010-10-14 04:05:56+0300 [HTTPChannel,3237,127.0.0.1] Unhandled Error
+            #     Traceback (most recent call last):
+            #       File "/usr/lib/python2.6/dist-packages/twisted/web/server.py", line 132, in render
+            #         body = resrc.render(self)
+            #       File "/usr/lib/python2.6/dist-packages/buildbot/status/web/xmlrpc.py", line 16, in render
+            #         return xmlrpc.XMLRPC.render(self, req)
+            #       File "/usr/lib/python2.6/dist-packages/twisted/web/resource.py", line 210, in render
+            #         return m(request)
+            #       File "/usr/lib/python2.6/dist-packages/twisted/web/xmlrpc.py", line 123, in render_POST
+            #         d = defer.maybeDeferred(function, *args)
+            #     --- <exception caught here> ---
+            #       File "/usr/lib/python2.6/dist-packages/twisted/internet/defer.py", line 117, in maybeDeferred
+            #         result = f(*args, **kw)
+            #       File "/usr/lib/python2.6/dist-packages/buildbot/status/web/xmlrpc.py", line 29, in xmlrpc_getLastBuildResults
+            #         return Results[lastbuild.getResults()]
+            #     exceptions.TypeError: list indices must be integers, not NoneType
+            # and the XML-RPC response returned to the client looks like
+            #   HTTP/1.1 200 OK
+            #   ...
+            #   <?xml version='1.0'?>
+            #   <methodResponse>
+            #   <fault>
+            #   <value><struct>
+            #   <member>
+            #   <name>faultCode</name>
+            #   <value><int>8002</int></value>
+            #   </member>
+            #   <member>
+            #   <name>faultString</name>
+            #   <value><string>error</string></value>
+            #   </member>
+            #   </struct></value>
+            #   </fault>
+            #   </methodResponse>
+            # Buildbot version 0.7.12-1ubuntu1
+            # Buildbot bug, I haven't had time to search for/file a ticket yet.
             results[builder] = e
     return results
 
