@@ -34,8 +34,8 @@ from StringIO import StringIO
 
 import os.path
 from os.path import exists, isfile, isdir
-from os.path import dirname, basename, split, join
-from os.path import realpath, normcase, normpath
+from os.path import split, join
+from os.path import realpath, normcase
 
 from zope.fssync.metadata import Metadata, dump_entries
 from zope.fssync.fsmerger import FSMerger
