@@ -103,7 +103,6 @@ class SVNMetadata(metadata.Metadata):
         there is no metadata entry for the file, return a new empty
         dict, modifications to which will also be flushed.
         """
-        fullpath = self.repository.fullpath(file)
         dir, base = self.repository.split(file)
         return self.getmanager(dir).getentry(base)
 

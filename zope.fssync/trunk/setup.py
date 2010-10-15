@@ -49,7 +49,7 @@ setup(name='zope.fssync',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope',],
-      tests_require = ['zope.testing', 'py'],
+      tests_require = ['ZODB3', 'zope.testing', 'py'],
       extras_require={
           'test': ['zope.testing',
                    'py'],

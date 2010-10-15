@@ -266,7 +266,7 @@ def getSynchronizer(obj, raise_error=False):
 
     Those cases may be unexpected and it may be a problem that
     the data are not completely serialized. If raise_error is True
-    we raise a MissingSerializer in those cases.
+    we raise a MissingSynchronizer in those cases.
     """
     dn = dottedname(obj.__class__)
     factory = component.queryUtility(interfaces.ISynchronizerFactory, name=dn)
@@ -274,7 +274,7 @@ def getSynchronizer(obj, raise_error=False):
         factory = component.queryUtility(interfaces.ISynchronizerFactory)
     if factory is None:
         if raise_error:
-            raise MissingSerializer(dn)
+            raise MissingSynchronizer(dn)
         return None
     return factory(obj)
 

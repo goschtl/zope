@@ -225,7 +225,7 @@ class TestFSMerger(TempFiles):
         os.mkdir(remotedir)
 
         localfile = self.addfile(localdir, name, localdata, localentry)
-        origfile = self.addorigfile(localdir, name, origdata)
+        self.addorigfile(localdir, name, origdata)
         remotefile = self.addfile(remotedir, name, remotedata, remoteentry)
 
         m.merge_dirs(localdir, remotedir)

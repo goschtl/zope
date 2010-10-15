@@ -27,7 +27,7 @@ import zope.component
 import zope.interface
 from zope.traversing.interfaces import TraversalError, IContainmentRoot
 from zope.traversing.interfaces import ITraversable, ITraverser
-from zope.xmlpickle import loads, dumps
+from zope.xmlpickle import dumps
 from zope.location import Location
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
@@ -245,7 +245,6 @@ class TestCommitClass(TestBase):
         f.close()
         container = TestContainer()
         name = "contentType"
-        root = TestRoot()
         try:
             self.create_object(container, name, {}, fspath, list().append) #, context=root)
         finally:

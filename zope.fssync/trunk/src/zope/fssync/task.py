@@ -27,9 +27,7 @@ import zope.dottedname.resolve
 import metadata
 import interfaces
 import synchronizer
-import repository
 import fsutil
-import pickle
 
 from synchronizer import dottedname
 
@@ -264,7 +262,6 @@ class Commit(SyncTask):
 
     def synchSpecials(self, fspath, specials, add_callback):
         """Synchronize an extra or annotation mapping."""
-        repository = self.repository
         md = self.metadata.getmanager(fspath)
         entries = md.entries
         synchronizer = self.getSynchronizer(specials)
@@ -345,7 +342,6 @@ class Commit(SyncTask):
         if not entry:
             # This object was not included on the filesystem; skip it
             return
-        cont = self.getSynchronizer(container)
         key = originalKey(fspath, name, self.metadata)
         obj = traverseKey(container, key)
         synchronizer = self.getSynchronizer(obj)
@@ -574,7 +570,6 @@ class Check(SyncTask):
         if not name:
             self.checkDirectory(container, fspath)
         else:
-            synchronizer = self.getSynchronizer(container)
             key = originalKey(fspath, name, self.metadata)
             try:
                 traverseKey(container, key)
@@ -662,7 +657,6 @@ class Check(SyncTask):
             if not self.repository.exists(fspath):
                 self.conflict(fspath)
 
-        synchronizer = self.getSynchronizer(container)
         key = originalKey(fspath, name, self.metadata)
         obj = traverseKey(container, key)
         adapter = self.getSynchronizer(obj)

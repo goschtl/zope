@@ -19,8 +19,7 @@ $Id$
 import os
 import shutil
 
-from os.path import basename, dirname, exists, isfile, isdir, join
-from os.path import realpath, normcase, normpath
+from os.path import basename, dirname, exists, isfile, isdir, join, normcase
 
 from zope.xmlpickle import dumps
 

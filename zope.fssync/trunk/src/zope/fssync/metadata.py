@@ -28,7 +28,7 @@ import copy
 
 from cStringIO import StringIO
 from os.path import exists, isfile, split, join, realpath, normcase
-from xml.sax import ContentHandler, parse, parseString
+from xml.sax import ContentHandler, parseString
 from xml.sax.saxutils import quoteattr
 
 import fsutil

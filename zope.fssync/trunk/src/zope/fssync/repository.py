@@ -15,7 +15,7 @@
 
 $Id: repository.py 73003 2007-03-06 10:34:19Z oestermeier $
 """
-import os, copy
+import copy
 import os
 import sys
 import unicodedata
@@ -24,7 +24,7 @@ import zope.interface
 
 import metadata
 import interfaces
-
+from fsutil import Error
 
 unwanted = ("", os.curdir, os.pardir)
 
@@ -66,7 +66,6 @@ class Repository(object):
         Adds a number to the file and leaves the case untouched.
         """
         if self.case_insensitive or self.enforce_nfd:
-            count = 1
             if self.enforce_nfd:
                 dirpath = self._toNFD(dirpath)
                 name = self._toNFD(name)
@@ -149,7 +148,7 @@ class Repository(object):
         if encoding is None:
             encoding = fsencoding
         if isinstance(path, unicode):
-            return normalize(path).encode(encoding)
+            return self.normalize(path).encode(encoding)
         return unicode(path, encoding=fsencoding).encode(encoding)
 
     def writeable(self, path):
