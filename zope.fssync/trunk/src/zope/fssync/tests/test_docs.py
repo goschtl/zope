@@ -16,9 +16,7 @@
 $Id: test_docs.py 70826 2006-10-20 03:41:16Z baijum $
 """
 import os
-import sys
 import unittest
-import tempfile
 import zope
 import py
 
@@ -27,9 +25,9 @@ from zope.testing import doctest, doctestunit, module, cleanup
 
 
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location.tests import TLocation
 
 from zope.fssync import pickle
+from zope.fssync.pickle import TLocation
 
 _test_dirs = []
 

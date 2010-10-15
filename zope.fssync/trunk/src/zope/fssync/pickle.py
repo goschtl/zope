@@ -28,7 +28,6 @@ passing an object to use as the parent as the second argument to the
 `loads()` function.  The name of the outermost object is not stored in
 the pickle unless it is stored in the object.
 
->>> from zope.location.tests import TLocation
 >>> root = TLocation()
 >>> interface.directlyProvides(root, IContainmentRoot)
 >>> o1 = DataLocation('o1', root, 12)
@@ -85,8 +84,6 @@ from zope import location
 
 from zope.location.interfaces import ILocation
 from zope.location.traversing import LocationPhysicallyLocatable
-from zope.location.tests import TLocation
-from zope.traversing.interfaces import ITraverser
 from zope.traversing.interfaces import IContainmentRoot
 
 from zope.xmlpickle import xmlpickle
@@ -102,7 +99,6 @@ def getPath(obj):
 class PathPersistentIdGenerator(object):
     """Uses traversal paths as persistent ids.
 
-    >>> from zope.location.tests import TLocation
     >>> root = TLocation()
     >>> interface.directlyProvides(root, IContainmentRoot)
     >>> o1 = TLocation(); o1.__parent__ = root; o1.__name__ = 'o1'
@@ -282,6 +278,22 @@ class XMLUnpickler(StandardUnpickler):
     def load(self, readable):
         pickle = xmlpickle.fromxml(readable.read())
         return super(XMLUnpickler, self).load(StringIO(pickle))
+
+
+
+from zope.location.location import Location
+
+
+class TLocation(Location):
+    """Simple traversable location used in examples."""
+
+    interface.implements(traversing.interfaces.ITraverser)
+
+    def traverse(self, path, default=None, request=None):
+        o = self
+        for name in path.split(u'/'):
+           o = getattr(o, name)
+        return o
 
 
 class DataLocation(TLocation):

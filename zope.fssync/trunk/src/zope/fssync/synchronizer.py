@@ -19,14 +19,12 @@ $Id: interfaces.py 73003 2007-03-06 10:34:19Z oestermeier $
 from zope import interface
 from zope import component
 from zope import annotation
-from zope import filerepresentation
 from zope import lifecycleevent
 
 from zope.dottedname.resolve import resolve
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
 
-import metadata
 import interfaces
 
 def dottedname(klass):
