@@ -102,7 +102,7 @@ The tests run on OS X 10.6
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.5%20slave-osx THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.6%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.7%20slave-osx THA
+      - unsupported
 
     * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
       - unsupported
@@ -185,7 +185,7 @@ no testing support for those
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2_win-py2.5%20slave-win THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2_win-py2.6%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2_win-py2.7%20slave-win THA
+      - unsupported
       - unsupported
       - unsupported
 
@@ -322,11 +322,11 @@ Linux
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.5%20slave-ubuntu32 THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.6%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.7%20slave-ubuntu32 THA
+      - unsupported
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.5%20slave-ubuntu64 THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.6%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/groktoolkit-1.2-py2.7%20slave-ubuntu64 THA
+      - unsupported
 
     * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
       - unsupported
