@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 import os
 
-long_description = open('README.txt').read() + \
-                    '\n\n' + \
+readme_filename = os.path.join('src', 'megrok', 'layout', 'README.txt')
+long_description = open(readme_filename).read() + '\n\n' + \
                     open(os.path.join('docs', 'HISTORY.txt')).read()
 
 
@@ -32,9 +32,8 @@ setup(name='megrok.layout',
       install_requires=[
           'setuptools',
 	  'grokcore.component',
-	  'grokcore.view',
+	  'grokcore.view >= 1.9',
 	  'grokcore.formlib',
-          # -*- Extra requirements: -*-
       ],
       entry_points="""
       # -*- Entry points: -*-

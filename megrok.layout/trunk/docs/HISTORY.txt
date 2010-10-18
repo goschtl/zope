@@ -1,8 +1,25 @@
 Changelog
 =========
 
+0.7 (2009-09-15)
+----------------
+
+- Add a CodePage to be compatible with the last version of
+  grokcore.view (higher than 1.9). This breaks compatibility with
+  previous release. You need to change any Page using a render method
+  to a CodePage.
+  [sylvain]
+
+- The content property on a Page is no longer a property, but a method
+  as it's hidding exceptions. You might need to update your code to
+  reflect that change as well.
+  [sylvain]
+
+- Fix MANIFEST.in.
+  [sylvain]
+
 0.6 (2009-09-14)
-------------------
+----------------
 
 - switch the arguments order in calling the layout
   [cklinger, sylvain]
@@ -13,5 +30,5 @@ Changelog
 0.5 (2009-07-24)
 ----------------
 
-- remove the grok dependency 
+- remove the grok dependency
   [cklinger souheil]

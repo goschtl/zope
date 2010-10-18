@@ -6,7 +6,7 @@ import grokcore.formlib
 import grokcore.component as grok
 from zope.interface import Interface
 from zope.publisher.publish import mapply
-from megrok.layout import IPage, ILayout
+from megrok.layout.interfaces import IPage, ICodePage, ILayout
 
 
 class Layout(object):
@@ -61,34 +61,13 @@ class Layout(object):
         return self.render()
 
 
-class Page(grokcore.view.View):
-    """A view class.
+class BasePage(object):
+    """A base page class.
     """
-    grok.baseclass()
-    grok.implements(IPage)
-
-    template = None
 
     def __init__(self, context, request):
-        super(Page, self).__init__(context, request)
+        super(BasePage, self).__init__(context, request)
         self.layout = None
-
-    def default_namespace(self):
-        namespace = super(Page, self).default_namespace()
-        namespace['layout'] = self.layout
-        return namespace
-
-    def render(self):
-        return self._render_template()
-
-    render.base_method = True
-
-    @property
-    def content(self):
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -101,11 +80,39 @@ class Page(grokcore.view.View):
         return self.layout(self)
 
 
+class Page(BasePage, grokcore.view.View):
+    """A view class.
+    """
+    grok.baseclass()
+    grok.implements(IPage)
+
+    def default_namespace(self):
+        namespace = super(Page, self).default_namespace()
+        namespace['layout'] = self.layout
+        return namespace
+
+    def content(self):
+        return self.template.render(self)
+
+
+class CodePage(BasePage, grokcore.view.CodeView):
+    """A code view class.
+    """
+    grok.baseclass()
+    grok.implements(ICodePage)
+
+    def render(self):
+        raise NotImplementedError
+
+    def content(self):
+        return mapply(self.render, (), self.request)
+
+
 class Form(grokcore.formlib.Form):
     """A form class.
     """
     grok.baseclass()
-    
+
     def __init__(self, context, request):
         super(Form, self).__init__(context, request)
         self.layout = None
@@ -115,13 +122,12 @@ class Form(grokcore.formlib.Form):
         namespace['layout'] = self.layout
         return namespace
 
-    @property
     def content(self):
         template = getattr(self, 'template', None)
         if template is not None:
             return self._render_template()
         return mapply(self.render, (), self.request)
-    
+
     def __call__(self):
         """Calls update and returns the layout template which calls render.
         """
@@ -130,11 +136,11 @@ class Form(grokcore.formlib.Form):
             # A redirect was triggered somewhere in update().  Don't
             # continue rendering the template or doing anything else.
             return
-        
+
         self.update_form()
         if self.request.response.getStatus() in (302, 303):
             return
-        
+
         self.layout = zope.component.getMultiAdapter(
             (self.request, self.context), ILayout)
         return self.layout(self)

@@ -5,16 +5,16 @@
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> browser.handleErrors = False 
-  
-  >>> browser.open("http://localhost/++skin++mydefaultskin/a/@@myview") 
+  >>> browser.handleErrors = False
+
+  >>> browser.open("http://localhost/++skin++mydefaultskin/a/@@myview")
   >>> print browser.contents
   <div> A Layout </div>
 
-  >>> browser.open("http://localhost/++skin++myskin/a/@@myview") 
+  >>> browser.open("http://localhost/++skin++myskin/a/@@myview")
   >>> print browser.contents
   <div> A2 Layout </div>
-  
+
   >>> browser.open("http://localhost/++skin++myskin/b/@@myviewb")
   >>> print browser.contents
   <div> B Layout </div>
@@ -24,7 +24,7 @@ import grokcore.component as grok
 from grokcore.view import layer, skin
 
 from zope import interface
-from megrok.layout import Layout, Page 
+from megrok.layout import Layout, Page, CodePage
 
 from grokcore.view import IDefaultBrowserLayer
 
@@ -79,14 +79,14 @@ class BLayout(Layout):
 	return "<div> B Layout </div>"
 
 
-class MyView(Page):
+class MyView(CodePage):
     grok.context(interface.Interface)
 
     def render(self):
         return "MYVIEW"
 
 
-class MyViewB(Page):
+class MyViewB(CodePage):
     grok.context(interface.Interface)
     layer(MySkinLayer)
 
@@ -101,4 +101,4 @@ def test_suite():
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
         )
     suite.layer = FunctionalLayer
-    return suite  
+    return suite

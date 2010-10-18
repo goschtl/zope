@@ -5,21 +5,21 @@
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> browser.handleErrors = False 
-  
-  >>> browser.open("http://localhost/++skin++askin/one/@@myview") 
+  >>> browser.handleErrors = False
+
+  >>> browser.open("http://localhost/++skin++askin/one/@@myview")
   >>> print browser.contents
   <div> Layout A for context One </div>
 
-  >>> browser.open("http://localhost/++skin++askin/two/@@myview") 
+  >>> browser.open("http://localhost/++skin++askin/two/@@myview")
   >>> print browser.contents
   <div> Layout A for context Two </div>
 
-  >>> browser.open("http://localhost/++skin++bskin/one/@@myview") 
+  >>> browser.open("http://localhost/++skin++bskin/one/@@myview")
   >>> print browser.contents
   <div> Layout B for context One </div>
 
-  >>> browser.open("http://localhost/++skin++bskin/two/@@myview") 
+  >>> browser.open("http://localhost/++skin++bskin/two/@@myview")
   >>> print browser.contents
   <div> Layout B for context Two </div>
 """
@@ -28,7 +28,7 @@ import grokcore.view as grok
 from grokcore.view import layer, skin
 
 from zope import interface
-from megrok.layout import Layout, Page 
+from megrok.layout import Layout, Page, CodePage
 
 from grokcore.view import IDefaultBrowserLayer
 
@@ -85,7 +85,7 @@ class BTwoLayout(Layout):
 	return "<div> Layout B for context Two </div>"
 
 
-class MyView(Page):
+class MyView(CodePage):
     grok.context(interface.Interface)
     grok.layer(IALayer)
 
@@ -100,4 +100,4 @@ def test_suite():
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
         )
     suite.layer = FunctionalLayer
-    return suite  
+    return suite

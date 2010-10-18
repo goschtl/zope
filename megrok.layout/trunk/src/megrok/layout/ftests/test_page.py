@@ -15,12 +15,12 @@
    </body>
   </html>
 
- 
+
   >>> myview
   <megrok.layout.ftests.test_page.MyView object at ...>
   >>> myview.layout
   <megrok.layout.ftests.test_page.Master object at ...>
-  >>> print myview.content
+  >>> print myview.content()
   <p> My nice Content </p>
 
 """
@@ -28,7 +28,7 @@ import grokcore.component as grok
 from grokcore.view import templatedir
 
 from zope import interface
-from megrok.layout import Layout, Page
+from megrok.layout import Layout, Page, CodePage
 
 templatedir('templates')
 
@@ -42,7 +42,7 @@ class Master(Layout):
     grok.context(Cow)
 
 
-class MyView(Page):
+class MyView(CodePage):
     grok.context(interface.Interface)
 
     def render(self):
@@ -56,4 +56,4 @@ def test_suite():
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
         )
     suite.layer = FunctionalLayer
-    return suite  
+    return suite

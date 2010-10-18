@@ -23,7 +23,7 @@
 import grokcore.component as grok
 
 from zope import interface
-from megrok.layout import Layout 
+from megrok.layout import Layout
 
 
 class Mammoth(grok.Context):
@@ -55,4 +55,4 @@ def test_suite():
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
         )
     suite.layer = FunctionalLayer
-    return suite  
+    return suite
