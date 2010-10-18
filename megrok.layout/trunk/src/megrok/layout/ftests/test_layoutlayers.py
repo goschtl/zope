@@ -7,7 +7,7 @@
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> browser.handleErrors = False 
   
-  >>> browser.open("http://localhost/++skin++Basic/a/@@myview") 
+  >>> browser.open("http://localhost/++skin++mydefaultskin/a/@@myview") 
   >>> print browser.contents
   <div> A Layout </div>
 
@@ -25,12 +25,22 @@ from grokcore.view import layer, skin
 
 from zope import interface
 from megrok.layout import Layout, Page 
-from zope.app.basicskin import IBasicSkin
 
-layer(IBasicSkin)
+from grokcore.view import IDefaultBrowserLayer
+
+class IMyDefaultLayer(IDefaultBrowserLayer):
+    pass
 
 
-class MySkinLayer(IBasicSkin):
+class MyDefaultSkin(IMyDefaultLayer):
+    skin('mydefaultskin')
+
+
+layer(IMyDefaultLayer)
+
+
+
+class MySkinLayer(IDefaultBrowserLayer):
     pass
 
 

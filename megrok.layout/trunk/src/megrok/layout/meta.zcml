@@ -4,8 +4,8 @@
 
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.security" file="meta.zcml" />
-  <include package="grokcore.view" file="meta.zcml" />
-  <include package="grokcore.view.templatereg" file="meta.zcml" />
+
+  <include package="grokcore.view" file="meta-minimal.zcml" />
   <grok:grok package=".meta" />
 
 </configure>

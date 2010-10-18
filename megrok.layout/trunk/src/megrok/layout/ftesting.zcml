@@ -4,12 +4,12 @@
 
   <include package="zope.app.zcmlfiles" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="megrok.layout" file="meta.zcml" />
+  <include package="megrok.layout" />
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
-  <include package="grokcore.view" />
 
+  <include package="grokcore.view" file="meta.zcml" />
   <grok:grok package="megrok.layout.ftests" />
 
   <securityPolicy

@@ -43,6 +43,8 @@ class LayoutGrokker(martian.ClassGrokker):
             return render and not base_method
 
         def has_no_render(factory):
-            return not getattr(factory, 'render', None)
+            render = getattr(factory, 'render', None)
+            base_method = getattr(render, 'base_method', False)
+            return render is None or base_method  
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)

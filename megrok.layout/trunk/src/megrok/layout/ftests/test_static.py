@@ -20,8 +20,9 @@ class Dummy(grok.Context):
 
 
 class LayoutWithResources(Layout):
-    pass
 
+    def render(self):
+        return ""
 
 def test_suite():
     from zope.testing import doctest
