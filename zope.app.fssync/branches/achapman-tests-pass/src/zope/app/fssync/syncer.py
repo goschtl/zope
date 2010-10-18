@@ -71,7 +71,7 @@ def toFS(obj, name, location):
 def toSNARF(obj, name):
     temp = tempfile.TemporaryFile()
     # TODO: Since we do not know anything about the target system here,
-    # we try to be on the save side. Case-sensivity and NFD should be 
+    # we try to be on the safe side. Case-sensivity and NFD should be 
     # determined from the request.
     
     snarf = repository.SnarfRepository(temp, case_insensitive=True, enforce_nfd=True)
