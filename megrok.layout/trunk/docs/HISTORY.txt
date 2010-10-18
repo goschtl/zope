@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.9.1 (UNRELEASED)
+------------------
+
+- Added a component called UtilityView that provides two useful
+  methods : application_url, flash. These methods are almost a copy of
+  what can be found in the `grok` package. The application_url is
+  using a simple getSite hook to get the root of the application. This
+  might be irrelevant for some applications and can be overriden.
+  [trollfot]
+
+- Added a module called 'messages' that contains the flash messages
+  utilities. This module is *NOT* grokked and must be grokked
+  manually. This prevents conflicts with grokui.admin's own
+  definitions of the very same components. It also allows you to
+  override the `flash` method to use something else than
+  z3c.flashmessage and then not be bothered by useless utilities.
+  [trollfot]
+
 0.9 (2009-09-26)
 ----------------
 
@@ -49,4 +67,4 @@ Changelog
 ----------------
 
 - remove the grok dependency
-  [cklinger souheil]
+  [cklinger trollfot]
