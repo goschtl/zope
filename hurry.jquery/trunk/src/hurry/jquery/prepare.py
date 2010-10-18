@@ -20,7 +20,7 @@ import urlparse
 from hurry.resource import generate_code, ResourceInclusion, Library
 
 BASEURL = "http://code.jquery.com/"
-VERSION = '1.4.2'
+VERSION = '1.4.3'
 MINIFIED = "jquery-%s.min.js" % VERSION
 FULL = "jquery-%s.js" % VERSION
 
