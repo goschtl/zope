@@ -1,0 +1,42 @@
+hurry.jqueryui basic tests
+==========================
+
+Here are some basic tests for hurry.jqueryui.
+
+Let's set up a way to render URLs; typically the framework has already
+done this::
+
+  >>> class Plugin(object):
+  ...   def get_library_url(self, library):
+  ...     return 'http://localhost/static/%s' % (library.name)
+  >>> from hurry.resource import register_plugin
+  >>> register_plugin(Plugin())
+
+Render the inclusion::
+
+  >>> from hurry.resource import NeededInclusions
+  >>> from hurry.jqueryui import jqueryui
+  >>> needed = NeededInclusions()
+  >>> needed.need(jqueryui)
+  >>> print needed.render()
+  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-....js"></script>
+  <script type="text/javascript" src="http://localhost/static/jqueryui/jquery-ui.js"></script>
+
+  >>> needed.mode('minified')
+  >>> print needed.render()
+  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-....min.js"></script>
+  <script type="text/javascript" src="http://localhost/static/jqueryui/jquery-ui.min.js"></script>
+
+Let's also try a theme::
+
+  >>> from hurry.jqueryui import base
+  >>> needed = NeededInclusions()
+  >>> needed.need(base)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/jqueryui_themes/base/jquery-ui.css" />
+ 
+  >>> needed.mode('minified') 
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/jqueryui_themes/base/jquery-ui.css" />
+
+
