@@ -8,14 +8,14 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
 class LayoutGrokker(martian.ClassGrokker):
-
     martian.component(Layout)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
 
     def grok(self, name, factory, module_info, **kw):
         factory.module_info = module_info
-        return super(LayoutGrokker, self).grok(name, factory, module_info, **kw)
+        return super(LayoutGrokker, self).grok(
+            name, factory, module_info, **kw)
 
     def execute(self, factory, config, context, layer, **kw):
         # find templates
@@ -24,8 +24,7 @@ class LayoutGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
-                )
+                args=(templates, factory.module_info, factory))
 
         adapts = (layer, context)
         config.action(

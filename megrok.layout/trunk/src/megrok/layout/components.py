@@ -16,6 +16,7 @@ from zope.site.hooks import getSite
 class UtilityView(object):
     """A view mixin with useful methods.
     """
+
     def application_url(self, name=None):
         """Return the URL of the nearest site.
         """
@@ -160,6 +161,7 @@ default_display_template = grokcore.view.PageTemplateFile(
 default_display_template.__grok_name__ = 'default_display_form'
 
 grokcore.view.templatedir('templates')
+
 
 class Form(LayoutAwareForm, grokcore.formlib.Form):
     """A form base class.
