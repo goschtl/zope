@@ -1,0 +1,14 @@
+Changelog
+=========
+
+0.5.1 (2009-07-24)
+------------------
+
+- add the CHANGES.txt
+  [cklinger]
+
+0.5 (2009-07-24)
+----------------
+
+- remove the grok dependency 
+  [cklinger souheil]
