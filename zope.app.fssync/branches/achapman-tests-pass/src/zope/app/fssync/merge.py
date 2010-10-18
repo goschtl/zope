@@ -122,6 +122,7 @@ def merge(source, target, sync):
     for root, dirs, files in os.walk(source):
         if '@@Zope' in dirs:
             dirs.remove('@@Zope')
+        files.sort()
         for filename in ([''] + files):
             source_path = os.path.join(root, filename)
             if metadata.getentry(source_path):
