@@ -5,26 +5,15 @@ from zope.interface import Interface
 
 
 class ILayout(Interface):
-    """Layout code.
+    """Layout view.
     """
 
 
-class IPageAware(Interface):
-    """A view which is able to use a layout to render itself.
+class IPage(interfaces.IGrokView):
+    """A view using a layout to render itself.
     """
 
-    def contents():
-        """Return the content of the page to be included in the
-        layout.
+    def content():
+        """Give you back the result of your Page to be included inside
+        the layout.
         """
-
-
-class IPage(IPageAware, interfaces.IGrokView):
-    """A template using a layout to render itself.
-    """
-
-
-class ICodePage(IPage):
-    """A template using a layout to render itself.
-    """
-

@@ -28,7 +28,7 @@ import grokcore.component as grok
 from grokcore.view import templatedir
 
 from zope import interface
-from megrok.layout import Layout, Page, CodePage
+from megrok.layout import Layout, Page
 
 templatedir('templates')
 
@@ -42,7 +42,7 @@ class Master(Layout):
     grok.context(Cow)
 
 
-class MyView(CodePage):
+class MyView(Page):
     grok.context(interface.Interface)
 
     def render(self):

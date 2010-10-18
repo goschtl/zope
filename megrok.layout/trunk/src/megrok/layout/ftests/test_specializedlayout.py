@@ -28,7 +28,7 @@ import grokcore.view as grok
 from grokcore.view import layer, skin
 
 from zope import interface
-from megrok.layout import Layout, Page, CodePage
+from megrok.layout import Layout, Page
 
 from grokcore.view import IDefaultBrowserLayer
 
@@ -85,7 +85,7 @@ class BTwoLayout(Layout):
 	return "<div> Layout B for context Two </div>"
 
 
-class MyView(CodePage):
+class MyView(Page):
     grok.context(interface.Interface)
     grok.layer(IALayer)
 

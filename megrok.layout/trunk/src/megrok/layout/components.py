@@ -6,7 +6,7 @@ import grokcore.formlib
 import grokcore.component as grok
 from zope.interface import Interface
 from zope.publisher.publish import mapply
-from megrok.layout.interfaces import IPage, ICodePage, ILayout
+from megrok.layout.interfaces import IPage, ILayout
 
 
 class Layout(object):
@@ -61,12 +61,14 @@ class Layout(object):
         return self.render()
 
 
-class BasePage(object):
-    """A base page class.
+class Page(grokcore.view.View):
+    """A view class.
     """
+    grok.baseclass()
+    grok.implements(IPage)
 
     def __init__(self, context, request):
-        super(BasePage, self).__init__(context, request)
+        super(Page, self).__init__(context, request)
         self.layout = None
 
     def __call__(self):
@@ -79,32 +81,15 @@ class BasePage(object):
             (self.request, self.context), ILayout)
         return self.layout(self)
 
-
-class Page(BasePage, grokcore.view.View):
-    """A view class.
-    """
-    grok.baseclass()
-    grok.implements(IPage)
-
     def default_namespace(self):
         namespace = super(Page, self).default_namespace()
         namespace['layout'] = self.layout
         return namespace
 
     def content(self):
-        return self.template.render(self)
-
-
-class CodePage(BasePage, grokcore.view.CodeView):
-    """A code view class.
-    """
-    grok.baseclass()
-    grok.implements(ICodePage)
-
-    def render(self):
-        raise NotImplementedError
-
-    def content(self):
+        template = getattr(self, 'template', None)
+        if template is not None:
+            return self._render_template()
         return mapply(self.render, (), self.request)
 
 

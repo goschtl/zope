@@ -2,8 +2,8 @@
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
   ...
-  ConfigurationExecutionError: martian.error.GrokError: View <class 'megrok.layout.tests.test_norenderortemplatelayout.MyLayout'> has no associated template.
-    in:
+  ConfigurationExecutionError: martian.error.GrokError: View <class 'megrok.layout.tests.test_norenderortemplatelayout.MyLayout'> has no associated template or 'render' method.
+  in:
   <BLANKLINE>
 """
 

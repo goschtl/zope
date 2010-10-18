@@ -24,7 +24,7 @@ import grokcore.component as grok
 from grokcore.view import layer, skin
 
 from zope import interface
-from megrok.layout import Layout, Page, CodePage
+from megrok.layout import Layout, Page
 
 from grokcore.view import IDefaultBrowserLayer
 
@@ -79,14 +79,14 @@ class BLayout(Layout):
 	return "<div> B Layout </div>"
 
 
-class MyView(CodePage):
+class MyView(Page):
     grok.context(interface.Interface)
 
     def render(self):
         return "MYVIEW"
 
 
-class MyViewB(CodePage):
+class MyViewB(Page):
     grok.context(interface.Interface)
     layer(MySkinLayer)
 
