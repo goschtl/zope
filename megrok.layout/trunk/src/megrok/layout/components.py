@@ -1,16 +1,40 @@
 # -*- coding: utf-8 -*-
 import os
 
-import zope.component
-import grokcore.view
-import grokcore.formlib
 import grokcore.component as grok
+import grokcore.formlib
+import grokcore.view
+import zope.component
+
+from megrok.layout.interfaces import IPage, ILayout
+from z3c.flashmessage.interfaces import IMessageSource
 from zope.interface import Interface
 from zope.publisher.publish import mapply
-from megrok.layout.interfaces import IPage, ILayout
+from zope.site.hooks import getSite
 
 
-class Layout(object):
+class UtilityView(object):
+    """A view mixin with useful methods.
+    """
+    def application_url(self, name=None):
+        """Return the URL of the nearest site.
+        """
+        site = getSite()
+        if not site:
+            raise zope.component.ComponentLookupError("No site found.")
+        return self.url(site, name)
+
+    def flash(self, message, type='message'):
+        """Send a short message to the user.
+        """
+        source = zope.component.queryUtility(IMessageSource, name='session')
+        if source is None:
+            return None
+        source.send(message, type)
+        return True
+
+
+class Layout(grokcore.view.ViewSupport, UtilityView):
     """A layout object.
     """
     grok.baseclass()
@@ -24,8 +48,7 @@ class Layout(object):
         if getattr(self, 'module_info', None) is not None:
             self.static = zope.component.queryAdapter(
                 self.request, Interface,
-                name=self.module_info.package_dotted_name
-                )
+                name=self.module_info.package_dotted_name)
         else:
             self.static = None
 
@@ -44,10 +67,6 @@ class Layout(object):
     def update(self):
         pass
 
-    @property
-    def response(self):
-        return self.request.response
-
     def _render_template(self):
         return self.template.render(self)
 
@@ -62,7 +81,7 @@ class Layout(object):
         return self.render()
 
 
-class Page(grokcore.view.View):
+class Page(grokcore.view.View, UtilityView):
     """A view class.
     """
     grok.baseclass()
@@ -132,33 +151,39 @@ class LayoutAwareForm(object):
 
 
 # Default forms for form without the html and body tags
-default_form_template = grokcore.view.PageTemplateFile(os.path.join(
-    'templates', 'default_edit_form.pt'))
+default_form_template = grokcore.view.PageTemplateFile(
+    os.path.join('templates', 'default_edit_form.pt'))
 default_form_template.__grok_name__ = 'default_edit_form'
-default_display_template = grokcore.view.PageTemplateFile(os.path.join(
-    'templates', 'default_display_form.pt'))
+
+default_display_template = grokcore.view.PageTemplateFile(
+    os.path.join('templates', 'default_display_form.pt'))
 default_display_template.__grok_name__ = 'default_display_form'
 
+grokcore.view.templatedir('templates')
 
 class Form(LayoutAwareForm, grokcore.formlib.Form):
-
+    """A form base class.
+    """
     grok.baseclass()
-    template = default_form_template
+    grokcore.view.template('default_form_template')
 
 
 class AddForm(LayoutAwareForm, grokcore.formlib.AddForm):
-
+    """Base add form.
+    """
     grok.baseclass()
     template = default_form_template
 
 
 class EditForm(LayoutAwareForm, grokcore.formlib.EditForm):
-
+    """Base edit form.
+    """
     grok.baseclass()
     template = default_form_template
 
 
 class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
-
+    """Base display form.
+    """
     grok.baseclass()
     template = default_display_template

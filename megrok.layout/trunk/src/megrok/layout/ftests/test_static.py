@@ -8,7 +8,7 @@
   >>> mylayout.static
   <grokcore.view.components.DirectoryResource object at ...>
   >>> mylayout.static['empty.js']
-  <zope.app.publisher.browser.fileresource.FileResource object at ...>
+  <zope.browserresource.file.FileResource object at ...>
 """
 
 import grokcore.component as grok

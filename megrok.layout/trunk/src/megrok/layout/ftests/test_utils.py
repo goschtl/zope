@@ -1,0 +1,79 @@
+"""
+  >>> from megrok.layout import ILayout
+  >>> from zope.component import getMultiAdapter
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> kitty = Cat()
+  >>> mylayout = getMultiAdapter((request, kitty), ILayout)
+  >>> myview = getMultiAdapter((kitty, request), name='utils')
+
+  >>> print myview.application_url()
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: No site found.
+
+  >>> from zope.site.hooks import setSite
+  >>> root = getRootFolder()
+  >>> setSite(root)
+  >>> print myview.application_url()
+  http://127.0.0.1
+
+  >>> print myview.flash(u'test')
+  None
+
+  >>> from zope.security.management import newInteraction
+  >>> newInteraction(request)
+
+  >>> grok.testing.grok('megrok.layout.messages')
+  >>> print myview.flash(u'test')
+  True
+
+  >>> from zope.component import getUtility
+  >>> from z3c.flashmessage.interfaces import IMessageReceiver
+  >>> receiver = getUtility(IMessageReceiver)
+  >>> messages = [i for i in receiver.receive()]
+  >>> messages
+  [<z3c.flashmessage.message.Message object at ...>]
+
+  >>> print ", ".join([msg.message for msg in messages])
+  test
+  
+  >>> from zope.security.management import endInteraction
+  >>> endInteraction()
+
+"""
+import grokcore.component as grok
+from grokcore.view import templatedir
+
+from zope import interface
+from megrok.layout import Layout, Page
+
+templatedir('templates')
+
+
+class Cat(grok.Context):
+    pass
+
+
+class Master(Layout):
+    grok.name('master')
+    grok.context(Cat)
+
+
+class Utils(Page):
+    grok.context(interface.Interface)
+
+    def render(self):
+	return "<p>A purring cat</p>"
+
+
+def test_suite():
+    from zope.testing import doctest
+    from zope.app.testing import functional
+    from megrok.layout.ftests import FunctionalLayer
+    suite = doctest.DocTestSuite(
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        extraglobs={"getRootFolder": functional.getRootFolder}
+        )
+    suite.layer = FunctionalLayer
+    return suite

@@ -11,10 +11,15 @@
   >>> print myview()
   <html>
    <body>
-     <div class="layout"><form ...
-     ...<span>Color</span>...
-     ...<div class="widget">globally dark</div>...
-     ...</form>
+     <div class="layout">...
+          <tr class="even">
+            <td class="fieldname">
+              Color
+            </td>
+            <td>
+              globally dark
+            </td>
+          </tr>...
      </div>
    </body>
   </html>
@@ -24,25 +29,75 @@
   >>> myview.layout
   <megrok.layout.ftests.test_form.Master object at ...>
   >>> print myview.content()
-  <form action="http://127.0.0.1" method="post"
-        class="edit-form" enctype="multipart/form-data">
-     ...<span>Color</span>...
-     ...<div class="widget">globally dark</div>...
-  </form>
+   <table class="listing">
+    <thead>
+      <tr>
+        <th class="label-column">&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+  <BLANKLINE>
+        <tr class="even">
+          <td class="fieldname">
+            Color
+          </td>
+          <td>
+            globally dark
+          </td>
+        </tr>
+  <BLANKLINE>
+    </tbody>
+    <tfoot>
+      <tr class="controls">
+        <td colspan="2" class="align-right">
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <BLANKLINE>
 
   Edit form:
   >>> myeditview = getMultiAdapter((cow, request), name='myeditview')
   >>> print myeditview()
   <html>
    <body>
-     <div class="layout"><form ...
-     ...<span>Color</span>...
-     ... value="globally dark" ...
-     ... value="Apply" ...
-     ...</form>
-     </div>
+     <div class="layout"><form action="http://127.0.0.1" method="post"
+        class="edit-form" enctype="multipart/form-data">
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+    <table class="form-fields">
+      <tbody>
+  <BLANKLINE>
+          <tr>
+            <td class="label">
+  <BLANKLINE>
+              <label for="form.color">
+                <span class="required">*</span><span>Color</span>
+              </label>
+            </td>
+            <td class="field">
+              <div class="widget"><input class="textType" id="form.color" name="form.color" size="20" type="text" value="globally dark"  /></div>
+  <BLANKLINE>
+            </td>
+          </tr>
+  <BLANKLINE>
+      </tbody>
+    </table>
+  <BLANKLINE>
+    <div id="actionsView">
+      <span class="actionButtons">
+        <input type="submit" id="form.actions.apply" name="form.actions.apply" value="Apply" class="button" />
+      </span>
+    </div>
+  </form>
+  </div>
    </body>
   </html>
+  <BLANKLINE>
 
   >>> myeditview
   <megrok.layout.ftests.test_form.MyEditView object at ...>
@@ -68,13 +123,11 @@ templatedir('templates')
 
 
 class ICowProperties(interface.Interface):
-
     color = schema.TextLine(title=u"Color")
 
 
 class Cow(grok.Context):
     grok.implements(ICowProperties)
-
     color = u"globally dark"
 
 
@@ -95,7 +148,6 @@ def test_suite():
     from zope.testing import doctest
     from megrok.layout.ftests import FunctionalLayer
     suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-        )
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite

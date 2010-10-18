@@ -4,12 +4,11 @@
 
   <include package="zope.app.zcmlfiles" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="megrok.layout" />
 
+  <include package="megrok.layout" />
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
 
-  <include package="grokcore.view" file="meta.zcml" />
   <grok:grok package="megrok.layout.ftests" />
 
   <securityPolicy
@@ -36,7 +35,5 @@
   <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
   <grant role="zope.Manager" principal="zope.mgr" />
-
-
 
 </configure>
