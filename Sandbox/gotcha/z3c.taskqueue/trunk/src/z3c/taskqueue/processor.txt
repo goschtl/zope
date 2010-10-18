@@ -71,8 +71,10 @@ Let's start by executing a job directly. The first argument to the simple
 processor constructor is the database and the second the traversal stack to
 the task service. All other arguments are optional:
 
+  >>> import z3c.taskqueue
+  >>> db = z3c.taskqueue.GLOBALDB
   >>> proc = processor.SimpleProcessor(
-  ...     tasks._p_jar.db(), ['tasks'], waitTime=0.0)
+  ...     db, ['tasks'], waitTime=0.0)
 
 Let's now process the first job. We clear the log and we also have to end any
 existing interactions in order to process the job in this thread:
@@ -176,8 +178,9 @@ Let's add a few new tasks to execute:
 Before testing the processor in the task service, let's have a look at every
 method by itself. So we instantiate the processor:
 
+  >>> db = z3c.taskqueue.GLOBALDB
   >>> proc = processor.MultiProcessor(
-  ...     tasks._p_jar.db(), ['tasks'], waitTime=0)
+  ...     db, ['tasks'], waitTime=0)
 
 The maximum amount of threads can be set as well:
 
