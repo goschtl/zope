@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 def read(*rnames):
     text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return text + '\n\n'
 
 setup(
     name = 'z3c.schema',
@@ -30,9 +30,17 @@ setup(
       author_email = "zope-dev@zope.org",
       description = "Additional schema fields for Zope 3",
     long_description=(
-        read('README.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
+        read('README.txt') +
+        '.. contents::\n\n'+
+        read('CHANGES.txt') +
+        read('src', 'z3c', 'schema', 'baseurl', 'README.txt') +
+        read('src', 'z3c', 'schema', 'dateselect', 'README.txt') +
+        read('src', 'z3c', 'schema', 'email', 'README.txt') +
+        read('src', 'z3c', 'schema', 'hostname', 'README.txt') +
+        read('src', 'z3c', 'schema', 'ip', 'README.txt') +
+        read('src', 'z3c', 'schema', 'optchoice', 'README.txt') +
+        read('src', 'z3c', 'schema', 'payments', 'README.txt') +
+        read('src', 'z3c', 'schema', 'regex', 'README.txt')
         ),
     license = 'ZPL 2.1',
     keywords = 'zope zope3 z3c schema',

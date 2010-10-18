@@ -5,7 +5,10 @@ CHANGES
 Version 0.6.1 (unreleased)
 --------------------------
 
-- Added french translations
+- Added french translations.
+
+- Added doctests to ``long_description`` so they appear on PyPI.
+
 
 Version 0.6.0 (2009-01-26)
 --------------------------
