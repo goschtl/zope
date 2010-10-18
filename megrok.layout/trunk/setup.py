@@ -6,10 +6,21 @@ long_description = open(readme_filename).read() + '\n\n' + \
                    open(os.path.join('docs', 'HISTORY.txt')).read()
 
 test_requires = [
+    'zope.annotation',
+    'zope.app.appsetup',
+    'zope.app.publication',
+    'zope.app.testing',
+    'zope.browserpage',
+    'zope.configuration',
+    'zope.password',
+    'zope.principalregistry',
+    'zope.schema',
     'zope.security',
     'zope.securitypolicy',
     'zope.testbrowser',
-    'zope.app.zcmlfiles']
+    'zope.testing',
+    'zope.traversing',
+    ]
 
 setup(name='megrok.layout',
       version='1.0b1',
@@ -37,13 +48,15 @@ setup(name='megrok.layout',
       install_requires=[
           'grokcore.component',
           'grokcore.formlib',
+          'grokcore.security',
           'grokcore.view >= 1.13.1',
+          'martian',
           'setuptools',
           'z3c.flashmessage',
           'zope.component',
           'zope.interface',
           'zope.publisher',
           'zope.session',
-          'zope.site'
+          'zope.site',
           ],
       )

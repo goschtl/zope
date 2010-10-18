@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This module can be grokked you need a generic flash message setup.
+"""This module can be grokked if you need a generic flash message setup.
 """
 import grokcore.component
 import z3c.flashmessage.sources

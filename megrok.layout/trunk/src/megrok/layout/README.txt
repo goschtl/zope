@@ -12,10 +12,7 @@ Getting started
 
 First we grok this package's grokkers::
 
-  >>> from megrok.layout import testing
   >>> import grokcore.component as grok
-  >>> testing.grok('megrok.layout')
-
 
 
 Layout

@@ -114,10 +114,11 @@
 
 """
 import grokcore.component as grok
-from grokcore.view import templatedir
 
-from zope import interface, schema
+from grokcore.view import templatedir
 from megrok.layout import Layout, DisplayForm, EditForm
+from zope import interface, schema
+
 
 templatedir('templates')
 
