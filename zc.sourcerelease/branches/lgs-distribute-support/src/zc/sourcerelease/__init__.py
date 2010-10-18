@@ -59,9 +59,9 @@ def source_release(args=None):
         help="create custom named files", default="None")
     parser.add_option("-d", "--use-distribute", dest="use_distribute",
         help="Use distribute to bootstrap the buildout (default)",
-        action="store_true", default=True)
+        action="store_true", default=False)
     parser.add_option("-s", "--use-setuptools", dest="use_distribute",
-        help="Use setuptools to bootstrap the buildout",
+        help="Use setuptools to bootstrap the buildout (default)",
         action="store_false")
 
     # retrieve options
