@@ -4,22 +4,17 @@ from App.config import getConfiguration
 
 from z3c.taskqueue.startup import getRootFolder
 from z3c.taskqueue.startup import getStartSpecifications
-from z3c.taskqueue.startup import startOneService
+from z3c.taskqueue.startup import startOneService, storeDBReference
 
 log = logging.getLogger('five.taskqueue')
 
 
-def databaseOpened(event):
-    """Start the queue processing services based on the
-       settings in zope.conf"""
-    log.info('handling event IDatabaseOpenedEvent')
-
-    root_folder = getRootFolder(event)
-
+def startServices(root_folder):
     configuration = getTaskqueueConfiguration()
     startSpecifications = getStartSpecifications(configuration)
 
     for siteName, serviceName in startSpecifications:
+        log.debug('Starting service %s from site %s' % (serviceName, siteName))
         site = getSite(siteName, root_folder)
         if site is None:
             continue
@@ -27,6 +22,17 @@ def databaseOpened(event):
         if not started:
             msg = 'service %s from site %s was not started.'
             log.warn(msg % (serviceName, siteName))
+        else:
+            log.debug('Service %s from site %s started.' % (serviceName, siteName))
+
+
+def databaseOpened(event):
+    """Start the queue processing services based on the
+       settings in zope.conf"""
+    log.info('handling event IDatabaseOpenedEvent')
+    storeDBReference(event)
+    root_folder = getRootFolder(event)
+    startServices(root_folder)
 
 
 def getSite(siteName, root_folder):

@@ -44,6 +44,9 @@ API. Let's create the necessary components to test the processor:
 
   >>> import zope.component
   >>> zope.component.provideUtility(sleepTask, name='sleep')
+  >>> import Zope2
+  >>> from z3c.taskqueue.startup import storeDBReference
+  >>> storeDBReference(Zope2.DB)
 
 
 The Simple Processor
@@ -67,8 +70,10 @@ Let's start by executing a job directly. The first argument to the simple
 processor constructor is the database and the second the traversal stack to
 the task service. All other arguments are optional:
 
+  >>> import z3c.taskqueue
+  >>> db = z3c.taskqueue.GLOBALDB
   >>> proc = processor.SimpleProcessor(
-  ...     tasks._p_jar.db(), tasks.getServicePath(), waitTime=0.0)
+  ...     db, tasks.getServicePath(), waitTime=0.0)
 
 Let's now process the first job. We clear the log.
 
@@ -108,7 +113,7 @@ were all completed in the order they were defined.
   z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 2
   z3c.taskqueue INFO
@@ -116,7 +121,7 @@ were all completed in the order they were defined.
   z3c.taskqueue INFO
     Job: 4
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
 Transactions in jobs
 --------------------
@@ -176,8 +181,9 @@ Let's add a few new tasks to execute:
 Before testing the processor in the task service, let's have a look at every
 method by itself. So we instantiate the processor:
 
+  >>> db = z3c.taskqueue.GLOBALDB
   >>> proc = processor.MultiProcessor(
-  ...     tasks._p_jar.db(), tasks.getServicePath(), waitTime=0)
+  ...     db, tasks.getServicePath(), waitTime=0)
 
 The maximum amount of threads can be set as well:
 
@@ -242,7 +248,7 @@ all need different time to execute:
 
   >>> print log_info
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 3
   z3c.taskqueue INFO
@@ -250,7 +256,7 @@ all need different time to execute:
   z3c.taskqueue INFO
     Job: 2
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
 
 Let's now set the thread limit to two and construct a new set of tasks that
@@ -280,7 +286,7 @@ the jobs and see the result:
 
   >>> print log_info
   z3c.taskqueue INFO
-    starting service remotetasks.tasks.tasks
+    starting service tasks
   z3c.taskqueue INFO
     Job: 1
   z3c.taskqueue INFO
@@ -290,7 +296,7 @@ the jobs and see the result:
   z3c.taskqueue INFO
     Job: 4
   z3c.taskqueue INFO
-    stopping service remotetasks.tasks.tasks
+    stopping service tasks
 
   >>> print conflict_logger
 
