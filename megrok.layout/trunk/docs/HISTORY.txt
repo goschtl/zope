@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.0.2 (2010-02-26)
+------------------
+
+- The existence test for the `application_url` site-lookup was
+  wrongly using a "if not" statement. In a case of a container, the object
+  is evaluated to False if it's empty. We now use a proper "if .. is
+  None". [trollfot]
+
 1.0.1 (2010-02-25)
 ------------------
 

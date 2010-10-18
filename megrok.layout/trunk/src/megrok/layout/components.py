@@ -10,7 +10,7 @@ from megrok.layout.interfaces import IPage, ILayout
 from z3c.flashmessage.interfaces import IMessageSource
 from zope.interface import Interface
 from zope.publisher.publish import mapply
-from zope.site.hooks import getSite
+from zope.component.hooks import getSite
 
 
 class UtilityView(object):
@@ -21,7 +21,7 @@ class UtilityView(object):
         """Return the URL of the nearest site.
         """
         site = getSite()
-        if not site:
+        if site is None:
             raise zope.component.ComponentLookupError("No site found.")
         return self.url(site, name)
 
