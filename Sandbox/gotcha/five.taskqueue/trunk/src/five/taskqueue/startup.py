@@ -30,7 +30,7 @@ def databaseOpened(event):
     """Start the queue processing services based on the
        settings in zope.conf"""
     log.info('handling event IDatabaseOpenedEvent')
-    storeDBReference(event)
+    storeDBReference(event.database)
     root_folder = getRootFolder(event)
     startServices(root_folder)
 
