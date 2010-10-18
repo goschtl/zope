@@ -49,7 +49,8 @@ API. Let's create the necessary components to test the processor:
   >>> conn = db.open()
   >>> conn.root()[ZopePublication.root_name] = root
   >>> transaction.commit()
-
+  >>> from z3c.taskqueue.startup import storeDBReference
+  >>> storeDBReference(db)
 
 The Simple Processor
 --------------------

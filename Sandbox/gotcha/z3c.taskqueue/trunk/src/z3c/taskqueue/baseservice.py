@@ -30,6 +30,7 @@ import zope.interface
 
 from z3c.taskqueue import interfaces, job, task
 from z3c.taskqueue import processor
+import z3c.taskqueue
 
 log = logging.getLogger('z3c.taskqueue')
 
@@ -307,8 +308,12 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         servicePath = self.getServicePath()
         log.info('starting service %s' % ".".join(servicePath))
         # Start the thread running the processor inside.
+        #
+        db = z3c.taskqueue.GLOBALDB
+        if db is None:
+            raise ValueError('z3c.taskqueue.GLOBALDB is not initialized; should be done with IDatabaseOpenedWithRootEvent')
         processor = self.processorFactory(
-            self._p_jar.db(), servicePath, **self.processorArguments)
+            db, servicePath, **self.processorArguments)
         threadName = self._threadName()
         thread = threading.Thread(target=processor, name=threadName)
         thread.setDaemon(True)

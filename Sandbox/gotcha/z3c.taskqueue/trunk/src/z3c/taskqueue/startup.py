@@ -22,6 +22,7 @@ from zope.app.publication.zopepublication import ZopePublication
 import logging
 import zope.interface
 import zope.location
+import z3c.taskqueue
 
 
 log = logging.getLogger('z3c.taskqueue')
@@ -31,7 +32,7 @@ def databaseOpened(event, productName='z3c.taskqueue'):
     """Start the queue processing services based on the
        settings in zope.conf"""
     log.info('handling event IDatabaseOpenedEvent')
-
+    storeDBReference(event)
     root_folder = getRootFolder(event)
 
     from zope.app.appsetup.product import getProductConfiguration
@@ -176,3 +177,11 @@ def getService(site, serviceName):
         msg = 'service %s on site %s not found'
         log.error(msg % (serviceName, siteName))
         return None
+
+
+def storeDBReference(db):
+    z3c.taskqueue.GLOBALDB = db
+
+
+def storeDBReferenceOnDBOpened(event):
+    storeDBReference(event.database)
