@@ -23,13 +23,10 @@
   >>> print myform.flash(u'some form message')
   True
 
-  >>> from zope.component import getUtility
-  >>> from z3c.flashmessage.interfaces import IMessageReceiver
-  >>> receiver = getUtility(IMessageReceiver)
-  >>> messages = [i for i in receiver.receive()]
-  >>> messages
-  [<z3c.flashmessage.message.Message object at ...>,
-   <z3c.flashmessage.message.Message object at ...>]
+  >>> from grokcore.message import receive
+  >>> messages = [i for i in receive()]
+  >>> len(messages)
+  2
 
   >>> print ", ".join([msg.message for msg in messages])
   test, some form message
