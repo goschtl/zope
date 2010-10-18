@@ -21,7 +21,7 @@
 """
 
 import grokcore.component as grok
-from zope import interface
+from zope.interface import Interface
 from megrok.layout import Layout
 
 
@@ -34,14 +34,14 @@ class Elephant(grok.Context):
 
 
 class MyLayout(Layout):
-    grok.context(interface.Interface)
+    grok.context(Interface)
 
     def render(self):
-	return "<div> MyLayout </div>"
+        return "<div> MyLayout </div>"
 
 
 class MyContextLayout(Layout):
     grok.context(Elephant)
 
     def render(self):
-	return "<div> MyContextLayout </div>"
+        return "<div> MyContextLayout </div>"

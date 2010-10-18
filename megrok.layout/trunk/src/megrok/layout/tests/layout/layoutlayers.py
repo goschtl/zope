@@ -49,7 +49,7 @@ class ALayout(Layout):
     grok.layer(IDefaultLayer)
 
     def render(self):
-	return "A Layout"
+        return "A Layout"
 
 
 class A2Layout(Layout):
@@ -57,7 +57,7 @@ class A2Layout(Layout):
     grok.layer(IAnotherLayer)
 
     def render(self):
-	return "A2 Layout"
+        return "A2 Layout"
 
 
 class BLayout(Layout):
@@ -65,7 +65,7 @@ class BLayout(Layout):
     grok.layer(IAnotherLayer)
 
     def render(self):
-	return "B Layout"
+        return "B Layout"
 
 
 class MyView(Page):

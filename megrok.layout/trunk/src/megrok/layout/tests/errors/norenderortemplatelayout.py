@@ -8,7 +8,6 @@
 """
 
 import grokcore.component as grok
-from grokcore.view import View
 from megrok.layout import Layout
 from zope.interface import Interface
 

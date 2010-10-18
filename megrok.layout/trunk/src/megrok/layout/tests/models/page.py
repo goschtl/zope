@@ -45,4 +45,4 @@ class MyView(Page):
     grok.context(interface.Interface)
 
     def render(self):
-	return "<p> My nice Content </p>"
+        return "<p> My nice Content </p>"

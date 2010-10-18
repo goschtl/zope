@@ -5,7 +5,7 @@
 
   >>> cow = Cow()
   >>> request = TestRequest()
-  
+
   >>> mylayout = getMultiAdapter((request, cow), ILayout)
 
   Display form:

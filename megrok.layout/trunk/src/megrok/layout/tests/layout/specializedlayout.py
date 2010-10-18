@@ -29,7 +29,7 @@ We switch the layer::
   >>> view = getMultiAdapter((two, request), name="myview")
   >>> print view()
   Layout B for context Two
-  
+
 """
 import grokcore.view as grok
 from zope.interface import Interface
@@ -58,7 +58,7 @@ class AOneLayout(Layout):
     grok.layer(IALayer)
 
     def render(self):
-	return "Layout A for context One"
+        return "Layout A for context One"
 
 
 class ATwoLayout(Layout):
@@ -66,7 +66,7 @@ class ATwoLayout(Layout):
     grok.layer(IALayer)
 
     def render(self):
-	return "Layout A for context Two"
+        return "Layout A for context Two"
 
 
 class BOneLayout(Layout):
@@ -74,7 +74,7 @@ class BOneLayout(Layout):
     grok.layer(IBLayer)
 
     def render(self):
-	return "Layout B for context One"
+        return "Layout B for context One"
 
 
 class BTwoLayout(Layout):
@@ -82,7 +82,7 @@ class BTwoLayout(Layout):
     grok.layer(IBLayer)
 
     def render(self):
-	return "Layout B for context Two"
+        return "Layout B for context Two"
 
 
 class MyView(Page):

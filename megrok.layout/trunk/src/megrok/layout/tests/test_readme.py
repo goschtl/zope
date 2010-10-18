@@ -17,7 +17,6 @@ def moduleTearDown(test):
 
 
 def test_suite():
-    
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     globs = {'grok_component': grok_component, '__name__': 'megrok.layout'}
     suite = unittest.TestSuite()
@@ -28,8 +27,6 @@ def test_suite():
             optionflags=optionflags,
             setUp=moduleSetUp,
             tearDown=moduleTearDown,
-            globs=globs),
-        )
-    layer = megrok.layout.tests.MegrokLayoutLayer(megrok.layout.tests)
+            globs=globs))
 
     return suite

@@ -1,5 +1,5 @@
 """
-  >>> grok.testing.grok(__name__) 
+  >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
   ...
   ConfigurationConflictError: Conflicting configuration actions

@@ -2,7 +2,7 @@
   >>> from megrok.layout import ILayout
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  
+
   >>> kitty = Cat()
   >>> request = TestRequest()
   >>> mylayout = getMultiAdapter((request, kitty), ILayout)
@@ -27,15 +27,14 @@
 
   >>> print ", ".join([msg.message for msg in messages])
   test
-  
+
   >>> from zope.security.management import endInteraction
   >>> endInteraction()
 
 """
 import grokcore.component as grok
 from grokcore.view import templatedir
-
-from zope import interface
+from zope.interface import Interface
 from megrok.layout import Layout, Page
 
 templatedir('templates')
@@ -51,7 +50,7 @@ class Master(Layout):
 
 
 class Utils(Page):
-    grok.context(interface.Interface)
+    grok.context(Interface)
 
     def render(self):
-	return "<p>A purring cat</p>"
+        return "<p>A purring cat</p>"
