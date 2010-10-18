@@ -1,2 +1,2 @@
-recursive-include src/dolmen/content *.txt *.py *.zcml *.png
+recursive-include megrok/layout *.txt *.py *.zcml *.png
 recursive-include docs *.txt
