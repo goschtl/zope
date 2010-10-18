@@ -8,7 +8,7 @@ long_description = open(readme_filename).read() + '\n\n' + \
 
 
 setup(name='megrok.layout',
-      version='0.6',
+      version='0.7',
       description="A layout component package for zope3 and Grok.",
       long_description = long_description,
       classifiers=[
