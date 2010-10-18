@@ -4,7 +4,7 @@
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> mongo = Dummy()
-  >>> mylayout = getMultiAdapter((mongo, request), ILayout)
+  >>> mylayout = getMultiAdapter((request, mongo), ILayout)
   >>> mylayout.static
   <grokcore.view.components.DirectoryResource object at ...>
   >>> mylayout.static['empty.js']

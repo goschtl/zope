@@ -4,7 +4,7 @@
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> mammoth = Mammoth()
-  >>> mylayout = getMultiAdapter((mammoth, request), ILayout)
+  >>> mylayout = getMultiAdapter((request, mammoth), ILayout)
   >>> ILayout.providedBy(mylayout)
   True
 
@@ -15,7 +15,7 @@
   '<div> MyLayout </div>'
 
   >>> elephant = Elephant()
-  >>> mycontextlayout = getMultiAdapter((elephant, request), ILayout)
+  >>> mycontextlayout = getMultiAdapter((request, elephant), ILayout)
   >>> mycontextlayout.render()
   '<div> MyContextLayout </div>'
 """

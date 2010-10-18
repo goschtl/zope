@@ -15,7 +15,7 @@ class Layout(object):
     grok.baseclass()
     grok.implements(ILayout)
 
-    def __init__(self, context, request):
+    def __init__(self, request, context):
         self.context = context
         self.request = request
         self.view = None
@@ -97,7 +97,7 @@ class Page(grokcore.view.View):
             # continue rendering the template or doing anything else.
             return
         self.layout = zope.component.getMultiAdapter(
-            (self.context, self.request), ILayout)
+            (self.request, self.context), ILayout)
         return self.layout(self)
 
 
@@ -136,5 +136,5 @@ class Form(grokcore.formlib.Form):
             return
         
         self.layout = zope.component.getMultiAdapter(
-            (self.context, self.request), ILayout)
+            (self.request, self.context), ILayout)
         return self.layout(self)

@@ -50,7 +50,7 @@ We check it has been correctly registered:
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
 
-  >>> layout = getMultiAdapter((Interface, TestRequest()), ILayout)
+  >>> layout = getMultiAdapter((TestRequest(), Interface), ILayout)
   >>> isinstance(layout, MyLayout)
   True
   >>> layout.render()

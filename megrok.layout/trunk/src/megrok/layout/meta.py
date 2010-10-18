@@ -27,7 +27,7 @@ class LayoutGrokker(martian.ClassGrokker):
                 args=(templates, factory.module_info, factory)
                 )
 
-        adapts = (context, layer)
+        adapts = (layer, context)
         config.action(
             discriminator=('adapter', adapts, ILayout),
             callable=zope.component.provideAdapter,

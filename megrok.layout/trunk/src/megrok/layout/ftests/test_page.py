@@ -4,7 +4,7 @@
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> cow = Cow()
-  >>> mylayout = getMultiAdapter((cow, request), ILayout)
+  >>> mylayout = getMultiAdapter((request, cow), ILayout)
   >>> myview = getMultiAdapter((cow, request), name='myview')
 
 
