@@ -9,7 +9,7 @@ from hurry.resource import generate_code, ResourceInclusion, Library
 from hurry.jquery import jquery
 
 BASEURL = 'http://ajax.googleapis.com/ajax/libs/jqueryui/'
-VERSION = '1.8.2'
+VERSION = '1.8.5'
 MINIFIED = "jquery-ui.min.js"
 FULL = "jquery-ui.js"
 THEME_URL = 'http://jquery-ui.googlecode.com/files/jquery-ui-themes-%s.zip' % VERSION

@@ -19,12 +19,12 @@ Render the inclusion::
   >>> needed = NeededInclusions()
   >>> needed.need(jqueryui)
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-1.4.2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-....js"></script>
   <script type="text/javascript" src="http://localhost/static/jqueryui/jquery-ui.js"></script>
 
   >>> needed.mode('minified')
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-....min.js"></script>
   <script type="text/javascript" src="http://localhost/static/jqueryui/jquery-ui.min.js"></script>
 
 Let's also try a theme::

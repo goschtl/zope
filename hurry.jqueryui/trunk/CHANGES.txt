@@ -1,11 +1,10 @@
 CHANGES
 *******
 
-1.8.2.3 (unreleased)
+1.8.5.1 (unreleased)
 ====================
 
-- Nothing changed yet.
-
+* Update to jQueryUI 1.8.4.
 
 1.8.2.2 (2010-07-29)
 ====================
