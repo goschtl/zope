@@ -1,5 +1,6 @@
 import logging
 
+from zExceptions import NotFound
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
 import ZPublisher
@@ -34,15 +35,19 @@ class Z2PublisherMixin(object):
         try:
             try:
                 ZPublisher.Publish.publish(request, 'Zope2', [None])
+                result = request.response.body
+            except NotFound, error:
+                log.warning('NotFound when traversing to %s' % '/'.join(path))
+                result = ''
             except Exception, error:
                 # This thread should never crash, thus a blank except
                 log.error('Processor: ``%s()`` caused an error!' % method)
                 log.exception(error)
-                return errorValue is ERROR_MARKER and error or errorValue
+                result = errorValue is ERROR_MARKER and error or errorValue
         finally:
             request.close()
             conn.close()
-            return request.response.body
+            return result
 
 
 class SimpleProcessor(Z2PublisherMixin, BaseSimpleProcessor):
