@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.3 (unreleased)
+0.3 (2010-10-18)
 ================
 
 * Removed dependency on zope.app.testing.
