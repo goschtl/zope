@@ -1,0 +1,2 @@
+recursive-include src/hurry/jquery/jquery-build *
+include src/hurry/jquery/_lib.py
