@@ -1,5 +1,5 @@
 """
-  >>> from zope.site.hooks import getSite
+  >>> from zope.component.hooks import getSite
 
   >>> site = getSite()
   >>> site
@@ -17,10 +17,17 @@
   >>> print view.application_url()
   http://127.0.0.1
 
+  >>> form = getMultiAdapter((helmut, request), name='form')
+  >>> form
+  <megrok.layout.tests.models.url.BearForm object at ...>
+
+  >>> print form.application_url()
+  http://127.0.0.1
+
 """
 
 import grokcore.view as grok
-from megrok.layout import Page, Layout
+from megrok.layout import Page, Layout, Form
 from zope.interface import Interface, implements
 
 grok.templatedir("templates")
@@ -37,6 +44,11 @@ class Panda(grok.Context):
 class Master(Layout):
     grok.context(IBear)
 
+
+class BearForm(Form):
+    grok.name('form')
+    grok.context(IBear)
+    
 
 class Index(Page):
     grok.context(IBear)

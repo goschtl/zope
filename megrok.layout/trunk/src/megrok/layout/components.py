@@ -114,7 +114,7 @@ class Page(grokcore.view.View, UtilityView):
         return mapply(self.render, (), self.request)
 
 
-class LayoutAwareForm(object):
+class LayoutAwareForm(UtilityView):
     """A mixin to make form aware of layouts.
     """
 
