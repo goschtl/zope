@@ -66,8 +66,7 @@ class SSHConnection(object):
         if host_port in cls.clients:
             return cls.clients[host_port]
         else:
-            cls.clients[host_port] = object.__new__(
-                cls, host_port, user_passwd)
+            cls.clients[host_port] = object.__new__(cls)
             return cls.clients[host_port]
 
     def __init__(self, host_port, user_passwd=None):
