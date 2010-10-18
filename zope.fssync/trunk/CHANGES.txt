@@ -4,7 +4,15 @@ Changes
 3.5.2 (unreleased)
 ------------------
 
-- ...
+- Fix tests; zope.location no longer exports TLocation.
+
+- Raise the right error in zope.fssync.synchronizer when the configured
+  synchronizer does not exist.
+
+- Update dependency information.
+
+- Minor code cleanups.
+
 
 3.5.1 (2009-07-24)
 ------------------
