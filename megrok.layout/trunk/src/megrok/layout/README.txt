@@ -6,15 +6,6 @@ The `megrok.layout` package provides a simple way to write view
 components which can be included into a defined layout. It turns
 around two main components : the Page and the Layout.
 
-
-Getting started
-===============
-
-First we grok this package's grokkers::
-
-  >>> import grokcore.component as grok
-
-
 Layout
 ======
 
@@ -27,6 +18,7 @@ Let's implement a simple Layout:
 
   >>> from megrok.layout import Layout
   >>> from zope.interface import Interface
+  >>> import grokcore.component as grok
 
   >>> class MyLayout(Layout):
   ...     grok.name('mylayout')
