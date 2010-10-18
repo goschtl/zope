@@ -17,7 +17,7 @@ test_requires = [
     ]
 
 setup(name='megrok.layout',
-      version='1.0.2',
+      version='1.1',
       description="A layout component package for zope3 and Grok.",
       long_description = long_description,
       classifiers=[
@@ -42,11 +42,11 @@ setup(name='megrok.layout',
       install_requires=[
           'grokcore.component',
           'grokcore.formlib',
+          'grokcore.message',
           'grokcore.security',
           'grokcore.view >= 1.13.1',
           'martian',
           'setuptools',
-          'z3c.flashmessage',
           'zope.component >= 3.9.1',
           'zope.interface',
           'zope.publisher',

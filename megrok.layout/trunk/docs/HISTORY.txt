@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.1.0 (2010-03-03)
+------------------
+
+- ``z3c.flashmessage`` has been dropped in favor of
+  ``grokcore.message``. This new package takes in charge the
+  registration of the utilities and retains the existing API. The
+  back-compatibility is assured.
+
 1.0.2 (2010-02-26)
 ------------------
 

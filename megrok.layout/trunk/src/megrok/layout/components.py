@@ -3,11 +3,11 @@ import os
 
 import grokcore.component as grok
 import grokcore.formlib
+import grokcore.message
 import grokcore.view
 import zope.component
 
 from megrok.layout.interfaces import IPage, ILayout
-from z3c.flashmessage.interfaces import IMessageSource
 from zope.interface import Interface
 from zope.publisher.publish import mapply
 from zope.component.hooks import getSite
@@ -26,13 +26,9 @@ class UtilityView(object):
         return self.url(site, name)
 
     def flash(self, message, type='message'):
-        """Send a short message to the user.
+        """Sends a message to the session messager.
         """
-        source = zope.component.queryUtility(IMessageSource, name='session')
-        if source is None:
-            return None
-        source.send(message, type)
-        return True
+        return grokcore.message.send(message, type)
 
 
 class Layout(grokcore.view.ViewSupport, UtilityView):

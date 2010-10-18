@@ -10,15 +10,13 @@
   >>> myform = getMultiAdapter((kitty, request), name='formutils')
 
   >>> print myview.flash(u'test')
-  None
-
-  >>> print myform.flash(u'some form message')
-  None
+  Traceback (most recent call last):
+  ...
+  NoInteraction
 
   >>> from zope.security.management import newInteraction
   >>> newInteraction(request)
 
-  >>> grok.testing.grok('megrok.layout.messages')
   >>> print myview.flash(u'test')
   True
 
