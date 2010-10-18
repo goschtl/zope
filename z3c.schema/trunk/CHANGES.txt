@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.6.2 (unreleased)
+0.7.0 (2010-10-18)
 ------------------
 
 - Updated tests to run with `zope.schema` >= 3.6, thus requiring at least
