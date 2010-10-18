@@ -113,3 +113,9 @@ with the help of the 'content' method:
   >>> page()
   u'Header. Page: Looks like an elephant. Footer'
 
+
+Forms
+=====
+
+You have as well a Form, AddForm, EditForm and DisplayForm availables,
+which are all aware of Layout components like Page does.

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 import zope.component
 import grokcore.view
@@ -93,17 +94,16 @@ class Page(grokcore.view.View):
         return mapply(self.render, (), self.request)
 
 
-class Form(grokcore.formlib.Form):
-    """A form class.
+class LayoutAwareForm(object):
+    """A mixin to make form aware of layouts.
     """
-    grok.baseclass()
 
     def __init__(self, context, request):
-        super(Form, self).__init__(context, request)
+        super(LayoutAwareForm, self).__init__(context, request)
         self.layout = None
 
     def default_namespace(self):
-        namespace = super(Form, self).default_namespace()
+        namespace = super(LayoutAwareForm, self).default_namespace()
         namespace['layout'] = self.layout
         return namespace
 
@@ -129,3 +129,36 @@ class Form(grokcore.formlib.Form):
         self.layout = zope.component.getMultiAdapter(
             (self.request, self.context), ILayout)
         return self.layout(self)
+
+
+# Default forms for form without the html and body tags
+default_form_template = grokcore.view.PageTemplateFile(os.path.join(
+    'templates', 'default_edit_form.pt'))
+default_form_template.__grok_name__ = 'default_edit_form'
+default_display_template = grokcore.view.PageTemplateFile(os.path.join(
+    'templates', 'default_display_form.pt'))
+default_display_template.__grok_name__ = 'default_display_form'
+
+
+class Form(LayoutAwareForm, grokcore.formlib.Form):
+
+    grok.baseclass()
+    template = default_form_template
+
+
+class AddForm(LayoutAwareForm, grokcore.formlib.AddForm):
+
+    grok.baseclass()
+    template = default_display_template
+
+
+class EditForm(LayoutAwareForm, grokcore.formlib.EditForm):
+
+    grok.baseclass()
+    template = default_form_template
+
+
+class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
+
+    grok.baseclass()
+    template = default_form_template
