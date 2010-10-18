@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import zope.component
-from grokcore.component import zcml
 from zope.component.interfaces import IComponentLookup
 from zope.component.testlayer import ZCMLFileLayer
-from zope.configuration.config import ConfigurationMachine
 from zope.container.interfaces import ISimpleReadContainer
 from zope.container.traversal import ContainerTraversable
 from zope.interface import Interface
@@ -53,13 +51,3 @@ class MegrokLayoutLayer(ZCMLFileLayer):
         ZCMLFileLayer.tearDown(self)
         zope.component.hooks.resetHooks()
         zope.component.hooks.setSite()
-
-
-def grok(module_name):
-    config = ConfigurationMachine()
-    zcml.do_grok('grokcore.component.meta', config)
-    zcml.do_grok('grokcore.security.meta', config)
-    zcml.do_grok('grokcore.view.meta', config)
-    zcml.do_grok('grokcore.view.templatereg', config)
-    zcml.do_grok(module_name, config)
-    config.execute_actions()

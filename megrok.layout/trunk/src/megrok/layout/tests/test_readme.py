@@ -3,17 +3,7 @@
 import doctest
 import unittest
 import megrok.layout.tests
-from zope.testing import cleanup, module
 from grokcore.component.testing import grok_component
-
-
-def moduleSetUp(test):
-    megrok.layout.tests.grok('megrok.layout')
-
-
-def moduleTearDown(test):
-    module.tearDown(test)
-    cleanup.cleanUp()
 
 
 def test_suite():
@@ -25,8 +15,7 @@ def test_suite():
         doctest.DocFileSuite(
             '../README.txt',
             optionflags=optionflags,
-            setUp=moduleSetUp,
-            tearDown=moduleTearDown,
             globs=globs))
+    suite.layer = megrok.layout.tests.ZCMLFileLayer(megrok.layout.tests)
 
     return suite

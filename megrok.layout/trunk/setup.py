@@ -7,17 +7,10 @@ long_description = open(readme_filename).read() + '\n\n' + \
 
 test_requires = [
     'zope.annotation',
-    'zope.app.appsetup',
-    'zope.app.publication',
-    'zope.app.testing',
-    'zope.browserpage',
-    'zope.configuration',
-    'zope.password',
-    'zope.principalregistry',
+    'zope.container',
     'zope.schema',
     'zope.security',
-    'zope.securitypolicy',
-    'zope.testbrowser',
+    'zope.session',
     'zope.testing',
     'zope.traversing',
     ]
@@ -56,7 +49,6 @@ setup(name='megrok.layout',
           'zope.component',
           'zope.interface',
           'zope.publisher',
-          'zope.session',
           'zope.site',
           ],
       )
