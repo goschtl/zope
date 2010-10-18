@@ -149,7 +149,7 @@ class Form(LayoutAwareForm, grokcore.formlib.Form):
 class AddForm(LayoutAwareForm, grokcore.formlib.AddForm):
 
     grok.baseclass()
-    template = default_display_template
+    template = default_form_template
 
 
 class EditForm(LayoutAwareForm, grokcore.formlib.EditForm):
@@ -161,4 +161,4 @@ class EditForm(LayoutAwareForm, grokcore.formlib.EditForm):
 class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
 
     grok.baseclass()
-    template = default_form_template
+    template = default_display_template
