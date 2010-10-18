@@ -17,18 +17,17 @@
 
 
   >>> myview
-  <megrok.layout.ftests.test_page.MyView object at ...>
+  <megrok.layout.tests.models.page.MyView object at ...>
   >>> myview.layout
-  <megrok.layout.ftests.test_page.Master object at ...>
+  <megrok.layout.tests.models.page.Master object at ...>
   >>> print myview.content()
   <p> My nice Content </p>
 
 """
 import grokcore.component as grok
 from grokcore.view import templatedir
-
-from zope import interface
 from megrok.layout import Layout, Page
+from zope import interface
 
 templatedir('templates')
 
@@ -47,13 +46,3 @@ class MyView(Page):
 
     def render(self):
 	return "<p> My nice Content </p>"
-
-
-def test_suite():
-    from zope.testing import doctest
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-        )
-    suite.layer = FunctionalLayer
-    return suite

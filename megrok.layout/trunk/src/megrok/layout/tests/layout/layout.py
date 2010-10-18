@@ -9,7 +9,7 @@
   True
 
   >>> mylayout.context
-  <megrok.layout.ftests.test_layout.Mammoth object at ...>
+  <megrok.layout.tests.layout.layout.Mammoth object at ...>
 
   >>> mylayout.render()
   '<div> MyLayout </div>'
@@ -21,7 +21,6 @@
 """
 
 import grokcore.component as grok
-
 from zope import interface
 from megrok.layout import Layout
 
@@ -46,13 +45,3 @@ class MyContextLayout(Layout):
 
     def render(self):
 	return "<div> MyContextLayout </div>"
-
-
-def test_suite():
-    from zope.testing import doctest
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-        )
-    suite.layer = FunctionalLayer
-    return suite

@@ -2,21 +2,11 @@
   >>> from megrok.layout import ILayout
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+  
   >>> kitty = Cat()
+  >>> request = TestRequest()
   >>> mylayout = getMultiAdapter((request, kitty), ILayout)
   >>> myview = getMultiAdapter((kitty, request), name='utils')
-
-  >>> print myview.application_url()
-  Traceback (most recent call last):
-  ...
-  ComponentLookupError: No site found.
-
-  >>> from zope.site.hooks import setSite
-  >>> root = getRootFolder()
-  >>> setSite(root)
-  >>> print myview.application_url()
-  http://127.0.0.1
 
   >>> print myview.flash(u'test')
   None
@@ -65,15 +55,3 @@ class Utils(Page):
 
     def render(self):
 	return "<p>A purring cat</p>"
-
-
-def test_suite():
-    from zope.testing import doctest
-    from zope.app.testing import functional
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-        extraglobs={"getRootFolder": functional.getRootFolder}
-        )
-    suite.layer = FunctionalLayer
-    return suite

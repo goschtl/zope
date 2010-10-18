@@ -2,8 +2,10 @@
   >>> from megrok.layout import ILayout
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+
   >>> cow = Cow()
+  >>> request = TestRequest()
+  
   >>> mylayout = getMultiAdapter((request, cow), ILayout)
 
   Display form:
@@ -25,9 +27,9 @@
   </html>
 
   >>> myview
-  <megrok.layout.ftests.test_form.MyView object at ...>
+  <megrok.layout.tests.models.forms.MyView object at ...>
   >>> myview.layout
-  <megrok.layout.ftests.test_form.Master object at ...>
+  <megrok.layout.tests.models.forms.Master object at ...>
   >>> print myview.content()
    <table class="listing">
     <thead>
@@ -100,9 +102,9 @@
   <BLANKLINE>
 
   >>> myeditview
-  <megrok.layout.ftests.test_form.MyEditView object at ...>
+  <megrok.layout.tests.models.forms.MyEditView object at ...>
   >>> myeditview.layout
-  <megrok.layout.ftests.test_form.Master object at ...>
+  <megrok.layout.tests.models.forms.Master object at ...>
   >>> print myeditview.content()
   <form action="http://127.0.0.1" method="post"
         class="edit-form" enctype="multipart/form-data">
@@ -143,12 +145,3 @@ class MyView(DisplayForm):
 
 class MyEditView(EditForm):
     grok.context(Cow)
-
-
-def test_suite():
-    from zope.testing import doctest
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
-    suite.layer = FunctionalLayer
-    return suite

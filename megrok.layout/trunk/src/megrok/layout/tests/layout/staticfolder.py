@@ -23,12 +23,3 @@ class LayoutWithResources(Layout):
 
     def render(self):
         return ""
-
-def test_suite():
-    from zope.testing import doctest
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-        )
-    suite.layer = FunctionalLayer
-    return suite  

@@ -17,13 +17,3 @@ class MyLayout(Layout):
 
 class MyOtherLayout(Layout):
     grok.context(Interface)
-
-
-def test_suite():
-    from zope.testing import doctest
-    from megrok.layout.ftests import FunctionalLayer
-    suite = doctest.DocTestSuite(
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-        )
-    suite.layer = FunctionalLayer
-    return suite
