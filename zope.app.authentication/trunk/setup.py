@@ -87,11 +87,10 @@ setup(name='zope.app.authentication',
           'zope.interface',
           'zope.location',
           'zope.password >= 3.5.1',
-          'zope.pluggableauth >= 1.0.1',
+          'zope.pluggableauth >= 1.1',
           'zope.schema',
           'zope.security',
           'zope.traversing',
-
           # Needed for browser code.
           'zope.app.container',
           'zope.app.component',
