@@ -1,8 +1,14 @@
 Changelog
 =========
 
-0.9.1 (UNRELEASED)
-------------------
+1.0 (2010-02-25)
+----------------
+
+- The dependencies have been heavily cleaned up. All zope.app packages
+  have been removed. We are now running with minimal dependencies and
+  using the latest ZTK. This release will probably *not* run on
+  `Grok 1.0`. You will need `Grok 1.1rc1` to be able to use
+  it. [trollfot]
 
 - Added a component called UtilityView that provides two useful
   methods : application_url, flash. These methods are almost a copy of
