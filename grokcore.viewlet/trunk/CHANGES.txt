@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5 (unreleased)
+1.5 (2010-10-18)
 ----------------
 
 * Make package comply to zope.org repository policy.
