@@ -8,6 +8,9 @@ CHANGES
 - Updated tests to run with `zope.schema` >= 3.6, thus requiring at least
   this version.
 
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest[unit]``.
+
 
 0.6.1 (2010-10-18)
 ------------------

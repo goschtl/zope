@@ -11,16 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
-import unittest
 from zope.schema.interfaces import RequiredMissing
 from zope.schema.tests.test_field import FieldTestBase
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import doctest
+import unittest
 
 from z3c.schema.hostname import HostName
 from z3c.schema.hostname import InvalidHostName
@@ -59,10 +53,7 @@ class HostNameTest(FieldTestBase):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,),
         unittest.makeSuite(HostNameTest),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
