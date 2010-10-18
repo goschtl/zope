@@ -7,14 +7,12 @@
   >>> mylayout = getMultiAdapter((request, cow), ILayout)
   >>> myview = getMultiAdapter((cow, request), name='myview')
 
-
   >>> print myview()
   <html>
    <body>
      <div class="layout"><p> My nice Content </p></div>
    </body>
   </html>
-
 
   >>> myview
   <megrok.layout.tests.models.page.MyView object at ...>
