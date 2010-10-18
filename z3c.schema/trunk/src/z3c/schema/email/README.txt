@@ -21,7 +21,7 @@ Now make sure the E-mail addresses validate:
   >>> email.validate('foo@bar.com')
   Traceback (most recent call last):
   ...
-  WrongType: ('foo@bar.com', <type 'unicode'>)
+  WrongType: ('foo@bar.com', <type 'unicode'>, '')
 
   >>> email.validate(u'foo@bar.')
   Traceback (most recent call last):

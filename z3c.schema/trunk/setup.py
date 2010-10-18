@@ -68,7 +68,7 @@ setup(
       'setuptools',
       'zope.i18nmessageid',
       'zope.interface',
-      'zope.schema',
+      'zope.schema >= 3.6',
       ],
     zip_safe=False,
 )

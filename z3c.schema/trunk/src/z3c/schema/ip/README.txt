@@ -13,7 +13,7 @@ Now make sure the IP addresses validate:
   >>> myip.validate(u'10.0.0.1')
   Traceback (most recent call last):
   ...
-  WrongType: (u'10.0.0.1', <type 'str'>)
+  WrongType: (u'10.0.0.1', <type 'str'>, '')
 
   >>> myip.validate('12.123.231.wee')
   Traceback (most recent call last):

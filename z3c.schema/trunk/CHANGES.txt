@@ -5,7 +5,8 @@ CHANGES
 0.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Updated tests to run with `zope.schema` >= 3.6, thus requiring at least
+  this version.
 
 
 0.6.1 (2010-10-18)
