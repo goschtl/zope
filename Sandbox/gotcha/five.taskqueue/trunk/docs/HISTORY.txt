@@ -1,10 +1,12 @@
 Changelog
 =========
 
-0.1-alpha-2 (unreleased)
+0.1-alpha-2 (2010-10-19)
 ------------------------
 
-- Nothing changed yet.
+- Z2PublisherMixin was not used.
+
+- Update after removal of use of _p_jar in z3c.taskqueue.
 
 
 0.1-alpha-1 (2010-09-27)
