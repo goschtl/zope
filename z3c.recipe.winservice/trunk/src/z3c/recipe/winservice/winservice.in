@@ -85,14 +85,14 @@ import win32event
 import win32process
 
 # these are replacements from winservice recipe
+PYTHONSERVICE_EXE = r'<<PYTHONSERVICE_EXE>>'
 PYTHON = r'<<PYTHON>>'
-PYTHONDIR = os.path.split(PYTHON)[0]
-PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
 TOSTART = r'<<RUNZOPE>>'
+PARAMETERS = r'<<PARAMETERS>>'
 SERVICE_NAME = '<<SERVICE_NAME>>'
 SERVICE_DISPLAY_NAME = r'<<SERVICE_DISPLAY_NAME>>'
 SERVICE_DESCRIPTION = r'<<SERVICE_DESCRIPTION>>'
-INSTANCE_HOME = os.path.dirname(os.path.dirname(TOSTART))
+INSTANCE_HOME = r'<<INSTANCE_HOME>>'
 
 
 # the max seconds we're allowed to spend backing off
@@ -152,12 +152,19 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     start_cmd = ''
 
     def __init__(self, args):
-        if not os.path.exists(PYTHON):
-            raise OSError("%s does not exist" % PYTHON)
+        cmdLine = ''
+        if PYTHON:
+            if not os.path.exists(PYTHON):
+                raise OSError("%s does not exist" % PYTHON)
+            cmdLine += '"%s" ' % PYTHON
         if not os.path.exists(TOSTART):
             raise OSError("%s does not exist" % TOSTART)
+        cmdLine += '"%s" ' % TOSTART
 
-        self.start_cmd = '"%s" "%s"' % (PYTHON, TOSTART)
+        if PARAMETERS:
+            cmdLine += PARAMETERS
+
+        self.start_cmd = cmdLine
 
         win32serviceutil.ServiceFramework.__init__(self, args)
         # Create an event which we will use to wait on.

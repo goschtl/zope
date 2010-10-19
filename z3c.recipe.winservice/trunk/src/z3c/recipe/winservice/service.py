@@ -54,6 +54,16 @@ def installScript(srcFile, script, replacements):
             shutil.copymode(srcFile, script)
             shutil.copystat(srcFile, script)
 
+            #get rid of compiled versions
+            try:
+                os.unlink(os.path.splitext(script)[0]+'.pyc')
+            except OSError:
+                pass
+            try:
+                os.unlink(os.path.splitext(script)[0]+'.pyo')
+            except OSError:
+                pass
+
     generated.append(script)
 
     return generated
@@ -74,6 +84,17 @@ def patchScript(srcFile, dstFile):
         open(dstFile, 'w').write(dest)
         shutil.copymode(srcFile, dstFile)
         shutil.copystat(srcFile, dstFile)
+
+        #get rid of compiled versions
+        try:
+            os.unlink(os.path.splitext(dstFile)[0]+'.pyc')
+        except OSError:
+            pass
+
+        try:
+            os.unlink(os.path.splitext(dstFile)[0]+'.pyo')
+        except OSError:
+            pass
 
     generated.append(dstFile)
 
@@ -107,17 +128,33 @@ class ServiceSetup:
         # setup start script
         binDir = self.buildout['buildout']['bin-directory']
         runzope = options.get('runzope')
+        runscript = options.get('runscript')
 
         # fix script name
-        if not runzope:
+        if not runzope and not runscript:
             raise zc.buildout.UserError(
-                'Missing runzope option in winservice recipe.')
-        if not runzope.endswith('-script.py'):
-            if runzope.endswith('.py'):
-                runzope = runzope[:3]
-            runzope = '%s-script.py' % runzope
+                'Missing `runzope` or `runscript` option in the recipe.')
 
-        self.runScript = os.path.join(binDir, runzope)
+        if runzope and runscript:
+            raise zc.buildout.UserError(
+                'Only one of `runzope` or `runscript` allowed in the recipe.')
+
+        if runzope:
+            #old-ish way
+            if not runzope.endswith('-script.py'):
+                if runzope.endswith('.py'):
+                    runzope = runzope[:3]
+                runzope = '%s-script.py' % runzope
+
+            if '/' in runzope or '\\' in runzope:
+                #don't add the bin folder if there's already a folder
+                self.runScript = runzope
+            else:
+                self.runScript = os.path.join(binDir, runzope)
+        else:
+            #new-ish way, just don't touch runscript
+            self.runScript = runscript
+
         options['serviceName'] = self.getServiceName()
 
     def getServiceName(self):
@@ -151,28 +188,47 @@ class ServiceSetup:
         displayName = options.get('name', defaultName)
         serviceName = options['serviceName']
         description = options.get('description', defaultDescription)
+        parameters = options.get('parameters', '')
+        python = self.executable
+        pythondir = os.path.split(python)[0]
+        #this is dumb... but stays unless someone figures something better
+        pythonservice_exe = r'%s\Lib\site-packages\win32\pythonservice.exe' % pythondir
+        instance_home = self.buildout['buildout']['directory']
+
+        # raise exeption if the service exe is not here now
+        if not os.path.exists(pythonservice_exe):
+            raise zc.buildout.UserError(
+                'Python service %s does not exist.'  %
+                    pythonservice_exe)
 
         generated = []
 
-        if options.get('debug'):
+        if options.get('debug') and self.runScript.lower().endswith('.py'):
             serviceScript = self.runScript.replace(
                 '-script.py', '-servicedebug.py')
             generated += patchScript(self.runScript, serviceScript)
         else:
             serviceScript = self.runScript
 
+        if serviceScript.lower().endswith('.exe'):
+            #if the script is an exe, no need to run it with python
+            python = ''
+
         self.winServiceVars = [
-            ("<<PYTHON>>", self.executable),
+            ("<<PYTHON>>", python),
             ("<<RUNZOPE>>", serviceScript),
+            ("<<PYTHONSERVICE_EXE>>", pythonservice_exe),
             ("<<SERVICE_NAME>>", serviceName),
             ("<<SERVICE_DISPLAY_NAME>>", displayName),
             ("<<SERVICE_DESCRIPTION>>", description),
+            ("<<PARAMETERS>>", parameters),
+            ("<<INSTANCE_HOME>>", instance_home),
             ]
 
         # raise exeption if the app script is not here now
         if not os.path.exists(serviceScript):
             raise zc.buildout.UserError(
-                'App start script %s does not exist in bin folder.'  %
+                'App start script %s does not exist.'  %
                     self.runScript)
 
         # get templates

@@ -5,9 +5,20 @@ CHANGES
 Version 0.7.0 (unreleased)
 --------------------------
 
+- New feature: ``runscript`` and ``parameters``.
+  With those, this recipe is now capable of making any executable or
+  python script a service.
+
+- Added more docs and tests.
+
+- Remove compiled winservice.pyc and pyo if they exist.
+
+- Most folder calculation moved to the recipe installer.
+  winservice.py gets constants, that makes it easier to see what happens.
+
 - Updated tests to be more tolerant to different Python versions.
 
-- Using Python's ``doctest`` module instead of depreacted
+- Using Python's ``doctest`` module instead of deprecated
   ``zope.testing.doctest``.
 
 Version 0.6.3 (2009-11-02)

@@ -66,8 +66,7 @@ def test_suite():
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             optionflags=(
                 doctest.NORMALIZE_WHITESPACE|
-                doctest.ELLIPSIS|
-                doctest.REPORT_NDIFF),
+                doctest.ELLIPSIS),
             checker=checker),
         )
 
