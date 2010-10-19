@@ -46,6 +46,10 @@ setup(name='z3c.schemadiff',
                         'zope.component',
                         'zope.pagetemplate',
                         ],
+      extras_require=dict(
+          test=[
+              'zope.component [test]',
+              ]),
       include_package_data = True,
       zip_safe = False,
       )

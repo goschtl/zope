@@ -1,7 +1,8 @@
 Changelog
 =========
 
-In next release:
+0.2 (unreleased)
+----------------
 
 - The ``IFieldDiff`` interface now allows for a ``html_diff`` method
   which will be used if the ``lines`` method is unavailable. This can
@@ -12,7 +13,12 @@ In next release:
 
 - Drop field if either value is ``None``. [malthe]
 
-- Use field.query instead of getattr
+- Use field.query instead of getattr.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+- Added test extra to declare test dependency on ``zope.component [test]``.
 
 
 0.1 (2008-04-30)
