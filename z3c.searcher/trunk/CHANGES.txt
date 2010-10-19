@@ -5,8 +5,10 @@ CHANGES
 0.6.1 (unreleased)
 ------------------
 
-- ...
+- Fixed test dependencies, so tests run with current version of ``z3c.form``.
 
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 0.6.0 (2009-09-20)
 ------------------
@@ -16,7 +18,7 @@ CHANGES
 
 - Bugfix: The criterim filter didn't work with more then one criterium used.
   The search form now locates the filter form and will set a individual prefix
-  for the criterium form. If you use a custom criterium form, you probably 
+  for the criterium form. If you use a custom criterium form, you probably
   have to review your custom implementation. Especialy review the prefix setup
   in the setupCriteriumRows method.
 

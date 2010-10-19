@@ -57,6 +57,7 @@ setup (
     namespace_packages = ['z3c',],
     extras_require = dict(
         test = [
+            'z3c.form [test]',
             'z3c.macro',
             'z3c.testing',
             'zope.app.authentication',

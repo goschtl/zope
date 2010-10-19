@@ -11,13 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id:$
-"""
-__docformat__ = "reStructuredText"
-
 import unittest
-from zope.testing import doctest
+import doctest
 
 import z3c.testing
 from z3c.searcher import interfaces
@@ -75,7 +70,3 @@ def test_suite():
         unittest.makeSuite(TestTextCriterium),
         unittest.makeSuite(TestSearchFilter),
         ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
