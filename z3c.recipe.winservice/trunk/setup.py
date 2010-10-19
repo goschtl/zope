@@ -26,7 +26,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.recipe.winservice',
-    version = '0.7.0dev',
+    version='0.7.0',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 windows service installer',

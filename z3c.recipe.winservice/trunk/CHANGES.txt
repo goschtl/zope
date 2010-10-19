@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.7.0 (unreleased)
---------------------------
+0.7.0 (2010-10-19)
+------------------
 
 - New feature: ``runscript`` and ``parameters``.
   With those, this recipe is now capable of making any executable or
