@@ -1,0 +1,33 @@
+=======
+CHANGES
+=======
+
+1.2 (2010-10-19)
+================
+
+* Removed test dependency on zope.app.zcmlfiles.
+
+
+1.1 (2010-10-02)
+================
+
+* Removed test dependency on `zope.app.testing`.
+
+
+1.0 (2007-12-06)
+================
+
+* Updated dependency to `zope.session` instead of `zope.app.session` to get rid of
+  deprecation warnings.
+
+
+1.0b2 (2007-09-12)
+==================
+
+* Bugfix: When there was more than one message in a source not all messages
+  would be returned by the receiver.
+
+1.0b1 (2007-08-22)
+==================
+
+* Initial public release.
