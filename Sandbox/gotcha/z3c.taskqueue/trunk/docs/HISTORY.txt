@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.1-alpha-3 (unreleased)
+------------------------
+
+- Nothing changed yet.
+
+
 0.1-alpha-2 (2010-10-19)
 ------------------------
 

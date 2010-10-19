@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1-alpha-2'
+version = '0.1-alpha-3dev'
 
 setup(name='z3c.taskqueue',
       version=version,
