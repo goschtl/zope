@@ -11,22 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests the zope policy.
-
-$Id: test_zopepolicy.py 73662 2007-03-27 06:52:40Z dobe $
-"""
-
-import unittest, doctest
-from zope.testing import module
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
-from zope.app.testing import placelesssetup, ztapi, functional, setup
-from z3c.securitytool import testing
-
-import os
-import unittest, doctest
-import zope.component
-from zope.app.testing import functional, setup
+from zope.app.testing import functional
 from zope.app.testing.functional import ZCMLLayer
+import doctest
+import os
+import unittest
 
 
 SecurityToolTestingLayer = ZCMLLayer(
@@ -38,7 +27,3 @@ def test_suite():
     suite = functional.FunctionalDocFileSuite('README.txt')
     suite.layer = SecurityToolTestingLayer
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
