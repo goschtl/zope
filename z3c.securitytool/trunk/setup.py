@@ -99,7 +99,7 @@ setup (
         'zope.location',
         'zope.schema',
         'z3c.macro',
-        'z3c.layer',
+        'z3c.layer.minimal',
         'zope.viewlet',
         ],
     zip_safe = False,
