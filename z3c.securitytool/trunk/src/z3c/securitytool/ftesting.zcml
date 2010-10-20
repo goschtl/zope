@@ -8,7 +8,7 @@
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
@@ -16,8 +16,7 @@
   <!--include package="zope.app.keyreference" /-->
   <!--include package="zope.app.intid" /-->
   <include package="zope.app.publisher.browser" />
-
-
+  <include package="zope.login" />
 
 
   <securityPolicy
@@ -27,7 +26,8 @@
   <role id="zope.Manager" title="Site Manager" />
 
   <grantAll role="zope.Manager" />
-  <include package="zope.app.securitypolicy.tests" file="functional.zcml" />
+  <include package="zope.app.securitypolicy.browser.tests"
+           file="functional.zcml" />
 
   <!-- Principal that tests generally run as -->
   <principal

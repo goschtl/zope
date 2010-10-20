@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 0.5.0 (unreleased)
+--------------------------
+
+- Updated tests, test setup and demo app to run with ZTK 1.0 on Python 2.4
+  and Python 2.6.
+
 
 Version 0.4.2 (2008-07-22)
 ---------------------------
@@ -52,7 +58,7 @@ Version 0.3.5b (2008-03-03)
 
 Version 0.3.5 (2008-03-02)
 --------------------------
-- Fixed issue where SecurityTool skin was only declared for the demo, 
+- Fixed issue where SecurityTool skin was only declared for the demo,
   skin is now declared in the configure.zcml.
 
 Version 0.3.4 (2008-02-26)
@@ -96,7 +102,7 @@ Version 0.2.4 (2008-02-06)
 - Fixed bug in permDetails
 - Updated interface and views
 - Added some more content to the demo
-  
+
 
 Version 0.2.3 (2008-01-29)
 --------------------------
@@ -115,11 +121,11 @@ Version 0.2.1 (2008-01-27)
 Version 0.2.0 (2008-01-26)
 --------------------------
 - Initial release of fully functional z3c.securitytool
-  
+
 Version 0.2.1 (2008-01-26)
 --------------------------
 - Fixed bug with Principal Details page
-  
+
 
 
 

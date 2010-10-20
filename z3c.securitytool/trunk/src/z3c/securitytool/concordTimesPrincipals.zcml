@@ -137,7 +137,7 @@
       <role id="zope.Manager" title="Manager" />
 
 
-      <!-- And the Boiler Plate --> 
+      <!-- And the Boiler Plate -->
 
       <grant
         role="zope.Manager"
@@ -153,7 +153,7 @@
 
       <grant permission="zope.View"
                       role="zope.Anonymous" />
-      <grant permission="zope.app.dublincore.view"
+      <grant permission="zope.dublincore.view"
                       role="zope.Anonymous" />
 
 </configure>

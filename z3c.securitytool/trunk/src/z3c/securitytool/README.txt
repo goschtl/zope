@@ -44,7 +44,7 @@ roles, groups or specifically assigned permissions will be displayed.
 
     >>> print folder1.__class__.__name__
     SecurityChecker
-    
+
     Lets introspect the object.
 
     >>> pprint(dir(folder1))
@@ -58,7 +58,7 @@ roles, groups or specifically assigned permissions will be displayed.
      'populateMatrix',
      'populatePermissionMatrix',
      'populateViewRoleMatrix']
-        
+
 
     To get all the security settings for particular context level the
     getPermissionSettingsForAllViews is called with a tuple of interfaces.
@@ -76,10 +76,11 @@ roles, groups or specifically assigned permissions will be displayed.
 
     >>> ifaces = tuple(providedBy(root['Folder1']))
     >>> pprint(ifaces)
-    (<InterfaceClass zope.app.folder.interfaces.IFolder>,
+    (<InterfaceClass zope.site.interfaces.IFolder>,
+     <InterfaceClass zope.container.interfaces.IContentContainer>,
      <InterfaceClass persistent.interfaces.IPersistent>,
-     <InterfaceClass zope.location.interfaces.IPossibleSite>,
-     <InterfaceClass zope.app.container.interfaces.IContained>)
+     <InterfaceClass zope.location.interfaces.IContained>,
+     <InterfaceClass zope.component.interfaces.IPossibleSite>)
 
     The next step to determine security levels is the getViews function.
     `getViews` gets all the registered views for this interface. This
@@ -209,7 +210,7 @@ and the context of 'Folder1'.
     Below we check to make sure the groups data structure from the user daniel
     is returned as expected. This is the data used to populate the groups
     section on the User Details page.
-    
+
     >>> pprint(matrix['groups'].keys())
     ['zope.randy']
 
@@ -249,18 +250,24 @@ and the context of 'Folder1'.
     The permissions section of the matrix displays the final say on
     whether or not the user has permissions at this context level.
 
-    >>> pprint(matrix['permissions'])
-    [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
-     {'setting': PermissionSetting: Deny, 'permission': 'concord.ReadIssue'},
-     {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
-     {'setting': PermissionSetting: Deny, 'permission': 'concord.DeleteArticle'},
-     {'setting': PermissionSetting: Allow, 'permission': 'concord.CreateIssue'},
-     {'setting': PermissionSetting: Allow, 'permission': 'concord.PublishIssue'}]
+    >>> pprint(matrix['permissions'], width=1)
+    [{'permission': 'concord.CreateArticle',
+      'setting': PermissionSetting: Allow},
+     {'permission': 'concord.ReadIssue',
+      'setting': PermissionSetting: Deny},
+     {'permission': 'concord.DeleteIssue',
+      'setting': PermissionSetting: Allow},
+     {'permission': 'concord.DeleteArticle',
+      'setting': PermissionSetting: Deny},
+     {'permission': 'concord.CreateIssue',
+      'setting': PermissionSetting: Allow},
+     {'permission': 'concord.PublishIssue',
+      'setting': PermissionSetting: Allow}]
 
     The roleTree structure is used to display the roles attained at
     each level of traversal. The roleTree is stored as a list so to
-    consistently test the data properly we will create a dictionary 
-    out of it and is similar in function to the permissionTree.    
+    consistently test the data properly we will create a dictionary
+    out of it and is similar in function to the permissionTree.
 
     >>> tmpDict = {}
     >>> keys = matrix['roleTree']
@@ -273,7 +280,7 @@ and the context of 'Folder1'.
      'roles': [{'principal': 'zope.daniel',
                 'role': 'zope.Writer',
                 'setting': PermissionSetting: Allow}]}
-    
+
     >>> pprint(tmpDict['Folder1_2'])
     {'name': None,
      'parentList': [u'Folder1', 'Root Folder'],
@@ -291,11 +298,15 @@ and the context of 'Folder1'.
     The roles section of the matrix displays the final say on whether or
     not the user has the role assigned at this context level.
 
-    >>> pprint(matrix['roles'])
-    {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
-     'zope.Writer':  [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
-                      {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
-                      {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
+    >>> pprint(matrix['roles'], width=1)
+    {'zope.Janitor': [{'permission': 'concord.ReadIssue',
+                       'setting': 'Allow'}],
+     'zope.Writer': [{'permission': 'concord.DeleteArticle',
+                      'setting': 'Allow'},
+                     {'permission': 'concord.CreateArticle',
+                      'setting': 'Allow'},
+                     {'permission': 'concord.ReadIssue',
+                      'setting': 'Allow'}]}
 
 
 Now lets see what the permission details returns
@@ -457,10 +468,10 @@ TestBrowser Smoke Tests
     This is the principal detail page, you can get to by clicking on the
     principals name at the top of the form
 
-    >>> manager.open(server + 
+    >>> manager.open(server +
     ...              '/@@principalDetails.html?principal=zope.daniel')
 
-    >>> manager.open(server + 
+    >>> manager.open(server +
     ...              '/Folder1/Folder2/Folder3/'
     ...              '@@principalDetails.html?principal=zope.daniel')
 
@@ -488,7 +499,7 @@ TestBrowser Smoke Tests
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no user specified
- 
+
 
     And now we will test it without the view name
 
@@ -496,13 +507,13 @@ TestBrowser Smoke Tests
     ...                        'principal=zope.daniel')
 
     And now with a view name that does not exist
-  
+
     >>> manager.open(server + '/@@permissionDetails.html?'
     ...              'principal=zope.daniel&view=garbage')
-  
+
     Lets also test with a different context level
-  
-    >>> manager.open(server + 
+
+    >>> manager.open(server +
     ...              '/Folder1/Folder2/Folder3/'
     ...              '@@permissionDetails.html'
     ...              '?principal=zope.daniel&view=ReadIssue.html')
