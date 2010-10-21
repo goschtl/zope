@@ -36,6 +36,13 @@ def get_conflictInfo():
     http://svn.zope.org/Zope/tags/2.11.1/lib/python/Zope2/App/startup.py?view=markup
     """
     major, minor, micro = getZopeVersion()[:3]
+    
+    # handle zope2.10.11 (shipped with plone3.3.5 that misses the version number
+    # see https://bugs.launchpad.net/zope2/+bug/510477
+    if major == -1:
+        major = 2
+        minor = 10
+        
     assert major == 2, "ZNagios has been built for Zope2, " \
         "your version seems to be %d" % major
 

@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.4.2 - 2010-10-21
+------------------
+
+- fixed ``Control_Panel/munin`` for Zope 2.10.11
+  which is used for plone 3.3.4 and 3.3.5 and ships
+  w/o version information
+  (see https://bugs.launchpad.net/zope2/+bug/510477)
+  [fRiSi]
+
 0.4.1 - 2010-06-14
 ------------------
 
