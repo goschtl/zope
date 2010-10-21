@@ -11,20 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Image Widgets Test
-
-$Id$
-"""
-__docformat__ = "reStructuredText"
 import doctest
-import unittest
 import zope.component
 from zope.app.session import interfaces
 from zope.app.session import session
 from zope.app.testing import placelesssetup
 from zope.app.session.http import CookieClientIdManager
 from zope.publisher.interfaces import IRequest
-from zope.testing.doctestunit import DocFileSuite
 
 
 def setUp(test):
@@ -39,17 +32,9 @@ def setUp(test):
         session.PersistentSessionDataContainer(),
         interfaces.ISessionDataContainer)
 
-def tearDown(test):
-    placelesssetup.tearDown()
-
 
 def test_suite():
-    return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp, tearDown=placelesssetup.tearDown(),
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)

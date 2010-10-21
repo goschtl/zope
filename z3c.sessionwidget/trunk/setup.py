@@ -1,4 +1,11 @@
 from setuptools import setup, find_packages
+import os.path
+
+
+def read(*rnames):
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return text + '\n\n'
+
 
 setup(
     name = "z3c.sessionwidget",
@@ -6,6 +13,11 @@ setup(
     author = "Zope Contributors",
     author_email = "zope3-dev@zope.org",
     description = "Session Input Widget",
+    long_description=(
+        '.. contents::\n\n' +
+        read('CHANGES.txt') +
+        read('src', 'z3c', 'sessionwidget', 'README.txt')
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 session widget",
     url = 'http://svn.zope.org/z3c.sessionwidget',

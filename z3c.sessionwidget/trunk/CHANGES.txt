@@ -1,0 +1,17 @@
+============
+ Change log
+============
+
+0.1 (unreleased)
+----------------
+
+- Added doctest to ``long_description``.
+
+- Added change log.
+
+- Removed ZPKG slugs and ZCML slugs.
+
+- Updated tests to run with current versions of the required packages.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctestunit``.

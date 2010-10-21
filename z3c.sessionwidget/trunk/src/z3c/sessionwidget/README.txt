@@ -12,13 +12,13 @@ While a sub-form is an acceptable solution, it often writes the data to the
 object before the form's save button is pressed. This is, for example, the
 case when uploading images and displaying them right away as visual
 feedback. The object widget has the same problem when constructing sequences
-qith complex sub-items. In general it is up to the developer to decide when to
+with complex sub-items. In general it is up to the developer to decide when to
 present a new form or use the widget, but at least s/he should have the
 choice.
 
 To solve this problem, this package provides a widget that is only responsible
 for relaying the data of interest to a session. A sub-form or any other
-componentcan then use this session data and provide new data, if desired. The
+component can then use this session data and provide new data, if desired. The
 session data will also be publically available via a URL, so that the objects
 can also be displayed, such as images. This has the advantage that the data is
 *not* stored on the content until the overall form is submitted.
@@ -85,7 +85,7 @@ we can now initialize the widget:
 The widget can directly access the session:
 
   >>> objWidget.session
-  <zope.app.session.session.SessionPkgData object at ...>
+  <zope.session.session.SessionPkgData object at ...>
   >>> objWidget.session.get('data', 'nothing')
   'nothing'
   >>> objWidget.session.get('changed', 'nothing')
@@ -103,7 +103,7 @@ input is not present, a ``MissingInputError`` is raised:
   Traceback (most recent call last):
   ...
   MissingInputError: ('field.obj', u'Object', None)
-  
+
 This is satisfied by using a hidden field.
 
   >>> request.form['field.obj.used'] = ''
@@ -112,7 +112,7 @@ This is satisfied by using a hidden field.
   >>> objWidget.getInputValue() is None
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('obj', u'Object', )
+  WidgetInputError: ('obj', u'Object', RequiredMissing('obj'))
 
 Ups, we have a required field, so we need an accecptable Value. We can
 achieve this by setting the rendered value.
