@@ -1,0 +1,72 @@
+
+
+TODO
+====
+
+Test the functionality of a custom security policy
+
+PrincipalDetails and Permission Details
+=======================================
+    * Strike through role - permissions which are denied 
+      by specific permission deny settings
+
+
+DONE
+=======================================
+    * Make sure the group settings are taken into account and
+      displayed properly 
+
+        o SecurityMatrix.html -- Done
+        o PrincipalDetails.html -- Done
+        o PermissionDetails.html -- Done       
+
+    * Test inheritance of roles through group memberships.
+        ( DONE we just inherit the permissions digested from the
+        groups ) 
+        o SecurityMatrix.html
+        o PrincipalDetails.html
+        o PermissionDetails.html        
+
+
+
+    * Permissions for securitytool views cannot be zope.Public
+
+    * Show permisisons that have a direct impact view and user
+    * Show roles that have a direct impact on view and user
+    * Link to PrincipalDetails
+    
+    * Fix permDetails 
+    
+    * PermissionDetails
+    
+    * Onclick for the fiter:
+
+    * Relative links for the root
+
+    * Specifically denied roles should be displayed with allowed roles
+
+
+    * Be able to show permissions for context levels even if names are
+      the same  ( works for roles )
+
+    * Securitymatrix should be a link instead of an onclick
+
+
+    PrincipalDetails
+    =================
+
+        * PermissionTree (Done)
+        * PermissionTree with `global settings` (Done)
+        * Directly provided permissions in effect at context
+          level (Done)
+
+        * Specify which context the permission,group and role are attained
+          from (Done)
+
+        * RoleTree (Done)
+        * RoleTree with `global settings` (Done) 
+        * Directly provided roles in effect at context level (Done)
+
+        WOO HOO !!
+
+

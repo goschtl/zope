@@ -1,0 +1,32 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <adapter
+      factory=".securitytool.SecurityChecker"
+      for="*"
+      />
+
+  <adapter
+      factory=".securitytool.PermissionDetails"
+      for="*"
+      />
+
+  <adapter
+      factory=".securitytool.PrincipalDetails"
+      for="*"
+      />
+
+  <interface
+    interface="z3c.securitytool.browser.ISecurityToolSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="SecurityTool"
+    />
+  <include package="z3c.macro" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.layer.minimal" />
+
+  <include package=".browser" />    
+
+
+</configure>

@@ -1,0 +1,46 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    >
+
+  <page name="securityMatrix.html"
+      for="*"
+      class=".views.PrincipalMatrixView"
+      permission="zope.ManageContent"
+      layer="z3c.securitytool.browser.ISecurityToolSkin"
+
+  />
+
+  <page name="principalDetails.html"
+      for="*"
+      class=".views.PrincipalDetailsView"
+      permission="zope.ManageContent"
+      layer="z3c.securitytool.browser.ISecurityToolSkin"
+  />
+
+  <page name="permissionDetails.html"
+      for="*"
+      class=".views.PermissionDetailsView"
+      permission="zope.ManageContent"
+      layer="z3c.securitytool.browser.ISecurityToolSkin"
+  />
+
+  <z3c:macro
+      name="permission-details"
+      macro="permission-details"
+      template="permdetails.pt"
+      />
+
+  <z3c:macro
+      name="user-details"
+      macro="user-details"
+      template="principalinfo.pt"
+      />
+
+  <resource
+      name="securitytool.css"
+      file="securitytool.css"
+      layer="z3c.securitytool.browser.ISecurityToolSkin"
+      />
+
+</configure>

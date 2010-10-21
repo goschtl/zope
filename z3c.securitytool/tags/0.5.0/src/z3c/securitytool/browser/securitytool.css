@@ -1,0 +1,220 @@
+/* Normalize */
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+  margin : 0;
+  padding : 0;
+  font-size: 100%;
+  font-weight: normal;
+
+}
+
+/* remove borders from tables */
+
+table {
+  border-collapse : collapse;
+  border-spacing : 0;
+}
+
+/* start formatting the page */
+
+body {
+    padding: 5px;
+    font-family:Arial,sans-serif;
+    font-size:small;
+    margin: 20px;
+
+}
+
+h1 {
+    font-size: 140%;
+    font-weight: bold;
+    padding: 10px 20px;
+    width: 60%;
+    border-bottom: 1px solid #ccc;
+}
+
+.just_border { 
+    padding: 0px 20px;
+}
+h2 {
+    font-size: 110%;
+    font-weight: bold;
+    padding: 5px 25px;
+}
+
+h3 {
+    font-weight: bold;
+    text-decoration: underline;
+ }
+
+form {
+    margin-top: 25px;    
+}
+
+form input {
+    font-size: 90%;
+}
+
+form select {
+    font-size: 90%;
+}
+
+table {
+    border: 1px solid #999;
+    width: 60%;
+}
+
+table td {
+    text-align : center;
+    vertical-align : middle;
+    font-size: 90%;
+    padding: 2px 5px;
+}
+
+* html table {  /* for Internet Explorer */
+  font-size: 120%; 
+}
+
+table th {
+    background-color : #ccc;
+    font-size: 90%; 
+    font-weight: bolder;
+    padding:5px;
+    
+}
+
+table th a {
+    text-decoration:none;
+}
+
+table th a:visited {
+    color: blue;
+}
+
+.viewname {
+    font-weight : bold;
+}
+
+.view_perm {
+    padding-left: 2em;
+    text-align: left;
+}
+
+.viewObj {
+    font-weight : bold;
+}
+
+
+.view{
+    text-align : left;
+}
+
+.permission {
+    font-style:italic;
+}
+
+.odd {
+    padding-left: 3em;
+    background-color: #ddd;
+}
+
+.even {
+    padding-left: 3em;
+}
+
+.contentList {
+    margin-left: 1em;
+}
+.contextList {
+    text-decoration: underline;
+    margin-left: 1em;
+}
+
+
+.contextListIndent {
+    margin-left: 3em;
+}
+
+.finalPermissions {
+    margin-left: 1em;
+}
+
+.sectionInfo {
+    padding-top: 5px;
+    padding-left: 5px;
+    font-size: 85%;
+    font-style:italic;
+    color: grey;
+}
+
+.legend {
+   font-style: italic;
+   /*margin-left: 25px;*/
+   font-size: 85%;
+   margin-bottom: 2em;
+
+}
+
+.description {
+    margin-right: 35%;
+    margin-left: 3em;
+}
+
+.top_nav {
+    margin-top: 5px;
+    margin-left: 38px;
+    margin-bottom: 10px;
+}
+
+.top_nav_val {
+    font-weight: bold;
+    font-size: 115%;
+}
+
+.matrix_body {
+    margin-left: 3em;
+}
+
+.matrix_table {
+    margin-left: 40px;
+}
+
+.headings {
+    background-color: #999;
+}
+
+.sub_heading {
+   font-size: 115%;
+   color: grey;
+   margin-bottom: 8px;
+   /*margin-left: 25px;*/
+
+}
+
+.tree{
+   float: left;
+   padding: 10px 20px;
+   margin-bottom: 8px;
+   margin-right: 8px;
+   border: 1px solid #ccc;
+
+}
+.context {
+   float: left;
+   padding: 10px 20px;
+   margin-bottom: 8px;
+   margin-right: 8px;
+   border: 1px solid #ccc;
+
+}
+
+
+/* Permission setting classes */
+.Allow {
+  color:green;
+}
+
+.Deny {
+  font-weight:bold;
+  color:red;
+}
