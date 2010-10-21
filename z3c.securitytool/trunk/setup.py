@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 def read(*rnames):
     text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return text + '\n\n'
 
 readmeText = read('./src/z3c/securitytool/README.txt')
 
@@ -32,10 +32,9 @@ setup (
     author_email = "zope-dev@zope.org",
     description = "A security audit tool and demo for Zope3 views",
     long_description=(
-        read('README.txt')
-        + '\n\n'
-        + '\n' + readmeText
-        + '\n\n' +
+        '.. contents::\n\n' +
+        read('README.txt') +
+        read('src', 'z3c', 'securitytool', 'README.txt')+
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
