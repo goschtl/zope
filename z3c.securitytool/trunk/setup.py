@@ -30,6 +30,7 @@ setup (
     version='0.5.1dev',
     author = "Daniel Blackburn, Stephan Richter, Randy Crafton",
     author_email = "zope-dev@zope.org",
+    url="http://pypi.python.org/pypi/z3c.securitytool",
     description = "A security audit tool and demo for Zope3 views",
     long_description=(
         '.. contents::\n\n' +
