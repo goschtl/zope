@@ -4,8 +4,7 @@ CHANGES
 0.4.1 (unreleased)
 ==================
 
-- Nothing changed yet.
-
+- Remove ftesting.zcml that was not necessary anymore.
 
 0.4 (2010-10-25)
 ================
