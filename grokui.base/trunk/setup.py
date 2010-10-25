@@ -21,7 +21,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='grokui.base',
-      version='0.4',
+      version='0.5dev',
       description="The Grok administration and development UI (base)",
       long_description=(
         read('README.txt') +
