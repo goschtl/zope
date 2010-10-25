@@ -13,6 +13,7 @@ install_requires = [
     'z3c.flashmessage',
     'grokcore.component',
     'zope.component',
+    'zope.traversing', # zope.session seems not to declare this dep.
     ]
 
 tests_require = [

@@ -23,7 +23,6 @@ def test_suite():
     suite = unittest.TestSuite()
     test = doctest.DocFileSuite(
         'README.txt', optionflags=doctest.ELLIPSIS)
-    test.layer = GrokcoreMessageLayer(
-        grokcore.message, zcml_file='configure.zcml')
+    test.layer = GrokcoreMessageLayer(grokcore.message)
     suite.addTest(test)
     return suite
