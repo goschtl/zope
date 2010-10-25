@@ -34,7 +34,7 @@ class Index(grok.View):
     Redirect to the first item displayed in grokui-namespaced main
     menu.
     """
-    grok.name('index.html') # The root folder is not a grok.Model
+    grok.name('index')
     grok.context(IRootFolder)
     grok.require('zope.ManageServices')
     grok.layer(grok.IDefaultBrowserLayer)

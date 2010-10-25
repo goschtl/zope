@@ -1,11 +1,12 @@
 <configure
+    xmlns="http://namespaces.zope.org/zope"
     xmlns:grok="http://namespaces.zope.org/grok"
-    xmlns="http://namespaces.zope.org/zope">
-
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
   <include package="zope.security" file="meta.zcml" />
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.viewlet" file="meta.zcml" />
-  
+
   <include package="grokcore.viewlet" />
   <include package="megrok.menu" file="meta.zcml" />
   <include package="megrok.layout" file="meta.zcml" />
@@ -15,6 +16,11 @@
 
   <!-- Declares the zope.ManageServices perm -->
   <include package="zope.security" />
+
+  <browser:defaultView
+    for="zope.site.interfaces.IRootFolder"
+    name="index"
+  />
 
   <grok:grok package="." />
 
