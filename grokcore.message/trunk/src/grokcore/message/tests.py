@@ -9,7 +9,6 @@ from zope.component.testlayer import ZCMLFileLayer
 from zope.publisher.browser import TestRequest
 from zope.security.management import newInteraction, endInteraction
 
-
 class GrokcoreMessageLayer(ZCMLFileLayer):
 
     def setUp(self):
@@ -20,11 +19,11 @@ class GrokcoreMessageLayer(ZCMLFileLayer):
         endInteraction()
         ZCMLFileLayer.tearDown(self)
 
-
 def test_suite():
     suite = unittest.TestSuite()
     test = doctest.DocFileSuite(
         'README.txt', optionflags=doctest.ELLIPSIS)
-    test.layer = GrokcoreMessageLayer(grokcore.message)
+    test.layer = GrokcoreMessageLayer(
+        grokcore.message, zcml_file='configure.zcml')
     suite.addTest(test)
     return suite

@@ -4,6 +4,9 @@ CHANGES
 0.4 (unreleased)
 ================
 
+* Make sure ``zope.session`` is configured, as this package claims to provide
+  for a session based flash message machinery.
+
 * Made package comply to zope.org repository policy.
 
 0.3 (2010-03-05)
