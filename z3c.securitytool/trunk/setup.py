@@ -11,21 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup
-
-$Id: setup.py 81198 2007-10-30 08:08:29Z icemac $
-"""
-import os
-import xml.sax.saxutils
+import os.path
 from setuptools import setup, find_packages
+
 
 def read(*rnames):
     text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
     return text + '\n\n'
 
-readmeText = read('./src/z3c/securitytool/README.txt')
 
-setup (
+setup(
     name='z3c.securitytool',
     version='0.5.2dev',
     author = "Daniel Blackburn, Stephan Richter, Randy Crafton",
