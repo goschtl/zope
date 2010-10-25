@@ -15,8 +15,8 @@
 
 $Id: tests.py 165 2008-03-12 00:09:25Z pcardune $
 """
+import doctest
 import unittest
-from zope.testing import doctestunit, doctest
 #from zope.app.testing import placelesssetup
 
 # set up internationalization
@@ -25,13 +25,10 @@ from zope.testing import doctestunit, doctest
 
 def test_suite():
     return unittest.TestSuite((
-        doctestunit.DocFileSuite(
+        doctest.DocFileSuite(
             'README.txt',
             #'implementation.txt',
             #setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

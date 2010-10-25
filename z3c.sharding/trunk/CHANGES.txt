@@ -2,7 +2,17 @@
 CHANGES
 =======
 
-Version 0.1.0 (2008-??-??)
---------------------------
+0.1.1 (unreleased)
+------------------
+
+- Declared dependency on `zope.app.container`.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest[unit]``.
+
+
+
+0.1.0 (2008-??-??)
+------------------
 
 - Initial Release

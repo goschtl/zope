@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup(
     name='z3c.sharding',
-    version = '0.1.0-dev',
+    version = '0.1.1dev',
     author='Keas, Inc.',
     description='Database Sharding for ZODB',
     long_description=(
@@ -42,6 +42,7 @@ setup(
         ),
     install_requires=[
         'setuptools',
+        'zope.app.container',
         ],
     include_package_data = True,
     zip_safe = False,
