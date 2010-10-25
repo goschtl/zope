@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '0.4.2dev'
+version = '0.4.2'
 
 readme = open(os.path.join('src', 'grokcore', 'message', 'README.txt')).read()
 changes = open("CHANGES.txt").read()
@@ -10,10 +10,10 @@ long_description = "%s\n\n%s\n" % (readme, changes)
 
 install_requires = [
     'setuptools',
-    'z3c.flashmessage',
     'grokcore.component',
+    'z3c.flashmessage',
     'zope.component',
-    'zope.traversing', # zope.session seems not to declare this dep.
+    'zope.traversing', # zope.session seems not to declare this dep.?
     ]
 
 tests_require = [
