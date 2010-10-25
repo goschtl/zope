@@ -27,7 +27,7 @@ readmeText = read('./src/z3c/securitytool/README.txt')
 
 setup (
     name='z3c.securitytool',
-    version='0.5.1dev',
+    version='0.5.2dev',
     author = "Daniel Blackburn, Stephan Richter, Randy Crafton",
     author_email = "zope-dev@zope.org",
     url="http://pypi.python.org/pypi/z3c.securitytool",
