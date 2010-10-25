@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" media="all" href=""
+              tal:attributes="href string:++resource++securitytool.css"/>
+    </head>
+<body>
+   <h1>Security Checking Tool</h1>
+   <div class="top_nav">
+       <span class="top_nav_val">Security Matrix</span>
+   </div>
+   <p class="description"> z3c.securitytool is a Zope3 package aimed at providing component level
+security information to assist in analyzing security problems and to
+potentially expose weaknesses. The goal of the security tool is to
+provide a matrix of users and their effective permissions for all available
+views for any given component and context. We also provide two further
+levels of detail. You can view the details of how a user came to have
+the permission on a given view, by clicking on the permission in the
+matrix. You may also select a specific principal at the top of the
+table and see all permissions roles and groups assigned to that
+principal.  The skin selection is very relevant when it comes to
+security settings and is very likely to change what you see on this
+page when you change skins.
+
+</p>
+   <form action="." method="POST"
+             name="form"
+             tal:attributes="action request/URL">
+     <p class="matrix_body">Select a skin:
+         <select name="selectedSkin"
+          tal:attributes="onchange string:javascript:document.form.submit()"
+          tal:define="skin request/session:securitytool/selectedSkin|nothing">
+            <option value="SkinType"
+               tal:repeat="skinName view/skinTypes"
+               tal:attributes="value skinName; 
+               selected python:skin==skinName"
+               tal:content="skinName">SkinName</option>
+         </select>
+      </p>
+      <p class="matrix_body">Filter by permission:   
+         <select name="selectedPermission"
+           tal:attributes="onchange string:javascript:document.form.submit();"
+           tal:define="selPerm request/session:securitytool/selectedPermission|nothing">
+            <option value="None">- All Permissions -</option>
+            <option value="Permission"
+               tal:repeat="permission view/getPermissionList"
+               tal:attributes="value permission; 
+               selected python:selPerm==permission"
+               tal:content="permission">permission</option>
+         </select>
+      </p>
+   </form>
+   <br />
+   <table class="matrix_table" tal:define="urlViewName view/urlEncodedViewName" >
+       <th class="headings">&nbsp</th>
+       <th class="headings"
+           tal:repeat="principal python: sorted(view.viewMatrix)">
+           <a tal:content="principal"
+               tal:attributes="href
+                        string:principalDetails.html?principal=${principal}">
+            Principal</a>
+       </th>
+
+       <metal:block tal:repeat="viewObj view/viewList"
+                    tal:attributes="class view/cssclass">
+          <tr>
+            <th align="left" valign="bottom" >
+               <div class="viewObj" tal:content="python: viewObj"/>
+            </th>
+            <th tal:attributes="colspan python:len(view.viewMatrix)">
+              &nbsp
+            </th>
+
+          </tr>
+          <tr tal:repeat="viewItem python: view.viewList[viewObj]"
+              tal:attributes="class view/cssclass" 
+              tal:define="skin
+              request/session:securitytool/selectedSkin|nothing;
+              view_url python: request['HTTP_HOST'];
+              view_skin request/session:securitytool/selectedSkin|nothing;
+              view_path python: view.path">
+              
+               <td class="view_perm">
+                 <a tal:attributes="href string: http://${view_url}/++skin++${view_skin}/${view_path}/${viewItem}" 
+                    tal:content="viewItem" class="view_perm"/>
+               </td>
+                <metal:block tal:repeat="principal python: sorted(view.viewMatrix)">
+                <td tal:define="enc python:urlViewName[viewItem];
+                   perm python: view.getPermissionSetting(viewItem,principal)">
+
+                  <a tal:attributes="class perm; 
+                    href string:permissionDetails.html?principal=${principal}&amp;view=${enc}"
+                     tal:omit-tag="python: perm =='--'">
+                      <span tal:content="python: perm"
+                            tal:omit-tag="">Allow</span>
+                  </a>
+              </td>
+              </metal:block>
+           </tr>
+
+       </metal:block>
+
+   </table>
+</body>
+</html>

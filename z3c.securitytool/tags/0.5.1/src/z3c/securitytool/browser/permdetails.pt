@@ -1,0 +1,177 @@
+<html>
+    <head>
+      <link type="text/css" rel="stylesheet" media="all" href=""
+           tal:attributes="href string:++resource++securitytool.css"/>
+    </head>
+    <body>
+       <h1>Security Checking Tool</h1>
+       <div class="top_nav">
+         <a class="top_nav_val"  href="./securityMatrix.html">Security Matrix</a>&nbsp|&nbsp
+         <span class="top_nav_val">Permission Settings </span>
+       </div>
+       <p class="description"> The permission settings for the
+       intersection of the view and principal are displayed here. This
+       view displays the permissions, roles, and groups applied to the
+       view and principal previously selected on the securityMatrix.html
+       page. These are the settings that directly determine what the
+       security settings are for the intersection selected. You
+       can go back to the matrix page by selecting the `Security
+       Matrix` link above. </p>
+           <div class="matrix_body">
+           <h1 class="just_border">&nbsp</h1>
+           <div class="sub_heading">Permission settings for
+              <a tal:content="view/principal"
+                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
+                 Principal</a>
+               and the view
+              <b tal:content="view/view"></b></div>
+           <div class="legend" tal:condition="view/legend" tal:content="structure view/legend"/>
+            <metal:block define-macro="user-details"
+                         tal:define="permissions view/principalPermissions/permissions;
+                                     roles view/principalPermissions/roles;
+                                     roleTree view/principalPermissions/roleTree;
+                                     permissionTree view/principalPermissions/permissionTree;
+                                     groups view/principalPermissions/groups">
+
+                  <div class="context">
+                      <!-- Section lists the digested list of permissions from all context levels -->
+                      <h3 tal:define="junk python:permissions.sort()">
+                        Permissions for this view and user:
+                      </h3>
+                      <p class="sectionInfo">
+                           This section lists
+                           the permission setting applied to this user and <br>
+                           view calculated from  all contexts in the current
+                           traversal path. This <br> is the actual permission
+                           for this user and view at this context level.
+                      </p>
+                      <br>
+                      <div tal:repeat="permissionItem permissions" >
+                         <div class="finalPermissions">
+                           <div tal:attributes="class python: permissionItem['setting']"
+                              tal:content="python: permissionItem['permission']"/>
+                         </div>
+                      </div>
+
+                      <!-- Section lists the roles assigned to this user that may provide access to the view -->
+                      <br>
+                      <h3 >Permissions provided by roles</h3>
+                      <p class="sectionInfo" > This section lists the
+                          the roles and the permissions they provide<br>
+                          which may provide access the view.
+                      </p>
+                      <br>
+                      <div tal:condition="not:roles">
+                          <b>There are no roles assigned to <br>
+                             this user which provide access <br>
+                             to this view.
+                          </b>
+                      </div>
+
+                      <div tal:condition="roles">
+                        <div tal:repeat="role python: sorted(roles)">
+                          <div class="contextList"
+                               tal:content="python: role">zope.ManageSite:
+                          </div>
+                          <div  tal:define="permissions python:roles[role]">
+                             <div class="contextListIndent"
+                                  tal:define="junk python:permissions.sort()"
+                                  tal:repeat="permission permissions">
+                                  <div  tal:attributes="class permission/setting"
+                                        tal:content="permission/permission"/>
+                             </div>
+                          </div>
+                          <br>
+                        </div>
+                      </div>
+                  </div>
+
+
+                  <!-- Section lists the permissions and location -->
+                  <!-- attained for access to the  view -->
+                  <div class="tree" tal:condition="python:permissionTree or roleTree">
+                      <span tal:condition="permissionTree">
+                        <h3>Permissions defined in
+                        context(s) for user:
+                        </h3>
+                        <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
+                        the related permissions for this <br>user and view
+                        and the context level assigned. The same settings <br>
+                        can be found in the @@grant.html view on each context.
+                        </p>
+                        <br>
+
+                        <tal:block tal:repeat="context permissionTree">
+                              <span tal:define="curr python:context.values()[0]">
+                                  <div class="contextList"
+                                       tal:content="python: ' / '.join(curr['parentList'])"/>
+                                  <div class="contextListIndent" tal:repeat="permission python: curr['permissions']">
+                                      <div tal:attributes="class  python:permission['setting']"
+                                           tal:content="python: permission['permission']"/>
+                                  </div>
+                              </span>
+                            <br>
+                            <br>
+                        </tal:block>
+                      </span>
+                      <span tal:condition="roleTree">
+                        <h3>Roles defined in
+                        context(s) for user:</h3>
+
+                        <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
+                        the roles and permissions assigned to this user and <br>the
+                        context level assigned which may provide access
+                        to the view.<br>The same settings can be found in the @@grant.html view on each context.
+                        </p>
+                        <br>
+
+                        <tal:block tal:repeat="context roleTree">
+                              <span tal:define="curr python:context.values()[0]">
+                                  <div class="contextList"
+                                       tal:content="python: ' / '.join(curr['parentList'])"/>
+                                  <div class="contextListIndent" tal:repeat="role python: curr['roles']">
+                                      <div tal:attributes="class  python:role['setting']"
+                                           tal:content="python: role['role']"/>
+                                  </div>
+                              </span>
+                              <br>
+                        </tal:block>
+                        <br tal:condition="roleTree">
+                     </span>
+                </div>
+
+                <!-- Group sections defined below -->
+                <div tal:condition="groups" class="context">
+                   <h3 tal:condition="permissions">Permissions
+                       provided by Groups:
+                   </h3>
+                   <p class="sectionInfo"> This section lists all
+                   the groups assigned to this user which have a
+                   <br> permission which affects this view and this user <br>
+                   </p>
+                   <br>
+
+                   <div tal:repeat="group python: groups.keys()">
+                    <metal:block
+                       tal:define="gPermissions python:groups[group]['permissions']">
+                       <span tal:condition="group">
+                           <a tal:content="group"
+                            tal:attributes="href string:principalDetails.html?principal=${group}">
+                            Principal</a>
+                         <br>
+                         <div tal:repeat="permissionItem gPermissions" >
+                          <div class="finalPermissions">
+                            <div   tal:attributes="class python: permissionItem['setting']"
+                               tal:content="python:  permissionItem['permission']"/>
+                            </div>
+                         </div>
+                         <br tal:condition="gPermissions">
+                       </span>
+                    </metal:block>
+                  </div>
+
+                </div>
+           </metal:block>
+        </div>
+    </body>
+</html>

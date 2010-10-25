@@ -1,0 +1,141 @@
+=======
+CHANGES
+=======
+
+0.5.1 (2010-10-23)
+------------------
+
+- Removed duplicate url entry in `setup.py` fixing brown bag release.
+
+
+0.5.0 (2010-10-21)
+------------------
+
+- Updated tests, test setup and demo app to run with ZTK 1.0 on Python 2.4
+  and Python 2.6.
+
+- Updated to `z3c.layer.minimal` instead of deprecated `z3c.layer`.
+
+
+0.4.2 (2008-07-22)
+------------------
+- Fixed issue with inheritance display on the permissionDetails page
+- Cleaned up some of the page template files.
+- Added description to the group inheritance display on the principal
+  details page.
+
+0.4.1 (2008-06-12)
+------------------
+- Fixed issue with inheritance display on the securityMatrix.html page
+- Added links to the views listed on the securityMatrix.html page
+- Refactored out the PrincipalDetails and the PermissionDetails to
+  their own files
+- Added the ZPL text to the tops of all the py files
+- Refactored out the shared global functions to globalFunctions.py
+- Refactored out the MatrixDetails superclass to its own file.
+
+pant, pant, pant
+
+0.4.0b (2008-06-09)
+-------------------
+- Updated page template for principal details
+- Sorting issue fixed on viewMatrix page
+
+0.4.0 (2008-06-09)
+------------------
+- Updated page template for principal details
+- Releasing as Beta
+
+0.3.6b (2008-06-02)
+-------------------
+- Misc fixes to group permission inheritance.
+- Misc verbiage and layout updates to page templates.
+
+0.3.6 (2008-05-25)
+------------------
+- Security tool now inherits properly from groups.
+
+0.3.5c (2008-05-24)
+-------------------
+- Mainly fixed documentation and DocTests
+
+0.3.5b (2008-03-03)
+-------------------
+- Fixed issue where stylesheets would not display in skin
+- Added z3c.macro namespace to configure.zcml
+
+0.3.5 (2008-03-02)
+------------------
+- Fixed issue where SecurityTool skin was only declared for the demo,
+  skin is now declared in the configure.zcml.
+
+0.3.4 (2008-02-26)
+------------------
+- Fixed issue with groups on permDetails and principalDetails pages
+- Fixed issue where securitytool views were declared as zope.Public
+- Added SecurityTool skin to register securitytool views against
+
+0.3.3 (2008-02-21)
+------------------
+- Updated css and styles
+- Cleanup of page templates
+- Fixed permission details page
+
+0.3.2 (2008-02-18)
+------------------
+- Updated css and styles
+- Cleanup of page templates
+- Updtated principalDetails with sorting
+- Fixed bug where some permissions were not being removed appropriately
+
+0.3.1 (2008-02-07)
+------------------
+- Updated interfaces and views
+- Updated css and styles
+- Cleanup of page templates
+- Updtated principalDetails to show all data
+- Various bug fixes
+- Added some more roles and permissions for the demo.
+
+0.3.0 (2008-02-07)
+------------------
+- Updated interfaces and views
+- Cleanup of page templates
+- Storing selected skin in session
+- Various bug fixes
+- Better project description
+
+0.2.4 (2008-02-06)
+------------------
+- Fixed bug in permDetails
+- Updated interface and views
+- Added some more content to the demo
+
+
+0.2.3 (2008-01-29)
+------------------
+- Fixed issue where all the permissions associated with a principal
+  were not populating properly
+
+0.2.2 (2008-01-28)
+------------------
+- Some enhancements on the page templates and css classes
+- Better test coverage and "Smoke" tests for all the available views
+
+0.2.1 (2008-01-27)
+------------------
+- Fixed bug with Permission Details
+
+0.2.0 (2008-01-26)
+------------------
+- Initial release of fully functional z3c.securitytool
+
+0.2.1 (2008-01-26)
+------------------
+- Fixed bug with Principal Details page
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+<configure
+      xmlns="http://namespaces.zope.org/zope"
+      xmlns:browser="http://namespaces.zope.org/browser"
+      i18n_domain="zope">
+
+      <interface
+        interface="z3c.securitytool.browser.IConcordTimesSkin"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="ConcordTimes"
+        />
+
+
+      <browser:page 
+        name="ReadIssue.html"
+        permission="concord.ReadIssue"
+        for="*"
+        template="dummy.pt"
+        layer="z3c.securitytool.browser.IConcordTimesSkin"
+        />
+
+      <browser:page 
+        name="CreateIssue.html"
+        permission="concord.CreateIssue"
+        for="*"
+        template="dummy.pt"
+        layer="z3c.securitytool.browser.IConcordTimesSkin"
+        />
+
+      <browser:page 
+        name="DeleteIssue.html"
+        permission="concord.DeleteIssue"
+        for="*"
+        template="dummy.pt"
+        layer="z3c.securitytool.browser.IConcordTimesSkin"
+        />
+      <browser:page 
+        name="CreateArticle.html"
+        permission="concord.CreateArticle"
+        for="*"
+        template="dummy.pt"
+        layer="z3c.securitytool.browser.IConcordTimesSkin"
+        />
+
+      <browser:page 
+        name="DeleteArticle.html"
+        permission="concord.DeleteArticle"
+        for="*"
+        template="dummy.pt"
+        layer="z3c.securitytool.browser.IConcordTimesSkin"
+        />
+
+</configure>
+
+
+
+
