@@ -10,20 +10,5 @@
   <include package="zope.security" />
   <include package="zope.session" />
 
-  <!--
-  These registration seem to be made somewhere in the stack when running the
-  application. For the tests we need to register them explicitely
-  -->
-
-  <utility
-    factory="zope.session.http.CookieClientIdManager"
-    provides="zope.session.interfaces.IClientIdManager"
-  />
-
-  <utility
-    factory="zope.session.session.RAMSessionDataContainer"
-    provides="zope.session.interfaces.ISessionDataContainer"
-  />
-
   <grok:grok package="." />
 </configure>
