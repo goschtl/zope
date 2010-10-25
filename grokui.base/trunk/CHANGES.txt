@@ -4,8 +4,8 @@ CHANGES
 0.4 (unreleased)
 ================
 
-- Nothing changed yet.
-
+- Set the default view name for IRootFolder to 'index' and register the
+  the redirecting view for this name as well.
 
 0.3 (2010-10-18)
 ================
