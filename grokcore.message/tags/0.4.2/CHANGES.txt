@@ -1,0 +1,40 @@
+CHANGES
+*******
+
+0.4.2 (2010-10-25)
+==================
+
+- Tests fixed by explicitely registering the IClientIdManager and
+  ISessionDataContainer utilities. The ftesting.zcml was re-introduced for this.
+
+0.4.1 (2010-10-25)
+==================
+
+- Remove ftesting.zcml that was not necessary anymore.
+
+0.4 (2010-10-25)
+================
+
+* Make sure ``zope.session`` is configured, as this package claims to provide
+  for a session based flash message machinery.
+
+* Made package comply to zope.org repository policy.
+
+0.3 (2010-03-05)
+================
+
+* ``UniqueMessageSource`` now implements the ``IMessageSource``
+  interface completely, i.e. the ``type`` parameter is now optional
+  when using ``UniqueMessageSource.send()``.
+
+0.2 (2010-03-03)
+================
+
+* The utility function ``send`` now takes a ``name`` argument,
+  allowing the choice of the target message source.
+
+0.1 (2010-03-03)
+================
+
+* Factored out from former versions of ``grokui.admin``, ``grok`` and
+  ``megrok.layout`` respectively.
