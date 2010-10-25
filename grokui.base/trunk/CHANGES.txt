@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.4 (unreleased)
+0.4 (2010-10-25)
 ================
 
 - Set the default view name for IRootFolder to 'index' and register the
