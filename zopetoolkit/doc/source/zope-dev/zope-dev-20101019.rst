@@ -9,13 +9,13 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-10-19.log.html
 
 Attendees
 ---------
 
-XXX
-
+Christian Theune, Tres Seaver, Jan-Wijbrandt Kolman, Jim Fulton, Chris
+McDonough
 
 Agenda
 ======
@@ -23,6 +23,62 @@ Agenda
 - Follow-up on summit goals
 - Plan next bug day
 - Bicycle toolkit
+
+Follow-up on summit goals
+-------------------------
+
+Didn't talk much. Thomas started a thread on discussing the functional areas,
+but he's sick currently.
+
+Bug-day
+-------
+
+We fixed the next bug day to Tuesday 2010-10-26. Christian promised to declare
+what he wants to work on in an announcement mail later today to make the bug
+day activities more visible.
+
+
+Bicycle toolkit
+---------------
+
+Christian mentioned that he finds the BTK seems to overlap with the goal to
+define functional areas. The BTK might be one of the functional areas. Thomas
+described one of the possible areas as "software architecture" - this might be
+identical with the BTK.
+
+
+Architecture/design documentation
+---------------------------------
+
+While talking about the bicycle toolkit a small discussion came up. Jim noted
+that he'd like a "sane way to talk about architecture" which caused multiple
+ideas and opinions to be stated.
+
+The basic desire is to have an architectural process/expression that provides
+enlightenment about design decisions.
+
+The points stated included:
+
+- some architectures are too big to express in a conversation or keep in your
+  head, so an oral tradition breaks down
+
+- people seem to understand an architecture better when it is written in a
+  domain they understand
+
+- having experience with a piece of software makes it easier to understand
+  existing designs in comparison to just reading about it
+
+- the documentation may be useful to reason about and review things like data
+  structures used, problems like index accumulation, and unnecessary
+  indirection
+
+- patterns may include parts of the solution, but specifically the community
+  around patterns seems to be focused on the wrong issues (jargon, blowing
+  smoke)
+
+- recording decisions and being able to relate and search problems and
+  solutions maybe be part of the puzzle
+
 
 Ongoing issues
 --------------
