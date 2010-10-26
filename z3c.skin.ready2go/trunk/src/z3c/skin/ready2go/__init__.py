@@ -24,4 +24,4 @@ class IReady2GoSkinLayer(z3c.layer.ready2go.IReady2GoBrowserLayer):
 
 
 class IReady2GoBrowserSkin(IReady2GoSkinLayer):
-    """The Ready2Go browser skin is accessible as named ´´Ready2Go´´ skin."""
+    """The Ready2Go browser skin is accessible as named ``Ready2Go`` skin."""

@@ -21,19 +21,13 @@
   <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
   <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
-  <exclude package="zope.app.broken" file="browser.zcml" />
   <exclude package="zope.app.container.browser" />
-  <exclude package="zope.app.error.browser" />
-  <exclude package="zope.app.folder.browser" />
-  <exclude package="zope.app.i18n.browser" />
   <exclude package="zope.app.securitypolicy.browser" />
-  <exclude package="zope.app.session" file="browser.zcml" />
   <exclude package="zope.dublincore.browser" />
 
   <!-- meta configure -->
   <include package="zope.i18n" file="meta.zcml" />
   <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.component.browser" file="meta.zcml" />
   <include package="zope.app.container.browser" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
@@ -50,14 +44,8 @@
   <include package="z3c.template" file="meta.zcml" />
   <include package="z3c.zrtresource" file="meta.zcml" />
 
-  <!-- vocabulary setup, that's bad and weird, because this is meta configuration -->
-  <include package="zope.app.schema" />
-
-
   <!-- Database -->
   <include package="zope.app.appsetup" />
-  <include package="zope.app.zopeappgenerations" />
-
 
   <!-- zope packages -->
   <include package="zope.annotation" />
@@ -75,12 +63,7 @@
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
 
-  <!-- Broken-object support -->
-  <include package="zope.app.broken" />
-  
-
   <!-- Utilities -->
-  <include package="zope.app.principalannotation" />
   <include package="zope.error" />
 
 
@@ -88,9 +71,7 @@
   <include package="zope.app.authentication" />
   <include package="zope.app.component" />
   <include package="zope.app.container" />
-  <include package="zope.app.folder" />
   <include package="zope.app.http" />
-  <include package="zope.app.i18n" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher" />
   <include package="zope.app.publisher.browser" />

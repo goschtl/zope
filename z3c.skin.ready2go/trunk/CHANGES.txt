@@ -2,7 +2,14 @@
 CHANGES
 =======
 
-Version 1.0.0 (21.9.2007)
--------------------------
+1.0.1 (unreleased)
+------------------
 
-- Initial Release
+- Updated tests to run with current package versions.
+
+
+
+1.0.0 (2007-09-21)
+------------------
+
+- Initial release.

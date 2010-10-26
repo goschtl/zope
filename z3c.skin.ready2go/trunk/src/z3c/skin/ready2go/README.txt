@@ -31,8 +31,7 @@ Let's see how such a skin looks like:
     var contexturl = 'http://localhost/++skin++Ready2Go';
     var viewurl = 'http://localhost/++skin++Ready2Go/@@index.html';</script>
   <script type="text/javascript"
-          src="http://localhost/++skin++Ready2Go/@@/ready2go.js">
-  </script>
+          src="http://localhost/++skin++Ready2Go/@@/ready2go.js"></script>
   <BLANKLINE>
   <link type="text/css" rel="stylesheet"
         href="http://localhost/++skin++Ready2Go/@@/ready2go.css"

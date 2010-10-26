@@ -21,7 +21,7 @@ import re
 import unittest
 from zope.testing import renormalizing
 from zope.app.testing import functional
-
+import doctest
 import z3c.layer.ready2go
 
 layer = functional.defineLayer('TestLayer', 'ftesting.zcml')
@@ -37,6 +37,7 @@ def test_suite():
     s = functional.FunctionalDocFileSuite(
         'README.txt',
         globs={'getRootFolder': getRootFolder},
+        optionflags=doctest.NORMALIZE_WHITESPACE,
         checker = renormalizing.RENormalizing([
             (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
             ])
@@ -45,6 +46,3 @@ def test_suite():
     suite.addTest(s)
 
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
