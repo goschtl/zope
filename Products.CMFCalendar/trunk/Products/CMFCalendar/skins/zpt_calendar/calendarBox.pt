@@ -50,7 +50,7 @@
             tal:define="daynumber day/day;
                         datestring python:'%d/%0.2d/%0.2d' % (year, month, daynumber);"
             tal:attributes="class python:context.getDaysClass(daynumber, month, year, day['event'])">
-          <a href
+          <a href="#"
              tal:omit-tag="not: day/event"
              tal:attributes="href string:${portal_url}/calendar_day_view?date=${datestring}"
              tal:content="python:daynumber or default"> &nbsp;</a>
