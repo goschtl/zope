@@ -7,6 +7,7 @@ CHANGES
 
 - Updated tests to run with current package versions.
 
+- Updated demo app to run with ZTK 1.0.
 
 
 1.0.0 (2007-09-21)
