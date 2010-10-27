@@ -9,12 +9,12 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-10-26.log.html#t2010-10-26T18:07:26
 
 Attendees
 ---------
 
-XXX
+Christian Theune
 
 Agenda
 ======
@@ -22,7 +22,10 @@ Agenda
 - Follow-up on summit goals
 - Bicycle toolkit
 
+Summary
+-------
 
+Nothing happened as Christian was the only attendend.
 
 Ongoing issues
 --------------
