@@ -166,7 +166,7 @@ no testing support for those
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
 
     * - `zc.buildout trunk <http://svn.zope.org/zc.buildout/trunk>`__
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_244_win32 winbot
+      - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_254_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win32 winbot
