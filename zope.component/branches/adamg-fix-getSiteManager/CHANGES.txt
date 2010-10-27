@@ -4,7 +4,12 @@ CHANGES
 3.10.1 (unreleased)
 ===================
 
-- Nothing changed yet.
+- Fix _api.getSiteManager in the way that it returns now
+  globalregistry.getGlobalSiteManager() if context is None. What's anyway
+  expected according to the docs.
+  Before it returned a cached local variable (which was init'ed with
+  globalregistry.base). This made z3c.baseregisty burp, because z3c.baseregisty
+  modifies globalregistry.globalSiteManager. Insane.
 
 
 3.10.0 (2010-09-25)

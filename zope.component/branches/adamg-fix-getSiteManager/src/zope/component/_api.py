@@ -39,14 +39,16 @@ except ImportError:
 # getSiteManager() returns a component registry.  Although the term
 # "site manager" is deprecated in favor of "component registry",
 # the old term is kept around to maintain a stable API.
-base = None
 @hookable
 def getSiteManager(context=None):
-    global base
     if context is None:
-        if base is None:
-            from zope.component.globalregistry import base
-        return base
+        # avoid cyclic import
+        # adhere to the doc and return the globalSiteManager,
+        # not some wannabe variable
+        # do not cache the value either, because at least z3c.baseregistry
+        # modifies it
+        from zope.component.globalregistry import getGlobalSiteManager
+        return getGlobalSiteManager()
     else:
         # Use the global site manager to adapt context to `IComponentLookup`
         # to avoid the recursion implied by using a local `getAdapter()` call.
