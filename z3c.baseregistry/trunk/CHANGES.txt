@@ -2,10 +2,15 @@
 CHANGES
 =======
 
-1.2.1 (unreleased)
+1.3.0 (unreleased)
 ------------------
 
-- ...
+- *Fundamental change* in the way how baseregistry hooks into ZCA.
+  Now it uses ``hooks.setSite``, which requires that ``zope.component`` hooks
+  are in place. Usually they are installed by ``zope.app.appsetup``.
+  Unless you use ``zope.app.appsetup``, install the hooks with
+  ``zope.component.hooks.setHooks()``.
+  This applies to ``zope.component`` versions >= 3.9.4.
 
 
 1.2.0 (2009-12-27)

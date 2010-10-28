@@ -18,6 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.interface
 import zope.component.globalregistry
+import zope.component.hooks
 import zope.configuration.config
 import zope.configuration.fields
 from zope.configuration.exceptions import ConfigurationError
@@ -73,13 +74,25 @@ class ActionsProxy(object):
         return getattr(self.original, name)
 
 
+class FakeBaseRegistrySite(object):
+    """This a minimal fake Site, the only responsibility it has
+    is to store our registry as a SiteManager and return it later.
+    This is needed to fool siteinfo via setSite, zope.component.zcml.handler
+    will grab the registry via zope.component.getSiteManager() then."""
+
+    def __init__(self, sm):
+        self.sm = sm
+
+    def getSiteManager(self):
+        return self.sm
+
 def setActiveRegistry(context, registry):
-    context.original = zope.component.globalregistry.globalSiteManager
-    # Set the temporary, base registry
-    zope.component.globalregistry.globalSiteManager = registry
+    context.original = zope.component.hooks.getSite()
+    fakeSite = FakeBaseRegistrySite(registry)
+    zope.component.hooks.setSite(fakeSite)
 
 def resetOriginalRegistry(context):
-    zope.component.globalregistry.globalSiteManager = context.original
+    zope.component.hooks.setSite(context.original)
 
 
 class RegisterIn(zope.configuration.config.GroupingContextDecorator):

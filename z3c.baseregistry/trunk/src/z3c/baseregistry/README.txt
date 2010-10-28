@@ -87,6 +87,13 @@ most commonly the base global registry:
   >>> myRegistry
   <BaseComponents myRegistry>
 
+Another *VERY IMPORTANT* requirement is that ``zope.component`` hooks are in
+place. Install the hooks now:
+
+  >>> import zope.component.hooks
+  >>> zope.component.hooks.setHooks()
+
+
 Since this registry does not implement any of the ``IComponents`` API itself,
 it is not necessary to demonstrate those features here. Please see the
 corresponding documentation in the ``zope.component`` package.
@@ -201,18 +208,61 @@ register:
   >>> example1 = Example('example1')
   >>> example2 = Example('example2')
 
-Let' now register "example1" in the global registry and "example2" in our
-custom registry:
+Create some adapters we can register:
+
+  >>> class IToAdapt1(zope.interface.Interface):
+  ...     pass
+
+  >>> class IToAdapt2(zope.interface.Interface):
+  ...     pass
+
+  >>> class IAdapted(zope.interface.Interface):
+  ...     pass
+
+  >>> @zope.component.adapter(IToAdapt1)
+  ... @zope.interface.implementer(IAdapted)
+  ... def adapter1(context):
+  ...     return "adapted1"
+
+  >>> @zope.component.adapter(IToAdapt2)
+  ... @zope.interface.implementer(IAdapted)
+  ... def adapter2(context):
+  ...     return "adapted2"
+
+  >>> class ToAdapt1(object):
+  ...     zope.interface.implements(IToAdapt1)
+  ...     def __init__(self, name):
+  ...         self.name = name
+  ...     def __repr__(self):
+  ...         return '<%s %r>' %(self.__class__.__name__, self.name)
+  >>> toAdapt1 = ToAdapt1('toAdapt1')
+
+  >>> class ToAdapt2(object):
+  ...     zope.interface.implements(IToAdapt2)
+  ...     def __init__(self, name):
+  ...         self.name = name
+  ...     def __repr__(self):
+  ...         return '<%s %r>' %(self.__class__.__name__, self.name)
+  >>> toAdapt2 = ToAdapt2('toAdapt2')
+
+Let' now register "example1", adapter1 in the global registry
+and "example2", "adapter2" in our custom registry:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
   ...
   ...   <utility component="README.example1"
   ...            name="example1" />
+  ...   <adapter
+  ...         factory="README.adapter1"
+  ...         name="adapter1"/>
   ...
   ...   <registerIn registry="README.custom">
   ...     <utility component="README.example2"
   ...              name="example2" />
+  ...     <adapter
+  ...         factory="README.adapter2"
+  ...         name="adapter2"/>
   ...   </registerIn>
   ...
   ... </configure>
@@ -229,6 +279,18 @@ registry:
   ...
   ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
 
+Let's now make sure that the adapters have been registered in the right
+registry:
+
+  >>> zope.component.getAdapter(toAdapt1, IAdapted, name="adapter1")
+  'adapted1'
+
+  >>> zope.component.getAdapter(toAdapt2, IAdapted, name="adapter2")
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
+
+
   >>> custom = zope.component.getUtility(IComponents, name='custom')
 
   >>> custom.getUtility(IExample, name="example1")
@@ -238,6 +300,16 @@ registry:
 
   >>> custom.getUtility(IExample, name="example2")
   <Example 'example2'>
+
+
+  >>> custom.getAdapter(toAdapt1, IAdapted, name="adapter1")
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: (<ToAdapt1 'toAdapt1'>, <InterfaceClass README.IAdapted>, 'adapter1')
+
+  >>> custom.getAdapter(toAdapt2, IAdapted, name="adapter2")
+  'adapted2'
+
 
 Let's now register other instances of the ``Example`` class without a
 name. This should *not* cause a conflict error:
@@ -295,6 +367,14 @@ Now only registrations from the base site are available:
   ...
   ComponentLookupError: (<InterfaceClass README.IExample>, 'example2')
 
+  >>> sm.getAdapter(toAdapt1, IAdapted, name="adapter1")
+  'adapted1'
+
+  >>> sm.getAdapter(toAdapt2, IAdapted, name="adapter2")
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: (<ToAdapt2 'toAdapt2'>, <InterfaceClass README.IAdapted>, 'adapter2')
+
 But if we add the "custom" registry, then things look more interesting:
 
   >>> sm.__bases__ += (custom,)
@@ -309,6 +389,12 @@ But if we add the "custom" registry, then things look more interesting:
 
   >>> sm.getUtility(IExample, name="example2")
   <Example 'example2'>
+
+  >>> sm.getAdapter(toAdapt1, IAdapted, name="adapter1")
+  'adapted1'
+
+  >>> sm.getAdapter(toAdapt2, IAdapted, name="adapter2")
+  'adapted2'
 
 But where is the registration for example 4? Well, the order of the bases
 matters, like the order of base classes in Python matters. The bases run from
@@ -465,6 +551,13 @@ benefit.
   ...
   ZopeXMLConfigurationError: File "<string>", line 5...
     ConfigurationError: Nested ``registerIn`` directives are not permitted.
+
+Cleanup
+~~~~~~~
+
+Just unregister the ``zope.component`` hooks:
+
+  >>> zope.component.hooks.resetHooks()
 
 
 Global Non-Component-Registration Actions
