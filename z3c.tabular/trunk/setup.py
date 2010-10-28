@@ -19,7 +19,8 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    content = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return content + '\n\n'
 
 setup (
     name='z3c.tabular',
@@ -28,9 +29,10 @@ setup (
     author_email = "zope3-dev@zope.org",
     description = "Table with form support based on z3c.form and z3c.table for Zope3",
     long_description=(
-        read('README.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
+        read('README.txt') +
+        '.. contents::\n\n' +
+        read('CHANGES.txt') +
+        read('src', 'z3c', 'tabular', 'README.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 z3c tabular data form table contents",
@@ -51,11 +53,11 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = [
+            'z3c.form[test]',
             'z3c.macro',
-            'z3c.table',
             'z3c.testing',
-            'zope.app.testing',
             'zope.app.publisher',
+            'zope.app.testing',
             'zope.browserpage',
             'zope.publisher',
             'zope.testing',

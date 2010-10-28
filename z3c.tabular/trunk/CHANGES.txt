@@ -1,3 +1,11 @@
+========
+ Issues
+========
+
+- There is still an issue in README.txt sample, the samples are using nested
+  ``<form>`` tags. Fix the sample and use real subform templates.
+
+
 =======
 CHANGES
 =======
@@ -5,20 +13,20 @@ CHANGES
 0.5.3dev (unreleased)
 ---------------------
 
-- ... 
+- Using ``registerType`` from `zope.browserpage` instead from
+  `zope.app.pagetemplate`
 
-  there is still an issue in README.txt sample, the samples are using
-  nested <form> tags. Fix the sample and use real subform templates.
+- Adjusted test output.
 
-- use registerType from zope.browserpage instead from zope.app.pagetemplate
+- Updated test dependencies so tests run with current `z3c.form` versions.
 
-- adjust test output
+- Added doctests to ``long_description`` so they show up on PyPI.
 
 
 0.5.2 (2009-10-19)
 ------------------
 
-- Fix my bug introduced in 0.5.1
+- Fixed my bug introduced in 0.5.1.
 
 
 0.5.1 (2009-10-19)
@@ -30,4 +38,4 @@ CHANGES
 0.5.0 (2009-02-22)
 ------------------
 
-- Initial Release
+- Initial release.
