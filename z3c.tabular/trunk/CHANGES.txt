@@ -10,8 +10,8 @@
 CHANGES
 =======
 
-0.5.3dev (unreleased)
----------------------
+0.6.0 (2010-10-28)
+------------------
 
 - Using ``registerType`` from `zope.browserpage` instead from
   `zope.app.pagetemplate`
