@@ -26,7 +26,7 @@ setup (
     name='z3c.tabular',
     version='0.6.1dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Table with form support based on z3c.form and z3c.table for Zope3",
     long_description=(
         read('README.txt') +
@@ -46,7 +46,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.tabular',
+    url = 'http://pypi.python.org/pypi/z3c.tabular',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
