@@ -87,6 +87,13 @@ most commonly the base global registry:
   >>> myRegistry
   <BaseComponents myRegistry>
 
+Another *VERY IMPORTANT* requirement is that ``zope.component`` hooks are in
+place. Install the hooks now:
+
+  >>> import zope.component.hooks
+  >>> zope.component.hooks.setHooks()
+
+
 Since this registry does not implement any of the ``IComponents`` API itself,
 it is not necessary to demonstrate those features here. Please see the
 corresponding documentation in the ``zope.component`` package.
@@ -544,6 +551,13 @@ benefit.
   ...
   ZopeXMLConfigurationError: File "<string>", line 5...
     ConfigurationError: Nested ``registerIn`` directives are not permitted.
+
+Cleanup
+~~~~~~~
+
+Just unregister the ``zope.component`` hooks:
+
+  >>> zope.component.hooks.resetHooks()
 
 
 Global Non-Component-Registration Actions
