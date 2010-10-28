@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.3.0 (unreleased)
+1.3.0 (2010-10-28)
 ------------------
 
 - *Fundamental change* in the way how baseregistry hooks into ZCA.
