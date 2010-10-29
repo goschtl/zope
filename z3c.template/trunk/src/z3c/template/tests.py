@@ -16,13 +16,11 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import unittest
-import itertools
-
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 from zope.configuration import xmlconfig
+import doctest
+import itertools
+import unittest
 
 import z3c.ptcompat
 from z3c.ptcompat.testing import OutputChecker
@@ -37,7 +35,7 @@ def tearDown(test):
 def setUpZPT(suite):
     z3c.ptcompat.config.disable()
     setUp(suite)
-    
+
 def setUpZ3CPT(suite):
     z3c.ptcompat.config.enable()
     setUp(suite)
@@ -46,18 +44,15 @@ def setUpZ3CPT(suite):
 def test_suite():
     checker = OutputChecker(doctest)
     tests = ((
-        DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker,
             ),
-        DocFileSuite('zcml.txt', setUp=setUp, tearDown=tearDown,
+        doctest.DocFileSuite('zcml.txt', setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker,
             ),
         ) for setUp in (setUpZPT, setUpZ3CPT,))
 
     return unittest.TestSuite(itertools.chain(*tests))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

@@ -5,8 +5,8 @@ CHANGES
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 1.2.1 (2009-08-22)
 ------------------
