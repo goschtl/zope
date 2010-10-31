@@ -6,6 +6,8 @@ Products.CMFCalendar Changelog
 
 - Adjusted test layer setup to work with Zope 2.13.0a2.
 
+- Fixed Chameleon incompatibilities in some templates.
+
 
 2.2.1 (2010-07-04)
 ------------------
