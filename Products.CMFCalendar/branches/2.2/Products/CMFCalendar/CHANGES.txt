@@ -1,7 +1,7 @@
 Products.CMFCalendar Changelog
 ==============================
 
-2.2.2 (unreleased)
+2.2.2 (2010-10-31)
 ------------------
 
 - Adjusted test layer setup to work with Zope 2.13.0a2.
