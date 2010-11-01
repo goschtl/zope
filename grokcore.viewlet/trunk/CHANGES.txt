@@ -4,7 +4,7 @@ Changes
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+* Move the order directive to grokcore.component.
 
 
 1.5 (2010-10-18)
