@@ -1,0 +1,296 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Mini-Howto: Macros with Grok</title><meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
+	<style type="text/css"><!-- @import url(/resources/grok.css); --></style>
+</head>
+
+<body>
+<div class="header">
+	
+	<a href="http://grok.zope.org">
+	<img src="/resources/grok-header.jpg" alt="GROK" /></a>
+	<ul id="navigation">
+        <li>
+            <a href="/index.html" class="" title="Home">Home</a></li>
+        <li>
+            <a href="/about.html" class="" title="About">About</a></li>
+        <li>
+            <a href="/tutorial.html" class=""
+               title="Tutorial">Tutorial</a></li>
+        <li>
+            <a href="/minitutorials/index.html" class=""
+               title="How Tos">How Tos</a></li>
+  </ul>
+</div>
+
+
+<div class="roundcont">
+	
+  <div class="roundtop">
+    <img src="/resources/corner-topleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+  <div class="content">
+
+          <h1 class="title">Mini-Howto: Macros with Grok</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Uli Fouquet</td></tr>
+</tbody>
+</table>
+<p>Intended Audience:</p>
+<blockquote>
+<ul class="simple">
+<li>Python Developers</li>
+<li>Zope 2 Developers</li>
+<li>Zope 3 Developers</li>
+</ul>
+</blockquote>
+<div class="section">
+<h2><a id="introduction" name="introduction">Introduction</a></h2>
+<p>Macros are a way to define a chunk of presentation in one template,
+and share it in others. Changes to the macro are immediately reflected
+in all of the places, that share it.</p>
+<p>Such, a developer can easily write some sort of 'page-skeleton' (the
+macro), which can be reused in other pages to take care, for instance,
+for a certain and consistent look-and-feel of a whole site with less
+maintenance.</p>
+<p>Technically, macros are made available by <tt class="docutils literal"><span class="pre">METAL</span></tt>, a Macro Expansion
+for TAL, which ships with nearly every Zope installation. They can be
+used in Zope Page Templates. See the <a class="reference" href="http://wiki.zope.org/ZPT/TAL">TAL</a> and <a class="reference" href="http://wiki.zope.org/ZPT/METAL">METAL</a> pages for
+details.</p>
+</div>
+<div class="section">
+<h2><a id="defining-a-simple-macro" name="defining-a-simple-macro">Defining a simple macro</a></h2>
+<p>In Grok macros are defined in usual views, where the associated page
+templates contain <cite>metal</cite>-statements to define the desired
+macros. Macros generally are attributes of the page template wherein they
+are defined, but to get them rendered, we usually use views.</p>
+<p>We define a view <tt class="docutils literal"><span class="pre">MyMacros</span></tt> the usual way in <tt class="docutils literal"><span class="pre">app.py</span></tt>:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span>
+
+<span class="k">class</span> <span class="nc">Sample</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">pass</span> <span class="c"># see app_templates/index.pt</span>
+
+<span class="k">class</span> <span class="nc">MyMacros</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The macro holder&quot;&quot;&quot;</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Sample</span><span class="p">)</span> <span class="c"># The default model this view is bound to.</span>
+
+</pre>
+<p>In the associated page template <tt class="docutils literal"><span class="pre">app_templates/mymacros.pt</span></tt> we
+define the macros we like to have available. You define macros with
+the <tt class="docutils literal"><span class="pre">METAL</span></tt> attribute:</p>
+<pre class="literal-block">
+metal:define-macro=&quot;&lt;macro-name&gt;&quot;
+</pre>
+<p>and the slots therein with:</p>
+<pre class="literal-block">
+metal:define-slot=&lt;slot-name&gt;
+</pre>
+<p>Let's define a very plain page macro in <tt class="docutils literal"><span class="pre">app_templates/mymacros.pt</span></tt>:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:define-macro=</span><span class="s">&quot;mypage&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    The content:
+    <span class="nt">&lt;div</span> <span class="na">metal:define-slot=</span><span class="s">&quot;mycontent&quot;</span><span class="nt">&gt;</span>
+      Put your content here...
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</pre>
+<p>Here we defined a single macro <tt class="docutils literal"><span class="pre">mypage</span></tt> with only one slot
+<tt class="docutils literal"><span class="pre">mycontent</span></tt>.</p>
+<p>If we restart our Zope instance (don't forget to put some <tt class="docutils literal"><span class="pre">index.pt</span></tt>
+into <tt class="docutils literal"><span class="pre">app_templates/</span></tt>) and have created our application as <tt class="docutils literal"><span class="pre">test</span></tt>,
+we now can go to the following URL:</p>
+<pre class="literal-block">
+http://localhost:8080/test/mymacros
+</pre>
+<p>and see the output:</p>
+<pre class="literal-block">
+The content:
+Put your content here...
+</pre>
+<p>Allright.</p>
+</div>
+<div class="section">
+<h2><a id="referencing-a-simple-macro" name="referencing-a-simple-macro">Referencing a simple macro</a></h2>
+<p>In <tt class="docutils literal"><span class="pre">index.pt</span></tt> we now want to <em>use</em> the macro defined in
+<tt class="docutils literal"><span class="pre">mymacros.pt</span></tt>. Using a macro means to let it render a part of
+another page template, especially, filling the slots defined in
+<tt class="docutils literal"><span class="pre">mymacros.pt</span></tt> with content defined in <tt class="docutils literal"><span class="pre">index.pt</span></tt>. You call macros
+with the <tt class="docutils literal"><span class="pre">METAL</span></tt> attribute:</p>
+<pre class="literal-block">
+metal:use-macro=&quot;&lt;macro-location&gt;&quot;
+</pre>
+<p>Our <tt class="docutils literal"><span class="pre">app_templates/index.pt</span></tt> can be that simple:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;mymacros/mypage&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</pre>
+<p>Watching:</p>
+<pre class="literal-block">
+http://localhost:8080/test/index
+</pre>
+<p>should now give the same result as above, although we didn't call
+<tt class="docutils literal"><span class="pre">mymacros</span></tt> in browser, but <tt class="docutils literal"><span class="pre">index</span></tt>. That's what macros are made
+for.</p>
+<p>When we fill the slots, we get different content rendered within
+the same macro. You can fill slots using:</p>
+<pre class="literal-block">
+metal:fill-slot=&quot;&lt;slot-name&gt;&quot;
+</pre>
+<p>where the slot-name must be defined in the macro. Now, change
+<tt class="docutils literal"><span class="pre">index.pt</span></tt> to:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;mymacros/mypage&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="c">&lt;!-- slot 'mycontent' was defined in the macro above --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;mycontent&quot;</span><span class="nt">&gt;</span>
+      My content from index.pt
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</pre>
+<p>and you will get the output:</p>
+<pre class="literal-block">
+The content:
+My content from index.pt
+</pre>
+<p>The pattern of the macro reference (the &lt;macro-location&gt;) used here
+is:</p>
+<pre class="literal-block">
+context/&lt;view-name&gt;/&lt;macro-name&gt;
+</pre>
+<p>whereas <tt class="docutils literal"><span class="pre">context</span></tt> references the object being viewed, which in our
+case is the <tt class="docutils literal"><span class="pre">Sample</span></tt> application. In plain English we want Zope to
+look for a view for a <tt class="docutils literal"><span class="pre">Sample</span></tt> application object (<tt class="docutils literal"><span class="pre">test</span></tt>) which
+is called <tt class="docutils literal"><span class="pre">mymacros</span></tt> and contains a macro called <tt class="docutils literal"><span class="pre">mypage</span></tt>.</p>
+<p>The logic behind this is, that views are always registered for certain
+object types. Registering a view with some kind of object (using
+<tt class="docutils literal"><span class="pre">grok.context()</span></tt> for example), means, that we promise, that this
+view can render objects of that type. (It is up to you to make sure,
+that the view can handle rendering of that object type).</p>
+<p>It is not a bad idea to register views for interfaces (instead of
+implementing classes), because it means, that a view will remain
+usable, while an implementation of an interface can change. [FIXME: Is
+this a lie?] This is done in the section <a class="reference" href="#defining-all-purpose-macros">Defining 'all-purpose'
+macros</a> below.</p>
+</div>
+<div class="section">
+<h2><a id="background-how-grok-view-and-macros-interact" name="background-how-grok-view-and-macros-interact">Background: how <tt class="docutils literal"><span class="pre">grok.View</span></tt> and macros interact</a></h2>
+<p>In case of <tt class="docutils literal"><span class="pre">grok.View</span></tt> views are in fact <tt class="docutils literal"><span class="pre">BrowserPage</span></tt> objects
+with an attribute <tt class="docutils literal"><span class="pre">template</span></tt>, which is the associated page
+template. The associated page template in turn has got an attribute
+<tt class="docutils literal"><span class="pre">macros</span></tt>, which is a dictionary containing all the macros defined in
+the page template with their names as keys (or <tt class="docutils literal"><span class="pre">None</span></tt>).</p>
+<p>This means, that you can also reference a macro of a <tt class="docutils literal"><span class="pre">grok.View</span></tt>
+using:</p>
+<pre class="literal-block">
+context/&lt;view-name&gt;/template/macros/&lt;macro-name&gt;
+</pre>
+<p>Grok shortens this path for you by mapping the <tt class="docutils literal"><span class="pre">macros</span></tt> dictionary
+keys to the associated <tt class="docutils literal"><span class="pre">grok.View</span></tt>. If you define a macro
+<tt class="docutils literal"><span class="pre">mymacro</span></tt> in a template associated with a <tt class="docutils literal"><span class="pre">grok.View</span></tt> called
+<tt class="docutils literal"><span class="pre">myview</span></tt>, this view will map <tt class="docutils literal"><span class="pre">mymacro</span></tt> as an own attribute, so
+that you can ask for the attribute <tt class="docutils literal"><span class="pre">mymacro</span></tt> of the <em>view</em>, wheras
+it is in fact an attribute of the associated template.</p>
+<p>Such, you can write in short for the above pattern:</p>
+<pre class="literal-block">
+context/&lt;view-name&gt;/&lt;macro-name&gt;
+</pre>
+<p>View names always start with the 'eyes' (<tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt>) which is a shortcut
+for <tt class="docutils literal"><span class="pre">++view++&lt;view-name&gt;</span></tt>.</p>
+</div>
+<div class="section">
+<h2><a id="defining-all-purpose-macros" name="defining-all-purpose-macros">Defining 'all-purpose' macros</a></h2>
+<p>To define an 'all-purpose' macro, i.e. a macro, that can render
+objects of (nearly) any type and thus be accessed from any
+other page template, just set a very general context for your macro
+view:</p>
+<pre class="code-block python literal-block">
+<span class="k">from</span> <span class="nn">zope.interface</span> <span class="k">import</span> <span class="n">Interface</span>
+<span class="k">import</span> <span class="nn">grok</span>
+
+<span class="k">class</span> <span class="nc">Master</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Interface</span><span class="p">)</span>
+
+</pre>
+<p>and reference the macros of the associated pagetemplate like this:</p>
+<pre class="literal-block">
+context/&#64;&#64;master/&lt;macro-name&gt;
+</pre>
+<p>Because the macros in <tt class="docutils literal"><span class="pre">Master</span></tt> now are 'bound' (in fact their view
+is bound) to <tt class="docutils literal"><span class="pre">Interface</span></tt> and every Grok application, model or
+container implements some interface, the <tt class="docutils literal"><span class="pre">Master</span></tt> macros will be
+accessible from nearly every other context. <tt class="docutils literal"><span class="pre">Master</span></tt> promises to be
+a view for every object, which implements <tt class="docutils literal"><span class="pre">Interface</span></tt>.</p>
+</div>
+<div class="section">
+<h2><a id="accessing-zope3-standard-macros" name="accessing-zope3-standard-macros">Accessing Zope3 standard macros</a></h2>
+<p>The standard macros of Zope 3, which render also the default ZMI
+pages, are accessible under the view-name <tt class="docutils literal"><span class="pre">standard_macros</span></tt> and usually
+provide slots <tt class="docutils literal"><span class="pre">title</span></tt>, <tt class="docutils literal"><span class="pre">headers</span></tt> and <tt class="docutils literal"><span class="pre">body</span></tt>. It is
+good style to provide this slots with your homegrown views as well.</p>
+<p>To give your pages standard Zope3 look, you can do something like
+this in your page template:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;standard_macros/page&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>
+      Document Title
+    <span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;metal:headers</span> <span class="na">fill-slot=</span><span class="s">&quot;headers&quot;</span><span class="nt">&gt;</span>
+      <span class="c">&lt;!-- Additional headers here... --&gt;</span>
+    <span class="nt">&lt;/metal:headers&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;body&quot;</span><span class="nt">&gt;</span>
+      Your content here...
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
+</pre>
+</div>
+
+  </div>
+
+  <div class="roundbottom">
+     <img src="/resources/corner-bottomleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+</div>
+
+<div class="footer">
+	
+	<table><tr><td>
+	Grok cooks around the campfire of <br />
+	<a href="http://wiki.zope.org/zope3/FrontPage"><img src="/resources/zopelogo.gif" alt="Zope" style="padding: 0.5em;" /></a>
+	</td><td>
+	 and roams free on the savannah of<br />
+	<a href="http://www.python.org"><img src="/resources/python-logo.gif" style="padding: 0.5em;" alt="Python" /></a>
+	</td></tr>
+	</table>
+
+	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
+</div>
+
+</body>
+</html>

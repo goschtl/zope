@@ -1,0 +1,927 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Navigating To Transient Objects Tutorial</title><meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
+	<style type="text/css"><!-- @import url(/resources/grok.css); --></style>
+</head>
+
+<body>
+<div class="header">
+	
+	<a href="http://grok.zope.org">
+	<img src="/resources/grok-header.jpg" alt="GROK" /></a>
+	<ul id="navigation">
+        <li>
+            <a href="/index.html" class="" title="Home">Home</a></li>
+        <li>
+            <a href="/about.html" class="" title="About">About</a></li>
+        <li>
+            <a href="/tutorial.html" class=""
+               title="Tutorial">Tutorial</a></li>
+        <li>
+            <a href="/minitutorials/index.html" class=""
+               title="How Tos">How Tos</a></li>
+  </ul>
+</div>
+
+
+<div class="roundcont">
+	
+  <div class="roundtop">
+    <img src="/resources/corner-topleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+  <div class="content">
+
+          <h1 class="title">Navigating To Transient Objects Tutorial</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Brandon Craig Rhodes</td></tr>
+</tbody>
+</table>
+<div class="section">
+<h2><a id="introduction" name="introduction">Introduction</a></h2>
+<p>If you have already read the Grok tutorial,
+you are familiar with the fact that behind Grok
+lives a wonderful object database called the <em>Zope Object Database</em>,
+or the <em>ZODB</em> for short.
+Thanks to the magic of this database,
+your web apps can create Python objects
+that are automatically saved to disk
+and are available every time your application runs.
+In particular,
+every <tt class="docutils literal"><span class="pre">grok.Model</span></tt> and <tt class="docutils literal"><span class="pre">grok.Container</span></tt> object you generate
+can be written safely to your application's <tt class="docutils literal"><span class="pre">Data.fs</span></tt> file.</p>
+<p>But sometimes you need to create objects
+that do not persist in the ZODB,
+wonderful though it is.
+Sometimes these will be objects you design yourself
+but have no need to save once you are done displaying them,
+like summary statistics or search results.
+On other occasions,
+you will find yourself using libraries or packages written by other people
+and will need to present the objects they return in your Grok app —
+whether those objects are LDAP entries,
+file system directory listings,
+or rows from a relational database.</p>
+<p>For the purpose of this tutorial,
+we are going to call all such objects <em>transient</em> objects.
+This highlights the fact that,
+from the point of view of Grok,
+they are going to be instantiated on-the-fly as a user visits them.
+Of course,
+they might (or might not) persist in some other application,
+like a file system or LDAP server or relational database!
+But as far as Grok can tell,
+they are being created the moment before they are used
+and then, very often, pass right back out of existence —
+and out of your application's memory —
+once Grok is finished composing the response.</p>
+<p>To try out the examples in this tutorial,
+start a Grok project named <tt class="docutils literal"><span class="pre">TransientApp</span></tt>
+and edit the <tt class="docutils literal"><span class="pre">app.py</span></tt> and other files
+that you are instructed to create or edit.</p>
+</div>
+<div class="section">
+<h2><a id="choosing-a-method" name="choosing-a-method">Choosing a method</a></h2>
+<p>In this tutorial,
+we introduce four methods for creating an object
+which you need to present on the web:</p>
+<ul class="simple">
+<li>Creating it in your View's <tt class="docutils literal"><span class="pre">update()</span></tt>, using no external data.</li>
+<li>Creating it in your View's <tt class="docutils literal"><span class="pre">update()</span></tt>, using URL or form data.</li>
+<li>Creating it in a <tt class="docutils literal"><span class="pre">Traverser</span></tt> that gets called for certain URLs.</li>
+<li>Creating it in a <tt class="docutils literal"><span class="pre">Container</span></tt> that gets called for certain URLs.</li>
+</ul>
+<p>To choose among these methods,
+the big question you need to ask yourself
+is whether the object you are planning to display
+is one that will live at its own particular URL or not.
+There are three basic relationships we can imagine
+between an object on a web page and the URL of the page itself.</p>
+<p>The simplest case,
+which is supported by the <em>first</em> method listed above,
+is when you need to create an object
+during the rendering of a page that already exists in your application.
+An example would be decorating the bottom of your front page
+with a random quotation
+selected by instantiating a <tt class="docutils literal"><span class="pre">RandomQuotation</span></tt> class you have written,
+so that each time a user reloads the page they see a different quote.
+None of the quotations would thereby have URLs of their own;
+there would, in fact, be no way for the user
+to demand that a particular quotation be displayed;
+and the user could not force the site to display again
+a quote from Bertrand Russell
+that they remember enjoying yesterday but have forgotten.
+Such objects can simply be instantiated
+in the <tt class="docutils literal"><span class="pre">update()</span></tt> method of your View,
+and this technique will be our first example below.</p>
+<p>The situation is only slightly more complex
+when you need to use form parameters the user has submitted
+to tailor the object you are creating.
+This is very common when supporting searching of a database:
+the user enters some search terms,
+and the application needs to instantiate an object —
+maybe a <tt class="docutils literal"><span class="pre">SearchResult</span></tt> or a <tt class="docutils literal"><span class="pre">DatabaseQuery</span></tt> —
+using those user-provided search terms,
+so that the page template can loop across and display the results.
+The <em>second</em> method listed above is best for this;
+since the form parameters are available in the <tt class="docutils literal"><span class="pre">update()</span></tt> method,
+you are free to use them when creating the result object.
+This will be the technique illustrated in our second example below.</p>
+<p>Finally,
+the really interesting case is when an object actually gets its own URL.
+You are probably already familiar with several kinds of object
+which have their own URLs on the Web —
+such as books on Amazon.com, photographs on Flickr, and people on Facebook,
+all of which live at their own URL.
+Each web site has a particular scheme
+which associates a URL with the object it names or identifies.
+You can probably guess, for example, just by looking at them,
+which object is named by each of the following three Amazon URLs:</p>
+<pre class="literal-block">
+http://www.amazon.com/Web-Component-Development-Zope-3/dp/3540223592
+http://www.amazon.com/Harry-Potter-Deathly-Hallows-Book/dp/0545010225
+http://www.amazon.com/J-R-R-Tolkien-Boxed-Hobbit-Rings/dp/0345340426
+</pre>
+<p>The Grok framework, of course,
+already supports URL traversal for persistent objects in the ZODB;
+if you create a <tt class="docutils literal"><span class="pre">Container</span></tt> named <tt class="docutils literal"><span class="pre">polygons</span></tt>
+that contains two objects named <tt class="docutils literal"><span class="pre">triangle</span></tt> and <tt class="docutils literal"><span class="pre">square</span></tt>,
+then your Grok site will already support URLs like:</p>
+<pre class="literal-block">
+http://yoursite.com/app/polygons/triangle
+http://yoursite.com/app/polygons/square
+</pre>
+<p>But the point of this tutorial, of course,
+is how you can support URL traversal
+for objects which are <em>not</em> persistent,
+which you will create on-the-fly once someone looks up their URL.
+And the answer is that, to support such objects,
+you will choose between the last two methods listed above:
+you will either create a custom <tt class="docutils literal"><span class="pre">Traverser</span></tt>,
+or actually define your own kind of <tt class="docutils literal"><span class="pre">Container</span></tt>,
+that knows how to find and instantiate the object the URL is naming.
+These two techniques are described last in this tutorial,
+because they involve the most code.</p>
+<p>But before starting our first example,
+we need to define an object that we want to display.
+We want to avoid choosing an obvious example,
+like an object whose data is loaded from a database,
+because then this tutorial would have to teach database programming too!
+Plus, you would have to set up a database just to try the examples.
+Instead,
+we need an object
+rich enough to support interesting attributes and navigation,
+but simple enough
+that we will not have to reach outside of Python to instantiate it.</p>
+</div>
+<div class="section">
+<h2><a id="our-topic-the-natural-numbers" name="our-topic-the-natural-numbers">Our Topic: The Natural Numbers</a></h2>
+<p>To make this tutorial simple,
+we will build a small web site
+that lets the user visit what some people call the <em>natural numbers</em>:
+the integers beginning with <em>1</em>
+and continuing with <em>2</em>, <em>3</em>, <em>4</em>, and so forth.
+We will define a <tt class="docutils literal"><span class="pre">Natural</span></tt> class
+which knows a few simple things about each number —
+like which number comes before it, which comes after it,
+and what its prime factors are.</p>
+<p>We should start by writing a test suite for our <tt class="docutils literal"><span class="pre">Natural</span></tt> class.
+Not only is writing tests before code an excellent programming practice
+that forces you to think through how your new class should behave,
+but it will make this tutorial easier to understand.
+When you are further down in the tutorial,
+and want to remember something about the <tt class="docutils literal"><span class="pre">Natural</span></tt> class,
+you may find yourself re-reading the tests instead of the code
+as the fastest way to remember how the class behaves!</p>
+<p>The reason this test will be so informative
+is that it is a Python “doctest”,
+which intersperses normal text with the example Python code.
+Create a file in your Grok instance named <tt class="docutils literal"><span class="pre">src/transient/natural.txt</span></tt>
+and give it the following contents:</p>
+<pre class="literal-block">
+              A Simple Implementation of Natural Numbers
+
+The &quot;natural&quot; module of this application provides a simple class for
+representing any postive integer, named &quot;Natural&quot;.
+
+    &gt;&gt;&gt; from transient.natural import Natural
+
+To instantiate it, provide a Python integer to its constructor:
+
+    &gt;&gt;&gt; three = Natural(3)
+    &gt;&gt;&gt; print 'This object is known to Python as a &quot;%r&quot;.' % three
+    This object is known to Python as a &quot;Natural(3)&quot;.
+    &gt;&gt;&gt; print 'The number of the counting shall be %s.' % three
+    The number of the counting shall be 3.
+
+You will find that there are very many natural numbers available; to
+help you navigate among them all, each of them offers a &quot;previous&quot; and
+&quot;next&quot; attribute to help you find the ones adjacent to it.
+
+    &gt;&gt;&gt; print 'Previous: %r  Next: %r' % (three.previous, three.next)
+    Previous: Natural(2)  Next: Natural(4)
+
+Since we define the set of &quot;natural numbers&quot; as beginning with 1, you
+will find that the number 1 lacks a &quot;previous&quot; attribute:
+
+    &gt;&gt;&gt; hasattr(three, 'previous')
+    True
+    &gt;&gt;&gt; one = Natural(1)
+    &gt;&gt;&gt; hasattr(one, 'previous')
+    False
+    &gt;&gt;&gt; one.previous
+    Traceback (most recent call last):
+     ...
+    AttributeError: There is no natural number less than 1.
+
+You can also ask a number to tell you which prime factors must be
+multiplied together to produce it.  The number 1 will return no
+factors:
+
+    &gt;&gt;&gt; one.factors
+    []
+
+Prime numbers will return only themselves as factors:
+
+    &gt;&gt;&gt; print Natural(2).factors, Natural(11).factors, Natural(251).factors
+    [Natural(2)] [Natural(11)] [Natural(251)]
+
+Compound numbers return several factors, sorted in increasing order,
+and each appearing the correct number of times:
+
+    &gt;&gt;&gt; print Natural(4).factors
+    [Natural(2), Natural(2)]
+    &gt;&gt;&gt; print Natural(12).factors
+    [Natural(2), Natural(2), Natural(3)]
+    &gt;&gt;&gt; print Natural(2310).factors
+    [Natural(2), Natural(3), Natural(5), Natural(7), Natural(11)]
+
+Each natural number can also simply return a boolean value indicating
+whether it is prime, and whether it is composite.
+
+    &gt;&gt;&gt; print Natural(6).is_prime, Natural(6).is_composite
+    False True
+    &gt;&gt;&gt; print Natural(7).is_prime, Natural(7).is_composite
+    True False
+</pre>
+<p>Next,
+we need to tell Grok about this doctest.
+Create a file in your instance named <tt class="docutils literal"><span class="pre">src/transient/tests.py</span></tt>
+that looks like:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">unittest</span>
+<span class="k">from</span> <span class="nn">doctest</span> <span class="k">import</span> <span class="n">DocFileSuite</span>
+
+<span class="k">def</span> <span class="nf">test_suite</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestSuite</span><span class="p">([</span> <span class="n">DocFileSuite</span><span class="p">(</span><span class="s">'natural.txt'</span><span class="p">)</span> <span class="p">])</span>
+
+</pre>
+<p>You should now find that running <tt class="docutils literal"><span class="pre">./bin/test</span></tt> inside of your instance
+now results in a whole series of test failures.
+This is wonderful and means that everything is working!
+At this point Grok is able to find your doctest,
+successfully execute it,
+and correctly report (if you examine the first error message)
+that you have not yet provided a <tt class="docutils literal"><span class="pre">Natural</span></tt> class
+that could make the doctest able to succeed.</p>
+</div>
+<div class="section">
+<h2><a id="the-class-itself" name="the-class-itself">The Class Itself</a></h2>
+<p>Now we merely have to provide an implementation for our <tt class="docutils literal"><span class="pre">Natural</span></tt> class.
+Create a file <tt class="docutils literal"><span class="pre">src/transient/natural.py</span></tt> under your Grok instance
+and give it the contents:</p>
+<pre class="code-block python literal-block">
+<span class="k">class</span> <span class="nc">Natural</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A natural number, here defined as an integer greater than zero.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="ow">or</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">'</span><span class="si">%d</span><span class="s">'</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">'Natural(</span><span class="si">%d</span><span class="s">)'</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">previous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">'There is no natural number less than 1.'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Natural</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Natural</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">factors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">'_factors'</span><span class="p">):</span>  <span class="c"># compute factors only once!</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_factors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>          <span class="c"># while n is divisible by i</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_factors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Natural</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                    <span class="n">n</span> <span class="o">/=</span> <span class="n">i</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_factors</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">factors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">is_composite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">factors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+</pre>
+<p>If you try running <tt class="docutils literal"><span class="pre">./bin/test</span></tt> again after creating this file,
+you should find that the entire <tt class="docutils literal"><span class="pre">natural.txt</span></tt> docfile
+now runs correctly!</p>
+<p>I hope that if you are new to Python,
+you are not too confused by the code above,
+which uses <tt class="docutils literal"><span class="pre">&#64;property</span></tt>
+which may not have been covered in the Python tutorial.
+But I prefer to show you “real Python” like this,
+that reflects how people actually use the language,
+rather than artifically simple code
+that hides from you the best ways to use Python.
+Note that it is <em>not</em> necessary to understand <tt class="docutils literal"><span class="pre">natural.py</span></tt>
+to enjoy the rest of this tutorial!
+Everything we do from this point on
+will involve building a framework to use this object on the web;
+we will be doing no further development on the class itself.
+So all you actually need to understand is how a <tt class="docutils literal"><span class="pre">Natural</span></tt> behaves,
+which was entirely explained in the doctest.</p>
+<p>Note that the <tt class="docutils literal"><span class="pre">Natural</span></tt> class knows nothing about Grok!
+This is an important feature of the whole Zope 3 framework,
+that bears frequent repeating:
+objects are supposed to be simple,
+and not have to know that they are being presented on the web.
+You should be able to grab objects created anywhere,
+from any old library of useful functions you happen to download,
+and suit them up to be displayed and manipulated with a browser.
+And the <tt class="docutils literal"><span class="pre">Natural</span></tt> class is exactly like that:
+it has no idea that we are about to build a framework around it
+that will soon be publishing it on the web.</p>
+</div>
+<div class="section">
+<h2><a id="having-your-view-directly-instantiate-an-object" name="having-your-view-directly-instantiate-an-object">Having Your View Directly Instantiate An Object</a></h2>
+<p>We now reach the first of our four techniques!</p>
+<p>The simplest way to create a transient object for display on the web
+involves a technique you may remember from the main Grok tutorial:
+providing an <tt class="docutils literal"><span class="pre">update()</span></tt> method on your View
+that creates the object you need
+and saves it as an attribute of the View.
+As a simple example,
+create an <tt class="docutils literal"><span class="pre">app.py</span></tt> file with these contents:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span>
+<span class="k">from</span> <span class="nn">transient.natural</span> <span class="k">import</span> <span class="n">Natural</span>
+
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">Natural</span><span class="p">(</span><span class="mi">126</span><span class="p">)</span>
+
+</pre>
+<p>Do you see what will happen?
+Right before Grok renders your View to answer a web request,
+Grok will call its <tt class="docutils literal"><span class="pre">update()</span></tt> method,
+and your View will gain an attribute named <tt class="docutils literal"><span class="pre">num</span></tt>
+whose value is a new instance of the <tt class="docutils literal"><span class="pre">Natural</span></tt> class.
+This attribute can then be referenced from the page template
+corresponding to your view!
+Let use write a small page template that accesses the new object.
+Try creating an <tt class="docutils literal"><span class="pre">/app_templates/index.pt</span></tt> file that looks like:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html&gt;&lt;body&gt;</span>
+ <span class="nt">&lt;p&gt;</span>
+  Behold the number <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;view/num&quot;</span><span class="nt">&gt;</span>x<span class="nt">&lt;/b&gt;</span>!
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num/is_prime&quot;</span><span class="nt">&gt;</span>It is prime.<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num/is_composite&quot;</span><span class="nt">&gt;</span>Its prime factors are:<span class="nt">&lt;/span&gt;</span>
+ <span class="nt">&lt;/p&gt;</span>
+ <span class="nt">&lt;ul</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num/factors&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li</span> <span class="na">tal:repeat=</span><span class="s">&quot;factor view/num/factors&quot;</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;factor&quot;</span><span class="nt">&gt;</span>f<span class="nt">&lt;/b&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+ <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+
+</pre>
+<p>If you now run your instance
+and view the main page of your application,
+your browser should show you something like:</p>
+<pre class="literal-block">
+Behold the number 126!  It has several prime factors:
+
+   * 2
+   * 3
+   * 3
+   * 7
+</pre>
+<p>You should remember,
+when creating an object through an <tt class="docutils literal"><span class="pre">update()</span></tt> method,
+that a new object gets created every time your page is viewed!
+This is hard to see with the above example,
+of course,
+because no matter how many times you hit “reload” on your web browser
+you will still see the same number.
+So adjust your <tt class="docutils literal"><span class="pre">app.py</span></tt> file so that it now looks like this:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span><span class="o">,</span> <span class="nn">random</span>
+<span class="k">from</span> <span class="nn">transient.natural</span> <span class="k">import</span> <span class="n">Natural</span>
+
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">Natural</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">))</span>
+
+</pre>
+<p>Re-run your application and hit “reload” several times;
+each time you should see a different number.</p>
+<p>The most important thing to realize when using this method
+is that this <tt class="docutils literal"><span class="pre">Natural</span></tt> object is <em>not</em> the object
+that Grok is wrapping with the View for display!
+The object actually selected by the URL in this example
+is your <tt class="docutils literal"><span class="pre">TransientApp</span></tt> application object itself;
+it is this application object which is the <tt class="docutils literal"><span class="pre">context</span></tt> of the View.
+The <tt class="docutils literal"><span class="pre">Natural</span></tt> object we are creating is nothing more
+than an incidental attribute of the View;
+it neither has its own URL, nor a View of its own to display it.</p>
+</div>
+<div class="section">
+<h2><a id="creating-objects-based-on-form-input" name="creating-objects-based-on-form-input">Creating Objects Based on Form Input</a></h2>
+<p>What if we wanted the user
+to be able to designate which <tt class="docutils literal"><span class="pre">Natural</span></tt> object was instantiated
+for display on this web page?
+This is a very common need
+when implementing things like a database search form,
+where the user's search terms need to be provided as inputs
+to the object that will return the search results.</p>
+<p>The answer is given in the main Grok tutorial:
+if you can write your <tt class="docutils literal"><span class="pre">update()</span></tt> method
+so that it takes keyword parameters,
+they will be filled in with any form parameters the user provides.
+Rewrite your <tt class="docutils literal"><span class="pre">app.py</span></tt> to look like:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span><span class="o">,</span> <span class="nn">random</span>
+<span class="k">from</span> <span class="nn">transient.natural</span> <span class="k">import</span> <span class="n">Natural</span>
+
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">badnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">Natural</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">badnum</span> <span class="o">=</span> <span class="n">n</span>
+
+</pre>
+<p>And make your <tt class="docutils literal"><span class="pre">app_templates/index.pt</span></tt> look like:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html&gt;&lt;body&gt;</span>
+ <span class="nt">&lt;p</span> <span class="na">tal:condition=</span><span class="s">&quot;view/badnum&quot;</span><span class="nt">&gt;</span>This does not look like a natural number:
+  <span class="ni">&amp;ldquo;</span><span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;view/badnum&quot;</span><span class="nt">&gt;</span>string<span class="nt">&lt;/b&gt;</span><span class="ni">&amp;rdquo;</span>
+ <span class="nt">&lt;/p&gt;</span>
+ <span class="nt">&lt;p</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num&quot;</span><span class="nt">&gt;</span>
+  You asked about the number <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;view/num&quot;</span><span class="nt">&gt;</span>x<span class="nt">&lt;/b&gt;</span>!<span class="nt">&lt;br/&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num/is_prime&quot;</span><span class="nt">&gt;</span>It is prime.<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;view/num/is_composite&quot;</span><span class="nt">&gt;</span>Its prime factors are:
+   <span class="nt">&lt;span</span> <span class="na">tal:repeat=</span><span class="s">&quot;factor view/num/factors&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;factor&quot;</span><span class="nt">&gt;</span>f<span class="nt">&lt;/b
+    &gt;&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;not:repeat/factor/end&quot;</span><span class="nt">&gt;</span>,<span class="nt">&lt;/span&gt;</span>
+   <span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;/span&gt;</span>
+ <span class="nt">&lt;/p&gt;</span>
+ <span class="nt">&lt;form</span> <span class="na">tal:attributes=</span><span class="s">&quot;action python:view.url()&quot;</span> <span class="na">method=</span><span class="s">&quot;GET&quot;</span><span class="nt">&gt;</span>
+  Choose a number: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;n&quot;</span> <span class="na">value=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Go&quot;</span> <span class="nt">/&gt;</span>
+ <span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+
+</pre>
+<p>This time, when you restart your Grok instance
+and look at your application front page,
+you will see a form asking for a number:</p>
+<pre class="literal-block">
+Choose a number: __________  [Go]
+</pre>
+<p>Enter a positive integer and submit the form
+(try to choose something with less than seven digits
+to keep the search for prime factors short),
+and you will see something like:</p>
+<pre class="literal-block">
+You asked about the number 48382!
+Its prime factors are: 2, 17, 1423
+Choose a number: __________  [Go]
+</pre>
+<p>And if you examine the URL to which the form has delivered you,
+you will see that the number you have selected
+is part of the URL's query section:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/app/index?n=48382">http://localhost:8080/app/index?n=48382</a></blockquote>
+<p>So none of these numbers get their own URL;
+they all live on the page <tt class="docutils literal"><span class="pre">/app/index</span></tt>
+and have to be selected by submitting a query to that one page.</p>
+</div>
+<div class="section">
+<h2><a id="custom-traversers" name="custom-traversers">Custom Traversers</a></h2>
+<p>But what about situations
+where you want each of your transient objects
+to have its own URL on your site?
+The answer is that you can create <tt class="docutils literal"><span class="pre">grok.Traverser</span></tt> objects that,
+when the user enters a URL
+and Grok tries to find the object which the URL names,
+intercept those requests
+and return objects of your own design instead.</p>
+<p>For our example application <tt class="docutils literal"><span class="pre">app</span></tt>,
+let's make each <tt class="docutils literal"><span class="pre">Natural</span></tt> object live at a URL like:</p>
+<pre class="literal-block">
+http://localhost:8080/app/natural/496
+</pre>
+<p>There is nothing magic about the fact that this URL has three parts,
+by the way&nbsp;—
+the three parts being the application name <tt class="docutils literal"><span class="pre">&quot;app&quot;</span></tt>,
+the word <tt class="docutils literal"><span class="pre">&quot;natural&quot;</span></tt>,
+and finally the name of the integer <tt class="docutils literal"><span class="pre">&quot;496&quot;</span></tt>.
+You should easily be able to figure out
+how to adapt the example application below
+either to the situation
+where you want all the objects to live at your application root
+(which would make the URLs look like <tt class="docutils literal"><span class="pre">/app/496</span></tt>),
+or where you want URLs to go several levels deeper
+(like if you wanted <tt class="docutils literal"><span class="pre">/app/numbers/naturals/496</span></tt>).</p>
+<p>The basic rule is that for each slash-separated URL component
+(like <tt class="docutils literal"><span class="pre">&quot;natural&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;496&quot;</span></tt>)
+that does not actually name an object in the ZODB,
+you have to provide a <tt class="docutils literal"><span class="pre">grok.Traverser</span></tt>.
+Make the <tt class="docutils literal"><span class="pre">grok.context</span></tt> of the Traverser
+the object that lives at the previous URL component,
+and give your Traverser a <tt class="docutils literal"><span class="pre">traverse()</span></tt> method
+that takes as its argument the next name in the URL
+and returns the object itself.
+If the name submitted to your traverser
+does not name an object,
+simply return <tt class="docutils literal"><span class="pre">None</span></tt>;
+this is very easy to do,
+since <tt class="docutils literal"><span class="pre">None</span></tt> is the default return value
+of a Python function that ends without a <tt class="docutils literal"><span class="pre">return</span></tt> statement.</p>
+<p>So place the following inside your <tt class="docutils literal"><span class="pre">app.py</span></tt> file:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span>
+<span class="k">from</span> <span class="nn">transient.natural</span> <span class="k">import</span> <span class="n">Natural</span>
+
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">BaseTraverser</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Traverser</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">TransientApp</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">'natural'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NaturalDir</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">NaturalDir</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">NaturalTraverser</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Traverser</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">NaturalDir</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Natural</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">NaturalIndex</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Natural</span><span class="p">)</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="s">'index.html'</span><span class="p">)</span>
+
+</pre>
+<p>And you will only need one template to go with this file,
+which you should place in <tt class="docutils literal"><span class="pre">app_templates/naturalindex.pt</span></tt>:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html&gt;&lt;body&gt;</span>
+ This is the number <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;context&quot;</span><span class="nt">&gt;</span>x<span class="nt">&lt;/b&gt;</span>!<span class="nt">&lt;br/&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;context/is_prime&quot;</span><span class="nt">&gt;</span>It is prime.<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;context/is_composite&quot;</span><span class="nt">&gt;</span>Its prime factors are:
+   <span class="nt">&lt;span</span> <span class="na">tal:repeat=</span><span class="s">&quot;factor context/factors&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;b</span> <span class="na">tal:content=</span><span class="s">&quot;factor&quot;</span><span class="nt">&gt;</span>f<span class="nt">&lt;/b
+    &gt;&lt;span</span> <span class="na">tal:condition=</span><span class="s">&quot;not:repeat/factor/end&quot;</span><span class="nt">&gt;</span>,<span class="nt">&lt;/span&gt;</span>
+   <span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;/span&gt;&lt;br&gt;</span>
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+
+</pre>
+<p>Now, if you view the URL <tt class="docutils literal"><span class="pre">/app/natural/496</span></tt> on your test server,
+you should see:</p>
+<pre class="literal-block">
+This is the number 496!
+Its prime factors are: 2, 2, 2, 2, 31
+</pre>
+<p>Note that there is no view name after the URL.
+That's because we chose to name our View <tt class="docutils literal"><span class="pre">index.html</span></tt>,
+which is the default view name in Zope&nbsp;3.
+(With <tt class="docutils literal"><span class="pre">grok.Model</span></tt> and <tt class="docutils literal"><span class="pre">grok.Container</span></tt> objects,
+by contrast,
+the default view selected if none is named is simply <tt class="docutils literal"><span class="pre">index</span></tt>
+without the <tt class="docutils literal"><span class="pre">.html</span></tt> at the end.)
+You can always name the view explicitly, though,
+so you will find that you can also view the number 496 at:</p>
+<pre class="literal-block">
+http://kenaniah.ten22:8080/app/natural/496/index.html
+</pre>
+<p>It's important to realize this because,
+if you need to add more views to a transient object,
+you of course will have to add them with other names&nbsp;—
+and to see the information in those other views,
+users (or the links they use) will have to name the views explicitly.</p>
+<p>Two final notes:</p>
+<ul>
+<li><p class="first">In order to make this example brief,
+the application above does not support
+either the user navigating simply to <tt class="docutils literal"><span class="pre">/app</span></tt>,
+nor will it allow them to view <tt class="docutils literal"><span class="pre">/app/natural</span></tt>,
+because we have provided neither our <tt class="docutils literal"><span class="pre">TransientApp</span></tt> application object
+nor the <tt class="docutils literal"><span class="pre">NaturalDir</span></tt> stepping-stone with <tt class="docutils literal"><span class="pre">grok.View</span></tt> objects
+that could let them be displayed.
+You will almost always,
+of course,
+want to provide a welcoming page
+for the top level of your application;
+but it's up to you whether you think it makes sense
+for users to be able to visit the intermediate <tt class="docutils literal"><span class="pre">/app/natural</span></tt>
+URL or not.
+If not,
+then follow the example above
+and simply do not provide a view,
+and everything else will work just fine.</p>
+</li>
+<li><p class="first">In order to provide symmetry in the example above,
+neither the <tt class="docutils literal"><span class="pre">TransientApp</span></tt> object nor the <tt class="docutils literal"><span class="pre">NaturalDir</span></tt> object
+knows how to send users to the next objects below them.
+Instead, they are both provided with Traversers.
+It turns out,
+I finally admin here at the bottom of the example,
+that this was not necessary!
+Grok objects like a <tt class="docutils literal"><span class="pre">grok.Container</span></tt> or a <tt class="docutils literal"><span class="pre">grok.Model</span></tt>
+already have enough magic built-in
+that you can put a <tt class="docutils literal"><span class="pre">traverse()</span></tt> method
+right on the object
+and Grok will find it when trying to resolve a URL.
+This would not have helped our <tt class="docutils literal"><span class="pre">NaturalDir</span></tt> object,
+of course,
+because it's not a Grok anything;
+but it means that we can technically delete the first Traverser
+and simply declare the first class as:</p>
+<pre class="code-block python literal-block">
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">'natural'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NaturalDir</span><span class="p">()</span>
+
+</pre>
+<p>The reason I did not do this in the actual example above
+is that showing two different ways to traverse in the same example
+seemed a bit excessive!
+I preferred instead to use a single method, twice,
+that is universal and works everywhere,
+rather than by starting off with a technique
+that does not work for most kinds of Python object.</p>
+</li>
+</ul>
+</div>
+<div class="section">
+<h2><a id="providing-links-to-other-objects" name="providing-links-to-other-objects">Providing Links To Other Objects</a></h2>
+<p>What if the object you are wrapping
+can return other objects to which the user might want to navigate?
+Imagine the possibilities:
+a filesystem object you are presenting on the web
+might be able to return the files inside of it;
+a genealogical application might have person objects
+that can return their spouse, children, or grandparents.
+In the example we are working on here,
+a <tt class="docutils literal"><span class="pre">Natural</span></tt> object can return
+both the previous and the next number;
+wouldn't it be nice to give the users links to them?</p>
+<p>If in a page template
+you naively ask your Grok view
+for the URL of a transient object,
+you will be disappointed.
+Grok <em>does</em> know the URL of the object
+to which the user has just navigated,
+because, well, it's just navigated there,
+so adding this near the bottom of your <tt class="docutils literal"><span class="pre">naturalindex.pt</span></tt>
+should work just fine:</p>
+<pre class="literal-block">
+This page lives at: &lt;b tal:content=&quot;python: view.url(context)&quot;&gt;url&lt;/b&gt;&lt;br&gt;
+</pre>
+<p>But if you rewrite your template
+so that it tries asking for the URL of any other object,
+the result will be a minor explosion.
+Try adding this to your <tt class="docutils literal"><span class="pre">naturalindex.pt</span></tt> file:</p>
+<pre class="literal-block">
+Next number: &lt;b tal:content=&quot;python: view.url(context.next)&quot;&gt;url&lt;/b&gt;&lt;br&gt;
+</pre>
+<p>and try reloading the page.
+On the command line,
+your application will return the exception:</p>
+<pre class="literal-block">
+TypeError: There isn't enough context to get URL information.
+This is probably due to a bug in setting up location information.
+</pre>
+<p>Do you see the problem?
+Because this new <tt class="docutils literal"><span class="pre">Natural</span></tt> object does not live inside of the ZopeDB,
+Grok cannot guess the URL at which you intend it to live.
+In order to provide this information,
+it is best to call a Zope function called <tt class="docutils literal"><span class="pre">locate()</span></tt>
+that marks as object as belonging inside of a particular container.
+To get the chance to do this magic,
+you'll have to avoid calling <tt class="docutils literal"><span class="pre">Natural.previous</span></tt> and <tt class="docutils literal"><span class="pre">Natural.next</span></tt>
+directly from your page template.
+Instead,
+provide your view with two new properties
+that will grab the <tt class="docutils literal"><span class="pre">previous</span></tt> and <tt class="docutils literal"><span class="pre">next</span></tt> attributes
+off of the <tt class="docutils literal"><span class="pre">Natural</span></tt> object which is your current context,
+and then perform the required modification before returning them:</p>
+<pre class="code-block python literal-block">
+<span class="k">class</span> <span class="nc">NaturalIndex</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+
+    <span class="o">...</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">previous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="s">'previous'</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">previous</span>
+            <span class="n">traverser</span> <span class="o">=</span> <span class="n">BaseTraverser</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">getSite</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">traverser</span><span class="o">.</span><span class="n">publishTraverse</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">'natural'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">zope</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">located</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">next</span>
+        <span class="n">traverser</span> <span class="o">=</span> <span class="n">BaseTraverser</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">getSite</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">traverser</span><span class="o">.</span><span class="n">publishTraverse</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s">'natural'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">zope</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">located</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+</pre>
+<p>This forces upon your objects
+enough information that Zope can determine their URL&nbsp;—
+it will believe that they live inside of the object
+named by the URL <tt class="docutils literal"><span class="pre">/app/natural</span></tt>
+(or whatever other name you use in the <tt class="docutils literal"><span class="pre">PublishTraverse</span></tt> call).
+With the above in place,
+you can add these links to the bottom of your <tt class="docutils literal"><span class="pre">naturalindex.pt</span></tt>
+and they should work just fine:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;tal:if</span> <span class="na">tal:condition=</span><span class="s">&quot;view/previous&quot;</span><span class="nt">&gt;</span>
+ Previous number: <span class="nt">&lt;a</span> <span class="na">tal:attributes=</span><span class="s">&quot;href python: view.url(view.previous)&quot;</span>
+  <span class="na">tal:content=</span><span class="s">&quot;view/previous&quot;</span><span class="nt">&gt;</span>123<span class="nt">&lt;/a&gt;&lt;br&gt;</span>
+<span class="nt">&lt;/tal:if&gt;</span>
+Next number: <span class="nt">&lt;a</span> <span class="na">tal:attributes=</span><span class="s">&quot;href python: view.url(view.next)&quot;</span>
+ <span class="na">tal:content=</span><span class="s">&quot;view/next&quot;</span><span class="nt">&gt;</span>123<span class="nt">&lt;/a&gt;&lt;br&gt;</span>
+
+</pre>
+<p>This should get easier in a future version of Grok and Zope!</p>
+</div>
+<div class="section">
+<h2><a id="writing-your-own-container" name="writing-your-own-container">Writing Your Own Container</a></h2>
+<p>The above approach, using Traversers, gives Grok
+just enough information
+to let users visit your objects,
+and for you to assign URLs to them.
+But there are several features of a normal <tt class="docutils literal"><span class="pre">grok.Container</span></tt>
+that are missing —
+there is no way for Grok to list or iterate over the objects,
+for example,
+nor can it ask whether a particular object lives in the container or not.</p>
+<p>While taking full advantage of containers
+is beyond the scope of this tutorial,
+I ought to show you how the above would be accomplished:</p>
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span>
+<span class="k">from</span> <span class="nn">transient.natural</span> <span class="k">import</span> <span class="n">Natural</span>
+<span class="k">from</span> <span class="nn">zope.app.container.interfaces</span> <span class="k">import</span> <span class="n">IItemContainer</span>
+<span class="k">from</span> <span class="nn">zope.app.container.contained</span> <span class="k">import</span> <span class="n">Contained</span>
+<span class="k">import</span> <span class="nn">zope.location.location</span>
+
+<span class="k">class</span> <span class="nc">TransientApp</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">BaseTraverser</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Traverser</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">TransientApp</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">'natural'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NaturalBox</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">NaturalBox</span><span class="p">(</span><span class="n">Contained</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">implements</span><span class="p">(</span><span class="n">IItemContainer</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">Natural</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">zope</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">located</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span>
+
+<span class="k">class</span> <span class="nc">NaturalIndex</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Natural</span><span class="p">)</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="s">'index.html'</span><span class="p">)</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">previous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="s">'previous'</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">previous</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">__parent__</span>
+            <span class="k">return</span> <span class="n">zope</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">located</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="nd">&#64;property</span>
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">next</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">__parent__</span>
+        <span class="k">return</span> <span class="n">zope</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">located</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+</pre>
+<p>Note, first, that this is almost identical to the application
+we built in the last section;
+the <tt class="docutils literal"><span class="pre">grok.Application</span></tt>,
+its <tt class="docutils literal"><span class="pre">Traverser</span></tt>,
+and the <tt class="docutils literal"><span class="pre">NaturalIndex</span></tt> are all the same —
+and you can leave alone the <tt class="docutils literal"><span class="pre">naturalindex.pt</span></tt> you wrote as well.</p>
+<p>But instead of placing a <tt class="docutils literal"><span class="pre">Traverser</span></tt> between our <tt class="docutils literal"><span class="pre">Application</span></tt>
+and the actual objects we are delivering,
+we have created an actual “container”
+that follows a more fundamental protocol.
+There are a few differences
+in even this simple example.</p>
+<ul class="simple">
+<li>A container is supposed to act like a Python dictionary,
+so we have overriden the Python operation <tt class="docutils literal"><span class="pre">__getitem__</span></tt>
+instead of providing a <tt class="docutils literal"><span class="pre">traverse()</span></tt> method.
+This means that other code using the container
+can find objects inside of it using the <tt class="docutils literal"><span class="pre">container[key]</span></tt>
+Python dictionary syntax.</li>
+<li>A Python <tt class="docutils literal"><span class="pre">__getitem__</span></tt> method
+is required to raise the <tt class="docutils literal"><span class="pre">KeyError</span></tt> exception
+when someone tries to look up a key
+that does not exist in the container.
+It is <em>not</em> sufficient to merely return <tt class="docutils literal"><span class="pre">None</span></tt>,
+like it was in our <tt class="docutils literal"><span class="pre">Traverser</span></tt> above,
+because, without the exception,
+Python will assume that the key lookup was successful
+and that <tt class="docutils literal"><span class="pre">None</span></tt> is the value that was found!</li>
+<li>Finally,
+before returning an object from your container,
+you need to call the Zope <tt class="docutils literal"><span class="pre">located()</span></tt> function
+to make sure the object gets marked up
+with information about where it lives on your site.
+A Grok <tt class="docutils literal"><span class="pre">Traverser</span></tt> does this for you.</li>
+</ul>
+<p>Again,
+in most circumstances I can imagine,
+you will be happier just using a Traverser
+like the third example shows,
+and not incurring the slight bit of extra work
+necessary to offer a full-fledged container.
+But,
+in case you ever find yourself
+wanting to use a widget or utility
+that needs an actual container to process,
+I wanted you to have this example available.</p>
+</div>
+
+  </div>
+
+  <div class="roundbottom">
+     <img src="/resources/corner-bottomleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+</div>
+
+<div class="footer">
+	
+	<table><tr><td>
+	Grok cooks around the campfire of <br />
+	<a href="http://wiki.zope.org/zope3/FrontPage"><img src="/resources/zopelogo.gif" alt="Zope" style="padding: 0.5em;" /></a>
+	</td><td>
+	 and roams free on the savannah of<br />
+	<a href="http://www.python.org"><img src="/resources/python-logo.gif" style="padding: 0.5em;" alt="Python" /></a>
+	</td></tr>
+	</table>
+
+	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
+</div>
+
+</body>
+</html>

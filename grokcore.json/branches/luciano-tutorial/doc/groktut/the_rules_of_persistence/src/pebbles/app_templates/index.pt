@@ -1,0 +1,10 @@
+<html>
+<body>
+<p>Mammoths seen:</p>
+<ul>
+  <li tal:repeat="name context/mammoths" tal:content="name"></li>
+</ul>
+<p><a tal:attributes="href python:view.url('edit')">Add</a></p>
+</body>
+</html>
+

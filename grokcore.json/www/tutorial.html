@@ -1,0 +1,1672 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Grok tutorial</title><meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
+	<style type="text/css"><!-- @import url(/resources/grok.css); --></style>
+</head>
+
+<body>
+<div class="header">
+	
+	<a href="http://grok.zope.org">
+	<img src="/resources/grok-header.jpg" alt="GROK" /></a>
+	<ul id="navigation">
+        <li>
+            <a href="/index.html" class="" title="Home">Home</a></li>
+        <li>
+            <a href="/about.html" class="" title="About">About</a></li>
+        <li>
+            <a href="/tutorial.html" class=""
+               title="Tutorial">Tutorial</a></li>
+        <li>
+            <a href="/minitutorials/index.html" class=""
+               title="How Tos">How Tos</a></li>
+  </ul>
+</div>
+
+
+<div class="roundcont">
+	
+  <div class="roundtop">
+    <img src="/resources/corner-topleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+  <div class="content">
+
+          <h1 class="title">Grok tutorial</h1>
+Also available as <a href="./tutorial.pdf">PDF</a>.<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#welcome-to-the-grok-tutorial" id="id1" name="id1">Welcome to the Grok tutorial!</a></li>
+<li><a class="reference" href="#getting-started-with-grok" id="id2" name="id2">Getting started with Grok</a><ul>
+<li><a class="reference" href="#setting-up-grokproject" id="id3" name="id3">Setting up grokproject</a></li>
+<li><a class="reference" href="#creating-a-grok-project" id="id4" name="id4">Creating a grok project</a></li>
+<li><a class="reference" href="#starting-up-zope" id="id5" name="id5">Starting up Zope</a></li>
+<li><a class="reference" href="#an-empty-grok-project" id="id6" name="id6">An empty Grok project</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#showing-pages" id="id7" name="id7">Showing pages</a><ul>
+<li><a class="reference" href="#publishing-a-simple-web-page" id="id8" name="id8">Publishing a simple web page</a></li>
+<li><a class="reference" href="#a-second-view" id="id9" name="id9">A second view</a></li>
+<li><a class="reference" href="#making-our-page-dynamic" id="id10" name="id10">Making our page dynamic</a></li>
+<li><a class="reference" href="#static-resources-for-our-web-page" id="id11" name="id11">Static resources for our web page</a></li>
+<li><a class="reference" href="#using-view-methods" id="id12" name="id12">Using view methods</a></li>
+<li><a class="reference" href="#generating-html-from-python" id="id13" name="id13">Generating HTML from Python</a></li>
+<li><a class="reference" href="#completely-python-driven-views" id="id14" name="id14">Completely Python-driven views</a></li>
+<li><a class="reference" href="#doing-some-calculation-before-viewing-a-page" id="id15" name="id15">Doing some calculation before viewing a page</a></li>
+<li><a class="reference" href="#reading-url-parameters" id="id16" name="id16">Reading URL parameters</a></li>
+<li><a class="reference" href="#simple-forms" id="id17" name="id17">Simple forms</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#models" id="id18" name="id18">Models</a><ul>
+<li><a class="reference" href="#a-view-for-a-model" id="id19" name="id19">A view for a model</a></li>
+<li><a class="reference" href="#storing-data" id="id20" name="id20">Storing data</a></li>
+<li><a class="reference" href="#redirection" id="id21" name="id21">Redirection</a></li>
+<li><a class="reference" href="#showing-the-value-in-the-form" id="id22" name="id22">Showing the value in the form</a></li>
+<li><a class="reference" href="#the-rules-of-persistence" id="id23" name="id23">The rules of persistence</a></li>
+<li><a class="reference" href="#explicitly-associating-a-view-with-a-model" id="id24" name="id24">Explicitly associating a view with a model</a></li>
+<li><a class="reference" href="#a-second-model" id="id25" name="id25">A second model</a></li>
+<li><a class="reference" href="#containers" id="id26" name="id26">Containers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id1" id="welcome-to-the-grok-tutorial" name="welcome-to-the-grok-tutorial">Welcome to the Grok tutorial!</a></h2>
+<div class="sidebar">
+<p class="first sidebar-title">Getting started with Zope Page Templates</p>
+<p>You can find introductions and more information about Zope Page
+Templates (ZPT, sometimes also called TAL) in various places:</p>
+<blockquote>
+<p><a class="reference" href="http://plone.org/documentation/tutorial/zpt">http://plone.org/documentation/tutorial/zpt</a></p>
+<p><a class="reference" href="http://wiki.zope.org/ZPT/FrontPage">http://wiki.zope.org/ZPT/FrontPage</a></p>
+</blockquote>
+<p class="last">Note that some of the information in these introductions may refer
+to concepts not available in Grok or Zope 3, in particular variables
+like <tt class="docutils literal"><span class="pre">here</span></tt> or <tt class="docutils literal"><span class="pre">template</span></tt>. The basic principles will work with
+Zope 3 (and Grok) however; try reading <tt class="docutils literal"><span class="pre">context</span></tt> or <tt class="docutils literal"><span class="pre">view</span></tt>
+instead.</p>
+</div>
+<p>Grok is a powerful and flexible web application framework for Python
+developers.  In this tutorial we will show you the various things you
+can do with Grok, and how Grok can help you build your web
+application. We'll start out simple, and will slowly go to more
+complex usage patterns.</p>
+<p>All you're expected to know is the Python programming language and an
+understanding of basic web programming (HTML, forms, URLs). It also
+helps if you are familiar with Zope Page Templates, though most of the
+examples should be fairly obvious if you are already familiar with
+another templating language.</p>
+<p>We recommend beginners to follow the tutorial from top to bottom. The
+tutorial is designed to explain important concepts in order and slowly
+builds up from there.</p>
+<p>If you are more experienced, or just curious, you may want to skip
+around instead and read the pieces which interest you most. If
+something is unclear, you can always backtrack to previous sections.</p>
+<p>Grok is based on Zope 3 and is compatible with Zope 3, but you do not
+need to know Zope 3 (or Zope 2) at all to follow this tutorial. Grok
+builds on existing Zope 3 technology but exposes it in a different way
+to the developer. We believe Grok makes developing with Zope 3
+technology easier and more fun for beginners and experienced
+developers alike.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id2" id="getting-started-with-grok" name="getting-started-with-grok">Getting started with Grok</a></h2>
+<p>This chapter will help you get up and running with Grok, using the
+<tt class="docutils literal"><span class="pre">grokproject</span></tt> tool. We create a new project with <tt class="docutils literal"><span class="pre">grokproject</span></tt>,
+tell you how to get that project running so you can access it with a
+web browser.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id3" id="setting-up-grokproject" name="setting-up-grokproject">Setting up grokproject</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">Installing <tt class="docutils literal"><span class="pre">easy_install</span></tt></p>
+<p>If you don't already have <tt class="docutils literal"><span class="pre">easy_install</span></tt> available, you can find the
+script to set it up on the <a class="reference" href="http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install">PEAK EasyInstall page</a>.</p>
+<p>You need to download <a class="reference" href="http://peak.telecommunity.com/dist/ez_setup.py">ez_setup.py</a>. Then, you run it like this to
+install <tt class="docutils literal"><span class="pre">easy_install</span></tt> into your system Python:</p>
+<pre class="literal-block">
+$ sudo python2.4 ez_setup.py
+</pre>
+<p>This will make <tt class="docutils literal"><span class="pre">easy_install</span></tt> available to you.</p>
+<p><strong>Note</strong>: Sometimes you have <tt class="docutils literal"><span class="pre">easy_install</span></tt> installed but you need
+a newer version of the underlying setuptools infrastructure to make
+Grok work. You can automatically upgrade setuptools this by doing:</p>
+<pre class="last literal-block">
+$ sudo easy_install -U setuptools
+</pre>
+</div>
+<p>Setting up grok on a Unix-like (Linux, Mac OS X) environment is
+easy.</p>
+<p>Let's go through the prerequisites first. You need a computer
+connected to the internet, as Grok installs itself over the
+network. You also need Python 2.4 installed.</p>
+<p>Because Grok uses a source distribution of Zope 3, you may need to
+install your operating system's Python &quot;dev&quot; package. You also need a
+working C compiler (typically <tt class="docutils literal"><span class="pre">gcc</span></tt>) installed, as we compile bits of
+Zope 3 during setup. Finally, you also need <tt class="docutils literal"><span class="pre">easy_install</span></tt> installed
+so it becomes easy to install eggs.</p>
+<p>Once you are done with the prerequisites, you can install
+grokproject itself:</p>
+<pre class="literal-block">
+$ sudo easy_install grokproject
+</pre>
+<p>We're ready to create our first grok project now!</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id4" id="creating-a-grok-project" name="creating-a-grok-project">Creating a grok project</a></h3>
+<p>Let's create a first Grok project. A Grok project is a working
+environment for a developer using Grok. In essence, a directory with a
+lot of files and subdirectories in it. Let's create a Grok project
+called Sample:</p>
+<pre class="literal-block">
+$ grokproject Sample
+</pre>
+<p>This tells grokproject to create a new subdirectory called <tt class="docutils literal"><span class="pre">Sample</span></tt>
+and set up the project in there. grokproject will automatically
+download and install Zope 3 and Grok into the project area.</p>
+<!-- XXX when grokproject gains a switch for pointing to a shared egg
+directory, mention this here. -->
+<p>grokproject will tell you what it will be creating:</p>
+<pre class="literal-block">
+Selected and implied templates:
+  grokproject#grokproject  A grok project
+
+Variables:
+  egg:      Sample
+  package:  sample
+  project:  Sample
+</pre>
+<p>The &quot;Selected and implied templates&quot; line is something reported by
+Paste, which is the Python project generation software which
+grokproject is using. After this, it reports three names.</p>
+<p>First, it reports the name this project will have if in the project's
+<tt class="docutils literal"><span class="pre">setup.py</span></tt>:</p>
+<pre class="literal-block">
+egg:      Sample
+</pre>
+<p>Next, it specifies the name of the Python package that you will be
+developing with. The package will be placed under the project's <tt class="docutils literal"><span class="pre">src</span></tt>
+directory:</p>
+<pre class="literal-block">
+package:  sample
+</pre>
+<p>Finally, it gives the name of the project directory that it will
+create (under the current directory):</p>
+<pre class="literal-block">
+project:  Sample
+</pre>
+<p>You will be asked a number of questions now. First you need to supply
+the name of the initial module that your package will contain. We'll
+stick with the default <tt class="docutils literal"><span class="pre">app.py</span></tt>:</p>
+<pre class="literal-block">
+Enter module (Name of a demo Python module placed into the package) ['app.py']:
+</pre>
+<p>After this Grok asks you for an initial username and password for the
+Zope server. We'll use <tt class="docutils literal"><span class="pre">grok</span></tt> for both:</p>
+<pre class="literal-block">
+Enter user (Name of an initial administrator user): grok
+Enter passwd (Password for the initial administrator user): grok
+</pre>
+<p>Now you have to wait a while as grokproject downloads <a class="reference" href="http://cheeseshop.python.org/pypi/zc.buildout">zc.buildout</a>
+(the system that's used to build the project area), Grok and the Zope
+3 libraries.</p>
+<p>After all that, Grok, along with a Zope 3 instance, is ready to go.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id5" id="starting-up-zope" name="starting-up-zope">Starting up Zope</a></h3>
+<p>You can go into the <tt class="docutils literal"><span class="pre">Sample</span></tt> project directory now and start up the
+Zope instance that has been installed:</p>
+<pre class="literal-block">
+$ cd Sample
+$ bin/zopectl fg
+</pre>
+<p>This will make Zope 3 available on port 8080, and you can log in with
+username <tt class="docutils literal"><span class="pre">grok</span></tt> and password <tt class="docutils literal"><span class="pre">grok</span></tt>. Assuming you've started up
+Zope on your localhost, you can go to it here:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080">http://localhost:8080</a></blockquote>
+<p>This first pops up a login dialog (username: <tt class="docutils literal"><span class="pre">grok</span></tt> and password:
+<tt class="docutils literal"><span class="pre">grok</span></tt>). It will then show a simple Grok admin interface. This
+allows you to install new Grok applications.</p>
+<p>Our sample application (<tt class="docutils literal"><span class="pre">sample.app.Sample</span></tt>) will be available for
+adding. Let's try this out.  Go to the Grok admin page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080">http://localhost:8080</a></blockquote>
+<p>and add a Sample application. Give it the name <tt class="docutils literal"><span class="pre">test</span></tt>.</p>
+<p>You can now go to the installed application if you click on its link. This
+will bring you to the following URL:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see a simple web page with the following text on it:</p>
+<pre class="literal-block">
+Congratulations!
+
+Your Grok application is up and running. Edit
+sample/app_templates/index.pt to change this page.
+</pre>
+<p>You can shut down Zope 3 at any time by hitting <tt class="docutils literal"><span class="pre">CTRL-c</span></tt>. Shut it
+down now. We will be shutting down and starting up Zope 3 often in
+this tutorial.</p>
+<p>Practice restarting Zope now, as you'll end up doing it a lot during
+this tutorial. It's just stopping Zope and starting it again:
+<cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">bin/zopectl</span> <span class="pre">fg</span></tt> from your Sample
+project directory.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id6" id="an-empty-grok-project" name="an-empty-grok-project">An empty Grok project</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">What about the other directories and files in our project?</p>
+<p class="last">What about the other files and subdirectories in our <tt class="docutils literal"><span class="pre">Sample</span></tt> project
+directory? Grokproject sets up the project using a system called
+<a class="reference" href="http://cheeseshop.python.org/pypi/zc.buildout">zc.buildout</a>. The <tt class="docutils literal"><span class="pre">eggs</span></tt>, <tt class="docutils literal"><span class="pre">develop-eggs</span></tt> and <tt class="docutils literal"><span class="pre">bin</span></tt>
+directories are all set up and maintained by zc.buildout. See its
+documentation for more information about how to use it. The
+configuration of the project and its dependency is in
+<tt class="docutils literal"><span class="pre">buildout.cfg</span></tt>. For now, you can avoid these details however.</p>
+</div>
+<p>Let's take a closer look at what's been created in the Sample project
+directory.</p>
+<p>One of the things grokproject created was a <tt class="docutils literal"><span class="pre">setup.py</span></tt> file. This file
+contains information about your project. This information is used by
+Python distutils and setuptools. You can use the <tt class="docutils literal"><span class="pre">setup.py</span></tt> file to
+upload your project to the Python Cheeseshop. We will discuss this in
+more detail later in this tutorial. (XXX)</p>
+<p>We have already seen the <tt class="docutils literal"><span class="pre">bin</span></tt> directory. It contains the startup
+script for the Zope instance (<tt class="docutils literal"><span class="pre">bin/zopectl</span></tt>) as well as the
+executable for the buildout system (<tt class="docutils literal"><span class="pre">bin/buildout</span></tt>) which can be
+used to re-build the Zope instance and possibly update the Grok and
+Zope packages.</p>
+<p>The <tt class="docutils literal"><span class="pre">parts</span></tt> directory contains configuration and data created by
+<tt class="docutils literal"><span class="pre">buildout</span></tt>, such as the Zope object database (ZODB) instance.</p>
+<p>The actual code of the project will all be inside the <tt class="docutils literal"><span class="pre">src</span></tt>
+directory. In it is a Python package directory called <tt class="docutils literal"><span class="pre">sample</span></tt> with
+the <tt class="docutils literal"><span class="pre">app.py</span></tt> file that grokproject said it would create. Let's look
+at this file:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    pass # see app_templates/index.pt
+
+</pre>
+<p>Not very much yet, but enough to make an installable Grok application
+and display its welcome page. We'll go into the details of what this
+means later.</p>
+<p>Besides this, there is an empty <tt class="docutils literal"><span class="pre">__init__.py</span></tt> file to make this
+directory a Python package.</p>
+<p>There is also a directory called <tt class="docutils literal"><span class="pre">app_templates</span></tt>. It contains a single
+template called <tt class="docutils literal"><span class="pre">index.pt</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Congratulations!&lt;/h1&gt;
+
+  &lt;p&gt;Your Grok application is up and running.
+  Edit &lt;code&gt;sample/app_templates/index.pt&lt;/code&gt; to change
+  this page.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>This is the template for your project's welcome page.</p>
+<p>What's left is a <tt class="docutils literal"><span class="pre">configure.zcml</span></tt> file. Unlike in typical Zope 3
+applications, this will only ever contain a few lines that load Grok
+and then register this application with Grok. This means we can
+typically completely ignore it, but we'll show it here once for good
+measure:</p>
+<pre class="literal-block">
+&lt;configure xmlns=&quot;http://namespaces.zope.org/zope&quot;
+           xmlns:grok=&quot;http://namespaces.zope.org/grok&quot;&gt;
+  &lt;include package=&quot;grok&quot; /&gt;
+  &lt;grok:grok package=&quot;.&quot; /&gt;
+&lt;/configure&gt;
+
+</pre>
+</div>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id7" id="showing-pages" name="showing-pages">Showing pages</a></h2>
+<p>Showing web pages is what puts the <em>web</em> in &quot;web applications&quot;. You
+start doing this with HTML templates, but Grok doesn't stop at
+templates. Most web pages in a web application will contain complex
+presentation logic that is better handled by separate Python code in
+conjunction with templates. This becomes especially important in more
+complex interactions with the user, such as form handling. After
+reading this chapter, you should already be able to write simple web
+applications with Grok.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id8" id="publishing-a-simple-web-page" name="publishing-a-simple-web-page">Publishing a simple web page</a></h3>
+<p>Let's publish a simple static web page. Grok is geared towards web
+applications and therefore not really meant for publishing a large
+number of static (pregenerated) web pages. For that you're better off
+to use a specialized system such as Apache. Nonetheless, in order to
+develop any web application we need to know how to put some simple
+HTML on the web.</p>
+<p>As you saw previously, our <tt class="docutils literal"><span class="pre">Sample</span></tt> application has a stock front
+page, generated by grokproject. Let's change that.</p>
+<p>To do this, go to the <tt class="docutils literal"><span class="pre">app_templates</span></tt> directory in <tt class="docutils literal"><span class="pre">src/sample/</span></tt>.
+This directory contains the templates used for anything defined in the
+<tt class="docutils literal"><span class="pre">app</span></tt> module. Grok knows to associate the directory to the module by
+its name (<tt class="docutils literal"><span class="pre">&lt;module_name&gt;_templates</span></tt>).</p>
+<p>In this directory we will edit the <tt class="docutils literal"><span class="pre">index</span></tt> template for our
+<tt class="docutils literal"><span class="pre">Sample</span></tt> application object. To do this, open the <tt class="docutils literal"><span class="pre">index.pt</span></tt> file
+in a text editor. The <tt class="docutils literal"><span class="pre">.pt</span></tt> extension indicates that this file is a
+Zope Page Template (ZPT). We're just going to put HTML in it now, but
+this allows us to make page dynamic later on.</p>
+<p>Change the <tt class="docutils literal"><span class="pre">index.pt</span></tt> file to contain the following (very
+simplistic) HTML:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Hello world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Then reload the page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should now see the following text:</p>
+<pre class="literal-block">
+Hello world!
+</pre>
+<p>Note that you can change templates and see the effects instantly:
+there is no need to restart Zope to see the effect. This is not true
+for changes on the Python level, for instance when you add a
+template. We show an example of this next.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id9" id="a-second-view" name="a-second-view">A second view</a></h3>
+<p>Our view is named <tt class="docutils literal"><span class="pre">index</span></tt>. This in fact means something slightly
+special: it's the default view of our application object. We can also
+access it explicitly by naming the view:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/index">http://localhost:8080/test/index</a></blockquote>
+<p>If you view that URL in your browser, you should see the same result
+as before. This is the way all other, non-index views are accessed.</p>
+<p>Often, your application needs more than one view. A document for
+instance may have an <tt class="docutils literal"><span class="pre">index</span></tt> view that displays it, but another
+<tt class="docutils literal"><span class="pre">edit</span></tt> view to change its contents.  To create a second view, create
+another template called <tt class="docutils literal"><span class="pre">bye.pt</span></tt> in <tt class="docutils literal"><span class="pre">app_templates</span></tt>. Make it have
+the following content:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Bye world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Now we need to tell Grok to actually use this template. To do this,
+modify <tt class="docutils literal"><span class="pre">src/sample/app.py</span></tt> so that it reads like this:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    pass
+
+class Bye(grok.View):
+    pass
+
+
+</pre>
+<p>As you can see, all we did was add a class called <tt class="docutils literal"><span class="pre">Bye</span></tt> that
+subclasses from <tt class="docutils literal"><span class="pre">grok.View</span></tt>. This indicates to Grok that we want a
+view named <tt class="docutils literal"><span class="pre">bye</span></tt> for the application, just like the <tt class="docutils literal"><span class="pre">Index</span></tt> class
+that was already created for us indicates that we want a view named
+<tt class="docutils literal"><span class="pre">index</span></tt>. A <em>view</em> is a way to view some model, in this case
+installations of our <tt class="docutils literal"><span class="pre">Sample</span></tt> application. Note that the view name
+in the URL is always going to be lowercase, while the class name
+normally starts with an uppercase letter.</p>
+<p>The empty class definition above is enough for Grok to go look in the
+<tt class="docutils literal"><span class="pre">app_templates</span></tt> directory for <tt class="docutils literal"><span class="pre">bye.pt</span></tt>. The rule is that a the
+template should have the same name as the class, but lowercased and
+with the <tt class="docutils literal"><span class="pre">.pt</span></tt> postfix.</p>
+<p>Restart Zope (<tt class="docutils literal"><span class="pre">CTRL-C,</span> <span class="pre">then</span> <span class="pre">``bin/zopectl</span> <span class="pre">fg</span></tt>). You can now go to a
+new web page called <tt class="docutils literal"><span class="pre">bye</span></tt>:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/bye">http://localhost:8080/test/bye</a></blockquote>
+<p>When you load this web page in a browser, you should see the following
+text:</p>
+<pre class="literal-block">
+Bye world!
+</pre>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id10" id="making-our-page-dynamic" name="making-our-page-dynamic">Making our page dynamic</a></h3>
+<p>Static web pages are not very helpful if we want to make a dynamic web
+application. Let's make a page that shows the result of a very simple
+calculation: <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></tt>.</p>
+<p>We will use a Zope Page Templates (ZPT) directive to do this
+calculation inside <tt class="docutils literal"><span class="pre">index.pt</span></tt> template. Change the <tt class="docutils literal"><span class="pre">index.pt</span></tt> to
+read like this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;python: 1 + 1&quot;&gt;this is replaced&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>We've used the <tt class="docutils literal"><span class="pre">tal:content</span></tt> page template directive to replace the
+content between the <tt class="docutils literal"><span class="pre">&lt;p&gt;</span></tt> and <tt class="docutils literal"><span class="pre">&lt;/p&gt;</span></tt> tags with something else, in
+this case the result of the Python expression <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></tt>.</p>
+<p>Since restarting Zope is not necessary for changes that are limited to
+the page templates, you can just reload the web page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see the following result:</p>
+<pre class="literal-block">
+2
+</pre>
+<p>Looking at the source of the web page shows us this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;2&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>As you can see, the content of the <tt class="docutils literal"><span class="pre">&lt;p&gt;</span></tt> tag was indeed replaced
+with the result of the expression <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></tt>.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id11" id="static-resources-for-our-web-page" name="static-resources-for-our-web-page">Static resources for our web page</a></h3>
+<p>In real-world web pages, we almost never publish a web page that just
+contains bare-bones HTML. We also want to refer to other resources,
+such as images, CSS files or Javascript files. As an example, let's
+add some style to our web page.</p>
+<p>To do this, create a new directory called <tt class="docutils literal"><span class="pre">static</span></tt> in the <tt class="docutils literal"><span class="pre">sample</span></tt>
+package (so, <tt class="docutils literal"><span class="pre">src/sample/static</span></tt>). In it, place a file called
+<tt class="docutils literal"><span class="pre">style.css</span></tt> and put in the following content:</p>
+<pre class="literal-block">
+body {
+    background-color: #FF0000;
+}
+
+</pre>
+<p>In order to use it, we also need to refer to it from our
+<tt class="docutils literal"><span class="pre">index.pt</span></tt>. Change the content of <tt class="docutils literal"><span class="pre">index.pt</span></tt> to read like this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;head&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; 
+      tal:attributes=&quot;href static/style.css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Hello world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Now restart Zope and reload the page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>The web page should now show up with a red background.</p>
+<p>You will have noticed we used the <tt class="docutils literal"><span class="pre">tal:attributes</span></tt> directive in our
+<tt class="docutils literal"><span class="pre">index.pt</span></tt> now. This uses Zope Page Templates to dynamically
+generate the link to our file <tt class="docutils literal"><span class="pre">style.css</span></tt>.</p>
+<p>Let's take a look at the source code of the generated web page:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot;
+      href=&quot;http://localhost:8080/test/&#64;&#64;/sample/style.css&quot; /&gt;
+&lt;body&gt;
+&lt;p&gt;Hello world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>As you can see, the <tt class="docutils literal"><span class="pre">tal:attributes</span></tt> directive is gone and has been
+replaced with the following URL to the actual stylesheet:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/&#64;&#64;/sample/style.css">http://localhost:8080/test/&#64;&#64;/sample/style.css</a></blockquote>
+<p>We will not go into the details of the structure of the URL here, but
+we will note that because it's generated this way, the link to
+<tt class="docutils literal"><span class="pre">style.css</span></tt> will continue to work no matter where you install your
+application (i.e. in a virtual hosting setup).</p>
+<p>Pulling in images or javascript is very similar. Just place your image
+files and <cite>.js</cite> files in the <tt class="docutils literal"><span class="pre">static</span></tt> directory, and create the URL
+to them using <tt class="docutils literal"><span class="pre">static/&lt;filename&gt;</span></tt> in your page template.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id12" id="using-view-methods" name="using-view-methods">Using view methods</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">Unassociated templates</p>
+<p>If you have followed the tutorial so far, you will have an extra
+template called <tt class="docutils literal"><span class="pre">bye.pt</span></tt> in your <tt class="docutils literal"><span class="pre">app_templates</span></tt> directory.
+Since in the given <tt class="docutils literal"><span class="pre">app.py``e</span> <span class="pre">we</span> <span class="pre">have</span> <span class="pre">no</span> <span class="pre">more</span> <span class="pre">class</span> <span class="pre">using</span> <span class="pre">it,</span> <span class="pre">the</span>
+<span class="pre">``bye.pt</span></tt> template will have become <em>unassociated*</em>. When you try
+to restart Zope, grok will be unable to read your application, and
+Zope will crash with an error message like this:</p>
+<pre class="literal-block">
+GrokError: Found the following unassociated template(s) when
+grokking 'sample.app': bye.  Define view classes inheriting from
+grok.View to enable the template(s).
+</pre>
+<p class="last">To resolve this error, simply remove <tt class="docutils literal"><span class="pre">bye.pt</span></tt> from your
+<tt class="docutils literal"><span class="pre">app_templates</span></tt> directory.</p>
+</div>
+<p>ZPT is deliberately limited in what it allows you to do with Python.
+It is good application design practice to use ZPT for fairly simple
+templating purposes only, and to do anything a bit more complicated in
+Python code. Using ZPT with arbitrary Python code is easy: you just
+add methods to your view class and use them from your template.</p>
+<p>Let's see how this is done by making a web page that displays the
+current date and time. We will use our Python interpreter to find out
+what works:</p>
+<pre class="literal-block">
+$ python
+Python 2.4.4
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</pre>
+<p>We will need Python's <tt class="docutils literal"><span class="pre">datetime</span></tt> class, so let's import it:</p>
+<pre class="literal-block">
+&gt;&gt;&gt; from datetime import datetime
+</pre>
+<p>Note that this statement brings us beyond the capabilities of simple
+ZPT use; it is not allowed to import arbitrary Python modules from
+within a ZPT template; only Python <em>expressions</em> (with a result) are
+allowed, not <em>statements</em> such as <tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">..</span></tt>.</p>
+<p>Let's get the current date and time:</p>
+<pre class="literal-block">
+&gt;&gt;&gt; now = datetime.now()
+</pre>
+<p>This gives us a date time object; something like this:</p>
+<pre class="literal-block">
+&gt;&gt;&gt; now
+datetime.datetime(2007, 2, 27, 17, 14, 40, 958809)
+</pre>
+<p>Not very nice to display on a web page, so let's turn it into a
+prettier string using the formatting capabilities of the <tt class="docutils literal"><span class="pre">datetime</span></tt>
+object:</p>
+<pre class="literal-block">
+&gt;&gt;&gt; now.strftime('%Y-%m-%d %H:%M')
+'2007-02-27 17:14'
+</pre>
+<p>That looks better.</p>
+<p>So far nothing new; just Python. We will integrate this code into our
+Grok project now. Go to <tt class="docutils literal"><span class="pre">app.py</span></tt> and change it to read like this:</p>
+<pre class="literal-block">
+import grok
+from datetime import datetime
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):    
+    def current_datetime(self):
+        now = datetime.now()
+        return now.strftime('%Y-%m-%d %H:%M')
+
+</pre>
+<p>We've simply added a method to our view that returns a string
+representing the current date and time. Now to get this string in our
+page template. Change <tt class="docutils literal"><span class="pre">index.pt</span></tt> to read like this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;python:view.current_datetime()&quot;&gt;Hello world!&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Restart Zope. This is needed as we changed the content of a Python
+file (<tt class="docutils literal"><span class="pre">app.py</span></tt>). Now reload our index page to see whether it worked:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see a web page with a date and time like this on your
+screen now:</p>
+<pre class="literal-block">
+2007-02-27 17:21
+</pre>
+<p>What happened here? When viewing a page, the view class (in this case
+<tt class="docutils literal"><span class="pre">Index</span></tt> is instantiated by Zope. The name <tt class="docutils literal"><span class="pre">view</span></tt> in the template
+is always made available and is associated with this instance. We then
+simply call the method on it in our template.</p>
+<p>There is another way to write the template that is slightly shorter
+and may be easier to read in some cases, using a ZPT path expression:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;view/current_datetime&quot;&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Running this has the same result as before.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id13" id="generating-html-from-python" name="generating-html-from-python">Generating HTML from Python</a></h3>
+<p>While usually you will be using templates to generate HTML, sometimes
+you want to generate complicated HTML in Python and then include it in
+an existing web page. For reasons of security against cross-site
+scripting attacks, TAL will automatically escape any HTML into <cite>&amp;gt;</cite>
+and <cite>&amp;lt;</cite>. With the <tt class="docutils literal"><span class="pre">structure</span></tt> directive, you can tell TAL
+explicitly to not escape HTML this way, so it is passed literally into
+the template. Let's see how this is done. Change <tt class="docutils literal"><span class="pre">app.pt</span></tt> to read like
+this:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def some_html(self):
+        return &quot;&lt;b&gt;ME GROK BOLD&lt;/b&gt;&quot;
+
+
+</pre>
+<p>and then change <tt class="docutils literal"><span class="pre">index.pt</span></tt> to read like the following:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;structure python:view.some_html()&quot;&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Let's take another look at our web page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see the following text (in bold):</p>
+<blockquote>
+<strong>ME GROK BOLD</strong></blockquote>
+<p>This means the HTML we generated from the <tt class="docutils literal"><span class="pre">some_html</span></tt> method was
+indeed successfully integrated in our web page.  Without the the
+<tt class="docutils literal"><span class="pre">structure</span></tt> directive, you would've seen the following instead:</p>
+<pre class="literal-block">
+&lt;b&gt;ME GROK BOLD&lt;/b&gt;
+</pre>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id14" id="completely-python-driven-views" name="completely-python-driven-views">Completely Python-driven views</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">Setting the content-type</p>
+<p>When generating the complete content of a page yourself, it's often
+useful to change the content-type of the page to something else than
+<tt class="docutils literal"><span class="pre">text/plain</span></tt>. Let's change our code to return simple XML and set
+the content type to <tt class="docutils literal"><span class="pre">text/xml</span></tt>:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def render(self):
+        self.response.setHeader('Content-Type',
+                                'text/xml; charset=UTF-8')
+        return &quot;&lt;doc&gt;Some XML&lt;/doc&gt;&quot;
+
+
+</pre>
+<p class="last">All views in Grok have a <tt class="docutils literal"><span class="pre">response</span></tt> property that you can use to
+manipulate response headers.</p>
+</div>
+<p>Sometimes it is inconvenient to have to use a template at all. Perhaps
+we are not returning a HTML page at all, for instance. In this case,
+we can use the special <tt class="docutils literal"><span class="pre">render</span></tt> method on a view.</p>
+<p>Modify <tt class="docutils literal"><span class="pre">app.py</span></tt> so it reads like this:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def render(self):
+        return &quot;ME GROK NO TEMPLATE&quot;
+
+</pre>
+<p>If you were to start up Zope with an <tt class="docutils literal"><span class="pre">index.pt</span></tt> template still
+inside <tt class="docutils literal"><span class="pre">app_templates</span></tt> you would get an error:</p>
+<pre class="literal-block">
+GrokError: Multiple possible ways to render view &lt;class
+'sample.app.Index'&gt;. It has both a 'render' method as well as an
+associated template.
+</pre>
+<p>In the face of ambiguity Grok, like Python, refuses to guess. To
+resolve this error, remove <tt class="docutils literal"><span class="pre">index.pt</span></tt> from the <tt class="docutils literal"><span class="pre">app_templates</span></tt>
+directory.</p>
+<p>Now take another look at our test application:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see the following:</p>
+<pre class="literal-block">
+ME GROK NO TEMPLATE
+</pre>
+<p>You should see this even when you view the source of the page. When
+looking at the content type of this page, you will see that it is
+<tt class="docutils literal"><span class="pre">text/plain</span></tt>.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id15" id="doing-some-calculation-before-viewing-a-page" name="doing-some-calculation-before-viewing-a-page">Doing some calculation before viewing a page</a></h3>
+<p>Instead of calculating some values in a method call from the template,
+it is often more useful to calculate just before the web page's
+template is calculated. This way you are sure that a value is only
+calculated once per view, even if you use it multiple times.</p>
+<p>You can do this by defining an <tt class="docutils literal"><span class="pre">update</span></tt> method on the view class. Modify
+<tt class="docutils literal"><span class="pre">app.py</span></tt> to read like this:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def update(self):
+        self.alpha = 2 ** 8
+
+
+</pre>
+<p>This sets a name <tt class="docutils literal"><span class="pre">alpha</span></tt> on the view just before the template is
+being displayed, so we can use it from the template. You can set as
+many names on <tt class="docutils literal"><span class="pre">self</span></tt> as you like.</p>
+<p>Now we need a template <tt class="docutils literal"><span class="pre">index.pt</span></tt> that uses <tt class="docutils literal"><span class="pre">alpha</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;python:view.alpha&quot;&gt;result&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Restart Zope and then let's take another look at our application:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see 256, which is indeed 2 raised to the power 8.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id16" id="reading-url-parameters" name="reading-url-parameters">Reading URL parameters</a></h3>
+<p>When developing a web application, you don't just want to output data,
+but also want to use input. One of the simplest ways for a web
+application to receive input is by retrieving information as a URL
+parameter. Let's devise a web application that can do sums for us. In
+this application, if you enter the following URL into that
+application:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test?value1=3&amp;value2=5">http://localhost:8080/test?value1=3&amp;value2=5</a></blockquote>
+<p>you should see the sum (8) as the result on the page.</p>
+<p>Modify <tt class="docutils literal"><span class="pre">app.py</span></tt> to read like this:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def update(self, value1, value2):
+        self.sum = int(value1) + int(value2)
+
+</pre>
+<p>We need an <tt class="docutils literal"><span class="pre">index.pt</span></tt> that uses <tt class="docutils literal"><span class="pre">sum</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;python:view.sum&quot;&gt;sum&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Restart Zope. Now going to the folllowing URL should display 8:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test?value1=3&amp;value2=5">http://localhost:8080/test?value1=3&amp;value2=5</a></blockquote>
+<p>Other sums work too, of course:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test?value1=50&amp;value2=50">http://localhost:8080/test?value1=50&amp;value2=50</a></blockquote>
+<p>What if we don't supply the needed parameters (<tt class="docutils literal"><span class="pre">value1</span></tt> and
+<tt class="docutils literal"><span class="pre">value2</span></tt>) to the request? We get an error:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You can look at the window where you started up Zope to see the error
+traceback. This is the relevant complaint:</p>
+<pre class="literal-block">
+TypeError: Missing argument to update(): value1
+</pre>
+<p>We can modify our code so it works even without input for either parameter:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def update(self, value1=0, value2=0):
+        self.sum = int(value1) + int(value2)
+
+</pre>
+<p>Restart Zope, and see it can now deal with missing parameters (they
+default to <tt class="docutils literal"><span class="pre">0</span></tt>).</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id17" id="simple-forms" name="simple-forms">Simple forms</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">Automatic forms</p>
+<p class="last">Creating forms and converting and validating user input by hand, as
+shown in this section, can be rather cumbersome. With Grok, you can
+use Zope 3's <em>schema</em> and <em>formlib</em> systems to automate this and
+more. This will be discussed in a later section. XXX</p>
+</div>
+<p>Entering the parameters through URLs is not very pretty. Let's use a
+form for this instead. Change <tt class="docutils literal"><span class="pre">index.pt</span></tt> to contain a form, like
+this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;form tal:attributes=&quot;action python:view.url()&quot; method=&quot;GET&quot;&gt;
+  Value 1: &lt;input type=&quot;text&quot; name=&quot;value1&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+  Value 2: &lt;input type=&quot;text&quot; name=&quot;value2&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+  &lt;input type=&quot;submit&quot; value=&quot;Sum!&quot; /&gt;
+&lt;/form&gt;
+&lt;p&gt;The sum is: &lt;span tal:replace=&quot;python:view.sum&quot;&gt;sum&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>One thing to note here is that we dynamically generate the form's
+<tt class="docutils literal"><span class="pre">action</span></tt>. We make the form submit to itself, basically. Grok views
+have a special method called <tt class="docutils literal"><span class="pre">url</span></tt> that you can use to retrieve the
+URL of the view itself (and other URLs which we'll go into later).</p>
+<p>Leave the <tt class="docutils literal"><span class="pre">app.py</span></tt> as in the previous section, for now. You can now
+go to the web page:</p>
+<pre class="literal-block">
+http://localhost:8080/test
+</pre>
+<p>You can submit the form with some values, and see the result displayed
+below.</p>
+<p>We still have a few bugs to deal with however. For one, if we don't fill
+in any parameters and submit the form, we get an error like this:</p>
+<pre class="literal-block">
+File &quot;../app.py&quot;, line 8, in update
+  self.sum = int(value1) + int(value2)
+ValueError: invalid literal for int():
+</pre>
+<p>This is because the parameters were empty strings, which cannot be
+converted to integers. Another thing that is not really pretty is that
+it displays a sum (0) even if we did not enter any data. Let's change
+<tt class="docutils literal"><span class="pre">app.py</span></tt> to take both cases into account:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    def update(self, value1=None, value2=None):
+        try:
+            value1 = int(value1)
+            value2 = int(value2)
+        except (TypeError, ValueError):
+            self.sum = &quot;No sum&quot;
+            return
+        self.sum = value1 + value2
+
+</pre>
+<p>We catch any TypeError and ValueError here so that wrong or missing
+data does not result in a failure. Instead we display the text &quot;No
+sum&quot;. If we don't get any error, the conversion to integer was fine,
+and we can display the sum.</p>
+<p>Restart Zope and go to the form again to try it out:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+</div>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id18" id="models" name="models">Models</a></h2>
+<p>Now we know how to show web pages, we need to go into what we are
+actually showing: the models. The models contain the
+display-independent logic of your application. In this chapter we will
+discuss a number of issues surrounding models: how your views connect
+to models, and how you can make sure the data in your models is stored
+safely. As the complexity of our sample applications grows, we will
+also go into a few more issues surrounding form handling.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id19" id="a-view-for-a-model" name="a-view-for-a-model">A view for a model</a></h3>
+<p>So far, we have only seen views that do the work all by themselves.
+In typical applications this is not the case however - views display
+information that is stored elsewhere. In Grok applications, views work
+for models: subclasses of <tt class="docutils literal"><span class="pre">grok.Model</span></tt> or <tt class="docutils literal"><span class="pre">grok.Container</span></tt>. For
+the purposes of this discussion, we can treat a <tt class="docutils literal"><span class="pre">grok.Container</span></tt> as
+another kind of <tt class="docutils literal"><span class="pre">grok.Model</span></tt> (more about what makes
+<tt class="docutils literal"><span class="pre">grok.Container</span></tt> special later XXX).</p>
+<p>Our <tt class="docutils literal"><span class="pre">Sample</span></tt> class is a <tt class="docutils literal"><span class="pre">grok.Container</span></tt>, so let's use <tt class="docutils literal"><span class="pre">Sample</span></tt>
+to demonstrate the basic principle. Let's modify <tt class="docutils literal"><span class="pre">app.py</span></tt> so that
+<tt class="docutils literal"><span class="pre">Sample</span></tt> actually makes some data available:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    def information(self):
+        return &quot;This is important information!&quot;
+
+class Index(grok.View):
+    pass
+
+</pre>
+<p>In this case, the information (<tt class="docutils literal"><span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">important</span> <span class="pre">information!&quot;</span></tt>)
+is just hardcoded, but you can imagine information is retrieved from
+somewhere else, such as a relational database or the filesystem.</p>
+<p>We now want to display this information in our template <tt class="docutils literal"><span class="pre">index.pt</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p tal:content=&quot;python:context.information()&quot;&gt;replaced&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Restart Zope. When you view the page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should now see the following:</p>
+<pre class="literal-block">
+This is important information!
+</pre>
+<p>Previously we have seen that you can access methods and attributes on
+the view using the special <tt class="docutils literal"><span class="pre">view</span></tt> name in a template. Similarly, the
+name <tt class="docutils literal"><span class="pre">context</span></tt> is also available in each template. <tt class="docutils literal"><span class="pre">context</span></tt>
+allows us to access information on the context object the view is
+displaying. In this case this is an instance of <tt class="docutils literal"><span class="pre">Sample</span></tt>, our
+application object.</p>
+<p>Separating the model from the view that displays it is an important
+concept in structuring applications. The view, along with the
+template, is responsible for displaying the information and its user
+interface. The model represents the actual information (or content)
+the application is about, such as documents, blog entries or wiki
+pages. The model should not know anything about the way it is
+displayed.</p>
+<p>This way of structuring your applications allows you to change the way
+your model is displayed without modifying the model itself, just
+the way it is viewed.</p>
+<p>Let's do that by making the view do something to the information. Change
+<tt class="docutils literal"><span class="pre">app.py</span></tt> again:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    def information(self):
+        return &quot;This is important information!&quot;
+
+class Index(grok.View):
+    def reversed_information(self):
+        return ''.join(reversed(self.context.information()))
+
+</pre>
+<p>You can see that it is possible to access the context object (an
+instance of <tt class="docutils literal"><span class="pre">Sample</span></tt>) from within the view class, by accessing the
+<tt class="docutils literal"><span class="pre">context</span></tt> attribute. This gets the same object as when we used the
+<tt class="docutils literal"><span class="pre">context</span></tt> name in our template before.</p>
+<p>What we do here is reverse the string returned from the
+<tt class="docutils literal"><span class="pre">information()</span></tt> method. You can try it on the Python prompt:</p>
+<pre class="literal-block">
+&gt;&gt;&gt; ''.join(reversed('foo'))
+'oof'
+</pre>
+<p>Now let's modify the <tt class="docutils literal"><span class="pre">index.pt</span></tt> template so that it uses the
+<tt class="docutils literal"><span class="pre">reversed_information</span></tt> method:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;The information:
+  &lt;span tal:content=&quot;python:context.information()&quot;&gt;info&lt;/span&gt;
+&lt;/p&gt;
+&lt;p&gt;The information, reversed: 
+  &lt;span tal:replace=&quot;python:view.reversed_information()&quot;&gt;info&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Restart Zope. When you view the page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should now see the following:</p>
+<blockquote>
+<p>The information: This is important information!</p>
+<p>The information, reversed: !noitamrofni tnatropmi si sihT</p>
+</blockquote>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id20" id="storing-data" name="storing-data">Storing data</a></h3>
+<p>So far we have only displayed either hardcoded data, or calculations
+based on end-user input. What if we actually want to <em>store</em> some
+information, such as something the user entered? The easiest way to do
+this with Zope is to use the Zope Object Database (ZODB).</p>
+<p>The ZODB is a database of Python objects. You can store any Python
+object in it, though you do need to follow a few simple rules (the
+&quot;rules of persistence&quot;, which we will go into later). Our <tt class="docutils literal"><span class="pre">Sample</span></tt>
+application object is stored in the object database, so we can store
+some information on it.</p>
+<p>Let's create an application that stores a bit of text for us. We will
+use one view to view the text (<tt class="docutils literal"><span class="pre">index</span></tt>) and another to edit it
+(<tt class="docutils literal"><span class="pre">edit</span></tt>).</p>
+<p>Modify <tt class="docutils literal"><span class="pre">app.py</span></tt> to read like this:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    text = 'default text'
+
+class Index(grok.View):
+    pass
+
+class Edit(grok.View):
+    def update(self, text=None):
+        if text is None:
+            return
+        self.context.text = text
+
+</pre>
+<p>The <tt class="docutils literal"><span class="pre">Sample</span></tt> class gained a class attribute with some default text.
+In the <tt class="docutils literal"><span class="pre">update</span></tt> method of the <tt class="docutils literal"><span class="pre">Edit</span></tt> view you can see we actually
+set the <tt class="docutils literal"><span class="pre">text</span></tt> attribute on the context, if at least a <tt class="docutils literal"><span class="pre">text</span></tt>
+value was supplied by a form. This will set the <tt class="docutils literal"><span class="pre">text</span></tt> attribute on
+the instance of the <tt class="docutils literal"><span class="pre">Sample</span></tt> object in the object database, and thus
+will override the default <tt class="docutils literal"><span class="pre">text</span></tt> class attribute.</p>
+<p>Change the <tt class="docutils literal"><span class="pre">index.pt</span></tt> template to read like this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;The text: &lt;span tal:replace=&quot;python:context.text&quot;&gt;text&lt;/span&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>This is a very simple template that just displays the <tt class="docutils literal"><span class="pre">text</span></tt>
+attribute of the <tt class="docutils literal"><span class="pre">context</span></tt> object (our <tt class="docutils literal"><span class="pre">Sample</span></tt> instance).</p>
+<p>Create an <tt class="docutils literal"><span class="pre">edit.pt</span></tt> template with the following content:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;form tal:attributes=&quot;action view/url&quot; method=&quot;POST&quot;&gt;
+Text to store: &lt;input type=&quot;text&quot; name=&quot;text&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;input type=&quot;submit&quot; value=&quot;Store&quot; /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>This template display a form asking for a bit of text. It submits to
+itself.</p>
+<p>Restart Zope. Let's first view the index page:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should see <tt class="docutils literal"><span class="pre">default</span> <span class="pre">text</span></tt>.</p>
+<p>Now let's modify the text by doing to the edit page of the application:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/edit">http://localhost:8080/test/edit</a></blockquote>
+<p>Type in some text and press the &quot;Store&quot; button. Since it submits to
+itself, we will see the form again, so go to the index page manually:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>You should now see the text you just entered on the page. This means
+that your text was successfully stored in the object database!</p>
+<p>You can even restart Zope and go back to the index page, and your text
+should still be there.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id21" id="redirection" name="redirection">Redirection</a></h3>
+<p>Let's make our application a bit easier to use. First, let's change
+<tt class="docutils literal"><span class="pre">index.pt</span></tt> so it includes a link to the edit page. To do this, we
+will use the <tt class="docutils literal"><span class="pre">url</span></tt> method on the view:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;The text: &lt;span tal:replace=&quot;python:context.text&quot;&gt;text&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a tal:attributes=&quot;href python:view.url('edit')&quot;&gt;Edit this page&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>Giving <tt class="docutils literal"><span class="pre">url</span></tt> a single string argument will generate a URL to the
+view named that way on the same object (<tt class="docutils literal"><span class="pre">test</span></tt>), so in this case
+<tt class="docutils literal"><span class="pre">test/edit</span></tt>.</p>
+<p>Now let's change the edit form so that it redirects back to the
+<tt class="docutils literal"><span class="pre">index</span></tt> page after you press the submit button:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    text = 'default text'
+
+class Index(grok.View):
+    pass
+
+class Edit(grok.View):
+    def update(self, text=None):
+        if text is None:
+            return
+        self.context.text = text
+        self.redirect(self.url('index'))
+
+</pre>
+<p>The last line is the new one. We use the <tt class="docutils literal"><span class="pre">url</span></tt> method on the view to
+construct a URL to the <tt class="docutils literal"><span class="pre">index</span></tt> page. Since we're in the template, we
+can simply call <tt class="docutils literal"><span class="pre">url</span></tt> on <tt class="docutils literal"><span class="pre">self</span></tt>. Then, we pass this to another
+special method available on all <tt class="docutils literal"><span class="pre">grok.View</span></tt> subclasses,
+<tt class="docutils literal"><span class="pre">redirect</span></tt>. We tell the system to redirect to the <tt class="docutils literal"><span class="pre">index</span></tt> page.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id22" id="showing-the-value-in-the-form" name="showing-the-value-in-the-form">Showing the value in the form</a></h3>
+<p>Let's change our application so it displays what we stored the edit
+form as well, not just on the index page.</p>
+<p>To make this work, change edit.pt so it reads like this:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;form tal:attributes=&quot;action view/url&quot; method=&quot;POST&quot;&gt;
+Text to store: &lt;input type=&quot;text&quot; name=&quot;text&quot; tal:attributes=&quot;value python:context.text&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;input type=&quot;submit&quot; value=&quot;Store&quot; /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>The only change is that we have used <tt class="docutils literal"><span class="pre">tal:attributes</span></tt> to include the
+value of the <tt class="docutils literal"><span class="pre">text</span></tt> attribute of the context object in the form.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id23" id="the-rules-of-persistence" name="the-rules-of-persistence">The rules of persistence</a></h3>
+<p>These are the &quot;rules of persistence&quot;:</p>
+<ul class="simple">
+<li>You should subclass classes that want to store data from
+<tt class="docutils literal"><span class="pre">persistent.Persistent</span></tt> so that it's easy to store them in the
+ZODB. The simplest way to do this with Grok is to subclass from
+<tt class="docutils literal"><span class="pre">grok.Model</span></tt> or <tt class="docutils literal"><span class="pre">grok.Container</span></tt>.</li>
+<li>Instances that you want to store should be connected to other
+persistent classes that are already stored. The simplest way to do
+this with Grok is to attach them somehow to the <tt class="docutils literal"><span class="pre">grok.Application</span></tt>
+object, directly or indirectly. This can be done by setting them as
+an attribute, or by putting them in a container (if you made your
+application subclass <tt class="docutils literal"><span class="pre">grok.Container</span></tt>).</li>
+<li>To make sure that the ZODB knows you changed a mutable attribute
+(such as a simple Python list or dictionary) in your instance, set
+the special <tt class="docutils literal"><span class="pre">_p_changed</span></tt> attribute on that instance to
+<tt class="docutils literal"><span class="pre">True</span></tt>. This is only necessary if that attribute is not
+<tt class="docutils literal"><span class="pre">Persistent</span></tt> itself. It is also not necessary when you create or
+overwrite an attribute directly using <tt class="docutils literal"><span class="pre">=</span></tt>.</li>
+</ul>
+<p>If you construct your application's content out of <tt class="docutils literal"><span class="pre">grok.Model</span></tt> and
+<tt class="docutils literal"><span class="pre">grok.Container</span></tt> subclasses you mostly follow the rules
+already. Just remember to set <tt class="docutils literal"><span class="pre">_p_changed</span></tt> in your methods if you
+find yourself modifying a Python list (with <tt class="docutils literal"><span class="pre">append</span></tt>, for instance)
+or dictionary (by storing a value in it).</p>
+<p>The code in the section <a class="reference" href="#storing-data">Storing data</a> is a simple example. We in
+fact have to do nothing special at all to obey the rules of
+persistence in that case.</p>
+<p>If we use a mutable object such as a list or dictionary to store data
+instead, we do need to take special action. Let's change our example
+code (based on the last section) to use a mutable object (a list):</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    def __init__(self):
+        super(Sample, self).__init__()
+        self.list = []
+    
+class Index(grok.View):
+    pass
+
+class Edit(grok.View):
+    def update(self, text=None):
+        if text is None:
+            return
+        # this code has a BUG!
+        self.context.list.append(text)
+        self.redirect(self.url('index'))
+
+</pre>
+<p>We have now changed the <tt class="docutils literal"><span class="pre">Sample</span></tt> class to do something new: it has
+an <tt class="docutils literal"><span class="pre">__init__</span></tt> method. Whenever you create the <tt class="docutils literal"><span class="pre">Sample</span></tt> application
+object now, it will be created with an attribute called <tt class="docutils literal"><span class="pre">list</span></tt>,
+which will contain an empty Python list.</p>
+<p>We also make sure that the <tt class="docutils literal"><span class="pre">__init__</span></tt> method of the superclass still
+gets executed, by using the regular Python <tt class="docutils literal"><span class="pre">super</span></tt> idiom. If we
+didn't do that, our container would not be fully initialized.</p>
+<p>You will also notice a small change to the <tt class="docutils literal"><span class="pre">update</span></tt> method of the
+<tt class="docutils literal"><span class="pre">Edit</span></tt> class. Instead of just storing the text as an attribute of
+our <tt class="docutils literal"><span class="pre">Sample</span></tt> model, we add each text we enter to the new
+<tt class="docutils literal"><span class="pre">list</span></tt> attribute on.</p>
+<p>Note that this code has a subtle bug in it, which is why we've added
+the comment. We will see what bug this is in a little bit. First,
+though, let's change our templates.</p>
+<p>We change <tt class="docutils literal"><span class="pre">index.pt</span></tt> so that it displays the list:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+We store the following texts:
+&lt;ul&gt;
+  &lt;li tal:repeat=&quot;text python:context.list&quot; tal:content=&quot;text&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a tal:attributes=&quot;href python:view.url('edit')&quot;&gt;Add a text&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+<p>We've also changed the text of the link to the <tt class="docutils literal"><span class="pre">edit</span></tt> page to reflect
+the new adding behavior of our application.</p>
+<p>We need to undo the change to the <tt class="docutils literal"><span class="pre">edit.pt</span></tt> template that we
+made in the last section, as each time we edit a text we now <em>add</em> a
+new text, instead of changing the original. There is therefore no text
+to show in as the input value anymore:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;form tal:attributes=&quot;action view/url&quot; method=&quot;POST&quot;&gt;
+Text to store: &lt;input type=&quot;text&quot; name=&quot;text&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;input type=&quot;submit&quot; value=&quot;Store&quot; /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<div class="sidebar">
+<p class="first sidebar-title">evolution</p>
+<p class="last">What to do when you change an object's storage structure while your
+application is already in production? In a later section, we will
+introduce Zope 3's object evolution mechanism that allows you to
+update objects in an existing object database. XXX</p>
+</div>
+<p>Let's restart our Zope application. If you have followed the tutorial
+from the last section, you will now see an error when you look at the
+front page of the application:</p>
+<pre class="literal-block">
+A system error occurred.
+</pre>
+<p>Look at the output Zope gave when we tried to load our page:</p>
+<pre class="literal-block">
+AttributeError: 'Sample' object has no attribute 'list'
+</pre>
+<p>But we just changed our object to have an attribute <tt class="docutils literal"><span class="pre">list</span></tt>, right?
+Yes we did, but only for <em>new</em> instances of the Sample object. What we
+are looking at is the sample object from before, still stored in the
+object database. It has no such attribute. This isn't a bug by the way
+(for our actual bug, see later in this section): it is just a database
+problem.</p>
+<p>What to do now? The simplest action to take during development is to
+simply remove our previously installed application, and create a new
+one that <em>does</em> have this attribute. Go to the Grok admin screen:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080">http://localhost:8080</a></blockquote>
+<p>Select the application object (<tt class="docutils literal"><span class="pre">test</span></tt>) and delete it. Now install it
+again, as <tt class="docutils literal"><span class="pre">test</span></tt>. Now go to its edit screen and add a text:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/edit">http://localhost:8080/test/edit</a></blockquote>
+<p>Click on <tt class="docutils literal"><span class="pre">add</span> <span class="pre">a</span> <span class="pre">text</span></tt> and add another text. You will see the new
+texts appear on the <tt class="docutils literal"><span class="pre">index</span></tt> page.</p>
+<p>Everything is just fine now, right? In fact, not so! Now we will get
+to our bug. Restart Zope and look at the index page again:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>None of the texts we added were saved! What happened? We broke the
+third rule of persistence as described above: we modified a mutable
+attribute and did not notify the database that we made this
+change. This means that the object database was not aware of our
+change to the object in memory, and thus never saved it to disk.</p>
+<!-- sidebar: The ZODB only stores instance data
+
+Note that the ZODB only stores ("persists") instance data. This
+means that any data you have directly associated with a class, as
+opposed to the instance, won't be persisted. Normally you only
+associate immutable data with the class, so this is not a problem::
+
+  class Foo(object):
+      mydata = 'some text'
+
+That data will be there when the module is imported, and since it
+will never be changed, there isn't a problem. Now let's check what
+happens with mutable data::
+
+  class Foo(object):
+      mydata = []
+
+Appending an item to mydata (through ``self.mydata.append('bar')``,
+for instance) have an effect, but only until you restart Zope. Then
+your changes will be lost.
+
+It is good Python design practice not to use mutable class-data, so
+this property of the ZODB shouldn't cramp your style. -->
+<p>We can easily amend this by adding one line to the code:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    def __init__(self):
+        super(Sample, self).__init__()
+        self.list = []
+    
+class Index(grok.View):
+    pass
+
+class Edit(grok.View):
+    def update(self, text=None):
+        if text is None:
+            return
+        self.context.list.append(text)
+        self.context._p_changed = True
+        self.redirect(self.url('index'))
+
+</pre>
+<p>We've now told Zope that the context object has changed (because we
+modified a mutable sub-object), by adding the line:</p>
+<pre class="literal-block">
+self.context._p_changed = True
+</pre>
+<p>If you now add some texts and then restart Zope, you will notice the
+data is still there: it has successfully been stored in the object
+database.</p>
+<p>The code shown so far is a bit ugly in the sense that typically we
+would want to manage our state in the model code (the <tt class="docutils literal"><span class="pre">Sample</span></tt>
+object in this case), and not in the view. Let's make one final
+change to show what that would look like:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    def __init__(self):
+        super(Sample, self).__init__()
+        self.list = []
+
+    def addText(self, text):
+        self.list.append(text)
+        self._p_changed = True
+        
+class Index(grok.View):
+    pass
+
+class Edit(grok.View):
+    def update(self, text=None):
+        if text is None:
+            return
+        self.context.addText(text)
+        self.redirect(self.url('index'))
+
+</pre>
+<p>As you can see, we have created a method <tt class="docutils literal"><span class="pre">addText</span></tt> to the model that
+takes care of amending the list and informing the ZODB about it. This
+way, any view code can safely use the API of <tt class="docutils literal"><span class="pre">Sample</span></tt> without having
+to worry about the rules of persistence itself, as that is the model's
+responsibility.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id24" id="explicitly-associating-a-view-with-a-model" name="explicitly-associating-a-view-with-a-model">Explicitly associating a view with a model</a></h3>
+<p>How does Grok know that a view belongs to a model? In the previous
+examples, Grok has made this association automatically. Grok could do
+this because there was only a single model defined in the module
+(<tt class="docutils literal"><span class="pre">Sample</span></tt>). In this case, Grok is clever enough to automatically
+associate all views defined elsewhere in the same module to the only
+model. Behind the scenes Grok made the model the <em>context</em> of the
+views.</p>
+<p>Everything that Grok does implicitly you can also tell Grok to do
+explicitly. This will come in handy later, as you may sometimes need
+(or want) to tell Grok what to do, overriding its default behavior. To
+associate a view with a model automatically, you use the
+<tt class="docutils literal"><span class="pre">grok.context</span></tt> class annotation.</p>
+<p>What is a class annotation? A class annotation is a declarative way
+to tell grok something about a Python class. Let's look at an example.
+We will change <tt class="docutils literal"><span class="pre">app.py</span></tt> in the example from <cite>A second view</cite> to demonstrate
+the use of <tt class="docutils literal"><span class="pre">grok.context</span></tt>:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Index(grok.View):
+    grok.context(Sample)
+
+class Bye(grok.View):
+    grok.context(Sample)
+    
+
+
+</pre>
+<p>This code behaves in exactly the same way as the previous example in
+<cite>A second view</cite>, but has the relationship between the model and the
+view made explicit, using the <tt class="docutils literal"><span class="pre">grok.context</span></tt> class annotation.</p>
+<p><tt class="docutils literal"><span class="pre">grok.context</span></tt> is just one class annotation out of many. We will see
+another one (<tt class="docutils literal"><span class="pre">grok.name</span></tt>) in the next section.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id25" id="a-second-model" name="a-second-model">A second model</a></h3>
+<div class="sidebar">
+<p class="first sidebar-title">How to combine models into a single application?</p>
+<p class="last">Curious now about how to combine models into a single application?
+Can't wait? Look at the section <cite>Containers</cite> coming up next, or
+<cite>Traversal</cite> later on.</p>
+</div>
+<p>We will now extend our application with a second model. Since we
+haven't explained yet how to combine models together into a single
+application, we will just create a second application next to our
+first one. Normally we probably wouldn't want to define two
+applications in the same module, but we are trying to illustrate a few
+points, so please bear with us. Change <tt class="docutils literal"><span class="pre">app.py</span></tt> so it looks like
+this:</p>
+<pre class="literal-block">
+import grok
+  
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Another(grok.Application, grok.Model):
+    pass
+
+class SampleIndex(grok.View):
+    grok.context(Sample)
+    grok.name('index')
+    
+class AnotherIndex(grok.View):
+    grok.context(Another)
+    grok.name('index')
+
+</pre>
+<p>You can see we now defined a second application class, <tt class="docutils literal"><span class="pre">Another</span></tt>.
+It subclasses from <tt class="docutils literal"><span class="pre">grok.Application</span></tt> to make it an installable
+application.</p>
+<p>It also subclasses from <tt class="docutils literal"><span class="pre">grok.Model</span></tt>. There is a difference between
+<tt class="docutils literal"><span class="pre">grok.Model</span></tt> and <tt class="docutils literal"><span class="pre">grok.Container</span></tt>, but for the purpose of the
+discussion we can ignore it for now. We just figured we should use
+<tt class="docutils literal"><span class="pre">grok.Model</span></tt> for some variety, though we could have indeed
+subclassed from <tt class="docutils literal"><span class="pre">grok.Container</span></tt> instead.</p>
+<p>We also define two templates, one called <tt class="docutils literal"><span class="pre">sampleindex.pt</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Sample index&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>And one called <tt class="docutils literal"><span class="pre">anotherindex.pt</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Another index&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>We have named the templates the name as the lowercased class names as
+the views, so that they get associated with them.</p>
+<p>You will have noticed we have used <tt class="docutils literal"><span class="pre">grok.context</span></tt> to associate the
+views with models. We actually <em>have</em> to do this here, as Grok refuses
+to guess in the face of ambiguity. Without the use of
+<tt class="docutils literal"><span class="pre">grok.context</span></tt>, we would have seen an error like this when we start
+up Zope:</p>
+<pre class="literal-block">
+GrokError: Multiple possible contexts for &lt;class
+'sample.app.AnotherIndex'&gt;, please use grok.context.
+</pre>
+<p>So, we use <tt class="docutils literal"><span class="pre">grok.context</span></tt> to explicitly associate <tt class="docutils literal"><span class="pre">SampleIndex</span></tt>
+with the <tt class="docutils literal"><span class="pre">Sample</span></tt> application, and again to associate
+<tt class="docutils literal"><span class="pre">AnotherIndex</span></tt> with the <tt class="docutils literal"><span class="pre">Another</span></tt> application.</p>
+<p>We have another problem: the intent is for these views to be <tt class="docutils literal"><span class="pre">index</span></tt>
+views. This cannot be deduced automatically from the name of the view
+classes however, and left to its own devices, Grok would have called
+the views <tt class="docutils literal"><span class="pre">sampleindex</span></tt> and <tt class="docutils literal"><span class="pre">anotherindex</span></tt>.</p>
+<p>Luckily we have another class annotation that can help us here:
+<tt class="docutils literal"><span class="pre">grok.name</span></tt>. We can use it on both view classes
+(<tt class="docutils literal"><span class="pre">grok.name('index')</span></tt>) to explicitly explain to Grok what we want.</p>
+<p>You can now try to restart Zope and create both applications. They
+should display the correct index pages when you look at them.</p>
+<p>We can see that the introduction of a second model has complicated our
+code a bit, though you will hopefully agree with us that it is still
+quite readable. We could have avoided the whole problem by simply
+placing <tt class="docutils literal"><span class="pre">Another</span></tt> and its views in another module such as
+<tt class="docutils literal"><span class="pre">another.py</span></tt>.  Its associated templates would then need to be placed
+in a directory <tt class="docutils literal"><span class="pre">another_templates</span></tt>. Often you will find it possible
+to structure your application so you can use Grok's default
+conventions.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id26" id="containers" name="containers">Containers</a></h3>
+<p>A container is a special kind of model object that can contain other
+objects. Our <tt class="docutils literal"><span class="pre">Sample</span></tt> application is already a container, as it
+subclasses <tt class="docutils literal"><span class="pre">grok.Container</span></tt>. What we will do in this section is
+build an application that actually puts something into that container.</p>
+<p>Grok applications ar typically composed of containers and
+models. Containers are objects that can contain models. This includes
+other containers, as a container is just a special kind of model.</p>
+<p>From the perspective of Python, you can think of containers as
+dictionaries.  They allow item access (<tt class="docutils literal"><span class="pre">container['key']</span></tt>) to get at
+its contents. They also define methods such as <tt class="docutils literal"><span class="pre">keys()</span></tt> and
+<tt class="docutils literal"><span class="pre">values()</span></tt>. Containers do a lot more than Python dictionaries
+though: they are persistent, and when you modify them, you don't have
+to use <cite>_p_changed</cite> anywhere to notice you changed them. They also
+send out special events that you can listen to when items are placed
+in them or removed from them. For more on that, see the section on
+events (XXX).</p>
+<p>Our application object will have a single index page that displays the
+list of items in the container. You can click an item in the list to
+view that item. Below the list, it will display a form that allows you
+to create new items.</p>
+<p>Here is the <tt class="docutils literal"><span class="pre">app.py</span></tt> of our new application:</p>
+<pre class="literal-block">
+import grok
+
+class Sample(grok.Application, grok.Container):
+    pass
+
+class Entry(grok.Model):
+    def __init__(self, text):
+        self.text = text
+
+class SampleIndex(grok.View):
+    grok.context(Sample)
+    grok.name('index')
+
+    def update(self, name=None, text=None):
+        if name is None or text is None:
+            return
+        self.context[name] = Entry(text)
+
+class EntryIndex(grok.View):
+    grok.context(Entry)
+    grok.name('index')
+
+</pre>
+<p>As you can see, <tt class="docutils literal"><span class="pre">Sample</span></tt> is unchanged. We have also created our
+first non-application object, <tt class="docutils literal"><span class="pre">Entry</span></tt>. It is just a
+<tt class="docutils literal"><span class="pre">grok.Model</span></tt>. It needs to be created with an argument <tt class="docutils literal"><span class="pre">text</span></tt> and
+this text is stored in it. We intend to place instances of <tt class="docutils literal"><span class="pre">Entry</span></tt>
+in our <tt class="docutils literal"><span class="pre">Sample</span></tt> container.</p>
+<p>Next are the views. We have an <tt class="docutils literal"><span class="pre">index</span></tt> page for the <tt class="docutils literal"><span class="pre">Sample</span></tt>
+container. When its <tt class="docutils literal"><span class="pre">update()</span></tt> is triggered with two values,
+<tt class="docutils literal"><span class="pre">name</span></tt> and <tt class="docutils literal"><span class="pre">text</span></tt>, it will create a new <tt class="docutils literal"><span class="pre">Entry</span></tt> instance with
+the given text, and place it under the container under the name
+<tt class="docutils literal"><span class="pre">name</span></tt>. We use the dictionary-like interface of our <tt class="docutils literal"><span class="pre">Sample</span></tt>
+container to put our new <tt class="docutils literal"><span class="pre">Entry</span></tt> in the container.</p>
+<p>Here is the associated template for <tt class="docutils literal"><span class="pre">SampleIndex</span></tt>, <tt class="docutils literal"><span class="pre">sampleindex.pt</span></tt>:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Existing entries&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li tal:repeat=&quot;key python:context.keys()&quot;&gt;
+      &lt;a tal:attributes=&quot;href python:view.url(key)&quot; 
+         tal:content=&quot;python:key&quot;&gt;&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+ 
+  &lt;h2&gt;Add a new entry&lt;/h2&gt;
+  &lt;form tal:attributes=&quot;action python:view.url()&quot; method=&quot;POST&quot;&gt;
+    Name: &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+    Text: &lt;input type=&quot;text&quot; name=&quot;text&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Add entry&quot; /&gt;
+  &lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>The first section in the template (<tt class="docutils literal"><span class="pre">&lt;h2&gt;Existing</span> <span class="pre">entries&lt;/h2&gt;</span></tt>)
+displays a list of the items in the container. We again use
+dictionary-like access using <tt class="docutils literal"><span class="pre">keys()</span></tt> to get a list of all the names
+of the items in the container. We create a link to these items using
+<tt class="docutils literal"><span class="pre">view.url()</span></tt>.</p>
+<p>The next section (<tt class="docutils literal"><span class="pre">&lt;h2&gt;Add</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">entry&lt;/h2&gt;</span></tt>) displays a simple form
+that submits to the index page itself. It has two fields, <tt class="docutils literal"><span class="pre">name</span></tt> and
+<tt class="docutils literal"><span class="pre">text</span></tt>, which we already have seen handled by <tt class="docutils literal"><span class="pre">update()</span></tt>.</p>
+<p>Finally, we have an <tt class="docutils literal"><span class="pre">index</span></tt> page for <tt class="docutils literal"><span class="pre">Entry</span></tt>. It just has a template
+to display the <tt class="docutils literal"><span class="pre">text</span></tt> attribute:</p>
+<pre class="literal-block">
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Entry &lt;span tal:replace=&quot;python:context.__name__&quot;&gt;&lt;/span&gt;&lt;/h2&gt;
+  &lt;p tal:content=&quot;python:context.text&quot;&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>Restart Zope and try this application.  Call your application
+<tt class="docutils literal"><span class="pre">test</span></tt>. Pay special attention to the URLs.</p>
+<p>First, we have the index page of our application:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
+<p>When we create an entry called <tt class="docutils literal"><span class="pre">hello</span></tt> in the form, and then click on it
+in the list, you see an URL that looks like this:</p>
+<blockquote>
+<a class="reference" href="http://localhost:8080/test/hello">http://localhost:8080/test/hello</a></blockquote>
+<p>We are now looking at the index page of the instance of <tt class="docutils literal"><span class="pre">Entry</span></tt>
+called <tt class="docutils literal"><span class="pre">hello</span></tt>.</p>
+<p>What kind of extensions to this application can we think of? We could
+create an <tt class="docutils literal"><span class="pre">edit</span></tt> form that allows you to edit the text of
+entries. We could modify our application so that you can not just add
+instances of <tt class="docutils literal"><span class="pre">Entry</span></tt>, but also other containers. If you made those
+modifications, you would be on your way to building your own content
+management system with Grok.</p>
+</div>
+</div>
+
+  </div>
+
+  <div class="roundbottom">
+     <img src="/resources/corner-bottomleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+</div>
+
+<div class="footer">
+	
+	<table><tr><td>
+	Grok cooks around the campfire of <br />
+	<a href="http://wiki.zope.org/zope3/FrontPage"><img src="/resources/zopelogo.gif" alt="Zope" style="padding: 0.5em;" /></a>
+	</td><td>
+	 and roams free on the savannah of<br />
+	<a href="http://www.python.org"><img src="/resources/python-logo.gif" style="padding: 0.5em;" alt="Python" /></a>
+	</td></tr>
+	</table>
+
+	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
+</div>
+
+</body>
+</html>

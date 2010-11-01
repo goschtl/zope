@@ -1,0 +1,10 @@
+<html>
+<body>
+<form tal:attributes="action view/url" method="POST">
+	Number of mammoths: <input type="text" name="number" value=""
+		tal:attributes="value context/mammoths"
+	><br />
+	<input type="submit" value="Remember" />
+</form>
+</body>
+</html>
