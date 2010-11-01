@@ -76,6 +76,7 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
 
     IBrowserRequest = Attribute('Browser request interface')
     IDefaultBrowserLayer = Attribute('Default layer for browser views.')
+    IGrokSecurityView = Attribute('Marker interface for permissive views.')
 
 
 class IGrokView(IBrowserPage, IBrowserView):
@@ -173,3 +174,15 @@ class ITemplate(Interface):
 
     def render(view):
         """Renders the template"""
+
+
+class IGrokSecurityView(Interface):
+    """A view treated special by the Grok publisher.
+
+    Views that provide this interface are treated more generously by
+    the Grok publisher, as they are allowed to use attributes, which
+    are not covered by permission setttings.
+
+    `grok.Permission` and `grok.require` settings however, will be
+    applied to such views.
+    """
