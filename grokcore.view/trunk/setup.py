@@ -12,9 +12,9 @@ long_description = (
 
 install_requires = [
     'setuptools',
-    'grokcore.component >= 2.0',
-    'grokcore.security >= 1.3',
-    'martian >= 0.12',
+    'grokcore.component >= 2.1',
+    'grokcore.security >= 1.5',
+    'martian >= 0.13',
     'zope.browserresource >= 3.9.0',
     'zope.component',
     'zope.interface',

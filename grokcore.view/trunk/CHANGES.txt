@@ -34,7 +34,7 @@ Changes
 - Factor out generally useful methods and properties for view-ish
   components into components.ViewSupport mixin.
 
-- Works with new Martian (0.12) and grokcore.component 2.0.
+- Works with new Martian (0.13) and grokcore.component 2.1.
 
 - Test fix: support windows paths.
 
