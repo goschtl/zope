@@ -65,6 +65,13 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
         An optional argument 'data' can be a dictionary that is converted
         into a query string appended to the URL."""
 
+    def make_checker(factory, view_factory, permission, method_names=None):
+        """Make a checker for a view_factory associated with factory.
+
+        These could be one and the same for normal views, or different
+        in case we make method-based views such as for JSON and XMLRPC.
+        """
+
     def PageTemplate(template):
         """Create a Grok PageTemplate object from ``template`` source
         text.  This can be used for inline PageTemplates."""

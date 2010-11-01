@@ -25,7 +25,7 @@ from grokcore.view.interfaces import IGrokSecurityView
 from grokcore.view.components import DirectoryResource
 from grokcore.view.directive import (
     layer, template, templatedir, skin, path, view)
-from grokcore.view.util import url
+from grokcore.view.util import url, make_checker
 
 # Import this module so that it's available as soon as you import the
 # 'grokcore.view' package.  Useful for tests and interpreter examples.

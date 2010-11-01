@@ -14,9 +14,11 @@
 """Grok utility functions.
 """
 import urllib
+from grokcore.security.util import check_permission
 from zope.component import getMultiAdapter
-from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.security.checker import NamesChecker, defineChecker
 from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 
 def url(request, obj, name=None, data=None):
@@ -39,3 +41,15 @@ def url(request, obj, name=None, data=None):
                 or item for item in v]
 
     return url + '?' + urllib.urlencode(data, doseq=True)
+
+
+def make_checker(factory, view_factory, permission, method_names=None):
+    if method_names is None:
+        method_names = ['__call__']
+    if permission is not None:
+        check_permission(factory, permission)
+    if permission is None or permission == 'zope.Public':
+        checker = NamesChecker(method_names)
+    else:
+        checker = NamesChecker(method_names, permission)
+    defineChecker(view_factory, checker)
