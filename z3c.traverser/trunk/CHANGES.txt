@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.2.6 (unreleased)
+0.3.0 (2010-11-01)
 ------------------
 
 - Updated test set up to run with ZTK 1.0.
