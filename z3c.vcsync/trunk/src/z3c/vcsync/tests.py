@@ -9,7 +9,7 @@ import grokcore.component as grok
 from zope import component
 
 from zope.interface import implements, Interface
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 from zope.exceptions.interfaces import DuplicationError
 
 from z3c.vcsync.interfaces import (ISerializer, IDump, IFactory, IParser,
@@ -18,14 +18,14 @@ from z3c.vcsync import vc
 
 class TestCheckout(object):
     grok.implements(ICheckout)
-    
+
     def __init__(self, path):
         self.path = path
         self.update_function = None
         self._files = []
         self._removed = []
         self._revision_nr = 0
-        
+
     def up(self):
         # call update_function which will modify the checkout as might
         # happen in a version control update. Function should be set before
@@ -47,9 +47,9 @@ class TestCheckout(object):
 
     def revision_nr(self):
         return self._revision_nr
- 
+
 class TestAllState(vc.AllState):
-    
+
     def __init__(self, root):
         super(TestAllState, self).__init__(root)
         self.removed_paths = []
@@ -85,7 +85,7 @@ class SubItem1(BaseItem):
     def _readonly(self):
         pass
     payload2 = property(_readonly)
-    
+
 class SubItem2(BaseItem):
     def __init__(self, payload2):
         self.payload2 = payload2
@@ -100,7 +100,7 @@ class SubItem2(BaseItem):
     def _readonly(self):
         pass
     payload = property(_readonly)
-    
+
 class TestState(object):
     implements(IState)
     def __init__(self, root):
@@ -155,7 +155,7 @@ class BaseItemSerializer(grok.Adapter):
             f.write('\n')
     def name(self):
         return self.context.__name__ + '.test2'
-        
+
 class ItemParser(grok.GlobalUtility):
     grok.provides(IParser)
     grok.name('.test')
@@ -193,7 +193,7 @@ class BaseItemFactory(grok.GlobalUtility):
 
 class Container(object):
     implements(IContainer)
-    
+
     def __init__(self):
         self.__name__ = None
         self.__parent__ = None
@@ -207,14 +207,14 @@ class Container(object):
 
     def __contains__(self, name):
         return name in self.keys()
-    
+
     def __setitem__(self, name, value):
         if name in self._data:
             raise DuplicationError
         self._data[name] = value
         value.__name__ = name
         value.__parent__ = self
-        
+
     def __getitem__(self, name):
         return self._data[name]
 
@@ -223,7 +223,7 @@ class Container(object):
             return self[key]
         except KeyError:
             return default
-    
+
     def __delitem__(self, name):
         del self._data[name]
 
@@ -244,7 +244,7 @@ def svn_repo_wc(postfix=''):
     """Create an empty SVN repository.
 
     Based on an internal testing function of the py library.
-    """    
+    """
     repo = py.test.ensuretemp('testrepo' + postfix)
     wcdir = py.test.ensuretemp('wc' + postfix)
     if not repo.listdir():

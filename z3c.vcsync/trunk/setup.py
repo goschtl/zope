@@ -25,7 +25,7 @@ setup(name='z3c.vcsync',
       install_requires=[
         'setuptools',
         'grokcore.component',
-        'zope.app.container',
+        'zope.container',
         'py == 0.9.1',
       ],
       license="ZPL 2.1",

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from zope.interface import Interface
 from zope.component import queryUtility, getUtility, queryAdapter
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from z3c.vcsync.interfaces import (IDump, ISerializer, IParser,
@@ -43,14 +43,14 @@ class Dump(grok.Adapter):
 class ContainerDump(grok.Adapter):
     grok.provides(IDump)
     grok.context(IContainer)
-        
+
     def save(self, path):
         path = path.join(self.context.__name__)
         path.ensure(dir=True)
 
     def save_bytes(self):
         return self.context.__name__, ''
-    
+
 def resolve(root, root_path, path):
     """Resolve checkout path to obj in state.
 
@@ -149,7 +149,7 @@ class Synchronizer(object):
 
         # we retrieve the revision number to which we just synchronized
         revision_nr = self.checkout.revision_nr()
-        
+
         # we store the new revision number in the state
         self.state.set_revision_nr(revision_nr)
         # and we return some information about what happened
@@ -173,13 +173,13 @@ class Synchronizer(object):
         object_paths_changed = [get_object_path(root, obj) for obj in
                            objects_changed]
         return objects_changed, object_paths_changed, object_paths_removed
-        
+
     def save(self, revision_nr):
         """Save objects to filesystem.
         """
         objects_changed, object_paths_changed, object_paths_removed =\
                          self._get_changed_removed(revision_nr)
-        
+
         # remove all files that have been removed in the database
         path = self.checkout.path
         for removed_path in object_paths_removed:
@@ -214,7 +214,7 @@ class Synchronizer(object):
         for obj in objects_changed:
             if obj is not root:
                 IDump(obj).save(self._get_container_path(root, obj))
-  
+
     def load(self, revision_nr):
         # remove all objects that have been removed in the checkout
         root = self.state.root
@@ -247,7 +247,7 @@ class Synchronizer(object):
             # we always use the factory to create an item
             factory = getUtility(IFactory, name=ext)
             created = factory(file_path)
-            
+
             # we observe the stored item in the container
             stored = container.get(name, None)
 
@@ -266,7 +266,7 @@ class Synchronizer(object):
                 container[name] = created
             modified_objects.append(container[name])
         return modified_objects
-    
+
     def _get_container_path(self, root, obj):
         steps = []
         assert root is not obj, "No container exists for the root"
@@ -279,7 +279,7 @@ class Synchronizer(object):
 
 class AllState(object):
     """Report all state as changed.
-    
+
     It reports all objects in the state as modified, and reports nothing
     removed. It actually completely ignores revision numbers. This
     implementation is not something you'd typically want to use in your
@@ -295,7 +295,7 @@ class AllState(object):
 
     def get_revision_nr(self):
         return 0
-    
+
     def objects(self, revision_nr):
         for container in self._containers():
             for item in container.values():
@@ -305,7 +305,7 @@ class AllState(object):
 
     def removed(self, revision_nr):
         return []
-    
+
     def _containers(self):
         return self._containers_helper(self.root)
 
@@ -335,21 +335,21 @@ class SynchronizationInfo(object):
         The paths are state internal paths.
         """
         return self._objects_removed
-    
+
     def objects_changed(self):
         """Paths of objects added or changed in synchronization.
 
         The paths are state internal paths.
         """
         return self._objects_changed
-    
+
     def files_removed(self):
         """Paths of files removed in synchronization.
 
         The paths are filesystem paths (py.path objects)
         """
         return self._files_removed
-    
+
     def files_changed(self):
         """The paths of files added or changed in synchronization.
 

@@ -1,10 +1,10 @@
 import py
 import tempfile, zipfile
 
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 from z3c.vcsync.interfaces import IDump, IFactory
 from zope.component import getUtility
-    
+
 def export(root, path):
     for obj in root.values():
         IDump(obj).save(path)
@@ -16,7 +16,7 @@ def export_zip(root, name, zippath):
     zf.writestr('data/', '')
     _export_zip_helper(root, zf, 'data')
     zf.close()
-    
+
 def _export_zip_helper(root, zf, save_path):
     for obj in root.values():
         name, bytes = IDump(obj).save_bytes()
@@ -26,12 +26,12 @@ def _export_zip_helper(root, zf, save_path):
             sub_path = name
         sub_path = sub_path.encode('cp437')
         if IContainer.providedBy(obj):
-            # create a directory 
+            # create a directory
             zf.writestr(sub_path + '/', '')
             _export_zip_helper(obj, zf, sub_path)
         else:
             zf.writestr(sub_path, bytes)
-        
+
 def import_(root, path, modified_function=None):
     modified_objects = _import_helper(root, path)
     if modified_function is not None:

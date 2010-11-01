@@ -1,17 +1,24 @@
+Issues
+======
+
+* Conflict resolution does not work with Subversion 1.6 (Tests fail, too).
+
+
 z3c.vcsync changes
 ==================
 
 0.18 (unreleased)
 -----------------
 
-- Nothing changed yet.
+* Depend on ``zope.container`` instead of ``zope.app.container`` by
+  depending on Grok 1.1 package versions.
 
 
 0.17 (2009-06-05)
 -----------------
 
 * Depend only on ``grokcore.component`` and ``zope.app.container``
-  directly, not on ``grok`` itself. We want instead to depend only 
+  directly, not on ``grok`` itself. We want instead to depend only
   on ``zope.container``, but we cannot do this yet as we need
   compatibility with Grok 0.14.
 
@@ -184,7 +191,7 @@ Restructuring
   checkout. This has a significant drawback if the datetime setting of
   the computer the synchronization code is running on is ahead of the
   datetime setting of the version control server: updates could be
-  lost. 
+  lost.
 
   Changed the code to use a revision_nr instead. This is a number that
   increments with each synchronization, and the number can be used to
