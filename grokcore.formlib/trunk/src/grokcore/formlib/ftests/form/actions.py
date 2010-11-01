@@ -69,6 +69,7 @@ class Mammoth(grok.testing.Model):
     size = FieldProperty(IMammoth['size'])
 
 class Edit(grok.EditForm):
+
     @grok.action("Apply")
     def handle_apply(self, **data):
         if self.applyData(self.context, **data):
