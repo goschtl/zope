@@ -4,6 +4,8 @@ Changes
 1.1 (unreleased)
 ----------------
 
+* Use newer grokcore.component.
+
 * Made package comply to zope.org repository policy.
 
 1.0 (2010-02-06)
