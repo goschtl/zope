@@ -15,12 +15,8 @@
 """
 
 import martian
-from grokcore.component.scan import UnambiguousComponentScope
-
 
 class viewletmanager(martian.Directive):
-    scope = UnambiguousComponentScope('viewletmanager')
+    scope = martian.CLASS_OR_MODULE
     store = martian.ONCE
     validate = martian.validateInterfaceOrClass
-
-
