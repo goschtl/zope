@@ -23,7 +23,7 @@ def read(*rnames):
     return data + "\n\n"
 
 setup(name='z3c.traverser',
-      version='0.3.0',
+      version='0.3.1dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Pluggable Traversers And URL handling utilities',
