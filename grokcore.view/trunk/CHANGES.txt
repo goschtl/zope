@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0 (unreleased)
+2.0 (2010-11-01)
 ----------------
 
 - The `view` directive has been moved from ``grokcore.viewlet`` to
