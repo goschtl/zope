@@ -18,7 +18,7 @@ from grokcore.security import *
 from grokcore.view import *
 
 from grokcore.viewlet.components import Viewlet, ViewletManager
-from grokcore.viewlet.directive import view, viewletmanager
+from grokcore.viewlet.directive import viewletmanager
 
 # Import this module so that it's available as soon as you import the
 # 'grokcore.view' package.  Useful for tests and interpreter examples.

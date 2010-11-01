@@ -16,20 +16,11 @@
 
 import martian
 from grokcore.component.scan import UnambiguousComponentScope
-from zope.publisher.interfaces.browser import IBrowserView
 
 
-class OneInterfaceOrClassOnClassOrModule(martian.Directive):
-    """Convenience base class.  Not for public use."""
-    scope = martian.CLASS_OR_MODULE
+class viewletmanager(martian.Directive):
+    scope = UnambiguousComponentScope('viewletmanager')
     store = martian.ONCE
     validate = martian.validateInterfaceOrClass
 
-
-class viewletmanager(OneInterfaceOrClassOnClassOrModule):
-    scope = UnambiguousComponentScope('viewletmanager')
-
-
-class view(OneInterfaceOrClassOnClassOrModule):
-    default = IBrowserView
 

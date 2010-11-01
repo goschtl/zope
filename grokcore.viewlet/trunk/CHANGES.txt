@@ -6,6 +6,8 @@ Changes
 
 * Move the order directive to grokcore.component.
 
+* Move the view directive to grokcore.view.
+
 
 1.5 (2010-10-18)
 ----------------

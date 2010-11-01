@@ -33,10 +33,6 @@ class IDirectives(grokcore.component.interfaces.IDirectives,
                   grokcore.security.interfaces.IDirectives,
                   grokcore.view.interfaces.IDirectives):
 
-    def view(view):
-        """Define on which view a viewlet manager/viewlet is registered.
-        """
-
     def viewletmanager(manager):
         """Define on which viewlet manager a viewlet is registered.
         """
