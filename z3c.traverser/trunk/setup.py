@@ -19,7 +19,8 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    data = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return data + "\n\n"
 
 setup(name='z3c.traverser',
       version = '0.2.6dev',
@@ -27,24 +28,15 @@ setup(name='z3c.traverser',
       author_email='zope-dev@zope.org',
       description='Pluggable Traversers And URL handling utilities',
       long_description=(
-          read('README.txt')
-          + '\n\n' +
-          'Detailed Documentation\n' +
-          '======================\n'
-          + '\n\n' +
-          read('src', 'z3c', 'traverser', 'README.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'traverser', 'namespace.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'traverser', 'viewlet', 'README.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'traverser', 'viewlet', 'BROWSER.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'traverser', 'stackinfo', 'README.txt')
-          + '\n\n' +
+          read('README.txt') +
+          '.. contents::\n\n' +
+          read('CHANGES.txt') +
+          read('src', 'z3c', 'traverser', 'README.txt') +
+          read('src', 'z3c', 'traverser', 'namespace.txt') +
+          read('src', 'z3c', 'traverser', 'viewlet', 'README.txt') +
+          read('src', 'z3c', 'traverser', 'viewlet', 'BROWSER.txt') +
+          read('src', 'z3c', 'traverser', 'stackinfo', 'README.txt') +
           read('src', 'z3c', 'traverser', 'stackinfo', 'BROWSER.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
           ),
       keywords = "zope3 traverser pluggable plugin viewlet",
       classifiers = [
