@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.1 (unreleased)
+1.1 (2010-11-01)
 ----------------
 
 * Use newer grokcore.component.
