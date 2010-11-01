@@ -1,13 +1,14 @@
 Changes
 =======
 
-1.6 (unreleased)
+1.6 (2010-11-01)
 ----------------
+
+* Upped version requirements for martian, grokcore.component, and grokcore.view.
 
 * Move the order directive to grokcore.component.
 
 * Move the view directive to grokcore.view.
-
 
 1.5 (2010-10-18)
 ----------------
