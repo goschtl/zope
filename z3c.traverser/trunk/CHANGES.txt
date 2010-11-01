@@ -5,7 +5,11 @@ CHANGES
 0.2.6 (unreleased)
 ------------------
 
-- ...
+- Updated test set up to run with ZTK 1.0.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest[unit]``.
+
 
 0.2.5 (2009-03-13)
 ------------------

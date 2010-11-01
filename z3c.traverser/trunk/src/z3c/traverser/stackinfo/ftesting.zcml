@@ -12,7 +12,7 @@
       package="zope.app"
       />
 
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.authentication" />
 
@@ -60,9 +60,5 @@
 
   <grant permission="zope.View"
          role="zope.Anonymous" />
-  <grant permission="zope.app.dublincore.view"
-         role="zope.Anonymous" />
-
-
 
 </configure>

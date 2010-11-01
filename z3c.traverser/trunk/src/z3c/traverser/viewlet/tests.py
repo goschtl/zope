@@ -3,7 +3,6 @@ import unittest
 
 import zope.traversing.testing
 from zope.app.testing import setup
-from zope.testing.doctestunit import DocFileSuite, DocFileSuite
 from zope.traversing.browser import AbsoluteURL, SiteAbsoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.interfaces import IContainmentRoot
@@ -23,14 +22,7 @@ def tearDown(test):
     setup.placefulTearDown()
 
 def test_suite():
-    
-    return unittest.TestSuite(
-        (
-        DocFileSuite('README.txt',
-                     setUp=setUp, tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp, tearDown=tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
