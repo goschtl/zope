@@ -1,4 +1,3 @@
-import doctest
 import re
 import unittest
 import os.path

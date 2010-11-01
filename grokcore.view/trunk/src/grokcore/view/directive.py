@@ -19,6 +19,7 @@ import martian
 from martian.error import GrokImportError
 from martian.directive import StoreOnce
 from zope.interface.interface import TAGGED_DATA
+from zope.publisher.interfaces.browser import IBrowserView
 
 
 def validateLocalPath(directive, value):
@@ -92,3 +93,6 @@ class path(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
+
+class view(OneInterfaceOrClassOnClassOrModule):
+    default = IBrowserView
