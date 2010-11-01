@@ -4,6 +4,12 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- The `view` directive has been moved from ``grokcore.viewlet`` to
+  ``grokcore.view``.
+
+- The `IGrokSecurityView` has been moved from ``grok`` to
+  ``grokcore.view``.
+
 - Fix the url() function to behave properly while passed an empty data dict.
 
 - Fix the url() method to accept the "status" and "trusted" arguments, passed
