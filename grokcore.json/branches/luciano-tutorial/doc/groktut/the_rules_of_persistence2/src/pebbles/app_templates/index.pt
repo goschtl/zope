@@ -1,9 +1,0 @@
-<html>
-<body>
-We store the following quantities:
-<ul>
-  <li tal:repeat="qty python:context.gifts" tal:content="qty"></li>
-</ul>
-<a tal:attributes="href python:view.url('edit')">Add a number</a>
-</body>
-</html>

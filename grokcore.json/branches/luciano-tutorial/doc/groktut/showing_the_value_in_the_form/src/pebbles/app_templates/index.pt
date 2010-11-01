@@ -1,6 +1,0 @@
-<html>
-<body>
-	<p>Mammoths seen: <span tal:replace="context/mammoths">999</span></p>
-
-</body>
-</html>

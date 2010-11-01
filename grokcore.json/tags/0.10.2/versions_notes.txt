@@ -1,2 +1,0 @@
-* zodbcode: 3.4.0b1dev-r75670
-tests in zope.app.component and zope.app.interface uses this.
