@@ -1,11 +1,11 @@
 Changes
 =======
 
-1.7 (unreleased)
+1.7 (2010-11-01)
 ----------------
 
-- Nothing changed yet.
-
+- Update version requirements for martian, grokcore.component, grokcore.security
+  grokcore.view.
 
 1.6 (2010-10-18)
 ----------------

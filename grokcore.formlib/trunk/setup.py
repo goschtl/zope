@@ -18,7 +18,7 @@ tests_require = [
 
 setup(
     name='grokcore.formlib',
-    version='1.7dev',
+    version='1.7',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -39,10 +39,10 @@ setup(
     include_package_data = True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'grokcore.component >= 1.5',
-                      'grokcore.security >= 1.2',
-                      'grokcore.view >= 1.12',
-                      'martian >= 0.10',
+                      'grokcore.component >= 2.1',
+                      'grokcore.security >= 1.5',
+                      'grokcore.view >= 2.0',
+                      'martian >= 0.13',
                       'pytz',
                       'zope.container',
                       'zope.event',
