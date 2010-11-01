@@ -69,7 +69,11 @@ class local_utility(martian.Directive):
                                   "provides argument of %s." % self.name)
 
         if provides is None:
-            provides = grokcore.component.provides.bind().get(factory)
+            # We cannot bind the provides directive and get information
+            # from the factory, so we do it "manually" as we know how
+            # to get to the information.
+            dotted = grokcore.component.provides.dotted_name()
+            provides = getattr(factory, dotted, None)
 
         if provides is None:
             if util.check_subclass(factory, LocalUtility):
