@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.4 (unreleased)
+1.4 (2010-11-01)
 ----------------
 
 - Upped versions requirements for martian and grokcore.component.
