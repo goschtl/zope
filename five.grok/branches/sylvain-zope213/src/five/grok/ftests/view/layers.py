@@ -2,7 +2,7 @@
   >>> from five.grok.ftests.view.layers import *
   >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/manfred/@@cavedrawings")
@@ -23,11 +23,14 @@
 
 """
 from five import grok
-from zope.app.rotterdam import rotterdam
 
 
 class MySkinLayer(grok.IBrowserRequest):
     grok.skin('myskin')
+
+
+class MyRotterdamLayer(MySkinLayer):
+    grok.skin('Rotterdam')
 
 
 class Mammoth(grok.Model):
@@ -48,7 +51,7 @@ cavedrawings = grok.PageTemplate("""\
 
 
 class MoreDrawings(grok.View):
-    grok.layer(rotterdam)
+    grok.layer(MyRotterdamLayer)
 
     def render(self):
         return "Pretty"

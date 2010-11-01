@@ -1,7 +1,7 @@
 """
   >>> from five.grok.ftests.view.resource import *
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 
@@ -21,7 +21,7 @@
   >>> print browser.contents
   <tal:test>This template should be considered as a file.</tal:test>
   >>> print browser.headers['content-type']
-  text/html; charset=iso-8859-15
+  text/plain; charset=iso-8859-15
 
   Set a content, and ask the view on it. In a view, you should be able
   to get the resource URL:
@@ -32,7 +32,7 @@
   <html>
   <body>
   <h1>Hello I a mammoth!</h1>
-  <a href="http://localhost/manfred/++resource++five.grok.ftests.view/style.css">A link to some style for life!</a>
+  <a href="http://localhost/manfred//++resource++five.grok.ftests.view/style.css">A link to some style for life!</a>
   </body>
   </html>
 

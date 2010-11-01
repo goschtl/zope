@@ -1,35 +1,27 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import unittest
+import doctest
 
-from pkg_resources import resource_listdir
-from zope.testing import doctest
-from zope.app.testing.functional import HTTPCaller
-from five.grok.testing import GrokFunctionalLayer
-from Testing.ZopeTestCase.zopedoctest.functional import getRootFolder, sync
 from Testing.ZopeTestCase import FunctionalDocTestSuite
-
 from Testing.ZopeTestCase import installProduct
+from Testing.ZopeTestCase.zopedoctest.functional import getRootFolder, sync
+from five.grok.testing import FunctionalLayer
+from pkg_resources import resource_listdir
+
 installProduct('PageTemplates')
-
-import Zope2 ; Zope2.startup()
-
-def http_call(method, path, data=None, **kw):
-    """Function to help make RESTful calls.
-
-    method - HTTP method to use
-    path - testbrowser style path
-    data - (body) data to submit
-    kw - any request parameters
-    """
-
-    if path.startswith('http://localhost'):
-        path = path[len('http://localhost'):]
-    request_string = '%s %s HTTP/1.1\n' % (method, path)
-    for key, value in kw.items():
-        request_string += '%s: %s\n' % (key, value)
-    if data is not None:
-        request_string += '\r\n'
-        request_string += data
-    return HTTPCaller()(request_string, handle_errors=False)
 
 
 def suiteFromPackage(name):
@@ -48,14 +40,12 @@ def suiteFromPackage(name):
         dottedname = 'five.grok.ftests.%s.%s' % (name, filename[:-3])
         test = FunctionalDocTestSuite(
             dottedname,
-            extraglobs=dict(http=HTTPCaller(),
-                            http_call=http_call,
-                            getRootFolder=getRootFolder,
+            extraglobs=dict(getRootFolder=getRootFolder,
                             sync=sync),
             optionflags=(doctest.ELLIPSIS+
                          doctest.NORMALIZE_WHITESPACE+
                          doctest.REPORT_NDIFF))
-        test.layer = GrokFunctionalLayer
+        test.layer = FunctionalLayer
 
         suite.addTest(test)
     return suite
@@ -66,6 +56,3 @@ def test_suite():
     for name in ['directoryresource', 'view', 'viewlet','form', 'site']:
         suite.addTest(suiteFromPackage(name))
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

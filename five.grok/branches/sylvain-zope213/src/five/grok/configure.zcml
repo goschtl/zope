@@ -6,13 +6,14 @@
     i18n_domain="five.grok">
 
   <include package="Products.Five" />
-
   <include package="five.grok" file="meta.zcml" />
 
+  <include package="five.formlib" />
   <include package="five.localsitemanager" />
   <include package="grokcore.annotation" />
   <include package="grokcore.view" />
-  <include package="grokcore.viewlet" />
+  <!-- zope.contentprovider doesn't work by default -->
+  <!--   <include package="grokcore.viewlet" /> -->
 
   <grok:grok package=".subscribers" />
   <grok:grok package=".absoluteurl" />
@@ -20,15 +21,9 @@
   <utility component="grokcore.site.meta.setupUtility" />
 
   <browser:defaultView
-      for="grokcore.component.interfaces.IContext"
-      name="index"
-      />
-
-  <permission
-      id="zope.View"
-      title="View"
-      zcml:condition="not-installed kss.core"
-      />
+     for="grokcore.component.interfaces.IContext"
+     name="index"
+     />
 
   <includeOverrides file="overrides.zcml" />
 

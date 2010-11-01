@@ -1,6 +1,7 @@
 """
 It is an error for the 'static' directory to be a python package:
 
+  >>> from five.grok.tests.resource import *
   >>> grok.testing.grok('five.grok.tests.all.staticispackage')
   Traceback (most recent call last):
     ...

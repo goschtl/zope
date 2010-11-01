@@ -1,6 +1,9 @@
-"""Testing that grokcore utilities work under Zope2
+"""
 
-  >>> grok.testing.grok(__name__)
+Testing that grokcore utilities work under Zope2:
+
+  >>> from five.grok.tests.utilities import *
+  >>> grok.testing.grok('five.grok.tests.utilities')
 
   >>> from zope import component
   >>> club = component.getUtility(IFiveClub, 'five_inch')

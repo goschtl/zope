@@ -12,28 +12,24 @@
 #
 ##############################################################################
 
-import martian
-import five.grok
-import grokcore.security
-import grokcore.view
-import grokcore.component
-import grokcore.site.interfaces
+import os.path
 
-from zope import interface, component
-from zope.app.container.interfaces import INameChooser
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components, formlib
 from grokcore.view.meta.directoryresource import _get_resource_path
-from martian.error import GrokError
+from zope import interface, component
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+import five.grok
+import grokcore.component
+import grokcore.security
+import grokcore.site.interfaces
+import grokcore.view
+import martian
 
-from Products.Five.security import protectClass, protectName
+from AccessControl.security import protectClass, protectName
 from App.class_init import InitializeClass as initializeClass
-
-import os.path
 
 
 class FormGrokker(martian.ClassGrokker):
-
     martian.component(components.GrokForm)
     martian.directive(grokcore.component.context)
     martian.priority(800)       # Must be run before real formlib grokker.

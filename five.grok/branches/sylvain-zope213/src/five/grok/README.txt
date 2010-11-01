@@ -37,10 +37,7 @@ Let's instantiate a village and store it in ZODB root.
 
     >>> from zope.component import getUtility
     >>> from five.grok.README import *
-    >>> from Testing.ZopeTestCase import ZopeLite as Zope2
-    >>> from Testing.makerequest import makerequest
-    >>> app = Zope2.app()
-    >>> app = makerequest(app)
+    >>> app = getRootFolder()
     >>> request = app.REQUEST
 
     >>> village = GrokVillage(id='amsterdam')
@@ -199,7 +196,7 @@ Global utility
 We can create a local utility. When a ``CaveWoman`` is added, we can
 lookup our utility and use it::
 
-    <<< from zope.app.container.interfaces import IObjectAddedEvent
+    <<< from zope.container.interfaces import IObjectAddedEvent
     <<< from zope.component import getUtility
 
     <<< class ICaveInformations(Interface):
