@@ -10,7 +10,7 @@ long_description = "%s\n%s\n" % (read('README.txt'), read('CHANGES.txt'))
 install_requires = [
     'setuptools',
     'ZODB3',
-    'grokcore.component >= 1.5, < 2.0',
+    'grokcore.component',
     'zope.annotation',
     'zope.container',
     'zope.interface',
