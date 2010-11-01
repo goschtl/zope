@@ -4,8 +4,9 @@ Changes
 1.5 (unreleased)
 ----------------
 
-- Made package comply to zope.org repository policy.
+- Upped the requirements for martian and grokcore.component.
 
+- Made package comply to zope.org repository policy.
 
 1.4 (2009-12-13)
 ----------------
