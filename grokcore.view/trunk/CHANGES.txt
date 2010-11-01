@@ -4,7 +4,8 @@ Changes
 2.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- The util function `make_checker` has been moved from the `grok`
+  package to ``grokcore.view``.
 
 
 2.0 (2010-11-01)
