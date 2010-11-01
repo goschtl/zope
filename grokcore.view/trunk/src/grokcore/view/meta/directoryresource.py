@@ -91,8 +91,8 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         # happens to be a package
         if not module_info.isPackage():
             return False
-        resource_path = _get_resource_path(module_info, 'static')
 
+        resource_path = _get_resource_path(module_info, 'static')
         if not os.path.exists(resource_path):
             return False
 
