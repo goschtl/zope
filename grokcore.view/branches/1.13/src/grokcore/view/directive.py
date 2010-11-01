@@ -19,13 +19,15 @@ import martian
 from martian.error import GrokImportError
 from martian.directive import StoreOnce
 from zope.interface.interface import TAGGED_DATA
+from zope.publisher.interfaces.browser import IBrowserView
 
 
 def validateLocalPath(directive, value):
     martian.validateText(directive, value)
     if os.path.sep in value:
-        raise GrokImportError("The '%s' directive can not contain path separator."
-                               % directive.name)
+        raise GrokImportError(
+            "The '%s' directive can not contain path separator." %
+            directive.name)
 
 # Define grok directives
 
@@ -89,3 +91,7 @@ class path(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
+
+
+class view(OneInterfaceOrClassOnClassOrModule):
+    default = IBrowserView

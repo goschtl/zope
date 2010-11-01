@@ -52,6 +52,10 @@ class IDirectives(Interface):
         of the directory.  This can be overridden using
         ``templatedir``."""
 
+    def view(view):
+        """Define on which view a viewlet manager/viewlet is registered.
+        """
+
 
 class IGrokcoreViewAPI(IBaseClasses, IDirectives):
 
