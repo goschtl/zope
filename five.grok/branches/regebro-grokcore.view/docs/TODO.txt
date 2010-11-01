@@ -1,5 +1,0 @@
-- factor View support out of Grok
-- factor security stuff out of Grok
-    RequireDirective
-    get_default_permission
-- Forms, Viewlets are missing
