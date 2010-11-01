@@ -1,0 +1,15 @@
+Changes
+=======
+
+1.1 (2010-11-01)
+----------------
+
+* Use newer grokcore.component.
+
+* Made package comply to zope.org repository policy.
+
+1.0 (2010-02-06)
+----------------
+
+* Created ``grokcore.content`` in January 2010 by factoring basic
+  component base classes out of Grok.
