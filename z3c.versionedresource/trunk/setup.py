@@ -60,12 +60,13 @@ setup (
         ),
     install_requires = [
         'setuptools',
+        'zope.app.publisher',
         'zope.component',
         'zope.configuration',
         'zope.interface',
-        'zope.security',
         'zope.publisher',
-        'zope.app.publisher'
+        'zope.security',
+        'zope.site',
         ],
     include_package_data = True,
     zip_safe = False,
