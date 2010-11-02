@@ -94,7 +94,7 @@ The view is also a browser publisher. But it does not support a default:
 When traversing to a sub-item, the version can be specified:
 
   >>> resources.publishTraverse(request, '1.0.0')
-  <zope.app.publisher.browser.resources.Resources ...>
+  <zope.browserresource.resources.Resources ...>
 
 The result of the traversal is the original resources object. When asking for
 an unknown resource or version, a ``NotFound`` is raised:
@@ -116,7 +116,7 @@ We can now ask the resources object to traverse the resource:
 
   >>> css = resources.publishTraverse(request, 'resource.css')
   >>> css
-  <zope.app.publisher.browser.resource.Resource object at ...>
+  <zope.browserresource.resource.Resource object at ...>
 
 Calling it will return the URL:
 
@@ -262,7 +262,7 @@ You can also specify a simple file resource,
 
   >>> resources.publishTraverse(request, '1.0.0')\
   ...          .publishTraverse(request, 'zcml-test.txt').context
-  <zope.app.publisher.fileresource.File object at ...>
+  <zope.browserresource.file.File object at ...>
 
   >>> unregister('zcml-test.txt')
 
@@ -280,7 +280,7 @@ as well as a page template.
 
   >>> resources.publishTraverse(request, '1.0.0')\
   ...          .publishTraverse(request, 'zcml-test.html').context
-  <zope.app.publisher.pagetemplateresource.PageTemplate object at ...>
+  <zope.ptresource.ptresource.PageTemplate object at ...>
 
 Note that the page template resource cannot be a versioned resource, since it
 has dynamic components:
@@ -400,15 +400,15 @@ You can also produce the resources in a directory:
   /.../1.0.0
 
   >>> ls(outdir)
-  d 1.0.0             4096
+  d 1.0.0
   >>> ls(os.path.join(outdir, '1.0.0'))
-  d zcml-subdir       4096
-  f zcml-test.gif     909
+  d zcml-subdir
+  f zcml-test.gif
   >>> ls(os.path.join(outdir, '1.0.0', 'zcml-subdir'))
-  d subsubdir         4096
-  f test.gif          909
+  d subsubdir
+  f test.gif
   >>> ls(os.path.join(outdir, '1.0.0', 'zcml-subdir', 'subsubdir'))
-  f subtest.gif       909
+  f subtest.gif
 
 The module consists of several small helper functions, so let's look at them
 to verify their correct behavior.
@@ -456,27 +456,27 @@ We can now store a resource to it:
 
   >>> list.storeResource(outdir, resources[1][0], resources[1][1])
   >>> ls(outdir)
-  f zcml-test.gif     909
+  f zcml-test.gif
 
 Let's now zip it:
 
   >>> list.storeResource(outdir, resources[1][0], resources[1][1], True)
   >>> ls(outdir)
-  f zcml-test.gif     252
+  f zcml-test.gif
 
 When storing a directory resource, all sub-items are stored as well:
 
   >>> list.storeResource(outdir, resources[0][0], resources[0][1], True)
   >>> ls(outdir)
-  d zcml-subdir       4096
-  f zcml-test.gif     252
+  d zcml-subdir
+  f zcml-test.gif
 
   >>> ls(os.path.join(outdir, 'zcml-subdir'))
-  d subsubdir 4096
-  f test.gif  259
+  d subsubdir
+  f test.gif
 
   >>> ls(os.path.join(outdir, 'zcml-subdir', 'subsubdir'))
-  f subtest.gif       272
+  f subtest.gif
 
 
 Some odds and ends

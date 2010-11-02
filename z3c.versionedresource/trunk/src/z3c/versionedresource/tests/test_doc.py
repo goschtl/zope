@@ -20,7 +20,7 @@ import os
 import unittest
 import zope.interface
 from zope.component import globalregistry
-from zope.testing import doctest
+import doctest
 from zope.app.testing import placelesssetup
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.publisher.browser.resource import AbsoluteURL
@@ -47,10 +47,7 @@ def unregister(name):
 def ls(dir):
     for name in sorted(os.listdir(dir)):
         path = os.path.join(dir, name)
-        print '%s %s\t%i' %(
-            'd' if os.path.isdir(path) else 'f',
-            name,
-            os.stat(path).st_size)
+        print '%s %s' %('d' if os.path.isdir(path) else 'f', name)
 
 def setUp(test):
     placelesssetup.setUp(test)

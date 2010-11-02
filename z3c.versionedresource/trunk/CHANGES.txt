@@ -1,3 +1,10 @@
+========
+ Issues
+========
+
+* Some tests break strangely. (Even depending on parameters of `bin/test`
+  call (`-v` vs. no parameters)!) Should be fixed before next release.
+
 =======
 CHANGES
 =======
@@ -5,7 +12,10 @@ CHANGES
 Version 0.6.0 (unreleased)
 --------------------------
 
-- ...
+* Fixed most of the tests to run with ZTK 1.0 and on Mac OS X, too.
+
+* Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 Version 0.5.0 (2009-07-30)
 --------------------------
