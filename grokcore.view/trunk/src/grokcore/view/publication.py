@@ -3,6 +3,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.security.checker import selectChecker
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.publication.browser import BrowserPublication
+from zope.app.publication.requestpublicationfactories import BrowserFactory
 from grokcore.view import IGrokSecurityView
 
 
@@ -68,3 +69,18 @@ class GrokBrowserPublication(ZopePublicationSansProxy, BrowserPublication):
         obj, path = super(GrokBrowserPublication, self).getDefaultTraversal(
             request, ob)
         return removeSecurityProxy(obj), path
+
+
+class GrokBrowserFactory(BrowserFactory):
+    """Returns the classes Grok uses for browser requests and publication.
+
+    When an instance of this class is called, it returns a 2-element
+    tuple containing:
+
+    - The request class that Grok uses for browser requests.
+    - The publication class that Grok uses to publish to a browser.
+
+    """
+    def __call__(self):
+        request, publication = super(GrokBrowserFactory, self).__call__()
+        return request, GrokBrowserPublication
