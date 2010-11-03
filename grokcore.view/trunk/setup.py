@@ -40,6 +40,10 @@ tests_require = [
     'zope.principalregistry',
     ]
 
+publication_require = [
+    'zope.app.publication'
+    ]
+
 setup(
     name='grokcore.view',
     version='2.1dev',
@@ -64,5 +68,6 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
-    extras_require={'test': tests_require},
+    extras_require={'test': tests_require,
+                    'security_publication': publication_require},
 )
