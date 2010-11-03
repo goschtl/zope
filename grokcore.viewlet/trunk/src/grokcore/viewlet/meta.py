@@ -23,21 +23,18 @@ from martian.error import GrokError
 
 import grokcore.component
 from grokcore.component.interfaces import IContext
-from grokcore.component.meta import default_context
 import grokcore.view
+from grokcore.view.meta.views import default_view_name
 import grokcore.security
-
 import grokcore.viewlet
 from grokcore.viewlet import components
 from grokcore.viewlet.util import make_checker
 from grokcore.viewlet.interfaces import IViewletManager as IGrokViewletManager
 
-from grokcore.view.meta.views import default_view_name
-
 
 class ViewletManagerGrokker(martian.ClassGrokker):
     martian.component(grokcore.viewlet.ViewletManager)
-    martian.directive(grokcore.component.context, get_default=default_context)
+    martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.viewlet.view)
     martian.directive(grokcore.component.name, get_default=default_view_name)
@@ -79,28 +76,12 @@ class ViewletManagerGrokker(martian.ClassGrokker):
         templates.checkTemplates(module_info, factory, 'viewlet manager',
                                  has_render, has_no_render)
 
-def default_viewletmanager(factory, module, **data):
-    components = list(scan_for_classes(module, IGrokViewletManager))
-    if len(components) == 0:
-        raise GrokError(
-            "No module-level viewletmanager for %r, please use the "
-            "'viewletmanager' directive." % (factory), factory)
-    elif len(components) == 1:
-        component = components[0]
-    else:
-        raise GrokError(
-            "Multiple possible viewletmanagers for %r, please use the "
-            "'viewletmanager' directive."
-            % (factory), factory)
-    return component
-
 class ViewletGrokker(martian.ClassGrokker):
     martian.component(grokcore.viewlet.Viewlet)
-    martian.directive(grokcore.component.context, get_default=default_context)
+    martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.viewlet.view)
-    martian.directive(
-        grokcore.viewlet.viewletmanager, get_default=default_viewletmanager)
+    martian.directive(grokcore.viewlet.viewletmanager)
     martian.directive(grokcore.component.name, get_default=default_view_name)
     martian.directive(grokcore.security.require, name='permission')
 
