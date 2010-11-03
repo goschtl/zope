@@ -17,13 +17,12 @@ import martian
 from martian.error import GrokError
 
 import grokcore.component
-from grokcore.component.meta import default_context
 from grokcore.formlib import formlib
 from grokcore.formlib import components
 
 class FormGrokker(martian.ClassGrokker):
     martian.component(components.GrokForm)
-    martian.directive(grokcore.component.context, get_default=default_context)
+    martian.directive(grokcore.component.context)
 
     def execute(self, factory, config, context, **kw):
         # Set up form_fields from context class if they haven't been
