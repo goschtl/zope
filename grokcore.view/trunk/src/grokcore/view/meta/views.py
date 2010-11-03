@@ -26,15 +26,12 @@ import grokcore.view
 from grokcore.security.util import protect_getattr
 from grokcore.view import components
 
-
-def default_view_name(factory, module=None, **data):
-    return factory.__name__.lower()
-
+def default_view_name(component, module=None, **data):
+    return component.__name__.lower()
 
 class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
-    martian.directive(grokcore.component.context,
-                      get_default=grokcore.component.meta.default_context)
+    martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
