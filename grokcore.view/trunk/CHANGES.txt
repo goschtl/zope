@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.1 (unreleased)
+2.1 (2010-11-03)
 ----------------
 
 - Use an update martian and grokcore.component.
