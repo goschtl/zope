@@ -11,22 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Base Components test setup
-
-$Id: tests.py 70205 2006-09-16 12:43:33Z srichter $
-"""
-__docformat__ = "reStructuredText"
+"""Base Components test setup"""
+from pprint import pprint
 import doctest
 import unittest
-from zope.testing.doctestunit import DocFileSuite, pprint
+
 
 def test_suite():
-    return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     globs={'pprint': pprint}
-                     ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        globs={'pprint': pprint})

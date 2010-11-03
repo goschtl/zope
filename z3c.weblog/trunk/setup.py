@@ -55,14 +55,14 @@ setup (
             ],
         ),
     install_requires = [
-        'setuptools',
-        'zope.interface',
         'ZODB3',
-        'zope.schema',
+        'setuptools',
         'zope.app.container',
         'zope.app.content',
+        'zope.app.file',
         'zope.dublincore',
+        'zope.interface',
+        'zope.schema',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )
