@@ -4,6 +4,8 @@ Changes
 2.1 (unreleased)
 ----------------
 
+- Use an update martian and grokcore.component.
+
 - The custom zope publication has now moved from the grok package to
   grokcore.view. The registration of the publication is optional, and is used
   by grok and the grokcore.json package.
