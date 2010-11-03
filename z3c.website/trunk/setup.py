@@ -25,7 +25,7 @@ setup (
     name='z3c.website',
     version='0.1.0c1',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Source code for Z3C Website",
     long_description=(
         read('README.txt')
@@ -93,6 +93,5 @@ setup (
         'zope.traversing',
         'zope.viewlet',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )
