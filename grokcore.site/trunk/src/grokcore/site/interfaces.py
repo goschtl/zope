@@ -15,6 +15,7 @@
 from zope.interface import Interface, Attribute
 from grokcore.component.interfaces import IGrokcoreComponentAPI
 
+
 class IUtilityInstaller(Interface):
     """This install an utility in a site. Let you have different
     'installation' method if you want (one for Zope2 / Zope3).
@@ -24,6 +25,11 @@ class IUtilityInstaller(Interface):
                  name_in_container=None, public=False, setup=None):
         """Setup an utility.
         """
+
+
+class IApplication(Interface):
+    """Interface to mark the local site used as application root.
+    """
 
 
 class IBaseClasses(Interface):
