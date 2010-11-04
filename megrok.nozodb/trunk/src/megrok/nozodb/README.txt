@@ -15,8 +15,6 @@ have to replace the paster-application-factory which typically is
 located in the debug.ini and in the deploy.ini: To be concrete
 replace grokcore.startup#... with megrok.nozodb#nozodb
 
-.. code-block::
-    
     [app:grok]
     use = egg:megrok.nozodb#nozodb
 
