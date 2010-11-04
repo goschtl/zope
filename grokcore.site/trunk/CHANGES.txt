@@ -4,7 +4,8 @@ Changes
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Moved IApplication and getApplication from the Grok package into
+  this one.
 
 
 1.4 (2010-11-01)

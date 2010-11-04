@@ -61,3 +61,5 @@ class IDirectives(Interface):
 class IGrokcoreSiteAPI(IGrokcoreComponentAPI, IBaseClasses, IDirectives):
     """grokcore.site's public API."""
 
+    def getApplication():
+        """Return the nearest enclosing `grok.Application`."""
