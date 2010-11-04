@@ -9,7 +9,7 @@ from zope import component
 from zope.site.hooks import setSite
 from zope.site.interfaces import IRootFolder
 
-from grok.publication import GrokHTTPPublication
+from grok.publication import GrokBrowserPublication
 
 from zope.app.appsetup import appsetup, product
 from zope.publisher.interfaces import ISkinnable
@@ -47,7 +47,7 @@ class SimplePublicationRequestFactory(object):
         return request
 
 
-class BrowserPublication(GrokHTTPPublication):
+class BrowserPublication(GrokBrowserPublication):
     """ Browser Publication with NoZODB
     """
 
