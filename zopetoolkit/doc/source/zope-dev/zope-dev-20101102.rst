@@ -9,12 +9,12 @@ Summary
 =======
 
 The IRC log is available here:
-    XXX
+    http://zope3.pov.lt/irclogs-zope/%23zope.2010-11-02.log.html#t2010-11-02T17:00:49
 
 Attendees
 ---------
 
-XXX
+Christian Theune, Marius Gedminas
 
 Agenda
 ======
@@ -26,7 +26,11 @@ Agenda
 Summary
 -------
 
-Nothing happened as Christian was the only attendend.
+Nothing happened as Christian and Marius were the only attends and both both
+timing issues with DST were suspected (nobody should up after the time,
+though) and also people might have been exhausted from the Plone Conference
+the week before.
+
 
 Ongoing issues
 --------------
