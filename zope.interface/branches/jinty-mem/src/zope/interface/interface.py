@@ -61,7 +61,6 @@ class Element(object):
 
         self.__name__=__name__
         self.__doc__=__doc__
-        self.__tagged_values = {}
 
     def getName(self):
         """ Returns the name of the object. """
@@ -73,19 +72,22 @@ class Element(object):
 
     def getTaggedValue(self, tag):
         """ Returns the value associated with 'tag'. """
-        return self.__tagged_values[tag]
+        return getattr(self, '_Element__tagged_values', {})[tag]
 
     def queryTaggedValue(self, tag, default=None):
         """ Returns the value associated with 'tag'. """
-        return self.__tagged_values.get(tag, default)
+        return getattr(self, '_Element__tagged_values', {}).get(tag, default)
 
     def getTaggedValueTags(self):
         """ Returns a list of all tags. """
-        return self.__tagged_values.keys()
+        return getattr(self, '_Element__tagged_values', {}).keys()
 
     def setTaggedValue(self, tag, value):
         """ Associates 'value' with 'key'. """
-        self.__tagged_values[tag] = value
+        tv = getattr(self, '_Element__tagged_values', None)
+        if tv is None:
+            tv = self.__tagged_values = {}
+        tv[tag] = value
 
 class SpecificationBasePy(object):
 
