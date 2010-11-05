@@ -14,7 +14,7 @@ install_requires = [
     'zope.annotation',
     'zope.container',
     'zope.interface',
-    ],
+    ]
 
 tests_require = [
     'zope.testing',
