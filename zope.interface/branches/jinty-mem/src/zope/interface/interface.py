@@ -260,16 +260,20 @@ class Specification(SpecificationBase):
     # Copy some base class methods for speed
     isOrExtends = SpecificationBase.isOrExtends
     providedBy = SpecificationBase.providedBy
+    dependents = None
 
     def __init__(self, bases=()):
         self._implied = {}
-        self.dependents = weakref.WeakKeyDictionary()
         self.__bases__ = tuple(bases)
 
     def subscribe(self, dependent):
+        if self.dependents is None:
+            self.dependents = weakref.WeakKeyDictionary()
         self.dependents[dependent] = self.dependents.get(dependent, 0) + 1
 
     def unsubscribe(self, dependent):
+        if self.dependents is None:
+            raise KeyError(dependent)
         n = self.dependents.get(dependent, 0) - 1
         if not n:
             del self.dependents[dependent]
@@ -325,8 +329,9 @@ class Specification(SpecificationBase):
             implied[ancestor] = ()
 
         # Now, advise our dependents of change:
-        for dependent in self.dependents.keys():
-            dependent.changed(originally_changed)
+        if self.dependents is not None:
+            for dependent in self.dependents.keys():
+                dependent.changed(originally_changed)
 
 
     def interfaces(self):
