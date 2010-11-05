@@ -1,3 +1,0 @@
-include *.txt
-recursive-include src *.txt
-exclude MANIFEST.in buildout.cfg .bzrignore
