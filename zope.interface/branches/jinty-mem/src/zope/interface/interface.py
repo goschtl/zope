@@ -51,6 +51,7 @@ class Element(object):
     # infrastructure in place.
     #
     #implements(IElement)
+    __tagged_values = None
 
     def __init__(self, __name__, __doc__=''):
         """Create an 'attribute' description
@@ -72,22 +73,27 @@ class Element(object):
 
     def getTaggedValue(self, tag):
         """ Returns the value associated with 'tag'. """
-        return getattr(self, '_Element__tagged_values', {})[tag]
+        if self.__tagged_values is None:
+            return default
+        return self.__tagged_values[tag]
 
     def queryTaggedValue(self, tag, default=None):
         """ Returns the value associated with 'tag'. """
-        return getattr(self, '_Element__tagged_values', {}).get(tag, default)
+        if self.__tagged_values is None:
+            return default
+        return self.__tagged_values.get(tag, default)
 
     def getTaggedValueTags(self):
         """ Returns a list of all tags. """
-        return getattr(self, '_Element__tagged_values', {}).keys()
+        if self.__tagged_values is None:
+            return default
+        return self.__tagged_values.keys()
 
     def setTaggedValue(self, tag, value):
         """ Associates 'value' with 'key'. """
-        tv = getattr(self, '_Element__tagged_values', None)
-        if tv is None:
-            tv = self.__tagged_values = {}
-        tv[tag] = value
+        if self.__tagged_values is None:
+            self.__tagged_values = {}
+        self.__tagged_values[tag] = value
 
 class SpecificationBasePy(object):
 
