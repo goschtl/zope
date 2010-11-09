@@ -73,27 +73,31 @@ class Element(object):
 
     def getTaggedValue(self, tag):
         """ Returns the value associated with 'tag'. """
-        if self.__tagged_values is None:
+        tv = self.__tagged_values
+        if tv is None:
             raise KeyError(tag)
-        return self.__tagged_values[tag]
+        return tv[tag]
 
     def queryTaggedValue(self, tag, default=None):
         """ Returns the value associated with 'tag'. """
-        if self.__tagged_values is None:
+        tv = self.__tagged_values
+        if tv is None:
             return default
-        return self.__tagged_values.get(tag, default)
+        return tv.get(tag, default)
 
     def getTaggedValueTags(self):
         """ Returns a list of all tags. """
-        if self.__tagged_values is None:
-            return default
-        return self.__tagged_values.keys()
+        tv = self.__tagged_values
+        if tv is None:
+            return []
+        return tv.keys()
 
     def setTaggedValue(self, tag, value):
         """ Associates 'value' with 'key'. """
-        if self.__tagged_values is None:
-            self.__tagged_values = {}
-        self.__tagged_values[tag] = value
+        tv = self.__tagged_values
+        if tv is None:
+            self.__tagged_values = tv = {}
+        tv[tag] = value
 
 class SpecificationBasePy(object):
 
