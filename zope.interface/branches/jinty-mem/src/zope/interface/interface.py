@@ -74,7 +74,7 @@ class Element(object):
     def getTaggedValue(self, tag):
         """ Returns the value associated with 'tag'. """
         if self.__tagged_values is None:
-            return default
+            raise KeyError(tag)
         return self.__tagged_values[tag]
 
     def queryTaggedValue(self, tag, default=None):
