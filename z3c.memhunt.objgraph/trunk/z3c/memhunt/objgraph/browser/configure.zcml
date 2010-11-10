@@ -3,7 +3,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zcml">
     
-    <include package=".browser"/>
+    <!--include zcml:condition="installed zope.app.component" file="configure_zope3.zcml"/-->
+    <include file="configure_zope3.zcml"/>
 
 </configure>
 
