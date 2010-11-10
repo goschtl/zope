@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      i18n:domain="hc.debug.core">
+<body>
+<head>
+      <link type="text/css" rel="stylesheet" media="all" href=""
+           tal:attributes="href string:++resource++debug.css"/>
+</head>
+
+        <metal:block tal:condition="context/title|nothing">
+            <br/><a tal:attributes="href string:."
+                   tal:content="string: Back to ${context/title}"/>
+        </metal:block>
+
+        <div class="title">
+            <h1>Reference Count</h1>
+
+        </div>
+
+        <div class="debug_table">
+            <p class="debug_body description">
+            Garbage Container Objects: <span tal:replace="view/garbage_containing"/><br/>
+            Garbage Watching Objects: <span tal:replace="view/garbage_watching"/><br/>
+            Total Reference Count From Modules: <span tal:replace="view/total_ref_count"/><br/>
+        
+                <table summary="Module Ref Counts" width="100%" class="debug_table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="date" nowrap="nowrap">Ref Count</th>
+                            <th scope="col" class="actor">Module</th>
+                            <th scope="col" class="actor">&nbsp;</th>
+                        </tr>
+                    </thead>
+            
+                    <tbody>
+                            <metal:block tal:repeat="pair view/pairs"
+                                         tal:attributes="class string:even">
+                             <tr tal:define="oddrow repeat/pair/odd">
+                                 <td nowrap="nowrap" valign="top" tal:content="pair/refcount|nothing"/>
+                                 <td nowrap="nowrap" valign="top" tal:content="pair/name|nothing"/>
+                                 <td nowrap="nowrap">
+                                    <a tal:attributes="href string:./view_backref?name=${pair/name}"
+                                       tal:content="string: backrefs"/>
+                                    <a tal:attributes="href string:./view_ref?name=${pair/name}"
+                                       tal:content="string: refs"/>
+                                 </td>
+                              </tr>
+                            </metal:block>
+                    </tbody>
+                </table>
+
+                <a class="button" href="javascript:history.back(1)" class="back-link">Cancel</a>
+
+</html>

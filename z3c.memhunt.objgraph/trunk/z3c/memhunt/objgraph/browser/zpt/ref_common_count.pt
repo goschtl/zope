@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      i18n:domain="hc.debug.core">
+
+<body>
+
+
+
+        <div class="title">
+            <h1>Reference Count</h1>
+
+        </div>
+
+        <div>
+            <p>
+                <table summary="Most common in garbage" width="100%">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="date" nowrap="nowrap">Ref Count</th>
+                            <th scope="col" class="actor">Object</th>
+                        </tr>
+                    </thead>
+            
+                    <tbody>
+                            <metal:block tal:repeat="pair view/pairs">
+                             <tr tal:define="oddrow repeat/pair/odd">
+                                 <td nowrap="nowrap" valign="top" tal:content="pair/refcount|nothing"/>
+                                 <td nowrap="nowrap" valign="top" tal:content="pair/name|nothing"/>
+                              </tr>
+                            </metal:block>
+                    </tbody>
+                </table>
+
+                <a class="button" href="javascript:history.back(1)" class="back-link">Cancel</a>
+
+</html>

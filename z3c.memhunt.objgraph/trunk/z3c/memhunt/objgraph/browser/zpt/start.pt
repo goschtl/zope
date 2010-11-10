@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      i18n:domain="z3c.memhunt.objgraph">
+<body>
+<head>
+      <link type="text/css" rel="stylesheet" media="all" href=""
+           tal:attributes="href string:++resource++debug.css"/>
+</head>
+    <div class="debug_table">
+        <metal:block tal:condition="context/title|nothing">
+            <br/><a tal:attributes="href string:."
+                   tal:content="string: Back to ${context/title}"/>
+        </metal:block>
+
+       <h1>Memory and Reference Counting Tools</h1>
+
+       <p class="description"> 
+            This tool is split into two logical tools. First is the Dependancy reference graphs.
+            Second is the memory introspection tools which use the guppy library for intelligence.
+       </p>
+
+           <br/>
+            <h3 class="sub_heading"> Dependancy Graph Views </h3>
+            <ul class="debug_body">
+                <li>
+                <a tal:attributes="href string:./context_refs.png"
+                   tal:content="string:This Context's Reference Graph"/>
+                </li>
+                
+                <li>
+                <a tal:attributes="href string:context_backrefs.png"
+                   tal:content="string:This Context's Back-Reference Graph"/>
+                </li>
+            
+                <li>
+                <a tal:attributes="href string:ref_count"
+                   tal:content="string: View Modules Ref-Counts"/>
+                </li>
+
+                <li>
+                <a tal:attributes="href string:ref_common_count"
+                   tal:content="string: View Most Common Objects in Garbage"/>
+                </li>
+
+            </ul>
+           <br/>
+            <h3 class="sub_heading"> Memory Introspection Views </h3>
+            <ul class="debug_body">
+                <li>
+                <a tal:attributes="href string:memory"
+                   tal:content="string: View Memory"/>
+                </li>
+
+                <li>
+                <a tal:attributes="href string:relative_memory"
+                   tal:content="string: View Relative Memory"/>
+                </li>
+
+
+                <li>
+                <a tal:attributes="href string:traverse_relative_memory"
+                   tal:content="string: View Traversed Relative Memory"/>
+                </li>
+
+
+                <li>
+                <a tal:attributes="href string:by_referrers"
+                   tal:content="string: View memory by Referrers"/>
+                </li>
+
+                <li>
+                <a tal:attributes="href string:get_biggest_offender"
+                   tal:content="string: View Biggest Memory Offender"/>
+                </li>
+
+            </ul>
+
+    </div>
+</body>
+</html>
