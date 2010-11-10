@@ -345,8 +345,8 @@ After a successful build, such temporary directories are removed.
     >>> import os
     >>> import tempfile
 
-    >>> match = lambda filename: fnmatch.fnmatch(filename, '*buildout-foo')
-    >>> dirs = len(map(match, os.listdir(tempfile.gettempdir())))
+    >>> match = lambda filenames: fnmatch.filter(filenames, '*buildout-foo')
+    >>> dirs = match(os.listdir(tempfile.gettempdir()))
 
     >>> write('buildout.cfg',
     ... """
@@ -370,6 +370,6 @@ After a successful build, such temporary directories are removed.
     <BLANKLINE>
 
     >>> tmpdir = os.listdir(tempfile.gettempdir())
-    >>> new_dirs = len(map(match, os.listdir(tempfile.gettempdir())))
+    >>> new_dirs = match(os.listdir(tempfile.gettempdir()))
     >>> dirs == new_dirs
     True
