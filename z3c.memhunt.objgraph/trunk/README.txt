@@ -1,4 +1,7 @@
-This is a global debug package used to hold debug code across any
-site. 
+====================
+z3c.memhunt.objgraph
+====================
 
-This package uses objgraph for introspection views
+z3c.memhunt.objgraph was created to help locate and diagnose memory
+leaks in zope applications. This package uses objgraph and guppy to
+help with this task.
