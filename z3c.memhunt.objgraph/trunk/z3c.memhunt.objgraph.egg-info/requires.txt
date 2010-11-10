@@ -1,6 +1,0 @@
-setuptools
-guppy
-objgraph
-
-[tests]
-zope.testing
