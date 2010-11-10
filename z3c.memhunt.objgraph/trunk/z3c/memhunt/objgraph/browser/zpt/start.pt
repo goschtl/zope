@@ -15,15 +15,18 @@
                    tal:content="string: Back to ${context/title}"/>
         </metal:block>
 
+
        <h1>Memory and Reference Counting Tools</h1>
 
        <p class="description"> 
-            This tool is split into two logical tools. First is the Dependancy reference graphs.
-            Second is the memory introspection tools which use the guppy library for intelligence.
+            The *Dependancy Graph Views* is a set of views that utilize the objgraph.py package.
+            This ref_tools view is registered for every context level for managers which makes it really easy
+            to get a dependancy graph for any context level in your application. 
        </p>
 
            <br/>
             <h3 class="sub_heading"> Dependancy Graph Views </h3>
+
             <ul class="debug_body">
                 <li>
                 <a tal:attributes="href string:./context_refs.png"
