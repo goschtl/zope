@@ -341,12 +341,11 @@ is logged to stdout, and left intact for debugging purposes.
 
 After a successful build, such temporary directories are removed.
 
-    >>> import fnmatch
-    >>> import os
+    >>> import glob
     >>> import tempfile
 
-    >>> match = lambda filenames: fnmatch.filter(filenames, '*buildout-foo')
-    >>> dirs = match(os.listdir(tempfile.gettempdir()))
+    >>> tempdir = tempfile.gettempdir()
+    >>> dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
 
     >>> write('buildout.cfg',
     ... """
@@ -369,7 +368,6 @@ After a successful build, such temporary directories are removed.
     installing foo
     <BLANKLINE>
 
-    >>> tmpdir = os.listdir(tempfile.gettempdir())
-    >>> new_dirs = match(os.listdir(tempfile.gettempdir()))
+    >>> new_dirs = len(glob.glob(os.path.join(tempdir, '*buildout-foo')))
     >>> dirs == new_dirs
     True
