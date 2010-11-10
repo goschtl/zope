@@ -1,0 +1,32 @@
+152d151
+<     res = set([])
+154,155c153
+<         res.add((name.ljust(width), count))
+<     return res
+---
+>         print name.ljust(width), count
+325,328d322
+< 
+<     if filename and os.path.exists(filename):
+<         os.unlink(filename)
+< 
+330c324
+<         f = file(filename, 'wb')
+---
+>         f = file(filename, 'w')
+333c327
+<         f = NamedTemporaryFile('wb', suffix='.dot')
+---
+>         f = NamedTemporaryFile('w', suffix='.dot', delete=False)
+335,341d328
+< 
+<     # NOTE:
+<     # Need to do this to ensure the file is created within transaction??
+<     f.close()
+<     f = open(f.name, 'wb')
+<     f.write('')
+< 
+415c402
+<             f = NamedTemporaryFile('wb', suffix='.png')
+---
+>             f = NamedTemporaryFile('wb', suffix='.png', delete=False)

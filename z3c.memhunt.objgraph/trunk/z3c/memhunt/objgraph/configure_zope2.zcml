@@ -1,0 +1,140 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.memhunt.objgraph">
+    
+    <browser:page
+        for="*"
+        name="ref_tools"
+        attribute="start"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="ref_count"
+        attribute="ref_count"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="ref_common_count"
+        attribute="most_common"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="display_mem"
+        attribute="display_mem"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="view_ref"
+        attribute="view_ref"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="view_backref"
+        attribute="view_backref"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="context_backrefs"
+        attribute="context_backrefs"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="memory"
+        attribute="memory"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="relative_memory"
+        attribute="relative_memory"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="traverse_relative_memory"
+        attribute="traverse_relative_memory"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="reset_heap"
+        attribute="reset_heap"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="by_referrers"
+        attribute="by_referrers"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="get_biggest_offender"
+        attribute="get_biggest_offender"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+
+    <browser:page
+        for="*"
+        name="context_refs"
+        attribute="context_refs"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="*"
+        name="breakpoint"
+        attribute="breakpoint"
+        class=".debug_views.DebugView"
+        permission="cmf.ManagePortal"
+        />
+
+     <browser:resourceDirectory
+	      name="history"
+ 	      directory="resources/history"
+              permission="zope2.View"
+ 	      />
+
+
+</configure>
+
+
+
+
+
+
