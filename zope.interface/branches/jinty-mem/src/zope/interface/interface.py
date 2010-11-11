@@ -51,7 +51,7 @@ class Element(object):
     # infrastructure in place.
     #
     #implements(IElement)
-    __tagged_values = None
+    __slots__ = ('__tagged_values', '__doc__', '__name__')
 
     def __init__(self, __name__, __doc__=''):
         """Create an 'attribute' description
@@ -60,6 +60,7 @@ class Element(object):
             __doc__ = __name__
             __name__ = None
 
+        self.__tagged_values = None
         self.__name__=__name__
         self.__doc__=__doc__
 
@@ -716,23 +717,26 @@ class InterfaceClass(Element, InterfaceBase, Specification):
 Interface = InterfaceClass("Interface", __module__ = 'zope.interface')
 
 class Attribute(Element):
-    """Attribute descriptions
-    """
+
+    __slots__ = ('interface', '__doc__')
 
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
     # implements(IAttribute)
 
-    interface = None
+    def __init__(self, __name__, __doc__=''):
+        Element.__init__(self, __name__, __doc__)
+        self.interface = None
 
 
 class Method(Attribute):
-    """Method interfaces
+    # Method interfaces
+    #
+    # The idea here is that you have objects that describe methods.
+    # This provides an opportunity for rich meta-data.
 
-    The idea here is that you have objects that describe methods.
-    This provides an opportunity for rich meta-data.
-    """
+    __slots__ = ('positional', 'required', 'optional', 'varargs', 'kwargs', '__doc__')
 
     # We can't say this yet because we don't have enough
     # infrastructure in place.
