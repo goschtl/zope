@@ -97,6 +97,11 @@ class Element(object):
         """ Associates 'value' with 'key'. """
         tv = self.__tagged_values
         if tv is None:
+            # there is a threading issue here, but we should be safe neglecting
+            # it because: "no sane code will call 'setTaggedValue' except at
+            # import time, when we should be serialized by Python's own import
+            # lock."
+            # https://mail.zope.org/pipermail/zope-dev/2010-November/041983.html
             self.__tagged_values = tv = {}
         tv[tag] = value
 
@@ -278,9 +283,11 @@ class Specification(SpecificationBase):
         self.__bases__ = tuple(bases)
 
     def subscribe(self, dependent):
-        if self.dependents is None:
-            self.dependents = weakref.WeakKeyDictionary()
-        self.dependents[dependent] = self.dependents.get(dependent, 0) + 1
+        dependents = self.dependents
+        if dependents is None:
+            # use of setdefault avoids threading issues
+            dependents = self.__dict__.setdefault('dependents', weakref.WeakKeyDictionary())
+        dependents[dependent] = dependents.get(dependent, 0) + 1
 
     def unsubscribe(self, dependent):
         if self.dependents is None:
