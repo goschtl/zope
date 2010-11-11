@@ -11,25 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id$
-"""
 __docformat__ = 'reStructuredText'
 
-import datetime
-import re
-import zope.interface
-import zope.schema
-from zope.formlib import form
+from z3c.i18n import MessageFactory as _
+from zope.app.form import browser
+from zope.app.form.browser.interfaces import IBrowserWidget
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.interfaces import WidgetInputError
-from zope.app.form.browser.interfaces import IBrowserWidget
-from zope.app.form import browser
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.zapi import getMultiAdapter
-from zope.app.form.browser.interfaces import IWidgetInputErrorView
-
-from z3c.i18n import MessageFactory as _
+from zope.formlib import form
+import datetime
+import re
+import zope.component
+import zope.interface
+import zope.schema
 
 
 class ISSNData(zope.interface.Interface):
@@ -187,8 +183,9 @@ class SSNWidget(object):
     def error(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""
         if self._error:
-            return getMultiAdapter((self._error, self.request),
-                                        IWidgetInputErrorView).snippet()
+            return zope.component.getMultiAdapter(
+                (self._error, self.request),
+                IWidgetInputErrorView).snippet()
         first_error = self.widgets['first'].error()
         if first_error:
             return first_error

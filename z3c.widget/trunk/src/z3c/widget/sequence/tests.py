@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.testing import doctest
+import doctest
 from zope.schema import Tuple, List, TextLine, Object
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
@@ -67,7 +67,7 @@ class SequenceWidgetTestHelper(object):
 
     def _FieldFactory(self, **kw):
         kw.update({
-            '__name__': u'foo', 
+            '__name__': u'foo',
             'value_type': Object(__name__=u'bar',
                                  schema=IFoo)})
         return Tuple(**kw)
@@ -354,7 +354,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
 
 class SequenceDisplayWidgetTest(
     VerifyResults, SequenceWidgetTestHelper, unittest.TestCase):
-    
+
     def _WidgetFactory(self, *args, **kw):
         w = SequenceDisplayTableWidget(*args, **kw)
         w.cssClass = "testwidget"
@@ -436,6 +436,3 @@ def test_suite():
                              |doctest.REPORT_NDIFF),
         unittest.makeSuite(SequenceDisplayWidgetTest),
         ))
-
-if __name__=='__main__':
-    unittest.main(defaultTest='test_suite')

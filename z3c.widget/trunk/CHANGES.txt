@@ -2,14 +2,20 @@
 Changes for z3c.widget
 ======================
 
-unreleased 0.2.2dev
-===================
- 
- - added translation for french
+0.3.0 (unreleased)
+==================
+
+ - Added translation for french.
+
+ - Updated tests to run with `zope.formlib` 4.0 and `zope.schema` 3.6.
+
+ - Using Python's ``doctest`` module instead of depreacted
+   ``zope.testing.doctest[unit]``.
+
 
 2008/01/29 0.2.1
 ================
- 
+
  - add translation for hungarian and romanian languages
 
 2007/09/21 0.2.0

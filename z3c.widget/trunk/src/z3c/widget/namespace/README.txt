@@ -24,5 +24,5 @@ Let us define a form to test this behaviour.
   >>> view = MyForm(content,request)
   >>> handler = WidgetHandler(view,request)
   >>> handler.traverse('title',None)
-  <zope.app.form.browser.textwidgets.TextWidget object at ...>
+  <zope.formlib.textwidgets.TextWidget object at ...>
 

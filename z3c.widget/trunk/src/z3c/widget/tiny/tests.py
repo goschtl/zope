@@ -11,33 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""HTML-Editor Widget unittests
+"""HTML-Editor Widget unittests."""
 
-$Id$
-"""
-__docformat__ = "reStructuredText"
-
-import doctest
-import unittest
-
-from zope.testing.doctestunit import DocTestSuite
 from zope.app.testing import setup
+import doctest
 
 
 def setUp(test):
     setup.placefulSetUp()
+
 
 def tearDown(test):
     setup.placefulTearDown()
 
 
 def test_suite():
-    return unittest.TestSuite(
-        (
-        DocTestSuite('z3c.widget.tiny.widget',
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocTestSuite(
+        'z3c.widget.tiny.widget',
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)

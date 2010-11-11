@@ -62,9 +62,9 @@ Let's make sure that all fields have the correct value:
 The constructor should have also created 2 widgets:
 
   >>> widget.customWidget
-  <zope.app.form.browser.textwidgets.TextWidget object at ...>
+  <zope.formlib.textwidgets.TextWidget object at ...>
   >>> widget.dropdownWidget
-  <zope.app.form.browser.itemswidgets.DropdownWidget object at ...>
+  <zope.formlib.itemswidgets.DropdownWidget object at ...>
 
 
 ``setRenderedValue(value)`` Method
@@ -295,7 +295,7 @@ reported:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  ConversionError: ('Invalid value', token u'Waitress' not found in vocabulary)
+  ConversionError: (u'Invalid value', InvalidValue("token u'Waitress' not found in vocabulary"))
   >>> widget.error()
   u'<span class="error">Invalid value</span>'
 
@@ -316,7 +316,7 @@ Otherwise the custom widget's errors are reported:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('custom', u'', Teacher Bad Stuff)
+  WidgetInputError: ('custom', u'', ConstraintNotSatisfied(u'Teacher\nBad Stuff'))
   >>> widget.error()
   u'<span class="error">Constraint not satisfied</span>'
 
@@ -339,7 +339,7 @@ widgets' output placing the ``connector between them:
   <div class="value">
   <select id="field.occupation.occupation"
           name="field.occupation.occupation" size="1" >
-  <option selected="selected" value="">(no value)</option>
+  <option selected="selected" value="">(nothing selected)</option>
   <option value="Programmer">Programmer</option>
   <option value="Designer">Designer</option>
   <option value="Project Manager">Project Manager</option>

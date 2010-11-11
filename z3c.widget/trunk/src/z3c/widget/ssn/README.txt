@@ -44,11 +44,11 @@ Let's make sure that all fields have the correct value:
 The constructor should have also created 3 sub-widgets:
 
   >>> widget.widgets['first']
-  <zope.app.form.browser.textwidgets.TextWidget object at ...>
+  <zope.formlib.textwidgets.TextWidget object at ...>
   >>> widget.widgets['second']
-  <zope.app.form.browser.textwidgets.TextWidget object at ...>
+  <zope.formlib.textwidgets.TextWidget object at ...>
   >>> widget.widgets['third']
-  <zope.app.form.browser.textwidgets.TextWidget object at ...>
+  <zope.formlib.textwidgets.TextWidget object at ...>
 
 
 ``setRenderedValue(value)`` Method
@@ -135,10 +135,10 @@ raised:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('first', u'Frst three digits', 1234)
+  WidgetInputError: ('first', u'Frst three digits', ConstraintNotSatisfied(u'1234'))
 
-  >>> widget._error
-  <zope.app.form.interfaces.WidgetInputError ...>
+  >>> widget._error.__class__
+  <class 'zope.formlib.interfaces.WidgetInputError'>
 
 
 ``applyChanges(content)`` Method
@@ -275,7 +275,7 @@ The third field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('third', u'Third four digits', 678)
+  WidgetInputError: ('third', u'Third four digits', ConstraintNotSatisfied(u'678'))
   >>> print widget.error()
   <span class="error">Constraint not satisfied</span>
 
@@ -289,7 +289,7 @@ The second field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('second', u'Second two digits', 4-)
+  WidgetInputError: ('second', u'Second two digits', ConstraintNotSatisfied(u'4-'))
   >>> print widget.error()
   <span class="error">Constraint not satisfied</span>
 
@@ -303,7 +303,7 @@ The first field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  WidgetInputError: ('first', u'Frst three digits', xxx)
+  WidgetInputError: ('first', u'Frst three digits', ConstraintNotSatisfied(u'xxx'))
   >>> print widget.error()
   <span class="error">Constraint not satisfied</span>
 

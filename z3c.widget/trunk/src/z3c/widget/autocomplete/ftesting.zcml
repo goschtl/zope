@@ -3,20 +3,14 @@
            xmlns:zcml="http://namespaces.zope.org/zcml"
            i18n_domain="zope">
 
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
-  
-  <include
-      zcml:condition="installed zope.app.zcmlfiles"
-      package="zope.app.zcmlfiles"
-      />
-  <include
-      zcml:condition="not-installed zope.app.zcmlfiles"
-      package="zope.app"
-      />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
+  <include package="zope.login" />
 
   <securityPolicy
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
   <include package="zope.app.securitypolicy" />
   <include package="zc.resourcelibrary" file="meta.zcml"/>
   <include package="zc.resourcelibrary" />
@@ -37,7 +31,7 @@
    title="Administrator"
    login="mgr"
    password="mgrpw" />
-  
+
   <grant
    role="zope.Manager"
    principal="zope.manager"

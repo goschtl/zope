@@ -11,24 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id$
-"""
-__docformat__ = 'reStructuredText'
-
-import datetime
-import zope.interface
-import zope.schema
-from zope.formlib import form
+from z3c.i18n import MessageFactory as _
+from zope.app.form import browser
+from zope.app.form.browser.interfaces import IBrowserWidget
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.interfaces import WidgetInputError
-from zope.app.form.browser.interfaces import IBrowserWidget
-from zope.app.form import browser
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.zapi import getMultiAdapter
-from zope.app.form.browser.interfaces import IWidgetInputErrorView
-
-from z3c.i18n import MessageFactory as _
+from zope.formlib import form
+import datetime
+import zope.component
+import zope.interface
+import zope.schema
 
 
 class DropdownWidget(browser.SelectWidget):
@@ -91,7 +85,7 @@ class DateSelectDataForDateSelectWidget(object):
     for a DateSelectWidget and is also able to set a the right values in
     the year vocabulary given from the yearRange attribute in the
     DateSelectWidget.
-    Note: this adapter is internal used for setUpEditWidget in formlib and 
+    Note: this adapter is internal used for setUpEditWidget in formlib and
     not registred in the adapter registry.
     """
 
@@ -153,7 +147,7 @@ class DateSelectWidget(object):
         self.context = field
         self.request = request
         if self.context.initialDate:
-            self.initialDate = self.context.initialDate 
+            self.initialDate = self.context.initialDate
         else:
             self.initialDate = datetime.date.today()
         value = field.query(field.context, default=self.initialDate)
@@ -164,9 +158,9 @@ class DateSelectWidget(object):
         self.name = self._prefix + field.__name__
 
         adapters = {}
-        adapters[IDateSelectData] = DateSelectDataForDateSelectWidget(self, 
+        adapters[IDateSelectData] = DateSelectDataForDateSelectWidget(self,
             value)
-        self.widgets = form.setUpEditWidgets(form.FormFields(IDateSelectData), 
+        self.widgets = form.setUpEditWidgets(form.FormFields(IDateSelectData),
             self.name, value, request, adapters=adapters)
 
     def setRenderedValue(self, value):
@@ -241,8 +235,9 @@ class DateSelectWidget(object):
     def error(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""
         if self._error:
-            return getMultiAdapter((self._error, self.request),
-                                        IWidgetInputErrorView).snippet()
+            return zope.component.getMultiAdapter(
+                (self._error, self.request),
+                IWidgetInputErrorView).snippet()
         year_error = self.widgets['year'].error()
         if year_error:
             return year_error

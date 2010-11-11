@@ -176,8 +176,8 @@ raised:
   ...
   WidgetInputError: ('field', u'Birthday', u'day is out of range for month')
 
-  >>> widget._error
-  <zope.app.form.interfaces.WidgetInputError ...>
+  >>> widget._error.__class__
+  <class 'zope.formlib.interfaces.WidgetInputError'>
 
 
 ``applyChanges(content)`` Method
@@ -314,7 +314,7 @@ The day field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  ConversionError: ('Invalid value', token '99' not found in vocabulary)
+  ConversionError: (u'Invalid value', InvalidValue("token '99' not found in vocabulary"))
   >>> print widget.error()
   <span class="error">Invalid value</span>
 
@@ -328,7 +328,7 @@ The month field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  ConversionError: ('Invalid value', token '0' not found in vocabulary)
+  ConversionError: (u'Invalid value', InvalidValue("token '0' not found in vocabulary"))
   >>> print widget.error()
   <span class="error">Invalid value</span>
 
@@ -342,7 +342,7 @@ The year field contains an invalid value:
   >>> widget.getInputValue()
   Traceback (most recent call last):
   ...
-  ConversionError: ('Invalid value', token '1900' not found in vocabulary)
+  ConversionError: (u'Invalid value', InvalidValue("token '1900' not found in vocabulary"))
   >>> print widget.error()
   <span class="error">Invalid value</span>
 

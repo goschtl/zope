@@ -11,27 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id$
-"""
-__docformat__ = "reStructuredText"
 
+from z3c.widget.dateselect import testing
 import doctest
 import unittest
 import zope.schema
-from zope.testing.doctestunit import DocFileSuite
-
-from z3c.widget.dateselect import testing
 
 
 def test_suite():
-    return unittest.TestSuite((
-        DocFileSuite('README.txt',
-                     setUp=testing.setUp, tearDown=testing.tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=testing.setUp, tearDown=testing.tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)

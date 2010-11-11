@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-
-from zope.i18n import translate
-from zope.app import zapi
-from zope.app.form.interfaces import IInputWidget
-
 from zope.app.form.browser import SequenceDisplayWidget, SequenceWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.i18n import translate
+import zope.component
+
 
 try:
     from zc import resourcelibrary
@@ -13,25 +12,26 @@ try:
 except ImportError:
     haveResourceLibrary = False
 
+
 def _getSubWidget(sequenceWidget, prefix="%s."):
     field = sequenceWidget.context.value_type
     if sequenceWidget.subwidget is not None:
         widget = sequenceWidget.subwidget(field, sequenceWidget.request)
     else:
-        widget = zapi.getMultiAdapter((field, sequenceWidget.request),
-                                      IInputWidget)
+        widget = zope.component.getMultiAdapter((field, sequenceWidget.request),
+                                                IInputWidget)
     widget.setPrefix(prefix % (sequenceWidget.name))
     return widget
 
 class SequenceDisplayTableWidget(SequenceDisplayWidget):
     template = ViewPageTemplateFile('sequencedisplaytablewidget.pt')
-    
+
     def __call__(self):
         return self.template()
-    
+
     def mainWidget(self):
         return _getSubWidget(self)
-    
+
     def haveMessage(self):
         if self._renderedValueSet():
             data = self._data
@@ -45,7 +45,7 @@ class SequenceDisplayTableWidget(SequenceDisplayWidget):
         if not data:
             return translate(self._emptySequenceMessage, self.request)
         return None
-    
+
     def widgets(self):
         # get the data to display:
         if self._renderedValueSet():
@@ -70,7 +70,7 @@ class SequenceDisplayTableWidget(SequenceDisplayWidget):
 
 class SequenceTableWidget(SequenceWidget):
     template = ViewPageTemplateFile('sequencetablewidget.pt')
-    
+
     def mainWidget(self):
         return _getSubWidget(self)
 
@@ -85,15 +85,15 @@ class ListSequenceTableWidget(SequenceTableWidget):
 class SequenceTableJSWidget(SequenceWidget):
     template = ViewPageTemplateFile('sequencetablejswidget.pt')
     haveResourceLibrary = haveResourceLibrary
-    
+
     def mainWidget(self):
         return _getSubWidget(self)
-    
+
     def emptyWidget(self):
         widget = _getSubWidget(self, prefix="%s._default_rowid_")
         widget.setRenderedValue(None)
         return widget
-    
+
     def _getPresenceMarker(self, count=0):
         maxval = self.context.max_length
         if maxval:
@@ -112,11 +112,11 @@ class SequenceTableJSWidget(SequenceWidget):
         rv = rv+('<input type="hidden" name="%s.min_length" id="%s.min_length" value="%s" />'
                 % (self.name, self.name, minval))
         return rv
-    
+
     def __call__(self, *args, **kw):
         if haveResourceLibrary:
             resourcelibrary.need('sequencetable')
-        return super(SequenceTableJSWidget, self).__call__(*args, **kw)        
+        return super(SequenceTableJSWidget, self).__call__(*args, **kw)
 
 class TupleSequenceTableJSWidget(SequenceTableJSWidget):
     _type = tuple
