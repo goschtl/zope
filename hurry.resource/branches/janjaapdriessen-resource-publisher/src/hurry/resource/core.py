@@ -10,14 +10,14 @@ except ImportError:
     def implements(iface):
         pass
     ZCA = False
-    
+
 from hurry.resource import interfaces
 
 EXTENSIONS = ['.css', '.kss', '.js']
 
 class Library(object):
     implements(interfaces.ILibrary)
-    
+
     def __init__(self, name, rootpath):
         self.name = name
         self.rootpath = rootpath
@@ -37,12 +37,12 @@ class InclusionBase(object):
 
 class ResourceInclusion(InclusionBase):
     """Resource inclusion
-    
+
     A resource inclusion specifies how to include a single resource in
     a library.
     """
     implements(interfaces.IResourceInclusion)
-    
+
     def __init__(self, library, relpath, depends=None,
                  supersedes=None, eager_superseder=False,
                  bottom=False, **kw):
@@ -75,11 +75,11 @@ class ResourceInclusion(InclusionBase):
         self.library = library
         self.relpath = relpath
         self.bottom = bottom
-        
+
         assert not isinstance(depends, basestring)
         depends = depends or []
         self.depends = normalize_inclusions(library, depends)
-        
+
         self.rollups = []
 
         normalized_modes = {}
@@ -87,11 +87,11 @@ class ResourceInclusion(InclusionBase):
             normalized_modes[mode_name] = normalize_inclusion(
                 library, inclusion)
         self.modes = normalized_modes
- 
+
         assert not isinstance(supersedes, basestring)
         self.supersedes = supersedes or []
         self.eager_superseder = eager_superseder
-        
+
         # create a reference to the superseder in the superseded inclusion
         for inclusion in self.supersedes:
             inclusion.rollups.append(self)
@@ -107,7 +107,7 @@ class ResourceInclusion(InclusionBase):
                     continue
                 mode.supersedes.append(superseded_mode)
                 superseded_mode.rollups.append(mode)
-    
+
     def __repr__(self):
         return "<ResourceInclusion '%s' in library '%s'>" % (
             self.relpath, self.library.name)
@@ -125,7 +125,7 @@ class ResourceInclusion(InclusionBase):
         except KeyError:
             # fall back on the default mode if mode not found
             return self
-    
+
     def key(self):
         return self.library.name, self.relpath
 
@@ -176,12 +176,13 @@ def normalize_inclusion(library, inclusion):
 
 class NeededInclusions(object):
     def __init__(self):
+        self.base_url = None
         self._inclusions = []
         self._mode = None
         self._rollup = False
         self._bottom = False
         self._force_bottom = False
-        
+
     def need(self, inclusion):
         self._inclusions.append(inclusion)
 
@@ -201,10 +202,10 @@ class NeededInclusions(object):
         if disable:
             self._rollup = False
         self._rollup = True
-        
+
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
-    
+
     def inclusions(self):
         inclusions = []
         for inclusion in self._inclusions:
@@ -217,16 +218,16 @@ class NeededInclusions(object):
         # python's stable sort to keep inclusion order intact
         inclusions = sort_inclusions_by_extension(inclusions)
         inclusions = remove_duplicates(inclusions)
-        
+
         return inclusions
 
     def render(self):
-        return render_inclusions(self.inclusions())
+        return render_inclusions(self.inclusions(), self.base_url)
 
     def render_into_html(self, html):
         to_insert = self.render()
         return html.replace('<head>', '<head>\n    %s\n' % to_insert, 1)
-        
+
     def render_topbottom(self):
         inclusions = self.inclusions()
 
@@ -250,9 +251,8 @@ class NeededInclusions(object):
             top_inclusions = inclusions
             bottom_inclusions = []
 
-        library_urls = {}
-        return (render_inclusions(top_inclusions, library_urls),
-                render_inclusions(bottom_inclusions, library_urls))
+        return (render_inclusions(top_inclusions, self.base_url),
+                render_inclusions(bottom_inclusions, self.base_url))
 
     def render_topbottom_into_html(self, html):
         top, bottom = self.render_topbottom()
@@ -275,10 +275,6 @@ class PluginNotImplemented(object):
     def get_current_needed_inclusions(self):
         raise NotImplementedError(
             "need to implement plugin.get_current_needed_inclusions()")
-
-    def get_library_url(self, library):
-        raise NotImplementedError(
-            "need to implement plugin.get_library_url()")
 
 _plugin = PluginNotImplemented()
 
@@ -368,7 +364,7 @@ def consolidate(inclusions):
             result.append(exact_superseders[-1])
         else:
             # nothing to supersede resource so use it directly
-            result.append(inclusion)                
+            result.append(inclusion)
     return result
 
 def sort_inclusions_by_extension(inclusions):
@@ -417,26 +413,17 @@ inclusion_renderers = {
     '.js': render_js,
     }
 
-def render_inclusions(inclusions, library_urls=None):
+def render_inclusions(inclusions, base_url):
     """Render a set of inclusions.
 
     inclusions - the inclusions to render
-    library_urls - optionally a dictionary for maintaining cached library
-                   URLs. Doing render_inclusions with the same
-                   dictionary can reduce component lookups.
+    base_url - the base url for resource inclusions.
     """
     result = []
-    library_urls = library_urls or {}
     for inclusion in inclusions:
-        library = inclusion.library
-        # get cached library url
-        library_url = library_urls.get(library.name)
-        if library_url is None:
-            # if we can't find it, recalculate it
-            library_url = _plugin.get_library_url(library)
-            if not library_url.endswith('/'):
-                library_url += '/'
-            library_urls[library.name] = library_url
+        if not base_url.endswith('/'):
+            base_url += '/'
+        library_url = base_url + inclusion.library.name + '/'
         result.append(render_inclusion(inclusion,
                                        library_url + inclusion.relpath))
     return '\n'.join(result)
@@ -456,7 +443,7 @@ def generate_code(**kw):
     for name, inclusion in kw.items():
         inclusion_to_name[inclusion.key()] = name
         inclusions.append(inclusion)
-        
+
     # libraries with the same name are the same libraries
     libraries = {}
     for inclusion in inclusions:
@@ -476,7 +463,7 @@ def generate_code(**kw):
     # sort inclusions in the order we want them to be
     inclusions = sort_inclusions_by_extension(
         sort_inclusions_topological(inclusions))
- 
+
     # now generate inclusion code
     for inclusion in inclusions:
         s = "%s = ResourceInclusion(%s, '%s'" % (
@@ -510,4 +497,3 @@ def generate_inline_inclusion(inclusion, associated_inclusion):
     else:
         return "ResourceInclusion(%s, '%s')" % (inclusion.library.name,
                                                 inclusion.relpath)
-    
