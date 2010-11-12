@@ -4,8 +4,18 @@ CHANGES
 0.11 (unreleased)
 =================
 
-- Nothing changed yet.
+- Add entry point for wsgi middleware.
 
+- Moved ZCA plugin to hurry.zoperesource.
+
+- Plugins now have two responsibilities:
+
+  1. Leaving a NeededInclusions() object in the WSGI environment.
+
+  2. Leaving a `base_url` attribute on this NeededInclusions object.
+
+- The WSGI `injector` middleware takes care of rendering the needed inclusions
+  into the HTML.
 
 0.10 (2010-07-24)
 =================
@@ -14,12 +24,12 @@ CHANGES
   dependency. Don't expose it into the ``__init__.py`` therefore, as
   that needs to be independent of WebOb. To use the middleware import
   it directly from ``hurry.resource.wsgi``.
-  
+
 * The ``Library`` factory now has to be called with a rootpath
   argument as the second argument. This is a path to the actual
   resource directory that the library represents, relative to the
   directory of the package. This is needed to make `` hurry.resource``
-  useful for frameworks not based on ``zope.configuration``. 
+  useful for frameworks not based on ``zope.configuration``.
 
   This breaks backwards compatibility with previous versions of
   ``hurry.resource``; all code that uses ``Library`` should be
@@ -37,7 +47,7 @@ CHANGES
   applications. If the application supplies a ``NeededInclusions``
   object in ``environ`` with the key ``hurry.resource.needed``, the
   middleware will pick up on this and insert the needed inclusions.
-  
+
   The WebOb library is needed to make this work and depending on
   ``hurry.resource [wsgi]`` will pull in the required dependency.
 
@@ -106,7 +116,7 @@ Bug fixes
 
 * Added support for rendering resources into two fragments, one to
   be included at the top of the HTML page in the ``<head>`` section,
-  the other to be included just before the ``</body>`` section. In 
+  the other to be included just before the ``</body>`` section. In
   some circumstances doing this can `speed up page load time`_.
 
   .. _`speed up page load time`: http://developer.yahoo.net/blog/archives/2007/07/high_performanc_5.html
