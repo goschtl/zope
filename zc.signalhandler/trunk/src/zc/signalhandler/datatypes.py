@@ -102,6 +102,7 @@ class SignalHandlers(object):
 
     def __init__(self, section):
         self.handlers = section.mapping
+        self.name = section.getSectionName()
 
         # Convert to an isolated signalnum->[handlers] mapping:
         self._handlers = {}
@@ -130,3 +131,12 @@ class SignalHandlers(object):
     def _dispatch(self, signum, frame):
         for f in self._handlers[signum]:
             f()
+
+    # HACK: Thse are needed to keep zope.app.appsetup.product happy.
+
+    def getSectionName(self):
+        return self.name
+
+    @property
+    def mapping(self):
+        return self

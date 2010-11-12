@@ -35,7 +35,7 @@ component and use it::
   ...
   ... %import zc.signalhandler
   ...
-  ... <signalhandlers>
+  ... <signalhandlers foo>
   ...   hup   zc.signalhandler.tests.sample_handler_1
   ...   hup   zc.signalhandler.tests.sample_handler_2
   ...   usr1  zc.signalhandler.tests.sample_handler_1
@@ -93,3 +93,12 @@ We can also uninstall the handlers::
 Now let's restore the previous behavior of the signal::
 
   >>> x = signal.signal(signal.SIGUSR1, old)
+
+The section value provides a couple of attributes that are used solely
+to support the ``zope.app.appsetup.product`` APIs::
+
+  >>> config.siginfo.getSectionName()
+  'foo'
+
+  >>> config.siginfo.mapping is config.siginfo
+  True
