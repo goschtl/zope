@@ -2,14 +2,12 @@ Zope integration for hurry.resource
 ***********************************
 
 This package provides Zope integration for hurry.resource. This means
-it's taking care of three things:
+it's taking care of two things:
 
-* maintain the needed resources throughout the request/response cycle.
+* provide access to the needed resources in the WSGI environment throughout
+  the request/response cycle.
 
-* know how to make a URL to a resource.
-
-* make so that resource references are automatically inserted in the
-  HTML header.
+* provide the base URL for the resources to be rendered.
 
 This library fulfills these conditions for a Zope Toolkit/Grok setup.
 
@@ -21,11 +19,11 @@ We need to be in a request to make this work, so let's up a request to
 a page we have set up in ``ftesting.zcml`` that should cause the
 inclusion of a single resource in its header::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open('http://localhost/hurry.zoperesource.test_single')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
       <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
@@ -40,7 +38,7 @@ If a resource happens to need another resource, this resource is also
 automatically included::
 
   >>> browser.open('http://localhost/hurry.zoperesource.test_multiple')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
       <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
@@ -56,7 +54,7 @@ Let's force all javascript resources to be forced to be included at
 the bottom now, just before the ``</body>`` tag::
 
   >>> browser.open('http://localhost/hurry.zoperesource.test_bottom')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
   </head>

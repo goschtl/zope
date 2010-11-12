@@ -1,28 +1,23 @@
-import os
 import unittest
 import doctest
 
-from zope.app.testing.functional import FunctionalDocFileSuite
-from zope.app.testing import functional
+from zope.app.wsgi.testlayer import BrowserLayer
 
-FunctionalLayer = functional.ZCMLLayer(
-    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
-    __name__, 'FunctionalLayer')
+from hurry.resource.wsgi import InjectMiddleWare
+import hurry.zoperesource.tests
+
+
+class HurryResourceBrowserLayer(BrowserLayer):
+    def setup_middleware(self, app):
+        return InjectMiddleWare(app)
 
 
 def test_suite():
-    optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
-    globs = {}
-
     suite = unittest.TestSuite()
-
-    readme = FunctionalDocFileSuite(
+    readme = doctest.DocFileSuite(
         '../README.txt',
-        optionflags=optionflags,
-        globs=globs)
-
-    readme.layer = FunctionalLayer
-
+        optionflags=doctest.NORMALIZE_WHITESPACE)
+    readme.layer = HurryResourceBrowserLayer(hurry.zoperesource.tests)
     suite.addTest(readme)
 
     return suite
