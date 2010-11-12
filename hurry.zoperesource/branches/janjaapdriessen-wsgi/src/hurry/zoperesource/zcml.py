@@ -1,10 +1,10 @@
 from zope.interface import Interface
-from hurry import resource
-from hurry.resource import zca
 from zope import component
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.browserresource.directory import DirectoryResourceFactory
 from zope.security.checker import NamesChecker
+from hurry import resource
+from hurry.zoperesource.zopesupport import Plugin
 
 class ISetupHurryZopeResource(Interface):
     pass
@@ -17,7 +17,7 @@ allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.
     """
-    resource.register_plugin(zca.Plugin())
+    resource.register_plugin(Plugin())
 
     for library in resource.libraries():
         checker = NamesChecker(allowed_resourcedir_names)
