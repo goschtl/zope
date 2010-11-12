@@ -1,74 +1,14 @@
 # zope integration for hurry.resource
-from grokcore import component as grok
-
-from zope import interface
 from zope import component
 from zope.component.hooks import getSite
 import zope.security.management
 from zope.publisher.interfaces import IRequest
 from zope.traversing.browser.interfaces import IAbsoluteURL
-from zope.publisher.browser import BrowserRequest, BrowserResponse, isHTML
-from zope.app.publication.interfaces import IBrowserRequestFactory
+from grokcore.component import subscribe
+from zope.publisher.interfaces import IEndRequestEvent
 
-from hurry.resource import NeededInclusions, render_topbottom_into_html
-from hurry.resource.interfaces import (
-    ICurrentNeededInclusions, ILibrary, ILibraryUrl)
-
-
-class CurrentNeededInclusions(grok.GlobalUtility):
-    grok.implements(ICurrentNeededInclusions)
-    grok.provides(ICurrentNeededInclusions)
-
-    def __call__(self):
-        try:
-            request = getRequest()
-        except NoRequestError:
-            # in some situations no request is set up
-            # to let 'need()' happen freely in places where
-            # no request is available (such as tests) we will
-            # silently assume that this is all right and return
-            # an empty NeededInclusions
-            return NeededInclusions()
-
-        if not hasattr(request, 'hurry_resource_needed'):
-            request.hurry_resource_needed = NeededInclusions()
-        return request.hurry_resource_needed
-
-
-@grok.adapter(ILibrary)
-@grok.implementer(ILibraryUrl)
-def library_url(library):
-    request = getRequest()
-    return str(component.getMultiAdapter((getSite(), request),
-                                         IAbsoluteURL)) + '/@@/' + library.name
-
-
-class Request(BrowserRequest):
-    interface.classProvides(IBrowserRequestFactory)
-
-    def _createResponse(self):
-        return Response()
-
-
-class Response(BrowserResponse):
-    def _implicitResult(self, body):
-        content_type = self.getHeader('content-type')
-        if content_type is None:
-            if isHTML(body):
-                content_type = 'text/html'
-            else:
-                content_type = 'text/plain'
-            self.setHeader('x-content-type-warning', 'guessed from content')
-            self.setHeader('content-type', content_type)
-
-        # check the content type disregarding parameters and case
-        if content_type and content_type.split(';', 1)[0].lower() in (
-            'text/html', 'text/xml'):
-            # act on HTML and XML content only!
-            body = render_topbottom_into_html(body)
-
-        return super(Response, self)._implicitResult(body)
-
+from hurry.resource import NeededInclusions
+from hurry.resource.wsgi import KEY
 
 class NoRequestError(Exception):
     pass
@@ -85,3 +25,30 @@ def getRequest():
             return p
 
     raise NoRequestError()
+
+
+class Plugin(object):
+    """Zope implementation of plugin.
+
+    This implementation provides access to the WSGI environment, in which
+    we place a NeededInclusions object upon needing resources.
+    """
+    def get_current_needed_inclusions(self):
+        request = getRequest()
+
+        # Find the NeededInclusions object in the WSGI environment;
+        # If none can be found, create a new one and add it to the
+        # environment.
+        # Unfortunately we don't have easy access to the WSGI environment,
+        # so we have to use request._orig_env.
+        return request._orig_env.setdefault(KEY, NeededInclusions())
+
+@subscribe(IEndRequestEvent)
+def set_base_url_on_needed_inclusions(event):
+    request = event.request
+    needed = request._orig_env.get(KEY)
+    # We only set the base_url if resources have been needed during this
+    # request and the base_url has not been set yet.
+    if needed is not None and needed.base_url is None:
+        needed.base_url = str(component.getMultiAdapter(
+            (getSite(), request), IAbsoluteURL)) + '/@@/'
