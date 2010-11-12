@@ -4,8 +4,13 @@ CHANGES
 0.8 (unreleased)
 ================
 
-- Nothing changed yet.
+- Moved the injection of resources from hurry.zoperesource to
+  hurry.resource.wsgi.
 
+- No need to plug a custom request/response object into the zope publisher
+  any longer.
+
+- Replaced zope.app.testing/zope.app.zcmlfiles test setup with zope.app.wsgi.
 
 0.7 (2010-10-01)
 ================
