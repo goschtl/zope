@@ -1,0 +1,15 @@
+<component>
+  <sectiontype
+      name="signalhandlers"
+      implements="zope.product.base"
+      keytype="zc.signalhandler.datatypes.name2signal"
+      datatype="zc.signalhandler.datatypes.SignalHandlers"
+      handler="zc.signalhandler.datatypes.SignalHandlers.install"
+      >
+    <multikey name="+"
+              attribute="mapping"
+              required="no"
+              datatype="ZConfig.components.logger.handlers.resolve"
+              />
+  </sectiontype>
+</component>
