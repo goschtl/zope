@@ -24,6 +24,11 @@ complete documentation.
 Release history
 ===============
 
+1.2 (2010-11-12)
+----------------
+
+- Moved development to zope.org, licensed under the ZPL 2.1.
+
 
 1.1 (2007-06-21)
 ----------------
