@@ -32,12 +32,6 @@ class InjectMiddleWare(object):
             response.body = needed.render_topbottom_into_html(response.body)
         return response(environ, start_response)
 
-        needed = environ.get('hurry.resource.needed', None)
-        if needed is None:
-            return res(environ, start_response)
-        res.body = needed.render_topbottom_into_html(res.body)
-        return res(environ, start_response)
-
 
 def make_inject(app, global_config, **local_config):
     return InjectMiddleWare(app)
