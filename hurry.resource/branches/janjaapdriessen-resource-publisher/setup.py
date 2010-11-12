@@ -33,7 +33,8 @@ setup(
         'setuptools',
         ],
     extras_require = dict(test=['WebOb'],
-                          wsgi=['WebOb'],
-                          zca=['zope.interface', 'zope.component']),
-    entry_points={},
-    )
+                          wsgi=['WebOb']),
+    entry_points = {
+        'paste.filter_app_factory': [
+            'inject = hurry.resource.wsgi:make_inject'],
+    })
