@@ -13,17 +13,4 @@
 
   <grok:grok package="."/>
 
-  <utility
-      component=".zopesupport.Request"
-      provides="zope.app.publication.interfaces.IBrowserRequestFactory"
-      />
-
-  <class class=".zopesupport.Request">
-    <require like_class="zope.publisher.browser.BrowserRequest" />
-  </class>
-
-  <class class=".zopesupport.Response">
-    <require like_class="zope.publisher.browser.BrowserResponse" />
-  </class>
-
 </configure>
