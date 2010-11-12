@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-import sys, os
+import os
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -32,24 +32,26 @@ setup(
     install_requires=[
         'setuptools',
         'grokcore.component',
-        'hurry.resource >= 0.10',
+        'hurry.resource[wsgi] >= 0.10',
         'z3c.autoinclude',
-        'zope.app.publication',
         'zope.browserresource',
         'zope.component',
         'zope.interface',
         'zope.publisher',
         'zope.security',
-        'zope.securitypolicy',
         'zope.traversing',
         ],
-  extras_require = {
+    extras_require = {
       'test': [
-         'zope.testbrowser',
-         'zope.app.authentication',
-         'zope.app.testing',
-         'zope.app.zcmlfiles',
+         'zope.annotation',
+         'zope.app.publication',
+         'zope.app.wsgi >= 3.10.0dev',
+         'zope.browserpage',
+         'zope.container',
+         'zope.principalregistry',
+         'zope.securitypolicy',
+         'zope.site',
+         'zope.app.appsetup',
          ],
       },
-    entry_points={},
     )
