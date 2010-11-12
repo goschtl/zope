@@ -6,12 +6,14 @@ Changes
 ==================
 
   - Updated to SQLAlchmy 0.4 compatibility. `z3c.zalchemy` now requires
-    SQLAlchemy 0.4
+    SQLAlchemy 0.4.
 
   - Added support for non-optimistic savepoints. Rolling back savepoints does
-    not evict the session but roll back the loaded object's state. 
+    not evict the session but roll back the loaded object's state.
 
-0.2.1 - 2007-11-13 
+  - Declared install dependency on `zope.deferredimport`.
+
+0.2.1 - 2007-11-13
 ==================
 
    - Conflict detection did not work with savepoints.
