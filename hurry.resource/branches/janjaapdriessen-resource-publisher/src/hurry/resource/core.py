@@ -1,5 +1,4 @@
 import os, sys
-from types import TupleType
 import pkg_resources
 
 try:
@@ -12,6 +11,7 @@ except ImportError:
     ZCA = False
 
 from hurry.resource import interfaces
+import hurry.resource.hash
 
 EXTENSIONS = ['.css', '.kss', '.js']
 
@@ -22,6 +22,9 @@ class Library(object):
         self.name = name
         self.rootpath = rootpath
         self.path = os.path.join(caller_dir(), rootpath)
+
+    def hash(self):
+        return hurry.resource.hash.checksum(self.path)
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
@@ -413,17 +416,26 @@ inclusion_renderers = {
     '.js': render_js,
     }
 
-def render_inclusions(inclusions, base_url):
+def render_inclusions(inclusions, base_url, hash_in_url=True):
     """Render a set of inclusions.
 
     inclusions - the inclusions to render
     base_url - the base url for resource inclusions.
     """
     result = []
+    hash_cache = {}
+    if not base_url.endswith('/'):
+        base_url += '/'
     for inclusion in inclusions:
-        if not base_url.endswith('/'):
-            base_url += '/'
+        library = inclusion.library
         library_url = base_url + inclusion.library.name + '/'
+        if hash_in_url:
+             hash = hash_cache.get(library.name)
+             if hash is None:
+                 hash = library.hash()
+                 hash_cache[library.name] = hash
+             library_url += 'hash:%s/' % hash
+
         result.append(render_inclusion(inclusion,
                                        library_url + inclusion.relpath))
     return '\n'.join(result)
