@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-import sys, os
+import os
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -32,9 +32,12 @@ setup(
     install_requires=[
         'setuptools',
         ],
-    extras_require = dict(test=['WebOb'],
+    extras_require = dict(publisher=['Paste'],
+                          test=['WebOb'],
                           wsgi=['WebOb']),
     entry_points = {
+        'paste.app_factory': [
+            'publisher = hurry.resource.publisher:make_publisher'],
         'paste.filter_app_factory': [
             'inject = hurry.resource.wsgi:make_inject'],
     })
