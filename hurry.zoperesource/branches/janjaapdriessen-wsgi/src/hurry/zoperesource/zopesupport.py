@@ -1,14 +1,12 @@
 # zope integration for hurry.resource
-from zope import component
-from zope.component.hooks import getSite
 import zope.security.management
 from zope.publisher.interfaces import IRequest
-from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.browser.absoluteurl import absoluteURL
 from grokcore.component import subscribe
 from zope.publisher.interfaces import IEndRequestEvent
 
 from hurry.resource import NeededInclusions
-from hurry.resource.wsgi import KEY
+from hurry.resource.wsgi import NEEDED, PUBLISHER_PREFIX
 
 class NoRequestError(Exception):
     pass
@@ -41,14 +39,22 @@ class Plugin(object):
         # environment.
         # Unfortunately we don't have easy access to the WSGI environment,
         # so we have to use request._orig_env.
-        return request._orig_env.setdefault(KEY, NeededInclusions())
+        return request._orig_env.setdefault(NEEDED, NeededInclusions())
 
 @subscribe(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
     request = event.request
-    needed = request._orig_env.get(KEY)
-    # We only set the base_url if resources have been needed during this
-    # request and the base_url has not been set yet.
+    # Unfortunately we don't have easy access to the WSGI environment,
+    # so we have to use request._orig_env.
+    needed = request._orig_env.get(NEEDED)
+    # Only set the base_url if resources have been needed during this request.
     if needed is not None and needed.base_url is None:
-        needed.base_url = str(component.getMultiAdapter(
-            (getSite(), request), IAbsoluteURL)) + '/@@/'
+        publisher_prefix = request._orig_env.get(PUBLISHER_PREFIX)
+        # Compute URLs to the resource publisher,
+        # Taking into account skins and virtual host specifications
+        # XXX Do we need to skip ++skin++ information?
+        absolute_url = absoluteURL(None, request)
+        if publisher_prefix is not None:
+            needed.base_url = absolute_url + publisher_prefix
+        else:
+            needed.base_url = absolute_url + '/@@/'
