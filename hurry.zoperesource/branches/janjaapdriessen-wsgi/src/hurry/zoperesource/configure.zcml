@@ -13,4 +13,6 @@
 
   <grok:grok package="."/>
 
+  <adapter factory=".zopesupport.AbsoluteURL" />
+
 </configure>
