@@ -32,6 +32,6 @@ class HurryResourceBrowserLayer(BrowserLayer):
 def test_suite():
     readme = doctest.DocFileSuite(
         '../README.txt',
-        optionflags=doctest.NORMALIZE_WHITESPACE)
+        optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
     readme.layer = HurryResourceBrowserLayer(hurry.zoperesource.tests)
     return unittest.TestSuite([readme])
