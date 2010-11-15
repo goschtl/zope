@@ -1,9 +1,9 @@
 <configure xmlns:meta="http://namespaces.zope.org/meta">
   <meta:directives namespace="http://namespaces.zope.org/hzr">
- 
+
     <meta:directive
        name="setupHurryZopeResource"
-       schema=".zcml.ISetupHurryZopeResource"
+       schema=".interfaces.ISetupHurryZopeResource"
        handler=".zcml.action_setup" />
 
   </meta:directives>
