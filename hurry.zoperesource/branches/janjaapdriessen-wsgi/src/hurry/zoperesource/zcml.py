@@ -1,18 +1,21 @@
 from zope.interface import Interface
 from zope import component
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.browserresource.directory import DirectoryResourceFactory
 from zope.security.checker import NamesChecker
+
 from hurry import resource
 from hurry.zoperesource.zopesupport import Plugin
+from hurry.zoperesource.zopesupport import HurryDirectoryResourceFactory
 
-class ISetupHurryZopeResource(Interface):
-    pass
 
-allowed_resource_names = (
-    'GET', 'HEAD', 'publishTraverse', 'browserDefault', 'request', '__call__')
+def create_resource_factory(library):
+    allowed_resource_names = ('GET', 'HEAD', 'publishTraverse',
+                              'browserDefault', 'request', '__call__')
 
-allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
+    allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
+
+    checker = NamesChecker(allowed_resourcedir_names)
+    return HurryDirectoryResourceFactory(library.path, checker, library.name)
 
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.
@@ -20,10 +23,7 @@ def action_setup(_context):
     resource.register_plugin(Plugin())
 
     for library in resource.libraries():
-        checker = NamesChecker(allowed_resourcedir_names)
-        resource_factory = DirectoryResourceFactory(
-            library.path, checker, library.name)
-
+        resource_factory = create_resource_factory(library)
         adapts = (IBrowserRequest,)
         provides = Interface
 
