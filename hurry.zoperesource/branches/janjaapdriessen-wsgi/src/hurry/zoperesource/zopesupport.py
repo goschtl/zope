@@ -1,8 +1,7 @@
 # zope integration for hurry.resource
 from zope.interface import alsoProvides
-from zope.component import adapts
+from zope.component import adapts, adapter
 import zope.security.management
-from grokcore.component import subscribe
 
 from zope.publisher.interfaces import IEndRequestEvent, IRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -49,7 +48,7 @@ class Plugin(object):
         # so we have to use request._orig_env.
         return request._orig_env.setdefault(NEEDED, NeededInclusions())
 
-@subscribe(IEndRequestEvent)
+@adapter(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
     request = event.request
     # Unfortunately we don't have easy access to the WSGI environment,

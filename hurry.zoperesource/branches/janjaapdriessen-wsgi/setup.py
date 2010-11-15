@@ -31,7 +31,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'grokcore.component',
         'hurry.resource[wsgi] >= 0.10',
         'z3c.autoinclude',
         'zope.browserresource',

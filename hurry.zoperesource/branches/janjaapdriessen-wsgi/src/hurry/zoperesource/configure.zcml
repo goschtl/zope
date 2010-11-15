@@ -11,7 +11,7 @@
 
   <hzr:setupHurryZopeResource />
 
-  <grok:grok package="."/>
+  <subscriber handler=".zopesupport.set_base_url_on_needed_inclusions" />
 
   <adapter factory=".zopesupport.AbsoluteURL" />
 
