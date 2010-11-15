@@ -26,7 +26,7 @@ inclusion of a single resource in its header::
   >>> print browser.contents
   <html>
   <head>
-      <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
+      <script type="text/javascript" src="http://localhost/media/foo/hash:2258902149/a.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -41,8 +41,8 @@ automatically included::
   >>> print browser.contents
   <html>
   <head>
-      <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
-    <script type="text/javascript" src="http://localhost/@@/foo/b.js"></script>
+      <script type="text/javascript" src="http://localhost/media/foo/hash:2258902149/a.js"></script>
+    <script type="text/javascript" src="http://localhost/media/foo/hash:2258902149/b.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -60,6 +60,24 @@ the bottom now, just before the ``</body>`` tag::
   </head>
   <body>
   <p>the widget HTML itself</p>
-  <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/@@/foo/b.js"></script></body>
+  <script type="text/javascript" src="http://localhost/media/foo/hash:2258902149/a.js"></script>
+  <script type="text/javascript" src="http://localhost/media/foo/hash:2258902149/b.js"></script></body>
   </html>
+
+In-template resources
+---------------------
+
+Hurry.zoperesource also provides support for rendering URLs to in-template
+resources::
+
+  >>> browser.open('http://localhost/hurry.zoperesource.test_inline_resource')
+  >>> print browser.contents
+  <html>
+  <head>
+  </head>
+  <body>
+    <img src="http://localhost/media/foo/hash:2258902149/evencaveman.jpg"/>
+  </body>
+  </html>
+
+

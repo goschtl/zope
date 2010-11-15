@@ -71,4 +71,12 @@
     class=".view.TestBottom"
     />
 
+  <browser:page
+    for="zope.interface.Interface"
+    name="hurry.zoperesource.test_inline_resource"
+    permission="zope.Public"
+    template="test_inline_resource.pt"
+    class=".view.TestInlineResource"
+    />
+
 </configure>

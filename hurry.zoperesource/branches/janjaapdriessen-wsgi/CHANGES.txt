@@ -12,6 +12,10 @@ CHANGES
 
 - Replaced zope.app.testing/zope.app.zcmlfiles test setup with zope.app.wsgi.
 
+- Register a custom DirectoryResource and DirectoryResourceFactory in order
+  to mark resources with a marker interface and render URLs that know about
+  the hurry.resource.publisher.
+
 0.7 (2010-10-01)
 ================
 

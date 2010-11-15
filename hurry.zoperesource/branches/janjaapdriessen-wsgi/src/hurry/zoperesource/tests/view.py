@@ -25,3 +25,7 @@ class TestBottom(object):
         b.need()
         bottom(force=True)
         return "the widget HTML itself"
+
+
+class TestInlineResource(object):
+    pass
