@@ -1,0 +1,84 @@
+======================
+Changes for z3c.widget
+======================
+
+0.3.0 (2010-11-16)
+==================
+
+ - Added translation for french.
+
+ - Updated tests to run with `zope.formlib` 4.0 and `zope.schema` 3.6.
+
+ - Using Python's ``doctest`` module instead of depreacted
+   ``zope.testing.doctest[unit]``.
+
+ - Added doctests to ``long_description`` to be visible on PyPI.
+
+2008/01/29 0.2.1
+================
+
+ - add translation for hungarian and romanian languages
+
+2007/09/21 0.2.0
+================
+
+ - feature: Added a date-selection widget.
+ - feature: Added a social security number widget.
+ - feature: Added a US phone number widget.
+
+2007/09/19 0.1.7
+================
+
+ - added translation for english to get i18n working in some browsers
+
+
+2007/09/19 0.1.6
+================
+
+ - added cheesehop classification, registered there
+ - fixed typos
+
+2007/09/05 0.1.5
+================
+
+ - bugfix: browse butten will now be enabled after cancel was clicked in
+   the open file dialog
+ - do not set the progessbar to 100% before the upload was started
+ - bugfix: files will not be uploaded if no limit was set
+
+
+2007/09/05 0.1.4
+================
+
+ - dealing file size during upload. If one or more files are bigger than
+   the passed size each one of them will be ignored during upload but listed
+   below the progress bar after the upload of the working files is done.
+ - displaying the maximal allowed file size (if it's contained in the config
+   file)
+
+
+2007/09/03 0.1.3
+================
+
+ - bugfix: too much quoting.
+
+
+2007/09/03 0.1.2
+================
+
+ - using passed config url instead of hard coded flashuploadvars.xml
+
+
+2007/08/06 0.1.1
+================
+
+ - flashupload: better skinnability for upload.swf. cleanup folder
+   structure for flash stuff.
+
+
+2007/06/14 0.1.0:
+=================
+
+ - z3c.widget.image: added translations for es
+
+ - update to newest bootstrap.py version

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+ <class class=".widget.AutoCompleteWidget">
+  <allow interface=".interfaces.IAutoCompleteWidget"/>
+ </class>
+
+ 
+ <browser:page
+  for=".interfaces.IAutoCompleteWidget"
+  name="suggestions"
+  template="suggestions.pt"
+  permission="zope.Public"
+  />
+</configure>

@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+# Christophe Combelles <ccomb@free.fr>, 2008 
+msgid ""
+msgstr ""
+"Project-Id-Version: z3c.widget.image 74099\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Wed Apr 11 16:38:06 2007\n"
+"PO-Revision-Date: 2008-02-24 11:55+0100\n"
+"Last-Translator: Christophe Combelles <ccomb@free.fr>\n"
+"Language-Team: French <zope3-french-user@lists.afpy.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: lib/python/z3c/widget/image/widget.py:23
+msgid "delete image"
+msgstr "effacer l'image"
+

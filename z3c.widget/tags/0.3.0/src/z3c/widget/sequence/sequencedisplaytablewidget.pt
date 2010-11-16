@@ -1,0 +1,26 @@
+<tal:defs define="message view/haveMessage">
+  <span tal:content="message"
+        tal:condition="message">
+        message</span>
+  <table class="sequencewidgettable"
+         tal:condition="not:message">
+    <thead tal:define="mainwidget view/mainWidget">
+      <th tal:repeat="widget mainwidget/subwidgets"
+          tal:content="widget/label">
+        Label
+      </th>
+    </thead>
+    <tbody>
+      <metal:block tal:repeat="mainwidget view/widgets">
+        <tr tal:define="oddrow repeat/mainwidget/odd"
+            tal:attributes="class python:oddrow and 'even' or 'odd'">
+          <td tal:repeat="widget mainwidget/subwidgets">
+            <div class="field" tal:content="structure widget">
+                <input type="text" style="width:100%"/>
+              </div>
+          </td>
+        </tr>
+      </metal:block>
+    </tbody>
+  </table>
+</tal:defs>

@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Date widget -->
+  <view
+      type="z3c.layer.minimal.IMinimalBrowserLayer"
+      for="z3c.schema.dateselect.IDateSelect"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".browser.DateSelectWidget"
+      permission="zope.Public"
+      />
+
+</configure>
