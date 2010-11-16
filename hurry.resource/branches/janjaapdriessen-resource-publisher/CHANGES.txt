@@ -19,10 +19,14 @@ CHANGES
 
 - Add hashing functionality that calculates a checksum of a resource library.
 
-- Hurry.resource.publisher knows about publishing resources.
+- Hurry.resource.wsgi knows about publishing resources.
 
 - The hurry.resource.wsgi injector middleware informs the wrapped application
   of the presence of a resource publisher.
+
+- Do not serve hidden files in hurry.resource.publisher.
+
+- Publisher only sets cache control header on successful responses.
 
 0.10 (2010-07-24)
 =================
