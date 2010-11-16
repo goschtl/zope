@@ -2,7 +2,7 @@
 Changes for z3c.widget
 ======================
 
-0.3.0 (unreleased)
+0.3.0 (2010-11-16)
 ==================
 
  - Added translation for french.
