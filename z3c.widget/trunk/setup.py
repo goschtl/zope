@@ -7,7 +7,7 @@ def read(*path_elements):
 
 
 setup(name='z3c.widget',
-      version='0.3.0',
+      version='0.3.1dev',
       author = "Zope Community",
       author_email = "zope-dev@zope.org",
       description = "Additional zope.formlib Widgets",
