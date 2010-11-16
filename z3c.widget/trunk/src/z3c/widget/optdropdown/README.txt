@@ -68,7 +68,7 @@ The constructor should have also created 2 widgets:
 
 
 ``setRenderedValue(value)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
 The first method is ``setRenderedValue()``. The widget has two use cases,
 based on the type of value. If the value is a custom value, it will
@@ -102,7 +102,7 @@ vocabulary, the value should be displayed in the dropdown:
 
 
 ``setPrefix(prefix)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 The prefix determines the name of the widget and the sub-widgets.
 
@@ -124,7 +124,7 @@ The prefix determines the name of the widget and the sub-widgets.
 
 
 ``getInputValue()`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 This method returns a value based on the input; the data is assumed to
 be valid. In our case that means, if we entered a custom value, it is
@@ -151,7 +151,7 @@ returned:
 
 
 ``applyChanges(content)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 This method applies the new value to the passed content. However, it
 must be smart enough to detect whether the values really changed.
@@ -183,7 +183,7 @@ must be smart enough to detect whether the values really changed.
 
 
 ``hasInput()`` Method
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 This mehtod checks for any input, but does not validate it. In our case this
 means that either a choice has been selected or the the custom value has been
@@ -208,7 +208,7 @@ entered.
 
 
 ``hasValidInput()`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 Additionally to checking for any input, this method also checks whether the
 input is valid:
@@ -244,7 +244,7 @@ input is valid:
 
 
 hidden() Method
-~~~~~~~~~~~~~~~
+===============
 
 This method is implemented by simply concatenating the two widget's hidden
 output:
@@ -267,7 +267,7 @@ output:
 
 
 error() Method
-~~~~~~~~~~~~~~
+==============
 
 Again, we have our two cases. If an error occured in the dropdown, it is
 reported:
@@ -322,10 +322,10 @@ Otherwise the custom widget's errors are reported:
 
 
 __call__() Method
-~~~~~~~~~~~~~~~~~
+=================
 
 This method renders the widget using the sub-widgets. It simply adds the two
-widgets' output placing the ``connector between them:
+widgets' output placing the ``connector`` between them:
 
   >>> request = TestRequest(form={
   ...     'field.occupation.custom': u'Teacher'})

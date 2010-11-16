@@ -12,6 +12,7 @@ Changes for z3c.widget
  - Using Python's ``doctest`` module instead of depreacted
    ``zope.testing.doctest[unit]``.
 
+ - Added doctests to ``long_description`` to be visible on PyPI.
 
 2008/01/29 0.2.1
 ================

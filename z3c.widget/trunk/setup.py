@@ -1,5 +1,10 @@
 #!python
 from setuptools import setup, find_packages
+import os.path
+
+def read(*path_elements):
+    return "\n\n" + file(os.path.join(*path_elements)).read()
+
 
 setup(name='z3c.widget',
       version='0.3.0dev',
@@ -9,6 +14,23 @@ setup(name='z3c.widget',
       license = "ZPL 2.1",
       keywords = "zope zope3 form formlib",
       url='http://svn.zope.org/z3c.widget',
+      long_description=(
+          '.. contents::\n\n' +
+          read('CHANGES.txt') +
+          read('src', 'z3c', 'widget', 'autocomplete', 'README.txt') +
+          read('src', 'z3c', 'widget', 'autocomplete', 'demo', 'README.txt') +
+          read('src', 'z3c', 'widget', 'country', 'README.txt') +
+          read('src', 'z3c', 'widget', 'dateselect', 'README.txt') +
+          read('src', 'z3c', 'widget', 'dropdowndatewidget', 'README.txt') +
+          read('src', 'z3c', 'widget', 'flashupload', 'README.txt') +
+          read('src', 'z3c', 'widget', 'image', 'README.txt') +
+          read('src', 'z3c', 'widget', 'namespace', 'README.txt') +
+          read('src', 'z3c', 'widget', 'optdropdown', 'README.txt') +
+          read('src', 'z3c', 'widget', 'sequence', 'README.txt') +
+          read('src', 'z3c', 'widget', 'ssn', 'README.txt') +
+          read('src', 'z3c', 'widget', 'tiny', 'README.txt') +
+          read('src', 'z3c', 'widget', 'usphone', 'README.txt')
+          ),
       zip_safe=False,
       packages=find_packages('src'),
       include_package_data=True,

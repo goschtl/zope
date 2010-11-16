@@ -17,11 +17,11 @@ Drawbacks of JS:
  * Submitting the form and using the Back button of the browser does not work.
 
 WARNING!
-~~~~~~~~
+========
 The subobject MUST have subwidgets. That is usually the case if the subobject
 is based on zope.schema.Object.
 
 TODO
-~~~~
+====
 Tests.
 Some are there, some are copied from z.a.form.browser and need fix.

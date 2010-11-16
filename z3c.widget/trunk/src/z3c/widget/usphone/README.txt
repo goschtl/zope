@@ -52,7 +52,7 @@ The constructor should have also created 3 sub-widgets:
 
 
 ``setRenderedValue(value)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
 The first method is ``setRenderedValue()``. The widget has two use cases,
 based on the type of value:
@@ -69,7 +69,7 @@ based on the type of value:
 
 
 ``setPrefix(prefix)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 The prefix determines the name of the widget and all its sub-widgets.
 
@@ -108,7 +108,7 @@ If the prefix does not end in a dot, one is added:
 
 
 ``getInputValue()`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 This method returns the full phone string:
 
@@ -142,7 +142,7 @@ raised:
 
 
 ``applyChanges(content)`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 This method applies the new phone number to the passed content. However, it
 must be smart enough to detect whether the values really changed.
@@ -167,7 +167,7 @@ must be smart enough to detect whether the values really changed.
 
 
 ``hasInput()`` Method
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 This method checks for any input, but does not validate it.
 
@@ -204,7 +204,7 @@ This method checks for any input, but does not validate it.
 
 
 ``hasValidInput()`` Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 Additionally to checking for any input, this method also checks whether the
 input is valid:
@@ -242,7 +242,7 @@ input is valid:
 
 
 ``hidden()`` Method
-~~~~~~~~~~~~~~~~~~~
+===================
 
 This method is renders the output as hidden fields:
 
@@ -261,7 +261,7 @@ This method is renders the output as hidden fields:
 
 
 ``error()`` Method
-~~~~~~~~~~~~~~~~~~
+==================
 
 Let's test some bad data and check the error handling.
 
@@ -324,7 +324,7 @@ No error occurred:
 
 
 ``__call__()`` Method
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 This method renders the widget using the sub-widgets. Let's see the output:
 
