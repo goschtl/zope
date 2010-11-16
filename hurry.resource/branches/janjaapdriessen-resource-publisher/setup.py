@@ -33,7 +33,7 @@ setup(
         'setuptools',
         ],
     extras_require = dict(publisher=['Paste'],
-                          test=['WebOb'],
+                          test=['Paste', 'WebOb', 'zc.buildout'],
                           wsgi=['WebOb']),
     entry_points = {
         'paste.app_factory': [
