@@ -2,7 +2,7 @@
  Issues
 ========
 
-- One tests fails surprisingly, maybe custom ZRT commands are currently
+- One test fails surprisingly, maybe custom ZRT commands are currently
   broken.
 
 =======
