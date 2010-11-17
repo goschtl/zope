@@ -1,0 +1,19 @@
+============
+ Change log
+============
+
+0.2 (unreleased)
+================
+
+- Declated all required install dependencies.
+
+- Added test extra to declare test dependency on ``zope.app.testing``.
+
+- Made sure functional tests are run.
+
+- Fixed test set up to run with ZTK 1.0.
+
+0.1 (20??-??-??)
+================
+
+- Initial release
