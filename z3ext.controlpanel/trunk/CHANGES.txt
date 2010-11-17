@@ -7,6 +7,8 @@ CHANGES
 
 - ZTK support
 
+- Updated test set up to run with ZTK 1.0.
+
 
 1.5.0 (2009-08-11)
 ------------------
@@ -37,7 +39,7 @@ CHANGES
 
 - Added 'Content types' configlet category
 
-- Added helper wizard form class 
+- Added helper wizard form class
 
 - Do not use z3c.autoinclude
 

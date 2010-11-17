@@ -4,12 +4,23 @@
    i18n_domain="zope">
 
   <exclude package="zope.dublincore.browser" />
+  <exclude package="zope.app.cache.browser" />
+  <exclude package="lovely.memcached.browser" />
+  <exclude package="zope.app.authentication.browser" file="session.zcml" />
+  <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
+  <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
+  <exclude package="zope.app.authentication.browser" file="groupfolder.zcml" />
+  <exclude package="zope.app.authentication.browser" />
+  <exclude package="zope.app.folder.browser" />
+  <exclude package="z3c.form.browser" file="radio.zcml" />
 
   <include package="z3ext.autoinclude" file="meta.zcml" />
   <includeAllDependencies package="z3ext.controlpanel" extras="test" />
 
   <include package="z3ext.controlpanel.tests" />
   <includeOverrides package="z3ext.controlpanel.tests" file="overrides.zcml" />
+
+  <include package="zope.traversing.browser" />
 
   <securityPolicy
      component="z3ext.security.securitypolicy.SecurityPolicy" />
@@ -29,7 +40,7 @@
   <grant permission="zope.View"
          role="zope.Anonymous" />
 
-  <grant permission="zope.app.dublincore.view"
+  <grant permission="zope.dublincore.view"
          role="zope.Anonymous" />
 
   <!-- Principals -->
