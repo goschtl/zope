@@ -30,13 +30,14 @@ def setUp(test):
     cleanup.setUp()
     testing.setUp()
     zope.component.provideAdapter(view, (None, None), ITraversable, name="view")
+    zope.component.provideAdapter(zope.browserresource.file.FileETag)
+
 
 def tearDown(test):
     cleanup.tearDown()
 
 
 def test_suite():
-
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
                      setUp=setUp,
@@ -44,7 +45,7 @@ def test_suite():
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         doctest.DocFileSuite('zcml.txt',
-                     setUp=lambda test:cleanup.setUp(),
+                     setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),

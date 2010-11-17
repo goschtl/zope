@@ -11,17 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for z3c.zrtresource package
-
-$Id$
-"""
+"""Setup for z3c.zrtresource package"""
 import os
 from setuptools import setup, find_packages
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.3.1dev'
+
+version = '1.4.0dev'
 
 
 setup(name='z3c.zrtresource',
@@ -60,7 +59,7 @@ setup(name='z3c.zrtresource',
       install_requires = ['setuptools',
                           'zope.site',
                           'zope.pagetemplate >= 3.5',
-                          'zope.browserresource',
+                          'zope.browserresource >= 3.11',
                           'zope.component',
                           'zope.configuration',
                           'zope.interface',
