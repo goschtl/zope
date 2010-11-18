@@ -11,24 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" z3ext.cssregistry tests
+""" z3ext.cssregistry tests"""
 
-$Id$
-"""
-__docformat__ = "reStructuredText"
-
-import unittest, doctest
 from zope import interface, schema
 from zope.component import provideAdapter, testing
-from zope.traversing.testing import setUp as traversingSetUp
-from zope.traversing.namespace import view
 from zope.traversing.interfaces import ITraversable
+from zope.traversing.namespace import view
+from zope.traversing.testing import setUp as traversingSetUp
+import unittest, doctest
+import zope.browserresource.file
 
 
 def setUp(test):
     testing.setUp()
     traversingSetUp()
     provideAdapter(view, (None, None), ITraversable, name="view")
+    provideAdapter(zope.browserresource.file.FileETag)
 
 
 def tearDown(test):
