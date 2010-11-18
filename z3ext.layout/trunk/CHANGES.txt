@@ -17,6 +17,8 @@ CHANGES
 
 - Added ``z3ext:expressiontype`` directive
 
+- Fixed tests.
+
 
 2.2.2 (2009-09-14)
 ------------------
@@ -207,7 +209,7 @@ inherited from IBrowserPublisher
 1.5.1 (2008-10-14)
 ------------------
 
-- Fixed missing NotFount in @@pagelet 
+- Fixed missing NotFount in @@pagelet
 
 - Log errors in @@pagelet
 
@@ -292,7 +294,7 @@ inherited from IBrowserPublisher
 ------------------
 
 - Added 'redirect' method to IBrowserPagelet, this is usefull
-  when we need redirect during 'update' method and we don't 
+  when we need redirect during 'update' method and we don't
   need render pagelet at all.
 
 - Added adapter to IPagelet for (context, request),

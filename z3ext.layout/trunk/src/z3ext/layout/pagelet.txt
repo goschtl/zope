@@ -2,7 +2,7 @@
 Pagelet directive
 =================
 
-Show how we can use the pagelet directive. Register the meta configuration for 
+Show how we can use the pagelet directive. Register the meta configuration for
 the directive.
 
   >>> import os, tempfile, sys
@@ -75,7 +75,7 @@ adds BrowserPagetlet to bases classes. Let's define some more components...
 Get the pagelet for the new content object
 
   >>> import zope.component
-  >>> pagelet = zope.component.queryMultiAdapter((Content(), TestRequest()), 
+  >>> pagelet = zope.component.queryMultiAdapter((Content(), TestRequest()),
   ...     name='custom.html')
 
 and check them:
@@ -107,10 +107,10 @@ Now register the pagelet within a interface.
   ... </configure>
   ... """, context)
 
-And if we get the pagelet, we can see that the object provides the new 
+And if we get the pagelet, we can see that the object provides the new
 pagelet interface:
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()),
   ...     name='new.html')
   >>> pagelet
   <z3ext.layout.zcml.PageletClass from <class 'z3ext.layout.TESTS.NewPagelet'> ...>
@@ -123,7 +123,7 @@ will have this attribute. Let' redefine INewPagelet interface
 
   >>> class INewPagelet2(interface.Interface):
   ...     """New pagelet interface."""
-  ...     
+  ...
   ...     number = schema.Int(
   ...         title = u'Number',
   ...         required = True)
@@ -148,7 +148,7 @@ Schema can provide default value
 
   >>> class INewPagelet2(interface.Interface):
   ...     """New pagelet interface."""
-  ...     
+  ...
   ...     number = schema.Int(
   ...         title = u'Number',
   ...         required = False,
@@ -203,10 +203,10 @@ Value should be in right format
   ...
   ZopeXMLConfigurationError: ...invalid literal for int()...
 
-Schema field should implement IFromUnicode 
+Schema field should implement IFromUnicode
 
   >>> class INewPagelet3(interface.Interface):
-  ...     
+  ...
   ...     date = schema.Date(
   ...         title = u'Date',
   ...         required = False)
@@ -274,7 +274,7 @@ We can create pagelet without specific class
   ...       for="*"
   ...       name="noclass.html" />
   ... </configure>
-  ... """, context) 
+  ... """, context)
 
   >>> pagelet = component.queryMultiAdapter(
   ...     (object(), TestRequest()), name='noclass.html')
@@ -311,7 +311,7 @@ We can create pagelet with template:
   ... </configure>
   ... """%template, context)
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()),
   ...     name='template.html')
   >>> pagelet
   <z3ext.layout.zcml.PageletClass from None ...>
@@ -349,7 +349,7 @@ We can create pagelet with additional context
   ...       name="index.html"
   ...       for="* z3ext.layout.TESTS.IContext2" />
   ... </configure>
-  ... """, context) 
+  ... """, context)
 
   >>> context2 = Context2()
 
@@ -370,7 +370,7 @@ Pagelet rendering
 We should use page template as template for pagelet or we should
 provide IPagelet adapter for pagelet
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()),
   ...     name='noclass.html')
   >>> pagelet.render()
   Traceback (most recent call last):
@@ -403,7 +403,7 @@ provide IPagelet adapter for pagelet
 We can redirect during pagelet rendering, in this case render method
 doesn't call.
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()),
   ...     name='noclass.html')
   >>> pagelet.redirect('/')
   >>> pagelet.isRedirected
@@ -508,7 +508,7 @@ We need register types
 
   >>> pagelet = component.queryMultiAdapter(
   ...     (object(), TestRequest()), ITestPagelet)
-  
+
   >>> ITestPagelet.providedBy(pagelet)
   True
   >>> print pagelet.render()
@@ -537,14 +537,14 @@ Access typed pagelet from view
 
 by default IPagelet
 
-  >>> print publisher()
+  >>> print publisher()()
   <div>My pagelet - default</div>
 
-  >>> print publisher.publishTraverse(request, '')
+  >>> print publisher.publishTraverse(request, '')()
   <div>My pagelet - default</div>
 
   >>> print publisher.publishTraverse(
-  ...     request, 'z3ext.layout.tests.ITestPagelet')
+  ...     request, 'z3ext.layout.tests.ITestPagelet')()
   <div>My pagelet</div>
 
 We can register our marker interface as named utility and use name
@@ -554,7 +554,7 @@ instead of full module path
   ...     ITestPagelet, z3ext.layout.interfaces.IPageletType, name='testPageletType')
   >>> interface.alsoProvides(ITestPagelet, z3ext.layout.interfaces.IPageletType)
 
-  >>> print publisher.publishTraverse(request, 'testPageletType')
+  >>> print publisher.publishTraverse(request, 'testPageletType')()
   <div>My pagelet</div>
 
 We can provide additional context for pagelet
@@ -583,7 +583,7 @@ We can provide additional context for pagelet
   ... </configure>"""%template41, context)
 
   >>> publisher = component.getMultiAdapter((Content(),request), name='pagelet')
-  >>> print publisher.publishTraverse(request, 'myPagelet4')
+  >>> print publisher.publishTraverse(request, 'myPagelet4')()
   <div>My pagelet4</div>
 
 Or multiple contexts
@@ -612,7 +612,7 @@ Or multiple contexts
   ... </configure>"""%template5, context)
 
   >>> publisher = component.getMultiAdapter((Content(),request), name='pagelet')
-  >>> print publisher.publishTraverse(request, 'myPagelet5')
+  >>> print publisher.publishTraverse(request, 'myPagelet5')()
   <div>My pagelet5</div>
 
 We can use interface as pagelet 'type'
@@ -647,7 +647,7 @@ We can use interface as pagelet 'type'
   ... </configure>"""%template6, context)
 
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet6')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6')()
   <div>My pagelet6</div>
 
 we can call named pagelets
@@ -666,7 +666,7 @@ we can call named pagelets
   ... </configure>"""%template7, context)
 
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
-  >>> print pagelet.publishTraverse(request, 'myPagelet6+named')
+  >>> print pagelet.publishTraverse(request, 'myPagelet6+named')()
   <div>My pagelet7</div>
 
 
@@ -1021,7 +1021,7 @@ Pagelets with errors
         raise Exception('Pagelet Error')</li>
   </ul>Exception: Pagelet Error&lt;br /&gt;
   </p><br />
-  
+
 
 Pagelet with extra context
 
@@ -1102,9 +1102,9 @@ pagelet with unknown layouts
   >>> from zope.publisher.browser import TestRequest
 
   >>> class MyView(BrowserPagelet):
-  ...     
+  ...
   ...     layoutname = 'unknown'
-  ...     
+  ...
   ...     def render(self):
   ...       return self.context.__name__
 
