@@ -44,7 +44,7 @@ setup(
       'test': [
          'zope.annotation',
          'zope.app.publication',
-         'zope.app.wsgi >= 3.10.0dev',
+         'zope.app.wsgi >= 3.10.0',
          'zope.browserpage',
          'zope.container',
          'zope.principalregistry',
