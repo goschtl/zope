@@ -1,0 +1,19 @@
+Changelog
+=========
+
+0.1-alpha-3 (2010-11-19)
+------------------------
+
+- Fix : service.processNext would not reset CronJob runCount
+
+
+0.1-alpha-2 (2010-10-19)
+------------------------
+
+- Removed use of _p_jar
+
+
+0.1-alpha-1 (2010-09-27)
+------------------------
+
+- Initial release
