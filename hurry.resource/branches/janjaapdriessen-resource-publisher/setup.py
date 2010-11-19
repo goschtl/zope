@@ -36,8 +36,7 @@ setup(
                           test=['Paste', 'WebOb', 'zc.buildout'],
                           wsgi=['WebOb']),
     entry_points = {
-        'paste.app_factory': [
-            'publisher = hurry.resource.publisher:make_publisher'],
         'paste.filter_app_factory': [
+            'publisher = hurry.resource.publisher:make_publisher',
             'inject = hurry.resource.wsgi:make_inject'],
     })
