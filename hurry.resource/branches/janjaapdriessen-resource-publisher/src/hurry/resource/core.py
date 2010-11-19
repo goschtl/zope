@@ -434,9 +434,9 @@ def render_inclusions(inclusions, base_url):
     hash_cache = {}
     if base_url and not base_url.endswith('/'):
         base_url += '/'
-        
-    signature = ''
+
     for inclusion in inclusions:
+        signature = ''
         library = inclusion.library
         if hurry.resource.hashing:
              # For every request, compute the hash of each library
@@ -446,7 +446,7 @@ def render_inclusions(inclusions, base_url):
              if hash is None:
                  hash = library.hash()
                  hash_cache[library.name] = hash
-             signature = ':%s:%s/' % (hurry.resource.hash_signature, hash)
+             signature = '%s%s/' % (hurry.resource.publisher_signature, hash)
         library_url = base_url + signature + inclusion.library.name + '/'
         result.append(render_inclusion(
             inclusion, library_url + inclusion.relpath))

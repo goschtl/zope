@@ -21,7 +21,7 @@ def configure_hashing(enable=True):
     global hashing
     hashing = enable
 
-hash_signature = 'hash'
+publisher_signature = ':hash:'
 
 devmode = False
 

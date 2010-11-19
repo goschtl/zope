@@ -1,3 +1,5 @@
+from itertools import dropwhile
+
 import webob
 from paste.request import path_info_pop, path_info_split
 from paste.fileapp import DirectoryApp, CACHE_CONTROL, EXPIRES
@@ -16,7 +18,7 @@ class FilterHiddenDirectoryApp(DirectoryApp):
 
 
 class Publisher(object):
-    def __init__(self, app, **local_conf):
+    def __init__(self, app):
         self._wrapped_app = app
         self.directory_apps = {}
         for library in hurry.resource.libraries():
@@ -24,25 +26,26 @@ class Publisher(object):
             self.directory_apps[library.name] = app
 
     def __call__(self, environ, start_response):
-        path = environ['PATH_INFO']
-        if hurry.resource.hash_signature not in path:
+        path_info = environ['PATH_INFO']
+
+        path_segments = [s for s in path_info.split('/') if s.strip() != '']
+
+        def hash_find(segment):
+            return not segment.startswith(hurry.resource.publisher_signature)
+
+        new_path = list(dropwhile(hash_find, path_segments))
+
+        if len(new_path) == 0:
             # There's no hash signature found in the path, so we
             # cannot publish it from here. Leave the response to the
             # wrapped app.
-            request = webob.Request(environ)
-            response = request.get_response(self._wrapped_app)
-            return response(environ, start_response)
+            return self._wrapped_app(environ, start_response)
 
-        library_name = ''
-        next_ = path_info_pop(environ)
-        while next_:
-            if next_.startswith(':%s:' % hurry.resource.hash_signature):
-                # Skip over hash signature segment. The library name
-                # will be that of the next step.
-                library_name = path_info_pop(environ)
-                break
-            next_ = path_info_pop(environ)
-            print 'STEPPIE', library_name, path, environ['PATH_INFO']
+        try:
+            hash = new_path.pop(0)
+            library_name = new_path.pop(0)
+        except IndexError:
+            return HTTPNotFound()(environ, start_response)
 
         try:
             directory_app = self.directory_apps[library_name]
@@ -57,8 +60,9 @@ class Publisher(object):
                 EXPIRES.update(headers, delta=expires)
             return start_response(status, headers, exc_info)
 
-        response = cache_header_start_response
-        return directory_app(environ, response)
+        # Reconstruct information for the directory_app to work with.
+        environ['PATH_INFO'] = '/' + '/'.join(new_path)
+        return directory_app(environ, cache_header_start_response)
 
-def make_publisher(app, global_conf, **local_conf):
+def make_publisher(app, global_conf):
     return Publisher(app, **local_conf)

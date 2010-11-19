@@ -1283,20 +1283,18 @@ We don't do anything fancy if the resource can not be found, but raise 404.
 The resources are handled by paste.fileapp.DirectoryApp, which sets the
 ETag header, among other things::
 
-  <<< res = app.get('/foo/style.css')
-  <<< print res.body
+  >>> res = app.get('/:hash:12345/foo/style.css')
+  >>> print res.body
   body {
     color: #f00;
   }
-  <<< headers = dict(res.headers)
-  <<< 'ETag' in headers
+  >>> headers = dict(res.headers)
+  >>> 'ETag' in headers
   True
 
 When we find the 'hash' marker in the requested URL, we send headers that let
 the user agent cache the resources for a long time.
 
-  >>> res = app.get('/:hash:12345/foo/style.css')
-  >>> headers = dict(res.headers)
   >>> 'Expires' in headers
   True
   >>> print headers['Cache-Control']
@@ -1313,6 +1311,16 @@ We don't set cache-control headers on non-successful responses::
 
 Hidden files and directories are not served:
 
-  >>> res = app.get('/foo/sub/.svn/test', expect_errors=True)
+  >>> res = app.get('/:hash:foo/sub/.svn/test', expect_errors=True)
   >>> print res.status
   404
+
+The publisher_signature can be found arbitrarily deep in the path_info:
+
+  >>> res = app.get('/++skin++foo/++etc++bar/foo/:hash:12345/foo/style.css')
+  >>> res.status
+  200
+  >>> print res.body
+  body {
+    color: #f00;
+  }
