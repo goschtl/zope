@@ -733,7 +733,7 @@ Now let's try to render these inclusions::
   >>> print needed.render()
   Traceback (most recent call last):
     ...
-  AttributeError: 'NoneType' object has no attribute 'endswith'
+  TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 
 That didn't work. In order to render an inclusion, we need to tell
 ``hurry.resource`` the base URL for a resource inclusion. We
@@ -773,8 +773,9 @@ the currently needed inclusion::
 Hashing resources
 =================
 
-As you have seen in the rendered URLs above, we insert a ``hash:`` segment
-into the URLs. Hashing of resources is inspired by z3c.hashedresource:
+As you have seen in the rendered URLs above, the default behavior is to insert
+a ``hash:`` segment into the generated URLs.
+Hashing of resources is inspired by z3c.hashedresource:
 
 'While we want browsers to cache static resources such as CSS-stylesheets and
 JavaScript files, we also want them *not* to use the cached version if the
@@ -786,6 +787,29 @@ To make browsers update their caches of resources immediately when the
 resource changes, the absolute URLs of resources can now be made to contain a
 hash of the resource's contents, so it will look like
 /foo/hash:12345/myresource instead of /foo/myresource.
+
+The default hashing behavior can be changed by setting the 'hashing' variable
+in the hurry.resource module through the `configure_hashing` function::
+
+  >>> import hurry.resource
+  >>> hurry.resource.configure_hashing(False)
+  >>> print resource.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
+  >>> hurry.resource.configure_hashing(True)
+  >>> print resource.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+
+More about the devmode in a minute::
+
+  >>> hurry.resource.configure_devmode(True)
+
+The hash of a library is computed based on the contents of the directory.
+If we alter the contents of the directory, the hash is updated.
 
   >>> before_hash = foo.hash()
   >>> from pkg_resources import resource_filename, resource_string
@@ -800,7 +824,7 @@ hash of the resource's contents, so it will look like
   >>> foo.hash() == before_hash
   True
 
-Any VCS directories are ignores in calculating the hash:
+Any VCS directories are ignored in calculating the hash:
 
   >>> import os
   >>> os.mkdir(resource_filename('mypackage',
@@ -817,7 +841,30 @@ its URL, while in production mode the hash is computed only once, so remember
 to restart the server after changing resource files (else browsers will still
 see the old URL unchanged and use their outdated cached versions of the files).
 
-  XXX Add tests for dev mode and non dev mode.
+Whether to compute the hash for every request is controlled by the `devmode`
+variable in the hurry.resource module and can be set with the convenience
+function `hurry.resource.configure_devmode`.
+
+  >>> hurry.resource.configure_devmode(True)
+  >>> before_hash = foo.hash()
+  >>> foo_sub_dir = resource_filename('mypackage', 'resources/sub')
+  >>> open(os.path.join(foo_sub_dir, 'test'), 'w').write('test')
+  >>> # The hash is newly computed.
+  >>> foo.hash() is not before_hash
+  True
+
+When we are not in devmode, the hash is not computed again:
+
+  >>> hurry.resource.configure_devmode(False)
+  >>> before_hash = foo.hash()
+  >>> open(os.path.join(foo_sub_dir, 'test2'), 'w').write('test2')
+  >>> # The hash is not newly computed.
+  >>> foo.hash() is before_hash
+  True
+  >>> hurry.resource.configure_devmode(True)
+  >>> foo.hash() is before_hash
+  False
+
 
 Inserting resources in HTML
 ===========================
