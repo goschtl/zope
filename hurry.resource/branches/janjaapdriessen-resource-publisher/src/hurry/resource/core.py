@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import pkg_resources
 
 try:
@@ -10,6 +11,7 @@ except ImportError:
         pass
     ZCA = False
 
+import hurry.resource
 from hurry.resource import interfaces
 import hurry.resource.hash
 
@@ -18,13 +20,19 @@ EXTENSIONS = ['.css', '.kss', '.js']
 class Library(object):
     implements(interfaces.ILibrary)
 
+    _hash = None
+
     def __init__(self, name, rootpath):
         self.name = name
         self.rootpath = rootpath
         self.path = os.path.join(caller_dir(), rootpath)
 
     def hash(self):
-        return hurry.resource.hash.checksum(self.path)
+        # Only compute the checksum if (1) it has not been computed before OR
+        # (2) we are in development mode.
+        if self._hash is None or hurry.resource.devmode:
+            self._hash = hurry.resource.hash.checksum(self.path)
+        return self._hash
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
@@ -416,7 +424,7 @@ inclusion_renderers = {
     '.js': render_js,
     }
 
-def render_inclusions(inclusions, base_url, hash_in_url=True):
+def render_inclusions(inclusions, base_url):
     """Render a set of inclusions.
 
     inclusions - the inclusions to render
@@ -424,12 +432,13 @@ def render_inclusions(inclusions, base_url, hash_in_url=True):
     """
     result = []
     hash_cache = {}
-    if not base_url.endswith('/'):
+    if base_url and not base_url.endswith('/'):
         base_url += '/'
     for inclusion in inclusions:
         library = inclusion.library
         library_url = base_url + inclusion.library.name + '/'
-        if hash_in_url:
+        if hurry.resource.hashing:
+             # For every request, compute the hash of each library only once.
              hash = hash_cache.get(library.name)
              if hash is None:
                  hash = library.hash()
