@@ -271,8 +271,13 @@ static char _zope_i18nmessageid_message_module_documentation[] =
 #ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
   #define PyMODINIT_FUNC void
 #endif
+
 PyMODINIT_FUNC
-init_zope_i18nmessageid_message(void)
+#if PY_MAJOR_VERSION >= 3
+ PyInit__zope_i18nmessageid_message(void)
+#else
+ init_zope_i18nmessageid_message(void)
+#endif
 {
   PyObject *m;
   /* Initialize types: */

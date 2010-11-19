@@ -121,8 +121,13 @@ try:
 	    DocFileSuite('messages.txt', package='zope.i18nmessageid'),
             unittest.makeSuite(PickleEqualityTests),
 	    ))
-except ImportError: # pragma: no cover
+except ImportError, e: # pragma: no cover
     # couldnt import C version
+    import sys
+    print '=' * 80
+    print "Could not import C version:"
+    print e
+    print '=' * 80
     def test_suite():
         return unittest.TestSuite((
 	    DocTestSuite('zope.i18nmessageid.message'),
