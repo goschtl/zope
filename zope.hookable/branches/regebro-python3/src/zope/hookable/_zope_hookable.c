@@ -206,41 +206,8 @@ static PyTypeObject hookabletype = {
 };
 
 
-/* Generic Module hacks */
-struct module_state {
-    PyObject *error;
-};
-
-#if PY_MAJOR_VERSION >= 3
-
-  #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
-  
-  static int extension_traverse(PyObject *m, visitproc visit, void *arg) {
-      Py_VISIT(GETSTATE(m)->error);
-      return 0;
-  }
-  
-  static int extension_clear(PyObject *m) {
-      Py_CLEAR(GETSTATE(m)->error);
-      return 0;
-  }
- 
-#else
-  #define GETSTATE(m) (&_state)
-  static struct module_state _state;
-#endif
-
-/* End module hacks */
-
-static PyObject *
-error_out(PyObject *m) {
-  struct module_state *st = GETSTATE(m);
-  PyErr_SetString(st->error, "zope.hookable module initialization failed");
-  return NULL;
-}
 
 static struct PyMethodDef zch_methods[] = {
-	{"error_out", (PyCFunction)error_out, METH_NOARGS, NULL},
 	{NULL, NULL}
 };
 
@@ -250,11 +217,11 @@ static struct PyMethodDef zch_methods[] = {
     PyModuleDef_HEAD_INIT,
     "_zope_hookable",/* m_name */
     "Provide an efficient implementation for hookable objects",/* m_doc */
-    sizeof(struct module_state),/* m_size */
+    -1,/* m_size */
     zch_methods,/* m_methods */
     NULL,/* m_reload */
-    extension_traverse,/* m_traverse */
-    extension_clear,/* m_clear */
+    NULL,/* m_traverse */
+    NULL,/* m_clear */
     NULL,/* m_free */
   };
 #endif
@@ -286,17 +253,13 @@ init_zope_hookable(void)
 
   if (m == NULL)
     return MOD_ERROR_VAL;
-  struct module_state *st = GETSTATE(m);
-
-  st->error = PyErr_NewException("myextension.Error", NULL, NULL);
-  if (st->error == NULL) {
-    Py_DECREF(m);
-    return MOD_ERROR_VAL;
-  }
   
   if (PyModule_AddObject(m, "hookable", (PyObject *)&hookabletype) < 0)
     return MOD_ERROR_VAL;
 
+#if PY_MAJOR_VERSION >= 3
   return m;
+#endif
+
 }
 
