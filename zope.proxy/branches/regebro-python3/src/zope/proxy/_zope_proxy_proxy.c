@@ -229,7 +229,7 @@ wrap_getattro(PyObject *self, PyObject *name)
 #if PY_MAJOR_VERSION < 3
     name_as_string = PyString_AS_STRING(name);
 #else
-    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
+    name_as_string = PyBytes_AS_STRING(name);
 #endif
 
     wrapped = Proxy_GET_OBJECT(self);
@@ -331,7 +331,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #if PY_MAJOR_VERSION < 3
     name_as_string = PyString_AS_STRING(name);
 #else
-    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
+    name_as_string = PyBytes_AS_STRING(name);
 #endif
 
     wrapped = Proxy_GET_OBJECT(self);
@@ -371,8 +371,6 @@ wrap_compare(PyObject *wrapper, PyObject *v)
 {
     return PyObject_Compare(Proxy_GET_OBJECT(wrapper), v);
 }
-#else
-  #define wrap_compare 0
 #endif
 
 static long
@@ -865,7 +863,11 @@ ProxyType = {
     wrap_print,				/* tp_print */
     0,					/* tp_getattr */
     0,					/* tp_setattr */
+#if PY_MAJOR_VERSION < 3
     wrap_compare,			/* tp_compare */
+#else
+    0,			                /* tp_reserved */
+#endif    
     wrap_repr,				/* tp_repr */
     &wrap_as_number,			/* tp_as_number */
     &wrap_as_sequence,			/* tp_as_sequence */
@@ -879,7 +881,7 @@ ProxyType = {
 #if PY_MAJOR_VERSION < 3
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC
         | Py_TPFLAGS_CHECKTYPES | Py_TPFLAGS_BASETYPE, /* tp_flags */ 
-#else // Checktypes is gone in Python 3, because there is no coersion
+#else // Py_TPFLAGS_CHECKTYPES is always true in Python 3 and removed.
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC
         | Py_TPFLAGS_BASETYPE, /* tp_flags */
 #endif
