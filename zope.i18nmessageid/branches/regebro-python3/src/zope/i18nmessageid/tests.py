@@ -122,8 +122,6 @@ try:
             unittest.makeSuite(PickleEqualityTests),
 	    ))
 except ImportError, e: # pragma: no cover
-    # couldnt import C version
-    import sys
     print '=' * 80
     print "Could not import C version:"
     print e

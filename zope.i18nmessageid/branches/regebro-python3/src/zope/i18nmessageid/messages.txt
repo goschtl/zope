@@ -65,16 +65,20 @@ through attributes:
 The message's attributes are considered part of the immutable message
 object.  They cannot be changed once the message id is created:
 
-  >>> def _assertReadonlyAttribute(thing, attrname, value):
-  ...     try:
-  ...         setattr(thing, attrname, value)
-  ...     except Exception, e:
-  ...         assert str(e) == 'readonly attribute'
-  ...     else:
-  ...         raise AssertionError("Assigned to read-only attribute")
-  >>> _assertReadonlyAttribute(robot, 'domain', "planetexpress")
-  >>> _assertReadonlyAttribute(robot, 'default', u"${name} is not a robot.")
-  >>> _assertReadonlyAttribute(robot, 'mapping',  {u'name': u'Bender'})
+  >>> robot.domain = "planetexpress"
+  Traceback (most recent call last):
+  ...
+  TypeError: readonly attribute
+
+  >>> robot.default = u"${name} is not a robot."
+  Traceback (most recent call last):
+  ...
+  TypeError: readonly attribute
+
+  >>> robot.mapping = {u'name': u'Bender'}
+  Traceback (most recent call last):
+  ...
+  TypeError: readonly attribute
 
 If you need to change their information, you'll have to make a new
 message id object:

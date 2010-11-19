@@ -33,7 +33,6 @@ if sys.version_info >= (3,):
                  convert_2to3_doctests = [
                      'src/zope/i18nmessageid/messages.txt',
                      ],
-                 dependency_links = ['.'],
                  )
 else:
     extra = {}
