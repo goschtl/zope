@@ -241,7 +241,7 @@ class ProxyTestCase(unittest.TestCase):
         P = self.new_proxy
         funcs = (lambda x: not x,)
         if sys.version < '3':
-            func += (oct, hex)
+            funcs += (oct, hex)
         for func in funcs:
             self.assertEqual(func(P(100)), func(100))
 
