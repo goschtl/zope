@@ -203,7 +203,7 @@ wrap_getattro(PyObject *self, PyObject *name)
     const char *name_as_string;
     int maybe_special_name;
 
-#ifdef Py_USING_UNICODE
+#if PY_MAJOR_VERSION < 3 && defined(Py_USING_UNICODE)
     /* The Unicode to string conversion is done here because the
        existing tp_getattro slots expect a string object as name
        and we wouldn't want to break those. */
@@ -229,8 +229,9 @@ wrap_getattro(PyObject *self, PyObject *name)
 #if PY_MAJOR_VERSION < 3
     name_as_string = PyString_AS_STRING(name);
 #else
-    name_as_string = PyBytes_AS_STRING(name);
+    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
 #endif
+    printf("======\n%s=======\n", name_as_string);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
@@ -293,7 +294,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     const char *name_as_string;
     int res = -1;
 
-#ifdef Py_USING_UNICODE
+#if PY_MAJOR_VERSION < 3 && defined(Py_USING_UNICODE)
     /* The Unicode to string conversion is done here because the
        existing tp_setattro slots expect a string object as name
        and we wouldn't want to break those. */
@@ -308,7 +309,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #if PY_MAJOR_VERSION < 3
     if (!PyString_Check(name)){
 #else
-    if (!PyUnicode_Check(name)){
+    if (!PyBytes_Check(name)){
 #endif
         PyErr_SetString(PyExc_TypeError, "attribute name must be string");
         return -1;
@@ -331,7 +332,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #if PY_MAJOR_VERSION < 3
     name_as_string = PyString_AS_STRING(name);
 #else
-    name_as_string = PyBytes_AS_STRING(name);
+    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
 #endif
 
     wrapped = Proxy_GET_OBJECT(self);

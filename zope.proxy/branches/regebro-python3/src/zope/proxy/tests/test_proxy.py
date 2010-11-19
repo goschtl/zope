@@ -162,8 +162,9 @@ class ProxyTestCase(unittest.TestCase):
         self.assert_(w2 <= o2)
 
     def test_proxy_callable(self):
-        w = self.new_proxy({}.get)
-        self.assert_(callable(w))
+        if sys.version < '3': # Gone in Python 3:
+            w = self.new_proxy({}.get)
+            self.assert_(callable(w))
 
     def test_proxy_item_protocol(self):
         w = self.new_proxy({})
@@ -220,8 +221,10 @@ class ProxyTestCase(unittest.TestCase):
 
     unops = [
         "-x", "+x", "abs(x)", "~x",
-        "int(x)", "long(x)", "float(x)",
+        "int(x)", "float(x)",
         ]
+    if sys.version < '3': # long is gone in Python 3
+        unops.append("long(x)") 
 
     def test_unops(self):
         P = self.new_proxy
