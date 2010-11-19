@@ -439,6 +439,8 @@ def render_inclusions(inclusions, base_url):
         library_url = base_url + inclusion.library.name + '/'
         if hurry.resource.hashing:
              # For every request, compute the hash of each library only once.
+             # XXX This is a suboptimal optimization that we would like to factor
+             # out.
              hash = hash_cache.get(library.name)
              if hash is None:
                  hash = library.hash()
