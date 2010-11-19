@@ -31,7 +31,7 @@ from distutils.errors import DistutilsPlatformError
 if sys.version_info >= (3,):
     extra = dict(use_2to3 = True,
                  convert_2to3_doctests = [
-                     'src/zope/i18messageis/messages.txt',
+                     'src/zope/i18nmessageid/messages.txt',
                      ],
                  dependency_links = ['.'],
                  )
