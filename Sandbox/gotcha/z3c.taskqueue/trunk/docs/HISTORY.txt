@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1-alpha-3 (unreleased)
+0.1-alpha-3 (2010-11-19)
 ------------------------
 
 - Fix : service.processNext would not reset CronJob runCount
