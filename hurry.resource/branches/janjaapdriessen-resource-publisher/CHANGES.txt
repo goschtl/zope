@@ -28,6 +28,11 @@ CHANGES
 
 - Publisher only sets cache control header on successful responses.
 
+- Configure hashing and devmode.
+
+- In devmode, don't re-compute the hash. The hash is stored on the Library
+  instance.
+
 0.10 (2010-07-24)
 =================
 
