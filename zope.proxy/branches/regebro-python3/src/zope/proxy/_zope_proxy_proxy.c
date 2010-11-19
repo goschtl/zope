@@ -231,7 +231,6 @@ wrap_getattro(PyObject *self, PyObject *name)
 #else
     name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
 #endif
-    printf("======\n%s=======\n", name_as_string);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {

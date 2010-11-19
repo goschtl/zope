@@ -239,7 +239,10 @@ class ProxyTestCase(unittest.TestCase):
     def test_odd_unops(self):
         # unops that don't return a proxy
         P = self.new_proxy
-        for func in hex, oct, lambda x: not x:
+        funcs = (lambda x: not x,)
+        if sys.version < '3':
+            func += (oct, hex)
+        for func in funcs:
             self.assertEqual(func(P(100)), func(100))
 
     binops = [
@@ -279,6 +282,9 @@ class ProxyTestCase(unittest.TestCase):
         self.assertEqual(pa, 4)
 
     def test_coerce(self):
+        if sys.version > '3':
+            # No coercion in Python 3
+            return
         P = self.new_proxy
 
         # Before 2.3, coerce() of two proxies returns them unchanged
