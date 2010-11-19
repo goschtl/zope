@@ -21,6 +21,8 @@ def configure_hashing(enable=True):
     global hashing
     hashing = enable
 
+hash_signature = 'hash'
+
 devmode = False
 
 def configure_devmode(enable=True):

@@ -28,8 +28,8 @@ class Library(object):
         self.path = os.path.join(caller_dir(), rootpath)
 
     def hash(self):
-        # Only compute the checksum if (1) it has not been computed before OR
-        # (2) we are in development mode.
+        # Only compute the checksum if (1) it has not been computed
+        # before or (2) we are in development mode.
         if self._hash is None or hurry.resource.devmode:
             self._hash = hurry.resource.hash.checksum(self.path)
         return self._hash
@@ -434,21 +434,22 @@ def render_inclusions(inclusions, base_url):
     hash_cache = {}
     if base_url and not base_url.endswith('/'):
         base_url += '/'
+        
+    signature = ''
     for inclusion in inclusions:
         library = inclusion.library
-        library_url = base_url + inclusion.library.name + '/'
         if hurry.resource.hashing:
-             # For every request, compute the hash of each library only once.
-             # XXX This is a suboptimal optimization that we would like to factor
-             # out.
+             # For every request, compute the hash of each library
+             # only once.  XXX This is a suboptimal optimization that
+             # we would like to factor out.
              hash = hash_cache.get(library.name)
              if hash is None:
                  hash = library.hash()
                  hash_cache[library.name] = hash
-             library_url += 'hash:%s/' % hash
-
-        result.append(render_inclusion(inclusion,
-                                       library_url + inclusion.relpath))
+             signature = ':%s:%s/' % (hurry.resource.hash_signature, hash)
+        library_url = base_url + signature + inclusion.library.name + '/'
+        result.append(render_inclusion(
+            inclusion, library_url + inclusion.relpath))
     return '\n'.join(result)
 
 def render_inclusion(inclusion, url):

@@ -1,3 +1,4 @@
+import webob
 from paste.request import path_info_pop, path_info_split
 from paste.fileapp import DirectoryApp, CACHE_CONTROL, EXPIRES
 from paste.httpexceptions import HTTPNotFound
@@ -15,17 +16,34 @@ class FilterHiddenDirectoryApp(DirectoryApp):
 
 
 class Publisher(object):
-    def __init__(self):
+    def __init__(self, app, **local_conf):
+        self._wrapped_app = app
         self.directory_apps = {}
         for library in hurry.resource.libraries():
             app = FilterHiddenDirectoryApp(library.path)
             self.directory_apps[library.name] = app
 
     def __call__(self, environ, start_response):
-        # When configured through Paste#urlmap, the WSGI environ['PATH_INFO']
-        # does not contain the mapping URL segment any more.
+        path = environ['PATH_INFO']
+        if hurry.resource.hash_signature not in path:
+            # There's no hash signature found in the path, so we
+            # cannot publish it from here. Leave the response to the
+            # wrapped app.
+            request = webob.Request(environ)
+            response = request.get_response(self._wrapped_app)
+            return response(environ, start_response)
 
-        library_name = path_info_pop(environ)
+        library_name = ''
+        next_ = path_info_pop(environ)
+        while next_:
+            if next_.startswith(':%s:' % hurry.resource.hash_signature):
+                # Skip over hash signature segment. The library name
+                # will be that of the next step.
+                library_name = path_info_pop(environ)
+                break
+            next_ = path_info_pop(environ)
+            print 'STEPPIE', library_name, path, environ['PATH_INFO']
+
         try:
             directory_app = self.directory_apps[library_name]
         except KeyError:
@@ -39,16 +57,8 @@ class Publisher(object):
                 EXPIRES.update(headers, delta=expires)
             return start_response(status, headers, exc_info)
 
-        response = start_response
-
-        next_segment = path_info_split(environ['PATH_INFO'])[0]
-        if next_segment is not None and next_segment.startswith('hash:'):
-            # Our hashed urls start with 'hash:'. Skip these URL segments.
-            path_info_pop(environ)
-            response = cache_header_start_response
-
+        response = cache_header_start_response
         return directory_app(environ, response)
 
-
-def make_publisher(global_conf):
-    return Publisher()
+def make_publisher(app, global_conf, **local_conf):
+    return Publisher(app, **local_conf)

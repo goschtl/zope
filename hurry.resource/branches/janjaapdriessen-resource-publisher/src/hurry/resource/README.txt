@@ -753,9 +753,9 @@ need to include on the top of our page (just under the ``<head>`` tag
 for instance)::
 
   >>> print needed.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
 
 Let's set this a currently needed inclusions::
 
@@ -766,9 +766,9 @@ the currently needed inclusion::
 
   >>> from hurry import resource
   >>> print resource.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
 
 Hashing resources
 =================
@@ -786,7 +786,7 @@ to do that over the phone every time.)'
 To make browsers update their caches of resources immediately when the
 resource changes, the absolute URLs of resources can now be made to contain a
 hash of the resource's contents, so it will look like
-/foo/hash:12345/myresource instead of /foo/myresource.
+/foo/:hash:12345/myresource instead of /foo/myresource.
 
 The default hashing behavior can be changed by setting the 'hashing' variable
 in the hurry.resource module through the `configure_hashing` function::
@@ -800,9 +800,9 @@ in the hurry.resource module through the `configure_hashing` function::
 
   >>> hurry.resource.configure_hashing(True)
   >>> print resource.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
 
 More about the devmode in a minute::
 
@@ -881,9 +881,9 @@ on ``needed``::
 
   >>> print needed.render_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   something more</head></html>
 
 The top-level convenience function does this for the currently needed
@@ -891,9 +891,9 @@ resources::
 
   >>> print resource.render_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:...b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   something more</head></html>
 
 See below for a way to insert into HTML when bottom fragments are
@@ -914,9 +914,9 @@ and ``bottom`` fragments::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   >>> print bottom
   <BLANKLINE>
 
@@ -931,9 +931,9 @@ the bottom, even this explicit call will not result in any changes::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   >>> print bottom
   <BLANKLINE>
 
@@ -943,10 +943,10 @@ rendered in the bottom fragment::
   >>> needed.bottom(force=True)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
 
 Let's now introduce a javascript resource that says it is safe to be
 included on the bottom::
@@ -963,10 +963,10 @@ show up in the top fragment after all::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script>
   >>> print bottom
   <BLANKLINE>
 
@@ -978,22 +978,22 @@ We now see the resource ``y2`` show up in the bottom fragment::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script>
 
 There's also a convenience function for the currently needed inclusion::
 
   >>> request.needed = needed
   >>> top, bottom = resource.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script>
 
 When we force bottom rendering of Javascript, there is no effect of
 making a resource bottom-safe: all ``.js`` resources will be rendered
@@ -1002,11 +1002,11 @@ at the bottom anyway::
   >>> needed.bottom(force=True)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script>
 
 Note that if ``bottom`` is enabled, it makes no sense to have a
 resource inclusion ``b`` that depends on a resource inclusion ``a``
@@ -1037,20 +1037,20 @@ To insert the resources directly in HTML we can use
 
   >>> print needed.render_topbottom_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script></body></html>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script></body></html>
 
 There's also a function available to do this for the currently needed
 resources::
 
   >>> print resource.render_topbottom_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../y2.js"></script></body></html>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/y2.js"></script></body></html>
 
 Using WSGI middleware to insert into HTML
 =========================================
@@ -1085,9 +1085,9 @@ We can now see that the resources are added to the HTML by the middleware::
 
   >>> print res.body
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/hash:.../b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../c.js"></script>
+      <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/c.js"></script>
   </head><body</body></html>
 
 When we set the response Content-Type to non-HTML, the middleware
@@ -1121,7 +1121,7 @@ Let's look at the resources needed by default::
   >>> c.base_url = 'http://localhost/static'
   >>> top, bottom = c.render_topbottom()
   >>> print top
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../l1.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/l1.js"></script>
   >>> print bottom
   <BLANKLINE>
 
@@ -1137,7 +1137,7 @@ Re-rendering will show it's honoring the bottom setting::
   >>> print top
   <BLANKLINE>
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/foo/hash:.../l1.js"></script>
+  <script type="text/javascript" src="http://localhost/static/:hash:.../foo/l1.js"></script>
 
 Generating resource code
 ========================
@@ -1257,7 +1257,7 @@ Now let's add a renderer for our ".unknown" extension and try again:
   >>> inclusion_renderers['.unknown'] = render_unknown
 
   >>> render_inclusions([a6], 'http://localhost/static/')
-  '<link rel="unknown" href="http://localhost/static/foo/hash:.../nothing.unknown" />'
+  '<link rel="unknown" href="http://localhost/static/:hash:.../foo/nothing.unknown" />'
 
 
 Resource publisher
@@ -1268,7 +1268,11 @@ resource libraries.
 
   >>> from hurry.resource.publisher import Publisher
   >>> from paste.fixture import TestApp
-  >>> app = TestApp(Publisher())
+  >>> from paste.httpexceptions import HTTPNotFound
+  >>> class NoFindNoResource(object):
+  ... 	    def __call__(self, environ, start_response):
+  ...	    	return HTTPNotFound()(environ, start_response)
+  >>> app = TestApp(Publisher(NoFindNoResource()))
 
 We don't do anything fancy if the resource can not be found, but raise 404.
 
@@ -1279,19 +1283,19 @@ We don't do anything fancy if the resource can not be found, but raise 404.
 The resources are handled by paste.fileapp.DirectoryApp, which sets the
 ETag header, among other things::
 
-  >>> res = app.get('/foo/style.css')
-  >>> print res.body
+  <<< res = app.get('/foo/style.css')
+  <<< print res.body
   body {
     color: #f00;
   }
-  >>> headers = dict(res.headers)
-  >>> 'ETag' in headers
+  <<< headers = dict(res.headers)
+  <<< 'ETag' in headers
   True
 
 When we find the 'hash' marker in the requested URL, we send headers that let
 the user agent cache the resources for a long time.
 
-  >>> res = app.get('/foo/hash:12345/style.css')
+  >>> res = app.get('/:hash:12345/foo/style.css')
   >>> headers = dict(res.headers)
   >>> 'Expires' in headers
   True
@@ -1300,7 +1304,7 @@ the user agent cache the resources for a long time.
 
 We don't set cache-control headers on non-successful responses::
 
-  >>> res = app.get('/foo/hash:12345/notfound.css', expect_errors=True)
+  >>> res = app.get('/:hash:12345/foo/notfound.css', expect_errors=True)
   >>> headers = dict(res.headers)
   >>> 'Expires' in headers
   False
