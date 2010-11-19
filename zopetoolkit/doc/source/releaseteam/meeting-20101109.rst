@@ -17,20 +17,20 @@ Discussion
 ----------
 
 Grok-1.2 has been released, based on ZTK-1.0. Grok still depends on a
-handful of "zope.app.*" packages. J-w will list them. Execpt for
+handful of "zope.app.*" packages. J-w will list them. Except for
 these, all other zope.app.* package will be deprecated for ZTK-1.1.
 
 BlueBream is using ZTK-1.0 and only short of an 1.0 release.
 
 zope.app.authentication will be deprecated, and the latest
-zope.pluggableauth inluded in the ZTK.
+zope.pluggableauth included in the ZTK.
 
 ZTK-1.1 is supposed to run on Python-2.7, Python-2.4 support is
 dropped. This means, the ZODB version can be updated to
-3.10.x. There're actually many more package that can now be updated in
+3.10.x. There are actually many more package that can now be updated in
 the ZTK, like zope.testing and zope.testrunner.
 
-The ZTK would like to use distribute by default. 
+The ZTK would like to use Distribute by default. 
 
 The buildout.cfg files in maintenance branches of packages in the ZTK
 should extend from a specific version of the ZTK themselves to get a
@@ -46,12 +46,15 @@ with Lennart Regebro about the current status.
 Hanno will check for minor version updates in the packages and see if
 it warrants a ZTK-1.0.1 release.
 
+
 Tasks
 -----
 
-* update minor version of pacakges for ZTK-1.0.1 [hannosh]
+* update minor version of packages for ZTK-1.0.1 [hannosh]
 
 * deprecate zope.app.* from ZTK trunk [j-w]
+
+* update all packages in the ZTK trunk [ccomb]
 
 Next meeting
 ------------
