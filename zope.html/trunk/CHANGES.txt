@@ -2,7 +2,14 @@
 CHANGES
 =======
 
+2.2.0 (2010-11-19)
+------------------
+
+- Make the use of un-minified ckeditor source explicit
+
+
 2.1.0 (2010-05-25)
+------------------
 
 - Use CKEditor 3.2.1
 

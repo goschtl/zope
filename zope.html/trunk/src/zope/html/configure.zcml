@@ -74,14 +74,15 @@
 
   <resourceLibrary name="ckeditor">
     <directory
-        zcml:condition="have devmode"
-        source="ckeditor"
-        include="3.2.1/ckeditor/ckeditor_source.js"
-        />
-    <directory
-        zcml:condition="not-have devmode"
         source="ckeditor"
         include="3.2.1/ckeditor/ckeditor.js"
+        />
+  </resourceLibrary>
+
+  <resourceLibrary name="ckeditor_dev">
+    <directory
+        source="ckeditor"
+        include="3.2.1/ckeditor/ckeditor_source.js"
         />
   </resourceLibrary>
 
