@@ -221,6 +221,8 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
                 job.error = error
                 if job.status != interfaces.CRONJOB:
                     job.status = interfaces.ERROR
+                else:
+                    storage.runCount = 0
         job.completed = datetime.datetime.now()
         return True
 
@@ -311,7 +313,8 @@ class BaseTaskService(contained.Contained, persistent.Persistent):
         #
         db = z3c.taskqueue.GLOBALDB
         if db is None:
-            raise ValueError('z3c.taskqueue.GLOBALDB is not initialized; should be done with IDatabaseOpenedWithRootEvent')
+            raise ValueError('z3c.taskqueue.GLOBALDB is not initialized; '
+                'should be done with IDatabaseOpenedWithRootEvent')
         processor = self.processorFactory(
             db, servicePath, **self.processorArguments)
         threadName = self._threadName()
