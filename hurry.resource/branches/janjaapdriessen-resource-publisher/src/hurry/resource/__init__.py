@@ -14,3 +14,15 @@ from hurry.resource.core import (sort_inclusions_topological,
 
 from hurry.resource.core import (register_plugin,
                                  get_current_needed_inclusions)
+
+hashing = True
+
+def configure_hashing(enable=True):
+    global hashing
+    hashing = enable
+
+devmode = False
+
+def configure_devmode(enable=True):
+    global devmode
+    devmode = enable
