@@ -243,43 +243,9 @@ MessageType = {
 /* -------------------------------------------------------- */
 
 
-/* Generic Module hacks */
-struct module_state {
-    PyObject *error;
-};
-
-#if PY_MAJOR_VERSION >= 3
-
-  #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
-  
-  static int extension_traverse(PyObject *m, visitproc visit, void *arg) {
-      Py_VISIT(GETSTATE(m)->error);
-      return 0;
-  }
-  
-  static int extension_clear(PyObject *m) {
-      Py_CLEAR(GETSTATE(m)->error);
-      return 0;
-  }
- 
-#else
-  #define GETSTATE(m) (&_state)
-  static struct module_state _state;
-#endif
-
-/* End module hacks */
-
-static PyObject *
-error_out(PyObject *m) {
-  struct module_state *st = GETSTATE(m);
-  PyErr_SetString(st->error, "zope.hookable module initialization failed");
-  return NULL;
-}
-
 /* List of methods defined in the module */
 static struct PyMethodDef _zope_i18nmessageid_message_methods[] = {
   {NULL, (PyCFunction)NULL, 0, NULL},         /* sentinel */
-  {"error_out", (PyCFunction)error_out, METH_NOARGS, NULL},
 };
 
 static char _zope_i18nmessageid_message_module_name[] =
@@ -293,11 +259,11 @@ static char _zope_i18nmessageid_message_module_documentation[] =
     PyModuleDef_HEAD_INIT,
     _zope_i18nmessageid_message_module_name,/* m_name */
     _zope_i18nmessageid_message_module_documentation,/* m_doc */
-    sizeof(struct module_state),/* m_size */
+    -1,/* m_size */
     _zope_i18nmessageid_message_methods,/* m_methods */
     NULL,/* m_reload */
-    extension_traverse,/* m_traverse */
-    extension_clear,/* m_clear */
+    NULL,/* m_traverse */
+    NULL,/* m_clear */
     NULL,/* m_free */
   };
 #endif
