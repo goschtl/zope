@@ -294,7 +294,8 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #if PY_MAJOR_VERSION < 3 && defined(Py_USING_UNICODE)
     /* The Unicode to string conversion is done here because the
        existing tp_setattro slots expect a string object as name
-       and we wouldn't want to break those. */
+       (except under Python 3) and we wouldn't want to break those. */
+
     if (PyUnicode_Check(name)) {
         name = PyUnicode_AsEncodedString(name, NULL, NULL);
         if (name == NULL)
@@ -306,7 +307,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #if PY_MAJOR_VERSION < 3
     if (!PyString_Check(name)){
 #else
-    if (!PyBytes_Check(name)){
+    if (!PyUnicode_Check(name)){
 #endif
         PyErr_SetString(PyExc_TypeError, "attribute name must be string");
         return -1;
