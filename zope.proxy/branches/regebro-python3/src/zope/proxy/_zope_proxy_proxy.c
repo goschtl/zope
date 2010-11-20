@@ -204,8 +204,8 @@ wrap_getattro(PyObject *self, PyObject *name)
 
 #if PY_MAJOR_VERSION < 3 && defined(Py_USING_UNICODE)
     /* The Unicode to string conversion is done here because the
-       existing tp_getattro slots expect a string object as name
-       and we wouldn't want to break those. */
+       existing tp_setattro slots expect a string object as name
+       (except under Python 3) and we wouldn't want to break those. */
     if (PyUnicode_Check(name)) {
         name = PyUnicode_AsEncodedString(name, NULL, NULL);
         if (name == NULL)
@@ -387,10 +387,6 @@ wrap_call(PyObject *self, PyObject *args, PyObject *kw)
     else
         return PyObject_CallObject(Proxy_GET_OBJECT(self), args);
 }
-
-/*
- *   Number methods
- */
 
 /*
  * Number methods.
@@ -851,6 +847,12 @@ wrap_methods[] = {
  * sides the way weakrefs do, since we don't know what semantics will
  * be associated with the wrapper itself.
  */
+
+// Python < 2.6	support:
+#ifndef PyVarObject_HEAD_INIT
+  #define PyVarObject_HEAD_INIT(type, size) \
+          _PyObject_EXTRA_INIT 1, type, size,
+#endif
 
 static PyTypeObject
 ProxyType = {
