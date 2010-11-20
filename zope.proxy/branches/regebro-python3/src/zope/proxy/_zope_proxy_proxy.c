@@ -176,14 +176,13 @@ WrapperType_Lookup(PyTypeObject *type, PyObject *name)
 #if PY_MAJOR_VERSION < 3
             if (PyClass_Check(base))
                 dict = ((PyClassObject *)base)->cl_dict;
-            else {
+            else 
+#endif
+	    {
                 assert(PyType_Check(base));
                 dict = ((PyTypeObject *)base)->tp_dict;
             }
-#else
-	    assert(PyType_Check(base));
-	    dict = ((PyTypeObject *)base)->tp_dict;
-#endif
+	    
             assert(dict && PyDict_Check(dict));
             res = PyDict_GetItem(dict, name);
             if (res != NULL)
@@ -247,11 +246,11 @@ wrap_getattro(PyObject *self, PyObject *name)
         descriptor = WrapperType_Lookup(self->ob_type, name);
 
         if (descriptor != NULL) {
-	    /* Support for old style classes */
-#if PY_MAJOR_VERSION < 3
-            if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
-                && descriptor->ob_type->tp_descr_get != NULL) {
-
+            if (descriptor->ob_type->tp_descr_get != NULL 
+#if PY_MAJOR_VERSION < 3 // Always true in Python 3
+		&& PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
+#endif	    
+	    ){
               if (descriptor->ob_type->tp_descr_set == NULL)
                 {
                   res = PyObject_GetAttr(wrapped, name);
@@ -269,7 +268,6 @@ wrap_getattro(PyObject *self, PyObject *name)
                         (PyObject *)self->ob_type);
             }
 	    else 
-#endif	    
 	    {
                 Py_INCREF(descriptor);
                 res = descriptor;
