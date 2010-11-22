@@ -1,8 +1,6 @@
 import webob
 
 NEEDED = 'hurry.resource.needed'
-PUBLISHER_PREFIX = 'hurry.resource.publisher_prefix'
-
 
 # TODO: would be nice to make middleware smarter so it could work with
 # a streamed HTML body instead of serializing it out to body. That
@@ -11,17 +9,11 @@ PUBLISHER_PREFIX = 'hurry.resource.publisher_prefix'
 
 class InjectMiddleWare(object):
 
-    def __init__(self, application, publisher_prefix=None):
+    def __init__(self, application):
         self.application = application
-        self.publisher_prefix = publisher_prefix
 
     def __call__(self, environ, start_response):
         request = webob.Request(environ)
-
-        if self.publisher_prefix is not None:
-            # Inform the wrapped application of the presence of a resource
-            # publisher and resource URLs may thus be routed to this publisher.
-            environ[PUBLISHER_PREFIX] = self.publisher_prefix
 
         # Get the response from the wrapped application:
         response = request.get_response(self.application)

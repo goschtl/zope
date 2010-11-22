@@ -15,12 +15,6 @@ from hurry.resource.core import (sort_inclusions_topological,
 from hurry.resource.core import (register_plugin,
                                  get_current_needed_inclusions)
 
-hashing = True
-
-def configure_hashing(enable=True):
-    global hashing
-    hashing = enable
-
 publisher_signature = ':hash:'
 
 devmode = False

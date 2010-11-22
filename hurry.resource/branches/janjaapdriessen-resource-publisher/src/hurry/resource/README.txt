@@ -733,7 +733,7 @@ Now let's try to render these inclusions::
   >>> print needed.render()
   Traceback (most recent call last):
     ...
-  TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+  AttributeError: 'NoneType' object has no attribute 'endswith'
 
 That didn't work. In order to render an inclusion, we need to tell
 ``hurry.resource`` the base URL for a resource inclusion. We
@@ -788,17 +788,6 @@ resource changes, the absolute URLs of resources can now be made to contain a
 hash of the resource's contents, so it will look like
 /foo/:hash:12345/myresource instead of /foo/myresource.
 
-The default hashing behavior can be changed by setting the 'hashing' variable
-in the hurry.resource module through the `configure_hashing` function::
-
-  >>> import hurry.resource
-  >>> hurry.resource.configure_hashing(False)
-  >>> print resource.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
-
-  >>> hurry.resource.configure_hashing(True)
   >>> print resource.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/:hash:.../foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/:hash:.../foo/a.js"></script>
@@ -806,22 +795,23 @@ in the hurry.resource module through the `configure_hashing` function::
 
 More about the devmode in a minute::
 
+  >>> import hurry.resource
   >>> hurry.resource.configure_devmode(True)
 
 The hash of a library is computed based on the contents of the directory.
 If we alter the contents of the directory, the hash is updated.
 
-  >>> before_hash = foo.hash()
+  >>> before_hash = foo.signature()
   >>> from pkg_resources import resource_filename, resource_string
   >>> before = resource_string('mypackage', 'resources/style.css')
   >>> mypackage_style = resource_filename('mypackage', 'resources/style.css')
   >>> open(mypackage_style, 'w').write('body {color: #0f0;}')
-  >>> foo.hash() == before_hash
+  >>> foo.signature() == before_hash
   False
 
   >>> # Reset the content.
   >>> open(mypackage_style, 'w').write(before)
-  >>> foo.hash() == before_hash
+  >>> foo.signature() == before_hash
   True
 
 Any VCS directories are ignored in calculating the hash:
@@ -833,7 +823,7 @@ Any VCS directories are ignored in calculating the hash:
   ...                            os.path.join('resources', 'sub', '.svn')))
   >>> open(os.path.join(resource_filename('mypackage', 'resources/sub/.svn'), 'test'),
   ...     'w').write('test')
-  >>> foo.hash() == before_hash
+  >>> foo.signature() == before_hash
   True
 
 In developer mode the hash is recomputed each time the resource is asked for
@@ -846,23 +836,23 @@ variable in the hurry.resource module and can be set with the convenience
 function `hurry.resource.configure_devmode`.
 
   >>> hurry.resource.configure_devmode(True)
-  >>> before_hash = foo.hash()
+  >>> before_hash = foo.signature()
   >>> foo_sub_dir = resource_filename('mypackage', 'resources/sub')
   >>> open(os.path.join(foo_sub_dir, 'test'), 'w').write('test')
   >>> # The hash is newly computed.
-  >>> foo.hash() is not before_hash
+  >>> foo.signature() is not before_hash
   True
 
 When we are not in devmode, the hash is not computed again:
 
   >>> hurry.resource.configure_devmode(False)
-  >>> before_hash = foo.hash()
+  >>> before_hash = foo.signature()
   >>> open(os.path.join(foo_sub_dir, 'test2'), 'w').write('test2')
   >>> # The hash is not newly computed.
-  >>> foo.hash() is before_hash
+  >>> foo.signature() is before_hash
   True
   >>> hurry.resource.configure_devmode(True)
-  >>> foo.hash() is before_hash
+  >>> foo.signature() is before_hash
   False
 
 

@@ -18,6 +18,7 @@ class FilterHiddenDirectoryApp(DirectoryApp):
 
 
 class Publisher(object):
+    
     def __init__(self, app):
         self._wrapped_app = app
         self.directory_apps = {}
@@ -65,4 +66,4 @@ class Publisher(object):
         return directory_app(environ, cache_header_start_response)
 
 def make_publisher(app, global_conf):
-    return Publisher(app, **local_conf)
+    return Publisher(app)

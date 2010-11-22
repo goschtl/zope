@@ -20,19 +20,24 @@ EXTENSIONS = ['.css', '.kss', '.js']
 class Library(object):
     implements(interfaces.ILibrary)
 
-    _hash = None
+    _signature = None
 
     def __init__(self, name, rootpath):
         self.name = name
         self.rootpath = rootpath
         self.path = os.path.join(caller_dir(), rootpath)
 
-    def hash(self):
+    def signature(self):
         # Only compute the checksum if (1) it has not been computed
         # before or (2) we are in development mode.
-        if self._hash is None or hurry.resource.devmode:
-            self._hash = hurry.resource.hash.checksum(self.path)
-        return self._hash
+        if self._signature is None or hurry.resource.devmode:
+            self._signature = hurry.resource.hash.checksum(self.path)
+        return self._signature
+
+    def url(self, base_url):
+        return '%s%s%s/%s/' % (
+            base_url, hurry.resource.publisher_signature,
+            self.signature(), self.name)
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
@@ -431,25 +436,17 @@ def render_inclusions(inclusions, base_url):
     base_url - the base url for resource inclusions.
     """
     result = []
-    hash_cache = {}
-    if base_url and not base_url.endswith('/'):
+    if not base_url.endswith('/'):
         base_url += '/'
 
+    url_cache = {} # prevent multiple computations for a library in one request
     for inclusion in inclusions:
-        signature = ''
         library = inclusion.library
-        if hurry.resource.hashing:
-             # For every request, compute the hash of each library
-             # only once.  XXX This is a suboptimal optimization that
-             # we would like to factor out.
-             hash = hash_cache.get(library.name)
-             if hash is None:
-                 hash = library.hash()
-                 hash_cache[library.name] = hash
-             signature = '%s%s/' % (hurry.resource.publisher_signature, hash)
-        library_url = base_url + signature + inclusion.library.name + '/'
-        result.append(render_inclusion(
-            inclusion, library_url + inclusion.relpath))
+        library_url = url_cache.get(library.name)
+        if library_url is None:
+            library_url = url_cache[library.name] = library.url(base_url)
+        result.append(
+            render_inclusion(inclusion, library_url + inclusion.relpath))
     return '\n'.join(result)
 
 def render_inclusion(inclusion, url):
