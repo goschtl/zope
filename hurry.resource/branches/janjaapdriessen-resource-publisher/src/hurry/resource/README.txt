@@ -231,23 +231,23 @@ We will summarize the optimization features here and tell you how to
 enable them. Later sections below go into more details.
 
 * minified resources. Resources can specify minified versions using
-  the mode system. You can use ``hurry.resource.mode('minified')``
-  somewhere in the request handling of your application. This will
-  make sure that resources included on your page are supplied as
-  minified versions, if these are available.
+  the mode system. You can pass the ``mode`` argument 'minified' to
+  CurrentlyNeededInclusions. This will make sure that resources
+  included on your page are supplied as minified versions, if these
+  are available. XXX
 
 * rolling up of resources.  Resource libraries can specify rollup
   resources that combine multiple resources into one. This reduces the
   amount of server requests to be made by the web browser, and can
-  help with caching. To enable rolling up, call
-  ``hurry.resource.rollup`` somewhere in your request handling.
+  help with caching. To enable rolling up, you can set the ``rollup``
+  argument to CurrentlyNeededInclusions. XXX
 
 * javascript inclusions at the bottom of the web page. If your
   framework integration uses the special ``render_topbottom`` method,
   you can enable the inclusion of javascript files at the bottom by
   calling ``hurry.resource.bottom()``. This will only include
   resources at the bottom that have explicitly declared themselves to
-  be *bottom-safe*. You can declare a resource bottom safe by passing
+  be *bottom-safe*. XXX You can declare a resource bottom safe by passing
   ``bottom=True`` when constructing a ``ResourceInclusion``. If you
   want to force all javascript to be including at the bottom of the
   page by default, you can call ``hurry.resource.bottom(force=True)``.
@@ -394,7 +394,8 @@ By default, we get ``k.js``::
 We can however also get the resource for mode ``debug`` and get
 ``k-debug.js``::
 
-  >>> needed.mode('debug')
+  >>> needed = NeededInclusions(mode='debug')
+  >>> needed.need(k1)
   >>> needed.inclusions()
   [<ResourceInclusion 'k-debug.js' in library 'foo'>]
 
@@ -403,18 +404,19 @@ you to specify a different ``library`` argumnent::
 
   >>> k2 = ResourceInclusion(foo, 'k2.js',
   ...                        debug=ResourceInclusion(foo, 'k2-debug.js'))
-  >>> needed = NeededInclusions()
-  >>> needed.need(k2)
 
 By default we get ``k2.js``::
 
+  >>> needed = NeededInclusions()
+  >>> needed.need(k2)
   >>> needed.inclusions()
   [<ResourceInclusion 'k2.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
 ``k2-debug.js``::
 
-  >>> needed.mode('debug')
+  >>> needed = NeededInclusions(mode='debug')
+  >>> needed.need(k2)
   >>> needed.inclusions()
   [<ResourceInclusion 'k2-debug.js' in library 'foo'>]
 
@@ -424,8 +426,7 @@ they functionally should do the same.
 If you request a mode and a resource doesn't support it, it will
 return its default resource instead::
 
-  >>> needed = NeededInclusions()
-  >>> needed.mode('minified')
+  >>> needed = NeededInclusions(mode='minified')
   >>> needed.need(k1)
   >>> needed.inclusions()
   [<ResourceInclusion 'k.js' in library 'foo'>]
@@ -452,39 +453,7 @@ mode is equal to the minified mode, like this::
 
 If the developer wants to debug, he will need to disable rolling up
 (by calling ``hurry.resource.rollup(disable=True)``, or by simply
-never calling ``hurry.resource.rollup()`` in the request cycle).
-
-Mode convenience
-================
-
-Like for ``need``, there is also a convenience spelling for
-``mode``. It uses ``ICurrentNeededInclusions``, which we've already
-set up to look at the ``request.needed`` variable. Let's set up
-a new request::
-
-  >>> request = Request()
-
-Let's set up a resource and need it::
-
-  >>> l1 = ResourceInclusion(foo, 'l1.js', debug='l1-debug.js')
-  >>> l1.need()
-
-Let's look at the resources needed by default::
-
-  >>> c = get_current_needed_inclusions()
-  >>> c.inclusions()
-  [<ResourceInclusion 'l1.js' in library 'foo'>]
-
-Let's now change the mode using the convenience
-``hurry.resource.mode`` spelling::
-
-  >>> from hurry.resource import mode
-  >>> mode('debug')
-
-When we request the resources now, we get them in the ``debug`` mode::
-
-  >>> c.inclusions()
-  [<ResourceInclusion 'l1-debug.js' in library 'foo'>]
+never calling ``hurry.resource.rollup()`` in the request cycle). XXX
 
 "Rollups"
 =========
@@ -514,13 +483,7 @@ Without rollups enabled nothing special happens::
 
 Let's enable rollups::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
-
-The convenience spelling to enable rollups during request handling
-looks like this::
-
-  hurry.resource.rollup()
+  >>> needed = NeededInclusions(rollup=True)
 
 If we now find multiple resources that are also part of a
 consolidation, the system automatically collapses them::
@@ -533,8 +496,7 @@ consolidation, the system automatically collapses them::
 The system will by default only consolidate exactly. That is, if only a single
 resource out of two is present, the consolidation will not be triggered::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(b1)
   >>> needed.inclusions()
   [<ResourceInclusion 'b1.js' in library 'foo'>]
@@ -548,16 +510,14 @@ Let's look at this with a larger consolidation of 3 resources::
 
 It will not roll up one resource::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(c1)
   >>> needed.inclusions()
   [<ResourceInclusion 'c1.css' in library 'foo'>]
 
 Neither will it roll up two resources::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(c1)
   >>> needed.need(c2)
   >>> needed.inclusions()
@@ -566,8 +526,7 @@ Neither will it roll up two resources::
 
 It will however roll up three resources::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(c1)
   >>> needed.need(c2)
   >>> needed.need(c3)
@@ -597,8 +556,7 @@ requirements have been met, we can indicate this::
 We will see ``giantd.js`` kick in even if we only require ``d1`` and
 ``d2``::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.inclusions()
@@ -607,8 +565,7 @@ We will see ``giantd.js`` kick in even if we only require ``d1`` and
 In fact even if we only need a single resource the eager superseder will
 show up instead::
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(d1)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantd.js' in library 'foo'>]
@@ -619,8 +576,7 @@ be taken::
   >>> d4 = ResourceInclusion(foo, 'd4.js')
   >>> giantd_bigger = ResourceInclusion(foo, 'giantd-bigger.js',
   ...   supersedes=[d1, d2, d3, d4], eager_superseder=True)
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.inclusions()
@@ -631,8 +587,7 @@ will be taken::
 
   >>> giantd_noneager = ResourceInclusion(foo, 'giantd-noneager.js',
   ...   supersedes=[d1, d2, d3, d4])
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.need(d3)
@@ -652,8 +607,7 @@ resources will be used::
   ...   supersedes=[e1, e2])
   >>> giante_three = ResourceInclusion(foo, 'giante-three.js',
   ...   supersedes=[e1, e2, e3])
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(e1)
   >>> needed.need(e2)
   >>> needed.need(e3)
@@ -667,13 +621,14 @@ Consolidation also works with modes::
   >>> giantf = ResourceInclusion(foo, 'giantf.js', supersedes=[f1, f2],
   ...                            debug='giantf-debug.js')
 
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(f1)
   >>> needed.need(f2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantf.js' in library 'foo'>]
-  >>> needed.mode('debug')
+  >>> needed = NeededInclusions(rollup=True, mode='debug')
+  >>> needed.need(f1)
+  >>> needed.need(f2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantf-debug.js' in library 'foo'>]
 
@@ -685,13 +640,14 @@ modes have no effect::
   >>> g2 = ResourceInclusion(foo, 'g2.js')
   >>> giantg = ResourceInclusion(foo, 'giantg.js', supersedes=[g1, g2],
   ...                            debug='giantg-debug.js')
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(g1)
   >>> needed.need(g2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
-  >>> needed.mode('debug')
+  >>> needed = NeededInclusions(rollup=True, mode='debug')
+  >>> needed.need(g1)
+  >>> needed.need(g2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
 
@@ -701,8 +657,7 @@ does not? Let's look at that scenario::
   >>> h1 = ResourceInclusion(foo, 'h1.js', debug='h1-debug.js')
   >>> h2 = ResourceInclusion(foo, 'h2.js', debug='h2-debug.js')
   >>> gianth = ResourceInclusion(foo, 'gianth.js', supersedes=[h1, h2])
-  >>> needed = NeededInclusions()
-  >>> needed.rollup()
+  >>> needed = NeededInclusions(rollup=True)
   >>> needed.need(h1)
   >>> needed.need(h2)
   >>> needed.inclusions()
@@ -711,7 +666,9 @@ does not? Let's look at that scenario::
 Since there is no superseder for the debug mode, we will get the two
 resources, not rolled up::
 
-  >>> needed.mode('debug')
+  >>> needed = NeededInclusions(rollup=True, mode='debug')
+  >>> needed.need(h1)
+  >>> needed.need(h2)
   >>> needed.inclusions()
   [<ResourceInclusion 'h1-debug.js' in library 'foo'>,
    <ResourceInclusion 'h2-debug.js' in library 'foo'>]
@@ -731,17 +688,15 @@ Let's define some needed resource inclusions::
 Now let's try to render these inclusions::
 
   >>> print needed.render()
-  Traceback (most recent call last):
-    ...
-  AttributeError: 'NoneType' object has no attribute 'endswith'
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
 
-That didn't work. In order to render an inclusion, we need to tell
-``hurry.resource`` the base URL for a resource inclusion. We
-already know the relative URL, so we need to specify how to get a URL
-to the library itself that the relative URL can be added to.
-
-Before rendering the resources, the base_url attribute has to be set
-on the needed inclusions.
+In some cases it is useful for the application to control where the
+resources should be published. This can be controlled by setting the
+``base_url`` attribute of the currently needed inclusions. We already
+know the relative URL, so we need to specify how to get a URL to the
+library itself that the relative URL can be added to.
 
 For the purposes of this document, we define a function that renders
 resources as some static URL on localhost::
@@ -753,19 +708,6 @@ need to include on the top of our page (just under the ``<head>`` tag
 for instance)::
 
   >>> print needed.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-
-Let's set this a currently needed inclusions::
-
-  >>> request.needed = needed
-
-There is a function available as well for rendering the resources for
-the currently needed inclusion::
-
-  >>> from hurry import resource
-  >>> print resource.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
@@ -788,7 +730,7 @@ resource changes, the absolute URLs of resources can now be made to contain a
 hash of the resource's contents, so it will look like
 /foo/fanstatic/:hash:12345/myresource instead of /foo/myresource.
 
-  >>> print resource.render()
+  >>> print needed.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
@@ -869,17 +811,9 @@ The insertion system assumes a HTML text that has a ``<head>`` tag in it::
 To insert the resources directly in HTML we can use ``render_into_html``
 on ``needed``::
 
+  >>> needed = NeededInclusions(base_url='http://localhost/static/')
+  >>> needed.need(y1)
   >>> print needed.render_into_html(html)
-  <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  something more</head></html>
-
-The top-level convenience function does this for the currently needed
-resources::
-
-  >>> print resource.render_into_html(html)
   <html><head>
       <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
@@ -911,10 +845,11 @@ and ``bottom`` fragments::
   <BLANKLINE>
 
 There is effectively no change; all the resources are still on the
-top. We can enable bottom rendering by calling the ``bottom`` method before
-we render::
+top. We now try with enabling bottom::
 
-  >>> needed.bottom()
+  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
+  ...   bottom=True)
+  >>> needed.need(y1)
 
 Since none of the resources indicated it was safe to render them at
 the bottom, even this explicit call will not result in any changes::
@@ -927,10 +862,12 @@ the bottom, even this explicit call will not result in any changes::
   >>> print bottom
   <BLANKLINE>
 
-``bottom(force=True)`` will however force all javascript inclusions to be
-rendered in the bottom fragment::
+We can however force all javascript inclusions to be rendered in the
+bottom fragment using ``force_bottom``::
 
-  >>> needed.bottom(force=True)
+  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
+  ...   bottom=True, force_bottom=True)
+  >>> needed.need(y1)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
@@ -946,8 +883,7 @@ included on the bottom::
 When we start over without ``bottom`` enabled, we get this resource
 show up in the top fragment after all::
 
-  >>> needed = NeededInclusions()
-  >>> needed.base_url = 'http://localhost/static/'
+  >>> needed = NeededInclusions(base_url='http://localhost/static/')
   >>> needed.need(y1)
   >>> needed.need(y2)
 
@@ -962,7 +898,10 @@ show up in the top fragment after all::
 
 We now tell the system that it's safe to render inclusions at the bottom::
 
-  >>> needed.bottom()
+  >>> needed = NeededInclusions(base_url='http://localhost/static', 
+  ...   bottom=True)
+  >>> needed.need(y1)
+  >>> needed.need(y2)
 
 We now see the resource ``y2`` show up in the bottom fragment::
 
@@ -974,22 +913,14 @@ We now see the resource ``y2`` show up in the bottom fragment::
   >>> print bottom
   <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script>
 
-There's also a convenience function for the currently needed inclusion::
-
-  >>> request.needed = needed
-  >>> top, bottom = resource.render_topbottom()
-  >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script>
-
 When we force bottom rendering of Javascript, there is no effect of
 making a resource bottom-safe: all ``.js`` resources will be rendered
 at the bottom anyway::
 
-  >>> needed.bottom(force=True)
+  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
+  ...   bottom=True, force_bottom=True)
+  >>> needed.need(y1)
+  >>> needed.need(y2)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
@@ -1026,16 +957,6 @@ To insert the resources directly in HTML we can use
 ``render_topbottom_into_html`` on ``needed``::
 
   >>> print needed.render_topbottom_into_html(html)
-  <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script></body></html>
-
-There's also a function available to do this for the currently needed
-resources::
-
-  >>> print resource.render_topbottom_into_html(html)
   <html><head>
       <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
   rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
@@ -1095,40 +1016,6 @@ HTML::
   >>> res = req.get_response(wrapped_app)
   >>> res.body
   '<html><head></head><body</body></html>'
-
-bottom convenience
-==================
-
-Like for ``need`` and ``mode``, there is also a convenience spelling for
-``bottom``::
-
-  >>> request = Request()
-  >>> l1 = ResourceInclusion(foo, 'l1.js', bottom=True)
-  >>> l1.need()
-
-Let's look at the resources needed by default::
-
-  >>> c = get_current_needed_inclusions()
-  >>> c.base_url = 'http://localhost/static'
-  >>> top, bottom = c.render_topbottom()
-  >>> print top
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/l1.js"></script>
-  >>> print bottom
-  <BLANKLINE>
-
-Let's now change the bottom mode using the convenience
-``hurry.resource.bottom`` spelling::
-
-  >>> from hurry.resource import bottom
-  >>> bottom()
-
-Re-rendering will show it's honoring the bottom setting::
-
-  >>> top, bottom = c.render_topbottom()
-  >>> print top
-  <BLANKLINE>
-  >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/l1.js"></script>
 
 Generating resource code
 ========================

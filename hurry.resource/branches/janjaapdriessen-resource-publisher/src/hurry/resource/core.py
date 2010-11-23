@@ -176,33 +176,23 @@ def normalize_inclusion(library, inclusion):
     return ResourceInclusion(library, inclusion)
 
 class NeededInclusions(object):
-    def __init__(self):
-        self.base_url = None
-        self._inclusions = []
-        self._mode = None
-        self._rollup = False
-        self._bottom = False
-        self._force_bottom = False
+    def __init__(self,
+                 base_url='/',
+                 inclusions=None,
+                 mode=None,
+                 rollup=False,
+                 bottom=False,
+                 force_bottom=False,
+                 ):
+        self.base_url = base_url
+        self._inclusions = inclusions or []
+        self._mode = mode
+        self._rollup = rollup
+        self._bottom = bottom
+        self._force_bottom = force_bottom
 
     def need(self, inclusion):
         self._inclusions.append(inclusion)
-
-    def mode(self, mode):
-        self._mode = mode
-
-    def bottom(self, force=False, disable=False):
-        if disable:
-            self._bottom = False
-            self._force_bottom = False
-            return
-        self._bottom = True
-        if force:
-            self._force_bottom = True
-
-    def rollup(self, disable=False):
-        if disable:
-            self._rollup = False
-        self._rollup = True
 
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
@@ -305,38 +295,6 @@ def register_plugin(plugin):
 
 def get_current_needed_inclusions():
     return _plugin.get_current_needed_inclusions()
-
-def mode(mode):
-    """Set the mode for the currently needed resources.
-    """
-    needed = _plugin.get_current_needed_inclusions()
-    needed.mode(mode)
-
-def bottom(force=False, disable=False):
-    """Try to include resources at the bottom of the page, not just on top.
-    """
-    needed = _plugin.get_current_needed_inclusions()
-    needed.bottom(force, disable)
-
-def rollup(disable=False):
-    needed = _plugin.get_current_needed_inclusions()
-    needed.rollup(disable)
-
-def render():
-    needed = _plugin.get_current_needed_inclusions()
-    return needed.render()
-
-def render_into_html(html):
-    needed = _plugin.get_current_needed_inclusions()
-    return needed.render_into_html(html)
-
-def render_topbottom():
-    needed = _plugin.get_current_needed_inclusions()
-    return needed.render_topbottom()
-
-def render_topbottom_into_html(html):
-    needed = _plugin.get_current_needed_inclusions()
-    return needed.render_topbottom_into_html(html)
 
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]
