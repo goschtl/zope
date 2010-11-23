@@ -1,0 +1,12 @@
+Credits
+=======
+
+* Martijn Faassen
+
+* Jan-Wijbrand Kolman
+
+* Jan-Jaap Driessen
+
+* Vincent Fretin
+
+* Dan Korostolev
