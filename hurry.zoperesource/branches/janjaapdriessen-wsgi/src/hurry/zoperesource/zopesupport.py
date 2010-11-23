@@ -69,6 +69,10 @@ class DirectoryResource(directory.DirectoryResource):
 
     implements(IHurryResource)
 
+    def directory_factory(self, path, checker, name):
+        directory_resource = DirectoryResourceFactory(path, checker, name)
+        return hurrify(directory_resource, self.library)
+        
     def get(self, name, *args, **kw):
         resource = super(DirectoryResource, self).get(name, *args, **kw)
         return hurrify(resource, self.library)
@@ -80,14 +84,6 @@ class DirectoryResourceFactory(directory.DirectoryResourceFactory):
     def __call__(self, request):
         resource = super(DirectoryResourceFactory, self).__call__(request)
         return hurrify(resource, self.library)
-
-# Close the cirular relationship between resource and resource factory
-# for directories.
-def directory_resource_factory(self, path, checker, name):
-    directory_resource = DirectoryResourceFactory(path, checker, name)
-    return hurrify(directory_resource, self.library)
-
-DirectoryResource.directory_factory = directory_resource_factory
 
 # "Top-level" directory resource factory, that allows us to inject the
 # library object. This, with the custom DirectoryResource(Factory)

@@ -19,8 +19,7 @@ def create_resource_factory(library):
         'request',
         )
     checker = NamesChecker(allowed_names)
-    factory = HurryDirectoryResourceFactory(library, checker)
-    return factory
+    return HurryDirectoryResourceFactory(library, checker)
 
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.
