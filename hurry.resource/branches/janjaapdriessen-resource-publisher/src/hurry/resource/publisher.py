@@ -49,13 +49,14 @@ class Publisher(object):
 
 class Delegator(object):
     
-    def __init__(self, app, signature):
+    def __init__(self, app, publisher_signature='fanstatic'):
         self.application = app
+        self.publisher_signature = publisher_signature
         self.resource_publisher = Publisher()
 
     def __call__(self, environ, start_response):
         path_info = environ['PATH_INFO']
-        trigger = '/%s/' % signature
+        trigger = '/%s/' % self.publisher_signature
         chunks = path_info.split(trigger, 1)
         if len(chunks) == 1:
             # The trigger is not in the URL at all, we delegate to the
@@ -66,14 +67,5 @@ class Delegator(object):
         return self.resource_publisher(environ, start_response)
 
 def make_delegator(app, global_conf, **local_conf):
-    return Delegator(app, hurry.resource.publisher_signature)
+    return Delegator(app, **local_conf)
 
-"""
-        def cache_header_start_response(status, headers, exc_info=None):
-            # Only set the cache control for succesful requests (200, 206).
-            if status.startswith('20'):
-                expires = CACHE_CONTROL.apply(
-                    headers, max_age=10*CACHE_CONTROL.ONE_YEAR)
-                EXPIRES.update(headers, delta=expires)
-            return start_response(status, headers, exc_info)
-"""
