@@ -26,9 +26,6 @@ class Library(object):
             self._signature = hurry.resource.hash.checksum(self.path)
         return hurry.resource.publisher_signature + str(self._signature)
 
-    def url(self, base_url):
-        return '%s%s/%s/' % (base_url, self.signature(), self.name)
-
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
     return os.path.dirname(sys._getframe(2).f_globals['__file__'])
@@ -224,8 +221,28 @@ class NeededInclusions(object):
 
         return inclusions
 
+    def library_url(self, library):
+        return '%s%s/%s/' % (self.base_url, library.signature(), library.name)
+        
     def render(self):
-        return render_inclusions(self.inclusions(), self.base_url)
+        """Render a set of inclusions.
+        """
+        return self.render_inclusions(self.inclusions())
+
+    def render_inclusions(self, inclusions):
+        result = []
+        if not self.base_url.endswith('/'):
+            self.base_url += '/'
+        url_cache = {} # prevent multiple computations for a library in one request
+        for inclusion in inclusions:
+            library = inclusion.library
+            library_url = url_cache.get(library.name)
+            if library_url is None:
+                library_url = url_cache[library.name] = self.library_url(
+                    library)
+            result.append(
+                render_inclusion(inclusion, library_url + inclusion.relpath))
+        return '\n'.join(result)
 
     def render_into_html(self, html):
         to_insert = self.render()
@@ -254,8 +271,8 @@ class NeededInclusions(object):
             top_inclusions = inclusions
             bottom_inclusions = []
 
-        return (render_inclusions(top_inclusions, self.base_url),
-                render_inclusions(bottom_inclusions, self.base_url))
+        return (self.render_inclusions(top_inclusions),
+                self.render_inclusions(bottom_inclusions))
 
     def render_topbottom_into_html(self, html):
         top, bottom = self.render_topbottom()
@@ -415,26 +432,6 @@ inclusion_renderers = {
     '.kss': render_kss,
     '.js': render_js,
     }
-
-def render_inclusions(inclusions, base_url):
-    """Render a set of inclusions.
-
-    inclusions - the inclusions to render
-    base_url - the base url for resource inclusions.
-    """
-    result = []
-    if not base_url.endswith('/'):
-        base_url += '/'
-
-    url_cache = {} # prevent multiple computations for a library in one request
-    for inclusion in inclusions:
-        library = inclusion.library
-        library_url = url_cache.get(library.name)
-        if library_url is None:
-            library_url = url_cache[library.name] = library.url(base_url)
-        result.append(
-            render_inclusion(inclusion, library_url + inclusion.relpath))
-    return '\n'.join(result)
 
 def render_inclusion(inclusion, url):
     renderer = inclusion_renderers.get(inclusion.ext(), None)

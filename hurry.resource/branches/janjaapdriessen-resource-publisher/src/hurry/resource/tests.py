@@ -9,6 +9,7 @@ from pkg_resources import working_set, resource_filename
 from zc.buildout.easy_install import install
 from zc.buildout import testing
 
+from hurry import resource
 
 @contextmanager
 def pwd(directory):
@@ -45,10 +46,24 @@ def tearDown(test):
     testing.remove(test.target_dir)
 
 
+class ConfigTests(unittest.TestCase):
+    pass
+
+    # def test_library_url(self):
+    #     library = resource.Library('foo', '')
+    #     inclusion = resource.ResourceInclusion(library, 'bar.js')
+    #     needed = resource.NeededInclusions()
+    #     needed.base_url = 'http://localhost/static'
+    #     print needed.library_url(library)
+    #     self.assertEquals('http://localhost/static:hash:2797572843/foo/',
+    #                       needed.library_url(library))        
+
 def test_suite():
+    suite = unittest.makeSuite(ConfigTests)
     readme = doctest.DocFileSuite(
         'README.txt',
         setUp=setUp,
         tearDown=tearDown,
         optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
-    return unittest.TestSuite([readme])
+    suite.addTest(readme)
+    return suite

@@ -1231,9 +1231,13 @@ Renderers render HTML fragments using given resource URL:
 Let's create an inclusion of unknown resource:
 
   >>> a6 = ResourceInclusion(foo, 'nothing.unknown')
+  >>> from hurry.resource.core import EXTENSIONS
+  >>> EXTENSIONS.append('.unknown')
 
-  >>> from hurry.resource.core import render_inclusions
-  >>> render_inclusions([a6], '/')
+  >>> needed = NeededInclusions()
+  >>> needed.base_url = 'http://localhost/static/'
+  >>> needed.need(a6)
+  >>> needed.render()
   Traceback (most recent call last):
   ...
   UnknownResourceExtension: Unknown resource extension .unknown for resource
@@ -1245,10 +1249,8 @@ Now let's add a renderer for our ".unknown" extension and try again:
   >>> def render_unknown(url):
   ...     return '<link rel="unknown" href="%s" />' % url
   >>> inclusion_renderers['.unknown'] = render_unknown
-
-  >>> render_inclusions([a6], 'http://localhost/static/')
+  >>> needed.render()
   '<link rel="unknown" href="http://localhost/static/:hash:.../foo/nothing.unknown" />'
-
 
 Resource publisher
 ==================
