@@ -1063,7 +1063,7 @@ key ``hurry.resource.needed``::
 We now wrap this in our middleware, so that the middleware is activated::
 
   >>> from hurry.resource.wsgi import InjectMiddleWare
-  >>> wrapped_app = InjectMiddleWare(app)
+  >>> wrapped_app = InjectMiddleWare(app, hurry.resource.publisher_signature)
 
 Now we make a request (using webob for convenience)::
 
@@ -1089,7 +1089,8 @@ HTML::
   ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
   ...    needed.need(y1)
   ...    return ['<html><head></head><body</body></html>']
-  >>> wrapped_app = InjectMiddleWare(app)
+  >>> import hurry.resource
+  >>> wrapped_app = InjectMiddleWare(app, hurry.resource.publisher_signature)
   >>> req = webob.Request.blank('/')
   >>> res = req.get_response(wrapped_app)
   >>> res.body

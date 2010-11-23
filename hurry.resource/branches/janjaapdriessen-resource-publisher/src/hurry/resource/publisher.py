@@ -49,13 +49,13 @@ class Publisher(object):
 
 class Delegator(object):
     
-    def __init__(self, app):
+    def __init__(self, app, signature):
         self.application = app
         self.resource_publisher = Publisher()
 
     def __call__(self, environ, start_response):
         path_info = environ['PATH_INFO']
-        trigger = '/%s/' % hurry.resource.publisher_signature
+        trigger = '/%s/' % signature
         chunks = path_info.split(trigger, 1)
         if len(chunks) == 1:
             # The trigger is not in the URL at all, we delegate to the
@@ -65,8 +65,8 @@ class Delegator(object):
         environ['PATH_INFO'] = '/%s' % chunks[1]
         return self.resource_publisher(environ, start_response)
 
-def make_delegator(app, global_conf):
-    return Delegator(app)
+def make_delegator(app, global_conf, **local_conf):
+    return Delegator(app, hurry.resource.publisher_signature)
 
 """
         def cache_header_start_response(status, headers, exc_info=None):
