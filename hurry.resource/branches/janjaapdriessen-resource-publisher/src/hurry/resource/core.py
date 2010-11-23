@@ -2,23 +2,15 @@ import os
 import sys
 import pkg_resources
 
-try:
-    from zope.interface import implements
-    ZCA = True
-except ImportError:
-    # fallback in case zope.interface isn't present
-    def implements(iface):
-        pass
-    ZCA = False
-
 import hurry.resource
-from hurry.resource import interfaces
 import hurry.resource.hash
 
 EXTENSIONS = ['.css', '.kss', '.js']
 
+class UnknownResourceExtension(Exception):
+    """Unknown resource extension"""
+
 class Library(object):
-    implements(interfaces.ILibrary)
 
     _signature = None
 
@@ -47,7 +39,7 @@ def libraries():
         yield entry_point.load()
 
 class InclusionBase(object):
-    implements(interfaces.IInclusion)
+    pass
 
 class ResourceInclusion(InclusionBase):
     """Resource inclusion
@@ -55,7 +47,6 @@ class ResourceInclusion(InclusionBase):
     A resource inclusion specifies how to include a single resource in
     a library.
     """
-    implements(interfaces.IResourceInclusion)
 
     def __init__(self, library, relpath, depends=None,
                  supersedes=None, eager_superseder=False,
@@ -181,8 +172,6 @@ def normalize_inclusions(library, inclusions):
             for inclusion in inclusions]
 
 def normalize_inclusion(library, inclusion):
-    if ZCA and interfaces.IInclusion.providedBy(inclusion):
-        return inclusion
     if isinstance(inclusion, InclusionBase):
         return inclusion
     assert isinstance(inclusion, basestring)
@@ -450,7 +439,7 @@ def render_inclusions(inclusions, base_url):
 def render_inclusion(inclusion, url):
     renderer = inclusion_renderers.get(inclusion.ext(), None)
     if renderer is None:
-        raise interfaces.UnknownResourceExtension(
+        raise UnknownResourceExtension(
             "Unknown resource extension %s for resource inclusion: %s" %
             (inclusion.ext(), repr(inclusion)))
     return renderer(url)
