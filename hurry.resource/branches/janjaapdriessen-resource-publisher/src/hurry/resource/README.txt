@@ -849,10 +849,10 @@ When we are not in devmode, the hash is not computed again:
   >>> before_hash = foo.signature()
   >>> open(os.path.join(foo_sub_dir, 'test2'), 'w').write('test2')
   >>> # The hash is not newly computed.
-  >>> foo.signature() is before_hash
+  >>> foo.signature() == before_hash
   True
   >>> hurry.resource.configure_devmode(True)
-  >>> foo.signature() is before_hash
+  >>> foo.signature() == before_hash
   False
 
 

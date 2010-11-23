@@ -32,12 +32,10 @@ class Library(object):
         # before or (2) we are in development mode.
         if self._signature is None or hurry.resource.devmode:
             self._signature = hurry.resource.hash.checksum(self.path)
-        return self._signature
+        return hurry.resource.publisher_signature + str(self._signature)
 
     def url(self, base_url):
-        return '%s%s%s/%s/' % (
-            base_url, hurry.resource.publisher_signature,
-            self.signature(), self.name)
+        return '%s%s/%s/' % (base_url, self.signature(), self.name)
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
