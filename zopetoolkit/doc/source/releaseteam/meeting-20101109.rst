@@ -30,7 +30,7 @@ dropped. This means, the ZODB version can be updated to
 3.10.x. There are actually many more package that can now be updated in
 the ZTK, like zope.testing and zope.testrunner.
 
-The ZTK would like to use Distribute by default. 
+The ZTK would like to use Distribute by default.
 
 The buildout.cfg files in maintenance branches of packages in the ZTK
 should extend from a specific version of the ZTK themselves to get a
@@ -50,7 +50,7 @@ it warrants a ZTK-1.0.1 release.
 Tasks
 -----
 
-* update minor version of packages for ZTK-1.0.1 [hannosh]
+* update minor version of packages for ZTK-1.0.1 [hannosch]
 
 * deprecate zope.app.* from ZTK trunk [j-w]
 
