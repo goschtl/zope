@@ -76,8 +76,8 @@ to in-template resources::
   <head>
   </head>
   <body>
-    <img src="http://localhost/media/foo/hash:.../evencaveman.jpg"/>
-    <img src="http://localhost/media/foo/hash:.../evencaveman.jpg"/>
+    <img src="http://localhost/@@/:hash:.../foo/evencaveman.jpg" />
+    <img src="http://localhost/@@/:hash:.../foo/sub/evencaveman.jpg" />
   </body>
   </html>
 
