@@ -26,7 +26,7 @@ inclusion of a single resource in its header::
   >>> print browser.contents
   <html>
   <head>
-      <script type="text/javascript" src="http://localhost/media/foo/hash:.../a.js"></script>
+      <script type="text/javascript" src="http://localhost/@@/:hash:.../foo/a.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -41,8 +41,8 @@ automatically included::
   >>> print browser.contents
   <html>
   <head>
-      <script type="text/javascript" src="http://localhost/media/foo/hash:.../a.js"></script>
-    <script type="text/javascript" src="http://localhost/media/foo/hash:.../b.js"></script>
+    <script type="text/javascript" src="http://localhost/@@/:hash:.../foo/a.js"></script>
+    <script type="text/javascript" src="http://localhost/@@/:hash:.../foo/b.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -60,8 +60,8 @@ the bottom now, just before the ``</body>`` tag::
   </head>
   <body>
   <p>the widget HTML itself</p>
-  <script type="text/javascript" src="http://localhost/media/foo/hash:.../a.js"></script>
-  <script type="text/javascript" src="http://localhost/media/foo/hash:.../b.js"></script></body>
+  <script type="text/javascript" src="http://localhost/@@/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/@@/:hash:.../foo/b.js"></script></body>
   </html>
 
 In-template resources
@@ -77,7 +77,7 @@ to in-template resources::
   </head>
   <body>
     <img src="http://localhost/media/foo/hash:.../evencaveman.jpg"/>
-    <img src="http://localhost/media/foo/hash:.../sub/evencaveman.jpg"/>
+    <img src="http://localhost/media/foo/hash:.../evencaveman.jpg"/>
   </body>
   </html>
 

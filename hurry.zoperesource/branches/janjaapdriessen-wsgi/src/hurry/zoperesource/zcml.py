@@ -7,15 +7,20 @@ from hurry import resource
 from hurry.zoperesource.zopesupport import Plugin
 from hurry.zoperesource.zopesupport import HurryDirectoryResourceFactory
 
-
 def create_resource_factory(library):
-    allowed_resource_names = ('GET', 'HEAD', 'publishTraverse',
-                              'browserDefault', 'request', '__call__')
-
-    allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
-
-    checker = NamesChecker(allowed_resourcedir_names)
-    return HurryDirectoryResourceFactory(library.path, checker, library.name)
+    allowed_names = (
+        'GET',
+        'HEAD',
+        '__call__',
+        '__getitem__',
+        'browserDefault',
+        'get',
+        'publishTraverse',
+        'request',
+        )
+    checker = NamesChecker(allowed_names)
+    factory = HurryDirectoryResourceFactory(library, checker)
+    return factory
 
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.

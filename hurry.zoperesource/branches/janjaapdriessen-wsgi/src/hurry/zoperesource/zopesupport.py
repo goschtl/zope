@@ -1,17 +1,16 @@
 # zope integration for hurry.resource
-from zope.interface import alsoProvides
-from zope.component import adapts, adapter
-import zope.security.management
-
+from zope.browserresource import directory
+from zope.component import adapts, adapter, getMultiAdapter
+from zope.interface import alsoProvides, implements
 from zope.publisher.interfaces import IEndRequestEvent, IRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.traversing.browser.absoluteurl import absoluteURL
+from zope.site.hooks import getSite
+from zope.traversing.browser.interfaces import IAbsoluteURL
 import zope.browserresource.resource
-from zope.browserresource.directory import DirectoryResourceFactory
-from zope.browserresource.directory import DirectoryResource
+import zope.security.management
 
 from hurry.resource import NeededInclusions
-from hurry.resource.wsgi import NEEDED, PUBLISHER_PREFIX
+from hurry.resource.wsgi import NEEDED
 
 from hurry.zoperesource.interfaces import IHurryResource
 
@@ -40,12 +39,10 @@ class Plugin(object):
     """
     def get_current_needed_inclusions(self):
         request = getRequest()
-
-        # Find the NeededInclusions object in the WSGI environment;
-        # If none can be found, create a new one and add it to the
-        # environment.
-        # Unfortunately we don't have easy access to the WSGI environment,
-        # so we have to use request._orig_env.
+        # Find the NeededInclusions object in the WSGI environment; If
+        # none can be found, create a new one and add it to the
+        # environment.  Unfortunately we don't have easy access to the
+        # WSGI environment, so we have to use request._orig_env.
         return request._orig_env.setdefault(NEEDED, NeededInclusions())
 
 @adapter(IEndRequestEvent)
@@ -54,43 +51,65 @@ def set_base_url_on_needed_inclusions(event):
     # Unfortunately we don't have easy access to the WSGI environment,
     # so we have to use request._orig_env.
     needed = request._orig_env.get(NEEDED)
-    # Only set the base_url if resources have been needed during this request.
     if needed is not None and needed.base_url is None:
-        publisher_prefix = request._orig_env.get(PUBLISHER_PREFIX)
-        # Compute URLs to the resource publisher,
-        # Taking into account skins and virtual host specifications
-        # XXX Do we need to skip ++skin++ information?
-        absolute_url = absoluteURL(None, request)
-        if publisher_prefix is not None:
-            needed.base_url = absolute_url + publisher_prefix
-        else:
-            needed.base_url = absolute_url + '/@@/'
+        # Only set the base_url if resources have been needed during
+        # this request.
+        site_url = str(getMultiAdapter((getSite(), request), IAbsoluteURL))
+        needed.base_url = '%s/@@' % site_url
+
+# Custom DirectoryResource(Factory) implementations that allow to
+# inject the library object that the IAbsoluteURL adapter can use.
+
+def hurrify(resource, library):
+    alsoProvides(resource, IHurryResource)
+    resource.library = library
+    return resource
+
+class DirectoryResource(directory.DirectoryResource):
+
+    implements(IHurryResource)
+
+    def get(self, name, *args, **kw):
+        resource = super(DirectoryResource, self).get(name, *args, **kw)
+        return hurrify(resource, self.library)
+
+class DirectoryResourceFactory(directory.DirectoryResourceFactory):
+
+    factoryClass = DirectoryResource
+
+    def __call__(self, request):
+        resource = super(DirectoryResourceFactory, self).__call__(request)
+        return hurrify(resource, self.library)
+
+# Close the cirular relationship between resource and resource factory
+# for directories.
+def directory_resource_factory(self, path, checker, name):
+    directory_resource = DirectoryResourceFactory(path, checker, name)
+    return hurrify(directory_resource, self.library)
+
+DirectoryResource.directory_factory = directory_resource_factory
+
+# "Top-level" directory resource factory, that allows us to inject the
+# library object. This, with the custom DirectoryResource(Factory)
+# implementation then is used to inject the libary object as an
+# attribute on all the subsequent resources. The IAbsoluteURL adapter
+# for IHurryResource is thus able to compute library URLs.
+class HurryDirectoryResourceFactory(DirectoryResourceFactory):
+
+    def __init__(self, library, checker):
+        super(HurryDirectoryResourceFactory, self).__init__(
+            library.path, checker, library.name)
+        self.library = library
 
 # Adapter for constructing URLs from page templates using
-# `context/++resource++foo` that may point to the hurry.resource publisher.
+# `context/++resource++foo` that may point to the hurry.resource
+# publisher.
 class AbsoluteURL(zope.browserresource.resource.AbsoluteURL):
 
     adapts(IHurryResource, IBrowserRequest)
 
     def __str__(self):
-        request = self.request
-        url = absoluteURL(None, request)
-        publisher_prefix = request._orig_env.get(PUBLISHER_PREFIX)
-        name = self.context.__name__
-        if publisher_prefix is None:
-            return self._createUrl(url, name)
-        return url + publisher_prefix + '/' + name
-
-
-class HurryDirectoryResource(DirectoryResource):
-
-    def get(self, *args, **kwargs):
-        result = super(HurryDirectoryResource, self).get(*args, **kwargs)
-        alsoProvides(result, IHurryResource)
-        return result
-
-class HurryDirectoryResourceFactory(DirectoryResourceFactory):
-
-    factoryClass = HurryDirectoryResource
-
-HurryDirectoryResource.directory_factory = HurryDirectoryResourceFactory
+        site_url = str(
+            getMultiAdapter((getSite(), self.request), IAbsoluteURL))
+        return '%s/@@/%s/%s' % (
+            site_url, self.context.library.signature(), self.context.__name__)

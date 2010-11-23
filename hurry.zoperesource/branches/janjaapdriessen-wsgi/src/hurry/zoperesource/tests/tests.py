@@ -11,7 +11,6 @@ from hurry.zoperesource.zcml import create_resource_factory
 from hurry.zoperesource.tests.view import foo
 import hurry.zoperesource.tests
 
-
 class HurryResourceBrowserLayer(BrowserLayer):
 
     def testSetUp(self):
@@ -24,10 +23,8 @@ class HurryResourceBrowserLayer(BrowserLayer):
         gsm.registerAdapter(
             resource_factory, (IBrowserRequest,), Interface, foo.name)
 
-
     def setup_middleware(self, app):
-        return InjectMiddleWare(app, publisher_prefix='/media')
-
+        return InjectMiddleWare(app)
 
 def test_suite():
     readme = doctest.DocFileSuite(
