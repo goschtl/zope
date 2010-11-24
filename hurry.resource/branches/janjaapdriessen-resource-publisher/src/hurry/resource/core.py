@@ -35,10 +35,18 @@ class Library(object):
 def caller_dir():
     return os.path.dirname(sys._getframe(2).f_globals['__file__'])
 
+def _libraries(libs={}):
+    if not libs:
+        for entry_point in pkg_resources.iter_entry_points(
+            'hurry.resource.libraries'):
+            libs[entry_point.name] = entry_point.load()
+    return libs
+    
 def libraries():
-    for entry_point in pkg_resources.iter_entry_points(
-        'hurry.resource.libraries'):
-        yield entry_point.load()
+    return _libraries().values()
+
+def library_by_name(name):
+    return _libraries()[name]
 
 class InclusionBase(object):
     pass
@@ -196,6 +204,7 @@ class NeededInclusions(object):
         self._mode = mode
         self._rollup = rollup
         self._bottom = bottom
+        self._force_bottom = force_bottom
         self.devmode = devmode
         self.hashing = hashing
         self.publisher_signature = publisher_signature

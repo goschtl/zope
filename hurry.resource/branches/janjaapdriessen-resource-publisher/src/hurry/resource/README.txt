@@ -768,36 +768,17 @@ Hashing is on by default, but can be turned off:
   >>> needed_no_hashing.library_url(foo)
   '/fanstatic/foo'
 
+Publisher signature
+===================
+
+[TODO: explain]
+
+  >>> needed_publishsig = NeededInclusions(publisher_signature='waku')
+  >>> needed_publishsig.library_url(foo)
+  '/waku/:hash:.../foo'
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-Any VCS directories are ignored in calculating the hash:
-
-  >>> import os
-  >>> os.mkdir(resource_filename('mypackage',
-  ...                            os.path.join('resources', 'sub')))
-  >>> os.mkdir(resource_filename('mypackage',
-  ...                            os.path.join('resources', 'sub', '.svn')))
-  >>> open(os.path.join(resource_filename(
-  ...     'mypackage', 'resources/sub/.svn'), 'test'),'w').write('test')
-  >>> foo.signature(devmode=True) == before_hash
-  True
-
-In developer mode the hash is recomputed each time the resource is asked for
-its URL, while in production mode the hash is computed only once, so remember
-to restart the server after changing resource files (else browsers will still
-see the old URL unchanged and use their outdated cached versions of the files).
 
 Inserting resources in HTML
 ===========================
@@ -812,13 +793,13 @@ The insertion system assumes a HTML text that has a ``<head>`` tag in it::
 To insert the resources directly in HTML we can use ``render_into_html``
 on ``needed``::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static/')
+  >>> needed = NeededInclusions()
   >>> needed.need(y1)
   >>> print needed.render_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
   something more</head></html>
 
 See below for a way to insert into HTML when bottom fragments are
@@ -839,17 +820,16 @@ and ``bottom`` fragments::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
   >>> print bottom
   <BLANKLINE>
 
 There is effectively no change; all the resources are still on the
 top. We now try with enabling bottom::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
-  ...   bottom=True)
+  >>> needed = NeededInclusions(bottom=True)
   >>> needed.need(y1)
 
 Since none of the resources indicated it was safe to render them at
@@ -857,24 +837,23 @@ the bottom, even this explicit call will not result in any changes::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
   >>> print bottom
   <BLANKLINE>
 
 We can however force all javascript inclusions to be rendered in the
 bottom fragment using ``force_bottom``::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
-  ...   bottom=True, force_bottom=True)
+  >>> needed = NeededInclusions(bottom=True, force_bottom=True)
   >>> needed.need(y1)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
 
 Let's now introduce a javascript resource that says it is safe to be
 included on the bottom::
@@ -884,23 +863,22 @@ included on the bottom::
 When we start over without ``bottom`` enabled, we get this resource
 show up in the top fragment after all::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static/')
+  >>> needed = NeededInclusions()
   >>> needed.need(y1)
   >>> needed.need(y2)
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/y2.js"></script>
   >>> print bottom
   <BLANKLINE>
 
 We now tell the system that it's safe to render inclusions at the bottom::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static', 
-  ...   bottom=True)
+  >>> needed = NeededInclusions(bottom=True)
   >>> needed.need(y1)
   >>> needed.need(y2)
 
@@ -908,27 +886,26 @@ We now see the resource ``y2`` show up in the bottom fragment::
 
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/y2.js"></script>
 
 When we force bottom rendering of Javascript, there is no effect of
 making a resource bottom-safe: all ``.js`` resources will be rendered
 at the bottom anyway::
 
-  >>> needed = NeededInclusions(base_url='http://localhost/static/', 
-  ...   bottom=True, force_bottom=True)
+  >>> needed = NeededInclusions(bottom=True, force_bottom=True)
   >>> needed.need(y1)
   >>> needed.need(y2)
   >>> top, bottom = needed.render_topbottom()
   >>> print top
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
   >>> print bottom
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/y2.js"></script>
 
 Note that if ``bottom`` is enabled, it makes no sense to have a
 resource inclusion ``b`` that depends on a resource inclusion ``a``
@@ -959,21 +936,21 @@ To insert the resources directly in HTML we can use
 
   >>> print needed.render_topbottom_into_html(html)
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  rest of head</head><body>rest of body<script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/y2.js"></script></body></html>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  rest of head</head><body>rest of body<script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/y2.js"></script></body></html>
 
 Using WSGI middleware to insert into HTML
 =========================================
 
-There is also a WSGI middleware available to insert the top (and bottom)
-into the HTML. We are using WebOb to create a response object that will
-serve as our WSGI application.
+There is also a WSGI middleware available to insert the top (and
+bottom) into the HTML. We are using WebOb to create a response object
+that will serve as our WSGI application.
 
-We create a simple WSGI application. In our application we declare that
-we need a resource (``y1``) and put that in the WSGI ``environ`` under the
-key ``hurry.resource.needed``::
+We create a simple WSGI application. In our application we declare
+that we need a resource (``y1``) and put that in the WSGI ``environ``
+under the key ``hurry.resource.needed``::
 
   >>> def app(environ, start_response):
   ...    start_response('200 OK', [])
@@ -985,7 +962,7 @@ key ``hurry.resource.needed``::
 We now wrap this in our middleware, so that the middleware is activated::
 
   >>> from hurry.resource.wsgi import InjectMiddleWare
-  >>> wrapped_app = InjectMiddleWare(app, hurry.resource.publisher_signature)
+  >>> wrapped_app = InjectMiddleWare(app)
 
 Now we make a request (using webob for convenience)::
 
@@ -997,9 +974,9 @@ We can now see that the resources are added to the HTML by the middleware::
 
   >>> print res.body
   <html><head>
-      <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
   </head><body</body></html>
 
 When we set the response Content-Type to non-HTML, the middleware
@@ -1124,7 +1101,7 @@ Let's create an inclusion of unknown resource:
   >>> EXTENSIONS.append('.unknown')
 
   >>> needed = NeededInclusions()
-  >>> needed.base_url = 'http://localhost/static/'
+  >>> needed.base_url = 'http://localhost/static'
   >>> needed.need(a6)
   >>> needed.render()
   Traceback (most recent call last):
