@@ -1,7 +1,6 @@
 hurry.resource
 **************
 
-
 Introduction
 ============
 
@@ -32,17 +31,17 @@ A resource library
 ==================
 
 A hurry.resource Library takes two arguments: the name of the library
-as it should be published under in a URL and uniquely identify
-it, and a path to the root of the resources (rootpath) that this
-library publishes. In the ``mypackage``, which was installed during
-setup of this test, we define a resource ``foo``::
+as it should be published under in a URL and uniquely identify it, and
+a path to the root of the resources (rootpath) that this library
+publishes. In the ``mypackage``, which was installed during setup of
+this test, we define a resource ``foo``::
 
   >>> from mypackage import foo
   >>> foo.name
   'foo'
 
-The full path to the directory with the resources is reconstructed from
-the package that the Library is defined in::
+The full path to the directory with the resources is reconstructed
+from the package that the Library is defined in::
 
   >>> foo.path
   '...test-installs/mypackage-1.0dev.../mypackage/resources'
@@ -69,6 +68,17 @@ There is an API to help you obtain all registered libraries::
   >>> from hurry.resource import libraries
   >>> list(libraries())
   [<hurry.resource.core.Library object at ...>]
+
+A library can be looked-up by name as well::
+
+  >>> from hurry.resource import library_by_name
+  >>> library_by_name('foo')
+  <hurry.resource.core.Library object at ...>
+
+  >>> library_by_name('bar')
+  Traceback (most recent call last):
+  ...
+  KeyError: 'bar'
 
 Inclusion
 =========

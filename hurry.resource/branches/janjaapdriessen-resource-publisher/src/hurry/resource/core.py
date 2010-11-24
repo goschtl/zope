@@ -43,7 +43,7 @@ def _libraries(libs={}):
     return libs
     
 def libraries():
-    return _libraries().values()
+    return _libraries().itervalues()
 
 def library_by_name(name):
     return _libraries()[name]
