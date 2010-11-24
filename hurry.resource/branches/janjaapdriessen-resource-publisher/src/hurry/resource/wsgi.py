@@ -1,5 +1,9 @@
 import webob
+
+from paste.util import asbool
+
 import hurry.resource
+from hurry.resource import NeededInclusions
 
 NEEDED = 'hurry.resource.needed'
 
@@ -10,15 +14,19 @@ NEEDED = 'hurry.resource.needed'
 
 class InjectMiddleWare(object):
 
-    def __init__(self, application, signature):
+    def __init__(self, application, devmode=False,
+                 publisher_signature='fanstatic'):
         self.application = application
+        self.devmode = devmode
+        self.publisher_signature = publisher_signature
 
     def __call__(self, environ, start_response):
         request = webob.Request(environ)
 
-        # XXX the needed inclusions object is created here and the
-        # signature should be set on it as would the mode and dev_mode
-        # etcetera.
+        needed = NeededInclusions(
+            devmode=self.devmode,
+            publisher_signature=self.publisher_signature)
+        request.environ[NEEDED] = needed
 
         # Get the response from the wrapped application:
         response = request.get_response(self.application)
@@ -30,11 +38,12 @@ class InjectMiddleWare(object):
 
         # The wrapped application may have left information in the environment
         # about needed inclusions.
-        needed = response.environ.get(NEEDED)
-        if needed is not None:
+        if len(needed):
             response.body = needed.render_topbottom_into_html(response.body)
         return response(environ, start_response)
 
 def make_inject(app, global_config, **local_config):
-    return InjectMiddleWare(
-        app, hurry.resource.publisher_signature, **local_config)
+    devmode = local_config.pop('devmode')
+    if devmode is not None:
+        local_config['devmode'] = asbool(devmode)
+    return InjectMiddleWare(app, **local_config)

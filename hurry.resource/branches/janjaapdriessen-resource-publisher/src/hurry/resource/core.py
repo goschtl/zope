@@ -183,13 +183,19 @@ class NeededInclusions(object):
                  rollup=False,
                  bottom=False,
                  force_bottom=False,
+                 devmode=False,
+                 publisher_signature=''
                  ):
         self.base_url = base_url
+        self.devmode = devmode
+        self.publisher_signature = publisher_signature
         self._inclusions = inclusions or []
         self._mode = mode
         self._rollup = rollup
         self._bottom = bottom
-        self._force_bottom = force_bottom
+
+    def __len__(self):
+        return len(self._inclusions)
 
     def need(self, inclusion):
         self._inclusions.append(inclusion)
@@ -214,7 +220,7 @@ class NeededInclusions(object):
 
     def library_url(self, library):
         return '%s%s/%s/' % (self.base_url, library.signature(), library.name)
-        
+
     def render(self):
         """Render a set of inclusions.
         """
