@@ -743,10 +743,10 @@ The signature segment has **not** changed::
   >>> first_url == second_url
   True
 
-When we set devmode, the segment will have changed::
+When we set ``devmode=True``, the segment will have changed::
 
-  >>> needed = NeededInclusions(devmode=True)
-  >>> third_url = needed.library_url(foo)
+  >>> needed_in_devmode = NeededInclusions(devmode=True)
+  >>> third_url = needed_in_devmode.library_url(foo)
   >>> third_url
   '/fanstatic/:hash:.../foo'  
 
@@ -755,12 +755,18 @@ The signature segment has changed::
   >>> first_url == third_url
   False
 
+  >>> needed.library_url(foo) == needed_in_devmode.library_url(foo)
+  False
+
 Reset the file contents:
 
   >>> open(mypackage_style, 'w').write(original_contents)
 
+Hashing is on by default, but can be turned off:
 
-
+  >>> needed_no_hashing = NeededInclusions(hashing=False)
+  >>> needed_no_hashing.library_url(foo)
+  '/fanstatic/foo'
 
 
 

@@ -21,10 +21,10 @@ class Library(object):
 
     def signature(self, devmode=False):
         if devmode:
-            # Always recalculate.
+            # Always re-compute.
             sig = hurry.resource.hash.checksum(self.path)
         elif self._signature is None:
-            # Only recalculate if not calculated before.
+            # Only compute if not conputed before.
             sig = self._signature = hurry.resource.hash.checksum(self.path)
         else:
             # Use cached value.
@@ -188,15 +188,17 @@ class NeededInclusions(object):
                  bottom=False,
                  force_bottom=False,
                  devmode=False,
+                 hashing=True,
                  publisher_signature='fanstatic'
                  ):
         self.base_url = base_url
-        self.devmode = devmode
-        self.publisher_signature = publisher_signature
         self._inclusions = inclusions or []
         self._mode = mode
         self._rollup = rollup
         self._bottom = bottom
+        self.devmode = devmode
+        self.hashing = hashing
+        self.publisher_signature = publisher_signature
 
     def __len__(self):
         return len(self._inclusions)
@@ -223,11 +225,11 @@ class NeededInclusions(object):
         return inclusions
 
     def library_url(self, library):
-        return '%s/%s/%s/%s' % (
-            self.base_url,
-            self.publisher_signature,
-            library.signature(devmode=self.devmode),
-            library.name)
+        segments = [self.base_url, self.publisher_signature]
+        if self.hashing:
+            segments.append(library.signature(devmode=self.devmode))
+        segments.append(library.name)
+        return '/'.join(segments)
 
     def render(self):
         """Render a set of inclusions.
