@@ -4,15 +4,18 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import hurry.resource
 from hurry.zoperesource.zopesupport import HurryResource
 
+def create_factory(library):
+    def factory(request):
+        return HurryResource(request, library)
+    return factory
+
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.
     """
     for library in hurry.resource.libraries():
-        def factory(request):
-            return HurryResource(request, library)
+        factory = create_factory(library)
         adapts = (IBrowserRequest,)
         provides = Interface
-
         _context.action(
             discriminator = ('adapter', adapts, provides, library.name),
             callable = component.provideAdapter,

@@ -17,7 +17,7 @@ class HurryResource(object):
 
     # Hack to get ++resource++foo/bar/baz.jpg paths working in Zope
     # Pagetemplates.
-    
+
     implements(ITraversable, IAbsoluteURL)
 
     def __init__(self, request, library, name=''):
