@@ -1,5 +1,5 @@
 import webob
-from paste.deploy.converters import asbool
+from paste.util.converters import asbool
 import hurry.resource
 
 # TODO: would be nice to make middleware smarter so it could work with

@@ -218,7 +218,7 @@ class NeededInclusions(object):
         return inclusions
 
     def library_url(self, library):
-        return '%s/%s/%s/%s/' % (
+        return '%s/%s/%s/%s' % (
             self.base_url,
             self.publisher_signature,
             library.signature(dev_mode=self.devmode),
@@ -239,7 +239,8 @@ class NeededInclusions(object):
                 library_url = url_cache[library.name] = self.library_url(
                     library)
             result.append(
-                render_inclusion(inclusion, library_url + inclusion.relpath))
+                render_inclusion(
+                    inclusion, '%s/%s' %(library_url, inclusion.relpath)))
         return '\n'.join(result)
 
     def render_into_html(self, html):
