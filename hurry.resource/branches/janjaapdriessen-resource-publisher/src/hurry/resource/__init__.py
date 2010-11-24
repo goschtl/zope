@@ -8,13 +8,7 @@ from hurry.resource.core import (sort_inclusions_topological,
                                  sort_inclusions_by_extension,
                                  generate_code)
 
-from hurry.resource.core import (register_plugin,
+from hurry.resource.core import (init_current_needed_inclusions,
                                  get_current_needed_inclusions)
 
-publisher_signature = 'fanstatic'
-
-devmode = False
-
-def configure_devmode(enable=True):
-    global devmode
-    devmode = enable
+NEEDED = 'hurry.resource.needed'

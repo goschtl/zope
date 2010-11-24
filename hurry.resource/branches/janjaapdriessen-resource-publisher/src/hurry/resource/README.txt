@@ -1140,8 +1140,13 @@ Now let's add a renderer for our ".unknown" extension and try again:
   >>> needed.render()
   '<link rel="unknown" href="http://localhost/static/fanstatic/:hash:.../foo/nothing.unknown" />'
 
-Resource publisher
-==================
+Inclusions injector middleware
+==============================
+
+...
+
+Resource publisher middleware
+=============================
 
 The hurry.resource.publisher is a WSGI component that publishes registered
 resource libraries.

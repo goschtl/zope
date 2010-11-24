@@ -1,7 +1,7 @@
 import os
 import sys
 import pkg_resources
-
+import threading
 import hurry.resource
 import hurry.resource.hash
 
@@ -19,13 +19,12 @@ class Library(object):
         self.rootpath = rootpath
         self.path = os.path.join(caller_dir(), rootpath)
 
-    def signature(self):
+    def signature(self, dev_mode=False):
         # Only compute the checksum if (1) it has not been computed
         # before or (2) we are in development mode.
-        if self._signature is None or hurry.resource.devmode:
+        if self._signature is None or dev_mode:
             self._signature = hurry.resource.hash.checksum(self.path)
-        return '%s/:hash:%s' % (
-            hurry.resource.publisher_signature, str(self._signature))
+        return ':hash:%s' % str(self._signature)
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
@@ -133,7 +132,7 @@ class ResourceInclusion(InclusionBase):
         return self.library.name, self.relpath
 
     def need(self):
-        needed = _plugin.get_current_needed_inclusions()
+        needed = get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -154,7 +153,7 @@ class GroupInclusion(InclusionBase):
         self.depends = depends
 
     def need(self):
-        needed = _plugin.get_current_needed_inclusions()
+        needed = get_current_needed_inclusions()
         needed.need(self)
 
     def inclusions(self):
@@ -177,7 +176,7 @@ def normalize_inclusion(library, inclusion):
 
 class NeededInclusions(object):
     def __init__(self,
-                 base_url='/',
+                 base_url='',
                  inclusions=None,
                  mode=None,
                  rollup=False,
@@ -219,7 +218,11 @@ class NeededInclusions(object):
         return inclusions
 
     def library_url(self, library):
-        return '%s%s/%s/' % (self.base_url, library.signature(), library.name)
+        return '%s/%s/%s/%s/' % (
+            self.base_url,
+            self.publisher_signature,
+            library.signature(dev_mode=self.devmode),
+            library.name)
 
     def render(self):
         """Render a set of inclusions.
@@ -228,8 +231,6 @@ class NeededInclusions(object):
 
     def render_inclusions(self, inclusions):
         result = []
-        if not self.base_url.endswith('/'):
-            self.base_url += '/'
         url_cache = {} # prevent multiple computations for a library in one request
         for inclusion in inclusions:
             library = inclusion.library
@@ -279,28 +280,15 @@ class NeededInclusions(object):
             html = html.replace('</body>', '%s</body>' % bottom, 1)
         return html
 
+thread_local_needed_data = threading.local()
 
-class PluginNotImplemented(object):
-    """Plug-in point for hurry.resource.
-
-    Frameworks that want to plug into hurry.resource need to
-    implement these two methods.
-
-    There's no need to subclass this in your own code; just implement
-    the methods.
-    """
-    def get_current_needed_inclusions(self):
-        raise NotImplementedError(
-            "need to implement plugin.get_current_needed_inclusions()")
-
-_plugin = PluginNotImplemented()
-
-def register_plugin(plugin):
-    global _plugin
-    _plugin = plugin
+def init_current_needed_inclusions(*args, **kw):
+    needed = NeededInclusions(*args, **kw)
+    thread_local_needed_data.__dict__[hurry.resource.NEEDED] = needed
+    return needed
 
 def get_current_needed_inclusions():
-    return _plugin.get_current_needed_inclusions()
+    return thread_local_needed_data.__dict__[hurry.resource.NEEDED]
 
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]

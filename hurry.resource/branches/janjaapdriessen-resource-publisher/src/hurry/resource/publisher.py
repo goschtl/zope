@@ -66,6 +66,6 @@ class Delegator(object):
         environ['PATH_INFO'] = '/%s' % chunks[1]
         return self.resource_publisher(environ, start_response)
 
-def make_delegator(app, global_conf, **local_conf):
+def make_publisher(app, global_conf, **local_conf):
     return Delegator(app, **local_conf)
 

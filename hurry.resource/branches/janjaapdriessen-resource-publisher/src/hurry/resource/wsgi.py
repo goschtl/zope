@@ -1,11 +1,6 @@
 import webob
-
-from paste.util import asbool
-
+from paste.deploy.converters import asbool
 import hurry.resource
-from hurry.resource import NeededInclusions
-
-NEEDED = 'hurry.resource.needed'
 
 # TODO: would be nice to make middleware smarter so it could work with
 # a streamed HTML body instead of serializing it out to body. That
@@ -21,14 +16,12 @@ class InjectMiddleWare(object):
         self.publisher_signature = publisher_signature
 
     def __call__(self, environ, start_response):
-        request = webob.Request(environ)
-
-        needed = NeededInclusions(
+        needed = hurry.resource.init_current_needed_inclusions(
             devmode=self.devmode,
             publisher_signature=self.publisher_signature)
-        request.environ[NEEDED] = needed
 
         # Get the response from the wrapped application:
+        request = webob.Request(environ)
         response = request.get_response(self.application)
 
         # Post-process the response:
@@ -43,7 +36,7 @@ class InjectMiddleWare(object):
         return response(environ, start_response)
 
 def make_inject(app, global_config, **local_config):
-    devmode = local_config.pop('devmode')
+    devmode = local_config.get('devmode')
     if devmode is not None:
         local_config['devmode'] = asbool(devmode)
     return InjectMiddleWare(app, **local_config)
