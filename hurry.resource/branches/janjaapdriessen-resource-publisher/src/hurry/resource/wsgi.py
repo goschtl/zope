@@ -35,4 +35,10 @@ def make_inject(app, global_config, **local_config):
     devmode = local_config.get('devmode')
     if devmode is not None:
         local_config['devmode'] = asbool(devmode)
+    rollup = local_config.get('rollup')
+    if rollup is not None:
+        local_config['rollup'] = asbool(rollup)
+    bottom = local_config.get('bottom')
+    if bottom is not None:
+        local_config['bottom'] = asbool(bottom)
     return InjectMiddleWare(app, **local_config)
