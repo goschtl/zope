@@ -2,9 +2,7 @@ from zope.interface import Interface
 from zope import component
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.checker import NamesChecker
-
-from hurry import resource
-from hurry.zoperesource.zopesupport import Plugin
+import hurry.resource
 from hurry.zoperesource.zopesupport import HurryDirectoryResourceFactory
 
 def create_resource_factory(library):
@@ -24,9 +22,7 @@ def create_resource_factory(library):
 def action_setup(_context):
     """Publish all hurry.resource library entry points as resources.
     """
-    resource.register_plugin(Plugin())
-
-    for library in resource.libraries():
+    for library in hurry.resource.libraries():
         resource_factory = create_resource_factory(library)
         adapts = (IBrowserRequest,)
         provides = Interface

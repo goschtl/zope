@@ -9,52 +9,14 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 import zope.browserresource.resource
 import zope.security.management
 
-from hurry.resource import NeededInclusions
-from hurry.resource.wsgi import NEEDED
-
+import hurry.resource
 from hurry.zoperesource.interfaces import IHurryResource
-
-class NoRequestError(Exception):
-    pass
-
-
-def getRequest():
-    try:
-        i = zope.security.management.getInteraction()  # raises NoInteraction
-    except zope.security.interfaces.NoInteraction:
-        raise NoRequestError()
-
-    for p in i.participations:
-        if IRequest.providedBy(p):
-            return p
-
-    raise NoRequestError()
-
-
-class Plugin(object):
-    """Zope implementation of plugin.
-
-    This implementation provides access to the WSGI environment, in which
-    we place a NeededInclusions object upon needing resources.
-    """
-    def get_current_needed_inclusions(self):
-        request = getRequest()
-        # Find the NeededInclusions object in the WSGI environment; If
-        # none can be found, create a new one and add it to the
-        # environment.  Unfortunately we don't have easy access to the
-        # WSGI environment, so we have to use request._orig_env.
-        return request._orig_env.setdefault(NEEDED, NeededInclusions())
 
 @adapter(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
-    request = event.request
-    # Unfortunately we don't have easy access to the WSGI environment,
-    # so we have to use request._orig_env.
-    needed = request._orig_env.get(NEEDED)
-    if needed is not None and needed.base_url is None:
-        # Only set the base_url if resources have been needed during
-        # this request.
-        site_url = str(getMultiAdapter((getSite(), request), IAbsoluteURL))
+    needed = hurry.resource.get_current_needed_inclusions()
+    if not needed.base_url:
+        site_url = str(getMultiAdapter((getSite(), event.request), IAbsoluteURL))
         needed.base_url = '%s/@@' % site_url
 
 # Custom DirectoryResource(Factory) implementations that allow to
@@ -105,7 +67,15 @@ class AbsoluteURL(zope.browserresource.resource.AbsoluteURL):
     adapts(IHurryResource, IBrowserRequest)
 
     def __str__(self):
-        site_url = str(
-            getMultiAdapter((getSite(), self.request), IAbsoluteURL))
-        return '%s/@@/%s/%s' % (
-            site_url, self.context.library.signature(), self.context.__name__)
+        needed = hurry.resource.get_current_needed_inclusions()
+        # The base_url might not have been set just yet.
+        if not needed.base_url:
+            site_url = str(getMultiAdapter(
+                (getSite(), self.request), IAbsoluteURL))
+            needed.base_url = '%s/@@' % site_url
+
+        print needed.library_url(self.context.library), self.context.__name__
+
+        # XXX the first path segment of the resource is that
+            
+        return needed.library_url(self.context.library) + self.context.__name__
