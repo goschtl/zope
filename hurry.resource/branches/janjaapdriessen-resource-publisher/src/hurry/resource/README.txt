@@ -787,9 +787,6 @@ Publisher signature
   >>> needed_publishsig.library_url(foo)
   '/waku/:hash:.../foo'
 
-
-
-
 Inserting resources in HTML
 ===========================
 
@@ -962,11 +959,12 @@ We create a simple WSGI application. In our application we declare
 that we need a resource (``y1``) and put that in the WSGI ``environ``
 under the key ``hurry.resource.needed``::
 
+  >>> import hurry.resource
   >>> def app(environ, start_response):
   ...    start_response('200 OK', [])
-  ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
+  ...    needed = hurry.resource.get_current_needed_inclusions()
   ...    needed.need(y1)
-  ...    needed.base_url = 'http://localhost/static/'
+  ...    needed.base_url = 'http://testapp'
   ...    return ['<html><head></head><body</body></html>']
 
 We now wrap this in our middleware, so that the middleware is activated::
@@ -984,9 +982,9 @@ We can now see that the resources are added to the HTML by the middleware::
 
   >>> print res.body
   <html><head>
-  <link rel="stylesheet" type="text/css" href="/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="/fanstatic/:hash:.../foo/c.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://testapp/fanstatic/:hash:.../foo/b.css" />
+  <script type="text/javascript" src="http://testapp/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://testapp/fanstatic/:hash:.../foo/c.js"></script>
   </head><body</body></html>
 
 When we set the response Content-Type to non-HTML, the middleware
@@ -995,11 +993,9 @@ HTML::
 
   >>> def app(environ, start_response):
   ...    start_response('200 OK', [('Content-Type', 'text/plain')])
-  ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
   ...    needed.need(y1)
   ...    return ['<html><head></head><body</body></html>']
-  >>> import hurry.resource
-  >>> wrapped_app = InjectMiddleWare(app, hurry.resource.publisher_signature)
+  >>> wrapped_app = InjectMiddleWare(app)
   >>> req = webob.Request.blank('/')
   >>> res = req.get_response(wrapped_app)
   >>> res.body
@@ -1010,8 +1006,8 @@ Generating resource code
 
 Sometimes it is useful to generate code that expresses a complex
 resource dependency structure. One example of that is in
-``hurry.yui``. We can use the ``generate_code`` function to render resource
-inclusions::
+``hurry.yui``. We can use the ``generate_code`` function to render
+resource inclusions::
 
   >>> i1 = ResourceInclusion(foo, 'i1.js')
   >>> i2 = ResourceInclusion(foo, 'i2.js', depends=[i1])
@@ -1128,11 +1124,6 @@ Now let's add a renderer for our ".unknown" extension and try again:
   >>> needed.render()
   '<link rel="unknown" href="http://localhost/static/fanstatic/:hash:.../foo/nothing.unknown" />'
 
-Inclusions injector middleware
-==============================
-
-...
-
 Resource publisher middleware
 =============================
 
@@ -1171,35 +1162,3 @@ ETag header, among other things::
   >>> 'ETag' in headers
   True
 
-When we find the 'hash' marker in the requested URL, we send headers that let
-the user agent cache the resources for a long time.
-
-  >>> 'Expires' in headers
-  True
-  >>> print headers['Cache-Control']
-  public, max-age=314496000
-
-We don't set cache-control headers on non-successful responses::
-
-  >>> res = app.get('/fanstatic/:hash:12345/foo/notfound.css', expect_errors=True)
-  >>> headers = dict(res.headers)
-  >>> 'Expires' in headers
-  False
-  >>> 'Cache-Control' in headers
-  False
-
-Hidden files and directories are not served:
-
-  >>> res = app.get('/fanstatic/:hash:foo/sub/.svn/test', expect_errors=True)
-  >>> print res.status
-  404
-
-The publisher_signature can be found arbitrarily deep in the path_info:
-
-  >>> res = app.get('/++skin++foo/++etc++bar/foo/fanstatic/:hash:12345/foo/style.css')
-  >>> res.status
-  200
-  >>> print res.body
-  body {
-    color: #f00;
-  }

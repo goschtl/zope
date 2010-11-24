@@ -31,7 +31,7 @@ class Library(object):
             sig = self._signature
         return ':hash:%s' % sig
 
-# total hack to be able to get the dir the resources will be in
+# Total hack to be able to get the dir the resources will be in.
 def caller_dir():
     return os.path.dirname(sys._getframe(2).f_globals['__file__'])
 
