@@ -31,7 +31,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource[wsgi] >= 0.10',
+        'hurry.resource[wsgi,publisher] >= 0.10',
         'z3c.autoinclude',
         'zope.browserresource',
         'zope.component',
