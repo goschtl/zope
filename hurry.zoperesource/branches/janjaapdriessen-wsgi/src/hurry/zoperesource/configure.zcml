@@ -13,6 +13,4 @@
 
   <subscriber handler=".zopesupport.set_base_url_on_needed_inclusions" />
 
-  <adapter factory=".zopesupport.AbsoluteURL" />
-
 </configure>
