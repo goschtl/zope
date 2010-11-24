@@ -850,9 +850,10 @@ wrap_methods[] = {
 
 // Python < 2.6	support:
 #ifndef PyVarObject_HEAD_INIT
-  #define PyVarObject_HEAD_INIT(type, size) \
-          _PyObject_EXTRA_INIT 1, type, size,
+    #define PyVarObject_HEAD_INIT(type, size) \
+	PyObject_HEAD_INIT(type) size,
 #endif
+
 
 static PyTypeObject
 ProxyType = {
