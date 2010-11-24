@@ -183,7 +183,7 @@ class NeededInclusions(object):
                  bottom=False,
                  force_bottom=False,
                  devmode=False,
-                 publisher_signature=''
+                 publisher_signature='fanstatic'
                  ):
         self.base_url = base_url
         self.devmode = devmode
@@ -281,6 +281,9 @@ class NeededInclusions(object):
             html = html.replace('</body>', '%s</body>' % bottom, 1)
         return html
 
+class NoNeededInclusions(Exception):
+    pass
+
 thread_local_needed_data = threading.local()
 
 def init_current_needed_inclusions(*args, **kw):
@@ -289,7 +292,10 @@ def init_current_needed_inclusions(*args, **kw):
     return needed
 
 def get_current_needed_inclusions():
-    return thread_local_needed_data.__dict__[hurry.resource.NEEDED]
+    needed = thread_local_needed_data.__dict__.get(hurry.resource.NEEDED)
+    if needed is None:
+        raise NoNeededInclusions('No NeededInclusions object initialized.')
+    return needed
 
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]

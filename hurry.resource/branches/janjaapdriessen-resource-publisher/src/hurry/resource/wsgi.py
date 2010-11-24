@@ -9,16 +9,12 @@ import hurry.resource
 
 class InjectMiddleWare(object):
 
-    def __init__(self, application, devmode=False,
-                 publisher_signature='fanstatic'):
+    def __init__(self, application, **config):
         self.application = application
-        self.devmode = devmode
-        self.publisher_signature = publisher_signature
+        self.config = config
 
     def __call__(self, environ, start_response):
-        needed = hurry.resource.init_current_needed_inclusions(
-            devmode=self.devmode,
-            publisher_signature=self.publisher_signature)
+        needed = hurry.resource.init_current_needed_inclusions(**self.config)
 
         # Get the response from the wrapped application:
         request = webob.Request(environ)

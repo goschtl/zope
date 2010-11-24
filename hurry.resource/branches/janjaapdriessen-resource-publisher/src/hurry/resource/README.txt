@@ -158,48 +158,26 @@ So let's try out this spelling to see it fail::
   >>> y1.need()
   Traceback (most recent call last):
     ...
-  NotImplementedError: need to implement plugin.get_current_needed_inclusions()
+  NoNeededInclusions: No NeededInclusions object initialized.
 
-We get an error because we haven't configured the framework yet. The
-system says we need to implement
-``plugin.get_current_needed_inclusions()`` first. This is a method
-that we need to implement so we can tell the system how to obtain the
-current ``NeededInclusions`` object.
+We get an error becasue we haven't initialized a NeededInclusions
+object yet. This is done by calling
+``hurry.resource.init_current_needed_inclusions()``. The
+NeededInclusions object will be thread local variable. This implies
+that the convenience API can only work for frameworks that use threads
+for isolating requests.
 
 This needed inclusions should be maintained on an object that is going
 to be present throughout the request/response cycle that generates the
-web page that has the inclusions on them. One place where
-we can maintain the needed inclusions is the request object
-itself, if we indeed have global access to it. Alternatively you could
-store the currently needed inclusions in a thread local variable.
+web page that has the inclusions on them.
 
-Let's introduce a simple request object (your mileage may vary in your
-own web framework)::
+Let's initialize the NeededInclusions object::
 
-  >>> class Request(object):
-  ...    def __init__(self):
-  ...        self.needed = NeededInclusions()
+  >>> from hurry.resource import init_current_needed_inclusions
+  >>> needed = init_current_needed_inclusions()
 
-We now make a request, imitating what happens during a typical
-request/response cycle in a web framework::
-
-  >>> request = Request()
-
-We now define a plugin class that implements the
-``get_current_needed_inclusions()`` method by obtaining it from the
-request::
-
-  >>> class Plugin(object):
-  ...   def get_current_needed_inclusions(self):
-  ...       return request.needed
-
-We now need to register this plugin with the framework::
-
-  >>> from hurry.resource import register_plugin
-  >>> register_plugin(Plugin())
-
-There is an API to retrieve the current needed inclusions, so let's
-check which resources our request needs currently::
+There is an API to retrieve the current needed inclusions as well, so
+let's check which resources our request needs currently::
 
   >>> from hurry.resource import get_current_needed_inclusions
   >>> get_current_needed_inclusions().inclusions()
@@ -701,11 +679,11 @@ library itself that the relative URL can be added to.
 For the purposes of this document, we define a function that renders
 resources as some static URL on localhost::
 
-  >>> needed.base_url = 'http://localhost/static/'
+  >>> needed.base_url = 'http://localhost/static'
 
-Rendering the inclusions now will result in the HTML fragments we
-need to include on the top of our page (just under the ``<head>`` tag
-for instance)::
+Rendering the inclusions now will result in the HTML fragments we need
+to include on the top of our page (just under the ``<head>`` tag for
+instance)::
 
   >>> print needed.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
@@ -715,20 +693,26 @@ for instance)::
 Hashing resources
 =================
 
-As you have seen in the rendered URLs above, the default behavior is to insert
-a ``hash:`` segment into the generated URLs.
-Hashing of resources is inspired by z3c.hashedresource:
+As you have seen in the rendered URLs above, the default behavior is
+to insert a ``hash:`` segment into the generated URLs.  Hashing of
+resources is inspired by z3c.hashedresource:
 
-'While we want browsers to cache static resources such as CSS-stylesheets and
-JavaScript files, we also want them *not* to use the cached version if the
-files on the server have been updated. (And we don't want to make end-users
-have to empty their browser cache to get the latest version. Nor explain how
-to do that over the phone every time.)'
+  'While we want browsers to cache static resources such as
+  CSS-stylesheets and JavaScript files, we also want them *not* to use
+  the cached version if the files on the server have been
+  updated. (And we don't want to make end-users have to empty their
+  browser cache to get the latest version. Nor explain how to do that
+  over the phone every time.)'
 
 To make browsers update their caches of resources immediately when the
-resource changes, the absolute URLs of resources can now be made to contain a
-hash of the resource's contents, so it will look like
-/foo/fanstatic/:hash:12345/myresource instead of /foo/myresource.
+resource changes, the absolute URLs of resources can now be made to
+contain a hash of the resource's contents, so it will look like::
+
+  /foo/fanstatic/:hash:12345/myresource
+
+instead of::
+
+  /foo/fanstatic/myresource.
 
   >>> print needed.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
@@ -737,8 +721,6 @@ hash of the resource's contents, so it will look like
 
 More about the devmode in a minute::
 
-  >>> import hurry.resource
-  >>> hurry.resource.configure_devmode(True)
 
 The hash of a library is computed based on the contents of the directory.
 If we alter the contents of the directory, the hash is updated.
