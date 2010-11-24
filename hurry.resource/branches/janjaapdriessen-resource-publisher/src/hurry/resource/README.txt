@@ -694,49 +694,87 @@ Hashing resources
 =================
 
 As you have seen in the rendered URLs above, the default behavior is
-to insert a ``hash:`` segment into the generated URLs.  Hashing of
-resources is inspired by z3c.hashedresource:
+to insert a ``:hash:123456`` segment into the generated URLs.  Adding
+this signature segment in the URLs is inspired by z3c.hashedresource:
 
-  'While we want browsers to cache static resources such as
-  CSS-stylesheets and JavaScript files, we also want them *not* to use
-  the cached version if the files on the server have been
-  updated. (And we don't want to make end-users have to empty their
-  browser cache to get the latest version. Nor explain how to do that
-  over the phone every time.)'
+    While we want browsers to cache static resources such as
+    CSS-stylesheets and JavaScript files, we also want them *not* to
+    use the cached version if the files on the server have been
+    updated. (And we don't want to make end-users have to empty their
+    browser cache to get the latest version. Nor explain how to do
+    that over the phone every time.)'
 
-To make browsers update their caches of resources immediately when the
-resource changes, the absolute URLs of resources can now be made to
-contain a hash of the resource's contents, so it will look like::
+Whenever the contents of the resources have changed, the "hash" or
+signature segment will be different and thus the URL to the resource
+is different. The webbrowser will request the "new" resource URL and
+will have the up-to-date contents.
 
-  /foo/fanstatic/:hash:12345/myresource
+The signature of a library is computed based on the contents of the
+directory::
 
-instead of::
+  >>> needed = NeededInclusions()
+  >>> first_url = needed.library_url(foo)
+  >>> first_url
+  '/fanstatic/:hash:.../foo'  
 
-  /foo/fanstatic/myresource.
+If we alter the contents of the directory, the signature segments
+should be different, however only if the ``devmode`` configuration
+setting on the NeedInclussions object is set to a truth-value.
 
-  >>> print needed.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/fanstatic/:hash:.../foo/b.css" />
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/static/fanstatic/:hash:.../foo/c.js"></script>
+We alter the contents of a specific resource::
 
-More about the devmode in a minute::
-
-
-The hash of a library is computed based on the contents of the directory.
-If we alter the contents of the directory, the hash is updated.
-
-  >>> before_hash = foo.signature()
   >>> from pkg_resources import resource_filename, resource_string
-  >>> before = resource_string('mypackage', 'resources/style.css')
+  >>> original_contents = resource_string('mypackage', 'resources/style.css')
   >>> mypackage_style = resource_filename('mypackage', 'resources/style.css')
   >>> open(mypackage_style, 'w').write('body {color: #0f0;}')
-  >>> foo.signature() == before_hash
+
+  >>> needed.devmode
   False
 
-  >>> # Reset the content.
-  >>> open(mypackage_style, 'w').write(before)
-  >>> foo.signature() == before_hash
+Since the devmode has a false-value by default, even though the
+resource contents have changed, the signature segment has not::
+
+  >>> second_url = needed.library_url(foo)
+  >>> second_url
+  '/fanstatic/:hash:.../foo'  
+
+The signature segment has **not** changed::
+
+  >>> first_url == second_url
   True
+
+When we set devmode, the segment will have changed::
+
+  >>> needed = NeededInclusions(devmode=True)
+  >>> third_url = needed.library_url(foo)
+  >>> third_url
+  '/fanstatic/:hash:.../foo'  
+
+The signature segment has changed::
+
+  >>> first_url == third_url
+  False
+
+Reset the file contents:
+
+  >>> open(mypackage_style, 'w').write(original_contents)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Any VCS directories are ignored in calculating the hash:
 
@@ -745,40 +783,15 @@ Any VCS directories are ignored in calculating the hash:
   ...                            os.path.join('resources', 'sub')))
   >>> os.mkdir(resource_filename('mypackage',
   ...                            os.path.join('resources', 'sub', '.svn')))
-  >>> open(os.path.join(resource_filename('mypackage', 'resources/sub/.svn'), 'test'),
-  ...     'w').write('test')
-  >>> foo.signature() == before_hash
+  >>> open(os.path.join(resource_filename(
+  ...     'mypackage', 'resources/sub/.svn'), 'test'),'w').write('test')
+  >>> foo.signature(devmode=True) == before_hash
   True
 
 In developer mode the hash is recomputed each time the resource is asked for
 its URL, while in production mode the hash is computed only once, so remember
 to restart the server after changing resource files (else browsers will still
 see the old URL unchanged and use their outdated cached versions of the files).
-
-Whether to compute the hash for every request is controlled by the `devmode`
-variable in the hurry.resource module and can be set with the convenience
-function `hurry.resource.configure_devmode`.
-
-  >>> hurry.resource.configure_devmode(True)
-  >>> before_hash = foo.signature()
-  >>> foo_sub_dir = resource_filename('mypackage', 'resources/sub')
-  >>> open(os.path.join(foo_sub_dir, 'test'), 'w').write('test')
-  >>> # The hash is newly computed.
-  >>> foo.signature() is not before_hash
-  True
-
-When we are not in devmode, the hash is not computed again:
-
-  >>> hurry.resource.configure_devmode(False)
-  >>> before_hash = foo.signature()
-  >>> open(os.path.join(foo_sub_dir, 'test2'), 'w').write('test2')
-  >>> # The hash is not newly computed.
-  >>> foo.signature() == before_hash
-  True
-  >>> hurry.resource.configure_devmode(True)
-  >>> foo.signature() == before_hash
-  False
-
 
 Inserting resources in HTML
 ===========================

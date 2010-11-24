@@ -19,12 +19,17 @@ class Library(object):
         self.rootpath = rootpath
         self.path = os.path.join(caller_dir(), rootpath)
 
-    def signature(self, dev_mode=False):
-        # Only compute the checksum if (1) it has not been computed
-        # before or (2) we are in development mode.
-        if self._signature is None or dev_mode:
-            self._signature = hurry.resource.hash.checksum(self.path)
-        return ':hash:%s' % str(self._signature)
+    def signature(self, devmode=False):
+        if devmode:
+            # Always recalculate.
+            sig = hurry.resource.hash.checksum(self.path)
+        elif self._signature is None:
+            # Only recalculate if not calculated before.
+            sig = self._signature = hurry.resource.hash.checksum(self.path)
+        else:
+            # Use cached value.
+            sig = self._signature
+        return ':hash:%s' % sig
 
 # total hack to be able to get the dir the resources will be in
 def caller_dir():
@@ -221,7 +226,7 @@ class NeededInclusions(object):
         return '%s/%s/%s/%s' % (
             self.base_url,
             self.publisher_signature,
-            library.signature(dev_mode=self.devmode),
+            library.signature(devmode=self.devmode),
             library.name)
 
     def render(self):
