@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.5.8 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 0.5.7 (2010-11-25)
 ------------------
 
@@ -14,7 +20,7 @@ Changelog
 
 - Remove broken templates from registry during engine migration. In
   some testing situation, stale templates would be tracked in the
-  regitry.
+  regsitry.
 
 - Existing template instances are now migrated to the right engine
   when using the ``enable`` and ``disable`` methods. [malthe]
