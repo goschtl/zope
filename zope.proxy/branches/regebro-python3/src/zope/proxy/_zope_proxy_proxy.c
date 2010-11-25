@@ -38,6 +38,17 @@ static PyObject *
 empty_tuple = NULL;
 
 
+// Compatibility with Python 2
+#if PY_MAJOR_VERSION < 3
+  #define IS_STRING PyString_Check
+  #define MAKE_STRING(name) PyString_AS_STRING(name)
+#else
+  #define IS_STRING PyUnicode_Check
+  #define MAKE_STRING(name) PyBytes_AS_STRING( \
+    PyUnicode_AsUTF8String(name))
+#endif
+
+
 /*
  *   Slot methods.
  */
@@ -214,22 +225,14 @@ wrap_getattro(PyObject *self, PyObject *name)
     else
 #endif
 
-#if PY_MAJOR_VERSION < 3
-    if (!PyString_Check(name)){
-#else
-    if (!PyUnicode_Check(name)){
-#endif
+    if (!IS_STRING(name)){
         PyErr_SetString(PyExc_TypeError, "attribute name must be string");
         return NULL;
     }
     else
         Py_INCREF(name);
 	
-#if PY_MAJOR_VERSION < 3
-    name_as_string = PyString_AS_STRING(name);
-#else
-    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
-#endif
+    name_as_string = MAKE_STRING(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
@@ -304,11 +307,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     else
 #endif
 
-#if PY_MAJOR_VERSION < 3
-    if (!PyString_Check(name)){
-#else
-    if (!PyUnicode_Check(name)){
-#endif
+    if (!IS_STRING(name)){
         PyErr_SetString(PyExc_TypeError, "attribute name must be string");
         return -1;
     }
@@ -327,11 +326,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
         goto finally;
       }
 
-#if PY_MAJOR_VERSION < 3
-    name_as_string = PyString_AS_STRING(name);
-#else
-    name_as_string = PyBytes_AS_STRING(PyUnicode_AsUTF8String(name));
-#endif
+    name_as_string = MAKE_STRING(name);
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
@@ -1185,12 +1180,6 @@ module_functions[] = {
 };
 
 #if PY_MAJOR_VERSION >= 3
-  #define MOD_ERROR_VAL NULL
-#else
-  #define MOD_ERROR_VAL
-#endif
-
-#if PY_MAJOR_VERSION >= 3
   static struct PyModuleDef moduledef = {
     PyModuleDef_HEAD_INIT,
     "_zope_proxy_proxy",/* m_name */
@@ -1204,13 +1193,8 @@ module_functions[] = {
   };
 #endif
 
-#if PY_MAJOR_VERSION >= 3
-PyMODINIT_FUNC
-PyInit__zope_proxy_proxy(void)
-#else
-void
-init_zope_proxy_proxy(void)
-#endif
+static PyObject *
+moduleinit(void)
 {
     PyObject *m;
     
@@ -1222,7 +1206,7 @@ init_zope_proxy_proxy(void)
 #endif
 
     if (m == NULL)
-        return MOD_ERROR_VAL;
+        return NULL;
 
     if (empty_tuple == NULL)
         empty_tuple = PyTuple_New(0);
@@ -1230,7 +1214,7 @@ init_zope_proxy_proxy(void)
     ProxyType.tp_free = _PyObject_GC_Del;
 
     if (PyType_Ready(&ProxyType) < 0)
-        return MOD_ERROR_VAL;
+        return NULL;
 
     Py_INCREF(&ProxyType);
     PyModule_AddObject(m, "ProxyBase", (PyObject *)&ProxyType);
@@ -1238,13 +1222,25 @@ init_zope_proxy_proxy(void)
     if (api_object == NULL) {
         api_object = PyCObject_FromVoidPtr(&wrapper_capi, NULL);
         if (api_object == NULL)
-        return MOD_ERROR_VAL;
+        return NULL;
     }
     Py_INCREF(api_object);
     PyModule_AddObject(m, "_CAPI", api_object);
     
-#if PY_MAJOR_VERSION >= 3
   return m;
-#endif
     
 }
+
+#if PY_MAJOR_VERSION < 3
+    PyMODINIT_FUNC
+    init_zope_proxy_proxy(void)
+    {
+	moduleinit();
+    }
+#else
+    PyMODINIT_FUNC
+    PyInit__zope_proxy_proxy(void)
+    {
+	return moduleinit();
+    }
+#endif
