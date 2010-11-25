@@ -21,10 +21,10 @@
 #include "Python.h"
 #include "structmember.h"
 
-/* Support for Python 2.4 and 2.5: */
+/* Support for Python < 2.6 */
 
 #ifndef Py_TYPE
-  #define Py_TYPE(o) ((o)->ob_type)
+  #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
 #endif
 
 #ifndef cmpfunc
@@ -34,12 +34,6 @@
 #ifndef PyVarObject_HEAD_INIT
   #define PyVarObject_HEAD_INIT(type, size) \
     PyObject_HEAD_INIT(type) size,
-#endif
-
-#if PY_MAJOR_VERSION >= 3
-  #define MOD_ERROR_VAL NULL
-#else
-  #define MOD_ERROR_VAL
 #endif
 
 
@@ -170,7 +164,7 @@ static PyTypeObject hookabletype = {
 	/* tp_print          */ (printfunc)0,
 	/* tp_getattr        */ (getattrfunc)0,
 	/* tp_setattr        */ (setattrfunc)0,
-	/* tp_compare        */ (cmpfunc)0,
+	/* tp_compare        */ 0,
 	/* tp_repr           */ (reprfunc)0,
 	/* tp_as_number      */ 0,
 	/* tp_as_sequence    */ 0,
@@ -206,33 +200,27 @@ static PyTypeObject hookabletype = {
 };
 
 
+#if PY_MAJOR_VERSION >= 3
+  #define MOD_ERROR_VAL NULL
+  #define MOD_SUCCESS_VAL(val) val
+  #define MOD_INIT(name) PyMODINIT_FUNC PyInit_##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+	  static struct PyModuleDef moduledef = { \
+	    PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
+	  ob = PyModule_Create(&moduledef);
+#else
+  #define MOD_ERROR_VAL
+  #define MOD_SUCCESS_VAL(val)
+  #define MOD_INIT(name) void init##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+          ob = Py_InitModule3(name, methods, doc);
+#endif
 
-static struct PyMethodDef zch_methods[] = {
+static struct PyMethodDef module_methods[] = {
 	{NULL, NULL}
 };
 
-
-#if PY_MAJOR_VERSION >= 3
-  static struct PyModuleDef moduledef = {
-    PyModuleDef_HEAD_INIT,
-    "_zope_hookable",/* m_name */
-    "Provide an efficient implementation for hookable objects",/* m_doc */
-    -1,/* m_size */
-    zch_methods,/* m_methods */
-    NULL,/* m_reload */
-    NULL,/* m_traverse */
-    NULL,/* m_clear */
-    NULL,/* m_free */
-  };
-#endif
-
-#if PY_MAJOR_VERSION >= 3
-PyMODINIT_FUNC
-PyInit__zope_hookable(void)
-#else
-void
-init_zope_hookable(void)
-#endif
+MOD_INIT(_zope_hookable)
 {
   PyObject *m;
 
@@ -243,13 +231,9 @@ init_zope_hookable(void)
   if (PyType_Ready(&hookabletype) < 0)
     return MOD_ERROR_VAL;
 
-#if PY_MAJOR_VERSION >= 3
-  m = PyModule_Create(&moduledef);
-#else
-  m = Py_InitModule3("_zope_hookable", zch_methods,
-                     "Provide an efficient implementation for hookable objects"
-                     );
-#endif
+  MOD_DEF(m, "_zope_hookable", 
+    "Provide an efficient implementation for hookable objects",
+    module_methods)
 
   if (m == NULL)
     return MOD_ERROR_VAL;
@@ -257,9 +241,6 @@ init_zope_hookable(void)
   if (PyModule_AddObject(m, "hookable", (PyObject *)&hookabletype) < 0)
     return MOD_ERROR_VAL;
 
-#if PY_MAJOR_VERSION >= 3
-  return m;
-#endif
+  return MOD_SUCCESS_VAL(m);
 
 }
-
