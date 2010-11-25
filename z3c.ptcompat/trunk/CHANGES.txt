@@ -6,6 +6,8 @@ Changelog
 
 - Added not yet declared test dependency on ``zope.testing``.
 
+- Fixed test tear down so tests can be run multiple times.
+
 
 0.5.6 (2010-04-19)
 ------------------
