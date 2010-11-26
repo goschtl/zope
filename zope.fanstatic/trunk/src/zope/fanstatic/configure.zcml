@@ -1,15 +1,15 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:grok="http://namespaces.zope.org/grok"
-  xmlns:hzr="http://namespaces.zope.org/hzr">
+  xmlns:zf="http://namespaces.zope.org/zf">
 
   <include package="z3c.autoinclude" file="meta.zcml" />
 
   <includeDependencies package="." />
 
-  <include package="hurry.zoperesource" file="meta.zcml" />
+  <include package="zope.fanstatic" file="meta.zcml" />
 
-  <hzr:setupHurryZopeResource />
+  <zf:setupZopeFanstatic />
 
   <subscriber handler=".zopesupport.set_base_url_on_needed_inclusions" />
 

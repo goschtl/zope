@@ -1,6 +1,6 @@
 from zope.interface import Interface
 
 
-class ISetupHurryZopeResource(Interface):
+class ISetupZopeFanstatic(Interface):
     pass
 

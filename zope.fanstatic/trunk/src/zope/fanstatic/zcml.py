@@ -4,11 +4,11 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import fanstatic
 
-from hurry.zoperesource.zopesupport import HurryResource
+from zope.fanstatic.zopesupport import ZopeFanstaticResource
 
 def create_factory(library):
     def factory(request):
-        return HurryResource(request, library)
+        return ZopeFanstaticResource(request, library)
     return factory
 
 def action_setup(_context):

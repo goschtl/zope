@@ -13,7 +13,7 @@ def set_base_url_on_needed_inclusions(event):
     if not needed.base_url:
         needed.base_url = absoluteURL(None, event.request)
 
-class HurryResource(object):
+class ZopeFanstaticResource(object):
 
     # Hack to get ++resource++foo/bar/baz.jpg paths working in Zope
     # Pagetemplates.
@@ -29,7 +29,7 @@ class HurryResource(object):
         name = '%s/%s' % (self.name, name)
         # XXX check whether the request resource actually exists and
         # warn if not.
-        return HurryResource(self.request, self.library, name=name)
+        return ZopeFanstaticResource(self.request, self.library, name=name)
 
     def __str__(self):
         needed = fanstatic.get_current_needed_inclusions()

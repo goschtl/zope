@@ -8,14 +8,14 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 from fanstatic import InjectMiddleware
 
-from hurry.zoperesource.zcml import create_factory
-from hurry.zoperesource.tests.view import foo
-import hurry.zoperesource.tests
+from zope.fanstatic.zcml import create_factory
+from zope.fanstatic.tests.view import foo
+import zope.fanstatic.tests
 
-class HurryResourceBrowserLayer(BrowserLayer):
+class ZopeFanstaticBrowserLayer(BrowserLayer):
 
     def testSetUp(self):
-        super(HurryResourceBrowserLayer, self).testSetUp()
+        super(ZopeFanstaticBrowserLayer, self).testSetUp()
         # Because it is difficult to dynamically register a
         # entry_point in tests, we do the setup by hand:
         resource_factory = create_factory(foo)
@@ -29,5 +29,5 @@ def test_suite():
     readme = doctest.DocFileSuite(
         '../README.txt',
         optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
-    readme.layer = HurryResourceBrowserLayer(hurry.zoperesource.tests)
+    readme.layer = ZopeFanstaticBrowserLayer(zope.fanstatic.tests)
     return unittest.TestSuite([readme])

@@ -1,7 +1,7 @@
-Zope integration for hurry.resource
-***********************************
+Zope integration for fanstatic
+******************************
 
-This package provides Zope integration for hurry.resource. This means
+This package provides Zope integration for fanstatic. This means
 it's taking care of two things:
 
 * provide access to the needed resources in the WSGI environment
@@ -22,7 +22,7 @@ inclusion of a single resource in its header::
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> browser.open('http://localhost/hurry.zoperesource.test_single')
+  >>> browser.open('http://localhost/zope.fanstatic.test_single')
   >>> print browser.contents
   <html>
   <head>
@@ -37,7 +37,7 @@ inclusion of a single resource in its header::
 If a resource happens to need another resource, this resource is also
 automatically included::
 
-  >>> browser.open('http://localhost/hurry.zoperesource.test_multiple')
+  >>> browser.open('http://localhost/zope.fanstatic.test_multiple')
   >>> print browser.contents
   <html>
   <head>
@@ -53,7 +53,7 @@ automatically included::
 Let's force all javascript resources to be forced to be included at
 the bottom now, just before the ``</body>`` tag::
 
-  >>> browser.open('http://localhost/hurry.zoperesource.test_bottom')
+  >>> browser.open('http://localhost/zope.fanstatic.test_bottom')
   >>> print browser.contents
   <html>
   <head>
@@ -67,10 +67,10 @@ the bottom now, just before the ``</body>`` tag::
 In-template resources
 ---------------------
 
-Hurry.zoperesource provides support for rendering resource publisher
+zope.fanstatic provides support for rendering resource publisher
 aware URLs to in-template resources::
 
-  >>> browser.open('http://localhost/hurry.zoperesource.test_inline_resource')
+  >>> browser.open('http://localhost/zope.fanstatic.test_inline_resource')
   >>> print browser.contents
   <html>
   <head>
