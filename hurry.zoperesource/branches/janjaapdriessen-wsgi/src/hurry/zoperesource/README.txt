@@ -26,7 +26,7 @@ inclusion of a single resource in its header::
   >>> print browser.contents
   <html>
   <head>
-  <script type="text/javascript" src="http://localhost/fanstatic/:hash:.../foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/fanstatic/foo/a.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -41,8 +41,8 @@ automatically included::
   >>> print browser.contents
   <html>
   <head>
-    <script type="text/javascript" src="http://localhost/fanstatic/:hash:.../foo/a.js"></script>
-    <script type="text/javascript" src="http://localhost/fanstatic/:hash:.../foo/b.js"></script>
+    <script type="text/javascript" src="http://localhost/fanstatic/foo/a.js"></script>
+    <script type="text/javascript" src="http://localhost/fanstatic/foo/b.js"></script>
   <BLANKLINE>
   </head>
   <body>
@@ -53,7 +53,6 @@ automatically included::
 Let's force all javascript resources to be forced to be included at
 the bottom now, just before the ``</body>`` tag::
 
-  >>> import hurry.resource
   >>> browser.open('http://localhost/hurry.zoperesource.test_bottom')
   >>> print browser.contents
   <html>
@@ -61,8 +60,8 @@ the bottom now, just before the ``</body>`` tag::
   </head>
   <body>
   <p>the widget HTML itself</p>
-  <script type="text/javascript" src="http://localhost/fanstatic/:hash:.../foo/a.js"></script>
-  <script type="text/javascript" src="http://localhost/fanstatic/:hash:.../foo/b.js"></script></body>
+  <script type="text/javascript" src="http://localhost/fanstatic/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/fanstatic/foo/b.js"></script></body>
   </html>
 
 In-template resources
@@ -77,8 +76,8 @@ aware URLs to in-template resources::
   <head>
   </head>
   <body>
-    <img src="http://localhost/fanstatic/:hash:.../foo/evencaveman.jpg" />
-    <img src="http://localhost/fanstatic/:hash:.../foo/sub/evencaveman.jpg" />
+    <img src="http://localhost/fanstatic/foo/evencaveman.jpg" />
+    <img src="http://localhost/fanstatic/foo/sub/evencaveman.jpg" />
   </body>
   </html>
 

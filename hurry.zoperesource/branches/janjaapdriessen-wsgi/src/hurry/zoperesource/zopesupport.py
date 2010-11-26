@@ -5,11 +5,11 @@ from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.interfaces import ITraversable
 
-import hurry.resource
+import fanstatic
 
 @adapter(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
-    needed = hurry.resource.get_current_needed_inclusions()
+    needed = fanstatic.get_current_needed_inclusions()
     if not needed.base_url:
         needed.base_url = absoluteURL(None, event.request)
 
@@ -32,7 +32,7 @@ class HurryResource(object):
         return HurryResource(self.request, self.library, name=name)
 
     def __str__(self):
-        needed = hurry.resource.get_current_needed_inclusions()
+        needed = fanstatic.get_current_needed_inclusions()
         if not needed.base_url:
             needed.base_url = absoluteURL(None, self.request)
         return needed.library_url(self.library) + self.name

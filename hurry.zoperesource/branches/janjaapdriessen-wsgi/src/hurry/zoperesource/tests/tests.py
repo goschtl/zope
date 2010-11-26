@@ -6,7 +6,8 @@ from zope.component import getGlobalSiteManager
 from zope.app.wsgi.testlayer import BrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from hurry.resource.wsgi import InjectMiddleWare
+from fanstatic import InjectMiddleware
+
 from hurry.zoperesource.zcml import create_factory
 from hurry.zoperesource.tests.view import foo
 import hurry.zoperesource.tests
@@ -22,7 +23,7 @@ class HurryResourceBrowserLayer(BrowserLayer):
             resource_factory, (IBrowserRequest,), Interface, foo.name)
 
     def setup_middleware(self, app):
-        return InjectMiddleWare(app)
+        return InjectMiddleware(app)
 
 def test_suite():
     readme = doctest.DocFileSuite(

@@ -1,4 +1,4 @@
-from hurry.resource import Library, ResourceInclusion, get_current_needed_inclusions
+from fanstatic import Library, ResourceInclusion, get_current_needed_inclusions
 
 foo = Library("foo", "foo_dir")
 

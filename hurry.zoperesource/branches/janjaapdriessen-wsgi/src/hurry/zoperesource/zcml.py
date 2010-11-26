@@ -1,7 +1,9 @@
 from zope.interface import Interface
 from zope import component
 from zope.publisher.interfaces.browser import IBrowserRequest
-import hurry.resource
+
+import fanstatic
+
 from hurry.zoperesource.zopesupport import HurryResource
 
 def create_factory(library):
@@ -10,9 +12,9 @@ def create_factory(library):
     return factory
 
 def action_setup(_context):
-    """Publish all hurry.resource library entry points as resources.
+    """Publish all fanstatic library entry points as resources.
     """
-    for library in hurry.resource.libraries():
+    for library in fanstatic.libraries():
         factory = create_factory(library)
         adapts = (IBrowserRequest,)
         provides = Interface
