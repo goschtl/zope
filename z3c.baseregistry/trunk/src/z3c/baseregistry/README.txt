@@ -100,7 +100,7 @@ corresponding documentation in the ``zope.component`` package.
 
 One feature of global registries must be that they pickle efficiently, since
 they can be referenced in persisted objects. As you can see, the base registry
-pickles quiet well:
+pickles quite well:
 
   >>> import cPickle
   >>> jar = cPickle.dumps(myRegistry)
