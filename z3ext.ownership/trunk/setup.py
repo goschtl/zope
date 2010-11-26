@@ -63,6 +63,11 @@ setup(name = 'z3ext.ownership',
                           'zope.authentication',
                           'z3ext.security',
                           ],
+      extras_require=dict(
+          test=[
+              'zope.app.testing',
+              'zope.component[test]',
+              ]),
       include_package_data = True,
       zip_safe = False
       )

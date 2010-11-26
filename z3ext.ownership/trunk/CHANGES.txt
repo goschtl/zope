@@ -7,6 +7,9 @@ CHANGES
 
 - ZTK support
 
+- Added test extra to declare test dependency on ``zope.component [test]``
+  and ``zope.app.testing``.
+
 
 1.2.0 (2009-08-11)
 ------------------
