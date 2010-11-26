@@ -17,7 +17,7 @@ import shutil
 import urllib2
 import urlparse
 
-from hurry.resource import generate_code, ResourceInclusion, Library
+from fanstatic import generate_code, ResourceInclusion, Library
 
 BASEURL = "http://code.jquery.com/"
 VERSION = '1.4.3'
@@ -72,4 +72,4 @@ def tag_entrypoint(data):
     if data['name'] != 'hurry.jquery':
         return
     prepare_jquery(data['tagdir'] + '/src/hurry/jquery')
-    
+

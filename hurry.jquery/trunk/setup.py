@@ -20,7 +20,7 @@ long_description = (
 setup(
     name='hurry.jquery',
     version=version,
-    description="hurry.resource style resources for jQuery.",
+    description="fanstatic style resources for jQuery.",
     long_description=long_description,
     classifiers=[],
     keywords='',
@@ -34,7 +34,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource >= 0.10',
+        'fanstatic',
         ],
     entry_points={
         'console_scripts': [
@@ -46,11 +46,8 @@ setup(
         'zest.releaser.releaser.after_checkout': [
             'prepare = hurry.jquery.prepare:tag_entrypoint',
             ],
-        'hurry.resource.libraries': [
+        'fanstatic.libraries': [
             'jquery = hurry.jquery:jquery_lib',
             ],
-        },
-    extras_require={
-        'zopesupport': ['hurry.zoperesource'],
         },
     )

@@ -4,26 +4,17 @@ hurry.jquery basic tests
 
 Here are some basic tests for hurry.jquery.
 
-Let's set up a way to render URLs; typically the framework has already
-done this::
-
-  >>> class Plugin(object):
-  ...   def get_library_url(self, library):
-  ...     return 'http://localhost/static/%s' % (library.name)
-  >>> from hurry.resource import register_plugin
-  >>> register_plugin(Plugin())
-
 Render the inclusion::
 
-  >>> from hurry.resource import NeededInclusions
+  >>> from fanstatic import NeededInclusions
   >>> from hurry.jquery import jquery
-  >>> needed = NeededInclusions()
+  >>> needed = NeededInclusions(base_url='http://localhost')
   >>> needed.need(jquery)
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-1.4.3.js"></script>
+  <script type="text/javascript" src="http://localhost/fanstatic/jquery_lib/jquery-1.4.3.js"></script>
 
-  >>> needed.mode('minified')
+  >>> needed._mode = 'minified'
   >>> print needed.render()
-  <script type="text/javascript" src="http://localhost/static/jquery_lib/jquery-1.4.3.min.js"></script>
+  <script type="text/javascript" src="http://localhost/fanstatic/jquery_lib/jquery-1.4.3.min.js"></script>
 
 """
