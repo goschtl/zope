@@ -5,7 +5,6 @@
     package="zope.fanstatic.tests">
 
   <!-- set up enough of Zope to run the tests -->
-
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />
@@ -14,12 +13,14 @@
   <include package="zope.securitypolicy" file="meta.zcml"/>
 
   <include package="zope.annotation" />
+  <include package="zope.component" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
   <include package="zope.container" />
   <include package="zope.principalregistry" />
   <include package="zope.site" />
   <include package="zope.security" />
+  <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
 
   <!-- principals -->
