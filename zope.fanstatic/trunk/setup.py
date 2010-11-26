@@ -32,7 +32,6 @@ setup(
     install_requires=[
         'setuptools',
         'fanstatic',
-        'z3c.autoinclude',
         'zope.component',
         'zope.interface',
         'zope.publisher',
