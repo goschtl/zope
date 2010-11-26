@@ -20,11 +20,11 @@ The current state of the component architecture allows us to
     commonly defined by the path of the URL.
 
 Unfortunately, it is impossible to populate local sites with ZCML. The main
-reason is the lack of addressibility of local sites during the initial startup
+reason is the lack of addressability of local sites during the initial startup
 process.
 
 However, on the other hand we have a very advanced UI configuration system
-that involves views, resources, layers ans skins. So let's compare the two.
+that involves views, resources, layers and skins. So let's compare the two.
 
 (1) Views/Resources in the UI are like registered components in the component
     architecture.
@@ -144,7 +144,7 @@ Defining Base Registries
 
 The above tasks are more commonly done in ZCML. Base components registries --
 or any ``IComponents`` implementation for that matter -- can be seen as
-utilities providing the aformentioned interface and are distinguishable by
+utilities providing the aforementioned interface and are distinguishable by
 name. So let's define a "custom" registry:
 
   >>> custom = baseregistry.BaseComponents(
@@ -443,7 +443,7 @@ Like before, duplicate registrations are detected and reported:
             ('utility', <InterfaceClass README.IExample>, u'default'))
   ...
 
-But as we have seen before, no duplication error is raied, if the same
+But as we have seen before, no duplication error is raised, if the same
 registration is made for different sites:
 
   >>> context = xmlconfig.string('''
@@ -563,7 +563,7 @@ Just unregister the ``zope.component`` hooks:
 Global Non-Component-Registration Actions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ZCML is not only responsible for populating the comonents registries, but also
+ZCML is not only responsible for populating the components registries, but also
 to do other global configuration, such as defining security and assigning
 interfaces to classes. On the other hand, the ``registerIn`` directive works
 by manipulating the discriminator by prefixing it with the current
@@ -603,7 +603,7 @@ surprises. Another disadvantage is the complexity of yet another registry.
 As far as I can tell, all actions that manipulate the components registries
 use the ``zope.component.zcml.handler`` function. Okay, so that allows me to
 detect those. Unfortunately, there might be directives that do *not*
-manipulate the state, for example ensuring the existance of something. There
+manipulate the state, for example ensuring the existence of something. There
 are a bunch of those directives in the core.
 
 The advantage here is that for the core it should just work. However, 3rd

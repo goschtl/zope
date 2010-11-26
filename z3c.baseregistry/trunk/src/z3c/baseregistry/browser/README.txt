@@ -52,7 +52,7 @@ Let' now add the "custom" registry:
   >>> addBasesSelection(manager, ['-- Global Base Registry --', 'custom'])
   >>> manager.getControl('Apply').click()
 
-Now, "example4" should be available, but "example3" ist overridden by
+Now, "example4" should be available, but "example3" is overridden by
 "example1".
 
   >>> site = getRootFolder()
