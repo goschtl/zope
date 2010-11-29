@@ -31,8 +31,6 @@ setup(name='z3ext.resource',
           'Detailed Dcoumentation\n' +
           '======================\n'
           + '\n\n' +
-          read('src', 'z3ext', 'resource', 'README.txt')
-          + '\n\n' +
           read('CHANGES.txt')
           ),
       classifiers=[
