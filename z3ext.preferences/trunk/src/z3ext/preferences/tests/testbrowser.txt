@@ -79,7 +79,7 @@ Browser
               <div class="z-listing-details">
                 <a href="category/prefs1/">
                   Preferences 1</a>
-                <div> 
+                <div>
                   &nbsp;</div>
               </div>
             </li>
@@ -87,7 +87,7 @@ Browser
               <div class="z-listing-details">
                 <a href="category/prefs2/">
                   Preferences 2</a>
-                <div> 
+                <div>
                   &nbsp;</div>
             </div>
           </li>
