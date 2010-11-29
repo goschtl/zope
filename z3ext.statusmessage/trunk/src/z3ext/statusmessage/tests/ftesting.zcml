@@ -39,9 +39,6 @@
   <grant permission="zope.View"
          role="zope.Anonymous" />
 
-  <grant permission="zope.app.dublincore.view"
-         role="zope.Anonymous" />
-
   <!-- Principals -->
   <unauthenticatedPrincipal
       id="zope.anybody"
