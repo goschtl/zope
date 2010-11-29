@@ -7,7 +7,9 @@ CHANGES
 
 - ZTK support
 
-- Handle only IBrowserRequests
+- Handle only IBrowserRequests.
+
+- Fixed test set up to run with all ``zope.dublincore`` versions.
 
 
 1.4.0 (2009-08-11)
