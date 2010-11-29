@@ -69,9 +69,11 @@ setup(name='z3ext.product',
                           'z3ext.controlpanel',
                           'z3ext.statusmessage',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
-                                  ]),
+      extras_require = dict(test=[
+          'zope.app.testing',
+          'zope.testing',
+          'zope.app.folder',
+          ]),
       include_package_data = True,
       zip_safe = False
       )

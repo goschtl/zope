@@ -5,7 +5,9 @@ CHANGES
 1.5.0 (Unreleased)
 ------------------
 
-- ZTK support
+- ZTK support.
+
+- Fixed test set up to run with ZTK.
 
 
 1.4.0 (2009-08-11)
