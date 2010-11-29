@@ -63,6 +63,10 @@ setup(name='z3ext.security',
                           'zope.securitypolicy',
                           'zope.authentication',
                           ],
+      extras_require=dict(
+          test=[
+              'zope.component[test]',
+              ]),
       include_package_data = True,
       zip_safe = False
       )
