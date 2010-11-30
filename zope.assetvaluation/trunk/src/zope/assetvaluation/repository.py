@@ -13,13 +13,14 @@ Options:
 --verbose, -v       Add more noisy output (on standard error).
 
 --source-dir, -s    Use the supplied value as the directory into which
-                    checkouts are made for each project.  Defaults to 'src'.
-                    This directory must exist.
+                    checkouts are made for each project.  Defaults to
+                    'work/src'.  This directory must exist.
 
 --data-dir, -d      Use the supplied value as the directory into which
                     'sloccount' stores its computed information.
-                    Defaults to 'data'.  This directory must not exist:
-                    it will be removed and recreated during the run.
+                    Defaults to 'work/data'.  If this directory exists, it
+                    should not have any valuable content:  it will be removed
+                    and recreated during the run.
 """
 import os
 import sys
@@ -84,8 +85,8 @@ def usage(error='', rc=1):
     sys.exit(rc)
 
 def main():
-    src_dir = 'src'
-    data_dir = 'data'
+    src_dir = 'work/src'
+    data_dir = 'work/data'
     verbosity = 1
 
     try:
@@ -119,7 +120,7 @@ def main():
 
     data_dir = os.path.abspath(os.path.normpath(data_dir))
     if not os.path.isdir(data_dir):
-        usage(error='No such data directory: %s' % data_dir)
+        os.makedirs(data_dir)
 
     print CSV_HEADER
 
