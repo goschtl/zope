@@ -229,51 +229,51 @@ def main(argv):
         if message.date < yesterday:
             break
         messages.append(message)
+    messages.sort(key=lambda m:m.description)
 
     out = StringIO.StringIO()
 
-    print >>out, "Summary of messages to the %s list." % list_name
-    print >>out, "Period %s UTC to %s UTC." % (yesterday.ctime(), now.ctime())
-
-    # Nicely format the number of messages, and a summary of whom they are
-    # from.
-    if len(messages) == 0:
-        print >>out, "There were no messages."
-    elif len(messages) == 1:
-        print >>out, "There was 1 message, from %s" % messages[0].fromaddr
-    else:
-        print >>out, "There were %s messages:" % len(messages),
-        msgcount = {}
-        for message in messages:
-            addr = message.fromaddr
-            msgcount[addr] = msgcount.get(addr, 0) + 1
-        fromaddrs = msgcount.keys()
-        fromaddrs.sort()
-        print >>out, ', '.join(
-            ['%s from %s' % (msgcount[addr], addr) for addr in fromaddrs])+'.'
-
+    print >>out, "This is the summary for test reports received on the zope-tests list "
+    print >>out, "between %s UTC and %s UTC:" % (
+        yesterday.replace(second=0, microsecond=0).isoformat(' '),
+        now.replace(second=0, microsecond=0).isoformat(' '))
     print >>out
-
-    messages.sort(key=lambda m:m.description)
+    print >>out, "See the footnotes for test reports of unsuccessful builds."
+    print >>out
+    print >>out, "An up-to date view of the builders is also available in our buildbot"
+    print >>out, "documentation: "
+    print >>out, "http://docs.zope.org/zopetoolkit/process/buildbots.html#the-nightly-builds"
+    print >>out
+    print >>out, "Reports received"
+    print >>out, "----------------"
     print >>out
 
     foot_notes = []
-    for i, message in enumerate(messages):
+    for message in messages:
+        ref = ''
+        if message.status != 'OK':
+            foot_notes.append(message)
+            ref = '[%s]' % len(foot_notes)
+        print >>out, (ref).ljust(6), message.description
+
+    print >>out
+    print >>out, "Non-OK results"
+    print >>out, "--------------"
+    print >>out
+
+    for i, message in enumerate(foot_notes):
         print >>out, ('[%s]' % (i+1)).ljust(6), message.status.ljust(7), message.description
+        print >>out,  ' '*6, message.url
+        print >>out
+        print >>out
 
+    stats = {}
+    for message in messages:
+        stats.setdefault(message.status, 0)
+        stats[message.status] += 1
 
-    for i, message in enumerate(messages):
-        print >>out,  ('[%s]' % (i+1)).ljust(6), message.url
-
-    subject_info = ['%s %s' % (val, txt)
-                    for val, txt in (len([]), 'OK'),
-                                    (len([]), 'Failed'),
-                                    (len([]), 'Unknown')
-                    if val
-                    ]
-    if not subject_info:
-        subject_info = ['No messages']
-    subject = '%s%s' % (subject_prefix, ', '.join(subject_info))
+    subject = '%s - %s' % (subject_prefix, ', '.join('%s: %s' % x for x in
+                                                     sorted(stats.items())))
 
     if print_not_email:
         print "Not sending this email."
