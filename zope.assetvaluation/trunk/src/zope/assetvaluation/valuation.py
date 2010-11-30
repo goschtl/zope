@@ -5,6 +5,7 @@ import subprocess
 
 TOTAL_SLOC = 'Total Physical Source Lines of Code (SLOC)'
 TOTAL_COST = 'Total Estimated Cost to Develop'
+ZERO = 'SLOC total is zero, no further analysis performed.'
 
 
 class Assessor(object):
@@ -26,6 +27,8 @@ class Assessor(object):
             line = pipe.readline()
             if not line:
                 break
+            if line.startswith(ZERO):
+                return 0, 0
             if line.startswith(TOTAL_SLOC):
                 sloc_str = line.rsplit('=', 1)[1].strip()
                 sloc_str = sloc_str.replace(',', '')
