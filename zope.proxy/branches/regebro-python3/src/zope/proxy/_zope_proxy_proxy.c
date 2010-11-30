@@ -41,11 +41,35 @@ empty_tuple = NULL;
 // Compatibility with Python 2
 #if PY_MAJOR_VERSION < 3
   #define IS_STRING PyString_Check
+
   #define MAKE_STRING(name) PyString_AS_STRING(name)
+
+  #define MOD_ERROR_VAL
+
+  #define MOD_SUCCESS_VAL(val)
+
+  #define MOD_INIT(name) void init##name(void)
+
+  #define MOD_DEF(ob, name, doc, methods) \
+          ob = Py_InitModule3(name, methods, doc);
+
 #else
-  #define IS_STRING PyUnicode_Check
+
+#define IS_STRING PyUnicode_Check
+
   #define MAKE_STRING(name) PyBytes_AS_STRING( \
-    PyUnicode_AsUTF8String(name))
+          PyUnicode_AsUTF8String(name))
+
+  #define MOD_ERROR_VAL NULL
+
+  #define MOD_SUCCESS_VAL(val) val
+
+  #define MOD_INIT(name) PyMODINIT_FUNC PyInit_##name(void)
+
+  #define MOD_DEF(ob, name, doc, methods) \
+	  static struct PyModuleDef moduledef = { \
+	    PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
+	  ob = PyModule_Create(&moduledef);
 #endif
 
 
@@ -1155,6 +1179,8 @@ wrapper_queryInnerProxy(PyObject *unused, PyObject *args)
   return result;
 }
 
+/* Module initialization */
+
 static char
 module___doc__[] =
 "Association between an object, a context object, and a dictionary.\n\
@@ -1179,34 +1205,14 @@ module_functions[] = {
     {NULL}
 };
 
-#if PY_MAJOR_VERSION >= 3
-  static struct PyModuleDef moduledef = {
-    PyModuleDef_HEAD_INIT,
-    "_zope_proxy_proxy",/* m_name */
-    module___doc__,/* m_doc */
-    -1,/* m_size */
-    module_functions,/* m_methods */
-    NULL,/* m_reload */
-    NULL,/* m_traverse */
-    NULL,/* m_clear */
-    NULL,/* m_free */
-  };
-#endif
-
-static PyObject *
-moduleinit(void)
+MOD_INIT(_zope_proxy_proxy)
 {
     PyObject *m;
     
-#if PY_MAJOR_VERSION >= 3
-    m = PyModule_Create(&moduledef);
-#else
-    m = Py_InitModule3("_zope_proxy_proxy", 
-			module_functions, module___doc__);
-#endif
+    MOD_DEF(m, "_zope_proxy_proxy", module___doc__, module_functions)
 
     if (m == NULL)
-        return NULL;
+        return MOD_ERROR_VAL;
 
     if (empty_tuple == NULL)
         empty_tuple = PyTuple_New(0);
@@ -1214,7 +1220,7 @@ moduleinit(void)
     ProxyType.tp_free = _PyObject_GC_Del;
 
     if (PyType_Ready(&ProxyType) < 0)
-        return NULL;
+        return MOD_ERROR_VAL;
 
     Py_INCREF(&ProxyType);
     PyModule_AddObject(m, "ProxyBase", (PyObject *)&ProxyType);
@@ -1222,25 +1228,12 @@ moduleinit(void)
     if (api_object == NULL) {
         api_object = PyCObject_FromVoidPtr(&wrapper_capi, NULL);
         if (api_object == NULL)
-        return NULL;
+        return MOD_ERROR_VAL;
     }
     Py_INCREF(api_object);
     PyModule_AddObject(m, "_CAPI", api_object);
     
-  return m;
+    return MOD_SUCCESS_VAL(m);
     
 }
 
-#if PY_MAJOR_VERSION < 3
-    PyMODINIT_FUNC
-    init_zope_proxy_proxy(void)
-    {
-	moduleinit();
-    }
-#else
-    PyMODINIT_FUNC
-    PyInit__zope_proxy_proxy(void)
-    {
-	return moduleinit();
-    }
-#endif
