@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003,2010 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,8 +13,6 @@
 #
 ##############################################################################
 """Script to check pipermail archive for recent messages, and post a summary.
-
-$Id: list_summarizer.py,v 1.3 2009-07-16 17:41:33 stefan Exp $
 """
 
 import sys
@@ -30,66 +27,33 @@ import smtplib
 from email.MIMEText import MIMEText
 from email.Utils import parseaddr
 
-from config import *
-
 __metaclass__ = type
 
 # Settings used by the script. You'll want to customize some of these.
-archive_url = 'http://mail.zope.org/pipermail/zope-tests/'
-archive_user = 'fred'
-archive_pass = 'secret'
-mailfrom = 'Zope tests summarizer <zopetests@z3u.com>'
-mailto = 'Zope-dev list <zope-dev@zope.org>'
-smtpserver = 'mail.z3u.com'
+# archive_url = 'http://mail.zope.org/pipermail/zope-tests/'
+archive_url = 'file:///tmp/mail.zope.org/pipermail/zope-tests/'
+
+mailfrom = 'Zope tests summarizer <ct+zopetests@gocept.com>'
+mailto = 'zope-dev list <zope-dev@zope.org>'
+smtpserver = 'mail.gocept.net'
+debug_mailto = 'ct@gocept.com'
 
 # used when debugging
-print_not_email = True
+print_not_email = False
 
 months = ("January February March April May June July August September "
           "October November December").split()
 
 
-def create_subject_regex():
-    """Create a regex that parses subjects like these:
-
-    OK -- anything at all -- Description
-    FAIL -- anything -- Descrcription
-    FAIL (failures=1) -- anything -- description
-    FAIL (errors=10) -- anything -- description
-    FAIL (errors=23, failures=3) -- anything -- description
-    FAIL (failures=3, errors=2) -- anything -- description
-    FAIL (errors=23 failures=3) -- anything -- description
-    FAIL (failures=3 errors=2) -- anything -- description
-    FAIL (errors:23, failures:3) -- anything -- description
-    FAIL (failures:3, errors:2) -- anything -- description
-    FAILED (errors=1): Test ZODB MVCC / Python 2.3 / Linux
-    OK: Test Zope 2.7 / Python 2.3 / Linux
-
-    TODO: Write these examples as a DocTest.
-    """
-    ok_or_fail = r"(?P<success>OK|FAIL(ED)?)"
-    failures_errors = (r"failures[=:](?P<failures1>\d+)"
-                       r"(,?\s*errors[=:](?P<errors1>\d+))?")
-    errors_failures = (r"errors[=:](?P<errors2>\d+)"
-                       r"(,?\s*failures[=:](?P<failures2>\d+))?")
-    success = (r"%(ok_or_fail)s"
-               r"(\s*[(]"
-               r"(%(failures_errors)s|%(errors_failures)s)"
-               r"[)])?"
-               ) % vars()
-    anything = r"(?P<anything>.*?)"
-    description = r"(?P<description1>.*?)"
-
-    full_regex = (r"^%(success)s"
-                  r":?\s+(?P<description2>.*)|"
-                  r"\s+--\s+"
-                  r"%(anything)s"
-                  r"\s+--\s+"
-                  r"%(description)s$"
-                  ) % vars()
-    return re.compile(full_regex)
-
-subject_regex = create_subject_regex()
+# Create a regex that parses subjects like these:
+#
+#    OK: Test Zope 2.7 / Python 2.3 / Linux
+#    FAIL: Test Zope 2.7 / Python 2.3 / Linux
+#    FAILED: Test Zope 2.7 / Python 2.3 / Linux
+#
+#    TODO: Write these examples as a DocTest.
+subject_regex = re.compile(
+    r"^(?P<success>OK|FAIL(ED)?)\s*:\s*(?P<description>.*?)$")
 
 
 def get_archive(year, month):
@@ -117,6 +81,8 @@ def get_archive(year, month):
 class Message:
     """Represents a single message, scraped from the mail archive."""
 
+    status = 'UNKNOWN'
+
     def __init__(self, url, datetext, subject, fromaddr):
         self.url = url
         self.datetext = datetext
@@ -126,22 +92,16 @@ class Message:
         self.fromaddr = fromaddr
         self.subject = ' '.join(subject.split())
         subject_search = subject_regex.search(self.subject)
-        self.subjectparsed = bool(subject_search)
         if subject_search:
             groups = subject_search.groupdict()
-            self.failed = groups['success'] != 'OK'
-            self.description = (groups['description1'] or
-                                groups['description2'])
-            self.anything = groups['anything']
-            self.failures = int(groups['failures1'] or
-                                groups['failures2'] or 0)
-            self.errors = int(groups['errors1'] or groups['errors2'] or 0)
+            self.set_status(groups['success'])
+            self.description = groups['description']
 
-    def printToStream(self, stream):
-        print >>stream, "Subject: %s" % self.subject
-        print >>stream, "From: %s" % self.fromaddr
-        print >>stream, "Date: %s" % self.datetext
-        print >>stream, "URL: %s" % self.url
+    def set_status(self, status):
+        if status.startswith('FAIL'):
+            self.status = 'FAILED'
+        else:
+            self.status = status
 
 
 def get_message(url):
@@ -223,6 +183,9 @@ def main(argv):
         else:
             err_exit(usage)
 
+    configs = {'zope_summarizer': dict(list_name='zope-tests',
+                                       subject_prefix='Zope Tests')}
+
     if not configs.has_key(selected_config):
         err_exit(usage)
 
@@ -291,40 +254,21 @@ def main(argv):
 
     print >>out
 
-    # We want the messages to be oldest first, so reverse them.
-    messages.reverse()
+    messages.sort(key=lambda m:m.description)
+    print >>out
 
-    fail_messages = []
-    ok_messages = []
-    unknown_messages = []
+    foot_notes = []
+    for i, message in enumerate(messages):
+        print >>out, ('[%s]' % (i+1)).ljust(6), message.status.ljust(7), message.description
 
-    for message in messages:
-        if message.subjectparsed:
-            if message.failed:
-                fail_messages.append(message)
-            else:
-                ok_messages.append(message)
-        else:
-            unknown_messages.append(message)
 
-    def print_messages(title, message_list):
-        if message_list:
-            print >>out
-            print >>out, title
-            print >>out, '-' * len(title)
-            print >>out
-            for message in message_list:
-                message.printToStream(out)
-                print >>out
-
-    print_messages('Test failures', fail_messages)
-    print_messages('Unknown', unknown_messages)
-    print_messages('Tests passed OK', ok_messages)
+    for i, message in enumerate(messages):
+        print >>out,  ('[%s]' % (i+1)).ljust(6), message.url
 
     subject_info = ['%s %s' % (val, txt)
-                    for val, txt in (len(ok_messages), 'OK'),
-                                    (len(fail_messages), 'Failed'),
-                                    (len(unknown_messages), 'Unknown')
+                    for val, txt in (len([]), 'OK'),
+                                    (len([]), 'Failed'),
+                                    (len([]), 'Unknown')
                     if val
                     ]
     if not subject_info:
@@ -345,7 +289,7 @@ def main(argv):
         fromname, fromaddr = parseaddr(mailfrom)
         toname, toaddr = parseaddr(mailto)
 
-        s = smtplib.SMTP(mailhost, mailport)
+        s = smtplib.SMTP(smtpserver, 25)
         s.sendmail(fromaddr, toaddr, body)
         s.quit()
 
