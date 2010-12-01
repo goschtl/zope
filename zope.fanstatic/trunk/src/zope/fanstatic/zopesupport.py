@@ -16,7 +16,8 @@ def set_base_url_on_needed_inclusions(event):
 class ZopeFanstaticResource(object):
 
     # Hack to get ++resource++foo/bar/baz.jpg paths working in Zope
-    # Pagetemplates.
+    # Pagetemplates. Note that ++resource+foo/bar/baz.jpg URLs will
+    # not work with this hack!
 
     implements(ITraversable, IAbsoluteURL)
 
