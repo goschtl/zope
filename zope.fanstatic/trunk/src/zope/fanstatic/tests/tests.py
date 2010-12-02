@@ -6,7 +6,7 @@ from zope.component import getGlobalSiteManager
 from zope.app.wsgi.testlayer import BrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from fanstatic import InjectMiddleware
+from fanstatic import Inject
 
 from zope.fanstatic.zcml import create_factory
 from zope.fanstatic.tests.view import foo
@@ -23,7 +23,7 @@ class ZopeFanstaticBrowserLayer(BrowserLayer):
             resource_factory, (IBrowserRequest,), Interface, foo.name)
 
     def setup_middleware(self, app):
-        return InjectMiddleware(app)
+        return Inject(app)
 
 def test_suite():
     readme = doctest.DocFileSuite(
