@@ -5,18 +5,21 @@ ldappas changes
 0.8 - (unreleased)
 ====================
 
- * Changes to use the ZTK import locations.
+* Changes to use the ZTK import locations.
+
+* Reduce dependencies. zope.app.testing dependency still exists, though,
+  and should be removed by adjusting the tests.
 
 0.7 - 04.07.2008
 ================
 
- * Updated install_requires to include all dependencies.
+* Updated install_requires to include all dependencies.
  
- * Removed deprecated localUtility ZCML.
+* Removed deprecated localUtility ZCML.
  
- * buildout.cfg compiles openldap and creates a python-ldap egg
+* buildout.cfg compiles openldap and creates a python-ldap egg
 
- * Compatible with Grok 0.12 and 0.13 releases.
+* Compatible with Grok 0.12 and 0.13 releases.
 
 0.6 - 20.11.2006
 ================
