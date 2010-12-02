@@ -3,7 +3,7 @@ LDAP Authentication Plugin
 ==========================
 
 This is a plugin for the pluggable authentication utility (located at
-``zope.app.authentication``) to deal with LDAP principal sources. It depends
+``zope.pluggableauth``) to deal with LDAP principal sources. It depends
 on the ``ldapadapter`` module (which itself depends on `python-ldap`).
 
 Authentication and Search
@@ -218,7 +218,7 @@ utility. The first step is to register the LDAP authentication plugin as an
 authenticator utility:
 
   >>> from zope.component import provideUtility
-  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+  >>> from zope.pluggableauth.interfaces import IAuthenticatorPlugin
   >>> provideUtility(auth, provides=IAuthenticatorPlugin,
   ...                name='ldap-authenticator')
 
@@ -226,7 +226,7 @@ We also need a credentials plugin that will extract the credentials from the
 request:
 
   >>> import zope.interface
-  >>> from zope.app.authentication.interfaces import ICredentialsPlugin
+  >>> from zope.pluggableauth.interfaces import ICredentialsPlugin
 
   >>> class MyCredentialsPlugin:
   ...
@@ -248,14 +248,14 @@ principal information, but not to generate the principals itself. Thus we have
 to register an adapter that can create principals from principal infos:
 
   >>> from zope.component import provideAdapter
-  >>> from zope.app.authentication import principalfolder
-  >>> provideAdapter(principalfolder.AuthenticatedPrincipalFactory)
+  >>> from zope.pluggableauth import factories
+  >>> provideAdapter(factories.AuthenticatedPrincipalFactory)
 
 We are finally ready to create a pluggable authentication utility and register
 the two plugins with it:
 
-  >>> from zope.app import authentication
-  >>> pau = authentication.PluggableAuthentication('pau.')
+  >>> from zope import pluggableauth
+  >>> pau = pluggableauth.PluggableAuthentication('pau.')
   >>> pau.credentialsPlugins = ('simple-creds', )
   >>> pau.authenticatorPlugins = ('ldap-authenticator', )
 
@@ -271,7 +271,7 @@ And now we can just authenticate a user using LDAP:
 You can also ask the authentication utility about a particular principal, once
 you have its id:
 
-  >>> provideAdapter(principalfolder.FoundPrincipalFactory)
+  >>> provideAdapter(factories.FoundPrincipalFactory)
 
   >>> pau.getPrincipal(u'pau.ldap.ok')
   Principal(u'pau.ldap.ok')

@@ -15,12 +15,12 @@
 
 $Id$
 """
-import unittest
+import unittest, doctest
 
 import zope.interface
-from zope.testing import doctest, doctestunit
-from zope.app import zapi
+
 from zope.app.testing import setup
+from pprint import pprint
 
 import ldapadapter.interfaces
 
@@ -95,7 +95,7 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown,
-                             globs={'pprint': doctestunit.pprint},
+                             globs={'pprint': pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 

@@ -18,10 +18,10 @@ $Id$
 import zope.schema
 import zope.interface
 from persistent import Persistent
+from zope import component
 
-from zope.app import zapi
-from zope.app import authentication
-from zope.app.container.contained import Contained
+from zope import pluggableauth
+from zope.container.contained import Contained
 
 from ldap.filter import filter_format
 from ldapadapter.interfaces import ServerDown
@@ -53,7 +53,7 @@ class ILDAPSearchSchema(zope.interface.Interface):
 
 class PrincipalInfo:
     """An implementation of IPrincipalInfo used by the principal folder."""
-    zope.interface.implements(authentication.interfaces.IPrincipalInfo)
+    zope.interface.implements(pluggableauth.interfaces.IPrincipalInfo)
 
     def __init__(self, id, login='', title='', description=''):
         self.id = id
@@ -75,9 +75,9 @@ class LDAPAuthentication(Persistent, Contained):
 
     zope.interface.implements(
         ILDAPAuthentication,
-        authentication.interfaces.IAuthenticatorPlugin,
-        authentication.interfaces.IQueriableAuthenticator,
-        authentication.interfaces.IQuerySchemaSearch)
+        pluggableauth.interfaces.IAuthenticatorPlugin,
+        pluggableauth.interfaces.IQueriableAuthenticator,
+        pluggableauth.interfaces.IQuerySchemaSearch)
 
     adapterName = ''
     searchBase = ''
@@ -97,11 +97,11 @@ class LDAPAuthentication(Persistent, Contained):
 
         Returns None if adapter connection is configured or available.
         """
-        da = zapi.queryUtility(ILDAPAdapter, self.adapterName)
+        da = component.queryUtility(ILDAPAdapter, name=self.adapterName)
         return da
 
     def authenticateCredentials(self, credentials):
-        """See zope.app.authentication.interfaces.IAuthenticatorPlugin."""
+        """See zope.pluggableauth.interfaces.IAuthenticatorPlugin."""
 
         if not isinstance(credentials, dict):
             return None
@@ -149,7 +149,7 @@ class LDAPAuthentication(Persistent, Contained):
         return PrincipalInfo(id, **self.getInfoFromEntry(dn, entry))
 
     def principalInfo(self, id):
-        """See zope.app.authentication.interfaces.IAuthenticatorPlugin."""
+        """See zope.pluggableauth.interfaces.IAuthenticatorPlugin."""
         if not id.startswith(self.principalIdPrefix):   
             return None
         internal_id = id[len(self.principalIdPrefix):]
@@ -204,7 +204,7 @@ class LDAPAuthentication(Persistent, Contained):
                 }
 
     def search(self, query, start=None, batch_size=None):
-        """See zope.app.authentication.interfaces.IQuerySchemaSearch."""
+        """See zope.pluggableauth.interfaces.IQuerySchemaSearch."""
         da = self.getLDAPAdapter()
         if da is None:
             return ()
