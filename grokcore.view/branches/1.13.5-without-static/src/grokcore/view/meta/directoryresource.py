@@ -79,19 +79,3 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
         resource_path = _get_resource_path(factory.module_info, path)
         name = name or factory.module_info.dotted_name
         return _register(config, resource_path, name, layer)
-
-class StaticResourcesGrokker(martian.GlobalGrokker):
-
-    def grok(self, name, module, module_info, config, **kw):
-        # we're only interested in static resources if this module
-        # happens to be a package
-        if not module_info.isPackage():
-            return False
-        resource_path = _get_resource_path(module_info, 'static')
-        
-        if not os.path.exists(resource_path):
-            return False
-        
-        name = module_info.dotted_name
-        layer = IDefaultBrowserLayer
-        return _register(config, resource_path, name, layer)
