@@ -4,7 +4,7 @@
     i18n_domain="zcml">
     
     <!--include zcml:condition="installed zope.app.component" file="configure_zope3.zcml"/-->
-    <include file="configure_zope3.zcml"/>
+    <include file="configure_zope2.zcml"/>
 
 </configure>
 
