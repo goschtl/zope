@@ -53,6 +53,7 @@ setup(name='grokui.base',
       zip_safe=False,
       namespace_packages = ['grokui'],
       install_requires=[
+          'fanstatic',
           'grokcore.component',
           'grokcore.message',
           'grokcore.view',
@@ -63,6 +64,7 @@ setup(name='grokui.base',
           'zope.authentication',
           'zope.browsermenu',
           'zope.component',
+          'zope.fanstatic',
           'zope.interface',
           'zope.location',
           'zope.publisher',
@@ -71,7 +73,8 @@ setup(name='grokui.base',
           ],
       tests_require = tests_require,
       extras_require = dict(test=tests_require),
-      entry_points="""
-      # Add entry points here
-      """,
-      )
+      entry_points={
+          'fanstatic.libraries': [
+              'grokui.base = grokui.base.resource:library',
+          ]
+      })

@@ -52,8 +52,8 @@ import unittest
 import doctest
 import grokcore.component as grok
 from grokui.base import GrokUIView
+import fanstatic
 from zope.app.wsgi.testlayer import BrowserLayer
-
 
 class CaveAdminView(GrokUIView):
     """An admin page to administer caves.
@@ -68,10 +68,16 @@ class CaveAdminView(GrokUIView):
         return u'Hello from CaveAdminView'
 
 
+# XXX fix after resolving https://bitbucket.org/fanstatic/fanstatic/issue/29
+
+def setUp(test):
+    fanstatic.init_current_needed_inclusions()
+
 def test_suite():
     suite = unittest.TestSuite()
     test = doctest.DocTestSuite(
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+        setUp=setUp)
     test.layer = BrowserLayer(grokui.base)
     suite.addTest(test)
     return suite
