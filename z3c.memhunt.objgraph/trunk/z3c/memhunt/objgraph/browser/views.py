@@ -4,6 +4,7 @@ import types
 from tempfile import NamedTemporaryFile
 
 try:
+    # Make this work for Plone, and zope2
     from Products.Five.browser import BrowserView
     from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 except ImportError:
@@ -32,20 +33,20 @@ class RefCount(BrowserView):
         return self.template(self)
         
     def update(self):
-        d = {}
+        res = {}
         # collect all classes
         self.garbage_containing = len(gc.garbage)
         self.garbage_watching = len(gc.get_objects())
         self.total_ref_count = 0
 
-        for m in sys.modules.values():
-            for sym in dir(m):
-                o = getattr (m, sym)
-                if type(o) is types.ClassType:
-                    d[o] = sys.getrefcount (o)
+        for mod in sys.modules.values():
+            for attr in dir(mod):
+                obj = getattr(mod, attr)
+                if type(obj) is types.ClassType:
+                    res[obj] = sys.getrefcount(obj)
 
                     # sort by refcount
-                    pairs = map (lambda x: (repr(x[0]),x[1]), d.items())
+                    pairs = map (lambda x: (repr(x[0]),x[1]), res.items())
                     pairs.sort()
                     pairs.reverse()
 
