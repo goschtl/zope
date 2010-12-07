@@ -17,7 +17,7 @@ test_requires = [
     ]
 
 setup(name='megrok.layout',
-      version='1.1.0',
+      version='1.2.0dev',
       description="A layout component package for zope3 and Grok.",
       long_description = long_description,
       classifiers=[
