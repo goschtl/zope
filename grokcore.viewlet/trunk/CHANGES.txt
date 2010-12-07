@@ -4,7 +4,8 @@ Changes
 1.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Update to use TemplateGrokker from grokcore.view to associate
+  viewlet and viewletmanager templates.
 
 
 1.7 (2010-11-03)

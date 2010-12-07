@@ -18,18 +18,25 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.interfaces import IViewletManager, IViewlet
 
 import martian
-from martian.util import scan_for_classes
-from martian.error import GrokError
 
 import grokcore.component
-from grokcore.component.interfaces import IContext
 import grokcore.view
-from grokcore.view.meta.views import default_view_name
+from grokcore.view.meta.views import default_view_name, TemplateGrokker
 import grokcore.security
 import grokcore.viewlet
 from grokcore.viewlet import components
 from grokcore.viewlet.util import make_checker
-from grokcore.viewlet.interfaces import IViewletManager as IGrokViewletManager
+
+
+class ViewletManagerTemplateGrokker(TemplateGrokker):
+    martian.component(grokcore.viewlet.ViewletManager)
+
+    def has_render(self, factory):
+        return factory.render != components.ViewletManager.render
+
+    def has_no_render(self, factory):
+        # always has a render method
+        return False
 
 
 class ViewletManagerGrokker(martian.ClassGrokker):
@@ -50,31 +57,22 @@ class ViewletManagerGrokker(martian.ClassGrokker):
         # This will be used to support __name__ on the viewlet manager
         factory.__view_name__ = name
 
-        # find templates
-        templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory))
-
         config.action(
             discriminator=('viewletManager', context, layer, view, name),
             callable=component.provideAdapter,
             args=(factory, (context, layer, view), IViewletManager, name))
         return True
 
-    def checkTemplates(self, templates, module_info, factory):
 
-        def has_render(factory):
-            return factory.render != components.ViewletManager.render
+class ViewletTemplateGrokker(TemplateGrokker):
+    martian.component(grokcore.viewlet.Viewlet)
 
-        def has_no_render(factory):
-            # always has a render method
-            return False
+    def has_render(self, factory):
+        return factory.render != components.Viewlet.render
 
-        templates.checkTemplates(module_info, factory, 'viewlet manager',
-                                 has_render, has_no_render)
+    def has_no_render(self, factory):
+        return not self.has_render(factory)
+
 
 class ViewletGrokker(martian.ClassGrokker):
     martian.component(grokcore.viewlet.Viewlet)
@@ -97,14 +95,6 @@ class ViewletGrokker(martian.ClassGrokker):
         # This will be used to support __name__ on the viewlet
         factory.__view_name__ = name
 
-        # find templates
-        templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory))
-
         config.action(
             discriminator=(
                 'viewlet', context, layer, view, viewletmanager, name),
@@ -118,14 +108,3 @@ class ViewletGrokker(martian.ClassGrokker):
             args=(factory, factory, permission, ['update', 'render']))
 
         return True
-
-    def checkTemplates(self, templates, module_info, factory):
-
-        def has_render(factory):
-            return factory.render != components.Viewlet.render
-
-        def has_no_render(factory):
-            return not has_render(factory)
-
-        templates.checkTemplates(module_info, factory, 'viewlet',
-                                 has_render, has_no_render)
