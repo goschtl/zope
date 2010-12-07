@@ -48,8 +48,9 @@ class TemplateGrokker(martian.ClassGrokker):
         return True
 
     def check_templates(self, module_info, factory):
+        component_name = martian.component.bind().get(self).__name__.lower()
         templatereg.checkTemplates(
-            module_info, factory, 'view', self.has_render, self.has_no_render)
+            module_info, factory, component_name, self.has_render, self.has_no_render)
 
     def has_render(self, factory):
         render = getattr(factory, 'render', None)
