@@ -25,6 +25,7 @@ import grokcore.security
 import grokcore.view
 from grokcore.security.util import protect_getattr
 from grokcore.view import components
+from grokcore.view import templatereg
 
 def default_view_name(component, module=None, **data):
     return component.__name__.lower()
@@ -43,13 +44,11 @@ class ViewGrokker(martian.ClassGrokker):
 
     def execute(self, factory, config, context, layer, name, **kw):
         # find templates
-        templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory),
-                )
+        config.action(
+            discriminator=None,
+            callable=self.checkTemplates,
+            args=(factory.module_info, factory)
+            )
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
@@ -72,7 +71,7 @@ class ViewGrokker(martian.ClassGrokker):
             )
         return True
 
-    def checkTemplates(self, templates, module_info, factory):
+    def checkTemplates(self, module_info, factory):
 
         def has_render(factory):
             render = getattr(factory, 'render', None)
@@ -82,8 +81,8 @@ class ViewGrokker(martian.ClassGrokker):
         def has_no_render(factory):
             return not has_render(factory)
 
-        templates.checkTemplates(module_info, factory, 'view',
-                                 has_render, has_no_render)
+        templatereg.checkTemplates(
+            module_info, factory, 'view', has_render, has_no_render)
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):

@@ -18,17 +18,6 @@ import martian
 from grokcore.view import components
 from grokcore.view import templatereg
 
-
-class TemplateGrokker(martian.GlobalGrokker):
-    # this needs to happen before any other grokkers execute that use
-    # the template registry
-    martian.priority(1001)
-
-    def grok(self, name, module, module_info, config, **kw):
-        module.__grok_templates__ = templatereg.TemplateRegistry()
-        return True
-
-
 class ModulePageTemplateGrokker(martian.InstanceGrokker):
     martian.component(components.BaseTemplate)
     # this needs to happen before any other grokkers execute that actually
@@ -36,18 +25,15 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
     martian.priority(1000)
 
     def grok(self, name, instance, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
         config.action(
             discriminator=None,
-            callable=templates.register,
-            args=(name, instance),
+            callable=templatereg.register_inline_template,
+            args=(module_info, name, instance)
             )
         config.action(
             discriminator=None,
             callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name),
+            args=(name, module_info.dotted_name)
             )
         return True
 
@@ -59,28 +45,28 @@ class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
     martian.priority(999)
 
     def grok(self, name, module, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
         config.action(
             discriminator=None,
-            callable=templates.findFilesystem,
-            args=(module_info,),
+            callable=templatereg.register_directory,
+            args=(module_info,)
             )
         return True
 
 
 class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
     martian.priority(-1001)
+    # XXX: The action should be registered only once, not for each module.
+    # There should be a way to register the action without a module grokker...
+    _action_registered = False
 
     def grok(self, name, module, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
-
-        config.action(
-            discriminator=None,
-            callable=templates.checkUnassociated,
-            args=(module_info,),
-            )
+        if not self._action_registered:
+            self._action_registered = True
+            config.action(
+                discriminator=None,
+                callable=templatereg.check_unassociated,
+                args=(),
+                order=10000
+                )
         return True
+

@@ -1,15 +1,15 @@
 """
 A template directory may only contain recognized template files::
 
-  >>> from zope.testing.loggingsupport import InstalledHandler
-  >>> handler = InstalledHandler('grokcore.view')
-  >>> handler.clear()
+  >>> from grokcore.view.testing import warn, lastwarning
+  >>> import warnings
+  >>> saved_warn = warnings.warn
+  >>> warnings.warn = warn
 
   >>> grok.testing.grok(__name__)
-  >>> print handler
-  grokcore.view WARNING
-      File 'invalid.txt' has an unrecognized extension in directory
-      '...dirtemplatesonly_templates'
+  From grok.testing's warn():
+  ... UserWarning: File 'invalid.txt' has an unrecognized extension in
+  directory '...dirtemplatesonly_templates'...
 
 Files ending with '.cache' are generated on the fly by some template
 engines. Although they provide no valid template filename extension,
@@ -18,16 +18,15 @@ they are ignored.
 There is a 'template' ``ignored.cache`` in our template dir, which
 emits no warning::
 
-  >>> #'ignored.cache' in lastwarning
-  >>> 'ignored.cache' in handler.records[0].msg
+  >>> 'ignored.cache' in lastwarning
   False
 
 The same applies to files and directories ending with '~' or starting
 with a dot ('.').
 
-Restore the logging machinery::
+Restore the warning machinery::
 
-  >>> handler.uninstall()
+  >>> warnings.warn = saved_warn
 
 """
 import grokcore.view as grok

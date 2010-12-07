@@ -182,6 +182,34 @@ class ITemplate(Interface):
     def render(view):
         """Renders the template"""
 
+class TemplateLookupError(Exception):
+    pass
+
+class ITemplateRegAPI(Interface):
+    """Public API for the templatereg module.
+    """
+    def register_inline_template(module_info, template_name, template):
+        """Register an inline template with the template registry.
+
+        module_info - the module_info of the module the inline template is in
+        template_name - the name of the template
+        template - the template itself
+        """
+
+    def register_directory(module_info):
+        """Register a template directory for a module.
+
+        module_info - the module_info of the module
+        """
+
+    def lookup(module_info, template_name, mark_as_associated=False):
+        """Look up a template for a module.
+
+        module_info - the module info for which to look up the template
+        template_name - the name of the template to look up
+        mark_as_associated - if a template is found, mark it as associated (disabled by default).
+        """
+
 
 class IGrokSecurityView(Interface):
     """A view treated special by the Grok publisher.
