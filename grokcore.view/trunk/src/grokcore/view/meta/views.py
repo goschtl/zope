@@ -30,6 +30,40 @@ from grokcore.view import templatereg
 def default_view_name(component, module=None, **data):
     return component.__name__.lower()
 
+
+class TemplateGrokker(martian.ClassGrokker):
+    martian.baseclass()
+
+    def grok(self, name, factory, module_info, **kw):
+        # Need to store the module info to look for a template
+        factory.module_info = module_info
+        return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
+
+    def execute(self, factory, config, **kw):
+        # find templates
+        config.action(
+            discriminator=None,
+            callable=self.check_templates,
+            args=(factory.module_info, factory))
+        return True
+
+    def check_templates(self, module_info, factory):
+        templatereg.checkTemplates(
+            module_info, factory, 'view', self.has_render, self.has_no_render)
+
+    def has_render(self, factory):
+        render = getattr(factory, 'render', None)
+        base_method = getattr(render, 'base_method', False)
+        return render and not base_method
+
+    def has_no_render(self, factory):
+        return not self.has_render(factory)
+
+
+class ViewTemplateGrokker(TemplateGrokker):
+    martian.component(components.View)
+
+
 class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
     martian.directive(grokcore.component.context)
@@ -43,13 +77,6 @@ class ViewGrokker(martian.ClassGrokker):
         return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, context, layer, name, **kw):
-        # find templates
-        config.action(
-            discriminator=None,
-            callable=self.checkTemplates,
-            args=(factory.module_info, factory)
-            )
-
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
@@ -70,19 +97,6 @@ class ViewGrokker(martian.ClassGrokker):
             args=(factory, adapts, interface.Interface, name),
             )
         return True
-
-    def checkTemplates(self, module_info, factory):
-
-        def has_render(factory):
-            render = getattr(factory, 'render', None)
-            base_method = getattr(render, 'base_method', False)
-            return render and not base_method
-
-        def has_no_render(factory):
-            return not has_render(factory)
-
-        templatereg.checkTemplates(
-            module_info, factory, 'view', has_render, has_no_render)
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):

@@ -4,6 +4,9 @@ Changes
 2.2 (unreleased)
 ----------------
 
+- Factor out a base template grokker that associate templates for
+  viewish components.
+
 - Merge support for a global template registry that remove unnecessary
   warnings about unassociated templates.
 
