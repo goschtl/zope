@@ -31,16 +31,19 @@ Example
 We can build a simple admin screen that fits into the environment like
 this:
 
+    >>> from martian.testing import FakeModule
     >>> import grokcore.viewlet as grok
     >>> from zope.interface import Interface
     >>> from grokui.base import GrokUILayer
 
-    >>> class MyAdminScreen(grok.View):
-    ...   grok.layer(GrokUILayer)
-    ...   grok.name('helloadmin')
-    ...   grok.context(Interface)
-    ...   def render(self):
-    ...     return u'Hello admin!'
+    >>> class mymodule(FakeModule):
+    ...     class MyAdminScreen(grok.View):
+    ...       grok.layer(GrokUILayer)
+    ...       grok.name('helloadmin')
+    ...       grok.context(Interface)
+    ...       def render(self):
+    ...         return u'Hello admin!'
+    >>> from martiantest.fake.mymodule import MyAdminScreen
 
 The important thing here is, that we set our view to belong to the
 GrokUI namespace, which is named ``++grokui++`` in URLs.
@@ -86,21 +89,22 @@ title, and optionally set an order number:
     >>> from grokui.base.layout import GrokUIView
     >>> from grokui.base.namespace import GrokUILayer
 
-    >>> class CaveManagementScreen(GrokUIView):
-    ...   # Name where we can access this page via URL:
-    ...   grok.name('managecave')
-    ...   # Also optional, but highly recommended:
-    ...   grok.require('zope.ManageServices')
-    ...   # Set title of page in menu bar:
-    ...   grok.title('admin stuff')
-    ...   # Display this entry very far to the left in menu bar:
-    ...   grok.order(-1)
+    >>> class mymodule(FakeModule):
+    ...   class CaveManagementScreen(GrokUIView):
+    ...     # Name where we can access this page via URL:
+    ...     grok.name('managecave')
+    ...     # Also optional, but highly recommended:
+    ...     grok.require('zope.ManageServices')
+    ...     # Set title of page in menu bar:
+    ...     grok.title('admin stuff')
+    ...     # Display this entry very far to the left in menu bar:
+    ...     grok.order(-1)
     ...
-    ...   def render(self):
-    ...     # Instead of render() we could also define a page template
-    ...     # for the actual contents of this page.
-    ...     return u'Hello cave manager!'
-
+    ...     def render(self):
+    ...       # Instead of render() we could also define a page template
+    ...       # for the actual contents of this page.
+    ...       return u'Hello cave manager!'
+    >>> from martiantest.fake.mymodule import CaveManagementScreen
     >>> grok_component('CaveManagementScreen', CaveManagementScreen)
     True
 
