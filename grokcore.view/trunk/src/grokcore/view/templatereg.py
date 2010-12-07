@@ -194,18 +194,16 @@ def check_unassociated():
     if unassociated:
         for dotted_name, template_name in unassociated:
             msg = (
-                "Found the following unassociated template(s) when "
-                "grokking %r: %s.  Define view classes inheriting "
-                "from grok.View to enable the template(s)." % (
-                dotted_name, template_name))
+                "Found the following unassociated template "
+                "after configuration in  %r: %s." % (
+                    dotted_name, template_name))
             warnings.warn(msg, UserWarning, 1)
     unassociated = file_template_registry.unassociated()
-    if unassociated:
+    for template_name in unassociated:
         msg = (
-            "Found the following unassociated template(s) when "
-            "grokking views: %s.  Define view classes inheriting "
-            "from grok.View to enable the template(s)." % (
-            ', '.join(unassociated)))
+            "Found the following unassociated template "
+            "after configuration: %s"  % (
+                template_name))
         warnings.warn(msg, UserWarning, 1)
 
 
