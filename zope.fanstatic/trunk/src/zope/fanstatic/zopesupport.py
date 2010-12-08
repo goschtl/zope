@@ -10,7 +10,7 @@ import fanstatic
 @adapter(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
     needed = fanstatic.get_current_needed_inclusions()
-    if not needed.base_url:
+    if needed.base_url is None:
         needed.base_url = absoluteURL(None, event.request)
 
 class ZopeFanstaticResource(object):
@@ -34,6 +34,6 @@ class ZopeFanstaticResource(object):
 
     def __str__(self):
         needed = fanstatic.get_current_needed_inclusions()
-        if not needed.base_url:
+        if needed.base_url is None:
             needed.base_url = absoluteURL(None, self.request)
         return needed.library_url(self.library) + self.name
