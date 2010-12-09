@@ -5,7 +5,8 @@ CHANGES
 1.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When loading this package's ZCML configuration, make sure to configure
+  ``zope.component`` first since we require part of its configuration.
 
 
 1.0.1 (2010-09-25)

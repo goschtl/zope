@@ -1,6 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <!-- the 'Interfaces' vocabulary below requires a registred IInterface -->
+  <include package="zope.component" file="configure.zcml" />
+
   <interface
       interface="zope.interface.interfaces.IInterface"
       />

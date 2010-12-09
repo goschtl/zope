@@ -58,6 +58,7 @@ setup(name='zope.componentvocabulary',
       extras_require=dict(
           test=[
               'zope.component [test]',
+              'zope.configuration',
               ]),
       include_package_data=True,
       zip_safe=False,
