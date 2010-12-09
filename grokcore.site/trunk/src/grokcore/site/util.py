@@ -16,7 +16,7 @@ from grokcore.site.interfaces import IApplication
 from zope.component.hooks import getSite
 
 
-def getApplication(self):
+def getApplication():
     """Return the nearest enclosing `grok.Application`.
 
     Raises ValueError if no Application can be found.
