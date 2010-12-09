@@ -1,6 +1,6 @@
 from zope.interface import Interface, Attribute, implements
 
-from zope.app.container.interfaces import IContainer as IContainerBase
+from zope.container.interfaces import IContainer as IContainerBase
 from grokcore.component.interfaces import IContext
 
 # FIXME: this doesn't depend on grok.interfaces.IContainer. If something
@@ -24,8 +24,10 @@ class IContainer(IContext, IContainerBase):
         Defined by SQLAlchemy dictionary-based collections.
         """
 
+
 class IDatabaseSetupEvent(Interface):
     metadata = Attribute("Metadata that was just set up")
+
 
 class DatabaseSetupEvent(object):
     implements(IDatabaseSetupEvent)

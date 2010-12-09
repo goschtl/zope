@@ -39,8 +39,8 @@ setup(name='megrok.rdb',
           'zope.event',
           'zope.location',
           'grokcore.component',
-          'zope.app.container', # want to depend on zope.container directly but can't yet to retain grok compatibility
-          'martian < 0.12', # 0.12 is too new for grokcore.component right now..
+          'zope.container',
+          'martian',
           'SQLAlchemy > 0.5beta2',
           'zope.sqlalchemy',
           'z3c.saconfig >= 0.9',
