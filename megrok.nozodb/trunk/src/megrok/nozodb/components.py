@@ -7,6 +7,7 @@ from zope import component, site, location
 class ApplicationRoot(grok.GlobalUtility):
     grok.implements(
         grok.interfaces.IApplication,
+        grok.interfaces.IContext,
         site.interfaces.IRootFolder,
         location.ILocation,
         component.interfaces.ISite)

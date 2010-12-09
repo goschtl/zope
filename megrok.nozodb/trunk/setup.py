@@ -7,7 +7,7 @@ readme_filename = os.path.join('src', 'megrok', 'nozodb', 'README.txt')
 long_description = open(readme_filename).read() + '\n\n' + \
                    open(os.path.join('docs', 'HISTORY.txt')).read()
 
-test_requires = ['zope.app.wsgi',]
+test_requires = ['zope.app.wsgi', 'grok']
 
 setup(name='megrok.nozodb',
       version=version,
@@ -31,7 +31,9 @@ setup(name='megrok.nozodb',
       extras_require={'test': test_requires},
       install_requires=[
           'setuptools',
-          'grok',
+          'zope.app.wsgi',
+          'zope.publisher',
+          'grokcore.view',
           # -*- Extra requirements: -*-
       ],
       entry_points={
