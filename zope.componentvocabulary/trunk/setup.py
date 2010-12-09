@@ -16,8 +16,10 @@
 import os
 from setuptools import setup, find_packages
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 
 setup(name='zope.componentvocabulary',
       version='1.0.2dev',
@@ -60,4 +62,3 @@ setup(name='zope.componentvocabulary',
       include_package_data=True,
       zip_safe=False,
       )
-

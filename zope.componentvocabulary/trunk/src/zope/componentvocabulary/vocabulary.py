@@ -30,13 +30,14 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from zope.componentvocabulary.i18n import ZopeMessageFactory as _
 
+
 class UtilityTerm(object):
     """A term representing a utility.
 
     The token of the term is the name of the utility. Here is a brief example
     on how the IVocabulary interface is handled in this term as a
     utility:
-    
+
     >>> from zope.interface.verify import verifyObject
     >>> from zope.schema.interfaces import IVocabulary
     >>> term = UtilityTerm(IVocabulary, 'zope.schema.interfaces.IVocabulary')
@@ -229,9 +230,11 @@ class UtilityVocabulary(object):
         """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self._terms)
 
+
 class InterfacesVocabulary(UtilityVocabulary):
     classProvides(IVocabularyFactory)
     interface = IInterface
+
 
 class ObjectInterfacesVocabulary(SimpleVocabulary):
     """A vocabulary that provides a list of all interfaces that its context
@@ -270,6 +273,7 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
         terms = [SimpleTerm(interface, interfaceToName(context, interface))
                  for interface in interfaces]
         super(ObjectInterfacesVocabulary, self).__init__(terms)
+
 
 class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
     classProvides(IVocabularyFactory)
