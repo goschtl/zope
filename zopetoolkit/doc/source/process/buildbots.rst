@@ -96,7 +96,7 @@ The tests run on OS X 10.6
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.5%20slave-osx THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.6%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.7%20slave-osx THA
+      - unsupported
 
     * - `Groktoolkit 1.2 <http://svn.zope.org/groktoolkit/branches/1.2>`__
       - unsupported
@@ -145,7 +145,8 @@ no testing support for those
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win64 winbot
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
+      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
+        * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.0_win-py2.4%20slave-win THA
       - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot
         * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.0_win-py2.5%20slave-win THA
       - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
@@ -160,8 +161,7 @@ no testing support for those
         * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit_win-py2.5%20slave-win THA
       - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
         * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit_win-py2.6%20slave-win THA
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit_win-py2.7%20slave-win THA
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
 
@@ -302,11 +302,11 @@ Linux
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.5%20slave-ubuntu32 THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.6%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.7%20slave-ubuntu32 THA
+      - unsupported
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.5%20slave-ubuntu64 THA
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.6%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.7%20slave-ubuntu64 THA
+      - unsupported
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       -
