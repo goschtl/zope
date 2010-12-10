@@ -1,11 +1,11 @@
-from fanstatic import Library, ResourceInclusion
-from fanstatic import get_current_needed_inclusions
+from fanstatic import Library, Resource
+from fanstatic import get_needed
 
 foo = Library("foo", "foo_dir")
 
-a = ResourceInclusion(foo, "a.js")
+a = Resource(foo, "a.js")
 
-b = ResourceInclusion(foo, "b.js", depends=[a])
+b = Resource(foo, "b.js", depends=[a])
 
 class TestSingle(object):
     def widget(self):
@@ -23,8 +23,8 @@ class TestBottom(object):
         # XXX this does not use any official API and needs to be
         # reconsidered. Its done anyway now to make the tests pass,
         # instead of just removing the corresponding test.
-        get_current_needed_inclusions()._bottom = True
-        get_current_needed_inclusions()._force_bottom = True
+        get_needed()._bottom = True
+        get_needed()._force_bottom = True
         return "the widget HTML itself"
 
 class TestInlineResource(object):
