@@ -4,17 +4,12 @@ CHANGES
 0.8 (unreleased)
 ================
 
-- Moved the injection of resources from hurry.zoperesource to
-  hurry.resource.wsgi.
+- ``++resource++foo/bar/baz.jpg`` expressions in Page Templates are
+  still supported by way registering a traversable component for all
+  available resource libraries. There are not zope.browserresource
+  components involved anymore in zope.fanstatic.
 
-- No need to plug a custom request/response object into the zope publisher
-  any longer.
-
-- Replaced zope.app.testing/zope.app.zcmlfiles test setup with zope.app.wsgi.
-
-- Register a custom DirectoryResource and DirectoryResourceFactory in order
-  to mark resources with a marker interface and render URLs that know about
-  the hurry.resource.publisher.
+- Full rewrite based on the Fanstatic library (fanstatic.org).
 
 0.7 (2010-10-01)
 ================
@@ -23,7 +18,6 @@ CHANGES
   base class of the previously used ``IDefaultBrowserLayer``. So this
   package can be used when the layer used by the application does not extend
   ``IDefaultBrowserLayer``, as e. g. `z3c.layer.pagelet` does.
-
 
 0.6 (2010-07-29)
 ================
