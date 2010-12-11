@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.7.0 (unreleased)
+------------------
+* converted to Pyramid
+
 0.6.7 (2010/07/18)
 ------------------
 * adjusted company name

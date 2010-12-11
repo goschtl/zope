@@ -11,8 +11,8 @@ def parse_xmlrpc_request(request):
     params, method = xmlrpclib.loads(request.body)
     return params, method
 
-import repoze.bfg.xmlrpc
-repoze.bfg.xmlrpc.parse_xmlrpc_request = parse_xmlrpc_request
+import pyramid_xmlrpc
+pyramid_xmlrpc.parse_xmlrpc_request = parse_xmlrpc_request
 
 # initialize mimetypes on our own to avoid stupid
 # recursion error in guess_type()
