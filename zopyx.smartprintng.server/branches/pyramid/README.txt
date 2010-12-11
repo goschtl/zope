@@ -1,7 +1,7 @@
 zopyx.smartprintng.server
 =========================
 
-A repoze.bfg based server implementation for the SmartPrintNG framework.
+A Pyramid based server implementation for the SmartPrintNG framework.
 
 The SmartPrintNG server is part of the SmartPrintNG web-to-print solution
 of ZOPYX.
@@ -24,11 +24,11 @@ Installation
 
     virtualenv --no-site-packages smartprintng
 
-- install ``repoze.bfg`` 
+- install ``Pyramid`` 
   as a dependency) ::
 
-    bin/easy_install repoze.bfg
-    bin/easy_install repoze.bfg.xmlrpc
+    bin/easy_install pyramid
+    bin/easy_install pyramid_xmlrpc
 
 - install the SmartPrintNG server::
 
