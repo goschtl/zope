@@ -9,7 +9,7 @@ import mail_util
 from views import have_authentication
 
 def app(global_config, **kw):
-    """ This function returns a repoze.bfg.router.Router object.  It
+    """ This function returns a pyramid.router.Router object.  It
     is usually called by the PasteDeploy framework during ``paster
     serve``"""
 

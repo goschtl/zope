@@ -13,7 +13,7 @@ import pkg_resources
 from stat import ST_CTIME
 from pyramid.chameleon_zpt import render_template_to_response
 from pyramid.view import static
-from pyramid.view import bfg_view
+from pyramid.view import view_config
 from pyramid_xmlrpc import xmlrpc_view
 from webob import Response
 from models import Server
@@ -33,7 +33,7 @@ static_view = static('templates/static')
 # HTTP views
 ##################
 
-@bfg_view(for_=Server, request_method='GET', permission='read')
+@view_config(for_=Server, request_method='GET', permission='read')
 class index(object):
     """ The default view providing some system information """
 
@@ -51,7 +51,7 @@ class index(object):
                                            version=version,
                                            project='zopyx.smartprintng.server')
 
-@bfg_view(for_=Server, request_method='GET', permission='read', name='selftest')
+@view_config(for_=Server, request_method='GET', permission='read', name='selftest')
 class selftest(object):
     """ Server selftest """
 
@@ -76,7 +76,7 @@ class selftest(object):
         raise RuntimeError
 
 
-@bfg_view(for_=Server, name='deliver')
+@view_config(for_=Server, name='deliver')
 def deliver(context, request):
     """ Send out a generated output file """
 
@@ -110,7 +110,7 @@ def deliver(context, request):
 # XMLRPC views
 ##################
 
-@bfg_view(name='authenticate', for_=Server)
+@view_config(name='authenticate', for_=Server)
 @xmlrpc_view
 def authenticate(context, username, password):
 
@@ -124,7 +124,7 @@ def authenticate(context, username, password):
         LOG.error(msg, exc_info=True)
         return xmlrpclib.Fault(123, msg)
 
-@bfg_view(name='convertZIP', for_=Server)
+@view_config(name='convertZIP', for_=Server)
 @xmlrpc_view
 def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
 
@@ -141,7 +141,7 @@ def convertZIP(context, auth_token, zip_archive, converter_name='pdf-prince'):
         return xmlrpclib.Fault(123, msg)
 
 
-@bfg_view(name='convertZIPEmail', for_=Server)
+@view_config(name='convertZIPEmail', for_=Server)
 @xmlrpc_view
 def convertZIPEmail(context, auth_token, zip_archive, converter_name='pdf-prince', sender=None, recipient=None, subject=None, body=None):
 
@@ -158,7 +158,7 @@ def convertZIPEmail(context, auth_token, zip_archive, converter_name='pdf-prince
         return xmlrpclib.Fault(123, msg)
 
 
-@bfg_view(name='convertZIPandRedirect',  for_=Server)
+@view_config(name='convertZIPandRedirect',  for_=Server)
 @xmlrpc_view
 def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prince-pdf', prefix=None):
     """ This view appects a ZIP archive through a POST request containing all
@@ -198,13 +198,13 @@ def convertZIPandRedirect(context, auth_token, zip_archive, converter_name='prin
         return xmlrpclib.Fault(123, msg)
 
 
-@bfg_view(name='availableConverters', for_=Server)
+@view_config(name='availableConverters', for_=Server)
 @xmlrpc_view
 def availableConverters(context):
     return context.availableConverters()
 
 
-@bfg_view(name='ping', for_=Server)
+@view_config(name='ping', for_=Server)
 @xmlrpc_view
 def ping(context):
     return 'zopyx.smartprintng.server'

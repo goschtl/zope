@@ -35,7 +35,7 @@ class ViewTests(unittest.TestCase):
 
     """ These tests are unit tests for the view.  They test the
     functionality of *only* the view.  They register and use dummy
-    implementations of repoze.bfg functionality to allow you to avoid
+    implementations of pyramid functionality to allow you to avoid
     testing 'too much'"""
 
     def setUp(self):
@@ -62,21 +62,21 @@ class ViewTests(unittest.TestCase):
 class ViewIntegrationTests(unittest.TestCase):
     """ These tests are integration tests for the view.  These test
     the functionality the view *and* its integration with the rest of
-    the repoze.bfg framework.  They cause the entire environment to be
+    the pyramid framework.  They cause the entire environment to be
     set up and torn down as if your application was running 'for
     real'.  This is a heavy-hammer way of making sure that your tests
     have enough context to run properly, and it tests your view's
-    integration with the rest of BFG.  You should not use this style
+    integration with the rest of Pyramid.  You should not use this style
     of test to perform 'true' unit testing as tests will run faster
     and will be easier to write if you use the testing facilities
-    provided by bfg and only the registrations you need, as in the
+    provided by Pyramid and only the registrations you need, as in the
     above ViewTests.
     """
 
     def setUp(self):
         """ This sets up the application registry with the
         registrations your application declares in its configure.zcml
-        (including dependent registrations for repoze.bfg itself).
+        (including dependent registrations for pyramid itself).
         """
         testing.cleanUp()
         import zopyx.smartprintng.server
