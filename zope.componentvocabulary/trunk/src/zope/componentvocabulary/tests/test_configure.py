@@ -31,4 +31,4 @@ class ZCMLTest(unittest.TestCase):
         count = len(list(gsm.registeredUtilities()))
         zope.configuration.xmlconfig.XMLConfig(
             'configure.zcml', zope.componentvocabulary)()
-        self.assertEqual(count + 11, len(list(gsm.registeredUtilities())))
+        self.assertEqual(count + 5, len(list(gsm.registeredUtilities())))

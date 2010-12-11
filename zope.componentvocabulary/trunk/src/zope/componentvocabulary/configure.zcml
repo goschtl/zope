@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <include package="zope.component" file="configure.zcml" />
+  <include package="zope.component" file="meta.zcml" />
 
   <interface
       interface="zope.interface.interfaces.IInterface"
