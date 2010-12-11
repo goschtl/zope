@@ -1,8 +1,8 @@
-<configure xmlns="http://namespaces.repoze.org/bfg"
+<configure xmlns="http://pylonshq.com/pyramid"
            xmlns:mail="http://namespaces.repoze.org/mail">
 
   <!-- this must be included for the view declarations to work -->
-  <include package="repoze.bfg.includes" />
+  <include package="pyramid.includes" />
 
   <scan package="."/>
 

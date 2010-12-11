@@ -9,7 +9,7 @@ import xmlrpclib
 import unittest
 import zipfile
 import tempfile
-from repoze.bfg import testing
+from pyramid import testing
 from models import Server
 
 xml = """<?xml version="1.0"?>

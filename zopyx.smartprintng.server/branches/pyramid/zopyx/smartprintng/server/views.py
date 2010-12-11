@@ -11,10 +11,10 @@ import mimetypes
 import xmlrpclib
 import pkg_resources
 from stat import ST_CTIME
-from repoze.bfg.chameleon_zpt import render_template_to_response
-from repoze.bfg.view import static
-from repoze.bfg.view import bfg_view
-from repoze.bfg.xmlrpc import xmlrpc_view
+from pyramid.chameleon_zpt import render_template_to_response
+from pyramid.view import static
+from pyramid.view import bfg_view
+from pyramid_xmlrpc import xmlrpc_view
 from webob import Response
 from models import Server
 from logger import LOG

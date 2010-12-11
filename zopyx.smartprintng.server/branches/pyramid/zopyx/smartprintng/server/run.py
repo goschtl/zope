@@ -4,7 +4,7 @@
 ##########################################################################
 
 import os
-from repoze.bfg.router import make_app
+from pyramid.router import make_app
 import mail_util
 from views import have_authentication
 
