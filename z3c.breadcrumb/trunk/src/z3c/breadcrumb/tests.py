@@ -11,17 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: __init__.py 70825 2006-10-20 01:34:05Z rogerineichen $
-"""
-__docformat__ = 'restructuredtext'
-
-import unittest
-
-from zope.testing import doctest
 from zope.app.testing import setup
 from zope.interface.verify import verifyObject
 from zope.publisher.browser import TestRequest
+import doctest
+import unittest
 
 
 def doctest_Breadcrumbs_interface():
