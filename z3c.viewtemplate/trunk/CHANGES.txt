@@ -5,10 +5,12 @@ CHANGES
 0.4.1 (unreleased)
 ------------------
 
- - fixed exception handling if macro is not found in the template
+ - Fixed exception handling if macro is not found in the template.
 
  - Using Python's ``doctest`` module instead of depreacted
    ``zope.testing.doctest``.
+
+ - Removed ZCML slugs and ZPKG ones.
 
 
 0.4.0 (2008-11-05)
