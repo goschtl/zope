@@ -66,6 +66,7 @@ setup (
     install_requires = [
         'setuptools',
         'z3c.rml',
+        'reportlab >= 2.4',
         'zope.app.pagetemplate',
         'zope.app.publisher',
         'zope.component',

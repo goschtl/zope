@@ -128,4 +128,4 @@ we can can look up the view
 and create the PDF:
 
   >>> contents() #doctest: +ELLIPSIS
-  '%PDF-1.3...'
+  '%PDF-1.4...'
