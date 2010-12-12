@@ -23,16 +23,13 @@ def read(*rnames):
 
 setup (
     name='z3c.pdftemplate',
-    version='0.2.0dev',
+    version='0.2.0',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "PDF Template",
     long_description=(
         read('README.txt')
-        + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************'
-        + '\n\n' +
+        + '\n\n.. contents::\n\n' +
         read('src', 'z3c', 'pdftemplate', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')

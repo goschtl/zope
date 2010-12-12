@@ -49,45 +49,45 @@ PDF. The following folder contents document template is available in
 
 ::
 
-<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
-<!DOCTYPE document SYSTEM "rml_1_0.dtd">
-<document
-    xmlns:tal="http://xml.zope.org/namespaces/tal"
-    xmlns:metal="http://xml.zope.org/namespaces/metal"
-    filename="contents.pdf">
-<content>
+  <?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+  <!DOCTYPE document SYSTEM "rml_1_0.dtd">
+  <document
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      filename="contents.pdf">
+  <content>
 
-<para style="FolderName">
-  Folder Name:
-  <tal:block
-     condition="context/__name__"
-     replace="context/__name__|default" />
-  <tal:block condition="not:context/__name__">&lt;no name&gt;</tal:block>
-</para>
+  <para style="FolderName">
+    Folder Name:
+    <tal:block
+       condition="context/__name__"
+       replace="context/__name__|default" />
+    <tal:block condition="not:context/__name__">&lt;no name&gt;</tal:block>
+  </para>
 
-<spacer height="30" />
+  <spacer height="30" />
 
-<table splitbyrow="1" repeatrows="0" repeatcols="0" style="ContentTable">
-  <tr>
-    <td>Name</td>
-    <td>Title</td>
-    <td>Size</td>
-    <td>Created</td>
-    <td>Modified</td>
-  </tr>
-  <tr tal:repeat="item view/listContentInfo">
-    <td tal:content="item/id">me.png</td>
-    <td tal:content="item/title|default">&lt;no title&gt;</td>
-    <td tal:content="item/size/sizeForDisplay|nothing">34.5 kB</td>
-    <td tal:content="item/created|default"></td>
-    <td tal:content="item/modified|default"></td>
-  </tr>
-</table>
+  <table splitbyrow="1" repeatrows="0" repeatcols="0" style="ContentTable">
+    <tr>
+      <td>Name</td>
+      <td>Title</td>
+      <td>Size</td>
+      <td>Created</td>
+      <td>Modified</td>
+    </tr>
+    <tr tal:repeat="item view/listContentInfo">
+      <td tal:content="item/id">me.png</td>
+      <td tal:content="item/title|default">&lt;no title&gt;</td>
+      <td tal:content="item/size/sizeForDisplay|nothing">34.5 kB</td>
+      <td tal:content="item/created|default"></td>
+      <td tal:content="item/modified|default"></td>
+    </tr>
+  </table>
 
-<action name="frameEnd" />
+  <action name="frameEnd" />
 
-</content>
-</document>
+  </content>
+  </document>
 
 Pretty easy isn't it? Fortunately, we can simply reuse the ``Contents`` view
 class for the HTML contents view.
