@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.viewtemplate',
-      version = '0.4.0',
+      version='0.4.1',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='View Templates',
