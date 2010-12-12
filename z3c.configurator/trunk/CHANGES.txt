@@ -6,7 +6,7 @@ CHANGES
 Version 1.2.2 (unreleased)
 --------------------------
 
-- ...
+- Updated test set up to run with ZTK 1.0.
 
 
 Version 1.2.1 (2009-12-27)
