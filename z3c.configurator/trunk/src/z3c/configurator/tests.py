@@ -10,31 +10,26 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
-"""Configurator Test Setup
+#############################################################################
+"""Configurator Test Setup"""
 
-$Id$
-"""
 __docformat__ = "reStructuredText"
-__docformat__ = 'restructuredtext'
 
-import unittest, doctest
+
 from zope.app.testing import setup
+import unittest, doctest
+
 
 def setUp(test):
     setup.placelessSetUp()
+
 
 def tearDown(test):
     setup.placelessTearDown()
 
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt',
-                             setUp=setUp, tearDown=tearDown,
-                             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                     ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp, tearDown=tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
