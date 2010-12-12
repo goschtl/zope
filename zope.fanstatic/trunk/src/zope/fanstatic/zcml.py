@@ -14,7 +14,7 @@ def create_factory(library):
 def action_setup(_context):
     """Publish all fanstatic library entry points as resources.
     """
-    for library in fanstatic.library_registry.values():
+    for library in fanstatic.get_library_registry().values():
         factory = create_factory(library)
         adapts = (IBrowserRequest,)
         provides = Interface
