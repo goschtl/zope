@@ -1,0 +1,46 @@
+=======
+CHANGES
+=======
+
+0.4.1 (2010-12-12)
+------------------
+
+ - Fixed exception handling if macro is not found in the template.
+
+ - Fixed tests, so they can successfully run on Windows.
+
+ - Using Python's ``doctest`` module instead of depreacted
+   ``zope.testing.doctest``.
+
+ - Removed ZCML slugs and ZPKG ones.
+
+
+0.4.0 (2008-11-05)
+------------------
+
+ - added support for TAL debug flags
+
+0.3.2 (2007-11-01)
+------------------
+
+- Fix package meta-data.
+
+0.3.1 (2007-10-31)
+------------------
+
+- Bugfix: Options did not get passed in to macro templates.
+
+
+0.3.0 (2007-09-27)
+------------------
+
+- Add the request to ``BeforeUpdateEvent``, this requires a recent
+  zope.contentprovider package.
+
+- No dev release anymore.
+
+
+0.2 (2007-05-01)
+----------------
+
+- Fire a ``BeforeUpdateEvent`` in the base views. This requires zope 3.4.
