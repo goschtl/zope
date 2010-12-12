@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
+
+    <pageTemplate id="main">
+      <pageGraphics>
+        <image y="265mm" width="35.5mm" x="167mm"
+            file="[z3c.pdftemplate]/sample/bopplogo.gif" height="25.6mm"/>
+      </pageGraphics>
+      <frame x1="15mm" y1="0mm" width="185mm" height="300mm" id="header" />
+      <frame x1="15mm" y1="82mm" width="185mm" height="11mm" id="middleline" />
+      <frame x1="15mm" y1="28mm" width="90mm" height="60mm" id="summary" />
+      <frame x1="110mm" y1="28mm" width="100mm" height="60mm" id="summary2" />
+      <frame x1="15mm" y1="0mm" width="185mm" height="17mm" id="footer" />
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="headercompany">
+      <blockFont name="Helvetica" size="14"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockBottomPadding start="0,0" length="3mm" stop="-1,0"/>
+      <blockTextColor start="-1,1" stop="-1,-1" colorName="1.0 0.5 0.25"/>
+    </blockTableStyle>
+    <blockTableStyle id="headercharge">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="1,0" stop="1,-1" name="Helvetica-Bold" size="10"/>
+      <blockFont start="4,0" stop="4,-1" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="1,0" stop="1,-1" value="RIGHT"/>
+      <blockAlignment start="4,0" stop="4,-1" value="RIGHT"/>
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+      <lineStyle start="0,2" kind="LINEBELOW" stop="-1,2" colorName="black"/>
+      </blockTableStyle><blockTableStyle id="middleline">
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+    </blockTableStyle>
+    <blockTableStyle id="measuredetail">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="0,0" stop="-1,0" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="0,0" stop="0,-1" value="RIGHT"/>
+      <blockAlignment start="3,0" stop="3,-1" value="RIGHT"/>
+      <blockAlignment start="6,0" stop="6,-1" value="RIGHT"/>
+      <blockBottomPadding start="0,1" stop="-1,-1" length="-0.55mm" />
+    </blockTableStyle>
+    <blockTableStyle id="middleline">
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+    </blockTableStyle>
+    <blockTableStyle id="measuresummary">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="2,0" stop="2,-1" name="Helvetica-Bold" size="10"/>
+      <blockFont start="0,0" stop="0,0" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="2,0" stop="2,-1" value="RIGHT"/>
+      <blockTopPadding start="0,1" length="5mm" stop="-1,1"/>
+    </blockTableStyle>
+    <blockTableStyle id="footer">
+      <blockLeftPadding length="0mm"/>
+      <blockTopPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+      <blockAlignment start="4,0" stop="4,-1" value="RIGHT"/>
+    </blockTableStyle>
+
+  </stylesheet>
+  <story>
+    <spacer length="8mm"/>
+    <blockTable style="headercompany" colWidths="186mm">
+      <tr>
+        <td>G. Bopp + Co. AG, Bachmannweg 20, CH-8046 Zuerich</td>
+      </tr>
+      <tr><td>RAYL PROTOKOLL</td></tr>
+      <tr><td>RAYL CERTIFICATE</td></tr>
+    </blockTable>
+    <spacer length="4mm"/>
+    <blockTable style="headercharge" colWidths="55mm, 34mm, 15mm, 40.5mm, 38mm">
+      <tr>
+        <td>Charge / Batch</td>
+        <td>111275</td>
+        <td/>
+        <td>Fert.Auftragsnr. / Prod.-No.</td>
+        <td>139354</td>
+      </tr>
+      <tr>
+        <td>Material 10457</td>
+        <td>w 1.120 mm / d 0.450 mm</td>
+        <td/>
+        <td>Werkstoff / Alloy</td>
+        <td>DIN 1.4401+4404 / AISI 316/L</td>
+      </tr>
+      <tr>
+        <td>Rollenbreite / Roll Width</td>
+        <td>1220 mm</td>
+        <td/>
+        <td>Geprueft nach / approved according to</td>
+        <td>Cust-Spec</td>
+      </tr>
+    </blockTable>
+    <blockTable style="measuredetail" colWidths="28.5mm, 5mm, 28.5mm, 28.5mm, 5mm, 28.5mm, 28.5mm, 5mm, 28.5mm">
+      <tr><td>AREA</td><td/><td>RAYL</td><td>AREA</td><td/><td>RAYL</td><td>AREA</td><td/><td>RAYL</td></tr>
+      <tr><td>1</td><td/><td>9.0</td><td>31</td><td/><td></td><td>61</td><td/><td></td></tr>
+      <tr><td>2</td><td/><td>9.0</td><td>32</td><td/><td></td><td>62</td><td/><td></td></tr>
+      <tr><td>3</td><td/><td>9.0</td><td>33</td><td/><td></td><td>63</td><td/><td></td></tr>
+      <tr><td>4</td><td/><td>9.0</td><td>34</td><td/><td></td><td>64</td><td/><td></td></tr>
+      <tr><td>5</td><td/><td>9.0</td><td>35</td><td/><td></td><td>65</td><td/><td></td></tr>
+      <tr><td>6</td><td/><td>9.0</td><td>36</td><td/><td></td><td>66</td><td/><td></td></tr>
+      <tr><td>7</td><td/><td>9.0</td><td>37</td><td/><td></td><td>67</td><td/><td></td></tr>
+      <tr><td>8</td><td/><td>9.0</td><td>38</td><td/><td></td><td>68</td><td/><td></td></tr>
+      <tr><td>9</td><td/><td>9.0</td><td>39</td><td/><td></td><td>69</td><td/><td></td></tr>
+      <tr><td>10</td><td/><td>9.0</td><td>40</td><td/><td></td><td>70</td><td/><td></td></tr>
+      <tr><td>11</td><td/><td>9.0</td><td>41</td><td/><td></td><td>71</td><td/><td></td></tr>
+      <tr><td>12</td><td/><td>9.0</td><td>42</td><td/><td></td><td>72</td><td/><td></td></tr>
+      <tr><td>13</td><td/><td>9.0</td><td>43</td><td/><td></td><td>73</td><td/><td></td></tr>
+      <tr><td>14</td><td/><td>9.0</td><td>44</td><td/><td></td><td>74</td><td/><td></td></tr>
+      <tr><td>15</td><td/><td>9.0</td><td>45</td><td/><td></td><td>75</td><td/><td></td></tr>
+      <tr><td>16</td><td/><td>9.0</td><td>46</td><td/><td></td><td>76</td><td/><td></td></tr>
+      <tr><td>17</td><td/><td>9.0</td><td>47</td><td/><td></td><td>77</td><td/><td></td></tr>
+      <tr><td>18</td><td/><td>9.0</td><td>48</td><td/><td></td><td>78</td><td/><td></td></tr>
+      <tr><td>19</td><td/><td>9.0</td><td>49</td><td/><td></td><td>79</td><td/><td></td></tr>
+      <tr><td>20</td><td/><td>9.0</td><td>50</td><td/><td></td><td>80</td><td/><td></td></tr>
+      <tr><td>21</td><td/><td>9.0</td><td>51</td><td/><td></td><td>81</td><td/><td></td></tr>
+      <tr><td>22</td><td/><td>9.0</td><td>52</td><td/><td></td><td>82</td><td/><td></td></tr>
+      <tr><td>23</td><td/><td>9.0</td><td>53</td><td/><td></td><td>83</td><td/><td></td></tr>
+      <tr><td>24</td><td/><td>9.0</td><td>54</td><td/><td></td><td>84</td><td/><td></td></tr>
+      <tr><td>25</td><td/><td>9.0</td><td>55</td><td/><td></td><td>85</td><td/><td></td></tr>
+      <tr><td>26</td><td/><td>9.0</td><td>56</td><td/><td></td><td>86</td><td/><td></td></tr>
+      <tr><td>27</td><td/><td>9.0</td><td>57</td><td/><td></td><td>87</td><td/><td></td></tr>
+      <tr><td>28</td><td/><td>9.0</td><td>58</td><td/><td></td><td>88</td><td/><td></td></tr>
+      <tr><td>29</td><td/><td>9.0</td><td>59</td><td/><td></td><td>89</td><td/><td></td></tr>
+      <tr><td>30</td><td/><td>9.0</td><td>60</td><td/><td></td><td>90</td><td/><td></td></tr>
+    </blockTable>
+    <nextFrame/>
+    <blockTable style="middleline" colWidths="55mm, 34mm, 15mm, 40.5mm, 38mm">
+      <tr><td/><td/><td/><td/><td/></tr>
+    </blockTable>
+    <nextFrame/>
+    <illustration width="90mm" height="60mm">
+    <barChart
+		direction="vertical"
+        dx="7mm" dy="0mm" dwidth="90mm" dheight="61mm"
+         x="0mm"    y="0mm"    width="90mm"  height="61mm"
+        barSpacing="3"
+        groupSpacing="3">
+      <bars>
+        <bar fillColor="red" strokeWidth="0.5" />
+      </bars>
+      <categoryAxis strokeColor="black" strokeWidth="0.5">
+        <labels fontName="Helvetica" angle="90" dx="-5" dy="-12" />
+        <categoryNames>
+          <name>8.60</name>
+          <name>8.65</name>
+          <name>8.70</name>
+		  <name>8.75</name>
+          <name>8.80</name>
+		  <name>8.85</name>
+		  <name>8.90</name>
+		  <name>8.95</name>
+		  <name>9.00</name>
+          <name>9.05</name>
+          <name>9.10</name>
+        </categoryNames>
+      </categoryAxis>
+      <valueAxis valueMin="0" valueMax="64" valueStep="10"
+          visibleLabels="true"
+		  strokeColor="black" strokeWidth="0.5"
+		  visibleGrid="1" gridStrokeColor="black" gridStrokeWidth="0.5">
+        <labels fontName="Helvetica" />
+      </valueAxis>
+      <data>
+        <series>0.0 0.0 0.0 0.0 0.0 20.0 64.0 16.0 0.0 0.0 0.0</series>
+      </data>
+    </barChart>
+    </illustration>
+    <nextFrame/>
+    <blockTable style="measuresummary" colWidths="7mm, 60mm, 12mm">
+      <tr><td>Messergebnisse / Results:</td><td/><td/></tr>
+      <tr><td>Average</td><td/><td>8.95</td></tr>
+      <tr><td>Maximun</td><td/><td>9.00</td></tr>
+      <tr><td>Minimum</td><td/><td>8.89</td></tr>
+    </blockTable>
+    <nextFrame/>
+    <blockTable style="footer" colWidths="55mm, 34mm, 15mm, 40.5mm, 38mm">
+      <tr>
+        <td>Datum / Date: 05.01.2005</td>
+        <td/>
+        <td/>
+        <td>Pruefer / Inspector: Colner Davor</td>
+        <td>
+          <illustration width="25mm" height="9.5mm">
+            <image y="-4mm" width="25mm" x="0mm" file="[z3c.pdftemplate]/sample/dcolner.gif" height="9.5mm"/>
+          </illustration>
+        </td>
+      </tr>
+    </blockTable>
+  </story>
+</document>

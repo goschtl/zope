@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template 
+    filename="default.pdf"
+    pagesize="A4" 
+    landscape="0" 
+    showboundary="0"
+    leftmargin="1cm"
+    rightmargin="1cm"
+    topmargin="1cm"
+    bottommargin="1cm"
+    allowsplitting="1">
+
+  <stylesheet>
+
+   <paragraphstyle 
+       name="Base" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       align="LEFT" 
+       firstLineIndent="0cm" 
+       leftIndent="0.5cm" 
+       rightIndent="0cm" 
+       spaceBefore="0" 
+       spaceAfter="0" 
+       leading="0.5cm" 
+       bulletFontName="Helvetica" 
+       bulletIndent="0cm" 
+       bulletFontSize="10" />
+
+   <paragraphstyle 
+       name="Normal" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       leading="0.5cm" />
+
+   <paragraphstyle 
+       name="BodyText" 
+       parent="Base" 
+       spaceBefore="4" />
+
+   <paragraphstyle 
+       name="BodyText1" 
+       parent="Base" 
+       spaceBefore="4" />
+
+   <paragraphstyle 
+       name="BodyText2" 
+       parent="Base" 
+       spaceBefore="4" 
+       leftIndent="0.5cm"/>
+
+   <paragraphstyle 
+       name="BodyText3" 
+       parent="Base" 
+       spaceBefore="4" 
+       leftIndent="1.0cm"/>
+
+   <paragraphstyle 
+       name="BodyText4" 
+       parent="Base" 
+       spaceBefore="4" 
+       leftIndent="1.5cm" />
+
+   <paragraphstyle 
+       name="Heading" 
+       parent="Base" 
+       leftIndent="0cm" 
+       fontName="Helvetica-Bold" 
+       fontSize="16" 
+       leading="0.5cm"
+       spaceBefore="4"
+       spaceAfter="4" />
+
+   <paragraphstyle 
+       name="Heading1" 
+       parent="Base"
+       leftIndent="0cm" 
+       fontName="Helvetica-Bold" 
+       fontSize="16"
+       leading="0.5cm" 
+       spaceBefore="4" 
+       spaceAfter="4" />
+
+   <paragraphstyle 
+       name="Heading2" 
+       parent="Base" 
+       leftIndent="0cm" 
+       fontName="Helvetica-Bold" 
+       fontSize="13" 
+       leading="0.5cm" 
+       spaceBefore="4" 
+       spaceAfter="4" />
+
+   <paragraphstyle 
+       name="Heading3" 
+       parent="Base" 
+       leftIndent="0cm" 
+       fontName="Helvetica-BoldOblique" 
+       fontSize="12" 
+       leading="0.3cm" 
+       spaceBefore="4" 
+       spaceAfter="4" />
+
+   <paragraphstyle 
+       name="Heading4" 
+       parent="Base" 
+       leftIndent="0cm" 
+       fontName="Helvetica-BoldOblique" 
+       fontSize="10" 
+       leading="0.3cm" 
+       spaceBefore="4" 
+       spaceAfter="4" />
+
+   <paragraphstyle 
+       name="Bullet" 
+       parent="Base"
+       bulletFontName="ZapfDingbats"
+       bulletFontSize="8" 
+       bulletIndent="0cm"
+       leftIndent="0cm"
+       firstLineIndent="0cm" 
+       spaceBefore="0"
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Bullet1" 
+       parent="Base"
+       bulletFontName="ZapfDingbats"
+       bulletFontSize="8" 
+       bulletIndent="0cm"
+       leftIndent="0cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="0" 
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Bullet2" 
+       parent="Base" 
+       bulletFontName="ZapfDingbats" 
+       bulletFontSize="8" 
+       bulletIndent="0cm" 
+       leftIndent="0cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="0"
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Bullet3" 
+       parent="Base" 
+       bulletFontName="ZapfDingbats" 
+       bulletFontSize="8" 
+       bulletIndent="0cm" 
+       leftIndent="0cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="0" 
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Bullet4" 
+       parent="Base" 
+       bulletFontName="ZapfDingbats" 
+       bulletFontSize="8" 
+       bulletIndent="0cm" 
+       leftIndent="0cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="0" 
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Sequence" 
+       parent="Base" 
+       bulletFontName="Helvetica" 
+       bulletFontSize="10" 
+       bulletIndent="0cm" 
+       leftIndent="0cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="0" 
+       spaceAfter="0" />
+
+   <paragraphstyle 
+       name="Sequence1" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       bulletFontName="Helvetica" 
+       bulletFontSize="10" 
+       bulletIndent="0.5cm" 
+       leftIndent="1.1cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="6" 
+       spaceAfter="0" 
+       parent="Base" />
+
+   <paragraphstyle 
+       name="Sequence2" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       bulletFontName="Helvetica" 
+       bulletFontSize="10" 
+       bulletIndent="1cm" 
+       leftIndent="1.6cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="6" 
+       spaceAfter="0" 
+       parent="Base" />
+
+   <paragraphstyle 
+       name="Sequence3" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       bulletFontName="Helvetica" 
+       bulletFontSize="10" 
+       bulletIndent="1.5cm" 
+       leftIndent="2.1cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="6" 
+       spaceAfter="0" 
+       parent="Base" />
+
+   <paragraphstyle 
+       name="Sequence4" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       bulletFontName="Helvetica" 
+       bulletFontSize="10" 
+       bulletIndent="2cm" 
+       leftIndent="2.6cm" 
+       firstLineIndent="0cm" 
+       spaceBefore="6" 
+       spaceAfter="0" 
+       parent="Base" />
+
+   <paragraphstyle 
+       name="Small" 
+       parent="Base" 
+       fontName="Helvetica-Bold" 
+       fontSize="7" />
+
+   <paragraphstyle 
+       name="Cell" 
+       parent="Base" 
+       fontName="Helvetica-Bold" 
+       fontSize="12" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="CellHeading" 
+       parent="Base" 
+       fontName="Helvetica-Bold" 
+       fontSize="13" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="Example" 
+       fontName="Courier-Oblique" 
+       fontSize="10" 
+       parent="Base" />
+
+   <paragraphstyle 
+       name="TitleHeader" 
+       parent="Base" 
+       fontName="Helvetica-Bold" 
+       fontSize="20" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="TitleAuthor" 
+       parent="Base" 
+       fontName="Helvetica" 
+       fontSize="12" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="TitleCenter" 
+       parent="Base" 
+       fontName="Helvetica" 
+       fontSize="14" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="TitleBottom" 
+       parent="Base" 
+       fontName="Helvetica" 
+       fontSize="10" 
+       alignment="center" />
+
+   <paragraphstyle 
+       name="DocumentHeader" 
+       parent="Base" 
+       fontName="Helvetica-Bold" 
+       fontSize="18" />
+
+   <tablestyle name="StandardTable">
+     <stylecmd expr="('LEFTPADDING', (0,0), (-1,-1), 5)"/>
+     <stylecmd expr="('RIGHTPADDING', (0,0), (-1,-1), 5)"/>
+     <stylecmd expr="('TOPPADDING', (0,0), (-1,-1), 3)"/>
+     <stylecmd expr="('BOTTOMPADDING', (0,0), (-1,-1), 7)"/>
+     <stylecmd expr="('ALIGN', (0,0), (-1,-1), 'LEFT')"/>
+     <stylecmd expr="('GRID', (0,0), (-1,-1), 0.5, colors.black)"/>
+     <stylecmd expr="('BOX', (0,0), (-1,-1), 1, colors.black)"/>
+     <stylecmd expr="('FONT', (1,1), (-1,-1), 'Helvetica', 10)"/>
+     <stylecmd expr="('FONT', (0,0), (-1,0), 'Helvetica-Bold', 10)"/>
+     <stylecmd expr="('FONT', (0,1), (0,-1), 'Courier', 10)"/>
+   </tablestyle>
+
+  </stylesheet>
+
+
+  <pagetemplate id="Page" >
+    <frame 
+        id="content"
+   	nextid="content"
+    	x="2cm" 
+        y="1.5cm" 
+	width="17cm" 
+	height="25.5cm" 
+	leftpadding="0.1cm"
+	rightpadding="0.1cm"
+	toppadding="0.5cm"
+	bottompadding="0.5cm"
+	showBoundary="0" 
+        />
+  </pagetemplate>
+
+</template>

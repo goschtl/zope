@@ -1,0 +1,26 @@
+=======
+CHANGES
+=======
+
+0.2.0 (2010-12-12)
+------------------
+
+- Added missing install dependencies and test dependencies.
+
+- Fixed tests to run with current package versions.
+
+- Adapted tests to `reportlab` 2.4+ which produces PDF 1.4, so requiring at
+  least this `reportlab` version.
+
+- Using python's `doctest` module instead of the deprecated
+  `zope.testing.doctest`.
+
+- Removed ZCML slugs and ZPKG ones.
+
+- Fixed REST of ``long_description``.
+
+
+0.1.0 (2008-02-15)
+------------------
+
+- Initial Release
