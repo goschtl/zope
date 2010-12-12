@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-1.1.0 (unreleased)
+1.2.0 (unreleased)
 ------------------
 
-- ...
+- Added needed but not declated test dependency on ``zope.app.container``.
+
 
 1.1.0 (2009-05-29)
 ------------------

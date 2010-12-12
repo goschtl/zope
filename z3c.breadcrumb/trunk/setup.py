@@ -55,7 +55,8 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
-        test = ['zope.app.testing'],
+        test = ['zope.app.testing',
+                'zope.app.container'],
         ),
     install_requires = [
         'setuptools',
