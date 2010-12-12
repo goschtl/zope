@@ -99,7 +99,7 @@ We can also render the view with debug flags set.
   >>> print view()
   <!--
   ==============================================================================
-  .../myViewTemplate.pt
+  ...myViewTemplate.pt
   ==============================================================================
   --><div>IMyView</div>
   >>> request.debug.sourceAnnotations = False

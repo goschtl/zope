@@ -7,6 +7,8 @@ CHANGES
 
  - Fixed exception handling if macro is not found in the template.
 
+ - Fixed tests, so they can successfully run on Windows.
+
  - Using Python's ``doctest`` module instead of depreacted
    ``zope.testing.doctest``.
 
