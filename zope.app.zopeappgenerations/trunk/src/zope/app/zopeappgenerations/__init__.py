@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Zope Application Server Generations
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 

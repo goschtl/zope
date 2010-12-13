@@ -12,16 +12,13 @@
 #
 ##############################################################################
 """Evolve moved Zope Dublin Core Annotatable data
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.annotatableadapter import DCkey
-from zope.generations.utility import findObjectsProviding
-from zope.app.zopeappgenerations import getRootFolder
+from zope.generations.utility import findObjectsProviding, getRootFolder
 
 generation = 5
 

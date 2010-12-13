@@ -17,8 +17,6 @@
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
 """Setup for zope.app.zopeappgenerations package
-
-$Id$
 """
 import os
 from setuptools import setup, find_packages
@@ -28,7 +26,7 @@ def read(*rnames):
 
 setup(name='zope.app.zopeappgenerations',
       version='3.6.1dev',
-      author='Zope Corporation and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Application ZODB Update Generations',
       long_description=(

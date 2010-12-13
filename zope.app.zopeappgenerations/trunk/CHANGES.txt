@@ -5,7 +5,7 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed evolve3 that used no longer existing API.
 
 
 3.6.0 (2010-09-18)

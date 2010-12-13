@@ -12,14 +12,11 @@
 #
 ##############################################################################
 """Evolve local site managers
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.zopeappgenerations import getRootFolder
+from zope.app.generations.utility import getRootFolder
 
 def evolve(context):
     getRootFolder(context).getSiteManager()._evolve_to_generation_4()
 
-    

@@ -14,22 +14,15 @@
 """Evolve existing PAU group folders.
 
 They should be used as contained plugins rather than registered plugins.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope import component
-
-from zope.app.component.interfaces import ISite
-from zope.app.zopeappgenerations import getRootFolder
-
-from zope.generations.utility import findObjectsProviding
-
-from zope.app.component import registration
 import zope.app.authentication.interfaces
 from zope.app.authentication import groupfolder
+from zope.app.component.interfaces import ISite
+from zope.component import getUtilitiesFor
 from zope.copypastemove.interfaces import IObjectMover
+from zope.generations.utility import findObjectsProviding, getRootFolder
 
 generation = 3
 
@@ -50,7 +43,7 @@ def evolve(context):
         sm = site.getSiteManager()
         for pau in findObjectsProviding(
             sm, zope.app.authentication.interfaces.IPluggableAuthentication):
-            for nm, util in component.getUtilitiesFor(
+            for nm, util in getUtilitiesFor(
                 zope.app.authentication.interfaces.IAuthenticatorPlugin,
                 context=pau):
                 if groupfolder.IGroupFolder.providedBy(util):
@@ -60,7 +53,8 @@ def evolve(context):
                             "each group folder should only be within the "
                             "Pluggable Authentication utility that uses it")
                     # we need to remove this registration
-                    regs = registration.Registered(util).registrations()
+                    regs = [r for r in sm.registeredUtilities()
+                            if r.component == util]
                     if len(regs) != 1:
                         raise RuntimeError(
                             "I don't know how to migrate your database: "
@@ -69,7 +63,7 @@ def evolve(context):
                             "like it's registered for something additional "
                             "that I don't expect")
                     r = regs[0]
-                    r.registry.unregisterUtility(
+                    sm.unregisterUtility(
                        util,
                        zope.app.authentication.interfaces.IAuthenticatorPlugin,
                        nm)
