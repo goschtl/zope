@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Evolve the ZODB from Zope 3.1 to a Zope 3.2 compatible format.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 

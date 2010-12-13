@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,18 +14,14 @@
 """Evolve existing PAU group folders.
 
 They should be used as contained plugins rather than registered plugins.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope import component
-
-from zope.app.component.interfaces import ISite
-
 import zope.app.authentication.interfaces
 from zope.app.authentication import groupfolder
+from zope.app.component.interfaces import ISite
 from zope.app.generations.utility import findObjectsProviding, getRootFolder
+from zope.component import getUtilitiesFor
 from zope.copypastemove.interfaces import IObjectMover
 
 generation = 3
@@ -47,7 +43,7 @@ def evolve(context):
         sm = site.getSiteManager()
         for pau in findObjectsProviding(
             sm, zope.app.authentication.interfaces.IPluggableAuthentication):
-            for nm, util in component.getUtilitiesFor(
+            for nm, util in getUtilitiesFor(
                 zope.app.authentication.interfaces.IAuthenticatorPlugin,
                 context=pau):
                 if groupfolder.IGroupFolder.providedBy(util):

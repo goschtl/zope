@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Setup for zope.app.zopeappgenerations package
-
-$Id$
 """
 import os
 from setuptools import setup, find_packages
@@ -23,7 +21,7 @@ def read(*rnames):
 
 setup(name='zope.app.zopeappgenerations',
       version = '3.5.1dev',
-      author='Zope Corporation and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Application ZODB Update Generations',
       long_description=(
@@ -51,7 +49,7 @@ setup(name='zope.app.zopeappgenerations',
                         'zope.annotation',
                         'zope.app.authentication',
                         'zope.app.component',
-                        'zope.app.generations >= 3.5.0',
+                        'zope.app.generations >= 3.5',
                         'zope.copypastemove',
                         'zope.dublincore',
                         ],

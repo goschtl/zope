@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,16 +12,13 @@
 #
 ##############################################################################
 """Evolve moved Zope Dublin Core Annotatable data
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.annotatableadapter import DCkey
-from zope.app.generations.utility import findObjectsProviding
-from zope.app.zopeappgenerations import getRootFolder
+from zope.app.generations.utility import findObjectsProviding, getRootFolder
 
 generation = 5
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,14 +12,11 @@
 #
 ##############################################################################
 """Evolve local site managers
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.zopeappgenerations import getRootFolder
+from zope.app.generations.utility import getRootFolder
 
 def evolve(context):
     getRootFolder(context).getSiteManager()._evolve_to_generation_4()
 
-    
