@@ -5,7 +5,7 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Fixed evolve3 that used no longer existing API.
 
 
 3.5.0 (2009-04-05)

@@ -19,9 +19,7 @@ __docformat__ = "reStructuredText"
 
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.component.interfaces import ISite
-from zope.app.zopeappgenerations import getRootFolder
-
-from zope.app.generations.utility import findObjectsProviding
+from zope.app.generations.utility import findObjectsProviding, getRootFolder
 
 
 generation = 2

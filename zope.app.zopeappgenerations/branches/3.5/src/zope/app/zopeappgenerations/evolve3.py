@@ -22,13 +22,10 @@ __docformat__ = "reStructuredText"
 from zope import component
 
 from zope.app.component.interfaces import ISite
-from zope.app.zopeappgenerations import getRootFolder
 
-from zope.app.generations.utility import findObjectsProviding
-
-from zope.app.component import registration
 import zope.app.authentication.interfaces
 from zope.app.authentication import groupfolder
+from zope.app.generations.utility import findObjectsProviding, getRootFolder
 from zope.copypastemove.interfaces import IObjectMover
 
 generation = 3
@@ -60,7 +57,8 @@ def evolve(context):
                             "each group folder should only be within the "
                             "Pluggable Authentication utility that uses it")
                     # we need to remove this registration
-                    regs = registration.Registered(util).registrations()
+                    regs = [r for r in sm.registeredUtilities()
+                            if r.component == util]
                     if len(regs) != 1:
                         raise RuntimeError(
                             "I don't know how to migrate your database: "
@@ -69,7 +67,7 @@ def evolve(context):
                             "like it's registered for something additional "
                             "that I don't expect")
                     r = regs[0]
-                    r.registry.unregisterUtility(
+                    sm.unregisterUtility(
                        util,
                        zope.app.authentication.interfaces.IAuthenticatorPlugin,
                        nm)
