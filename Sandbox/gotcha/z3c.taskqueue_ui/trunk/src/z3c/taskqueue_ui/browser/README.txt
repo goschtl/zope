@@ -2,258 +2,59 @@
 Task Service Browser Management UI
 ==================================
 
-Let's start a browser:
 
-  >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser()
-  >>> browser.addHeader('Authorization','Basic mgr:mgrpw')
-  >>> browser.handleErrors = False
+  >>> from z3c.taskqueue.service import TaskService
+  >>> service_instance = TaskService()
 
-Now we add a task service:
+  >>> def echo(input):
+  ...     return input
 
-  >>> browser.open('http://localhost/manage')
-  >>> browser.getLink('Remote Task Service').click()
-  >>> browser.getControl(name='new_value').value = 'tasks'
-  >>> browser.getControl('Apply').click()
+  >>> from z3c.taskqueue import task
+  >>> echoTask = task.SimpleTask(echo)
 
-Now let's have a look at the job's table:
+  >>> echoTask(service_instance, 1, input={'foo': 'blah'})
+  {'foo': 'blah'}
 
-  >>> browser.getLink('tasks').click()
+Let's now register the task as a utility:
 
-You can see the available tasks:
+  >>> import zope.component
+  >>> zope.component.provideUtility(echoTask, name='echo')
 
-  >>> 'Available Tasks' in browser.contents
-  True
+The echo task is now available in the service:
 
-By default there is an "echo" task:
+  >>> service_instance.getAvailableTasks()
+  {u'exception': <ExceptionTask>, u'echo': <SimpleTask <function echo ...>>}
 
-  >>> '<div>echo</div>' in browser.contents
-  True
+Since the service cannot instantaneously complete a task, incoming jobs are
+managed by a queue. First we request the echo task to be executed:
 
-Below you see a table of all the jobs. Initially we have no jobs, so let's add
-one via XML-RPC:
+  >>> jobid = service_instance.add(u'echo', {'foo': 'bar'})
+  >>> jobid
+  1392637175
 
-  >>> print http(r"""
-  ... POST /tasks/ HTTP/1.0
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: text/xml
-  ...
-  ... <?xml version='1.0'?>
-  ... <methodCall>
-  ... <methodName>add</methodName>
-  ... <params>
-  ... <value><string>echo</string></value>
-  ... <value><struct>
-  ... <key><string>foo</string></key>
-  ... <value><string>bar</string></value>
-  ... </struct></value>
-  ... </params>
-  ... </methodCall>
-  ... """)
-  HTTP/1.0 200 Ok
-  ...
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
 
-If we now refresh the screen, we will see the new job:
+Let's instantiate a table to display the jobs...
 
-  >>> browser.reload()
-  >>> print browser.contents
-  <!DOCTYPE ...
-  <tbody>
-  <tr class="odd">
-    <td class="">
-      <input type="checkbox" name="jobs:list" value="1506179619">
-    </td>
-    <td class="tableId">
-      1506179619
-    </td>
-    <td class="tableTask">
-      echo
-    </td>
-    <td class="tableStatus">
-      <span class="status-queued">queued</span>
-    </td>
-    <td class="tableDetail">
-      No input detail available
-    </td>
-    <td class="tableCreated">
-      ...
-    </td>
-    <td class="tableStart">
-      [not set]
-    </td>
-    <td class="tableEnd">
-      [not set]
-    </td>
-  </tr>
-  </tbody>
-  ...
+  >>> from z3c.taskqueue_ui.browser import service
+  >>> jobsTable = service.JobsTable(service_instance.jobs.values(), request)
+  >>> jobsTable.update()
 
-It is possible to provide custom views for the details. Note the name of the
-view "echo_detail", it consists of the task name and "_detail". This allows us
-to use different detail views on the same job classes. if no such view is
-found a view with name 'detail' is searched.
+and render it.
 
-  >>> from zope import interface
-  >>> from zope.publisher.interfaces.browser import IBrowserView
-  >>> class EchoDetailView(object):
-  ...     interface.implements(IBrowserView)
-  ...     def __init__(self, context, request):
-  ...         self.context = context
-  ...         self.request = request
-  ...     def __call__(self):
-  ...         return u'echo: foo=%s'% self.context.input['foo']
-  >>> from lovely.remotetask.interfaces import IJob
-  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-  >>> from zope import component
-  >>> component.provideAdapter(EchoDetailView,
-  ...                          (IJob, IDefaultBrowserLayer),
-  ...                          name='echo_detail')
-  >>> browser.reload()
-  >>> print browser.contents
-  <!DOCTYPE
-  ...
-  <td class="tableDetail">
-    echo: foo=bar
-  ...
+  >>> table_html = jobsTable.render()
+  >>> assert '<th>Task name</th>' in table_html
+  >>> assert '<th>Status</th>' in table_html
+  >>> assert '<th>Created</th>' in table_html
+  >>> assert '<td>echo</td>' in table_html
+  >>> assert '<td>queued</td>' in table_html
 
-You can cancel scheduled jobs:
+We can access an overview of the jobs in the service.
 
-  >>> browser.getControl('Cancel', index=0).click()
-  >>> 'No jobs were selected.' in browser.contents
-  True
+  >>> jobs_overview = service.JobsOverview(service_instance, request)
+  >>> view_html = jobs_overview()
 
-  >>> browser.getControl(name='jobs:list').getControl(
-  ...     value='1506179619').click()
-  >>> browser.getControl('Cancel', index=0).click()
-  >>> 'Jobs were successfully cancelled.' in browser.contents
-  True
+Let's check that it includes the table.
 
-It is also possible cancel all jobs::
-
-  >>> browser.getControl('Cancel all', index=0).click()
-  >>> 'All jobs cancelled' in browser.contents
-  True
-
-You can also clean attic jobs:
-
-  >>> browser.getControl('Remove all').click()
-  >>> 'Cleaned 1 Jobs' in  browser.contents
-  True
-
-
-Thread Exception Reporting
---------------------------
-
-If a job raises an exception the task service repeats the job 3 times. On
-every exception a traceback is written to the log.
-
-We modify the python logger to get the log output.
-
-  >>> import logging
-  >>> logger = logging.getLogger("lovely.remotetask")
-  >>> logger.setLevel(logging.ERROR)
-  >>> import StringIO
-  >>> io = StringIO.StringIO()
-  >>> ch = logging.StreamHandler(io)
-  >>> ch.setLevel(logging.DEBUG)
-  >>> logger.addHandler(ch)
-
-  >>> from time import sleep
-  >>> from zope import component
-  >>> from lovely.remotetask.interfaces import ITaskService
-  >>> service = getRootFolder()['tasks']
-
-We add a job for a task which raises a ZeroDivisionError every time it is
-called.
-
-  >>> jobid = service.add(u'exception')
-  >>> service.getStatus(jobid)
-  'queued'
-  >>> import transaction
-  >>> transaction.commit()
-  >>> service.startProcessing()
-  >>> transaction.commit()
-
-  >>> import time
-  >>> time.sleep(1.5)
-
-
-Note that the processing thread is daemonic, that way it won't keep the process
-alive unnecessarily.
-
-  >>> import threading
-  >>> for thread in threading.enumerate():
-  ...     if thread.getName().startswith('remotetasks.'):
-  ...         print thread.isDaemon()
-  True
-
-  >>> service.stopProcessing()
-  >>> transaction.commit()
-
-
-We got log entries with the tracebacks of the division error.
-
-  >>> logvalue = io.getvalue()
-  >>> print logvalue
-  Caught a generic exception, preventing thread from crashing
-  integer division or modulo by zero
-  Traceback (most recent call last):
-  ...
-  ZeroDivisionError: integer division or modulo by zero
-  <BLANKLINE>
-
-We had 3 retries, but every error is reported twice, once by the processor and
-once from by the task service.
-
-  >>> logvalue.count('ZeroDivisionError')
-  6
-
-The job status is set to 'error'.
-
-  >>> service.getStatus(jobid)
-  'error'
-
-We do the same again to see if the same thing happens again. This test is
-necessary to see if the internal runCount in the task service is reset.
-
-  >>> io.seek(0)
-  >>> jobid = service.add(u'exception')
-  >>> service.getStatus(jobid)
-  'queued'
-  >>> import transaction
-  >>> transaction.commit()
-  >>> service.startProcessing()
-  >>> transaction.commit()
-  >>> sleep(1.5)
-  >>> service.stopProcessing()
-  >>> transaction.commit()
-
-We got log entries with the tracebacks of the division error.
-
-  >>> logvalue = io.getvalue()
-  >>> print logvalue
-  Caught a generic exception, preventing thread from crashing
-  integer division or modulo by zero
-  Traceback (most recent call last):
-  ...
-  ZeroDivisionError: integer division or modulo by zero
-  <BLANKLINE>
-
-We had 3 retries, but every error is reported twice, once by the processor and
-once from by the task service.
-
-  >>> logvalue.count('ZeroDivisionError')
-  6
-
-The job status is set to 'error'.
-
-  >>> service.getStatus(jobid)
-  'error'
-
-
-Clenaup
--------
-
-Allow the threads to exit:
-
-  >>> sleep(0.2)
+  >>> assert table_html in view_html
