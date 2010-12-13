@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,12 +12,9 @@
 #
 ##############################################################################
 """Plain Text Renderer Classes
-
-$Id$
 """
 from zope.component.interfaces import IFactory
 from zope.interface import implements, directlyProvides, Declaration
-from interfaces import ISource, IHTMLRenderer
 
 
 class Source(unicode):
