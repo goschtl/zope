@@ -65,13 +65,14 @@ class JobsTable(table.SequenceTable):
         return [firstColumn, secondColumn, thirdColumn]
 
 
-class JobsOverview(BrowserPage):
-
-    template = ViewPageTemplateFile('jobs.pt')
+class BaseJobsOverview:
 
     def table(self):
         if not hasattr(self, '_table'):
             self._table = JobsTable(self.jobs(), self.request)
+            self._table.__name__ = 'jobs'
+            self._table.__parent__ = self
+            self._table.batchSize = 30
         return self._table
 
     def jobs(self):
@@ -84,3 +85,8 @@ class JobsOverview(BrowserPage):
     def __call__(self):
         self.table().update()
         return self.template()
+
+
+class JobsOverview(BrowserPage, BaseJobsOverview):
+
+    template = ViewPageTemplateFile('jobs.pt')
