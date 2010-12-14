@@ -1,7 +1,20 @@
+Issues
+======
+
+- The failing tests may indicate that this package does not work as
+  expected.
+
+
 z3reload Changelog
 ==================
+
+0.2 (unreleased)
+----------------
+
+- Updated test set up to run with ZTK 1.0.
+
 
 0.1 (unreleased)
 ----------------
 
-- First publis release.
+- First public release.

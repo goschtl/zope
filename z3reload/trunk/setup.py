@@ -39,6 +39,11 @@ setup(name='z3reload',
                         'zope.configuration',
                         'zope.publisher',
                        ],
+      extras_require=dict(
+          test=[
+              'zope.app.testing',
+              'zope.app.zcmlfiles',
+              ]),
       include_package_data=True,
       zip_safe=False,
       )
