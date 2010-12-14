@@ -16,11 +16,11 @@ Agenda
 Discussion
 ----------
 
-* j-w moved the zope.app. packages to the deprecated-section.
+* j-w moved the `zope.app.*` packages to the deprecated-section.
 
 * There was a short discussion on zope-dev about using distribute
   versus setuptools. The releaseteam conclusion was not to introduce
-  any (implicit) dependencies on either. Hannosh suggested to test the
+  any (implicit) dependencies on either. Hanno suggested to test the
   ZTK packages for (unintentional) dependencies on distribute.
 
 * There're a few ZTK packages trunks that refer to yet-unreleased
