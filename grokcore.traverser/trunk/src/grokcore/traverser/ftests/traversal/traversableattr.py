@@ -34,23 +34,26 @@ Finally, attributes which are not exposed, should not be visible:
   NotFound: ...
 
 """
-import grok
+import grokcore.component as grok
+import grokcore.content as content
+import grokcore.view as view
+import grokcore.traverser
 
-class Bar(grok.Model):
+class Bar(content.Model):
     def __init__(self, name):
         self.name = name
 
-class BarIndex(grok.View):
+class BarIndex(view.View):
     grok.context(Bar)
     grok.name('index')
 
     def render(self):
         return self.context.name
 
-class Foo(grok.Model):
-    grok.traversable('bar')
-    grok.traversable('foo')
-    grok.traversable(attr='bar', name='namedbar')
+class Foo(content.Model):
+    grokcore.traverser.traversable('bar')
+    grokcore.traverser.traversable('foo')
+    grokcore.traverser.traversable(attr='bar', name='namedbar')
 
     def __init__(self, name):
         self.name = name
@@ -60,7 +63,7 @@ class Foo(grok.Model):
         return Bar('bar')
     z = "i'm not called"
 
-class FooIndex(grok.View):
+class FooIndex(view.View):
     grok.context(Foo)
     grok.name('index')
     def render(self):

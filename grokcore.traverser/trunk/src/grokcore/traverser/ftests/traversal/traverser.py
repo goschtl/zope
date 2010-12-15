@@ -26,30 +26,33 @@ also create a separate traverser component:
   </html>
 
 """
-import grok
+import grokcore.component as grok
+import grokcore.content as content
+import grokcore.traverser
+import grokcore.view as view
 
-class Herd(grok.Model):
+class Herd(content.Model):
 
     def __init__(self, name):
         self.name = name
 
-class HerdTraverser(grok.Traverser):
+class HerdTraverser(grokcore.traverser.Traverser):
     grok.context(Herd)
 
     def traverse(self, name):
         return Mammoth(name)
 
-class Mammoth(grok.Model):
+class Mammoth(content.Model):
 
     def __init__(self, name):
         self.name = name
 
 grok.context(Mammoth)
 
-class Index(grok.View):
+class Index(view.View):
     pass
 
-index = grok.PageTemplate("""\
+index = view.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, <span tal:replace="context/name/title" />!</h1>

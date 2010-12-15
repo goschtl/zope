@@ -57,26 +57,29 @@ as a subitem of a container:
   special view
 
 """
-import grok
+import grokcore.component as grok
+import grokcore.traverser 
+import grokcore.content as content
+import grokcore.view as view
 
-class Herd(grok.Container):
+class Herd(content.Container):
     pass
 
-class Traverser(grok.Traverser):
+class Traverser(grokcore.traverser.Traverser):
     grok.context(Herd)
     def traverse(self, name):
         if name == 'special':
             return Special()
         return None
 
-class Mammoth(grok.Model):
+class Mammoth(content.Model):
     def __init__(self, name):
         self.name = name
 
-class Special(grok.Model):
+class Special(content.Model):
     pass
 
-class SpecialIndex(grok.View):
+class SpecialIndex(view.View):
     grok.context(Special)
     grok.name('index')
     
@@ -85,10 +88,10 @@ class SpecialIndex(grok.View):
 
 grok.context(Mammoth)
 
-class Index(grok.View):
+class Index(view.View):
     pass
 
-index = grok.PageTemplate("""\
+index = view.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, <span tal:replace="context/name/title" />!</h1>

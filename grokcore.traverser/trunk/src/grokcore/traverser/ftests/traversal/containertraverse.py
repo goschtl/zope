@@ -57,31 +57,34 @@ as a subitem of a container:
   A herd
 
 """
-import grok
+import grokcore.component as grok
+import grokcore.view as view
+import grokcore.content as content
 
-class Herd(grok.Container):
+
+class Herd(content.Container):
 
     def traverse(self, name):
         if name == 'special':
             return Special()
         return None
     
-class HerdIndex(grok.View):
+class HerdIndex(view.View):
     grok.context(Herd)
     grok.name('index')
 
     def render(self):
         return 'A herd'
 
-class Mammoth(grok.Model):
+class Mammoth(content.Model):
 
     def __init__(self, name):
         self.name = name
 
-class Special(grok.Model):
+class Special(content.Model):
     pass
 
-class SpecialIndex(grok.View):
+class SpecialIndex(view.View):
     grok.context(Special)
     grok.name('index')
     
@@ -90,10 +93,10 @@ class SpecialIndex(grok.View):
 
 grok.context(Mammoth)
 
-class Index(grok.View):
+class Index(view.View):
     pass
 
-index = grok.PageTemplate("""\
+index = view.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, <span tal:replace="context/name/title" />!</h1>

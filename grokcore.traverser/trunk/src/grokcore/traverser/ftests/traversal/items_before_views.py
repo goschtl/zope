@@ -32,12 +32,15 @@ We can, of course, get to the Ellie view explicitly:
   Hi, it's me, the Ellie view!
 
 """
-import grok
+import grokcore.component as grok
+import grokcore.content as content
+import grokcore.view as view 
+import grokcore.traverser
 
-class Herd(grok.Container):
+class Herd(content.Container):
     pass
 
-class Traverser(grok.Traverser):
+class Traverser(grokcore.traverser.Traverser):
     grok.context(Herd)
 
     def traverse(self, name):
@@ -45,18 +48,18 @@ class Traverser(grok.Traverser):
         # the fallback behaviour
         pass
 
-class Ellie(grok.View):
+class Ellie(view.View):
     grok.context(Herd)
     grok.name('ellie')
 
     def render(self):
         return "Hi, it's me, the Ellie view!"
 
-class Mammoth(grok.Model):
+class Mammoth(content.Model):
     def __init__(self, name):
         self.name = name
 
-class MammothIndex(grok.View):
+class MammothIndex(view.View):
     grok.context(Mammoth)
     grok.name('index')
 

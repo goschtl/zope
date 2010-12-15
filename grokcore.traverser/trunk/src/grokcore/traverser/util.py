@@ -13,15 +13,7 @@
 ##############################################################################
 """Grok utility functions.
 """
-import grok
-import grokcore.site.interfaces
 import zope.location.location
-
-from zope import interface
-from zope.schema.interfaces import WrongType
-from grokcore.view.util import url
-from grokcore.site.util import getApplication
-
 
 def safely_locate_maybe(obj, parent, name):
     """Set an object's __parent__ (and __name__) if the object's
@@ -34,50 +26,3 @@ def safely_locate_maybe(obj, parent, name):
         return obj
     # This either sets __parent__ or wraps 'obj' in a LocationProxy
     return zope.location.location.located(obj, parent, name)
-
-
-def applySkin(request, skin, skin_type):
-    """Change the presentation skin for this request.
-    """
-    # Remove all existing skin declarations (commonly the default skin).
-    ifaces = [iface for iface in interface.directlyProvidedBy(request)
-              if not skin_type.providedBy(iface)]
-    # Add the new skin.
-    ifaces.append(skin)
-    interface.directlyProvides(request, *ifaces)
-
-
-def application_url(request, obj, name=None, data={}):
-    """Return the URL of the nearest enclosing `grok.Application`.
-
-    Raises ValueError if no Application can be found.
-    """
-    return url(request, getApplication(), name, data)
-
-
-def create_application(factory, container, name):
-    """Creates an application and triggers the events from
-    the application lifecycle.
-    """
-    # Check the factory.
-    if not grokcore.site.interfaces.IApplication.implementedBy(factory):
-        raise WrongType(factory)
-
-    # Check the availability of the name in the container.
-    if name in container:
-        raise KeyError(name)
-
-    # Instanciate the application
-    application = factory()
-
-    # Trigger the creation event.
-    grok.notify(grok.ObjectCreatedEvent(application))
-
-    # Persist the application.
-    # This may raise a KeyError.
-    container[name] = application
-
-    # Trigger the initialization event.
-    grok.notify(grok.ApplicationInitializedEvent(application))
-
-    return application
