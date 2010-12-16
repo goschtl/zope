@@ -1,15 +1,15 @@
 Changes
 =======
 
-2.2 (unreleased)
+2.2 (2010-12-16)
 ----------------
 
 - Factor out a base template grokker that associate templates for
   viewish components.
 
-- Merge support for a global template registry that remove unnecessary
-  warnings about unassociated templates.
-
+- Merge support for a global template registry that removes
+  unnecessary warnings about unassociated templates in "shared"
+  template directories.
 
 2.1 (2010-11-03)
 ----------------
