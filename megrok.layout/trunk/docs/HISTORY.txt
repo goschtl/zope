@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.0 (unreleased)
+1.2.0 (2010-12-16)
 ------------------
 
 - Update to use the new TemplateGrokker from grokcore.view.
