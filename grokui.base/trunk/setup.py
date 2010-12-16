@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='grokui.base',
-      version='0.4.2dev',
+      version='0.4.2',
       description="The Grok administration and development UI (base)",
       long_description=(
         read('README.txt') +
@@ -55,7 +55,7 @@ setup(name='grokui.base',
       install_requires=[
           'grokcore.component',
           'grokcore.message',
-          'grokcore.view',
+          'grokcore.view >= 2.2',
           'grokcore.viewlet',
           'megrok.layout',
           'megrok.menu',
