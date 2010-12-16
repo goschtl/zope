@@ -4,9 +4,8 @@ import zc.buildout.testing
 from zope.testing import renormalizing
 
 
-normalize_script = (
-    re.compile('(\n?)-  ([a-zA-Z0-9_.-]+)-script.py\n-  \\2.exe\n'),
-    '\\1-  \\2\n')
+normalize_script = (re.compile('(-  [a-zA-Z0-9_.-]+)-script.py\n'), '\\1\n')
+normalize_exe = (re.compile('-  [a-zA-Z0-9_.-]+.exe\n'), '')
 
 # Distribute does not result in a setuptools compattest binary, so filter
 # that out.
@@ -17,6 +16,7 @@ normalize_setuptools = (
 # On windows and OS X the name of the python executable starts with a
 # capital 'P'. On linux it does not.
 python_case_normalizer = (re.compile('[pP]ython'), 'python')
+
 
 def DocFileSuite(*args, **kw):
     def setUp(test):
@@ -44,6 +44,7 @@ def DocFileSuite(*args, **kw):
     kw['checker'] = renormalizing.RENormalizing([
         zc.buildout.testing.normalize_path,
         normalize_script,
+        normalize_exe,
         normalize_setuptools,
         python_case_normalizer,
         ])
