@@ -5,7 +5,9 @@ CHANGES
 0.14 (unreleased)
 =================
 
-- Nothing changed yet.
+- Fix tests on windows.
+
+- Fix for use with a python executable from inside a virtualenv.
 
 
 0.13 (2010-10-07)
