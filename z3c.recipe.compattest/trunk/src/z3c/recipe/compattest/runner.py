@@ -5,6 +5,7 @@ import sys
 import time
 import pickle
 
+from zc.buildout.easy_install import _has_broken_dash_S
 
 def usage():
     print """
@@ -21,8 +22,6 @@ class Job(object):
 
     def __init__(self, script, args):
         self.script = script
-        if windoze:
-            self.script += '-script.py'
         self.args = args
         self.name = os.path.basename(script)
         self.output = StringIO.StringIO()
@@ -30,8 +29,18 @@ class Job(object):
 
     def start(self):
         self.start = time.time()
+
+        cmd = [self.script]
+        # We are dealing with two problems: windoze and virtualenv.
+        if windoze:
+            # Use zc.buildout internal to sniff a virtualenv.
+            if _has_broken_dash_S(sys.executable):
+                cmd = [sys.executable, self.script + '-script.py']
+            else:
+                cmd = [self.script + '.exe']
+
         self.process = subprocess.Popen(
-            [sys.executable, self.script, '--exit-with-status'] + self.args,
+            cmd + ['--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
