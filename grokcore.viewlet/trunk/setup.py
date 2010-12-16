@@ -26,7 +26,7 @@ tests_require = [
 
 setup(
     name='grokcore.viewlet',
-    version='1.8dev',
+    version='1.8',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -48,7 +48,7 @@ setup(
     install_requires=['setuptools',
                       'grokcore.component >= 2.1',
                       'grokcore.security >= 1.5',
-                      'grokcore.view >= 2.0',
+                      'grokcore.view >= 2.2',
                       'martian >= 0.13',
                       'zope.viewlet',
                       'zope.contentprovider',
