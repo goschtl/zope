@@ -11,22 +11,22 @@ failures.
 
     >>> import os, sys
 
-    >>> ok_script = ok_path = os.path.join(sample_buildout, 'test-ok')
-    >>> failure_script = failure_path = os.path.join(sample_buildout, 'test-failure')
-    >>> if sys.platform.startswith('win'):
-    ...     ok_path += '-script.py'
-    ...     failure_path += '-script.py'
+    >>> # Re-use zc.buildout internals in order to handle both windows
+    >>> # and other environments.
+    >>> from zc.buildout.easy_install import _write_script
+    >>> ok_script = os.path.join(sample_buildout, 'test-ok')
+    >>> _ = _write_script(ok_script, '''\
+    ... #!%s
+    ... import time
+    ... time.sleep(1)
+    ... print 'ok' ''' % sys.executable, 'script')
 
-    >>> write(ok_path, """
+    >>> failure_script = os.path.join(sample_buildout, 'test-failure')
+    >>> _ = _write_script(failure_script, '''\
+    ... #!%s
     ... import time
     ... time.sleep(1)
-    ... print 'ok'
-    ... """)
-    >>> write(failure_path, """
-    ... import time
-    ... time.sleep(1)
-    ... raise SystemError('Fail!')
-    ... """)
+    ... raise SystemError('Fail!') ''' % sys.executable, 'script')
 
     >>> from z3c.recipe.compattest.runner import main
     >>> main(1, ok_script, failure_script, no_exit_code=True)
