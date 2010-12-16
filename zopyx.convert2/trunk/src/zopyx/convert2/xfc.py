@@ -65,7 +65,7 @@ class RTFConverter(BaseConverter):
         return xfc_available
 
     def convert(self, output_filename=None, **options):
-
+        options['strip_base'] = True
         self.convert2FO(**options)
         return fo2xfc(self.fo_filename, self.output_format, output_filename)
 
