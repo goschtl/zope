@@ -1,6 +1,5 @@
 import StringIO
 import os.path
-import select
 import subprocess
 import sys
 import time
@@ -17,6 +16,7 @@ options you can use, refer to the test runner documentation.
 
 windoze = sys.platform.startswith('win')
 
+
 class Job(object):
 
     def __init__(self, script, args):
@@ -31,11 +31,11 @@ class Job(object):
     def start(self):
         self.start = time.time()
         self.process = subprocess.Popen(
-            [sys.executable, '-S', self.script, '--exit-with-status'] + self.args,
+            [sys.executable, self.script, '--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            close_fds = not windoze,
+            close_fds=not windoze,
             )
 
     def poll(self):
@@ -75,7 +75,7 @@ def main(max_jobs, *scripts, **options):
     else:
         default_time = 0
     scripts.sort(
-        key=lambda package:-stats.get(os.path.basename(package), default_time)
+        key=lambda package: -stats.get(os.path.basename(package), default_time)
         )
 
     # Main loop for controlling test runs
