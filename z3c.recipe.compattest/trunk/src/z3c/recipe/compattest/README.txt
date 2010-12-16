@@ -54,8 +54,15 @@ We take care about installing the test dependencies for the packages
 declared a (superfluous) test dependency on ``zope.dottedname``, which is
 picked up:
 
->>> cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
-"""Append module ...
+>>> try:
+...     print 'start'
+...     cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
+... except IOError:
+...     print 'start'
+...     # When the tests are run from a virtualenv, the bin scripts are created
+...     # in a different location.
+...     cat('bin', 'compattest-z3c.recipe.compattest')
+start
 ...zope.dottedname...
 
 If we use ``include-dependencies`` instead of just ``include``, our direct
@@ -70,10 +77,10 @@ dependencies are also picked up, for instance zc.buildout:
 ... include-dependencies = z3c.recipe.compattest
 ... """)
 >>> print 'start', system(buildout)
-start ...
+start...
 Generated script '/sample-buildout/bin/compattest-zc.buildout'.
 ...
-Generated script '/sample-buildout/bin/compattest'.
+Generated script '/sample-buildout/bin/compattest'...
 
 All our direct dependencies have a test script now:
 
@@ -97,8 +104,8 @@ the ``exclude`` option:
 ... exclude = zc.buildout
 ... """)
 >>> print 'start', system(buildout)
-start ...
-Generated script '/sample-buildout/bin/compattest'.
+start...
+Generated script '/sample-buildout/bin/compattest'...
 
 ``bin/compattest-zc.buildout`` is now missing:
 
@@ -153,6 +160,13 @@ that depends on zope2 < 2.12:
 ... extra-paths = zope2location/lib/python
 ... """)
 >>> ignore = system(buildout)
->>> cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
-"""Append module ...
+>>> try:
+...     print 'start'
+...     cat('parts', 'compattest-z3c.recipe.compattest', 'site-packages', 'site.py')
+... except IOError:
+...     print 'start'
+...     # When the tests are run from a virtualenv, the bin scripts are created
+...     # in a different location.
+...     cat('bin', 'compattest-z3c.recipe.compattest')
+start
 ...zope2location/lib/python...
