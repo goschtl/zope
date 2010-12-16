@@ -2,6 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 tests_require = [
+    'martian',
     'zope.annotation',
     'zope.app.appsetup',
     'zope.app.pagetemplate',
@@ -55,7 +56,7 @@ setup(name='grokui.base',
       install_requires=[
           'grokcore.component',
           'grokcore.message',
-          'grokcore.view >= 2.2',
+          'grokcore.view',
           'grokcore.viewlet',
           'megrok.layout',
           'megrok.menu',
