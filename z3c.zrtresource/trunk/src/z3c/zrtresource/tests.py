@@ -38,15 +38,18 @@ def tearDown(test):
 
 
 def test_suite():
+    optionflags = (doctest.NORMALIZE_WHITESPACE
+                   | doctest.ELLIPSIS
+                   | doctest.REPORT_NDIFF)
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
                      setUp=setUp,
                      tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     optionflags=optionflags,
                      ),
         doctest.DocFileSuite('zcml.txt',
                      setUp=setUp,
                      tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     optionflags=optionflags,
                      ),
         ))
