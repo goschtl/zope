@@ -1,9 +1,11 @@
 import doctest
 import os
+import re
 import os.path
 import unittest
 import zope.component
 import zope.interface
+from zope.testing import renormalizing
 
 
 OPTIONFLAGS = (doctest.ELLIPSIS |
@@ -44,10 +46,17 @@ def test_suite():
         interface=zope.interface,
         component=zope.component)
 
+    checker = renormalizing.RENormalizing([
+        (re.compile(
+            r'<ViewPageTemplateFile [^>]*\\z3c\\ptcompat\\tests\\test.pt>'),
+         '<ViewPageTemplateFile .../z3c/ptcompat/tests/test.pt>'),
+    ])
+
     return unittest.TestSuite([
         doctest.DocFileSuite(
         "zcml.txt",
         optionflags=OPTIONFLAGS,
+        checker=checker,
         globs=globs,
         setUp=setUp,
         tearDown=tearDown,
