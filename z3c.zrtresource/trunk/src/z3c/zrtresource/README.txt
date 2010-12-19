@@ -304,6 +304,14 @@ a named IZRTCommandFactory utility
   ... /* zrt-replace: "../img2" "++resource++/img" */
   ... ''')
 
+We have to recreate the ZRTFileResourceFactory to reload the changed file
+contents (don't worry -- in real life Zope creates these anew for every
+request, since resources are actually registered as IResourceFactoryFactory
+utilities).
+
+  >>> cssFactory = ZRTFileResourceFactory(fn, None, 'site.css')
+  >>> css = cssFactory(TestRequest())
+
   >>> print css.GET()
   /* oh, and we're testing that when the file changes, it is reloaded */
   h1 {
