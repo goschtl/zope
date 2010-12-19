@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 import doctest
 import unittest
 import zope.component
-from zope.testing import cleanup, doctest
+from zope.testing import cleanup
 from zope.traversing import testing
 from zope.traversing.interfaces import ITraversable
 from zope.traversing.namespace import view
