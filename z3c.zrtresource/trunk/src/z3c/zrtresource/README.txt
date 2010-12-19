@@ -228,8 +228,8 @@ Yes, even group replacement works:
 The TALES Expression
 ~~~~~~~~~~~~~~~~~~~~
 
-What would be a Zope-based templating language without TALES expressions. This
-is particularly useful, if you want create absolute URLs and other dynamic
+What would be a Zope-based templating language without TALES expressions? This
+is particularly useful, if you want to create absolute URLs and other dynamic
 bits based on the request and the context:
 
   >>> import zope.interface
@@ -252,8 +252,8 @@ bits based on the request and the context:
 Custom ZRT Command
 ~~~~~~~~~~~~~~~~~~
 
-We can create custom zrt command, for this we should register
-named IZRTCommandFactory utility
+We can create custom ZRT commands.  For this we should register
+a named IZRTCommandFactory utility
 
   >>> import re
   >>> from zope import interface
@@ -290,6 +290,7 @@ named IZRTCommandFactory utility
   ... /* zrt-replace: "../img1" "++resource++/img" */
   ... /* zrt-replace: "fontFamily" "Arial, Tahoma" */
   ... /* zrt-mycommand: */
+  ... /* oh, and we're testing that when the file changes, it is reloaded */
   ... h1 {
   ...   color: color1;
   ...   font: fontFamily;
@@ -304,6 +305,7 @@ named IZRTCommandFactory utility
   ... ''')
 
   >>> print css.GET()
+  /* oh, and we're testing that when the file changes, it is reloaded */
   h1 {
     color: red;
     font: Arial, Tahoma;
