@@ -15,6 +15,8 @@ Version 0.6.2 (unreleased)
 - Using Python's ``doctest`` module instead of depreacted
   ``zope.testing.doctestunit``.
 
+- Fixed package metadata, added doctests top `long_description`.
+
 Version 0.6.1 (2009-07-06)
 --------------------------
 

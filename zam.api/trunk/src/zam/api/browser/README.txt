@@ -1,6 +1,6 @@
-======
-README
-======
+=======
+zam.api
+=======
 
 This package contains the Zope Application Management api. We support a test
 skin for this package which allows us to test the plugin management page.

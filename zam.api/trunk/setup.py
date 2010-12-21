@@ -19,18 +19,21 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    data = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return data + '\n\n'
 
 setup (
     name='zam.api',
-    version='0.6.2dev',
+    version='0.7.0dev',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "API for ZAM (Zope Application Management",
     long_description=(
-        read('README.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
+        read('README.txt') +
+        '.. contents::\n\n' +
+        read('CHANGES.txt') +
+        read('src', 'zam', 'api', 'browser', 'README.txt') +
+        read('src', 'zam', 'api', 'README.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 z3c zam api",
@@ -44,7 +47,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zam.api',
+    url = 'http://pypi.python.org/pypi/zam.api',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
