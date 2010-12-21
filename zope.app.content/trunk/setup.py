@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,10 +16,7 @@
 # When developing and releasing this package, please follow the documented
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
-"""Setup for zope.app.content package
-
-$Id$
-"""
+"""Setup for zope.app.content package"""
 import os
 from setuptools import setup, find_packages
 
@@ -28,7 +25,7 @@ def read(*rnames):
 
 setup(name='zope.app.content',
       version='3.5.1dev',
-      author='Zope Corporation and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Content Type',
       long_description=(
