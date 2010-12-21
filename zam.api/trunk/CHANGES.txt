@@ -9,7 +9,10 @@ Version 0.6.2 (unreleased)
 - Updated test set up and tests to run with ZTK 1.0 and current z3c.form
   version.
 
-- Removed dependency on `zope.app.twisted`.
+- Removed dependency on ``zope.app.twisted``.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctestunit``.
 
 Version 0.6.1 (2009-07-06)
 --------------------------

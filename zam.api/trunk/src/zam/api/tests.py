@@ -18,7 +18,6 @@ __docformat__ = 'restructuredtext'
 
 import doctest
 import unittest
-from zope.testing import doctestunit
 from zope.app.testing import setup
 
 
@@ -27,16 +26,14 @@ def setUp(test):
     test.globs['rootFolder'] = site
     setup.setUpTestAsModule(test, name='README')
 
+
 def tearDown(test):
     setup.placefulTearDown()
 
 
 def test_suite():
     return unittest.TestSuite((
-        doctestunit.DocFileSuite('README.txt', 
+        doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
-
-if __name__=='__main__':
-    unittest.main(defaultTest='test_suite')
