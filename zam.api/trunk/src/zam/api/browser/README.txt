@@ -71,10 +71,6 @@ Now we see the plugins.html page:
       <strong class="notInstalledPlugin">ZAM test plugin</strong>
       <div class="description">ZAM test plugin.</div>
     <div class="viewspace">
-        <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
-        </div>
       <div>
       </div>
     </div>
@@ -132,7 +128,7 @@ Now we can see that the plugin is installed:
   </div>
   ...
 
-Now make test coverage happy and test different things. The zam plugin test 
+Now make test coverage happy and test different things. The zam plugin test
 page is available at the ``first`` site
 
   >>> manager.open(firstSiteURL + '/test.html')

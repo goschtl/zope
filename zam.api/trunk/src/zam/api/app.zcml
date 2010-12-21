@@ -81,7 +81,7 @@
   <include package="zope.site" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
-
+  <include package="zope.login" />
 
   <!-- zope app package configuration -->
   <include package="zope.app.authentication" />

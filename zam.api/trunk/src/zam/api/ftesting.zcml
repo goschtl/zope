@@ -70,10 +70,6 @@
       permission="zope.View"
       role="zope.Anonymous"
       />
-  <grant
-      permission="zope.app.dublincore.view"
-      role="zope.Anonymous"
-      />
   <grantAll
       role="zope.Manager"
       />
