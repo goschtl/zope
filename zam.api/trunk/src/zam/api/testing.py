@@ -11,24 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
-"""
-__docformat__ = "reStructuredText"
-
-import zope.interface
-import zope.component
-import zope.schema
-from zope.schema.fieldproperty import FieldProperty
+from z3c.baseregistry import baseregistry
+from zam.api import plugin
+from zam.api.i18n import MessageFactory as _
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.location.interfaces import IPossibleSite
+from zope.schema.fieldproperty import FieldProperty
 from zope.site import folder
-from zope.app.component import site
-
-from z3c.baseregistry import baseregistry
-
-from zam.api.i18n import MessageFactory as _
-from zam.api import plugin
+import zope.component
+import zope.interface
+import zope.schema
+import zope.site.site
 
 ###############################################################################
 #
@@ -66,7 +59,7 @@ class ZAMTestSite(folder.Folder):
         self.title = title
 
         # setup site manager
-        self.setSiteManager(site.LocalSiteManager(self))
+        self.setSiteManager(zope.site.site.LocalSiteManager(self))
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)

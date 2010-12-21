@@ -28,7 +28,7 @@
     <require
         permission="zope.Public"
         attributes="title testAttr"
-        interface="zope.app.container.interfaces.IContained"
+        interface="zope.container.interfaces.IContained"
         />
     <require
         permission="zope.ManageSite"
