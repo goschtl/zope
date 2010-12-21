@@ -65,7 +65,6 @@ setup (
             'zope.app.securitypolicy',
             'zope.app.server',
             'zope.app.testing',
-            'zope.app.twisted',
             'zope.app.session',
             'zope.app.zopeappgenerations',
             'zope.site',

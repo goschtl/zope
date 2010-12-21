@@ -63,7 +63,6 @@
 
   <!-- zope server -->
   <include package="zope.app.server" />
-  <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
 
 
