@@ -4,6 +4,9 @@ Grok changes
 1.4 (unreleased)
 ================
 
+- To build the docs use `collective.recipe.sphinxbuilder` instead of
+  our own, early hack (get rid of `grokdocs` subpackage).
+
 - The `IApplication` interface, and getApplication moved to
   ``grokcore.site``.
 
