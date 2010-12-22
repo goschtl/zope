@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.1 (2010-12-22)
 ------------------
 
 - Fixed evolve3 that used no longer existing API.
