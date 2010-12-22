@@ -114,6 +114,10 @@ class OrderedContainer(Container):
         argument to this method that is a sequence containing every key
         already in the container, but in a new order.
 
+        Raises :exc:`TypeError` if `order` is not a tuple or list.
+
+        Rauses :exc:`ValueError` if `order` contains an invalid set of
+        keys.
         """
         if set(order) != set(self._order):
             raise ValueError("Incompatible key set.")
