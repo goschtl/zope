@@ -12,19 +12,9 @@
 # show the default value as assigned to them.
 
 import sys
+import pkg_resources
 
 from os import path, curdir
-import re
-
-
-version = 'Unknown'
-setupfilepath = path.join(path.dirname(path.abspath(curdir)), 'setup.py')
-reg = re.compile("^\s*version = .(.+).,.*")
-for line in open(setupfilepath, 'r').read().split('\n'):
-    m = reg.match(line)
-    if m:
-        version = m.groups()[0]
-
 
 # If your extensions are in another directory, add it here.
 #sys.path.append('some/directory')
@@ -53,9 +43,11 @@ copyright = '2006-2009, The Zope Foundation'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = version
+version = pkg_resources.get_distribution('grok').version
 # The full version, including alpha/beta/rc tags.
 release = version
+if release.endswith('dev'):
+    release = '%s (unreleased)' % release
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
