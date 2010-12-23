@@ -27,6 +27,8 @@ except:
 else:
 
     setuptools_options = dict(
+        install_requires=['setuptools'],
+        namespace_packages=['zope'],
         zip_safe = False,
         include_package_data = True,
         )
