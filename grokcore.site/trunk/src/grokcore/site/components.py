@@ -33,11 +33,12 @@ class BaseSite(object):
 class Site(BaseSite, SiteManagerContainer):
     """Mixin for creating sites in Grok applications.
 
-    When an application `grok.Model` or `grok.Container` also inherits
-    from `grokcore.site.Site`, then it can additionally support the
-    registration of local Component Architecture entities like
-    `grokcore.site.LocalUtility` and `grok.Indexes` objects; see those
-    classes for more information.
+    When an application :class:`grok.Model` or :class:`grok.Container`
+    also inherits from :class:`grokcore.site.Site`, then it can
+    additionally support the registration of local Component
+    Architecture entities like :class:`grokcore.site.LocalUtility` and
+    :class:`grok.Indexes` objects; see those classes for more
+    information.
 
     """
 
@@ -45,8 +46,11 @@ class Site(BaseSite, SiteManagerContainer):
 class LocalUtility(Contained, Persistent):
     """The base class for local utilities in Grok applications.
 
+    Defines a utility that will be registered local to a :class:`Site`
+    or :class:`grok.Application`.
+    
     Although application developers can create local utilies without
-    actually subclassing `grokcore.site.LocalUtility`, they gain three
+    actually subclassing :class:`LocalUtility`, they gain three
     benefits from doing so.  First, their code is more readable
     because their classes "look like" local utilities to casual
     readers.  Second, their utility will know how to persist itself to
