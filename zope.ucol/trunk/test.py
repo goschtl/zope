@@ -1,7 +1,7 @@
 #!/home/jim/p/z4i/jim-icu/var/opt/python/bin/python -u
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,10 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Run tests in a Zope instance home.
-
-$Id$
-"""
+"""Run tests in a Zope instance home."""
 import sys
 sys.path.insert(0, 'src')
 from zope.testing import testrunner
