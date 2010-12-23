@@ -12,6 +12,9 @@ COPYRIGHT_PATTERN = re.compile(
     '^(?P<lead>.*)Copyright \\(c\\) '
     '(?P<periods>[0-9\-, ]+) (?P<owner>.*?)(?P<tail>\W*)$')
 
+LICENSE_PATTERN = re.compile(
+    '^(?P<lead>.*)Version (?P<version>.*) \(ZPL\)\.')
+
 
 def walk_project_dir(root, callback):
     def visit(args, dirname, names):
@@ -37,6 +40,7 @@ class Checker(object):
 
     data_dir = os.path.join(os.path.dirname(__file__), 'data')
     license_name = 'ZPL'
+    license_version = '2.1'
     copyright_holder = 'Zope Foundation and Contributors'
 
     def __init__(self, working_dir):
@@ -104,6 +108,7 @@ class Checker(object):
             - the file COPYRIGHT.txt exists and has correct content
             - all copyright statements that can be found refer to the Zope
               foundation
+            - all license comments refer to the most recent version of ZPL
 
         """
         copyright = os.path.join(self.working_dir, 'COPYRIGHT.txt')
@@ -120,12 +125,18 @@ class Checker(object):
     def _check_copyright_file(self, filename):
         for i, line in enumerate(open(filename)):
             m = COPYRIGHT_PATTERN.match(line)
-            if m is None:
+            if m is not None:
+                if m.group('owner') != self.copyright_holder:
+                    self.log.append('%s:%i: incorrect copyright holder: %s' % (
+                        filename.replace(self.working_dir + '/', ''), i + 1,
+                        m.group('owner')))
                 continue
-            if m.group('owner') != self.copyright_holder:
-                self.log.append('%s:%i: incorrect copyright holder: %s' % (
+            m = LICENSE_PATTERN.match(line)
+            if m is not None:
+                if m.group('version') != self.license_version:
+                    self.log.append('%s:%i: incorrect ZPL version: %s' % (
                     filename.replace(self.working_dir + '/', ''), i + 1,
-                    m.group('owner')))
+                    m.group('version')))
 
 
 def main():

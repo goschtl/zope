@@ -11,6 +11,7 @@ class FixCopyrightHeaders(object):
     """A simple helper to fix source file copyright headers."""
 
     owner = zope.repositorypolicy.project.Checker.copyright_holder
+    license_version = zope.repositorypolicy.project.Checker.license_version
 
     def __init__(self, working_dir):
         self.working_dir = os.path.abspath(working_dir)
@@ -38,6 +39,13 @@ class FixCopyrightHeaders(object):
                     m.group('lead'), m.group('periods'), self.owner,
                     m.group('tail'))
                 if new_line != line:
+                    line = new_line
+                    needs_fixing = True
+            m = zope.repositorypolicy.project.LICENSE_PATTERN.match(line)
+            if m is not None:
+                if m.group('version') != self.license_version:
+                    new_line = line.replace(m.group('version'),
+                                            self.license_version)
                     line = new_line
                     needs_fixing = True
             output.write(line)
