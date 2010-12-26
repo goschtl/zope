@@ -23,6 +23,11 @@ of your source code is called "grokking".
 Core components
 ~~~~~~~~~~~~~~~
 
+.. module:: grok
+
+.. automodule:: grok.components
+   :members:
+
 :class:`grok.Application`
 =========================
 
@@ -31,13 +36,8 @@ configuration and behaviour for an application instance, as well as holding
 data objects such as :class:`grok.Container` and :class:`grok.Model` object
 instances.
 
-When a new Grok application is installed using the Grok Admin interface, it
-creates an instance of the :class:`grok.Application` class and saves it in
-the root of the main ZODB database.
-
-.. class:: grok.Application
-
-    Base class for applications. Inherits from :class:`grok.Site`.
+.. autoclass:: grok.Application
+   :members:
 
 
 :class:`grok.Model`
@@ -45,18 +45,18 @@ the root of the main ZODB database.
 
 Model objects provide persistence and containment. Model in Grok refers to
 an applications data model - that is data which is persistently saved to
-disk, by default in the Zope Object Dataabse (ZODB).
+disk, by default in the Zope Object Database (ZODB).
 
-.. class:: grok.Model
-
-    Base class to define a content or model object.
+.. autoclass:: grok.Model
+   :members:
 
     .. attribute:: __parent__
 
        The parent in the location hierarchy.
        
-       If you recursively follow the `__parent__` attribute, you will always
-       reach a reference to a top-level grok.Application object instance.
+       If you recursively follow the :attr:`__parent__` attribute, you
+       will always reach a reference to a top-level grok.Application
+       object instance.
 
     .. attribute:: __name__
     
@@ -64,8 +64,9 @@ disk, by default in the Zope Object Dataabse (ZODB).
         
         Traverse the parent with this name to get the object.
 
-        Name in Grok means "human-readable identifier" as the `__name__`
-        attribute is used to reference the object within an URL.
+        Name in Grok means "human-readable identifier" as the
+        :attr:`__name__` attribute is used to reference the object
+        within an URL.
 
 
 :class:`grok.Container`
@@ -76,16 +77,15 @@ with a standard Python Dictionary object. The container implements the
 zope.container.interfaces.IContainer interface using a BTree, providing
 reasonable performance for large collections of objects.
 
-.. class:: grok.Container
-
-    Base class to define a container object.
+.. autoclass:: grok.Container
 
     .. attribute:: __parent__
 
        The parent in the location hierarchy.
        
-       If you recursively follow the `__parent__` attribute, you will always
-       reach a reference to a top-level grok.Application object instance.
+       If you recursively follow the :attr:`__parent__` attribute, you
+       will always reach a reference to a top-level grok.Application
+       object instance.
 
     .. attribute:: __name__
     
@@ -93,8 +93,9 @@ reasonable performance for large collections of objects.
         
         Traverse the parent with this name to get the object.
 
-        Name in Grok means "human-readable identifier" as the `__name__`
-        attribute is used to reference the object within an URL.
+        Name in Grok means "human-readable identifier" as the
+        :attr:`__name__` attribute is used to reference the object
+        within an URL.
 
     .. method:: items(key=None)
     
@@ -262,55 +263,23 @@ maintains a persistent list of keys on a private attribute, so it's
 important to note that OrderedContainers will have poorer performance than
 a normal Container.
 
-.. class:: grok.OrderedContainer
+.. autoclass:: grok.OrderedContainer
+   :members:
 
-    Base class for an OrderedContainer. OrderedContainer inherits from
-    Container and supports the same interface.
-    
-    .. method:: updateOrder(order)
-    
-        Revise the order of keys, replacing the current ordering.
 
-        order is a list or a tuple containing the set of existing keys in
-        the new order. `order` must contain ``len(keys())`` items and cannot
-        contain duplicate keys.
-
-        Raises ``TypeError`` if order is not a tuple or a list.
-
-        Raises ``ValueError`` if order contains an invalid set of keys.
-
+Indexes
+~~~~~~~
 
 :class:`grok.Indexes`
 =====================
 
-Indexes are local utilities for holding a set of indexes alongside a
-:class:`grok.Site` or :class:`grok.Application`. An index is a data
-structure that provides a way of quickly finding certain types of
-objects, i.e. it provides catalog functionality for
+:class:`Indexes` are local utilities for holding a set of indexes
+alongside a :class:`grok.Site` or :class:`grok.Application`. An index
+is a data structure that provides a way of quickly finding certain
+types of objects, i.e. it provides catalog functionality for
 attributes/contents of stored objects.
 
-The site or application that the indexes are intended for should be
-named with the :func:`grok.site()` directive, and the kind of object to
-index should be named with a :func:`grok.context()` directive.
-
-Inside their class, the developer should specify one or more
-:class:`grok.index.Field`, :class:`grok.index.Text`, or
-:class:`grok.index.Set` instances naming object attributes that should
-be indexed (and therefore searchable). See :mod:`grok.index` module
-for more information on field types.
-
-.. note:: Indexes are persistent: they are stored in the Zope database
-          alongside the site or application that they index.  They are
-          created when the site or application is first created (and
-          made persistent), and so an already-created site will not
-          change just because the definition of one of its
-          `grok.Indexes` changes; it will either have to be deleted
-          and re-created, or some other operation performed to bring
-          its indexes up to date.
-
-.. class:: grok.Indexes
-
-    Base class for index collections in a Grok application.
+.. autodata:: grok.Indexes
 
     **Directives:**
 
@@ -330,6 +299,14 @@ for more information on field types.
 
             :func:`grok.site`
 
+
+Grok Index Definitions
+======================
+
+.. automodule:: grok.index
+   :members:
+   :inherited-members:
+   :undoc-members:
 
 **Example 1: Index the Mammoths in a Herd**
 
@@ -413,7 +390,10 @@ The source code for the `grok.Adapter` base class is simply:
         def __init__(self, context):
             self.context = context
 
-.. class:: grok.Adapter
+.. autoclass:: grok.Adapter
+   :members:
+
+    .. The Adapter class itself does not provide docstrings.
 
     Base class to define an adapter. Adapters are automatically
     registered when a module is "grokked".
@@ -456,6 +436,7 @@ The source code for the `grok.Adapter` base class is simply:
     .. seealso::
 
         :func:`grok.provides`
+
 
 **Example 1: Simple adaptation example**
 
@@ -514,11 +495,12 @@ The source code for the `grok.Adapter` base class is simply:
 A MultiAdapter takes multiple objects providing existing interface(s)
 and extends them to provide a new interface.
 
-The `grok.MultiAdapter` base class does not provide a default constructor
-implementation, it's up to the individual multi-adapters to determine how
-to handle the objects being adapted.
+The :class:`grok.MultiAdapter` base class does not provide a default
+constructor implementation, it's up to the individual multi-adapters
+to determine how to handle the objects being adapted.
 
-.. class:: grok.MultiAdapter
+.. autoclass:: grok.MultiAdapter
+   :members:
 
     Base class to define a Multi Adapter.
 
@@ -535,13 +517,13 @@ to handle the objects being adapted.
         Optional. Identifies the name used for the adapter registration. If
         ommitted, no name will be used.
 
-        When a name is used for the adapter registration, the adapter can only be
-        retrieved by explicitely using its name.
+        When a name is used for the adapter registration, the adapter
+        can only be retrieved by explicitely using its name.
 
     :func:`grok.provides(name)`
-        Only required if the adapter implements more than one interface.
-        :func:`grok.provides` is required to disambiguate for which interface the
-        adapter will be registered for.
+        Only required if the adapter implements more than one
+        interface.  :func:`grok.provides` is required to disambiguate
+        for which interface the adapter will be registered for.
 
 **Example: A home is made from a cave and a fireplace.**
 
@@ -574,11 +556,11 @@ View component using the `getMultiAdapter` function.
 
 .. code-block:: python
 
-    def FireplaceView(grok.View):
+    class FireplaceView(grok.View):
         grok.context(Fireplace)
         grok.name('fire-view')
-    
-    def AlternateFireplaceView(grok.View):
+
+    class AlternateFireplaceView(grok.View):
         grok.context(Fireplace)
         
         def render(self):
@@ -593,10 +575,11 @@ View component using the `getMultiAdapter` function.
 
 Annotation components are persistent writeable adapters.
 
-.. class:: grok.Annotation
+.. autoclass:: grok.Annotation
+   :members:
 
-    Base class to declare an Annotation. Inherits from the
-    persistent.Persistent class.
+   Inherits from the :class:`persistent.Persistent` class.
+
 
 **Example: Storing annotations on model objects**
 
@@ -647,7 +630,8 @@ attributes provided by a global utility are not persistent.
 Examples of global utilities are database connections, XML parsers,
 and web service proxies.
 
-.. class:: grok.GlobalUtility
+.. autoclass:: grok.GlobalUtility
+   :members:
 
     Base class to define a globally registered utility. Global utilities are
     automatically registered when a module is "grokked".
@@ -665,9 +649,9 @@ and web service proxies.
         utility can only be retrieved by explicitely using its name.
 
     :func:`grok.provides(name)`
-        Maybe required. If the global utility implements more than one interface,
-        :func:`grok.provides` is required to disambiguate for what interface the
-        global utility will be registered.
+        Maybe required. If the global utility implements more than one
+        interface, :func:`grok.provides` is required to disambiguate
+        for what interface the global utility will be registered.
 
 
 :class:`grok.LocalUtility`
@@ -683,11 +667,12 @@ An example is for database connections or web service proxies,
 where you need to dynamically provide the connection settings
 so that they can be edited through-the-web.
 
-.. class:: grok.LocalUtility
+.. autoclass:: grok.LocalUtility
+   :members:
 
-    Base class to define a utility that will be registered local to a
-    :class:`grok.Site` or :class:`grok.Application` object by using the
-    :func:`grok.local_utility` directive.
+    Defines utilities that will be registered local to a
+    :class:`grok.Site` or :class:`grok.Application` object by using
+    the :func:`grok.local_utility` directive.
 
     **Directives:**
 
@@ -698,19 +683,21 @@ so that they can be edited through-the-web.
         Optional. Identifies the name used for the adapter registration. If
         ommitted, no name will be used.
 
-        When a name is used for the local utility registration, the local utility
-        can only be retrieved by explicitely using its name.
+        When a name is used for the local utility registration, the
+        local utility can only be retrieved by explicitely using its
+        name.
 
     :func:`grok.provides(name)`
-        Maybe required. If the local utility implements more than one interface
-        or if the implemented interface cannot be determined,
-        :func:`grok.provides` is required to disambiguate for what interface the
-        local utility will be registered.
+        Maybe required. If the local utility implements more than one
+        interface or if the implemented interface cannot be
+        determined, :func:`grok.provides` is required to disambiguate
+        for what interface the local utility will be registered.
 
   	.. seealso::
 
-	    Local utilities need to be registered in the context of :class:`grok.Site`
-	    or :class:`grok.Application` using the :func:`grok.local_utility` directive.
+	    Local utilities need to be registered in the context of
+	    :class:`grok.Site` or :class:`grok.Application` using the
+	    :func:`grok.local_utility` directive.
 
 :class:`grok.Site`
 ==================
@@ -723,17 +710,18 @@ it contains before using a context-based lookup to find another site
 manager to delegate to. If no other site manager is found they defer to
 the global site manager which contains file based utilities and adapters.
 
-.. class:: grok.Site
+.. autoclass:: grok.Site
+   :members:
 
-	.. method:: getSiteManager()
+    .. automethod:: grok.Site.getSiteManager()
 
-		Returns the site manager contained in this object.
+        Returns the site manager contained in this object.
 
-		If there isn't a site manager, raise a component lookup.
+        If there isn't a site manager, raise a component lookup.
 
-	.. method:: setSiteManager(sitemanager)
-	
-		Sets the site manager for this object.
+    .. automethod:: grok.Site.setSiteManager(sitemanager)
+
+        Sets the site manager for this object.
 
 Views
 ~~~~~
@@ -741,20 +729,16 @@ Views
 :class:`grok.View`
 ==================
 
-Views handle interactions between the user and the model. The are constructed
-with context and request attributes, are responsible for providing a
-response. The request attribute in a View will always be for a normal
-HTTP Request.
+Views handle interactions between the user and the model. The are
+constructed with context and request attributes, are responsible for
+providing a response. The request attribute in a View will always be
+for a normal HTTP Request.
 
-The determination of what View gets used for what Model is made by walking the
-URL in the HTTP Request object sepearted by the / character. This process is
-called Traversal.
+The determination of what :class:`View` gets used for what
+:class:`Model` is made by walking the URL in the HTTP Request object
+sepearted by the ``/`` character. This process is called "Traversal".
 
-.. class:: grok.View
-
-    Base class to define a View.
-    
-    Implements the `grokcore.view.interfaces.IGrokView` interface.
+.. autoclass:: grok.View
 
     .. attribute:: context
 
@@ -766,23 +750,45 @@ called Traversal.
    
         The HTTP Request object.
 
-    .. attribute:: response
+    .. autoattribute:: grok.View.response
 
-        The HTTP Response object that is associated with the request. This
-        is also available as self.request.response, but the response attribute
-        is provided as a convenience.
+        The HTTP Response object that is associated with the request.
+
+        This is also available as ``self.request.response``, but the
+        response attribute is provided as a convenience.
 
     .. attribute:: static
 
-        Directory resource containing the static files of the view's package.
+        Directory resource containing the static files of the view's
+        package.
 
-    .. method:: redirect(url)
-   
-        Redirect to given URL
+    .. autoattribute:: grok.View.body
 
-    .. method:: url(obj=None, name=None, data=None)
-   
-        Construct URL.
+        Get the body of the associated request.
+
+    .. automethod:: grok.View.redirect
+
+        Redirect to `url`.
+
+        The headers of the :attr:`response` are modified so that the
+        calling browser gets a redirect status code. Please note, that
+        this method returns before actually sending the response to
+        the browser.
+
+        `url` is a string that can contain anything that makes sense
+        to a browser. Also relative URIs are allowed.
+
+        `status` is a number representing the HTTP status code sent
+        back. If not given or ``None``, ``302`` or ``303`` will be
+        sent, depending on the HTTP protocol version in use (HTTP/1.0
+        or HTTP/1.1).
+
+        `trusted` is a boolean telling whether we're allowed to
+        redirect to 'external' hosts. Normally redirects to other
+        hosts than the one the request was sent to are forbidden and
+        will raise a :exc:`ValueError`.
+
+     .. automethod:: grok.View.url
 
         If no arguments given, construct URL to view itself.
 
@@ -794,10 +800,7 @@ called Traversal.
         If both object and name arguments are supplied, construct
         URL to obj/name.
 
-        Optionally pass a 'data' keyword argument which gets added to the URL
-        as a cgi query string.
-
-    .. method:: default_namespace()
+     .. automethod:: grok.View.default_namespace
 
         Returns a dictionary of namespaces that the template
         implementation expects to always be available.
@@ -805,17 +808,17 @@ called Traversal.
         This method is *not* intended to be overridden by application
         developers.
 
-    .. method:: namespace()
-   
+     .. automethod:: grok.View.namespace
+
         Returns a dictionary that is injected in the template
         namespace in addition to the default namespace.
 
         This method *is* intended to be overridden by the application
         developer.
 
-    .. method:: update(**kw)
-   
-        This method is meant to be implemented by grok.View
+     .. automethod:: grok.View.update
+
+        This method is meant to be implemented by :class:`grok.View`
         subclasses.  It will be called *before* the view's associated
         template is rendered and can be used to pre-compute values
         for the template.
@@ -824,8 +827,8 @@ called Traversal.
         filled in from the request (in that case they *must* be
         present in the request).
 
-    .. method:: render(**kw)
-   
+     .. automethod:: grok.View.render
+
         A view can either be rendered by an associated template, or
         it can implement this method to render itself from Python.
         This is useful if the view's output isn't XML/HTML but
@@ -835,15 +838,10 @@ called Traversal.
         filled in from the request (in that case they *must* be
         present in the request).
 
-    .. method:: application_url(name=None)
-   
-        Return the URL of the closest application object in the
-        hierarchy or the URL of a named object (``name`` parameter)
-        relative to the closest application object.
+     .. automethod:: grok.View.application_url
 
-    .. method:: flash(message, type='message')
-      
-        Send a short message to the user.
+     .. automethod:: grok.View.flash
+
 
 
 :class:`grok.ViewletManager`
@@ -867,33 +865,51 @@ content providers (Viewlets). The ViewletManager's responsibilities are:
 ViewletManager's also implement a read-only mapping API, so the Viewlet's
 that they contain can be read like a normal Python dictionary.
 
-.. class:: grok.ViewletManager
+.. autoclass:: grok.ViewletManager
 
-    Base class for a ViewletManager.
-    
-    .. attribute:: context
+   .. XXX: undocumented: sort(), filter(), get().
 
-        Typically the Model object for which this ViewletManager is being
-        rendered in the context of.
+   .. attribute:: context
+
+       Typically the Model object for which this ViewletManager is being
+       rendered in the context of.
         
-    .. attribute:: request
+   .. attribute:: request
     
-        The Request object.
+       The Request object.
     
-    .. attribute:: view
+   .. attribute:: view
     
-        Reference to the View that the ViewletManager is being provided in.
+       Reference to the View that the ViewletManager is being provided
+       in.
 
-    .. method::  update()
+   .. automethod:: grok.ViewletManager.default_namespace
 
-        This method is called before the ViewletManager is rendered, and
-        can be used to perfrom pre-computation.
-    
-    .. method:: render(*args, **kw)
+       Returns a dictionary of namespaces that the template
+       implementation expects to always be available.
 
-        This method renders the content provided by this ViewletManager.
-        Typically this will mean rendering and concatenating all of the
-        Viewlets managed by this ViewletManager.
+       This method is *not* intended to be overridden by application
+       developers.
+
+   .. automethod:: grok.ViewletManager.namespace
+
+      Returns a dictionary that is injected in the template
+      namespace in addition to the default namespace.
+
+      This method *is* intended to be overridden by the application
+      developer.
+
+   .. automethod:: grok.ViewletManager.update
+
+      This method is called before the ViewletManager is rendered, and
+      can be used to perform pre-computation.
+
+   .. automethod:: grok.ViewletManager.render
+
+      This method renders the content provided by this ViewletManager.
+      Typically this will mean rendering and concatenating all of the
+      Viewlets managed by this ViewletManager.
+
 
 **Example: Register a ViewletManager and Viewlet and use them from a template for a View**
 
@@ -935,9 +951,8 @@ Viewlets are typically used for the layout of the web site. Often all the
 pages of the site have the same layout with header, one or two columns, the
 main content area and a footer.
 
-.. class:: grok.Viewlet
-
-    Base class for a Viewlet.
+.. autoclass:: grok.Viewlet
+   :members:
 
     .. attribute:: context
 
@@ -955,13 +970,29 @@ main content area and a footer.
     .. attribute:: viewletmanager
     
         Reference to the ViewletManager that is rendering this Viewlet.
-    
-    .. method::  update()
+
+    .. automethod:: grok.Viewlet.default_namespace
+
+        Returns a dictionary of namespaces that the template
+        implementation expects to always be available.
+
+        This method is *not* intended to be overridden by application
+        developers.
+
+    .. automethod:: grok.Viewlet.namespace
+
+       Returns a dictionary that is injected in the template
+       namespace in addition to the default namespace.
+
+       This method *is* intended to be overridden by the application
+       developer.
+
+    .. automethod::  grok.Viewlet.update
 
         This method is called before the Viewlet is rendered, and
         can be used to perfrom pre-computation.
 
-    .. method:: render(*args, **kw)
+    .. automethod:: grok.Viewlet.render
 
         This method renders the content provided by this Viewlet.
 
@@ -977,9 +1008,23 @@ registered as the name of a JSON View. The exceptions are names that
 begin with an _ or special names such as __call__. The grok.require
 decorator can be used to protect methods with a permission.
 
-.. class:: grok.JSON
+.. autoclass:: grok.JSON
+   :members:
+   :inherited-members:
+   :undoc-members:
 
-    Base class for JSON methods.
+    .. attribute:: context
+    
+        Object that the REST handler presents.
+
+    .. attribute:: request
+    
+        Request that REST handler was looked up with.
+
+    .. attribute:: body
+    
+        The text of the request body.
+    
 
 **Example 1: Create a public and a protected JSON view.**
 
@@ -1010,10 +1055,11 @@ Specialized View for making web services that conform to the REST style.
 These Views can define methods named GET, PUT, POST and DELETE, which will
 be invoked based on the Request type.
 
-.. class:: grok.REST
+.. autoclass:: grok.REST
+   :members:
+   :inherited-members:
+   :undoc-members:
 
-    Base class for REST.
-    
     .. attribute:: context
     
         Object that the REST handler presents.
@@ -1022,9 +1068,19 @@ be invoked based on the Request type.
     
         Request that REST handler was looked up with.
     
-    .. attribute:: body
+    .. autoattribute:: grok.REST.response
+
+        The response sent back to the client.
+
+    .. autoattribute:: grok.REST.body
     
         The text of the request body.
+
+    .. automethod:: grok.REST.application_url
+
+    .. automethod:: grok.REST.url
+
+    .. automethod:: grok.REST.redirect
 
 
 :class:`grok.XMLRPC`
@@ -1032,9 +1088,30 @@ be invoked based on the Request type.
 
 Specialized View that responds to XML-RPC.
 
-.. class:: grok.XMLRPC
+.. autoclass:: grok.XMLRPC
 
-    Base class for XML-RPC methods.
+    .. attribute:: context
+    
+        Object that the REST handler presents.
+
+    .. attribute:: request
+    
+        Request that REST handler was looked up with.
+    
+    .. autoattribute:: grok.XMLRPC.response
+
+        The response sent back to the client.
+
+    .. autoattribute:: grok.XMLRPC.body
+    
+        The text of the request body.
+
+    .. automethod:: grok.XMLRPC.application_url
+
+    .. automethod:: grok.XMLRPC.url
+
+    .. automethod:: grok.XMLRPC.redirect
+
 
 **Example 1: Create a public and a protected XML-RPC view.**
 
@@ -1062,10 +1139,10 @@ The grok.require decorator can be used to protect methods with a permission.
 A Traverser is used to map from a URL to an object being published (Model)
 and the View used to interact with that object.
 
-.. class:: grok.Traverser
+.. autoclass:: grok.Traverser
 
-    Base class for custom traversers. Override the traverse method to 
-    supply the desired custom traversal behaviour.
+    Override the :meth:`traverse` method to supply the desired custom
+    traversal behaviour.
 
     .. attribute:: context
 
@@ -1075,14 +1152,14 @@ and the View used to interact with that object.
    
         The HTTP Request object.
 
-    .. method:: traverse(self, name):
-      
-        You must provide your own implementation of this method to do what
-        you want. If you return None, Grok will use the default traversal
-        behaviour.
+    .. automethod:: grok.Traverser.traverse
 
-    .. method:: browserDefault(request):
-   
+        You must provide your own implementation of this method to do
+        what you want. If you return ``None``, Grok will use the
+        default traversal behaviour.
+
+    .. automethod:: grok.Traverser.browserDefault
+
         Returns an object and a sequence of names.
 	  
         The publisher calls this method at the end of each traversal path.
@@ -1090,23 +1167,24 @@ and the View used to interact with that object.
         for each name. After the publisher gets to the end of the sequence,
         it will call browserDefault on the last traversed object.
 	  
-        The default behaviour in Grok is to return self.context for the object
-        and 'index' for the default view name.
+        The default behaviour in Grok is to return `self.context` for
+        the object and ``'index'`` for the default view name.
 	  
         Note that if additional traversal steps are indicated (via a
         nonempty sequence of names), then the publisher will try to adjust
         the base href.
 
-    .. method:: publishTraverse(request, name):
+    .. automethod:: grok.Traverser.publishTraverse
 
-        Lookup a name and return an object with `self.context` as it's parent.
+        Lookup a name and return an object with `self.context` as its parent.
         The method can use the request to determine the correct object.
 	  
-        The 'request' argument is the publisher request object. The
-        'name' argument is the name that is to be looked up. It must
+        The `request` argument is the publisher request object. The
+        `name` argument is the name that is to be looked up. It must
         be an ASCII string or Unicode object.
-	  
-        If a lookup is not possible, raise a NotFound error.
+
+        If a lookup is not possible, raise a :exc:`NotFound` error.
+
 
 **Example 1: Traverse into a Herd Model and return a Mammoth Model**
 
@@ -1142,15 +1220,23 @@ are typically created from a string.
 
     grok.PageTemplate("<h1>Hello World!</h1>")
 
-.. class:: grok.PageTemplate
+.. autoclass:: grok.PageTemplate
 
-    .. method:: _initFactory(factory)
-    
+    .. automethod:: grok.PageTemplate._initFactory
+
         Template language specific initializations on the view factory.
 
-    .. method:: render(view)
-        
-        Renders the template
+    .. automethod:: grok.PageTemplate.render
+
+        Renders the template.
+
+    .. automethod:: grok.PageTemplate.setFromString
+
+    .. automethod:: grok.PageTemplate.setFromFilename
+
+    .. automethod:: grok.PageTemplate.getNamespace
+
+    .. automethod:: grok.PageTemplate.namespace
 
 
 :class:`grok.PageTemplateFile`
@@ -1162,15 +1248,24 @@ Creates a Page Template from a filename.
 
     grok.PageTemplateFile("my_page_template.pt")
 
-.. class:: grok.PageTemplateFile
+.. autoclass:: grok.PageTemplateFile
 
-    .. method:: _initFactory(factory)
+    .. automethod:: grok.PageTemplateFile._initFactory
 
         Template language specific initializations on the view factory.
 
-    .. method:: render(view)
-        
-        Renders the template
+    .. automethod:: grok.PageTemplateFile.render
+
+        Renders the template.
+
+    .. automethod:: grok.PageTemplateFile.setFromString
+
+    .. automethod:: grok.PageTemplateFile.setFromFilename
+
+    .. automethod:: grok.PageTemplateFile.getNamespace
+
+    .. automethod:: grok.PageTemplateFile.namespace
+
 
 
 Forms
