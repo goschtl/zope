@@ -25,6 +25,12 @@ from os import path, curdir
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
 #extensions = []
+#extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest',
+#              'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc']
+
+# Order autodoc generated docs in source code order.
+autodoc_member_order = 'bysource'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.']
