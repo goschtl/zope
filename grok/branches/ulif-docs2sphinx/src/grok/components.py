@@ -150,14 +150,15 @@ class View(grokcore.view.View):
 class Form(grokcore.formlib.Form, View):
     """The base class for forms in Grok applications.
 
-    A class that inherits from `grok.Form` is a `grok.View` whose
-    template will be given information about the fields in its context,
-    and use that information to render an HTML form for adding or
-    editing the form.  Generally developers use one of the subclasses:
+    A class that inherits from :class:`grok.Form` is a
+    :class:`grok.View` whose template will be given information about
+    the fields in its context, and use that information to render an
+    HTML form for adding or editing the form.  Generally developers
+    use one of the subclasses:
 
-    * `grok.AddForm`
-    * `grok.DisplayForm`
-    * `grok.EditForm`
+    * :class:`grok.AddForm`
+    * :class:`grok.DisplayForm`
+    * :class:`grok.EditForm`
 
     """
     interface.implements(interfaces.IGrokForm)

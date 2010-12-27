@@ -374,6 +374,8 @@ Search the herd::
 Adapters
 ~~~~~~~~
 
+.. currentmodule:: grok
+
 :class:`grok.Adapter`
 =====================
 
@@ -398,13 +400,13 @@ The source code for the `grok.Adapter` base class is simply:
     Base class to define an adapter. Adapters are automatically
     registered when a module is "grokked".
 
-    .. attribute:: grok.Adapter.context
+    .. attribute:: context
 
         The adapted object.
 
     **Directives:**
 
-    :func:`grok.context(context_obj_or_interface)`
+    :data:`grok.context(context_obj_or_interface)`
         Maybe required. Identifies the type of objects or interface for
         the adaptation.
 
@@ -412,14 +414,14 @@ The source code for the `grok.Adapter` base class is simply:
 
         :func:`grok.context`
 
-    :func:`grok.implements(\*interfaces)`
+    :data:`grok.implements(\*interfaces)`
         Required. Identifies the interface(s) the adapter implements.
 
     .. seealso::
 
         :func:`grok.implements`
 
-    :func:`grok.name(name)`
+    :data:`grok.name(name)`
         Optional. Identifies the name used for the adapter
         registration. If ommitted, no name will be used.
 
@@ -506,21 +508,21 @@ to determine how to handle the objects being adapted.
 
     **Directives:**
 
-    :func:`grok.adapts(\*objects_or_interfaces)`
+    :data:`grok.adapts(\*objects_or_interfaces)`
         Required. Identifies the combination of types of objects or interfaces
         for the adaptation.
 
-    :func:`grok.implements(\*interfaces)`
+    :data:`grok.implements(\*interfaces)`
         Required. Identifies the interfaces(s) the adapter implements.
 
-    :func:`grok.name(name)`
+    :data:`grok.name(name)`
         Optional. Identifies the name used for the adapter registration. If
         ommitted, no name will be used.
 
         When a name is used for the adapter registration, the adapter
         can only be retrieved by explicitely using its name.
 
-    :func:`grok.provides(name)`
+    :data:`grok.provides(name)`
         Only required if the adapter implements more than one
         interface.  :func:`grok.provides` is required to disambiguate
         for which interface the adapter will be registered for.
@@ -638,17 +640,17 @@ and web service proxies.
 
     **Directives:**
 
-    :func:`grok.implements(\*interfaces)`
+    :data:`grok.implements(\*interfaces)`
         Required. Identifies the interfaces(s) the utility implements.
 
-    :func:`grok.name(name)`
+    :data:`grok.name(name)`
         Optional. Identifies the name used for the adapter registration. If
         ommitted, no name will be used.
 
         When a name is used for the global utility registration, the global
         utility can only be retrieved by explicitely using its name.
 
-    :func:`grok.provides(name)`
+    :data:`grok.provides(name)`
         Maybe required. If the global utility implements more than one
         interface, :func:`grok.provides` is required to disambiguate
         for what interface the global utility will be registered.
@@ -676,10 +678,10 @@ so that they can be edited through-the-web.
 
     **Directives:**
 
-    :func:`grok.implements(\*interfaces)`
+    :data:`grok.implements(\*interfaces)`
         Optional. Identifies the interfaces(s) the utility implements.
 
-    :func:`grok.name(name)`
+    :data:`grok.name(name)`
         Optional. Identifies the name used for the adapter registration. If
         ommitted, no name will be used.
 
@@ -687,7 +689,7 @@ so that they can be edited through-the-web.
         local utility can only be retrieved by explicitely using its
         name.
 
-    :func:`grok.provides(name)`
+    :data:`grok.provides(name)`
         Maybe required. If the local utility implements more than one
         interface or if the implemented interface cannot be
         determined, :func:`grok.provides` is required to disambiguate
@@ -1009,22 +1011,74 @@ begin with an _ or special names such as __call__. The grok.require
 decorator can be used to protect methods with a permission.
 
 .. autoclass:: grok.JSON
-   :members:
-   :inherited-members:
-   :undoc-members:
 
     .. attribute:: context
     
-        Object that the REST handler presents.
+        Object that the JSON handler presents.
 
     .. attribute:: request
     
-        Request that REST handler was looked up with.
+        Request that JSON handler was looked up with.
+
+    .. autoattribute:: response
+
+        The response sent back to the client.
 
     .. attribute:: body
     
         The text of the request body.
-    
+
+    .. automethod:: redirect
+
+        Redirect to `url`.
+
+        The headers of the :attr:`response` are modified so that the
+        calling browser gets a redirect status code. Please note, that
+        this method returns before actually sending the response to
+        the browser.
+
+        `url` is a string that can contain anything that makes sense
+        to a browser. Also relative URIs are allowed.
+
+        `status` is a number representing the HTTP status code sent
+        back. If not given or ``None``, ``302`` or ``303`` will be
+        sent, depending on the HTTP protocol version in use (HTTP/1.0
+        or HTTP/1.1).
+
+        `trusted` is a boolean telling whether we're allowed to
+        redirect to 'external' hosts. Normally redirects to other
+        hosts than the one the request was sent to are forbidden and
+        will raise a :exc:`ValueError`.
+
+    .. automethod:: url
+
+    .. automethod:: publishTraverse
+
+        Lookup a name and return an object with `self.context` as its parent.
+        The method can use the request to determine the correct object.
+	  
+        The `request` argument is the publisher request object. The
+        `name` argument is the name that is to be looked up. It must
+        be an ASCII string or Unicode object.
+
+        If a lookup is not possible, raise a :exc:`NotFound` error.
+
+    .. automethod:: browserDefault
+
+        Returns an object and a sequence of names.
+	  
+        The publisher calls this method at the end of each traversal path.
+        If the sequence of names is not empty, then a traversal step is made
+        for each name. After the publisher gets to the end of the sequence,
+        it will call browserDefault on the last traversed object.
+
+        The default behaviour in Grok is to return `self.context` for
+        the object and ``'index'`` for the default view name.
+
+        Note that if additional traversal steps are indicated (via a
+        nonempty sequence of names), then the publisher will try to adjust
+        the base href.
+
 
 **Example 1: Create a public and a protected JSON view.**
 
@@ -1056,9 +1110,6 @@ These Views can define methods named GET, PUT, POST and DELETE, which will
 be invoked based on the Request type.
 
 .. autoclass:: grok.REST
-   :members:
-   :inherited-members:
-   :undoc-members:
 
     .. attribute:: context
     
@@ -1068,19 +1119,39 @@ be invoked based on the Request type.
     
         Request that REST handler was looked up with.
     
-    .. autoattribute:: grok.REST.response
+    .. autoattribute:: response
 
         The response sent back to the client.
 
-    .. autoattribute:: grok.REST.body
+    .. autoattribute:: body
     
         The text of the request body.
 
-    .. automethod:: grok.REST.application_url
+    .. automethod:: application_url
 
-    .. automethod:: grok.REST.url
+    .. automethod:: url
 
-    .. automethod:: grok.REST.redirect
+    .. automethod:: redirect
+
+        Redirect to `url`.
+
+        The headers of the :attr:`response` are modified so that the
+        calling browser gets a redirect status code. Please note, that
+        this method returns before actually sending the response to
+        the browser.
+
+        `url` is a string that can contain anything that makes sense
+        to a browser. Also relative URIs are allowed.
+
+        `status` is a number representing the HTTP status code sent
+        back. If not given or ``None``, ``302`` or ``303`` will be
+        sent, depending on the HTTP protocol version in use (HTTP/1.0
+        or HTTP/1.1).
+
+        `trusted` is a boolean telling whether we're allowed to
+        redirect to 'external' hosts. Normally redirects to other
+        hosts than the one the request was sent to are forbidden and
+        will raise a :exc:`ValueError`.
 
 
 :class:`grok.XMLRPC`
@@ -1152,13 +1223,13 @@ and the View used to interact with that object.
    
         The HTTP Request object.
 
-    .. automethod:: grok.Traverser.traverse
+    .. automethod:: traverse
 
         You must provide your own implementation of this method to do
         what you want. If you return ``None``, Grok will use the
         default traversal behaviour.
 
-    .. automethod:: grok.Traverser.browserDefault
+    .. automethod:: browserDefault
 
         Returns an object and a sequence of names.
 	  
@@ -1174,7 +1245,7 @@ and the View used to interact with that object.
         nonempty sequence of names), then the publisher will try to adjust
         the base href.
 
-    .. automethod:: grok.Traverser.publishTraverse
+    .. automethod:: publishTraverse
 
         Lookup a name and return an object with `self.context` as its parent.
         The method can use the request to determine the correct object.
@@ -1271,15 +1342,21 @@ Creates a Page Template from a filename.
 Forms
 ~~~~~
 
-Forms inherit from the `grok.View` class. They are a specialized type of
+Forms inherit from the :class:`grok.View` class. They are a specialized type of
 View that renders an HTML Form.
 
 :class:`grok.Form`
 ==================
 
-.. class:: grok.Form
+.. autoclass:: grok.Form
 
-    Base class for forms.
+    .. attribute:: template
+    
+        Template used to display the form
+
+    .. attribute:: context
+
+        The object for which the form is rendered.
 
     .. attribute:: prefix
     
@@ -1287,14 +1364,14 @@ View that renders an HTML Form.
         subpage should have names and identifiers that begin with a subpage
         prefix followed by a dot.
 
-    .. method:: setPrefix(prefix):
+    .. automethod:: setPrefix
 
         Update the subpage prefix
 
     .. attribute:: label
     
         A label to display at the top of a form.
-        
+
     .. attribute:: status
     
         An update status message. This is normally generated by success or
@@ -1322,42 +1399,47 @@ View that renders an HTML Form.
     
         The form's widgets.
 
-        - set by setUpWidgets
+        - set by :meth:`setUpWidgets`
 
-        - used by validate
+        - used by :meth:`validate`
 
+    .. autoattribute:: actions
 
-    .. method:: setUpWidgets(ignore_request=False):
+    .. autoattribute:: body
+
+        The text of the request body.
+
+    .. autoattribute:: response
+
+        The response sent back to the client.
+
+    .. automethod:: setUpWidgets
     
         Set up the form's widgets.
 
         The default implementation uses the form definitions in the
-        form_fields attribute and setUpInputWidgets.
+        :attr:`form_fields` attribute and :meth:`setUpInputWidgets`.
 
-        The function should set the widgets attribute.
+        The function should set the :attr:`widgets` attribute.
 
-    .. method:: validate(action, data):
+    .. automethod:: validate
     
         The default form validator
 
         If an action is submitted and the action doesn't have it's own
         validator then this function will be called.
 
-    .. attribute:: template
-    
-        Template used to display the form
-
-    .. method:: resetForm():
+    .. automethod:: resetForm
     
         Reset any cached data because underlying content may have changed.
 
-    .. method:: error_views():
+    .. automethod:: grok.Form.error_views
     
         Return views of any errors.
 
         The errors are returned as an iterable.
 
-    .. method:: applyData(obj, **data):
+    .. automethod:: applyData
     
         Save form data to an object.
 
@@ -1367,15 +1449,48 @@ View that renders an HTML Form.
         the method works in update mode (e.g. on EditForms) and
         doesn't have to update an object, the dictionary is empty.
 
+    .. automethod:: application_url
+
+    .. automethod:: applyChanges
+
+        .. deprecated:: 0.13
+           Use :meth:`applyData` instead.
+
+    .. automethod:: availableActions
+
+    .. automethod:: browserDefault
+
+    .. automethod:: default_namespace
+
+    .. automethod:: flash
+
+    .. automethod:: namespace
+
+    .. automethod:: publishTraverse
+
+    .. automethod:: redirect
+
+    .. automethod:: render
+
+    .. automethod:: update
+
+    .. automethod:: update_form
+
+    .. automethod:: url
+
+
 :class:`grok.AddForm`
 =====================
 
 Add forms are used for creating new objects. The widgets for this form
 are not bound to any existing content or model object.
 
-.. class:: grok.AddForm
+.. autoclass:: grok.AddForm
+   :members:
+   :undoc-members:
 
-    Base class for add forms. Inherits from :class:`grok.Form`.
+   Inherits from :class:`grok.Form`.
+
 
 :class:`grok.EditForm`
 ======================
@@ -1383,9 +1498,12 @@ are not bound to any existing content or model object.
 Edit forms are used for editing existing objects. The widgets for this form
 are bound to the object set in the `context` attribute.
 
-.. class:: grok.EditForm
+.. autoclass:: grok.EditForm
+   :members:
+   :undoc-members:
 
-    Base class for edit forms. Inherits from :class:`grok.Form`.
+   Inherits from :class:`grok.Form`.
+
 
 :class:`grok.DisplayForm`
 =========================
@@ -1393,9 +1511,11 @@ are bound to the object set in the `context` attribute.
 Display forms are used to display an existing object. The widgets for this
 form are bound to the object set in the `context` attribute.
 
-.. class:: grok.DisplayForm
+.. autoclass:: grok.DisplayForm
+   :members:
+   :undoc-members:
 
-    Base class for display forms. Inherits from :class:`grok.Form`.
+   Inherits from :class:`grok.Form`.
 
 
 Security
@@ -1404,22 +1524,24 @@ Security
 :class:`grok.Permission`
 ========================
 
-Permissions are used to protect Views so that they can only be called by
-an authenticated principal. If a View in Grok does not have a `grok.require`
-directive declaring a permission needed to use the View, then the default
-anonymously viewable `zope.View` permission used.
+Permissions are used to protect Views so that they can only be called
+by an authenticated principal. If a View in Grok does not have a
+:func:`grok.require` directive declaring a permission needed to use
+the View, then the default anonymously viewable `zope.View` permission
+used.
 
-.. class:: grok.Permission
+.. autoclass:: grok.Permission
 
-    Base class for permissions. You must specify a unique name for every
-    permission using the `grok.name` directive. The convention for ensuring
-    uniqueness is to prefix your permission name with the name of your
-    Grok package followed by a dot, e.g. 'mypackage.MyPermissionName'.
+    Base class for permissions. You must specify a unique name for
+    every permission using the :func:`grok.name` directive. The convention
+    for ensuring uniqueness is to prefix your permission name with the
+    name of your Grok package followed by a dot,
+    e.g. ``'mypackage.MyPermissionName'``.
 
     .. attribute:: id
     
         Id as which this permission will be known and used. This is set
-        to the value specified in the `grok.name` directive.
+        to the value specified in the :func:`grok.name` directive.
 
     .. attribute:: title
 
@@ -1431,18 +1553,19 @@ anonymously viewable `zope.View` permission used.
 
     **Directives:**
 
-    :func:`grok.name(name)`
+    :data:`grok.name(name)`
     
         Required. Identifies the unique name (also used as the id) of the
         permission.
 
-    :func:`grok.title(title)`
+    :data:`grok.title(title)`
 
         Optional. Stored as the title attribute for this permission.
     
-    :func:`grok.description(description)`
+    :data:`grok.description(description)`
 
         Optional. Stored as the description attribute for this permission.
+
 
 **Example 1: Define a new Permission and use it to protect a View**
 
@@ -1466,42 +1589,43 @@ Roles provide a way to group together a collection of permissions. Principals
 (aka Users) can be granted a Role which will allow them to access all Views
 protected by the Permissions that the Role contains.
 
-.. class:: grok.Role
+.. autoclass:: grok.Role
+   :members:
+   :inherited-members:
+   :undoc-members:
 
-    Base class for roles.
-
-    .. attribute:: id
+   .. attribute:: id
     
-        Id as which this role will be known and used. This is set
-        to the value specified in the `grok.name` directive.
+       Id as which this role will be known and used. This is set
+       to the value specified in the :func:`grok.name` directive.
 
-    .. attribute:: title
+   .. attribute:: title
 
-        Human readable identifier for this permission.
+       Human readable identifier for this permission.
 
-    .. attribute:: description
+   .. attribute:: description
 
-        Description of the permission.
+       Description of the permission.
 
-    **Directives:**
+   **Directives:**
 
-    :func:`grok.name(name)`
+   :data:`grok.name(name)`
 
-        Required. Identifies the unique name (also used as the id) of the
-        role.
+       Required. Identifies the unique name (also used as the id) of the
+       role.
 
-    :func:`grok.permissions(permissions)`
+   :data:`grok.permissions(permissions)`
 
-        Required. Declare the permissions granted to this role. These
-        can refer by permission class or by name.
+       Required. Declare the permissions granted to this role. These
+       can refer by permission class or by name.
 
-    :func:`grok.title(title)`
+   :data:`grok.title(title)`
 
-        Optional. Stored as the title attribute for this role.
+       Optional. Stored as the title attribute for this role.
 
-    :func:`grok.description(description)`
+   :data:`grok.description(description)`
 
-        Optional. Stored as the description attribute for this role.
+       Optional. Stored as the description attribute for this role.
 
 **Example 1: Define a new 'paint.Artist' Role and assign it to the 'paint.grok' principal**
 
@@ -1567,4 +1691,4 @@ protected by the Permissions that the Role contains.
     # but could also be a container within your application.
     from zope.securitypolicy.interfaces import IPrincipalRoleManager
     IPrincipalRoleManager(app).assignRoleToPrincipal(
-       'paint.Artixt', 'paint.grok')
+       'paint.Artist', 'paint.grok')
