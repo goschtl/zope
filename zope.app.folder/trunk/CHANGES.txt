@@ -2,11 +2,12 @@
 CHANGES
 =======
 
-3.5.2 (unreleased)
+3.5.2 (2010-12-28)
 ------------------
 
-- Removed testing.py. There is no functional tests and
-  ftesting.zcml now.
+- Removed testing.py. There are no functional tests and ftesting.zcml now.
+
+- Removed unneeded dependencies.
 
 
 3.5.1 (2009-02-14)
