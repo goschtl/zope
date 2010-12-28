@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,13 +21,13 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.5.2 dev'
+version = '3.5.2dev'
 
 setup(name='zope.app.folder',
       version=version,
-      author='Zope Corporation and Contributors',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Folder and Site -- Zope 3 Content Components',
+      description='Folder Content Type for Zope 3',
       long_description=(
           read('README.txt')
           + '\n\n' +
