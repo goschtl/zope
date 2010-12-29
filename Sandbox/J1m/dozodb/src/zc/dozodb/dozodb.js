@@ -16,6 +16,16 @@ zc.dozodb = function () {
     };
     Request = dojo.declare(null, Request);
 
+    var idattrs = {_p_oid: true, _p_id: true};
+
+    function list(obj) {
+        var r = [];
+        for (var name in obj)
+            if (obj.hasOwnProperty(name))
+                r.push(name);
+        return r;
+    }
+
     var Dozodb = {
 
         // url: url of data server
@@ -24,10 +34,14 @@ zc.dozodb = function () {
             dojo.safeMixin(this, args);
             this._cache = {};       // {oid->ob}
             this._new_next = 0;
-            this._new_ids = {};
+            this._initialize_changes();
         },
 
-        _fixupItemSubobjects: function (item) {
+        _initialize_changes: function () {
+            this._changes = {changed: {}, inserted: {}};
+        },
+
+        _convert_incoming_items_refs_to_items: function (item) {
             for (var name in item) {
                 var v = item[name];
                 if (typeof(v) != "object")
@@ -41,22 +55,60 @@ zc.dozodb = function () {
                 }
                 if (oid)
                     item[name] = this._in_cache(v);
-                this._fixupItemSubobjects(v);
+                this._convert_incoming_items_refs_to_items(v);
             }
         },
 
+        _convert_outgoing_items_to_item_refs: function (item, isobject) {
+            var maybe_array = (! isobject) && (item.length != null);
+            var result;
+            if (maybe_array)
+                result = [];
+            else
+                result = {};
+
+            for (var name in item) {
+                if (! item.hasOwnProperty(name))
+                    continue;
+
+                if (maybe_array && name == 'length')
+                    return _convert_outgoing_items_to_item_refs(item, true);
+
+                var v = item[name];
+                if (typeof(v) != "object") {
+                    result[name] = v;
+                    continue;
+                }
+                var oid;
+                try {
+                    oid = v._p_id;
+                    }
+                catch (e) {
+                    oid = null;
+                }
+                if (oid) {
+                    result[name] = {_p_ref: oid};
+                    continue;
+                }
+                result[name] = this._convert_outgoing_items_to_item_refs(v);
+            }
+            return result;
+        },
+
         _in_cache: function (item, with_data) {
-            if (item._p_oid in this._cache) {
-                var cached = this._cache[item._p_oid];
+            if (! item._p_id)
+                item._p_id = item._p_oid;
+            if (item._p_id in this._cache) {
+                var cached = this._cache[item._p_id];
                 if (with_data)
                     dojo.safeMixin(cached, item);
                 item = cached;
             }
             else
-                this._cache[item._p_oid] = item;
+                this._cache[item._p_id] = item;
 
             if (with_data) {
-                this._fixupItemSubobjects(item);
+                this._convert_incoming_items_refs_to_items(item);
                 item._p_changed = false;
             }
             return item;
@@ -72,11 +124,19 @@ zc.dozodb = function () {
                 return false;
             if (v.length == null)
                 return v == value;
-            return dojo.indexOf(v, value) >= 0;
+            for (var i=v.length; --i >= 0; )
+                if (v[i] === value)
+                    return true;
+            return false;
         },
 
         deleteItem : function (item) {
-            // xxx
+            if (! item._p_oid) {
+                // New object
+                delete this._changes.changed[item._p_id];
+                if (item._p_id in this._changes.inserted)
+                    delete this._changes.inserted[item._p_id];
+            }
             this.onDelete(item);
         },
         onDelete: function (item) {}, // hook
@@ -88,7 +148,7 @@ zc.dozodb = function () {
                 {
                     // Server gets query args for args.query
                     // Server returns: {items: array_of_items}
-                    url: self.url+'/fetch',
+                    url: self.url,
                     handleAs: 'json',
                     preventCache: true,
                     content: args.query,
@@ -147,7 +207,7 @@ zc.dozodb = function () {
                 {
                     // Server gets query arg _p_oid
                     // Server returns: {item: item}
-                    url: this.url+'/fetchBydentity',
+                    url: this.url,
                     handleAs: 'json',
                     preventCache: true,
                     content: {_p_oid: args.identity},
@@ -179,16 +239,16 @@ zc.dozodb = function () {
         },
 
         getIdentity: function (item) {
-            return item._p_oid;
+            return item._p_id;
         },
 
         getIdentityAttributes: function (item) {
-            return ['_p_oid'];
+            return ['_p_id'];
         },
 
         getLabel : function (item) {
             // replace me :)
-            return item.title || item.label || item._p_oid || 'unlabeled';
+            return item.title || item.label || item._p_id || 'unlabeled';
         },
 
         getValue : function (item, attribute, defaultValue) {
@@ -233,14 +293,14 @@ zc.dozodb = function () {
                 {
                     // Server gets query arg _p_oid
                     // Server returns: {item: item}
-                    url: this.url+'/load',
+                    url: this.url,
                     handleAs: 'json',
                     preventCache: true,
                     content: {_p_oid: item._p_oid},
                     load: function (r) {
                         dojo.safeMixin(item, r.item);
                         item._p_changed = false;
-                        self._fixupItemSubobjects(item);
+                        self._convert_incoming_items_refs_to_items(item);
                         if (args.onItem)
                             dojo.hitch(args.scope, args.onItem)(item);
                     },
@@ -252,32 +312,95 @@ zc.dozodb = function () {
 
         newItem : function (args, parentInfo) {
             var item = dojo.safeMixin(
-                {_p_oid: 'new'+this._new_next++, _p_changed: 0}, args);
+                {_p_id: 'new'+this._new_next++, _p_changed: 1}, args);
             if (parentInfo) {
-                var v = parentInfo.parent[parentInfo.attribute];
+                var parent = parentInfo.parent;
+                if (item._p_changed == null)
+                    throw("Attempt to modify ghost parent.");
+                var v = parent[parentInfo.attribute];
                 if (v == null || v.length == null)
-                    parentInfo.parent[parentInfo.attribute] = item;
+                    parent[parentInfo.attribute] = item;
                 else
                     v.push(item);
+                this._changes.changed[parent._p_id] = parent;
             }
-            this.onNew(
-                item, {
-                    item: parentInfo.parent,
-                    attribute: parentInfo.attribute
-                });
+            else
+                this._changes.inserted[item._p_id] = 1;
+            this._cache[item._p_id] = item;
+            this._changes.changed[item._p_id] = item;
+            if (parentInfo)
+                this.onNew(
+                    item, { item: parent, attribute: parentInfo.attribute });
+            else
+                this.onNew(item);
             return item;
         },
         onNew: function (item, parentInfo) {}, // hook
 
         revert : function () {
+            for (var id in self._changes.changed) {
+                var item = self._changes.changed[id];
+                if (item._p_oid) {
+                    var _p_oid = item._p_oid;
+                    for (var name in item)
+                        if (item.hasOwnProperty(name) && ! name in ids)
+                            delete item[name];
+                }
+                else
+                {
+                    delete self._cache[id];
+                }
+            }
+            self._initialize_changes();
+        },
 
+        _to_save: function () {
+            self = this;
+            return dojo.toJson(
+                {
+                    changed: dojo.map(
+                        list(self._changes.changed),
+                        function (id) {
+                            var r = self._convert_outgoing_items_to_item_refs(
+                                self._changes.changed[id], true);
+                            r._p_oid = r._p_id;
+                            delete r._p_id;
+                            delete r._p_changed;
+                            return r;
+                        }),
+                    inserted: list(self._changes.inserted)
+                });
         },
 
         save : function (args) {
-
+            self = this;
+            dojo.xhrPost(
+                {
+                    url: this.url,
+                    handleAs: 'json',
+                    headers: {'Content-Type': 'application/json'},
+                    postData: self._to_save(),
+                    load: function (r) {
+                        self._initialize_changes();
+                        for (var i=r.updates.length; --i >= 0; ) {
+                            var data = r.updates[i];
+                            if ('_p_id' in data) {
+                                self._cache[data._p_oid] = self._cache[
+                                    data._p_id];
+                                delete data._p_id;
+                            }
+                            var item = self._cache[data._p_oid];
+                            for (var name in data)
+                                if (data.hasOwnProperty(name))
+                                    item[name] = data[name];
+                        }
+                    }
+                });
         },
 
         setValue : function (item, attribute, value) {
+            if (item._p_changed == null)
+                throw("Attempt to modify ghost.");
             var old = undefined;
             if (attribute in item)
                 old = attribute[item];
@@ -285,10 +408,13 @@ zc.dozodb = function () {
                 item[attribute] = value;
             else
                 item[attribute] = [value];
+            this._changes.changed[item._p_id] = item;
             this.onSet(item, attribute, old, value);
         },
 
         setValues : function (item, attribute, value) {
+            if (item._p_changed == null)
+                throw("Attempt to modify ghost.");
             var old = undefined;
             if (attribute in item)
                 old = item[attribute];
@@ -296,6 +422,7 @@ zc.dozodb = function () {
                 delete item[attribute];
             else
                 item[attribute] = value;
+            this._changes.changed[item._p_id] = item;
             this.onSet(item, attribute, old, value);
         },
         onSet: function (item, attribute, old, new_) {}, // hook
@@ -306,6 +433,6 @@ zc.dozodb = function () {
     };
 
     return {
-        DB: dojo.declare(null, Dozodb)
+        Store: dojo.declare(null, Dozodb)
     };
 }();
