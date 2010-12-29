@@ -1,0 +1,86 @@
+dozodb ajax protocol
+====================
+
+Basic requests
+==============
+
+There are 3 basic types of requests:
+
+load
+   Load data for a single persistent object, given it's id.
+
+   Load requests are HTTP GET requests with an _p_oid variable in the
+   query string with a hex encoding of an object id.
+
+   The response is a dictionary with an ``item`` item with the
+   object's state as a dictionary.  The state includes any data to be
+   used by the client, and typically includes the data returned by the
+   persistent ``__getstate__`` method.  The state also includes
+   hex-encoded ``_p_oid`` and ``_p_serial`` persistent items.
+   Persistent subobjects are represented as object references, which
+   are simply dictionaries with just ``_p_oid`` items.
+
+   The response is returned to the client as a JSON string with
+   content type 'application/json'.  Of course, the result can only
+   contain values that can be rendered as JSON.
+
+query
+   Query the server for objects.
+
+   A query is an HTTP GET request that does not have an _p_oid
+   parameter.  It may have application-defined paramters as well as
+   the dojo defined parameters start, size, or sort.  The result is a
+   dictionary with an ``items`` item containing a list of object
+   states. The object states are as described for load requests.
+
+   The response is returned to the client as a JSON string with
+   content type 'application/json'.
+
+save
+   Save changed or new data to the database.
+
+   Save requests are POST requests with JSON (application/json)
+   bodies.  Requests are interpreted as dictionaries with 2 items:
+
+   ``changed``
+      A list of new or changed object states.
+
+      The states are as described for load requests, except that new
+      objects don't have ``_p_serial`` items and have client-generated
+      ``_p_oid`` items with values starting with "new".
+
+      Also, object references use _p_ref items rather than _p_oid
+      items.  Later, _p_ref will probably be used for reading as
+      well.
+
+   ``inserted``
+      A list of ids of objects that were inserted on the client
+      without specifying a container.
+
+      Inserted items would be typically used with a grid that provides
+      a window into a large data set on the server.  In this case, the
+      container isn't downloaded to the client. Rather the container
+      is known by the server and items are inserted into it on the
+      server. A server resource may reject inserted items if it
+      doesn't support them.
+
+   A server should return an error if there are new items in changed
+   that aren't referenced by existing items or aren't in the inserted
+   list.
+
+   The result is a dictionary with an ``updates`` item containing a
+   list of data to update the client cache.  Each item in the array is
+   a dictionary with a ``_p_oid``, identifying the object being
+   updated, and a new ``_p_serial``.
+
+   If a conflict for an object was resolved, the dictionary will have
+   an ``_p_resolved`` flag and will contain new object state.
+
+   If the object was added, then the dictionary will have an
+   ``_p_id`` containing the client-generated id sent to the server.
+   The ``_p_oid`` item will contain the objects id on the seever.
+
+Errors
+======
+
+Errors are returned as ``error`` items.
