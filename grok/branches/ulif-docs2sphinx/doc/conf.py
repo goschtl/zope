@@ -23,11 +23,12 @@ from os import path, curdir
 # ---------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
-# coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
-#extensions = []
-#extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest',
-#              'sphinx.ext.intersphinx', 'sphinx.ext.viewcode']
-extensions = ['sphinx.ext.autodoc']
+# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              # 'sphinx.ext.viewcode', # This is currently broken?
+              ]
 
 # Order autodoc generated docs in source code order.
 autodoc_member_order = 'bysource'
