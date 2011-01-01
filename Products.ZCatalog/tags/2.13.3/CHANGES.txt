@@ -1,0 +1,37 @@
+Changelog
+=========
+
+2.13.3 (2011-01-01)
+-------------------
+
+- Avoid locale-dependent test condition in `test_length_with_filter`.
+
+2.13.2 (2010-12-31)
+-------------------
+
+- Preserve `actual_result_count` on flattening nested LazyCat's.
+
+- Preserve the `actual_result_count` on all lazy return values. This allows
+  to get proper batching information from catalog results which have been
+  restricted by `sort_limit`.
+
+- Made sure `actual_result_count` is available on all lazy classes and falls
+  back to `__len__` if not explicitly provided.
+
+- Optimized length calculation of Lazy classes.
+
+2.13.1 (2010-12-25)
+-------------------
+
+- Added automatic sorting limit calculation based on batch arguments. If the
+  query contains a `b_start` and `b_size` argument and no explicit `sort_limit`
+  is provided, the sort limit will be calculated as `b_start + b_size`.
+
+- Avoid pre-allocation of marker items in `LazyMap`.
+
+2.13.0 (2010-12-25)
+-------------------
+
+- Fix `LazyMap` to avoid unnecessary function calls.
+
+- Released as separate distribution.
