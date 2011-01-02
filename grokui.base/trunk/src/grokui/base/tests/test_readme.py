@@ -2,8 +2,7 @@
 
 import unittest, doctest
 import grokui.base
-from zope.app.wsgi.testlayer import BrowserLayer
-
+from zope.fanstatic.testing import ZopeFanstaticBrowserLayer
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -11,7 +10,7 @@ def test_suite():
         '../README.txt',
         optionflags=(doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE|
                      doctest.REPORT_NDIFF))
-    readme.layer = BrowserLayer(grokui.base)
+    readme.layer = ZopeFanstaticBrowserLayer(grokui.base)
     suite.addTest(readme)
     return suite
 

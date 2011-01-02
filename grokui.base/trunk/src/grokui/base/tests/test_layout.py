@@ -52,7 +52,7 @@ import unittest
 import doctest
 import grokcore.component as grok
 from grokui.base import GrokUIView
-from zope.app.wsgi.testlayer import BrowserLayer
+from zope.fanstatic.testing import ZopeFanstaticBrowserLayer
 
 
 class CaveAdminView(GrokUIView):
@@ -72,6 +72,6 @@ def test_suite():
     suite = unittest.TestSuite()
     test = doctest.DocTestSuite(
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
-    test.layer = BrowserLayer(grokui.base)
+    test.layer = ZopeFanstaticBrowserLayer(grokui.base)
     suite.addTest(test)
     return suite

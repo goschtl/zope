@@ -1,6 +1,11 @@
 CHANGES
 *******
 
+0.5 (unreleased)
+================
+
+- Use `fanstatic` instead of zope DirectoryResource.
+
 0.4.2 (2010-12-16)
 ==================
 
