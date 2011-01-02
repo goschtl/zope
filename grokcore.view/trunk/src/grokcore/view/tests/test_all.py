@@ -43,7 +43,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'static', 'skin', 'template', 'directoryresource']:
+    for name in ['view', 'skin', 'template', 'directoryresource']:
         suite.addTest(suiteFromPackage(name))
     suite.addTest(doctest.DocFileSuite('../templatereg.txt',
                                        optionflags=optionflags,
