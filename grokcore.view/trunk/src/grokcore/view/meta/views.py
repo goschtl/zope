@@ -71,12 +71,6 @@ class ViewGrokker(martian.ClassGrokker):
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
-    def grok(self, name, factory, module_info, **kw):
-        # Need to store the module info object on the view class so that it
-        # can look up the 'static' resource directory.
-        factory.module_info = module_info
-        return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
-
     def execute(self, factory, config, context, layer, name, **kw):
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
