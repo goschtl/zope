@@ -17,9 +17,9 @@ from zope.component.hooks import getSite
 
 
 def getApplication():
-    """Return the nearest enclosing `grok.Application`.
+    """Return the nearest enclosing :class:`grok.Application`.
 
-    Raises ValueError if no Application can be found.
+    Raises :exc:`ValueError` if no application can be found.
     """
     site = getSite()
     if IApplication.providedBy(site):
