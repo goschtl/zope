@@ -22,7 +22,7 @@ def read(name):
 
 setuptools.setup(
     name = 'zc.monitorcache',
-    version = '0',
+    version = '0.1.0',
     author = 'Alex Chapman',
     author_email = 'achapman@zope.com',
     description = 'zc.monitor plugin to modify cache sizes',
