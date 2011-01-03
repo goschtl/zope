@@ -21,7 +21,7 @@ the cache size (in objects or bytes) of a running instance.
     >>> connection.test_input('cache_size\n')
     -> CLOSE
 
-We have no databases right now. Lets add a few so that we can test.
+We have no databases right now. Let's add a few so that we can test.
 
     >>> import ZODB.tests.util
     >>> import ZODB.interfaces
@@ -45,7 +45,7 @@ Now we should get information on each of the database's cache sizes
     Max object size bytes: 0MB
     -> CLOSE
 
-we can request information about a specific db as well
+We can request information about a specific db as well
 
     >>> connection = zc.ngi.testing.TextConnection()
     >>> server = zc.monitor.Server(connection)
