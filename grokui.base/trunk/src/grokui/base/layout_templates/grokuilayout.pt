@@ -2,8 +2,6 @@
   <head>
     <title tal:content="layout/title" />
     <base tal:attributes="href layout/baseurl" />
-    <link rel="stylesheet" type="text/css" 
-	  tal:attributes="href static/grok.css" />
     <link rel="shortcut icon" type="image/x-icon"
 	  tal:attributes="href static/favicon.ico" />
   </head>
