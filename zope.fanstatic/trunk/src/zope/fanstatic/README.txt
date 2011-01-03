@@ -4,8 +4,7 @@ Zope integration for fanstatic
 This package provides Zope integration for fanstatic. This means
 it's taking care of two things:
 
-* provide access to the needed resources in the WSGI environment
-  throughout the request/response cycle.
+* provide access to the needed resources throughout the request/response cycle.
 
 * provide the base URL for the resources to be rendered.
 
