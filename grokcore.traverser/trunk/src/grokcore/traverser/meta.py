@@ -26,9 +26,10 @@ import martian
 import grokcore.traverser
 import grokcore.component
 
-from zope import interface, component
+from zope import component
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
+
 
 class TraverserGrokker(martian.ClassGrokker):
     """Grokker for subclasses of `grok.Traverser`."""

@@ -15,6 +15,7 @@
 """
 import zope.location.location
 
+
 def safely_locate_maybe(obj, parent, name):
     """Set an object's __parent__ (and __name__) if the object's
     __parent__ attribute doesn't exist yet or is None.

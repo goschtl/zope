@@ -121,5 +121,3 @@ class ContainerTraverser(Traverser):
                 return result
         # try to get the item from the container
         return self.context.get(name)
-
-
