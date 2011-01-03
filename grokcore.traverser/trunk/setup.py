@@ -25,7 +25,7 @@ tests_require = [
 
 setup(
     name='grokcore.traverser',
-    version='0.1',
+    version='1.0',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
