@@ -7,7 +7,7 @@ tests_require = [
     'zope.app.appsetup',
     'zope.app.pagetemplate',
     'zope.app.publication',
-    'zope.app.wsgi > 3.10.0',
+    'zope.app.wsgi >= 3.10.0',
     'zope.browserpage',
     'zope.browserresource',
     'zope.container',
