@@ -3,23 +3,23 @@
   >>> from zope.component import getMultiAdapter
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
+  >>> from megrok.layout.tests.layout.static_fixture.simple import Dummy 
   >>> mongo = Dummy()
   >>> mylayout = getMultiAdapter((request, mongo), ILayout)
   >>> mylayout.static
-  <grokcore.view.components.DirectoryResource object at ...>
-  >>> mylayout.static['empty.js']
-  <zope.browserresource.file.FileResource object at ...>
+  <grokcore.view.ftests.staticdir.simple.DummyResource object at 0...>
 """
 
 import grokcore.component as grok
 from megrok.layout import Layout
+from grokcore.view.ftests.staticdir.simple import DummyResource
+
+import zope.component
+import zope.interface
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 
-class Dummy(grok.Context):
-    pass
-
-
-class LayoutWithResources(Layout):
-
-    def render(self):
-        return ""
+zope.component.provideAdapter(factory=DummyResource,
+    adapts=(IBrowserRequest,),
+    provides=zope.interface.Interface,
+    name='megrok.layout.tests.layout.static_fixture')
