@@ -7,9 +7,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 long_description = (
-    read(os.path.join('docs', 'README.txt'))
+    read(os.path.join('README.txt'))
     + '\n' +
-    read(os.path.join('docs', 'CHANGES.txt'))
+    read(os.path.join('CHANGES.txt'))
     + '\n' +
     'Download\n'
     '********\n'
