@@ -1,0 +1,12 @@
+TODO
+====
+
+* the interact stuff could be removed entirely; it's useful for
+  JSON testing but not particularly relevant to pytest integration.
+
+* the @argument decorator should be removed again. This is a layer
+  on top of pytest that we should discuss within the pytest project,
+  and not do as an innovation in zope-land. Instead use  
+  ``pyargs_funcarg__foo``, which is the standard pytest way to do it.
+
+* it needs tests
