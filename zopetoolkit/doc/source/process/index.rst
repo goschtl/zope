@@ -15,7 +15,6 @@ developing Zope Toolkit components.
 
     bug-tracking
     buildbots
-    python-versions
     releasing-software
     proposals
     maintaining-software
