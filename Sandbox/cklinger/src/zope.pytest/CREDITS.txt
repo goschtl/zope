@@ -1,6 +1,0 @@
-CREDITS
-*******
-
-* Martijn Faassen (basic pytest integration)
-
-* Izhar Firdaus (separated into package)
