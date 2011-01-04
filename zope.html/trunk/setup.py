@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,8 +20,8 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.html',
-      version = '0',
-      author='Zope Corporation and Contributors',
+      version = '2.2.1dev',
+      author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='HTML and XHTML Editing Support',
       long_description=(
