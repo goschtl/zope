@@ -17,6 +17,7 @@ class GrokUILayout(Layout):
 
     def update(self):
         resource.grok_css.need()
+        resource.favicon.need()
         self.baseurl = absoluteURL(self.context, self.request) + '/'
 
 
