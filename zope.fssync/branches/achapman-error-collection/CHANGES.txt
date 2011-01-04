@@ -1,10 +1,17 @@
 Changes
 =======
 
-3.5.3 (unreleased)
+3.5.4 (UNRELEASED)
 ------------------
 
-- ...
+--
+
+
+3.5.3 (2011-01-04)
+------------------
+
+- Commit task will collect errors and send them all back rather
+  than stopping on the first error encountered.
 
 
 3.5.2 (2010-10-18)

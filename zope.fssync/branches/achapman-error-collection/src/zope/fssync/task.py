@@ -177,11 +177,16 @@ class Commit(SyncTask):
     def __init__(self, getSynchronizer, repository):
         super(Commit, self).__init__(getSynchronizer, repository)
         self.metadata = self.repository.getMetadata()
+        self.errors = []
 
     def perform(self, container, name, fspath):
         callbacks = []
         add_callback = callbacks.append
         self.synchronize(container, name, fspath, add_callback)
+
+        # check for errors
+        if self.errors:
+            raise Exception('\n'.join(self.errors))
 
         # process callbacks
         passes = 0
@@ -219,9 +224,18 @@ class Commit(SyncTask):
             try:
                 traverseKey(container, key)
             except:
-                self.synchNew(container, key, fspath, add_callback)
+                try:
+                    self.synchNew(container, key, fspath, add_callback)
+                except Exception, e:
+                    self.errors.append(','.join(e.args))
+                    return
             else:
-                modified = self.synchOld(container, key, fspath, add_callback)
+                try:
+                    modified = self.synchOld(container, key, fspath,
+                        add_callback)
+                except Exception, e:
+                    self.errors.append(','.join(e.args))
+                    return
                 if modified:
                     modifications.append(modified)
             # Now update extra and annotations
