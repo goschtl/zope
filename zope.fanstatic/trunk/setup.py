@@ -42,7 +42,6 @@ setup(
          'zope.annotation',
          'zope.app.publication',
          'zope.app.wsgi >= 3.10.0',
-         'zope.browser',
          'zope.browserpage',
          'zope.container',
          'zope.principalregistry',
