@@ -11,8 +11,28 @@ from zope.fanstatic.interfaces import IZopeFanstaticResource
 
 @adapter(IEndRequestEvent)
 def set_base_url_on_needed_inclusions(event):
+    # At first sight it might be better to subscribe to the
+    # IBeforeTraverseEvent for ISite objects and only set a base_url
+    # then. However, we might be too early in that case and miss out
+    # on essential information for computing URLs. One example of such
+    # information is that of the virtualhost namespace traversal.
     needed = fanstatic.get_needed()
+    if not needed.has_resources():
+        # Do nothing if there're no resources needed at all.
+        return
     if needed.base_url is None:
+        # Only set the base_url if it has not been set just yet.
+        #
+        # Note that the given context is set to None, resulting in
+        # computing a URL to the Application root (while still
+        # adhering to the, for example, virtualhost information). In
+        # principle this is not correct, as we should compute the URL
+        # for the nearest ISite object, but there is no site nor
+        # context anymore in the EndRequestEvent (as the request has
+        # been "closed", transactions have been handled, and the site
+        # is cleared). Since fanstatic resource "registrations" cannot
+        # be overridden on a per ISite basis anyway, this is good
+        # enough.
         needed.base_url = absoluteURL(None, event.request)
 
 _sentinel = object()
