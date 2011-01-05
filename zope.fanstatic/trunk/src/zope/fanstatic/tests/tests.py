@@ -24,9 +24,11 @@ class TestLayer(ZopeFanstaticBrowserLayer):
     def setup_middleware(self, app):
         return fanstatic.Injector(app)
 
+layer = TestLayer(zope.fanstatic.tests)
+
 def test_suite():
     readme = doctest.DocFileSuite(
         '../README.txt',
         optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
-    readme.layer = TestLayer(zope.fanstatic.tests)
+    readme.layer = layer
     return unittest.TestSuite([readme])

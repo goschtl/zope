@@ -29,3 +29,4 @@ class TestBottom(object):
 
 class TestInlineResource(object):
     pass
+
