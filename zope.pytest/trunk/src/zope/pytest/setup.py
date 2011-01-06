@@ -18,22 +18,6 @@ import ZODB.interfaces
 import transaction
 import sys
 
-def argument(func):
-    def function(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    name = 'pytest_funcarg__' + func.func_name
-    function.func_name = name
-
-    if func.__module__ is None:
-        __builtins__[name] = function
-        return function
-    else:
-        __import__(func.__module__)
-        mod = sys.modules[func.__module__]
-        setattr(mod, name, function)
-        return getattr(mod, name)
-
 
 def create_app(request, site_root):
     db = setup_db()
