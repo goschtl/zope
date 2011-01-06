@@ -21,5 +21,6 @@ def test_create_app(conf_request):
     # We have to configure the environment to get an app.
     config = setup_config(zope.pytest.tests, 'ftesting.zcml')
     app = create_app(conf_request, None)
+    teardown_config(config)
     assert isinstance(app, WSGIPublisherApplication)
 
