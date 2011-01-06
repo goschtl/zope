@@ -8,6 +8,12 @@ tests_require = [
     'zope.app.appsetup',
     ]
 
+docs_require = [
+    'Sphinx',
+    'docutils',
+    'roman',
+    ]
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
@@ -60,6 +66,7 @@ setup(name='zope.pytest',
       ],
       extras_require={
         'tests': tests_require,
+        'docs': docs_require,
         },
       entry_points={
       }
