@@ -12,6 +12,7 @@ docs_require = [
     'Sphinx',
     'docutils',
     'roman',
+    'pytest',
     ]
 
 def read(*rnames):
