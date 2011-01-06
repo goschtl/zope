@@ -1,4 +1,20 @@
 TODO
 ====
 
-* Integrate sphinx docs.
+* Tell how to build/use the docs stuff (including doc tests).
+
+* Integrate sphinx docs:
+
+  - Add docstrings for API in sources.
+
+  - Give samples in docs (should be runnable with doctest builder).
+
+  - Make docs better looking.
+
+  - Include README and CHANGES in docs.
+
+  - Set zope.pytest version automatically in conf.py (using
+    pkg_resources).
+
+* Set svn:ignore.
+
