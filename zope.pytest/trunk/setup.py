@@ -3,6 +3,11 @@ import sys,os
 
 version = '0.1dev'
 
+tests_require = [
+    'pytest',
+    'zope.app.appsetup',
+    ]
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
@@ -53,6 +58,9 @@ setup(name='zope.pytest',
           'simplejson'
           # -*- Extra requirements: -*-
       ],
+      extras_require={
+        'tests': tests_require,
+        },
       entry_points={
       }
       )
