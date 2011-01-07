@@ -40,20 +40,59 @@ class ViewSupport(object):
 
     @property
     def response(self):
+        """The HTTP Response object that is associated with the request.
+
+        This is also available as self.request.response, but the
+        response attribute is provided as a convenience.
+        """
         return self.request.response
 
     @property
     def body(self):
+        """The text of the request body.
+        """
         return self.request.bodyStream.getCacheStream().read()
 
     def redirect(self, url, status=None, trusted=False):
+        """Redirect to `url`.
+
+        The headers of the :attr:`response` are modified so that the
+        calling browser gets a redirect status code. Please note, that
+        this method returns before actually sending the response to
+        the browser.
+
+        `url` is a string that can contain anything that makes sense
+        to a browser. Also relative URIs are allowed.
+
+        `status` is a number representing the HTTP status code sent
+        back. If not given or ``None``, ``302`` or ``303`` will be
+        sent, depending on the HTTP protocol version in use (HTTP/1.0
+        or HTTP/1.1).
+
+        `trusted` is a boolean telling whether we're allowed to
+        redirect to 'external' hosts. Normally redirects to other
+        hosts than the one the request was sent to are forbidden and
+        will raise a :exc:`ValueError`.
+        """
         return self.request.response.redirect(
             url, status=status, trusted=trusted)
 
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name.
 
-        The data argument is used to form a CGI query string.
+        If no arguments given, construct URL to view itself.
+
+        If only `obj` argument is given, construct URL to `obj`.
+
+        If only name is given as the first argument, construct URL to
+        `context/name`.
+
+        If both object and name arguments are supplied, construct URL
+        to `obj/name`.
+
+        Optionally pass a `data` keyword argument which gets added to
+        the URL as a CGI query string.
+
         """
         if isinstance(obj, basestring):
             if name is not None:
@@ -104,6 +143,12 @@ class View(ViewSupport, BrowserPage):
         return self.template.render(self)
 
     def default_namespace(self):
+        """Returns a dictionary of namespaces that the template implementation
+        expects to always be available.
+
+        This method is **not** intended to be overridden by
+        application developers.
+        """
         namespace = {}
         namespace['context'] = self.context
         namespace['request'] = self.request
@@ -112,6 +157,12 @@ class View(ViewSupport, BrowserPage):
         return namespace
 
     def namespace(self):
+        """Returns a dictionary that is injected in the template namespace in
+        addition to the default namespace.
+
+        This method **is** intended to be overridden by the application
+        developer.
+        """
         return {}
 
     def __getitem__(self, key):
@@ -129,9 +180,27 @@ class View(ViewSupport, BrowserPage):
         return value
 
     def update(self, **kwargs):
+        """This method is meant to be implemented by subclasses. It
+        will be called before the view's associated template is
+        rendered and can be used to pre-compute values for the
+        template.
+
+        update() accepts arbitrary keyword parameters which will be
+        filled in from the request (in that case they **must** be
+        present in the request).
+        """
         pass
 
     def render(self, **kwargs):
+        """A view can either be rendered by an associated template, or
+        it can implement this method to render itself from Python.
+        This is useful if the view's output isn't XML/HTML but
+        something computed in Python (plain text, PDF, etc.)
+
+        render() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request).
+        """
         pass
 
     render.base_method = True
