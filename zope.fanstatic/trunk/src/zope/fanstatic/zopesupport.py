@@ -66,7 +66,7 @@ class ZopeFanstaticResource(object):
     def __getitem__(self, name):
         resource = self.get(name, None)
         if resource is None:
-            raise KeyErro(name)
+            raise KeyError(name)
         return resource
 
     def __str__(self):
