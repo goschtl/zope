@@ -282,22 +282,24 @@ zc.dozodb = function () {
 
         loadItem : function (args) {
             var item = args.item;
-            console.log('loading '+item._p_oid);
             if (item._p_changed != null) {
                 if (args.onItem != null)
                     dojo.hitch(args.scope, args.onItem)(item);
                 return;
             }
             self = this;
+            console.log('loading '+item._p_oid);
             dojo.xhrGet(
                 {
                     // Server gets query arg _p_oid
                     // Server returns: {item: item}
                     url: this.url,
+                    //sync: true,
                     handleAs: 'json',
                     preventCache: true,
                     content: {_p_oid: item._p_oid},
                     load: function (r) {
+                        console.log('loaded '+item._p_oid);
                         dojo.safeMixin(item, r.item);
                         item._p_changed = false;
                         self._convert_incoming_items_refs_to_items(item);
@@ -401,34 +403,36 @@ zc.dozodb = function () {
         setValue : function (item, attribute, value) {
             if (item._p_changed == null)
                 throw("Attempt to modify ghost.");
-            var old = undefined;
-            if (attribute in item)
-                old = attribute[item];
-            if (old == null || old.length == null)
-                item[attribute] = value;
-            else
-                item[attribute] = [value];
-            this._changes.changed[item._p_id] = item;
-            this.onSet(item, attribute, old, value);
-        },
 
-        setValues : function (item, attribute, value) {
-            if (item._p_changed == null)
-                throw("Attempt to modify ghost.");
-            var old = undefined;
-            if (attribute in item)
-                old = item[attribute];
-            if (value == [])
-                delete item[attribute];
-            else
-                item[attribute] = value;
+            var old = item[attribute];
+            if (old === value)
+                return true;
+
+            item[attribute] = value;
+            item._p_changed = true;
             this._changes.changed[item._p_id] = item;
             this.onSet(item, attribute, old, value);
+            return true;        // I guess :/
+        },
+        setValues : function (item, attribute, value) {
+            if (dojo.isArray(value) && value.length == 0)
+                return this.unsetAttribute(item, attribute);
+            return this.setValue(item, attribute, value);
         },
         onSet: function (item, attribute, old, new_) {}, // hook
 
         unsetAttribute : function (item, attribute) {
-            delete item[attribute];
+            if (item._p_changed == null)
+                throw("Attempt to modify ghost.");
+
+            if (attribute in item) {
+                var old = item[attribute];
+                delete item[attribute];
+                item._p_changed = true;
+                this._changes.changed[item._p_id] = item;
+                self.onset(item, attribute, old, undefined);
+            }
+            return true;
         }
     };
 

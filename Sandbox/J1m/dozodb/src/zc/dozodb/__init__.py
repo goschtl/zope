@@ -107,7 +107,7 @@ def save(app, json_string):
         raise ValueError("Unreachable new objects")
 
     if inserted:
-        app.insert(inserted)
+        app.insert([app.connection.get(new_ids[i]) for i in inserted])
 
     # XXX it's annoying that we have to commit here, but we need the
     # committed serials. :/  Maybe we can think of something better
@@ -132,11 +132,15 @@ def save(app, json_string):
 
 
 def webob(app, request):
-    if request.method == 'GET':
-        if '_p_oid' in request.str_GET:
-            return load(app.connection, request.str_GET.get('_p_oid'))
-        return fetched(app.query())
+    import time; time.sleep(1)
+    try:
+        if request.method == 'GET':
+            if '_p_oid' in request.str_GET:
+                return load(app.connection, request.str_GET.get('_p_oid'))
+            return fetched(app.query())
 
-    assert(request.method == 'POST')
-    assert request.content_type.startswith('application/json')
-    return save(app, request.body)
+        assert(request.method == 'POST')
+        assert request.content_type.startswith('application/json')
+        return save(app, request.body)
+    except Exception, e:
+        return json.dumps(dict(error=unicode(e)))
