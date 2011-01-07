@@ -83,6 +83,8 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
         name = name or factory.module_info.dotted_name
         return _register(config, resource_path, name, layer)
 
+import fanstatic
+from zope.fanstatic.zcml import create_factory
 
 class StaticResourcesGrokker(martian.GlobalGrokker):
 
@@ -97,5 +99,19 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
             return False
 
         name = module_info.dotted_name
-        layer = IDefaultBrowserLayer
-        return _register(config, resource_path, name, layer)
+
+        # Create a fanstatic library with the name and path.
+        library = fanstatic.Library(name, resource_path)
+
+        # Register the newly created library with fanstatic.
+        fanstatic.get_library_registry().add(library)
+
+        resource_factory = create_factory(library)
+        adapts = (IDefaultBrowserLayer,)
+        provides = interface.Interface
+        config.action(
+            discriminator=('adapter', adapts, provides, name),
+            callable=component.provideAdapter,
+            args=(resource_factory, adapts, provides, name),
+            )
+        return True
