@@ -1,7 +1,13 @@
-import sys
 
 from BTrees.IOBTree import IOBTree
 from OFS.SimpleItem import SimpleItem
+
+try:
+    from BTrees import family32
+    MAXINT = family32.maxint
+except ImportError:
+    import sys
+    MAXINT = sys.maxint
 
 from z3c.taskqueue.baseservice import BaseTaskService
 from five.taskqueue import processor
@@ -9,7 +15,7 @@ from five.taskqueue import processor
 
 class TaskService(BaseTaskService, SimpleItem):
     containerClass = IOBTree
-    maxint = sys.maxint
+    maxint = MAXINT
 
     processorFactory = processor.SimpleProcessor
 
