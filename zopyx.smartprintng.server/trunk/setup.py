@@ -34,7 +34,7 @@ setup(name='zopyx.smartprintng.server',
       install_requires=[
           'setuptools',
           'pyramid',
-          'pyramid_xmlrpc',
+          'pyramid_xmlrpc==0.1',
           'uuid',
           'zopyx.convert2',
           'zope.sendmail',
