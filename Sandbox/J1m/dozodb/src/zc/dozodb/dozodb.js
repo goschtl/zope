@@ -1,6 +1,6 @@
 dojo.provide('zc.dozodb');
 
-if (zc == null)
+if (zc === undefined)
     zc = {};
 
 zc.dozodb = function () {
@@ -44,7 +44,7 @@ zc.dozodb = function () {
         _convert_incoming_items_refs_to_items: function (item) {
             for (var name in item) {
                 var v = item[name];
-                if (typeof(v) != "object")
+                if (typeof(v) !== "object")
                     continue;
                 var oid;
                 try {
@@ -60,7 +60,7 @@ zc.dozodb = function () {
         },
 
         _convert_outgoing_items_to_item_refs: function (item, isobject) {
-            var maybe_array = (! isobject) && (item.length != null);
+            var maybe_array = (! isobject) && (item.length !== undefined);
             var result;
             if (maybe_array) {
                 result = [];
@@ -73,11 +73,11 @@ zc.dozodb = function () {
                 if (! item.hasOwnProperty(name))
                     continue;
 
-                if (maybe_array && name == 'length')
+                if (maybe_array && name === 'length')
                     return _convert_outgoing_items_to_item_refs(item, true);
 
                 var v = item[name];
-                if (typeof(v) != "object") {
+                if (typeof(v) !== "object") {
                     result[name] = v;
                     continue;
                 }
@@ -122,10 +122,10 @@ zc.dozodb = function () {
 
         containsValue : function (item, attribute, value) {
             var v = item[attribute];
-            if (v == null)
+            if (v === undefined)
                 return false;
-            if (v.length == null)
-                return v == value;
+            if (v.length === undefined)
+                return v === value;
             for (var i=v.length; --i >= 0; )
                 if (v[i] === value)
                     return true;
@@ -164,7 +164,7 @@ zc.dozodb = function () {
                             });
                         if (args.onBegin) {
                             dojo.hitch(args.scope, args.onBegin)(
-                                items.length, request);
+                                r.size || -1, request);
                             if (request.aborted)
                                 return;
                         }
@@ -175,13 +175,15 @@ zc.dozodb = function () {
                                 if (request.aborted)
                                     return;
                             }
-                            if (args.onComplete)
+                            if (args.onComplete) {
                                 dojo.hitch(args.scope, args.onComplete)(
                                     null, request);
+                            }
                         }
-                        else if (args.onComplete)
-                        dojo.hitch(args.scope, args.onComplete)(
+                        else if (args.onComplete) {
+                            dojo.hitch(args.scope, args.onComplete)(
                                 items, request);
+                        }
                     },
                     error: function (e) {
                         if (request.aborted)
@@ -227,7 +229,7 @@ zc.dozodb = function () {
         getAttributes : function (item) {
             var result = [];
             for (var name in item)
-                if ((!(name in empty)) && name.slice(0, 1) != '_')
+                if ((!(name in empty)) && name.slice(0, 1) !== '_')
                     result.push(name);
         },
 
@@ -261,17 +263,17 @@ zc.dozodb = function () {
 
         getValues : function (item, attribute) {
             var v = this.getValue(item, attribute, []);
-            if (v.length == null)
+            if (v.length === undefined)
                 v = [v];
             return v;
         },
 
         hasAttribute : function (item, attribute) {
-            return item[attribute] != null;
+            return item[attribute] !== undefined;
         },
 
         isDirty : function (item) {
-            return item._p_changed == true;
+            return item._p_changed === true;
         },
 
         isItem : function (v) {
@@ -279,13 +281,13 @@ zc.dozodb = function () {
         },
 
         isItemLoaded : function (item) {
-            return item._p_changed != null;
+            return item._p_changed !== undefined;
         },
 
         loadItem : function (args) {
             var item = args.item;
-            if (item._p_changed != null) {
-                if (args.onItem != null)
+            if (item._p_changed !== undefined) {
+                if (args.onItem !== undefined)
                     dojo.hitch(args.scope, args.onItem)(item);
                 return;
             }
@@ -319,10 +321,10 @@ zc.dozodb = function () {
                 {_p_id: 'new'+this._new_next++, _p_changed: 1}, args);
             if (parentInfo) {
                 var parent = parentInfo.parent;
-                if (item._p_changed == null)
+                if (item._p_changed === undefined)
                     throw("Attempt to modify ghost parent.");
                 var v = parent[parentInfo.attribute];
-                if (v == null || v.length == null)
+                if (v === undefined || v.length === undefined)
                     parent[parentInfo.attribute] = item;
                 else
                     v.push(item);
@@ -403,7 +405,7 @@ zc.dozodb = function () {
         },
 
         setValue : function (item, attribute, value) {
-            if (item._p_changed == null)
+            if (item._p_changed === undefined)
                 throw("Attempt to modify ghost.");
 
             var old = item[attribute];
@@ -417,14 +419,14 @@ zc.dozodb = function () {
             return true;        // I guess :/
         },
         setValues : function (item, attribute, value) {
-            if (dojo.isArray(value) && value.length == 0)
+            if (dojo.isArray(value) && value.length === 0)
                 return this.unsetAttribute(item, attribute);
             return this.setValue(item, attribute, value);
         },
         onSet: function (item, attribute, old, new_) {}, // hook
 
         unsetAttribute : function (item, attribute) {
-            if (item._p_changed == null)
+            if (item._p_changed === undefined)
                 throw("Attempt to modify ghost.");
 
             if (attribute in item) {
