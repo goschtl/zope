@@ -1,0 +1,21 @@
+dozodb -- ZODB-based dojo storage implementation
+================================================
+
+This files tests the javascript portion of the dozodb implementation.
+
+To use, you need to require:
+
+    >>> dojo.require('zc.dozodb');
+    [object Object]
+
+Create a store:
+
+    >>> store = zc.dozodb.Store({url: '/store'});
+
+where the url option names a dozodb web resource.  dozodb web
+resources support loading and saving data via GET and POST ajax
+requests. Fopr these tests, we've stubbed out dojo's xhr interface to
+provide implementations that save xhr callbacks and print other data
+passed to xhr.
+
+

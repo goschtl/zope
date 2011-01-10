@@ -62,10 +62,12 @@ zc.dozodb = function () {
         _convert_outgoing_items_to_item_refs: function (item, isobject) {
             var maybe_array = (! isobject) && (item.length != null);
             var result;
-            if (maybe_array)
+            if (maybe_array) {
                 result = [];
-            else
+            }
+            else {
                 result = {};
+            }
 
             for (var name in item) {
                 if (! item.hasOwnProperty(name))
