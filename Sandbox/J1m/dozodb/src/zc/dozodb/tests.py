@@ -18,6 +18,8 @@ import spidermonkey
 import sys
 import unittest
 
+baseUrl = None # Set by test runner.
+
 run_time = spidermonkey.Runtime()
 
 class DocTestParser(doctest.DocTestParser):
@@ -34,15 +36,14 @@ def setUp(test):
 
     cx = run_time.new_context()
     cx.add_global('line2pc', 0)
-    base = '/home/jim/p/dozodb/dev/parts/dojo/release/dojo/dojo/'
-    cx.add_global('djConfig',dict(baseUrl=base))
+    cx.add_global('djConfig', dict(baseUrl=baseUrl))
 
     def load(name):
         cx.execute(open(name).read(), name)
 
     cx.add_global('load', load)
 
-    load(base+'dojo.js.uncompressed.js')
+    load(baseUrl+'dojo.js.uncompressed.js')
     cx.execute('console').log = lambda s: sys.stdout.write('%s\n' % (s, ))
     cx.execute('console'
                ).error = lambda s: sys.stdout.write('Error: %s\n' % (s, ))
