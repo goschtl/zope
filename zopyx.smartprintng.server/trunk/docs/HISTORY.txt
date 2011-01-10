@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.7.1 (2011/01/10)
+------------------
+* pinned pyramid_xmlrpc 0.1
+
 0.7.0 (2010/12/11)
 ------------------
 * converted to Pyramid

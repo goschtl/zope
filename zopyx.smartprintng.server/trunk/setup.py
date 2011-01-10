@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 if sys.version_info < (2,6):
     raise RuntimeError('Please use Python 2.6.X')
 
-version = '0.7.0'
+version = '0.7.1'
 
 setup(name='zopyx.smartprintng.server',
       version=version,
@@ -22,7 +22,7 @@ setup(name='zopyx.smartprintng.server',
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='SmartPrintNG Conversion repoze.bfg',
+      keywords='SmartPrintNG Conversion Pyramid',
       author='Andreas Jung',
       author_email='info@zopyx.com',
       url='http://www.zopyx.com/projects/smartprintng',
