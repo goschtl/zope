@@ -5,12 +5,16 @@ This files tests the javascript portion of the dozodb implementation.
 
 To use, you need to require:
 
-    >>> dojo.require('zc.dozodb');
+    js> dojo.require('zc.dozodb');
     [object Object]
 
 Create a store:
 
-    >>> var store = zc.dozodb.Store({url: '/store'});
+    js> var store = zc.dozodb.Store({url: '/store'});
+
+    py> import sys
+    py> sys.platform
+    'linux2'
 
 where the url option names a dozodb web resource.  dozodb web
 resources support loading and saving data via GET and POST ajax
@@ -26,7 +30,7 @@ grid will do to get initial data.  The fetch call can pass a query and
 some callbacks.  It's up to the server to interpret the query to
 decide which data to return.
 
-    >>> var request = store.fetch({
+    js> var request = store.fetch({
     ...     query: {a: 1, b: 2},
     ...     onBegin: function (n, r) {
     ...         assert(r === request);
@@ -61,7 +65,7 @@ all of the items.
 
 We'll now emulate the server by calling the xhr load callback.
 
-    >>> last_xhr.load({
+    js> last_xhr.load({
     ...     items: [{_p_oid: '1', _p_serial: '1',
     ...              name: 'root', children: []}],
     ...     size: 1
@@ -82,7 +86,7 @@ doesn't really care what they are.
 
 Now we'll do another fetch, but this time, pass an onItem handler:
 
-    >>> var request = store.fetch({
+    js> var request = store.fetch({
     ...     query: {a: 1, b: 2},
     ...     onBegin: function (n, r) {
     ...         assert(r === request);
@@ -105,7 +109,7 @@ Now we'll do another fetch, but this time, pass an onItem handler:
         preventCache: true,
         url: "/store" }
 
-    >>> last_xhr.load({
+    js> last_xhr.load({
     ...     items: [
     ...         {_p_oid: '2', _p_serial: '1', name: 'foo', children: []},
     ...         {_p_oid: '3', _p_serial: '1', name: 'bar',

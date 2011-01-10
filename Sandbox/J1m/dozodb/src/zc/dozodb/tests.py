@@ -14,22 +14,55 @@
 
 import doctest
 import os
+import re
 import spidermonkey
 import sys
 import unittest
+import manuel.capture
+import manuel.doctest
+import manuel.testing
 
 baseUrl = None # Set by test runner.
 
 run_time = spidermonkey.Runtime()
 
-class DocTestParser(doctest.DocTestParser):
-    ""
+class DocTestPyParser(doctest.DocTestParser):
+
+    _EXAMPLE_RE = re.compile(r'''
+        # Source consists of a PS1 line followed by zero or more PS2 lines.
+        (?P<source>
+            (?:^(?P<indent> [ ]*) py>    .*)    # PS1 line
+            (?:\n           [ ]*  \.\.\. .*)*)  # PS2 lines
+        \n?
+        # Want consists of any non-blank lines that do not start with PS1.
+        (?P<want> (?:(?![ ]*$)    # Not a blank line
+                     (?![ ]*py>)  # Not a line starting with PS1
+                     .*$\n?       # But any other line
+                  )*)
+        ''', re.MULTILINE | re.VERBOSE)
+
+
+class DocTestJSParser(doctest.DocTestParser):
+    "Doctest parser that creates calls into JavaScript."
+
+    _EXAMPLE_RE = re.compile(r'''
+        # Source consists of a PS1 line followed by zero or more PS2 lines.
+        (?P<source>
+            (?:^(?P<indent> [ ]*) js>    .*)    # PS1 line
+            (?:\n           [ ]*  \.\.\. .*)*)  # PS2 lines
+        \n?
+        # Want consists of any non-blank lines that do not start with PS1.
+        (?P<want> (?:(?![ ]*$)    # Not a blank line
+                     (?![ ]*js>)  # Not a line starting with PS1
+                     .*$\n?       # But any other line
+                  )*)
+        ''', re.MULTILINE | re.VERBOSE)
 
     def parse(self, string, name='<string>'):
         r =doctest.DocTestParser.parse(self, string, name)
         for s in r:
             if isinstance(s, doctest.Example):
-                s.source = "JS(%r)" % s.source
+                s.source = "JS(%r)\n" % s.source
         return r
 
 def setUp(test):
@@ -57,9 +90,15 @@ def setUp(test):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite(
+        manuel.testing.TestSuite(
+            manuel.doctest.Manuel(parser=DocTestJSParser()) +
+            manuel.doctest.Manuel(parser=DocTestPyParser()) +
+            manuel.capture.Manuel(),
             'dozodb.js.test',
-            parser=DocTestParser(),
-            setUp=setUp,
-            ),
+            setUp=setUp),
+        # doctest.DocFileSuite(
+        #     'dozodb.js.test',
+        #     parser=DocTestParser(),
+        #     setUp=setUp,
+        #     ),
         ))
