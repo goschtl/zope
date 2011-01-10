@@ -1,68 +1,112 @@
 /* customization starts here */
 
-div.topnavbar {
-    text-align: center
+body {
+font-size: 12pt;
+background-color: #1C363E;
+color: #555;
 }
 
-div.topnavbar ul {
-    margin: 0;
-    list-style-type: none;
+#wrapper {
+width: 958px;
+margin-left: auto;
+margin-right: auto;
+padding: 1em;
+padding-top: 0.5em;
+background: white;
+}
+h1 {
+font-size: 150%;
+color: #2C89A0;
+text-shadow: 2px 2px 2px #BBB;
+}
+h1 img {
+margin: 0;
+border: none;
+margin-right: 1em;
+vertical-align: top;
+margin-top: 2px;
 }
 
-div.topnavbar ul li {
-    display: inline;
-    padding-left: 10px;
+div#title {
+color: #555;
+width: 100%;
+padding: 0;
+}
+#logo {
+float: right;
+margin: 1.5em;
+margin-top: 0;
+}
+.navbar {
+
+background: black;
+margin-left: solid -50px black;
+}
+.navbar ul {
+margin: 0;
+padding: 0;
+border: 0;
+}
+.navbar li {
+display: inline-block;
+padding: 7px;
+margin: 0;
+margin:1px 0px;
+}
+.navbar li a {
+color: white;
+font-weight:bold;
+}
+div#panel {
+background: #226A79;
+background-image: url('../_static/img/background.jpg');
+height: 369px;
+width: 958px;
 }
 
-div.logo {
-    clear: right;
+.gfg-title {
+  font-weight : bold;
+  background-color: #2C89A0;
+  overflow : hidden;
+  white-space : nowrap;
+  text-align: center;
 }
-
-div.titlearea {
-    float: right;
-    clear: left;
+.gfg-title a {
+color: #FFF;
+margin-left: 3%;
 }
-
-ul.mainlinks {
-    margin: 0;
-    list-style-type: none;
+.newsfeeds {
+background: #226A79;
+width: 300px;
+float: right;
+margin-top: 10px;
+margin-right: 10px;
 }
-
-ul.mainlinks li {
-    display: inline;
+.gfg-list a {
+color: white;
 }
-
-ul.mainlinks li a {
-    float: left;
-    padding: 20px;
-    text-decoration: none;
+#feed-control {
+color: white;
+-moz-box-shadow: 3px 3px 10px black;
+-webkit-box-shadow: 3px 3px 10px black;
 }
-
-ul.mainlinks li a span {
-    display: block;
-    text-align: center;
+.gfg-listentry-odd {
+color: white;
+background-color: #226A79;
 }
-
-ul.mainlinks li a span.linktitle {
-    font-size: 22px;
-    font-weight: bold;
-    padding-bottom: 15px;
+.gfg-listentry-even {
+color: white;
+background-color: #2C89A0;
 }
-
-ul.mainlinks li a span.linkdesc {
-    font-size: 10px;
-    display: block;
-    padding-top: 10px;
+.gfg-entry {
+padding: 0.5em;
 }
-
-.footer {
-    color: black;
+div.footer {
+color: #555;
 }
-
 div.footer a {
-    color: black;
+color: #555;
 }
-
-div.gfg-root {
-    height: 370px
+#zope3 {
+margin-top: 3px;
 }
