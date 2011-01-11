@@ -4,6 +4,8 @@ Changelog
 1.1.3 (unreleased)
 ------------------
 
+- Require five.formlib for Zope 2.13 compatibility.
+  [elro]
 
 1.1.2 (2010-08-04)
 ------------------
