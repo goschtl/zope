@@ -21,7 +21,7 @@ Discussion
   point. This is good.
 
 * Several package trunks relied on un-released versions of other packages.
-  Hannosch released several package to resolve this situation.
+  Hannosch released several packages to resolve this situation.
 
 * z3c.recipe.compattest needs a release to fix its inability to run in a
   virtualenv. This will be taken care of by Jan-Jaap Driessen.

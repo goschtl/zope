@@ -16,7 +16,7 @@ Agenda
 Discussion
 ----------
 
-* ccomb plan the release BlueBream 1.0 "final" soon.
+* ccomb plans the release BlueBream 1.0 "final" soon.
 
 * z3c.recipe.compattest has been released and runs again in a virtualenv.
 
