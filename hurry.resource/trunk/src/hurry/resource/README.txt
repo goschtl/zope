@@ -1,6 +1,9 @@
 hurry.resource
 **************
 
+.. Important::
+   hurry.resource has been superseded by the
+   `Fanstatic <http://fanstatic.org>`_ project!
 
 Introduction
 ============
@@ -111,8 +114,8 @@ this object::
 Let's now see what resources are needed by this inclusion::
 
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 As you can see, ``css`` resources are sorted before ``js`` resources.
@@ -131,7 +134,7 @@ When we need a group, we'll get all inclusions referenced in it::
   >>> needed = NeededInclusions()
   >>> needed.need(group)
   >>> group.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'b.css' in library 'foo'>]
 
 A group can also be depended on; it won't show up in the list of
@@ -139,7 +142,7 @@ inclusions directly::
 
   >>> more_stuff = ResourceInclusion(foo, 'more_stuff.js', depends=[group])
   >>> more_stuff.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'b.css' in library 'foo'>,
    <ResourceInclusion 'more_stuff.js' in library 'foo'>]
 
@@ -156,7 +159,7 @@ Let's introduce a more convenient spelling of needs now::
 
 We can require a resource without reference to the needed inclusions
 object directly as there is typically only a single set of needed
-inclusions that is generated during the rendering of a page.  
+inclusions that is generated during the rendering of a page.
 
 So let's try out this spelling to see it fail::
 
@@ -176,7 +179,7 @@ to be present throughout the request/response cycle that generates the
 web page that has the inclusions on them. One place where
 we can maintain the needed inclusions is the request object
 itself, if we indeed have global access to it. Alternatively you could
-store the currently needed inclusions in a thread local variable. 
+store the currently needed inclusions in a thread local variable.
 
 Let's introduce a simple request object (your mileage may vary in your
 own web framework)::
@@ -205,7 +208,7 @@ We now need to register this plugin with the framework::
 
 There is an API to retrieve the current needed inclusions, so let's
 check which resources our request needs currently::
-  
+
   >>> from hurry.resource import get_current_needed_inclusions
   >>> get_current_needed_inclusions().inclusions()
   []
@@ -217,8 +220,8 @@ Nothing yet. We now make ``y1`` needed using our simplified spelling::
 The resource inclusion will now indeed be needed::
 
   >>> get_current_needed_inclusions().inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Let's go back to the original spelling of ``needed.need(y)``
@@ -239,7 +242,7 @@ enable them. Later sections below go into more details.
   the mode system. You can use ``hurry.resource.mode('minified')``
   somewhere in the request handling of your application. This will
   make sure that resources included on your page are supplied as
-  minified versions, if these are available. 
+  minified versions, if these are available.
 
 * rolling up of resources.  Resource libraries can specify rollup
   resources that combine multiple resources into one. This reduces the
@@ -279,8 +282,8 @@ We need ``y1`` again::
 
   >>> needed.need(y1)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Needing the same inclusion twice won't make any difference for the
@@ -289,8 +292,8 @@ in the needed resources::
 
   >>> needed.need(y1)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Needing ``x1`` or ``x2`` won't make any difference either, as ``y1``
@@ -298,13 +301,13 @@ already required ``x1`` and ``x2``::
 
   >>> needed.need(x1)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
   >>> needed.need(x2)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Let's do it in reverse, and require the ``x1`` and ``x2`` resources
@@ -316,7 +319,7 @@ before we need those in ``y1``. Again this makes no difference::
   >>> needed.need(y1)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'b.css' in library 'foo'>,
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Let's try it with more complicated dependency structures now::
@@ -371,10 +374,10 @@ though the sorting order is different::
   >>> needed.need(a3)
   >>> needed.need(a5)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'a1.js' in library 'foo'>, 
-   <ResourceInclusion 'a2.js' in library 'foo'>, 
-   <ResourceInclusion 'a3.js' in library 'foo'>, 
-   <ResourceInclusion 'a4.js' in library 'foo'>, 
+  [<ResourceInclusion 'a1.js' in library 'foo'>,
+   <ResourceInclusion 'a2.js' in library 'foo'>,
+   <ResourceInclusion 'a3.js' in library 'foo'>,
+   <ResourceInclusion 'a4.js' in library 'foo'>,
    <ResourceInclusion 'a5.js' in library 'foo'>]
 
 Modes
@@ -406,7 +409,7 @@ We can however also get the resource for mode ``debug`` and get
 Modes can also be specified fully with a resource inclusion, which allows
 you to specify a different ``library`` argumnent::
 
-  >>> k2 = ResourceInclusion(foo, 'k2.js', 
+  >>> k2 = ResourceInclusion(foo, 'k2.js',
   ...                        debug=ResourceInclusion(foo, 'k2-debug.js'))
   >>> needed = NeededInclusions()
   >>> needed.need(k2)
@@ -550,7 +553,7 @@ Let's look at this with a larger consolidation of 3 resources::
   >>> c2 = ResourceInclusion(foo, 'c2.css')
   >>> c3 = ResourceInclusion(foo, 'c3.css')
   >>> giantc = ResourceInclusion(foo, 'giantc.css', supersedes=[c1, c2, c3])
- 
+
 It will not roll up one resource::
 
   >>> needed = NeededInclusions()
@@ -568,7 +571,7 @@ Neither will it roll up two resources::
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'c1.css' in library 'foo'>,
    <ResourceInclusion 'c2.css' in library 'foo'>]
-  
+
 It will however roll up three resources::
 
   >>> needed = NeededInclusions()
@@ -622,7 +625,7 @@ If there are two potential eager superseders, the biggest one will
 be taken::
 
   >>> d4 = ResourceInclusion(foo, 'd4.js')
-  >>> giantd_bigger = ResourceInclusion(foo, 'giantd-bigger.js', 
+  >>> giantd_bigger = ResourceInclusion(foo, 'giantd-bigger.js',
   ...   supersedes=[d1, d2, d3, d4], eager_superseder=True)
   >>> needed = NeededInclusions()
   >>> needed.rollup()
@@ -649,7 +652,7 @@ A resource can be part of multiple rollups. In this case the rollup
 that rolls up the most resources is used. So, if there are two
 potential non-eager superseders, the one that rolls up the most
 resources will be used::
- 
+
   >>> e1 = ResourceInclusion(foo, 'e1.js')
   >>> e2 = ResourceInclusion(foo, 'e2.js')
   >>> e3 = ResourceInclusion(foo, 'e3.js')
@@ -713,7 +716,7 @@ does not? Let's look at that scenario::
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
   [<ResourceInclusion 'gianth.js' in library 'foo'>]
 
-Since there is no superseder for the debug mode, we will get the two 
+Since there is no superseder for the debug mode, we will get the two
 resources, not rolled up::
 
   >>> needed.mode('debug')
@@ -729,8 +732,8 @@ Let's define some needed resource inclusions::
   >>> needed = NeededInclusions()
   >>> needed.need(y1)
   >>> needed.inclusions() #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'b.css' in library 'foo'>, 
-   <ResourceInclusion 'a.js' in library 'foo'>, 
+  [<ResourceInclusion 'b.css' in library 'foo'>,
+   <ResourceInclusion 'a.js' in library 'foo'>,
    <ResourceInclusion 'c.js' in library 'foo'>]
 
 Now let's try to render these inclusions::
@@ -768,7 +771,7 @@ for instance)::
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
 
 Let's set this a currently needed inclusions::
-  
+
   >>> request.needed = needed
 
 There is a function available as well for rendering the resources for
@@ -784,7 +787,7 @@ Inserting resources in HTML
 ===========================
 
 When you have the HTML it can be convenient to have a way to insert
-resources directly into some HTML. 
+resources directly into some HTML.
 
 The insertion system assumes a HTML text that has a ``<head>`` tag in it::
 
@@ -819,7 +822,7 @@ Top and bottom fragments
 It's also possible to render the resource inclusions into two
 fragments, some to be included just after the ``<head>`` tag, but some
 to be included at the very bottom of the HTML page, just before the
-``</body>`` tag. This is useful as it can `speed up page load times`_. 
+``</body>`` tag. This is useful as it can `speed up page load times`_.
 
 .. _`speed up page load times`: http://developer.yahoo.com/performance/rules.html
 
@@ -842,7 +845,7 @@ we render::
 
 Since none of the resources indicated it was safe to render them at
 the bottom, even this explicit call will not result in any changes::
- 
+
   >>> top, bottom = needed.render_topbottom()
   >>> print top
   <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
@@ -864,7 +867,7 @@ rendered in the bottom fragment::
 
 Let's now introduce a javascript resource that says it is safe to be
 included on the bottom::
- 
+
   >>> y2 = ResourceInclusion(foo, 'y2.js', bottom=True)
 
 When we start over without ``bottom`` enabled, we get this resource
@@ -975,7 +978,7 @@ serve as our WSGI application.
 We create a simple WSGI application. In our application we declare that
 we need a resource (``y1``) and put that in the WSGI ``environ`` under the
 key ``hurry.resource.needed``::
- 
+
   >>> def app(environ, start_response):
   ...    start_response('200 OK', [])
   ...    needed = environ['hurry.resource.needed'] = NeededInclusions()
@@ -991,7 +994,7 @@ Now we make a request (using webob for convenience)::
 
   >>> import webob
   >>> req = webob.Request.blank('/')
-  >>> res = req.get_response(wrapped_app) 
+  >>> res = req.get_response(wrapped_app)
 
 We can now see that the resources are added to the HTML by the middleware::
 
@@ -1125,10 +1128,10 @@ Let's make a list of resource inclusions not sorted by dependency::
 
   >>> i = [a5, a3, a1, a2, a4]
   >>> sort_inclusions_topological(i) #doctest: +NORMALIZE_WHITESPACE
-  [<ResourceInclusion 'a1.js' in library 'foo'>, 
-   <ResourceInclusion 'a4.js' in library 'foo'>, 
-   <ResourceInclusion 'a2.js' in library 'foo'>, 
-   <ResourceInclusion 'a3.js' in library 'foo'>, 
+  [<ResourceInclusion 'a1.js' in library 'foo'>,
+   <ResourceInclusion 'a4.js' in library 'foo'>,
+   <ResourceInclusion 'a2.js' in library 'foo'>,
+   <ResourceInclusion 'a3.js' in library 'foo'>,
    <ResourceInclusion 'a5.js' in library 'foo'>]
 
 
