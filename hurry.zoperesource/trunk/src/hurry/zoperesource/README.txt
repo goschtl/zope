@@ -1,6 +1,10 @@
 Zope integration for hurry.resource
 ***********************************
 
+.. Important::
+   hurry.zoperesource has been superseded by
+   `zope.fanstatic <http://pypi.python.org/pypi/zope.fanstatic/>`_
+
 This package provides Zope integration for hurry.resource. This means
 it's taking care of three things:
 
@@ -25,7 +29,7 @@ inclusion of a single resource in its header::
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open('http://localhost/hurry.zoperesource.test_single')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
       <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
@@ -40,7 +44,7 @@ If a resource happens to need another resource, this resource is also
 automatically included::
 
   >>> browser.open('http://localhost/hurry.zoperesource.test_multiple')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
       <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
@@ -56,7 +60,7 @@ Let's force all javascript resources to be forced to be included at
 the bottom now, just before the ``</body>`` tag::
 
   >>> browser.open('http://localhost/hurry.zoperesource.test_bottom')
-  >>> print browser.contents 
+  >>> print browser.contents
   <html>
   <head>
   </head>

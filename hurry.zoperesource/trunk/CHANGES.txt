@@ -1,11 +1,9 @@
 CHANGES
 *******
 
-0.8 (unreleased)
-================
-
-- Nothing changed yet.
-
+.. Important::
+   hurry.zoperesource has been superseded by
+   `zope.fanstatic <http://pypi.python.org/pypi/zope.fanstatic/>`_
 
 0.7 (2010-10-01)
 ================
