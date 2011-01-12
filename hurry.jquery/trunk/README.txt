@@ -1,6 +1,10 @@
 hurry.jquery
 ************
 
+.. Important::
+   hurry.jquery has been superseded by
+   `js.jquery <http://pypi.python.org/pypi/js.jquery>`_
+
 Introduction
 ============
 

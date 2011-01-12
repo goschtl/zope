@@ -1,11 +1,9 @@
 CHANGES
 *******
 
-1.4.3.2 (unreleased)
-====================
-
-- Nothing changed yet.
-
+.. Important::
+   hurry.jquery has been superseded by
+   `js.jquery <http://pypi.python.org/pypi/js.jquery>`_
 
 1.4.3.1 (2010-10-18)
 ====================
