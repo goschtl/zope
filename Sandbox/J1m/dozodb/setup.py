@@ -14,7 +14,9 @@
 name, version = 'zc.dozodb', '0'
 
 install_requires = ['setuptools', 'ZODB3']
-extras_require = dict(test=['zope.testing', 'python-spidermonkey', 'manuel'])
+extras_require = dict(
+    test=['zope.testing', 'python-spidermonkey', 'manuel', 'webtest'],
+    )
 
 entry_points = """
 """

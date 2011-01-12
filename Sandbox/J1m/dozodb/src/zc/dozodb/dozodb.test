@@ -1,0 +1,255 @@
+dozodb -- ZODB-based dojo storage implementation
+================================================
+
+To use the storage from dojo, you need to require:
+
+    js> dojo.require('zc.dozodb');
+    [object Object]
+
+Create a store:
+
+    js> var store = zc.dozodb.Store({url: '/store'});
+
+where the url option names a dozodb web resource.  dozodb web
+resources support loading and saving data via GET and POST ajax
+requests. For these tests, we've stubbed out dojo's xhr interface to
+provide implementations that save xhr callbacks and print other data
+passed to xhr.
+
+In case anyone's reading this, I'll walk through a typical usage
+scenario, before I get to the boring stuff. :)
+
+Usage typically starts with a fetch call.  This is what a dojo tree or
+grid will do to get initial data.  The fetch call can pass a query and
+some callbacks.  It's up to the server to interpret the query to
+decide which data to return.
+
+    js> var request = store.fetch({
+    ...     query: {name: 'x'},
+    ...     onBegin: function (n, r) {
+    ...         assert(r === request);
+    ...         console.log('onBegin '+n);
+    ...     },
+    ...     onComplete: function (items, r) {
+    ...         assert(r === request);
+    ...         pprint('onComplete items', items);
+    ...     }
+    ... });
+    xhr GET: {
+        content: "name=x",
+        error: ,
+        handleAs: "json",
+        load: ,
+        preventCache: true,
+        url: "/store?name=x" }
+
+So, fetch makes an xhr get with the URL we have it, and the parameters
+passed to it.
+
+For the server side, first, we'll set up our database:
+
+    py> import ZODB
+    py> db = ZODB.DB(None)
+
+Dozodb provides a Persistent class, meant to be used as a base
+class, but it can be used directly.
+
+    py> import zc.dozodb
+    py> with db.transaction() as conn:
+    ...     conn.root.x = zc.dozodb.Persistent()
+    ...     conn.root.x.name = 'x'
+
+Now, we need to make the data available to the web.  dozodb has a
+number of apis to facilitate this, one of which works with webob.  To
+use the webob interface, we need to define an application-handler
+factory.  An application-handler factory takes a database connection
+and a request and returns a handler object.  A handler object has the
+fillowing attributes:
+
+connection
+   The database connection passed to the handler
+
+query()
+   Get query results for the request.
+
+   Return the size of the query result and a list of results. Note
+   that the length of the results might be less than the size if batch
+   parameters are included in the request.
+
+factory(data)
+   Return an object with a _dozodb_new method that can be called
+   without arguments to create a new object.  The new object need not
+   be initialized, as it will have _dozodb_set_client_state called on
+   it it set its state.
+
+   Typically the object returned by the handler's factory method will
+   be a subclass of zc.dozodb.Persistent.
+
+   The method is optional, but if not provided, it won't be possible
+   to create new objects.
+
+insert(items)
+   Insert some newly created items without parentage into some
+   application-defined container.  This would typically be used by
+   dojo grids when new rows are inserted.
+
+   The insert method is optional and, if not provided, it won't be
+   possible to create new items without some sort of parentage.
+
+
+Let's start with a minimal handler class that just deals with querying.
+
+    py> class App:
+    ...
+    ...     def __init__(self, connection, request):
+    ...         self.connection = connection
+    ...         self.request = request
+    ...
+    ...     def query(self):
+    ...         name = self.request.str_GET.get('name')
+    ...         return 1, [self.connection.root()[name]]
+
+
+Now that we have our application handler, we can create a webob-based
+WSGI application:
+
+    py> import zc.dozodb.webob
+    py> dozodb_app = zc.dozodb.webob.Application(App, db)
+
+We pass an application handler and a database object. As each request
+comes in, a connection to the database will be created.
+
+Now, to make testing easier, we'll wrap our application object in a
+webtest test application:
+
+    py> import webtest
+    py> app = webtest.TestApp(dozodb_app)
+
+There are a number of javascript handlers we can pass to fetch.  See
+the dojo data api.  The onBegin handler exists mainly to let the
+client the total number of items that match the query.  It can be
+different from the total number of items returned if batching
+parameters were provided.
+
+The onComplete handler behaves differently, depending on whether the
+onItem handler was used.  The onItem handler recieves each item
+individually. If it isn't used, then the onComplete handler is passed
+all of the items.
+
+Now, we'll call our application the way our dojo storage would:
+
+    py> r = app.get(JS('last_xhr.url'))
+    py> r.status, r.content_type
+    ('200 OK', 'application/json')
+
+Now, we'll pass the resulting json data to the storage load handler,
+simulating the xhr response:
+
+    py> xhr_respond(r.body)
+    onBegin 1
+    onComplete items: [
+        { _p_changed: false,
+          _p_id: "0000000000000002",
+          _p_oid: "0000000000000002",
+          _p_serial: "038b8883c529a433",
+          name: "x" } ]
+
+
+The items we get have spplication-level attributes as well as _p_
+attributes used internally bu dozodb.
+
+Now we'll do another fetch, but this time, pass an onItem handler:
+
+    js> var request = store.fetch({
+    ...     query: {name: 'tasks', count: 2},
+    ...     onBegin: function (n, r) {
+    ...         assert(r === request);
+    ...         console.log('onBegin '+n);
+    ...     },
+    ...     onItem: function (item, r) {
+    ...         assert(r === request);
+    ...         pprint('onItem item', item);
+    ...     },
+    ...     onComplete: function (items, r) {
+    ...         assert(r === request);
+    ...         pprint('onComplete items', items);
+    ...     }
+    ... });
+    xhr GET: {
+        content: "name=tasks&count=2",
+        error: ,
+        handleAs: "json",
+        load: ,
+        preventCache: true,
+        url: "/store?name=tasks&count=2" }
+
+Let's add some tasks to our database and update our application
+handler to work with them:
+
+    py> class Task(zc.dozodb.Persistent):
+    ...     def __init__(self, title, subtasks=None):
+    ...         self.title = title
+    ...         self.subtasks = subtasks or []
+
+    py> with db.transaction() as conn:
+    ...     conn.root.tasks = [
+    ...        Task('task 1'),
+    ...        Task('task 2', [
+    ...                        Task('task 2.1'),
+    ...                        Task('task 2.2'),
+    ...                       ]),
+    ...        Task('task 3'),
+    ...        Task('task 4'),
+    ...        ]
+
+    py> def in_class(class_):
+    ...     return lambda f: setattr(class_, f.__name__, f)
+
+    py> @in_class(App)
+    ... def query(self):
+    ...     name = self.request.str_GET.get('name')
+    ...     result = self.connection.root()[name]
+    ...     if not isinstance(result, list):
+    ...         result = [result]
+    ...     size = len(result)
+    ...     if 'count' in self.request.str_GET:
+    ...         result = result[:int(self.request.str_GET.get('count'))]
+    ...
+    ...     return size, result
+
+Now, let's call our application:
+
+    py> xhr_respond(app.get(JS('last_xhr.url')).body)
+    onBegin 4
+    onItem item: {
+        _p_changed: false,
+        _p_id: "0000000000000009",
+        _p_oid: "0000000000000009",
+        _p_serial: "038b8883ce8ca033",
+        subtasks: [],
+        title: "task 1" }
+    onItem item: {
+        _p_changed: false,
+        _p_id: "000000000000000a",
+        _p_oid: "000000000000000a",
+        _p_serial: "038b8883ce8ca033",
+        subtasks: [
+          { _p_id: "000000000000000d",
+            _p_oid: "000000000000000d" },
+          { _p_id: "000000000000000e",
+            _p_oid: "000000000000000e" } ],
+        title: "task 2" }
+    onComplete items: null
+
+There are a couple of interesting things to note about this:
+
+1. onItem is called for each item and onComplete is passed null,
+   rather than a list of items.
+
+2. The second item had children and the children didn't have any
+   state.  The items returned directly from fetch always have
+   state. They are distinguished by having _p_changed that's false,
+   meaning they are non-ghost objects.  They also have _p_serial,
+   which is used when saving to detect conflicts.  But the sub-items
+   if the items returned don't have state.
+

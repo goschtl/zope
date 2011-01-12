@@ -1,3 +1,16 @@
+##############################################################################
+#
+# Copyright (c) 2011 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 try:
     import simplejson as json
 except ImportError:
@@ -44,8 +57,8 @@ def load(connection, _p_oid):
         item=_serialize(connection.get(_p_oid.decode('hex')))
         )
 
-def fetched(items):
-    return _result(items=[_serialize(item) for item in items])
+def fetched(size, items):
+    return _result(items=[_serialize(item) for item in items], size=size)
 
 otypes = list, dict
 def save(app, json_string):
@@ -129,18 +142,3 @@ def save(app, json_string):
                             ))
 
     return json.dumps(dict(updates=updates))
-
-
-def webob(app, request):
-    import time; time.sleep(1)
-    try:
-        if request.method == 'GET':
-            if '_p_oid' in request.str_GET:
-                return load(app.connection, request.str_GET.get('_p_oid'))
-            return fetched(app.query())
-
-        assert(request.method == 'POST')
-        assert request.content_type.startswith('application/json')
-        return save(app, request.body)
-    except Exception, e:
-        return json.dumps(dict(error=unicode(e)))

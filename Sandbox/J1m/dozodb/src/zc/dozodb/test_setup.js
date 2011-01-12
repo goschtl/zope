@@ -1,5 +1,16 @@
+/*
 
-var last_xhr;
+ Copyright (c) 2011 Zope Foundation and Contributors.
+ All Rights Reserved.
+
+ This software is subject to the provisions of the Zope Public License,
+ Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+ THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ FOR A PARTICULAR PURPOSE.
+
+*/
 
 function pprint(pname, ob, indent) {
     var print = ! indent, out = [], i, name, names;
@@ -68,20 +79,29 @@ function pprint(pname, ob, indent) {
     return out;
 }
 
-dojo.xhr = function (method, args, hasBody) {
-    var i, name, nonfun={};
-    last_xhr = {};
-    for (name in args) {
-        if (args.hasOwnProperty(name)) {
-            if (typeof args[name] == 'function') {
-                last_xhr[name] = args[name];
-            }
-            else {
-                nonfun[name] = args[name];
-            }
+var last_xhr;
+
+dojo.objectToQuery = function (ob) { // simple minded impl :)
+    var name, result = [];
+    for (name in ob) {
+        if (ob.hasOwnProperty(name)) {
+            result.push(name+'='+ob[name]);
         }
     }
-    pprint('xhr '+method, nonfun);
+    return result.join('&');
+};
+
+dojo.xhr = function (method, args, hasBody) {
+    last_xhr = args;
+    if (args.content) {
+        if (typeof args.content !== 'string') {
+            args.content = dojo.objectToQuery(args.content);
+        }
+        if (method == 'GET') {
+            args.url += '?' + args.content;
+        }
+    }
+    pprint('xhr '+method, args);
     if (hasBody ? method !== 'POST' : method !== 'GET') {
         console.error('Bad hasBody: '+ hasBody);
     }
@@ -91,6 +111,10 @@ dojo.xhrGet = function (args) {
 };
 dojo.xhrPost = function (args) {
     return dojo.xhr("POST", args, true);
+};
+
+var xhr_respond = function(json) {
+    last_xhr.load(dojo.fromJson(json));
 };
 
 function assert(cond, message) {
