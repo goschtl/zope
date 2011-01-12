@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.5 (unreleased)
+0.5 (2011-01-12)
 ================
 
 - Use `fanstatic` instead of zope DirectoryResource.
