@@ -92,6 +92,12 @@ The tests run on OS X 10.6
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.0-py2.6%20slave-osx THA
       - unsupported
 
+    * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
+      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.5%20slave-osx THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.6%20slave-osx THA
+      - unsupported
+
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
       - unsupported
       - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-py2.5%20slave-osx THA
@@ -153,6 +159,14 @@ no testing support for those
         * .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.0_win-py2.6%20slave-win THA
       - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win64 winbot
+      - unsupported
+
+    * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
+      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1_win-py2.5%20slave-win THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1_win-py2.6%20slave-win THA
+      - unsupported
+      - unsupported
       - unsupported
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
@@ -296,6 +310,16 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.4.6%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.5%20Linux%2064bit AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.5%20Linux%2064bit AFPY
+      - unsupported
+
+    * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
+      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu32 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu32 THA
+      - unsupported
+      - unsupported
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu64 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/buildbot/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu64 THA
       - unsupported
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
