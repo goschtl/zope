@@ -1,6 +1,10 @@
 hurry.yui
 *********
 
+.. Important::
+   hurry.yui has been superseded by
+   `js.yui <http://pypi.python.org/pypi/js.yui>_` package.
+
 Introduction
 ============
 
@@ -18,7 +22,7 @@ How to use?
 You can import various bits of YUI from ``hurry.yui`` and ``.need``
 them where you want these resources to be included on a page::
 
-  from hurry import yui 
+  from hurry import yui
 
   .. in your page or widget rendering code, somewhere ..
 

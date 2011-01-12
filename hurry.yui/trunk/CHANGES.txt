@@ -1,11 +1,9 @@
 CHANGES
 *******
 
-2.7.0.2 (unreleased)
-====================
-
-- Nothing changed yet.
-
+.. Important::
+   hurry.yui has been superseded by
+   `js.yui <http://pypi.python.org/pypi/js.yui>_` package.
 
 2.7.0.1 (2010-07-29)
 ====================
