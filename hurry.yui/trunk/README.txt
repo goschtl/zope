@@ -3,7 +3,7 @@ hurry.yui
 
 .. Important::
    hurry.yui has been superseded by
-   `js.yui <http://pypi.python.org/pypi/js.yui>_` package.
+   `js.yui <http://pypi.python.org/pypi/js.yui>`_ package.
 
 Introduction
 ============
