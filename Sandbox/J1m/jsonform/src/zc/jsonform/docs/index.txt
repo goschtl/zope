@@ -1,0 +1,41 @@
+Introduction
+============
+
+Jsonform (zc.jsonform) is a framework for automating ajax-based form
+processing.  Forms are a common tool for collecting and displaying
+data. They're most appropriate for managing data corresponding to
+database records or flat object state.  Typically a form has a UI
+consisting of a single page (or dialog) with a fixed bumer of fields
+of various types.  Even within a more complex data structure, like a
+tree or a table, forms may be used to work with portions of the larger
+data structure.
+
+The Jsonform framework [#whyframework]_ provides:
+
+- Client-side and server-side form validation,
+
+- Client-side or server-side form definition, and
+
+- Client-side form building.
+
+It uses a JSON form-definition protocol that allows for various client
+side UI frameworks.
+
+The framework can be used client-side only, or on both the client and
+server.   The server famework is Python based.  It also provides
+adapters for the Zope Toolkit, bobo, and for Webob.
+
+
+.. [#whyframework] The jsonform framework has a number of different parts
+  with different responsibilities:
+
+  - The zc.jsonform Python package provides server-side support for
+    server-side form definition and validation,
+
+  - The jsonform json definition protocol provides client-side form
+    definition, and
+
+  - Client implementations written to the framework provide
+    client-side form building and definition.  For example,
+    zc.dojoform provides a client-side implementation for the dojo
+    JavaScript framework.

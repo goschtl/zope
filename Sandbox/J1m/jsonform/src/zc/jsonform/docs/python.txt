@@ -1,0 +1,238 @@
+Getting Started for Python Programmers
+======================================
+
+You can use jsonform primarily as a server framework letting it to
+alot of work for you.  To get started, you'll define a form object
+using zope.formlib [#formliblight]_.  A form is defined as a
+collection of fields, where each fields builds on a zope.schema field
+and optional user-interface configuration information.
+
+The most common way to define a form is using a schema::
+
+    import zope.formlib.form
+    import zope.interface
+    import zope.schema
+
+    class IOrder(zope.interface.Interface):
+        identifier = zope.schema.Int(title=u"Identifier", readonly=True)
+        name = zope.schema.TextLine(title=u"Name")
+        min_size = zope.schema.Float(title=u"Minimum size")
+        max_size = zope.schema.Float(title=u"Maximum size")
+        color = zope.schema.TextLine(title=u"Color", required=False)
+        now = zope.schema.Datetime(title=u"Now", readonly=True)
+
+    class MyForm:
+        form_fields = zope.formlib.form.Fields(IOrder)
+
+Once we've defined a form, we can use zc.jsonform to render it as
+dictionary::
+
+    import zc.jsonform
+    json_form = zc.jsonform.definitions(MyForm)
+
+Typically, you'd return the resulting dictionary, after converting it
+to a json string, in a response to an ajax request for the form
+definition.
+
+When forms are submitted, the're submitted as json data.  You can
+validate the data::
+
+    try:
+        validated = zc.jsonform.validate(MyForm, jsondata)
+    except zc.jsonform.ValidationError, e:
+        error_data = e.json
+        validated = e.validated
+
+We call validate with a form deinition and data to validate. The data
+can be a json string or a dictionary of values.
+
+If the data are validated, a dictionary of data is returned.  Note
+that the data returened will often be different from the data
+input. The data input represents a serialization to json, which may
+not be the same as is used in Python. For example, a date-time value
+may be a list of values in the json data but will be converted to
+Python datetime objects.
+
+If there are validation errors, an exception will be raised. The
+exception will include:
+
+- An ``error`` dictionary [#error_data]_ that can be converted to json and
+  returned to the client.
+
+- A ``validated`` dictionary of the values that could be validated.
+
+Often, when displaying forms, you want to provide initial data.  You
+can pass the initial data as a data keyword argument to
+``zc.jsonform.definitions``::
+
+    import zc.jsonform
+    json_form = zc.jsonform.definitions(MyForm, data=some_data)
+
+In this case, the initial data will be included with the form
+definition.
+
+You can also call ``zc.jsonform.data`` to get just the data in a form
+suitable for conversion to json.
+
+Actions
+-------
+
+A form can define actions. Typically, this is done using the
+zope.formlib.form.action decorator::
+
+    import zope.formlib.form
+    import zope.interface
+    import zope.schema
+
+    class IOrder(zope.interface.Interface):
+        identifier = zope.schema.Int(title=u"Identifier", readonly=True)
+        name = zope.schema.TextLine(title=u"Name")
+        min_size = zope.schema.Float(title=u"Minimum size")
+        max_size = zope.schema.Float(title=u"Maximum size")
+        color = zope.schema.TextLine(title=u"Color", required=False)
+        now = zope.schema.Datetime(title=u"Now", readonly=True)
+
+    class MyForm:
+        form_fields = zope.formlib.form.Fields(IOrder)
+
+        @zope.formlib.form.action("Purchase")
+        def submit(self, action, data):
+            print "You bought a", data['color'], data['name']
+
+
+When actions are defined, as they typically are, the form definition
+will include action definitions and the client form will have
+buttons corresponding to the actions.
+
+It's up to you to decide what should happen when actions are
+clicked. This could be hooked up in client code, or you can assign
+action urls in the generated definitions.  How you do this will depend
+on the web framework you're using.  If a url is specified, then, when
+a use clicks on a button, json data will be submitted to the given
+url.  In addition to the form data, the json data will include an
+action identifier.
+
+Layout
+------
+
+For simple forms, a simple columnar layout is fine.  For larger forms,
+you may want to be more creative in how a form is layed out.  You'll
+use CSS to layout forms.  You can do things like combining small
+fields in a single line by using an inline display style.  You can
+create a two or three columns by floating some fields.
+
+Sometimes, you want to layour fields in groups. For that reason,
+jsonform provides a grouping construct.  To use this, you define an
+organization sequence.  You can set this as a ``form_organization``
+attribute in your form, or you can pass it as an ``organization``
+keyword argument to ``zc.jsonform.definitions``.
+
+An organization sequence is a sequence of dictionaries. Each
+dictionary includes:
+
+name
+   The name of a grouping of fields.  Names must follow the rules for
+   CSS class names.
+
+content
+   A sequence of any of the following:
+
+   - field names
+
+   - nested dictionaries of the same form.
+
+If the content item is ommitted, then a form attribute of the same
+name will be used.  If the contents value is the string '*', then any
+fields not otherwise identified will be used.  If the contents value
+is a string, then the corresponding attribute of the form will be
+used.
+
+It's an error to include a field in more than one place in the
+organization.
+
+When the form is generated, divs will be generated for each grouping
+with a class equal to the group name and a id derived from the group
+name.  You can use the class in CSS to control how the group is layed
+out.
+
+Conditional Handling
+--------------------
+
+Sometimes, you want to change the information you display or collect
+based on the values of some fields.  You may also want to change how
+information is displayed.  Jsonform provides a mechanism to
+do this for some common cases.  Group definitions in organization
+lists can include a classes item:
+
+classes
+   A dictionary of classes.
+
+   Each key is a class name.
+
+   Values are one of:
+
+   True
+      The class is alwaays present
+
+   Field id
+      The class is present if the field's value is true
+
+   Field id, values
+      A 2-item sequence consisting of a field id and a sequence of
+      values.  The class will be present if the fields value is in the
+      list of values.
+
+For example::
+
+   class IFolder(zope.interface.Interface):
+       name = zope.schema.TextLine(title=u"Name")
+       public = zope.schema.Bool(title=u"Public")
+       commentary = zope.schema.Text("Commentary")
+
+    class MyForm:
+        form_fields = zope.formlib.form.Fields(IOrder)
+
+        form_organization = [
+            {'name': 'main', content: '*'},
+            {'name': 'public', content: ['public'],
+              'classes': {'hidden': ['public', False]}
+              },
+            ]
+
+On the client, you use CSS to control how conditional classes are
+displayed. In the above example, you could use the following CSS::
+
+   .hidden {display: none}
+
+In the above example, the commentary field is required, but really
+only if the folder is public.  When we validate the form, we don't
+want to validate the commentary.
+
+When we call zc.jsonform.validate, we can specify which fields to
+validate by specifying conditional classes, using the options:
+
+classes
+    Only validate fields in organizations with the given list of conditional
+    classes set. By default, all fields are validated.
+
+exclude_classes
+    Don't validate fields in organizations with the given conditional
+    classes set.
+
+So, to validate the form above, we'd use::
+
+    zc.jsonform.validate(MyForm, jsondata, exclude_classes=['hidden'])
+
+.. [#formliblight] zope.formlib has a number of dependencies that we
+   don't really need. We might add a light version later that just
+   defines form meta data.
+
+
+.. [#error_data] The error dictionary will contain:
+
+  success
+     A sucess flag with a false value.
+
+  errors
+     A dictionary of validation errors. The keys are the names of the
+     fields with errors and the values are error messages.

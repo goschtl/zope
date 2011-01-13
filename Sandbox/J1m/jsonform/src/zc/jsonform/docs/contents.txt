@@ -9,7 +9,9 @@ Welcome to zc.jsonform's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+
+   index
+   python
 
 Indices and tables
 ==================
