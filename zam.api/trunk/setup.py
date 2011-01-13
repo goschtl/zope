@@ -75,6 +75,7 @@ setup (
             'zope.site',
             'zope.testbrowser',
             'zope.testing',
+            'zope.dublincore >= 3.7',
             ],
         ),
     install_requires = [
