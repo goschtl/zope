@@ -1,0 +1,56 @@
+=======
+CHANGES
+=======
+
+
+0.7.0 (2011-01-13)
+------------------
+
+- Updated test set up and tests to run with ZTK 1.0 and current z3c.form
+  version.
+
+- Removed dependency on ``zope.app.twisted``, ``zc.configuration`` and most
+  of the ``zope.app.*`` packages.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctestunit``.
+
+- Fixed package metadata, added doctests top `long_description`.
+
+0.6.1 (2009-07-06)
+------------------
+
+- Removed deprecation warnings.
+
+0.6.0 (2009-07-06)
+------------------
+
+- Updating tests and dependencies to work with latest versions of packages.
+
+0.5.3 (2008-06-07)
+------------------
+
+- A test dependency (zope.app.session) was missing
+  (still checking with KGS 3.4)
+
+0.5.2 (2008-04-11)
+------------------
+
+- Simplify ftesting setup, removed duplicated configuration. Make it better
+  reusable. Now we can include app.zcml and mixin ftesting.zcml at the same
+  time in plugin tests.
+
+0.5.1 (2008-04-13)
+------------------
+
+- Added new plugin layer for zamplugin.contents plugin
+
+0.5.0 (2008-04-11)
+------------------
+
+- Now plugin provides it's own management form. By default the PluginManagement
+  page can be used which is a mixin of IContentProvider and IForm. This makes
+  it possible to write intelligent plugin management views which can do more
+  then just install and uninstall.
+
+- Initial Release

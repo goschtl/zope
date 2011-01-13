@@ -1,0 +1,13 @@
+<form action="./plugins.html" method="post" enctype="multipart/form-data" class="plugin-form">
+  <h1 i18n:translate="">ZAM Plugin Management</h1>
+  <fieldset id="pluginManagement" tal:repeat="plugin view/pluginForms">
+    <strong class="title" tal:content="structure plugin/title"
+         tal:attributes="class plugin/statusCSS">
+      title
+    </strong>
+    <div class="description" tal:content="structure plugin/description">
+      desription
+    </div>
+    <tal:block content="structure plugin/render" />
+  </fieldset>
+</form>

@@ -1,0 +1,202 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <configure package="z3c.menu.ready2go">
+    <viewletManager
+        name="IAddMenu"
+        class=".manager.MenuManager"
+        provides="zam.api.menu.IAddMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+    <viewletManager
+        name="IGlobalMenu"
+        class=".manager.MenuManager"
+        provides="zam.api.menu.IGlobalMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+    <viewletManager
+        name="ISiteMenu"
+        class=".manager.MenuManager"
+        provides="zam.api.menu.ISiteMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+    <viewletManager
+        name="IContextMenu"
+        class=".manager.MenuManager"
+        provides="zam.api.menu.IContextMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+
+    <!-- IException -->
+    <viewletManager
+        name="IAddMenu"
+        for="zope.interface.common.interfaces.IException"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IAddMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IGlobalMenu"
+        for="zope.interface.common.interfaces.IException"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IGlobalMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="ISiteMenu"
+        for="zope.interface.common.interfaces.IException"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.ISiteMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IContextMenu"
+        for="zope.interface.common.interfaces.IException"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IContextMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+
+    <!-- IUnauthorized -->
+    <viewletManager
+        name="IAddMenu"
+        for="zope.security.interfaces.IUnauthorized"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IAddMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IGlobalMenu"
+        for="zope.security.interfaces.IUnauthorized"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IGlobalMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="ISiteMenu"
+        for="zope.security.interfaces.IUnauthorized"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.ISiteMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IContextMenu"
+        for="zope.security.interfaces.IUnauthorized"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IContextMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+
+    <!-- IUserError -->
+    <viewletManager
+        name="IAddMenu"
+        for="zope.exceptions.interfaces.IUserError"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IAddMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IGlobalMenu"
+        for="zope.exceptions.interfaces.IUserError"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IGlobalMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="ISiteMenu"
+        for="zope.exceptions.interfaces.IUserError"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.ISiteMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IContextMenu"
+        for="zope.exceptions.interfaces.IUserError"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IContextMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+
+    <!-- INotFound -->
+    <viewletManager
+        name="IAddMenu"
+        for="zope.publisher.interfaces.INotFound"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IAddMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IGlobalMenu"
+        for="zope.publisher.interfaces.INotFound"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IGlobalMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="ISiteMenu"
+        for="zope.publisher.interfaces.INotFound"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.ISiteMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+    <viewletManager
+        name="IContextMenu"
+        for="zope.publisher.interfaces.INotFound"
+        class=".manager.EmptyMenuManager"
+        provides="zam.api.menu.IContextMenu"
+        template="menu.pt"
+        layer="zam.api.layer.IZAMCoreLayer"
+        permission="zope.Public"
+        />
+
+  </configure>
+
+</configure>

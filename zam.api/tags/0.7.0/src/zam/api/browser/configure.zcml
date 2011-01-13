@@ -1,0 +1,21 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      name="plugins.html"
+      for="zope.location.interfaces.ISite"
+      class=".plugin.PluginsPage"
+      layer="zam.api.layer.IZAMCoreLayer"
+      permission="zope.ManageSite"
+      />
+
+  <z3c:template
+      template="plugins.pt"
+      for=".plugin.PluginsPage"
+      layer="zam.api.layer.IZAMCoreLayer"
+      />
+
+</configure>
