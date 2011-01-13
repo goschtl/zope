@@ -27,7 +27,7 @@ setup (
     version='0.7.1dev',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
-    description = "API for ZAM (Zope Application Management",
+    description = "API for ZAM (Zope Application Management)",
     long_description=(
         read('README.txt') +
         '.. contents::\n\n' +
