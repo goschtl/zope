@@ -15,6 +15,3 @@ TODO
 
   - Set zope.pytest version automatically in conf.py (using
     pkg_resources).
-
-* Set svn:ignore.
-
