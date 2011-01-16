@@ -42,13 +42,13 @@ class ViewTests(unittest.TestCase):
         """ cleanUp() is required to clear out the application registry
         between tests (done in setUp for good measure too)
         """
-        testing.cleanUp()
+        self.config = testing.setUp()
 
     def tearDown(self):
         """ cleanUp() is required to clear out the application registry
         between tests
         """
-        testing.cleanUp()
+        testing.tearDown()
 
     def test_index(self):
         from zopyx.smartprintng.server.views import index
