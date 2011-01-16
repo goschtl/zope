@@ -15,6 +15,7 @@ Contents:
    samples
    api
    community
+   development
    changes
    license
    copyright
