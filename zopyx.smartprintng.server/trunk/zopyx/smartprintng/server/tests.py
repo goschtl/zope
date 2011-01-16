@@ -78,7 +78,7 @@ class ViewIntegrationTests(unittest.TestCase):
         registrations your application declares in its configure.zcml
         (including dependent registrations for pyramid itself).
         """
-        testing.cleanUp()
+        self.config = testing.setUp()
         import zopyx.smartprintng.server
         import zope.configuration.xmlconfig
         zope.configuration.xmlconfig.file('configure.zcml',
@@ -86,7 +86,7 @@ class ViewIntegrationTests(unittest.TestCase):
 
     def tearDown(self):
         """ Clear out the application registry """
-        testing.cleanUp()
+        testing.tearDown()
 
     def test_index(self):
         from zopyx.smartprintng.server.views import index
