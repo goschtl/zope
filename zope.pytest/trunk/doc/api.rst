@@ -5,6 +5,11 @@
 
 Helpers for py.test integration in Zope-based environments.
 
+The main test helpers are the first two functions (:func:`create_app`,
+:func:`configure`) which are normally accessed deploying the py.test_
+`funcarg`_ mechanism.
+
+
 :func:`create_app`
 ==================
 
@@ -55,3 +60,12 @@ Helpers for py.test integration in Zope-based environments.
 =====================
 
 .. autofunction:: zope.pytest.teardown_root
+
+
+.. _py.test: http://pytest.org/
+
+.. _funcarg: http://pytest.org/funcargs.html
+
+.. _ZODB: http://www.zodb.org/
+
+.. _ZCML: http://www.muthukadan.net/docs/zca.html#zcml
