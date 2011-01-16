@@ -5,13 +5,9 @@ TODO
 
 * Integrate sphinx docs:
 
-  - Add docstrings for API in sources.
+  - Add docstrings for API in sources. [Done, although they might be
+    more extensive/appropriate]
 
   - Give samples in docs (should be runnable with doctest builder).
 
   - Make docs better looking.
-
-  - Include README and CHANGES in docs.
-
-  - Set zope.pytest version automatically in conf.py (using
-    pkg_resources).
