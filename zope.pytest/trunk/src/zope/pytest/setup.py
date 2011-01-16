@@ -16,7 +16,6 @@ from ZODB.DemoStorage import DemoStorage
 import ZODB.interfaces
 
 import transaction
-import sys
 
 
 def create_app(request, site_root):
