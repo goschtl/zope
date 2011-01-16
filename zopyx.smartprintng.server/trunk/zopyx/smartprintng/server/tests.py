@@ -81,8 +81,6 @@ class ViewIntegrationTests(unittest.TestCase):
         self.config = testing.setUp()
         import zopyx.smartprintng.server
         import zope.configuration.xmlconfig
-        zope.configuration.xmlconfig.file('configure.zcml',
-                                          package=zopyx.smartprintng.server)
 
     def tearDown(self):
         """ Clear out the application registry """
