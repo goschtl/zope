@@ -11,9 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   api
+   intro
    samples
-
+   api
+   changes
+   license
+   copyright
 
 Indices and tables
 ==================
