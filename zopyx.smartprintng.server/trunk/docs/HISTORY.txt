@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.0 (2011/01/16)
+------------------
+* final release
+* fixed test fixtures
+
 0.7.1 (2011/01/10)
 ------------------
 * pinned pyramid_xmlrpc 0.1
