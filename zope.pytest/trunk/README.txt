@@ -1,5 +1,5 @@
 zope.pytest
-****************************
+***********
 
 Introduction
 ============
@@ -17,28 +17,24 @@ zope.pytest.setup.configure
 
  * this function parses zcml file and initialize the component registry
 
-zope.pytest.setup.argument
-
- * this is a function decorator which register a function as an argument for 
-   pytest functions
-
 
 Simple example::
 
-    from zope.pytest import create_app, configure, argument
+    from zope.pytest import create_app, configure
     from my.project import Root
 
-    @argument
-    def app(request):
+    def pytest_funcarg__app(request):
         return create_app(request, Root())
 
-    @argument
-    def config(request):
+    def pytest_funcarg__config(request):
         return configure(request, my.project, 'ftesting.zcml')
 
     def test_hello(app, config):
         pass
 
+Documentation
+=============
 
-Interact
-=========
+Complete documentation can be found on
+
+http://packages.python.org/zope.pytest
