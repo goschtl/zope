@@ -14,6 +14,7 @@ Contents:
    intro
    samples
    api
+   community
    changes
    license
    copyright
