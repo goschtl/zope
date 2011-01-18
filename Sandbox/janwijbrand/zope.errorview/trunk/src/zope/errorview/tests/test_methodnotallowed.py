@@ -52,11 +52,6 @@ class TestMethodNotAllowedView(TestCase):
         provideAdapter(DeleteView, (I, IHTTPRequest), Interface, 'DELETE')
         provideAdapter(GetView, (I, IHTTPRequest), Interface, 'irrelevant')
         provideAdapter(DeleteView, (I, IHTTPRequest), Interface, 'also_irr.')
-        # Do the same as defaultView would for something like:
-        # <defaultView
-        #     for=".test_methodnotallowed.I"
-        #     name="index.html"
-        #     />
         provideAdapter(u'index.html', (I, IBrowserRequest), IDefaultViewName)
 
     def test(self):

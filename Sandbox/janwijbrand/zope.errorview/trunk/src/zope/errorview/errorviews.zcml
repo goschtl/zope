@@ -32,7 +32,7 @@
 
 <view
     for="zope.publisher.interfaces.http.IMethodNotAllowed"
-    factory="zope.app.http.exception.methodnotallowed.MethodNotAllowedView"
+    factory="zope.errorview.methodnotallowed.MethodNotAllowedView"
     name="index.html"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     permission="zope.Public"
