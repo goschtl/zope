@@ -16,13 +16,13 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
+from zope.errorview.unauthorized import Unauthorized
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.http import IHTTPException
 
 class Test(TestCase):
 
     def testbasicauth(self):
-        from zope.app.http.exception.unauthorized import Unauthorized
         exception = Exception()
         try:
             raise exception
@@ -30,16 +30,14 @@ class Test(TestCase):
             pass
         request = TestRequest()
         u = Unauthorized(exception, request)
-
-        # Chech that we implement the right interface
+        # Check that we implement the right interface.
         self.failUnless(IHTTPException.providedBy(u))
-        
-        # Call the view
+        # Call the view.
         u()
-        
-        # Make sure the response status was set
+        # Make sure the response status was set.
         self.assertEqual(request.response.getStatus(), 401)
-        self.failUnless(request.response.getHeader('WWW-Authenticate', '', True).startswith('basic'))
+        self.failUnless(request.response.getHeader(
+            'WWW-Authenticate', '', True).startswith('basic'))
 
 def test_suite():
     return makeSuite(Test)
