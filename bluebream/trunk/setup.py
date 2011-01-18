@@ -20,7 +20,7 @@ def read(*rnames):
 
 setup(
     name="bluebream",
-    version='1.0c1dev',
+    version='1.0',
     author="Zope Foundation and Contributors",
     author_email="bluebream@zope.org",
     url="http://bluebream.zope.org",
@@ -34,7 +34,7 @@ setup(
         '********'),
     license="ZPL",
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
