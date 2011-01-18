@@ -16,9 +16,7 @@
 # When developing and releasing this package, please follow the documented
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
-"""Setup for zope.app.http package
-
-$Id$
+"""Setup for zope.errorview package
 """
 import os
 from setuptools import setup, find_packages
@@ -26,17 +24,17 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.http',
-      version='3.9.1dev',
+setup(name='zope.errorview',
+      version='1.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='HTTP Behavior for the Zope Publisher',
+      description='HTTP error views for the Zope Publisher',
       long_description=(
           read('README.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords="zope3 http publisher view",
+      keywords="zope3 http error view",
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -47,24 +45,16 @@ setup(name='zope.app.http',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://pypi.python.org/pypi/zope.app.http',
+      url='http://pypi.python.org/pypi/zope.errorview',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      namespace_packages=['zope', 'zope.app'],
-      extras_require=dict(
-          test=['zope.app.testing',
-                'zope.app.zcmlfiles',
-                'zope.app.wsgi >= 3.9.0',
-                'zope.securitypolicy',
-                'zope.site',
-                'zope.login',]),
-      install_requires=['setuptools',
-                        'zope.interface',
-                        'zope.publisher>=3.12',
-                        'zope.container',
-                        'zope.filerepresentation',
-                        ],
+      namespace_packages=['zope''],
+      extras_require={'test':[]},
+      install_requires=[
+          'setuptools',
+          'zope.interface',
+          ],
       include_package_data=True,
       zip_safe=False,
       )
