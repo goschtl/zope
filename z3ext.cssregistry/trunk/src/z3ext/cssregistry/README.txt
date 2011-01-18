@@ -126,6 +126,7 @@ Now if we need change css file we only need change cssregistry properties
      font: Arial;
    }
 
+
 We also can use named cssregistries
 
    >>> context = xmlconfig.string("""
@@ -150,6 +151,8 @@ We also can use named cssregistries
    ...   font: fontFamilyH2;
    ... }''')
 
+   >>> cssFactory = ZRTFileResourceFactory(fn, None, 'site.css')
+   >>> css = cssFactory(TestRequest())
    >>> print css.GET()
    h1 {
      color: #d5d5d5;
@@ -169,6 +172,9 @@ If cssregistry is unknown nothing will happen
    ...   color: color1;
    ...   font: fontFamilyH1;
    ... }''')
+
+   >>> cssFactory = ZRTFileResourceFactory(fn, None, 'site.css')
+   >>> css = cssFactory(TestRequest())
    >>> print css.GET()
    h1 {
      color: color1;
