@@ -3,7 +3,6 @@
 import grokcore.viewlet as grok
 
 from grokcore.viewlet.components import ViewletManager, Viewlet
-from hurry.resource.interfaces import IInclusion
 from zope.schema import List, Object
 from zope.schema.fieldproperty import FieldProperty
 from zope.viewlet.interfaces import IViewlet
@@ -15,8 +14,7 @@ class IResourceViewlet(IViewlet):
     """
     resources = List(
         title=u"Resources to be included",
-        required=True,
-        value_type=Object(schema=IInclusion))
+        required=True)
 
     def render(self):
         """Calling this method will include the resources.

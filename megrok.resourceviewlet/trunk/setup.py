@@ -3,7 +3,7 @@
 from os.path import join
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '0.2'
 name = 'megrok.resourceviewlet'
 
 history = open(join('docs', 'HISTORY.txt')).read()
@@ -11,11 +11,9 @@ readme = open(join('src', 'megrok', 'resourceviewlet', 'README.txt')).read()
 
 test_requires = [
     'grokcore.view',
-    'zope.app.testing',
-    'zope.app.zcmlfiles',
     'zope.contentprovider',
     'zope.testbrowser',
-    'zope.testing',
+    'zope.fanstatic [test]'
     ]
 
 setup(name=name,
@@ -35,12 +33,12 @@ setup(name=name,
       platforms='Any',
       zip_safe=False,
       install_requires=[
-          'hurry.resource',
+          'fanstatic',
           'grokcore.viewlet',
-          'megrok.resource',
           'setuptools',
-          'zope.schema',
+          'zope.fanstatic',
           'zope.interface',
+          'zope.schema',
           'zope.viewlet',
           ],
       extras_require={'test': test_requires},

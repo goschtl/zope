@@ -1,26 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import os.path
 import unittest
-from zope.testing import doctest, module
-from zope.app.testing import functional
-from zope.app.testing.functional import ZCMLLayer
-
-ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
-FunctionalLayer = ZCMLLayer(
-    ftesting_zcml, __name__, 'FunctionalLayer', allow_teardown=True)
+import doctest
+import fanstatic
+import megrok.resourceviewlet.ftests
+from zope.fanstatic.testing import ZopeFanstaticBrowserLayer
 
 
-def setUp(test):
-    module.setUp(test, 'megrok.resourceviewlet.ftests')
+class TestLayer(ZopeFanstaticBrowserLayer):
+    def setup_middleware(self, app):
+        return fanstatic.Injector(app)
 
-def tearDown(test):
-    module.tearDown(test)
+layer = TestLayer(megrok.resourceviewlet.ftests)
 
 def test_suite():
-    suite = unittest.TestSuite()      
-    readme = functional.FunctionalDocFileSuite(
-        '../README.txt', setUp=setUp, tearDown=tearDown)
-    readme.layer = FunctionalLayer
-    suite.addTest(readme)
-    return suite
+    readme = doctest.DocFileSuite(
+        '../README.txt',
+        globs={'__name__': 'megrok.resourceviewlet.ftests'},
+        optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+    readme.layer = layer
+    return unittest.TestSuite([readme])

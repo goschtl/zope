@@ -13,10 +13,10 @@ Let's import and init the necessary work environment::
 
   >>> import grokcore.component as grok
   >>> from grokcore import view, viewlet
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.app.wsgi.testlayer import Browser
 
   >>> browser = Browser()
-  >>> browser.handleErrors = False 
+  >>> browser.handleErrors = False
 
 
 Library
@@ -24,13 +24,20 @@ Library
 
 We first declare a resource. We'll include it in our page::
 
-  >>> from megrok import resource
-  >>> class SomeResource(resource.ResourceLibrary):
-  ...     resource.path('ftests/resources')
-  ...     resource.resource('thing.js')
+  >>> from fanstatic import Resource, Library
+  >>> myLibrary = Library('test_library', 'ftests/resources')
+  >>> Thing = Resource(myLibrary, 'thing.js')
 
-  >>> grok.testing.grok_component('library', SomeResource)
-  True
+This step is done by an entry point. For the testing, we do it by hand::
+
+  >>> from zope.fanstatic.zcml import create_factory
+  >>> from zope.component import getGlobalSiteManager
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from zope.interface import Interface
+
+  >>> resource_factory = create_factory(myLibrary)
+  >>> getGlobalSiteManager().registerAdapter(
+  ...      resource_factory, (IBrowserRequest,), Interface, myLibrary.name)
 
 
 Components
@@ -79,7 +86,7 @@ declaration is very straightforward::
 
   >>> class SomeViewlet(ResourceViewlet):
   ...   viewlet.context(Interface)
-  ...   resources = [SomeResource]
+  ...   resources = [Thing]
 
   >>> grok.testing.grok_component('viewlet', SomeViewlet)
   True
@@ -99,9 +106,8 @@ therefore, include our resource::
   >>> browser.open('http://localhost/@@index')
   >>> print browser.contents
   <html><head>
-    <script
-      type="text/javascript"
-      src="http://localhost/@@/++noop++.../someresource/thing.js"></script>
+    <script type="text/javascript"
+     src="http://localhost/fanstatic/test_library/thing.js"></script>
   </head></html>
 
 It works ! Enjoy.
