@@ -24,7 +24,7 @@ setup(
     author="Zope Foundation and Contributors",
     author_email="bluebream@zope.org",
     url="http://bluebream.zope.org",
-    description="The Zope Web Framework",
+    description="The Web Component Framework",
     long_description=(
         read('README.txt')
         + '\n\n' +
