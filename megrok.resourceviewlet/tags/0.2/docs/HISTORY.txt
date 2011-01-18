@@ -1,0 +1,13 @@
+Changelog
+=========
+
+0.2 (2011-01-18)
+----------------
+
+* ``megrok.resourceviewlet`` now works and depends on ``fanstatic``.
+* Dependencies has been greatly reduced.
+
+0.1 (2009-12-24)
+----------------
+
+* Initial release
