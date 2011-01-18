@@ -2,8 +2,9 @@
 
 import grokcore.viewlet as grok
 
+from fanstatic import Resource
 from grokcore.viewlet.components import ViewletManager, Viewlet
-from zope.schema import List, Object
+from zope.schema import List
 from zope.schema.fieldproperty import FieldProperty
 from zope.viewlet.interfaces import IViewlet
 from zope.viewlet.manager import ViewletManagerBase
@@ -75,4 +76,5 @@ class ResourceViewlet(Viewlet):
 
     def render(self):
         for resource in self.resources:
-            resource.need()
+            if isinstance(resource, Resource):
+                resource.need()

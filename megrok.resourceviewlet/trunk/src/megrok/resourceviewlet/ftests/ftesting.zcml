@@ -11,6 +11,8 @@
   <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml"/>
+  <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.viewlet" file="meta.zcml" />
 
   <include package="zope.annotation" />
   <include package="zope.component" />
@@ -22,30 +24,29 @@
   <include package="zope.security" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
-
-  <include package="grokcore.view" file="meta-minimal.zcml" />
-  <include package="grokcore.viewlet" file="meta.zcml" />
-
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
 
   <!-- principals -->
   <securityPolicy
-    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
-  />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
 
   <unauthenticatedPrincipal
-    id="zope.anybody"
-    title="Unauthenticated User"
-  />
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+
   <unauthenticatedGroup
       id="zope.Anybody"
       title="Unauthenticated Users"
       />
+
   <everybodyGroup
       id="zope.Everybody"
       title="All Users"
       />
+
   <grant
       permission="zope.View"
       principal="zope.Everybody"
