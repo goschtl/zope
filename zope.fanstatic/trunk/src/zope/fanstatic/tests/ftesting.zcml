@@ -22,6 +22,7 @@
   <include package="zope.security" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
+  <include package="zope.errorview" file="browser.zcml" />
 
   <!-- principals -->
   <securityPolicy
