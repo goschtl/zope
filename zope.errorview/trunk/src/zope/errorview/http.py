@@ -39,7 +39,7 @@ class ExceptionViewBase(object):
         self.request.response.setStatus(500)
 
     def render(self):
-        return u''
+        return ''
 
     def __call__(self):
         notify(HandleExceptionEvent(self.request))
