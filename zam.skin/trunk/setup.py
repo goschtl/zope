@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zam.skin',
-    version='0.6.1dev',
+    version='0.7.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope 3 Application Management skin",
