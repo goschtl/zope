@@ -4,4 +4,24 @@
 
   <include package="." file="http.zcml" />
 
+  <page
+    for="zope.interface.common.interfaces.IException"
+    class=".browser.ExceptionView"
+    name="index.html"
+    permission="zope.Public"
+  />
+
+  <page
+    for="zope.security.interfaces.IUnauthorized"
+    class=".browser.UnauthorizedView"
+    name="index.html"
+    permission="zope.Public"
+  />
+
+  <page
+    for="zope.publisher.interfaces.INotFound"
+    class=".browser.NotFondView"
+    name="index.html"
+    permission="zope.Public"
+  />
 </configure>

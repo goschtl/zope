@@ -57,6 +57,7 @@ setup(name='zope.errorview',
       install_requires=[
           'setuptools',
           'zope.browser',
+          'zope.authentication',
           'zope.component',
           'zope.interface',
           'zope.publisher',
