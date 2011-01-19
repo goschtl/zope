@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="layer.zcml" />
+  <include file="skin.zcml" />
+  <include file="menu.zcml" />
+
+  <include package=".browser" />
+
+</configure>
