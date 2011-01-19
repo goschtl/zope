@@ -16,7 +16,7 @@ from zope.browser.interfaces import ISystemErrorView
 from zope.interface import implements
 from zope.publisher.interfaces.http import IHTTPException
 
-class SystemErrorViewMixin:
+class SystemErrorViewMixin(object):
 
     implements(ISystemErrorView)
 
