@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2011 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,10 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Exception view for BrowserRequest
-
-$Id: unauthorized.py 100273 2009-05-23 02:20:25Z shane $
-"""
 
 from zope.authentication.interfaces import IAuthentication
 from zope.component import getUtility

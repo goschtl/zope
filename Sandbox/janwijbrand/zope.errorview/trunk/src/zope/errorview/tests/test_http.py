@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2011 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Exception views
 
-$Id: test_unauthorized.py 119650 2011-01-18 14:58:35Z janwijbrand $
-"""
 from unittest import TestCase
 from zope.browser.interfaces import ISystemErrorView
 from zope.component import getMultiAdapter, provideAdapter
