@@ -22,7 +22,7 @@ from zope.publisher.defaultview import getDefaultViewName
 from zope.publisher.http import HTTPRequest
 from zope.publisher.interfaces.http import IHTTPException, IHTTPRequest
 from zope.publisher.interfaces.http import MethodNotAllowed, IMethodNotAllowed
-from zope.publisher.interfaces import TraversalException
+from zope.publisher.interfaces import TraversalException, NotFound
 from zope.security.interfaces import Unauthorized
 import zope.errorview
 
@@ -118,6 +118,13 @@ class TestErrorViewsFunctional(TestCase):
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 404)
         # XXX test the MKCOL verb here too.
+
+    def test_notfound(self):
+        view = getMultiAdapter(
+            (NotFound(object(), self.request), self.request), name='index.html')
+        self.failUnless(IHTTPException.providedBy(view))
+        self.assertEquals(view(), '')
+        self.assertEqual(self.request.response.getStatus(), 404)
 
     def test_unauthorizedexceptionview(self):
         view = getMultiAdapter(
