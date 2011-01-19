@@ -28,7 +28,7 @@ setup(name='zope.errorview',
       version='1.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='HTTP error views for the Zope Publisher',
+      description='Basic HTTP and Browser exception views.',
       long_description=(
           read('README.txt')
           + '\n\n' +
