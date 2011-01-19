@@ -3,7 +3,6 @@ from zope.authentication.interfaces import IAuthentication
 from zope.browser.interfaces import ISystemErrorView
 from zope.component import getUtility, getMultiAdapter
 from zope.component.testlayer import ZCMLFileLayer
-from zope.errorview import browser
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.publisher.defaultview import getDefaultViewName

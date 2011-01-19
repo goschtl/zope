@@ -77,7 +77,6 @@ class MethodNotAllowedView(ExceptionViewBase):
         return []
 
     def update(self):
-        error = self.context
         allow = self.allowed()
         self.request.response.setStatus(405)
         self.request.response.setHeader('Allow', ', '.join(allow))

@@ -21,12 +21,11 @@ from zope.component import getMultiAdapter, provideAdapter
 from zope.component.testlayer import ZCMLFileLayer
 from zope.errorview import http
 from zope.interface import Interface
-from zope.publisher.browser import TestRequest
 from zope.publisher.defaultview import getDefaultViewName
 from zope.publisher.http import HTTPRequest
 from zope.publisher.interfaces.http import IHTTPException, IHTTPRequest
 from zope.publisher.interfaces.http import MethodNotAllowed, IMethodNotAllowed
-from zope.publisher.interfaces import TraversalException, IDefaultViewName
+from zope.publisher.interfaces import TraversalException
 from zope.security.interfaces import Unauthorized
 import zope.errorview
 
