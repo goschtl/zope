@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unauthorized Exception Test
+"""Exception views
 
 $Id: test_unauthorized.py 119650 2011-01-18 14:58:35Z janwijbrand $
 """
@@ -157,5 +157,3 @@ class TestErrorViewsFunctional(TestCase):
         self.assertEquals(self.request.response.getStatus(), 405)
         self.assertEquals(
             self.request.response.getHeader('Allow'), 'GET, POST, PUT, DELETE')
-
-
