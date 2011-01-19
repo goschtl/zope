@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# Copyright (c) 2003-2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,11 +13,11 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu May 01 01:36:51 2008\n"
+"Project-Id-Version: Meaningless\n"
+"POT-Creation-Date: Wed Jan 19 08:47:31 2011\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"Language-Team: Zope 3 Developers <zope-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,7 +40,7 @@ msgid "Install"
 msgstr ""
 
 #: zam/api/interfaces.py:30
-#: zam/api/testing.py:50
+#: zam/api/testing.py:43
 msgid "Title"
 msgstr ""
 
@@ -64,23 +64,23 @@ msgstr ""
 msgid "The base registry to be inserted into the site."
 msgstr ""
 
-#: zam/api/testing.py:43
+#: zam/api/testing.py:36
 msgid "Object name."
 msgstr ""
 
-#: zam/api/testing.py:44
+#: zam/api/testing.py:37
 msgid "The object name."
 msgstr ""
 
-#: zam/api/testing.py:51
+#: zam/api/testing.py:44
 msgid "The title of the demo site."
 msgstr ""
 
-#: zam/api/testing.py:84
+#: zam/api/testing.py:77
 msgid "ZAM test plugin"
 msgstr ""
 
-#: zam/api/testing.py:86
+#: zam/api/testing.py:79
 msgid "ZAM test plugin."
 msgstr ""
 
