@@ -86,7 +86,106 @@ test:
 integration-tests
 -----------------
 
+For integration tests we need a bit more setup. To be more precise we have to
+load the Zope Component Architecture.
+
+To run the integration test we need a bit of code that registers something in
+the Zope Component Architecture. Take a look on this example in app.py:
+
+.. code-block:: python 
+
+    import grok
+
+    class Example(grok.Application, grok.Container):
+        pass
+
+    class Index(grok.View):
+    
+        def render(self):
+            return "Hello World"
+
+Ok now we have some code to test. 
+We have to create again a module with holds our test prefixed with test_.
+So we call it test_integration.py
+
+.. code-block:: python
+
+    import example 
+    import pytest
+
+    from zope import component
+    from example.app import Example
+    from zope.publisher.browser import TestRequest
+    from zope.pytest import create_app, configure
+
+
+    def pytest_funcarg__app(request):
+        return create_app(request, Example())
+
+    def pytest_funcarg__config(request):
+        return configure(request, pytt, 'ftesting.zcml')
+
+
+    def test_integration(app, config):
+        zope_req = TestRequest()
+        view = component.getMultiAdapter(
+            (Example(), zope_req), name=u"index")
+        assert "Hello World" in view()
+
+The intresting bits are the two pytest_funcarg functions: 
+
+  - pytest_funcarg__app 
+    This function creates a test ZODB with our Example
+    Application in the site-root.
+
+  - pytest_funcarg__config
+    This function sets up the Zope Component Registry
+    which groks in this case the contents of our app.py
+
+
+You can now again run bin/py.test you will see that pytest
+will discover and execute this test_integration module.
 
 
 functional-tests
 ----------------
+
+We take again the example in the app.py file for demonstrating
+the functional tests with zope.pytest in grok. Functional Tests
+showing the perspective of a user. This means we test here
+with a kind of a browser. We take for this infrae.testbrowser.
+
+We have to include it in our setup.py install_requires.
+
+Again we creat a module called test_functional.py.
+
+.. code-block:: python 
+
+    import example 
+    import pytest
+
+    from example.app import Example
+    from zope.pytest import create_app, configure
+
+    from infrae.testbrowser.browser import Browser
+
+    def pytest_funcarg__app(request):
+        return create_app(request, Example())
+
+    def pytest_funcarg__config(request):
+        return configure(request, pytt, 'ftesting.zcml')
+
+    def test_with_infrae_testbrowser(config, app):
+        browser = Browser(app)
+        browser.options.handle_errors = False
+        browser.open('http://localhost/test')
+        assert browser.status == '200 Ok'
+
+We use again the pytest_funcarg functions to setup a ZODB
+and the Zope Component Architecture. In our test function
+we create an instance of Browser with our app as argument.
+
+Now we can open our Index site in the browser and check
+for example the HTTP Response Status.
+
+You can run now again bin/py.test and look on the running test.
