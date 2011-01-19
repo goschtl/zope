@@ -8,22 +8,18 @@ import pytest
 from zope import component
 from pytt.app import Example
 from zope.publisher.browser import TestRequest
-from zope.pytest import create_app, configure, argument
-
-from infrae.testbrowser.browser import Browser
+from zope.pytest import create_app, configure
 
 
-request = TestRequest()
+#def pytest_funcarg__app(request):
+#    return create_app(request, Example())
+#
+#def pytest_funcarg__config(request):
+#    return configure(request, pytt, 'ftesting.zcml')
 
-@argument
-def app(request):
-    return create_app(request, Example())
+zope_req = TestRequest()
 
-@argument
-def config(request):
-    return configure(request, pytt, 'ftesting.zcml')
-
-def test_integration(config, app):
+def test_integration(app, config):
     view = component.getMultiAdapter(
-        (Example(), request), name=u"index")
+        (Example(), zope_req), name=u"index")
     assert "Congratulations" in view()
