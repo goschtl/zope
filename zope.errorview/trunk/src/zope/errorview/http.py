@@ -16,12 +16,14 @@ from zope.browser.interfaces import ISystemErrorView
 from zope.interface import implements
 from zope.publisher.interfaces.http import IHTTPException
 
+
 class SystemErrorViewMixin(object):
 
     implements(ISystemErrorView)
 
     def isSystemError(self):
         return True
+
 
 class ExceptionViewBase(object):
 
@@ -44,23 +46,27 @@ class ExceptionViewBase(object):
     def __str__(self):
         return self()
 
+
 class ExceptionView(ExceptionViewBase, SystemErrorViewMixin):
     pass
+
 
 class TraversalExceptionView(ExceptionViewBase):
 
     def update(self):
-        if self.request.method =='MKCOL' and self.request.getTraversalStack():
+        if self.request.method == 'MKCOL' and self.request.getTraversalStack():
             # MKCOL with non-existing parent.
             self.request.response.setStatus(409)
         else:
             self.request.response.setStatus(404)
+
 
 class UnauthorizedView(ExceptionViewBase):
 
     def update(self):
         self.request.unauthorized('basic realm="Zope"')
         self.request.response.setStatus(401)
+
 
 class MethodNotAllowedView(ExceptionViewBase):
 

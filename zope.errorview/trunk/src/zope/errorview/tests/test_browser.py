@@ -27,17 +27,20 @@ import zope.errorview
 
 browser_layer = ZCMLFileLayer(zope.errorview.tests)
 
+
 class MockPrincipal(object):
     id = 'mock principal'
 
+
 class MockAuthenticationUtility(object):
-    implements(IAuthentication) # this is a lie.
+    implements(IAuthentication)  # this is a lie.
 
     status = None
 
     def unauthorized(self, principal_id, request):
         if self.status is not None:
             request.response.setStatus(self.status)
+
 
 class TestErrorViews(TestCase):
 

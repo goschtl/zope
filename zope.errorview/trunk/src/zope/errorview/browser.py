@@ -20,10 +20,12 @@ from zope.publisher.browser import BrowserPage
 
 # XXX i18n-ing?
 
+
 class ExceptionView(ExceptionView, BrowserPage):
 
     def render(self):
         return u'A system error occurred.'
+
 
 class NotFoundView(ExceptionViewBase, BrowserPage):
 
@@ -32,6 +34,7 @@ class NotFoundView(ExceptionViewBase, BrowserPage):
 
     def render(self):
         return u'The requested resource can not be found.'
+
 
 class UnauthorizedView(UnauthorizedView, BrowserPage):
 

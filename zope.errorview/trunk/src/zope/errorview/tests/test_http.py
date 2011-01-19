@@ -26,6 +26,7 @@ from zope.publisher.interfaces import TraversalException
 from zope.security.interfaces import Unauthorized
 import zope.errorview
 
+
 class TestErrorViews(TestCase):
 
     def setUp(self):
@@ -80,7 +81,9 @@ class TestErrorViews(TestCase):
         self.assertEquals(
             self.request.response.getHeader('Allow'), 'GET, POST, PUT, DELETE')
 
+
 http_layer = ZCMLFileLayer(zope.errorview, zcml_file='http.zcml')
+
 
 class TestErrorViewsFunctional(TestCase):
 
