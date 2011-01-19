@@ -1,0 +1,292 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Meaningless\n"
+"POT-Creation-Date: Wed Jan 19 08:47:31 2011\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: zam/api/browser/plugin.py:100
+msgid "Uninstall"
+msgstr ""
+
+#: zam/api/browser/plugin.py:58
+msgid "Plugin status successfully installed."
+msgstr ""
+
+#: zam/api/browser/plugin.py:59
+msgid "Plugin status successfully un-installed."
+msgstr ""
+
+#: zam/api/browser/plugin.py:92
+msgid "Install"
+msgstr ""
+
+#: zam/api/interfaces.py:30
+#: zam/api/testing.py:43
+msgid "Title"
+msgstr ""
+
+#: zam/api/interfaces.py:31
+msgid "The title."
+msgstr ""
+
+#: zam/api/interfaces.py:35
+msgid "Description"
+msgstr ""
+
+#: zam/api/interfaces.py:36
+msgid "The depscription."
+msgstr ""
+
+#: zam/api/interfaces.py:58
+msgid "Registry"
+msgstr ""
+
+#: zam/api/interfaces.py:59
+msgid "The base registry to be inserted into the site."
+msgstr ""
+
+#: zam/api/testing.py:36
+msgid "Object name."
+msgstr ""
+
+#: zam/api/testing.py:37
+msgid "The object name."
+msgstr ""
+
+#: zam/api/testing.py:44
+msgid "The title of the demo site."
+msgstr ""
+
+#: zam/api/testing.py:77
+msgid "ZAM test plugin"
+msgstr ""
+
+#: zam/api/testing.py:79
+msgid "ZAM test plugin."
+msgstr ""
+
+#: zam/skin/browser/contents.pt:1
+msgid "There is no contents.html page registered for this object"
+msgstr ""
+
+#: zam/skin/browser/index.pt:1
+msgid "There is no index.html page registered for this object"
+msgstr ""
+
+#: zam/skin/browser/template.pt:28
+msgid "User:"
+msgstr ""
+
+#: zam/skin/browser/template.pt:31
+msgid "[Logout]"
+msgstr ""
+
+#: zam/skin/browser/template.pt:61
+msgid "Breadcrumb:"
+msgstr ""
+
+#: zam/skin/browser/template.pt:70
+msgid "+"
+msgstr ""
+
+#: zam/skin/menu_item_global.pt:2
+#: zam/skin/menu_item_site.pt:3
+#: zam/skin/browser/sidebar.pt:4
+msgid "${DYNAMIC_CONTENT}"
+msgstr ""
+
+#: zamplugin/contents/plugin.py:36
+msgid "Container management page"
+msgstr ""
+
+#: zamplugin/contents/plugin.py:38
+msgid "This container management page is configured for IReadContainer."
+msgstr ""
+
+#: zamplugin/control/browser/runtimeinfo.py:41
+msgid "Unavailable"
+msgstr ""
+
+#: zamplugin/control/browser/runtimeinfo.py:73
+#. Default: ""
+msgid "${days} day(s) ${hours}:${minutes}:${seconds}"
+msgstr ""
+
+#: zamplugin/control/browser/zodbcontrol.py:65
+msgid "Error: Invalid Number"
+msgstr ""
+
+#: zamplugin/control/browser/zodbcontrol.py:72
+#. Default: ""
+msgid "ZODB \"${name}\" successfully packed."
+msgstr ""
+
+#: zamplugin/control/browser/zodbcontrol.py:75
+#. Default: ""
+msgid "ERROR packing ZODB \"${name}\": ${err}"
+msgstr ""
+
+#: zamplugin/control/plugin.py:36
+msgid "Server control plugin"
+msgstr ""
+
+#: zamplugin/control/plugin.py:38
+msgid "ZAM Control plugin."
+msgstr ""
+
+#: zamplugin/error/browser.py:39
+#: zamplugin/sitemanager/registration.py:190
+msgid "There were some errors."
+msgstr ""
+
+#: zamplugin/error/browser.py:40
+msgid "Data successfully updated."
+msgstr ""
+
+#: zamplugin/error/browser.py:54
+msgid "Apply"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:32
+msgid "Keep entries"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:33
+msgid "Count of entries in history"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:38
+msgid "Copy to log"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:39
+msgid "Flag for copy errors to log"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:43
+msgid "Ignore exceptions"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:44
+msgid "List of ignored exceptions"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:46
+msgid "Ignored exception"
+msgstr ""
+
+#: zamplugin/error/interfaces.py:47
+msgid "Name of the ignored exception."
+msgstr ""
+
+#: zamplugin/error/plugin.py:36
+msgid "Error reporting utility"
+msgstr ""
+
+#: zamplugin/error/plugin.py:38
+msgid "ZAM Error reporting utility."
+msgstr ""
+
+#: zamplugin/navigation/plugin.py:36
+msgid "Navigation tree"
+msgstr ""
+
+#: zamplugin/navigation/plugin.py:38
+msgid "ZAM navigation tree."
+msgstr ""
+
+#: zamplugin/sampledata/browser.py:131
+msgid "Duplidated item"
+msgstr ""
+
+#: zamplugin/sampledata/browser.py:62
+msgid "Seed"
+msgstr ""
+
+#: zamplugin/sampledata/browser.py:63
+msgid "A seed for the random generator"
+msgstr ""
+
+#: zamplugin/sampledata/plugin.py:36
+msgid "Sample data configuration views"
+msgstr ""
+
+#: zamplugin/sampledata/plugin.py:38
+msgid "ZAM sample data configuration views utility."
+msgstr ""
+
+#: zamplugin/sitemanager/plugin.py:36
+msgid "Site management"
+msgstr ""
+
+#: zamplugin/sitemanager/plugin.py:38
+msgid "ZAM Site Manager."
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:110
+#. Default: ""
+msgid "comment: ${comment}"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:117
+#. Default: ""
+msgid "${provided} utility named '${name}'"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:120
+#. Default: ""
+msgid "${provided} utility"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:164
+msgid "(unknown name)"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:196
+msgid "Provided interface"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:197
+msgid "The interface provided by the utility"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:203
+msgid "Register As"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:204
+msgid "The name under which the utility will be known."
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:211
+msgid "Comment"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:231
+#. Default: ""
+msgid "Register a $classname"
+msgstr ""
+
+#: zamplugin/sitemanager/registration.py:235
+msgid "Register"
+msgstr ""
+
