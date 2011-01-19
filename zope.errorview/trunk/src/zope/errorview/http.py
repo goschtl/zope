@@ -15,6 +15,8 @@
 from zope.browser.interfaces import ISystemErrorView
 from zope.interface import implements
 from zope.publisher.interfaces.http import IHTTPException
+from zope.event import notify
+from zope.errorview.interfaces import HandleExceptionEvent
 
 
 class SystemErrorViewMixin(object):
@@ -40,6 +42,7 @@ class ExceptionViewBase(object):
         return u''
 
     def __call__(self):
+        notify(HandleExceptionEvent(self.request))
         self.update()
         return self.render()
 
