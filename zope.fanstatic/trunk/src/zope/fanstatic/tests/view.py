@@ -30,3 +30,8 @@ class TestBottom(object):
 class TestInlineResource(object):
     pass
 
+class TestError(object):
+    def widget(self):
+        b.need()
+        raise Exception('I am not a teapot')
+

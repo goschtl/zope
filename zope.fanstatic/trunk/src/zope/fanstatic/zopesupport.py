@@ -4,13 +4,14 @@ from zope.publisher.interfaces import IEndRequestEvent
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.interfaces import ITraversable
+from zope.errorview.interfaces import IHandleExceptionEvent
 
 import fanstatic
 
 from zope.fanstatic.interfaces import IZopeFanstaticResource
 
 @adapter(IEndRequestEvent)
-def set_base_url_on_needed_inclusions(event):
+def set_base_url(event):
     # At first sight it might be better to subscribe to the
     # IBeforeTraverseEvent for ISite objects and only set a base_url
     # then. However, we might be too early in that case and miss out
@@ -34,6 +35,10 @@ def set_base_url_on_needed_inclusions(event):
         # be overridden on a per ISite basis anyway, this is good
         # enough.
         needed.base_url = absoluteURL(None, event.request)
+
+@adapter(IHandleExceptionEvent)
+def clear_needed_resources(event):
+    fanstatic.clear_needed()
 
 _sentinel = object()
 

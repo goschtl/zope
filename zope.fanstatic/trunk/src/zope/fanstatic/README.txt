@@ -2,12 +2,13 @@ Zope integration for fanstatic
 ******************************
 
 This package provides Zope integration for fanstatic. This means it's
-taking care of two things:
+taking care of three things:
 
-* provide access to the needed resources throughout the
-  request/response cycle.
+* provide access to the needed resources throughout the request/response cycle.
 
 * provide the base URL for the resources to be rendered.
+
+* clear the needed resources when an exception view is rendered.
 
 This library fulfills these conditions for a Zope Toolkit/Grok setup.
 
@@ -81,4 +82,17 @@ aware URLs to in-template resources::
   </body>
   </html>
 
+Exception views
+---------------
+
+When an exception occurs in the rendering of a view, we don't want to have any
+needed resources intended for a view being also injected in the error view.
+The needed resources are cleared and if the exception view chooses to do so,
+it can need resources itself.
+
+  >>> browser.raiseHttpErrors = False
+  >>> browser.open('http://localhost/zope.fanstatic.test_error')
+  >>> import fanstatic
+  >>> fanstatic.get_needed().has_resources()
+  False
 

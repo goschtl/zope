@@ -33,6 +33,8 @@ setup(
         'setuptools',
         'fanstatic',
         'zope.component',
+        'zope.errorview',
+        'zope.event',
         'zope.interface',
         'zope.publisher',
         'zope.traversing',

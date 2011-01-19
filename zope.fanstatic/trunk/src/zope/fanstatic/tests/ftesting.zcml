@@ -81,4 +81,12 @@
     class=".view.TestInlineResource"
     />
 
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_error"
+    permission="zope.Public"
+    template="test_error.pt"
+    class=".view.TestError"
+    />
+
 </configure>
