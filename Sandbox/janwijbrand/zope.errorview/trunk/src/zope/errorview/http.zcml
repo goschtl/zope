@@ -6,35 +6,36 @@
   <include package="zope.publisher" file="meta.zcml" />
 
   <view
-    class=".http.ExceptionView"
+    factory=".http.ExceptionView"
     for="zope.interface.common.interfaces.IException"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     permission="zope.Public"
   />
 
-<!--  <view-->
-<!--    factory=".unauthorized.Unauthorized"-->
-<!--    for="zope.security.interfaces.IUnauthorized"-->
-<!--    type="zope.publisher.interfaces.http.IHTTPRequest"-->
-<!--    name="index.html"-->
-<!--    permission="zope.Public"-->
-<!--  />-->
+  <view
+    factory=".http.UnauthorizedView"
+    for="zope.security.interfaces.IUnauthorized"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    name="index.html"
+    permission="zope.Public"
+  />
 
-<!--  <view-->
-<!--    factory=".notfound.NotFound"-->
-<!--    for="zope.publisher.interfaces.ITraversalException"-->
-<!--    type="zope.publisher.interfaces.http.IHTTPRequest"-->
-<!--    name="index.html"-->
-<!--    permission="zope.Public"-->
-<!--  />-->
+  <view
+    factory=".http.TraversalExceptionView"
+    for="zope.publisher.interfaces.ITraversalException"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    name="index.html"
+    permission="zope.Public"
+  />
 
-<!--  <view-->
-<!--    factory="zope.errorview.methodnotallowed.MethodNotAllowedView"-->
-<!--    for="zope.publisher.interfaces.http.IMethodNotAllowed"-->
-<!--    type="zope.publisher.interfaces.http.IHTTPRequest"-->
-<!--    name="index.html"-->
-<!--    permission="zope.Public"-->
-<!--  />-->
+  <view
+    factory=".http.MethodNotAllowedView"
+    for="zope.publisher.interfaces.http.IMethodNotAllowed"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    name="index.html"
+    permission="zope.Public"
+  />
 
   <browser:defaultView
     for="zope.interface.common.interfaces.IException"

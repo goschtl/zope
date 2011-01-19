@@ -79,4 +79,3 @@ class MethodNotAllowedView(ExceptionViewBase):
         self.request.response.setStatus(405)
         self.request.response.setHeader('Allow', ', '.join(allow))
         return ''
-
