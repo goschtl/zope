@@ -5,7 +5,7 @@ CHANGES
 0.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Updated author e-mail address and home page address.
 
 
 0.5.0 (2011-01-19)
