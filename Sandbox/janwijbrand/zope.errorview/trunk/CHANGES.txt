@@ -5,4 +5,4 @@ CHANGES
 1.0 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Initially refactoring from zope.app.http.exception and zope.app.exception.
