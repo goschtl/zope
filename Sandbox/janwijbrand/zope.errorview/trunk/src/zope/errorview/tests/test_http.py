@@ -54,7 +54,6 @@ class TestErrorViews(TestCase):
     def test_traversalexceptionview(self):
         view = http.TraversalExceptionView(TraversalException(), self.request)
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 404)
         # XXX test the MKCOL verb here too.
@@ -62,7 +61,6 @@ class TestErrorViews(TestCase):
     def test_unauthorizedexceptionview(self):
         view = http.UnauthorizedView(Unauthorized(), self.request)
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 401)
         self.failUnless(
@@ -73,7 +71,6 @@ class TestErrorViews(TestCase):
         error = MethodNotAllowed(object(), self.request)
         view = http.MethodNotAllowedView(error, self.request)
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEquals(self.request.response.getStatus(), 405)
         self.assertEquals(self.request.response.getHeader('Allow'), '')
@@ -112,7 +109,6 @@ class TestErrorViewsFunctional(TestCase):
     def test_exceptionview(self):
         view = getMultiAdapter((Exception(), self.request), name='index.html')
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 500)
 
@@ -120,7 +116,6 @@ class TestErrorViewsFunctional(TestCase):
         view = getMultiAdapter(
             (TraversalException(), self.request), name='index.html')
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 404)
         # XXX test the MKCOL verb here too.
@@ -129,7 +124,6 @@ class TestErrorViewsFunctional(TestCase):
         view = getMultiAdapter(
             (Unauthorized(), self.request), name='index.html')
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 401)
         self.failUnless(
@@ -140,7 +134,6 @@ class TestErrorViewsFunctional(TestCase):
         error = MethodNotAllowed(object(), self.request)
         view = getMultiAdapter((error, self.request), name='index.html')
         self.failUnless(IHTTPException.providedBy(view))
-        self.assertEquals(str(view), '')
         self.assertEquals(view(), '')
         self.assertEquals(self.request.response.getStatus(), 405)
         self.assertEquals(self.request.response.getHeader('Allow'), '')

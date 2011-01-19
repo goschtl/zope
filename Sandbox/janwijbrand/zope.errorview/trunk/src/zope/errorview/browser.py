@@ -24,12 +24,12 @@ from zope.publisher.browser import BrowserPage
 
 # XXX i18n-ing?
 
-class ExceptionView(ExceptionView):
+class ExceptionView(ExceptionView, BrowserPage):
 
     def render(self):
         return u'A system error occurred.'
 
-class NotFoundView(ExceptionViewBase):
+class NotFoundView(ExceptionViewBase, BrowserPage):
 
     def update(self):
         self.request.response.setStatus(404)
@@ -37,7 +37,7 @@ class NotFoundView(ExceptionViewBase):
     def render(self):
         return u'The requested resource can not be found.'
 
-class UnauthorizedView(UnauthorizedView):
+class UnauthorizedView(UnauthorizedView, BrowserPage):
 
     def update(self):
         # Set the error status to 403 (Forbidden) in the case when we
@@ -55,4 +55,5 @@ class UnauthorizedView(UnauthorizedView):
 
     def render(self):
         if self.request.response.getStatus() not in (302, 303):
-            return u'Acces to the requested resource is forbidden.'
+            return u'Access to the requested resource is forbidden.'
+        return ''

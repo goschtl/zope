@@ -2,25 +2,26 @@
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser">
 
+  <include package="zope.browserpage" file="meta.zcml" />
   <include package="." file="http.zcml" />
 
-  <page
+  <browser:page
     for="zope.interface.common.interfaces.IException"
     class=".browser.ExceptionView"
     name="index.html"
     permission="zope.Public"
   />
 
-  <page
+  <browser:page
     for="zope.security.interfaces.IUnauthorized"
     class=".browser.UnauthorizedView"
     name="index.html"
     permission="zope.Public"
   />
 
-  <page
+  <browser:page
     for="zope.publisher.interfaces.INotFound"
-    class=".browser.NotFondView"
+    class=".browser.NotFoundView"
     name="index.html"
     permission="zope.Public"
   />

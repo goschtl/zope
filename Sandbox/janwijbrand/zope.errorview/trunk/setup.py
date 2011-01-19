@@ -52,12 +52,15 @@ setup(name='zope.errorview',
       namespace_packages=['zope'],
       extras_require={
           'test':[
-          'zope.testing'],
+              'zope.testing'],
+          'browser': [
+              'zope.authentication',
+              'zope.browser',
+              'zope.browserpage',
+          ],
           },
       install_requires=[
           'setuptools',
-          'zope.browser',
-          'zope.authentication',
           'zope.component',
           'zope.interface',
           'zope.publisher',
