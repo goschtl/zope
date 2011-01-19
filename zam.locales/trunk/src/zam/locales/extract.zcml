@@ -2,9 +2,7 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="zam">
 
-  <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.component.browser" file="meta.zcml" />
-  <include package="zope.app.container.browser" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />

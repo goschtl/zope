@@ -5,4 +5,4 @@ CHANGES
 Version 0.5.0 (unreleased)
 --------------------------
 
-- Initial Release
+- Initial Release.
