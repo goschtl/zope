@@ -50,9 +50,12 @@ setup(name='zope.errorview',
       packages=find_packages('src'),
       package_dir={'': 'src'},
       namespace_packages=['zope'],
-      extras_require={'test':[]},
+      extras_require={
+          'test':[],
+          },
       install_requires=[
           'setuptools',
+          'zope.browser',
           'zope.component',
           'zope.interface',
           'zope.publisher',
