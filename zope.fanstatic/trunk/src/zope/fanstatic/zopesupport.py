@@ -51,7 +51,9 @@ def set_base_url(event):
 
 @adapter(IHandleExceptionEvent)
 def clear_needed_resources(event):
-    fanstatic.clear_needed()
+    needed = fanstatic.get_needed()
+    if isinstance(needed, fanstatic.NeededResources):
+        needed.clear()
 
 _sentinel = object()
 
