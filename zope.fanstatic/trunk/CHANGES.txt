@@ -1,10 +1,12 @@
 CHANGES
 *******
 
-0.9a (unreleased)
------------------
+0.9 (2011-01-20)
+----------------
 
-- Nothing changed yet.
+- Integrate zope.errorview, subscribing to the HandleExceptionEvent. This will
+  clear the needed resources thusfar required, to have a clean slate for the
+  error view to be rendered.
 
 0.9b (2011-01-06)
 -----------------
