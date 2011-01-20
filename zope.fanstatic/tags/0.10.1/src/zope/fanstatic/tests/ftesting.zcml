@@ -1,0 +1,93 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    package="zope.fanstatic.tests">
+
+  <!-- set up enough of Zope to run the tests -->
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.principalregistry" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml"/>
+
+  <include package="zope.annotation" />
+  <include package="zope.component" />
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.publication" />
+  <include package="zope.container" />
+  <include package="zope.principalregistry" />
+  <include package="zope.site" />
+  <include package="zope.security" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.errorview" file="browser.zcml" />
+
+  <!-- principals -->
+  <securityPolicy
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+  />
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User"
+  />
+  <unauthenticatedGroup
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
+  <everybodyGroup
+      id="zope.Everybody"
+      title="All Users"
+      />
+  <grant
+      permission="zope.View"
+      principal="zope.Everybody"
+      />
+
+  <include package="zope.fanstatic"/>
+
+  <!-- some pages to use in the tests -->
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_single"
+    permission="zope.Public"
+    template="test_single.pt"
+    class=".view.TestSingle"
+    />
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_multiple"
+    permission="zope.Public"
+    template="test_multiple.pt"
+    class=".view.TestMultiple"
+    />
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_bottom"
+    permission="zope.Public"
+    template="test_bottom.pt"
+    class=".view.TestBottom"
+    />
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_inline_resource"
+    permission="zope.Public"
+    template="test_inline_resource.pt"
+    class=".view.TestInlineResource"
+    />
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="zope.fanstatic.test_error"
+    permission="zope.Public"
+    template="test_error.pt"
+    class=".view.TestError"
+    />
+
+</configure>
