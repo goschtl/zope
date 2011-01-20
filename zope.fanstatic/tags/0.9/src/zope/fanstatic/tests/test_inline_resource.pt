@@ -1,0 +1,9 @@
+<html>
+<head>
+</head>
+<body>
+  <img tal:attributes="src context/++resource++foo/evencaveman.jpg"/>
+  <img tal:attributes="src context/++resource++foo/sub/evencaveman.jpg"/>
+</body>
+</html>
+

@@ -1,0 +1,11 @@
+<configure xmlns:meta="http://namespaces.zope.org/meta">
+  <meta:directives namespace="http://namespaces.zope.org/zf">
+
+    <meta:directive
+       name="setupZopeFanstatic"
+       schema=".interfaces.ISetupZopeFanstatic"
+       handler=".zcml.action_setup" />
+
+  </meta:directives>
+
+</configure>
