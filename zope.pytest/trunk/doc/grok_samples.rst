@@ -27,7 +27,7 @@ to the find_links.
 Then we can add a new part called 'pytest'. Don't forget to add it 
 to the global parts too!
 
-Here is the pytest section:
+Here is the pytest section::
 
     [pytest]
     recipe = z3c.recipe.scripts
@@ -47,7 +47,7 @@ unit-tests
 ----------
 
 To run unit-tests with pytest we have to create a file with the
-prefix 'test_'. Ok so let's create a file test_unit.py with the
+prefix ``test_``. Ok so let's create a file test_unit.py with the
 following content.
 
 .. code-block:: python
@@ -64,9 +64,9 @@ following content.
 
 
 Now we can run this test with bin/py.test we should get one failing
-test:
+test::
 
-.. code-block:: bash
+
     ==================================== FAILURES =====================================
     _______________________________ TestClass.test_two ________________________________
 
@@ -105,7 +105,7 @@ the Zope Component Architecture. Take a look on this example in app.py:
             return "Hello World"
 
 Ok now we have some code to test. 
-We have to create again a module with holds our test prefixed with test_.
+We have to create again a module with holds our test prefixed with ``test_``.
 So we call it test_integration.py
 
 .. code-block:: python
