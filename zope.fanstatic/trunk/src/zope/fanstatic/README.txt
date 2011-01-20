@@ -22,7 +22,6 @@ inclusion of a single resource in its header::
 
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
-  >>> browser.handleErrors = False
   >>> browser.open('http://localhost/zope.fanstatic.test_single')
   >>> print browser.contents
   <html>
@@ -95,4 +94,3 @@ it can need resources itself.
   >>> import fanstatic
   >>> fanstatic.get_needed().has_resources()
   False
-

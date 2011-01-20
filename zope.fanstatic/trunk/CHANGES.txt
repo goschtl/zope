@@ -6,7 +6,6 @@ CHANGES
 
 - Nothing changed yet.
 
-
 0.9b (2011-01-06)
 -----------------
 
