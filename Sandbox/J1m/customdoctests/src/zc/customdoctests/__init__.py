@@ -1,0 +1,47 @@
+##############################################################################
+#
+# Copyright (c) 2011 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
+import doctest
+import re
+import sys
+
+class DocTestParser(doctest.DocTestParser):
+    "Doctest parser that creates calls into JavaScript."
+
+    def __init__(self, *args, **kw):
+        ps1 = kw.pop('ps1', '>>>')
+        ps2 = kw.pop('ps2', r'\.\.\.')
+        self.handler_name = kw.pop('handler_name', '')
+        getattr(doctest.DocTestParser, '__init__', lambda : None)(*args, **kw)
+
+        self._EXAMPLE_RE = re.compile(
+            r'''
+            # Source consists of a PS1 line followed by zero or more PS2 lines.
+            (?P<source>
+                (?:^(?P<indent> [ ]*) %(ps1)s    .*)    # PS1 line
+                (?:\n           [ ]*  %(ps2)s    .*)*)  # PS2 lines
+            \n?
+            # Want consists of any non-blank lines that do not start with PS1.
+            (?P<want> (?:(?![ ]*$)        # Not a blank line
+                         (?![ ]*%(ps1)s)  # Not a line starting with PS1
+                         .*$\n?           # But any other line
+                      )*)
+        ''' % dict(ps1=ps1, ps2=ps2), re.MULTILINE | re.VERBOSE)
+
+    def parse(self, string, name='<string>'):
+        r =doctest.DocTestParser.parse(self, string, name)
+        for s in r:
+            if isinstance(s, doctest.Example):
+                s.source = "%s(%r)\n" % (self.handler_name, s.source)
+        return r
