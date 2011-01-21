@@ -11,5 +11,7 @@ TODO
 
   - Fix use of interfaces in sample fixtures.
 
+  - Add project setup section in docs.
+
   - Add (testable) samples for browser- and doctest-related usage
     of zope.pytest.
