@@ -71,18 +71,47 @@ The management page can be found at the edit.html page:
   >>> mgr.open(rootURL + '/++etc++site/auth/edit.html')
   >>> print mgr.contents
   <!DOCTYPE ...
-  ...
-  <div id="content">
-    <form action="http://localhost/++skin++ZAM/++etc++site/auth/edit.html"
-          method="post" enctype="multipart/form-data"
-          class="edit-form" name="form" id="form">
+      <div id="content">
+        <form action="http://localhost/++skin++ZAM/++etc++site/auth/edit.html"
+        method="post" enctype="multipart/form-data"
+        class="edit-form" name="form" id="form">
     <div class="viewspace">
         <h1>Edit Authenticator.</h1>
         <div class="required-info">
-           <span class="required">*</span>
-           &ndash; required
+           <span class="required">*</span>&ndash; required
         </div>
       <div>
+            <div id="form-widgets-includeNextUtilityForAuthenticate-row"
+                 class="row">
+                <div class="label">
+                  <label for="form-widgets-includeNextUtilityForAuthenticate">
+                    <span>Include next utility for authenticate</span>
+                    <span class="required">*</span>
+                  </label>
+                </div>
+                <div class="widget">
+  <span class="option">
+    <label for="form-widgets-includeNextUtilityForAuthenticate-0">
+      <input id="form-widgets-includeNextUtilityForAuthenticate-0"
+             name="form.widgets.includeNextUtilityForAuthenticate:list"
+             class="radio-widget required bool-field"
+             value="true" checked="checked" type="radio" />
+      <span class="label">yes</span>
+    </label>
+  </span>
+  <span class="option">
+    <label for="form-widgets-includeNextUtilityForAuthenticate-1">
+      <input id="form-widgets-includeNextUtilityForAuthenticate-1"
+             name="form.widgets.includeNextUtilityForAuthenticate:list"
+             class="radio-widget required bool-field"
+             value="false" type="radio" />
+      <span class="label">no</span>
+    </label>
+  </span>
+  <input name="form.widgets.includeNextUtilityForAuthenticate-empty-marker"
+         type="hidden" value="1" />
+  </div>
+            </div>
             <div id="form-widgets-credentialsPlugins-row"
                  class="row">
                 <div class="label">
@@ -91,7 +120,9 @@ The management page can be found at the edit.html page:
                     <span class="required">*</span>
                   </label>
                 </div>
-                <div class="widget"><script type="text/javascript">
+                <div class="widget">
+  <script type="text/javascript">
+  /*  <![CDATA[ */
   function moveItems(from, to)
     {
     // shortcuts for selection fields
@@ -211,30 +242,29 @@ The management page can be found at the edit.html page:
   // error message for missing selection
   function selectionError()
     {alert("Must select something!")}
+  /* ]]> */
   </script>
   <table border="0" class="ordered-selection-field">
     <tr>
       <td>
         <select id="form-widgets-credentialsPlugins-from"
                 name="form.widgets.credentialsPlugins.from"
-                size="5" multiple="multiple"
-                class="required list-field">
+                class="required list-field"
+                multiple="multiple" size="5">
         </select>
       </td>
       <td>
-        <button name="from2toButton" type="button"
-                value="&rarr;"
-                onclick="javascript:from2to('form-widgets-credentialsPlugins')">&rarr;</button>
+        <button onclick="javascript:from2to('form-widgets-credentialsPlugins')"
+                name="from2toButton" type="button" value="→">&rarr;</button>
         <br />
-        <button name="to2fromButton" type="button"
-                value="&larr;"
-                onclick="javascript:to2from('form-widgets-credentialsPlugins')">&larr;</button>
+        <button onclick="javascript:to2from('form-widgets-credentialsPlugins')"
+                name="to2fromButton" type="button" value="←">&larr;</button>
       </td>
       <td>
         <select id="form-widgets-credentialsPlugins-to"
                 name="form.widgets.credentialsPlugins.to"
-                size="5" multiple="multiple"
-                class="required list-field">
+                class="required list-field"
+                multiple="multiple" size="5">
         </select>
         <input name="form.widgets.credentialsPlugins-empty-marker"
                type="hidden" />
@@ -244,11 +274,11 @@ The management page can be found at the edit.html page:
         </span>
       </td>
       <td>
-        <button name="upButton" type="button" value="&uarr;"
-                onclick="javascript:moveUp('form-widgets-credentialsPlugins')">&uarr;</button>
+        <button onclick="javascript:moveUp('form-widgets-credentialsPlugins')"
+                name="upButton" type="button" value="↑">&uarr;</button>
         <br />
-        <button name="downButton" type="button" value="&darr;"
-                onclick="javascript:moveDown('form-widgets-credentialsPlugins')">&darr;</button>
+        <button onclick="javascript:moveDown('form-widgets-credentialsPlugins')"
+                name="downButton" type="button" value="↓">&darr;</button>
       </td>
     </tr>
   </table>
@@ -262,7 +292,9 @@ The management page can be found at the edit.html page:
                     <span class="required">*</span>
                   </label>
                 </div>
-                <div class="widget"><script type="text/javascript">
+                <div class="widget">
+  <script type="text/javascript">
+  /*  <![CDATA[ */
   function moveItems(from, to)
     {
     // shortcuts for selection fields
@@ -382,30 +414,29 @@ The management page can be found at the edit.html page:
   // error message for missing selection
   function selectionError()
     {alert("Must select something!")}
+  /* ]]> */
   </script>
   <table border="0" class="ordered-selection-field">
     <tr>
       <td>
         <select id="form-widgets-authenticatorPlugins-from"
                 name="form.widgets.authenticatorPlugins.from"
-                size="5" multiple="multiple"
-                class="required list-field">
+                class="required list-field"
+                multiple="multiple" size="5">
         </select>
       </td>
       <td>
-        <button name="from2toButton" type="button"
-                value="&rarr;"
-                onclick="javascript:from2to('form-widgets-authenticatorPlugins')">&rarr;</button>
+        <button onclick="javascript:from2to('form-widgets-authenticatorPlugins')"
+                name="from2toButton" type="button" value="→">&rarr;</button>
         <br />
-        <button name="to2fromButton" type="button"
-                value="&larr;"
-                onclick="javascript:to2from('form-widgets-authenticatorPlugins')">&larr;</button>
+        <button onclick="javascript:to2from('form-widgets-authenticatorPlugins')"
+                name="to2fromButton" type="button" value="←">&larr;</button>
       </td>
       <td>
         <select id="form-widgets-authenticatorPlugins-to"
                 name="form.widgets.authenticatorPlugins.to"
-                size="5" multiple="multiple"
-                class="required list-field">
+                class="required list-field"
+                multiple="multiple" size="5">
         </select>
         <input name="form.widgets.authenticatorPlugins-empty-marker"
                type="hidden" />
@@ -415,11 +446,11 @@ The management page can be found at the edit.html page:
         </span>
       </td>
       <td>
-        <button name="upButton" type="button" value="&uarr;"
-                onclick="javascript:moveUp('form-widgets-authenticatorPlugins')">&uarr;</button>
+        <button onclick="javascript:moveUp('form-widgets-authenticatorPlugins')"
+                name="upButton" type="button" value="↑">&uarr;</button>
         <br />
-        <button name="downButton" type="button" value="&darr;"
-                onclick="javascript:moveDown('form-widgets-authenticatorPlugins')">&darr;</button>
+        <button onclick="javascript:moveDown('form-widgets-authenticatorPlugins')"
+                name="downButton" type="button" value="↓">&darr;</button>
       </td>
     </tr>
   </table>
@@ -429,9 +460,9 @@ The management page can be found at the edit.html page:
     </div>
     <div>
       <div class="buttons">
-        <input type="submit" id="form-buttons-apply"
-         name="form.buttons.apply"
-         class="submit-widget button-field" value="Apply" />
+  <input id="form-buttons-apply" name="form.buttons.apply"
+         class="submit-widget button-field" value="Apply"
+         type="submit" />
       </div>
     </div>
   </form>

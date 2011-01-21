@@ -6,9 +6,12 @@
 
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.skin" file="ftesting.zcml" />
+  <include package="zope.i18n" />
+  <include package="zope.app.schema" />
 
   <!-- load 3rd party configuration -->
   <include package="z3c.contents" />
+  <include package="z3c.authenticator" />
 
   <!-- zamplugin configuration -->
   <include package="zamplugin.authenticator" />
