@@ -13,6 +13,7 @@ Contents:
 
    intro
    samples
+   grok_samples
    api
    community
    development
