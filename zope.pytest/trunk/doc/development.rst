@@ -85,6 +85,14 @@ extracted from the `zope.pytest` source code. The docs source is in
 ``doc/``, the built documentation will be available in
 ``doc/_build/html``.
 
+We also have to support for testing the docs. These tests can be run
+in the ``doc`` dir as well::
+
+  $ make doctest
+
+Releasers should make sure that all tests pass.
+
+
 Python with `zope.pytest` on the sys.path
 -----------------------------------------
 
