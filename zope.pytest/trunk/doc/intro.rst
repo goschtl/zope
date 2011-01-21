@@ -44,6 +44,8 @@ setup/teardown code simply like this::
 This setup requires that you provide a valid configuration in an
 ``ftesting.zcml`` file in your package.
 
+.. _project_setup:
+
 Activating pytest_ and :mod:`zope.pytest` in your project
 *********************************************************
 
@@ -69,6 +71,7 @@ be setup like this in your project's ``setup.py``::
     tests_require = [
         'pytest',
         'zope.app.appsetup',
+        'zope.pytest',
         ]
 
     setuptools.setup(
