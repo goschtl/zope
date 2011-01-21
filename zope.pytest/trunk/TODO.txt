@@ -1,8 +1,6 @@
 TODO
 ====
 
-* Tell how to build/use the docs stuff (including doc tests).
-
 * Integrate sphinx docs:
 
   - Give browser samples in docs (should be runnable with doctest builder).
@@ -10,8 +8,6 @@ TODO
   - Make docs better looking.
 
   - Fix use of interfaces in sample fixtures.
-
-  - Add project setup section in docs.
 
   - Add (testable) samples for browser- and doctest-related usage
     of zope.pytest.
