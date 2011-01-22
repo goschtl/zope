@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.1.3dev'
+version = '1.2.0'
 
 setup(name='five.grok',
       version=version,
@@ -29,7 +29,7 @@ setup(name='five.grok',
       install_requires=[
         'setuptools',
         'martian',
-        'Zope2',
+        'Zope2>=2.12.3',
         'five.formlib',
         'five.localsitemanager > 2.0dev',
         'grokcore.component',
