@@ -109,6 +109,14 @@ In our package we add the following, pretty plain test file:
 
   .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/simple/mypkg/tests/test_app.py
 
+All tests do the usual plain pytest_ stuff: they are named starting
+with ``test_`` so that pytest_ can find them. The second and third
+tests check whether the specified interfaces are implemented by the
+``SampleApp`` class and instances thereof.
+
+For plain :mod:`zope.interface` related tests we need no special
+setup.
+
 .. doctest::
    :hide:
 
@@ -117,15 +125,15 @@ In our package we add the following, pretty plain test file:
 Then, we run py.test_ with this package as argument:
 
     >>> import pytest
-    >>> pytest.main(mypkg_dir)
+    >>> pytest.main(mypkg_dir) # doctest: +REPORT_UDIFF
     =============...=== test session starts ====...================
     platform ... -- Python 2... -- pytest-...
     collecting ...
-    collected 1 items
+    collected 3 items
     <BLANKLINE>
-    .../mypkg/tests/test_app.py .
+    .../mypkg/tests/test_app.py ...
     <BLANKLINE>
-    =============...=== 1 passed in ... seconds ===...=============
+    =============...=== 3 passed in ... seconds ===...=============
     0
 
 .. doctest::
@@ -133,7 +141,7 @@ Then, we run py.test_ with this package as argument:
 
     >>> unregister_fixture(mypkg_dir)
 
-Excellent! py.test found our little piece and ran it.
+Excellent! py.test found our tests and executed them.
 
 Apparently we didn't really need `zope.pytest` in this example, as
 there was no Zope specific code to test.
@@ -194,24 +202,28 @@ parsed when the `test_foo_utility()` test starts and any registrations
 are cleared up afterwards. This is the reason, why the ``foo utility``
 looked up in our test can actually be found.
 
+Please note, that in the actual tests we make no use of the passed
+`config` parameter. We only request it to inject the necessary setup
+and teardown functionality.
+
 .. doctest::
    :hide:
 
     >>> mypkg_dir = register_fixture('zcml')
 
-Therefore the tests pass:
+When run, all tests pass:
 
     >>> import pytest
     >>> pytest.main(mypkg_dir)
     =============...=== test session starts ====...================
     platform ... -- Python 2... -- pytest-...
     collecting ...
-    collected 3 items
+    collected 5 items
     <BLANKLINE>
-    .../mypkg/tests/test_app.py .
+    .../mypkg/tests/test_app.py ...
     .../mypkg/tests/test_foo.py ..
     <BLANKLINE>
-    =============...=== 3 passed in ... seconds ===...=============
+    =============...=== 5 passed in ... seconds ===...=============
     0
 
 .. doctest::
@@ -227,7 +239,9 @@ Browsing Objects
 ----------------
 
 The most interesting point about functional testing might be to check
-Zope-generated output, i.e. browser pages.
+Zope-generated output, i.e. browser pages or similar.
+
+This task needs much more setup where `zope.pytest` can come to help.
 
 .. _ZCML: http://docs.zope.org/zopetoolkit/codingstyle/zcml-style.html
 .. _pytest: http://pytest.org/
