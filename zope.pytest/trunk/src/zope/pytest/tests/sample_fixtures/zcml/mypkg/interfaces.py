@@ -5,12 +5,12 @@ class ISampleApp(zope.interface.Interface):
     """
     pass
 
-class ISampleInterface1(zope.interface.Interface):
-    """Sample interface 1.
-    """
-    pass
+class IFoo(zope.interface.Interface):
+    """A Foo.
 
-class ISampleInterface2(zope.interface.Interface):
-    """Sample interface 2.
+    Foos can do foo.
     """
-    pass
+    def do_foo():
+        """Do the foo.
+        """
+        pass

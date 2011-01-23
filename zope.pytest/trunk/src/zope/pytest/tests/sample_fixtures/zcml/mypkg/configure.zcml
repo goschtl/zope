@@ -4,7 +4,7 @@
 
   <include package="zope.component" file="meta.zcml" />
   <utility component=".app.FooUtility" 
-	   provides=".app.IFoo" 
+	   provides=".interfaces.IFoo" 
 	   name="foo utility" />
 
 </configure>

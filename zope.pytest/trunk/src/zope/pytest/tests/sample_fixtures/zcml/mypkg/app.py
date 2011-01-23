@@ -1,14 +1,11 @@
-import zope.interface
+from zope.interface import implements
+from mypkg.interfaces import ISampleApp, IFoo
 
-class AppSample(object):
-    pass
-
-class IFoo(zope.interface.Interface):
-    def do_foo():
-        pass
+class SampleApp(object):
+    implements(ISampleApp)
 
 class FooUtility(object):
-    zope.interface.implements(IFoo)
+    implements(IFoo)
 
     def do_foo(self):
         return "Foo!"
