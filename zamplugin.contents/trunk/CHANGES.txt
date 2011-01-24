@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
-----------------------------
+0.6.0 (2011-01-24)
+------------------
 
 - Requiring ``zam.api`` 0.7 or newer for ZTK 1.0 compatibility.
 
@@ -11,7 +11,7 @@ Version 0.5.1dev (unreleased)
 
 - Removed duplicated z3c.table and z3c.contents configuration in ftesting.zcml.
 
-Version 0.5.0 (2008-04-13)
--------------------------
+0.5.0 (2008-04-13)
+------------------
 
 - Initial Release
