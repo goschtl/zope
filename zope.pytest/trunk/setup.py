@@ -13,6 +13,9 @@ docs_require = [
     'docutils',
     'roman',
     'pytest',
+    'zope.app.zcmlfiles',
+    'zope.browserpage',
+    'zope.securitypolicy',
     ]
 
 def read(*rnames):
