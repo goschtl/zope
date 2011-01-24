@@ -56,18 +56,20 @@ Now you can see there is ``contents.html`` page at the site root:
   >>> print mgr.contents
   <!DOCTYPE ...
   ...
-  <table>
+          <table>
   <tr>
   <td class="row">
     <label for="search-widgets-searchterm">Search</label>
-    <input type="text" id="search-widgets-searchterm"
-         name="search.widgets.searchterm"
-         class="text-widget required textline-field" value="" />
+      <input id="search-widgets-searchterm"
+             name="search.widgets.searchterm"
+             class="text-widget required textline-field"
+             value="" type="text" />
   </td>
   <td class="action">
-    <input type="submit" id="search-buttons-search"
+  <input id="search-buttons-search"
          name="search.buttons.search"
-         class="submit-widget button-field" value="Search" />
+         class="submit-widget button-field" value="Search"
+         type="submit" />
   </td>
   </tr>
   </table>
