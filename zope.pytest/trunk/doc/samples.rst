@@ -241,7 +241,35 @@ Browsing Objects
 The most interesting point about functional testing might be to check
 Zope-generated output, i.e. browser pages or similar.
 
-This task needs much more setup where `zope.pytest` can come to help.
+This task normally needs much more setup where `zope.pytest` can come
+to help to minimize the efforts dramatically.
+
+.. doctest::
+   :hide:
+
+    >>> mypkg_dir = register_fixture('browser')
+
+When run, all tests pass:
+
+    >>> import pytest
+    >>> pytest.main(mypkg_dir)
+    =============...=== test session starts ====...================
+    platform ... -- Python 2... -- pytest-...
+    collecting ...
+    collected 7 items
+    <BLANKLINE>
+    .../mypkg/tests/test_app.py ...
+    .../mypkg/tests/test_browser.py ..
+    .../mypkg/tests/test_foo.py ..
+    <BLANKLINE>
+    =============...=== 7 passed in ... seconds ===...=============
+    0
+
+.. doctest::
+   :hide:
+
+    >>> unregister_fixture(mypkg_dir)
+
 
 .. _ZCML: http://docs.zope.org/zopetoolkit/codingstyle/zcml-style.html
 .. _pytest: http://pytest.org/
