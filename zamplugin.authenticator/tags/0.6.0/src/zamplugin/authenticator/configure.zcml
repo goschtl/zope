@@ -1,0 +1,30 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include package="z3c.authenticator" />
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for IAuthenticatorPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.authenticator.plugin.AuthenticatorPlugin
+           zam.api.layer.IAuthenticatorPluginLayer
+           zope.location.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <registerIn registry="zamplugin.authenticator.plugin.AuthenticatorBaseRegistry">
+    <view
+        name="etc"
+        type="zam.api.layer.IAuthenticatorPluginLayer"
+        provides="zope.traversing.interfaces.ITraversable" for="*"
+        factory="zope.traversing.namespace.etc"
+        />
+  
+    <include package=".browser" />
+    <include file="menu.zcml" />
+
+  </registerIn>
+
+</configure>

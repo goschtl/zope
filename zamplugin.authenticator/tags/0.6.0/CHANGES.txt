@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2011-01-24)
+------------------
+
+- Requiring ``zam.api`` 0.7 or newer for ZTK 1.0 compatibility.
+
+- Updated tests to run with ``z3c.form`` 2.1 or newer thus requiring at
+  least this version.
+
+- Updated author email and home page address in package meta data.
+
+
+0.5.0 (2008-04-16)
+------------------
+
+- Initial Release
