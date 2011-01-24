@@ -23,10 +23,10 @@ def read(*rnames):
 
 setup (
     name='zamplugin.contents',
-    version='0.6.0',
+    version='0.6.1dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
-    description = "Container management for ZAM Zope 3 Application Management",
+    author_email = "zope-dev@zope.org",
+    description = "Container management for ZAM (Zope 3 Application Management)",
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zamplugin.contents',
+    url = 'http://pypi.python.org/pypi/zamplugin.contents',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
