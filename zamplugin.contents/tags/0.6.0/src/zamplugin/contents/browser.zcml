@@ -1,0 +1,19 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <zope:registerIn registry="zamplugin.contents.plugin.ContentsBaseRegistry">
+
+    <z3c:pagelet
+        name="contents.html"
+        for="zope.app.container.interfaces.IReadContainer"
+        class="z3c.contents.browser.Contents"
+        permission="zope.ManageContent"
+        layer="zam.api.layer.IContentsPluginLayer"
+        />
+
+  </zope:registerIn>
+
+</configure>
