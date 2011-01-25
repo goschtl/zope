@@ -1,0 +1,42 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="ldapadapter">
+
+  <!-- the UI for ldapadapter is deprecated -->
+
+  <!-- LDAPAdapter -->
+  <addform
+      name="AddLDAPAdapter.html"
+      label="Add a LDAP Adapter"
+      schema="ldapadapter.interfaces.ILDAPAdapterManagement"
+      permission="zope.ManageSite"
+      content_factory="ldapadapter.utility.LDAPAdapter"
+      />
+  
+  <addMenuItem
+      class="ldapadapter.utility.ManageableLDAPAdapter"
+      title="LDAP Adapter"
+      description="A LDAP adapter"
+      permission="zope.ManageSite"
+      />
+  
+  <editform
+      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      schema="ldapadapter.interfaces.ILDAPAdapterManagement"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+  
+  <!-- LDAPAdapter connetion test view -->
+  <page
+      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      name="checkLDAPAdapter.html"
+      attribute="check"
+      class=".check.CheckLDAPAdapterView"
+      menu="zmi_views" title="Test LDAP Adapter"
+      permission="zope.ManageServices"
+      />
+
+</configure>

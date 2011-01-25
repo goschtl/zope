@@ -1,0 +1,42 @@
+===================
+ldapadapter changes
+===================
+
+0.8 (2011-01-25)
+================
+
+* Update to work with ZTK.
+
+* Newer version of openldap installed for testing purposes.
+
+* The UI stuff in ldapadapter.browser is now deprecrated. Should you
+  still need it, ZCML include ldapadapter.browser's ``configure.zcml``
+  manually; it is not pulled in automatically anymore.
+
+* Remove some old installation cruft.
+
+* zest.releaser support in buildout.
+
+0.7 - 04.07.2008
+================
+
+* Encoding DNs to UTF-8 when connecting.
+
+* Removed help:register directive for Grok 0.13 compatability.
+
+0.6 - 20.11.2006
+================
+
+Features added
+--------------
+
+* Fixed Zope 3.3 induced deprecation warnings.
+
+Bugs fixed
+----------
+
+* The LDAP Adapter Vocabulary list (used by ldappas) was showing an
+  enormous list of irrelevant things. Instead only show those
+  LDAPAdapters that were registered. Note: each ldapadapter must be
+  registered with a particular *name* for it to show up properly in
+  the user interface of ldappas now...

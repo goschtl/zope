@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="ldapadapter"
+    >
+
+  <class class="ldapadapter.utility.ManageableLDAPAdapter">
+
+    <factory
+        id="ldapadapter.utility.ManageableLDAPAdapter" />
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageServices"
+        interface="ldapadapter.interfaces.IManageableLDAPAdapter"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        set_schema="ldapadapter.interfaces.IManageableLDAPAdapter"
+        />
+
+  </class>
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component=".utility.LDAPAdapterVocabulary"
+      name="LDAP Adapter Names"
+      />
+
+  <!-- LDAP connection test adapter -->
+  <adapter
+      factory="ldapadapter.check.CheckLDAPAdapter"
+      provides="ldapadapter.interfaces.ICheckLDAPAdapter"
+      for="ldapadapter.interfaces.ILDAPAdapter"
+      />
+
+  <!-- not loading browser automatically anymore; that code is deprecated -->
+
+</configure>
