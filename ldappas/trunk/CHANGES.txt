@@ -2,7 +2,7 @@
 ldappas changes
 ===============
 
-0.8.1 (unreleased)
+0.8.1 (2011-01-25)
 ==================
 
 * Make registration of ZCML forms conditional on the presence of
