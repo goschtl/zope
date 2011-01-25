@@ -6,7 +6,7 @@ tests_require = [
 
 setup(
     name='ldappas',
-    version='0.8.2dev',
+    version='0.8.2',
     author='Zope developers',
     author_email='zope-dev@zope.org',
     url='http://svn.zope.org/ldappas',
@@ -29,7 +29,6 @@ LDAP server.
         'zope.i18nmessageid',
         'zope.interface',
         'zope.schema',
-        'zope.app.testing',
     ],
     tests_require=tests_require,
     extras_require={'test': tests_require},

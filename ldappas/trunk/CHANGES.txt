@@ -2,11 +2,10 @@
 ldappas changes
 ===============
 
-0.8.2 (unreleased)
+0.8.2 (2011-01-25)
 ==================
 
-- Nothing changed yet.
-
+* Actually *remove* zope.app.testing from the non-testing dependencies!
 
 0.8.1 (2011-01-25)
 ==================
