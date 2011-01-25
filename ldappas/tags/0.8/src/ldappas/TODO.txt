@@ -1,0 +1,21 @@
+TODO for LDAP PAS Plugins
+=========================
+
+Most important first:
+
+- Caching of information to not do searches at every auth.
+
+- More configuration to restrict searches to some objectClasses, and to
+  specify a field for the principal's description.
+
+- Debug/log functionnality so that an administrator can figure out
+  what's wrong when it doesn't work (which happens often with LDAP :-).
+
+- Search plugin: more configuration to decide when and if we do
+  substring searches on some attributes.
+
+- A subscriber that adds properties to a principal from LDAP its
+  information.
+
+- Search plugin: use LDAP schema introspection on objectClasses to
+  display a nice search form tailored to the server.
