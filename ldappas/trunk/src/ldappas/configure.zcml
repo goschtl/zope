@@ -17,29 +17,35 @@
 
   </class>
 
-  <browser:addform
+  <configure
+      xmlns:browser="http://namespaces.zope.org/browser"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="installed zope.app.form">
+
+    <browser:addform
       schema="ldappas.interfaces.ILDAPAuthentication"
       label="Add LDAP Authentication Plugin"
       content_factory=".authentication.LDAPAuthentication"
       name="addLDAPAuthentication.html"
       permission="zope.ManageSite"
       />
-
-  <browser:addMenuItem
+    
+    <browser:addMenuItem
       title="LDAP Authentication"
       description="A LDAP Authentication Plugin"
       class=".authentication.LDAPAuthentication"
       permission="zope.ManageSite"
       view="addLDAPAuthentication.html"
       />
-
-  <browser:editform
+    
+    <browser:editform
       schema="ldappas.interfaces.ILDAPAuthentication"
       name="edit.html"
       title="Edit"
       permission="zope.ManageSite"
       menu="zmi_views"
       />
+  </configure>
 
   <!-- Registering documentation with API doc -->
   <configure
