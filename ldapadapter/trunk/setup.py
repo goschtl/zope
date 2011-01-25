@@ -2,19 +2,19 @@ from setuptools import setup, find_packages
 
 setup(
     name='ldapadapter',
-    version='0.7.1dev',
-    author='Zope 3 developers',
-    author_email='zope3-dev@zope.org',
+    version='0.8dev',
+    author='Zope developers',
+    author_email='zope-dev@zope.org',
     url='http://svn.zope.org/ldapadapter',
     description="""\
-LDAP connection for Zope 3. Connects Zope 3 to an LDAP server.
+LDAP connection for Zope Toolkit. Connects to an LDAP server.
 """,
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data = True,
     zip_safe=False,
     license='ZPL 2.1',
-    keywords='Zope3 authentication ldap',
+    keywords='Zope3 ZTK authentication ldap',
     classifiers = ['Framework :: Zope 3'],
     install_requires=[
         'setuptools',
@@ -23,8 +23,8 @@ LDAP connection for Zope 3. Connects Zope 3 to an LDAP server.
         'zope.interface',
         'zope.component',
         'zope.schema',
-        'zope.app.container',
-        'zope.app.component',
+        'zope.container',
+        'zope.componentvocabulary',
         'zope.security',
         'zope.i18nmessageid',
     ],

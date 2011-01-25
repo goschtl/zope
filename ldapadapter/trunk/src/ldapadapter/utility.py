@@ -19,8 +19,8 @@ import re
 import ldap
 import persistent
 import zope.interface
-from zope.app.container.contained import Contained
-from zope.app.component.vocabulary import UtilityVocabulary
+from zope.container.contained import Contained
+from zope.componentvocabulary.vocabulary import UtilityVocabulary
 
 from ldapadapter import interfaces
 

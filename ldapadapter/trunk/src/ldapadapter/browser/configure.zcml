@@ -3,6 +3,8 @@
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="ldapadapter">
 
+  <!-- the UI for ldapadapter is deprecated -->
+
   <!-- LDAPAdapter -->
   <addform
       name="AddLDAPAdapter.html"

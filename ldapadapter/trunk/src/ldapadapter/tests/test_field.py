@@ -19,9 +19,7 @@ __docformat__ = "reStructuredText"
 
 import sys
 
-import unittest
-
-from zope.testing import doctest
+import unittest, doctest
 
 
 def test_suite():

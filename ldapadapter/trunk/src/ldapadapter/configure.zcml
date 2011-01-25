@@ -38,6 +38,6 @@
       for="ldapadapter.interfaces.ILDAPAdapter"
       />
 
-  <include package=".browser" />
+  <!-- not loading browser automatically anymore; that code is deprecated -->
 
 </configure>

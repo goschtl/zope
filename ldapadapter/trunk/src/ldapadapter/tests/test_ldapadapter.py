@@ -17,8 +17,8 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import sys
-import unittest
-from zope.testing import doctest, doctestunit
+import unittest, doctest
+from pprint import pprint
 
 
 def setUp(test):
@@ -48,7 +48,7 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('../README.txt',
                              setUp=setUp, tearDown=tearDown,
-                             globs={'pprint': doctestunit.pprint},
+                             globs={'pprint': pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 

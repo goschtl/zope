@@ -16,7 +16,6 @@
 $Id$
 """
 
-import sha
 import base64
 from copy import deepcopy
 

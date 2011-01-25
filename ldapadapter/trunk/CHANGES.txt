@@ -2,10 +2,20 @@
 ldapadapter changes
 ===================
 
-0.7.1 - (unreleased)
-====================
+0.8 - (unreleased)
+==================
 
- * ...
+* Update to work with ZTK.
+
+* Newer version of openldap installed for testing purposes.
+
+* The UI stuff in ldapadapter.browser is now deprecrated. Should you
+  still need it, ZCML include ldapadapter.browser's ``configure.zcml``
+  manually; it is not pulled in automatically anymore.
+
+* Remove some old installation cruft.
+
+* zest.releaser support in buildout.
 
 0.7 - 04.07.2008
 ================
