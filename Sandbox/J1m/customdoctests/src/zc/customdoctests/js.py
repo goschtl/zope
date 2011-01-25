@@ -31,7 +31,7 @@ def setUp(test_or_self):
 
     cx = run_time.new_context()
     globs['JS'] = JS = cx.execute
-    globs['add_global'] = cx.add_global
+    globs['add_js_global'] = cx.add_global
 
 
     # Emulate rhino load:
