@@ -20,7 +20,6 @@ LDAP server.
     zip_safe=False,
     license='ZPL 2.1',
     keywords='Zope3 authentication ldap',
-    classifiers = ['Framework :: Zope 3'],
     install_requires=[
         'ZODB3',
         'ldapadapter>0.6',
