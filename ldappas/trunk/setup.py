@@ -7,8 +7,8 @@ tests_require = [
 setup(
     name='ldappas',
     version='0.9dev',
-    author='Zope 3 developers',
-    author_email='zope3-dev@zope.org',
+    author='Zope developers',
+    author_email='zope-dev@zope.org',
     url='http://svn.zope.org/ldappas',
     description="""\
 LDAP-based authenticator for Zope 3. It uses ldapadapter to talk to an
