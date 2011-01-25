@@ -9,10 +9,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""HTTP `PUT` verb
-
-$Id$
-"""
+"""HTTP `PUT` verb"""
 __docformat__ = 'restructuredtext'
 
 from zope.component import queryAdapter
@@ -23,8 +20,9 @@ from zope.filerepresentation.interfaces import IWriteFile
 from zope.filerepresentation.interfaces import \
     IWriteDirectory, IReadDirectory, IFileFactory
 import zope.traversing.browser
-
+import zope.publisher.interfaces.http
 from zope.app.http.interfaces import INullResource
+
 
 class NullResource(object):
     """Object representing objects to be created by a `PUT`.
@@ -72,7 +70,10 @@ class NullPUT(object):
 
         # Fall back to a non-custom one
         if factory is None:
-            factory = IFileFactory(container)
+            factory = IFileFactory(container, None)
+        if factory is None:
+            raise zope.publisher.interfaces.http.MethodNotAllowed(
+                container, self.request)
 
         # TODO: Need to add support for large files
         data = body.read()
@@ -81,7 +82,7 @@ class NullPUT(object):
         notify(ObjectCreatedEvent(newfile))
 
         dir_write[name] = newfile
-        # Ickyness with non-predictable support for containment: 
+        # Ickyness with non-predictable support for containment:
         #   make sure we get a containment proxy
         newfile = dir_read[name]
 
@@ -103,7 +104,10 @@ class FilePUT(object):
     def PUT(self):
         body = self.request.bodyStream
         file = self.context
-        adapter = IWriteFile(file)
+        adapter = IWriteFile(file, None)
+        if adapter is None:
+            raise zope.publisher.interfaces.http.MethodNotAllowed(
+                self.context, self.request)
 
         length = int(self.request.get('CONTENT_LENGTH', -1))
         adapter.write(body.read(length))

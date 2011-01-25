@@ -116,6 +116,19 @@ class TestNullPUT(TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 201)
 
+    def test_put_on_invalid_container_raises_MethodNotAllowed(self):
+        import zope.publisher.interfaces.http
+
+        request = TestRequest(StringIO(),
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': '0',
+                               })
+        null = zope.app.http.put.NullResource(rootFolder(), 'spam.txt')
+        put = zope.app.http.put.NullPUT(null, request)
+        self.assertRaises(zope.publisher.interfaces.http.MethodNotAllowed,
+                          put.PUT)
+
+
 class TestFilePUT(TestCase):
     layer = BrowserLayer(zope.app.http)
 
@@ -150,6 +163,19 @@ class TestFilePUT(TestCase):
 
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 200)
+
+    def test_put_on_invalid_file_raises_MethodNotAllowed(self):
+        import zope.publisher.interfaces.http
+
+        file = object()
+        request = TestRequest(StringIO(),
+                              {'CONTENT_TYPE': 'test/foo',
+                               'CONTENT_LENGTH': '0',
+                               })
+        put = zope.app.http.put.FilePUT(file, request)
+        self.assertRaises(zope.publisher.interfaces.http.MethodNotAllowed,
+                          put.PUT)
+
 
 def test_suite():
     return TestSuite((
