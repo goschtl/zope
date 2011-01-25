@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-3.10.0 (unreleased)
-------------------
+3.10.0 (2011-01-25)
+-------------------
 
 - PUT raises ``405 MethodNotAllowed`` when the context cannot be adapted to
   ``zope.filerepresentation.interfaces.IWriteFile`` for existing objects
