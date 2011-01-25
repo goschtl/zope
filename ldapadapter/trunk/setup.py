@@ -15,7 +15,6 @@ LDAP connection for Zope Toolkit. Connects to an LDAP server.
     zip_safe=False,
     license='ZPL 2.1',
     keywords='Zope3 ZTK authentication ldap',
-    classifiers = ['Framework :: Zope 3'],
     install_requires=[
         'setuptools',
         'python-ldap',
