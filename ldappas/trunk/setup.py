@@ -6,7 +6,7 @@ tests_require = [
 
 setup(
     name='ldappas',
-    version='0.8dev',
+    version='0.8',
     author='Zope 3 developers',
     author_email='zope3-dev@zope.org',
     url='http://svn.zope.org/ldappas',

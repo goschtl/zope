@@ -2,8 +2,8 @@
 ldappas changes
 ===============
 
-0.8 - (unreleased)
-==================
+0.8 (2011-01-25)
+================
 
 * Changes to use the ZTK import locations.
 
