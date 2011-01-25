@@ -2,8 +2,8 @@
 ldapadapter changes
 ===================
 
-0.8 - (unreleased)
-==================
+0.8 (2011-01-25)
+================
 
 * Update to work with ZTK.
 
