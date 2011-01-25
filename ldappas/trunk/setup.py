@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
 
+tests_require = [
+    'zope.app.testing',
+    ]
+
 setup(
     name='ldappas',
     version='0.7.1dev',
@@ -28,4 +32,6 @@ LDAP server.
         'zope.schema',
         'zope.app.testing',
     ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
     )
