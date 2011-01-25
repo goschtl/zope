@@ -2,11 +2,11 @@
 ldappas changes
 ===============
 
-0.9 (unreleased)
-================
+0.8.1 (unreleased)
+==================
 
-- Nothing changed yet.
-
+* Make registration of ZCML forms conditional on the presence of
+  zope.app.form. This is probably a deprecated feature by now.
 
 0.8 (2011-01-25)
 ================
