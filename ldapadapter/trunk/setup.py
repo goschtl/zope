@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ldapadapter',
-    version='0.8',
+    version='0.9dev',
     author='Zope developers',
     author_email='zope-dev@zope.org',
     url='http://svn.zope.org/ldapadapter',
