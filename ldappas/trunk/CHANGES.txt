@@ -3,9 +3,13 @@ ldappas changes
 ===============
 
 0.8 - (unreleased)
-====================
+==================
 
 * Changes to use the ZTK import locations.
+
+* Use newer version of openldap for test builds.
+
+* zest.releaser support in buildout
 
 * Reduce dependencies. zope.app.testing dependency still exists, though,
   and should be removed by adjusting the tests.
