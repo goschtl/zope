@@ -22,7 +22,7 @@ class DocTestParser(doctest.DocTestParser):
     def __init__(self, *args, **kw):
         ps1 = kw.pop('ps1', '>>>')
         ps2 = kw.pop('ps2', r'\.\.\.')
-        self.handler_name = kw.pop('handler_name', '')
+        self.transform = kw.pop('transform', lambda s: s)
         getattr(doctest.DocTestParser, '__init__', lambda : None)(*args, **kw)
 
         self._EXAMPLE_RE = re.compile(
@@ -43,5 +43,5 @@ class DocTestParser(doctest.DocTestParser):
         r =doctest.DocTestParser.parse(self, string, name)
         for s in r:
             if isinstance(s, doctest.Example):
-                s.source = "%s(%r)\n" % (self.handler_name, s.source)
+                s.source = self.transform(s.source)
         return r

@@ -20,7 +20,13 @@ import zc.customdoctests
 
 run_time = None
 
-parser = zc.customdoctests.DocTestParser(ps1='js>', handler_name='JS')
+parser = zc.customdoctests.DocTestParser(
+    ps1='js>', transform=lambda s: 'JS(r"""%s""")' % s)
+
+# parser_ is like parser, except adds: var _ = to
+# the fron of the executed code.
+eq_parser = zc.customdoctests.DocTestParser(
+    ps1='js!', transform=lambda s: 'JS("var _ = "+ r"""%s""")' % s)
 
 def setUp(test_or_self):
     globs = getattr(test_or_self, 'globs', test_or_self.__dict__)
