@@ -34,22 +34,33 @@ def default_view_name(component, module=None, **data):
 class TemplateGrokker(martian.ClassGrokker):
     martian.baseclass()
 
+    _template_order = 5000
+
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info to look for a template
         factory.module_info = module_info
         return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, **kw):
-        # find templates
+        # Associate templates to a view or a component. We set order
+        # to at least 5000, to do it after all templates have be
+        # registered to the shared template registry, and yet before
+        # unassociated templates are checked.
         config.action(
             discriminator=None,
-            callable=self.check_templates,
-            args=(factory.module_info, factory))
+            callable=self.associate_template,
+            args=(factory.module_info, factory),
+            order=self._template_order)
+        # We increase _template_order to keep a relative order of
+        # association between each different Grok extensions. (Like
+        # this an implicit template can be inherited between two
+        # different Grok extensions.)
+        self._template_order += 1
         return True
 
-    def check_templates(self, module_info, factory):
+    def associate_template(self, module_info, factory):
         component_name = martian.component.bind().get(self).__name__.lower()
-        templatereg.checkTemplates(
+        templatereg.associate_template(
             module_info, factory, component_name, self.has_render, self.has_no_render)
 
     def has_render(self, factory):

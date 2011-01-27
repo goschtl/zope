@@ -25,16 +25,17 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
     martian.priority(1000)
 
     def grok(self, name, instance, module_info, config, **kw):
+        # We set order to 0, to be sure to register templates
+        # first.
         config.action(
             discriminator=None,
             callable=templatereg.register_inline_template,
-            args=(module_info, name, instance)
-            )
+            args=(module_info, name, instance),
+            order=0)
         config.action(
             discriminator=None,
             callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name)
-            )
+            args=(name, module_info.dotted_name))
         return True
 
 
@@ -45,11 +46,13 @@ class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
     martian.priority(999)
 
     def grok(self, name, module, module_info, config, **kw):
+        # We set order to 0, to be sure to register templates
+        # first.
         config.action(
             discriminator=None,
             callable=templatereg.register_directory,
-            args=(module_info,)
-            )
+            args=(module_info,),
+            order=0)
         return True
 
 
@@ -62,6 +65,8 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
     def grok(self, name, module, module_info, config, **kw):
         if not self._action_registered:
             self._action_registered = True
+            # We set order to 10000 to be sure to check unused
+            # template at the end only.
             config.action(
                 discriminator=None,
                 callable=templatereg.check_unassociated,
