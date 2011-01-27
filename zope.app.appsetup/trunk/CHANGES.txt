@@ -1,10 +1,11 @@
 Changelog
 =========
 
-3.15.1 (unreleased)
+3.16.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added stacking of storages for layer/test level setup separation in derived
+  ZODBLayers.
 
 
 3.15.0 (2010-09-25)

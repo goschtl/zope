@@ -60,3 +60,56 @@ And run that suite:
     Ran 4 tests with 0 failures and 0 errors in ... seconds.
   Tearing down left over layers:
     Tear down zope.app.appsetup.testpackage.ZODBLayer in ... seconds.
+
+Database stacking with ZODBlayer
+--------------------------------
+
+When deriving from ZODBLayer we can start populating a test database at layer
+setup time. Each test will be run with a DemoStorage wrapped around that
+baseline and unwrapped afterwards. This way you can save a significant amount
+of time if tests require shared setup.
+
+We start with a derived layer, based on ZODBLayer that has some setup code:
+
+  >>> class CustomZODBLayer(ZODBLayer):
+  ...     def setUp(self):
+  ...         super(CustomZODBLayer, self).setUp()
+  ...         root = self.getRootFolder()
+  ...         root['foo'] = 1
+  ...         transaction.commit()
+
+  >>> layer = CustomZODBLayer(testpackage)
+  >>> layer
+  <CustomZODBLayer object at ...>
+
+Now, when running tests in this layer, each test sees the prepopulated
+database but is still isolated from other tests' changes:
+
+  >>> class CustomZODBLayerTests(unittest.TestCase):
+  ...     layer = layer
+  ...     def test_test1(self):
+  ...         root = self.layer.getRootFolder()
+  ...         self.assertEquals(1, len(root))
+  ...         root['bar'] = 1
+  ...         transaction.commit()
+  ...     def test_test2(self):
+  ...         root = self.layer.getRootFolder()
+  ...         self.assertEquals(1, len(root))
+  ...         root['baz'] = 1
+  ...         transaction.commit()
+
+Run the tests to prove that above statements are correct::
+
+  >>> suite = unittest.TestSuite()
+  >>> suite.addTest(unittest.makeSuite(CustomZODBLayerTests))
+
+And run that suite:
+
+  >>> from zope.testrunner.runner import Runner
+  >>> runner = Runner(args=[], found_suites=[suite])
+  >>> succeeded = runner.run()
+  Running zope.app.appsetup.testpackage.CustomZODBLayer tests:
+    Set up zope.app.appsetup.testpackage.CustomZODBLayer in ... seconds.
+    Ran 2 tests with 0 failures and 0 errors in ... seconds.
+  Tearing down left over layers:
+    Tear down zope.app.appsetup.testpackage.CustomZODBLayer in ... seconds.

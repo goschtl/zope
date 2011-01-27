@@ -25,10 +25,10 @@ from zope.event import notify
 import zope.processlifetime
 
 
-def createTestDB(name='main'):
+def createTestDB(name='main', base=None):
     """This create a test storage and register it.
     """
-    storage = DemoStorage(name)
+    storage = DemoStorage(name, base=base)
     db = DB(storage, database_name=name)
     db.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
 
@@ -59,11 +59,7 @@ class ZODBLayer(ZCMLFileLayer):
             self.connection = self.db.open()
         return self.connection.root()[ZopePublication.root_name]
 
-    def testSetUp(self):
-        super(ZODBLayer, self).testSetUp()
-        self.db = createTestDB(self.db_name)
-
-    def testTearDown(self):
+    def _close_db(self):
         # Close any opened connections
         if self.connection is not None:
             transaction.abort()
@@ -79,4 +75,22 @@ class ZODBLayer(ZCMLFileLayer):
             self.db.close()
             self.db = None
 
+    def setUp(self):
+        super(ZODBLayer, self).setUp()
+        self.db = createTestDB(self.db_name)
+        self.base_storage = self.db._storage
+        self._base_db_open = True
+
+    def testSetUp(self):
+        if self._base_db_open:
+            # This is the first time testSetUp is called.
+            # We need to close down the database configuration
+            # that we needed for performing global setup now.
+            self._close_db()
+            self._base_db_open = False
+        super(ZODBLayer, self).testSetUp()
+        self.db = createTestDB(self.db_name, self.base_storage)
+
+    def testTearDown(self):
+        self._close_db()
         super(ZODBLayer, self).testTearDown()
