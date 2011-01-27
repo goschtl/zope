@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zamplugin.error',
-    version='0.6.1dev',
+    version='0.7.0dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Error utility for Zope Application Management",
@@ -65,6 +65,7 @@ setup (
         'z3c.menu.ready2go',
         'z3c.pagelet',
         'zam.api >= 0.7',
+        'zam.skin >= 0.8',
         'zope.component',
         'zope.error >= 3.7.2',
         'zope.interface',

@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-0.6.1 (unreleased)
+0.7.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Updated to `zam.skin` version 0.8.
 
 
 0.6.0 (2011-01-27)

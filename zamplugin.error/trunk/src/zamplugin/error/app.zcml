@@ -5,7 +5,6 @@
 
   <!-- use app configuration from zam.api -->
   <include package="zam.skin" file="app.zcml" />
-  <include package="zope.app.server" />
 
   <!-- zope app package configuration -->
   <include package="zope.error" />
