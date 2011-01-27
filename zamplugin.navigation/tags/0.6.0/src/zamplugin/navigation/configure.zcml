@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for INavigationPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.navigation.plugin.NavigationPlugin
+           zam.api.layer.INavigationPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <registerIn registry="zamplugin.navigation.plugin.NavigationBaseRegistry">
+    <view
+        name="etc"
+        type="zam.api.layer.INavigationPluginLayer"
+        provides="zope.traversing.interfaces.ITraversable" for="*"
+        factory="zope.traversing.namespace.etc"
+        />
+  
+    <include file="browser.zcml" />
+
+  </registerIn>
+
+</configure>

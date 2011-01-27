@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <utility
+      component=".plugin.NavigationBaseRegistry"
+      provides="zope.component.interfaces.IComponents"
+      name="zamplugin.navigation"
+      />
+
+  <utility
+      factory=".plugin.NavigationPlugin"
+      provides="zam.api.interfaces.IPlugin"
+      name="zamplugin.navigation"
+      />
+
+</configure>

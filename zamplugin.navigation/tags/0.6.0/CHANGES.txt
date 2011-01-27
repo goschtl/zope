@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2011-01-27)
+------------------
+
+- Removed `zc.configuration` package from dependency list since this is a part
+  of `zope.configuration`.
+
+- Updated to `zam.api` version 0.7 to run with ZTK 1.0.
+
+
+0.5.0 (2008-04-16)
+------------------
+
+- Initial release.

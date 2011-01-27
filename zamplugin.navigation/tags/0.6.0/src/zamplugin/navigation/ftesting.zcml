@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zope">
+
+  <!-- use ftesting configuration from zam.api -->
+  <include package="zam.skin" file="ftesting.zcml" />
+
+  <!-- include z3c meta configuration -->
+  <include package="z3c.jsonrpc" file="meta.zcml" />
+
+  <!-- include z3c configuration -->
+  <include package="z3c.json" />
+  <include package="z3c.jsonrpc" />
+  <include package="z3c.jsontree" />
+
+  <!-- zamplugin configuration -->
+  <include package="zamplugin.navigation" />
+
+</configure>
