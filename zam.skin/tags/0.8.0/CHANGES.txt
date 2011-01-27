@@ -1,0 +1,48 @@
+=======
+CHANGES
+=======
+
+0.8.0 (2011-01-27)
+------------------
+
+- Moved ZCML installation of `zope.app.server` from ``site.zcml`` to
+  ``app.zcml`` as it is required by the `zamplugin.*` packages, too.
+
+
+0.7.0 (2011-01-19)
+------------------
+
+- Depends on `zam.api` >= 0.7 to run with ZTK 1.0.
+
+Version 0.6.0 (2009-07-06)
+--------------------------
+
+- Removed duplicated zam.api configure.zcml file include
+
+- Import IDefaultViewName from the new location at zope.publisher.interfaces
+
+- Removed zc.configuration package from dependency list since this is a part
+  of zope.configuration
+
+Version 0.5.2 (2008-04-16)
+--------------------------
+
+- bugfix: Move the existing index.html and contents.html page to index.zcml
+  This allows us to exclude them with the zc.configuration <exclude> directive
+  Restrict the default index.html and contents.html to the IContainmentRoot
+  this will avoid to adding such views on object which do not have such views.
+
+Version 0.5.1 (2008-04-13)
+--------------------------
+
+- Cleanup ftesting configuration, make it possbile to load ftesting.zcml
+  additional to the app.zcml configuration.
+
+Version 0.5.0 (2008-04-13)
+--------------------------
+
+- Moved contens.html page to zamplugin.contents
+
+- Update CSS, use overflow: auto; for ISideBar boxes
+
+- Initial Release

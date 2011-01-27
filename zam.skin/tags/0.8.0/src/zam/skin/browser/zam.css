@@ -1,0 +1,541 @@
+/* zrt-replace: "./img" tal"string:${context/++resource++img}" */
+
+body {
+    width: 100%;
+    font: 11px Verdana, Helvetica, Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* [ html ]---------------------------------------------------------------- */
+
+form {
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    border: 0;
+}
+
+a {
+    color: #3C66C1;
+    text-decoration: none;
+}
+
+a:link {
+    color: #3C66C1;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #A68E8E;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #1B1D83;
+}
+
+fieldset {
+    padding: 5px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: Black;
+    clear: left;
+    font: 100% bold Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 140%;
+}
+
+h3 {
+    height: 20px;
+    font-size: 120%;
+    background-color: #EBE9DF;
+    padding: 2px 0px 0px 5px;
+}
+
+h4 {
+    color: #777777;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 90%;
+}
+
+h6 {
+    font-size: 80%;
+}
+
+/* [ layout ]---------------------------------------------------------------- */
+
+div#layoutContainer {
+    width: 100%;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* [ header ]-------------------------------------------------------------- */
+
+div#headerContainer {
+    height: 55px;
+    text-align: left;
+    position: relative;
+    border: solid white 1px;
+    margin: 0px;
+    padding: 0px;
+    background-color: #969696;
+}
+
+div#headerContainer a {
+    color: white;
+}
+
+div#headerContainer a:hover {
+    color: black;
+}
+
+img#logo {
+    padding: 5px 0px 0px 5px;
+}
+
+div#user {
+    top: 5px;
+    right: 10px;
+    position: absolute;
+    color: white;
+    padding: 0px 0px 0px 0px;
+}
+
+div#user a {
+    font-size: 80%;
+}
+
+
+/*---[ batch ]---------------------------------------------------------------*/
+
+.batch {
+    color: #666666;
+    border-color: #999999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding: 3px 4px;
+    text-align: left;
+    background: url(./img/tableHeaderBG.gif) repeat-x left top;
+}
+
+.batch a.first {
+    color: black;
+}
+
+.batch a.current {
+    font-weight: bold;
+}
+
+.batch a.last {
+    color: black;
+}
+
+
+/* [ breadcrumbs ]---------------------------------------------------------- */
+
+div#breadcrumbs {
+    color: #666666;
+    font-size: 11px;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+#breadcrumbs a {
+    color: #3C66C1;
+    text-decoration: none;
+}
+
+#breadcrumbs a:hover {
+    color: #000000;
+}
+
+
+/*---[ plugin management ]---------------------------------------------------*/
+
+#pluginManagement .installedPlugin {
+    color: green;
+}
+
+#pluginManagement .notInstalledPlugin {
+    color: red;
+}
+
+#pluginManagement .required-info {
+    display: none;
+}
+
+
+/*---[ app menu ]------------------------------------------------------------*/
+
+#appMenuContainer {
+    height: 23px;
+    color: white;
+    background: #3F69C3 url(./img/menuBlueBG.gif) repeat-x top left;
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    padding: 1px 0px 0px 0px;
+    margin: 0;
+    cursor: default;
+}
+
+.z3cDivMenu hr {
+    height: 1px;
+    color: silver;
+}
+
+.z3cDivMenu .topMenu,
+.z3cDivMenu .topMenu:hover,
+.z3cDivMenu .topMenuActive,
+.z3cDivMenu .topMenuActive:hover {
+    height: 16px;
+    padding: 2px 6px 1px 6px;
+    margin: 1px; 
+    color: white;
+    text-decoration: none;
+    cursor: default;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+}
+
+.z3cDivMenu .topMenu:hover {
+    color: black; 
+    margin: 0px;
+    border: 1px solid white;
+    background: #D2D2D2;
+}
+
+.z3cDivMenu .topMenuActive,
+.z3cDivMenu .topMenuActive:hover {
+    color: black;
+    margin: 0px;
+    border: 1px solid white;
+    background: #D2D2D2;
+}
+
+.z3cDivMenu .subMenu,
+.z3cDivMenu .subMenu:hover,
+.z3cDivMenu .subMenuActive,
+.z3cDivMenu .subMenuActive:hover {
+    line-height: normal;
+    border: 1px solid #F5F5F5;
+    color: black;
+    text-decoration: none;
+    cursor: default;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    padding: 3px 25px 3px 5px;
+}
+
+.z3cDivMenu .subMenu:hover,
+.z3cDivMenu .subMenuActive,
+.z3cDivMenu .subMenuActive:hover {
+    border: 1px solid #666666;
+    background: #D2D2D2;
+    color: black;
+}
+
+.z3cDivMenu .menuGroup {
+    background: #F5F5F5;
+    border: 1px solid #666666;
+    padding: 1px 3px 1px 1px;
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;     
+}
+
+.z3cDivMenu .menuArrow {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    border: 0;
+}
+
+* html .z3cDivMenu td { 
+    position: relative;
+} /* ie 5.0 fix */
+
+
+/*---[ add menu ]---------------------------------------------------------*/
+
+#addMenu {
+    float: left;
+    width: 20px;
+    height: 22px;
+    color: red;
+    background: #3F69C3 url(./img/menuBlueBG.gif) repeat-x top left;
+    border-right: 8px solid white;
+}
+
+.addMenu .topMenu,
+.addMenu .topMenu:hover,
+.addMenu .topMenuActive,
+.addMenu .topMenuActive:hover {
+    height: 18px;
+    padding: 3px 6px 0px 6px;
+    color: black;
+    text-decoration: none;
+    cursor: default;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    border: 0;
+}
+
+.addMenu .topMenu:hover {
+    color: black; 
+    border: 0;
+    background: #4E4E4F url(./img/menuBlackBG.gif) repeat-x top left;
+}
+
+.addMenu .topMenuActive,
+.addMenu .topMenuActive:hover {
+    color: black; 
+    border: 0;
+    background: #4E4E4F url(./img/menuBlackBG.gif) repeat-x top left;
+}
+
+div#addMenu a.subMenu {
+    color: black;
+}
+
+div#addMenu a.subMenuActive {
+    color: black;
+}
+
+.addMenu .subMenu,
+.addMenu .subMenu:hover,
+.addMenu .subMenuActive,
+.addMenu .subMenuActive:hover {
+    line-height: normal;
+    border: 1px solid #F5F5F5;
+    color: red;
+    text-decoration: none;
+    cursor: default;
+    white-space: nowrap;
+    display: block;
+    position: relative;
+    padding: 3px 25px 3px 5px;
+}
+
+.addMenu .subMenu:hover,
+.addMenu .subMenuActive,
+.addMenu .subMenuActive:hover {
+    border: 1px solid #666666;
+    background: #D2D2D2;
+    color: black;
+}
+
+.addMenu .menuGroup {
+    background: #F5F5F5;
+    border: 1px solid #666666;
+    padding: 1px 3px 1px 1px;
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;     
+}
+
+.addMenu .menuArrow {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    border: 0;
+}
+
+* html .addMenu td { 
+    position: relative;
+} /* ie 5.0 fix */
+
+
+/*---[ menu tabs ]-----------------------------------------------------------*/
+
+div#contextMenuContainer {
+    height: 22px;
+    background-color: #D3D3D3;
+    border-right: 1px solid white;
+    padding: 0px;
+    margin-bottom: 10px;
+}
+
+div#contextMenuContainer a {
+    color: white;
+    text-decoration: none;
+}
+
+div#contextMenuContainer ul {
+    margin: 0;
+    padding: 0;
+}
+
+div#contextMenuContainer li {
+    float: left;
+    height: 18px;
+    list-style: none;
+    background: #3F69C3 url(./img/menuBlueBG.gif) repeat-x top left;
+    border-right: 8px solid white;
+    padding: 3px 5px 1px 5px;
+    margin: 0px;
+}
+
+div#contextMenuContainer li.selected {
+    background: #4E4E4F url(./img/menuBlackBG.gif) repeat-x top left;
+}
+
+div#contextMenuContainer li:hover {
+    background: #4E4E4F url(./img/menuBlackBG.gif) repeat-x top left;
+}
+
+
+/*---[ sideBar ]-------------------------------------------------------------*/
+
+#sideBarContainer {
+    width: 250px;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    left: 1px;
+    top: 110px;
+}
+
+div.sideBarBox {
+    padding: 0px 0px 7px 0px;
+    margin: 0px;
+}
+
+div.sideBarBoxHeader {
+    color: #FFFFFF;
+    height: 18px;
+    background: #3F69C3 url(./img/menuBlueBG.gif) repeat-x top left;
+    padding: 3px 5px 1px 3px;
+    margin: 0px;
+}
+
+div.sideBarBoxBody {
+	overflow: auto;
+	height: auto; 
+	width: 242px;
+	border-right: 1px solid #A5BAE7;
+	border-bottom: 1px solid #A5BAE7;
+	border-left: 1px solid #A5BAE7;
+	font: normal 11px arial, tahoma, helvetica, sans-serif;
+	padding: 3px;
+}
+
+div.sideBarBoxSpacer {
+    height: 10px;
+    clear: both;
+}
+
+/*---[ content ]-------------------------------------------------------------*/
+
+#contentContainer {
+    margin: 0;
+    padding: 5px 0px 0px 260px;
+}
+
+#content {
+    margin: 0;
+    padding: 0;
+}
+
+/*---[ table ]---------------------------------------------------------------*/
+/* Styles for tables that list contents. */
+
+table.contents {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-collapse: collapse;
+}
+
+table.contents tr {
+    border-bottom: 1px solid #ffffff;
+}
+
+table.contents tr.even {
+    background-color: #E6E1D9;
+}
+
+table.contents tr.even td.sorted-on {
+    background-color: #D5CCBD;
+}
+
+table.contents tr.odd {
+    background-color: #F2F0EC;
+}
+
+table.contents tr.odd td.sorted-on {
+    background-color: #DFD9CE;
+}
+
+table.contents tr.selected {
+    background-color: #BCAE98;
+}
+
+table.contents tr.selected td.sorted-on {
+    background-color: #AE9E84;
+}
+
+table.contents th {
+    color: #666666;
+    border-color: #999999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding: 3px 4px;
+    text-align: left;
+    background: url(./img/tableHeaderBG.gif) repeat-x left top;
+}
+
+table.contents thead.verticaltext th {
+    text-align: left;
+    writing-mode: tb-rl;
+    filter: flipv fliph;
+    white-space: nowrap;
+    background: transparent;
+}
+
+table.contents th.sorted-on {
+    background-color: #D5CCBD;
+}
+
+table.contents td {
+    padding: 3px 4px;
+}
+
+table.contents .centered {
+    text-align: center;
+}
+
+table.contents .right {
+    text-align: right;
+}
+
+.clear {
+    height: 1px;
+    clear: both;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}

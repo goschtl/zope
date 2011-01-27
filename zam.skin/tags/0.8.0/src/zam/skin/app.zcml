@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+
+  <!-- use app configuration from zam.api -->
+  <include package="zam.api" file="app.zcml" />
+  <include package="zope.browserresource" />
+  <include package="zope.app.server" />
+
+
+  <!-- configure additional z3c packages -->
+  <include package="z3c.contents" />
+  <include package="z3c.table" />
+
+
+  <!-- zam skin configuration -->
+  <include package="zam.skin" />
+
+
+  <!-- configure defaults -->
+  <browser:defaultSkin name="ZAM" />
+  <browser:defaultView name="index.html" />
+
+</configure>
