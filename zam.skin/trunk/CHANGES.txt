@@ -5,7 +5,8 @@ CHANGES
 0.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Moved ZCML installation of `zope.app.server` from ``site.zcml`` to
+  ``app.zcml`` as it is required by the `zamplugin.*` packages, too.
 
 
 0.7.0 (2011-01-19)

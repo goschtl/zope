@@ -7,6 +7,7 @@
   <!-- use app configuration from zam.api -->
   <include package="zam.api" file="app.zcml" />
   <include package="zope.browserresource" />
+  <include package="zope.app.server" />
 
 
   <!-- configure additional z3c packages -->
