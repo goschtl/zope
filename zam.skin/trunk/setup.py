@@ -25,7 +25,7 @@ setup (
     name='zam.skin',
     version='0.8.1dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Zope 3 Application Management skin",
     long_description=(
         read('README.txt')
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zam.skin',
+    url = 'http://pypi.python.org/pypi/zam.skin',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
