@@ -11,22 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup
+"""Setup"""
 
-$Id:$
-"""
 import os
 from setuptools import setup, find_packages
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup (
+
+setup(
     name='zamplugin.navigation',
     version='0.5.1dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
-    description = "Navigation for ZAM Zope 3 Application Management",
+    author_email = "zope-dev@zope.org",
+    description = "Navigation for ZAM (Zope 3 Application Management)",
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zamplugin.navigation',
+    url = 'http://pypi.python.org/pypi/zamplugin.navigation',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -72,8 +72,7 @@ setup (
             'z3c.jsontree',
             'z3c.table',
             'z3c.xmlhttp',
-            'zam.api',
-            'zam.skin',
+            'zam.skin >= 0.8',
             'zope.app.component',
             'zope.app.http',
             'zope.app.intid',
@@ -92,11 +91,11 @@ setup (
         'setuptools',
         'z3c.baseregistry',
         'z3c.jsontree',
-        'zam.api',
+        'zam.api >= 0.7',
         'zope.interface',
         'zope.component',
         'zope.traversing',
         'zope.viewlet',
         ],
     zip_safe = False,
-)
+    )
