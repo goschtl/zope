@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+0.6.0 (2011-01-27)
+------------------
 
 - Removed `zc.configuration` package from dependency list since this is a part
   of `zope.configuration`.

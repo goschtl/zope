@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup(
     name='zamplugin.navigation',
-    version='0.5.1dev',
+    version='0.6.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Navigation for ZAM (Zope 3 Application Management)",
