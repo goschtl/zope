@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.16.0 (unreleased)
+3.16.0 (2011-01-27)
 -------------------
 
 - Added stacking of storages for layer/test level setup separation in derived
