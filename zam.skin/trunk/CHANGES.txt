@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.7.1 (unreleased)
+0.8.0 (2011-01-27)
 ------------------
 
 - Moved ZCML installation of `zope.app.server` from ``site.zcml`` to
