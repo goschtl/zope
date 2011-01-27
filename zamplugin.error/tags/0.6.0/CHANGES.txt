@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2011-01-27)
+------------------
+
+- Updated test and demo app to run with ZTK 1.0, thus requiring zam.api >=
+  0.7.
+
+- Fixed ErrorReportingUtility edit form. The form was ignoring the
+  ``ignored_exceptions`` attribute because of ignoreContext=True and could not
+  store the ``keep_entries`` value because of broken implementation.
+
+- Added tests for edit.html page.
+
+- Updated package metadata.
+
+
+0.5.0 (2008-04-14)
+------------------
+
+- Initial release.

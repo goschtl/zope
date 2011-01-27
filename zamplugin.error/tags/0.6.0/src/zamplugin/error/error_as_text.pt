@@ -1,0 +1,12 @@
+<div tal:define="entry view/logEntry">
+  <pre tal:content="entry/tb_text">
+        Traceback (text)
+  </pre>
+  <p>
+    <a href="javascript:history.back()" i18n:translate="">Return to error entry</a>
+  </p>
+  <p>
+    <a href="./index.html" i18n:translate="">Return to error log</a>
+  </p>
+  <br/>
+</div>

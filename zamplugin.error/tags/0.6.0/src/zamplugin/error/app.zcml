@@ -1,0 +1,16 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <!-- use app configuration from zam.api -->
+  <include package="zam.skin" file="app.zcml" />
+  <include package="zope.app.server" />
+
+  <!-- zope app package configuration -->
+  <include package="zope.error" />
+
+  <!-- zam plugin configuration -->
+  <include package="zamplugin.error" />
+
+</configure>

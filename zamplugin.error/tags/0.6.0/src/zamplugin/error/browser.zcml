@@ -1,0 +1,56 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      name="index.html"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".browser.Errors"
+      permission="zope.ManageServices"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:template
+      for=".browser.Errors"
+      template="errors.pt"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="edit.html"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".browser.EditErrorLog"
+      permission="zope.ManageServices"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="error.html"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".browser.Error"
+      permission="zope.ManageServices"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:template
+      for=".browser.Error"
+      template="error.pt"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="errorAsText.html"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".browser.ErrorAsText"
+      permission="zope.ManageServices"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+  <z3c:template
+      for=".browser.ErrorAsText"
+      template="error_as_text.pt"
+      layer="zam.api.layer.IErrorPluginLayer"
+      />
+
+</configure>

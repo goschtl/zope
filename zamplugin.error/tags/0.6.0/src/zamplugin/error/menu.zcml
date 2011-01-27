@@ -1,0 +1,36 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <!-- global menu item -->
+  <viewlet
+      name="Errors"
+      for="*"
+      class=".menu.ErrorsMenuItem"
+      manager="zam.api.menu.IGlobalMenu"
+      layer="zam.api.layer.IErrorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- context menu item -->
+  <viewlet
+      name="Index"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".menu.IndexMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IErrorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Edit"
+      for="zope.error.interfaces.IErrorReportingUtility"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IErrorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>
