@@ -2,7 +2,7 @@
 README
 ======
 
-This package provides the error utility pages. The zam.skin is used as basic 
+This package provides the error utility pages. The zam.skin is used as basic
 skin for this test.
 
 First login as manager:
@@ -55,47 +55,31 @@ Now you can see that we can access the error utility at the site root:
   </div>
   ...
 
-Let's go to the edit.html page:
+Let's go to the edit.html page and look at the default configuration:
 
-  >>> mgr.open(rootURL + '/++etc++site/default/RootErrorReportingUtility/edit.html')
-  >>> print mgr.contents
-  <!DOCTYPE ...
-  ...<div class="widget"><input type="text" id="form-widgets-keep_entries"
-                     name="form.widgets.keep_entries"
-                     class="text-widget required int-field" value="20" />
-  ...<label for="form-widgets-copy_to_zlog-1">
-      <input type="radio" id="form-widgets-copy_to_zlog-1"
-             name="form.widgets.copy_to_zlog:list"
-             class="radio-widget required bool-field"
-             value="false" checked="checked" />
-      <span class="label">no</span>
-  ...<div class="widget"><textarea id="form-widgets-ignored_exceptions"
-            name="form.widgets.ignored_exceptions"
-            class="textarea-widget required tuple-field">Unauthorized</textarea>
-  ...
+  >>> mgr.open(
+  ...     rootURL + '/++etc++site/default/RootErrorReportingUtility/edit.html')
+  >>> mgr.getControl('Keep entries').value
+  '20'
+  >>> mgr.getControl(name='form.widgets.copy_to_zlog:list').value
+  ['true']
+  >>> mgr.getControl('Ignore exceptions').value
+  'Unauthorized'
 
 And change the configuration:
 
   >>> mgr.getControl('Keep entries').value = '10'
-  >>> mgr.getControl(name='form.widgets.copy_to_zlog:list').value = ['true']
+  >>> mgr.getControl(name='form.widgets.copy_to_zlog:list').value = ['false']
   >>> mgr.getControl('Ignore exceptions').value = 'UserError'
   >>> mgr.getControl('Apply').click()
 
-Now go to the edit.html page and check the values again.
+Now go to the `edit.html` page and check the values again.
 
-  >>> mgr.open(rootURL + '/++etc++site/default/RootErrorReportingUtility/edit.html')
-  >>> print mgr.contents
-  <!DOCTYPE ...
-  ...<div class="widget"><input type="text" id="form-widgets-keep_entries"
-                     name="form.widgets.keep_entries"
-                     class="text-widget required int-field" value="10" />
-  ...<label for="form-widgets-copy_to_zlog-1">
-      <input type="radio" id="form-widgets-copy_to_zlog-1"
-             name="form.widgets.copy_to_zlog:list"
-             class="radio-widget required bool-field"
-             value="false" />
-      <span class="label">no</span>
-  ...<div class="widget"><textarea id="form-widgets-ignored_exceptions"
-            name="form.widgets.ignored_exceptions"
-            class="textarea-widget required tuple-field">UserError</textarea>
-  ...
+  >>> mgr.open(
+  ...     rootURL + '/++etc++site/default/RootErrorReportingUtility/edit.html')
+  >>> mgr.getControl('Keep entries').value
+  '10'
+  >>> mgr.getControl(name='form.widgets.copy_to_zlog:list').value
+  ['false']
+  >>> mgr.getControl('Ignore exceptions').value
+  'UserError'

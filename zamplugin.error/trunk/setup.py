@@ -50,7 +50,7 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['zamplugin'],
     extras_require = dict(
-        test = [
+        test=[
             'z3c.coverage',
             'z3c.testing',
             'zope.app.testing',
@@ -64,9 +64,9 @@ setup (
         'z3c.formui',
         'z3c.menu.ready2go',
         'z3c.pagelet',
-        'zam.api',
+        'zam.api >= 0.7',
         'zope.component',
-        'zope.error',
+        'zope.error >= 3.7.2',
         'zope.interface',
         'zope.schema',
         'zope.traversing',
