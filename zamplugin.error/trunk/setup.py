@@ -23,9 +23,9 @@ def read(*rnames):
 
 setup (
     name='zamplugin.error',
-    version='0.5.1dev',
+    version='0.6.0',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Error utility for Zope Application Management",
     long_description=(
         read('README.txt')
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zamplugin.error',
+    url = 'http://pypi.python.org/pypi/zamplugin.error',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
