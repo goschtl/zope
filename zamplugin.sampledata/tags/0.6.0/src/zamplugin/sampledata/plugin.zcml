@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <utility
+      component=".plugin.SampleDataBaseRegistry"
+      provides="zope.component.interfaces.IComponents"
+      name="zamplugin.sampledata"
+      />
+
+  <utility
+      factory=".plugin.SampleDataPlugin"
+      provides="zam.api.interfaces.IPlugin"
+      name="zamplugin.sampledata"
+      />
+
+</configure>

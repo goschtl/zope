@@ -1,0 +1,41 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      name="sampledata.html"
+      for="*"
+      class=".browser.SampleData"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      permission="zope.ManageSite"
+      />
+
+  <z3c:template
+      template="sampledata.pt"
+      for=".browser.SampleData"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="generatesample.html"
+      for="zope.site.interfaces.IFolder"
+      class=".browser.GenerateSample"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      permission="zope.ManageSite"
+      />
+
+  <z3c:template
+      template="generatesample.pt"
+      for=".browser.GenerateSample"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      />
+
+  <z3c:template
+      template="generator.pt"
+      for=".browser.Generator"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      />
+
+</configure>

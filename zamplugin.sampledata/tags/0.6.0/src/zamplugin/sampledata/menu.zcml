@@ -1,0 +1,24 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <viewlet
+      name="Sample data"
+      for="*"
+      class=".menu.GlobalSampleDataMenuItem"
+      manager="zam.api.menu.IGlobalMenu"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Sample data"
+      for="zope.app.component.interfaces.ISite"
+      class=".menu.LocalSampleDataMenuItem"
+      manager="zam.api.menu.ISiteMenu"
+      layer="zam.api.layer.ISampleDataPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>

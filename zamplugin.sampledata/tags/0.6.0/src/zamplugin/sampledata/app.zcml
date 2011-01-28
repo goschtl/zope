@@ -1,0 +1,18 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <!-- use app configuration from zam.api -->
+  <include package="zam.skin" file="app.zcml" />
+
+  <!-- z3c exlude -->
+  <exclude package="z3c.sampledata.browser" />
+
+  <!-- load 3rd party meta configuration -->
+  <include package="z3c.sampledata" file="meta.zcml" />
+
+  <!-- zam plugin configuration -->
+  <include package="zamplugin.sampledata" />
+
+</configure>
