@@ -20,7 +20,7 @@
 
   <z3c:pagelet
       name="generatesample.html"
-      for="zope.app.folder.interfaces.IFolder"
+      for="zope.site.interfaces.IFolder"
       class=".browser.GenerateSample"
       layer="zam.api.layer.ISampleDataPluginLayer"
       permission="zope.ManageSite"

@@ -55,7 +55,7 @@ setup (
             'z3c.testing',
             'zope.app.testing',
             'zope.testbrowser',
-            'zam.skin',
+            'zam.skin >= 0.8',
             ],
         ),
     install_requires = [
@@ -67,7 +67,7 @@ setup (
         'z3c.pagelet',
         'z3c.sampledata',
         'z3c.template',
-        'zam.api',
+        'zam.api >= 0.7',
         'zope.component',
         'zope.exceptions',
         'zope.interface',
