@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zamplugin.sitemanager',
-    version='0.6.0',
+    version='0.6.1dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Site manager support for ZAM (Zope Application Management)",
