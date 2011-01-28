@@ -1,0 +1,21 @@
+=======
+CHANGES
+=======
+
+0.6.0 (2011-01-28)
+------------------
+
+- Removed zc.configuration package from dependency list since this is a part
+  of zope.configuration.
+
+- Updated tests to run with ``z3c.form`` >= 2.1, thus requiring at least this
+  version.
+
+- Updated tests and demo application to run with ZTK 1.0, requiring at least
+  ``zam.api`` 0.7.
+
+
+0.5.0 (2008-04-16)
+------------------
+
+- Initial release.

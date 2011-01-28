@@ -1,0 +1,17 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
+
+  <!-- use ftesting configuration from zam.api -->
+  <include package="zam.skin" file="ftesting.zcml" />
+  <exclude package="zope.app.principalannotation" file="browser.zcml" />
+  <include package="zope.app.principalannotation" />
+
+  <!-- load app configuration -->
+  <include package="zamplugin.sitemanager" file="app.zcml" />
+
+</configure>

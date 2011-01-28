@@ -1,0 +1,51 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      for="*"
+      name="registration.html"
+      class=".registration.RegistrationView"
+      permission="zope.ManageSite"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+  <z3c:template
+      for=".registration.RegistrationView"
+      template="registration.pt"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+
+  <z3c:pagelet
+      for="*"
+      name="addRegistration.html"
+      class=".registration.AddUtilityRegistration" 
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageSite"
+      />
+
+  <zope:adapter
+      factory=".registration.UtilityRegistrationDisplay"
+      />
+  <zope:adapter
+      factory=".registration.UtilitySiteRegistrationDisplay"
+      /> 
+
+  <z3c:pagelet
+      name="registrations.html"
+      for="zope.app.component.interfaces.ILocalSiteManager"
+      class=".registration.SiteRegistrationView"
+      permission="zope.ManageSite"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+  <z3c:template
+      for=".registration.SiteRegistrationView"
+      template="siteregistration.pt"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+</configure>

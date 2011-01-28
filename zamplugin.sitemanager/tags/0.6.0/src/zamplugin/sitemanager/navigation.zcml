@@ -1,0 +1,85 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <configure package="z3c.xmlhttp">
+    <resource
+        name="z3c.xmlhttp.js"
+        file="js/z3c.xmlhttp-0.5.0.js"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        />
+
+    <viewlet
+        name="z3c.xmlhttp.js"
+        for="*"
+        manager="zam.api.layer.IJavaScript"
+        class=".browser.XMLHTTPJavaScriptViewlet"
+        permission="zope.Public"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        weight="10"
+        />
+  </configure>
+
+  <configure package="z3c.jsonrpcproxy">
+    <resource
+        name="z3c.jsonrpcproxy.js"
+        file="js/z3c.jsonrpcproxy-0.5.0.js"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        />
+
+    <viewlet
+        name="z3c.jsonrpcproxy.js"
+        for="*"
+        manager="zam.api.layer.IJavaScript"
+        class=".browser.JSONRPCProxyJavaScriptViewlet"
+        permission="zope.Public"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        weight="100"
+        />
+  </configure>
+
+  <configure package="z3c.jsontree.browser">
+    <zrt-resource
+        name="z3c.jsontree.js"
+        file="js/z3c.jsontree-0.5.0.js"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        />
+    <resource
+        name="z3c.jsontree.css"
+        file="z3c.jsontree.css"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        />
+
+    <viewlet
+        name="z3c.jsontree.js"
+        for="*"
+        manager="zam.api.layer.IJavaScript"
+        class=".Z3CJSONTreeJavaScriptViewlet"
+        permission="zope.Public"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        weight="1000"
+        />
+    <viewlet
+        name="z3c.jsontree.css"
+        for="*"
+        manager="zam.api.layer.ICSS"
+        class=".Z3CJSONTreeCSSViewlet"
+        permission="zope.Public"
+        layer="zam.api.layer.ISiteManagerPluginLayer"
+        weight="1000"
+        />
+  </configure>
+
+  <viewlet
+      name="Site Management"
+      for="*"
+      class=".navigation.SiteManagerTreeViewlet"
+      manager="zam.api.layer.ISideBar"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.View"
+      weight="2"
+      />
+
+</configure>
