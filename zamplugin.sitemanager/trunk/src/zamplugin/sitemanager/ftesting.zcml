@@ -8,6 +8,8 @@
 
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.skin" file="ftesting.zcml" />
+  <exclude package="zope.app.principalannotation" file="browser.zcml" />
+  <include package="zope.app.principalannotation" />
 
   <!-- load app configuration -->
   <include package="zamplugin.sitemanager" file="app.zcml" />

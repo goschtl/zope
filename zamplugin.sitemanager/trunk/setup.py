@@ -25,8 +25,8 @@ setup (
     name='zamplugin.sitemanager',
     version='0.5.1dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
-    description = "Site manager support for Zope Application Management",
+    author_email = "zope-dev@zope.org",
+    description = "Site manager support for ZAM (Zope Application Management)",
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/zamplugin.sitemanager',
+    url = 'http://pypi.python.org/pypi/zamplugin.sitemanager',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -69,6 +69,7 @@ setup (
             'zope.session',
             'zope.testing',
             'zope.testbrowser',
+            'zope.app.principalannotation',
             ],
         ),
     install_requires = [
@@ -77,8 +78,8 @@ setup (
         'z3c.batching',
         'z3c.batching',
         'z3c.contents',
-        'z3c.form',
-        'z3c.formui',
+        'z3c.form >= 2.1',
+        'z3c.formui >= 2.1',
         'z3c.json',
         'z3c.jsonrpc',
         'z3c.jsontree',
@@ -90,7 +91,7 @@ setup (
         'z3c.table',
         'z3c.xmlhttp',
         'z3c.zrtresource',
-        'zam.api',
+        'zam.api >= 0.7',
         'zope.app.component',
         'zope.app.http',
         'zope.app.intid',
