@@ -1,0 +1,101 @@
+<!doctype html>
+<head>
+  <link
+     rel="stylesheet" type="text/css"
+     href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/resources/dojo.css"
+     >
+  <link
+     rel="stylesheet" type="text/css"
+     href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css"
+     >
+
+  <style type='text/css'>
+    html, body { height: 100%; }
+    .frame-div {
+        position: fixed;
+        top: 2.5em;
+        left: 0em;
+        right: 0em;
+        bottom: 0em;
+    }
+    iframe { height: 100%; width: 100%; }
+    .url-area {
+        position: fixed;
+        top: .5em;
+        left: 14em;
+        right: 0em;
+        height: 1.5em;
+        display: inline;
+    }
+    .url-container {
+        position: absolute;
+        top: 0em;
+        left: 2.5em;
+        right: 5em;
+        bottom: 0em;
+    }
+    .url-buttons {
+        position: absolute;
+        top: -.3em;
+        right: .5em;
+    }
+    .intro {padding: 2em; }
+  </style>
+
+  <script type="text/javascript"
+          src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js"
+          djConfig="parseOnLoad: true"
+          ></script>
+  <script type="text/javascript" src="webframe.js">
+  </script>
+
+</head>
+<body class="tundra">
+  <button dojoType="dijit.form.Button"
+          onClick="web_frame_application.back"
+          style="font-weight: bold;"
+          id="back" title="Back">&#x27f8;</button>
+  <button id="playtoggle"
+          dojoType="dijit.form.Button"
+          onClick="web_frame_application.toggle"
+          style="font-weight: bold;"
+          >&#x2016;</button>
+  <button dojoType="dijit.form.Button"
+          style="font-weight: bold;"
+          onClick="web_frame_application.forward"
+          id="forward" title="Forward">&#x27f9;</button>
+
+  <div dojoType="dijit.form.ComboButton">
+    <span>urls:</span>
+    <div id="url_menu" dojoType="dijit.Menu" id="url-menu"></div>
+  </div>
+  <div class="url-area">
+    URL:
+    <div class="url-container">
+      <input type="text" name="url" id="url" value=""
+             dojoType="dijit.form.ValidationTextBox"
+             regExp="\S+" invalidMessage="Invalid URL."
+             style="width: 100%;">
+    </div>
+    <div class="url-buttons">
+      <button dojoType="dijit.form.Button"
+              onClick="web_frame_application.add"
+              id="add" title="Add a URL">+</button>
+      <button dojoType="dijit.form.Button"
+              onClick="web_frame_application.remove"
+              id="remove" title="Remove a URL">-</button>
+    </div>
+  </div>
+  <div class="frame-div">
+    <iframe id="frame"></iframe>
+  </div>
+  <div class="intro">
+    <h1>Getting started</h1>
+    <p>To add urls to the player:</p>
+    <ul>
+      <li>Enter a URL into the URL field</li>
+      <li>Press enter to see the page.</li>
+      <li>Click the add (+) button.</li>
+    </ul>
+  </div>
+</body>
