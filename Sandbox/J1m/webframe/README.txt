@@ -52,7 +52,7 @@ Layout
 
 Unicode Fun
   I was too lazy to go scrounge up images to use for the player
-  controls, so I ended up using unicode text that got be close
+  controls, so I ended up using unicode text that got me close
   enough. :)
 
 
