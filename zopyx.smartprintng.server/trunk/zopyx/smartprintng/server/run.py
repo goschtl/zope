@@ -4,7 +4,7 @@
 ##########################################################################
 
 import os
-from pyramid.router import make_app
+from pyramid_zcml import make_app
 import mail_util
 from views import have_authentication
 
