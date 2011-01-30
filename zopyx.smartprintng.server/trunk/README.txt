@@ -24,12 +24,6 @@ Installation
 
     virtualenv --no-site-packages smartprintng
 
-- install ``Pyramid`` 
-  as a dependency) ::
-
-    bin/easy_install pyramid
-    bin/easy_install pyramid_xmlrpc
-
 - install the SmartPrintNG server::
 
     bin/easy_install zopyx.smartprintng.server
