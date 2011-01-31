@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.4.2'
+version = '1.5.0'
 readme = open(os.path.join("src", "megrok", "z3ctable", "README.txt")).read()
 history = open(os.path.join("docs", "HISTORY.txt")).read()
 

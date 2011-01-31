@@ -7,8 +7,7 @@ import grokcore.component
 
 from zope import component
 from z3c.table.interfaces import ITable
-from grokcore.component.scan import determine_module_component
-from grokcore.component.meta import default_provides as default
+from martian.util import scan_for_classes
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
@@ -18,11 +17,20 @@ class TableGrokker(martian.GlobalGrokker):
     """
     martian.priority(991)
 
+    def get_default(cls, component, module=None, **data):
+        components = list(scan_for_classes(module, megrok.z3ctable.ITable))
+        if len(components) == 0:
+            return None
+        elif len(components) == 1:
+            component = components[0]
+        else:
+            return None
+        return component
+
     def grok(self, name, module, module_info, config, **kw):
-        table = determine_module_component(module_info,
-                                           megrok.z3ctable.table,
-                                           megrok.z3ctable.ITable)
-        megrok.z3ctable.table.set(module, table)
+        factory = self.get_default(module, module)
+        if factory is not None:
+            megrok.z3ctable.table.set(module, factory)
         return True
 
 
@@ -33,7 +41,7 @@ class ColumnGrokker(martian.ClassGrokker):
     martian.directive(grokcore.component.name)
     martian.directive(grokcore.component.context)
     martian.directive(megrok.z3ctable.table, default=ITable)
-    martian.directive(grokcore.component.provides, get_default=default)
+    martian.directive(grokcore.component.provides)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
 
     def execute(self, factory, config, layer, context, table, provides, name):
