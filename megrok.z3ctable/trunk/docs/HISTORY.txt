@@ -1,12 +1,20 @@
 Changelog
 =========
 
+1.5.0 (2011-01-31)
+------------------
+
+* Adapted the grokkers for the latest versions of ``martian`` and
+  ``grokcore.component``.
+
+
 1.4.2 (2010-05-07)
 ------------------
 
 * Migration from Dolmen's GIT to Zope's Subversion repository. MANIFEST has
   been removed while a license file has been added. `megrok.z3ctable` is under
   the ZPL license.
+
 
 1.4.1 (2010-02-21)
 ------------------
