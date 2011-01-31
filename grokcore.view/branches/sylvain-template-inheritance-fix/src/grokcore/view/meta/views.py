@@ -12,6 +12,7 @@
 #
 ##############################################################################
 """Grokkers for the views code."""
+import sys
 
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -34,7 +35,7 @@ def default_view_name(component, module=None, **data):
 class TemplateGrokker(martian.ClassGrokker):
     martian.baseclass()
 
-    _template_order = 5000
+    _template_order = sys.maxint/2
 
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info to look for a template
@@ -42,19 +43,19 @@ class TemplateGrokker(martian.ClassGrokker):
         return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, **kw):
-        # Associate templates to a view or a component. We set order
-        # to at least 5000, to do it after all templates have be
-        # registered to the shared template registry, and yet before
-        # unassociated templates are checked.
+        # Associate templates to a view or a component. We set the
+        # configuration action order to a number quite high, to do it
+        # after all templates have be registered to the shared template
+        # registry, and yet before unassociated templates are checked.
         config.action(
             discriminator=None,
             callable=self.associate_template,
             args=(factory.module_info, factory),
             order=self._template_order)
-        # We increase _template_order to keep a relative order of
-        # association between each different Grok extensions. (Like
-        # this an implicit template can be inherited between two
-        # different Grok extensions.)
+        # We increase _template_order to maintain the relative order of
+        # template association between the different Grok extensions
+        # (like an implicit template can be inherited between two
+        # different Grok extensions).
         self._template_order += 1
         return True
 
