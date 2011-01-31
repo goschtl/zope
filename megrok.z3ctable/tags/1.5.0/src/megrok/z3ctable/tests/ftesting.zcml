@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok">
+
+  <include package="grokcore.view" file="meta.zcml" />
+  <include package="megrok.layout" file="meta.zcml"/>
+  <include package="zope.browserpage" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+
+  <include package="grokcore.view"/>
+  <include package="z3c.table"/>
+  <include package="zope.container" />
+  <include package="zope.security" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+ 
+  <include package="megrok.z3ctable" file="meta.zcml"/>
+  <grok:grok package="megrok.z3ctable.tests" />
+
+</configure>
