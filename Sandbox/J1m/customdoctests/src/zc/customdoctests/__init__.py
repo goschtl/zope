@@ -22,6 +22,7 @@ class DocTestParser(doctest.DocTestParser):
     def __init__(self, *args, **kw):
         ps1 = kw.pop('ps1', '>>>')
         ps2 = kw.pop('ps2', r'\.\.\.')
+        comment_prefix = kw.pop('comment_prefix', '#')
         self.transform = kw.pop('transform', lambda s: s)
         getattr(doctest.DocTestParser, '__init__', lambda : None)(*args, **kw)
 
@@ -38,6 +39,11 @@ class DocTestParser(doctest.DocTestParser):
                          .*$\n?           # But any other line
                       )*)
         ''' % dict(ps1=ps1, ps2=ps2), re.MULTILINE | re.VERBOSE)
+
+        self._OPTION_DIRECTIVE_RE = re.compile(
+            comment_prefix +r'\s*doctest:\s*([^\n\'"]*)$', re.MULTILINE)
+
+
 
     def parse(self, string, name='<string>'):
         r =doctest.DocTestParser.parse(self, string, name)
