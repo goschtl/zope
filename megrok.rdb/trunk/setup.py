@@ -8,7 +8,7 @@ long_description = read('src/megrok/rdb/README.txt') + '\n' +\
     read('CHANGES.txt')
 
 setup(name='megrok.rdb',
-      version = '0.12',
+      version = '0.13dev',
       description="SQLAlchemy based RDB support for Grok.",
       long_description=long_description,
       classifiers=['Development Status :: 4 - Beta',
