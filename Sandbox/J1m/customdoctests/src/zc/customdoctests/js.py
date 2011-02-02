@@ -52,8 +52,11 @@ def setUp(test_or_self):
         JS(open(name).read(), name)
 
     cx.add_global('load', load)         # rhino compat
-    cx.add_global('print',
-                  lambda s: sys.stdout.write('%s\n' % (s, ))) # rhino compat
+    cx.add_global(
+        'print',
+        lambda *s:
+        sys.stdout.write('%s\n' % ' '.join(map(str, s)))
+        ) # rhino compatish
 
     cx.add_global('console', dict(
         error = lambda s: sys.stdout.write('Error: %s\n' % (s, )),
