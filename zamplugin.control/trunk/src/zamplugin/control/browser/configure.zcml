@@ -6,7 +6,7 @@
   <!-- runtime info -->
   <z3c:pagelet
       name="index.html"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
       class=".runtimeinfo.RuntimeInfo"
       permission="zope.ManageApplication"
       layer="zam.api.layer.IControlPluginLayer"
@@ -22,7 +22,7 @@
   <!-- ZODB control -->
   <z3c:pagelet
       name="ZODBControl.html"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
       class=".zodbcontrol.ZODBControl"
       permission="zope.ManageApplication"
       layer="zam.api.layer.IControlPluginLayer"
@@ -38,7 +38,7 @@
   <!-- generations -->
   <z3c:pagelet
       name="generations.html"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
       class=".generation.Generations"
       permission="zope.ManageApplication"
       layer="zam.api.layer.IControlPluginLayer"
@@ -52,7 +52,7 @@
 
   <z3c:pagelet
       name="generationDetails.html"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
       class=".generation.GenerationDetails"
       permission="zope.ManageApplication"
       layer="zam.api.layer.IControlPluginLayer"

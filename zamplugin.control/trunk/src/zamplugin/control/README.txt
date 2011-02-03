@@ -2,7 +2,7 @@
 README
 ======
 
-This package provides the server control management. The zam.skin is used as 
+This package provides the server control management. The zam.skin is used as
 basic skin for this test.
 
 First login as manager:
@@ -13,18 +13,15 @@ First login as manager:
 
 Check if we can access the management namespace without the installed plugin:
 
-  >>> mgr = Browser()
-  >>> mgr.handleErrors = False
-  >>> mgr.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> rootURL = 'http://localhost/++skin++ZAM'
   >>> mgr.open(rootURL + '/++etc++ApplicationController')
-  >>> mgr.url
-  'http://localhost/++skin++ZAM/++etc++ApplicationController'
+  Traceback (most recent call last):
+  HTTPError: HTTP Error 404: Not Found
 
-As you can see there is no real page available only the default one from the 
+As you can see there is no real page available only the default one from the
 skin configuration which shows the following message:
 
-  >>> 'There is no index.html page registered for this object' in mgr.contents
+  >>> 'The page you are trying to access is not available' in mgr.contents
   True
 
 Go to the plugins page at the site root:
@@ -101,7 +98,7 @@ Now you can see there is management namespace at the site root:
   </html>
 
 
-The ZODB control page allows you to pack the Database and shows the current 
+The ZODB control page allows you to pack the Database and shows the current
 database size:
 
   >>> mgr.open(rootURL + '/++etc++ApplicationController/ZODBControl.html')
@@ -150,7 +147,7 @@ database size:
   </div>
   ...
 
-The generation page shows you pending generations and will list already 
+The generation page shows you pending generations and will list already
 processed generation steps:
 
   >>> mgr.open(rootURL + '/++etc++ApplicationController/generations.html')

@@ -3,17 +3,11 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope">
 
-  <!-- load meta configuration for exclude -->
-  <include package="zc.configuration" file="meta.zcml" />
-
-  <!-- use app configuration from zam.api -->
+  <!-- use app configuration from zam.skin -->
   <include package="zam.skin" file="app.zcml" />
 
-  <!-- exclude will prevent from include -->
-  <exclude package="zope.app.applicationcontrol.browser" />
-
   <!-- zope app package configuration -->
-  <include package="zope.app.applicationcontrol" />
+  <include package="zope.applicationcontrol" />
 
   <!-- zam skin configuration -->
   <include package="zamplugin.control" />
