@@ -5,7 +5,7 @@ Before we can begin, we need to set up a few things.  We need a
 manager account:
 
   >>> uf = self.folder.acl_users
-  >>> user = uf._doAddUser('manager', 'r00t', ['Manager'], [])
+  >>> _ignored = uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
 We need to configure all of Five for the functional test:
 
