@@ -1,0 +1,43 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <viewlet
+      name="Process"
+      for="*"
+      class=".menu.ProcessMenuItem"
+      manager="zam.api.menu.IGlobalMenu"
+      layer="zam.api.layer.IControlPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <!-- context menu item -->
+  <viewlet
+      name="Runtime"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".menu.RuntimeMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IControlPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="ZODB Control"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".menu.ZODBControlMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IControlPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Generations"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".menu.GenerationsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IControlPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>

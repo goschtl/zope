@@ -1,0 +1,67 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <!-- runtime info -->
+  <z3c:pagelet
+      name="index.html"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
+      class=".runtimeinfo.RuntimeInfo"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+  <z3c:template
+      for=".runtimeinfo.RuntimeInfo"
+      template="runtimeinfo.pt"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+
+  <!-- ZODB control -->
+  <z3c:pagelet
+      name="ZODBControl.html"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
+      class=".zodbcontrol.ZODBControl"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+  <z3c:template
+      for=".zodbcontrol.ZODBControl"
+      template="zodbcontrol.pt"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+
+  <!-- generations -->
+  <z3c:pagelet
+      name="generations.html"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
+      class=".generation.Generations"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+  <z3c:template
+      for=".generation.Generations"
+      template="generations.pt"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="generationDetails.html"
+      for="zope.applicationcontrol.interfaces.IApplicationControl"
+      class=".generation.GenerationDetails"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+  <z3c:template
+      for=".generation.GenerationDetails"
+      template="generation_details.pt"
+      layer="zam.api.layer.IControlPluginLayer"
+      />
+
+</configure>
