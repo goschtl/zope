@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
--------------------------
+0.6.0 (2011-02-03)
+------------------
 
 - Updated test setup, tests and demo application to run with ZTK 1.0, thus
   requiring ``zam.api`` >= 0.7.

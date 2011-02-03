@@ -19,18 +19,20 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    data = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return data + '\n\n'
 
 setup (
     name='zamplugin.control',
-    version='0.5.1dev',
+    version='0.6.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Error utility for Zope Application Management",
     long_description=(
-        read('README.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
+        read('README.txt') +
+        '.. contents::\n\n' +
+        read('CHANGES.txt') +
+        read('src', 'zamplugin', 'control', 'README.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 zam server and application control management",
