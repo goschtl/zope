@@ -1,0 +1,25 @@
+=======
+CHANGES
+=======
+
+0.6.1 (2011-02-04)
+------------------
+
+- Moved zcml package include of ``zope.applicationcontrol`` from `app.zcml`
+  to `configure.zcml` so you can include `configure.zcml` (as usual) when
+  using this plug-in.
+
+
+0.6.0 (2011-02-03)
+------------------
+
+- Updated test setup, tests and demo application to run with ZTK 1.0, thus
+  requiring ``zam.api`` >= 0.7.
+
+- Depending on ``zope.applicationcontrol`` instead of
+  ``zope.app.applicationcontrol``.
+
+0.5.0 (2008-04-14)
+------------------
+
+- Initial release.

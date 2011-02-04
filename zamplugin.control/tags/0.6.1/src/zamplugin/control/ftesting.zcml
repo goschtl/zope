@@ -1,0 +1,20 @@
+<configure
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
+
+
+  <!-- load app configuration -->
+  <include package="zamplugin.control" file="app.zcml" />
+
+  <!-- use ftesting configuration from zam.skin -->
+  <include package="zam.skin" file="ftesting.zcml" />
+
+  <!-- zope.app.zopeappgenerations' generations are expected by test -->
+  <include package="zope.app.zopeappgenerations" />
+
+
+</configure>
