@@ -5,7 +5,9 @@ CHANGES
 0.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Moved zcml package include of ``zope.applicationcontrol`` from `app.zcml`
+  to `configure.zcml` so you can include `configure.zcml` (as usual) when
+  using this plug-in.
 
 
 0.6.0 (2011-02-03)

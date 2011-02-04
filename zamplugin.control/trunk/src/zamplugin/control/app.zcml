@@ -6,9 +6,6 @@
   <!-- use app configuration from zam.skin -->
   <include package="zam.skin" file="app.zcml" />
 
-  <!-- zope app package configuration -->
-  <include package="zope.applicationcontrol" />
-
   <!-- zam skin configuration -->
   <include package="zamplugin.control" />
 

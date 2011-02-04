@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zam">
 
+  <include package="zope.applicationcontrol" />
   <include file="plugin.zcml" />
 
   <!-- plugin management for IControlPluginLayer -->
@@ -29,7 +30,7 @@
 
 
     <!-- configure zope defaults (we do not include original configure.zcml -->
-    <adapter 
+    <adapter
         for="zope.app.applicationcontrol.interfaces.IApplicationControl"
         provides="zope.app.applicationcontrol.interfaces.IRuntimeInfo"
         factory="zope.app.applicationcontrol.runtimeinfo.RuntimeInfo"
@@ -37,7 +38,7 @@
         />
 
     <!-- configure zope defaults (we do not include original configure.zcml -->
-    <utility 
+    <utility
         component="zope.app.applicationcontrol.zopeversion.ZopeVersionUtility"
         provides="zope.app.applicationcontrol.interfaces.IZopeVersion"
         />
