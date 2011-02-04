@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup (
     name='zamplugin.control',
-    version='0.6.1',
+    version='0.6.2dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Error utility for Zope Application Management",
