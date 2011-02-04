@@ -46,20 +46,8 @@ def setUp(test_or_self):
     globs['JS'] = JS = cx.execute
     globs['add_js_global'] = cx.add_global
 
-
-    # Emulate rhino load:
-    def load(name):
-        JS(open(name).read(), name)
-
-    cx.add_global('load', load)         # rhino compat
-    cx.add_global(
-        'print',
-        lambda *s:
-        sys.stdout.write('%s\n' % ' '.join(map(str, s)))
-        ) # rhino compatish
-
-    cx.add_global('console', dict(
-        error = lambda s: sys.stdout.write('Error: %s\n' % (s, )),
-        info = lambda s: sys.stdout.write('Info: %s\n' % (s, )),
-        log = lambda s: sys.stdout.write('%s\n' % (s, )),
-        ))
+    # Rhino & spidermonkey/js compatability functions
+    cx.add_global('load', lambda name: JS(open(name).read(), name))
+    cx.add_global('print',
+                  lambda *s: sys.stdout.write('%s\n' % ' '.join(map(str, s)))
+                  )
