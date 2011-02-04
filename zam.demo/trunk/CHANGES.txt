@@ -2,7 +2,11 @@
 CHANGES
 =======
 
-Version 0.1.0 (unreleased)
--------------------------
+0.1.0 (unreleased)
+------------------
 
-- Initial Release
+- Initial Release.
+
+- Updated app to run with ZTK 1.0.
+
+- Switched from using externals to released packages.
