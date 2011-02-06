@@ -48,9 +48,9 @@ def main():
                 if download_url == 'UNKNOWN':
                     print 'CRAP: %s==%s - no release files, no valid download_url' % (package, version)
 
-            if len(metadata['description']) < 40:
+            if len(metadata['description'] or '') < 40:
                     print 'CRAP: %s==%s - description < 40 chars' % (package, version)
-            if len(metadata['summary']) < 10:
+            if len(metadata['summary'] or '') < 10:
                     print 'CRAP: %s==%s - summary < 10 chars' % (package, version)
             if not metadata['author_email'] and not metadata['maintainer_email']:
                     print 'CRAP: %s==%s - no author and no maintainer email given' % (package, version)
