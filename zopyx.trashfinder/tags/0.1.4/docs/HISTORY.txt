@@ -1,0 +1,21 @@
+Changelog
+=========
+
+0.1.4 (2011/02/06)
+-------------------
+- bug fix in parsing metadata
+
+0.1.3 (2009/12/29)
+-------------------
+
+- bug fix
+
+0.1.2 (2009/12/29)
+-------------------
+
+- added some sanity checks on egg releases files vs. source releases
+
+0.1.0 (2009/12/29)
+-------------------
+
+- Initial release
