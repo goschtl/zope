@@ -4,7 +4,7 @@ Changelog
 1.0.4 - unreleased
 ------------------
 
-* Fix test failures when running against PluggableAuthService 1.7.3
+* Fix test failures when running against 2.13.2+.
 
 1.0.3 - 2010-06-13
 ------------------
