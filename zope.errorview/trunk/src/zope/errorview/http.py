@@ -20,6 +20,11 @@ from zope.errorview.interfaces import HandleExceptionEvent
 
 
 class SystemErrorViewMixin(object):
+    """An optional mixin to indicate a particular error view to be an "system
+    error" view. This indicates the publication object to log the error again
+    with the error reporting utility.
+
+    """
 
     implements(ISystemErrorView)
 
@@ -50,7 +55,7 @@ class ExceptionViewBase(object):
         return self()
 
 
-class ExceptionView(ExceptionViewBase, SystemErrorViewMixin):
+class ExceptionView(ExceptionViewBase):
     pass
 
 

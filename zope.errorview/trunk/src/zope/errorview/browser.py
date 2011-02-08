@@ -21,7 +21,7 @@ from zope.publisher.browser import BrowserPage
 # XXX i18n-ing?
 
 
-class ExceptionView(ExceptionView, BrowserPage):
+class ExceptionView(ExceptionViewBase, BrowserPage):
 
     def render(self):
         return u'A system error occurred.'

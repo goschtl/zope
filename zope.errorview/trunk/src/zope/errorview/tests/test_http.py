@@ -24,6 +24,7 @@ from zope.publisher.interfaces.http import IHTTPException, IHTTPRequest
 from zope.publisher.interfaces.http import MethodNotAllowed, IMethodNotAllowed
 from zope.publisher.interfaces import TraversalException, NotFound
 from zope.security.interfaces import Unauthorized
+
 import zope.errorview
 
 
@@ -41,6 +42,15 @@ class TestErrorViews(TestCase):
 
     def test_exceptionview(self):
         view = http.ExceptionView(Exception(), self.request)
+        self.failUnless(IHTTPException.providedBy(view))
+        self.assertEquals(str(view), '')
+        self.assertEquals(view(), '')
+        self.assertEqual(self.request.response.getStatus(), 500)
+
+    def test_systemerrormixin_view(self):
+        class SystemErrorView(http.ExceptionViewBase, http.SystemErrorViewMixin):
+            pass
+        view = SystemErrorView(Exception(), self.request)
         self.failUnless(IHTTPException.providedBy(view))
         self.failUnless(ISystemErrorView.providedBy(view))
         self.assertTrue(view.isSystemError())

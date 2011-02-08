@@ -61,9 +61,6 @@ class TestErrorViews(TestCase):
 
     def test_exceptionview(self):
         view = getMultiAdapter((Exception(), self.request), name='index.html')
-        self.failUnless(IHTTPException.providedBy(view))
-        self.failUnless(ISystemErrorView.providedBy(view))
-        self.assertTrue(view.isSystemError())
         self.assertEquals(view(), 'A system error occurred.')
         self.assertEquals(self.request.response.getStatus(), 500)
 
