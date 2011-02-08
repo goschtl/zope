@@ -1,0 +1,15 @@
+=======
+CHANGES
+=======
+
+0.10 (2011-02-08)
+-----------------
+
+- Exception views do not by default provide ISystemErrorView anymore as it
+  would result in duplicate log output. The mixin class still exists for
+  writing custom error views that do provide ISystemErrorView.
+
+0.9 (2011-01-20)
+----------------
+
+- Initial release.
