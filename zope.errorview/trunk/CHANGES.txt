@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.10 (unreleased)
+0.10 (2011-02-08)
 -----------------
 
 - Exception views do not by default provide ISystemErrorView anymore as it
