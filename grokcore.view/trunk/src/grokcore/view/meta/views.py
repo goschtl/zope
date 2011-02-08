@@ -12,6 +12,7 @@
 #
 ##############################################################################
 """Grokkers for the views code."""
+import sys
 
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -34,22 +35,33 @@ def default_view_name(component, module=None, **data):
 class TemplateGrokker(martian.ClassGrokker):
     martian.baseclass()
 
+    _template_order = sys.maxint/2
+
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info to look for a template
         factory.module_info = module_info
         return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, **kw):
-        # find templates
+        # Associate templates to a view or a component. We set the
+        # configuration action order to a number quite high, to do it
+        # after all templates have be registered to the shared template
+        # registry, and yet before unassociated templates are checked.
         config.action(
             discriminator=None,
-            callable=self.check_templates,
-            args=(factory.module_info, factory))
+            callable=self.associate_template,
+            args=(factory.module_info, factory),
+            order=self._template_order)
+        # We increase _template_order to maintain the relative order of
+        # template association between the different Grok extensions
+        # (like an implicit template can be inherited between two
+        # different Grok extensions).
+        self._template_order += 1
         return True
 
-    def check_templates(self, module_info, factory):
+    def associate_template(self, module_info, factory):
         component_name = martian.component.bind().get(self).__name__.lower()
-        templatereg.checkTemplates(
+        templatereg.associate_template(
             module_info, factory, component_name, self.has_render, self.has_no_render)
 
     def has_render(self, factory):

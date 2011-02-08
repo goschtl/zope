@@ -14,6 +14,7 @@
 """Grok directives.
 """
 import os.path
+import sys
 
 import martian
 from martian.error import GrokImportError
@@ -37,6 +38,12 @@ class template(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
+
+    def factory(self, name):
+        # In combination of the name, store from which module the
+        # template is refered.
+        f_locals = sys._getframe(2).f_locals
+        return (f_locals['__module__'], name)
 
 
 class templatedir(martian.Directive):

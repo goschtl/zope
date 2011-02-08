@@ -3,6 +3,7 @@ import warnings
 import zope.component
 import grokcore.component
 import grokcore.view
+from martian.scan import module_info_from_dotted_name
 from martian.error import GrokError
 from grokcore.view.interfaces import ITemplate, ITemplateFileFactory, TemplateLookupError
 from grokcore.view.components import PageTemplate
@@ -207,15 +208,29 @@ def check_unassociated():
         warnings.warn(msg, UserWarning, 1)
 
 
-def checkTemplates(module_info, factory, component_name,
-                   has_render, has_no_render):
+def associate_template(module_info, factory, component_name,
+                       has_render, has_no_render):
+    """Associate a template to a factory located in the module
+    described by module_info.
+    """
     factory_name = factory.__name__.lower()
-    template_name = grokcore.view.template.bind().get(factory)
+    module_name, template_name = grokcore.view.template.bind(
+        default=(None, None)).get(factory)
     if template_name is None:
+        # We didn't used grok.template. Default the template name to
+        # the factory name.
         template_name = factory_name
+    else:
+        # We used grok.template. Use the same module_info to fetch the
+        # template that the module in which the directive have been
+        # used (to get the grok.templatedir value).
+        assert module_name is not None, \
+            u"module_name cannot be None if template_name is specified."
+        module_info = module_info_from_dotted_name(module_name)
 
-    # We used grok.template. Check if there is no template with the
-    # same name as the view
+    # We used grok.template, to specify a template which is different
+    # than the class name. Check if there is no template with the same
+    # name as the view
     if factory_name != template_name:
         try:
             lookup(module_info, factory_name)

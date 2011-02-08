@@ -4,15 +4,21 @@ Changes
 2.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Use the zope configuration action ordering feature to have templates
+  registered for all packages and modules, before trying to associate the
+  templates. Checking for unassociated templates is done very very late in the
+  configuration action order.
 
+- Inherited grok.template() information is looked up against the module of
+  the view class that uses the grok.template() directive. This allows for
+  subclassing view components that use the grok.template() directive from other
+  packages.
 
 2.3 (2011-01-04)
 ----------------
 
 - Removed the static directory grokker in order to make way for using
   fanstatic.
-
 
 2.2 (2010-12-16)
 ----------------
