@@ -12,24 +12,15 @@
 #
 ##############################################################################
 
-try:
-    from zope.pluggableauth.interfaces import IAuthenticatorPlugin
-except ImportError:
-    # BBB
-    from zope.app.authentication.interfaces import IAuthenticatorPlugin
-
-from zope.app.authentication.interfaces import IQuerySchemaSearch
-try:
-    from zope.pluggableauth.factories import PrincipalInfo
-except ImportError:
-    # BBB
-    from zope.app.authentication.principalfolder import PrincipalInfo
-from zope.app.authentication.principalfolder import (
-    PrincipalFolder, InternalPrincipal
+from zope.pluggableauth.interfaces import (
+    IAuthenticatorPlugin, IQuerySchemaSearch
     )
-from zope.app.authentication.principalfolder import ISearchSchema
-from zope.app.container.interfaces import DuplicateIDError
-from zope.app.security.principalregistry import principalRegistry
+from zope.pluggableauth.factories import PrincipalInfo
+from zope.pluggableauth.plugins.principalfolder import (
+    PrincipalFolder, InternalPrincipal, ISearchSchema,
+    )
+from zope.container.interfaces import DuplicateIDError
+from zope.principalregistry.principalregistry import principalRegistry
 from zope.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.interface import implements
 
