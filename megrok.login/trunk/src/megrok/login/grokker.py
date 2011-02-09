@@ -2,22 +2,10 @@ import martian
 import grok
 import megrok.login
 from zope import component
-try:
-    from zope.pluggableauth import PluggableAuthentication
-except ImportError:
-    # BBB
-    from zope.app.authentication import PluggableAuthentication
-from zope.app.authentication.principalfolder import PrincipalFolder
-try:
-    from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-except ImportError:
-    # BBB
-    from zope.app.authentication.session import SessionCredentialsPlugin
-try:
-    from zope.authentication.interfaces import IAuthentication
-except ImportError:
-    # BBB
-    from zope.app.security.interfaces import IAuthentication
+from zope.pluggableauth import PluggableAuthentication
+from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
+from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
+from zope.authentication.interfaces import IAuthentication
 from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
                                       AutoRegisteringPrincipalFolder)
 
