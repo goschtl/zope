@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain='megrok.login'>
+
+  <include package="grok" />
+  <include package="megrok.login" file="meta.zcml" />
+  <include package="megrok.login" file="configure.zcml" />
+  <grok:grok package="megrok.login.tests" />
+
+  <!-- We register also a default loginpage and sessions. -->
+  <include package="megrok.login" file="loginpage.zcml" />
+  <include package="zope.session" file="configure.zcml" />
+
+  <!-- A usual security setup. -->
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+
+  <!-- The new grok.View permission must be assigned to all users.
+       Use the role based assignments to allow to to propagate to our
+       logged in users by default -->
+
+  <role
+      id="zope.Anonymous"
+      title="Everybody"
+      description="All users have this role implicitly" />
+  <grant
+      permission="zope.View"
+      role="zope.Anonymous" />
+
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <grant role="zope.Manager" principal="zope.mgr" />
+
+</configure>
