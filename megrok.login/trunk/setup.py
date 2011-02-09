@@ -8,6 +8,7 @@ tests_require = [
     'zope.testing',
     'zope.app.testing',
     'zope.testbrowser',
+    'z3c.testsetup',
     ]
 
 long_description = (
@@ -51,11 +52,11 @@ setup(
     install_requires=['setuptools',
                       'grok',
                       'martian',
-                      'zope.app.authentication',
-                      'zope.app.security',
-                      'zope.app.container',
+                      'zope.authentication',
+                      'zope.container',
                       'zope.component',
                       'zope.interface',
+                      'zope.pluggableauth',
                       'zope.securitypolicy',
                       ],
     tests_require = tests_require,
