@@ -1,0 +1,13 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <page
+      name="loginForm.html" 
+      for="*"
+      template="loginform.pt"
+      class=".loginform.LoginForm"
+      permission="zope.Public" 
+      />
+
+</configure>
