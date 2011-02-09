@@ -68,20 +68,21 @@ Note, that the installed PAU (as any other PAU installed by
 folder, for example, which is handled by a different PAU::
 
   >>> browser.open('http://localhost')
+  Traceback (most recent call last):
+  ...
+  HTTPError: HTTP Error 500: Internal Server Error
+
   >>> print browser.contents
-  <!DOCTYPE html...
-  User:...
-  Unauthenticated User...
-  </html>
+  A system error occurred.
 
 """
 import grok
 import megrok.login
 
 from zope.pluggableauth import PluggableAuthentication
-from zope.app.authentication.principalfolder import PrincipalFolder
+from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
 from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
                                       AutoRegisteringPrincipalFolder)
 
@@ -122,4 +123,3 @@ class Index(grok.View):
 
     def render(self):
         return "Hi from custom setup app!"
-
