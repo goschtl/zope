@@ -64,7 +64,7 @@ principal folder of our app.
 
 First we create a new principal (user)::
 
-  >>> from zope.app.authentication.principalfolder import InternalPrincipal
+  >>> from zope.pluggableauth.plugins.principalfolder import InternalPrincipal
   >>> bob = InternalPrincipal('bob', 'bobpw', 'bob')
 
 We add bob to our principal folder::
