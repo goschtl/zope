@@ -84,7 +84,7 @@ The correct credentials, of course, will work::
 """
 import grok
 import megrok.login
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
 from zope.component import getUtility
 
 class ManageApp(grok.Permission):
