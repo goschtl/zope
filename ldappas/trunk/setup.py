@@ -19,7 +19,7 @@ LDAP-based authenticator for Zope 3. It uses ldapadapter to talk to an
 LDAP server.
 """,
     long_description=(
-        read('CHANGES.txt'),
+        read('CHANGES.txt')
     ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
