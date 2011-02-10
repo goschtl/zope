@@ -1,12 +1,15 @@
-===============
-ldappas changes
-===============
+=======
+Changes
+=======
 
 0.8.3 (unreleased)
 ==================
 
-- Nothing changed yet.
+* Change conditional usage of ZCML registrations for views to use
+  'have' instead of 'installed' to account for consumers of zope.app.form
+   which aren't using the meta.zcml of that package.
 
+* Display this changelog on PyPI.
 
 0.8.2 (2011-01-25)
 ==================
@@ -45,9 +48,6 @@ ldappas changes
 0.6 - 20.11.2006
 ================
 
-Features added
---------------
-
 * Fixed Zope 3.3 induced deprecation warnings.
 
 * principalInfo will try to look up a group if it cannot find a
@@ -55,9 +55,3 @@ Features added
   still the responsibility of the application to add LDAP-based groups
   to the principal (for instance by subscribing to the
   IAuthenticatedPrincipalCreated).
-
-
-Bugs fixed
-----------
-
-Nothing yet.

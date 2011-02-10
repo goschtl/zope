@@ -4,6 +4,9 @@ tests_require = [
     'zope.app.testing',
     ]
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(
     name='ldappas',
     version='0.8.3dev',
@@ -14,6 +17,9 @@ setup(
 LDAP-based authenticator for Zope 3. It uses ldapadapter to talk to an
 LDAP server.
 """,
+    long_description=(
+        read('CHANGES.txt')
+    ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data = True,
