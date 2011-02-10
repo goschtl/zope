@@ -20,7 +20,7 @@
   <configure
       xmlns:browser="http://namespaces.zope.org/browser"
       xmlns:zcml="http://namespaces.zope.org/zcml"
-      zcml:condition="installed zope.app.form">
+      zcml:condition="have addform">
 
     <browser:addform
       schema="ldappas.interfaces.ILDAPAuthentication"
