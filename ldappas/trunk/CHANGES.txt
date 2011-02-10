@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.8.3 (unreleased)
+0.8.3 (2011-02-10)
 ==================
 
 * Change conditional usage of ZCML registrations for views to use

@@ -10,7 +10,7 @@ def read(*rnames):
 
 setup(
     name='ldappas',
-    version='0.8.3dev',
+    version='0.8.3',
     author='Zope developers',
     author_email='zope-dev@zope.org',
     url='http://svn.zope.org/ldappas',
