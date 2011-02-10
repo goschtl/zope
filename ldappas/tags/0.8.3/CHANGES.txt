@@ -1,0 +1,57 @@
+=======
+Changes
+=======
+
+0.8.3 (2011-02-10)
+==================
+
+* Change conditional usage of ZCML registrations for views to use
+  'have' instead of 'installed' to account for consumers of zope.app.form
+   which aren't using the meta.zcml of that package.
+
+* Display this changelog on PyPI.
+
+0.8.2 (2011-01-25)
+==================
+
+* Actually *remove* zope.app.testing from the non-testing dependencies!
+
+0.8.1 (2011-01-25)
+==================
+
+* Make registration of ZCML forms conditional on the presence of
+  zope.app.form. This is probably a deprecated feature by now.
+
+0.8 (2011-01-25)
+================
+
+* Changes to use the ZTK import locations.
+
+* Use newer version of openldap for test builds.
+
+* zest.releaser support in buildout
+
+* Reduce dependencies. zope.app.testing dependency still exists, though,
+  and should be removed by adjusting the tests.
+
+0.7 - 04.07.2008
+================
+
+* Updated install_requires to include all dependencies.
+ 
+* Removed deprecated localUtility ZCML.
+ 
+* buildout.cfg compiles openldap and creates a python-ldap egg
+
+* Compatible with Grok 0.12 and 0.13 releases.
+
+0.6 - 20.11.2006
+================
+
+* Fixed Zope 3.3 induced deprecation warnings.
+
+* principalInfo will try to look up a group if it cannot find a
+  user. This is to make ldappas support groups in a minimal way. It is
+  still the responsibility of the application to add LDAP-based groups
+  to the principal (for instance by subscribing to the
+  IAuthenticatedPrincipalCreated).
