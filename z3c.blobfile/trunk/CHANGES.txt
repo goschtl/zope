@@ -5,6 +5,9 @@ CHANGES
 0.1.5 (unreleased)
 ------------------
 
+- Put a ceiling on the number of info bytes read and read those bytes in one
+  shot.
+
 - Bug: Correctly detect the dimensions of JPEG images with the dimensions
   in a position greater than IMAGE_INFO_BYTES.
 

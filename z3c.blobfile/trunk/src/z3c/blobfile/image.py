@@ -31,6 +31,7 @@ from z3c.blobfile.file import File
 import interfaces
 
 IMAGE_INFO_BYTES = 1024
+MAX_INFO_BYTES = 1 << 16
 
 class Image(File):
     implements(interfaces.IBlobImage)
@@ -39,26 +40,26 @@ class Image(File):
         super(Image, self)._setData(data)
         firstbytes = self.getFirstBytes()
         res = getImageInfo(firstbytes)
-        while res == ('image/jpeg', -1, -1):
+        if res == ('image/jpeg', -1, -1):
             # header was longer than firstbytes
-            firstbytes += self.getFirstBytes(len(firstbytes))
+            start = len(firstbytes)
+            length = max(0, MAX_INFO_BYTES - start)
+            firstbytes += self.getFirstBytes(start, length)
             res = getImageInfo(firstbytes)
-            if len(firstbytes) >= self.size:
-                break
         contentType, self._width, self._height = res
         if contentType:
             self.contentType = contentType
 
     data = property(File._getData, _setData)
 
-    def getFirstBytes(self, start=0):
+    def getFirstBytes(self, start=0, length=IMAGE_INFO_BYTES):
         """Returns the first bytes of the file.
         
         Returns an amount which is sufficient to determine the image type.
         """
         fp = self.open('r')
         fp.seek(start)
-        firstbytes = fp.read(IMAGE_INFO_BYTES)
+        firstbytes = fp.read(length)
         fp.close()
         return firstbytes
     
