@@ -25,13 +25,19 @@ There is also a special version of the ``Browser`` class which uses
 applications, it can be imported from ``zope.testbrowser.wsgi``:
 
     >>> from zope.testbrowser.wsgi import Browser
-    >>> browser = Browser()
+    >>> from wsgiref.simple_server import demo_app
+    >>> browser = Browser('http://localhost/', wsgi_app=demo_app)
+    >>> print browser.contents
+    Hello world!
+    ...
 
-.. _`wsgi_intercept`: http://pypi.python.org/pypi/wsgi_intercept
+.. _`WebTest`: http://pypi.python.org/pypi/WebTest
 
 To use this browser you have to:
 
   * use the `wsgi` extra of the ``zope.testbrowser`` egg,
+
+You can also use it with zope layers by:
 
   * write a subclass of ``zope.testbrowser.wsgi.Layer`` and override the
     ``make_wsgi_app`` method,

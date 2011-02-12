@@ -75,7 +75,7 @@ setup(
             'zope.app.testing',
             ],
         'wsgi': [
-            'wsgi_intercept',
+            'WebTest',
             ]
         },
     include_package_data = True,
