@@ -95,7 +95,7 @@ template, e.g. like so::
 
 This will greet a logged in user with his or her actual name.
 
-Such a template-using page is a subclass of ``grokcore.view.View``.
+Such a template-using page is a subclass of ``grokcore.view.View``::
 
   import grokcore.view
   import zope.interface
