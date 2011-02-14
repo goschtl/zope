@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Simple int-matching criterion
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -84,7 +82,7 @@ class SimpleIntCriterion( AbstractCriterion ):
         """
 
         if type( value ) == type( '' ):
-           value = value.strip()
+            value = value.strip()
 
         if not value:
             # An empty string was passed in, which evals to None
