@@ -6,10 +6,9 @@ from DateTime import DateTime
 
 text = ""
 
-last_date=DateTime(thisDay.Date()+" 23:59:59")
+last_date = DateTime(thisDay.Date() + " 23:59:59")
 
 if event.end > last_date:
-  return event.end.aCommon()[:12]
+    return event.end.aCommon()[:12]
 else:
-  return event.end.TimeMinutes()
-
+    return event.end.TimeMinutes()
