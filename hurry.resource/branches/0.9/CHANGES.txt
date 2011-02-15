@@ -1,6 +1,14 @@
 CHANGES
 *******
 
+0.9.1 (unreleased)
+==================
+
+* The WSGI Middleware depends on WebOb, which is an optional
+  dependency. Don't fail in ``__init__.py`` therefore, as
+  that needs to be independent of WebOb. To use the middleware import
+  it directly from ``hurry.resource.wsgi``.
+
 0.9 (2010-07-13)
 ================
 
