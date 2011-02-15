@@ -956,7 +956,7 @@ key ``hurry.resource.needed``::
 
 We now wrap this in our middleware, so that the middleware is activated::
 
-  >>> from hurry.resource import Middleware
+  >>> from hurry.resource.wsgi import Middleware
   >>> wrapped_app = Middleware(app)
 
 Now we make a request (using webob for convenience)::
