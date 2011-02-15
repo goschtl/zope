@@ -47,7 +47,22 @@ def setUp(test_or_self):
     globs['add_js_global'] = cx.add_global
 
     # Rhino & spidermonkey/js compatability functions
-    cx.add_global('load', lambda name: JS(open(name).read(), name))
+    cx.add_global('load_',
+                  lambda name: JS(load_template % open(name).read(), name))
+    JS(load_js)
     cx.add_global('print',
                   lambda *s: sys.stdout.write('%s\n' % ' '.join(map(str, s)))
                   )
+    cx.add_global('printe',
+                  lambda *s: sys.stderr.write('%s\n' % ' '.join(map(str, s)))
+                  )
+
+load_template = "try { %s } catch (e) {spidermonkey_error = e;}"
+
+load_js = """
+function load(p) {
+    spidermonkey_error = undefined;
+    load_(p);
+    if (spidermonkey_error) throw spidermonkey_error;
+}
+"""
