@@ -20,7 +20,6 @@ ZopeTestCase.utils.setupCoreSessions()
 import locale
 
 from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.User import UnrestrictedUser
 from DateTime import DateTime
 from zope.interface.verify import verifyClass
 from zope.site.hooks import setSite
@@ -106,9 +105,12 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
-        setSite(self.app.site)
-        self.app.site.setupCurrentSkin(self.app.REQUEST)
-        newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
+        site = self.app.site
+        setSite(site)
+        site.setupCurrentSkin(self.app.REQUEST)
+        site.acl_users._doAddUser('god', 'secret', ['Manager'], [])
+        user = site.acl_users.getUser('god').__of__(site.acl_users)
+        newSecurityManager(None, user)
 
         # sessioning setup
         sdm = self.app.session_data_manager
