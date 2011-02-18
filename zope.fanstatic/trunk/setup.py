@@ -31,7 +31,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'fanstatic',
+        'fanstatic > 0.10.1',
         'zope.component',
         'zope.errorview [browser]',
         'zope.event',
