@@ -20,6 +20,7 @@ import urllib
 
 import Acquisition
 from OFS.Traversable import Traversable as OFSTraversable
+from zope.publisher.interfaces import IPublishTraverse
 from zope.app.publisher.browser.resources import empty
 from zope.app.publisher.fileresource import File, Image
 from zope.app.publisher.pagetemplateresource import PageTemplate
@@ -175,6 +176,7 @@ class Directory:
 
 class DirectoryResource(BrowserView, Resource, OFSTraversable):
     #implements(IBrowserPublisher)
+    implements(IPublishTraverse)
 
     resource_factories = {
         'gif':  ImageResourceFactory,
@@ -198,6 +200,9 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
         if not name.startswith('++resource++'):
             name = '++resource++%s' % self.__name__
         return name
+
+    def publishTraverse(self, request, name):
+        return self.get(name)
 
     def __browser_default__(self, request):
         '''See interface IBrowserPublisher'''

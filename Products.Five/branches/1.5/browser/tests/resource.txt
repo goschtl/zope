@@ -61,6 +61,20 @@ Resource directory
   >>> abs_url + '/' == base_url % ''
   True
 
+Verify that the resource directory implements the ``IPublishTraverse``
+interface. We want only directory-based traversal at this point
+(otherwise, if a subobject has the name of a view component, it will
+be preferred by the default traverser).
+
+  >>> directory = self.folder.unrestrictedTraverse(
+  ...     'testoid/++resource++fivetest_resources')
+  >>> from zope.publisher.interfaces import IPublishTraverse
+  >>> IPublishTraverse.providedBy(directory)
+  True
+
+  >>> directory.publishTraverse('self.folder.REQUEST', 'resource_subdir')
+  <Products.Five.browser.resource.DirectoryResource object at ...>
+
 PageTemplateResource's __call__ renders the template
 
   >>> for r in dir_resource_names:

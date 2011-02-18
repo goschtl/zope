@@ -5,6 +5,10 @@ Five Changes
 HEAD
 ====
 
+* Resource directories now implement own traversal. This fixes an
+  issue where a browser view with the same name as a subdirectory
+  would be favored.
+
 Five 1.5.9 (2009-01-01)
 =======================
 
