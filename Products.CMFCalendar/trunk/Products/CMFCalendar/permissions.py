@@ -11,22 +11,20 @@
 #
 ##############################################################################
 """ CMFCalendar product permissions
-
-$Id$
 """
-from AccessControl import ModuleSecurityInfo
 
-from Products.CMFCore.permissions import setDefaultRoles
+from AccessControl import ModuleSecurityInfo
+from AccessControl.Permission import addPermission
 
 security = ModuleSecurityInfo('Products.CMFCalendar.permissions')
 
 security.declarePublic('AddEvents')
 AddEvents = 'Add portal events'
-setDefaultRoles(AddEvents, ('Manager', 'Owner', 'Member'))
+addPermission(AddEvents, ('Manager', 'Owner', 'Member'))
 
 security.declarePublic('ChangeEvents')
 ChangeEvents = 'Change portal events'
-setDefaultRoles(ChangeEvents, ('Manager', 'Owner',))
+addPermission(ChangeEvents, ('Manager', 'Owner',))
 
 security.declarePublic('AddPortalContent')
 from Products.CMFCore.permissions import AddPortalContent

@@ -15,10 +15,8 @@
 
 import unittest
 from Testing import ZopeTestCase
-try:
-    from Zope2.App.schema import Zope2VocabularyRegistry
-except ImportError:  # Zope2 <= 2.12
-    from Products.Five.schema import Zope2VocabularyRegistry
+
+from Zope2.App.schema import Zope2VocabularyRegistry
 
 from Products.CMFCalendar.testing import FunctionalLayer
 
