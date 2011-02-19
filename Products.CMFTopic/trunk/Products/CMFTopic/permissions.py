@@ -11,22 +11,20 @@
 #
 ##############################################################################
 """ Permissions used throughout CMFTopic.
-
-$Id$
 """
+
 from AccessControl import ModuleSecurityInfo
+from AccessControl.Permission import addPermission
 
 security = ModuleSecurityInfo('Products.CMFTopic.permissions')
 
-from Products.CMFCore.permissions import setDefaultRoles
-
 security.declarePublic('AddTopics')
 AddTopics = 'Add portal topics'
-setDefaultRoles(AddTopics, ('Manager',))
+addPermission(AddTopics, ('Manager',))
 
 security.declarePublic('ChangeTopics')
 ChangeTopics = 'Change portal topics'
-setDefaultRoles(ChangeTopics, ('Manager', 'Owner',))
+addPermission(ChangeTopics, ('Manager', 'Owner',))
 
 security.declarePublic('AccessContentsInformation')
 from Products.CMFCore.permissions import AccessContentsInformation
