@@ -100,23 +100,6 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
         return _register_resource(config, resource_path, name, layer)
 
 
-class StaticResourcesGrokker(martian.GlobalGrokker):
-
-    def grok(self, name, module, module_info, config, **kw):
-        # we're only interested in static resources if this module
-        # happens to be a package
-        if not module_info.isPackage():
-            return False
-        resource_path = _get_resource_path(module_info, 'static')
-
-        if not os.path.exists(resource_path):
-            return False
-
-        name = module_info.dotted_name
-        layer = IDefaultBrowserLayer
-        return _register_resource(config, resource_path, name, layer)
-
-
 class ViewletSecurityGrokker(martian.ClassGrokker):
     martian.component(five.grok.Viewlet)
     martian.directive(grokcore.security.require, name='permission')
