@@ -14,6 +14,10 @@ Changes
   subclassing view components that use the grok.template() directive from other
   packages.
 
+- Add a new ZCML directive, ``ignoreTemplates`` that let you configure
+  which template filename pattern should be ignored by the template
+  registry.
+
 2.3 (2011-01-04)
 ----------------
 

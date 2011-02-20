@@ -1,19 +1,38 @@
+##############################################################################
+#
+# Copyright (c) 2006-2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import os
 import warnings
+import re
+
 import zope.component
 import grokcore.component
 import grokcore.view
 from martian.scan import module_info_from_dotted_name
 from martian.error import GrokError
-from grokcore.view.interfaces import ITemplate, ITemplateFileFactory, TemplateLookupError
+from grokcore.view.interfaces import ITemplate, ITemplateFileFactory
+from grokcore.view.interfaces import TemplateLookupError
 from grokcore.view.components import PageTemplate
 
 
 class InlineTemplateRegistry(object):
+    """Registry managing all inline template files.
+    """
+
     def __init__(self):
         self._reg = {}
         self._unassociated = set()
-
 
     def register_inline_template(self, module_info, template_name, template):
         # verify no file template got registered with the same name
@@ -35,7 +54,8 @@ class InlineTemplateRegistry(object):
         self._unassociated.add((module_info.dotted_name, template_name))
 
     def associate(self, module_info, template_name):
-        # Two views in the same module should be able to use the same inline template
+        # Two views in the same module should be able to use the same
+        # inline template
         try:
             self._unassociated.remove((module_info.dotted_name, template_name))
         except KeyError:
@@ -44,7 +64,8 @@ class InlineTemplateRegistry(object):
     def lookup(self, module_info, template_name, mark_as_associated=False):
         result = self._reg.get((module_info.dotted_name, template_name))
         if result is None:
-            raise TemplateLookupError("inline template '%s' in '%s' cannot be found" % (
+            raise TemplateLookupError(
+                "inline template '%s' in '%s' cannot be found" % (
                     template_name, module_info.dotted_name))
         if mark_as_associated:
             self.associate(module_info, template_name)
@@ -53,11 +74,19 @@ class InlineTemplateRegistry(object):
     def unassociated(self):
         return self._unassociated
 
+
 class FileTemplateRegistry(object):
+    """Registry managing all template files.
+    """
+
     def __init__(self):
         self._reg = {}
         self._unassociated = set()
         self._registered_directories = set()
+        self._ignored_patterns = []
+
+    def ignore_templates(self, pattern):
+        self._ignored_patterns.append(re.compile(pattern))
 
     def register_directory(self, module_info):
         # we cannot register a templates dir for a package
@@ -82,11 +111,9 @@ class FileTemplateRegistry(object):
     def _register_template_file(self, module_info, template_path):
         template_dir, template_file = os.path.split(template_path)
 
-        if template_file.startswith('.') or template_file.endswith('~'):
-            return
-        if template_file.endswith('.cache'):
-            # chameleon creates '<tpl_name>.cache' files on the fly
-            return
+        for pattern in self._ignored_patterns:
+            if pattern.search(template_file):
+                return
 
         template_name, extension = os.path.splitext(template_file)
         if (template_dir, template_name) in self._reg:
@@ -136,10 +163,12 @@ class FileTemplateRegistry(object):
         template_dir = self.get_template_dir(module_info)
         result = self._reg.get((template_dir, template_name))
         if result is None:
-            raise TemplateLookupError("template '%s' in '%s' cannot be found" % (
+            raise TemplateLookupError(
+                "template '%s' in '%s' cannot be found" % (
                     template_name, template_dir))
         if mark_as_associated:
-            registered_template_path = self._reg.get((template_dir, template_name)).__grok_location__
+            registered_template_path = self._reg.get(
+                (template_dir, template_name)).__grok_location__
             self.associate(registered_template_path)
         return result
 
@@ -159,7 +188,8 @@ inline_template_registry = InlineTemplateRegistry()
 file_template_registry = FileTemplateRegistry()
 
 def register_inline_template(module_info, template_name, template):
-    return inline_template_registry.register_inline_template(module_info, template_name, template)
+    return inline_template_registry.register_inline_template(
+        module_info, template_name, template)
 
 def register_directory(module_info):
     return file_template_registry.register_directory(module_info)
@@ -182,10 +212,12 @@ else:
 
 def lookup(module_info, template_name, mark_as_associated=False):
     try:
-        return file_template_registry.lookup(module_info, template_name, mark_as_associated)
+        return file_template_registry.lookup(
+            module_info, template_name, mark_as_associated)
     except TemplateLookupError, e:
         try:
-            return inline_template_registry.lookup(module_info, template_name, mark_as_associated)
+            return inline_template_registry.lookup(
+                module_info, template_name, mark_as_associated)
         except TemplateLookupError, e2:
             # re-raise first error again
             raise e
@@ -249,7 +281,8 @@ def associate_template(module_info, factory, component_name,
 
     # Lookup for a template in the registry
     try:
-        factory.template = lookup(module_info, template_name, mark_as_associated=True)
+        factory.template = lookup(
+            module_info, template_name, mark_as_associated=True)
         factory_have_template = True
     except TemplateLookupError:
         pass
