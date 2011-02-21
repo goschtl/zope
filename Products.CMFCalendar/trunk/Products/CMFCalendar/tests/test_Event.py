@@ -43,8 +43,47 @@ class TestEvent(ConformsToContent, unittest.TestCase):
     def test_new(self):
         event = self._makeOne('test')
 
-        self.assertEqual( event.getId(), 'test' )
-        self.failIf( event.Title() )
+        self.assertEqual(event.getId(), 'test')
+        self.assertFalse(event.Title())
+        self.assertTrue(isinstance(event.start(), DateTime))
+        self.assertTrue(event.start().timezoneNaive())
+        self.assertTrue(isinstance(event.end(), DateTime))
+        self.assertTrue(event.end().timezoneNaive())
+        self.assertEqual(event.start(), event.end())
+        self.assertEqual(event.start().asdatetime(),
+                         event.end().asdatetime())
+
+    def test_new_w_start_date(self):
+        event = self._makeOne('test', start_date='2003/04/05 06:07')
+
+        self.assertTrue(isinstance(event.start(), DateTime))
+        self.assertEqual(event.start(), DateTime('2003/04/05 06:07'))
+        self.assertTrue(event.start().timezoneNaive())
+        self.assertTrue(isinstance(event.end(), DateTime))
+        self.assertEqual(event.end(), DateTime('2003/04/05 06:07'))
+        self.assertTrue(event.end().timezoneNaive())
+
+    def test_new_vs_edit(self):
+        event1 = self._makeOne('test',
+                               start_date='2003/04/05 06:07',
+                               end_date='2003/04/05 18:07')
+        event2 = self._makeOne('test')
+        event2.edit(effectiveDay=5, effectiveMo=4, effectiveYear=2003,
+                    expirationDay=5, expirationMo=4, expirationYear=2003,
+                    start_time='06:07', startAMPM='AM',
+                    stop_time='06:07', stopAMPM='PM')
+
+        self.assertEqual(event1.start(), event2.start())
+        self.assertEqual(event1.start().asdatetime(),
+                         event2.start().asdatetime())
+        self.assertEqual(event1.end(), event2.end())
+        self.assertEqual(event1.end().asdatetime(),
+                         event2.end().asdatetime())
+
+    def test_new_vs_buildTimes(self):
+        event = self._makeOne('test')
+
+        self.assertTrue(event.getStartTimeString()[:5] in event.buildTimes())
 
     def test_edit(self):
         # Year month and day were processed in the wrong order

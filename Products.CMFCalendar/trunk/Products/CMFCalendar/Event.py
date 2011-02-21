@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Event: A CMF-enabled Event object.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -113,27 +111,34 @@ class Event(PortalContent, DefaultDublinCoreImpl):
                 , event_url=''
                 ):
         DefaultDublinCoreImpl.__init__(self)
-        self.id=id
+        self.id = id
         self.setTitle(title)
         self.setDescription(description)
         self.effective_date = effective_date
         self.expiration_date = expiration_date
-        self.setStartDate(start_date)
 
         if start_date is None:
-            start_date = DateTime()
+            # Round time to a value that exists in buildTimes().
+            dt = DateTime((int(DateTime()) / 1800 + 1) * 1800)
+            # Parse time the same way as in edit(). The result is offset-naive.
+            start_date = DateTime(str(dt)[:16])
+        else:
+            start_date = self._datify(start_date)
+
         if end_date is None:
             end_date = start_date
-
+        else:
+            end_date = self._datify(end_date)
         if end_date < start_date:
             end_date = start_date
 
+        self.setStartDate(start_date)
         self.setEndDate(end_date)
-        self.location=location
-        self.contact_name=contact_name
-        self.contact_email=contact_email
-        self.contact_phone=contact_phone
-        self.event_url=event_url
+        self.location = location
+        self.contact_name = contact_name
+        self.contact_email = contact_email
+        self.contact_phone = contact_phone
+        self.event_url = event_url
 
     security.declarePrivate( '_datify' )
     def _datify( self, attrib ):
