@@ -18,6 +18,15 @@ Create the browser object we'll be using.
     >>> browser.handleErrors = False
     >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
+Use the edit form without input.
+
+    >>> browser.open('http://localhost/site/myEvent/@@edit.html')
+    >>> '[[cmf_default][Edit [[cmf_calendar][Event]]]]' in browser.contents
+    True
+    >>> browser.getControl('[[cmf_default][Change]]').click()
+    >>> '[[cmf_default][Nothing to change.]]' in browser.contents
+    True
+
 Use the edit form with invalid input.
 
     >>> browser.open('http://localhost/site/myEvent/@@edit.html')
@@ -42,14 +51,16 @@ Look at the result:
     True
 
 Validate iCal
+
     >>> browser.open('http://localhost/site/myEvent/@@view.ics')
     >>> print browser.headers
     Status: 200...
     Content-Disposition: filename=cmf.ics
     Content-Length: 0
     Content-Type: text/iCal
-    
+
 Validate vCal
+
     >>> browser.open('http://localhost/site/myEvent/@@view.vcs')
     >>> print browser.headers
     Status: 200...
