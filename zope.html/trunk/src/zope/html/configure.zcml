@@ -75,14 +75,14 @@
   <resourceLibrary name="ckeditor">
     <directory
         source="ckeditor"
-        include="3.2.5/ckeditor/ckeditor.js"
+        include="3.5.2/ckeditor/ckeditor.js"
         />
   </resourceLibrary>
 
   <resourceLibrary name="ckeditor_dev">
     <directory
         source="ckeditor"
-        include="3.2.5/ckeditor/ckeditor_source.js"
+        include="3.5.2/ckeditor/ckeditor_source.js"
         />
   </resourceLibrary>
 
