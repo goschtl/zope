@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-0.13 (unreleased)
+0.13 (2011-02-22)
 -----------------
 
-- Nothing changed yet.
+- Update dependencies sqlalchemy=0.6.6, zope.sqlalchemy=0.6.1, z3c.saconfig=0.12.
+- Fix a bug for getting primary keys.
 
 
 0.12 (2011-02-02)

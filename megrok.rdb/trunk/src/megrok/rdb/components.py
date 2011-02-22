@@ -36,7 +36,7 @@ class LocatedModel(Model):
         return
     
 def default_keyfunc(node):
-    primary_keys = node.__table__.primary_key.keys()
+    primary_keys = node.__table__.primary_key.columns.keys()
     if len(primary_keys) == 1:
         return getattr(node, primary_keys[0])
     else:
