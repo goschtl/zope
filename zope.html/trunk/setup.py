@@ -20,7 +20,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.html',
-      version = '2.2.5dev',
+      version = '2.3.0dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='HTML and XHTML Editing Support',
