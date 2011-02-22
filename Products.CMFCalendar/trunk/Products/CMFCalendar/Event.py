@@ -121,7 +121,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             # Round time to a value that exists in buildTimes().
             dt = DateTime((int(DateTime()) / 1800 + 1) * 1800)
             # Parse time the same way as in edit(). The result is offset-naive.
-            start_date = DateTime(str(dt)[:16])
+            start_date = DateTime(str(dt).rsplit(' ', 1)[0])
         else:
             start_date = self._datify(start_date)
 
