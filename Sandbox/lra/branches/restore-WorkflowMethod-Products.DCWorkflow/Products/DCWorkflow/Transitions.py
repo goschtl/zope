@@ -230,6 +230,7 @@ class Transitions (ContainerTab):
 
     all_meta_types = ({'name':TransitionDefinition.meta_type,
                        'action':'addTransition',
+                       'permission': ManagePortal,
                        },)
 
     _manage_transitions = DTMLFile('transitions', _dtmldir)
