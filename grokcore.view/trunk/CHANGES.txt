@@ -4,6 +4,11 @@ Changes
 2.4 (unreleased)
 ----------------
 
+- Add a new ZCML directive, ``ignoreTemplates`` that let you configure which
+  template filename pattern should be ignored by the template registry. The
+  pattern attribute of the directive accepts regular expresssion that will be
+  matched against the (template) file extension.
+
 - Use the zope configuration action ordering feature to have templates
   registered for all packages and modules, before trying to associate the
   templates. Checking for unassociated templates is done very very late in the
@@ -13,10 +18,6 @@ Changes
   the view class that uses the grok.template() directive. This allows for
   subclassing view components that use the grok.template() directive from other
   packages.
-
-- Add a new ZCML directive, ``ignoreTemplates`` that let you configure
-  which template filename pattern should be ignored by the template
-  registry.
 
 2.3 (2011-01-04)
 ----------------
