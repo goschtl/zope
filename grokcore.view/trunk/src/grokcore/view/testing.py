@@ -17,7 +17,7 @@ import sys
 import grokcore.view
 from zope.configuration.config import ConfigurationMachine
 from grokcore.component import zcml
-
+from grokcore.view.zcml import file_template_registry
 
 def grok(module_name):
     config = ConfigurationMachine()
