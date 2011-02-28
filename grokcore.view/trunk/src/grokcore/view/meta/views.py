@@ -51,7 +51,8 @@ class TemplateGrokker(martian.ClassGrokker):
             discriminator=None,
             callable=self.associate_template,
             args=(factory.module_info, factory),
-            order=self._template_order)
+            order=self._template_order
+            )
         # We increase _template_order to maintain the relative order of
         # template association between the different Grok extensions
         # (like an implicit template can be inherited between two
