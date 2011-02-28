@@ -1,20 +1,25 @@
 1.0 (unreleased)
 ================
 
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+- Updated tests to run on Python 2.6, too.
+
 
 1.0b2 (2009-03-12)
 ==================
 
-- fixed: internal data structures were not stored correctly in the ZODB, so
+- Fixed: internal data structures were not stored correctly in the ZODB, so
   BLists loaded from a fresh DB connection would break.
 
-- removed unused code and the dependency on rwproperty
+- Removed unused code and the dependency on rwproperty.
 
-- improved test coverage of the BList API, fixed access to items at index -1
-  or at the ends of the valid index range
+- Improved test coverage of the BList API, fixed access to items at index -1
+  or at the ends of the valid index range.
 
 
 1.0b1 (2008-10-06)
 ==================
 
-Initial release.
+- Initial release.

@@ -51,17 +51,17 @@ iterators.
     >>> from zc.blist import BList
     >>> l = BList(range(1000))
     >>> l[345:351] # doctest: +ELLIPSIS
-    <generator object at ...>
+    <generator object ...>
     >>> list(l[345:351])
     [345, 346, 347, 348, 349, 350]
 
     >>> l[351:345:-1] # doctest: +ELLIPSIS
-    <generator object at ...>
+    <generator object ...>
     >>> list(l[351:345:-1])
     [351, 350, 349, 348, 347, 346]
 
     >>> l[345:351:2] # doctest: +ELLIPSIS
-    <generator object at ...>
+    <generator object ...>
     >>> list(l[345:351:2])
     [345, 347, 349]
 
@@ -85,7 +85,7 @@ using a slice with __getitem__.
 
     >>> i = l.iterSlice(345, 351, 2)
     >>> i # doctest: +ELLIPSIS
-    <generator object at ...>
+    <generator object ...>
     >>> list(i)
     [345, 347, 349]
 

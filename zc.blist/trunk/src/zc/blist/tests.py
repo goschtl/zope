@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+import doctest
 import os
 import pickle
-import unittest
 import random
 import sys
 import traceback
-
-from zope.testing import doctest
-
+import unittest
 import zc.blist
 import zc.blist.testing
 
@@ -296,11 +294,6 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.txt',
-            'regression.txt',
-            optionflags=doctest.INTERPRET_FOOTNOTES),
+            'regression.txt'),
         unittest.TestLoader().loadTestsFromTestCase(CanaryTestCase),
         ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
