@@ -4,6 +4,10 @@ Changes
 2.4 (unreleased)
 ----------------
 
+- grok.View component can optionally use the ``grok.provides`` directive,
+  specifying an interface that the component provides (instead of the
+  zope.interface.Interface that views by default provide).
+
 - Add a new ZCML directive, ``ignoreTemplates`` that let you configure which
   template filename pattern should be ignored by the template registry. The
   pattern attribute of the directive accepts regular expresssion that will be

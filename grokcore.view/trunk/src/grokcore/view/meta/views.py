@@ -82,9 +82,10 @@ class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.component.provides, default=interface.Interface)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
-    def execute(self, factory, config, context, layer, name, **kw):
+    def execute(self, factory, config, context, layer, provides, name, **kw):
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
@@ -100,9 +101,9 @@ class ViewGrokker(martian.ClassGrokker):
         adapts = (context, layer)
 
         config.action(
-            discriminator=('adapter', adapts, interface.Interface, name),
+            discriminator=('adapter', adapts, provides, name),
             callable=component.provideAdapter,
-            args=(factory, adapts, interface.Interface, name),
+            args=(factory, adapts, provides, name),
             )
         return True
 
