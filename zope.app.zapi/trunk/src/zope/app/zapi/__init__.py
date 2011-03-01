@@ -14,8 +14,6 @@
 """Collection of many common api functions
 
 Makes imports easier
-
-$Id$
 """
 from zope.interface import moduleProvides
 from zope.app.zapi.interfaces import IZAPI
