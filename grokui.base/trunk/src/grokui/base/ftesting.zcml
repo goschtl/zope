@@ -1,9 +1,9 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:grok="http://namespaces.zope.org/grok"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="grok"
-   package="grokui.base">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="grok"
+  package="grokui.base">
 
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.message" file="ftesting.zcml" />
@@ -26,33 +26,32 @@
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
 
-  <include package="grokcore.view" />
   <include package="grokui.base" />
 
   <grok:grok package="grokui.base.tests" />
 
- <browser:defaultView name="index.html" />
+  <browser:defaultView name="index.html" />
 
   <securityPolicy
-      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
-      />
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+  />
 
   <unauthenticatedPrincipal
-      id="zope.anybody"
-      title="Unauthenticated User"
-      />
+    id="zope.anybody"
+    title="Unauthenticated User"
+  />
 
   <grant
-      permission="zope.View"
-      principal="zope.anybody"
-      />
+    permission="zope.View"
+    principal="zope.anybody"
+  />
 
   <principal
-      id="zope.mgr"
-      title="Manager"
-      login="mgr"
-      password="mgrpw"
-      />
+    id="zope.mgr"
+    title="Manager"
+    login="mgr"
+    password="mgrpw"
+  />
 
   <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
