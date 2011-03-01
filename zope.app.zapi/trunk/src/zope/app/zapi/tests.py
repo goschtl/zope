@@ -11,10 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZTAPI Tests
-
-$Id$
-"""
+"""ZTAPI Tests"""
+import doctest
 import unittest
 from zope.app.testing import placelesssetup
 from zope.app import zapi
@@ -28,7 +26,7 @@ class TestIZAPI(unittest.TestCase):
         """
         Ensure that the zapi module provides the IZAPI interface
         """
-        
+
         from zope.app import zapi
         # deprecation proxies don't seem to always work with
         # verifyObject, so remove any proxies
@@ -41,19 +39,14 @@ class TestIZAPI(unittest.TestCase):
         zope.deprecation.__show__.off()
         verifyObject(IZAPI, zapi)
         zope.deprecation.__show__.on()
-        
+
 
 def setUp(test):
     placelesssetup.setUp()
 
 def test_suite():
-    from zope.testing import doctest
     return unittest.TestSuite((
         unittest.makeSuite(TestIZAPI),
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
