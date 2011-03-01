@@ -58,13 +58,7 @@ class Proxy(object):
         server = xmlrpclib.ServerProxy('http://%s:%d/availableConverters' % (self.host, self.port))
         return server()
 
-    def convertZIP(self, dirname, converter_name='pdf-prince'):
-        """ XMLRPC client to SmartPrintNG server (deprecated)"""
-
-        warnings.warn("convertZIP() is deprecated", DeprecationWarning)
-        return self.convertZIP2(dirname, converter_name)['output_filename']
-
-    def convertZIP2(self, dirname, converter_name='pdf-prince'):
+    def convertZIP2(self, dirname, converter_name='pdf-prince', workdir=None):
         """ XMLRPC client to SmartPrintNG server """
 
         auth_token = self._authenticate()
@@ -83,7 +77,7 @@ class Proxy(object):
         result = dict()
         ZF = zipfile.ZipFile(zip_temp, 'r')
         for name in ZF.namelist():
-            fullname = os.path.join(self.output_directory, os.path.basename(name))
+            fullname = os.path.join(workdir or self.output_directory, os.path.basename(name))
             file(fullname, 'wb').write(ZF.read(name))
             if name.startswith('output.'):
                 result['output_filename'] = fullname
