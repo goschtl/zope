@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-3.4.2 (unreleased)
+3.5.0 (2011-03-01)
 ------------------
 
 - Removed BBB imports of deprecated parts (services, multiviews etc.) which
