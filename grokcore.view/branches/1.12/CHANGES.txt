@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.12.3 (unreleased)
+1.12.3 (2011-03-01)
 -------------------
 
 - Make package comply to zope.org repository policy.
