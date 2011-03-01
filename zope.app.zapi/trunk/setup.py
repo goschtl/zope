@@ -33,7 +33,7 @@ long_description = (
 
 setup(
     name='zope.app.zapi',
-    version='3.5.0',
+    version='3.5.1dev',
     url='http://pypi.python.org/pypi/zope.app.zapi',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
