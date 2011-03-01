@@ -1,11 +1,10 @@
 CHANGES
 *******
 
-0.6 (unreleased)
-================
+0.5.1 (2011-03-01)
+==================
 
-- Nothing changed yet.
-
+- Make sure grokcore.view is properly configured.
 
 0.5 (2011-01-12)
 ================
