@@ -1,0 +1,23 @@
+CHANGES
+=======
+
+3.5.0 (2011-03-01)
+------------------
+
+- Removed BBB imports of deprecated parts (services, multiviews etc.) which
+  were removed in ``zope.component`` 3.6, thus requiring at least this
+  version.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+3.4.1 (2009-07-23)
+------------------
+
+- Explicitely list all dependencies. Fixes test failures.
+
+
+3.4.0 (2007-10-03)
+------------------
+
+- Initial public release as an individual package.
