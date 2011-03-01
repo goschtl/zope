@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.4 (unreleased)
+2.4 (2011-03-01)
 ----------------
 
 - grok.View component can optionally use the ``grok.provides`` directive,
