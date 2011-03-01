@@ -29,6 +29,7 @@ import time
 import traceback
 import unittest
 
+from zope.testing.testrunner.layerutils import order_by_bases, gather_layers
 from zope.testing.testrunner.find import import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 from zope.testing.testrunner.refcount import TrackRefs
@@ -206,7 +207,7 @@ class Runner(object):
         Returns True if there where failures or False if all tests passed.
 
         """
-        setup_layers = {}
+        setup_layers = []
         layers_to_run = list(self.ordered_layers())
         should_resume = False
 
@@ -592,26 +593,31 @@ def resume_tests(script_parts, options, features, layers, failures, errors):
 def tear_down_unneeded(options, needed, setup_layers, optional=False):
     # Tear down any layers not needed for these tests. The unneeded layers
     # might interfere.
-    unneeded = [l for l in setup_layers if l not in needed]
-    unneeded = order_by_bases(unneeded)
-    unneeded.reverse()
-    output = options.output
-    for l in unneeded:
-        output.start_tear_down(name_from_layer(l))
-        t = time.time()
+    unneeded = set([l for l in setup_layers if l not in needed])
+    while unneeded:
+        l = setup_layers[-1]
+        if l not in unneeded:
+            raise ValueError('Unexpected layer teardown order.')
         try:
-            try:
-                if hasattr(l, 'tearDown'):
-                    l.tearDown()
-            except NotImplementedError:
-                output.tear_down_not_supported()
-                if not optional:
-                    raise CanNotTearDown(l)
-            else:
-                output.stop_tear_down(time.time() - t)
+            tear_down_layer(options, l, optional)
         finally:
-            del setup_layers[l]
+            setup_layers.pop()
+            unneeded.remove(l)
 
+
+def tear_down_layer(options, l, optional):
+    output = options.output
+    output.start_tear_down(name_from_layer(l))
+    t = time.time()
+    try:
+        if hasattr(l, 'tearDown'):
+            l.tearDown()
+    except NotImplementedError:
+        output.tear_down_not_supported()
+        if not optional:
+            raise CanNotTearDown(l)
+    else:
+        output.stop_tear_down(time.time() - t)
 
 cant_pm_in_subprocess_message = """
 Can't post-mortem debug when running a layer as a subprocess!
@@ -645,14 +651,10 @@ def setup_layer(options, layer, setup_layers):
                     raise
 
         output.stop_set_up(time.time() - t)
-        setup_layers[layer] = 1
+        setup_layers.append(layer)
 
 
 class TestResult(unittest.TestResult):
-
-    # Handle unexpected success as failure:
-    # https://bugs.launchpad.net/zope.testrunner/+bug/719369
-    addUnexpectedSuccess = None
 
     def __init__(self, options, tests, layer_name=None):
         unittest.TestResult.__init__(self)
@@ -775,33 +777,6 @@ def layer_from_name(layer_name):
         # it doesn't say *which* module
         raise AttributeError('module %r has no attribute %r'
                              % (module_name, module_layer_name))
-
-
-def order_by_bases(layers):
-    """Order the layers from least to most specific (bottom to top)
-    """
-    named_layers = [(name_from_layer(layer), layer) for layer in layers]
-    named_layers.sort()
-    named_layers.reverse()
-    gathered = []
-    for name, layer in named_layers:
-        gather_layers(layer, gathered)
-    gathered.reverse()
-    seen = {}
-    result = []
-    for layer in gathered:
-        if layer not in seen:
-            seen[layer] = 1
-            if layer in layers:
-                result.append(layer)
-    return result
-
-
-def gather_layers(layer, result):
-    if layer is not object:
-        result.append(layer)
-    for b in layer.__bases__:
-        gather_layers(b, result)
 
 
 class FakeInputContinueGenerator:
