@@ -54,6 +54,10 @@ setup(
         'ZODB3',
         'zope.interface',
         ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
     zip_safe = False,
     entry_points=entry_points,
     include_package_data = True,
