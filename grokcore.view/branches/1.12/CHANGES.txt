@@ -6,6 +6,9 @@ Changes
 
 - Make package comply to zope.org repository policy.
 
+- grok.View component can optionally use the ``grok.provides`` directive,
+  specifying an interface that the component provides (instead of the
+  zope.interface.Interface that views by default provide).
 
 1.12.2 (2009-09-17)
 -------------------

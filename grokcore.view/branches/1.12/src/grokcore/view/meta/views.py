@@ -37,6 +37,7 @@ class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.component.provides, default=interface.Interface)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
     def grok(self, name, factory, module_info, **kw):
@@ -45,7 +46,7 @@ class ViewGrokker(martian.ClassGrokker):
         factory.module_info = module_info
         return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, name, **kw):
+    def execute(self, factory, config, context, layer, provides, name, **kw):
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
         if templates is not None:
@@ -70,9 +71,9 @@ class ViewGrokker(martian.ClassGrokker):
         adapts = (context, layer)
 
         config.action(
-            discriminator=('adapter', adapts, interface.Interface, name),
+            discriminator=('adapter', adapts, provides, name),
             callable=component.provideAdapter,
-            args=(factory, adapts, interface.Interface, name),
+            args=(factory, adapts, provides, name),
             )
         return True
 
@@ -85,7 +86,7 @@ class ViewGrokker(martian.ClassGrokker):
 
         def has_no_render(factory):
             return not has_render(factory)
-        
+
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
 
