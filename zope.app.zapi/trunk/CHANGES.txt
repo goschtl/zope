@@ -4,6 +4,10 @@ CHANGES
 3.4.2 (unreleased)
 ------------------
 
+- Removed BBB imports of deprecated parts (services, multiviews etc.) which
+  were removed in ``zope.component`` 3.6, thus requiring at least this
+  version.
+
 - Using Python's ``doctest`` module instead of depreacted
   ``zope.testing.doctest``.
 

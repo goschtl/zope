@@ -36,22 +36,3 @@ name = getName
 def principals():
     from zope.authentication.interfaces import IAuthentication
     return getUtility(IAuthentication)
-
-# BBB 2006/04/27 -- to be removed after 12 months
-import zope.deferredimport
-zope.deferredimport.deprecated(
-    "This object was deprecated long ago.  Only import is allowed now "
-    "and will be disallowed in Zope 3.5.",
-    getGlobalServices = "zope.component.back35:deprecated",
-    getGlobalService = "zope.component.back35:deprecated",
-    getService = "zope.component.back35:deprecated",
-    getServiceDefinitions = "zope.component.back35:deprecated",
-    getView = "zope.component.back35:deprecated",
-    queryView = "zope.component.back35:deprecated",
-    getMultiView = "zope.component.back35:deprecated",
-    queryMultiView = "zope.component.back35:deprecated",
-    getViewProviding = "zope.component.back35:deprecated",
-    queryViewProviding = "zope.component.back35:deprecated",
-    getResource = "zope.component.back35:deprecated",
-    queryResource = "zope.component.back35:deprecated",
-    )

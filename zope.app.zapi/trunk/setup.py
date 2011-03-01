@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.zapi package
-
-$Id$
-"""
+"""Setup for zope.app.zapi package"""
 
 import os
 
@@ -39,7 +36,7 @@ setup(
     version='3.4.2dev',
     url='http://pypi.python.org/pypi/zope.app.zapi',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     license='ZPL 2.1',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -62,8 +59,7 @@ setup(
         'setuptools',
         'zope.app.interface',
         'zope.app.publisher',
-        'zope.component',
-        'zope.deferredimport',
+        'zope.component >= 3.6',
         'zope.deprecation',
         'zope.interface',
         'zope.traversing',
