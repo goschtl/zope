@@ -46,7 +46,7 @@ publication_require = [
 
 setup(
     name='grokcore.view',
-    version='2.4',
+    version='2.5dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
