@@ -25,7 +25,6 @@ import zope.interface
 import zope.schema
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.testing.doctestunit import DocFileSuite
 
 from z3c.form import widget, testing
 from z3c.formwidget.ckeditor import ckeditor, interfaces
@@ -43,7 +42,7 @@ def setUp(test):
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt',
                      setUp=setUp, tearDown=testing.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),

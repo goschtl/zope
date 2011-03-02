@@ -3,8 +3,12 @@ CHANGES
 =======
 
 
-1.1.0 (2009-??-??)
+1.1.0 (2011-03-02)
 ------------------
+
+- Upgraded CKEditor to 3.5.2.
+
+- Removed deprecation warnings.
 
 
 1.0.0 (2009-11-03)
