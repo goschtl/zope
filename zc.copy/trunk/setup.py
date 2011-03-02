@@ -9,10 +9,14 @@ setup(
         'zope.copypastemove>=3.5.1',
         'zope.location>=3.5.3',
         ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
     packages=find_packages('src'),
     include_package_data=True,
     package_dir= {'':'src'},
-    
+
     namespace_packages=['zc'],
 
     zip_safe=False,

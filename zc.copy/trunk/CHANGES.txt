@@ -5,7 +5,11 @@ CHANGES
 1.3 (unreleased)
 ----------------
 
-- ...
+- Added test extra to declare test dependency on ``zope.testing``.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
 
 1.2 (2009-02-09)
 ----------------
@@ -15,7 +19,7 @@ CHANGES
   copy and clone functions as well as CopyPersistent helper class and
   doesn't depend on either zope.copypastemove or even zope.location,
   providing a pluggable object copying mechanism zc.copy used to provide.
-  
+
   Now, this package only contains backward-compatibility imports.
 
 1.1 (2009-02-09)
@@ -29,4 +33,4 @@ CHANGES
 1.1b (unknown)
 --------------
 
-- Converted to eggs
+- Converted to eggs.
