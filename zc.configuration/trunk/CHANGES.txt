@@ -5,14 +5,15 @@ Changes
 1.2dev
 ======
 
-- ...
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 1.1
 ===
 
 - Move the ``exclude`` directive into the original ``zope.configuration``
   package.
-  
+
   So, this package is currently contains only a backward-compatibility
   import for ``exclude`` directive and is not useful anymore. However
   it's intended to contain miscellaneous extensions to the configuration

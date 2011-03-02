@@ -11,24 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os, re, unittest
-from zope.testing import doctest, setupstack, renormalizing
+import os, re, doctest
+from zope.testing import setupstack, renormalizing
 
 def setUp(test):
     setupstack.setUpDirectory(test)
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
+    return doctest.DocFileSuite(
             'README.txt', setUp=setUp, tearDown=setupstack.tearDown,
             checker=renormalizing.RENormalizing([
                 (re.compile('include [^\n]+zc.configuration[\S+]'),
                  'include /zc.configuration\2'),
                 (re.compile(r'\\'), '/'),
                 ])
-            ),
-        ))
+            )
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
 
