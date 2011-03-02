@@ -157,13 +157,13 @@ this:
 
 `app.py`:
 
-  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg/app.py
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg2/app.py
 
 The `FooUtility` can be registered via ZCML_ like this:
 
 `configure.zcml`:
 
-  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg/configure.zcml
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg2/configure.zcml
      :language: xml
 
 To check whether the `FooUtility` was registered and is available we
@@ -177,7 +177,7 @@ We use this approach in a new test module where we want to test the
 
 `tests/test_foo.py`:
 
-  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg/tests/test_foo.py
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/zcml/mypkg2/tests/test_foo.py
 
 Here the `pytest_funcarg__config` function provides a ``config``
 argument for arbitrary test functions you want to write. It can be
@@ -220,8 +220,8 @@ When run, all tests pass:
     collecting ...
     collected 5 items
     <BLANKLINE>
-    .../mypkg/tests/test_app.py ...
-    .../mypkg/tests/test_foo.py ..
+    .../mypkg2/tests/test_app.py ...
+    .../mypkg2/tests/test_foo.py ..
     <BLANKLINE>
     =============...=== 5 passed in ... seconds ===...=============
     0
@@ -235,34 +235,113 @@ Both foo tests would fail without `pytest_funcarg__config` preparing
 the tests.
 
 
-Browsing Objects
-----------------
+Functional Testing: Browsing Objects
+------------------------------------
 
 The most interesting point about functional testing might be to check
-Zope-generated output, i.e. browser pages or similar.
+Zope-generated output, i.e. browser pages or similar. This is, what
+normally is referred to as 'functional testing'.
 
 This task normally needs much more setup where `zope.pytest` can come
 to help to minimize the efforts dramatically.
+
+To show this we add a view for the `SampleApp` class we defined in
+``app.py`` above. We add a new module ``browser.py`` in our `mypkg`
+package with the following contents:
+
+New module `browser.py`:
+
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/browser/mypkg3/browser.py
+
+This is a simple browser page that sets the content type of any HTTP
+response and returns a simple string as content.
+
+However, to make content browsable we need more registrations. In
+``configure.zcml`` we register the main components as above but this
+time including also the new browser page:
+
+`configure.zcml`:
+
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/browser/mypkg3/configure.zcml
+     :language: xml
+
+In ``ftesting.zcml`` we do all the registration stuff that is normally
+done in the ``site.zcml``.
+
+`ftesting.zcml`:
+
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/browser/mypkg3/ftesting.zcml
+     :language: xml
+
+Now we are ready to add another test module that checks the new view
+defined in the `browser` module:
+
+`tests/test_browser.py`:
+
+  .. literalinclude:: ../src/zope/pytest/tests/sample_fixtures/browser/mypkg3/tests/test_browser.py
+
+Here we have three tests. While the first one checks only whether the
+component architecture can generate the new view in general, with the
+latter ones (`test_browser` and `test_infrae_browser`) we access the
+whole machinery via a real WSGI application. This gives us a
+sufficient level of abstraction for real functional testing.
+
+Please note, that we make no strong assumptions about the existence of
+some ZODB working in background or similar. While in fact here a ZODB
+is working, the tests do not reflect this. We therefore can deploy non-Zope-specific packages like WebOb_.
+
+One of the main parts of this test module therefore is the funcarg_
+function `pytest_funcarg__apps` that sets up a complete WSGI
+application and returns it together with a `SampleApp` object stored
+somewhere.
+
+To do the complete setup `pytest_funcarg__apps` calls the
+`zope.pytest` function :func:`zope.pytest.create_app` with a
+`SampleApp` instance to be stored in the
+database. :func:`zope.pytest.create_app` stores this instance under
+the name ``test`` in the DB root and returns a ready-to-use WSGI
+application along with the `SampleApp` instance created.
+
+In the first functional test (`test_browser`) we create and perform an
+HTTP request that is sent to the setup WSGI application and check the
+output returned by that request. Please note that we use
+``http://localhost/test/index.html`` as URL. That's because
+:func:`zope.pytest.create_app` stores our application under the name
+``test`` in the DB and we registered the view on `SampleApp` objects
+under the name ``index.html``.
+
+The second functional test (`test_infrae_browser`) does nearly the
+same but this time deploying a faked browser provided by the
+:mod:`infrae.testbrowser` package. The latter is well prepared for
+simulations of browser sessions, virtual browser clicks, filling out
+HTML forms and much more you usually do with a browser. See the
+`infrae.testbrowser documentation`_ for details.
+
+Usage of :mod:`infrae.testbrowser`, however, requires Python 2.6 at
+least. We therefore expect the respective test to fail if using older
+Python versions and mark this condition with a ``@pytest.mark.xfail``
+decorator. Another great feature of `py.test` (see `py.test skip and
+xfail mechanisms <http://www.pytest.org/skipping.html>`_ for details).
 
 .. doctest::
    :hide:
 
     >>> mypkg_dir = register_fixture('browser')
 
-When run, all tests pass:
+Finally, when run, all tests pass:
 
     >>> import pytest
     >>> pytest.main(mypkg_dir)
     =============...=== test session starts ====...================
     platform ... -- Python 2... -- pytest-...
     collecting ...
-    collected 7 items
+    collected 8 items
     <BLANKLINE>
-    .../mypkg/tests/test_app.py ...
-    .../mypkg/tests/test_browser.py ..
-    .../mypkg/tests/test_foo.py ..
+    .../mypkg3/tests/test_app.py ...
+    .../mypkg3/tests/test_browser.py ...
+    .../mypkg3/tests/test_foo.py ..
     <BLANKLINE>
-    =============...=== 7 passed in ... seconds ===...=============
+    =============...=== ... passed... in ... seconds ===...=============
     0
 
 .. doctest::
@@ -275,3 +354,5 @@ When run, all tests pass:
 .. _pytest: http://pytest.org/
 .. _py.test: http://pytest.org/
 .. _funcarg: http://pytest.org/funcargs.html
+.. _WebOb: http://pythonpaste.org/webob/
+.. _`infrae.testbrowser documentation`: http://infrae.com/download/tools/infrae.testbrowser
