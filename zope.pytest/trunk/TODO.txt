@@ -7,3 +7,4 @@ TODO
 
   - Add (testable) samples for doctest-related usage of zope.pytest.
 
+  - Tell, why we have `mypkg`, `mypkg2`, and `mypkg3` in samples.
