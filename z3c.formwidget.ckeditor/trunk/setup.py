@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup (
     name='z3c.formwidget.ckeditor',
-    version='1.1.0',
+    version='1.2.0dev',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A CKEditor widget for text fields using z3c.form",
