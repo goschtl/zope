@@ -54,7 +54,8 @@ columns = [
         _('comment_column-principals', 'Principals'), principalsGetter,
         principalsFormatter),
     zc.table.column.GetterColumn( # XXX escape?
-        _('comment_column-comment', 'Comment'), lambda c, f: c.body)
+        _('comment_column-comment', 'Comment'), lambda c, f: c.body,
+        cell_formatter=lambda v, i, f: unicode(v))
     ]
 
 class Comments(zope.formlib.form.PageForm):

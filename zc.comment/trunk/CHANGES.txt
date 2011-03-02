@@ -5,7 +5,8 @@ CHANGES
 0.2.0 (unreleased)
 ------------------
 
-- Fixed tests to run with `zope.interface` >= 3.3 and `zope.schema` >= 3.6.
+- Fixed tests to run with `zope.interface` >= 3.3, `zope.schema` >= 3.6 and
+  `zc.table` >= 0.7, thus requiring at least these versions.
 
 
 
