@@ -8,6 +8,8 @@ CHANGES
 - Fixed tests to run with `zope.interface` >= 3.3, `zope.schema` >= 3.6 and
   `zc.table` >= 0.7, thus requiring at least these versions.
 
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 
 0.1.0 (2008-04-21)

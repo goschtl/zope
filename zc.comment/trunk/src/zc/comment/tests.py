@@ -17,7 +17,7 @@
 $Id: tests.py 678 2005-02-22 21:49:28Z gary $
 """
 import unittest
-from zope.testing import doctest
+import doctest
 from zope.app.testing import placelesssetup
 
 def test_suite():
@@ -27,6 +27,3 @@ def test_suite():
             setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
