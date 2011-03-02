@@ -1,5 +1,5 @@
 from zope.interface import implements
-from mypkg.interfaces import ISampleApp, IFoo
+from mypkg3.interfaces import ISampleApp, IFoo
 
 class SampleApp(object):
     implements(ISampleApp)

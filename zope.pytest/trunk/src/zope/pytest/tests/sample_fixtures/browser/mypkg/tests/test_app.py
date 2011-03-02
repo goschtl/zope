@@ -1,6 +1,6 @@
 from zope.interface.verify import verifyClass, verifyObject
-from mypkg.app import SampleApp
-from mypkg.interfaces import ISampleApp
+from mypkg3.app import SampleApp
+from mypkg3.interfaces import ISampleApp
 
 def test_app_create():
     # Assure we can create instances of `SampleApp`

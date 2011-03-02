@@ -1,10 +1,10 @@
-import mypkg
+import mypkg3
 from zope.component import queryUtility
-from mypkg.interfaces import IFoo
+from mypkg3.interfaces import IFoo
 from zope.pytest import configure
 
 def pytest_funcarg__config(request):
-    return configure(request, mypkg, 'ftesting.zcml')
+    return configure(request, mypkg3, 'ftesting.zcml')
 
 def test_get_utility(config):
     util = queryUtility(IFoo, name='foo utility', default=None)

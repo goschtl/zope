@@ -1,7 +1,7 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   package="mypkg"
+   package="mypkg3"
    >
 
   <!-- This file is the equivalent of site.zcml and it is -->
@@ -15,6 +15,8 @@
 
   <include package="zope.app.wsgi" />
   <include package="zope.app.zcmlfiles" />
+
+  <include package="mypkg3" file="configure.zcml" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
@@ -39,20 +41,5 @@
       password="mgrpw" />
 
   <grant role="zope.Manager" principal="zope.mgr" />
-
-  <utility 
-      component=".app.FooUtility"
-      provides=".interfaces.IFoo"
-      name="foo utility"
-      />
-
-  <browser:page
-      for=".interfaces.ISampleApp"
-      name="index.html"
-      class=".browser.SampleAppView"
-      permission="zope.View"
-      />
-
-  <include package="mypkg" file="configure.zcml" />
 
 </configure>
