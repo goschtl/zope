@@ -1,0 +1,93 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="demo">
+
+  <!-- load meta configuration for exclude -->
+  <include package="zc.configuration" file="meta.zcml" />
+
+  <!-- exclude will prevent from include -->
+  <exclude package="zope.error" />
+
+  <!-- meta configure -->
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.browserresource" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.i18n" file="meta.zcml" />
+  <include package="zope.publisher" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+
+  <!-- load 3rd party meta configuration -->
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+
+  <!-- zope server -->
+  <include package="zope.app.server" />
+  <include package="zope.app.wsgi" />
+
+  <!-- zope packages -->
+  <include package="zope.browserresource" />
+  <include package="zope.component" />
+  <include package="zope.container" />
+  <include package="zope.contentprovider" />
+  <include package="zope.i18n" />
+  <include package="zope.location" />
+  <include package="zope.publisher" />
+  <include package="zope.securitypolicy" />
+  <include package="zope.site" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+
+  <!-- zope app package configuration -->
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.security" />
+
+  <!-- z3c component -->
+  <include package="z3c.form" />
+  <include package="z3c.formui" />
+  <include package="z3c.layer.pagelet" />
+  <include package="z3c.macro" />
+  <include package="z3c.pagelet" />
+
+  <!-- Setup charset negotiation -->
+  <!-- from zope.app.i18n -->
+  <!-- fix dependency in zope and move this to another package -->
+  <adapter
+      factory="zope.publisher.http.HTTPCharsets"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IUserPreferredCharsets"
+      />
+
+  <adapter
+      factory="zope.app.publisher.browser.ModifiableBrowserLanguages"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
+      />
+
+  <class class="zope.publisher.http.HTTPRequest">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+  <include package="z3c.formwidget.ckeditor" />
+  <include package="z3c.formwidget.ckeditor" file="ckeditor-js.zcml"/>
+
+  <include package="z3c.formwidget.ckeditor.demo" />
+  <include package="z3c.formwidget.ckeditor.demo" file="error.zcml"/>
+
+  <browser:defaultSkin name="demo" />
+  <browser:defaultView for="*" name="index.html" />
+
+  <securityPolicy
+      component="zope.security.simplepolicies.PermissiveSecurityPolicy" />
+
+</configure>
