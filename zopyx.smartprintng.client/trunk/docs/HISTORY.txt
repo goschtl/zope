@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.7.0 (2011-03-02)
+------------------
+- removed convertZIP() api method
+- added 'workdir' parameter to convertZIP2()
+
+
 0.6.0 (2010-05-16)
 ------------------
 - deprecated convertZIP() api method
