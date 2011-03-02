@@ -6,16 +6,16 @@ version = '0.1dev'
 tests_require = [
     'pytest',
     'zope.app.appsetup',
-    ]
-
-docs_require = [
-    'Sphinx',
-    'docutils',
-    'roman',
-    'pytest',
     'zope.app.zcmlfiles',
     'zope.browserpage',
     'zope.securitypolicy',
+    'infrae.testbrowser',
+    ]
+
+docs_require = tests_require + [
+    'Sphinx',
+    'docutils',
+    'roman',
     ]
 
 def read(*rnames):
