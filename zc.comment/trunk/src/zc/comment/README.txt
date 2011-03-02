@@ -162,7 +162,7 @@ Finally, note that we can only add unicode text as a valid comment:
     >>> comments.add(42)
     Traceback (most recent call last):
     ...
-    WrongType: (42, <type 'unicode'>)
+    WrongType: (42, <type 'unicode'>, 'body')
 
 If you like, you can always clear all comments:
 
