@@ -39,5 +39,7 @@ setup(name='five.grok',
         'grokcore.security',
         'grokcore.site',
         'grokcore.annotation',
+        'zope.app.pagetemplate',
+        'zope.app.container'
         ],
       )
