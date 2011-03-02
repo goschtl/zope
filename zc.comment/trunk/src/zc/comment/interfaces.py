@@ -62,6 +62,10 @@ class IComments(IReadSequence):
     def clear():
         """Remove all comments."""
 
+    def __iter__():
+        """Iterate over all comments."""
+
+
 class ICommentable(zope.annotation.interfaces.IAnnotatable):
     "Content that may be commented upon"
 
