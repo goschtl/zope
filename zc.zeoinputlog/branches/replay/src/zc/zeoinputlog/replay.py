@@ -377,18 +377,18 @@ zz = 0, 0
 
 class Handlers:
 
-    async = abandoned = 0
+    async = abandoned = active = 0
 
     def __init__(self, disconnected):
         self.errtimes = {}
         self.times = {}
         self.disconnected = disconnected
-        self.connected = self.active = self.calls = self.replies = 0
+        self.connected = self.maxactive = self.calls = self.replies = 0
         self.errors = 0
         self.event = threading.Event()
 
     def __repr__(self):
-        return ("%(connected)s %(disconnected)s %(active)s"
+        return ("%(connected)s %(disconnected)s %(maxactive)s"
                 " %(calls)s %(replies)s %(errors)s"
                 % self.__dict__)
 
@@ -412,6 +412,7 @@ class Handlers:
 
     def request(self, op, args):
         self.active += 1
+        self.maxactive = max(self.maxactive, self.active)
         self.calls += 1
 
     def reply(self, op, args, ret, elapsed):
@@ -471,7 +472,14 @@ def main(args=None):
 
     print "$Id$"
     print args
-    [addr, log, source] = args[:3]
+    addr = args.pop(0)
+    log = args.pop(0)
+    source = args.pop(0)
+    if args:
+        maxtrans = int(args.pop(0))
+    else:
+        maxtrans = 999999999
+    assert not args
     addr = parse_addr(addr)
 
     log = Log(log)
@@ -535,6 +543,7 @@ def main(args=None):
         print nt, time.strftime('%H:%M:%S', time.localtime(time.time())),
         print ZODB.TimeStamp.TimeStamp(time_stamp(tt)), handlers,
         print speed, speed1
+        handlers.maxactive = 0
         while logrecord[1] < tt:
             ni += 1
             session, _, _, async, op, args = logrecord
@@ -559,6 +568,9 @@ def main(args=None):
         cs.tpc_vote(t)
         #print '=== finish'
         cs.tpc_finish(t)
+
+        if nt >= maxtrans:
+            break
 
     print '='*70
 
