@@ -1681,6 +1681,67 @@ class ConditionalSecurityLayer(UnitTests):
         reload(zope.component.zcml)
 
 
+class StackingTests(unittest.TestCase):
+
+    def test_pushed_registry_delegates_to_current(self):
+        from zope.interface import Interface
+        from zope.component import queryUtility
+
+        self.assertEqual(None, queryUtility(Interface, name='foo'))
+        self.assertEqual(None, queryUtility(Interface, name='bar'))
+        self.assertEqual(None, queryUtility(Interface, name='qux'))
+
+        zope.component.getSiteManager().registerUtility(
+            'foo', Interface, name='foo')
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual(None, queryUtility(Interface, name='bar'))
+        self.assertEqual(None, queryUtility(Interface, name='qux'))
+
+        zope.component.testing.push_registry()
+        zope.component.getSiteManager().registerUtility(
+            'bar', Interface, name='bar')
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual('bar', queryUtility(Interface, name='bar'))
+        self.assertEqual(None, queryUtility(Interface, name='qux'))
+
+        zope.component.testing.push_registry()
+        zope.component.getSiteManager().registerUtility(
+            'qux', Interface, name='qux')
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual('bar', queryUtility(Interface, name='bar'))
+        self.assertEqual('qux', queryUtility(Interface, name='qux'))
+
+        zope.component.testing.pop_registry()
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual('bar', queryUtility(Interface, name='bar'))
+        self.assertEqual(None, queryUtility(Interface, name='qux'))
+
+        zope.component.testing.pop_registry()
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual(None, queryUtility(Interface, name='bar'))
+        self.assertEqual(None, queryUtility(Interface, name='qux'))
+
+    def test_changing_sitemanager_hook_does_not_break_stack(self):
+        from zope.interface import Interface
+        from zope.component import queryUtility
+
+        zope.component.testing.push_registry()
+        zope.component.getSiteManager().registerUtility(
+            'foo', Interface, name='foo')
+
+        site_registry = zope.component.registry.Components(name='site')
+        site_registry.registerUtility('bar', Interface, name='bar')
+        self.assertEqual(None, queryUtility(Interface, name='bar'))
+
+        zope.component.getSiteManager.sethook(lambda x=None: site_registry)
+        self.assertEqual('foo', queryUtility(Interface, name='foo'))
+        self.assertEqual('bar', queryUtility(Interface, name='bar'))
+
+        zope.component.testing.pop_registry()
+        self.assertEqual(site_registry, zope.component.getSiteManager())
+        zope.component.getSiteManager.reset() # XXX should be done by tearDown
+
+
 def setUpRegistryTests(tests):
     setUp()
 
@@ -1739,6 +1800,7 @@ def test_suite():
         hooks_conditional,
         unittest.makeSuite(StandaloneTests),
         unittest.makeSuite(ResourceViewTests),
+        unittest.makeSuite(StackingTests),
         ))
 
 if __name__ == "__main__":
