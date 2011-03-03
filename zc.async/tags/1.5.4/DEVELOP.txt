@@ -1,0 +1,53 @@
+BUILDING
+========
+
+To develop this package from source:
+
+- check out the software from the repository
+
+- ``cd`` to the checkout
+
+- Ideally with a clean, non-system python, run
+  ``python bootstrap/bootstrap.py``
+
+- run ``./bin/buildout``
+
+TESTING
+=======
+
+To run tests, run *all three* of the following:
+
+- ``./bin/test``: this tests zc.async without any zope.app stuff
+
+- ``./bin/mtest``: this tests zc.async monitoring with zc.monitor code, which
+  just adds itself (zc.monitor), zc.ngi, and simplejson as dependencies.
+
+- ``./bin/z3test``: this tests zc.async with a big chunk of Zope 3, and with
+  zc.z3monitor code (a package of Zope 3-specific helpers for zc.monitor).
+
+RELEASING
+=========
+
+Changes should be documented in CHANGES.txt *in the package*.
+
+Before making a release that registers the software to PyPI, run the following:
+
+- ``./bin/py setup.py``
+
+This then creates a file with the following silly name:
+``TEST_THIS_REST_BEFORE_REGISTERING.txt``
+
+As the name suggests, test the file in a ReST tool to make sure docutils
+parses it correctly.
+
+Once this works, go ahead and ``./bin/py setup.py sdist register upload``.
+
+BUILDING SPHINX DOCS
+====================
+
+Use this command::
+
+    ./bin/sphinx-build -b <builder> sphinx sphinx/.build
+
+You'll want to use the "html" builder for PyPI upload.  Then tar the resulting
+files in the sphinx/.build directory and upload to PyPI.
