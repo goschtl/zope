@@ -4,7 +4,7 @@ setup(
     name = "zc.creditcard",
     version = "1.0",
     author = "Zope Corporation",
-    author_email = "zope3-dev#zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Utilities for credit card processing",
     keywords = "cc credit card",
 
@@ -16,6 +16,5 @@ setup(
        'zope.testing',
        'setuptools',
        ],
-    dependency_links = ['http://download.zope.org/distribution/'],
-    license = "ZPL 2.1",
+    license="ZPL 2.1",
     )

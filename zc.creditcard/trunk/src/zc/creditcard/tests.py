@@ -1,13 +1,5 @@
-"""Tests for zc.ssl
-
-$Id$
-"""
-import unittest
-import zope.testing.doctest
+"""Tests for zc.creditcard"""
+import doctest
 
 def test_suite():
-    suite = unittest.TestSuite([
-        zope.testing.doctest.DocTestSuite('zc.creditcard'),
-        ])
-
-    return suite
+    return doctest.DocTestSuite('zc.creditcard')
