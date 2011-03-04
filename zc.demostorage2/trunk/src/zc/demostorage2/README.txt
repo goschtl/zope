@@ -1,38 +1,3 @@
-Second-generation demo storage
-==============================
-
-The zc.demostorage2 module provides a storage implementation that
-wraps two storages, a base storage and a storage to hold changes.
-The base storage is never written to.  All new records are written to
-the changes storage.  Both storages are expected to:
-
-- Use packed 64-bit unsigned integers as object ids,
-
-- Allocate object ids sequentially, starting from 0, and
-
-- in the case of the changes storage, accept object ids assigned externally.
-
-In addition, it is assumed that less than 2**62 object ids have been
-allocated in the first storage. 
-
-Note that DemoStorage also assumes that it's base storage uses 64-bit
-unsigned integer object ids allocated sequentially.
-
-.. contents::
-
-Change History
---------------
-
-0.1.1 (2008-02-07)
-******************
-
-Fixed a packaging bug that caused some files to be omitted.
-
-0.1 (2008-02-04)
-****************
-
-Initial release.
-
 Configuration
 -------------
 
@@ -50,9 +15,9 @@ use the configuration from python:
 
     >>> import ZODB.config
     >>> storage = ZODB.config.storageFromString("""
-    ... 
+    ...
     ... %import zc.demostorage2
-    ... 
+    ...
     ... <demostorage2>
     ...    <filestorage base>
     ...       path base.fs
@@ -170,7 +135,7 @@ the new oderlying storages:
 The object id of the new object is quite large:
 
     >>> u64(conn.root()['2']._p_oid)
-    4611686018427387905L
+    4611686018427387905
 
 Let's look at some other methods:
 
@@ -182,11 +147,11 @@ Let's look at some other methods:
 
     >>> storage.getSize() == changes.getSize()
     True
-    
+
     >>> len(storage) == len(changes)
     True
 
-    
+
 Undo methods are simply copied from the changes storage:
 
     >>> [getattr(storage, name) == getattr(changes, name)

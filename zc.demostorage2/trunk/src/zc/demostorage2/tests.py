@@ -70,7 +70,3 @@ def test_suite():
             setUp=setUp, tearDown=zope.testing.setupstack.tearDown,
             ),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-

@@ -1,0 +1,22 @@
+Change History
+--------------
+
+0.1.2 (unreleased)
+******************
+
+- Updated tests to run with Python 2.6+.
+
+- Added test extra to declare test dependency on ``zope.testing``.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
+0.1.1 (2008-02-07)
+******************
+
+- Fixed a packaging bug that caused some files to be omitted.
+
+0.1 (2008-02-04)
+****************
+
+- Initial release.

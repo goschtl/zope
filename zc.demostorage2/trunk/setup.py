@@ -17,11 +17,12 @@ from setuptools import setup, find_packages
 
 def read(rname):
     return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
-                             )).read()
+                             )).read() + '\n\n'
 
 long_description = (
-        read('src/zc/demostorage2/README.txt')
-        + '\n' +
+        read('README.txt') +
+        read('CHANGES.txt') +
+        read('src/zc/demostorage2/README.txt') +
         'Download\n'
         '--------\n'
         )
@@ -36,12 +37,19 @@ setup(
     description = 'ZODB storage that stores changes relative to a base storage',
     long_description=long_description,
     license = 'ZPL 2.1',
-    
+
     include_package_data = True,
     packages = find_packages('src'),
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
-    install_requires = ['ZODB3', 'setuptools'],
+    install_requires = [
+        'ZODB3',
+        'setuptools',
+        ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
     zip_safe = False,
     classifiers = [
         'Intended Audience :: Developers',
