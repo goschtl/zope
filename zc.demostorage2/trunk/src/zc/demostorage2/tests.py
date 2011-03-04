@@ -13,7 +13,7 @@
 ##############################################################################
 import time, unittest
 
-from zope.testing import doctest
+import doctest
 import zope.testing.setupstack
 
 import transaction
