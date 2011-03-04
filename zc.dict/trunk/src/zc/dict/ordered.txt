@@ -9,11 +9,11 @@ It also provides the API to reorder the items.
     >>> d = OrderedDict()
     >>> d
     <zc.dict.dict.OrderedDict object at ...>
- 
+
     >>> d['foo'] = 'bar'
     >>> len(d)
     1
- 
+
     >>> d['bar'] = 'baz'
     >>> len(d)
     2
@@ -161,34 +161,34 @@ the underlying BTree, these are always in sort order of the keys.
 
     >>> d.keys()
     ['bar', 'beep', 'ding', 'foo']
- 
+
     >>> d.values()
     ['moo', 'beep', 'dong', 'bar']
- 
+
     >>> d.items()
     [('bar', 'moo'), ('beep', 'beep'), ('ding', 'dong'), ('foo', 'bar')]
 
 However, efficient iterators are available via the iter methods:
 
     >>> iter(d)
-    <generator object at ...>
+    <generator object ...>
     >>> d.iterkeys()
-    <generator object at ...>
- 
+    <generator object ...>
+
     >>> d.iteritems()
-    <generator object at ...>
- 
+    <generator object ...>
+
     >>> d.itervalues()
-    <generator object at ...>
+    <generator object ...>
 
 popitem removes an item from the dict and returns a key-value pair:
 
     >>> len(d)
     4
- 
+
     >>> d.popitem()
     ('bar', 'moo')
- 
+
     >>> len(d)
     3
 
@@ -256,7 +256,7 @@ Let's demonstrate these with a quick subclass.
     ...         print 'clear'
     ...         super(Demo, self).clear()
     ...
-    
+
     >>> demo1 = Demo()
     >>> demo2 = Demo([['foo', 'bar'], ['bing', 'baz']], sha='zam')
     update

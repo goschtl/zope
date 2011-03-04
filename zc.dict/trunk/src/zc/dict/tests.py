@@ -11,24 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zc.dict
-
-$Id$
-"""
-import unittest
-from zope.testing import doctest
+"""Tests for zc.dict"""
+import doctest
 
 
-optionflags = (doctest.INTERPRET_FOOTNOTES |
-               doctest.REPORT_NDIFF |
+optionflags = (doctest.REPORT_NDIFF |
                doctest.ELLIPSIS)
 
 
 def test_suite():
-    return unittest.TestSuite([
-        doctest.DocFileSuite('dict.txt', 'ordered.txt',
-                             optionflags=optionflags),
-        ])
+    return doctest.DocFileSuite('dict.txt', 'ordered.txt',
+                                optionflags=optionflags)
 
 
 def test_suite_generations():
@@ -36,7 +29,3 @@ def test_suite_generations():
     suite.addTest(doctest.DocFileSuite('generations/evolve1.txt',
                                        optionflags=optionflags))
     return suite
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

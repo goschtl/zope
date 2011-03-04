@@ -12,7 +12,19 @@ Note: It does so only for those OrderedDicts which can be reached through a
 hierarchy of mappings. Applications that use OrderedDicts as internal data
 structures need to take care of upgrading themselves.
 
-Let's create some ordered dicts [testdb]_:
+
+Setting up a test database:
+
+>>> from ZODB.tests.util import DB
+>>> db = DB()
+>>> conn = db.open()
+>>> class Context(object): pass
+>>> context = Context()
+>>> context.connection = conn
+>>> root = conn.root()
+
+
+Let's create some ordered dicts:
 
 >>> from zc.dict import OrderedDict
 >>> from persistent.list import PersistentList
@@ -68,19 +80,3 @@ contents as the PersistentLists:
 >>> list(d._order)
 ['d2', 'd1']
 
-
-
-.. [testdb] **Setting up a test database**
-
-    >>> from ZODB.tests.util import DB
-    >>> db = DB()
-    >>> conn = db.open()
-    >>> class Context(object): pass
-    >>> context = Context()
-    >>> context.connection = conn
-    >>> root = conn.root()
-
-
-.. Local Variables:
-.. mode: rst
-.. End:
