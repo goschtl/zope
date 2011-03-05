@@ -26,7 +26,7 @@ def test_suite():
     suite = unittest.TestSuite()
 
     for name in ['adapters', 'annotation', 'multiadapter', 'utilities',
-                 'subscribers', 'resource']:
+                 'subscribers']:
         test = FunctionalDocTestSuite(
             module='five.grok.tests.%s' % name,
             optionflags=options)
