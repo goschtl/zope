@@ -63,7 +63,7 @@ A simple Zope-geared package now could be look like this::
 We prepared several such projects in the sources of :mod:`zope.pytest`
 (see ``sample_fixtures/`` in `zope.pytest`s ``tests/``
 directory). There we have different versions of a package called
-``mypkg`` which we will use here.
+``mypkg`` (or ``mypkg2`` or similar) which we will use here.
 
 .. doctest::
    :hide:
@@ -345,6 +345,16 @@ Finally, when run, all tests pass:
    :hide:
 
     >>> unregister_fixture(mypkg_dir)
+
+
+Writing and running doctests
+----------------------------
+
+:mod:`zope.pytest` currently has no specific support for
+doctesting. That means you can write and run regular doctests but
+there is currently no special hook or similar included for setting up
+Zope-geared environments/ZCML parsing and the like. We hope to provide
+doctest support in some future release.
 
 
 .. _ZCML: http://docs.zope.org/zopetoolkit/codingstyle/zcml-style.html
