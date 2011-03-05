@@ -67,13 +67,13 @@ your buildout::
   grokcore.site = 1.4
   grokcore.view = 2.1
   grokcore.viewlet = 1.7
-  five.localsitemanager = 2.0.4
-  five.formlib = 1.0.3
+  five.localsitemanager = 2.0.5
+  five.formlib = 1.0.4
   martian = 0.14
 
 
 Zope 2.13 is required. If you wish to use a previous version of Zope
-2, look at the version 1.0 or 1.1 of five.grok.
+2, look at five.grok 1.0 for Zope 2.10.x or five.grok 1.2 for Zope 2.12.x.
 
 
 More information
