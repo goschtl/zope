@@ -61,7 +61,7 @@ A simple Zope-geared package now could be look like this::
                +----test_app.py
 
 We prepared several such projects in the sources of :mod:`zope.pytest`
-(see ``sample_fixtures/`` in `zope.pytest`s ``tests/``
+(see ``sample_fixtures/`` in :mod:`zope.pytest`'s ``tests/``
 directory). There we have different versions of a package called
 ``mypkg`` (or ``mypkg2`` or similar) which we will use here.
 
@@ -122,7 +122,9 @@ setup.
 
     >>> mypkg_dir = register_fixture('simple')
 
-Then, we run py.test_ with this package as argument:
+Then, we run py.test_ with this package as argument. In real-world
+usage we would call ``bin/py.test`` or even ``py.test`` (if `pytest`
+is installed globally in your system Python) from the commandline:
 
     >>> import pytest
     >>> pytest.main(mypkg_dir) # doctest: +REPORT_UDIFF
@@ -286,7 +288,8 @@ sufficient level of abstraction for real functional testing.
 
 Please note, that we make no strong assumptions about the existence of
 some ZODB working in background or similar. While in fact here a ZODB
-is working, the tests do not reflect this. We therefore can deploy non-Zope-specific packages like WebOb_.
+is working, the tests do not reflect this. We therefore can deploy
+non-Zope-specific packages like WebOb_.
 
 One of the main parts of this test module therefore is the funcarg_
 function `pytest_funcarg__apps` that sets up a complete WSGI
@@ -347,8 +350,8 @@ Finally, when run, all tests pass:
     >>> unregister_fixture(mypkg_dir)
 
 
-Writing and running doctests
-----------------------------
+Writing and running doctests (unsupported)
+------------------------------------------
 
 :mod:`zope.pytest` currently has no specific support for
 doctesting. That means you can write and run regular doctests but
