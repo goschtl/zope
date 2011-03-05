@@ -29,7 +29,6 @@ from grokcore.view.components import PageTemplate
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
 from grokcore.site.components import BaseSite
 import grokcore.view
-import grokcore.security
 from five.formlib import formbase
 
 from Products.Five.browser.pagetemplatefile import ViewMapper

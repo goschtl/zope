@@ -12,8 +12,6 @@
 #
 ##############################################################################
 
-import os.path
-
 from five.grok import components, formlib
 from grokcore.view.meta.directoryresource import _get_resource_path
 from zope import interface, component
@@ -21,7 +19,6 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 import five.grok
 import grokcore.component
 import grokcore.security
-import grokcore.site.interfaces
 import grokcore.view
 import martian
 
