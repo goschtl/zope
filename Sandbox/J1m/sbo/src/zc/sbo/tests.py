@@ -18,9 +18,9 @@ from zope.testing import setupstack
 def test_suite():
     return doctest.DocFileSuite(
         'sbo.test',
+        optionflags=doctest.NORMALIZE_WHITESPACE,
         setUp=setupstack.setUpDirectory, tearDown=setupstack.tearDown,
         )
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-

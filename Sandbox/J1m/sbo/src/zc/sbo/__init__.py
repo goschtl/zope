@@ -1,15 +1,23 @@
 import optparse
 import os
+import pkg_resources
 import subprocess
 import sys
 import tempfile
+
+
+for dist in pkg_resources.working_set:
+    if dist.project_name == "zc.sbo":
+        version = dist.version
+assert version
+
 
 parser = optparse.OptionParser("""\
 Usage: %prog [options] application [configuration]
 
 Configure or unconfigure an application defined by a buildout
 configuration file.  By default, an application is configured.  If the
--U option is provided, then the application is unconfigured.  An
+-u option is provided, then the application is unconfigured.  An
 optional configuration name may be given.  If not given, the
 configuration name defaults to the application name.
 
@@ -29,11 +37,16 @@ To perform it's work, the script will run:
    /opt/${application}/bin/buildout
 
 So the named application must be installed in /opt.
-""")
+""", version=("%%prog %s" % version))
 
 parser.add_option(
     '-a', '--all', action="store_true", dest="all",
     help="Operate on all configurations.",
+    )
+
+parser.add_option(
+    '-i', '--installation', action="store", dest="installation",
+    help="""Installation directory of the application.""",
     )
 
 parser.add_option(
@@ -91,7 +104,10 @@ def main(args=None):
         error("No application was specified.")
     application = args.pop(0)
 
-    app_dir = os.path.join(root, 'opt', application)
+    if options.installation:
+        app_dir = options.installation
+    else:
+        app_dir = os.path.join(root, 'opt', application)
     assert_exists("The application directory", app_dir)
 
     buildout = os.path.join(app_dir, 'bin', 'buildout')

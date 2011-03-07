@@ -17,7 +17,7 @@ buildout.
     <BLANKLINE>
     Configure or unconfigure an application defined by a buildout
     configuration file.  By default, an application is configured.  If the
-    -U option is provided, then the application is unconfigured.  An
+    -u option is provided, then the application is unconfigured.  An
     optional configuration name may be given.  If not given, the
     configuration name defaults to the application name.
     <BLANKLINE>
@@ -40,8 +40,11 @@ buildout.
     <BLANKLINE>
     <BLANKLINE>
     Options:
+      --version             show program's version number and exit
       -h, --help            show this help message and exit
       -a, --all             Operate on all configurations.
+      -i INSTALLATION, --installation=INSTALLATION
+                            Installation directory of the application.
       -l, --list            List available configurations.
       -q                    Decrease the verbosity
       --test-root=TEST_ROOT
@@ -226,6 +229,41 @@ If we pass -v or -q options, they are passed through to the buildout:
     buildout:directory=root/opt/myapp
     -oUvc
     ...tmp/...buildout
+
+We can specify an alternate application installation while still
+pointing to the usual place for configurations:
+
+    >>> test('--test-root', 'root', '--installation', 'myapp-1.2.3',
+    ...      'myapp', 'cust') # doctest: +ELLIPSIS
+    Error:
+    The application directory, 'myapp-1.2.3', doesn't exist.
+    ...
+    Exit status 1
+
+Let's create an application installation there:
+
+    >>> myapp123 = os.path.join('root', 'opt', 'myapp-1.2.3')
+    >>> os.makedirs(myapp123)
+    >>> os.makedirs(os.path.join(myapp123, 'bin'))
+    >>> open(os.path.join(myapp123, 'bin', 'buildout'), 'w').write(
+    ... """#!%s
+    ... import sys
+    ... installed = [a[19:] for a in sys.argv
+    ...              if a.startswith('buildout:installed=')][0]
+    ... open(installed, 'w').write('\\n'.join(sys.argv[1:]))
+    ... """ % sys.executable)
+    >>> os.chmod(os.path.join(myapp123, 'bin', 'buildout'), 0755)
+
+    >>> test('--test-root', 'root', '--installation', myapp123,
+    ...      'myapp', 'cust') # doctest: +ELLIPSIS
+    Configuring: cust
+
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'cust.configured')
+    ... ).read()
+    buildout:installed=root/etc/myapp/cust.configured
+    buildout:directory=root/opt/myapp-1.2.3
+    -oUc
+    root/etc/myapp/cust.cfg
 
 
 Cleanup
