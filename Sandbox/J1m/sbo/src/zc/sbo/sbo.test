@@ -1,0 +1,233 @@
+System Buildout Script
+======================
+
+The system buildout script simply automates running an application
+buildout.
+
+    >>> from zc import sbo
+    >>> def test(*args):
+    ...     try:
+    ...         sbo.main(list(args))
+    ...     except SystemExit, v:
+    ...          print 'Exit status', v
+
+
+    >>> test('-h')
+    Usage: test [options] application [configuration]
+    <BLANKLINE>
+    Configure or unconfigure an application defined by a buildout
+    configuration file.  By default, an application is configured.  If the
+    -U option is provided, then the application is unconfigured.  An
+    optional configuration name may be given.  If not given, the
+    configuration name defaults to the application name.
+    <BLANKLINE>
+    The buildout configuration path is computed as:
+    <BLANKLINE>
+       /etc/${application}/${configuration}.cfg
+    <BLANKLINE>
+    During configuration, the file:
+    <BLANKLINE>
+       /etc/${application}/${configuration}.configured
+    <BLANKLINE>
+    will be created, which records information about what was configured to
+    support unconfiguring.
+    <BLANKLINE>
+    To perform it's work, the script will run:
+    <BLANKLINE>
+       /opt/${application}/bin/buildout
+    <BLANKLINE>
+    So the named application must be installed in /opt.
+    <BLANKLINE>
+    <BLANKLINE>
+    Options:
+      -h, --help            show this help message and exit
+      -a, --all             Operate on all configurations.
+      -l, --list            List available configurations.
+      -q                    Decrease the verbosity
+      --test-root=TEST_ROOT
+                            The location of an alternate root directory for
+                            testing.  If this is used then the given directory
+                            will be used rather than / to find the opt and etc
+                            directories.
+      -u, --unconfigure     Remove any configuration artifacts for the given
+                            configuration file. This option reads the associated
+                            installation database to discover what to unconfigure.
+      -v                    Increase the verbosity
+    Exit status 0
+
+We can supply a root directory for testing. Let's create one:
+
+    >>> import os
+    >>> os.mkdir('root')
+    >>> test('--test-root', 'root') # doctest: +ELLIPSIS
+    Error:
+    No application was specified.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+    >>> test('--test-root', 'root', 'myapp') # doctest: +ELLIPSIS
+    Error:
+    The application directory, 'root/opt/myapp', doesn't exist.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+    >>> os.makedirs(os.path.join('root', 'opt', 'myapp'))
+    >>> test('--test-root', 'root', 'myapp')
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Error:
+    The application buildout script, 'root/opt/myapp/bin/buildout',
+    doesn't exist.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+We create a fake buildout script, just for testing purposes:
+
+    >>> os.mkdir(os.path.join('root', 'opt', 'myapp', 'bin'))
+    >>> import sys
+    >>> open(os.path.join('root', 'opt', 'myapp', 'bin', 'buildout'),
+    ...      'w').write(
+    ... """#!%s
+    ... import sys
+    ... installed = [a[19:] for a in sys.argv
+    ...              if a.startswith('buildout:installed=')][0]
+    ... open(installed, 'w').write('\\n'.join(sys.argv[1:]))
+    ... """ % sys.executable)
+    >>> os.chmod(os.path.join('root', 'opt', 'myapp', 'bin', 'buildout'), 0755)
+
+    >>> test('--test-root', 'root', 'myapp') # doctest: +ELLIPSIS
+    Error:
+    The application configuration directory, 'root/etc/myapp', doesn't exist.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+    >>> os.makedirs(os.path.join('root', 'etc', 'myapp'))
+    >>> test('--test-root', 'root', 'myapp') # doctest: +ELLIPSIS
+    Error:
+    The configuration file, 'root/etc/myapp/myapp.cfg', doesn't exist.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+    >>> open(os.path.join('root', 'etc', 'myapp', 'myapp.cfg'), 'w').write("""
+    ... [buildout]
+    ... parts = foo
+    ... """)
+
+    >>> test('--test-root', 'root', 'myapp') # doctest: +ELLIPSIS
+    Configuring: myapp
+
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'myapp.configured')
+    ... ).read()
+    buildout:installed=root/etc/myapp/myapp.configured
+    buildout:directory=root/opt/myapp
+    -oUc
+    root/etc/myapp/myapp.cfg
+
+We can specify a configuration name:
+
+    >>> test('--test-root', 'root', 'myapp', 'cust') # doctest: +ELLIPSIS
+    Error:
+    The configuration file, 'root/etc/myapp/cust.cfg', doesn't exist.
+    <BLANKLINE>
+    Usage: test [options] application [configuration]
+    ...
+    Exit status 1
+
+    >>> open(os.path.join('root', 'etc', 'myapp', 'cust.cfg'), 'w').write("""
+    ... [buildout]
+    ... parts = foo
+    ... """)
+
+    >>> test('--test-root', 'root', 'myapp', 'cust') # doctest: +ELLIPSIS
+    Configuring: cust
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'cust.configured')
+    ... ).read()
+    buildout:installed=root/etc/myapp/cust.configured
+    buildout:directory=root/opt/myapp
+    -oUc
+    root/etc/myapp/cust.cfg
+
+The -l/--list option can be used to list available configurations:
+
+    >>> test('--test-root', 'root', 'myapp', '-l')
+    cust
+    myapp
+    Exit status 0
+
+The -a/--all option can be used to work with all configurations:
+
+    >>> test('--test-root', 'root', 'myapp', '-a')
+    Configuring: cust
+    Configuring: myapp
+
+If we use the -u option, we'll unconfigure:
+
+    >>> import tempfile
+    >>> os.mkdir('tmp')
+    >>> oldtempdir = tempfile.tempdir
+    >>> tempfile.tempdir = 'tmp'
+
+    >>> test('--test-root', 'root', '-u', 'myapp', 'cust') # doctest: +ELLIPSIS
+    Unconfiguring: cust
+
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'cust.configured')
+    ... ).read() # doctest: +ELLIPSIS
+    buildout:installed=root/etc/myapp/cust.configured
+    buildout:directory=root/opt/myapp
+    -oUc
+    ...tmp/...buildout
+
+    >>> test('--test-root', 'root', '-u', 'myapp', 'cust2') # doctest: +ELLIPSIS
+    'root/etc/myapp/cust2.configured' doesn't exist.
+    Nothing to unconfigure.
+    Exit status 0
+
+The -a/--all option works when unconfiguring as well:
+
+    >>> test('--test-root', 'root', '-u', 'myapp', '-a')
+    Unconfiguring: cust
+    Unconfiguring: myapp
+
+If we pass -v or -q options, they are passed through to the buildout:
+
+    >>> test('--test-root', 'root', '-u', 'myapp', '-vv') # doctest: +ELLIPSIS
+    Unconfiguring: myapp
+
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'myapp.configured')
+    ... ).read() # doctest: +ELLIPSIS
+    buildout:installed=root/etc/myapp/myapp.configured
+    buildout:directory=root/opt/myapp
+    -oUvvc
+    ...tmp/...buildout
+
+    >>> test('--test-root', 'root', '-u', 'myapp', '-q') # doctest: +ELLIPSIS
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'myapp.configured')
+    ... ).read() # doctest: +ELLIPSIS
+    buildout:installed=root/etc/myapp/myapp.configured
+    buildout:directory=root/opt/myapp
+    -oUqc
+    ...tmp/...buildout
+
+    >>> test('--test-root', 'root', '-u', 'myapp', '-vvq') # doctest: +ELLIPSIS
+    Unconfiguring: myapp
+
+    >>> print open(os.path.join('root', 'etc', 'myapp', 'myapp.configured')
+    ... ).read() # doctest: +ELLIPSIS
+    buildout:installed=root/etc/myapp/myapp.configured
+    buildout:directory=root/opt/myapp
+    -oUvc
+    ...tmp/...buildout
+
+
+Cleanup
+
+    >>> tempfile.tempdir = oldtempdir

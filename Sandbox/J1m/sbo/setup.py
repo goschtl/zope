@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.sbo', '0'
 
 install_requires = ['setuptools']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
+[console_scripts]
+sbo = sbo:main
 """
 
 from setuptools import setup
