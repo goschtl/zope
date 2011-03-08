@@ -17,15 +17,15 @@ from setuptools import setup, find_packages
 
 def read(rname):
     return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
-                             )).read() + '\n\n'
+                             )).read()
 
-long_description = (
-        read('README.txt') +
-        read('CHANGES.txt') +
-        read('src/zc/demostorage2/README.txt') +
-        'Download\n'
-        '--------\n'
-        )
+long_description = '\n\n'.join((
+    read('README.txt'),
+    read('CHANGES.txt'),
+    read('src/zc/demostorage2/README.txt'),
+    'Download\n'
+    '--------\n',
+    ))
 
 open('doc.txt', 'w').write(long_description)
 
