@@ -4,6 +4,9 @@ Changelog
 1.0.5 - unreleased
 ------------------
 
+* Deal with forward compatibility with Zope 2.14.
+
+* Avoid charset negotiation.
 
 1.0.4 - 2011-02-06
 ------------------

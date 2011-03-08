@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Five baseclasses for zope.formlib.form
-
-$Id$
 """
 import os.path
 
@@ -24,7 +22,8 @@ from zope.i18nmessageid import MessageFactory
 _ = MessageFactory("zope")
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from Products.Five.browser.decode import processInputs, setPageEncoding
+from Products.Five.browser.decode import processInputs
+from ZPublisher import HTTPRequest
 
 _FORMLIB_DIR = os.path.dirname(zope.formlib.__file__)
 _PAGEFORM_PATH = os.path.join(_FORMLIB_DIR, 'pageform.pt')
@@ -45,8 +44,9 @@ class FiveFormlibMixin(object):
     # decoded first and the page encoding is set before proceeding.
 
     def update(self):
-        processInputs(self.request)
-        setPageEncoding(self.request)
+        # BBB: for Zope < 2.14
+        if not getattr(self.request, 'postProcessInputs', False):
+            processInputs(self.request, [HTTPRequest.default_encoding])
         super(FiveFormlibMixin, self).update()
 
 

@@ -45,7 +45,6 @@ Let's set up a testbrowser:
   ...     from Products.Five.testbrowser import Browser
 
   >>> browser = Browser()
-  >>> browser.addHeader('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7')
   >>> browser.addHeader('Accept-Language', 'en-US')
   >>> browser.addHeader('Authorization', 'Basic manager:r00t')
 
@@ -69,7 +68,8 @@ like the traditional AddView and EditView, supports unicode:
   >>> browser.getControl(name="form.actions.apply").click()
   >>> isinstance(folder.content_1.title, unicode)
   True
-  >>> folder.content_1.title == ni_hao.decode('utf-8')
+  >>> from ZPublisher import HTTPRequest 
+  >>> folder.content_1.title == ni_hao.decode(HTTPRequest.default_encoding)
   True
 
 Adding a new content object, with two list items:
