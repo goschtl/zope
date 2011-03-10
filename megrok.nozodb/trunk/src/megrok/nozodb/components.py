@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import grok
+import grokcore.site
 from zope import component, site, location
 
 
 class ApplicationRoot(grok.GlobalUtility):
     grok.implements(
-        grok.interfaces.IApplication,
+        grokcore.site.interfaces.IApplication,
         grok.interfaces.IContext,
         site.interfaces.IRootFolder,
         location.ILocation,

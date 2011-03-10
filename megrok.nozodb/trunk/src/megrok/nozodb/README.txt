@@ -34,7 +34,7 @@ provide your own stuff which acts as ApplicationRoot.
    >>> IRootFolder.providedBy(myapp)
    True
 
-   >>> from grok.interfaces import IApplication
+   >>> from grokcore.site.interfaces import IApplication
    >>> IApplication.providedBy(myapp)
    True
 
