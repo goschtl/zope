@@ -1,6 +1,8 @@
 1.2 (unreleased)
 ----------------
 
+* Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 1.1 (2010-02-25)
 ----------------

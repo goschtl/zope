@@ -10,18 +10,10 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################  
+##############################################################################
+"""zc.displayname package test runner"""
 
-"""zc.displayname package test runner
-
-$Id:$
-"""
-
-import unittest
-from zope.testing import doctest
+import doctest
 
 def test_suite():
     return doctest.DocFileSuite('adapters.txt')
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
