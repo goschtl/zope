@@ -9,7 +9,6 @@ class ApplicationRoot(grok.GlobalUtility):
     grok.implements(
         grokcore.site.interfaces.IApplication,
         grok.interfaces.IContext,
-        site.interfaces.IRootFolder,
         location.ILocation,
         component.interfaces.ISite)
     grok.provides(site.interfaces.IRootFolder)

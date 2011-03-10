@@ -30,9 +30,6 @@ provide your own stuff which acts as ApplicationRoot.
    ...     pass
 
    >>> myapp = MyApplicationRoot()
-   >>> from zope.site.interfaces import IRootFolder
-   >>> IRootFolder.providedBy(myapp)
-   True
 
    >>> from grokcore.site.interfaces import IApplication
    >>> IApplication.providedBy(myapp)
