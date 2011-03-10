@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.sbo', '0'
+name, version = 'zc.sbo', '0.6.1'
 
 install_requires = ['setuptools']
 extras_require = dict(test=['zope.testing'])
