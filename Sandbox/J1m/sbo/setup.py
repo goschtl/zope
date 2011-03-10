@@ -18,7 +18,7 @@ extras_require = dict(test=['zope.testing'])
 
 entry_points = """
 [console_scripts]
-sbo = sbo:main
+sbo = zc.sbo:main
 """
 
 from setuptools import setup
