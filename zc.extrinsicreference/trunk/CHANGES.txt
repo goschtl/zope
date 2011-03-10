@@ -5,7 +5,8 @@ CHANGES
 0.4.0 (unreleased)
 ------------------
 
-- No changes yet.
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
 
 
 0.3.0 (2009-08-27)

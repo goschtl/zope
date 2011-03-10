@@ -13,7 +13,7 @@
 ##############################################################################
 """extrinsicreference module test runner"""
 
-from zope.testing import doctest
+import doctest
 
 def test_suite():
     return doctest.DocFileSuite('README.txt', optionflags=doctest.ELLIPSIS)
