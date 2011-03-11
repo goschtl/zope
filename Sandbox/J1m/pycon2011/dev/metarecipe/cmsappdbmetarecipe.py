@@ -18,12 +18,12 @@ class MetaRecipe:
 
         ports = options['main-port'], options['index-port']
         dbnames = 'main', 'index'
-        servers - zip(dbnames, ports)
+        servers = zip(dbnames, ports)
         for dbname, port in servers:
             add_section(name+'-'+dbname,
                         recipe = 'zc.zodbrecipes:server',
                         deployment = deployment,
-                        **{'zeo.conf': zeo_conf * dict(
+                        **{'zeo.conf': zeo_conf % dict(
                             port=port,
                             customer=name,
                             dbname=dbname,
@@ -67,7 +67,7 @@ zeo_conf = """
 <zeo>
    address :%(port)s
 </zeo>
-%import zc.zlibstorage
+%%import zc.zlibstorage
 <zlibstorage>
   <filestorage>
      path /var/databases/%(customer)s/%(dbname)s
@@ -85,7 +85,7 @@ gc_conf = """
 """
 
 pack_sh = """
-  %(bin)s/zeopack -d3 -t00 \
+  ${buildout:bin-directory}/zeopack -d3 -t00 \
      %(addresses)s
 
   ${buildout:bin-directory}/multi-zodb-gc -d3 -lERROR \
