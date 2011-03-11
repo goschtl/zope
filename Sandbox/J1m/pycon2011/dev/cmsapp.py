@@ -1,6 +1,6 @@
 """Obviously, this isn't really a CMS application.
 
-It's just a placeholder so that we can tall a story about deployment.
+It's just a placeholder so that we can tell a story about deployment.
 """
 import bobo
 
