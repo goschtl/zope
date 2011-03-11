@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.4 (unreleased)
+0.3.4 (2011-03-11)
 ------------------
 
 * Remove unnecessary distribution lookup in the PluginFinder.
