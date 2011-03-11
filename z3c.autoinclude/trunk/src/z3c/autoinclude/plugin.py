@@ -2,12 +2,11 @@ import os
 from pkg_resources import iter_entry_points
 from pkg_resources import resource_filename
 from z3c.autoinclude.utils import DistributionManager
-from z3c.autoinclude.utils import distributionForDottedName
 from z3c.autoinclude.utils import ZCMLInfo
 
-class PluginFinder(DistributionManager):
+
+class PluginFinder(object):
     def __init__(self, platform_dottedname):
-        self.context = distributionForDottedName(platform_dottedname)
         self.dottedname = platform_dottedname
 
     def includableInfo(self, zcml_to_look_for):

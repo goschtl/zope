@@ -4,8 +4,7 @@ Changes
 0.3.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+* Remove unnecessary distribution lookup in the PluginFinder.
 
 0.3.3 (2010-05-06)
 ------------------
