@@ -16,7 +16,9 @@ class MetaRecipe:
                     user=options['user'],
                     )
 
-        ports = options['main-port'], options['index-port']
+        main_port = options['main-port']
+        index_port = options.get('index-port', str(int(main_port) + 1))
+        ports = main_port, index_port
         dbnames = 'main', 'index'
         servers = zip(dbnames, ports)
         for dbname, port in servers:
