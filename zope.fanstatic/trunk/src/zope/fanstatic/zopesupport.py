@@ -23,17 +23,7 @@ import fanstatic
 
 from zope.fanstatic.interfaces import IZopeFanstaticResource
 
-@adapter(IEndRequestEvent)
-def set_base_url(event):
-    # At first sight it might be better to subscribe to the
-    # IBeforeTraverseEvent for ISite objects and only set a base_url
-    # then. However, we might be too early in that case and miss out
-    # on essential information for computing URLs. One example of such
-    # information is that of the virtualhost namespace traversal.
-    needed = fanstatic.get_needed()
-    if not needed.has_resources():
-        # Do nothing if there're no resources needed at all.
-        return
+def ensure_base_url(needed, request):
     if not needed.has_base_url():
         # Only set the base_url if it has not been set just yet.
         #
@@ -47,7 +37,21 @@ def set_base_url(event):
         # is cleared). Since fanstatic resource "registrations" cannot
         # be overridden on a per ISite basis anyway, this is good
         # enough.
-        needed.set_base_url(absoluteURL(None, event.request))
+        needed.set_base_url(absoluteURL(None, request))
+
+
+@adapter(IEndRequestEvent)
+def set_base_url(event):
+    # At first sight it might be better to subscribe to the
+    # IBeforeTraverseEvent for ISite objects and only set a base_url
+    # then. However, we might be too early in that case and miss out
+    # on essential information for computing URLs. One example of such
+    # information is that of the virtualhost namespace traversal.
+    needed = fanstatic.get_needed()
+    if not needed.has_resources():
+        # Do nothing if there're no resources needed at all.
+        return
+    ensure_base_url(needed, event.request)
 
 @adapter(IHandleExceptionEvent)
 def clear_needed_resources(event):
@@ -91,8 +95,7 @@ class ZopeFanstaticResource(object):
 
     def __str__(self):
         needed = fanstatic.get_needed()
-        if not needed.has_base_url():
-            needed.set_base_url(absoluteURL(None, self.request))
+        ensure_base_url(needed, self.request)
         return needed.library_url(self.library) + self.name
 
     __call__ = __str__
