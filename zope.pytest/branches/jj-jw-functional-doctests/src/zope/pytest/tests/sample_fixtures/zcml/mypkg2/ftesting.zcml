@@ -1,0 +1,8 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   package="mypkg2"
+   >
+
+  <include package="mypkg2" file="configure.zcml" />
+
+</configure>
