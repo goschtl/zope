@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5 - unreleased
+0.5 - 2011-03-14
 ----------------
 
 - `munin_client.py` can handle multiple databases now.
