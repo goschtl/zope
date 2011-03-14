@@ -66,10 +66,10 @@ class SimpleGraph(GraphBase):
         print "%s.value %s" % (self.name, self.data[self.key])
 
     def config(self):
-        print "graph_title %s (Zope %s)" % (self.title, server_index)
+        print "graph_title %s (Zope %s/%s)" % (self.title, server_index, dbname)
         print "graph_vlabel %s" % (self.vlabel or self.name)
         print "graph_category Zope"
-        print "graph_info %s of Zope %s " % (self.title, server_index)
+        print "graph_info %s of Zope %s, database %s " % (self.title, server_index, dbname)
         print "%s.label %s" % (self.name, self.name)
         if self.cdef:
             print "%s.cdef " % self.name + self.cdef % self.name
@@ -87,10 +87,10 @@ class SimpleMultiGraph(GraphBase):
             print "%s.value %s" % (name, self.data[key])
 
     def config(self):
-        print "graph_title %s (Zope %s)" % (self.title, server_index)
+        print "graph_title %s (Zope %s/%s)" % (self.title, server_index, dbname)
         print "graph_vlabel %s" % (self.vlabel)
         print "graph_category Zope"
-        print "graph_info %s of the Zope %s " % (self.title, server_index)
+        print "graph_info %s of the Zope %s, database %s" % (self.title, server_index, dbname)
         for name in self.names:
             print "%s.label %s" % (name, name)
 
@@ -158,10 +158,10 @@ class cacheconnections(GraphBase):
 
     def config(self):
         self._prepare_fetch()
-        print "graph_title Per connection caches (Zope %s)" % server_index
+        print "graph_title Per connection caches (Zope %s/%s)" % (server_index, dbname)
         print "graph_vlabel Connections"
         print "graph_category Zope"
-        print "graph_info Per connection caches of Zope %s "% server_index
+        print "graph_info Per connection caches of Zope %s, database %s" % (server_index, dbname)
         print "active0.label Connection 1: Active objects"
         print "active1.label Connection 2: Active objects"
         print "active2.label Connection 3: Active objects"
