@@ -137,7 +137,7 @@ class dbsize(SimpleGraph):
 
     key = 'db-bytes'
     name = 'database_size'
-    title = 'Size of main Database'
+    title = 'Size of Database'
     vlabel = 'MB'
     cdef = '%s,1048576,/'
 
