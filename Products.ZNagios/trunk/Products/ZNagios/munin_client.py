@@ -24,7 +24,11 @@ if cmd == '':
     cmd = 'fetch'
 
 script_name = os.path.basename(sys.argv[0])
-_, graph, server_index = script_name.split('_')
+try:
+	_, graph, server_index, dbname = script_name.split('_')
+except ValueError:
+	_, graph, server_index = script_name.split('_')
+	dbname = 'main'
 
 URL = os.environ['MUNIN_ZOPE_HOST_%s' % server_index]
 AUTHORIZATION = os.environ.get('MUNIN_ZOPE_AUTHENTICATE_%s' % server_index)
@@ -33,6 +37,7 @@ class GraphBase(object):
 
     def _prepare_fetch(self):
 
+        URL = URL + '?db=%s' % dbname
         request = urllib2.Request(URL)
         if AUTHORIZATION:
             request.add_header('Authorization', 'Basic %s' %

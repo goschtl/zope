@@ -93,11 +93,12 @@ Create symlinks in ``/etc/munin/plugins/``
 
 plugins using munin_client.py are named like::
 
-  /etc/munin/plugins/zope_<graph>_<server-index>
+  /etc/munin/plugins/zope_<graph>_<server-index>[_<dbname>]
 
   eg:
   /etc/munin/plugins/zope_uptime_instance1
   /etc/munin/plugins/zope_uptime_instance2
+  /etc/munin/plugins/zope_activity_instance1_db2
 
 plugins using zeo_munin.py are named like::
 
@@ -141,8 +142,6 @@ to tell the plugins how to connect to zeo server/clients::
   env.MUNIN_ZEO_PORT_ZEO1 8502
 
 
-
-
 Credits
 -------
 
@@ -155,3 +154,4 @@ Thanks for contributing ideas and code to:
 - Florian Schulze (independent)
 - Hanno Schlichting (Jarn)
 - Harald Friessnegger (Webmeisterei)
+- David Glick (Groundwire)

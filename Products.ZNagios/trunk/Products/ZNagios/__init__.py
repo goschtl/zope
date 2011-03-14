@@ -86,7 +86,7 @@ def nagios(self):
     return result
 
 
-def munin(self):
+def munin(self, db='main'):
     """Return munin-compatible statistic data."""
     data = {}
 
@@ -98,21 +98,21 @@ def munin(self):
     # ... total number of objects referenced
     data['refcount-total'] = get_refcount(self)
 
-    main_db = self.Control_Panel.Database['main']
+    db = self.Control_Panel.Database[db]
     # Database size
     # ... in bytes
-    data['db-bytes'] = main_db._getDB()._storage.getSize()
+    data['db-bytes'] = db._getDB()._storage.getSize()
     # ... in number of objects
-    data['db-objects'] = main_db.database_size()
+    data['db-objects'] = db.database_size()
 
     # Cache information (whole process)
     # ... total number of objects in all caches
-    data['db-cache-total-size'] = main_db.cache_length()
+    data['db-cache-total-size'] = db.cache_length()
 
     # Cache information (per connection/thread)
     # ... target size
-    data['db-cache-target-size'] = main_db.cache_size()
-    for i, connection in enumerate(main_db.cache_detail_length()):
+    data['db-cache-target-size'] = db.cache_size()
+    for i, connection in enumerate(db.cache_detail_length()):
         # ... active objects for the connect
         data['db-cache-conn%s-active-objects' % i] = connection['ngsize']
         # ... total objects (active and inactive) for the connection
@@ -120,7 +120,7 @@ def munin(self):
 
     # Activity information
     # measured for the last 5 minutes, normalized per second
-    activity = get_activity(main_db)
+    activity = get_activity(db)
     # ... loads per second in the last 5 minutes
     data['db-loads'] = activity['total_load_count'] / MUNIN_TIME_DELTA
     # ... stores per second in the last 5 minutes
