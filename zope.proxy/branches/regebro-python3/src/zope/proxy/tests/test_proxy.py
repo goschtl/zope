@@ -120,6 +120,10 @@ class ProxyTestCase(unittest.TestCase):
         self.assert_(w.__class__ is o.__class__)
 
     def test_pickle_prevention(self):
+        # Proxies of old-style classes can't be pickled.
+        if sys.version > '3':
+            # No old-style classes in Python 3.
+            return
         w = self.new_proxy(Thing())
         self.assertRaises(pickle.PicklingError,
                           pickle.dumps, w)
@@ -348,7 +352,11 @@ class ProxyTestCase(unittest.TestCase):
         self.failUnless(b is y)
 
     def test_getslice(self):
-        # Lists have special slicing bahvior.
+        # These tests are moot under Python 3 as __slice__ isn't supported.
+        if sys.version > '3':
+            return
+        
+        # Lists have special slicing behavior.
         pList = self.new_proxy([1, 2])
         self.assertEqual(pList[-1:], [2])
         self.assertEqual(pList[-2:], [1, 2])
