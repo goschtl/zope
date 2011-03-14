@@ -37,8 +37,8 @@ class GraphBase(object):
 
     def _prepare_fetch(self):
 
-        URL = URL + '?db=%s' % dbname
-        request = urllib2.Request(URL)
+        url = URL + '?db=%s' % dbname
+        request = urllib2.Request(url)
         if AUTHORIZATION:
             request.add_header('Authorization', 'Basic %s' %
                                base64.encodestring(AUTHORIZATION))
