@@ -3,7 +3,7 @@ from zope.testing.testrunner.find import name_from_layer
 
 def order_by_bases(layers):
     """Order the layers from least to most specific (bottom to top)
- 
+
     >>> class TestLayer(object):
     ...    def __init__(self, bases, name):
     ...        self.__bases__ = bases
@@ -13,7 +13,7 @@ def order_by_bases(layers):
 
     A layer without any base:
 
-    >>> zero = TestLayer(bases=(), name='zero') 
+    >>> zero = TestLayer(bases=(), name='zero')
 
     A layer with a single base:
 
@@ -95,11 +95,22 @@ def order_by_bases(layers):
     """
     named_layers = [(name_from_layer(layer), layer) for layer in layers]
     named_layers.sort()
-    named_layers.reverse()
-    gathered = []
+    # Store layers along with their specificity measured by numbers of
+    # sublayers.
+    all_layers = {}
     for name, layer in named_layers:
+        gathered = []
         gather_layers(layer, gathered)
-    gathered.reverse()
+        index = len(gathered)
+        some_layers = all_layers.setdefault(index, [])
+        some_layers.append(gathered)
+    keys = all_layers.keys()
+    keys.sort()
+    # Gather them all starting by the least specific.
+    gathered = []
+    for key in keys:
+        for some_layers in all_layers[key]:
+            gathered.extend(some_layers)
     seen = {}
     result = []
     for layer in gathered:
