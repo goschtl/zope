@@ -194,6 +194,7 @@ def test_suite():
             optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE),
         doctest.DocTestSuite('zope.testing.testrunner.options'),
         doctest.DocTestSuite('zope.testing.testrunner.find'),
+        doctest.DocTestSuite('zope.testing.testrunner.layerutils'),
         ]
 
     if sys.platform == 'win32':

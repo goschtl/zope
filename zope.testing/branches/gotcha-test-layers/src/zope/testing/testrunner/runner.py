@@ -29,6 +29,7 @@ import time
 import traceback
 import unittest
 
+from zope.testing.testrunner.layerutils import order_by_bases, gather_layers
 from zope.testing.testrunner.find import import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 from zope.testing.testrunner.refcount import TrackRefs
@@ -775,33 +776,6 @@ def layer_from_name(layer_name):
         # it doesn't say *which* module
         raise AttributeError('module %r has no attribute %r'
                              % (module_name, module_layer_name))
-
-
-def order_by_bases(layers):
-    """Order the layers from least to most specific (bottom to top)
-    """
-    named_layers = [(name_from_layer(layer), layer) for layer in layers]
-    named_layers.sort()
-    named_layers.reverse()
-    gathered = []
-    for name, layer in named_layers:
-        gather_layers(layer, gathered)
-    gathered.reverse()
-    seen = {}
-    result = []
-    for layer in gathered:
-        if layer not in seen:
-            seen[layer] = 1
-            if layer in layers:
-                result.append(layer)
-    return result
-
-
-def gather_layers(layer, result):
-    if layer is not object:
-        result.append(layer)
-    for b in layer.__bases__:
-        gather_layers(b, result)
 
 
 class FakeInputContinueGenerator:
