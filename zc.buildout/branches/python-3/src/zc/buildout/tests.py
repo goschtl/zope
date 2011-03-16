@@ -108,17 +108,13 @@ Asking for a section that doesn't exist, yields a missing section error:
     >>> os.chdir(sample_buildout)
     >>> import zc.buildout.buildout
     >>> buildout = zc.buildout.buildout.Buildout('buildout.cfg', [])
-    >>> buildout['eek']
-    Traceback (most recent call last):
-    ...
-    MissingSection: The referenced section, 'eek', was not defined.
+    >>> print(raises('MissingSection', buildout.__getitem__, 'eek'))
+    The referenced section, 'eek', was not defined.
 
 Asking for an option that doesn't exist, a MissingOption error is raised:
 
-    >>> buildout['buildout']['eek']
-    Traceback (most recent call last):
-    ...
-    MissingOption: Missing option: buildout:eek
+    >>> print(raises('MissingOption', buildout['buildout'].__getitem__, 'eek'))
+    Missing option: buildout:eek
 
 It is an error to create a variable-reference cycle:
 
@@ -128,7 +124,10 @@ It is an error to create a variable-reference cycle:
     ... parts =
     ... x = ${buildout:y}
     ... y = ${buildout:z}
-    ... z = ${runprint system(os.path.join(sample_buildout, 'bin', 'buildout'))
+    ... z = ${buildout:x}
+    ... ''')
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout')),
     ... # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     While:
       Initializing.
@@ -874,7 +873,7 @@ We do not get a warning, but we do get setuptools included in the working set:
     ...     ])]
     ['foox', 'setuptools']
 
-    >>> print_(handler.decode())
+    >>> print_(handler)
 
 We get the same behavior if the it is a depedency that uses a
 namespace package.
@@ -907,7 +906,7 @@ namespace package.
     ...     ])]
     ['bar', 'foox', 'setuptools']
 
-    >>> print_(handler.decode())
+    >>> print_(handler)
     zc.buildout.easy_install WARNING
       Develop distribution: foox 0.0.0
     uses namespace packages but the distribution does not require setuptools.
@@ -1851,7 +1850,7 @@ version 0.3 and demoneeded version 1.1.
     >>> print_(call_py(
     ...     py_path,
     ...     "import tellmy.version; print(tellmy.version.__version__)"
-    ...     ).decode())
+    ...     ))
     1.1
 
 Now here's a setup that would expose the bug, using the
@@ -1889,9 +1888,8 @@ tellmy.version 1.1, and tellmy.fortune 1.0.  tellmy.version 1.1 is installed.
     >>> print_(call_py(
     ...     py_path,
     ...     "import tellmy.version; print(tellmy.version.__version__)"
-    ...     ).decode())
+    ...     ))
     1.1
-    <BLANKLINE>
 
 Now we will create a buildout that creates a script and a faux-Python script.
 We want to see that both can successfully import the specified versions of
@@ -2014,9 +2012,9 @@ these unpleasant tricks, and a Python that has an older version installed.
     >>> print_(call_py(
     ...     py_path,
     ...     "import tellmy.version; print(tellmy.version.__version__)"
-    ...     ).decode())
+    ...     ))
     1.0
-    <BLANKLINE>
+
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
@@ -2226,26 +2224,22 @@ But now let's try again with 'demoneeded' not allowed.
     >>> zc.buildout.easy_install.clear_index_cache()
     >>> rmdir(example_dest)
     >>> example_dest = tmpdir('site-packages-example-install')
-    >>> workingset = zc.buildout.easy_install.install(
+    >>> print(raises('MissingDistribution', zc.buildout.easy_install.install,
     ...     ['demoneeded'], example_dest, links=[], executable=py_path,
     ...     index=None,
-    ...     allowed_eggs_from_site_packages=['demo'])
-    Traceback (most recent call last):
-        ...
-    MissingDistribution: Couldn't find a distribution for 'demoneeded'.
+    ...     allowed_eggs_from_site_packages=['demo']))
+    Couldn't find a distribution for 'demoneeded'.
 
 Here's the same, but with an empty list.
 
     >>> zc.buildout.easy_install.clear_index_cache()
     >>> rmdir(example_dest)
     >>> example_dest = tmpdir('site-packages-example-install')
-    >>> workingset = zc.buildout.easy_install.install(
+    >>> print(raises('MissingDistribution', zc.buildout.easy_install.install,
     ...     ['demoneeded'], example_dest, links=[], executable=py_path,
     ...     index=None,
-    ...     allowed_eggs_from_site_packages=[])
-    Traceback (most recent call last):
-        ...
-    MissingDistribution: Couldn't find a distribution for 'demoneeded'.
+    ...     allowed_eggs_from_site_packages=[]))
+    Couldn't find a distribution for 'demoneeded'.
 
 Of course, this doesn't stop us from getting a package from elsewhere.  Here,
 we add a link server.
@@ -2269,13 +2263,11 @@ include-site-packages.
     >>> zc.buildout.easy_install.clear_index_cache()
     >>> rmdir(example_dest)
     >>> example_dest = tmpdir('site-packages-example-install')
-    >>> workingset = zc.buildout.easy_install.install(
+    >>> print(raises('MissingDistribution', zc.buildout.easy_install.install,
     ...     ['demoneeded'], example_dest, links=[], executable=py_path,
     ...     index=None, include_site_packages=False,
-    ...     allowed_eggs_from_site_packages=['demoneeded'])
-    Traceback (most recent call last):
-        ...
-    MissingDistribution: Couldn't find a distribution for 'demoneeded'.
+    ...     allowed_eggs_from_site_packages=['demoneeded']))
+    Couldn't find a distribution for 'demoneeded'.
 
     """
 
@@ -2416,8 +2408,7 @@ have the desired eggs available.
 
 This also works for the generated interpreter, with identical results.
 
-    >>> print_(call_py(join(interpreter_bin_dir, 'py'), test
-    ... ).decode())
+    >>> print_(call_py(join(interpreter_bin_dir, 'py'), test))
     ... # doctest: +ELLIPSIS
     ['',
      '/interpreter/parts/interpreter',
@@ -3699,7 +3690,7 @@ def _write_eggrecipedemo(tmp, minor_version, suffix=''):
         tmp, 'eggrecipedemo.py',
         'import eggrecipedemoneeded\n'
         'x=%s\n'
-        'def main(): print(x), eggrecipedemoneeded.y\n'
+        'def main(): print(x, eggrecipedemoneeded.y)\n'
         % minor_version)
     write(
         tmp, 'setup.py',
@@ -3762,7 +3753,7 @@ def create_sample_eggs(test, executable=sys.executable):
     finally:
         shutil.rmtree(tmp)
 
-extdemo_c = """
+extdemo_c2 = """
 #include <Python.h>
 #include <extdemo.h>
 
@@ -3780,6 +3771,37 @@ initextdemo(void)
 #endif
 }
 """
+
+extdemo_c3 = """
+#include <Python.h>
+#include <extdemo.h>
+
+static PyMethodDef methods[] = {{NULL}};
+
+#define MOD_DEF(ob, name, doc, methods) \
+	  static struct PyModuleDef moduledef = { \
+	    PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
+	  ob = PyModule_Create(&moduledef);
+
+#define MOD_INIT(name) PyMODINIT_FUNC PyInit_##name(void)
+
+MOD_INIT(extdemo)
+{
+    PyObject *m;
+
+    MOD_DEF(m, "extdemo", "", methods);
+
+#ifdef TWO
+    PyModule_AddObject(m, "val", PyLong_FromLong(2));
+#else
+    PyModule_AddObject(m, "val", PyLong_FromLong(EXTDEMO));
+#endif
+
+    return m;
+}
+"""
+
+extdemo_c = sys.version_info[0] < 3 and extdemo_c2 or extdemo_c3
 
 extdemo_setup_py = """
 import os

@@ -75,27 +75,25 @@ We can also have the downloaded file's MD5 sum checked:
 ... except ImportError: from md5 import new as md5
 
 >>> path, is_temp = download(server_url+'foo.txt',
-...                          md5('This is a foo text.').hexdigest())
+...                   md5('This is a foo text.'.encode()).hexdigest())
 >>> is_temp
 True
 >>> remove(path)
 
->>> download(server_url+'foo.txt',
-...          md5('The wrong text.').hexdigest())
-Traceback (most recent call last):
-ChecksumError: MD5 checksum mismatch downloading 'http://localhost/foo.txt'
+>>> print(raises('ChecksumError', download, server_url+'foo.txt',
+...                 md5('The wrong text.'.encode()).hexdigest()))
+MD5 checksum mismatch downloading 'http://localhost/foo.txt'
 
 The error message in the event of an MD5 checksum mismatch for a local file
 reads somewhat differently:
 
 >>> download(join(server_data, 'foo.txt'),
-...               md5('This is a foo text.').hexdigest())
+...               md5('This is a foo text.'.encode()).hexdigest())
 ('/sample_files/foo.txt', False)
 
->>> download(join(server_data, 'foo.txt'),
-...          md5('The wrong text.').hexdigest())
-Traceback (most recent call last):
-ChecksumError: MD5 checksum mismatch for local resource at '/sample_files/foo.txt'.
+>>> print(raises('ChecksumError', download, join(server_data, 'foo.txt'),
+...          md5('The wrong text.'.encode()).hexdigest()))
+MD5 checksum mismatch for local resource at '/sample_files/foo.txt'.
 
 Finally, we can download the file to a specified place in the file system:
 
@@ -112,9 +110,8 @@ False
 Trying to download a file in offline mode will result in an error:
 
 >>> download = Download(cache=None, offline=True)
->>> download(server_url+'foo.txt')
-Traceback (most recent call last):
-UserError: Couldn't download 'http://localhost/foo.txt' in offline mode.
+>>> print(raises('UserError', download, server_url+'foo.txt'))
+Couldn't download 'http://localhost/foo.txt' in offline mode.
 
 As an exception to this rule, file system paths and URLs in the ``file``
 scheme will still work:
@@ -168,10 +165,11 @@ This is a foo text.
 If we specify an MD5 checksum for a file that is already in the cache, the
 cached copy's checksum will be verified:
 
->>> download(server_url+'foo.txt', md5('The wrong text.').hexdigest())
-Traceback (most recent call last):
-ChecksumError: MD5 checksum mismatch for cached download
-               from 'http://localhost/foo.txt' at '/download-cache/foo.txt'
+>>> print(raises('ChecksumError', download, server_url+'foo.txt',
+...       md5('The wrong text.'.encode()).hexdigest()))
+... # doctest: +NORMALIZE_WHITESPACE
+MD5 checksum mismatch for cached download
+from 'http://localhost/foo.txt' at '/download-cache/foo.txt'
 
 Trying to access another file at a different URL which has the same base name
 will result in the cached copy being used:
@@ -247,26 +245,28 @@ This is a foo text.
 
 However, resources with checksum mismatches will not be copied to the cache:
 
->>> download(server_url+'foo.txt', md5('The wrong text.').hexdigest())
-Traceback (most recent call last):
-ChecksumError: MD5 checksum mismatch downloading 'http://localhost/foo.txt'
+>>> print(raises('ChecksumError', download, server_url+'foo.txt',
+... md5('The wrong text.'.encode()).hexdigest()))
+MD5 checksum mismatch downloading 'http://localhost/foo.txt'
+
 >>> ls(cache)
 
 >>> remove(path)
 
 If the file is completely missing it should notify the user of the error:
 
->>> download(server_url+'bar.txt')
-Traceback (most recent call last):
-UserError: Error downloading extends for URL http://localhost/bar.txt: (404, 'Not Found')
+>>> print(raises('UserError', download, server_url+'bar.txt'))
+Error downloading extends for URL http://localhost/bar.txt:
+HTTP Error 404: Not Found
+
 >>> ls(cache)
 
 Finally, let's see what happens if the download cache to be used doesn't exist
 as a directory in the file system yet:
 
->>> Download(cache=join(cache, 'non-existent'))(server_url+'foo.txt')
-Traceback (most recent call last):
-UserError: The directory:
+>>> print(raises('UserError',
+...    Download(cache=join(cache, 'non-existent')), server_url+'foo.txt'))
+The directory:
 '/download-cache/non-existent'
 to be used as a download cache doesn't exist.
 
@@ -344,7 +344,8 @@ checksum since we don't know which port the server happens to listen at when
 the test is run, so we don't actually know the full URL of the file. Let's
 check that the checksum actually belongs to the particular URL used:
 
->>> path.lower() == join(cache, md5(server_url+'foo.txt').hexdigest()).lower()
+>>> path.lower() == join(
+...    cache, md5((server_url+'foo.txt').encode('utf8')).hexdigest()).lower()
 True
 
 The cached copy is used when downloading the file again:
@@ -366,7 +367,9 @@ cache under a different name:
 /download-cache/537b6d73267f8f4447586989af8c470e
 >>> path == path2
 False
->>> path2.lower() == join(cache, md5(server_url+'other/foo.txt').hexdigest()).lower()
+>>> path2.lower() == join(
+...   cache,
+...   md5((server_url+'other/foo.txt').encode('utf8')).hexdigest()).lower()
 True
 >>> cat(path)
 This is a foo text.
@@ -446,9 +449,10 @@ When trying to download a resource whose checksum does not match, the cached
 copy will neither be used nor overwritten:
 
 >>> write(server_data, 'foo.txt', 'This is a foo text.')
->>> download(server_url+'foo.txt', md5('The wrong text.').hexdigest())
-Traceback (most recent call last):
-ChecksumError: MD5 checksum mismatch downloading 'http://localhost/foo.txt'
+>>> print(raises('ChecksumError', download, server_url+'foo.txt',
+...          md5('The wrong text.'.encode()).hexdigest()))
+MD5 checksum mismatch downloading 'http://localhost/foo.txt'
+
 >>> cat(cache, 'foo.txt')
 The wrong text.
 
@@ -537,9 +541,9 @@ MD5 checksum calculation needs to be reliable on all supported systems, which
 requires text files to be treated as binary to avoid implicit line-ending
 conversions:
 
->>> text = 'First line of text.\r\nSecond line.\r\n'
+>>> text = 'First line of text.\r\nSecond line.\r\n'.encode()
 >>> f = open(join(server_data, 'foo.txt'), 'wb')
->>> f.write(text)
+>>> _ = f.write(text)
 >>> f.close()
 >>> path, is_temp = Download()(server_url+'foo.txt', md5(text).hexdigest())
 >>> remove(path)

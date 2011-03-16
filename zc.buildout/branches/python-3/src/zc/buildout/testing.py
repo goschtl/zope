@@ -57,6 +57,8 @@ def ls(dir, *subs):
     names = os.listdir(dir)
     names.sort()
     for name in names:
+        if name == '__pycache__':
+            continue
         if os.path.isdir(os.path.join(dir, name)):
             print('d ', end=' ')
         elif os.path.islink(os.path.join(dir, name)):
@@ -107,13 +109,13 @@ def system(command, input=''):
     result = o.read() + e.read()
     o.close()
     e.close()
-    return result
+    return result.decode()
 
 def print_(*args):
     sys.stdout.write(' '.join(map(str, args)))
 
 def run(command, input=''):
-    sys.stdout.write(system(command, input).decode())
+    sys.stdout.write(system(command, input))
 
 def call_py(interpreter, cmd, flags=None):
     if sys.platform == 'win32':
@@ -126,7 +128,7 @@ def call_py(interpreter, cmd, flags=None):
             ' '.join(arg for arg in (interpreter, flags, '-c', cmd) if arg))
 
 def get(url):
-    return urllib.request.urlopen(url).read()
+    return urllib.request.urlopen(url).read().decode()
 
 def _runsetup(setup, executable, *args):
     if os.path.isdir(setup):
@@ -166,7 +168,7 @@ def sys_install(setup, dest):
 
 def find_python(version):
     env_friendly_version = ''.join(version.split('.'))
-    
+
     e = os.environ.get('PYTHON%s' % env_friendly_version)
     if e is not None:
         return e
@@ -233,6 +235,26 @@ def wait_until(label, func, *args, **kw):
             return
         time.sleep(0.01)
     raise ValueError('Timed out waiting for: '+label)
+
+def raises(exc_type, callable, *args, **kw):
+    if isinstance(exc_type, str):
+        E = Exception
+    else:
+        E = exc_type
+
+    try:
+        callable(*args, **kw)
+    except E:
+        v = sys.exc_info()[1]
+        if E is exc_type:
+            return v
+
+        if exc_type == v.__class__.__name__:
+            return v
+        else:
+            raise
+
+    raise AssertionError("Expected %r" % exc_type)
 
 def get_installer_values():
     """Get the current values for the easy_install module.
@@ -406,6 +428,7 @@ def buildoutSetUp(test):
         write = write,
         system = system,
         run = run,
+        raises = raises,
         print_ = print_,
         call_py = call_py,
         get = get,
@@ -468,9 +491,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             os.path.exists(path)
             ):
             self.send_response(404, 'Not Found')
-            #self.send_response(200)
-            out = '<html><body>Not Found</body></html>'
-            #out = '\n'.join(self.tree, self.path, path)
+            out = '<html><body>Not Found</body></html>'.encode()
             self.send_header('Content-Length', str(len(out)))
             self.send_header('Content-Type', 'text/html')
             self.end_headers()

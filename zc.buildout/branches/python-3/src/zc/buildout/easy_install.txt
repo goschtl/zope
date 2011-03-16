@@ -107,7 +107,7 @@ needed to meet the given requirements.
 
 We have a link server that has a number of eggs:
 
-    >>> print_(get(link_server).decode())
+    >>> print_(get(link_server))
     <html><body>
     <a href="bigdemo-0.1-py2.4.egg">bigdemo-0.1-py2.4.egg</a><br>
     <a href="demo-0.1-py2.4.egg">demo-0.1-py2.4.egg</a><br>
@@ -313,13 +313,11 @@ we'll get an error:
     >>> import logging
     >>> logging.getLogger('zc.buildout.easy_install').propagate = False
 
-    >>> ws = zc.buildout.easy_install.install(
+    >>> _ = raises('IncompatibleVersionError',
+    ...     zc.buildout.easy_install.install,
     ...     ['demo >0.2'], dest, links=[link_server],
     ...     index=link_server+'index/',
     ...     versions = dict(demo='0.2', demoneeded='1.0'))
-    Traceback (most recent call last):
-    ...
-    IncompatibleVersionError: Bad version 0.2
 
     >>> print(handler)
     zc.buildout.easy_install DEBUG
@@ -362,12 +360,10 @@ We can request that we get an error if versions are picked:
 
 (The old setting is returned.)
 
-    >>> ws = zc.buildout.easy_install.install(
+    >>> print(raises('UserError', zc.buildout.easy_install.install,
     ...     ['demo'], dest, links=[link_server], index=link_server+'index/',
-    ...     )
-    Traceback (most recent call last):
-    ...
-    UserError: Picked: demo = 0.3
+    ...     ))
+    Picked: demo = 0.3
 
     >>> zc.buildout.easy_install.allow_picked_versions(True)
     False
@@ -455,12 +451,11 @@ changing the default value returns the previous value.
     >>> zc.buildout.easy_install.clear_index_cache()
     >>> rmdir(example_dest)
     >>> example_dest = tmpdir('site-packages-example-install')
-    >>> workingset = zc.buildout.easy_install.install(
+    >>> print(raises('MissingDistribution', zc.buildout.easy_install.install,
     ...     ['demoneeded'], example_dest, links=[], executable=py_path,
-    ...     index=None)
-    Traceback (most recent call last):
-        ...
-    MissingDistribution: Couldn't find a distribution for 'demoneeded'.
+    ...     index=None))
+    Couldn't find a distribution for 'demoneeded'.
+
     >>> zc.buildout.easy_install.clear_index_cache()
 
 Now we'll reset the default.
@@ -775,7 +770,7 @@ the path set:
             sys.argv[:] = _args
             __file__ = _args[0]
             del _options, _args
-            execfile(__file__)
+            exec(compile(open(__file__).read(), __file__, "exec"))
     <BLANKLINE>
     if _interactive:
         del _interactive
@@ -786,7 +781,7 @@ If invoked with a script name and arguments, it will run that script, instead.
     >>> write('ascript', '''
     ... "demo doc"
     ... print(sys.argv)
-    ... print(__name__, __file__, __doc__)
+    ... print((__name__, __file__, __doc__))
     ... ''')
     >>> run(join(bin, 'py')+' ascript a b c')
     ['ascript', 'a', 'b', 'c']
@@ -795,8 +790,8 @@ If invoked with a script name and arguments, it will run that script, instead.
 For Python 2.5 and higher, you can also use the -m option to run a
 module:
 
-    >>> run(join(bin, 'py')+' -m pdb')
-    usage: pdb.py scriptfile [arg] ...
+    >>> run(join(bin, 'py')+' -m pdb') # doctest: +ELLIPSIS
+    usage: pdb.py ...
 
     >>> run(join(bin, 'py')+' -m pdb what')
     Error: what does not exist
@@ -979,7 +974,7 @@ We specified an interpreter and its paths are adjusted too:
             if _opt == '-i':
                 _interactive = True
             elif _opt == '-c':
-                exec(_va)
+                exec(_val)
             elif _opt == '-m':
                 sys.argv[1:] = _args
                 _args = []
@@ -990,7 +985,7 @@ We specified an interpreter and its paths are adjusted too:
             sys.argv[:] = _args
             __file__ = _args[0]
             del _options, _args
-            execfile(__file__)
+            exec(compile(open(__file__).read(), __file__, "exec"))
     <BLANKLINE>
     if _interactive:
         del _interactive
@@ -1110,10 +1105,12 @@ buildout inserts, in the simplest case.
 
 Here are some examples of the interpreter in use.
 
-    >>> print_(call_py(interpreter_path, "print(16+26)").decode())
+    >>> print_(call_py(interpreter_path, "print(16+26)"))
     42
 
-    >>> res = call_py(interpreter_path, "import sys; print(sys.path)")
+    >>> res = call_py(
+    ...    interpreter_path,
+    ...    "import sys; print([s for s in sys.path])")
     >>> print(res) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ['',
      '/interpreter/parts/interpreter',
@@ -1144,7 +1141,8 @@ If you provide initialization, it goes in sitecustomize.py.
     >>> cat(sitecustomize_path)
     import os
     os.environ['FOO'] = 'bar baz bing shazam'
-    >>> print(call_py(interpreter_path, "import os; print(os.environ['FOO'])"))
+    >>> print(call_py(interpreter_path,
+    ...      "import os; print(os.environ['FOO'])"))
     bar baz bing shazam
     <BLANKLINE>
 
@@ -1195,7 +1193,7 @@ paths join a base to a path, as with the use of this argument in the
 The paths resolve in practice as you would expect.
 
     >>> print(call_py(interpreter_path,
-    ...               "import sys, pprint; pprint.pprint(sys.path)"))
+    ...   "import sys, pprint; pprint.pprint([s for s in sys.path])"))
     ... # doctest: +ELLIPSIS
     ['',
      '/interpreter/parts/interpreter',
@@ -1679,7 +1677,7 @@ Now if we look in our destination directory, we see we have an extdemo egg:
 Let's update our link server with a new version of extdemo:
 
     >>> update_extdemo()
-    >>> print_(get(link_server).decode())
+    >>> print_(get(link_server))
     <html><body>
     <a href="bigdemo-0.1-py2.4.egg">bigdemo-0.1-py2.4.egg</a><br>
     <a href="demo-0.1-py2.4.egg">demo-0.1-py2.4.egg</a><br>

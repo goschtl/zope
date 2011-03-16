@@ -268,8 +268,7 @@ should continue.
     >>> version = sys.version_info[0:2]
     >>> egg = new_releases + '/zc.buildout-99.99-py%s.%s.egg ' % version
     >>> copy_egg = new_releases + '/zc.buildout-1000-py%s.%s.egg ' % version
-    >>> system('cp ' + egg  + copy_egg)
-    ''
+    >>> run('cp ' + egg  + copy_egg)
 
 Create a broken egg
 

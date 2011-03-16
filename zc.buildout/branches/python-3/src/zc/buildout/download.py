@@ -23,6 +23,7 @@ import os
 import os.path
 import re
 import shutil
+import sys
 import tempfile
 import urllib.request, urllib.parse, urllib.error
 import urllib.parse
@@ -175,18 +176,15 @@ class Download(object):
         urllib.request._urlopener = url_opener
         handle, tmp_path = tempfile.mkstemp(prefix='buildout-')
         try:
-            try:
-                tmp_path, headers = urllib.request.urlretrieve(url, tmp_path)
-                if not check_md5sum(tmp_path, md5sum):
-                    raise ChecksumError(
-                        'MD5 checksum mismatch downloading %r' % url)
-            finally:
-                os.close(handle)
+            tmp_path, headers = urllib.request.urlretrieve(url, tmp_path)
+            if not check_md5sum(tmp_path, md5sum):
+                raise ChecksumError(
+                    'MD5 checksum mismatch downloading %r' % url)
         except IOError:
             e = sys.exc_info()[1]
             os.remove(tmp_path)
             raise zc.buildout.UserError("Error downloading extends for URL "
-                              "%s: %r" % (url, e[1:3]))
+                              "%s:\n%s" % (url, e))
         except Exception:
             os.remove(tmp_path)
             raise
@@ -204,7 +202,7 @@ class Download(object):
 
         """
         if self.hash_name:
-            return md5(url).hexdigest()
+            return md5(url.encode('utf8')).hexdigest()
         else:
             if re.match(r"^[A-Za-z]:\\", url):
                 url = 'file:' + url
