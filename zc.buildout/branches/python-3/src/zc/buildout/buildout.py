@@ -1798,15 +1798,16 @@ def main(args=None):
             _error('invalid command:', command)
     else:
         command = 'install'
-    
+
     try:
         try:
             buildout = Buildout(config_file, options,
                                 user_defaults, windows_restart, command)
             getattr(buildout, command)(args)
-        except Exception as v:
+        except Exception:
             _doing()
             exc_info = sys.exc_info()
+            v = exc_info[1]
             import pdb, traceback
             if debug:
                 traceback.print_exception(*exc_info)
