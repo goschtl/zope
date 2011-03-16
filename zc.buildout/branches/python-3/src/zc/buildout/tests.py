@@ -4004,7 +4004,9 @@ def test_suite():
                 (re.compile('distribute'), 'setuptools'),
                 (re.compile("\nUnused options for buildout: "
                             "'(distribute|setuptools)\-version'\."),
-                 '')
+                 ''),
+                (re.compile('subprocess.CalledProcessError'),
+                 'CalledProcessError'),
                 ])
             ),
 
