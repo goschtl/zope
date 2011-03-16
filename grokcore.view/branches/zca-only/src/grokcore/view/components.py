@@ -20,14 +20,9 @@ import fnmatch
 
 from zope import component
 from zope import interface
-from zope.browserresource import directory
-from zope.browserresource.interfaces import IResourceFactoryFactory
+from zope.location import Location
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.pagetemplate.engine import TrustedAppPT
-from zope.ptresource.ptresource import PageTemplateResourceFactory
-from zope.publisher.browser import BrowserPage
-from zope.publisher.interfaces import NotFound
-from zope.publisher.publish import mapply
 
 import martian.util
 from grokcore.view import interfaces, util
@@ -45,13 +40,13 @@ class ViewSupport(object):
         This is also available as self.request.response, but the
         response attribute is provided as a convenience.
         """
-        return self.request.response
+        return IResponse(self.request)
 
     @property
     def body(self):
         """The text of the request body.
         """
-        return self.request.bodyStream.getCacheStream().read()
+        return self.request.body
 
     def redirect(self, url, status=None, trusted=False):
         """Redirect to `url`.
@@ -74,8 +69,7 @@ class ViewSupport(object):
         hosts than the one the request was sent to are forbidden and
         will raise a :exc:`ValueError`.
         """
-        return self.request.response.redirect(
-            url, status=status, trusted=trusted)
+        return self.response.redirect(url, status=status, trusted=trusted)
 
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name.
@@ -112,11 +106,13 @@ class ViewSupport(object):
         return util.url(self.request, obj, name, data)
 
 
-class View(ViewSupport, BrowserPage):
+class View(Location, ViewSupport):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
-        super(View, self).__init__(context, request)
+        self.context = context
+        self.request = request
+
         self.__name__ = getattr(self, '__view_name__', None)
 
         if getattr(self, 'module_info', None) is not None:
@@ -128,16 +124,11 @@ class View(ViewSupport, BrowserPage):
             self.static = None
 
     def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
+        self.update()
         template = getattr(self, 'template', None)
         if template is not None:
             return self._render_template()
-        return mapply(self.render, (), self.request)
+        return self.render()
 
     def _render_template(self):
         return self.template.render(self)
@@ -328,48 +319,3 @@ class PageTemplateFile(PageTemplate):
 
 
 _marker = object()
-
-
-class DirectoryResource(directory.DirectoryResource):
-    forbidden_names = ('.svn', )
-
-    def get(self, name, default=_marker):
-
-        for pat in self.forbidden_names:
-            if fnmatch.fnmatch(name, pat):
-                if default is _marker:
-                    raise NotFound(None, name)
-                else:
-                    return default
-
-        path = self.context.path
-        filename = os.path.join(path, name)
-        isfile = os.path.isfile(filename)
-        isdir = os.path.isdir(filename)
-
-        if not (isfile or isdir):
-            if default is _marker:
-                raise NotFound(None, name)
-            return default
-
-        if isfile:
-            ext = os.path.splitext(os.path.normcase(name))[1][1:]
-            factory = component.queryUtility(IResourceFactoryFactory, ext,
-                                             self.default_factory)
-            if factory is PageTemplateResourceFactory:
-                factory = self.default_factory
-        else:
-            factory = self.directory_factory
-
-        rname = self.__name__ + '/' + name
-        resource = factory(filename, self.context.checker, rname)(self.request)
-        resource.__parent__ = self
-        return resource
-
-
-class DirectoryResourceFactory(directory.DirectoryResourceFactory):
-    # We need this to allow hooking up our own DirectoryResource class.
-    factoryClass = DirectoryResource
-
-
-DirectoryResource.directory_factory = DirectoryResourceFactory

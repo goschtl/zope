@@ -15,38 +15,25 @@ install_requires = [
     'grokcore.component >= 2.1',
     'grokcore.security >= 1.5',
     'martian >= 0.13',
-    'zope.browserresource >= 3.9.0',
     'zope.component',
     'zope.interface',
     'zope.pagetemplate',
-    'zope.ptresource >= 3.9.0',
     'zope.publisher',
     'zope.security',
     'zope.traversing',
     ]
 
 tests_require = [
-    'zope.app.wsgi',
     'zope.container',
     'zope.securitypolicy',
     'zope.site',
-    'zope.testing',
-    'zope.login',
-    'zope.configuration',
-    'zope.app.appsetup',
-    'zope.app.publication',
     'zope.browserpage',
-    'zope.password',
     'zope.principalregistry',
-    ]
-
-publication_require = [
-    'zope.app.publication'
     ]
 
 setup(
     name='grokcore.view',
-    version='2.5dev',
+    version='3.0dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -68,6 +55,5 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
-    extras_require={'test': tests_require,
-                    'security_publication': publication_require},
+    extras_require={'test': tests_require},
 )

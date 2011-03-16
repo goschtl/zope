@@ -15,8 +15,6 @@
 import sys
 
 from zope import interface, component
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.publisher.interfaces.browser import IBrowserPage
 
 import martian
 from martian.error import GrokError
@@ -27,6 +25,7 @@ import grokcore.view
 from grokcore.security.util import protect_getattr
 from grokcore.view import components
 from grokcore.view import templatereg
+
 
 def default_view_name(component, module=None, **data):
     return component.__name__.lower()
@@ -40,7 +39,8 @@ class TemplateGrokker(martian.ClassGrokker):
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info to look for a template
         factory.module_info = module_info
-        return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
+        return super(TemplateGrokker, self).grok(
+            name, factory, module_info, **kw)
 
     def execute(self, factory, config, **kw):
         # Associate templates to a view or a component. We set the
@@ -63,7 +63,8 @@ class TemplateGrokker(martian.ClassGrokker):
     def associate_template(self, module_info, factory):
         component_name = martian.component.bind().get(self).__name__.lower()
         templatereg.associate_template(
-            module_info, factory, component_name, self.has_render, self.has_no_render)
+            module_info, factory, component_name,
+            self.has_render, self.has_no_render)
 
     def has_render(self, factory):
         render = getattr(factory, 'render', None)
@@ -81,7 +82,7 @@ class ViewTemplateGrokker(TemplateGrokker):
 class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
     martian.directive(grokcore.component.context)
-    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.view.layer, default=interface.Interface)
     martian.directive(grokcore.component.provides, default=interface.Interface)
     martian.directive(grokcore.component.name, get_default=default_view_name)
 
@@ -105,18 +106,4 @@ class ViewGrokker(martian.ClassGrokker):
             callable=component.provideAdapter,
             args=(factory, adapts, provides, name),
             )
-        return True
-
-
-class ViewSecurityGrokker(martian.ClassGrokker):
-    martian.component(components.View)
-    martian.directive(grokcore.security.require, name='permission')
-
-    def execute(self, factory, config, permission, **kw):
-        for method_name in IBrowserPage:
-            config.action(
-                discriminator=('protectName', factory, method_name),
-                callable=protect_getattr,
-                args=(factory, method_name, permission),
-                )
         return True

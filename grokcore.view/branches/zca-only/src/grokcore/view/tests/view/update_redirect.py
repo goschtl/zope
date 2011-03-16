@@ -5,15 +5,17 @@ is not executed subsequently.
   >>> grok.testing.grok(__name__)
 
   >>> manfred = Mammoth()
-  >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+
+  >>> from webob import Request
+  >>> request = Request.blank('/')
+
   >>> from zope.component import getMultiAdapter
   >>> view = getMultiAdapter((manfred, request), name='cavepainting')
   >>> print view()
   None
   >>> print view.response.getStatus()
   302
-  >>> print view.response.getHeader('Location')
+  >>> print view.response.headers('Location')
   somewhere-else
 
 """

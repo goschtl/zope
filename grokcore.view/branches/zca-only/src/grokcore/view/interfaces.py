@@ -14,7 +14,6 @@
 """Grok interfaces
 """
 from zope.interface import Interface, Attribute
-from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 
 class IBaseClasses(Interface):
@@ -33,11 +32,6 @@ class IDirectives(Interface):
 
     def path(path):
         """Declare which path to use on a DirectoryResource.
-
-        This directive can only be used on class level."""
-
-    def skin(skin):
-        """Declare this layer as a named skin.
 
         This directive can only be used on class level."""
 
@@ -86,7 +80,7 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
     IGrokSecurityView = Attribute('Marker interface for permissive views.')
 
 
-class IGrokView(IBrowserPage, IBrowserView):
+class IGrokView(Interface):
     """Grok views all provide this interface."""
 
     context = Attribute('context', "Object that the view presents.")
@@ -154,11 +148,6 @@ class IGrokView(IBrowserPage, IBrowserView):
         render() can take arbitrary keyword parameters which will be
         filled in from the request (in that case they *must* be
         present in the request)."""
-
-    def __call__():
-        """This is the main method called by Zope to render the
-        view. You can use that method if you whish to render the
-        view."""
 
 
 class ITemplateFileFactory(Interface):

@@ -19,8 +19,8 @@ import sys
 import martian
 from martian.error import GrokImportError
 from martian.directive import StoreOnce
+from zope.interface import Interface
 from zope.interface.interface import TAGGED_DATA
-from zope.publisher.interfaces.browser import IBrowserView
 
 
 def validateLocalPath(directive, value):
@@ -88,18 +88,11 @@ class TaggedValueStoreOnce(StoreOnce):
         context.setTaggedValue(directive.dotted_name(), value)
 
 
-class skin(martian.Directive):
-    # We cannot do any better than to check for a class scope. Ideally we
-    # would've checked whether the context is indeed an Interface class.
-    scope = martian.CLASS
-    store = TaggedValueStoreOnce()
-    validate = martian.validateText
-
-
 class path(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
 
+
 class view(OneInterfaceOrClassOnClassOrModule):
-    default = IBrowserView
+    default = Interface
