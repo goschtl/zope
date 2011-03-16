@@ -3973,6 +3973,8 @@ def test_suite():
                 (re.compile(r'\S+buildout.py'), 'buildout.py'),
                 (re.compile(r'line \d+'), 'line NNN'),
                 (re.compile(r'py\(\d+\)'), 'py(NNN)'),
+                (re.compile(r'zc.buildout.buildout.MissingOption'),
+                 'MissingOption'),
                 ])
             ),
 
