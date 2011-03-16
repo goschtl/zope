@@ -24,12 +24,7 @@ except ImportError:
 try:
     from UserDict import DictMixin
 except ImportError:
-    import collections
-    class DictMixin(collections.MutableMapping):
-        def __iter__(self):
-            return iter(self.keys())
-        def __len__(self):
-            return len(self.keys())
+    from collections import MutableMapping as DictMixin
 
 import copy
 import distutils.errors
@@ -1285,6 +1280,11 @@ class Options(DictMixin):
     def keys(self):
         raw = self._raw
         return list(self._raw) + [k for k in self._data if k not in raw]
+
+    def __iter__(self):
+        return iter(self.keys())
+    def __len__(self):
+        return len(self.keys())
 
     def copy(self):
         result = self._raw.copy()
