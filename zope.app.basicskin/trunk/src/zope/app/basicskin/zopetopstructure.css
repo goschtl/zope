@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+ * Copyright (c) 2001, 2002 Zope Foundation and Contributors.
  * All Rights Reserved.
  * 
  * This software is subject to the provisions of the Zope Public License,
@@ -17,8 +17,6 @@
  Widgets, that are used several times in a page.
 
  KNOWN BUG: The selected tab cannot have image backdrop. FIXME
-
- $Id$
 */
 
 div.top {

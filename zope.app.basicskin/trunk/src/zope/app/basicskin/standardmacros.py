@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,8 +14,6 @@
 """Standard macros for page templates in the ZMI
 
 The macros are drawn from various different page templates.
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 import zope.interface
