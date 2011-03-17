@@ -23,21 +23,21 @@ It is also possible to look up the same view by also including the interface:
 
   >>> view = component.getMultiAdapter(
   ...     (manfred, request), interface=IChalk, name='cavepainting')
-  >>> view()
-  'a chalk cave painting'
+  >>> print view()
+  a chalk cave painting
 
 The name can be set to '', in which case it is an 'unnamed' view:
 
   >>> view = component.getMultiAdapter((manfred, request), interface=IRealist)
-  >>> view()
-  'a realist cave painting'
+  >>> print view()
+  a realist cave painting
 
 Multipl IPaintStyles can now be looked up by interface, rather than name:
 
   >>> view = component.getMultiAdapter(
   ...     (manfred, request), interface=IImpressionist)
-  >>> view()
-  'an impressionist cave painting'
+  >>> print view()
+  an impressionist cave painting
 
 """
 

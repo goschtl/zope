@@ -33,7 +33,7 @@ from grokcore.view import interfaces, util
 class Response(webob.Response):
     interface.implements(IResponse)
 
-    charset = 'utf8'
+    charset = 'utf-8'
 
     @apply
     def body():
@@ -60,6 +60,9 @@ class Response(webob.Response):
         """
         self.location = url
         self.status = status
+
+    def __str__(self):
+        return self.body
 
 
 class ViewSupport(object):

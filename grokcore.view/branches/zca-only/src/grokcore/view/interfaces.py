@@ -73,8 +73,6 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
         ``filename``.  It will be treated like an inline template
         created with ``PageTemplate``."""
 
-    IBrowserRequest = Attribute('Browser request interface')
-    IDefaultBrowserLayer = Attribute('Default layer for browser views.')
     IGrokSecurityView = Attribute('Marker interface for permissive views.')
 
 

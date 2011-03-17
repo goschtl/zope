@@ -11,25 +11,34 @@ long_description = (
     )
 
 install_requires = [
-    'setuptools',
+    'WebOb',
+    'cromlech.io',
     'grokcore.component >= 2.1',
     'grokcore.security >= 1.5',
     'martian >= 0.13',
+    'setuptools',
+    'zc.buildout',
     'zope.component',
     'zope.interface',
+    'zope.location',
     'zope.pagetemplate',
-    'zope.publisher',
-    'zope.security',
+    'zope.schema',
     'zope.traversing',
-    'cromlech.io',
     ]
 
 tests_require = [
-    'WebOb',
     'zope.container',
-    'zope.securitypolicy',
     'zope.site',
-    'zope.browserpage',
+    'zope.publisher',
+    'infrae.testbrowser',
+    'cromlech.publication',
+    'cromlech.bootstrap',
+    'cromlech.request',
+    ]
+
+security_require = [
+    'zope.security',
+    'zope.securitypolicy',
     'zope.principalregistry',
     ]
 
@@ -43,13 +52,12 @@ setup(
     description='Grok-like configuration for Zope browser pages',
     long_description=long_description,
     license='ZPL',
-    classifiers=['Environment :: Web Environment',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: Zope Public License',
-                 'Programming Language :: Python',
-                 'Framework :: Zope3',
-                 ],
-
+    classifiers=[
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        ],
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['grokcore'],
@@ -57,5 +65,8 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
-    extras_require={'test': tests_require},
+    extras_require={
+        'test': tests_require,
+        'security': security_require,
+        },
 )

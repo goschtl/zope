@@ -22,7 +22,6 @@ from martian import util
 
 import grokcore.security
 import grokcore.view
-from grokcore.security.util import protect_getattr
 from grokcore.view import components
 from grokcore.view import templatereg
 
@@ -90,12 +89,6 @@ class ViewGrokker(martian.ClassGrokker):
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
-        for method in methods:
-            if grokcore.security.require.bind().get(method) is not None:
-                raise GrokError('The @grok.require decorator is used for '
-                                'method %r in view %r. It may only be used '
-                                'for XML-RPC methods.'
-                                % (method.__name__, factory), factory)
 
         # __view_name__ is needed to support IAbsoluteURL on views
         factory.__view_name__ = name

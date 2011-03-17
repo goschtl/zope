@@ -5,22 +5,18 @@
    i18n_domain="grokcore.view"
    package="grokcore.view">
 
+  <include package="zope.security" />
+  <include package="zope.securitypolicy" />
+
   <include package="zope.component" file="meta.zcml" />
   <include package="grokcore.view" file="meta.zcml" />
 
-  <include package="zope.security" />
-  <include package="zope.site" />
-  <include package="zope.container" />
-  <include package="zope.publisher" />
-  <include package="zope.traversing" />
-  <include package="zope.traversing.browser" />
+  <include package="cromlech.bootstrap" />
+  <include package="cromlech.publication" file="publish.zcml" />
+  <include package="cromlech.publication" file="traverse.zcml" />
+  <include package="cromlech.request" file="webob.zcml" />
 
   <include package="grokcore.view" />
   <grok:grok package="grokcore.view.ftests" />
-
-  <browser:defaultView
-      for="grokcore.component.interfaces.IContext"
-      name="index"
-      />
 
 </configure>

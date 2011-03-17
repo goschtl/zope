@@ -1,10 +1,8 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:meta="http://namespaces.zope.org/meta"
    xmlns:grok="http://namespaces.zope.org/grok">
-
-  <include package="grokcore.component" file="meta.zcml" />
-  <include package="grokcore.security" file="meta.zcml" />
 
   <meta:directives namespace="http://namespaces.zope.org/grok">
     <meta:directive
@@ -14,5 +12,13 @@
         />
   </meta:directives>
 
-  <grok:grok package=".meta" />
+  <include package="grokcore.component" file="meta.zcml" />
+  <grok:grok package=".meta.views" />
+  <grok:grok package=".meta.templates" />
+
+  <configure zcml:condition="installed grokcore.security"> 
+    <include package="grokcore.security" file="meta.zcml" />
+    <grok:grok package=".meta.security" />
+  </configure>
+
 </configure>
