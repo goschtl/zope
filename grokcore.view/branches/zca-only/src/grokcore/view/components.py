@@ -33,11 +33,20 @@ from grokcore.view import interfaces, util
 class Response(webob.Response):
     interface.implements(IResponse)
 
-    def setBody(self, value):
-        if isinstance(value, unicode):
-            self.unicode_body = value
-        else:
-            self.body = value
+    charset = 'utf8'
+
+    @apply
+    def body():
+        def setBody(self, value):
+            if isinstance(value, unicode):
+                webob.Response.unicode_body.fset(self, value)
+            else:
+                webob.Response.body.fset(self, value)
+
+        def getBody(self):
+            return webob.Response.body.fget(self)
+
+        return property(getBody, setBody)
 
     def getStatus(self, as_int=True):
         """returns the status of the response
@@ -148,9 +157,9 @@ class View(Location, ViewSupport):
             return None
         template = getattr(self, 'template', None)
         if template is not None:
-            self.response.setBody(self._render_template())
+            self.response.body = self._render_template()
         else:
-            self.response.setBody(self.render())
+            self.response.body = self.render()
         return self.response
 
     def _render_template(self):
