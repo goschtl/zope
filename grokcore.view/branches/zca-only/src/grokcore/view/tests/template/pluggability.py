@@ -55,7 +55,7 @@ class MyPageTemplate(grok.components.GrokTemplate):
         return {'middle_text': 'is in'}
 
     def render(self, view):
-        return self._template.render(**self.getNamespace(view))
+        return self._template.render(**self.namespace(view))
 
 class MyPageTemplateFactory(grok.GlobalUtility):
 

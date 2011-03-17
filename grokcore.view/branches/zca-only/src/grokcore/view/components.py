@@ -15,6 +15,7 @@
 
 import sys
 import os
+import webob
 import warnings
 import fnmatch
 
@@ -25,7 +26,31 @@ from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.pagetemplate.engine import TrustedAppPT
 
 import martian.util
+from cromlech.io import IResponse
 from grokcore.view import interfaces, util
+
+
+class Response(webob.Response):
+    interface.implements(IResponse)
+
+    def setBody(self, value):
+        if isinstance(value, unicode):
+            self.unicode_body = value
+        else:
+            self.body = value
+
+    def getStatus(self, as_int=True):
+        """returns the status of the response
+        """
+        if not as_int:
+            return self.status
+        return self.status_int
+
+    def redirect(self, url, status=302, trusted=False):
+        """Sets the response for a redirect.
+        """
+        self.location = url
+        self.status = status
 
 
 class ViewSupport(object):
@@ -34,21 +59,12 @@ class ViewSupport(object):
     """
 
     @property
-    def response(self):
-        """The HTTP Response object that is associated with the request.
-
-        This is also available as self.request.response, but the
-        response attribute is provided as a convenience.
-        """
-        return IResponse(self.request)
-
-    @property
     def body(self):
         """The text of the request body.
         """
         return self.request.body
 
-    def redirect(self, url, status=None, trusted=False):
+    def redirect(self, url, status=302, trusted=False):
         """Redirect to `url`.
 
         The headers of the :attr:`response` are modified so that the
@@ -109,9 +125,12 @@ class ViewSupport(object):
 class View(Location, ViewSupport):
     interface.implements(interfaces.IGrokView)
 
+    responseFactory = Response
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.response = self.responseFactory()
 
         self.__name__ = getattr(self, '__view_name__', None)
 
@@ -125,15 +144,19 @@ class View(Location, ViewSupport):
 
     def __call__(self):
         self.update()
+        if self.response.getStatus() in [301, 302]:
+            return None
         template = getattr(self, 'template', None)
         if template is not None:
-            return self._render_template()
-        return self.render()
+            self.response.setBody(self._render_template())
+        else:
+            self.response.setBody(self.render())
+        return self.response
 
     def _render_template(self):
         return self.template.render(self)
 
-    def default_namespace(self):
+    def namespace(self):
         """Returns a dictionary of namespaces that the template implementation
         expects to always be available.
 
@@ -146,29 +169,6 @@ class View(Location, ViewSupport):
         namespace['static'] = self.static
         namespace['view'] = self
         return namespace
-
-    def namespace(self):
-        """Returns a dictionary that is injected in the template namespace in
-        addition to the default namespace.
-
-        This method **is** intended to be overridden by the application
-        developer.
-        """
-        return {}
-
-    def __getitem__(self, key):
-        # This is BBB code for Zope page templates only:
-        if not isinstance(self.template, PageTemplate):
-            raise AttributeError("View has no item %s" % key)
-
-        value = self.template._template.macros[key]
-        # When this deprecation is done with, this whole __getitem__ can
-        # be removed.
-        warnings.warn("Calling macros directly on the view is deprecated. "
-                      "Please use context/@@viewname/macros/macroname\n"
-                      "View %r, macro %s" % (self, key),
-                      DeprecationWarning, 1)
-        return value
 
     def update(self, **kwargs):
         """This method is meant to be implemented by subclasses. It
@@ -262,12 +262,7 @@ class GrokTemplate(BaseTemplate):
     def namespace(self, view):
         # By default use the namespaces that are defined as the
         # default by the view implementation.
-        return view.default_namespace()
-
-    def getNamespace(self, view):
-        namespace = self.namespace(view)
-        namespace.update(view.namespace())
-        return namespace
+        return view.namespace()
 
 
 class TrustedPageTemplate(TrustedAppPT, pagetemplate.PageTemplate):
@@ -301,8 +296,8 @@ class PageTemplate(GrokTemplate):
         factory.macros = property(_get_macros)
 
     def render(self, view):
-        namespace = self.getNamespace(view)
         template = self._template
+        namespace = view.namespace()
         namespace.update(template.pt_getContext())
         return template.pt_render(namespace)
 

@@ -21,9 +21,11 @@ install_requires = [
     'zope.publisher',
     'zope.security',
     'zope.traversing',
+    'cromlech.io',
     ]
 
 tests_require = [
+    'WebOb',
     'zope.container',
     'zope.securitypolicy',
     'zope.site',

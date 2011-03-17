@@ -15,7 +15,7 @@ is not executed subsequently.
   None
   >>> print view.response.getStatus()
   302
-  >>> print view.response.headers('Location')
+  >>> print view.response.headers.get('Location')
   somewhere-else
 
 """

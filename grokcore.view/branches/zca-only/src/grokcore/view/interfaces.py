@@ -18,8 +18,6 @@ from zope.interface import Interface, Attribute
 
 class IBaseClasses(Interface):
     View = Attribute("Base class for browser views.")
-    DirectoryResource = Attribute("Base class to create new "
-                                  "directory resource.")
 
 
 class IDirectives(Interface):
@@ -87,9 +85,6 @@ class IGrokView(Interface):
 
     request = Attribute('request', "Request that the view was looked up with.")
 
-    response = Attribute('response', "Response object that is "
-                         "associated with the current request.")
-
     static = Attribute('static', "Directory resource containing "
                        "the static files of the view's package.")
 
@@ -113,20 +108,9 @@ class IGrokView(Interface):
         as a cgi query string.
         """
 
-    def default_namespace():
-        """Returns a dictionary of namespaces that the template
-        implementation expects to always be available.
-
-        This method is *not* intended to be overridden by application
-        developers.
-        """
-
     def namespace():
         """Returns a dictionary that is injected in the template
-        namespace in addition to the default namespace.
-
-        This method *is* intended to be overridden by the application
-        developer.
+        namespace.
         """
 
     def update(**kw):
@@ -171,8 +155,10 @@ class ITemplate(Interface):
     def render(view):
         """Renders the template"""
 
+
 class TemplateLookupError(Exception):
     pass
+
 
 class ITemplateRegAPI(Interface):
     """Public API for the templatereg module.
