@@ -92,6 +92,67 @@ def order_by_bases(layers):
 
     >>> order_by_bases([one_bis, two_bis, three, two, one, zero])
     [zero, one, one_bis, two, two_bis, three]
+    >>> order_by_bases([three, one_bis, two_bis, two, one, zero])
+    [zero, one, one_bis, two, two_bis, three]
+    >>> order_by_bases([one_bis, three, two_bis, two, one, zero])
+    [zero, one, one_bis, two, two_bis, three]
+    >>> order_by_bases([one_bis, two_bis, two, three, one, zero])
+    [zero, one, one_bis, two, two_bis, three]
+
+    Another layer without any base:
+
+    >>> other_zero = TestLayer(bases=(), name='other_zero')
+
+    >>> order_by_bases([other_zero, zero])
+    [other_zero, zero]
+    >>> order_by_bases([zero, other_zero])
+    [other_zero, zero]
+
+    Another layer with this new base:
+
+    >>> other_one = TestLayer(bases=(other_zero, ), name='other_one')
+
+    >>> order_by_bases([one, other_one])
+    [one, other_one]
+    >>> order_by_bases([one, other_one])
+    [one, other_one]
+
+    A layer with the two bases:
+
+    >>> both_one = TestLayer(bases=(zero, other_zero, ), name='both_one')
+
+    >>> order_by_bases([one, other_one, both_one])
+    [one, other_one, both_one]
+    >>> order_by_bases([one, other_one, both_one])
+    [one, other_one, both_one]
+    >>> order_by_bases([both_one, one, other_one])
+    [one, other_one, both_one]
+    >>> order_by_bases([one, both_one, other_one])
+    [one, other_one, both_one]
+
+    Another layer with the two bases:
+
+    >>> both_one_bis = TestLayer(bases=(zero, other_zero, ),
+    ...     name='both_one_bis')
+
+    >>> order_by_bases([both_one_bis, one, other_one, both_one])
+    [one, other_one, both_one, both_one_bis]
+    >>> order_by_bases([one, both_one_bis, other_one, both_one])
+    [one, other_one, both_one, both_one_bis]
+    >>> order_by_bases([both_one, one, both_one_bis, other_one])
+    [one, other_one, both_one, both_one_bis]
+    >>> order_by_bases([one, both_one, other_one, both_one_bis])
+    [one, other_one, both_one, both_one_bis]
+
+    >>> order_by_bases([two, both_one_bis, one, other_one, both_one])
+    [one, other_one, both_one, both_one_bis, two]
+    >>> order_by_bases([one, two, both_one_bis, other_one, both_one])
+    [one, other_one, both_one, both_one_bis, two]
+    >>> order_by_bases([both_one, one, two, both_one_bis, other_one])
+    [one, other_one, both_one, both_one_bis, two]
+    >>> order_by_bases([one, both_one, two, other_one, both_one_bis])
+    [one, other_one, both_one, both_one_bis, two]
+
     """
     named_layers = [(name_from_layer(layer), layer) for layer in layers]
     named_layers.sort()
