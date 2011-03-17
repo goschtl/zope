@@ -144,6 +144,8 @@ def order_by_bases(layers):
     >>> order_by_bases([one, both_one, other_one, both_one_bis])
     [one, other_one, both_one, both_one_bis]
 
+    Let's use a layer of specificity two:
+
     >>> order_by_bases([two, both_one_bis, one, other_one, both_one])
     [one, other_one, both_one, both_one_bis, two]
     >>> order_by_bases([one, two, both_one_bis, other_one, both_one])
@@ -152,6 +154,19 @@ def order_by_bases(layers):
     [one, other_one, both_one, both_one_bis, two]
     >>> order_by_bases([one, both_one, two, other_one, both_one_bis])
     [one, other_one, both_one, both_one_bis, two]
+
+    Another layer of specificity two:
+
+    >>> other_two = TestLayer(bases=(other_one, ), name='other_two')
+
+    >>> order_by_bases([other_two, two, both_one_bis, one, other_one, both_one])
+    [one, other_one, both_one, both_one_bis, other_two, two]
+    >>> order_by_bases([one, other_two, two, both_one_bis, other_one, both_one])
+    [one, other_one, both_one, both_one_bis, other_two, two]
+    >>> order_by_bases([one, both_one, other_two, two, other_one, both_one_bis])
+    [one, other_one, both_one, both_one_bis, other_two, two]
+    >>> order_by_bases([both_one, one, two, other_two, both_one_bis, other_one])
+    [one, other_one, both_one, both_one_bis, other_two, two]
 
     """
     named_layers = [(name_from_layer(layer), layer) for layer in layers]
