@@ -7,6 +7,9 @@ CHANGES
 
 * Updated tests to run with ZTK 1.0.
 
+* Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
 
 1.1
 ===

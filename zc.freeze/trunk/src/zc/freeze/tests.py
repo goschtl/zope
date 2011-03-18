@@ -1,7 +1,7 @@
 from zope.app.container.tests.placelesssetup import PlacelessSetup
 from zope.app.testing import placelesssetup
 from zope.component import testing, eventtesting
-from zope.testing import doctest
+import doctest
 import unittest
 import zope.app.testing.functional
 import zope.testing.module
