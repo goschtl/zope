@@ -6,6 +6,9 @@ Change history
 
 - Fixed tests to run on Python 2.4 up to 2.7.
 
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
 
 1.0.0 (2008-02-07)
 ------------------

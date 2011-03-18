@@ -14,17 +14,16 @@
 __docformat__ = "reStructuredText"
 
 import unittest
-import zope.testing.doctest
+import doctest
 import zope.testing.renormalizing
 import re
 
 def test_suite():
-    return zope.testing.doctest.DocFileSuite(
+    return doctest.DocFileSuite(
         "README.txt",
         "datagram.txt",
         checker=zope.testing.renormalizing.RENormalizing([
             (re.compile(r'0L, '), '0, '),
             (re.compile(r'9L, '), '9, '),
             ]),
-        optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE|
-                     zope.testing.doctest.ELLIPSIS)
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
