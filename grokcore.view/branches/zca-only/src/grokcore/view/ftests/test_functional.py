@@ -7,9 +7,12 @@ import os.path
 import re
 import types
 import unittest
+import webob
 import webob.dec
+import transaction
 
 from cromlech.bootstrap.testlayer import ZODBLayer
+from cromlech.bootstrap.helper import Bootstrapper
 from persistent.interfaces import IPersistent
 from pkg_resources import resource_listdir
 from zope.component import getMultiAdapter
@@ -19,19 +22,65 @@ from zope.publisher.interfaces import IRequest, IPublication
 from zope.publisher.publish import publish
 from zope.site.interfaces import IRootFolder
 from zope.site.folder import rootFolder
+from zope.interface import implements, Interface
+from zope.security.interfaces import IGroupAwarePrincipal
+from zope.security.testing import Participation
+from zope.security.management import newInteraction, endInteraction
 
+
+class IUnauthenticatedPrincipal(IGroupAwarePrincipal):
+    pass
+
+
+class UnauthenticatedPrincipal(object):
+    implements(IUnauthenticatedPrincipal)
+
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
+        self.groups = ["zope.Anybody"]
+
+
+unauthenticated_principal = UnauthenticatedPrincipal(
+    'test.unauthenticated',
+    'Unauthenticated principal',
+    'The default unauthenticated principal.')
 
 ROOT = 'grok'
 
 @grokcore.component.implementer(IRootFolder)
 @grokcore.component.adapter(IPersistent, types.BooleanType)
 def test_root(db_root, creation=False):
+    print "Creation of ROOT : %s" % creation
     folder = db_root.get(ROOT, None)
     if folder is None and creation is True:
         folder = rootFolder()
         notify(ObjectCreatedEvent(folder))
         db_root[ROOT] = folder
     return folder
+
+
+
+def getUser(wsgiapp, app, request):
+    request.setPrincipal(unauthenticated_principal)
+    return unauthenticated_principal
+
+
+class Interaction(object):
+
+    def __init__(self, user, request):
+ 
+
+    def __enter__(self):
+        participation = Participation(unauthenticated_principal)
+        newInteraction(participation)
+        return participation
+
+    def __exit__(self, type, value, traceback):
+        endInteraction()
+        if traceback is not None:
+            logger.warn(value)
 
 
 class WSGIApplication(object):
@@ -42,20 +91,14 @@ class WSGIApplication(object):
     @webob.dec.wsgify
     def __call__(self, webob_req):
 
-        # We want an interaction here
-        # XXXX
-
-        # We get a valid zope request
         request = IRequest(webob_req)
 
-        # Here, we keep the zope compatibility. It will go away
-        request.setPublication(getMultiAdapter(
-            (request, self.db), IPublication))
+        with Bootstrapper(self.db) as root, app:
+            with transaction:
+                user = setUser(self, app, request)
+                with Interaction(user) as participation:
+                    response = publish(request, root=app, handle_errors=False)
 
-        # publishing
-        response = publish(request)
-
-        # Return the WSGI server response
         return response
 
 
@@ -107,6 +150,6 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'staticdir', 'url']:
+    for name in ['view', 'url']:
         suite.addTest(suiteFromPackage(name))
     return suite

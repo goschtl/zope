@@ -1,24 +1,26 @@
 """
 Views have a redirect() method to easily create redirects:
 
-  >>> getRootFolder()['manfred'] = manfred = Mammoth()
+  >>> root = getRootFolder()
+  >>> root['manfred'] = manfred = Mammoth()
 
 Since the index view redirects to mammoth, we expect to see the URL
 point to mammoth:
 
-  >>> from zope.app.wsgi.testlayer import Browser, http
-  >>> browser = Browser()
-  >>> browser.handleErrors = False
+  >>> from infrae.testbrowser.browser import Browser
+  >>> application = getApplication()
+  >>> browser = Browser(application)
+  >>> browser.options.handle_errors = False
+
   >>> browser.open('http://localhost/manfred')
   >>> browser.url
   'http://localhost/manfred/another'
 
-  >>> response = http('GET /manfred/trustedredirect HTTP/1.0')
-  >>> response.getStatus()
+  >>> response = browser.open('http://localhost/manfred/trustedredirect')
+  >>> response.status_code
   302
-  >>> response.getHeader('location')
+  >>> response.location
   'http://www.google.com/ncr'
-
 
   >>> browser.open('http://localhost/manfred/redirectwithstatus')
   Traceback (most recent call last):

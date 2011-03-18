@@ -2,23 +2,28 @@
 """
 Views have a method that can be used to construct URLs:
 
+  >>> root = getRootFolder()
   >>> from zope.site.folder import Folder
   >>> herd = Folder()
-  >>> getRootFolder()['herd'] = herd
+  >>> root['herd'] = herd
   >>> manfred = Mammoth()
   >>> herd['manfred'] = manfred
 
 The views in this test implement self.url():
 
-  >>> from zope.app.wsgi.testlayer import Browser
-  >>> browser = Browser()
-  >>> browser.handleErrors = False
+  >>> from infrae.testbrowser.browser import Browser
+  >>> application = getApplication()
+  >>> browser = Browser(application)
+  >>> browser.options.handle_errors = False
+
   >>> browser.open("http://localhost/herd/manfred/index")
   >>> print browser.contents
   http://localhost/herd/manfred/index
+
   >>> browser.open("http://localhost/herd/manfred/another")
   >>> print browser.contents
   http://localhost/herd/manfred/another
+
   >>> browser.open("http://localhost/herd/manfred/yetanother")
   >>> print browser.contents
   http://localhost/herd/manfred/yetanother
@@ -26,15 +31,20 @@ The views in this test implement self.url():
 We get the views manually so we can do a greater variety of url() calls:
 
   >>> from zope import component
-  >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+  >>> from webob import Request
+  >>> request = Request.blank('/')
+
   >>> index_view = component.getMultiAdapter((manfred, request), name='index')
   >>> index_view.url()
   'http://127.0.0.1/herd/manfred/index'
+
+
   >>> another_view = component.getMultiAdapter((manfred, request),
   ...                                              name='another')
   >>> another_view.url()
   'http://127.0.0.1/herd/manfred/another'
+
+
   >>> yet_another_view = component.getMultiAdapter((manfred, request),
   ...                                              name='yetanother')
   >>> yet_another_view.url()

@@ -1,13 +1,13 @@
 """
   >>> root = getRootFolder()
-  >>> application = getApplication()
   >>> root["manfred"] = Mammoth()
 
+  >>> application = getApplication()
   >>> from infrae.testbrowser.browser import Browser
   >>> browser = Browser(application)
   >>> browser.options.handle_errors = False
 
-  >>> browser("http://localhost/manfred/@@painting")
+  >>> browser.open("http://localhost/manfred/@@painting")
   >>> print browser.contents
   <html>
   <body>
@@ -20,14 +20,14 @@
 
 Views without a template do not support macros:
 
-  >>> browser("http://localhost/manfred/@@dancing")
+  >>> browser.open("http://localhost/manfred/@@dancing")
   Traceback (most recent call last):
   AttributeError: 'DancingHall' object has no attribute 'template'
 
 If the view has an attribute with the same name as a macro, the macro
 shadows the view. XXX This should probably generate a warning at runtime.
 
-  >>> browser("http://localhost/manfred/@@grilldish")
+  >>> browser.open("http://localhost/manfred/@@grilldish")
   >>> print browser.contents
   <html>
   Curry
@@ -40,7 +40,7 @@ You can skip the "macro" part of the macro call, but this is deprecated:
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
 
-  >>> browser("http://localhost/manfred/@@burnt")
+  >>> browser.open("http://localhost/manfred/@@burnt")
   From grok.testing's warn():
   ... DeprecationWarning: Calling macros directly on the view is deprecated. Please use context/@@viewname/macros/macroname
   ...
@@ -58,7 +58,7 @@ applies to macros::
   >>> before = open(template_file, 'r').read()
   >>> changed = before.replace('GROK', 'GROK RELOADED')
   >>> open(template_file, 'w').write(changed)
-  >>> browser("http://localhost/manfred/@@painting")
+  >>> browser.open("http://localhost/manfred/@@painting")
   >>> print browser.contents
   <html>
   <body>

@@ -6,16 +6,20 @@ absolute URL of objects.
   >>> from grokcore.view import url
 
   >>> from zope.site.folder import Folder
+  
+  >>> root = getRootFolder()
   >>> herd = Folder()
-  >>> getRootFolder()['herd'] = herd
+  >>> root['herd'] = herd
   >>> manfred = Mammoth()
   >>> herd['manfred'] = manfred
 
 Now let's use url on some things::
 
-  >>> from zope.app.wsgi.testlayer import Browser
-  >>> browser = Browser()
-  >>> browser.handleErrors = False
+  >>> from infrae.testbrowser.browser import Browser
+  >>> application = getApplication()
+  >>> browser = Browser(application)
+  >>> browser.options.handle_errors = False
+
   >>> browser.open("http://localhost/herd/manfred/index")
   >>> print browser.contents
   http://localhost/herd/manfred/index
@@ -26,8 +30,8 @@ Now let's use url on some things::
 We get the views manually so we can do a greater variety of url() calls:
 
   >>> from zope import component
-  >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
+  >>> from webob import Request
+  >>> request = Request.blank('/')
   >>> index_view = component.getMultiAdapter((manfred, request), name='index')
   >>> url(request, index_view)
   'http://127.0.0.1/herd/manfred/index'
