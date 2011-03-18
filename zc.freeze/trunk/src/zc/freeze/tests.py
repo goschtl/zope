@@ -1,11 +1,14 @@
-import unittest
-from zope.app.testing import placelesssetup
-import zope.testing.module
-from zope.testing import doctest
-from zope.component import testing, eventtesting
 from zope.app.container.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import placelesssetup
+from zope.component import testing, eventtesting
+from zope.testing import doctest
+import unittest
+import zope.app.testing.functional
+import zope.testing.module
+
 
 container_setup = PlacelessSetup()
+
 
 def setUp(test):
     placelesssetup.setUp(test)
@@ -53,12 +56,13 @@ def test_suite():
     except ImportError:
         pass
     else:
-        tests += (
-        doctest.DocFileSuite(
-            'subscribers.txt',
-            setUp=subscribersSetUp, tearDown=subscribersTearDown,
-            optionflags=doctest.INTERPRET_FOOTNOTES),)
-    return unittest.TestSuite(tests)
+        zope.app.testing.functional.defineLayer(
+            'SubscribersLayer', zcml='ftesting.zcml')
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+        subscribers = zope.app.testing.functional.FunctionalDocFileSuite(
+            'subscribers.txt',
+            setUp=subscribersSetUp, tearDown=subscribersTearDown)
+        subscribers.layer = SubscribersLayer
+        tests += (subscribers,)
+
+    return unittest.TestSuite(tests)

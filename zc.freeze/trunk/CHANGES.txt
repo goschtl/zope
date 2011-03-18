@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2 (unreleased)
+================
+
+* Updated tests to run with ZTK 1.0.
+
+
 1.1
 ===
 

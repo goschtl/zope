@@ -19,19 +19,19 @@ setup(
         'zope.app.testing', # lame, should remove
         'zope.app.container', # lame, should remove
         ],
-#    dependency_links=['http://download.zope.org/distribution/',],
     packages=find_packages('src'),
     include_package_data=True,
     package_dir= {'':'src'},
-    
+
     namespace_packages=['zc'],
 
     zip_safe=False,
     author='Zope Project',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
+    url='http://pypi.python.org/pypi/zc.freeze',
     description=open('README.txt').read(),
     long_description=
-        open('src/zc/freeze/CHANGES.txt').read() +
+        open('CHANGES.txt').read() +
         '\n\n' +
         open("src/zc/freeze/README.txt").read(),
     license='ZPL 2.1',
