@@ -1,8 +1,6 @@
 """
   >>> root = getRootFolder()
   >>> application = getApplication()
-
-  
   >>> root["manfred"] = Mammoth()
 
   >>> from infrae.testbrowser.browser import Browser
