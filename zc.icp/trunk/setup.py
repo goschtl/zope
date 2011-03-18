@@ -5,7 +5,12 @@ def read(rname):
     return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
                              )).read()
 
-long_description = read('src/zc/icp/README.txt')
+long_description = '\n\n'.join([
+    read('README.txt'),
+    '.. contents::',
+    read('CHANGES.txt'),
+    read('src/zc/icp/README.txt'),
+    ])
 
 setup(
     name='zc.icp',
