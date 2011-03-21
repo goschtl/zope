@@ -166,6 +166,21 @@ and `getAdapter` raises an error:
     ...
     ComponentLookupError: (...Person...>, <...IGreeter>, 'frank')
 
+We can also query for the *factory* for the adapter (e.g., if we want to
+call it later ourselves, or supply an unregistered default):
+
+    >>> component.queryAdapterFactory(Person("Sally"), IGreeter
+    ...                              ) is PersonGreeter
+    True
+    >>> component.queryAdapterFactory(Person("Sally"), IGreeter, 'bob'
+    ...                                     ) is BobPersonGreeter
+    True
+    >>> def _greeterDefault(*args):
+    ...     assert 0, "Don't call the factory!"
+    >>> component.queryAdapterFactory(Person("Sally"), IGreeter,
+    ...          'not_registered', default=_greeterDefault) is _greeterDefault
+    True
+
 Adapters can adapt multiple objects:
 
     >>> class TwoPersonGreeter:
@@ -196,6 +211,19 @@ To look up a multi-adapter, use either `queryMultiAdapter` or
     ...                                  IGreeter).greet()
     Hello Sally
     my name is Bob
+
+We can also query for the *factory* for the multi-adapter (e.g., if we want to
+call it later ourselves, or supply an unregistered default):
+
+    >>> component.queryMultiAdapterFactory((Person("Sally"), Person("Bob")),
+    ...                                  IGreeter) is TwoPersonGreeter
+    True
+    >>> def _multiGreeterDefault(*args):
+    ...     assert 0, "Don't call the factory!"
+    >>> component.queryMultiAdapterFactory((Person("Sally"), Person("Bob")),
+    ...           IGreeter, 'not_registered', default=_greeterDefault
+    ...           ) is _greeterDefault
+    True
 
 Adapters need not be classes.  Any callable will do.  We use the
 adapter decorator (in the Python 2.4 decorator sense) to declare that

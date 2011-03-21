@@ -227,6 +227,10 @@ class Components(object):
     def queryAdapter(self, object, interface, name=u'', default=None):
         return self.adapters.queryAdapter(object, interface, name, default)
 
+    def queryAdapterFactory(self, object, interface, name=u'', default=None):
+        required = providedBy(object)
+        return self.adapters.lookup1(required, interface, name, default)
+
     def getAdapter(self, object, interface, name=u''):
         adapter = self.adapters.queryAdapter(object, interface, name)
         if adapter is None:
@@ -236,6 +240,11 @@ class Components(object):
     def queryMultiAdapter(self, objects, interface, name=u'', default=None):
         return self.adapters.queryMultiAdapter(
             objects, interface, name, default)
+
+    def queryMultiAdapterFactory(self, objects, interface, name=u'',
+                                 default=None):
+        required = map(providedBy, objects)
+        return self.adapters.lookup(required, interface,  name, default)
 
     def getMultiAdapter(self, objects, interface, name=u''):
         adapter = self.adapters.queryMultiAdapter(objects, interface, name)

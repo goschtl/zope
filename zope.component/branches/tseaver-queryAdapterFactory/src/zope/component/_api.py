@@ -95,6 +95,18 @@ def queryAdapter(object, interface=Interface, name=u'', default=None,
     return getSiteManager(context).queryAdapter(object, interface, name,
                                                 default)
 
+def queryAdapterFactory(object, interface=Interface, name=u'', default=None,
+                 context=None):
+    if context is None: # inlined from adapter_hook
+        try:
+            sitemanager = getSiteManager()
+        except ComponentLookupError:
+            # Oh blast, no site manager. This should *never* happen!
+            return None
+    else:
+        sitemanager = getSiteManager(context)
+    return sitemanager.queryAdapterFactory(object, interface, name, default)
+
 def getMultiAdapter(objects, interface=Interface, name=u'', context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
     if adapter is None:
@@ -110,6 +122,17 @@ def queryMultiAdapter(objects, interface=Interface, name=u'', default=None,
         return default
 
     return sitemanager.queryMultiAdapter(objects, interface, name, default)
+
+def queryMultiAdapterFactory(objects, interface=Interface, name=u'',
+                             default=None, context=None):
+    try:
+        sitemanager = getSiteManager(context)
+    except ComponentLookupError:
+        # Oh blast, no site manager. This should *never* happen!
+        return default
+
+    return sitemanager.queryMultiAdapterFactory(objects, interface, name,
+                                                default)
 
 def getAdapters(objects, provided, context=None):
     try:

@@ -188,6 +188,21 @@ class IComponentArchitecture(Interface):
         and this adapter's 'Adapters' service is used.
         """
 
+    def queryAdapterFactory(object, interface=Interface, name=u'',
+                     default=None, context=None):
+        """Look for a factory named adapter to an interface for an object
+
+        Returns a callable which, if called with 'object', returns an adapter
+        that can adapt object to interface.  If a matching
+        factory cannot be found, returns 'default'.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
+        """
+
     def queryAdapterInContext(object, interface, context, default=None):
         """Look for a special adapter to an interface for an object
 
@@ -218,6 +233,27 @@ class IComponentArchitecture(Interface):
 
         Returns a multi-adapter that can adapt objects to interface.  If a
         matching adapter cannot be found, returns the default.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+        """
+
+    def queryMultiAdapterFactory(objects,
+                                 interface=Interface, name=u'',
+                                 default=None,
+                                 context=None):
+        """Look for a multi-adapter to an interface for objects
+
+        Returns a factory, which if called with 'objects' returns a 
+        multi-adapter that can adapt objects to interface.  If a
+        matching factory cannot be found, returns 'default'.
 
         If context is None, an application-defined policy is used to choose
         an appropriate service manager from which to get an 'Adapters' service.
@@ -324,6 +360,12 @@ class IComponentLookup(Interface):
         If a matching adapter cannot be found, returns the default.
         """
 
+    def queryAdapterFactory(object, interface, name=u'', default=None):
+        """Look for a factory named adapter to an interface for an object
+
+        If a matching factory cannot be found, returns 'default'.
+        """
+
     def getAdapter(object, interface, name=u''):
         """Look for a named adapter to an interface for an object
 
@@ -335,6 +377,12 @@ class IComponentLookup(Interface):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, returns the default.
+        """
+
+    def queryMultiAdapterFactory(objects, interface, name=u'', default=None):
+        """Look for a factory for multi-adapter to an interface.
+
+        If a matching adapter cannot be found, returns 'default'.
         """
 
     def getMultiAdapter(objects, interface, name=u''):

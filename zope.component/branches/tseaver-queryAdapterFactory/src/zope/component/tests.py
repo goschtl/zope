@@ -1272,6 +1272,49 @@ template = """<configure
    </configure>"""
 
 
+
+class ComponentsTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from zope.component.registry import Components
+        return Components
+
+    def _makeOne(self, name='', bases=()):
+        return self._getTargetClass()(name, bases)
+
+    def test_queryAdapterFactory(self):
+        from zope.interface import Interface
+        class IAdapted(Interface):
+            pass
+        class Context(object):
+            pass
+        context = Context()
+        def _factory(*args):
+            assert 0, "Don't call the factory, we'll call later!"
+        registry = self._makeOne()
+        factory  = registry.queryAdapterFactory(context, IAdapted,
+                                                default=_factory)
+        self.assert_(factory is _factory)
+
+    def test_queryMultiAdapterFactory(self):
+        from zope.interface import Interface
+        class IAdapted(Interface):
+            pass
+        class Context1(object):
+            pass
+        context1 = Context1()
+        class Context2(object):
+            pass
+        context2 = Context2()
+        def _factory(*args):
+            assert 0, "Don't call the factory, we'll call later!"
+        registry = self._makeOne()
+        factory  = registry.queryMultiAdapterFactory(
+                                (context1, context2), IAdapted,
+                                default=_factory)
+        self.assert_(factory is _factory)
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -1738,6 +1781,7 @@ def test_suite():
         zcml_conditional,
         hooks_conditional,
         unittest.makeSuite(StandaloneTests),
+        unittest.makeSuite(ComponentsTests),
         unittest.makeSuite(ResourceViewTests),
         ))
 
