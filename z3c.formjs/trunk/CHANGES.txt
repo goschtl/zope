@@ -19,19 +19,19 @@ Version 0.5.0 (2009-07-23)
 Version 0.4.1 (2008-12-16)
 --------------------------
 
-- Restructure: Use WeightOrderedViewletManager from zope.viewlet instead
-  of z3c.viewlet, that removes additional egg requirement.
+- Restructure: Use ``WeightOrderedViewletManager`` from `zope.viewlet` instead
+  of `z3c.viewlet`, that removes additional egg requirement.
 
 
 Version 0.4.0 (2008-08-26)
 --------------------------
 
 - Feature: There is now a special unique prefix generator that uses
-  `z3c.form`'s new ``createCSSId()`` function to generate css selectable
-  prefixes for ajax forms.
+  `z3c.form`'s new ``createCSSId()`` function to generate CSS selectable
+  prefixes for AJAX forms.
 
 - Feature: There is now a viewlet manager already registered with all
-  the viewlets necessary to use `z3c.formjs`.  You can now just do:
+  the viewlets necessary to use `z3c.formjs`.  You can now just do::
 
     <script tal:replace="structure
                          provider:z3c.formjs.interfaces.IDynamicJavaScript">
@@ -41,7 +41,7 @@ Version 0.4.0 (2008-08-26)
   lists and tuples), the data is automatically converted into JSON
   format before delivery.
 
-- Restructure: Make package run on latest z3c.form 1.9.0 release.
+- Restructure: Make package run on latest `z3c.form` 1.9.0 release.
 
 - Bug: Widgets that were being updated multiple times were generating
   duplicate javascript event subscriptions. This is now fixed.
@@ -50,7 +50,7 @@ Version 0.4.0 (2008-08-26)
 Version 0.3.0 (2007-10-03)
 --------------------------
 
-- Feature: Made a JavaScript renderer for calls to JS Functions.
+- Feature: Made a JavaScript renderer for calls to JS functions.
 
 - Feature: Implemented tools to make server side events propagate to
   the client.
@@ -76,7 +76,7 @@ Version 0.2.0 (2007-07-18)
 
 - Feature: Implementation of AJAX-driven widget value validation.
 
-- Restructure: Completely overhauled the entire API to be most easy to use and
+- Restructure: Completely overhauled the entire API to be more easy to use and
   have the most minimal implementation.
 
 - Bug: The package is now 100% tested.
