@@ -12,7 +12,7 @@ import zope.component
 import zope.mimetype.interfaces
 from zope.app.testing import placelesssetup
 
-from zope.testing import doctest
+import doctest
 
 import zc.index.base
 
@@ -66,8 +66,10 @@ def test_suite():
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
     suite.addTest(doctest.DocFileSuite(
         "html.txt",
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
+        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+        encoding='utf-8'))
     suite.addTest(doctest.DocFileSuite(
         "extensiblemarkuplanguage.txt",
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
+        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+        encoding='utf-8'))
     return suite
