@@ -8,6 +8,15 @@ setup(
     package_dir={'':'src'},
     namespace_packages=['zc'],
     include_package_data=True,
-    install_requirements = ['setuptools'],
+    install_requires = [
+        'setuptools',
+        'zope.index',
+        'BeautifulSoup < 3.0',
+        ],
+    extras_require=dict(
+        test=[
+            'zope.app.testing',
+            'zope.file',
+            ]),
     zip_safe = False
     )
