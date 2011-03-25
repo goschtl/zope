@@ -13,12 +13,13 @@ import transaction
 
 from cromlech.bootstrap.testlayer import ZODBLayer
 from cromlech.bootstrap.helper import Bootstrapper
+from cromlech.io.interfaces import IRequest, IPublisher
+
 from persistent.interfaces import IPersistent
 from pkg_resources import resource_listdir
 from zope.component import getMultiAdapter
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent
-from zope.publisher.interfaces import IRequest, IPublication
 from zope.publisher.publish import publish
 from zope.site.interfaces import IRootFolder
 from zope.site.folder import rootFolder
@@ -96,8 +97,9 @@ class WSGIApplication(object):
         with Bootstrapper(self.db) as root, app:
             with transaction:
                 user = setUser(self, app, request)
-                with Interaction(user) as participation:
-                    response = publish(request, root=app, handle_errors=False)
+                with Interaction(user) as participation:                    
+                    response = getMultiAdapter(
+                        (request, root, )
 
         return response
 
