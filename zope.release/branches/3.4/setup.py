@@ -19,7 +19,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.release',
-      version = '3.4.1dev',
+      version = '3.4.2dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Release and Known-Good-Set (KGS) Support',
@@ -32,10 +32,11 @@ setup(name='zope.release',
           ),
       keywords = "zope3 setuptools egg kgs release",
       classifiers = [
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
-          'Programming Language :: Python',
+          'Programming Language :: Python :: 2.4',
+          'Programming Language :: Python :: 2.5',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',

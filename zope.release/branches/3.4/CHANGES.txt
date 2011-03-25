@@ -4,7 +4,7 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
-3.4.1 (unreleased)
+3.4.1 (2010-06-22)
 ------------------
 
 - Upgraded ZODB3 to 3.5.1
