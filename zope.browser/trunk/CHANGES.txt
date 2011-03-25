@@ -1,25 +1,8 @@
 Changelog
 =========
 
-1.4 (unreleased)
-----------------
-
-Added definitions to the base browser publishing process, including :
-
-  * IRequest and IResponse
-  * IPublisher
-  * Errors definitions with : IPublishingError, IBadRequest, INotFound
-    and IRedirect
-  * Views publishing help : IDefaultViewName, that permits to retrieve
-    the name of the default view for a context.
-
-This allows us to move toward a greater interoperability with other
-systems, severing a lot of zope packages' ties with ``zope.publisher``,
-where all these concepts were initially defined. ``zope.publisher`` will
-now use these interfaces as mixins to create zope publication
-specific definitions. Components that don't need the full blow
-definition can now register on broader interfaces, making them
-available to non ``zope.publisher`` aware applications.
+1.3.1 (unreleased)
+------------------
 
 
 1.3 (2010-04-30)
