@@ -8,7 +8,7 @@
   >>> browser = Browser(application)
   >>> browser.options.handle_errors = False
 
-  >>> browser.open("http://localhost/manfred/@@painting")
+  >>> status = browser.open("http://localhost/manfred/@@painting")
   >>> print browser.contents
   <html>
   <body>

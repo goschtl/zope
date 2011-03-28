@@ -14,12 +14,12 @@ point to mammoth:
 
   >>> browser.open('http://localhost/manfred')
   >>> browser.url
-  'http://localhost/manfred/another'
+  '/manfred'
 
-  >>> response = browser.open('http://localhost/manfred/trustedredirect')
-  >>> response.status_code
+  >>> status = browser.open('http://localhost/manfred/trustedredirect')
+  >>> browser.status_code
   302
-  >>> response.location
+  >>> browser.location
   'http://www.google.com/ncr'
 
   >>> browser.open('http://localhost/manfred/redirectwithstatus')
@@ -27,25 +27,35 @@ point to mammoth:
   ...
   HTTPError: HTTP Error 418: Unknown
   >>> browser.url
-  'http://localhost/manfred/redirectwithstatus'
+  '/manfred/redirectwithstatus'
 
 """
 import grokcore.view as grok
 
+
 class Mammoth(grok.Context):
     pass
+
 
 class Index(grok.View):
     def render(self):
         self.redirect(self.url('another'))
 
+
 class TrustedRedirect(grok.View):
-    def render(self):
+
+    def update(self):
+        super(TrustedRedirect, self).update()
         self.redirect('http://www.google.com/ncr', trusted=True)
+
+    def render(self):
+        return self.response
+
 
 class RedirectWithStatus(grok.View):
     def render(self):
         self.redirect(self.url(), status=418)
+
 
 class Another(grok.View):
     def render(self):

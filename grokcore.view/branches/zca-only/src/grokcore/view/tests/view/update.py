@@ -5,34 +5,32 @@ template.
 
   >>> grok.testing.grok(__name__)
 
-We need to set up a default ITraversable adapter so that TALES
-expressions can resolve paths:
-
-  >>> from zope import component
-  >>> from zope.traversing.adapters import DefaultTraversable
-  >>> component.provideAdapter(DefaultTraversable, (None,))
+  >>> from zope.publisher.browser import TestRequest
+  >>> from zope.component import getMultiAdapter
 
   >>> manfred = Mammoth()
-  >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
-  >>> print view()
+  >>> view = getMultiAdapter((manfred, request), name='cavepainting')
+  >>> print str(view())
   <html>
   <body>
   <h1>red</h1>
   <h1>red</h1>
   </body>
   </html>
-  
+
 
 """
 import grokcore.view as grok
 
+
 class Mammoth(grok.Context):
     pass
 
+
 class CavePainting(grok.View):
     def update(self):
+        super(CavePainting, self).update()
         self.color = "red"
 
 

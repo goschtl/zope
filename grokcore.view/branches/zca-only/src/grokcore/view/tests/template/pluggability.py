@@ -52,7 +52,9 @@ class MyPageTemplate(grok.components.GrokTemplate):
 
     def namespace(self, view):
         # I'll override the default namespace here for testing:
-        return {'middle_text': 'is in'}
+        ns = {'middle_text': 'is in'}
+        ns.update(view.namespace())
+        return ns
 
     def render(self, view):
         return self._template.render(**self.namespace(view))

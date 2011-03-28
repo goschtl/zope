@@ -9,8 +9,8 @@ We should find the ``cavepainting`` view for a mammoth:
   >>> request = TestRequest()
   >>> from zope import component
   >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
-  >>> view()
-  'A cave painting of a mammoth'
+  >>> print str(view())
+  A cave painting of a mammoth
 
   >>> view.context is manfred
   True
@@ -25,8 +25,8 @@ We should find the ``cavepainting`` view for a mammoth:
 Look up a view with a name explicitly set with ``grok.name``:
 
   >>> view = component.getMultiAdapter((manfred, request), name='meal')
-  >>> view()
-  'Mammoth burger'
+  >>> print str(view())
+  Mammoth burger
 
 There's no view 'food':
 

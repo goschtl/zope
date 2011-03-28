@@ -16,27 +16,27 @@ If grok.name is used, it needs to be supplied. If not supplied, grok.name
 defaults to the lowercase of the class:
 
   >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
-  >>> view()
-  'a chalk cave painting'
+  >>> print str(view())
+  a chalk cave painting
 
 It is also possible to look up the same view by also including the interface:
 
   >>> view = component.getMultiAdapter(
   ...     (manfred, request), interface=IChalk, name='cavepainting')
-  >>> print view()
+  >>> print str(view())
   a chalk cave painting
 
 The name can be set to '', in which case it is an 'unnamed' view:
 
   >>> view = component.getMultiAdapter((manfred, request), interface=IRealist)
-  >>> print view()
+  >>> print str(view())
   a realist cave painting
 
 Multipl IPaintStyles can now be looked up by interface, rather than name:
 
   >>> view = component.getMultiAdapter(
   ...     (manfred, request), interface=IImpressionist)
-  >>> print view()
+  >>> print str(view())
   an impressionist cave painting
 
 """

@@ -26,6 +26,7 @@ class Mammoth(grok.Context):
 
 class CavePainting(grok.View):
     def update(self):
+        super(CavePainting, self).update()
         self.redirect('somewhere-else')
 
 

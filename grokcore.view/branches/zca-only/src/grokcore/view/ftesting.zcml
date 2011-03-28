@@ -6,8 +6,8 @@
    package="grokcore.view">
 
   <include package="zope.component" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="zope.principalregistry" file="meta.zcml" />
   <include package="grokcore.view" file="meta.zcml" />
 
   <include package="zope.security" />
@@ -17,27 +17,11 @@
   <include package="zope.traversing" />
   <include package="zope.container" />
   <include package="zope.location" />
-  <include package="zope.principalregistry" />
+  <include package="zope.traversing" />
 
-  <include package="cromlech.bootstrap" />
-  <include package="cromlech.publication" file="publish.zcml" />
-  <include package="cromlech.publication" file="traverse.zcml" />
-  <include package="cromlech.request" file="webob.zcml" />
-
+  <include package="cromlech.dawnlight" />
   <include package="grokcore.view" />
+
   <grok:grok package="grokcore.view.ftests" />
-
-  <securityPolicy
-      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
-      />
-
-  <unauthenticatedGroup
-      id="zope.Anybody"
-      title="Unauthenticated Users" />
-
-  <grant
-      permission="zope.View"
-      principal="zope.Anybody"
-      />
 
 </configure>

@@ -35,19 +35,6 @@ class Response(webob.Response):
 
     charset = 'utf-8'
 
-    @apply
-    def body():
-        def setBody(self, value):
-            if isinstance(value, unicode):
-                webob.Response.unicode_body.fset(self, value)
-            else:
-                webob.Response.body.fset(self, value)
-
-        def getBody(self):
-            return webob.Response.body.fget(self)
-
-        return property(getBody, setBody)
-
     def getStatus(self, as_int=True):
         """returns the status of the response
         """
@@ -142,8 +129,8 @@ class View(Location, ViewSupport):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.response = self.responseFactory()
-
+        self.response = None
+        
         self.__name__ = getattr(self, '__view_name__', None)
 
         if getattr(self, 'module_info', None) is not None:
@@ -160,9 +147,10 @@ class View(Location, ViewSupport):
             return None
         template = getattr(self, 'template', None)
         if template is not None:
-            self.response.body = self._render_template()
+            result = self._render_template()
+            self.response.write(result)
         else:
-            self.response.body = self.render()
+            self.response.write(self.render() or u'')
         return self.response
 
     def _render_template(self):
@@ -192,7 +180,7 @@ class View(Location, ViewSupport):
         filled in from the request (in that case they **must** be
         present in the request).
         """
-        pass
+        self.response = self.responseFactory()
 
     def render(self, **kwargs):
         """A view can either be rendered by an associated template, or

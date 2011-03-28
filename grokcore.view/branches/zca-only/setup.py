@@ -31,8 +31,7 @@ tests_require = [
     'zope.site',
     'zope.publisher',
     'infrae.testbrowser',
-    'cromlech.publication',
-    'cromlech.bootstrap',
+    'cromlech.dawnlight',
     'cromlech.request',
     ]
 

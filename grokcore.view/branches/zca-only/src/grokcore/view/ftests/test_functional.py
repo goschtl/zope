@@ -11,11 +11,12 @@ import webob
 import webob.dec
 import transaction
 
-from cromlech.bootstrap.testlayer import ZODBLayer
-from cromlech.bootstrap.helper import Bootstrapper
+from cromlech.dawnlight.publish import DawnlightPublisher
 from cromlech.io.interfaces import IRequest, IPublisher
-
-from persistent.interfaces import IPersistent
+from zope.component.testlayer import ZCMLFileLayer
+from cromlech.dawnlight import IDawnlightApplication
+import zope.component
+from zope.component import hooks
 from pkg_resources import resource_listdir
 from zope.component import getMultiAdapter
 from zope.event import notify
@@ -27,6 +28,8 @@ from zope.interface import implements, Interface
 from zope.security.interfaces import IGroupAwarePrincipal
 from zope.security.testing import Participation
 from zope.security.management import newInteraction, endInteraction
+from zope.component.interfaces import ISite
+from zope.site.site import LocalSiteManager
 
 
 class IUnauthenticatedPrincipal(IGroupAwarePrincipal):
@@ -48,63 +51,60 @@ unauthenticated_principal = UnauthenticatedPrincipal(
     'Unauthenticated principal',
     'The default unauthenticated principal.')
 
-ROOT = 'grok'
-
-@grokcore.component.implementer(IRootFolder)
-@grokcore.component.adapter(IPersistent, types.BooleanType)
-def test_root(db_root, creation=False):
-    print "Creation of ROOT : %s" % creation
-    folder = db_root.get(ROOT, None)
-    if folder is None and creation is True:
-        folder = rootFolder()
-        notify(ObjectCreatedEvent(folder))
-        db_root[ROOT] = folder
-    return folder
-
-
-
-def getUser(wsgiapp, app, request):
-    request.setPrincipal(unauthenticated_principal)
-    return unauthenticated_principal
-
 
 class Interaction(object):
 
-    def __init__(self, user, request):
- 
+    def __init__(self, user):
+        self.user = user
 
     def __enter__(self):
-        participation = Participation(unauthenticated_principal)
+        participation = Participation(self.user)
         newInteraction(participation)
         return participation
 
     def __exit__(self, type, value, traceback):
         endInteraction()
-        if traceback is not None:
-            logger.warn(value)
 
+
+class SitePublisher(object):
+
+    def __init__(self, request, app, site):
+        self.app = app
+        self.request = request
+        self.site = site
+
+    def __enter__(self):
+        publisher = DawnlightPublisher(self.request, self.app)
+
+        if not ISite.providedBy(self.site):
+            site_manager = LocalSiteManager(self.site)
+            self.site.setSiteManager(site_manager)
+
+        zope.component.hooks.setSite(self.site)
+        return publisher
+
+    def __exit__(self, type, value, traceback):
+        zope.component.hooks.setSite()
+
+
+SITE = rootFolder()
 
 class WSGIApplication(object):
+    implements(IDawnlightApplication)
 
-    def __init__(self, db):
-        self.db = db
+    def __init__(self, user):
+        self.user = user
 
     @webob.dec.wsgify
-    def __call__(self, webob_req):
-
-        request = IRequest(webob_req)
-
-        with Bootstrapper(self.db) as root, app:
-            with transaction:
-                user = setUser(self, app, request)
-                with Interaction(user) as participation:                    
-                    response = getMultiAdapter(
-                        (request, root, )
-
+    def __call__(self, req):
+        request = getMultiAdapter((req, self), IRequest)
+        with Interaction(self.user) as participation:             
+            with SitePublisher(request, self, SITE) as publisher:
+                response = publisher.publish(SITE, handle_errors=False)
         return response
 
 
-class BrowserLayer(ZODBLayer):
+class BrowserLayer(ZCMLFileLayer):
     """This create a test layer with a test database and register a wsgi
     application to use that test database.
 
@@ -114,11 +114,18 @@ class BrowserLayer(ZODBLayer):
     """
 
     def testSetUp(self):
-        ZODBLayer.testSetUp(self)
-        self.application = WSGIApplication(self.db)
+        ZCMLFileLayer.testSetUp(self)
+        zope.component.hooks.setHooks()
+        self.application = WSGIApplication
 
-    def getApplication(self):
-        return self.application
+    def getRootFolder(self):
+        return SITE
+
+    def getApplication(self, user=unauthenticated_principal):
+        return self.application(user)
+
+    def testTearDown(self):
+        SITE.data.clear()
 
 
 FunctionalLayer = BrowserLayer(grokcore.view)
