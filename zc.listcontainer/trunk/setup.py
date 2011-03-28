@@ -7,6 +7,14 @@ setup(
     package_dir={'':'src'},
     namespace_packages=['zc'],
     include_package_data=True,
-    install_requirements = ['setuptools'],
-    zip_safe = False
+    install_requires = [
+        'setuptools',
+        'ZODB3',
+        'zope.component',
+        ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
+    zip_safe=False
     )
