@@ -11,18 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""listcontainer module test runner
+"""listcontainer module test runner"""
 
-$Id: tests.py 586 2005-02-07 15:48:22Z benji $
-"""
-
-import unittest
-from zope.testing import doctest
+import doctest
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt'),))
+    return doctest.DocFileSuite('README.txt')
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
