@@ -36,7 +36,6 @@ setuptools.setup(
         '--------\n'
         ),
     license = 'ZPL 2.1',
-    
     include_package_data = True,
     packages = setuptools.find_packages('src'),
     namespace_packages = ['zc'],
@@ -44,5 +43,9 @@ setuptools.setup(
     install_requires = ['setuptools'],
     zip_safe = False,
     entry_points=entry_points,
-    extras_require = dict(test=['ZConfig'])
+    extras_require=dict(
+        test=[
+            'ZConfig',
+            'zope.testing',
+            ])
     )
