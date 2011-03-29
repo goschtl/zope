@@ -4,6 +4,7 @@ setup(
     name='zc.mirrorcheeseshopslashsimple',
     version='0.3',
     description='A script for mirroring the PyPI simple index',
+    license='ZPL 2.1',
     package_dir = {'': 'src'},
     install_requires = ['zc.lockfile'],
     entry_points = dict(console_scripts=[
