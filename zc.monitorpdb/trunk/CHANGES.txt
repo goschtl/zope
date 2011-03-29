@@ -3,6 +3,9 @@
 
 - Fixed tests to run on different absolute paths.
 
+- Using Python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest``.
+
 1.0.0 (2009-10-30)
 ==================
 

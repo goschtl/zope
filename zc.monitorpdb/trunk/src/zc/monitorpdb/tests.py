@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from zope.testing import doctest
+import doctest
 import re
 import zope.testing.renormalizing
 
