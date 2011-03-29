@@ -6,7 +6,11 @@ Change History
 ------------------
 
 - Added an ``address`` option to ``start`` to be able to specify an adapter
-  to bind to
+  to bind to.
+
+- Using Python's ``doctest`` module instead of depreacted
+  ``zope.testing.doctest``.
+
 
 0.2.0 (2009-10-28)
 ------------------
