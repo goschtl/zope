@@ -45,7 +45,7 @@ Now we can do normal pdb things like list the code being executed.
 As well as go "up" in the function call stack.
 
     >>> connection.test_input('u\n')
-    >   /graphted-storage/workspace/zc.monitorpdb/src/zc/monitorpdb/__init__.py(48)command()
+    >   /zc.monitorpdb/src/zc/monitorpdb/__init__.py(48)command()
     -> reset(connection)
     (Pdb)
 

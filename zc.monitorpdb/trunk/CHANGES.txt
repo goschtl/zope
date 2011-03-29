@@ -1,3 +1,8 @@
+1.0.1 (unreleased)
+==================
+
+- Fixed tests to run on different absolute paths.
+
 1.0.0 (2009-10-30)
 ==================
 
