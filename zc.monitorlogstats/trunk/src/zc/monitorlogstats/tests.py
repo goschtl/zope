@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from zope.testing import setupstack
 import datetime
+import doctest
 import unittest
-from zope.testing import doctest, setupstack
 
 def setUp(test):
 
@@ -34,10 +35,9 @@ def setUp(test):
 
     datetime.datetime = FauxDateTime
 
+
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt',
-            setUp=setUp, tearDown=setupstack.tearDown),
-        ))
+    return doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUp, tearDown=setupstack.tearDown)
 
