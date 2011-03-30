@@ -5,7 +5,7 @@ CHANGES
 0.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add nl translations.
 
 
 0.7.0 (2010-10-18)
