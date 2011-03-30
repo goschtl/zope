@@ -1,5 +1,5 @@
-from zope.pagetemplate import pagetemplatefile
-from zope.app.pagetemplate import engine, viewpagetemplatefile
+from zope.pagetemplate import pagetemplatefile, engine
+from zope.app.pagetemplate import viewpagetemplatefile
 
 class Context(engine.ZopeContextBase):
     def translate(self, msgid, domain=None, mapping=None, default=None):
