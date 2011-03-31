@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct 23 12:38:11 2008\n"
+"POT-Creation-Date: Thu Mar 31 09:41:10 2011\n"
 "PO-Revision-Date: 2008-10-23 12:38+0300\n"
 "Last-Translator: Dan Korostelev <nadako@gmail.com>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -28,7 +28,8 @@ msgid "The specified base URL is not valid."
 msgstr "Указан неверный базовый URL."
 
 #: src/z3c/schema/email/interfaces.py:30
-msgid "Not a valid RFC822 email address"
+#, fuzzy
+msgid "Not a valid email address"
 msgstr "Неправильный формат e-mail адреса"
 
 #: src/z3c/schema/hostname/interfaces.py:31
@@ -54,4 +55,3 @@ msgstr "Неправильный номер кредитной карты."
 #: src/z3c/schema/regex/interfaces.py:29
 msgid "The specified regular expression is not valid."
 msgstr "Указано неверное регулярное выражение."
-

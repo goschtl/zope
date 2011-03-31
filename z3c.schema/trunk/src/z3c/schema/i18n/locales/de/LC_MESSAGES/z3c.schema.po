@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,11 +10,11 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct 23 12:38:11 2008\n"
+"POT-Creation-Date: Thu Mar 31 09:41:10 2011\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -28,7 +28,8 @@ msgid "The specified base URL is not valid."
 msgstr "Die angegebene URL ist nicht gültig."
 
 #: src/z3c/schema/email/interfaces.py:30
-msgid "Not a valid RFC822 email address"
+#, fuzzy
+msgid "Not a valid email address"
 msgstr "Keine gültige E-Mail-Addresse."
 
 #: src/z3c/schema/hostname/interfaces.py:31
@@ -54,4 +55,3 @@ msgstr "Die Kreditkartennummer ist nicht gültig."
 #: src/z3c/schema/regex/interfaces.py:29
 msgid "The specified regular expression is not valid."
 msgstr "Die angegebene RegEx ist nicht gültig."
-

@@ -27,4 +27,4 @@ class IRFC822MailAddress(zope.schema.interfaces.ITextLine):
 
 
 class NotValidRFC822MailAdress(zope.schema.ValidationError):
-    __doc__ = _("""Not a valid RFC822 email address""")
+    __doc__ = _("""Not a valid email address""")

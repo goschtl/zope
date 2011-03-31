@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct 23 12:38:11 2008\n"
+"POT-Creation-Date: Thu Mar 31 09:41:10 2011\n"
 "PO-Revision-Date: 2011-03-30 09:39+0200\n"
 "Last-Translator: jdriessen <janjaapdriessen@gmail.com>\n"
 "Language-Team: Dutch\n"
@@ -29,7 +29,8 @@ msgid "The specified base URL is not valid."
 msgstr "De opgegeven base URL is niet geldig."
 
 #: src/z3c/schema/email/interfaces.py:30
-msgid "Not a valid RFC822 email address"
+#, fuzzy
+msgid "Not a valid email address"
 msgstr "Geen geldig e-mailadres."
 
 #: src/z3c/schema/hostname/interfaces.py:31
