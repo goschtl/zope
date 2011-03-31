@@ -30,7 +30,7 @@ msgstr "De opgegeven base URL is niet geldig."
 
 #: src/z3c/schema/email/interfaces.py:30
 msgid "Not a valid RFC822 email address"
-msgstr "Geen geldig email adres volgens RFC822"
+msgstr "Geen geldig e-mailadres."
 
 #: src/z3c/schema/hostname/interfaces.py:31
 msgid "The specified host name is not valid."
