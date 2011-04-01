@@ -14,6 +14,10 @@
   >>> adapted.id()
   'item'
 
+  >>> a = A()
+  >>> IB(a)
+  'adapted to IB'
+
 """
 from zope.interface import Interface
 from five import grok
@@ -30,3 +34,14 @@ class SimpleItemIdAdapter(grok.Adapter):
 
     def id(self):
         return self.context.getId()
+
+class A(object):
+    pass
+
+class IB(Interface):
+    pass
+
+@grok.adapter(A)
+@grok.implementer(IB)
+def atob(context):
+    return 'adapted to IB'
