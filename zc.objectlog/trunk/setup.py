@@ -94,6 +94,13 @@ setup(
         'setuptools',
         'zc.copy',
         'zope.app.keyreference',
+        'zope.schema >= 3.6',
     ],
+    extras_require=dict(
+        test=[
+            'zope.app.security',
+            'zope.testing',
+            'zope.app.testing',
+            ]),
     zip_safe = False
     )

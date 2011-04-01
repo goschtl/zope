@@ -274,7 +274,7 @@ It will also fail if the arguments passed to it are not correct.
     >>> emily.log("This isn't unicode so will not succeed")
     Traceback (most recent call last):
     ...
-    WrongType: ("This isn't unicode so will not succeed", <type 'unicode'>)
+    WrongType: ("This isn't unicode so will not succeed", <type 'unicode'>, 'summary')
     >>> len(emily.log)
     4
     >>> success = emily.log(u"Yay, unicode")
