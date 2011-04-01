@@ -28,10 +28,9 @@ msgid "The specified base URL is not valid."
 msgstr "La valeur spécifiée comme url de base n'est pas valide"
 
 #: src/z3c/schema/email/interfaces.py:30
-#, fuzzy
 msgid "Not a valid email address"
 msgstr ""
-"Ce champ doit contenir une adresse email au format: \"usager@domaine.com\""
+"Ce champ doit contenir une adresse email au format : \"usager@domaine.com\""
 
 #: src/z3c/schema/hostname/interfaces.py:31
 msgid "The specified host name is not valid."
