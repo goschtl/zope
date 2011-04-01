@@ -12,14 +12,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""objectlog module test runner
+"""objectlog module test runner"""
 
-$Id: tests.py 12198 2006-06-14 20:56:25Z gary $
-"""
-
-import unittest, transaction
-from zope.testing import doctest, module
-from zope.testing.doctestunit import DocTestSuite
+import unittest, transaction, doctest
+from zope.testing import module
 from zope.component import testing
 
 def setUp(test):
@@ -48,7 +44,7 @@ def copierSetUp(test):
             self.id = unicode(id)
             self.title = title
             self.description = description
-    
+
     alice = DummyPrincipal('alice', 'Alice Aal', 'a principled principal')
     class DummyParticipation(object):
         interface.implements(zope.publisher.interfaces.IRequest)
@@ -64,14 +60,12 @@ def copierTearDown(test):
     module.tearDown(test)
     testing.tearDown(test)
 
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('log.txt',
                              setUp=setUp, tearDown=tearDown,),
         doctest.DocFileSuite('copier.txt',
                              setUp=copierSetUp, tearDown=copierTearDown,),
-        DocTestSuite('zc.objectlog.utils'),
+        doctest.DocTestSuite('zc.objectlog.utils'),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
