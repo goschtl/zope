@@ -29,7 +29,6 @@ msgid "The specified base URL is not valid."
 msgstr "De opgegeven base URL is niet geldig."
 
 #: src/z3c/schema/email/interfaces.py:30
-#, fuzzy
 msgid "Not a valid email address"
 msgstr "Geen geldig e-mailadres."
 

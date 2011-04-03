@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-0.8 (unreleased)
-----------------
+0.7.2 (unreleased)
+------------------
 
-- Nothing changed yet.
+- Fixed i18n files after something injected 'fuzzy' into the PO files.
 
 
 0.7.1 (2011-04-03)
