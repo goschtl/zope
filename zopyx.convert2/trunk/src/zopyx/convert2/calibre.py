@@ -22,7 +22,7 @@ def _check_calibre():
 
 calibre_available = _check_calibre()
 
-def html2calibre(html_filename, output_filename=None, **calibre_options):
+def html2calibre(html_filename, output_filename=None, cmdopts='', **calibre_options):
     """ Convert a HTML file using calibre """
 
     if not html_filename.endswith('.html'):
@@ -45,7 +45,9 @@ def html2calibre(html_filename, output_filename=None, **calibre_options):
     if sys.platform == 'win32':
         raise NotImplementedError('No support for using Calibre on Windows available')
     else:
-        cmd = '"ebook-convert" "%s" "%s" %s' % (html_filename, output_filename, ' '.join(options))
+        options = ' '.join(options)
+        options = options + ' ' + cmdopts
+        cmd = '"ebook-convert" "%s" "%s" %s' % (html_filename, output_filename, options)
     
     status, output = runcmd(cmd)
     if status != 0:
@@ -68,8 +70,15 @@ class HTML2Calibre(BaseConverter):
         return calibre_available
 
     def convert(self, output_filename=None, **calibre_options):
+    
+        # check for commandlineoptions.txt file
+        cmdopts = '' 
+        cmdopts_filename = os.path.join(os.path.dirname(self.filename), 'commandlineoptions.txt')
+        if os.path.exists(cmdopts_filename):
+            cmdopts = file(cmdopts_filename).read()
+
         tidy_filename = tidyhtml(self.filename, self.encoding)
-        result = html2calibre(tidy_filename, output_filename, **calibre_options)
+        result = html2calibre(tidy_filename, output_filename, cmdopts=cmdopts, **calibre_options)
         os.unlink(tidy_filename)
         return result
 
