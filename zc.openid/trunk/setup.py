@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2009 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -22,7 +22,7 @@ setup(name='zc.openid',
       author='',
       author_email='',
       url='',
-      license='',
+      license='ZPL 2.1',
       # Get more from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=['Programming Language :: Python',
                    'Environment :: Web Environment',
