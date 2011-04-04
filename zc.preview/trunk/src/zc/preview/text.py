@@ -59,7 +59,7 @@ class TextPreview(zope.formlib.form.Form):
         # set up fields
         fields = []
 
-        f = context.open("rb")
+        f = context.open("r")
         data = f.read()
         f.close()
 

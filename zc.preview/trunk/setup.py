@@ -14,5 +14,13 @@ setup(
         'zope.mimetype',
         'zc.shortcut',  # only needed for tests?
         ],
+    extras_require=dict(
+        test=[
+            'zope.app.debugskin',
+            'zope.app.server',
+            'zope.app.testing',
+            'zope.app.zcmlfiles',
+            ]),
+
     zip_safe=False,
     )
