@@ -119,6 +119,11 @@ If None is used as an input date, ltimefmt will return None:
 Localized formatting examples
 +++++++++++++++++++++++++++++
 
+Short times:
+
+    >>> print ltimefmt(mydate, us, category="time", length="short")
+    12:00 AM
+
 Short dates:
 
     >>> print ltimefmt(mydate, us, category="date", length="short")

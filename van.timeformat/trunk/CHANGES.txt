@@ -6,7 +6,7 @@ Changes
 
 Features:
 
-- None.
+- Add time examples to the documentation.
 
 Bugfixes:
 
