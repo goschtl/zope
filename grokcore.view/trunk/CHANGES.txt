@@ -1,11 +1,10 @@
 Changes
 =======
 
-2.5 (unreleased)
+2.5 (2011-04-04)
 ----------------
 
-- Nothing changed yet.
-
+- Fix a test that relied on older zope.testbrowser behaviour.
 
 2.4 (2011-03-01)
 ----------------
