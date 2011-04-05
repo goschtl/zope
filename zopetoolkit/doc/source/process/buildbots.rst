@@ -428,8 +428,10 @@ zope-dev@zope.org mailing list.
 
 A separate list (zope-tests@zope.org) exists which you can send build
 notifications to.  This list is usually not read by humans. However, a script
+(`z3c.testsummarizer <http://pypi.python.org/pypi/z3c.testsummarizer>`_)
 aggregates the messages once per day and reports the overall build status back
-to zope-dev.
+to zope-dev. At the moment it runs on a zopefoundation.org machine, administered
+by Jens Vagelpohl.
 
 To ensure that your build output is correctly picked up, you need to
 
