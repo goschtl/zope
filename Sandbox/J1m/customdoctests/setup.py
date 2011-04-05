@@ -13,7 +13,7 @@
 ##############################################################################
 name, version = 'zc.customdoctests', '0'
 
-install_requires = ['setuptools', 'python-spidermonkey']
+install_requires = ['setuptools']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """

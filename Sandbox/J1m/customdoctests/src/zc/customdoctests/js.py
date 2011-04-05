@@ -15,7 +15,6 @@
 import doctest
 import os
 import re
-import spidermonkey
 import sys
 import zc.customdoctests
 
@@ -35,6 +34,9 @@ parser = zc.customdoctests.DocTestParser(
 eq_parser = zc.customdoctests.DocTestParser(
     ps1='js!', comment_prefix='//',
     transform=lambda s: transform(s, 'JS_'))
+
+
+# spidermonkey hacks below:
 
 class JavaScriptError(Exception):
 
@@ -64,9 +66,10 @@ class ContextConvenience(object):
         if self.spidermonkey_error is not None:
             raise JavaScriptError(self.spidermonkey_error)
 
-def setUp(test_or_self=None):
+def spidermonkeySetUp(test_or_self=None):
     global run_time
     if run_time is None:
+        import spidermonkey
         run_time = spidermonkey.Runtime()
     cx = run_time.new_context()
     JS = cx.execute
