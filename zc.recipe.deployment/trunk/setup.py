@@ -32,6 +32,8 @@ setup(
     long_description = (
     read('README.txt')
     + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
     'Detailed Documentation\n'
     '**********************\n'
     + '\n' +
@@ -40,9 +42,13 @@ setup(
     'Download\n'
     '**********************\n'
     ),
-    
+
     install_requires = ['setuptools'],
-    extras_require = {'test': 'zc.buildout'},
+    extras_require = {
+        'test': [
+            'zc.buildout',
+            'zope.testing',
+            ]},
     entry_points = entry_points,
     package_dir = {'': 'src'},
     packages = find_packages('src'),
