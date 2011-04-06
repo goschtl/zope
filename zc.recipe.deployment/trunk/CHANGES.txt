@@ -4,7 +4,10 @@ Changes
 0.8.1 (unreleased)
 ==================
 
-Fixed test dependencies.
+- Fixed test dependencies.
+
+- Using Python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest``.
 
 
 0.8.0 (2010-05-18)

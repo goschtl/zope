@@ -16,8 +16,8 @@ import re
 import zc.buildout.testing
 
 import unittest
-import zope.testing
-from zope.testing import doctest, renormalizing
+import doctest
+from zope.testing import renormalizing
 import getpass
 import os
 import os.path
@@ -79,7 +79,7 @@ def test_suite():
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
                ]),
-            optionflags = zope.testing.doctest.REPORT_NDIFF,
+            optionflags = doctest.REPORT_NDIFF,
             ),
         ))
 
