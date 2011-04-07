@@ -10,6 +10,12 @@ compatible run-control scripts.
 Changes
 *******
 
+1.3.1 (unreleased)
+==================
+
+- Added not declared, but needed test dependency on `zope.testing`.
+
+
 1.3.0 (2010/05/26)
 ==================
 

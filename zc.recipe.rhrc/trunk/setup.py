@@ -39,7 +39,11 @@ setup(
     packages = find_packages('src'),
     namespace_packages = ['zc', 'zc.recipe'],
     package_dir = {'': 'src'},
-    extras_require = dict(test="zc.buildout"),
+    extras_require = dict(
+        test=[
+            'zc.buildout',
+            'zope.testing',
+            ]),
     install_requires = 'setuptools',
     zip_safe = False,
     )
