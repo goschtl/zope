@@ -1,0 +1,44 @@
+===========
+Subscribers
+===========
+
+The subscribers module contains a subscriber for "enforcing" freezing
+using zope.locking tokens.  This, of course, assumes that zope.locking
+tokens are configured to themselves be enforced somehow, using
+approaches such as those in zc.tokenpolicy.  By default, this `freezer`
+subscriber is registered only for objects that provide
+zc.freeze.interfaces.ITokenEnforced.  Imagine a demo object that
+implements ``ITokenEnforced``, with a token utility already in place.
+
+    >>> import zc.freeze.subscribers
+    >>> import zope.component
+    >>> zope.component.provideHandler(zc.freeze.subscribers.freezer)
+    >>> demo = Demo()
+    >>> import zc.freeze.interfaces
+    >>> import zope.interface
+    >>> zope.interface.directlyProvides(
+    ...     demo, zc.freeze.interfaces.ITokenEnforced)
+    >>> zc.freeze.interfaces.ITokenEnforced.providedBy(demo)
+    True
+    >>> util.get(demo) is None
+    True
+    >>> demo._z_frozen
+    False
+    >>> demo._z_freeze()
+    >>> demo._z_frozen
+    True
+    >>> import zope.locking.interfaces
+    >>> zope.locking.interfaces.IFreeze.providedBy(util.get(demo))
+    True
+
+If an object does not provide ``ITokenEnforced``, the subscriber will not
+fire, given a default registration.
+
+    >>> demo2 = Demo()
+    >>> zc.freeze.interfaces.ITokenEnforced.providedBy(demo2)
+    False
+    >>> demo2._z_freeze()
+    >>> demo2._z_frozen
+    True
+    >>> util.get(demo2) is None
+    True

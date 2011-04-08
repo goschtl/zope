@@ -1,0 +1,35 @@
+=======
+CHANGES
+=======
+
+1.2 (2011-04-08)
+================
+
+- Updated tests to run with ZTK 1.0.
+
+- Using Python's `doctest` module instead of the deprecated
+  `zope.testing.doctest`.
+
+- Depend on a newer bug-fix version of `zope.locking`.
+
+
+1.1
+===
+
+(supports Zope 3.4/eggs)
+
+1.1b
+----
+
+Switched to supporting eggs
+
+1.0
+===
+
+(supports Zope 3.3/no eggs)
+
+1.0.1
+-----
+
+Removed the included rwproperty.py and added a dependency instead, as
+rwproperty is now available from pypi.
