@@ -1,0 +1,177 @@
+========
+Versions
+========
+
+A pattern for using the vault often involves wrapping it, so that clients
+are not aware of the vault or inventory API, but have a custom API more
+pertinent to the specific use case.  One convenient way to follow this pattern
+is to have an object that acts as a container and factory for the
+wrappers.  The `versions` module provides this object, and a traverser that
+can use it.
+
+To show it in use, we will need a class that uses a Versions object and a
+factory that creates the persistent versions.  Here, we'll have a Project class
+that has ProjectVersion classes.
+
+    >>> import persistent
+    >>> import zc.vault.vault
+    >>> import zc.vault.versions
+    >>> import zc.vault.core
+    >>> import zope.location
+    >>> class ProjectVersion(persistent.Persistent, zope.location.Location):
+    ...     def __init__(self, inventory):
+    ...         self.inventory = inventory
+    ...         zope.location.locate(self.inventory, self, 'inventory')
+    ...     def __getitem__(self, key):
+    ...         return self.inventory.contents('library')[key]
+    ...     def __setitem__(self, key, value):
+    ...         self.inventory.contents('library')[key] = value
+    ...     def get(self, key, default=None):
+    ...         try:
+    ...             return self[key]
+    ...         except KeyError:
+    ...             return default
+    ...
+    >>> def initialize(obj):
+    ...     assert obj.__dict__.get('held') is None, 'programmer error'
+    ...     obj.held = zc.vault.core.HeldContainer()
+    ...     zope.location.locate(obj.held, obj, 'held')
+    ...     def _initialize(version):
+    ...         inventory = version.inventory
+    ...         if inventory.contents.get('library', inventory) is inventory:
+    ...             # initialize inventory
+    ...             inventory.contents['library'] = None
+    ...             inventory.contents['data'] = None
+    ...     obj.versions = zc.vault.versions.Versions(
+    ...         zc.vault.vault.Vault(held=obj.held), ProjectVersion,
+    ...         obj, 'versions', _initialize)
+    ...     obj.active = obj.versions.create()
+    ...     zope.location.locate(obj.active, obj, 'active')
+    ...
+    >>> class Project(persistent.Persistent, zope.location.Location):
+    ...     zc.vault.versions.deferredProperty('active', initialize)
+    ...     zc.vault.versions.deferredProperty('versions', initialize)
+    ...     zc.vault.versions.deferredProperty('held', initialize)
+    ...     def commit(self):
+    ...         self.versions.commit(self.active)
+    ...         self.active = self.versions.create()
+    ...         zope.location.locate(self.active, self, 'active')
+    ...
+
+Now if we instantiate the Project (and put it in an application), we can
+examine the versions.
+
+    >>> p = app['project'] = Project()
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(zc.vault.versions.IVersions, p.versions)
+    True
+    >>> len(p.versions)
+    1
+    >>> p.versions[0].get('foo') # None
+    >>> import zc.freeze
+    >>> class Demo(persistent.Persistent, zc.freeze.Freezing):
+    ...     pass
+    >>> o = p.active['foo'] = Demo()
+    >>> p.commit()
+    >>> len(p.versions)
+    2
+    >>> p.versions[1]['foo'] is o
+    True
+    >>> o2 = p.active['bar'] = Demo()
+
+Old versions that are ILocations have been placed within the versions object
+and given __name__ values that correspond to their indices.
+
+    >>> p.versions[0].__name__
+    '0'
+    >>> p.versions[0].__parent__ is p.versions
+    True
+    >>> p.versions[1].__name__
+    '1'
+    >>> p.versions[1].__parent__ is p.versions
+    True
+
+In addition to `commit`, the Versions object also provides `commitFrom`.
+This works the same as the vault `commitFrom` method, and is not explained
+further here (for now).
+
+    >>> new_o = p.active['foo'] = Demo()
+    >>> p.commit()
+    >>> p.versions[2]['foo'] is new_o
+    True
+    >>> p.versions.commitFrom(p.versions[1])
+    >>> p.versions[3]['foo'] is new_o
+    False
+    >>> p.versions[3]['foo'] is o
+    True
+    >>> p.versions[3].__name__
+    '3'
+    >>> p.versions[3].__parent__ is p.versions
+    True
+
+If you instantiate a Versions object with a vault that has pre-existing
+manifests--like one that comes from a branch--the pre-existing manifests will
+automatically get set up as if they had been part of the versions object.
+
+    >>> p.alt_versions = zc.vault.versions.Versions(
+    ...     p.versions.vault.createBranch(), ProjectVersion, p, 'alt_versions')
+    >>> len(p.alt_versions)
+    1
+    >>> p.alt_versions[0].get('foo') is o
+    True
+    >>> p.alt_versions[0].__parent__ is p.alt_versions
+    True
+    >>> p.alt_versions[0].__name__
+    '0'
+
+The module also includes a traverser.
+
+    >>> import zope.publisher.browser
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> traverser = zc.vault.versions.Traverser(p.versions, request)
+    >>> traverser.browserDefault(request) # doctest: +ELLIPSIS
+    (<zc.vault.versions.Versions object at ...>, ('index.html',))
+    >>> traverser.publishTraverse(request, '1') is p.versions[1]
+    True
+    >>> traverser.publishTraverse(request, '0') is p.versions[0]
+    True
+
+If the traverser gets a non-integer, it tries to get a view, but fails with
+a NotFound error.
+
+    >>> traverser.publishTraverse(request, 'index.html')
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    NotFound: Object: <zc.vault.versions.Versions object at ...>,
+              name: 'index.html'
+
+If the traverser gets an integer out-of-range, it tries for 'index.html' at
+the moment; this may need to be rethought.
+
+    >>> traverser.publishTraverse(request, '200')
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    NotFound: Object: <zc.vault.versions.Versions object at ...>,
+              name: 'index.html'
+
+Similarly, it contains a traversable.
+
+    >>> traversable = zc.vault.versions.Traversable(p.versions)
+    >>> traversable.traverse('1', []) is p.versions[1]
+    True
+    >>> traversable.traverse('0', []) is p.versions[0]
+    True
+    >>> traversable.traverse('5', [])
+    Traceback (most recent call last):
+    ...
+    LocationError: '5'
+
+With this stuff, I usually like to make sure we can actually commit the
+transaction.
+
+    >>> import transaction
+    >>> transaction.commit()
+
+Yay.

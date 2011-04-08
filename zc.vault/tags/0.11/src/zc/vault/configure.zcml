@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zc.task">
+
+  <class class=".core.Mapping">
+    <require like_class="zc.freeze.FreezingAdapter" />
+    <require permission="zope.View"
+        interface="zope.interface.common.mapping.IEnumerableMapping" />
+    <require permission="zope.View"
+        attributes="getKey __eq__ __ne__" />
+    <require permission="zope.ManageContent"
+        interface="zope.interface.common.mapping.IWriteMapping" />
+    <require permission="zope.ManageContent"
+        attributes="updateOrder updateOrderFromTokens" />
+  </class>
+
+  <class class=".keyref.Token">
+    <allow interface="zope.app.keyreference.interfaces.IKeyReference"
+        attributes="identifiers" />
+  </class>
+
+  <class class=".keyref._top_token_">
+    <require like_class=".keyref.Token" />
+  </class>
+
+  <class class=".core.Relationship">
+    <require like_class="zc.freeze.FreezingAdapter" />
+    <require like_class=".keyref.Token" />
+    <require permission="zope.View"
+        attributes="token object containment children copy_source" />
+    <require permission="zope.ManageContent"
+        set_attributes="object" />
+  </class>
+
+  <class class=".core.HeldContainer">
+    <require permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" />
+    <require permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer" />
+  </class>
+
+  <class class=".core.Manifest">
+    <require like_class="zc.freeze.FreezingAdapter" />
+    <require permission="zope.View"
+        attributes="held vault_index getBaseSources getBaseSource base_source
+                    vault merged_sources update_source update_base updating
+                    iterChanges get getType isSelected getBase getLocal
+                    getUpdated iterSuggested iterModified iterMerged
+                    iterSelectedParents iterParents isLinked
+                    iterUpdateConflicts iterUpdateResolutions isUpdateConflict
+                    iterOrphanConflicts iterOrphanResolutions isOrphan
+                    isOrphanConflict iterParentConflicts iterAll __iter__
+                    iterUnchangedOrphans previous next isOption" />
+    <require permission="zope.ManageContent"
+        attributes="addLocal addModified beginUpdate beginCollectionUpdate
+                    completeUpdate approveRelationshipChange abortUpdate select
+                    resolveUpdateConflict resolveOrphanConflict
+                    undoOrphanConflictResolution" />
+    <!-- addSuggested and reindex should be forbidden or another permission;
+         currently forbidden -->
+    <require permission="zope.ManageContent"
+        set_attributes="vault_index vault" />
+  </class>
+
+  <class class=".core.Vault">
+    <require permission="zope.View"
+        attributes="intids getPrevious getNext __len__ __getitem__ __iter__
+                    manifest" />
+    <require permission="zope.ManageContent"
+        attributes="commit commitOverride" />
+  </class>
+
+  <class class=".vault.InventoryContents">
+    <require permission="zope.View"
+        interface="zope.interface.common.mapping.IEnumerableMapping" />
+    <require permission="zope.View"
+        attributes="getKey __eq__ __ne__ __call__ previous next
+                    previous_version next_version type selected
+                    is_update_conflict has_base has_local has_updated
+                    has_suggested has_modified has_merged base_item local_item
+                    updated_item iterSuggestedItems iterModifiedItems
+                    iterMergedItems copy_source selected_item
+                    relationship inventory" />
+    <require permission="zope.ManageContent"
+        interface="zope.interface.common.mapping.IWriteMapping" />
+    <require permission="zope.ManageContent"
+        attributes="updateOrder updateOrderFromTokens makeMutable select
+                    resolveUpdateConflict" />
+  </class>
+
+  <class class=".vault.InventoryItem">
+    <require like_class=".vault.InventoryContents" />
+    <require permission="zope.View"
+        attributes="is_orphan is_orphan_conflict is_parent_conflict parent
+                    name iterSelectedParents iterParents object" />
+    <require permission="zope.ManageContent"
+        attributes="resolveOrphanConflict moveTo copyTo"
+        set_attributes="object" />
+   </class>
+
+  <class class=".vault.Inventory">
+    <require permission="zope.View"
+        attributes="__eq__ __ne__ vault contents manifest iterUpdateConflicts
+                    iterUpdateResolutions iterOrphanConflicts
+                    iterOrphanResolutions iterUnchangedOrphans
+                    iterParentConflicts __iter__ updating merged_sources
+                    update_source iterChangedItems getItemFromToken previous
+                    next" />
+    <require permission="zope.ManageContent"
+        attributes="beginUpdate completeUpdate abortUpdate
+                    beginCollectionUpdate"
+        set_attributes="vault" />
+   </class>
+
+  <class class=".vault.Vault">
+    <require like_class=".core.Vault" />
+    <require permission="zope.View"
+        attributes="getInventory inventory" />
+  </class>
+
+</configure>

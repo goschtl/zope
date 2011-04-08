@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
+
+  <adapter
+      factory=".traversal.ObjectCopier"
+      permission="zope.ManageContent"
+      trusted="y"
+      />
+
+  <adapter
+      factory=".traversal.ObjectMover"
+      permission="zope.ManageContent"
+      trusted="y"
+      />
+
+  <adapter
+      factory=".traversal.ObjectLinker"
+      permission="zope.ManageContent"
+      trusted="y"
+      />
+
+  <class class=".traversal.Proxy">
+    <require
+        permission="zope.Public"
+        interface=".traversal.IProxy"
+        />
+  </class>
+
+</configure>

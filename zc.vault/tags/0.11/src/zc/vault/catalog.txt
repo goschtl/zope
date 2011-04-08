@@ -1,0 +1,196 @@
+When wanting to index objects in a vault, we have identified at least three
+scenarios.
+
+- You may want to find unique objects irrespective of their effective locations
+  within a vault.
+
+- You may want to index the objects within a vault, tracking the most recent
+  manifest revision, treating identical objects in different vault locations as
+  separate searchable entities.
+
+- As a variation of the second story, you may want to search through all past
+  vault revisions, not just the most recent one.
+
+The way the catalog.py module approaches this is to provide three
+extrinsicreferences-like mapping objects to historical revisions, current
+revisions, and uncommitted versions, respectively, that use them (a fourth
+similar data structure is included for bookkeeping, but is not part of the
+advertised API).  Then it provides a number of subscribers to keep these
+data structures up-to-date.
+
+Let's run the code through its paces.  First we want to run the code that adds
+the references.  It is a function that expects a package.
+
+    >>> from zc.vault import catalog
+    >>> sm = app.getSiteManager()
+    >>> package = sm['default']
+    >>> catalog.createRevisionReferences(package)
+
+Now we should be able to get the utilities.  Note that the
+catalog module provides constants for the utility names.
+
+    >>> from zope import component
+    >>> refs = component.getUtility(catalog.IRevisionReferences)
+
+Now we can actually create a vault and watch the references change.
+
+    >>> from zc.vault.vault import Vault, Inventory
+    >>> v = Vault()
+    >>> app['vault'] = v
+    >>> i = Inventory(vault=v)
+    >>> import persistent
+    >>> from zope.app.container.contained import Contained
+    >>> from zc.freeze import Freezing
+    >>> class Demo(persistent.Persistent, Contained, Freezing):
+    ...     def __repr__(self):
+    ...         return "<%s %r>" % (self.__class__.__name__, self.__name__)
+    ...
+    >>> i.contents[u'able'] = app['a1'] = Demo()
+
+Initially, an object is added to a working inventory (or manifest).
+The refs put a relationship in the working category.
+
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> intids = component.getUtility(IIntIds)
+    >>> working = refs.working.get(intids.getId(app['a1']))
+    >>> len(working)
+    1
+    >>> list(working) == [intids.getId(i.manifest)]
+    True
+    >>> len(refs.current.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.historical.get(intids.getId(app['a1'])))
+    0
+
+Once we commit the inventory, the relationship moves to the current category.
+
+    >>> v.commit(i)
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.historical.get(intids.getId(app['a1'])))
+    0
+    >>> current = refs.current.get(intids.getId(app['a1']))
+    >>> len(current)
+    1
+    >>> list(current) == [intids.getId(i.manifest)]
+    True
+
+If we create a new inventory, the object is in both working and current.
+
+    >>> i = Inventory(vault=v, mutable=True)
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    1
+    >>> working = refs.working.get(intids.getId(app['a1']))
+    >>> len(working)
+    1
+    >>> list(working) == [intids.getId(i.manifest)]
+    True
+    >>> current = refs.current.get(intids.getId(app['a1']))
+    >>> len(current)
+    1
+    >>> list(current) == [intids.getId(v.manifest)]
+    True
+    >>> len(refs.historical.get(intids.getId(app['a1'])))
+    0
+
+Commit that one, and we have one in historical and one in current.
+
+    >>> i.contents[u'disiri'] = app['d1'] = Demo() # so there's a change
+    >>> v.commit(i)
+    >>> historical = refs.historical.get(intids.getId(app['a1']))
+    >>> len(historical)
+    1
+    >>> list(historical) == [intids.getId(v[0])]
+    True
+    >>> current = refs.current.get(intids.getId(app['a1']))
+    >>> len(current)
+    1
+    >>> list(current) == [intids.getId(v.manifest)]
+    True
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+
+We'll make another two inventories.
+
+    >>> i = Inventory(vault=v, mutable=True)
+    >>> i2 = Inventory(vault=v, mutable=True)
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    2
+
+Now one of them will replace 'a1' ('able') with another object.
+
+    >>> i.contents['able'] = app['a2'] = Demo()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    1
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    1
+
+Now we'll commit the first inventory.
+
+    >>> v.commit(i)
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    1
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    0
+    >>> len(refs.current.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.current.get(intids.getId(app['a2'])))
+    1
+    >>> len(refs.historical.get(intids.getId(app['a1'])))
+    2
+
+If we update i2 (do a merge with the checked-in version) then the references
+correctly change.
+
+    >>> i2.beginUpdate()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    1
+
+If we select a different relationship then the references also correctly
+change.
+
+    >>> i2.contents('able').base_item.select()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    1
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    0
+    >>> i2.contents('able').updated_item.select()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    1
+
+If we abort then the references correctly change.
+
+    >>> i2.abortUpdate()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    1
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    0
+    >>> i2.beginUpdate()
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    1
+
+Now we'll commit i2 and once again check the references.
+
+    >>> i2.contents[u'toug'] = app['t1'] = Demo() # so there's a change
+    >>> v.commit(i2)
+    >>> len(refs.working.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.working.get(intids.getId(app['a2'])))
+    0
+    >>> len(refs.current.get(intids.getId(app['a1'])))
+    0
+    >>> len(refs.current.get(intids.getId(app['a2'])))
+    1
+    >>> len(refs.historical.get(intids.getId(app['a1'])))
+    2
+    >>> len(refs.historical.get(intids.getId(app['a2'])))
+    1
+
+The end.  Further tests would make sure that selected orphans were
+maintained in working copies.
