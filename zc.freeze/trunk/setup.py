@@ -1,3 +1,5 @@
+"""Pattern for freezing objects"""
+
 import os
 from setuptools import setup, find_packages
 
@@ -7,12 +9,12 @@ def read(*rnames):
 
 
 tests_require = [
-        'transaction',
-        'zope.app.container', # lame, should remove
-        'zope.app.keyreference',
-        'zope.app.testing', # lame, should remove
-        'zope.testing',
-        ],
+    'transaction',
+    'zope.app.container', # lame, should remove
+    'zope.app.keyreference',
+    'zope.app.testing', # lame, should remove
+    'zope.testing',
+    ],
 
 
 setup(
@@ -20,8 +22,14 @@ setup(
     version="1.2dev",
     author='Zope Project',
     author_email='zope-dev@zope.org',
-    description=read('README.txt'),
+    description=__doc__,
     long_description='\n\n'.join([
+        read('README.txt'),
+        '.. contents::',
+        '\n'.join([
+            'Detailed Documentation',
+            '**********************',
+            ]),
         read('src', 'zc', 'freeze', 'README.txt'),
         read('CHANGES.txt'),
         ]),
@@ -56,7 +64,7 @@ setup(
         'zope.component',
         'zope.event',
         'zope.interface',
-        'zope.locking >= 1.2.1', # optional, actually
+        'zope.locking >= 1.2.1', # optional, actually <= wish? not reality
         ],
     extras_require=dict(
         test=tests_require,

@@ -5,10 +5,12 @@ CHANGES
 1.2 (unreleased)
 ================
 
-* Updated tests to run with ZTK 1.0.
+- Updated tests to run with ZTK 1.0.
 
-* Using Python's ``doctest`` module instead of depreacted
-  ``zope.testing.doctest``.
+- Using Python's `doctest` module instead of the deprecated
+  `zope.testing.doctest`.
+
+- Depend on a newer bug-fix version of zope.locking
 
 
 1.1
