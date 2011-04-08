@@ -20,7 +20,7 @@ tests_require = [
 
 setup(
     name="zc.vault",
-    version="0.11",
+    version="0.12dev",
     author='Zope Project',
     author_email='zope-dev@zope.org',
     description=__doc__,
