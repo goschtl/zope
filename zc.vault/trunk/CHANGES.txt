@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.11 (unreleased)
+0.11 (2011-04-08)
 =================
 
 - Use eggs instead of zope3 checkout.
