@@ -1,65 +1,14 @@
-=============
- Subscribers
-=============
+===========
+Subscribers
+===========
 
 The subscribers module contains a subscriber for "enforcing" freezing
 using zope.locking tokens.  This, of course, assumes that zope.locking
 tokens are configured to themselves be enforced somehow, using
 approaches such as those in zc.tokenpolicy.  By default, this `freezer`
 subscriber is registered only for objects that provide
-zc.freeze.interfaces.ITokenEnforced.
-
-Set up
-======
-
-This sets up a `zope.locking` token utility. This code also creates a Demo
-class that provides ``IVersioning`` and can be used in our setup.
-
-    >>> from zope import interface, component
-    >>> from zope.locking import utility, interfaces
-    >>> getRootFolder()['token_util'] = util = utility.TokenUtility()
-    >>> import transaction
-    >>> transaction.commit()
-    >>> component.provideUtility(util, provides=interfaces.ITokenUtility)
-    >>> import zope.app.keyreference.interfaces
-    >>> class IDemo(interface.Interface):
-    ...     """a demonstration interface for a demonstration class"""
-    ...
-    >>> import zc.freeze
-    >>> class Demo(zc.freeze.Freezing):
-    ...     interface.implements(IDemo)
-    ...
-    >>> class DemoKeyReference(object):
-    ...     component.adapts(IDemo)
-    ...     _class_counter = 0
-    ...     interface.implements(
-    ...         zope.app.keyreference.interfaces.IKeyReference)
-    ...     def __init__(self, context):
-    ...         self.context = context
-    ...         class_ = type(self)
-    ...         self._id = getattr(context, '__demo_key_reference__', None)
-    ...         if self._id is None:
-    ...             self._id = class_._class_counter
-    ...             context.__demo_key_reference__ = self._id
-    ...             class_._class_counter += 1
-    ...     key_type_id = 'zc.freeze.DemoKeyReference'
-    ...     def __call__(self):
-    ...         return self.context
-    ...     def __hash__(self):
-    ...         return (self.key_type_id, self._id)
-    ...     def __cmp__(self, other):
-    ...         if self.key_type_id == other.key_type_id:
-    ...             return cmp(self._id, other._id)
-    ...         return cmp(self.key_type_id, other.key_type_id)
-    ...
-    >>> component.provideAdapter(DemoKeyReference)
-
-
-Subscription
-============
-
-Imagine a demo object that implements ``ITokenEnforced``, with a token utility
-already in place.
+zc.freeze.interfaces.ITokenEnforced.  Imagine a demo object that
+implements ``ITokenEnforced``, with a token utility already in place.
 
     >>> import zc.freeze.subscribers
     >>> import zope.component
@@ -93,4 +42,3 @@ fire, given a default registration.
     True
     >>> util.get(demo2) is None
     True
-

@@ -1,39 +1,66 @@
+import os
 from setuptools import setup, find_packages
+
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+
+tests_require = [
+        'transaction',
+        'zope.app.container', # lame, should remove
+        'zope.app.keyreference',
+        'zope.app.testing', # lame, should remove
+        'zope.testing',
+        ],
+
 
 setup(
     name="zc.freeze",
-    version="1.1b",
-    install_requires=[
-        'zc.copy >= 1.1b',
-        'rwproperty',
-        'setuptools',
-        'zope.component',
-        'zope.interface',
-        'pytz',
-        'ZODB3',
-        'zope.event',
-        'zope.annotation',
-        'zope.cachedescriptors',
-        'zope.locking >= 1.1b', # optional, actually
-        'zope.testing',
-        'zope.app.testing', # lame, should remove
-        'zope.app.container', # lame, should remove
-        ],
-    packages=find_packages('src'),
-    include_package_data=True,
-    package_dir= {'':'src'},
-
-    namespace_packages=['zc'],
-
-    zip_safe=False,
+    version="1.2dev",
     author='Zope Project',
     author_email='zope-dev@zope.org',
-    url='http://pypi.python.org/pypi/zc.freeze',
-    description=open('README.txt').read(),
-    long_description=
-        open('CHANGES.txt').read() +
-        '\n\n' +
-        open("src/zc/freeze/README.txt").read(),
+    description=read('README.txt'),
+    long_description='\n\n'.join([
+        read('src', 'zc', 'freeze', 'README.txt'),
+        read('CHANGES.txt'),
+        ]),
     license='ZPL 2.1',
-    keywords="zope zope3",
+    keywords="Zope Zope3 version freeze",
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Web Environment',
+        'Framework :: Zope3',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        ],
+    url='http://pypi.python.org/pypi/zc.freeze',
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    namespace_packages=['zc'],
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
+        'pytz',
+        'rwproperty',
+        'setuptools',
+        'zc.copy >= 1.1b',
+        'ZODB3',
+        'zope.annotation',
+        'zope.cachedescriptors',
+        'zope.component',
+        'zope.event',
+        'zope.interface',
+        'zope.locking >= 1.2.1', # optional, actually
+        ],
+    extras_require=dict(
+        test=tests_require,
+        ),
+    tests_require=tests_require,
+    test_suite='zc.freeze.tests.test_suite',
     )
