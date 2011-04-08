@@ -19,7 +19,7 @@ tests_require = [
 
 setup(
     name="zc.freeze",
-    version="1.2",
+    version="1.3dev",
     author='Zope Project',
     author_email='zope-dev@zope.org',
     description=__doc__,
