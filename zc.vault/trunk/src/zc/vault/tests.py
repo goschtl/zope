@@ -11,13 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Relationship tests
+"""Vault tests
 
-$Id$
 """
+
+import doctest
 import unittest
 import re
-from zope.testing import doctest, renormalizing
+from zope.testing import renormalizing
 import zope.testing.module
 
 # these are used by setup
@@ -144,8 +145,7 @@ def test_suite():
     tests = (
         doctest.DocFileSuite(
             'README.txt',
-            setUp=setUp, tearDown=tearDown, checker=checker,
-            optionflags=doctest.INTERPRET_FOOTNOTES),
+            setUp=setUp, tearDown=tearDown, checker=checker),
         doctest.DocFileSuite(
             'versions.txt',
             setUp=setUp, tearDown=tearDown),
@@ -178,6 +178,3 @@ def test_suite():
         pass
 
     return unittest.TestSuite(tests)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

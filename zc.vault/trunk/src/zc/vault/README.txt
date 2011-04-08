@@ -1430,7 +1430,26 @@ In a future revision of the zc.vault package, it may be possible to move and
 copy between inventories. At the time of writing, this use case is
 unnecessary, and doing so will have unspecified behavior.
 
-See also [#rename_after_freeze]_ for an important test case.
+.. topic:: A test for a subtle bug in revision <= 78553
+
+    One important case, at least for the regression testing is an
+    attempt to rename an item after the vault has been frozen.
+    Since we have just committed, this is the right time to try that.
+    Let's create a local copy of an inventory and try to rename some
+    items on it.
+
+    >>> v.manifest._z_frozen
+    True
+    >>> l = Inventory(Manifest(v.manifest))
+    >>> l.manifest._z_frozen
+    False
+    >>> l.contents('abe').items()
+    [('old_donald', <Demo u'd1'>), ('new_donald', <Demo u'Demo-2'>)]
+    >>> l.contents('abe')('old_donald').moveTo(l.contents('abe'), 'bob')
+    >>> l.contents('abe')('new_donald').moveTo(l.contents('abe'), 'donald')
+    >>> l.contents('abe').items()
+    [('bob', <Demo u'd1'>), ('donald', <Demo u'Demo-2'>)]
+
 
 We have now discussed the core API for the vault system for basic use.  A
 number of other use cases are important, however:
@@ -2474,41 +2493,19 @@ We'll make sure that all these changes can in fact be committed to the ZODB.
 
 -----------
 
-...commit messages?  Could be added to event, so object log could use.
+.. Other topics.
 
-Need commit datetime stamp, users.  Handled now by objectlog.
+    ...commit messages?  Could be added to event, so object log could use.
 
-Show traversal adapters that use zc.shortcut code...
+    Need commit datetime stamp, users.  Handled now by objectlog.
 
-Talk about tokens.
+    Show traversal adapters that use zc.shortcut code...
 
-Then talk about use case of having a reference be updated to a given object
-within a vault...
+    Talk about tokens.
 
-...a vault mirror that also keeps track of hierarchy?
+    Then talk about use case of having a reference be updated to a given object
+    within a vault...
 
-A special reference that knows both vault and token?
+    ...a vault mirror that also keeps track of hierarchy?
 
-
-Footnotes
-=========
-
-.. [#rename_after_freeze] A test for a subtle bug in revision <= 78553
-
-One important case, at least for the regression testing is an attempt to
-rename an item after the vault has been frozen.  Since we have just
-committed, this is the right time to try that.  Let's create a local
-copy of an inventory and try to rename some items on it.
-
-    >>> v.manifest._z_frozen
-    True
-    >>> l = Inventory(Manifest(v.manifest))
-    >>> l.manifest._z_frozen
-    False
-    >>> l.contents('abe').items()
-    [('old_donald', <Demo u'd1'>), ('new_donald', <Demo u'Demo-2'>)]
-    >>> l.contents('abe')('old_donald').moveTo(l.contents('abe'), 'bob')
-    >>> l.contents('abe')('new_donald').moveTo(l.contents('abe'), 'donald')
-    >>> l.contents('abe').items()
-    [('bob', <Demo u'd1'>), ('donald', <Demo u'Demo-2'>)]
-
+    A special reference that knows both vault and token?

@@ -1,0 +1,25 @@
+=======
+CHANGES
+=======
+
+0.11 (unreleased)
+=================
+
+- Use eggs instead of zope3 checkout.
+- Use Python's `doctest` module instead of the deprecated
+  `zope.testing.doctest`.
+- Update tests to run with ZTK 1.0.
+
+
+0.10 (2008-03-04)
+=================
+
+- Add a dependency on `rwproperty` instead of using a copy of it.
+- Add `zc.vault.versions.Traversable`.
+- Fix a bug for rename after freeze in r <= 78553.
+
+
+0.9 (2006-12-03)
+================
+
+Initial egg release.

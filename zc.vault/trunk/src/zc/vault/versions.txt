@@ -166,7 +166,7 @@ Similarly, it contains a traversable.
     >>> traversable.traverse('5', [])
     Traceback (most recent call last):
     ...
-    TraversalError: '5'
+    LocationError: '5'
 
 With this stuff, I usually like to make sure we can actually commit the
 transaction.
