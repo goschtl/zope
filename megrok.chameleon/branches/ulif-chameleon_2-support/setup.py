@@ -1,0 +1,57 @@
+import os
+from setuptools import setup, find_packages
+
+version = '0.5.3dev'
+
+install_requires = [
+    'setuptools',
+    'grokcore.view',
+    'Chameleon',
+    'lxml', # Needed by chameleon.genshi
+    'zope.component',
+    'zope.contentprovider',
+    'zope.event',
+    'zope.traversing',
+    ]
+
+tests_require = [
+    'grokcore.component',
+    'grokcore.viewlet',
+    'zope.app.wsgi',
+    'zope.app.zcmlfiles',
+    ]
+
+long_description = (open('README.txt').read() +
+                    '\n\n' +
+                    open(os.path.join('src', 'megrok', 'chameleon',
+                                      'README.txt')).read() +
+                    '\n\n' +
+                    open('CHANGES.txt').read())
+
+setup(name='megrok.chameleon',
+      version=version,
+      description="Chameleon page template support for Grok",
+      long_description=long_description,
+      # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=['Development Status :: 3 - Alpha',
+                   'Environment :: Web Environment',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: Zope Public License',
+                   'Programming Language :: Python :: 2.5',
+                   'Operating System :: OS Independent',
+                   'Topic :: Internet :: WWW/HTTP',
+                   ],
+      keywords="grok chameleon template",
+      author="Uli Fouquet",
+      author_email="grok-dev@zope.org",
+      url="http://pypi.python.org/pypi/megrok.chameleon",
+      license="ZPL",
+      package_dir={'': 'src'},
+      packages=find_packages('src'),
+      namespace_packages=['megrok'],
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=install_requires,
+      tests_require=tests_require,
+      extras_require={'test': tests_require},
+      )
