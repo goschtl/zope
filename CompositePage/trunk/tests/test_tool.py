@@ -18,15 +18,14 @@ $Id: test_tool.py,v 1.4 2004/05/03 16:02:40 sidnei Exp $
 
 import unittest
 
-import ZODB
 from OFS.Folder import Folder
-from Products.CompositePage.tool import CompositeTool
-from Products.CompositePage.slot import Slot
-from Products.CompositePage.interfaces import CompositeError
-
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 import AccessControl.User  # Get the "nobody" user defined
+
+from Products.CompositePage.tool import CompositeTool
+from Products.CompositePage.slot import Slot
+from Products.CompositePage.interfaces import CompositeError
 
 
 class PermissiveSecurityPolicy:
@@ -35,7 +34,6 @@ class PermissiveSecurityPolicy:
 
     def checkPermission(*args, **kw):
         return 1
-
 
 
 class ToolTests(unittest.TestCase):

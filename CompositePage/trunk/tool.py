@@ -24,10 +24,12 @@ from OFS.CopySupport import _cb_encode, _cb_decode, cookie_path
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
 
-from interfaces import ISlot, ISlotClass, ICompositeElement
-from interfaces import CompositeError
-from element import CompositeElement
-from utils import copyOf
+from Products.CompositePage.interfaces import ICompositeElement
+from Products.CompositePage.interfaces import ISlot
+from Products.CompositePage.interfaces import ISlotClass
+from Products.CompositePage.interfaces import CompositeError
+from Products.CompositePage.element import CompositeElement
+from Products.CompositePage.utils import copyOf
 
 
 _uis = {}
@@ -129,10 +131,10 @@ class CompositeTool(Folder):
         root = self.getPhysicalRoot()
         elements = []
         target = root.restrictedTraverse(target_path)
-        assert ISlot.isImplementedBy(target), repr(target)
+        assert ISlot.providedBy(target), repr(target)
         for source in sources:
             slot = root.restrictedTraverse(source[:-1])
-            assert ISlot.isImplementedBy(slot), repr(slot)
+            assert ISlot.providedBy(slot), repr(slot)
             element = slot.restrictedTraverse(source[-1])
             elements.append(element)
             if self._check_security:
@@ -155,7 +157,7 @@ class CompositeTool(Folder):
             # Add the elements and reorder.
             for element in elements:
 
-                if not ICompositeElement.isImplementedBy(element):
+                if not ICompositeElement.providedBy(element):
                     # Make a composite element wrapper.
                     element = CompositeElement(element.getId(), element)
 
@@ -189,7 +191,7 @@ class CompositeTool(Folder):
         try:
             for source in sources:
                 slot = self.restrictedTraverse(source[:-1])
-                assert ISlot.isImplementedBy(slot), repr(slot)
+                assert ISlot.providedBy(slot), repr(slot)
                 slot_id = id(aq_base(slot))
                 if not orig_slots.has_key(slot_id):
                     orig_slots[slot_id] = slot

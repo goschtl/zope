@@ -20,22 +20,32 @@ import re
 
 import Globals
 import Acquisition
-from Acquisition import aq_base, aq_inner, aq_parent, aq_get
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from Acquisition import aq_get
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
+from zope.interface import implements
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
-from interfaces import IComposite, ISlot, ISlotGenerator, CompositeError
-from slot import Slot, getIconURL, formatException
-import perm_names
+from Products.CompositePage.interfaces import IComposite
+from Products.CompositePage.interfaces import ISlot
+from Products.CompositePage.interfaces import ISlotGenerator
+from Products.CompositePage.interfaces import CompositeError
+from Products.CompositePage.slot import Slot
+from Products.CompositePage.slot import getIconURL
+from Products.CompositePage.slot import formatException
+from Products.CompositePage.perm_names import view_perm
+from Products.CompositePage.perm_names import change_composites_perm
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
 
-class SlotGenerator (Acquisition.Explicit):
+class SlotGenerator(Acquisition.Explicit):
     """Automatically makes slots available to the template.
 
     Note: instances of this class are shared across threads.
@@ -49,12 +59,13 @@ class SlotGenerator (Acquisition.Explicit):
         template.  Assigns attributes (class_name and title) to the
         slot at the same time.
         """
+        name = str(name)
         composite = aq_parent(aq_inner(self))
         composite._usingSlot(name, class_name, title)
         slots = composite.filled_slots
-        try:
+        if slots.hasObject(name):
             return slots[name]
-        except (KeyError, AttributeError):
+        else:
             # Generate a new slot.
             s = self._slot_class(name)
             if composite.isEditing():
@@ -73,8 +84,8 @@ class CompositeMixin:
     elements.  This base class provides the nuts and bolts of a
     composite editing interface.
     """
+    implements(IComposite)
     meta_type = "Composite"
-    __implements__ = IComposite
 
     security = ClassSecurityInfo()
 
@@ -87,7 +98,6 @@ class CompositeMixin:
     template_path = "template"
     _v_editing = 0
     _v_rendering = 0
-    _v_generating = 0
     _v_slot_specs = None  # [{'name', 'class', 'title'}]
 
     security.declarePublic("slots")
@@ -98,19 +108,19 @@ class CompositeMixin:
          "label": "Path to template"},
         )
 
-    security.declareProtected(perm_names.view, "hasTemplate")
+    security.declareProtected(view_perm, "hasTemplate")
     def hasTemplate(self):
         if self.template_path:
             return 1
         return 0
 
-    security.declareProtected(perm_names.view, "getTemplate")
+    security.declareProtected(view_perm, "getTemplate")
     def getTemplate(self):
         if not self.template_path:
             raise CompositeError("No template set")
         return self.restrictedTraverse(str(self.template_path))
 
-    security.declareProtected(perm_names.change_composites, "generateSlots")
+    security.declareProtected(change_composites_perm, "generateSlots")
     def generateSlots(self):
         """Creates the slots defined by the template.
         """
@@ -120,7 +130,7 @@ class CompositeMixin:
         finally:
             self._v_editing = 0
 
-    security.declareProtected(perm_names.view, "__call__")
+    security.declareProtected(view_perm, "__call__")
     def __call__(self):
         """Renders the composite.
         """
@@ -137,7 +147,7 @@ class CompositeMixin:
 
     index_html = None
 
-    security.declareProtected(perm_names.change_composites, "design")
+    security.declareProtected(change_composites_perm, "design")
     def design(self, ui=None):
         """Renders the composite with editing features.
         """
@@ -152,14 +162,13 @@ class CompositeMixin:
         finally:
             self._v_editing = 0
 
-    security.declareProtected(perm_names.change_composites,
-                              "manage_designForm")
+    security.declareProtected(change_composites_perm, "manage_designForm")
     def manage_designForm(self):
         """Renders the composite with editing and ZMI features.
         """
         return self.design("zmi")
 
-    security.declareProtected(perm_names.change_composites, "getUI")
+    security.declareProtected(change_composites_perm, "getUI")
     def getUI(self, ui=None):
         """Returns a UI object.
         """
@@ -186,7 +195,7 @@ class CompositeMixin:
                 'title': title,
                 })
 
-    security.declareProtected(perm_names.change_composites, "getSlotSpecs")
+    security.declareProtected(change_composites_perm, "getSlotSpecs")
     def getSlotSpecs(self):
         """Returns the slot specs within the template.
 
@@ -196,13 +205,13 @@ class CompositeMixin:
         self._v_slot_specs = []
         try:
             self()
+            slots = self._v_slot_specs
+            return slots
         finally:
             self._v_editing = 0
-            slots = self._v_slot_specs
             self._v_slot_specs = None
-            return slots
 
-    security.declareProtected(perm_names.change_composites, "getSlotClassName")
+    security.declareProtected(change_composites_perm, "getSlotClassName")
     def getSlotClassName(self, slot_name):
         """Returns the class_name of a slot.
 
@@ -215,7 +224,7 @@ class CompositeMixin:
                 return spec['class_name']
         raise KeyError(slot_name)
 
-    security.declareProtected(perm_names.change_composites, "getManifest")
+    security.declareProtected(change_composites_perm, "getManifest")
     def getManifest(self):
         """Returns a manifest of slot contents.
 
@@ -228,9 +237,9 @@ class CompositeMixin:
         if hasattr(self, 'portal_url'):
             icon_base_url = self.portal_url()
         else:
-            REQUEST = getattr(self, 'REQUEST', None)
-            if REQUEST is not None:
-                icon_base_url = self.REQUEST['BASEPATH1']
+            request = getattr(self, 'REQUEST', None)
+            if request is not None:
+                icon_base_url = request['BASEPATH1']
             else:
                 icon_base_url = ''
         for spec in specs:
@@ -287,7 +296,7 @@ class CompositeMixin:
             contents.append(slot_info)
         return contents
 
-    security.declareProtected(perm_names.view, "isEditing")
+    security.declareProtected(view_perm, "isEditing")
     def isEditing(self):
         """Returns true if currently rendering in design mode.
         """
@@ -334,7 +343,7 @@ class FailedElement(SimpleItem):
     title = 'Error'
 
 
-addCompositeForm = PageTemplateFile("addCompositeForm", _www)
+addCompositeForm = PageTemplateFile("addCompositeForm.zpt", _www)
 
 def manage_addComposite(dispatcher, id, title="", create_sample="",
                         REQUEST=None):
@@ -342,7 +351,7 @@ def manage_addComposite(dispatcher, id, title="", create_sample="",
     """
     ob = Composite()
     ob._setId(id)
-    ob.title = string(title)
+    ob.title = unicode(title)
     dispatcher._setObject(ob.getId(), ob)
     if create_sample:
         ob = dispatcher.this()._getOb(ob.getId())
@@ -356,13 +365,3 @@ def manage_addComposite(dispatcher, id, title="", create_sample="",
         ob._setObject(pt.getId(), pt)
     if REQUEST is not None:
         return dispatcher.manage_main(dispatcher, REQUEST)
-
-
-def string(s):
-    """Ensures an object is either a string or a unicode.
-    """
-    try:
-        return str(s)
-    except UnicodeEncodeError:
-        return unicode(s)
-

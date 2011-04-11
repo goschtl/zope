@@ -1,8 +1,26 @@
-After Version 0.2
-  - allow to subclass rendering of target
-    change order of targets rendering
+Next Release
+------------
 
-Version 0.2
+- Fixed test failures caused by 7 years of changes to Zope.  This mostly
+  involved simple modernization:
+
+    - Use zope.interface, zope.tales, and zope.pagetemplate rather than
+      their predecessors.
+
+    - Use absolute imports.
+
+    - Use Unicode where possible.
+
+- Let's stop swallowing errors that occur when rendering the template
+  to get the list of slots.  Error messages are friendlier than silent
+  breakage.
+
+- Slots now show the add element interface only at the top and bottom
+  of the slot, not between elements.  (Hmm, should this be configurable?)
+
+
+0.2 (2004-06-16)
+----------------
 
   - Changed the UI to use images for elements and targets.
 

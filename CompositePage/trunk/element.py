@@ -23,19 +23,20 @@ from Acquisition import aq_get
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from DocumentTemplate.DT_Util import safe_callable
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+from zope.interface import implements
 
-from interfaces import ICompositeElement
+from Products.CompositePage.interfaces import ICompositeElement
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
 
-class CompositeElement (SimpleItem, PropertyManager):
+class CompositeElement(SimpleItem, PropertyManager):
     """A simple path-based reference to an object and a template.
 
     You can render it and choose which template to apply for rendering.
     """
-    __implements__ = ICompositeElement
+    implements(ICompositeElement)
     meta_type = "Composite Element"
     security = ClassSecurityInfo()
     manage_options = PropertyManager.manage_options + SimpleItem.manage_options
@@ -72,7 +73,7 @@ class CompositeElement (SimpleItem, PropertyManager):
         # Special template name "call" means to call the object.
         if safe_callable(obj):
             return obj()
-        return str(obj)
+        return unicode(obj)
 
     def queryInlineTemplate(self, slot_class_name=None):
         """Returns the name of the inline template this object uses.
@@ -100,7 +101,7 @@ class CompositeElement (SimpleItem, PropertyManager):
 Globals.InitializeClass(CompositeElement)
 
 
-addElementForm = PageTemplateFile("addElementForm", _www)
+addElementForm = PageTemplateFile("addElementForm.zpt", _www)
 
 def manage_addElement(dispatcher, id, path, template_name=None, REQUEST=None):
     """Adds an element to a slot.

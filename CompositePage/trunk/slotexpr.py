@@ -17,18 +17,21 @@
 $Id: slotexpr.py,v 1.5 2004/05/03 16:02:40 sidnei Exp $
 """
 
+import logging
 import re
 
-from Products.PageTemplates.TALES import CompilerError, Default
+from zope.tales.tales import CompilerError
 
-from interfaces import IComposite
+from Products.CompositePage.interfaces import IComposite
 
 name_re = re.compile("\s*([a-zA-Z][a-zA-Z0-9_]*)")
 class_name_re = re.compile("\s*[(]([a-zA-Z][a-zA-Z0-9_]*)[)]")
 title_re = re.compile("\s*[']([^']+)[']")
 
+log = logging.getLogger(__name__)
 
-class SlotExpr:
+
+class SlotExpr(object):
     """Slot expression type.
 
     Provides a concise syntax for specifying composite slots in
@@ -38,7 +41,7 @@ class SlotExpr:
     """
 
     def __init__(self, name, expr, engine):
-        self._s = s = expr
+        self._s = s = expr.strip()
         mo = name_re.match(s)
         if mo is None:
             raise CompilerError('Invalid slot expression "%s"' % s)
@@ -60,29 +63,43 @@ class SlotExpr:
             # Can't interpret some of the expression
             raise CompilerError(
                 'Slot expression syntax error near %s' % repr(s))
-    
+
     def __call__(self, econtext):
         context = econtext.contexts.get('options')
         if context is None:
             raise RuntimeError("Could not find options")
         composite = context.get('composite')
-        if IComposite.isImplementedBy(composite):
+        if IComposite.providedBy(composite):
             slot = composite.slots.get(
                 self._name, self._class_name, self._title)
             # Render the slot
-            return "".join(slot.multiple())
+            return unicode(slot)
         else:
             # Show the default content
-            return Default
+            return econtext.getDefault()
 
     def __repr__(self):
-        return 'slot:%s' % self._s
+        return '<SlotExpr %s>' % repr(self._s)
 
 
 def registerSlotExprType():
     # Register the 'slot:' expression type.
-    from Products.PageTemplates.Expressions import getEngine
-    # Avoid registering twice.
-    engine = getEngine()
-    if not engine.getTypes().has_key('slot'):
-        engine.registerType('slot', SlotExpr)
+
+    # Register with Products.PageTemplates.
+    try:
+        from Products.PageTemplates.Expressions import getEngine
+    except ImportError:
+        log.exception("Unable to register the slot expression type")
+    else:
+        engine = getEngine()
+        if not engine.getTypes().has_key('slot'):
+            engine.registerType('slot', SlotExpr)
+
+    # Register with zope.tales.
+    try:
+        from zope.tales.engine import Engine
+    except ImportError:
+        log.exception("Unable to register the slot expression type")
+    else:
+        if not Engine.getTypes().has_key('slot'):
+            Engine.registerType('slot', SlotExpr)

@@ -21,14 +21,21 @@ import sys
 from cgi import escape
 
 import Globals
-from Acquisition import aq_base, aq_inner, aq_parent, aq_get
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from Acquisition import aq_get
 from ZODB.POSException import ConflictError
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from zLOG import LOG, ERROR
+from zope.interface import implements
 
-from interfaces import ICompositeElement
+from Products.CompositePage.interfaces import ICompositeElement
+from Products.CompositePage.interfaces import ISlot
+from Products.CompositePage.perm_names import view_perm
+from Products.CompositePage.perm_names import change_composites_perm
 
 
 try:
@@ -37,9 +44,6 @@ try:
 except ImportError:
     # Fall back to normal folders, which happen to retain order anyway.
     from OFS.Folder import Folder as OrderedFolder
-
-from interfaces import ISlot
-import perm_names
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
@@ -63,19 +67,19 @@ error_tag = '''%s
 
 
 class NullElement(SimpleItem):
-    """Temporary slot content
+    """Empty placeholder for slot content
     """
-    meta_type = "Temporary Null Page Element"
+    meta_type = "Temporary Empty Slot Content"
 
     def __init__(self, id):
         self.id = id
 
+
 class Slot(OrderedFolder):
     """A slot in a composite.
     """
+    implements(ISlot)
     meta_type = "Composite Slot"
-
-    __implements__ = ISlot, OrderedFolder.__implements__
 
     security = ClassSecurityInfo()
 
@@ -89,7 +93,7 @@ class Slot(OrderedFolder):
         return OrderedFolder.all_meta_types(
             self, interfaces=(ICompositeElement,))
 
-    security.declareProtected(perm_names.view, "single")
+    security.declareProtected(view_perm, "single")
     def single(self):
         """Renders as a single-element slot.
 
@@ -100,7 +104,7 @@ class Slot(OrderedFolder):
         allow_add = (not self._objects)
         return "".join(self.renderToList(allow_add))
 
-    security.declareProtected(perm_names.view, "multiple")
+    security.declareProtected(view_perm, "multiple")
     def multiple(self):
         """Renders as a list containing multiple elements.
         """
@@ -111,7 +115,9 @@ class Slot(OrderedFolder):
         """
         return "".join(self.renderToList(1))
 
-    security.declareProtected(perm_names.change_composites, "reorder")
+    __unicode__ = __str__
+
+    security.declareProtected(change_composites_perm, "reorder")
     def reorder(self, name, new_index):
         if name not in self.objectIds():
             raise KeyError, name
@@ -120,7 +126,7 @@ class Slot(OrderedFolder):
                     {'id': name, 'meta_type': getattr(self, name).meta_type})
         self._objects = tuple(objs)
 
-    security.declareProtected(perm_names.change_composites, "nullify")
+    security.declareProtected(change_composites_perm, "nullify")
     def nullify(self, name):
         res = self[name]
         objs = list(self._objects)
@@ -131,12 +137,12 @@ class Slot(OrderedFolder):
         delattr(self, name)
         return res
 
-    security.declareProtected(perm_names.change_composites, "nullify")
+    security.declareProtected(change_composites_perm, "nullify")
     def pack(self):
         objs = [info for info in self._objects if info["id"] != "null_element"]
         self._objects = tuple(objs)
 
-    security.declareProtected(perm_names.view, "renderToList")
+    security.declareProtected(view_perm, "renderToList")
     def renderToList(self, allow_add):
         """Renders the items to a list.
         """
@@ -149,20 +155,21 @@ class Slot(OrderedFolder):
             myid = self.getId()
             if hasattr(self, 'portal_url'):
                 icon_base_url = self.portal_url()
-            elif hasattr(self, 'REQUEST'):
-                icon_base_url = self.REQUEST['BASEPATH1']
             else:
-                icon_base_url = '/'
-       
+                request = getattr(self, 'REQUEST', None)
+                if request is not None:
+                    icon_base_url = request['BASEPATH1']
+                else:
+                    icon_base_url = '/'
+
         if editing and allow_add:
             res.append(self._render_add_target(myid, 0, mypath))
-        
+
         for index in range(len(items)):
             name, obj = items[index]
 
-
             try:
-                assert ICompositeElement.isImplementedBy(obj), (
+                assert ICompositeElement.providedBy(obj), (
                     "Not a composite element: %s" % repr(obj))
                 text = obj.renderInline()
             except ConflictError:
@@ -199,9 +206,9 @@ Globals.InitializeClass(Slot)
 def getIconURL(obj, icon_base_url):
     base = aq_base(obj)
     if hasattr(base, 'getIcon'):
-        icon = str(obj.getIcon())
+        icon = obj.getIcon()
     elif hasattr(base, 'icon'):
-        icon = str(obj.icon)
+        icon = obj.icon
     else:
         icon = ""
     if icon and '://' not in icon:
@@ -230,18 +237,22 @@ def formatException(context, editing):
                     "this part of the page.")
         try:
             log = aq_get(context, '__error_log__', None, 1)
+            raising = getattr(log, 'raising', None)
         except AttributeError:
+            raising = None
+
+        if raising is not None:
+            error_log_url = raising(exc_info)
+            return error_tag % (msg, error_log_url)
+        else:
             LOG("Composite", ERROR, "Error in a page element",
                 error=exc_info)
             return msg
-        else:
-            error_log_url = log.raising(exc_info)
-            return error_tag % (msg, error_log_url)
     finally:
         del exc_info
 
 
-addSlotForm = PageTemplateFile("addSlotForm", _www)
+addSlotForm = PageTemplateFile("addSlotForm.zpt", _www)
 
 def manage_addSlot(dispatcher, id, REQUEST=None):
     """Adds a slot to a composite.

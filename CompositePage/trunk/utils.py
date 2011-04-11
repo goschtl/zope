@@ -20,7 +20,6 @@ $Id: utils.py,v 1.1 2003/12/28 04:32:47 shane Exp $
 
 from cStringIO import StringIO
 from cPickle import Pickler, Unpickler
-from types import StringType
 
 
 def copyOf(source):
@@ -40,7 +39,7 @@ def copyOf(source):
         if hasattr(ob, '__bases__'):
             m = getattr(ob, '__module__', None)
             if (m is not None
-                and isinstance(m, StringType)
+                and isinstance(m, basestring)
                 and m.startswith('*')):
                 n = getattr(ob, '__name__', None)
                 if n is not None:

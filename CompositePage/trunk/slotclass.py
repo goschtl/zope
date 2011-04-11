@@ -21,17 +21,19 @@ import os
 from Acquisition import aq_inner, aq_parent
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+from zope.interface import implements
 
-from interfaces import ISlotClass
+from Products.CompositePage.interfaces import ISlotClass
 
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
+
 class SlotClass(SimpleItem, PropertyManager):
     """Parameters and constraints for a slot.
     """
-    __implements__ = ISlotClass
+    implements(ISlotClass)
     meta_type = "Composite Slot Class"
     find_script = ""
 
@@ -51,7 +53,7 @@ class SlotClass(SimpleItem, PropertyManager):
         return s(slot)
 
 
-addSlotClassForm = PageTemplateFile("addSlotClassForm", _www)
+addSlotClassForm = PageTemplateFile("addSlotClassForm.zpt", _www)
 
 def manage_addSlotClass(dispatcher, id, REQUEST=None):
     """Adds a slot class to a composite tool.

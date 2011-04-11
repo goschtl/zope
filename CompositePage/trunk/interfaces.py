@@ -15,8 +15,9 @@
 $Id: interfaces.py,v 1.14 2004/04/15 22:13:44 shane Exp $
 """
 
-from Interface import Interface
-from Interface.Attribute import Attribute
+from zope.interface import Attribute
+from zope.interface import Interface
+
 
 class CompositeError(Exception):
     """An error in constructing a composite

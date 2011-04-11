@@ -16,6 +16,6 @@
 $Id: perm_names.py,v 1.1 2003/10/01 18:59:31 shane Exp $
 """
 
-change_composites = "Change Composites"
-view = "View"
+change_composites_perm = "Change Composites"
+view_perm = "View"
 

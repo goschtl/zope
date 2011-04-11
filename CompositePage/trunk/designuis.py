@@ -22,12 +22,13 @@ import re
 import Globals
 from Acquisition import aq_base, aq_inner, aq_parent
 from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
 
-from rawfile import RawFile, InterpolatedFile
-from interfaces import ICompositeElement
+from Products.CompositePage.rawfile import RawFile
+from Products.CompositePage.rawfile import InterpolatedFile
+from Products.CompositePage.interfaces import ICompositeElement
 
 
 _common = os.path.join(os.path.dirname(__file__), "common")
@@ -58,7 +59,7 @@ window.close();
 </html>
 '''
 
-class CommonUI (SimpleItem):
+class CommonUI(SimpleItem):
     """Basic page design UI.
 
     Adds editing features to a rendered composite.
@@ -148,7 +149,7 @@ class CommonUI (SimpleItem):
         """
         root = self.getPhysicalRoot()
         obj = root.restrictedTraverse(path)
-        if ICompositeElement.isImplementedBy(obj):
+        if ICompositeElement.providedBy(obj):
             obj = obj.dereference()
         RESPONSE.redirect("%s/%s" % (
             obj.absolute_url(), self.workspace_view_name))
@@ -160,7 +161,7 @@ class CommonUI (SimpleItem):
         """
         root = self.getPhysicalRoot()
         obj = root.restrictedTraverse(path)
-        if ICompositeElement.isImplementedBy(obj):
+        if ICompositeElement.providedBy(obj):
             obj = obj.dereference()
         RESPONSE.redirect(obj.absolute_url())
 
@@ -175,11 +176,7 @@ class CommonUI (SimpleItem):
         parts = str(path).split('/')
         for name in parts:
             obj = obj.restrictedTraverse(name)
-            try:
-                is_comp = isinstance(obj, Composite)
-            except TypeError:
-                is_comp = 0  # Python 2.1 bug
-            if is_comp:
+            if IComposite.providedBy(obj):
                 gen = guarded_getattr(obj, "generateSlots")
                 gen()
         RESPONSE.redirect("%s/%s" % (
@@ -198,7 +195,7 @@ class CommonUI (SimpleItem):
         for path in str(paths).split(':'):
             ob = root.unrestrictedTraverse(path)
             obs.append(ob)
-            if not ICompositeElement.isImplementedBy(ob):
+            if not ICompositeElement.providedBy(ob):
                 raise ValueError("Not a composite element: %s" % path)
             m = guarded_getattr(ob, "queryInlineTemplate")
             template = m()
@@ -236,7 +233,7 @@ class CommonUI (SimpleItem):
             raise KeyError("Template %s is not among the choices" % template)
         tool = aq_parent(aq_inner(self))
         for ob in info["obs"]:
-            assert ICompositeElement.isImplementedBy(ob)
+            assert ICompositeElement.providedBy(ob)
             m = guarded_getattr(ob, "setInlineTemplate")
             m(template)
         if REQUEST is not None:
