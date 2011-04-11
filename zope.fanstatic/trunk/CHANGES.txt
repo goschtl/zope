@@ -4,11 +4,11 @@ CHANGES
 0.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Update to fanstatic 0.11 API.
 
 
-0.10.1 (2011-01-20)
--------------------
+0.9.1 (2011-01-20)
+------------------
 
 - Do not clear resources on DummyNeededResources objects.
 
