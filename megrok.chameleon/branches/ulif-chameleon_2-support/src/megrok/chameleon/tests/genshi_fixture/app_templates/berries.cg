@@ -1,1 +1,0 @@
-<strong>Lovely blueberries!</strong>
