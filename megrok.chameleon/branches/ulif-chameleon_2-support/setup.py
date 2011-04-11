@@ -6,12 +6,13 @@ version = '0.5.3dev'
 install_requires = [
     'setuptools',
     'grokcore.view',
-    'Chameleon',
+    'Chameleon >= 2.0-rc1',
     'lxml', # Needed by chameleon.genshi
     'zope.component',
     'zope.contentprovider',
     'zope.event',
     'zope.traversing',
+    'z3c.pt >= 2.0-rc1',
     ]
 
 tests_require = [
