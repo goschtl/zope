@@ -13,17 +13,20 @@
 ##############################################################################
 """Chameleon page template components"""
 import os
-from chameleon.zpt.template import PageTemplateFile, PageTemplate
-from chameleon.genshi.template import (GenshiTemplateFile, GenshiTemplate,
-                                       GenshiTextTemplateFile,
-                                       GenshiTextTemplate)
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
+from z3c.pt.pagetemplate import ViewPageTemplate, ViewPageTemplateFile
 
 #
 # Chameleon Zope Page Templates...
 #
+class PageTemplate(ViewPageTemplate):
+    default_expression = 'python'
+
+class PageTemplateFile(ViewPageTemplateFile):
+    default_expression = 'python'
+    
 class ChameleonPageTemplate(GrokTemplate):
 
     def setFromString(self, string):
@@ -46,8 +49,8 @@ class ChameleonPageTemplate(GrokTemplate):
         namespace = super(ChameleonPageTemplate, self).getNamespace(view)
         namespace.update(dict(
                 template=self,
-                nothing=None,
-                ))                
+                _ob=view, # z3c.pt expects this strange key for the view
+                ))
         return namespace
 
     @property
@@ -63,60 +66,3 @@ class ChameleonPageTemplateFactory(GlobalUtility):
 
     def __call__(self, filename, _prefix=None):
         return ChameleonPageTemplate(filename=filename, _prefix=_prefix)
-
-#
-# Chameleon Genshi Templates
-#
-class ChameleonGenshiTemplate(GrokTemplate):
-    filename = None
-    _format = None
-
-    def setFromString(self, string):
-        self._filename = None
-        self._template = GenshiTemplate(string, format=self._format)
-
-    def setFromFilename(self, filename, _prefix=None):
-        self._filename = filename
-        self._prefix = _prefix
-        self._template = GenshiTemplateFile(
-            os.path.join(_prefix, filename), format=self._format)
-        return
-
-    def render(self, view):
-        if self._filename is not None:
-            self.setFromFilename(self._filename, self._prefix)
-        return self._template(**self.getNamespace(view))
-
-class ChameleonGenshiTemplateFactory(GlobalUtility):
-    implements(interfaces.ITemplateFileFactory)
-    name('cg')
-
-    def __call__(self, filename, _prefix=None):
-        return ChameleonGenshiTemplate(filename=filename, _prefix=_prefix)
-
-
-class ChameleonGenshiTextTemplate(GrokTemplate):
-    filename = None
-
-    def setFromString(self, string):
-        self._filename = None
-        self._template = GenshiTextTemplate(string)
-
-    def setFromFilename(self, filename, _prefix=None):
-        self._filename = filename
-        self._prefix = _prefix
-        self._template = GenshiTextTemplateFile(
-            os.path.join(_prefix, filename))
-        return
-
-    def render(self, view):
-        if self._filename is not None:
-            self.setFromFilename(self._filename, self._prefix)
-        return self._template(**self.getNamespace(view))
-
-class ChameleonGenshiTextTemplateFactory(GlobalUtility):
-    implements(interfaces.ITemplateFileFactory)
-    name('cgt')
-
-    def __call__(self, filename, _prefix=None):
-        return ChameleonGenshiTextTemplate(filename=filename, _prefix=_prefix)

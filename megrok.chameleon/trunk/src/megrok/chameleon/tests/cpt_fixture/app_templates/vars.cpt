@@ -13,8 +13,5 @@ This template knows about the following vars:
 
   request (the current request):
    ${request}
-
-  static (the static dir of the application):
-   ${static}
 </body>
 </html>

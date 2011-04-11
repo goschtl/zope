@@ -1,21 +1,17 @@
 import os
 from setuptools import setup, find_packages
 
-version = '0.5.3dev'
+version = '1.0.0dev'
 
 install_requires = [
     'setuptools',
+    'grokcore.component',
     'grokcore.view',
-    'Chameleon',
-    'lxml', # Needed by chameleon.genshi
-    'zope.component',
-    'zope.contentprovider',
-    'zope.event',
-    'zope.traversing',
+    'Chameleon >= 2.0-rc1',
+    'z3c.pt >= 2.0-rc1',
     ]
 
 tests_require = [
-    'grokcore.component',
     'grokcore.viewlet',
     'zope.app.wsgi',
     'zope.app.zcmlfiles',
