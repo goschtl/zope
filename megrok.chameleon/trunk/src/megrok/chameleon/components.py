@@ -22,10 +22,40 @@ from z3c.pt.pagetemplate import ViewPageTemplate, ViewPageTemplateFile
 # Chameleon Zope Page Templates...
 #
 class PageTemplate(ViewPageTemplate):
+    """A `z3c.pt` page template suitable for use with views.
+
+    This page template implementation is different from `z3c.pt`
+    implementation in two respects:
+
+    - It sets ``python`` as default mode (instead of ``path``)
+   
+    - It injects any views ``static`` variable in template namespace.
+    """
+    default_expression = 'python' # Use the chameleon default
+
+    def _pt_get_context(self, view, request, kwargs):
+        """Get context vars for a template.
+
+        Inject ``static`` var in template namespace.
+        """
+        context = super(PageTemplate, self)._pt_get_context(
+            view, request, kwargs)
+        context.update(dict(static = getattr(view, 'static', None)))
+        return context
+
+class PageTemplateFile(PageTemplate, ViewPageTemplateFile):
+    """A `z3c.pt` page template file suitable for use with views.
+
+    This implementation is different from `z3c.pt` implementation in
+    two respects:
+
+    - It sets ``python`` as default mode (instead of ``path``)
+   
+    - It injects any views ``static`` variable in template namespace.
+    """
     default_expression = 'python'
 
-class PageTemplateFile(ViewPageTemplateFile):
-    default_expression = 'python'
+
     
 class ChameleonPageTemplate(GrokTemplate):
 
