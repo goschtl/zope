@@ -93,9 +93,9 @@ The rendered view looks like this:
 Substituting variables
 ----------------------
 
-A template can access variables like ``view``, ``context`` and its
-methods and attributes. The ``food`` view does exactly this. The
-template looks like this:
+A template can access variables like ``view``, ``context``, ``static``
+and its methods and attributes. The ``food`` view does exactly
+this. The template looks like this:
 
     >>> food_cpt = os.path.join(template_dir, 'food.cpt')
     >>> print open(food_cpt, 'rb').read()
@@ -104,6 +104,7 @@ template looks like this:
     <span tal:define="foo 'a FOO'">
     ${view.me_do()}
     <span tal:replace="structure view.me_do()" />
+    CSS-URL: ${path: static/test.css}
     My context is: ${view.url(context)}
     ${foo}
     <span tal:replace="foo" />
@@ -120,6 +121,7 @@ The rendered view looks like this:
     <span>
     &lt;ME GROK EAT MAMMOTH!&gt;
     <ME GROK EAT MAMMOTH!>
+    CSS-URL: dummy:/test.css
     My context is: http://127.0.0.1/manfred
     a FOO
     a FOO
