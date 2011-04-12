@@ -22,8 +22,9 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_get
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from DocumentTemplate.DT_Util import safe_callable
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+
 from zope.interface import implements
 
 from Products.CompositePage.interfaces import ICompositeElement

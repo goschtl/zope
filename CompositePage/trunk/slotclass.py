@@ -21,7 +21,7 @@ import os
 from Acquisition import aq_inner, aq_parent
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 
 from Products.CompositePage.interfaces import ISlotClass

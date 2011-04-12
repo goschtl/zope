@@ -27,7 +27,7 @@ from Acquisition import aq_parent
 from Acquisition import aq_get
 from ZODB.POSException import ConflictError
 from OFS.SimpleItem import SimpleItem
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from zLOG import LOG, ERROR
 from zope.interface import implements

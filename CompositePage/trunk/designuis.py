@@ -22,7 +22,7 @@ import re
 import Globals
 from Acquisition import aq_base, aq_inner, aq_parent
 from OFS.SimpleItem import SimpleItem
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
 

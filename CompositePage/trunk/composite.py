@@ -26,11 +26,11 @@ from Acquisition import aq_parent
 from Acquisition import aq_get
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
 from zope.interface import implements
-from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
 from Products.CompositePage.interfaces import IComposite
 from Products.CompositePage.interfaces import ISlot
