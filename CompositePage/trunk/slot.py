@@ -62,8 +62,8 @@ view_tag = '''<div>
 
 # error_tag lets the user click on the 'log' link even if the
 # container normally stops clicks.
-error_tag = '''%s
-(<a href="%s" onmousedown="document.location=this.href">log</a>)'''
+error_tag = '''<span class="slot_error">%s
+(<a href="%s" onmousedown="document.location=this.href">log</a>)</span>'''
 
 
 class NullElement(SimpleItem):
