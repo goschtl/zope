@@ -28,7 +28,6 @@ class PageTemplate(ViewPageTemplate):
     implementation in two respects:
 
     - It sets ``python`` as default mode (instead of ``path``)
-   
     - It injects any views ``static`` variable in template namespace.
     """
     default_expression = 'python' # Use the chameleon default
@@ -40,7 +39,7 @@ class PageTemplate(ViewPageTemplate):
         """
         context = super(PageTemplate, self)._pt_get_context(
             view, request, kwargs)
-        context.update(dict(static = getattr(view, 'static', None)))
+        context.update(kwargs)
         return context
 
 class PageTemplateFile(PageTemplate, ViewPageTemplateFile):
@@ -50,13 +49,10 @@ class PageTemplateFile(PageTemplate, ViewPageTemplateFile):
     two respects:
 
     - It sets ``python`` as default mode (instead of ``path``)
-   
     - It injects any views ``static`` variable in template namespace.
     """
     default_expression = 'python'
 
-
-    
 class ChameleonPageTemplate(GrokTemplate):
 
     def setFromString(self, string):
@@ -68,20 +64,6 @@ class ChameleonPageTemplate(GrokTemplate):
         self._prefix = _prefix
         self._template = PageTemplateFile(os.path.join(_prefix, filename))
         return
-
-    def getNamespace(self, view):
-        """Extend namespace.
-
-        Beside the vars defined in standard grok templates, we inject
-        some vars and functions to be more compatible with official
-        ZPTs.
-        """
-        namespace = super(ChameleonPageTemplate, self).getNamespace(view)
-        namespace.update(dict(
-                template=self,
-                _ob=view, # z3c.pt expects this strange key for the view
-                ))
-        return namespace
 
     @property
     def macros(self):

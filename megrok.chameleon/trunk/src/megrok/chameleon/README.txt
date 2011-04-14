@@ -216,6 +216,19 @@ and render it:
     </body>
     </html>
 
+Custom template namespace names are supported:
+
+    >>> view = getMultiAdapter((manfred, request), name='namespace')
+    >>> print view()
+    <html>
+    <body>
+    This template knows about the following custom namespace name:
+    <BLANKLINE>
+      myname:
+       Henk
+    <BLANKLINE>
+    </body>
+    </html>
 
 Inline Templates
 ----------------
@@ -260,7 +273,7 @@ TALES expressions provided by ``megrok.chameleon`` are:
 * ``not``
      Evaluate the trailing expression to a boolean value and invert it.
 
-* ``path`` 
+* ``path``
      Handle the trailing expression as a path and not as a
      Python expression.
 

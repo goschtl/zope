@@ -49,3 +49,8 @@ class MacroUser(grokcore.view.View):
     """A view with a template that uses macros.
     """
     pass
+
+class Namespace(grokcore.view.View):
+
+    def namespace(self):
+        return {'myname': 'Henk'}
