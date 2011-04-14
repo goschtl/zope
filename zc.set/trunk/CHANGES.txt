@@ -1,0 +1,16 @@
+======
+Issues
+======
+
+* Tests fail on Python 2.6+.
+
+=======
+Changes
+=======
+
+0.1 (unreleased)
+================
+
+* ...
+
+
