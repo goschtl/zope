@@ -1,0 +1,11 @@
+TODOs
+=====
+
+- [_] Add support for ignoring non-managed files (e.g., already-installed
+      eggs in a buildout).
+
+- [_] Work out how to ignore detailed reporting on ``svn:externals``.
+
+- [_] Take SVN URLs on the command line.
+
+      o Perform a checkout to a tempdir before checking.
