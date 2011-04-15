@@ -15,6 +15,9 @@ COPYRIGHT_PATTERN = re.compile(
 LICENSE_PATTERN = re.compile(
     '^(?P<lead>.*)Version (?P<version>.*) \(ZPL\)\.')
 
+ALIEN_ZVSL_LICENSE_PATTERN = re.compile(
+    '^(?P<lead>.*)Version (?P<version>.*) \(ZVSL\)\.')
+
 
 def walk_project_dir(root, callback):
     def visit(args, dirname, names):
@@ -137,7 +140,11 @@ class Checker(object):
                     self.log.append('%s:%i: incorrect ZPL version: %s' % (
                     filename.replace(self.working_dir + '/', ''), i + 1,
                     m.group('version')))
-
+            m = ALIEN_ZVSL_LICENSE_PATTERN.match(line)
+            if m is not None:
+                self.log.append('%s:%i: incorrect license: ZVSL version: %s' % (
+                        filename.replace(self.working_dir + '/', ''), i + 1,
+                        m.group('version')))
 
 def main():
     result = 0
