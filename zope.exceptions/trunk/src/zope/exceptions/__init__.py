@@ -24,7 +24,7 @@ try:
     import zope.security
 except ImportError, v:
     # "ImportError: No module named security"
-    if not str(v).endswith(' security'):
+    if not str(v).endswith('security'):
         raise
 else:
     from zope.security.interfaces import IUnauthorized, Unauthorized
