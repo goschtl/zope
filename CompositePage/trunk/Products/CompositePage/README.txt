@@ -3,17 +3,11 @@
 Contents
 ========
 
-  - Introduction
-
-  - How to use CompositePage
-
-  - How to write a template
-
-  - How it works
-
-  - Adapting CompositePage to other applications
-
-  - Near-term directions
+- `Introduction`_
+- `How to use CompositePage`_
+- `How to write a template`_
+- `How it works`_
+- `Adapting CompositePage to other applications`_
 
 
 
@@ -21,16 +15,14 @@ Introduction
 ============
 
 CompositePage is a new way to assemble pages for the World Wide Web.
-Through the use of Zope technology, browser-based drag and drop, and
+Through the use of Zope page templates, browser-based drag and drop, and
 custom context menus, CompositePage makes it easy to visually combine
 page fragments into complete pages.
 
 CompositePage supercedes the PageDesign product and makes use of
 PDLib, a Javascript library.  CompositePage is designed for browsers
 that support the DOM (Document Object Model) and CSS (Cascading Style
-Sheets) level 2: Mozilla, Internet Explorer 5+, Opera, Konqueror, etc.
-Not all of these browsers have been tested, but it should be possible
-to solve most problems that occur.
+Sheets) level 2: Firefox, Internet Explorer 5+, Opera, Konqueror, etc.
 
 
 
@@ -40,36 +32,36 @@ How to use CompositePage
 Follow these steps:
 
 - Install the CompositePage product in Zope by unpacking the archive
-into your Products directory.  I've tested only with a current Zope
-checkout, which is something like Zope 2.7.
+  into your Products directory.  I've tested only with a current Zope
+  checkout, which is something like Zope 2.7.
 
 - Create a Composite Tool instance in a central location, possibly the
-root folder.
+  root folder.
 
 - Create a Composite object.  On the creation form, there is a
-checkbox for creating a sample template.  Leave the checkbox checked.
+  checkbox for creating a sample template.  Leave the checkbox checked.
 
 - Visit the Composite object and select the "Design" tab.  You should
-see a three-column layout with blue dotted lines in the places where
-you are allowed to insert content.
+  see a three-column layout with blue dotted lines in the places where
+  you are allowed to insert content.
 
 - Click just beneath one of the blue lines.  A context menu will pop
-up.  Select "Add...".
+  up.  Select "Add...".
 
 - You will be directed to a slot (a folderish object.)  In slots, you
-can add composite elements.  Add a composite element that points to a
-script.
+  can add composite elements.  Add a composite element that points to a
+  script.
 
 - Find the composite created earlier and select the "Design" tab
-again.  Your new object should now show up in the slot.
+  again.  Your new object should now show up in the slot.
 
 - Move the object to a different slot using drag and drop.  When the
-mouse cursor is hovering over a permitted target (the blue dotted
-lines are targets), the target will be highlighted.  Let go and watch
-your object appear in the new place.
+  mouse cursor is hovering over a permitted target (the blue dotted
+  lines are targets), the target will be highlighted.  Let go and watch
+  your object appear in the new place.
 
 - Right-click over your object and select "Delete" from the context
-menu.
+  menu.
 
 
 How to write a template
@@ -111,12 +103,35 @@ element.  Use multiple() to allow more than one element.  In either
 case, don't forget to use the ZPT 'structure' keyword, since the
 returned strings contain HTML that should not be escaped.
 
+``slot`` expressions
+--------------------
+
+You can also use the special ``slot`` expression type to define
+slots in a template::
+
+  <html>
+   <head>
+   </head>
+  <body>
+   <div tal:content="slot: center">
+   This will be replaced with elements in the center slot.
+   </div>
+  </body>
+  </html>
+
+This syntax allows the template author to define slot titles
+in addition to slot names.  The template author could write::
+
+  <div tal:content="slot: center 'Page Center'">
+
+The slot title will be shown to page designers.
 
 
 How it works
 ============
 
-Rendering:
+Rendering
+---------
 
 When you render (view) a composite, it calls its template.  When the
 template refers to a slot, the composite looks for the named slot in
@@ -126,7 +141,8 @@ the template calls either the single() or multiple() method and the
 slot renders and returns its contents.
 
 
-Rendering in edit mode:
+Rendering in edit mode
+----------------------
 
 When requested, the composite calls upon a "UI" object to render its
 template and slots with edit mode turned on.  In edit mode, slots add
@@ -144,7 +160,8 @@ tags.  Then the UI object inserts scripts, styles, and HTML elements.
 The result of the transformation is sent back to the browser.
 
 
-Drag and drop:
+Drag and drop
+-------------
 
 At the bottom of a page rendered in edit mode is a call to the
 pd_setupPage() Javascript function.  pd_setupPage() searches all of
@@ -164,7 +181,8 @@ page in edit mode again and the moved element gets rendered in its new
 spot.
 
 
-Context menus:
+Context menus
+-------------
 
 Like drag and drop, context menus depend on pd_setupPage().  When
 pd_setupPage() finds a 'slot_element', a handler adds a context menu
@@ -191,15 +209,4 @@ CompositePage provides a default user interface that integrates with
 the Zope management interface, but mechanisms are provided for
 integrating with any user interface.  Look at design.py, the 'common'
 subdirectory, and the 'zmi' subdirectory for guidance.  Simple
-customizations probably do not require more code than ZMIUI.
-
-
-
-Near-term directions
-====================
-
-I would like CompositePage to work reliably with as many browsers as
-possible, but Mozilla 1.4 is the current reference browser.  Try it in
-your preferred browser.  If it acts strangely, try the same thing in
-Mozilla 1.4 and send an email describing the differences.
-
+customizations probably do not require more code than the ZMI UI.
