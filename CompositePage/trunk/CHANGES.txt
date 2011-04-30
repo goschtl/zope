@@ -22,19 +22,19 @@ Next Release
 0.2 (2004-06-16)
 ----------------
 
-  - Changed the UI to use images for elements and targets.
+- Changed the UI to use images for elements and targets.
 
-  - Added inline views.  You can now select templates to render objects.
+- Added inline views.  You can now select templates to render objects.
 
-  - Context menus now have headers.
+- Context menus now have headers.
 
-  - The clipboard now works.
+- The clipboard now works.
 
-  - You can now define slots in a template using "slot:" expressions.
-    This should make it easier to write templates.
+- You can now define slots in a template using "slot:" expressions.
+  This should make it easier to write templates.
 
-  - The composite tool now checks copy/paste permissions before making
-    any changes.
+- The composite tool now checks copy/paste permissions before making
+  any changes.
 
-  - Slots now have a __str__ method, making it easy to render them
-    directly.
+- Slots now have a __str__ method, making it easy to render them
+  directly.
