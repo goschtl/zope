@@ -36,9 +36,9 @@ _uis = {}
 
 def registerUI(name, obj):
     """Registers a page design UI for use with the composite tool.
+
+    Replaces any existing registration.
     """
-    if _uis.has_key(name):
-        raise RuntimeError("There is already a UI named %s" % name)
     obj._setId(name)
     _uis[name] = obj
 
