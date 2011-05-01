@@ -14,7 +14,7 @@ Contents
 Introduction
 ============
 
-CompositePage is a new way to assemble pages for the World Wide Web.
+CompositePage is a way to assemble web pages from page fragments.
 Through the use of Zope page templates, browser-based drag and drop, and
 custom context menus, CompositePage makes it easy to visually combine
 page fragments into complete pages.
