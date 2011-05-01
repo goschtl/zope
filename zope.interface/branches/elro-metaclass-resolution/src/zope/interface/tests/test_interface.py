@@ -413,6 +413,32 @@ cleared when the bases were changed.
     True
     """
 
+def test_subclassing_interfaceclass():
+    """
+As ``InterfaceClass`` does not derive from ``type`` the normal python rules
+for determining the metaclass of a class from it's bases are not applied and
+the. In order to support specialisation, ``InterfaceClass`` resolves the
+metclass itself in ``__new__``.
+
+    >>> from zope.interface import Interface
+    >>> from zope.interface.interface import InterfaceClass
+    >>> class SpecialClass(InterfaceClass): pass
+    ... 
+    >>> Special = SpecialClass('Special')
+    >>> class I(Interface):
+    ...     pass
+
+    >>> class S(Special):
+    ...     pass
+
+    >>> class Combined(I, S):
+    ...     pass
+
+    >>> isinstance(Combined, SpecialClass)
+    True
+    """
+
+
 
 def test_suite():
     suite = unittest.makeSuite(InterfaceTests)

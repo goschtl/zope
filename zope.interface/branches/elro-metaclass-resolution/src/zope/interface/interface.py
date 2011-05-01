@@ -433,6 +433,22 @@ class InterfaceClass(Element, InterfaceBase, Specification):
     #
     #implements(IInterface)
 
+    def __new__(cls, name, bases=(), attrs=None, __doc__=None,
+                 __module__=None):
+        # Resolve metaclass in the same way as ``type``
+        for base in bases:
+            meta = type(base)
+            if issubclass(cls, meta):
+                continue
+            if issubclass(meta, cls):
+                cls = meta
+                continue
+            raise TypeError(
+                "Error when calling the metaclass bases\n    "
+                "metaclass conflict: the metaclass of a derived class must be "
+                "a (non-strict) subclass of the metaclasses of all its bases")
+        return object.__new__(cls)
+
     def __init__(self, name, bases=(), attrs=None, __doc__=None,
                  __module__=None):
 
