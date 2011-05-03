@@ -425,7 +425,7 @@ that we use to show what events are being fired.
     >>> verifyObject(copypastemove.IObjectCopier, copier)
     True
     >>> copier.copyTo(folder)
-    'dummy'
+    u'dummy'
     >>> showEvents()
     ['IObjectCopiedEvent fired for foo.',
      'IObjectCreatedEvent fired for a Shortcut (IShortcut).']
@@ -475,31 +475,31 @@ shortcut's target.
     >>> dummy_linker.linkTo(badcontainer)
     Traceback (most recent call last):
     ...
-    Invalid: ('Not linkableTo target with name', <DummyContainer...>, 'dummy')
+    Invalid: ('Not linkableTo target with name', <DummyContainer...>, u'dummy')
     >>> shortcut_linker.linkTo(badcontainer)
     Traceback (most recent call last):
     ...
-    Invalid: ('Not linkableTo target with name', <DummyContainer...>, 'special_spam_shortcut')
+    Invalid: ('Not linkableTo target with name', <DummyContainer...>, u'special_spam_shortcut')
     >>> dummy_linker.linkTo(folder)
-    'dummy'
+    u'dummy'
     >>> showEvents()
     ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
     >>> folder['dummy'].raw_target is dummy
     True
     >>> shortcut_linker.linkTo(folder)
-    'special_spam_shortcut'
+    u'special_spam_shortcut'
     >>> showEvents()
     ['IObjectCopiedEvent fired for a Shortcut (IShortcut).']
     >>> folder['special_spam_shortcut'].raw_target is spam
     True
     >>> dummy_linker.linkTo(folder, 'dummy2')
-    'dummy2'
+    u'dummy2'
     >>> showEvents()
     ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
     >>> folder['dummy2'].raw_target is dummy
     True
     >>> shortcut_linker.linkTo(folder, 'shortcut2')
-    'shortcut2'
+    u'shortcut2'
     >>> showEvents()
     ['IObjectCopiedEvent fired for a Shortcut (IShortcut).']
     >>> folder['shortcut2'].raw_target is spam
@@ -534,7 +534,7 @@ selectively.
     >>> copier.copyableTo(folder)
     True
     >>> copier.copyTo(folder)
-    'immutable_dummy'
+    u'immutable_dummy'
     >>> showEvents()
     ['IObjectCreatedEvent fired for a Shortcut (IShortcut).']
     >>> folder['immutable_dummy'].raw_target is immutable_dummy

@@ -3,22 +3,28 @@ from setuptools import setup, find_packages
 setup(
     name = "zc.shortcut",
     version = "1.1",
-
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc'],
     install_requires = [
-    'setuptools',
-    'zc.displayname',
-    # XXX leaving out most of the zope 3 dependencies for now,
-    # since Zope 3 hasn't been packages yet.
+        'setuptools',
+        'zc.displayname',
+        'zope.decorator',
+        'zope.deprecation',
+        'zope.app.component',
     ],
+    extras_require=dict(
+        test=[
+            'zope.app.testing',
+            ]),
     zip_safe=False,
     author='Zope Project',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description=open("README.txt").read(),
     long_description=
+        open("CHANGES.txt").read() +
+        '\n' +
         open("src/zc/shortcut/shortcut.txt").read() +
         '\n' +
         open("src/zc/shortcut/proxy.txt").read() +
@@ -30,5 +36,4 @@ setup(
         open("src/zc/shortcut/factory.txt").read(),
     license='ZPL 2.1',
     keywords="zope zope3",
-    dependency_links = ['http://download.zope.org/distribution/'],
     )

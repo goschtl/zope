@@ -1,0 +1,25 @@
+========
+ Issues
+========
+
+* Currently a test breaks with ZTK 1.1, maybe the product does not work with ZTK 1.1.
+
+=========
+ Changes
+=========
+
+1.2 (unreleased)
+================
+
+* Declared missing dependencies in `setup.py` so package might run on ZTK 1.1.
+
+* Added test extra to declare test dependency on ``zope.app.testing``.
+
+* Fixed obvious test failures on ZTK 1.1.
+
+
+1.1 (????-??-??)
+================
+
+* Previous release.
+
