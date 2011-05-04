@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.13.2 (unreleased)
+2.13.2 (2011-05-04)
 -------------------
 
 - Avoid changing data, if the indexed values stayed the same.
