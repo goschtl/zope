@@ -1,0 +1,25 @@
+Changelog
+=========
+
+0.6 - 2011-05-04
+----------------
+
+* Add an ignoreMissing parameter and widget subclasses to avoid errors when
+  rendering missing values.
+  [elro]
+
+* Create changelog file.
+  [dukebody]
+
+* Respect the ignoreRequest parameter.
+  [dukebody]
+
+0.5 - 2009-04-17
+-----------------
+
+* ...
+
+0.3 - 2008-08-28
+-----------------
+
+* ...
