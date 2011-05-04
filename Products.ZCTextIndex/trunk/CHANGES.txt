@@ -4,6 +4,7 @@ Changelog
 2.13.2 (unreleased)
 -------------------
 
+- Avoid changing data, if the indexed values stayed the same.
 
 2.13.1 (2010-10-02)
 -------------------

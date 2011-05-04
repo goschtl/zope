@@ -19,7 +19,6 @@ import math
 
 from BTrees.IOBTree import IOBTree
 from BTrees.IIBTree import IIBTree
-from BTrees.IIBTree import IIBucket
 from BTrees.IIBTree import IITreeSet
 from BTrees.IIBTree import difference
 from BTrees.IIBTree import intersection
@@ -127,9 +126,11 @@ class BaseIndex(Persistent):
     def _reindex_doc(self, docid, text):
         # Touch as few docid->w(docid, score) maps in ._wordinfo as possible.
         old_wids = self.get_words(docid)
-        old_wid2w, old_docw = self._get_frequencies(old_wids)
-
         new_wids = self._lexicon.sourceToWordIds(text)
+        if old_wids == new_wids:
+            return 0
+
+        old_wid2w, old_docw = self._get_frequencies(old_wids)
         new_wid2w, new_docw = self._get_frequencies(new_wids)
 
         old_widset = IITreeSet(old_wid2w.keys())

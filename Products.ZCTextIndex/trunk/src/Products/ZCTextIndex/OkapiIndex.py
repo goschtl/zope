@@ -67,9 +67,11 @@ class OkapiIndex(BaseIndex):
     def unindex_doc(self, docid):
         self._change_doc_len(-self._docweight[docid])
         BaseIndex.unindex_doc(self, docid)
-    
+
     def _change_doc_len(self, delta):
         # Change total doc length used for scoring
+        if delta == 0:
+            return
         try:
             self._totaldoclen.change(delta)
         except AttributeError:
