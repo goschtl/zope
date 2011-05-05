@@ -46,7 +46,13 @@ be used with non-subversion source-code control systems.
 Let's look at an example.  We have a server with some distributions on
 it.
 
-    >>> print get(link_server),
+    >>> index_content = get(link_server)
+    >>> if 'distribute' in index_content:
+    ...     lines = index_content.splitlines()
+    ...     distribute_line = lines.pop(1)
+    ...     lines.insert(4, distribute_line)
+    ...     index_content = '\n'.join(lines)
+    >>> print index_content,
     <html><body>
     <a href="index/">index/</a><br>
     <a href="sample1-1.0.zip">sample1-1.0.zip</a><br>
@@ -81,7 +87,6 @@ We'll run the release script against this sample directory:
     ... # doctest: +ELLIPSIS
     Creating source release in sample.tgz
     ...
-    Generated script '...sample1'.
 
 We end up with a tar file:
 
@@ -154,9 +159,10 @@ than the version of buildout used by the source-release script.
 It has a release-distributions directory containing distributions
 needed to install the buildout:
 
-    >>> ls('test', 'sample', 'release-distributions', 'dist') # doctest: +ELLIPSIS
+    >>> ls('test', 'sample', 'release-distributions', 'dist')
     -  sample1-1.0.zip
-    -  sample2-1.0.zip...
+    -  sample2-1.0.zip
+    -  zc.buildout-99.99-pyN.N.egg
     -  zc.recipe.egg-1.0.0b6-py2.4.egg
 
 (There normally aren't distributions for buildout and setuptools, etc.

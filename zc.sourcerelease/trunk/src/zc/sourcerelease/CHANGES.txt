@@ -4,10 +4,10 @@ Release History
 0.3.2 (unreleased)
 ------------------
 
-* Made tests compatible with distribute.
-
-* Added test extra to declare test dependency on ``zope.testing``.
-
+- Made tests compatible with distribute.
+- Added test extra to declare test dependency on `zope.testing`.
+- One test currently fails with `zc.buildout` >=1.5.0.
+  So the versions of packages that depend on it are pinned.
 
 
 0.3.1 (2009-09-25)

@@ -126,18 +126,16 @@ egg_parse = re.compile('([0-9a-zA-Z_.]+)-([0-9a-zA-Z_.]+)-py(\d[.]\d).egg$'
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-        'README.txt',
-        setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-        checker=renormalizing.RENormalizing([
-               zc.buildout.testing.normalize_path,
-               zc.buildout.testing.normalize_egg_py,
-                (re.compile('-\S+-py'), ''),
-                # support both distribute and setuptools:
-                (re.compile('<a href="distributeN.N.egg</a><br>\n'), ''),
-                (re.compile('<a href="setuptoolsN.N.egg</a><br>\n'), ''),
-                (re.compile('d  distributeN.N.egg'), '-  setuptoolsN.N.egg'),
-               ]),
-        ),
+            'README.txt',
+            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            checker=renormalizing.RENormalizing([
+                (re.compile(r'distribute(-?(?:\w|[.-])+\.egg)'),
+                    r'setuptools\1'),
+                zc.buildout.testing.normalize_path,
+                zc.buildout.testing.normalize_egg_py,
+                (re.compile(r'-\S+-py'), ''),
+                ]),
+            ),
         ))
 
 if __name__ == '__main__':
