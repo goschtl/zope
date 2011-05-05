@@ -115,8 +115,13 @@ def source_release(args=None):
         os.chdir(here)
 
         env = pkg_resources.Environment([eggs_directory])
+        projects = ['zc.buildout']
+        if env['setuptools']:
+            projects.append('setuptools')
+        else:
+            projects.append('distribute')
         dists = [env[project][0].location
-                 for project in ('zc.buildout', 'setuptools')]
+                 for project in projects]
 
         eggs = os.path.join(co2, reggs)
         os.mkdir(eggs)

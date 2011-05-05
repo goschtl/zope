@@ -45,7 +45,7 @@ def mkdist(dest, name, **kw):
 
 py_template = """
 def main():
-    print 'Hello. My name is ', %r 
+    print 'Hello. My name is ', %r
 
 """
 
@@ -110,12 +110,12 @@ def setUp(test):
     eggname, oldver, pyver = egg_parse(
         os.path.basename(dist.location)
         ).groups()
-    dest = os.path.join(sample_eggs, "%s-99.99-py%s.egg" % (eggname, pyver)) 
+    dest = os.path.join(sample_eggs, "%s-99.99-py%s.egg" % (eggname, pyver))
     shutil.copy(dist.location, dest)
     zip = zipfile.ZipFile(dest, 'a')
     zip.writestr(
         'EGG-INFO/PKG-INFO',
-        zip.read('EGG-INFO/PKG-INFO').replace("Version: %s" % oldver, 
+        zip.read('EGG-INFO/PKG-INFO').replace("Version: %s" % oldver,
                                               "Version: 99.99")
         )
     zip.close()
@@ -131,7 +131,11 @@ def test_suite():
         checker=renormalizing.RENormalizing([
                zc.buildout.testing.normalize_path,
                zc.buildout.testing.normalize_egg_py,
-               (re.compile('-\S+-py'), ''),
+                (re.compile('-\S+-py'), ''),
+                # support both distribute and setuptools:
+                (re.compile('<a href="distributeN.N.egg</a><br>\n'), ''),
+                (re.compile('<a href="setuptoolsN.N.egg</a><br>\n'), ''),
+                (re.compile('d  distributeN.N.egg'), '-  setuptoolsN.N.egg'),
                ]),
         ),
         ))

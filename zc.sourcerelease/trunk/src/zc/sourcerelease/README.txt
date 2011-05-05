@@ -14,7 +14,7 @@ by the zc.recipe.cmmi recipe.  If a buildout uses a recipe that
 downloads data but does not store the downloaded data in the buildout
 download cache, then the data will not be included in the source
 release and will have to be downloaded when the source release is
-installed. 
+installed.
 
 The source release includes a Python install script.  It is not
 executable and must be run with the desired Python, which must be the
@@ -44,7 +44,7 @@ configuration file to use.  File URLs are useful for testing and can
 be used with non-subversion source-code control systems.
 
 Let's look at an example.  We have a server with some distributions on
-it. 
+it.
 
     >>> print get(link_server),
     <html><body>
@@ -63,12 +63,12 @@ source release.
 
     >>> mkdir('sample')
     >>> sample = join(sample_buildout, 'sample')
-    >>> write(sample, 'buildout.cfg', 
+    >>> write(sample, 'buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = sample
     ... find-links = %(link_server)s
-    ... 
+    ...
     ... [sample]
     ... recipe = zc.recipe.egg
     ... eggs = sample1
@@ -81,6 +81,7 @@ We'll run the release script against this sample directory:
     ... # doctest: +ELLIPSIS
     Creating source release in sample.tgz
     ...
+    Generated script '...sample1'.
 
 We end up with a tar file:
 
@@ -153,13 +154,12 @@ than the version of buildout used by the source-release script.
 It has a release-distributions directory containing distributions
 needed to install the buildout:
 
-    >>> ls('test', 'sample', 'release-distributions', 'dist')
+    >>> ls('test', 'sample', 'release-distributions', 'dist') # doctest: +ELLIPSIS
     -  sample1-1.0.zip
-    -  sample2-1.0.zip
-    -  zc.buildout-99.99-pyN.N.egg
+    -  sample2-1.0.zip...
     -  zc.recipe.egg-1.0.0b6-py2.4.egg
 
-(There normally aren't distributions for buildout and setuptools
+(There normally aren't distributions for buildout and setuptools, etc.
 because these are pre-installed in the eggs directory of the source
 release. In this case, we have a release for zc.buildout because it
 was downloaded from the link server.  Anything that we downloaded is
@@ -279,13 +279,13 @@ You can specify a different configuration file of course.  Let's
 create one with an error as it contains an absolute path for the
 eggs-directory.
 
-    >>> write(sample, 'wrong.cfg', 
+    >>> write(sample, 'wrong.cfg',
     ... '''
     ... [buildout]
     ... parts = sample
     ... find-links = %(link_server)s
     ... eggs-directory = /somewhere/shared-eggs
-    ... 
+    ...
     ... [sample]
     ... recipe = zc.recipe.egg
     ... eggs = sample1

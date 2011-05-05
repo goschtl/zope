@@ -58,4 +58,8 @@ setup(
         'zc.buildout',
         'zc.recipe.egg',
         ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ]),
     )

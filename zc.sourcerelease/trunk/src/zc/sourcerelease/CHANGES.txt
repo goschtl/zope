@@ -1,6 +1,15 @@
 Release History
 ===============
 
+0.3.2 (unreleased)
+------------------
+
+* Made tests compatible with distribute.
+
+* Added test extra to declare test dependency on ``zope.testing``.
+
+
+
 0.3.1 (2009-09-25)
 ------------------
 
@@ -21,7 +30,7 @@ Bugs Fixed
 ++++++++++
 
 Having an absolute eggs-directory in buildout.cfg will now give an
-error instead of running forever trying to find a relative path. 
+error instead of running forever trying to find a relative path.
 
 0.2 (2007-10-25)
 ----------------
