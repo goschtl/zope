@@ -30,7 +30,7 @@ called "my-tunnel"::
 Building this out creates a single script in the bin/ directory::
 
   >>> print system(join("bin", "buildout")),
-  buildout: Installing my-tunnel
+  Installing my-tunnel
 
   >>> ls("bin")
   -  buildout
