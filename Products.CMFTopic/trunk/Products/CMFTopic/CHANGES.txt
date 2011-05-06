@@ -4,6 +4,9 @@ Products.CMFTopic Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Correct test assertion about the value of DateCriteria. It's edit method
+  mandates the value to be of type int, so we should respect that in tests.
+
 - Require at least Zope 2.13.4.
 
 - Deal with deprecation warnings for Zope 2.13.
