@@ -1,8 +1,0 @@
-Changelog
-=========
-
-1.0 (unreleased)
-----------------
-
-* import of dzug.theme from Gocept repository and
-  renamed to plonetheme.zopeorg

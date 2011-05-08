@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<layers>
-  <layer name="zopeorg_theme"
-    interface="plonetheme.zopeorg.browser.interfaces.IZopeorgTheme" />
-</layers>
