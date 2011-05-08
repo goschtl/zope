@@ -4,6 +4,9 @@ Products.CMFTopic Changelog
 2.2.2 (unreleased)
 ------------------
 
+- Correct test assertion about the value of DateCriteria. It's edit method
+  mandates the value to be of type int, so we should respect that in tests.
+
 
 2.2.1 (2010-07-04)
 ------------------

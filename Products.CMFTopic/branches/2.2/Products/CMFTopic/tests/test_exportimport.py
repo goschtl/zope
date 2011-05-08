@@ -32,7 +32,7 @@ _DATE_STR = '2005-11-20T12:00:00Z'
 _CRITERIA_DATA = (
     ('a', 'String Criterion', {'value': 'A'}),
     ('b', 'Integer Criterion', {'value': 3, 'direction': 'min'}),
-    ('c', 'Friendly Date Criterion', {'value': DateTime(_DATE_STR),
+    ('c', 'Friendly Date Criterion', {'value': DateTime(_DATE_STR).timeTime(),
                                       'operation': 'min',
                                       'daterange': 'old',
                                      }),
