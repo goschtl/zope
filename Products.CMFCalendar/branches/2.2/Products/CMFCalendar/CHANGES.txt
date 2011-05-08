@@ -4,6 +4,7 @@ Products.CMFCalendar Changelog
 2.2.3 (unreleased)
 ------------------
 
+- Fixed tests to be compatibility with DateTime 3.
 
 2.2.2 (2010-10-31)
 ------------------
