@@ -1,0 +1,45 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="plonetheme.zopeorg">
+
+  <!-- Resource directory registrations -->
+  <browser:resourceDirectory
+      name="plonetheme.zopeorg.images"
+      directory="images"
+      layer=".interfaces.IZopeorgTheme"
+      />
+  <browser:resourceDirectory
+      name="plonetheme.zopeorg.resources"
+      directory="resources"
+      layer=".interfaces.IZopeorgTheme"
+      />
+
+  <!-- Viewlet registrations -->
+  <browser:viewlet
+      name="zopeorg.footer"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      class=".common.FooterViewlet"
+      template="templates/footer.pt"
+      layer=".interfaces.IZopeorgTheme"
+      permission="zope2.View"
+      />
+
+  <!-- The site actions -->
+  <browser:viewlet
+      name="zopeorg.site_actions"
+      manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+      class="plone.app.layout.viewlets.common.SiteActionsViewlet"
+      permission="zope2.View"
+      />
+
+  <!-- The Path Bar -->
+  <browser:viewlet
+      name="zopeorg.path_bar"
+      manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+      class="plone.app.layout.viewlets.common.PathBarViewlet"
+      permission="zope2.View"
+      />
+
+</configure>
