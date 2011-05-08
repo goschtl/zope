@@ -4,6 +4,8 @@ Products.CMFCalendar Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Fixed tests to be compatibility with DateTime 3.
+
 - Event: Fixed object initialization.
   Default start and stop times are now rounded and offset-naive.
 

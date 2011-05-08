@@ -17,6 +17,7 @@ import unittest
 import Testing
 
 from DateTime import DateTime
+from DateTime.interfaces import DateError
 from zope.interface.verify import verifyClass
 
 from Products.CMFCore.testing import ConformsToContent
@@ -116,7 +117,7 @@ class TestEvent(ConformsToContent, unittest.TestCase):
     def test_puke(self):
         event = self._makeOne('shouldPuke')
 
-        self.assertRaises( DateTime.DateError
+        self.assertRaises( DateError
                          , event.edit
                          , effectiveDay=31
                          , effectiveMo=2
