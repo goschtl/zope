@@ -1,0 +1,9 @@
+#!/work/develop/repository/svn.zope.org/zopeorg.buildout/branches/beta.zope.org/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'ZopeSkel==2.19','console_scripts','zopeskel'
+__requires__ = 'ZopeSkel==2.19'
+import sys
+from pkg_resources import load_entry_point
+
+sys.exit(
+   load_entry_point('ZopeSkel==2.19', 'console_scripts', 'zopeskel')()
+)
