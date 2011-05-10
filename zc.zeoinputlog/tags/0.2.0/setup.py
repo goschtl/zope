@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.zeoinputlog', '0.1.0'
+name, version = 'zc.zeoinputlog', '0.2.0'
 
 install_requires = [
     'setuptools',
