@@ -9,7 +9,7 @@ Hopefully, a future version of ZEO will meke the monkey patch
 unnecessary.
 
 This test tests the zc.monitor plugin and tests the monkey patch using
-a monkey oatch of our our own. (ook)
+a monkey patch of our our own. (ook)
 
     >>> def base_message_input_ook(self, message):
     ...     print 'base message input', `message`
@@ -18,7 +18,7 @@ a monkey oatch of our our own. (ook)
     >>> base_message_input = ZEO.zrpc.connection.Connection.message_input
     >>> base_init = ZEO.zrpc.connection.Connection.__init__
     >>> ZEO.zrpc.connection.Connection.message_input = base_message_input_ook
-    >>> ZEO.zrpc.connection.Connection.__init__ = lambda *a: None
+    >>> ZEO.zrpc.connection.Connection.__init__ = lambda *a, **kw: None
     >>> 'message_input' in ZEO.zrpc.connection.ManagedServerConnection.__dict__
     False
 

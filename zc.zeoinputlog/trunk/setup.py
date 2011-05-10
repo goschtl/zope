@@ -15,7 +15,7 @@ name, version = 'zc.zeoinputlog', '0.1.0'
 
 install_requires = [
     'setuptools',
-    'ZODB3 >=3.9.0dev, <3.10.0dev',
+    'ZODB3 >=3.9.0dev, <3.11.0dev',
     ]
 extras_require = dict(test=['zope.testing'])
 
