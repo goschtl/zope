@@ -11,9 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from zope.testing import setupstack
+
+import doctest
 import time
 import unittest
-from zope.testing import doctest, setupstack
 
 _now = 1252400584.910615
 def now():
