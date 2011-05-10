@@ -1,0 +1,119 @@
+The zc.zeoinputlog package provides a mechanism to log ZEO network input
+========================================================================
+
+The mechanism consists of a zc.monitor plugin that provides control
+and a monkeypatch of
+ZEO.zrpc.connection.ManagedServerConnection.Message_input method.
+
+Hopefully, a future version of ZEO will meke the monkey patch
+unnecessary.
+
+This test tests the zc.monitor plugin and tests the monkey patch using
+a monkey patch of our our own. (ook)
+
+    >>> def base_message_input_ook(self, message):
+    ...     print 'base message input', `message`
+
+    >>> import ZEO.zrpc.connection
+    >>> base_message_input = ZEO.zrpc.connection.Connection.message_input
+    >>> base_init = ZEO.zrpc.connection.Connection.__init__
+    >>> ZEO.zrpc.connection.Connection.message_input = base_message_input_ook
+    >>> ZEO.zrpc.connection.Connection.__init__ = lambda *a, **kw: None
+    >>> 'message_input' in ZEO.zrpc.connection.ManagedServerConnection.__dict__
+    False
+
+    >>> connection = ZEO.zrpc.connection.ManagedServerConnection(*'1234')
+    >>> connection.message_input('test')
+    base message input 'test'
+
+Now, we're ready to try out our monitor plugin.
+
+    >>> import sys, zc.zeoinputlog
+    >>> from zc.zeoinputlog import log
+
+Calling the logger without arguments just outouts the current state,
+which is disabled:
+
+    >>> log(sys.stdout)
+    disabled
+
+The zc.zeoinputlog module has a base attribute saying where to create
+log files.  Let's set it to a non-existent directory:
+
+    >>> zc.zeoinputlog.base = 'base'
+
+If we try to enable logging, we'll get an error:
+
+    >>> log(sys.stdout, 'enable')
+    Traceback (most recent call last):
+    ...
+    IOError: [Errno 2] No such file or directory: 'base/090908090305'
+
+    >>> 'message_input' in ZEO.zrpc.connection.ManagedServerConnection.__dict__
+    False
+    >>> log(sys.stdout)
+    disabled
+
+If create the directory, we'll be able to enable logging:
+
+    >>> import os
+    >>> os.mkdir('base')
+    >>> log(sys.stdout, 'enable')
+    enabled 'base/090908090306'
+    >>> connection.message_input('test')
+    base message input 'test'
+    >>> connection.message_input('test2')
+    base message input 'test2'
+    >>> log(sys.stdout)
+    'base/090908090306'
+
+If enable again, we'll get a new log file:
+
+    >>> log(sys.stdout, 'enable')
+    disabled 'base/090908090306'
+    enabled 'base/090908090309'
+    >>> log(sys.stdout)
+    'base/090908090309'
+    >>> connection.message_input('test3')
+    base message input 'test3'
+    >>> connection.message_input('test4')
+    base message input 'test4'
+
+If we disable, we'll stop logging
+
+    >>> log(sys.stdout, 'disable')
+    disabled 'base/090908090309'
+    >>> log(sys.stdout)
+    disabled
+    >>> log(sys.stdout, 'disable')
+    Already disabled
+
+    >>> 'message_input' in ZEO.zrpc.connection.ManagedServerConnection.__dict__
+    False
+    >>> connection.message_input('test5')
+    base message input 'test5'
+    >>> connection.message_input('test6')
+    base message input 'test6'
+
+The log files contain marshals:
+
+    >>> import marshal
+    >>> for p in ('base/090908090306', 'base/090908090309'):
+    ...     print p
+    ...     f = open(p)
+    ...     while 1:
+    ...         try:
+    ...             i, t, m = marshal.load(f)
+    ...             print (i==id(connection), t, m)
+    ...         except EOFError: break
+    base/090908090306
+    (True, 1252400587.910615, 'test')
+    (True, 1252400588.910615, 'test2')
+    base/090908090309
+    (True, 1252400590.910615, 'test3')
+    (True, 1252400591.910615, 'test4')
+
+Restore the monkey patches:
+
+    >>> ZEO.zrpc.connection.Connection.message_input = base_message_input
+    >>> ZEO.zrpc.connection.Connection.__init__ = base_init
