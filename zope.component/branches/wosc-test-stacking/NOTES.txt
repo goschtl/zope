@@ -1,0 +1,37 @@
+TODO:
+
+
+- Tests for zope.component-Stacking
+  Registry-Object: new registration, delete, view old, bases chain
+  getGlobalSiteManager()
+  getSiteManager / setSite
+
+    - Do we need to make cache contents (in AdapterRegistry/Lookup) stackable?
+      aka, do list-like lookup results work or are they broken by push/pop?
+      Example-test:
+      register subscriber
+      A = subscribers
+      push
+      register some more subscribers
+      B = subscribers
+      pop
+      C = subscribers
+      assert C == A
+      assert len(B) > len(C)
+
+    - Do we have to make _v_subregistries stackable?
+
+
+- zope.interface uses C-code for some parts. Is it a performance problem that
+  'stackable' is Python-code? (This should only apply to tests, since we're
+  going to want to create a way to bypass the stackable stuff)
+
+* Stackable:
+- Needs a better name
+- Create separate egg?
+
+- don't create a new class object for each stackable() call
+- prettier class name, repr, etc.
+
+- have a name or "stack context", so you can say push('zope.component')
+- do we leak memory since we never unregister stackables?

@@ -24,6 +24,7 @@ from zope.interface import providedBy
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interfaces import ISpecification
 
+from zope.component.stackable import stackable
 from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IAdapterRegistration
 from zope.component.interfaces import IComponents
@@ -56,10 +57,10 @@ class Components(object):
         self.utilities = AdapterRegistry()
 
     def _init_registrations(self):
-        self._utility_registrations = {}
-        self._adapter_registrations = {}
-        self._subscription_registrations = []
-        self._handler_registrations = []
+        self._utility_registrations = stackable({})
+        self._adapter_registrations = stackable({})
+        self._subscription_registrations = stackable([])
+        self._handler_registrations = stackable([])
 
     def _getBases(self):
         # Subclasses might override

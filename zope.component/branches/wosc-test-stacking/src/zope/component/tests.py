@@ -34,6 +34,7 @@ from zope.component.interfaces import IComponentLookup
 from zope.component.testing import setUp, tearDown, PlacelessSetup
 import zope.component.persistentregistry
 import zope.component.globalregistry
+import zope.component.stackable
 
 from zope.configuration.xmlconfig import XMLConfig, xmlconfig
 from zope.configuration.exceptions import ConfigurationError
@@ -1681,6 +1682,88 @@ class ConditionalSecurityLayer(UnitTests):
         reload(zope.component.zcml)
 
 
+class StackableTests(unittest.TestCase):
+
+    def test_should_be_transparent_dict(self):
+        orig = {1: 2}
+        stack = zope.component.stackable.stackable(orig)
+        stack[3] = 4
+        self.assertEqual(2, stack[1])
+        self.assertEqual(4, stack[3])
+        del stack[1]
+        self.assertRaises(KeyError, lambda: stack[1])
+
+    def test_should_be_transparent_list(self):
+        orig = [1]
+        stack = zope.component.stackable.stackable(orig)
+        stack.append(2)
+        self.assertEqual(1, stack[0])
+        self.assertEqual(2, stack[1])
+        self.assertRaises(IndexError, lambda: stack[2])
+        del stack[1]
+        self.assertRaises(IndexError, lambda: stack[1])
+
+    def test_push_creates_new_copy(self):
+        orig = [1]
+        stack = zope.component.stackable.stackable(orig)
+        zope.component.stackable.push()
+        stack.append(2)
+        self.assertEqual([1, 2], stack)
+        self.assertEqual([1], orig)
+        zope.component.stackable.pop()
+        self.assertEqual([1], stack)
+        self.assertEqual([1], orig)
+
+    def test_reset_removes_all_copies_and_leaves_the_original(self):
+        orig = [1]
+        stack = zope.component.stackable.stackable(orig)
+        zope.component.stackable.push()
+        stack.append(2)
+        zope.component.stackable.reset()
+        self.assertEqual([1], stack)
+
+
+from zope.interface import Interface
+
+
+class ZCAStackingTests(unittest.TestCase):
+
+    def tearDown(self):
+        zope.component.stackable.reset()
+
+    def test_after_push_old_registrations_are_still_visible(self):
+        registry = zope.component.registry.Components()
+        registry.registerUtility('foo', Interface)
+        self.assertEqual('foo', registry.getUtility(Interface))
+
+        zope.component.stackable.push()
+        self.assertEqual('foo', registry.getUtility(Interface))
+
+    def test_after_push_new_registration_can_be_added(self):
+        registry = zope.component.registry.Components()
+        zope.component.stackable.push()
+        registry.registerUtility('bar', Interface)
+        self.assertEqual('bar', registry.getUtility(Interface))
+
+    def test_pop_restores_previous_registrations(self):
+        registry = zope.component.registry.Components()
+        registry.registerUtility('foo', Interface)
+        zope.component.stackable.push()
+        registry.registerUtility('bar', Interface)
+        self.assertEqual('bar', registry.getUtility(Interface))
+        zope.component.stackable.pop()
+        self.assertEqual('foo', registry.getUtility(Interface))
+
+    def test_pop_restores_deleted_registrations(self):
+        registry = zope.component.registry.Components()
+        registry.registerUtility('foo', Interface)
+        zope.component.stackable.push()
+        registry.unregisterUtility('foo', Interface)
+        self.assertEqual(None, registry.queryUtility(Interface))
+        zope.component.stackable.pop()
+        self.assertEqual('foo', registry.getUtility(Interface))
+
+
 def setUpRegistryTests(tests):
     setUp()
 
@@ -1739,6 +1822,8 @@ def test_suite():
         hooks_conditional,
         unittest.makeSuite(StandaloneTests),
         unittest.makeSuite(ResourceViewTests),
+        unittest.makeSuite(StackableTests),
+        unittest.makeSuite(ZCAStackingTests),
         ))
 
 if __name__ == "__main__":
