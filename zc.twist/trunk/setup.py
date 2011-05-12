@@ -68,6 +68,7 @@ setup(
     packages=find_packages('src'),
     url='http://pypi.python.org/pypi/zc.twist',
     package_dir={'':'src'},
+    namespace_packages=['zc'],
     zip_safe=False,
     author='Zope Project',
     author_email='zope-dev@zope.org',

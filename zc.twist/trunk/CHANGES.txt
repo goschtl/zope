@@ -1,7 +1,7 @@
 1.3.2 (unreleased)
 ------------------
 
-- (no changes yet)
+* Declare `zc` to be a namespace package in setup.py.
 
 1.3.1 (2009-11-15)
 ------------------
