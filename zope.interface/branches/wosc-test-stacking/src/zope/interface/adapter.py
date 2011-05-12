@@ -14,6 +14,7 @@
 """Adapter management
 """
 
+from zope.component.stackable import stackable
 import weakref
 from zope.interface import providedBy, Interface, ro
 
@@ -44,15 +45,15 @@ class BaseAdapterRegistry(object):
         # but for order == 2 (that is, self._adapters[2]), we have:
         #   {r1 -> {r2 -> {provided -> {name -> value}}}}
         #
-        self._adapters = []
+        self._adapters = stackable([])
 
         # {order -> {required -> {provided -> {name -> [value]}}}}
         # where the remarks about adapters above apply
-        self._subscribers = []
+        self._subscribers = stackable([])
 
         # Set, with a reference count, keeping track of the interfaces
         # for which we have provided components:
-        self._provided = {}
+        self._provided = stackable({})
 
         # Create ``_v_lookup`` object to perform lookup.  We make this a
         # separate object to to make it easier to implement just the
@@ -104,14 +105,14 @@ class BaseAdapterRegistry(object):
         order = len(required)
         byorder = self._adapters
         while len(byorder) <= order:
-            byorder.append({})
+            byorder.append(stackable({}))
         components = byorder[order]
         key = required + (provided,)
 
         for k in key:
             d = components.get(k)
             if d is None:
-                d = {}
+                d = stackable({})
                 components[k] = d
             components = d
 
@@ -202,14 +203,14 @@ class BaseAdapterRegistry(object):
         order = len(required)
         byorder = self._subscribers
         while len(byorder) <= order:
-            byorder.append({})
+            byorder.append(stackable({}))
         components = byorder[order]
         key = required + (provided,)
 
         for k in key:
             d = components.get(k)
             if d is None:
-                d = {}
+                d = stackable({})
                 components[k] = d
             components = d
 
@@ -295,9 +296,9 @@ _not_in_mapping = object()
 class LookupBasePy(object):
 
     def __init__(self):
-        self._cache = {}
-        self._mcache = {}
-        self._scache = {}
+        self._cache = stackable({})
+        self._mcache = stackable({})
+        self._scache = stackable({})
 
     def changed(self, ignored=None):
         self._cache.clear()
@@ -307,12 +308,12 @@ class LookupBasePy(object):
     def _getcache(self, provided, name):
         cache = self._cache.get(provided)
         if cache is None:
-            cache = {}
+            cache = stackable({})
             self._cache[provided] = cache
         if name:
             c = cache.get(name)
             if c is None:
-                c = {}
+                c = stackable({})
                 cache[name] = c
             cache = c
         return cache
@@ -367,7 +368,7 @@ class LookupBasePy(object):
     def lookupAll(self, required, provided):
         cache = self._mcache.get(provided)
         if cache is None:
-            cache = {}
+            cache = stackable({})
             self._mcache[provided] = cache
 
         required = tuple(required)
@@ -382,7 +383,7 @@ class LookupBasePy(object):
     def subscriptions(self, required, provided):
         cache = self._scache.get(provided)
         if cache is None:
-            cache = {}
+            cache = stackable({})
             self._scache[provided] = cache
 
         required = tuple(required)
@@ -433,7 +434,7 @@ class AdapterLookupBase(object):
 
     def __init__(self, registry):
         self._registry = registry
-        self._required = {}
+        self._required = stackable({})
         self.init_extendors()
         super(AdapterLookupBase, self).__init__()
 
@@ -469,7 +470,7 @@ class AdapterLookupBase(object):
     # we'll take our chances for now.
 
     def init_extendors(self):
-        self._extendors = {}
+        self._extendors = stackable({})
         for p in self._registry._provided:
             self.add_extendor(p)
 
