@@ -75,6 +75,7 @@ setup(
     version='1.0dev',
     packages=find_packages('src'),
     package_dir={'':'src'},
+    namespace_packages=['zc'],
     zip_safe=False,
     author='Gary Poster',
     author_email='gary.poster@canonical.com',

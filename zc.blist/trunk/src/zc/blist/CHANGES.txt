@@ -1,7 +1,9 @@
 1.0 (unreleased)
 ================
 
-- Using Python's ``doctest`` module instead of depreacted
+- Declare `zc` to be a namespace package in setup.py.
+
+- Using Python's ``doctest`` module instead of deprecated
   ``zope.testing.doctest``.
 
 - Updated tests to run on Python 2.6, too.
