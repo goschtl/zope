@@ -4,7 +4,7 @@ Changelog
 0.1-alpha-3 (unreleased)
 ------------------------
 
-- Nothing changed yet.
+- Avoid code to stop thread and set the default value for variable before exception
 
 
 0.1-alpha-2 (2010-10-19)

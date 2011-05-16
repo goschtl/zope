@@ -30,15 +30,15 @@ class Z2PublisherMixin(object):
         request = HTTPRequest(None, env, response)
         request.args = args
         conn = self.db.open()
-        root = conn.root()
-        request['PARENTS'] = [root['Application']]
+        result = ''
         try:
             try:
+                root = conn.root()
+                request['PARENTS'] = [root['Application']]
                 ZPublisher.Publish.publish(request, 'Zope2', [None])
                 result = request.response.body
             except NotFound, error:
                 log.warning('NotFound when traversing to %s' % '/'.join(path))
-                result = ''
             except Exception, error:
                 # This thread should never crash, thus a blank except
                 log.error('Processor: ``%s()`` caused an error!' % method)
