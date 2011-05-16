@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1-alpha-3'
+version = '0.1-alpha-4dev'
 
 setup(name='five.taskqueue',
       version=version,
