@@ -88,7 +88,11 @@ class BaseSimpleProcessor(object):
 
     def __call__(self):
         while self.running:
-            result = self.processNext()
+            try:
+                result = self.processNext()
+            except Exception, error:
+                log.exception(error)
+                result = None
             # If there are no jobs available, sleep a little bit and then
             # check again.
             if not result:
