@@ -1763,6 +1763,27 @@ class ZCAStackingTests(unittest.TestCase):
         zope.component.stackable.pop()
         self.assertEqual('foo', registry.getUtility(Interface))
 
+    def test_list_valued_lookups_are_not_affected_by_stackable(self):
+        ANY = 'foo'
+        registry = zope.component.registry.Components()
+        registry.registerSubscriptionAdapter(
+            lambda x: ANY, (object,), Interface)
+        registry.registerSubscriptionAdapter(
+            lambda x: ANY, (object,), Interface)
+        original = registry.subscribers((object(),), Interface)
+        self.assertEqual(2, len(original))
+
+        zope.component.stackable.push()
+        registry.registerSubscriptionAdapter(
+            lambda x: ANY, (object,), Interface)
+        after_push = registry.subscribers((object(),), Interface)
+        self.assertEqual(3, len(after_push))
+
+        zope.component.stackable.pop()
+        after_pop = registry.subscribers((object(),), Interface)
+        self.assertEqual(original, after_pop)
+        self.assertEqual(3, len(after_push))
+
 
 def setUpRegistryTests(tests):
     setUp()

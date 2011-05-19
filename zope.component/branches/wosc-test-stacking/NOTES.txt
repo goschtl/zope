@@ -6,18 +6,7 @@ TODO:
   getGlobalSiteManager()
   getSiteManager / setSite
 
-    - Do we need to make cache contents (in AdapterRegistry/Lookup) stackable?
-      aka, do list-like lookup results work or are they broken by push/pop?
-      Example-test:
-      register subscriber
-      A = subscribers
-      push
-      register some more subscribers
-      B = subscribers
-      pop
-      C = subscribers
-      assert C == A
-      assert len(B) > len(C)
+    - stackable.reset() needs to take into account "dying" stackables
 
     - Do we have to make _v_subregistries stackable?
 
