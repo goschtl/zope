@@ -104,7 +104,7 @@ this. The template looks like this:
     <span tal:define="foo 'a FOO'">
     ${view.me_do()}
     <span tal:replace="structure view.me_do()" />
-    CSS-URL: ${path: static/test.css}
+    CSS-URL: ${path:static/test.css}
     My context is: ${view.url(context)}
     ${foo}
     <span tal:replace="foo" />
