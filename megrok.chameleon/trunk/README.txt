@@ -1,26 +1,16 @@
+================
 megrok.chameleon
-****************
+================
 
-`megrok.chameleon` makes it possible to use chameleon templates in Grok. 
+`megrok.chameleon` makes it possible to use Chameleon page templates in Grok.
+For more information on Grok and Chameleon page templates see:
 
-Currently support for chameleon genshi templates and chameleon zope
-page templates is provided.
-
-For more information on Grok and Chameleon templates see:
-
-- http://grok.zope.org/
-- http://chameleon.repoze.org/
+- http://pagetemplates.org/
+- http://pagetemplates.org/docs/latest/
 - http://pypi.python.org/pypi/Chameleon
-- http://pypi.python.org/pypi/chameleon.genshi
+- http://grok.zope.org/
 
 .. contents::
-
-Requirements
-============
-
-- Chameleon templates (`Chameleon`).
-- Chameleon genshi templates (`chameleon.genshi`).
-- Grok v1.0a1 or later, or five.grok 1.0 or later.
 
 Installation
 ============
@@ -37,21 +27,25 @@ project root. It should look something like this::
                      # Add extra requirements here
                      ],
 
-Then include ``megrok.chameleon`` in your ``configure.zcml``. If you
-used grokproject to create your application it's at
-``src/<projectname>/configure.zcml``. Add the include line after the
-include line for grok, but before the grokking of the current
-package. It should look something like this::
+Note that if you use the ``allow-picked-versions = false`` directive in your
+project's ``buildout.cfg``, you will have to add version number specifications
+for several packages to your ``[versions]] section.
+
+Then include ``megrok.chameleon`` in your ``configure.zcml``. If you used
+grokproject to create your application it's at
+``src/<projectname>/configure.zcml``. Add the include line after the include
+line for grok, but before the grokking of the current package. It should look
+something like this::
 
       <include package="grok" />
-      <include package="megrok.chameleon" />  
+      <include package="megrok.chameleon" />
       <grok:grok package="." />
 
 If you use ``autoInclude`` in your ``configure.zcml``, you should not
 have to do this latter step.
 
 Then run ``bin/buildout`` again. You should now see buildout saying
-something like::
+something like (where version numbers can vary)::
 
    Getting distribution for 'megrok.chameleon'.
    Got megrok.chameleon 0.5.
@@ -59,36 +53,29 @@ something like::
 That's all. You can now start using Chameleon page templates in your
 Grok application.
 
-
 Usage
 =====
 
-``megrok.chameleon`` supports the Grok standard of placing templates
-in a templates directory, for example ``app_templates``, so you can
-use Chameleon page templates by simply placing the Chameleon genshi
-templates or Chameleon Zope page templates in the templates directory,
-just as you would with regular ZPT templates.  Although chameleon
-templates themselves do not have a standard for the file extensions
-for templates, Grok needs to have an association between an
-extension and a type so it knows which type of template each template
-is.  `megrok.chameleon` defines the following extensions:
+``megrok.chameleon`` supports the Grok standard of placing templates in a
+templates directory, for example ``app_templates``, so you can use Chameleon
+page templates by simply placing the Chameleon page templates in the templates
+directory, just as you would with regular ZPT templates.
 
-* ``.cpt`` (``Chameleon page template``) for Chameleon page templates
+Although chameleon templates themselves do not have a standard for the file
+extensions for templates, Grok needs to have an association between an filename
+extension and a template language implementation so it knows which
+implementation to use.
 
-* ``.cg`` (``Chameleon genshi template``) for chameleon driven genshi
-  templates
+`megrok.chameleon` declares to use the extension ``*.cpt`` (``Chameleon page
+template``) for Chameleon page templates.
 
-* ``.cgt`` (``Chameleon genshi text template``) for chameleon driven
-  genshi text templates
-
-You can also use Chameleon page templates inline.  The syntax for this
+You can also use Chameleon page templates inline. The syntax for this
 is::
 
    from megrok.chameleon.components import ChameleonPageTemplate
-   index = ChameleonPageTemplate('<html>the html code</html>') 
+   index = ChameleonPageTemplate('<html>the html code</html>')
 
 Or if you use files::
 
    from megrok.genshi.components import ChameleonPageTemplateFile
    index = ChameleonPageTemplateFile(filename='thefilename.html')
-

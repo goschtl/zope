@@ -4,11 +4,14 @@ CHANGES
 1.0.0 (unreleased)
 ==================
 
+* Depend on the Chameleon 2.0 line.
+
 * Depend on z3c.pt again, as it contains necessary components for the types
   of expressions we expect to be able to use in page templates in a Zope/Grok
   context. The maintainer for z3c.pt is the same as for Chameleon itself.
 
-* Removal of the Genshi-template components XXX WHy?
+* Removal of the Genshi-template components, as they are not available in the
+  Chameleon-2.0 line anymore.
 
 * Grok's view namespaces are injected as "top-level" template namespaces
   instead of part of the `options` namespace.
