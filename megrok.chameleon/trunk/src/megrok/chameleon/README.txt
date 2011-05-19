@@ -4,8 +4,7 @@ Detailed Description
 Grok-support for using chameleon driven templates.
 
 With `megrok.chameleon` you can use templates parsed and rendered by
-`Chameleon`_. Currently Zope page templates and Genshi templates are
-supported.
+`Chameleon`_ using the Zope Page Template templating language.
 
 Chameleon Zope page templates
 =============================
@@ -23,7 +22,7 @@ few aspects, most notably:
   starting with ``python:`` now can be shortened by skipping this
   marker.
 
-* Also genshi-like variable substitutions are supported. For example
+* Also Genshi-like variable substitutions are supported. For example
   you can write ``${myvar}`` instead of ``tal:content="myvar"``.
 
 Beside this, most rules for regular Zope page templates apply also to
