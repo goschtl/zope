@@ -1,5 +1,6 @@
+====================
 Detailed Description
-********************
+====================
 
 Grok-support for using chameleon driven templates.
 
@@ -33,7 +34,7 @@ See the `Chameleon`_ page for more information.
 .. _Chameleon: http://chameleon.repoze.org/docs/latest/zpt.html
 
 Prerequisites
--------------
+=============
 
 Before we can see the templates in action, we care for correct
 registration and set some used variables:
@@ -66,7 +67,7 @@ Furthermore we prepare for getting the different views on manfred:
     >>> request = TestRequest()
 
 Simple templates
-----------------
+================
 
 We prepared a plain cavepainting view. The template looks like this:
 
@@ -90,7 +91,7 @@ The rendered view looks like this:
     </html>
 
 Substituting variables
-----------------------
+======================
 
 A template can access variables like ``view``, ``context``, ``static``
 and its methods and attributes. The ``food`` view does exactly
@@ -152,7 +153,7 @@ for the latter.
 
 
 Supported variables
--------------------
+===================
 
 Each template provides at least the following vars:
 
@@ -230,7 +231,7 @@ Custom template namespace names are supported:
     </html>
 
 Inline Templates
-----------------
+================
 
 We can also define inline templates. In our ``app.py`` we defined an
 inline template like this::
@@ -252,7 +253,7 @@ If we render this view we get:
     <html><body>ME GROK HAS INLINES! Some Text</body></html>
 
 TAL expressions
----------------
+===============
 
 Starting with ``megrok.chameleon`` 0.5 we deploy the all-in-one
 `Chameleon`_ package.
@@ -270,17 +271,13 @@ TALES expressions provided by ``megrok.chameleon`` are:
      Tell whether a name exists in the templates' namespace.
 
 * ``not``
-     Evaluate the trailing expression to a boolean value and invert it.
+     Evaluate the expression to a boolean value and invert it.
 
 * ``path``
-     Handle the trailing expression as a path and not as a
-     Python expression.
+     Handle the expression as a path and not as a Python expression.
 
 * ``provider``
      Support for viewlet providers.
-
-.. warning:: `z3c.pt` support has been dropped with
-             ``megrok.chameleon`` 0.5.
 
 .. note:: Starting with ``megrok.chameleon`` 0.5 support for the
           Python expression ``exists()`` has been dropped. The TALES
@@ -369,7 +366,7 @@ and render it:
     </html>
 
 Macros
-------
+======
 
 With ``megrok.chameleon`` we can also use macros, although it is a bit
 different from regular Zope page templates.
@@ -395,20 +392,20 @@ you can use something like::
 
 where ``<macro-name>`` must be an existing macro name.
 
-To refer to macros in external templates, you must use the ``path:``
-expression like this::
+To refer to macros in external templates, you must use the ``path:`` expression
+like this::
 
   <div metal:use-macro="path:
     context/@@<viewname>/template/macros/<macro-name>">
      Replaced by external macro
   </div>
 
-where ``<viewname>`` refers to an existing view on ``context`` and
-``macro-name`` again refers to an existing macro in the specified template.
+where ``<viewname>`` refers to an existing view on ``context`` and ``macro-
+name`` again refers to an existing macro in the specified template.
 
-Note, that this is different from how you refer to macros in standard
-Zope page templates. The short notation ``view/macros/<macro-name>``
-works only with regular Zope page templates.
+Note, that this is different from how you refer to macros in standard Zope page
+templates. The short notation ``view/macros/<macro-name>`` works only with
+regular Zope page templates.
 
 The following template makes use of both methods:
 
@@ -430,8 +427,8 @@ The following template makes use of both methods:
     </body>
     </html>
 
-When rendered also the slot defined in the master template is filled
-by macro user content:
+When rendered also the slot defined in the master template is filled by macro
+user content:
 
     >>> cpt_file = os.path.join(template_dir, 'macrouser.cpt')
     >>> view = getMultiAdapter((manfred, request), name='macrouser')
@@ -458,14 +455,12 @@ Clean up:
 
     >>> del getRootFolder()['manfred']
 
-
 Differences from regular Zope page templates
---------------------------------------------
+============================================
 
 * Macros are referenced differently. See appropriate section above.
 
-* Expressions are parsed in ``Python-mode`` by default. This means,
-  instead of ``tal:content="view/value"`` you must use
-  ``tal:content="view.value"``. Every occurence of TAL-expressions
-  starting with ``python:`` now can be shortened by skipping this
-  marker.
+* Expressions are parsed in ``Python-mode`` by default. This means, instead
+  of ``tal:content="view/value"`` you must use ``tal:content="view.value"``.
+  Every occurence of TAL-expressions starting with ``python:`` now can be
+  shortened by skipping this marker.

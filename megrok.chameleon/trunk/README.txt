@@ -29,7 +29,7 @@ project root. It should look something like this::
 
 Note that if you use the ``allow-picked-versions = false`` directive in your
 project's ``buildout.cfg``, you will have to add version number specifications
-for several packages to your ``[versions]] section.
+for several packages to your ``[versions]`` section.
 
 Then include ``megrok.chameleon`` in your ``configure.zcml``. If you used
 grokproject to create your application it's at
