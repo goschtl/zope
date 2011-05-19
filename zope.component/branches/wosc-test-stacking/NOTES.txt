@@ -1,15 +1,11 @@
 TODO:
 
 
-- Tests for zope.component-Stacking
-  Registry-Object: new registration, delete, view old, bases chain
-  getGlobalSiteManager()
-  getSiteManager / setSite
+- persisting/pickling stackable registries
 
-    - stackable.reset() needs to take into account "dying" stackables
-
-    - Do we have to make _v_subregistries stackable?
-
+- Tests for zope.component-Stacking: can we run the existing tests on a push
+  and then pop "level"? (Maybe use another existing application as a
+  cross-check, too).
 
 - zope.interface uses C-code for some parts. Is it a performance problem that
   'stackable' is Python-code? (This should only apply to tests, since we're
@@ -19,8 +15,16 @@ TODO:
 - Needs a better name
 - Create separate egg?
 
+- stackable.reset() needs to take into account "dying" stackables
+
 - don't create a new class object for each stackable() call
 - prettier class name, repr, etc.
 
 - have a name or "stack context", so you can say push('zope.component')
-- do we leak memory since we never unregister stackables?
+- do we leak memory regarding unregistering of stackables?
+
+
+
+* later
+- Do we have to make _v_subregistries stackable, i.e. do we want/need to
+  support changing __bases__ and restoring that after pop?
