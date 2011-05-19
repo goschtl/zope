@@ -3,7 +3,7 @@
 $Id$
 """
 import unittest
-import zope.testing.doctest
+import doctest
 
 
 class StubSSLWrapper(object):
@@ -23,9 +23,9 @@ class StubSSLWrapper(object):
 
 def test_suite():
     suite = unittest.TestSuite([
-        zope.testing.doctest.DocFileSuite(
+        doctest.DocFileSuite(
         'tests.txt',
-        optionflags=zope.testing.doctest.ELLIPSIS),
+        optionflags=doctest.ELLIPSIS),
         ])
 
     return suite
