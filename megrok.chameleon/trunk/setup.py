@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '1.0r-c1'
+version = '1.0rc1'
 
 install_requires = [
     'setuptools',
