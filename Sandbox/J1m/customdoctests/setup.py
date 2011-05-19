@@ -14,12 +14,10 @@
 name, version = 'zc.customdoctests', '0'
 
 install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
-
-entry_points = """
-"""
+extras_require = dict(test=['zope.testing', 'python-spidermonkey', 'manuel'])
 
 from setuptools import setup
+import os
 
 setup(
     author = 'Jim Fulton',
@@ -27,14 +25,23 @@ setup(
     license = 'ZPL 2.1',
 
     name = name, version = version,
-    long_description=open('README.txt').read(),
+    long_description=(
+        open('README.txt').read() + '\n\n' +
+        'Detailed dcoumentation\n' +
+        '**********************\n\n' +
+        open(os.path.join(os.path.dirname(__file__),
+                          'src', 'zc', 'customdoctests', 'README.txt')
+             ).read() + '\n\n' +
+        open(os.path.join(os.path.dirname(__file__),
+                          'src', 'zc', 'customdoctests', 'spidermonkey.txt')
+             ).read()
+        ),
     description = open('README.txt').read().strip().split('\n')[0],
     packages = [name.split('.')[0], name],
     namespace_packages = [name.split('.')[0]],
     package_dir = {'': 'src'},
     install_requires = install_requires,
     zip_safe = False,
-    entry_points=entry_points,
     package_data = {name: ['*.txt', '*.test', '*.html']},
     extras_require = extras_require,
     tests_require = extras_require['test'],

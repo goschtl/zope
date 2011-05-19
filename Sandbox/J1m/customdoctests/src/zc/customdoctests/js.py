@@ -80,6 +80,7 @@ def spidermonkeySetUp(test_or_self=None):
         globs = getattr(test_or_self, 'globs', test_or_self.__dict__)
         globs['JS'] = JS
         globs['JS_'] = js
+        globs['js'] = js
         globs['add_js_global'] = cx.add_global
 
     def load_(name):

@@ -9,10 +9,12 @@ zc.customdoctests.DocTestParser and pass any of the following options:
 ps1
    The first-line prompt, which defaultd to ``'>>>'``.
 
+   This must be a regular expression that matches exact;y 3 characters.
+
    (Note that you can't override the second-line prompt.)
 
 comment_prefix
-   The comment prefix string, which defaults to '#'.
+   The comment prefix regular expression, which defaults to '#'.
 
 transform
    A function used to transform example source, which defaults to a
@@ -20,6 +22,5 @@ transform
 
 The js module provides support for using JavaScript in doctests using
 `python-spidermonkey
-<http://pypi.python.org/pypi/python-spidermonkey>`_ or `selenium
-<http://pypi.python.org/pypi/selenium>`. It provides some examples of
-defining custom doctest parsers.
+<http://pypi.python.org/pypi/python-spidermonkey>`_. It provides some
+examples of defining custom doctest parsers.

@@ -18,8 +18,7 @@
 import unittest
 import doctest
 
-import zc.customdoctests
-
+import zc.customdoctests.js
 
 def custom_doctest_parser():
     r"""
@@ -49,9 +48,24 @@ def custom_doctest_parser():
 
     """
 
-
-
 def test_suite():
-    return doctest.DocTestSuite()
-
+    suite = unittest.TestSuite([doctest.DocTestSuite()])
+    try:
+        import spidermonkey
+    except ImportError:
+        pass
+    else:
+        import manuel.capture
+        import manuel.doctest
+        import manuel.testing
+        suite.addTest(
+            manuel.testing.TestSuite(
+                manuel.doctest.Manuel(parser=zc.customdoctests.js.parser) +
+                manuel.doctest.Manuel(parser=zc.customdoctests.js.eq_parser) +
+                manuel.doctest.Manuel() +
+                manuel.capture.Manuel(),
+                'spidermonkey.txt',
+                setUp=zc.customdoctests.js.spidermonkeySetUp)
+            )
+    return suite
 
