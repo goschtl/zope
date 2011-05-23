@@ -26,6 +26,7 @@ from Products.GenericSetup.registry import _profile_registry
 
 #### genericsetup:registerProfile
 
+
 class IRegisterProfileDirective(Interface):
 
     """Register profiles with the global registry.
@@ -112,7 +113,6 @@ class IExportStepDirective(Interface):
         required=True)
 
 
-
 def exportStep(context, name, handler, title=None, description=None):
 
     context.action(
@@ -192,6 +192,7 @@ from upgrade import UpgradeStep
 from upgrade import UpgradeDepends
 from upgrade import _registerUpgradeStep
 from upgrade import _registerNestedUpgradeStep
+
 
 class IUpgradeStepsDirective(Interface):
 
@@ -303,6 +304,7 @@ def upgradeStep(_context, title, profile, handler, description=None, source='*',
         callable=_registerUpgradeStep,
         args=(step,),
         )
+
 
 def upgradeDepends(_context, title, profile, description, import_profile=None,
                    import_steps=[], source='*', destination='*',

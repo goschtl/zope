@@ -169,7 +169,7 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
             provided = _resolveDottedName(provided)
             name = unicode(str(child.getAttribute('name')))
 
-            for_ = child.getAttribute('for') or child.getAttribute('for_') #BBB
+            for_ = child.getAttribute('for') or child.getAttribute('for_')  # BBB
             required = []
             for interface in for_.split():
                 required.append(_resolveDottedName(interface))
@@ -197,8 +197,8 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
 
             handler = child.getAttribute('handler')
             if handler:
-                raise ValueError, "Can not specify both a factory and a " \
-                                  "handler in a subscriber registration."
+                raise ValueError("Can not specify both a factory and a " \
+                                  "handler in a subscriber registration.")
 
             factory = _resolveDottedName(factory)
 
@@ -208,7 +208,7 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
 
             provided = _resolveDottedName(provided)
 
-            for_ = child.getAttribute('for') or child.getAttribute('for_') #BBB
+            for_ = child.getAttribute('for') or child.getAttribute('for_')  # BBB
             required = []
             for interface in for_.split():
                 required.append(_resolveDottedName(interface))
@@ -237,16 +237,15 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
 
             factory = child.getAttribute('factory')
             if factory:
-                raise ValueError, "Can not specify both a factory and a " \
-                                  "handler in a subscriber registration."
-            
+                raise ValueError("Can not specify both a factory and a " \
+                                  "handler in a subscriber registration.")
             if child.hasAttribute('provides'):
-                raise ValueError, "Cannot use handler with provides " \
-                                  "in a subscriber registration."
+                raise ValueError("Cannot use handler with provides " \
+                                  "in a subscriber registration.")
 
             handler = _resolveDottedName(handler)
 
-            for_ = child.getAttribute('for') or child.getAttribute('for_') #BBB
+            for_ = child.getAttribute('for') or child.getAttribute('for_')  # BBB
             required = []
 
             for interface in for_.split():
@@ -300,9 +299,8 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
                 continue
 
             if component and factory:
-                raise ValueError, "Can not specify both a factory and a " \
-                                  "component in a utility registration."
-
+                raise ValueError("Can not specify both a factory and a " \
+                                  "component in a utility registration.")
 
             obj_path = child.getAttribute('object')
             if not component and not factory and obj_path is not None:
@@ -327,11 +325,11 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
             elif component:
                 self.context.registerUtility(component, provided, name)
             elif factory:
-                current = [ utility for utility in current_utilities
-                                    if utility.provided==provided and
-                                       utility.name==name ]
+                current = [utility for utility in current_utilities
+                                    if utility.provided == provided and
+                                       utility.name == name]
 
-                if current and getattr(current[0], "factory", None)==factory:
+                if current and getattr(current[0], "factory", None) == factory:
                     continue
 
                 obj = factory()
@@ -362,11 +360,11 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
     def _extractAdapters(self):
         fragment = self._doc.createDocumentFragment()
 
-        registrations = [ {'factory': _getDottedName(reg.factory),
+        registrations = [{'factory': _getDottedName(reg.factory),
                            'provided': _getDottedName(reg.provided),
                            'required': reg.required,
                            'name': reg.name}
-                          for reg in self.context.registeredAdapters() ]
+                          for reg in self.context.registeredAdapters()]
         registrations.sort(key=itemgetter('name'))
         registrations.sort(key=itemgetter('provided'))
         blacklist = self._constructBlacklist()
@@ -394,10 +392,10 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
     def _extractSubscriptionAdapters(self):
         fragment = self._doc.createDocumentFragment()
 
-        registrations = [ {'factory': _getDottedName(reg.factory),
+        registrations = [{'factory': _getDottedName(reg.factory),
                            'provided': _getDottedName(reg.provided),
                            'required': reg.required}
-                          for reg in self.context.registeredSubscriptionAdapters() ]
+                          for reg in self.context.registeredSubscriptionAdapters()]
         registrations.sort(key=itemgetter('factory'))
         registrations.sort(key=itemgetter('provided'))
         blacklist = self._constructBlacklist()
@@ -423,9 +421,9 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
     def _extractHandlers(self):
         fragment = self._doc.createDocumentFragment()
 
-        registrations = [ {'factory': _getDottedName(reg.factory),
+        registrations = [{'factory': _getDottedName(reg.factory),
                            'required': reg.required}
-                          for reg in self.context.registeredHandlers() ]
+                          for reg in self.context.registeredHandlers()]
         registrations.sort(key=itemgetter('factory'))
         registrations.sort(key=itemgetter('required'))
 
@@ -446,11 +444,11 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
     def _extractUtilities(self):
         fragment = self._doc.createDocumentFragment()
 
-        registrations = [ {'component': reg.component,
-                           'factory' : getattr(reg, 'factory', None),
+        registrations = [{'component': reg.component,
+                           'factory': getattr(reg, 'factory', None),
                            'provided': _getDottedName(reg.provided),
                            'name': reg.name}
-                           for reg in self.context.registeredUtilities() ]
+                           for reg in self.context.registeredUtilities()]
         registrations.sort(key=itemgetter('name'))
         registrations.sort(key=itemgetter('provided'))
         site = aq_base(self._getSite())
@@ -527,6 +525,7 @@ def importComponentRegistry(context):
             logger = context.getLogger('componentregistry')
             logger.debug("Nothing to import")
 
+
 def exportComponentRegistry(context):
     """Export local components.
     """
@@ -551,4 +550,3 @@ def exportComponentRegistry(context):
         if body is not None:
             context.writeDataFile('componentregistry.xml', body,
                                   exporter.mime_type)
-
