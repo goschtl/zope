@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '3.6.3dev'
+version = '3.6.3'
 
 setup(name='zope.app.exception',
       version=version,

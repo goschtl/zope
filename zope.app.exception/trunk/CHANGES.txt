@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-3.6.3 (unreleased)
+3.6.3 (2011-05-23)
 ------------------
 
 - Replaced an undeclared test dependency on ``zope.app.authentication`` with
