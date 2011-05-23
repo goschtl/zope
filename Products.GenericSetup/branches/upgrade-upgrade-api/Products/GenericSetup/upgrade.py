@@ -53,14 +53,10 @@ class UpgradeRegistry(object):
         self._registry.clear()
 
     def getUpgradeStepsForProfile(self, profile_id):
-        """Return the upgrade steps mapping for a given profile, or
-        None if there are no steps registered for a profile matching
-        that id.
-        """
+        """Return the upgrade steps mapping for a given profile"""
         profile_steps = self._registry.get(profile_id)
         if profile_steps is None:
-            self._registry[profile_id] = OOBTree()
-            profile_steps = self._registry.get(profile_id)
+            profile_steps = self._registry[profile_id] = OOBTree()
         return profile_steps
 
     def getUpgradeStep(self, profile_id, step_id):
