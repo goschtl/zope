@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,12 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""zope.app.exception common test related classes/functions/objects.
-
-$Id$
-"""
-
-__docformat__ = "reStructuredText"
+"""zope.app.exception common test related classes/functions/objects."""
 
 import os
 from zope.app.testing.functional import ZCMLLayer

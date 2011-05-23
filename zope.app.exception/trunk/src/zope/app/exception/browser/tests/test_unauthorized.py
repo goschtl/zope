@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001-2009 Zope Corporation and Contributors.
+# Copyright (c) 2001-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,10 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test Unauthorized Exception Views
+"""Test Unauthorized Exception Views"""
 
-$Id$
-"""
 from unittest import TestCase, main, makeSuite
 from zope import component, interface
 import zope.browserpage.namedtemplate

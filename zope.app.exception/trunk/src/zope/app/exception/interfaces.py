@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -9,11 +9,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""General exceptions
-
-$Id$
-"""
-__docformat__ = 'restructuredtext'
+"""General exceptions"""
 
 # BBB
 from zope.browser.interfaces import ISystemErrorView

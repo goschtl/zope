@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """NotFound Error View class.
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unauthorized Exception View Class
-
-$Id$
-"""
-__docformat__ = 'restructuredtext'
+"""Unauthorized Exception View Class"""
 
 from zope.authentication.interfaces import IAuthentication
 from zope.publisher.browser import BrowserPage
