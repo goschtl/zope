@@ -176,10 +176,12 @@ class UpgradeDepends(UpgradeEntity):
                                               purge_old=self.purge,
                                               ignore_dependencies=ign_deps)
 
+
 def _registerUpgradeStep(step):
     profile_id = step.profile
     profile_steps = _upgrade_registry.getUpgradeStepsForProfile(profile_id)
     profile_steps[step.id] = step
+
 
 def _registerNestedUpgradeStep(step, outer_id):
     profile_id = step.profile
@@ -187,6 +189,7 @@ def _registerNestedUpgradeStep(step, outer_id):
     nested_steps = profile_steps.get(outer_id, [])
     nested_steps.append((step.id, step))
     profile_steps[outer_id] = nested_steps
+
 
 def _extractStepInfo(tool, id, step, source):
     """Returns the info data structure for a given step.
@@ -212,8 +215,10 @@ def _extractStepInfo(tool, id, step, source):
         }
     return info
 
+
 def listProfilesWithUpgrades():
     return _upgrade_registry.keys()
+
 
 def listUpgradeSteps(tool, profile_id, source):
     """Lists upgrade steps available from a given version, for a given
@@ -228,7 +233,8 @@ def listUpgradeSteps(tool, profile_id, source):
                 continue
             normsrc = normalize_version(step.source)
             res.append(((normsrc or '', step.sortkey, info['proposed']), info))
-        else: # nested steps
+        else:
+            # nested steps
             nested = []
             outer_proposed = False
             for inner_id, inner_step in step:
