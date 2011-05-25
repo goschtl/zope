@@ -310,10 +310,11 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
                 if obj_path in ('', '/'):
                     obj = site
                 else:
-                    # BBB: filter out path segments, we did claim to support
-                    # nested paths once
-                    id_ = [p for p in obj_path.split('/') if p][0]
-                    obj = getattr(site, id_, None)
+                    obj = site
+                    for path in obj_path.split('/'):
+                        if not path:
+                            continue
+                        obj = getattr(obj, path, None)
 
                 if obj is not None:
                     self.context.registerUtility(aq_base(obj), provided, name)
