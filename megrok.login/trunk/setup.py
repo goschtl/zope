@@ -28,7 +28,7 @@ long_description = (
 
 setup(
     name='megrok.login',
-    version='0.4.1dev',
+    version='0.5dev',
     author='Uli Fouquet and the Zope Community',
     author_email='uli@gnufix.de',
     url = 'http://pypi.python.org/pypi/megrok.login',
