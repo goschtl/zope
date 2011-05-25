@@ -42,7 +42,7 @@ The installed PAU is indeed the one, we configured below::
 
 The installed setup is active. We can login via a login screen::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.testbrowser.wsgi import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/app')
   >>> print browser.contents
@@ -52,7 +52,7 @@ The installed setup is active. We can login via a login screen::
   ...
 
 We enter the credentials::
-  
+
   >>> browser.getControl('User Name').value = 'mgr'
   >>> browser.getControl('Password').value = 'mgrpw'
   >>> browser.getControl('Log in').click()
@@ -110,7 +110,7 @@ def customPAUSetup(site, pau, viewname=None, strict=None, autoregister=None):
     session.loginpagename = viewname
     return
 
-    
+
 class ManageCustomSetupApp(grok.Permission):
     grok.name('app.manageCustomSetupApp')
 

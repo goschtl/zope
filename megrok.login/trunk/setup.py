@@ -5,10 +5,11 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 tests_require = [
-    'zope.testing',
-    'zope.app.testing',
-    'zope.testbrowser',
     'z3c.testsetup',
+    'zope.app.wsgi',
+    'zope.app.appsetup',
+    'zope.testbrowser',
+    'zope.testing',
     ]
 
 long_description = (
@@ -35,30 +36,31 @@ setup(
     long_description=long_description,
     license='ZPL 2.1',
     keywords="zope3 zope login grok security PAU",
-    classifiers=['Development Status :: 3 - Alpha',
-                 'Environment :: Web Environment',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: Zope Public License',
-                 'Programming Language :: Python',
-                 'Operating System :: OS Independent',
-                 'Framework :: Zope3',
-                 ],
-
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Operating System :: OS Independent',
+        'Framework :: Zope3',
+        ],
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages = ['megrok'],
     include_package_data = True,
     zip_safe=False,
-    install_requires=['setuptools',
-                      'grok',
-                      'martian',
-                      'zope.authentication',
-                      'zope.container',
-                      'zope.component',
-                      'zope.interface',
-                      'zope.pluggableauth',
-                      'zope.securitypolicy',
-                      ],
+    install_requires=[
+        'grok',
+        'martian',
+        'setuptools',
+        'zope.authentication',
+        'zope.component',
+        'zope.container',
+        'zope.interface',
+        'zope.pluggableauth',
+        'zope.securitypolicy',
+        ],
     tests_require = tests_require,
     extras_require = dict(test=tests_require),
-)
+    )

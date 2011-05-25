@@ -21,8 +21,8 @@ We create an instance of ``CustomLoginApp`` and store it in the ZODB::
 
 Now, when we try to access the `index` view of the app, we'll get a
 login page::
-  
-  >>> from zope.testbrowser.testing import Browser
+
+  >>> from zope.testbrowser.wsgi import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/app')
   >>> print browser.contents
@@ -32,7 +32,7 @@ login page::
   ...
 
 We enter the credentials::
-  
+
   >>> browser.getControl(name='login').value = 'mgr'
   >>> browser.getControl(name='password').value = 'mgrpw'
   >>> browser.getControl('Log in').click()
@@ -42,10 +42,10 @@ We are redirected to the page we wanted to access in the beginning::
   >>> print browser.contents
   Hi after custom login!
 
-  
+
 Login view fields
 -----------------
-  
+
 For the authentication it is essential, that your login form provides:
 
  * a field named `login` with the username (principal title)

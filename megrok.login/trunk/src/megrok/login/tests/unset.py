@@ -12,7 +12,7 @@ We create an instance of App and store it in the ZODB::
   >>> root = getRootFolder()
   >>> root['app'] = App()
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from zope.testbrowser.wsgi import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/app')
   Traceback (most recent call last):
@@ -25,7 +25,7 @@ We can, however, use basic-auth::
   >>> browser.open('http://localhost/app')
   >>> browser.headers['status']
   '200 Ok'
-  
+
 
 """
 import grok

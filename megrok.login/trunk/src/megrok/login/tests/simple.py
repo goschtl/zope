@@ -15,8 +15,8 @@ We create an instance of App and store it in the ZODB::
 
 Now, when we try to access the `index` view of the app, we'll get a
 login page::
-  
-  >>> from zope.testbrowser.testing import Browser
+
+  >>> from zope.testbrowser.wsgi import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/simpleapp')
   >>> print browser.contents
@@ -26,7 +26,7 @@ login page::
   ...
 
 We enter the credentials::
-  
+
   >>> browser.getControl('User Name').value = 'mgr'
   >>> browser.getControl('Password').value = 'mgrpw'
   >>> browser.getControl('Log in').click()

@@ -22,8 +22,8 @@ We create an instance of ``AutoRegisterApp`` and store it in the ZODB::
 
 Now, when we try to access the `index` view of the app, we'll get a
 login page::
-  
-  >>> from zope.testbrowser.testing import Browser
+
+  >>> from zope.testbrowser.wsgi import Browser
   >>> browser = Browser()
   >>> browser.open('http://localhost/app')
   >>> print browser.contents
@@ -33,7 +33,7 @@ login page::
   ...
 
 We enter the credentials::
-  
+
   >>> browser.getControl('User Name').value = 'bob'
   >>> browser.getControl('Password').value = 'bobspw'
   >>> browser.getControl('Log in').click()
@@ -80,7 +80,7 @@ The correct credentials, of course, will work::
   >>> print browser.contents
   Hi autoregistered user!
 
-  
+
 """
 import grok
 import megrok.login
@@ -104,7 +104,7 @@ class Index(grok.View):
 class Logout(grok.View):
     """A logout screen.
     """
-    
+
     def render(self):
         # The session plugin which is automatically created, is always
         # called 'session'
