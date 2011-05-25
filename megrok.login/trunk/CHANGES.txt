@@ -1,11 +1,15 @@
+====================
 megrok.login changes
-********************
+====================
 
-0.4.1 (unreleased)
-==================
+0.5 (unreleased)
+================
 
-* No changes yet.
+* Update package to be part of the Grok Toolkit.
 
+* Remove z3c.testsetup.
+
+* Use recent zope.testbrowser.
 
 0.4 (2011-02-09)
 ==================
@@ -34,11 +38,10 @@ megrok.login changes
 
      If you define your own login page, this step is not needed.
 
-
 0.3 (2010-07-03)
 ================
 
-* Support for Grok 1.1, 1.2. 
+* Support for Grok 1.1, 1.2.
 
   We now use zope.pluggableauth and friends if available. Note, that
   if you run into problems like non-found authentication adapters, you
@@ -69,7 +72,6 @@ megrok.login changes
   plugins of your already setup PAU manually, for instance using the
   ZMI.
 
-
 0.2 (2009-12-09)
 ================
 
@@ -79,8 +81,7 @@ megrok.login changes
 
 * Changed the test configuration to handle the new grok.View permission.
 
-* Added the versions.cfg file from grok. 
-
+* Added the versions.cfg file from grok.
 
 0.1 (2008-12-26)
 ================
