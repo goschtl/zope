@@ -2,8 +2,6 @@
 How to enable session based authentication
 ******************************************
 
-:Test-Layer: functional
-
 If the `megrok.login.enable` directive is used, we get a login page
 when trying to access a protected view.
 

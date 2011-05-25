@@ -1,7 +1,5 @@
 """
 
-:Test-Layer: functional
-
 If the `megrok.login.enable` directive is not used, we get the
 standard behaviour, a HTTP error: 401 Unauthorized when trying to
 access a protected view.

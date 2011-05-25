@@ -2,8 +2,6 @@
 How to setup a customized login page
 ************************************
 
-:Test-Layer: functional
-
 Using the `megrok.login.viewname` directive, you can specify your own
 login page. If you do not use it, a default page is used.
 

@@ -3,8 +3,6 @@
 How to disable authentication of internal principals
 ****************************************************
 
-:Test-Layer: functional
-
 If we want to disable 'default' principals (users) defined in
 ``site.zcml`` or similar from logging in, we can use
 ``megrok.login.strict()``. This marker directive takes care, so that

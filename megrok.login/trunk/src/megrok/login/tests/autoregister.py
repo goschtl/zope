@@ -2,8 +2,6 @@
 How to setup auto registering authentication
 ********************************************
 
-:Test-Layer: functional
-
 When (beside `megrok.login.enable()`, which is always necessary), the
 `megrok.login.autoregister()` directive is used, then all credentials
 that contain a new username are automatically registered and accepted
