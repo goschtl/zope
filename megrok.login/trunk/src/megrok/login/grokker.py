@@ -6,8 +6,9 @@ from zope.pluggableauth import PluggableAuthentication
 from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
 from zope.authentication.interfaces import IAuthentication
-from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
-                                      AutoRegisteringPrincipalFolder)
+from grokcore.site.interfaces import IUtilityInstaller
+from megrok.login.authplugins import (
+    PrincipalRegistryAuthenticator, AutoRegisteringPrincipalFolder)
 
 class ApplicationGrokker(martian.ClassGrokker):
     martian.component(grok.Site)
@@ -17,7 +18,7 @@ class ApplicationGrokker(martian.ClassGrokker):
     martian.directive(megrok.login.strict, default=False)
     martian.directive(megrok.login.autoregister, default=u'')
     martian.directive(megrok.login.setup, default=None)
-    
+
     def execute(self, factory, config, enable, viewname, strict,
                 autoregister, setup, **kw):
         if enable is False:
@@ -32,16 +33,10 @@ class ApplicationGrokker(martian.ClassGrokker):
         return True
 
 def authenticationSubscriber(site, event):
-    try:
-        # Conditional import. Newer versions of grok do not provide
-        # `setupUtility` any more...
-        from grok.meta import setupUtility
-    except ImportError:
-        from grokcore.site.interfaces import IUtilityInstaller
-        setupUtility = component.getUtility(IUtilityInstaller)
-    setupUtility(site, PluggableAuthentication(), IAuthentication,
-                 setup=setupPAU,
-                 name_in_container='megrok_login_pau')
+    setupUtility = component.getUtility(IUtilityInstaller)
+    setupUtility(
+        site, PluggableAuthentication(), IAuthentication,
+        setup=setupPAU, name_in_container='megrok_login_pau')
 
 def setupPAU(pau):
     """Callback to setup the Pluggable Authentication Utility """
@@ -56,7 +51,7 @@ def setupPAU(pau):
         result = setup(pau, viewname=viewname, strict=strict,
                        autoregister=autoregister)
         return result
-    
+
     if len(autoregister) > 0 :
         pau['principals'] = AutoRegisteringPrincipalFolder(
             autopermissions = autoregister)

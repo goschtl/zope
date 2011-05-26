@@ -78,13 +78,10 @@ folder, for example, which is handled by a different PAU::
 """
 import grok
 import megrok.login
-
-from zope.pluggableauth import PluggableAuthentication
 from zope.pluggableauth.plugins.principalfolder import PrincipalFolder
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-from zope.authentication.interfaces import IAuthentication
-from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
-                                      AutoRegisteringPrincipalFolder)
+from megrok.login.authplugins import (
+    PrincipalRegistryAuthenticator, AutoRegisteringPrincipalFolder)
 
 def customPAUSetup(site, pau, viewname=None, strict=None, autoregister=None):
     """Setup our own PAU.

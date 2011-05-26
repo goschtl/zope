@@ -5,9 +5,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 tests_require = [
-    'z3c.testsetup',
     'zope.app.wsgi',
-    'zope.app.appsetup',
     'zope.testbrowser',
     'zope.testing',
     ]
@@ -51,8 +49,8 @@ setup(
     include_package_data = True,
     zip_safe=False,
     install_requires=[
-        'grok',
-        'martian',
+        'grok >= 1.6',
+        'martian >= 0.14',
         'setuptools',
         'zope.authentication',
         'zope.component',

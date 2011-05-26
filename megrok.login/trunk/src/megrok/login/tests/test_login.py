@@ -2,7 +2,7 @@ import doctest
 import megrok.login
 import re
 import unittest
-from zope.testing import module, renormalizing
+from zope.testing import renormalizing
 from zope.app.wsgi.testlayer import BrowserLayer
 
 _layer = BrowserLayer(megrok.login, zcml_file='ftesting.zcml')
@@ -20,18 +20,6 @@ _option_flags = (
     doctest.ELLIPSIS +
     doctest.NORMALIZE_WHITESPACE +
     doctest.REPORT_NDIFF)
-
-'''
-def setUp(test):
-    if test.filename.endswith('.txt'):
-        module.setUp(test, '__main__')
-    FunctionalTestSetup().setUp()
-
-def tearDown(test):
-    FunctionalTestSetup().tearDown()
-    if test.filename.endswith('.txt'):
-        module.tearDown(test)
-'''
 
 def test_suite():
     suite = unittest.TestSuite()
