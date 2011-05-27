@@ -163,7 +163,10 @@ class Handler:
                         #print 'queue timeout'
                         continue
                     if callargs == 'stop':
-                        break
+                        connection = self.connection
+                        if connection is not None:
+                            connection.close()
+                        return
                     async, op, args = callargs
                     assert not async
                     self.call(op, args)
@@ -244,7 +247,6 @@ class Handlers:
     async = abandoned = active = 0
 
     def __init__(self, disconnected):
-        self.errtimes = {}
         self.times = {}
         self.disconnected = disconnected
         self.connected = self.maxactive = self.calls = self.replies = 0
@@ -286,13 +288,10 @@ class Handlers:
             and len(ret) == 2
             and isinstance(ret[1], Exception)
             ):
-            n, t = self.errtimes.get(op, zz)
-            self.errtimes[op] = n+1, t+elapsed
-            #print '  OOPS', op, args, elapsed, ret[0].__name__, ret[1]
+            op = op+'-error'
             self.errors += 1
-        else:
-            n, t = self.times.get(op, zz)
-            self.times[op] = n+1, t+elapsed
+        n, t = self.times.get(op, zz)
+        self.times[op] = n+1, t+elapsed
         sys.stdout.flush()
 
 
@@ -352,6 +351,7 @@ def main(args=None):
     sessions = {}
     nhandlers = 0
     handlers_queue = Queue()
+    processes = []
     for session, timetime, msgid, async, op, args in log:
         if singe_threaded:
             session = '1'
@@ -363,13 +363,13 @@ def main(args=None):
                 )
             process.daemon = True
             process.start()
+            processes.append(process)
             sessions[session] = handler_queue
             nhandlers += 1
 
     nsessions = len(sessions)
     handlers = Handlers(nsessions)
     thread = threading.Thread(target=handlers.run, args=(handlers_queue, ))
-    thread.setDaemon(True)
     thread.start()
 
     handlers.event.wait(10)
@@ -406,8 +406,12 @@ def main(args=None):
 
         if nrecords and (nrecords%10000 == 0):
             if (nrecords%100000 == 0):
+                print
+                os.system('free')
+                print
                 last_times = print_times(last_times, handlers.times,
                                          "after %s operations" % nrecords)
+                print
 
             now = time.time()
             if now > start:
@@ -434,13 +438,10 @@ def main(args=None):
         if nrecords >= max_records:
             break
 
+    for q in sessions.values():
+        q.put('stop')
+
     print '='*70
-
-    print speed, nrecords
-
-    for op in sorted(handlers.errtimes):
-        n, t = handlers.times[op]
-        print 'err', op, n, t/n
 
     print_times(last_times, handlers.times,
                 "after %s transactions" % nrecords)
@@ -448,3 +449,7 @@ def main(args=None):
     print_times({}, handlers.times, "overall")
     sys.stdout.flush()
 
+    for p in processes:
+        p.join(1)
+
+    sys.exit(0)
