@@ -1,0 +1,14 @@
+Changelog
+=========
+
+0.2 (2011-05-31)
+----------------
+
+- Add context and action parameters for menuitems.
+
+
+0.1 (2009-05-28)
+----------------
+
+* Initial release
+
