@@ -4,7 +4,7 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add context and action parameters for menuitems.
 
 
 0.1 (2009-05-28)

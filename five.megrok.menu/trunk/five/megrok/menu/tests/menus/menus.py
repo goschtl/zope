@@ -23,7 +23,14 @@ to the request:
 
   >>> from pprint import pprint
   >>> pprint(menu.getMenuItems(manfred, request))
-  [{'action': 'edit',
+  [{'action': '/path/customcontext',
+    'description': u'',
+    'extra': None,
+    'icon': None,
+    'selected': u'',
+    'submenu': None,
+    'title': 'CustomContext'},
+   {'action': 'edit',
     'description': u'',
     'extra': None,
     'icon': None,
@@ -46,12 +53,19 @@ from five.grok import testing
 from five.megrok import menu
 import grokcore.security
 
+
 class Mammoth(Context):
     pass
+
+
+class Smilodon(Context):
+    pass
+
 
 class Tabs(menu.Menu):
     grok.name('tabs')
     grok.title('Tabs')
+    grok.context(Mammoth)
     grok.description('')
 
 # You can either refer to the menu class itself:
@@ -59,7 +73,9 @@ class Tabs(menu.Menu):
 
 class Index(grok.View):
     grok.title('View')
+    grok.context(Mammoth)
     menu.menuitem(Tabs)
+
     def render(self):
         return 'index'
 
@@ -67,8 +83,20 @@ class Index(grok.View):
 
 class Edit(grok.View):
     grok.title('Edit')
+    grok.context(Mammoth)
     menu.menuitem('tabs')
     grokcore.security.require('zope2.Public')
 
     def render(self):
         return 'edit'
+
+# You can define custom context and action for menuitem
+
+class CustomContext(grok.View):
+    grok.title('CustomContext')
+    grok.context(Smilodon)
+    grok.require('zope2.Public')
+    menu.menuitem('tabs', context=Mammoth, action='/path/customcontext')
+
+    def render(self):
+        return 'custom-context'

@@ -61,8 +61,8 @@ class SubMenuItemGrokker(martian.ClassGrokker):
 
         menu_id, icon, filter, order, extra = menuitem
         try:
-            menu = config.resolve('zope.app.menus.'+menu_id)
-        except ConfigurationError, v:
+            menu = config.resolve('zope.app.menus.%s' % menu_id)
+        except ConfigurationError:
             raise GrokError("The %r menu could not be found.  Please use "
                             "megrok.menu.Menu to register a menu first."
                             % menu_id, factory)
@@ -90,18 +90,24 @@ class MenuItemGrokker(ViewSecurityGrokker):
                 title=u''):
         if menuitem is None:
             return False
-        menu_id, icon, filter, order, extra = menuitem
+        menu_id, icon, filter, order, extra, action, menuContext = menuitem
 
         try:
-            menu = config.resolve('zope.app.menus.'+menu_id)
-        except ConfigurationError, v:
+            menu = config.resolve('zope.app.menus.%s' % menu_id)
+        except ConfigurationError:
             raise GrokError("The %r menu could not be found.  Please use "
                             "megrok.menu.Menu to register a menu first."
                             % menu_id, factory)
-        if permission == None:
+        if permission is None:
             permission = CheckerPublic
 
-        menuItemDirective(config, menu=menu, for_=context, action=name,
+        if action is None:
+            action = name
+
+        if menuContext is not None:
+            context = menuContext
+
+        menuItemDirective(config, menu=menu, for_=context, action=action,
                           title=title, description=description, icon=icon,
                           filter=filter, permission=permission, layer=layer,
                           order=order, extra=extra)
