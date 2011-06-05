@@ -12,7 +12,7 @@ CLASSIFIERS = [
     'Programming Language :: Python',
 ]
 
-version = '2.2.5'
+version = '2.3.0'
 
 desc = unicode(file('README.txt').read().strip(), 'utf-8')
 changes = file('CHANGES.txt').read().strip()
@@ -35,7 +35,14 @@ setup(name='zopyx.convert2',
       include_package_data = True,
       test_suite='nose.collector',
       zip_safe=False,
-      install_requires=['setuptools', 'elementtree', 'BeautifulSoup<=3.0.9999'],
+      install_requires=[
+          'setuptools', 
+          'elementtree', 
+          'BeautifulSoup<=3.0.9999', 
+          'pisa', 
+          'reportlab', 
+          'pypdf', 
+          'html5lib'],
       namespace_packages=['zopyx'],
       entry_points={'console_scripts': ['html-convert = zopyx.convert2.cli:main',]},
       )
