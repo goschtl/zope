@@ -35,7 +35,7 @@ setup(name='zopyx.convert2',
       include_package_data = True,
       test_suite='nose.collector',
       zip_safe=False,
-      install_requires=['setuptools', 'elementtree', 'BeautifulSoup<=3.0.9999'],
+      install_requires=['setuptools', 'elementtree', 'BeautifulSoup<=3.0.9999', 'pisa', 'reportlab', 'pypdf'],
       namespace_packages=['zopyx'],
       entry_points={'console_scripts': ['html-convert = zopyx.convert2.cli:main',]},
       )
