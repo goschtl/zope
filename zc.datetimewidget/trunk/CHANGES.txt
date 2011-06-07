@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.6.5 (unreleased)
+0.7.0 (2011-06-07)
 ------------------
 
 - Fix tests using a newer zope.publisher that requires zope.login.
