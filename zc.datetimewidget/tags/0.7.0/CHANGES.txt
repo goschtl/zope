@@ -1,0 +1,76 @@
+=======
+CHANGES
+=======
+
+0.7.0 (2011-06-07)
+------------------
+
+- Fix tests using a newer zope.publisher that requires zope.login.
+- Fix tests by not using deprecated ``zope.app.securitypolicy``
+- Remove test dependency ``zope.app.server`` and ``zope.app.authentication``.
+  Use ``zope.password`` instead.
+- No longer using deprecated ``zope.testing.doctestunit``. Use python's
+  build-in ``doctest`` instead.
+
+
+0.6.4 (2009-10-20)
+------------------
+
+- Make Calendar pop-up and drag behavior more consistent across
+  browser modes in IE.
+
+
+0.6.3 (2009-08-24)
+------------------
+
+- Fixed handling of naive datetime objects, they no longer result in
+  an exception but are displayed unchanged. When they get saved again
+  they are saved with UTC timezone like all other ones.
+
+- Added `datetimewidget.txt` doctest to ``long_description`` to show
+  up on pypi home page.
+
+- Fixed home page name in `setup.py`.
+
+- Added coverage analysis tools to buildout.
+
+- Removed deprecated zpkg and zcml slugs.
+
+
+0.6.2 (2009-05-20)
+------------------
+
+- Using `++resource++` instead of `@@/` to load resources.
+
+- Renaming "lang" directory (``ZPublisher`` gets confused because of a
+  view with the same name exists in ``zope.traversing.namespace``).
+
+  See `gocept.datetimewidget`_ for more details on how to use
+  zc.datetimewidget with zope2.
+
+.. _`gocept.datetimewidget` : http://pypi.python.org/pypi/gocept.datetimewidget
+
+0.6.1 (2008-05-29)
+------------------
+
+- Unchanged from 0.5.2, but released with a new version number thanks to a
+  package with an 0.6.1dev-rBFN revision found in the wild.
+
+0.5.2 (2007-11-03)
+------------------
+
+- Improve package data.
+
+- Developed proper package dependencies.
+
+- Merged functional tests into ``tests.py``.
+
+0.5.1 (2006-06-15)
+------------------
+
+- Include license and copyright headers.
+
+0.5.0 (2006-05-24)
+------------------
+
+- Initial release.
