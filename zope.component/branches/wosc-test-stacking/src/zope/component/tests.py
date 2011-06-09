@@ -1722,6 +1722,22 @@ class StackableTests(unittest.TestCase):
         zope.component.stackable.reset()
         self.assertEqual([1], stack)
 
+    def test_is_persistable(self):
+        import tempfile
+        import ZODB
+        tmpfile = tempfile.NamedTemporaryFile(delete=True)
+        root = ZODB.DB(tmpfile.name).open().root()
+        orig = [1]
+        stack = zope.component.stackable.stackable(orig)
+        root['stack'] = stack
+        zope.component.stackable.push()
+        stack.append(2)
+        transaction.commit()
+        stack = root['stack']
+        self.assertEqual([1, 2], stack)
+        zope.component.stackable.pop()
+        self.assertEqual([1], stack)
+
 
 from zope.interface import Interface
 

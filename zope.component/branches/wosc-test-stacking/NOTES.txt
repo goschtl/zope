@@ -3,6 +3,9 @@ TODO:
 
 - persisting/pickling stackable registries
 
+- Name StackableBase methods with a prefix so they don't conflict with
+  delegated methods (e.g. pop).
+
 - Tests for zope.component-Stacking: can we run the existing tests on a push
   and then pop "level"? (Maybe use another existing application as a
   cross-check, too).
@@ -16,9 +19,6 @@ TODO:
 - Create separate egg?
 
 - stackable.reset() needs to take into account "dying" stackables
-
-- don't create a new class object for each stackable() call
-- prettier class name, repr, etc.
 
 - have a name or "stack context", so you can say push('zope.component')
 - do we leak memory regarding unregistering of stackables?
