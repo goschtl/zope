@@ -12,6 +12,7 @@ import prince
 import xfc
 import calibre
 import pisa
+import pisa_bin
 from convert import Converter
 
 

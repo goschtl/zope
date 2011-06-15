@@ -1,3 +1,8 @@
+2.3.1 (2011-06-15)
+==================
+- support for PISA (pdf-pisa-bin) - requires that 'pisa'
+  is found in the $PATH
+ 
 2.3.0 (2011-06-05)
 ==================
 - support for PISA (pdf-pisa)
