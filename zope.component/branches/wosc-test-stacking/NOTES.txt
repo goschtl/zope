@@ -1,10 +1,10 @@
 TODO:
 
+* zope.component
 
-- persisting/pickling stackable registries
+major:
 
-- Name StackableBase methods with a prefix so they don't conflict with
-  delegated methods (e.g. pop).
+- persisting/pickling stackables
 
 - Tests for zope.component-Stacking: can we run the existing tests on a push
   and then pop "level"? (Maybe use another existing application as a
@@ -14,6 +14,14 @@ TODO:
   'stackable' is Python-code? (This should only apply to tests, since we're
   going to want to create a way to bypass the stackable stuff)
 
+minor:
+
+- Name StackableBase methods with a prefix so they don't conflict with
+  delegated methods (e.g. pop).
+
+- rewrite persistence test to use DemoStorage instead of FileStorage
+
+
 * Stackable:
 - Needs a better name
 - Create separate egg?
@@ -22,7 +30,6 @@ TODO:
 
 - have a name or "stack context", so you can say push('zope.component')
 - do we leak memory regarding unregistering of stackables?
-
 
 
 * later
