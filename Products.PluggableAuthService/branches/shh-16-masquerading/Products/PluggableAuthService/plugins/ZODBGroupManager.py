@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights
+# Copyright (c) 2001 Zope Foundation and Contributors
 # Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -250,14 +250,12 @@ class ZODBGroupManager( BasePlugin ):
 
         for k, v in self._principal_groups.items():
             if group_id in v:
-                # should be one and only one mapping to 'k'
-
                 parent = aq_parent( self )
                 info = parent.searchPrincipals( id=k, exact_match=True )
-                assert( len( info ) in ( 0, 1 ) )
                 if len( info ) == 0:
                     title = '<%s: not found>' % k
                 else:
+                    # always use the title of the first principal found
                     title = info[0].get( 'title', k )
                 result.append( ( k, title ) )
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights
+# Copyright (c) 2001 Zope Foundation and Contributors
 # Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -18,6 +18,7 @@ $Id$
 """
 
 from base64 import encodestring, decodestring
+from binascii import Error
 from urllib import quote, unquote
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -118,15 +119,25 @@ class CookieAuthHelper(Folder, BasePlugin):
             creds['password'] = request.form.get('__ac_password', '')
 
         elif cookie and cookie != 'deleted':
-            cookie_val = decodestring(unquote(cookie))
+            raw = unquote(cookie)
+            try:
+                cookie_val = decodestring(raw)
+            except Error:
+                # Cookie is in a different format, so it is not ours
+                return creds
+
             try:
                 login, password = cookie_val.split(':')
             except ValueError:
                 # Cookie is in a different format, so it is not ours
                 return creds
 
-            creds['login'] = login.decode('hex')
-            creds['password'] = password.decode('hex')
+            try:
+                creds['login'] = login.decode('hex')
+                creds['password'] = password.decode('hex')
+            except TypeError:
+                # Cookie is in a different format, so it is not ours
+                return {}
 
         if creds:
             creds['remote_host'] = request.get('REMOTE_HOST', '')

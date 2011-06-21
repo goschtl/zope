@@ -11,12 +11,10 @@ def _package_doc(name):
     f = open(os.path.join(package, name))
     return f.read()
 
-_boundary = '\n' + ('-' * 60) + '\n\n'
+_boundary = '\n\n'
 README = ( _package_doc('README.txt')
          + _boundary 
          + _package_doc('doc/CHANGES.txt')
-         + _boundary 
-         + "Download\n========"
          )
 
 setup(name='Products.%s' % NAME,
@@ -35,7 +33,7 @@ setup(name='Products.%s' % NAME,
                 "Authentication/Directory",
         ],
       keywords='web application server zope zope2',
-      author="Zope Corporation and contributors",
+      author="Zope Foundation and Contributors",
       author_email="zope-cmf@zope.org",
       url="http://pypi.python.org/pypi/Products.PluggableAuthService",
       license="ZPL 2.1 (http://www.zope.org/Resources/License/ZPL-2.1)",

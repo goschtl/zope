@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights
+# Copyright (c) 2001 Zope Foundation and Contributors
 # Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -186,6 +186,37 @@ class CookieAuthHelperTests( unittest.TestCase
                          'password': 'b:ar', 
                          'remote_host': '', 
                          'remote_address': ''}) 
+
+    def test_extractCredentials_from_cookie_with_colon_that_is_not_ours(self): 
+        # http://article.gmane.org/gmane.comp.web.zope.plone.product-developers/5145
+        from base64 import encodestring
+
+        helper = self._makeOne()
+        response = FauxCookieResponse()
+        request = FauxSettableRequest(RESPONSE=response)
+
+        cookie_str = 'cookie:from_other_plugin'
+        cookie_val = encodestring(cookie_str)
+        cookie_val = cookie_val.rstrip()
+        request.set(helper.cookie_name, cookie_val)
+
+        self.assertEqual(helper.extractCredentials(request),
+                        {})
+
+    def test_extractCredentials_from_cookie_with_bad_binascii(self):
+        # this might happen between browser implementations
+        from base64 import encodestring
+
+        helper = self._makeOne()
+        response = FauxCookieResponse()
+        request = FauxSettableRequest(RESPONSE=response)
+
+        cookie_val = 'NjE2NDZkNjk2ZTo3MDZjNmY2ZTY1MzQ3NQ%3D%3D'[:-1]
+        request.set(helper.cookie_name, cookie_val)
+
+        self.assertEqual(helper.extractCredentials(request),
+                        {})
+
 
 
 if __name__ == "__main__":

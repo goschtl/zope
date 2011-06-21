@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001-2008 Zope Corporation and Contributors. All Rights
+# Copyright (c) 2001-2008 Zope Foundation and Contributors
 # Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -442,6 +442,17 @@ class ZODBUserManagerTests( unittest.TestCase
         user_id, login = zum.authenticateCredentials(info2)
         self.assertEqual(user_id, 'user1')
         self.assertEqual(login, 'user1@foobar.com')
+
+    def test_updateUser_login_name_conflicts(self):
+        # See https://bugs.launchpad.net/zope-pas/+bug/789858
+        zum = self._makeOne()
+
+        # Create a user and make sure we can authenticate with it
+        zum.addUser( 'user1', 'user1@example.com', 'password' )
+        zum.addUser( 'user2', 'user2@example.com', 'other' )
+
+        self.assertRaises(ValueError,
+                          zum.updateUser, 'user1', 'user2@example.com')
 
     def test_enumerateUsersWithOptionalMangling(self):
 
