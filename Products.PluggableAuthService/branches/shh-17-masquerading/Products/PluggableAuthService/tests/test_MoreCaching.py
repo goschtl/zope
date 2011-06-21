@@ -282,7 +282,6 @@ class CachingTests(pastc.PASTestCase):
         password = 'secret'
 
         factory = self.pas.manage_addProduct['PluggableAuthService']
-        factory.addZODBGroupManager( 'groups' )
         self.pas._doAddUser(user_id, password, [], [])
         groups = self.pas.groups
         groups.addGroup( group_id )
@@ -297,7 +296,6 @@ class CachingTests(pastc.PASTestCase):
         password = 'secret'
 
         factory = self.pas.manage_addProduct['PluggableAuthService']
-        factory.addZODBGroupManager( 'groups' )
         self.pas._doAddUser(user_id, password, [], [])
         groups = self.pas.groups
         groups.addGroup( group_id )

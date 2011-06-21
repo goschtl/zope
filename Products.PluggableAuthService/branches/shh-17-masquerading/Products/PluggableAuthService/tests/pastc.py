@@ -23,13 +23,18 @@ from Testing.ZopeTestCase import user_name
 from Testing.ZopeTestCase import user_password
 from Testing.ZopeTestCase import user_role
 
-from base64 import encodestring
-user_auth = encodestring('%s:%s' % (user_name, user_password)).rstrip()
-
 from Products.PluggableAuthService.interfaces.plugins import \
     IAuthenticationPlugin, IUserEnumerationPlugin, IRolesPlugin, \
     IRoleEnumerationPlugin, IRoleAssignerPlugin, \
+    IGroupsPlugin, IGroupEnumerationPlugin, \
     IChallengePlugin, IExtractionPlugin, IUserAdderPlugin
+
+from base64 import encodestring
+
+def mkauth(name, password):
+    return encodestring('%s:%s' % (name, password)).rstrip()
+
+user_auth = mkauth(user_name, user_password)
 
 
 class PASTestCase(ZopeTestCase.ZopeTestCase):
@@ -45,6 +50,7 @@ class PASTestCase(ZopeTestCase.ZopeTestCase):
         factory.addHTTPBasicAuthHelper('http_auth')
         factory.addZODBUserManager('users')
         factory.addZODBRoleManager('roles')
+        factory.addZODBGroupManager('groups')
         plugins = pas.plugins
         plugins.activatePlugin(IChallengePlugin, 'http_auth')
         plugins.activatePlugin(IExtractionPlugin, 'http_auth')
@@ -54,6 +60,8 @@ class PASTestCase(ZopeTestCase.ZopeTestCase):
         plugins.activatePlugin(IRolesPlugin, 'roles')
         plugins.activatePlugin(IRoleAssignerPlugin, 'roles')
         plugins.activatePlugin(IRoleEnumerationPlugin, 'roles')
+        plugins.activatePlugin(IGroupsPlugin, 'groups')
+        plugins.activatePlugin(IGroupEnumerationPlugin, 'groups')
 
     def _setupUser(self):
         """Creates the default user."""
