@@ -40,7 +40,8 @@ class TemplateGrokker(martian.ClassGrokker):
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info to look for a template
         factory.module_info = module_info
-        return super(TemplateGrokker, self).grok(name, factory, module_info, **kw)
+        return super(TemplateGrokker, self).grok(
+            name, factory, module_info, **kw)
 
     def execute(self, factory, config, **kw):
         # Associate templates to a view or a component. We set the
@@ -63,7 +64,8 @@ class TemplateGrokker(martian.ClassGrokker):
     def associate_template(self, module_info, factory):
         component_name = martian.component.bind().get(self).__name__.lower()
         templatereg.associate_template(
-            module_info, factory, component_name, self.has_render, self.has_no_render)
+            module_info, factory, component_name,
+            self.has_render, self.has_no_render)
 
     def has_render(self, factory):
         render = getattr(factory, 'render', None)
