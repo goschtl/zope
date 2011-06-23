@@ -1725,14 +1725,23 @@ class StackableTests(unittest.TestCase):
     def test_is_persistable(self):
         import tempfile
         import ZODB
-        tmpfile = tempfile.NamedTemporaryFile(delete=True)
-        root = ZODB.DB(tmpfile.name).open().root()
+        # XXX delete tempfile, or rather, don't use FileStorage at all, use
+        # DemoStorage instead
+        tmpfile = tempfile.NamedTemporaryFile()
+        db = ZODB.DB(tmpfile.name)
+        root = db.open().root()
         orig = [1]
         stack = zope.component.stackable.stackable(orig)
         root['stack'] = stack
         zope.component.stackable.push()
         stack.append(2)
         transaction.commit()
+
+        # force deserialization
+        db.close()
+        db = ZODB.DB(tmpfile.name)
+        root = db.open().root()
+
         stack = root['stack']
         self.assertEqual([1, 2], stack)
         zope.component.stackable.pop()

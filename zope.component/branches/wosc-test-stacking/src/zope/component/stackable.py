@@ -4,8 +4,9 @@ import inspect
 
 class StackableBase(object):
 
-    def __init__(self, original):
-        self.stack = [original]
+    def __init__(self, original=None):
+        if original is not None:
+            self.stack = [original]
 
     def push(self):
         self.stack.append(copy.copy(self.stack[-1]))
