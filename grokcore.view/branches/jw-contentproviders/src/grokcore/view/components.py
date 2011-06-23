@@ -22,6 +22,7 @@ from zope import component
 from zope import interface
 from zope.browserresource import directory
 from zope.browserresource.interfaces import IResourceFactoryFactory
+from zope.contentprovider.provider import ContentProviderBase
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.pagetemplate.engine import TrustedAppPT
 from zope.ptresource.ptresource import PageTemplateResourceFactory
@@ -228,6 +229,52 @@ class BaseTemplate(object):
 
     def _initFactory(self, factory):
         pass
+
+class ContentProvider(ContentProviderBase):
+    interface.implements(interfaces.IContentProvider)
+
+    template = None
+
+    def __init__(self, context, request, view):
+        super(ContentProvider, self).__init__(context, request, view)
+        self.context = context
+        self.request = request
+        self.view = view
+        self.__name__ = self.__view_name__
+        self.static = component.queryAdapter(
+            self.request,
+            interface.Interface,
+            name=self.module_info.package_dotted_name,
+            )
+
+    def default_namespace(self):
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['provider'] = self
+        namespace['request'] = self.request
+        namespace['static'] = self.static
+        namespace['view'] = self.view
+        return namespace
+
+    def namespace(self):
+        return {}
+
+    def _render_template(self):
+        return self.template.render(self)
+
+    def render(self, **kwargs):
+        """A content provider can either be rendered by an associated
+        template, or it can implement this method to render itself from
+        Python.  This is useful if the view's output isn't XML/HTML but
+        something computed in Python (plain text, PDF, etc.)
+
+        render() can take arbitrary keyword parameters which will be
+        filled in from the request (in that case they *must* be
+        present in the request).
+        """
+        return self._render_template()
+
+    render.base_method = True
 
 
 class GrokTemplate(BaseTemplate):

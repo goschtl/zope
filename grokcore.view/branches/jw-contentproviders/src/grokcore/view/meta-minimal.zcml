@@ -16,6 +16,7 @@
 
   <!-- Only load view and template grokkers -->
   <grok:grok package=".meta.views" />
+  <grok:grok package=".meta.contentproviders" />
   <grok:grok package=".meta.templates" />
 
 </configure>

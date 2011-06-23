@@ -11,12 +11,13 @@ long_description = (
     )
 
 install_requires = [
-    'setuptools',
     'grokcore.component >= 2.1',
     'grokcore.security >= 1.5',
     'martian >= 0.13',
+    'setuptools',
     'zope.browserresource >= 3.9.0',
     'zope.component',
+    'zope.contentprovider',
     'zope.interface',
     'zope.pagetemplate',
     'zope.ptresource >= 3.9.0',
@@ -26,18 +27,18 @@ install_requires = [
     ]
 
 tests_require = [
+    'zope.app.appsetup',
+    'zope.app.publication',
     'zope.app.wsgi',
+    'zope.browserpage',
+    'zope.configuration',
     'zope.container',
+    'zope.login',
+    'zope.password',
+    'zope.principalregistry',
     'zope.securitypolicy',
     'zope.site',
     'zope.testing',
-    'zope.login',
-    'zope.configuration',
-    'zope.app.appsetup',
-    'zope.app.publication',
-    'zope.browserpage',
-    'zope.password',
-    'zope.principalregistry',
     ]
 
 publication_require = [
@@ -68,6 +69,8 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
-    extras_require={'test': tests_require,
-                    'security_publication': publication_require},
+    extras_require={
+        'test': tests_require,
+        'security_publication': publication_require
+        },
 )
