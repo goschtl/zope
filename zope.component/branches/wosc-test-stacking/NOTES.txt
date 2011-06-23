@@ -1,3 +1,10 @@
+HACKING:
+
+- you need the wosc-test-stacking branch of zope.interface, too
+- after buildout, delete _zope_interface_coptimizations.so
+  (until we get to the point about C-code on the todo list)
+
+
 TODO:
 
 * zope.component
