@@ -22,7 +22,7 @@ def read(*rnames):
 
 setuptools.setup(
     name="zc.intid",
-    version="0",
+    version="1.0.1",
     author="Zope Corporation and Contributors",
     author_email="zope-dev@zope.org",
     description="Reduced-conflict Integer Id Utility",
