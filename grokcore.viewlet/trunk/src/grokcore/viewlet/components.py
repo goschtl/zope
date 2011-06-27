@@ -125,7 +125,7 @@ class Viewlet(ViewletBase):
         """Return True if this viewlet is to be rendered. False otherwise.
 
         Note that the available() method is called *after* update() but
-        *before* render() but has been called.
+        *before* render() has been called.
         """
         return True
 
