@@ -37,10 +37,10 @@ class Layout(grokcore.view.ViewSupport, UtilityView):
     grok.baseclass()
     grok.implements(ILayout)
 
-    def __init__(self, request, context):
+    def __init__(self, request, context, view):
         self.context = context
         self.request = request
-        self.view = None
+        self.view = view
 
         if getattr(self, 'module_info', None) is not None:
             self.static = zope.component.queryAdapter(
@@ -72,8 +72,7 @@ class Layout(grokcore.view.ViewSupport, UtilityView):
 
     render.base_method = True
 
-    def __call__(self, view):
-        self.view = view
+    def __call__(self):
         self.update()
         return self.render()
 
@@ -95,8 +94,8 @@ class Page(grokcore.view.View, UtilityView):
             # continue rendering the template or doing anything else.
             return
         self.layout = zope.component.getMultiAdapter(
-            (self.request, self.context), ILayout)
-        return self.layout(self)
+            (self.request, self.context, self), ILayout)
+        return self.layout()
 
     def default_namespace(self):
         namespace = super(Page, self).default_namespace()
@@ -143,8 +142,8 @@ class LayoutAwareForm(UtilityView):
             return
 
         self.layout = zope.component.getMultiAdapter(
-            (self.request, self.context), ILayout)
-        return self.layout(self)
+            (self.request, self.context, self), ILayout)
+        return self.layout()
 
 
 # Default forms for form without the html and body tags
