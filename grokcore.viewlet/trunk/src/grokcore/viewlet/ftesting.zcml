@@ -25,6 +25,7 @@
   <include package="zope.annotation" />
   <include package="zope.principalregistry" />
   <include package="zope.contentprovider" />
+  <include package="zope.publisher" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
   <include package="grokcore.viewlet" />

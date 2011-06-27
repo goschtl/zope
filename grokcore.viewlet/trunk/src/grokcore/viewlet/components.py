@@ -73,6 +73,12 @@ class ViewletManager(ViewletManagerBase):
     def namespace(self):
         return {}
 
+    def update(self):
+        super(ViewletManager, self).update()
+        # Filter out the unavailable viewlets *after* the viewlet's update()
+        # has been called.
+        self.viewlets = filter(lambda v: v.available(), self.viewlets)
+
     def render(self):
         """See zope.contentprovider.interfaces.IContentProvider"""
         # Now render the view
@@ -114,6 +120,14 @@ class Viewlet(ViewletBase):
 
     def update(self):
         pass
+
+    def available(self):
+        """Return True if this viewlet is to be rendered. False otherwise.
+
+        Note that the available() method is called *after* update() but
+        *before* render() but has been called.
+        """
+        return True
 
     def render(self):
         return self.template.render(self)

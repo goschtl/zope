@@ -4,8 +4,10 @@ Changes
 1.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Introduce the `available()` method on viewlet component. The viewlet
+  manager will filter out unavailable viewlet by calling this method. The
+  `available()` method is called *after* the viewlet's `update()` is called,
+  but *before* the `render()` is called.
 
 1.8 (2010-12-16)
 ----------------
