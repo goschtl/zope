@@ -4,9 +4,14 @@
   xmlns:i18n="http://namespaces.zope.org/i18n"
   i18n_domain="zope.errorview">
 
+  <include package="zope.errorview" file="http.zcml" />
+
+  <include package="zope.i18n" file="meta.zcml"/>
   <include package="zope.browserpage" file="meta.zcml" />
-  <include package="." file="http.zcml" />
-  
+
+  <include package="zope.i18n"/>
+  <include package="zope.browserpage" />
+
   <i18n:registerTranslations directory="i18n/locales" />
 
   <browser:page
