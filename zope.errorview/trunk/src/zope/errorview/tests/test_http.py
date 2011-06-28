@@ -48,7 +48,8 @@ class TestErrorViews(TestCase):
         self.assertEqual(self.request.response.getStatus(), 500)
 
     def test_systemerrormixin_view(self):
-        class SystemErrorView(http.ExceptionViewBase, http.SystemErrorViewMixin):
+        class SystemErrorView(http.ExceptionViewBase,
+                              http.SystemErrorViewMixin):
             pass
         view = SystemErrorView(Exception(), self.request)
         self.failUnless(IHTTPException.providedBy(view))
@@ -130,8 +131,9 @@ class TestErrorViewsFunctional(TestCase):
         # XXX test the MKCOL verb here too.
 
     def test_notfound(self):
-        view = getMultiAdapter(
-            (NotFound(object(), self.request), self.request), name='index.html')
+        view = getMultiAdapter((NotFound(object(), self.request),
+                               self.request),
+                               name='index.html')
         self.failUnless(IHTTPException.providedBy(view))
         self.assertEquals(view(), '')
         self.assertEqual(self.request.response.getStatus(), 404)

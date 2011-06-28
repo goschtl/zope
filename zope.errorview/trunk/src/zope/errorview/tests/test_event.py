@@ -27,7 +27,7 @@ class TestEvent(TestCase):
         self.request = HTTPRequest('', {})
 
     def test_event(self):
-        view = ExceptionViewBase(Exception(), self.request)()
+        ExceptionViewBase(Exception(), self.request)()
         event = zope.component.eventtesting.getEvents()[0]
         self.assertEqual(event.request, self.request)
         self.assertTrue(IHandleExceptionEvent.providedBy(event))

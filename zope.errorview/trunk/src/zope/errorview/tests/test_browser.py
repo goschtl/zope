@@ -14,7 +14,6 @@
 
 from unittest import TestCase
 from zope.authentication.interfaces import IAuthentication
-from zope.browser.interfaces import ISystemErrorView
 from zope.component import getUtility, getMultiAdapter
 from zope.component.testlayer import ZCMLFileLayer
 from zope.interface import implements
