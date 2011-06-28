@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.9 (unreleased)
+1.9 (2011-06-28)
 ----------------
 
 - Introduce the `available()` method on viewlet component. The viewlet
