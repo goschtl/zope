@@ -3,6 +3,7 @@
   xmlns:grok="http://namespaces.zope.org/grok">
 
   <include package="zope.contentprovider" />
+  <include package="zope.browserpage" />
   <include package="zope.browserresource" />
 
   <!-- ZPT support -->

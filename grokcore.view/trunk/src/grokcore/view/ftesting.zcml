@@ -10,7 +10,6 @@
   <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.publisher" file="meta.zcml" />
-  <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="grokcore.view" file="meta.zcml" />
 
