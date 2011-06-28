@@ -1,9 +1,13 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser">
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  i18n_domain="zope.errorview">
 
   <include package="zope.browserpage" file="meta.zcml" />
   <include package="." file="http.zcml" />
+  
+  <i18n:registerTranslations directory="i18n/locales" />
 
   <browser:page
     for="zope.interface.common.interfaces.IException"
