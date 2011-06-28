@@ -3,7 +3,12 @@
   xmlns:browser="http://namespaces.zope.org/browser">
 
   <include package="zope.component" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml"/>
   <include package="zope.publisher" file="meta.zcml" />
+
+  <include package="zope.component"/>
+  <include package="zope.security"/>
+  <include package="zope.publisher"/>
 
   <view
     factory=".http.ExceptionView"
