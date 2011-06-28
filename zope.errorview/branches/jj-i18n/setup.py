@@ -62,6 +62,8 @@ setup(name='zope.errorview',
       install_requires=[
           'setuptools',
           'zope.component',
+          'zope.i18n',
+          'zope.i18nmessageid',
           'zope.interface',
           'zope.publisher',
           'zope.security',
