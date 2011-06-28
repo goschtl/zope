@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.11 (unreleased)
+0.11 (2011-06-28)
 -----------------
 
 - Added nl translations.
