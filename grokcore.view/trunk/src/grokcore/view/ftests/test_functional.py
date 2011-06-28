@@ -44,6 +44,12 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'staticdir', 'url', 'directoryresource']:
+    for name in [
+        'contentprovider',
+        'directoryresource',
+        'staticdir',
+        'url',
+        'view',
+        ]:
         suite.addTest(suiteFromPackage(name))
     return suite

@@ -15,12 +15,15 @@
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
-
+from zope.contentprovider.interfaces import IContentProvider
 
 class IBaseClasses(Interface):
     View = Attribute("Base class for browser views.")
-    DirectoryResource = Attribute("Base class to create new "
-                                  "directory resource.")
+
+    ContentProvider = Attribute("Base class for content providers.")
+
+    DirectoryResource = Attribute(
+        "Base class to create new directory resource.")
 
 
 class IDirectives(Interface):
@@ -182,8 +185,10 @@ class ITemplate(Interface):
     def render(view):
         """Renders the template"""
 
+
 class TemplateLookupError(Exception):
     pass
+
 
 class ITemplateRegAPI(Interface):
     """Public API for the templatereg module.
@@ -221,3 +226,20 @@ class IGrokSecurityView(Interface):
     `grok.Permission` and `grok.require` settings however, will be
     applied to such views.
     """
+
+
+class IContentProvider(IContentProvider):
+
+    context = Attribute(
+        'context', "Context object for the content provider.")
+
+    request = Attribute(
+        'request', "Request object for the content provider.")
+
+    view = Attribute(
+        'view', "View object for the content provider.")
+
+    static = Attribute(
+        'static',
+        "Directory resource containing the static files of the "
+        "content provider's package.")
