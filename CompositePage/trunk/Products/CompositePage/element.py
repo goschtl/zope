@@ -3,7 +3,7 @@
 # Copyright (c) 2003 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -11,20 +11,16 @@
 #
 ##############################################################################
 """Composite element.
-
-$Id: element.py,v 1.5 2004/04/14 16:15:29 sidnei Exp $
 """
-
 import os
 
-import Globals
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.class_init import InitializeClass
 from Acquisition import aq_get
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from DocumentTemplate.DT_Util import safe_callable
-
 from zope.interface import implements
 
 from Products.CompositePage.interfaces import ICompositeElement
@@ -99,7 +95,7 @@ class CompositeElement(SimpleItem, PropertyManager):
         # No tool found, so no inline templates are known.
         return ()
 
-Globals.InitializeClass(CompositeElement)
+InitializeClass(CompositeElement)
 
 
 addElementForm = PageTemplateFile("addElementForm.zpt", _www)

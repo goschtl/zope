@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,13 +12,11 @@
 # 
 ##############################################################################
 """Slot classes.
-
-$Id: slotclass.py,v 1.1 2004/03/02 20:41:44 shane Exp $
 """
-
 import os
 
-from Acquisition import aq_inner, aq_parent
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile

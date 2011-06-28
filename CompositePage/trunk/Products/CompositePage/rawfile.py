@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,28 +12,24 @@
 # 
 ##############################################################################
 """Binary data that is stored in a file.
-
-$Id: rawfile.py,v 1.3 2004/04/03 16:35:32 shane Exp $
 """
-
 import os
-from os import stat
-from time import time
+import time
 
-import Acquisition
-from Acquisition import aq_inner, aq_parent
-import Globals
-from Globals import package_home
+from Acquisition import Explicit
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from App.Common import package_home
 from App.Common import rfc1123_date
 from DateTime import DateTime
 
 
-class RawFile(Acquisition.Explicit):
+class RawFile(Explicit):
     """Binary data stored in external files."""
 
     def __init__(self, path, content_type, _prefix=None):
         if _prefix is None:
-            _prefix = SOFTWARE_HOME
+            _prefix = SOFTWARE_HOME  # XXX Grrr -- why?
         elif type(_prefix) is not type(''):
             _prefix = package_home(_prefix)
         path = os.path.join(_prefix, path)
@@ -45,7 +41,7 @@ class RawFile(Acquisition.Explicit):
         file.close()
         self.content_type = content_type
         self.__name__ = path.split('/')[-1]
-        self.lmt = float(stat(path)[8]) or time()
+        self.lmt = float(os.stat(path)[8]) or time.time()
         self.lmh = rfc1123_date(self.lmt)
 
 

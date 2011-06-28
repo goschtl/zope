@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,33 +12,18 @@
 # 
 ##############################################################################
 """Composite tool tests.
-
-$Id: test_tool.py,v 1.4 2004/05/03 16:02:40 sidnei Exp $
 """
-
 import unittest
-
-from OFS.Folder import Folder
-from AccessControl.SecurityManagement import noSecurityManager
-from AccessControl.SecurityManager import setSecurityPolicy
-import AccessControl.User  # Get the "nobody" user defined
-
-from Products.CompositePage.tool import CompositeTool
-from Products.CompositePage.slot import Slot
-from Products.CompositePage.interfaces import CompositeError
-
-
-class PermissiveSecurityPolicy:
-    def validate(*args, **kw):
-        return 1
-
-    def checkPermission(*args, **kw):
-        return 1
 
 
 class ToolTests(unittest.TestCase):
 
     def setUp(self):
+        from AccessControl.SecurityManagement import noSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from OFS.Folder import Folder
+        from Products.CompositePage.slot import Slot
+        from Products.CompositePage.tool import CompositeTool
         self.root = Folder()
         self.root.getPhysicalPath = lambda: ()
         self.root.getPhysicalRoot = lambda r=self.root: r
@@ -58,10 +43,13 @@ class ToolTests(unittest.TestCase):
         noSecurityManager()
 
     def tearDown(self):
+        from AccessControl.SecurityManagement import noSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
         setSecurityPolicy(self.old_policy)
         noSecurityManager()
 
     def testPreventParentageLoop(self):
+        from Products.CompositePage.interfaces import CompositeError
         self.assertRaises(CompositeError, self.tool.moveElements,
                           ["/slot/foo"], "/slot/foo/zzz", 0)
         self.assertRaises(CompositeError, self.tool.moveElements,
@@ -108,11 +96,15 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(list(self.root.otherslot.objectIds()), [])
 
 
+class PermissiveSecurityPolicy:
+    def validate(*args, **kw):
+        return 1
+
+    def checkPermission(*args, **kw):
+        return 1
+
+
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ToolTests))
-    return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+    return unittest.TestSuite((
+        unittest.makeSuite(ToolTests),
+    ))

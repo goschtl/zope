@@ -3,7 +3,7 @@
 # Copyright (c) 2003 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -11,12 +11,16 @@
 #
 ##############################################################################
 """CompositePage product initialization.
-
-$Id: __init__.py,v 1.7 2004/03/05 21:41:04 shane Exp $
 """
 
-import tool, element, composite, slot, slotclass, designuis, interfaces
-import slotexpr
+from Products.CompositePage import tool
+from Products.CompositePage import element
+from Products.CompositePage import composite
+from Products.CompositePage import slot
+from Products.CompositePage import slotclass
+from Products.CompositePage import designuis
+from Products.CompositePage import interfaces
+from Products.CompositePage import slotexpr
 
 slotexpr.registerSlotExprType()
 

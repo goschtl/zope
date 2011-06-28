@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,24 +12,27 @@
 # 
 ##############################################################################
 """Slot class and supporting code.
-
-$Id: slot.py,v 1.21 2004/04/26 09:30:25 gotcha Exp $
 """
-
 import os
 import sys
 from cgi import escape
 
-import Globals
+from AccessControl import ClassSecurityInfo
+from AccessControl.class_init import InitializeClass
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import aq_get
-from ZODB.POSException import ConflictError
+try:
+    # Use OrderedFolder if it's available.
+    from OFS.OrderedFolder import OrderedFolder
+except ImportError:
+    # Fall back to normal folders, which happen to retain order anyway.
+    from OFS.Folder import Folder as OrderedFolder
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from AccessControl import ClassSecurityInfo
 from zLOG import LOG, ERROR
+from ZODB.POSException import ConflictError
 from zope.interface import implements
 
 from Products.CompositePage.interfaces import ICompositeElement
@@ -37,13 +40,6 @@ from Products.CompositePage.interfaces import ISlot
 from Products.CompositePage.perm_names import view_perm
 from Products.CompositePage.perm_names import change_composites_perm
 
-
-try:
-    # Use OrderedFolder if it's available.
-    from OFS.OrderedFolder import OrderedFolder
-except ImportError:
-    # Fall back to normal folders, which happen to retain order anyway.
-    from OFS.Folder import Folder as OrderedFolder
 
 _www = os.path.join(os.path.dirname(__file__), "www")
 
@@ -200,7 +196,7 @@ class Slot(OrderedFolder):
     def _render_add_target(self, slot_id, index, path, obj_id=''):
          return target_tag % (slot_id, index, path, index)
          
-Globals.InitializeClass(Slot)
+InitializeClass(Slot)
 
 
 def getIconURL(obj, icon_base_url):

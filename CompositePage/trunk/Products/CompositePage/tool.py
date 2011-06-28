@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,17 +12,17 @@
 # 
 ##############################################################################
 """Composite tool.
-
-$Id: tool.py,v 1.11 2004/03/02 20:41:44 shane Exp $
 """
 
-import Globals
-from Acquisition import aq_base, aq_parent, aq_inner
-from OFS.SimpleItem import SimpleItem
-from OFS.Folder import Folder
-from OFS.CopySupport import _cb_encode, _cb_decode, cookie_path
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
+from AccessControl.class_init import InitializeClass
+from Acquisition import aq_base
+from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
+from OFS.CopySupport import _cb_encode
+from OFS.CopySupport import _cb_decode
+from OFS.CopySupport import cookie_path
 
 from Products.CompositePage.interfaces import ICompositeElement
 from Products.CompositePage.interfaces import ISlot
@@ -247,7 +247,7 @@ class CompositeTool(Folder):
             raise ValueError("Clipboard function %s unknown" % func)
         resp.redirect(REQUEST["HTTP_REFERER"])
 
-Globals.InitializeClass(CompositeTool)
+InitializeClass(CompositeTool)
 
 
 def manage_addCompositeTool(dispatcher, REQUEST=None):

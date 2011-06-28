@@ -4,7 +4,7 @@
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -14,12 +14,10 @@
 """Utilities for handling ZODB objects.
 
 (Copied from the Ape product.)
-
-$Id: utils.py,v 1.1 2003/12/28 04:32:47 shane Exp $
 """
-
+from cPickle import Pickler
+from cPickle import Unpickler
 from cStringIO import StringIO
-from cPickle import Pickler, Unpickler
 
 
 def copyOf(source):

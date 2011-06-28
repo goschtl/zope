@@ -4,7 +4,7 @@
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -12,19 +12,17 @@
 # 
 ##############################################################################
 """Page design UI classes.
-
-$Id: designuis.py,v 1.10 2004/04/06 16:50:25 shane Exp $
 """
-
 import os
 import re
 
-import Globals
-from Acquisition import aq_base, aq_inner, aq_parent
-from OFS.SimpleItem import SimpleItem
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from AccessControl.ZopeGuards import guarded_getattr
+from AccessControl.class_init import InitializeClass
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from OFS.SimpleItem import SimpleItem
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CompositePage.rawfile import RawFile
 from Products.CompositePage.rawfile import InterpolatedFile
@@ -242,7 +240,7 @@ class CommonUI(SimpleItem):
             elif close:
                 return close_dialog_html
 
-Globals.InitializeClass(CommonUI)
+InitializeClass(CommonUI)
 
 
 
@@ -265,7 +263,7 @@ class ZMIUI (CommonUI):
     bottom_templates = (PageTemplateFile("bottom.pt", _zmi),
                         ) + CommonUI.bottom_templates
 
-Globals.InitializeClass(ZMIUI)
+InitializeClass(ZMIUI)
 
 
 
@@ -286,7 +284,7 @@ class CMFUI (CommonUI):
     bottom_templates = (PageTemplateFile("bottom.pt", _cmf),
                         ) + CommonUI.bottom_templates
 
-Globals.InitializeClass(CMFUI)
+InitializeClass(CMFUI)
 
 
 
@@ -342,4 +340,4 @@ class ManualUI (CommonUI):
         res.append(composite.manage_page_footer())
         return '\n'.join(res)
 
-Globals.InitializeClass(ManualUI)
+InitializeClass(ManualUI)

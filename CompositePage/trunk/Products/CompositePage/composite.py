@@ -3,7 +3,7 @@
 # Copyright (c) 2003 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -11,15 +11,13 @@
 #
 ##############################################################################
 """Composite class and supporting code.
-
-$Id: composite.py,v 1.24 2004/04/15 22:13:44 shane Exp $
 """
-
 import os
-import re
 
-import Globals
-import Acquisition
+from AccessControl import ClassSecurityInfo
+from AccessControl.ZopeGuards import guarded_getattr
+from AccessControl.class_init import InitializeClass
+from Acquisition import Explicit
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
@@ -28,13 +26,10 @@ from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from AccessControl import ClassSecurityInfo
-from AccessControl.ZopeGuards import guarded_getattr
 from zope.interface import implements
 
 from Products.CompositePage.interfaces import IComposite
 from Products.CompositePage.interfaces import ISlot
-from Products.CompositePage.interfaces import ISlotGenerator
 from Products.CompositePage.interfaces import CompositeError
 from Products.CompositePage.slot import Slot
 from Products.CompositePage.slot import getIconURL
@@ -45,7 +40,7 @@ from Products.CompositePage.perm_names import change_composites_perm
 _www = os.path.join(os.path.dirname(__file__), "www")
 
 
-class SlotGenerator(Acquisition.Explicit):
+class SlotGenerator(Explicit):
     """Automatically makes slots available to the template.
 
     Note: instances of this class are shared across threads.
@@ -302,7 +297,7 @@ class CompositeMixin:
         """
         return self._v_editing
 
-Globals.InitializeClass(CompositeMixin)
+InitializeClass(CompositeMixin)
 
 
 class SlotCollection(Folder):
@@ -333,7 +328,7 @@ class Composite(CompositeMixin, Folder):
         f._setId("filled_slots")
         self._setObject(f.getId(), f)
 
-Globals.InitializeClass(Composite)
+InitializeClass(Composite)
 
 
 class FailedElement(SimpleItem):
