@@ -54,6 +54,9 @@ def package_list(packages, config, out,
         doap_xml = urllib2.urlopen(
             'http://pypi.python.org/pypi?:action=doap&name=%s&version=%s' %
             (package, version)).read()
+        if not doap_xml:
+            # someone removed a released package from PyPi - ARGHHH!
+            return
         doap_xml = StringIO.StringIO(doap_xml.replace('\f', ''))
         doap = xml.etree.ElementTree.ElementTree()
         doap.parse(doap_xml)
