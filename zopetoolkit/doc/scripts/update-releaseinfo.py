@@ -51,9 +51,12 @@ def package_list(packages, config, out,
     print >>out, TABLE_HEADER
     for package in sorted(packages):
         version = config.get('versions', package)
-        doap_xml = urllib2.urlopen(
-            'http://pypi.python.org/pypi?:action=doap&name=%s&version=%s' %
-            (package, version)).read()
+        try:
+            doap_xml = urllib2.urlopen(
+                'http://pypi.python.org/pypi?:action=doap&name=%s&version=%s' %
+                (package, version)).read()
+        except urllib2.HTTPError:
+            return
         if not doap_xml:
             # someone removed a released package from PyPi - ARGHHH!
             return
