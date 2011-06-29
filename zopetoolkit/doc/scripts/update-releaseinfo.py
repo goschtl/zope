@@ -91,7 +91,7 @@ for tag in os.listdir(TAGS_DIR):
 
 def _sort(entry):
     return parse_version(entry[0])
-releases.sort(_key=_sort)
+releases.sort(key=_sort)
 
 
 for release, location in releases:
