@@ -92,7 +92,7 @@ for tag in os.listdir(TAGS_DIR):
 def _sort(entry):
     version = entry[0]
     if version == 'trunk':
-        return (99, )
+        version = '99.0'
     return parse_version(version)
 releases.sort(key=_sort, reverse=True)
 
