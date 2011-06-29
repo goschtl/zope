@@ -88,7 +88,10 @@ for tag in os.listdir(TAGS_DIR):
         continue
     releases.append((tag, os.path.join(TAGS_DIR, tag)))
 
-releases.sort(_key=parse_version)
+
+def _sort(entry):
+    return parse_version(entry[0])
+releases.sort(_key=_sort)
 
 
 for release, location in releases:
