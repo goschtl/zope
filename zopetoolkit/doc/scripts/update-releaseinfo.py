@@ -8,6 +8,8 @@ import socket
 import urllib2
 import xml.etree.ElementTree
 
+from pkg_resources import parse_version
+
 socket.setdefaulttimeout(10)
 
 
@@ -85,6 +87,9 @@ for tag in os.listdir(TAGS_DIR):
     if tag.startswith('.'):
         continue
     releases.append((tag, os.path.join(TAGS_DIR, tag)))
+
+releases.sort(_key=parse_version)
+
 
 for release, location in releases:
     print "Writing package list for", release
