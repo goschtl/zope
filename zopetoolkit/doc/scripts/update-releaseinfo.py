@@ -90,8 +90,11 @@ for tag in os.listdir(TAGS_DIR):
 
 
 def _sort(entry):
-    return parse_version(entry[0])
-releases.sort(key=_sort)
+    version = entry[0]
+    if version == 'trunk':
+        return (99, )
+    return parse_version(version)
+releases.sort(key=_sort, reverse=True)
 
 
 for release, location in releases:
