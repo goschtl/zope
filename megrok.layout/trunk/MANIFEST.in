@@ -1,2 +1,2 @@
-recursive-include src/megrok/layout *.txt *.py *.zcml *.pt *.js
+recursive-include src/megrok/layout *.txt *.py *.zcml *.pt
 recursive-include docs *.txt
