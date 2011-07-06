@@ -8,7 +8,11 @@ import zope.component
 
 from megrok.layout.interfaces import IPage, ILayout
 from zope.interface import Interface
+import zope.publisher.interfaces
+import zope.security.interfaces
 from zope.publisher.publish import mapply
+import zope.interface.common.interfaces
+import zope.errorview.browser
 from zope.component.hooks import getSite
 
 
@@ -184,3 +188,36 @@ class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
     """
     grok.baseclass()
     template = default_display_template
+
+
+class ExceptionView(Page, zope.errorview.browser.ExceptionView):
+    grok.context(zope.interface.common.interfaces.IException)
+    grok.baseclass()
+
+    def update(self):
+        return zope.errorview.browser.ExceptionView.update(self)
+
+    def render(self):
+        return zope.errorview.browser.ExceptionView.render(self)
+
+
+class NotFoundView(Page, zope.errorview.browser.NotFoundView):
+    grok.context(zope.publisher.interfaces.INotFound)
+    grok.baseclass()
+
+    def update(self):
+        return zope.errorview.browser.NotFoundView.update(self)
+
+    def render(self):
+        return zope.errorview.browser.NotFoundView.render(self)
+
+
+class UnauthorizedView(Page, zope.errorview.browser.UnauthorizedView):
+    grok.context(zope.security.interfaces.IUnauthorized)
+    grok.baseclass()
+
+    def update(self):
+        return zope.errorview.browser.UnauthorizedView.update(self)
+
+    def render(self):
+        return zope.errorview.browser.UnauthorizedView.render(self)
