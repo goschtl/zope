@@ -8,6 +8,48 @@
 
   >>> mylayout = getMultiAdapter((request, cow), ILayout)
 
+  Form:
+  >>> myform = getMultiAdapter((cow, request), name='myform')
+  >>> print myform()
+  <html>
+   <body>
+     <div class="layout"><form action="http://127.0.0.1" method="post"
+        class="edit-form" enctype="multipart/form-data">
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+    <table class="form-fields">
+      <tbody>
+  <BLANKLINE>
+          <tr>
+            <td class="label">
+  <BLANKLINE>
+              <label for="form.color">
+                <span class="required">*</span><span>Color</span>
+              </label>
+            </td>
+            <td class="field">
+              <div class="widget"><input class="textType" id="form.color" name="form.color" size="20" type="text" value=""  /></div>
+  <BLANKLINE>
+            </td>
+          </tr>
+  <BLANKLINE>
+      </tbody>
+    </table>
+  <BLANKLINE>
+    <div id="actionsView">
+  <BLANKLINE>
+    </div>
+  </form>
+  </div>
+   </body>
+  </html>
+
+
+
+
   Display form:
   >>> myview = getMultiAdapter((cow, request), name='myview')
   >>> print myview()
@@ -118,7 +160,7 @@
 import grokcore.component as grok
 
 from grokcore.view import templatedir
-from megrok.layout import Layout, DisplayForm, EditForm
+from megrok.layout import Layout, DisplayForm, EditForm, Form
 from zope import interface, schema
 
 
@@ -144,4 +186,7 @@ class MyView(DisplayForm):
 
 
 class MyEditView(EditForm):
+    grok.context(Cow)
+
+class MyForm(Form):
     grok.context(Cow)

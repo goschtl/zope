@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 import grokcore.component as grok
@@ -163,7 +162,7 @@ class Form(LayoutAwareForm, grokcore.formlib.Form):
     """A form base class.
     """
     grok.baseclass()
-    grokcore.view.template('default_form_template')
+    template = default_form_template
 
 
 class AddForm(LayoutAwareForm, grokcore.formlib.AddForm):
