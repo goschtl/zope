@@ -1,5 +1,5 @@
-Next Release
-------------
+1.1 (2011-07-07)
+----------------
 
 - Plone4 compatibility cleanups:
 
