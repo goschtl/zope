@@ -1,7 +1,16 @@
 Next Release
 ------------
 
-- ...
+- Plone4 compatibility cleanups:
+
+  - Fixed remaining deprecation warnings under Zope 2.12+.
+
+  - Import normalization.
+
+  - Unit test normalization.
+
+  - Header normalization.
+
 
 1.0 (2011-04-30)
 ----------------
