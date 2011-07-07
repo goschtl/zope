@@ -13,9 +13,17 @@ major:
 
 - persisting/pickling stackables
 
-  - need to support persistentregistry.py, i.e. stackable(PersistentList)
+  * scope for persistent stackables: the currently running process, i.e. it's
+    okay not to persist the stackable-registry
 
-  - does stackable.stack need to be a PersistentList?
+  * we might not have to do anything special for persistent component
+    registries, since the ZODB synchronizes changes to all copies of a
+    persistent object on transaction boundaries.
+
+  - support stackable(PersistentList/PersistentMapping)
+    (makes trouble on unpickling, does not restore stackable.stack right now)
+  - put stackable() into persistentregistry.py
+  - stackable.stack needs to be a PersistentList
 
 - Tests for zope.component-Stacking: can we run the existing tests on a push
   and then pop "level"? (Maybe use another existing application as a
