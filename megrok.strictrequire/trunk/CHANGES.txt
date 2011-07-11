@@ -1,7 +1,7 @@
 Changelog of megrok.strictrequire
 =================================
 
-0.4 (unreleased)
+0.4 (2011-07-11)
 ----------------
 
 - Use the groktoolkit versions.
