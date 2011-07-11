@@ -6,6 +6,8 @@ Changelog of megrok.strictrequire
 
 - Use the groktoolkit versions.
 
+- Don't check the requirement directive for ViewletManager, as these are
+  not exposed as views.
 
 0.3 (2010-05-18)
 ----------------

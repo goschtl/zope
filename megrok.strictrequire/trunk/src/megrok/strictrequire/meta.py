@@ -14,6 +14,7 @@
 import martian
 import grok
 
+
 class SecurityError(grok.GrokError):
     pass
 
@@ -37,11 +38,6 @@ class CheckRequireGrokker(martian.ClassGrokker):
 class CheckRequireGrokkerViewlet(CheckRequireGrokker):
     """Ensure every grok.Viewlet has a grok.require directive"""
     martian.component(grok.Viewlet)
-
-
-class CheckRequireGrokkerViewletmanager(CheckRequireGrokker):
-    """Ensure every grok.ViewletManager has a grok.require directive"""
-    martian.component(grok.ViewletManager)
 
 
 class CheckRequireRESTGrokker(martian.MethodGrokker):

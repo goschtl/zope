@@ -56,6 +56,7 @@ class NoRequireREST(grok.REST):
 
 class NoRequireJSON(grok.JSON):
     grok.context(zope.interface.Interface)
+
     def foobar(self):
         pass
 

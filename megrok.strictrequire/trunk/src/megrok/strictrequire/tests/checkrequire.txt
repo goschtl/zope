@@ -11,19 +11,12 @@ component does have a required permission defined::
 
     >>> from grok.testing import grok_component
     >>> from megrok.strictrequire.tests.fixtures import (
-    ...     NoRequireView, NoRequireViewletManager, NoRequireViewlet)
+    ...     NoRequireView, NoRequireViewlet)
     >>> grok_component('NoRequireView', NoRequireView)
     Traceback (most recent call last):
     ...
     SecurityError: megrok.strictrequire requires
     <class 'megrok.strictrequire.tests.fixtures.NoRequireView'>
-    to use the grok.require directive!
-
-    >>> grok_component('NoRequireViewletManager', NoRequireViewletManager)
-    Traceback (most recent call last):
-    ...
-    SecurityError: megrok.strictrequire requires
-    <class 'megrok.strictrequire.tests.fixtures.NoRequireViewletManager'>
     to use the grok.require directive!
 
     >>> grok_component('NoRequireViewlet', NoRequireViewlet)
