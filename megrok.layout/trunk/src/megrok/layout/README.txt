@@ -101,8 +101,9 @@ with the help of the 'content' method:
   >>> page()
   u'Header. Page: Looks like an elephant. Footer'
 
-Forms
-=====
+Forms & Errorpages
+==================
 
-You have as well a Form, AddForm, EditForm and DisplayForm availables,
-which are all aware of Layout components like Page does.
+Baseclasses for Form views (Form, AddForm, EditForm and DisplayForm) and Error
+views (NotFoundView, ExceptionView, UnauthorizedView) are available which are
+all aware of Layout components like Page is.
