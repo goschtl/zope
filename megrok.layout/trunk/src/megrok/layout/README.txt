@@ -46,7 +46,6 @@ We check it has been correctly registered:
 
 Now let's see how to use this Layout in a specific context using a Page.
 
-
 Page
 ====
 
@@ -101,7 +100,6 @@ with the help of the 'content' method:
   True
   >>> page()
   u'Header. Page: Looks like an elephant. Footer'
-
 
 Forms
 =====

@@ -3,7 +3,7 @@ import os
 
 readme_filename = os.path.join('src', 'megrok', 'layout', 'README.txt')
 long_description = open(readme_filename).read() + '\n\n' + \
-                   open(os.path.join('docs', 'HISTORY.txt')).read()
+                   open('CHANGES.txt').read()
 
 test_requires = [
     'zope.annotation',
