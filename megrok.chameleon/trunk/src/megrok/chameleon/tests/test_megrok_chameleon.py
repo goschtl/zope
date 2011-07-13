@@ -43,16 +43,15 @@ def test_suite():
     """Get a testsuite of all doctests.
     """
     suite = unittest.TestSuite()
-    for name in ['README.txt']:
-        test = doctest.DocFileSuite(
-            name,
-            setUp=setUpStatic,
-            package=megrok.chameleon,
-            globs=dict(
-                getRootFolder=FunctionalLayer.getRootFolder,
-                ),
-            optionflags=FLAGS,
-            )
-        test.layer = FunctionalLayer
-        suite.addTest(test)
+    test = doctest.DocFileSuite(
+        'README.txt',
+        setUp=setUpStatic,
+        package=megrok.chameleon,
+        globs=dict(
+            getRootFolder=FunctionalLayer.getRootFolder,
+            ),
+        optionflags=FLAGS,
+        )
+    test.layer = FunctionalLayer
+    suite.addTest(test)
     return suite
