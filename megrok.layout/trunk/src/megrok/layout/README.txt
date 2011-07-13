@@ -105,5 +105,5 @@ Forms & Errorpages
 ==================
 
 Baseclasses for Form views (Form, AddForm, EditForm and DisplayForm) and Error
-views (NotFoundView, ExceptionView, UnauthorizedView) are available which are
+views (NotFoundPage, ExceptionPage, UnauthorizedPage) are available which are
 all aware of Layout components like Page is.

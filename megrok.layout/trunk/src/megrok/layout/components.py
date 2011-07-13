@@ -81,15 +81,12 @@ class Layout(grokcore.view.ViewSupport, UtilityView):
         return self.render()
 
 
-class Page(grokcore.view.View, UtilityView):
-    """A view class.
+class LayoutAware(UtilityView):
+    """A mixin to make views aware of layouts.
     """
     grok.baseclass()
-    grok.implements(IPage)
 
-    def __init__(self, context, request):
-        super(Page, self).__init__(context, request)
-        self.layout = None
+    layout = None
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -102,7 +99,7 @@ class Page(grokcore.view.View, UtilityView):
         return self.layout(self)
 
     def default_namespace(self):
-        namespace = super(Page, self).default_namespace()
+        namespace = super(LayoutAware, self).default_namespace()
         namespace['layout'] = self.layout
         return namespace
 
@@ -113,25 +110,9 @@ class Page(grokcore.view.View, UtilityView):
         return mapply(self.render, (), self.request)
 
 
-class LayoutAwareForm(UtilityView):
+class LayoutAwareForm(LayoutAware):
     """A mixin to make form aware of layouts.
     """
-
-    def __init__(self, context, request):
-        super(LayoutAwareForm, self).__init__(context, request)
-        self.layout = None
-
-    def default_namespace(self):
-        namespace = super(LayoutAwareForm, self).default_namespace()
-        namespace['layout'] = self.layout
-        return namespace
-
-    def content(self):
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
-
     def __call__(self):
         """Calls update and returns the layout template which calls render.
         """
@@ -140,14 +121,48 @@ class LayoutAwareForm(UtilityView):
             # A redirect was triggered somewhere in update().  Don't
             # continue rendering the template or doing anything else.
             return
-
+        # update_form() is what make a layout-aware form different from
+        # 'regular" layout-aware component.
         self.update_form()
         if self.request.response.getStatus() in (302, 303):
             return
-
         self.layout = zope.component.getMultiAdapter(
             (self.request, self.context), ILayout)
         return self.layout(self)
+
+
+class Page(LayoutAware, grokcore.view.View):
+    """A view class.
+    """
+    grok.baseclass()
+    grok.implements(IPage)
+
+
+class ExceptionPage(
+        LayoutAware,
+        zope.errorview.browser.ExceptionView,
+        grokcore.view.View
+        ):
+    grok.context(zope.interface.common.interfaces.IException)
+    grok.baseclass()
+
+
+class NotFoundPage(
+        LayoutAware,
+        zope.errorview.browser.NotFoundView,
+        grokcore.view.View
+        ):
+    grok.context(zope.publisher.interfaces.INotFound)
+    grok.baseclass()
+
+
+class UnauthorizedPage(
+        LayoutAware,
+        zope.errorview.browser.UnauthorizedView,
+        grokcore.view.View
+        ):
+    grok.context(zope.security.interfaces.IUnauthorized)
+    grok.baseclass()
 
 
 # Default forms for form without the html and body tags
@@ -188,29 +203,3 @@ class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
     """
     grok.baseclass()
     template = default_display_template
-
-
-class ExceptionView(zope.errorview.browser.ExceptionView, Page):
-    grok.context(zope.interface.common.interfaces.IException)
-    grok.baseclass()
-
-    def __call__(self):
-        # Make sure the __call__ handling of the Page component is
-        # used, not that of any of the bases in the ExceptionView class
-        # hierarchy.
-        return Page.__call__(self)
-
-class NotFoundView(zope.errorview.browser.NotFoundView, Page):
-    grok.context(zope.publisher.interfaces.INotFound)
-    grok.baseclass()
-
-    def __call__(self):
-        return Page.__call__(self)
-
-
-class UnauthorizedView(zope.errorview.browser.UnauthorizedView, Page):
-    grok.context(zope.security.interfaces.IUnauthorized)
-    grok.baseclass()
-
-    def __call__(self):
-        return Page.__call__(self)
