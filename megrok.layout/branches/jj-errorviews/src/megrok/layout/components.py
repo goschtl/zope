@@ -190,34 +190,27 @@ class DisplayForm(LayoutAwareForm, grokcore.formlib.DisplayForm):
     template = default_display_template
 
 
-class ExceptionView(Page, zope.errorview.browser.ExceptionView):
+class ExceptionView(zope.errorview.browser.ExceptionView, Page):
     grok.context(zope.interface.common.interfaces.IException)
     grok.baseclass()
 
-    def update(self):
-        return zope.errorview.browser.ExceptionView.update(self)
+    def __call__(self):
+        # Make sure the __call__ handling of the Page component is
+        # used, not that of any of the bases in the ExceptionView class
+        # hierarchy.
+        return Page.__call__(self)
 
-    def render(self):
-        return zope.errorview.browser.ExceptionView.render(self)
-
-
-class NotFoundView(Page, zope.errorview.browser.NotFoundView):
+class NotFoundView(zope.errorview.browser.NotFoundView, Page):
     grok.context(zope.publisher.interfaces.INotFound)
     grok.baseclass()
 
-    def update(self):
-        return zope.errorview.browser.NotFoundView.update(self)
-
-    def render(self):
-        return zope.errorview.browser.NotFoundView.render(self)
+    def __call__(self):
+        return Page.__call__(self)
 
 
-class UnauthorizedView(Page, zope.errorview.browser.UnauthorizedView):
+class UnauthorizedView(zope.errorview.browser.UnauthorizedView, Page):
     grok.context(zope.security.interfaces.IUnauthorized)
     grok.baseclass()
 
-    def update(self):
-        return zope.errorview.browser.UnauthorizedView.update(self)
-
-    def render(self):
-        return zope.errorview.browser.UnauthorizedView.render(self)
+    def __call__(self):
+        return Page.__call__(self)
