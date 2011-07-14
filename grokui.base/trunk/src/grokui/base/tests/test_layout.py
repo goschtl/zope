@@ -12,7 +12,7 @@ We create a browser to watch our views:
 To create a view that automatically comes with the GrokUI layout, we
 can derive from `grokui.base.AdminView`.
 
-Instances of `AdminView` are in fact `megrok.layout.Page` instances
+Instances of `AdminView` are in fact `grokcore.layout.Page` instances
 that render the content provided by a template or `render` method
 into a given layout.
 

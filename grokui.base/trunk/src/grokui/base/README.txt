@@ -113,7 +113,7 @@ layout automatically, the ``order`` tells at which position in the
 menu we want our page to appear. Pages without a title do not appear
 in the menu bar at all.
 
-Instances of `GrokUIView` are in fact `megrok.layout.Page` instances
+Instances of `GrokUIView` are in fact `grokcore.layout.Page` instances
 that render the content provided by a template or `render` method
 into a given layout (here: the general GrokUI layout).
 

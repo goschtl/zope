@@ -3,7 +3,7 @@ import grokcore.view as grok
 
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 from grokui.base import resource
-from megrok.layout import Layout, Page
+from grokcore.layout import Layout, Page
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 grok.layer(GrokUILayer)
