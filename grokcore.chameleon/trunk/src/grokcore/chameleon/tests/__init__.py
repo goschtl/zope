@@ -14,7 +14,7 @@
 # $Id$ $Rev$ $Author$ $Date$
 """A functional test layer.
 """
-import megrok.chameleon
+import grokcore.chameleon
 from zope.app.wsgi.testlayer import BrowserLayer
 
-FunctionalLayer = BrowserLayer(megrok.chameleon, 'ftesting.zcml')
+FunctionalLayer = BrowserLayer(grokcore.chameleon, 'ftesting.zcml')

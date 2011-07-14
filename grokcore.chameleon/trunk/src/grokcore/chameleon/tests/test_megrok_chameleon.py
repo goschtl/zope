@@ -1,15 +1,15 @@
-"""Test setup for megrok.chameleon.
+"""Test setup for grokcore.chameleon.
 """
 import doctest
 import unittest
 import zope.interface
 import zope.component
-import megrok.chameleon
+import grokcore.chameleon
 
 from zope.traversing.interfaces import ITraversable
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.interfaces.browser import IBrowserRequest
-from megrok.chameleon.tests import FunctionalLayer
+from grokcore.chameleon.tests import FunctionalLayer
 
 FLAGS = (doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
 
@@ -34,7 +34,7 @@ def setUpStatic(test):
         factory=DummyResource,
         adapts=(IBrowserRequest,),
         provides=zope.interface.Interface,
-        name='megrok.chameleon.tests.cpt_fixture'
+        name='grokcore.chameleon.tests.cpt_fixture'
         )
     return
 
@@ -46,7 +46,7 @@ def test_suite():
     test = doctest.DocFileSuite(
         'README.txt',
         setUp=setUpStatic,
-        package=megrok.chameleon,
+        package=grokcore.chameleon,
         globs=dict(
             getRootFolder=FunctionalLayer.getRootFolder,
             ),

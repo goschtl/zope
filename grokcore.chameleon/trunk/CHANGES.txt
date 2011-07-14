@@ -39,7 +39,7 @@ CHANGES
 
 * Made registering of ITranslatorExpressions conditional: if
   ``z3c.pt`` is installed as well, we don't register our own
-  ones. Should fix DuplicationError when using megrok.chameleon
+  ones. Should fix DuplicationError when using grokcore.chameleon
   together with other packages that require z3c.pt like ``z3c.form``
   and dependent packages from grok-ecosphere.
 
@@ -49,7 +49,7 @@ CHANGES
 0.5 (2010-03-03)
 ================
 
-* Added tests to show usage of macros with ``megrok.chameleon``.
+* Added tests to show usage of macros with ``grokcore.chameleon``.
 
 * Removed dependency from ``z3c.pt`` by copying the relevant bits over
   and registering them locally.

@@ -19,12 +19,12 @@ tests_require = [
 
 long_description = (open('README.txt').read() +
                     '\n\n' +
-                    open(os.path.join('src', 'megrok', 'chameleon',
+                    open(os.path.join('src', 'grokcore', 'chameleon',
                                       'README.txt')).read() +
                     '\n\n' +
                     open('CHANGES.txt').read())
 
-setup(name='megrok.chameleon',
+setup(name='grokcore.chameleon',
       version=version,
       description="Chameleon page template support for Grok",
       long_description=long_description,
@@ -40,11 +40,11 @@ setup(name='megrok.chameleon',
       keywords="grok chameleon template",
       author="Uli Fouquet",
       author_email="grok-dev@zope.org",
-      url="http://pypi.python.org/pypi/megrok.chameleon",
+      url="http://pypi.python.org/pypi/grokcore.chameleon",
       license="ZPL",
       package_dir={'': 'src'},
       packages=find_packages('src'),
-      namespace_packages=['megrok'],
+      namespace_packages=['grokcore'],
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,

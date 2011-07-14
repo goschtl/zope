@@ -4,7 +4,7 @@ Detailed Description
 
 Grok-support for using chameleon driven templates.
 
-With `megrok.chameleon` you can use templates parsed and rendered by
+With `grokcore.chameleon` you can use templates parsed and rendered by
 `Chameleon`_ using the Zope Page Template templating language.
 
 Chameleon Zope page templates
@@ -45,18 +45,18 @@ registration and set some used variables:
     >>> template_dir = os.path.join(cpt_fixture, 'app_templates')
 
 We register everything. Before we can grok our fixture, we have to
-grok the `megrok.chameleon` package. This way the new template types
+grok the `grokcore.chameleon` package. This way the new template types
 are registered with the framework:
 
     >>> import grokcore.view
-    >>> grokcore.view.testing.grok('megrok.chameleon')
-    >>> grokcore.view.testing.grok('megrok.chameleon.tests.cpt_fixture')
+    >>> grokcore.view.testing.grok('grokcore.chameleon')
+    >>> grokcore.view.testing.grok('grokcore.chameleon.tests.cpt_fixture')
 
 We create a mammoth, which should provide us a bunch of chameleon page
 template driven views and put it in the database to setup location
 info::
 
-    >>> from megrok.chameleon.tests.cpt_fixture.app import Mammoth
+    >>> from grokcore.chameleon.tests.cpt_fixture.app import Mammoth
     >>> manfred = Mammoth()
     >>> getRootFolder()['manfred'] = manfred
 
@@ -203,10 +203,10 @@ and render it:
        &lt;PageTemplateFile ...vars.cpt&gt;
     <BLANKLINE>
       view (the associated view):
-       &lt;megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...&gt;
+       &lt;grokcore.chameleon.tests.cpt_fixture.app.Vars object at 0x...&gt;
     <BLANKLINE>
       context (the context of the view):
-       &lt;megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...&gt;
+       &lt;grokcore.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...&gt;
     <BLANKLINE>
       request (the current request):
        CONTENT_LENGTH:	0
@@ -236,7 +236,7 @@ Inline Templates
 We can also define inline templates. In our ``app.py`` we defined an
 inline template like this::
 
-  from megrok.chameleon import components
+  from grokcore.chameleon import components
 
   ...
 
@@ -255,7 +255,7 @@ If we render this view we get:
 TAL expressions
 ===============
 
-Starting with ``megrok.chameleon`` 0.5 we deploy the all-in-one
+Starting with ``grokcore.chameleon`` 0.5 we deploy the all-in-one
 `Chameleon`_ package.
 
 What TAL/TALES expressions in templates are supported depends mainly
@@ -265,7 +265,7 @@ additional, Zope-related TALES expressions.
 A list of all supported expressions and statements can be found at the
 `chameleon.zpt documentation
 <http://chameleon.repoze.org/docs/latest/zpt.html>`_. The additional
-TALES expressions provided by ``megrok.chameleon`` are:
+TALES expressions provided by ``grokcore.chameleon`` are:
 
 * ``exists``
      Tell whether a name exists in the templates' namespace.
@@ -279,7 +279,7 @@ TALES expressions provided by ``megrok.chameleon`` are:
 * ``provider``
      Support for viewlet providers.
 
-.. note:: Starting with ``megrok.chameleon`` 0.5 support for the
+.. note:: Starting with ``grokcore.chameleon`` 0.5 support for the
           Python expression ``exists()`` has been dropped. The TALES
           expression ``exists: path/to/something`` is still available.
 
@@ -287,7 +287,7 @@ In our ``app.py`` we defined a special view for showing some special
 expressions. This also includes a viewlet::
 
    import grok
-   from megrok.chameleon import components
+   from grokcore.chameleon import components
 
    class Mammoth(grok.Application, grok.Container):
        pass
@@ -368,7 +368,7 @@ and render it:
 Macros
 ======
 
-With ``megrok.chameleon`` we can also use macros, although it is a bit
+With ``grokcore.chameleon`` we can also use macros, although it is a bit
 different from regular Zope page templates.
 
 We can define macros like this:

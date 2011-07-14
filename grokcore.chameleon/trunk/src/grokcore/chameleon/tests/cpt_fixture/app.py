@@ -1,7 +1,7 @@
 from grokcore.component.interfaces import IContext
 from zope.container.btree import BTreeContainer
 from zope.interface import implements
-from megrok.chameleon import components
+from grokcore.chameleon import components
 
 import grokcore.view
 import grokcore.viewlet
