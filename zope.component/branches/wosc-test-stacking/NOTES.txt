@@ -22,6 +22,32 @@ major:
 
   - support stackable(PersistentList/PersistentMapping)
     (makes trouble on unpickling, does not restore stackable.stack right now)
+
+  * we have a conflict of roles:
+  a stackable object needs to fulfill three roles:
+  1. the object it delegates to
+  2. its own concerns
+  3. (new) persistence
+
+  Two of these (1+3) are outside of our control, which especially means we
+  can't control the method names in play, and it could (and does) happen that 1
+  has methods itself that reappear in 3. (example: PersistentList has its own
+  idea about __setstate__ and friends, which the Stackable itself needs too,
+  for its own persistence). --> conflict
+
+  Idea: use proxying behaviour, i.e. intercept the persistence protocol, use it
+  for Stackable's purpose *and* pass it on to the delegated object. [rejected]
+
+  Idea: Stackable doesn't have to do anything about the persistence of the
+  delegated object (will be handled automagically by the ZODB).
+  Stackable doesn't even have state of its own except the ``stack`` attribute
+  (which then takes care of itself since it's a PersistentList).
+
+  Problem: unexpected, obscure exception:
+  File "ZODB/Connection.py", line 549, in tpc_begin
+    self._normal_storage.tpc_begin(transaction)
+  AttributeError: 'NoneType' object has no attribute 'tpc_begin'
+
   - put stackable() into persistentregistry.py
   - stackable.stack needs to be a PersistentList
 
@@ -33,10 +59,10 @@ major:
   'stackable' is Python-code? (This should only apply to tests, since we're
   going to want to create a way to bypass the stackable stuff)
 
-minor:
-
 - Name StackableBase methods with a prefix so they don't conflict with
   delegated methods (e.g. pop).
+
+minor:
 
 - rewrite persistence test to use DemoStorage instead of FileStorage
 
