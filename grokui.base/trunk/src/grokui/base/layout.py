@@ -1,6 +1,5 @@
 from zope.traversing.browser.absoluteurl import absoluteURL
-import grokcore.view as grok
-from grokcore.layout import Layout, Page
+import grok
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 from grokui.base import resource
 import megrok.menu
@@ -8,7 +7,7 @@ import megrok.menu
 grok.layer(GrokUILayer)
 
 
-class GrokUILayout(Layout):
+class GrokUILayout(grok.Layout):
     """The general layout for the administration
     """
     grok.context(IGrokUIRealm)
@@ -20,7 +19,7 @@ class GrokUILayout(Layout):
         self.baseurl = absoluteURL(self.context, self.request) + '/'
 
 
-class GrokUIView(Page):
+class GrokUIView(grok.Page):
     """A grok ui view.
     """
     grok.baseclass()

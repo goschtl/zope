@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import grokcore.viewlet as grok
-from megrok.menu import Menu
 from zope.site.interfaces import IRootFolder
 from zope.component import getUtility, getMultiAdapter
 from zope.browsermenu.interfaces import IBrowserMenu
+import grok
+from megrok.menu import Menu
 from grokui.base import IGrokUIRealm, GrokUILayer
 
 grok.layer(GrokUILayer)

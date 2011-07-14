@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """Components to keep Grok UI related stuff in a dedicated namespace.
 """
-import grokcore.view as grok
-
 from zope.site.interfaces import IRootFolder
 from zope.location import LocationProxy
 from zope.publisher.browser import applySkin
 from zope.publisher.interfaces import browser
 from zope.traversing.interfaces import ITraversable
+import grok
 from grokui.base.interfaces import IGrokUIRealm
 
 

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-import grokcore.component as grok
+import grok
 from grokcore.message import UniqueMessageSource
 
 

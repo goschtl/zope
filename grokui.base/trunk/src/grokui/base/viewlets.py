@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import grokcore.viewlet as grok
-from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
-from grokcore.message.utils import receive
 from zope.browsermenu.interfaces import IBrowserMenu
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.component import getUtility
+import grok
+from grokcore.message.utils import receive
+from grokui.base import Header, Footer, Messages, IUIPanel, IGrokUIRealm
 
 grok.view(IUIPanel)
 grok.context(IGrokUIRealm)

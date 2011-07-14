@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 
 tests_require = [
     'martian',
+    'grokcore.component',
     'zope.annotation',
     'zope.app.appsetup',
     'zope.app.pagetemplate',
@@ -55,11 +56,8 @@ setup(name='grokui.base',
       namespace_packages = ['grokui'],
       install_requires=[
           'fanstatic',
-          'grokcore.component',
-          'grokcore.layout',
+          'grok',
           'grokcore.message',
-          'grokcore.view',
-          'grokcore.viewlet',
           'megrok.menu',
           'setuptools',
           'zope.authentication',
