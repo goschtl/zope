@@ -1,10 +1,9 @@
-import megrok.menu
+from zope.traversing.browser.absoluteurl import absoluteURL
 import grokcore.view as grok
-
+from grokcore.layout import Layout, Page
 from grokui.base import IGrokUIRealm, GrokUILayer, IUIPanel, MainMenu
 from grokui.base import resource
-from grokcore.layout import Layout, Page
-from zope.traversing.browser.absoluteurl import absoluteURL
+import megrok.menu
 
 grok.layer(GrokUILayer)
 
