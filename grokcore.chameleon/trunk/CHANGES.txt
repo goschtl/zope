@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-1.0rc3 (unreleased)
+1.0rc3 (2011-07-14)
 ===================
 
 - Rename megrok.chameleon into grokcore.chameleon to make it an official part
