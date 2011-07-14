@@ -1,6 +1,6 @@
-=================
+==================
 grokcore.chameleon
-=================
+==================
 
 `grokcore.chameleon` makes it possible to use Chameleon page templates in Grok.
 For more information on Grok and Chameleon page templates see:
