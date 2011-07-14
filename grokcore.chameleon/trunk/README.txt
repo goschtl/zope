@@ -15,6 +15,10 @@ For more information on Grok and Chameleon page templates see:
 Installation
 ============
 
+Note that future versions of grok will depend itself on grokcore.chameleon
+and configure it. In other words, chameleon-based templates will be available
+by default from that version on!
+
 To use Chameleon page templates with Grok all you need is to install
 grokcore.chameleon as an egg and include its ZCML. The best place to do
 this is to make `grokcore.chameleon` a dependency of your application by

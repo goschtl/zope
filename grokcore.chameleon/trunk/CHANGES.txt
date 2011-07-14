@@ -4,14 +4,13 @@ CHANGES
 1.0rc3 (unreleased)
 ===================
 
-- Nothing changed yet.
-
+- Rename megrok.chameleon into grokcore.chameleon to make it an official part
+  of Grok.
 
 1.0rc2 (2011-07-13)
 ===================
 
 * Removed the zope.app.zcmlfiles test dependency.
-
 
 1.0rc1 (2011-05-19)
 ===================
