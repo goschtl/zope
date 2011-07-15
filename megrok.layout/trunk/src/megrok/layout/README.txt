@@ -2,6 +2,12 @@
 megrok.layout
 =============
 
+.. NOTE::
+   megrok.layout has been promoted to grokcore.layout and will be a part of the
+   Grok from the upcomming Grok release on. The grokcore.layout package can
+   already be included in your own projects in the meantime. This means this
+   package most likely will not see any further updates.
+
 The `megrok.layout` package provides a simple way to write view
 components which can be included into a defined layout. It turns
 around two main components : the Page and the Layout.
