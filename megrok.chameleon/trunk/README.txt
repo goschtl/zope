@@ -2,6 +2,12 @@
 megrok.chameleon
 ================
 
+.. NOTE::
+   megrok.chameleon has been promoted to grokcore.chameleon and will be a part
+   of the Grok from the upcomming Grok release on. The grokcore.chameleon
+   package can already be included in your own projects in the meantime. This
+   means this package most likely will not see any further updates.
+
 `megrok.chameleon` makes it possible to use Chameleon page templates in Grok.
 For more information on Grok and Chameleon page templates see:
 
