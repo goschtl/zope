@@ -104,10 +104,10 @@ The tests run on OS X 10.6
       - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-osx THA
       - unsupported
 
-    * - `Groktoolkit 1.2 <http://svn.zope.org/groktoolkit/branches/1.2>`__
+    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.5%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.6%20slave-osx THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-osx THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-osx THA
       - unsupported
 
     * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
@@ -195,10 +195,10 @@ no testing support for those
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_270_win64 winbot
 
-    * - `Groktoolkit 1.2 <http://svn.zope.org/groktoolkit/branches/1.2>`__
+    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2_win-py2.5%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2_win-py2.6%20slave-win THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4_win-py2.5%20slave-win THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4_win-py2.6%20slave-win THA
       - unsupported
       - unsupported
       - unsupported
@@ -342,14 +342,14 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.0%2064bit%20linux AFPY
 
-    * - `Groktoolkit 1.2 <http://svn.zope.org/groktoolkit/branches/1.2>`__
+    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.5%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.6%20slave-ubuntu32 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-ubuntu32 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.5%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.2-py2.6%20slave-ubuntu64 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-ubuntu64 THA
+      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-ubuntu64 THA
       - unsupported
 
     * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
