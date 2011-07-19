@@ -1,0 +1,32 @@
+Changelog of megrok.strictrequire
+=================================
+
+0.5 (2011-07-19)
+----------------
+
+- Reflect recent changes in grok 1.8.
+
+
+0.4 (2011-07-11)
+----------------
+
+- Use the groktoolkit versions.
+
+- Don't check the requirement directive for ViewletManager, as these are
+  not exposed as views.
+
+0.3 (2010-05-18)
+----------------
+
+- Test-requirements have been fixed. They formally include zope.app.testing for
+  the moment.
+
+0.2 (2009-06-22)
+----------------
+
+- Check ViewletManager and Viewlet components too.
+
+0.1 (2009-06-18)
+----------------
+
+- Initial release.
