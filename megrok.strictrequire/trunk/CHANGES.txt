@@ -1,7 +1,7 @@
 Changelog of megrok.strictrequire
 =================================
 
-0.5 (unreleased)
+0.5 (2011-07-19)
 ----------------
 
 - Reflect recent changes in grok 1.8.
