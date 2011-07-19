@@ -40,6 +40,21 @@ class CheckRequireGrokkerViewlet(CheckRequireGrokker):
     martian.component(grok.Viewlet)
 
 
+class CheckRequireGrokkerForm(CheckRequireGrokker):
+    """Ensure every grok.Form has a grok.require directive"""
+    martian.component(grok.Form)
+
+
+class CheckRequireGrokkerAddForm(CheckRequireGrokker):
+    """Ensure every grok.AddForm has a grok.require directive"""
+    martian.component(grok.AddForm)
+
+
+class CheckRequireGrokkerEditForm(CheckRequireGrokker):
+    """Ensure every grok.EditForm has a grok.require directive"""
+    martian.component(grok.EditForm)
+
+
 class CheckRequireRESTGrokker(martian.MethodGrokker):
     """Ensure every grok.REST has a grok.require directive"""
     martian.component(grok.REST)

@@ -4,7 +4,7 @@ Changelog of megrok.strictrequire
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Reflect recent changes in grok 1.8.
 
 
 0.4 (2011-07-11)

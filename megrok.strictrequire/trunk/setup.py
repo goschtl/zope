@@ -30,7 +30,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'grok',
+        'grok >= 1.8',
         ],
     extras_require = {'test': tests_require},
     tests_require=tests_require,

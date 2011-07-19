@@ -26,7 +26,7 @@ component does have a required permission defined::
     <class 'megrok.strictrequire.tests.fixtures.NoRequireViewlet'>
     to use the grok.require directive!
 
-Ditto for grok.Fornm, grok.AddForm. grok.EditForm, grok.XMLRPC, grok.JSON,
+Ditto for grok.Form, grok.AddForm. grok.EditForm, grok.XMLRPC, grok.JSON,
 grok.REST components::
 
     >>> from megrok.strictrequire.tests.fixtures import (
