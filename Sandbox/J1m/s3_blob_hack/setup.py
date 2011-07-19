@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.s3blobhack', '0'
 
-install_requires = ['setuptools']
+install_requires = ['setuptools', 'ZODB3', 'boto']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
+[console_scripts]
+copy-blobs-to-s3 = zc.s3blobhack:copy_blobs
 """
 
 from setuptools import setup
