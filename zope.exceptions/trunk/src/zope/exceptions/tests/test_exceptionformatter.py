@@ -51,9 +51,9 @@ class Test(TestCase):
         except ExceptionForTesting:
             s = tb(as_html)
             # The traceback should include the name of this function.
-            self.assert_(s.find('testBasicNamesText') >= 0)
+            self.assertTrue(s.find('testBasicNamesText') >= 0)
             # The traceback should include the name of the exception.
-            self.assert_(s.find('ExceptionForTesting') >= 0)
+            self.assertTrue(s.find('ExceptionForTesting') >= 0)
         else:
             self.fail('no exception occurred')
 
@@ -68,15 +68,15 @@ class Test(TestCase):
         except ExceptionForTesting:
             s = tb(as_html)
             # The source URL
-            self.assert_(s.find('/somepath') >= 0, s)
+            self.assertTrue(s.find('/somepath') >= 0, s)
             # The line number
-            self.assert_(s.find('634') >= 0, s)
+            self.assertTrue(s.find('634') >= 0, s)
             # The column number
-            self.assert_(s.find('57') >= 0, s)
+            self.assertTrue(s.find('57') >= 0, s)
             # The expression
-            self.assert_(s.find("You're one in a million") >= 0, s)
+            self.assertTrue(s.find("You're one in a million") >= 0, s)
             # The warning
-            self.assert_(s.find("Repent, for the end is nigh") >= 0, s)
+            self.assertTrue(s.find("Repent, for the end is nigh") >= 0, s)
         else:
             self.fail('no exception occurred')
 
@@ -91,9 +91,9 @@ class Test(TestCase):
             s = tb(as_html)
             if as_html:
                 # Be sure quoting is happening.
-                self.assert_(s.find('Adam &amp; Eve') >= 0, s)
+                self.assertTrue(s.find('Adam &amp; Eve') >= 0, s)
             else:
-                self.assert_(s.find('Adam & Eve') >= 0, s)
+                self.assertTrue(s.find('Adam & Eve') >= 0, s)
         else:
             self.fail('no exception occurred')
 
@@ -106,8 +106,8 @@ class Test(TestCase):
             raise ExceptionForTesting
         except ExceptionForTesting:
             s = tb()
-            self.assert_(s.find('Adam') >= 0, s)
-            self.assert_(s.find('Eve') >= 0, s)
+            self.assertTrue(s.find('Adam') >= 0, s)
+            self.assertTrue(s.find('Eve') >= 0, s)
         else:
             self.fail('no exception occurred')
 
@@ -126,7 +126,7 @@ class Test(TestCase):
         except ExceptionForTesting:
             s = tb()
             for n in range(11):
-                self.assert_(s.find('level%d' % n) >= 0, s)
+                self.assertTrue(s.find('level%d' % n) >= 0, s)
         else:
             self.fail('no exception occurred')
 
@@ -139,18 +139,18 @@ class Test(TestCase):
             s = tb(1)
         else:
             self.fail('no exception occurred')
-        self.assert_(s.find('&lt;') >= 0, s)
-        self.assert_(s.find('&gt;') >= 0, s)
+        self.assertTrue(s.find('&lt;') >= 0, s)
+        self.assertTrue(s.find('&gt;') >= 0, s)
 
     def testMultilineException(self):
         try:
             exec 'syntax error\n'
         except Exception:
             s = tb()
-        self.assertEquals(s.splitlines()[-3:],
-                          ['    syntax error',
-                           '               ^',
-                           'SyntaxError: invalid syntax'])
+        self.assertEqual(s.splitlines()[-3:],
+                         ['    syntax error',
+                          '               ^',
+                          'SyntaxError: invalid syntax'])
 
     def testRecursionFailure(self):
         from zope.exceptions.exceptionformatter import TextExceptionFormatter
@@ -173,7 +173,7 @@ class Test(TestCase):
         # Recursion was detected
         self.assertTrue('(Recursive formatException() stopped, trying traceback.format_tb)' in s, s)
         # and we fellback to the stdlib rather than hid the real error
-        self.assertEquals(s.splitlines()[-2], '    raise FormatterException("Formatter failed")')
+        self.assertEqual(s.splitlines()[-2], '    raise FormatterException("Formatter failed")')
         self.assertTrue('FormatterException: Formatter failed' in s.splitlines()[-1])
 
 def test_suite():
