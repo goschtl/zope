@@ -5,6 +5,8 @@ Changes
 3.6.2 (unreleased)
 ------------------
 
+- Fallback to traceback.format_tb when the formatter is called recursively.
+  i.e. Don't let errors in the formatter pass silently.
 
 3.6.1 (2010-07-06)
 ------------------

@@ -152,6 +152,29 @@ class Test(TestCase):
                            '               ^',
                            'SyntaxError: invalid syntax'])
 
+    def testRecursionFailure(self):
+        from zope.exceptions.exceptionformatter import TextExceptionFormatter
+
+        class FormatterException(Exception):
+            pass
+            
+        class FailingFormatter(TextExceptionFormatter):
+            def formatLine(self, tb):
+                raise FormatterException("Formatter failed")
+
+        fmt = FailingFormatter()
+        try:
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            try:
+                fmt.formatException(*sys.exc_info())
+            except FormatterException:
+                s = tb()
+        # Recursion was detected
+        self.assertTrue('(Recursive formatException() stopped, trying traceback.format_tb)' in s, s)
+        # and we fellback to the stdlib rather than hid the real error
+        self.assertEquals(s.splitlines()[-2], '    raise FormatterException("Formatter failed")')
+        self.assertTrue('FormatterException: Formatter failed' in s.splitlines()[-1])
 
 def test_suite():
     return makeSuite(Test)
