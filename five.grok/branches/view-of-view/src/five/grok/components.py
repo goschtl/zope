@@ -94,6 +94,10 @@ class View(grokcore.view.View):
     def HEAD(self, request, response):
         pass
 
+    def redirect(self, url, status=302, trusted=False):
+        return self.request.response.redirect(
+                url, status=status)
+
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
