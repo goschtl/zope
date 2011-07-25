@@ -91,6 +91,11 @@ class View(grokcore.view.View):
             return view
         raise NotFound(self, name, request)
 
+    # to enable HEAD as a view, ZPublisher require the HEAD method
+    # to be define on the view (cf ZPublisher.BaseRequest.BaseRequest:484)
+    def HEAD(self, request, response):
+        pass
+
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
