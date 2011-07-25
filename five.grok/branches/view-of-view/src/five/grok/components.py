@@ -21,6 +21,7 @@ import sys
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.location.interfaces import IPossibleSite
+from zope.publisher.interfaces import NotFound
 from zope import interface, component
 
 from five.formlib import formbase
@@ -82,6 +83,13 @@ class View(grokcore.view.View):
         if self.static is not None:
             # Set parent so that we have an acquisition chain
             self.static.__parent__ = context
+
+    def publishTraverse(self, request, name):
+        view = component.queryMultiAdapter((self, request), name=name,
+                                           default=None)
+        if view is not None:
+            return view
+        raise NotFound(self, name, request)
 
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
