@@ -314,6 +314,22 @@ def print_times(last_times, times, label):
 
     return times
 
+# Update the following three (3) commands for your use-case and uncomment them
+# before running this script.
+
+# FREE_CMD = 'free'
+# VMSTAT_CMD = 'tail -n 1 vmstat.log'
+# IOSTAT_CMD = 'tail -n 10 iostat.log | grep -B 1 -A 6 avg-cpu'
+
+def print_meminfo(host):
+    print "free: "
+    os.system(FREE_CMD)
+    print "vmstat: "
+    os.system(VMSTAT_CMD)
+    print "iostat: "
+    os.system(IOSTAT_CMD)
+    print
+
 def main(args=None):
     """Usage: script address log source
 
@@ -324,6 +340,12 @@ def main(args=None):
 
        log
           zeo input log
+
+       sessionids
+          path to file containing session ids.
+
+       max_records (optional. default is 999999999)
+          integer value indicating how many records should be considered.
 
     """
     if args is None:
@@ -338,6 +360,7 @@ def main(args=None):
     print args
     addr = args.pop(0)
     log = args.pop(0)
+    sessionids = args.pop(0)
     if args:
         max_records = int(args.pop(0))
     else:
@@ -345,14 +368,16 @@ def main(args=None):
     assert not args
     addr = parse_addr(addr)
 
-    log = Log(log, set(('loadEx', 'loadBefore', 'sendBlob')))
+    log = Log(log, set(('loadEx', 'sendBlob')))
+    sessionids = open(sessionids).readlines()
 
     # Set up the client connections
     sessions = {}
     nhandlers = 0
     handlers_queue = Queue()
     processes = []
-    for session, timetime, msgid, async, op, args in log:
+    for session in sessionids:
+        session = int(session.strip())
         if singe_threaded:
             session = '1'
         if session not in sessions:
@@ -406,9 +431,7 @@ def main(args=None):
 
         if nrecords and (nrecords%10000 == 0):
             if (nrecords%100000 == 0):
-                print
-                os.system('free')
-                print
+                print_meminfo(addr[0])
                 last_times = print_times(last_times, handlers.times,
                                          "after %s operations" % nrecords)
                 print
