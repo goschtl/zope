@@ -31,7 +31,6 @@ from grokcore.formlib.components import GrokForm as BaseGrokForm
 from grokcore.formlib.components import default_display_template, \
     default_form_template
 from grokcore.view.components import PageTemplate
-from grokcore.viewlet.components import Viewlet as BaseViewlet
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
 from grokcore.site.components import BaseSite
 import grokcore.view
@@ -48,7 +47,6 @@ from Products.PageTemplates.Expressions import SecureModuleImporter
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
 
-import Acquisition
 from AccessControl import getSecurityManager
 from Acquisition import aq_get
 
@@ -123,7 +121,7 @@ class ViewAwareZopePageTemplate(ZopePageTemplate):
                          root=root,
                          modules=SecureModuleImporter,
                          traverse_subpath=[],  # BBB, never really worked
-                         user = getSecurityManager().getUser())
+                         user=getSecurityManager().getUser())
         return namespace
 
 
@@ -164,10 +162,9 @@ class ZopeTwoDirectoryResource(resource.DirectoryResource):
 
     # Allow traversal to contained resources from protected code
     __allow_access_to_unprotected_subobjects__ = True
-    
+
     # Allow subdirectories to work with restrictedTraverse() (in Zope >= 2.12.6)
     __roles__ = None
-    
     resource_factories = {}
     for type, factory in (resource.DirectoryResource.resource_factories.items()):
         if factory is resource.PageTemplateResourceFactory:
@@ -184,7 +181,7 @@ class ZopeTwoDirectoryResourceFactory(resource.DirectoryResourceFactory):
 
     def __call__(self, request):
         resource = ZopeTwoDirectoryResource(self.__rsrc, request)
-        resource.__name__ = self.__name # We need to add name
+        resource.__name__ = self.__name   # We need to add name
         return resource
 
 
@@ -239,4 +236,3 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
     def __getitem__(self, key):
         # XXX Need Zope 2 __getitem__
         return ZopeTwoBaseViewletManager.__getitem__(self, key)
-
