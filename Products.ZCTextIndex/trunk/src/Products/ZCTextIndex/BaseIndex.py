@@ -128,7 +128,7 @@ class BaseIndex(Persistent):
         old_wids = self.get_words(docid)
         new_wids = self._lexicon.sourceToWordIds(text)
         if old_wids == new_wids:
-            return 0
+            return len(new_wids)
 
         old_wid2w, old_docw = self._get_frequencies(old_wids)
         new_wid2w, new_docw = self._get_frequencies(new_wids)

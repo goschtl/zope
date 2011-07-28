@@ -4,6 +4,8 @@ Changelog
 2.13.3 (unreleased)
 -------------------
 
+- Fixed problem in reindex document optimization, which could lead to negative
+  document counts when reindexing unchanged documents.
 
 2.13.2 (2011-05-04)
 -------------------
