@@ -14,6 +14,7 @@
 name, version = 'zc.zeoinputlog', '0.1.0'
 
 install_requires = [
+    'boto',
     'setuptools',
     'zc.ngi',
     'ZODB3',

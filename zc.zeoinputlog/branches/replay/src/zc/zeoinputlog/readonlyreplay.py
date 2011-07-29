@@ -24,6 +24,7 @@ from multiprocessing import Process, Queue
 import optparse
 import os
 import sys
+import tempfile
 import threading
 import time
 import traceback
@@ -244,7 +245,7 @@ class Handler:
 class S3Handler(Handler):
 
     def __init__(self, folder, addr, session, inq, outq):
-        bucket_name, self.folder = os.environ['S3_FOLDER'].split('/', 1)
+        bucket_name, self.folder = folder.split('/', 1)
         import boto.s3.connection
         import boto.s3.key
         self.s3 = boto.s3.key.Key(
@@ -254,13 +255,13 @@ class S3Handler(Handler):
     def call(self, op, args):
         if op == 'sendBlob':
             oid, serial = args
-            key.key = "%s/%s/%s" % (
+            self.s3.key = "%s/%s/%s" % (
                 self.folder, oid.encode('hex'), serial.encode('hex'))
             self.output('request', op, args)
             f = tempfile.TemporaryFile()
             t = time.time()
             try:
-                key.get_contents_to_file(f)
+                self.s3.get_contents_to_file(f)
                 ret = None
             except Exception, v:
                 ret = None, v
