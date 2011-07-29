@@ -11,7 +11,7 @@ import ZEO.StorageServer
 # copy script that gets around the fact that we haven't implemented
 # committing blobs.
 
-hexmatch = re.compile('0x(\d\d)$').match
+hexmatch = re.compile('0x([0-9a-fA-F]{2})$').match
 
 def copy_blobs(args=None):
     if args is None:
