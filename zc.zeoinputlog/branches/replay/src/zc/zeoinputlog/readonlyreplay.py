@@ -439,6 +439,9 @@ def main(args=None):
     last_times = {}
     for session, timetime, msgid, async, op, args in log:
 
+        if session not in sessions:     # Skip unknown sessions
+            continue
+
         if singe_threaded:
             session = '1'
 
@@ -485,7 +488,6 @@ def main(args=None):
         nrecords += 1
 
         handlers.maxactive = 0
-
 
         sessions[session].put((async, op, args))
         if nrecords >= max_records:
