@@ -159,7 +159,7 @@
  <tr>
   <th i18n:translate="">Description</th>
   <td class="TextField" colspan="3">
-   <textarea name="description:text" rows="5" cols="70" wrap="soft"
+   <textarea name="description:text" rows="5" cols="70"
       tal:content="options/description"></textarea>
   </td>
  </tr>

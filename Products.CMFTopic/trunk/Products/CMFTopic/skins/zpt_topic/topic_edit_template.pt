@@ -21,7 +21,7 @@
  <tr>
   <th i18n:translate="">Description</th>
   <td>
-   <textarea name="description:text" rows="5" cols="65" wrap="soft"
+   <textarea name="description:text" rows="5" cols="65"
       tal:content="options/description"></textarea>
   </td>
  </tr>
