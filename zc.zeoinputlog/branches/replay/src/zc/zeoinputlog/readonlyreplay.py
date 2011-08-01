@@ -14,13 +14,14 @@
 """Replay ZEO input logs in read-only mode
 """
 
-
-import cPickle
-import logging
-import marshal
 from multiprocessing import Process, Queue
 # from threading import Thread as Process
 # from Queue import Queue
+
+import cPickle
+import httplib
+import logging
+import marshal
 import optparse
 import os
 import sys
@@ -29,9 +30,11 @@ import threading
 import time
 import traceback
 import transaction
-import zc.ngi.async
+import urlparse
 import zc.ngi.adapters
+import zc.ngi.async
 import ZODB.TimeStamp
+import ZODB.blob
 import ZODB.utils
 
 sys.setcheckinterval(999)
@@ -272,6 +275,56 @@ class S3Handler(Handler):
         else:
             Handler.call(self, op, args)
 
+class HTTPHandler(Handler):
+
+    def __init__(self, url, addr, session, inq, outq):
+        if not url[-1] == '/':
+            url += '/'
+        url = urlparse.urlparse(url)
+        self.blob_prefix = url.path
+        self.blob_conn = httplib.HTTPConnection(url.netloc)
+        self.blob_layout = ZODB.blob.BushyLayout()
+        Handler.__init__(self, addr, session, inq, outq)
+
+    def call(self, op, args):
+        if op == 'sendBlob':
+            conn = self.blob_conn
+            path = self.blob_layout.getBlobFilePath(*args)
+            self.output('request', op, args)
+            try:
+                try:
+                    t = time.time()
+                    conn.request("GET", self.blob_prefix+path,
+                                 headers=dict(Connection='Keep-Alive'))
+                    r = conn.getresponse()
+                except httplib.HTTPException:
+                    t = time.time()
+                    conn.connect()
+                    conn.request("GET", self.blob_prefix+path,
+                                 headers=dict(Connection='Keep-Alive'))
+                    r = conn.getresponse()
+
+                self.read_blob(r)
+                ret = None
+            except Exception, v:
+                ret = None, v
+
+            elapsed = time.time() - t
+
+            self.output('reply', op, args, ret, elapsed)
+        else:
+            Handler.call(self, op, args)
+
+
+        def read_blob(self, r):
+            r.read()
+
+class HTTPWritingHandler(HTTPHandler):
+
+    def read_blob(self, r):
+        f = tempfile.TemporaryFile()
+        f.write(r.read())
+        f.close()
 
 
 zz = 0, 0
@@ -368,6 +421,16 @@ parser.add_option("--s3-folder", "-s", dest='s3',
                   help="""
 Get blobs from the given s3 folder: BUCKET/FOLDER
 """)
+parser.add_option("--blob-url", "-u", dest='blob_url',
+                  help="""
+Get blobs from an HTTP server at the given URL.
+""")
+parser.add_option("--blob-url-with-blobs-written", "-U",
+                  dest='blob_url_written',
+                  help="""
+Get blobs from an HTTP server at the given URL.
+Write bob data to a temporary file to simulate real download
+""")
 parser.add_option("--status-port", "-p", dest='status_port',
                   type="int",
                   help="Port to get status data from.")
@@ -409,6 +472,18 @@ def main(args=None):
                 process = Process(
                     target = S3Handler,
                     args = (options.s3,
+                            addr, nhandlers, handler_queue, handlers_queue),
+                    )
+            elif options.blob_url:
+                process = Process(
+                    target = HTTPHandler,
+                    args = (options.blob_url,
+                            addr, nhandlers, handler_queue, handlers_queue),
+                    )
+            elif options.blob_url_written:
+                process = Process(
+                    target = HTTPWritingHandler,
+                    args = (options.blob_url_written,
                             addr, nhandlers, handler_queue, handlers_queue),
                     )
             else:
