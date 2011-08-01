@@ -261,16 +261,17 @@ class S3Handler(Handler):
             self.s3.key = "%s/%s/%s" % (
                 self.folder, oid.encode('hex'), serial.encode('hex'))
             self.output('request', op, args)
-            f = tempfile.TemporaryFile()
+            # f = tempfile.TemporaryFile()
             t = time.time()
             try:
-                self.s3.get_contents_to_file(f)
+                # self.s3.get_contents_to_file(f)
+                self.s3.get_contents_as_string()
                 ret = None
             except Exception, v:
                 ret = None, v
             elapsed = time.time() - t
             self.output('reply', op, args, ret, elapsed)
-            f.close()
+            # f.close()
 
         else:
             Handler.call(self, op, args)
