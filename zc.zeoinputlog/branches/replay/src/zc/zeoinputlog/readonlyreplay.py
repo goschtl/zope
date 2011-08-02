@@ -541,6 +541,7 @@ def main(args=None):
         if nrecords and (nrecords%10000 == 0):
             if (nrecords%100000 == 0):
                 os.system("nc %s %s" % (addr[0], options.status_port))
+                os.system("uptime")
                 last_times = print_times(last_times, handlers.times,
                                          "after %s operations" % nrecords)
                 print
