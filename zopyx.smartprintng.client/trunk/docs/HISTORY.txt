@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.8.0 (2011-08-02)
+------------------
+- obsoleted Proxy() implementation
+- added Proxy2() implementation supporting a standard URL 
+
 0.7.0 (2011-03-02)
 ------------------
 - removed convertZIP() api method
