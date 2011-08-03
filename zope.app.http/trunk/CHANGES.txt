@@ -8,6 +8,9 @@ CHANGES
 - Replaced an undeclared test dependency on ``zope.app.authentication`` with
   ``zope.password``.
 
+- Replaced the testing dependency on ``zope.app.zcmlfiles`` with explicit
+  dependencies of a minimal set of packages.
+
 
 3.10.0 (2011-01-25)
 -------------------
