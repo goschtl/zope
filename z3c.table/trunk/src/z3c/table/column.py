@@ -373,6 +373,11 @@ class EMailColumn(LinkColumn, GetAttrColumn):
             return self.defaultValue
         return super(EMailColumn, self).renderCell(item)
 
+def ensureList(item):
+    if not isinstance(item, (list, tuple)):
+        return [item]
+    return item
+
 class SelectedItemColumn(LinkColumn):
     """Link which can set an item."""
 
@@ -404,8 +409,8 @@ class SelectedItemColumn(LinkColumn):
 
     def update(self):
         items = [item for item in self.table.values
-                 if self.getItemValue(item) in self.request.get(
-                     self.getItemKey(item), [])]
+                 if self.getItemValue(item) in ensureList(self.request.get(
+                     self.getItemKey(item), []))]
         if len(items):
             self.selectedItem = items.pop()
             self.table.selectedItems = [self.selectedItem]
