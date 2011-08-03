@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.9.1 (unreleased)
+0.9.1 (2011-08-03)
 ------------------
 
 - Fixed SelectedItemColumn.update when just one item was selected
