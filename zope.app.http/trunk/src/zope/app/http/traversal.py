@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,8 +13,6 @@
 
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 
