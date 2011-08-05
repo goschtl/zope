@@ -1,0 +1,293 @@
+Zope transactions and sqlalchemy
+================================
+
+When a zope transaction is used also a sqlalchemy transaction must be
+activated. "z3c.zalchemy" installs a data manager every time a new zope
+transaction is created. 
+
+Create a utility to provide a database :
+
+  >>> import os
+  >>> from zope.component import provideUtility
+  >>> from z3c.zalchemy.interfaces import IAlchemyEngineUtility
+  >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
+  >>> engineUtility = AlchemyEngineUtility('database',
+  ...                                      'sqlite:///%s'%dbTrFilename,
+  ...                                      echo=False)
+  >>> provideUtility(engineUtility, IAlchemyEngineUtility)
+
+Setup a sqlalchemy table and class :
+
+  >>> import sqlalchemy
+  >>> import z3c.zalchemy
+  >>> table2 = sqlalchemy.Table(
+  ...     'table2',
+  ...     z3c.zalchemy.metadata(),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer,
+  ...         sqlalchemy.Sequence('atable_id'), primary_key = True),
+  ...     sqlalchemy.Column('value', sqlalchemy.Integer),
+  ...     )
+  >>> class A(object):
+  ...   pass
+  >>> A.mapper = sqlalchemy.mapper(A, table2)
+
+Now start a zope transaction :
+
+  >>> import transaction
+  >>> txn = transaction.begin()
+
+Get a thread local session :
+
+  >>> session = z3c.zalchemy.getSession()
+
+  >>> z3c.zalchemy.createTable('table2', '')
+
+Multiple calls to getSession return the same session :
+
+  >>> session == z3c.zalchemy.getSession()
+  True
+
+Create an object and add it to the session :
+
+  >>> a=A()
+  >>> session.save(a)
+  >>> a.id is None
+  True
+
+We flush the object so that it gets a primary key.
+
+  >>> session.flush([a])
+  >>> a.id is None
+  False
+
+  >>> a.value = 1
+
+  >>> transaction.commit()
+
+After the commit we can get a new session from zalchemy outside of a
+transaction.  We can tell zalchemy to create a new transaction if there is
+none active.  But we need to commit the transaction manually.
+
+  >>> session2 = z3c.zalchemy.getSession()
+  >>> a = A()
+  >>> session2.save(a)
+  >>> a.value = 2
+  >>> transaction.commit()
+
+
+Handling multiple threads
+-------------------------
+
+  >>> import threading
+
+A different thread must get a different session :
+
+  >>> log = []
+  >>> def differentSession():
+  ...     global session
+  ...     log.append(('differentSession', session == z3c.zalchemy.getSession()))
+  ...
+
+  >>> thread = threading.Thread(target=differentSession)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('differentSession', False)]
+
+A different Thread must be able to operate on the engine :
+
+  >>> log = []
+  >>> def modifyA():
+  ...     txn = transaction.begin()
+  ...     session = z3c.zalchemy.getSession()
+  ...     obj = session.get(A, 1)
+  ...     obj.value += 1
+  ...     log.append(('modifyA', obj.value))
+  ...     transaction.commit()
+
+  >>> thread = threading.Thread(target=modifyA)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('modifyA', 2)]
+
+Nested Threads:
+
+  >>> log = []
+
+  >>> def nested():
+  ...     txn = transaction.begin()
+  ...     session = z3c.zalchemy.getSession()
+  ...     obj = session.get(A, 1)
+  ...     thread = threading.Thread(target=modifyA)
+  ...     thread.start()
+  ...     thread.join()
+  ...     obj.value+= 1
+  ...     log.append(('nested', obj.value))
+  ...     transaction.commit()
+
+  >>> thread = threading.Thread(target=nested)
+  >>> thread.start()
+  >>> thread.join()
+  >>> log
+  [('modifyA', 3), ('nested', 3)]
+
+
+Aborting transactions
+---------------------
+
+  >>> session = z3c.zalchemy.getSession()
+  >>> a = session.get(A, 1)
+  >>> a.value = 2
+  >>> transaction.commit()
+
+  >>> a.value += 1
+  >>> a.value
+  3
+  >>> transaction.abort()
+
+  >>> session = z3c.zalchemy.getSession()
+  >>> a = session.get(A, 1)
+  >>> a.value
+  2
+
+
+Two Phase Commit With Errors
+----------------------------
+
+zalchemy uses zope's two phase commit by first doing only a flush when commit
+is called. SQLAlchemy's transaction is commited in the second phase of the
+zope transacion.
+
+  >>> session = z3c.zalchemy.getSession()
+  >>> aa=A()
+  >>> session.save(aa)
+  >>> aa.value = 3
+
+We create an object with an already existing primary key.
+
+  >>> aa.id = 2
+
+Let's make sure we get an exception when using commit.
+
+  >>> transaction.commit()
+  Traceback (most recent call last):
+  ...
+  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+
+Finally we need to abort zope's transaction.
+
+  >>> transaction.abort()
+
+And we do the same using the commit from the transaction.
+
+  >>> session = z3c.zalchemy.getSession()
+  >>> aa=A()
+  >>> session.save(aa)
+  >>> aa.value = 3
+  >>> aa.id = 2
+  >>> transaction.commit()
+  Traceback (most recent call last):
+  ...
+  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+
+We need to manually abort the transaction.
+
+  >>> transaction.abort()
+
+
+Conflicts
+---------
+
+With the a serialisable isolation level it is possible to get conflicts with a
+relational database. For correct integration we need to convert such a conflict
+error to a ZODB.POSException.ConflictError.
+
+Since every database backend yields different exceptions an exception is
+adapted to IConflictError.
+
+Let's use a mock session here which issues a conflict error when asked to:
+
+>>> class MockSession(object):
+...
+...     conflict = 'Conflict'
+...
+...     def flush(self):
+...         if self.conflict:
+...             raise sqlalchemy.exceptions.SQLError(
+...                 'UPDATE bla...', (1, 2, 3), ValueError(self.conflict))
+...
+...     def create_transaction(self):
+...         pass
+...
+
+Now create a datamanager:
+
+>>> dm = z3c.zalchemy.datamanager.AlchemyDataManager(MockSession())
+
+When we don't do anything we'll get the exception as specified above:
+
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) Conflict 'UPDATE bla...' (1, 2, 3)
+
+
+When we now provide an adapter from SQLError to IConflictError we'll get a
+ZODB ConflictError:
+
+>>> import ZODB.POSException
+>>> def adapt_sqlerror(context):
+...     if context.orig.args == ('Conflict', ):
+...         return ZODB.POSException.ConflictError('play it again')
+>>> import zope.component
+>>> gsm = zope.component.getGlobalSiteManager()
+>>> gsm.registerAdapter(adapt_sqlerror,
+...     (sqlalchemy.exceptions.SQLError, ),
+...      z3c.zalchemy.interfaces.IConflictError)
+
+
+So commit:
+
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+ConflictError: play it again
+
+
+Note, that we added a condition to the adapter, so we'll only get a conflict
+error when the argument is "Conflict". Otherise the original exception is
+raised:
+
+>>> MockSession.conflict = 'No conflict'
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) No conflict 'UPDATE bla...' (1, 2, 3)
+   
+
+The same happens for savepoints where conflicts also might happen:
+
+>>> MockSession.conflict = 'Conflict'
+>>> dm.savepoint()
+Traceback (most recent call last):
+    ...
+ConflictError: play it again
+
+
+Non-conflict errors are passed as well:
+
+>>> MockSession.conflict = 'Not at all'
+>>> dm.savepoint()
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) Not at all 'UPDATE bla...' (1, 2, 3)
+
+
+
+Clean up:
+
+>>> gsm.unregisterAdapter(adapt_sqlerror,
+...     (sqlalchemy.exceptions.SQLError, ),
+...      z3c.zalchemy.interfaces.IConflictError)
+True

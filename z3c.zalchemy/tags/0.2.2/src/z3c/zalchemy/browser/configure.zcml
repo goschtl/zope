@@ -1,0 +1,45 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zalchemy"
+           >
+
+  <browser:addMenuItem
+      class="z3c.zalchemy.container.SQLAlchemyContainer"
+      title="SQLAlchemy Container"
+      description="A persistent container for mapped SQLAlchemy instances"
+      permission="zope.ManageContent"
+      view="addSQLAlchemyContainer.html"
+      />
+
+  <browser:addform
+      for="*"
+      name="addSQLAlchemyContainer.html"
+      content_factory="z3c.zalchemy.container.SQLAlchemyContainer"
+      schema="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
+      set_before_add="className"
+      permission="zope.ManageContent"
+      />
+
+  <browser:containerViews
+      for="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
+      index="zope.View"
+      contents="zope.View"
+      add="zope.ManageContent"
+      />
+
+  <browser:page
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      for="..interfaces.IAlchemyEngineUtility"
+      permission="zope.ManageServices"
+      class=".views.EditView"
+      />
+
+  <browser:icon
+    name="zmi_icon"
+    for="..interfaces.IAlchemyEngineUtility"
+    file="engine.gif"
+    />
+
+</configure>
+

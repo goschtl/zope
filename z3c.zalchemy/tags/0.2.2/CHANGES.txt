@@ -1,0 +1,49 @@
+=======
+Changes
+=======
+
+0.2.2 (2011-08-05)
+==================
+
+   - Fix packaging problem: Declare namespace package 'z3c'.
+
+0.2.1 - 2007-11-13 
+==================
+
+   - Conflict detection did not work with savepoints.
+
+
+0.2 - 2007-09-27
+================
+
+  - Added a way to register database specific adapters for conflict detection
+    and possible re-do by the publisher.
+
+  - Using the threadlocal strategy of sqlalchemy instead of doing that
+    ourselves.
+
+  - Added support for optimistic savepoints. This can be used, similarly to
+    what happens with ZODB, to flush intermediary work without committing.
+
+  - Provide a tighter integration with Zope's transaction mechanism. Sessions
+    are now automatically associated with new objects. We rely on SQLAlchemy's
+    SessionContext object which hands out a session for each thread. Your code
+    rarely should never have to call `session.save(object)` now.
+
+    One incompatible change was introduced: You can not call `getSession`
+    before registering an (unnamed) engine utility first. Doing so will raise
+    a ValueError.
+
+
+0.1.1 - 2007-06-27
+==================
+
+  - Fixed a failing test in TRANSACTION.txt where an exception demonstrated a
+    string being returned but it was a unicode string.
+
+
+0.1 - never released
+====================
+
+  - This was supposed to be the first release, but we missed a broken test.
+    See 0.1.1

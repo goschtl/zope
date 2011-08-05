@@ -1,0 +1,9 @@
+To Do
+=====
+
+ * add tests to the demos
+
+ * copy/paste of fragments between messages (in demo_4) ends up doing a
+   cut/paste instead, and a cut/paste ends up doing a deletion. This is probably
+   because of the way the container implementation interacts with the 
+   SQLALchemy FK relationships.
