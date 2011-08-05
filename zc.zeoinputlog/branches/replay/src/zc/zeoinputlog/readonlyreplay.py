@@ -283,7 +283,8 @@ class HTTPHandler(Handler):
             url += '/'
         url = urlparse.urlparse(url)
         self.blob_prefix = url.path
-        self.blob_conn = httplib.HTTPConnection(url.netloc)
+        self.blob_url = url.netloc
+        self.blob_conn = httplib.HTTPConnection(self.blob_url)
         self.blob_layout = ZODB.blob.BushyLayout()
         Handler.__init__(self, addr, session, inq, outq)
 
@@ -300,7 +301,8 @@ class HTTPHandler(Handler):
                     r = conn.getresponse()
                 except httplib.HTTPException:
                     t = time.time()
-                    conn.connect()
+                    conn = self.blob_conn = httplib.HTTPConnection(
+                        self.blob_url)
                     conn.request("GET", self.blob_prefix+path,
                                  headers=dict(Connection='Keep-Alive'))
                     r = conn.getresponse()
@@ -308,6 +310,7 @@ class HTTPHandler(Handler):
                 self.read_blob(r)
                 ret = None
             except Exception, v:
+                traceback.print_exc()
                 ret = None, v
 
             elapsed = time.time() - t
@@ -316,9 +319,8 @@ class HTTPHandler(Handler):
         else:
             Handler.call(self, op, args)
 
-
-        def read_blob(self, r):
-            r.read()
+    def read_blob(self, r):
+        r.read()
 
 class HTTPWritingHandler(HTTPHandler):
 
