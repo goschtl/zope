@@ -7,6 +7,7 @@
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
+  <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />
   <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
