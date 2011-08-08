@@ -19,7 +19,6 @@ from multiprocessing import Process, Queue
 # from Queue import Queue
 
 import cPickle
-import httplib
 import logging
 import marshal
 import optparse
@@ -30,6 +29,7 @@ import threading
 import time
 import traceback
 import transaction
+import urllib2
 import urlparse
 import zc.ngi.adapters
 import zc.ngi.async
@@ -281,32 +281,17 @@ class HTTPHandler(Handler):
     def __init__(self, url, addr, session, inq, outq):
         if not url[-1] == '/':
             url += '/'
-        url = urlparse.urlparse(url)
-        self.blob_prefix = url.path
-        self.blob_url = url.netloc
-        self.blob_conn = httplib.HTTPConnection(self.blob_url)
+        self.blob_url = url
         self.blob_layout = ZODB.blob.BushyLayout()
         Handler.__init__(self, addr, session, inq, outq)
 
     def call(self, op, args):
         if op == 'sendBlob':
-            conn = self.blob_conn
             path = self.blob_layout.getBlobFilePath(*args)
             self.output('request', op, args)
             try:
-                try:
-                    t = time.time()
-                    conn.request("GET", self.blob_prefix+path,
-                                 headers=dict(Connection='Keep-Alive'))
-                    r = conn.getresponse()
-                except httplib.HTTPException:
-                    t = time.time()
-                    conn = self.blob_conn = httplib.HTTPConnection(
-                        self.blob_url)
-                    conn.request("GET", self.blob_prefix+path,
-                                 headers=dict(Connection='Keep-Alive'))
-                    r = conn.getresponse()
-
+                t = time.time()
+                r = urllib2.urlopen(self.blob_url+path)
                 self.read_blob(r)
                 ret = None
             except Exception, v:
