@@ -50,7 +50,7 @@ class HurryFile(Persistent):
         except AttributeError:
             return False
 
-    def __neq__(self, other):
+    def __ne__(self, other):
         try:
             return (self.filename != other.filename or
                     self.data != other.data)

@@ -15,6 +15,23 @@ The file widget is built on top of the HurryFile object::
   >>> f.read()
   'mydata'
 
+HurryFile objects are equal if data and filename of two of them match:
+
+  >>> file1 = HurryFile('foo.txt', 'mydata')
+  >>> file2 = HurryFile('foo.txt', 'mydata')
+  >>> file3 = HurryFile('bar.txt', 'otherdata')
+  >>> file1 == file2
+  True
+
+  >>> file1 != file2
+  False
+
+  >>> file1 == file3
+  False
+
+  >>> file1 != file3
+  True
+
 We can also create HurryFile objects from file-like objects::
 
   >>> from StringIO import StringIO
@@ -86,7 +103,7 @@ The data is now '1', referring to the real file::
   '1'
 
 Retrieving the file results in the real file::
-  
+
   >>> f = file.file
   >>> f.read()
   'test data'
