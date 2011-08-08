@@ -22,12 +22,12 @@ from zope.app.container.contained import Contained
 
 class HurryFile(Persistent):
     implements(interfaces.IHurryFile)
-    
+
     def __init__(self, filename, data):
         self.filename = filename
         self.data = data
         self.headers = {}
-        
+
     def _get_file(self):
         storage = component.getUtility(interfaces.IFileRetrieval)
         return storage.getFile(self.data)
@@ -49,7 +49,7 @@ class HurryFile(Persistent):
                     self.data == other.data)
         except AttributeError:
             return False
-        
+
     def __neq__(self, other):
         try:
             return (self.filename != other.filename or
@@ -60,20 +60,20 @@ class HurryFile(Persistent):
 def createHurryFile(filename, f):
     retrieval = component.getUtility(interfaces.IFileRetrieval)
     return retrieval.createFile(filename, f)
-    
+
 class IdFileRetrieval(Persistent, Contained):
     """Very basic implementation of FileRetrieval.
 
     This implementation just returns a File object for the data.
     """
     implements(interfaces.IFileRetrieval)
-    
+
     def getFile(self, data):
         return StringIO(data)
 
     def createFile(self, filename, f):
         return HurryFile(filename, f.read())
-    
+
 class TramlineFileRetrievalBase(Persistent, Contained):
     """File retrieval for tramline (base class).
     """
@@ -84,7 +84,7 @@ class TramlineFileRetrievalBase(Persistent, Contained):
 
     def isTramlineEnabled(self):
         return True
-    
+
     def getFile(self, data):
         # tramline is disabled, so give fall-back behavior for testing
         # without tramline
@@ -126,5 +126,5 @@ class TramlineFileRetrievalBase(Persistent, Contained):
         # XXX this can be made more efficient
         of.write(f.read())
         of.close()
-        
+
         return HurryFile(filename, file_id)
