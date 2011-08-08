@@ -291,7 +291,7 @@ class HTTPHandler(Handler):
             self.output('request', op, args)
             try:
                 t = time.time()
-                r = urllib2.urlopen(self.blob_url+path)
+                r = urllib2.urlopen(self.blob_url+path, timeout=10)
                 self.read_blob(r)
                 ret = None
             except Exception, v:
