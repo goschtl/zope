@@ -14,7 +14,7 @@ long_description = (
 
 setup(
     name="hurry.file",
-    version="1.3dev",
+    version="1.2.1",
     description="""\
 hurry.file is an advanced Zope 3 file widget which tries its best to behave
 like other widgets, even when the form is redisplayed due to a validation
