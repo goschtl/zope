@@ -1,7 +1,7 @@
 hurry.file fields
 =================
 
-The file widget is built on top of the HurryFile object::
+The file widget is built on top of the HurryFile object:
 
   >>> from hurry.file import HurryFile
   >>> file = HurryFile('foo.txt', 'mydata')
@@ -32,7 +32,7 @@ HurryFile objects are equal if data and filename of two of them match:
   >>> file1 != file3
   True
 
-We can also create HurryFile objects from file-like objects::
+We can also create HurryFile objects from file-like objects:
 
   >>> from StringIO import StringIO
   >>> from zope import component
@@ -49,7 +49,7 @@ We can also create HurryFile objects from file-like objects::
   >>> f.read()
   'test data'
 
-This does exactly the same, but may be easier to use::
+This does exactly the same, but may be easier to use:
 
   >>> from hurry.file import createHurryFile
   >>> file = createHurryFile('test2.txt', StringIO('another test file'))
@@ -67,7 +67,7 @@ are then passed as file data to be stored in the ZODB.
 Let's first enable tramline.
 
 The tramline directory structure is a directory with two subdirectories,
-one called 'repository' and the other called 'upload'::
+one called 'repository' and the other called 'upload':
 
   >>> import tempfile, os
   >>> dirpath = tempfile.mkdtemp()
@@ -77,7 +77,7 @@ one called 'repository' and the other called 'upload'::
   >>> os.mkdir(uploadpath)
 
 We create a TramlineFileRetrieval object knowing about this directory,
-and register it as a utility::
+and register it as a utility:
 
   >>> from hurry.file.file import TramlineFileRetrievalBase
   >>> class TramlineFileRetrieval(TramlineFileRetrievalBase):
@@ -86,46 +86,46 @@ and register it as a utility::
   >>> retrieval = TramlineFileRetrieval()
   >>> component.provideUtility(retrieval, IFileRetrieval)
 
-Now let's store a file the way tramline would during upload::
+Now let's store a file the way tramline would during upload:
 
   >>> f = open(os.path.join(repositorypath, '1'), 'wb')
   >>> f.write('test data')
   >>> f.close()
 
 The file with underlying name '1' (the data stored in the ZODB will be
-just '1') will now be created::
+just '1') will now be created:
 
   >>> file = HurryFile('foo.txt', '1')
 
-The data is now '1', referring to the real file::
+The data is now '1', referring to the real file:
 
   >>> file.data
   '1'
 
-Retrieving the file results in the real file::
+Retrieving the file results in the real file:
 
   >>> f = file.file
   >>> f.read()
   'test data'
 
-We can also retrieve its size::
+We can also retrieve its size:
 
   >>> file.size
   9L
 
 It should be possible to create Hurry File objects that are stored in
-the directory structure directly::
+the directory structure directly:
 
   >>> file = retrieval.createFile('test.txt', StringIO('my test data'))
   >>> file.filename
   'test.txt'
 
-We get an id for the data now::
+We get an id for the data now:
 
   >>> file.data != 'my test data'
   True
 
-And we can retrieve the file itself::
+And we can retrieve the file itself:
 
   >>> f = file.file
   >>> f.read()
@@ -133,7 +133,7 @@ And we can retrieve the file itself::
   >>> file.size
   12L
 
-Now let's disable tramline in our utility::
+Now let's disable tramline in our utility:
 
   >>> class TramlineFileRetrieval(TramlineFileRetrievalBase):
   ...     def getTramlinePath(self):
@@ -142,7 +142,7 @@ Now let's disable tramline in our utility::
   ...        return False
   >>> component.provideUtility(TramlineFileRetrieval(), IFileRetrieval)
 
-We expect the same behavior as when tramline is not installed::
+We expect the same behavior as when tramline is not installed:
 
   >>> file = HurryFile('foo.txt', 'data')
   >>> f = file.file
@@ -151,7 +151,7 @@ We expect the same behavior as when tramline is not installed::
   >>> file.size
   4
 
-Clean up::
+Clean up:
 
   >>> import shutil
   >>> shutil.rmtree(dirpath)
