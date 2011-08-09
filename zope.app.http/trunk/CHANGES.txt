@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.10.2 (unreleased)
+3.10.2 (2011-08-09)
 -------------------
 
-- Nothing changed yet.
+- Fixing brown bag release 3.10.1, failing tests.
 
 
 3.10.1 (2011-08-04)

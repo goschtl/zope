@@ -25,7 +25,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.http',
-      version='3.10.2dev',
+      version='3.10.2',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='HTTP Behavior for the Zope Publisher',
