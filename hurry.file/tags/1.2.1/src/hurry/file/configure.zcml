@@ -1,0 +1,11 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  >
+
+  <utility provides=".interfaces.IFileRetrieval"
+           factory=".file.IdFileRetrieval" />
+
+<!-- the widget is not yet the default widget for FileUpload; use
+   formlib's custom_widget system to use it. This may change -->
+ 
+</configure>
