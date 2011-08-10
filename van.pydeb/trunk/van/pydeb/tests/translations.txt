@@ -82,23 +82,26 @@ Setuptools
     http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=543551
 
 Setuptools is a special case, most packages in debian which depend on
-setuptools are namespace packages and only require pkg-resources.
+setuptools are namespace packages and only require pkg_resources.
 
 van.pydeb therefore defaults to defining python-pkg-resources as the debian
-translation od setuptools:
+translation of setuptools:
 
     >>> print pydeb.py_to_bin("setuptools")
     python-pkg-resources
-    
-    >>> print pydeb.py_to_src("setuptools")
-    python-setuptools
 
     >>> print pydeb.bin_to_py("python-setuptools")
     setuptools
     >>> print pydeb.bin_to_py("python-pkg-resources")
     setuptools
     
-    >>> print pydeb.src_to_py("python-setuptools")
+In fact setuptools is provided by `distribute` source package
+
+    >>> print pydeb.py_to_src("setuptools")
+    distribute
+    >>> print pydeb.src_to_py("distribute")
+    setuptools
+    >>> print pydeb.src_to_py("setuptools")
     setuptools
      
 

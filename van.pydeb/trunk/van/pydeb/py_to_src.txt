@@ -8,9 +8,9 @@ PIL                                             python-imaging
 pyPdf                                           python-pypdf
 PyQt4                                           python-qt4
 pytz                                            python-tz
-Reportlab                                       python-reportlab
+reportlab                                       python-reportlab
 RestrictedPython                                restrictedpython
-setuptools                                      python-setuptools
+setuptools                                      distribute
 SQLAlchemy                                      sqlalchemy
 xlrd                                            python-xlrd
 ZConfig                                         zconfig
