@@ -8,6 +8,7 @@ Changes
   specified (https://bugs.launchpad.net/bugs/628560)
 * py_to_bin_default: do not prepend python- if python package name already
   starts with it.
+* Update automatically updated list from current unstable.
 
 1.3.2 (2010-06-22)
 ------------------
