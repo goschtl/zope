@@ -1,8 +1,0 @@
-<tal:block tal:content="structure view/renderForm" />
-
-<div class="frame" tal:condition="view/groups">
-  <tal:block tal:repeat="group view/groups">
-    <tal:block tal:content="structure group/render" />
-    <br />
-  </tal:block>
-</div>

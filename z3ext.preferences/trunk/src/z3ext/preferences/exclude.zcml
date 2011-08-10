@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-	   xmlns:zcml="http://namespaces.zope.org/zcml">
-
-  <exclude package="zope.app.principalannotation"
-	   zcml:condition="installed zope.app.principalannotation" />
-
-</configure>

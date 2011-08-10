@@ -1,9 +1,0 @@
-<html>
-  <body>
-    <div tal:define="context nocall:maincontext"
-         tal:content="structure provider:portal.breadcrumbs"></div>
-    <div tal:content="structure provider:statusMessage"></div>
-
-    <div tal:content="structure view/render"></div>
-  </body>
-</html>
