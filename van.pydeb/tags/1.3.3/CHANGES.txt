@@ -1,0 +1,72 @@
+Changes
+=======
+
+1.3.3 (2011-08-10)
+------------------
+
+* Generate separate dependencies when both extra and version requirements are
+  specified (https://bugs.launchpad.net/bugs/628560)
+* py_to_bin_default: do not prepend python- if python package name already
+  starts with it.
+* Update automatically updated list from current unstable.
+* setuptools comes from distribute source package.
+
+1.3.2 (2010-06-22)
+------------------
+
+* Conform to Zope repository policy.
+* Update automatically updated list from current unstable.
+* Ignore python3 packages for now in auto-generated list.
+
+1.3.1 (2010-01-14)
+------------------
+
+* Add override for python-gettext.
+* Add override for Chameleon (python-chameleon).
+* Update automatically updated list from current unstable.
+
+1.3.0 (2009-09-04)
+------------------
+
+* Add a scripts/generate script which generates a python package -> debian
+  binary mapping suitable for adding to van/pydeb/py_to_bin.txt.
+* Append the output of the generate script to van/pydeb/py_to_bin.txt.
+* Expose _default functions for package conversions so that generate can check
+  it's results and weed out extra packages that match the default conversions.
+* Make python-pkg-resources the default translation for setuptools:
+  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=543551
+* Add the concept of options to the list of dependencies.
+* Create a "reduced" option that causes warnings to be printed when a reduced
+  dependncy is used.
+* Implement a --override-bdep option which can be used to override python to
+  binary package dependencies.
+
+1.2.1 (2009-06-15)
+------------------
+
+* Add mapping for ZConfig and RestrictedPython.
+* Change default Debian binary to python package name conversion. The original
+  package name will be used if there is no python-prefix. This works with
+  packages such as buildbot which do not include the python-. The previous
+  version errored in this case, so we're backwards compatible :)
+
+1.2.0 (2009-05-29)
+------------------
+
+* Improve README.txt. Thanks to Fabio Tranchitella for a better looking way of
+  calling van-pydeb in the rules file.
+* Expose version and package name conversion functions via the command line interface.
+  e.g. This command will print out the debian binary package name::
+
+    $ van-pydeb py_to_bin foo
+
+1.1.0 (2009-05-26)
+------------------
+
+* Obligatory "How could I have done that" release smoothing out documentation
+  bugs and making the command line options more complete.
+
+1.0.0 (2009-05-26)
+------------------
+
+* Initial Release.

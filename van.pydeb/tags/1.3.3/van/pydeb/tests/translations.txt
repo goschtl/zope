@@ -1,0 +1,152 @@
+Test various builtin translations
+=================================
+
+    >>> from van import pydeb
+    >>> from van.pydeb.tests import runit
+
+We can translate package names between setuptools names and debian
+source/binary names using the python API. By default package names convert as
+follows:
+ 
+    >>> print pydeb.py_to_bin("foo")
+    python-foo
+    >>> print pydeb.py_to_src("foo")
+    foo
+    >>> print pydeb.bin_to_py("python-foo")
+    foo
+    >>> print pydeb.src_to_py("foo")
+    foo
+
+These conversions are also exposed in the command line interface:
+
+    >>> runit('van-pydeb py_to_bin foo')
+    python-foo
+    >>> runit('van-pydeb py_to_src foo')
+    foo
+    >>> runit('van-pydeb bin_to_py python-foo')
+    foo
+    >>> runit('van-pydeb src_to_py foo')
+    foo
+
+Defaults
+--------
+
+If no special rules are specified, defaults that are (hopefully) intelligent
+will take effect.
+
+For converting the binary package name to the python package
+name they look like:
+
+    * If the package name starts with python- remove it:
+        
+        >>> print pydeb.bin_to_py("python-foo")
+        foo
+        >>> print pydeb.bin_to_py("python-python-foo")
+        python-foo
+
+    * Else, return the package name:
+        
+        >>> print pydeb.bin_to_py("foo")
+        foo
+
+For converting from python package name to binary, the name is lowercased, and
+python- is prepended:
+
+    >>> print pydeb.py_to_bin("Foo")
+    python-foo
+
+Unless it already starts with python:
+
+    >>> print pydeb.py_to_bin("python-foo")
+    python-foo
+
+Overriding binary package translations
+--------------------------------------
+
+The --override-bdep command line option can be used to override mappings of binary dependencies.
+
+    >>> runit('van-pydeb py_to_bin foo')
+    python-foo
+    >>> runit('van-pydeb py_to_bin --override-bdep "foo python-bar" foo')
+    python-bar
+    >>> runit('van-pydeb py_to_bin --override-bdep "Test python-tst" --override-bdep "foo python-bar" foo')
+    python-bar
+    >>> runit('van-pydeb py_to_bin --override-bdep "foo python-bar" --override-bdep "foo python-bar" foo')
+    python-bar
+
+
+
+Setuptools
+----------
+
+    http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=543551
+
+Setuptools is a special case, most packages in debian which depend on
+setuptools are namespace packages and only require pkg_resources.
+
+van.pydeb therefore defaults to defining python-pkg-resources as the debian
+translation of setuptools:
+
+    >>> print pydeb.py_to_bin("setuptools")
+    python-pkg-resources
+
+    >>> print pydeb.bin_to_py("python-setuptools")
+    setuptools
+    >>> print pydeb.bin_to_py("python-pkg-resources")
+    setuptools
+    
+In fact setuptools is provided by `distribute` source package
+
+    >>> print pydeb.py_to_src("setuptools")
+    distribute
+    >>> print pydeb.src_to_py("distribute")
+    setuptools
+    >>> print pydeb.src_to_py("setuptools")
+    setuptools
+     
+
+Paste
+-----
+
+    >>> print pydeb.py_to_bin("Paste")
+    python-paste
+    >>> print pydeb.py_to_bin("PasteDeploy")
+    python-pastedeploy
+    >>> print pydeb.py_to_bin("PasteScript")
+    python-pastescript
+
+python-gettext
+--------------
+
+http://pypi.python.org/pypi/python-gettext
+
+    >>> print pydeb.py_to_bin("python-gettext")
+    python-gettext
+    >>> print pydeb.bin_to_py("python-gettext")
+    python-gettext
+
+ZODB3
+-----
+
+ZODB3 doesn't follow convention:
+
+    >>> print pydeb.py_to_bin("ZODB3")
+    python-zodb
+    >>> print pydeb.py_to_src("ZODB3")
+    zodb
+    >>> print pydeb.bin_to_py("python-zodb")
+    ZODB3
+    >>> print pydeb.src_to_py("zodb")
+    ZODB3
+
+zope.interface
+--------------
+    
+    >>> print pydeb.py_to_bin("zope.interface")
+    python-zope.interface
+    >>> print pydeb.py_to_src("zope.interface")
+    zope.interface
+    >>> print pydeb.bin_to_py("python-zope.interface")
+    zope.interface
+    >>> print pydeb.src_to_py("zope.interface")
+    zope.interface

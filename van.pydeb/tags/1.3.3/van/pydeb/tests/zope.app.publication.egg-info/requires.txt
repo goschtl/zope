@@ -1,0 +1,21 @@
+zope.interface
+ZODB3
+zope.authentication
+zope.component [zcml]
+zope.deprecation
+zope.error
+zope.i18n [zcml] >= 3.7
+zope.browser>=1.2
+zope.publisher>=3.8.0
+zope.traversing>=3.7.0
+setuptools
+
+[test]
+zope.app.testing
+zope.app.securitypolicy
+zope.app.zcmlfiles>=3.5.4
+zope.app.dav
+zope.app.publisher
+zope.app.zptpage
+zope.principalregistry
+zope.app.applicationcontrol>=3.5.0

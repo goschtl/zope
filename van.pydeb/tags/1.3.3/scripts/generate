@@ -1,0 +1,105 @@
+#!../bin/python
+"""A pretty awful script to magically generate a python -> binary package mapping.
+
+The result of this script is added to van/pydeb/py_to_bin.txt periodically.
+"""
+import os
+import sys
+from pprint import pprint
+from subprocess import Popen, check_call, PIPE
+
+from van import pydeb
+
+#here = os.path.dirname(__file__)
+here = os.curdir
+cache_dir = os.path.join(here, 'cache')
+sources_list = os.path.join(here, 'sources.list')
+
+apt_file_opts = ['-s', sources_list, '-c', cache_dir]
+
+# setup apt-file locally
+if '--update-apt-file' in sys.argv:
+    args = ['apt-file'] + apt_file_opts + ['update']
+    check_call(args)
+# get list of packages to parse
+p = Popen(['apt-file'] + apt_file_opts + ['find', '.egg-info'], stdout=PIPE)
+packages, _ = p.communicate()
+assert p.returncode == 0
+
+def process_line(line):
+    # line contains things like: sixpack: /usr/share/pyshared/sixpack-0.64.egg-info
+    bin_package, egg_info_path = line.split(': ')
+    path_parts = egg_info_path.split('/')
+    quoted_egg_info = None
+    for p in path_parts:
+        if p.endswith('.egg-info'):
+            quoted_egg_info = p[:-9]
+    quoted_python_package = quoted_egg_info.split('-')[0]
+    # reverse of pkg_resources.to_filename, not quite...
+    python_package = quoted_python_package.replace('_', '-')
+    return bin_package, python_package
+
+packages = [process_line(l) for l in packages.splitlines()]
+packages = [(bin, py) for bin, py in packages if not bin.startswith('python3-')] # ignore python3 packages for now
+start_count = len(packages)
+
+bin_packages = {}
+bin_packages_dups = set([])
+python_packages = {}
+python_packages_dups = set([])
+
+def find_dups(bin_package, python_package):
+    seen = False
+    if bin_package in bin_packages:
+        seen = True
+        prev_python_package = bin_packages[bin_package]
+        if prev_python_package != python_package:
+            bin_packages_dups.add(bin_package)
+    bin_packages[bin_package] = python_package
+    if python_package in python_packages:
+        seen = True
+        prev_bin_package = python_packages[python_package]
+        if prev_bin_package != bin_package:
+            python_packages_dups.add(python_package)
+    python_packages[python_package] = bin_package
+    if seen:
+        return None
+    return bin_package, python_package
+
+packages = [find_dups(*l) for l in packages]
+
+def filter_dups(bin_package, python_package):
+    if python_package in python_packages_dups or\
+            bin_package in bin_packages_dups:
+        return None
+    return bin_package, python_package
+
+packages = [filter_dups(*l) for l in packages if l is not None]
+packages = [l for l in packages if l is not None]
+dup_count = len(packages)
+
+print "Removed %s duplicates, left with %s" % ((start_count - dup_count), dup_count)
+
+# now we remove any that conform to the heuristic
+
+def check_matches_heuristic(bin_package, python_package):
+    if pydeb.py_to_bin_default(python_package) == bin_package and \
+            pydeb.bin_to_py_default(bin_package) == python_package:
+        return None
+    return bin_package, python_package
+
+packages = [check_matches_heuristic(*l) for l in packages]
+packages = [l for l in packages if l is not None]
+heuristic_match_count = len(packages)
+
+print "Removed %s packages that matched the default mapping" % (dup_count - heuristic_match_count)
+
+outfile = os.path.join(here, 'py_to_bin.txt')
+print "left with %s packages writing them out to %s" % (len(packages), outfile)
+
+f = open(outfile, 'w')
+for bin_package, python_package in packages:
+    line = python_package + ' ' * 40
+    line = line[:39] + ' ' + bin_package + '\n'
+    f.write(line)
+f.close()
