@@ -18,6 +18,8 @@ import logging
 
 LOG = logging.getLogger()
 
+KEEP_ZIP = os.environ.get('KEEP_ZIP')
+
 
 class Proxy(object):
     """ THIS IMPLEMENTATION IS OBSOLETE, USE 'Proxy2' INSTEAD """
@@ -204,7 +206,8 @@ class Proxy2(Proxy):
             elif name.startswith('conversion-output'):
                 result['conversion_output'] = fullname
         ZF.close()
-        os.unlink(zip_filename)
+        if not KEEP_ZIP:
+            os.unlink(zip_filename)
         os.unlink(zip_temp)
         return result
 
@@ -217,7 +220,8 @@ class Proxy2(Proxy):
                           base64.encodestring(file(zip_filename, 'rb').read()),
                           converter_name,
                           prefix)
-        os.unlink(zip_filename)
+        if not KEEP_ZIP:
+            os.unlink(zip_filename)
         return location
 
     def convertZIPEmail(self, dirname, converter_name='pdf-prince', 

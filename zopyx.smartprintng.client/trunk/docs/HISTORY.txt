@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.8.2 (2011-08-11)
+------------------
+- support for KEEP_ZIP environment variable
+
 0.8.1 (2011-08-11)
 ------------------
 - logging spool directory location
