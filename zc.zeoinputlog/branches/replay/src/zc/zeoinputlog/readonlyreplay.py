@@ -245,6 +245,7 @@ class Handler:
 
             self.output('reply', op, args, ret, elapsed)
 
+
 class S3Handler(Handler):
 
     def __init__(self, folder, addr, session, inq, outq):
@@ -276,6 +277,8 @@ class S3Handler(Handler):
         else:
             Handler.call(self, op, args)
 
+
+
 class HTTPHandler(Handler):
 
     def __init__(self, url, addr, session, inq, outq):
@@ -285,35 +288,43 @@ class HTTPHandler(Handler):
         self.blob_layout = ZODB.blob.BushyLayout()
         Handler.__init__(self, addr, session, inq, outq)
 
+    def fetchblob(self, result, *args):
+        ret = None
+        try:
+            path = self.blob_layout.getBlobFilePath(*args)
+            for i in range(10):
+                try:
+                    r = urllib2.urlopen(self.blob_url+path, timeout=10)
+                    r.read()
+                    r.close()
+                    break
+                except urllib2.URLError, v:
+                    if not 'timed out' in str(v):
+                        raise
+        except Exception, v:
+            #traceback.print_exc()
+            ret = None, Exception(str(v))
+        except:
+            ret = None, Exception('wtf')
+
+        result.append(ret)
+
     def call(self, op, args):
         if op == 'sendBlob':
-            path = self.blob_layout.getBlobFilePath(*args)
             self.output('request', op, args)
-            try:
-                t = time.time()
-                r = urllib2.urlopen(self.blob_url+path, timeout=10)
-                self.read_blob(r)
-                ret = None
-            except Exception, v:
-                traceback.print_exc()
-                ret = None, v
-
+            t = time.time()
+            r = []
+            self.fetchblob(r, *args)
+            if not r:
+                print "WTF blob fetch %r" % (args,)
+                ret = None, SystemError()
+            else:
+                ret = r[0]
             elapsed = time.time() - t
 
             self.output('reply', op, args, ret, elapsed)
         else:
             Handler.call(self, op, args)
-
-    def read_blob(self, r):
-        r.read()
-
-class HTTPWritingHandler(HTTPHandler):
-
-    def read_blob(self, r):
-        f = tempfile.TemporaryFile()
-        f.write(r.read())
-        f.close()
-
 
 zz = 0, 0
 
@@ -413,12 +424,6 @@ parser.add_option("--blob-url", "-u", dest='blob_url',
                   help="""
 Get blobs from an HTTP server at the given URL.
 """)
-parser.add_option("--blob-url-with-blobs-written", "-U",
-                  dest='blob_url_written',
-                  help="""
-Get blobs from an HTTP server at the given URL.
-Write bob data to a temporary file to simulate real download
-""")
 parser.add_option("--status-port", "-p", dest='status_port',
                   type="int",
                   help="Port to get status data from.")
@@ -466,12 +471,6 @@ def main(args=None):
                 process = Process(
                     target = HTTPHandler,
                     args = (options.blob_url,
-                            addr, nhandlers, handler_queue, handlers_queue),
-                    )
-            elif options.blob_url_written:
-                process = Process(
-                    target = HTTPWritingHandler,
-                    args = (options.blob_url_written,
                             addr, nhandlers, handler_queue, handlers_queue),
                     )
             else:
