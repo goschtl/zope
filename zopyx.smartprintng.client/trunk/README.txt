@@ -13,7 +13,7 @@ Contact
 =======
 
 | ZOPYX Limited
-| c/o Andreas Jung, 
+| c/o Andreas Jung,
 | Charlottenstr. 37/1
 | D-72070 Tuebingen, Germany
 | E-mail: info at zopyx dot com
