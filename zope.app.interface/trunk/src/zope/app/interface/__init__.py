@@ -38,6 +38,27 @@ class PersistentInterfaceClass(Persistent, InterfaceClass):
 
         self.dependents = FlexibleWeakKeyDictionary()
 
+    def __hash__(self):
+        # Override the version in InterfaceClass to cope with the fact that
+        # we don't have __module__
+        return hash((self._p_jar, self._p_oid))
+
+    def __eq__(self, other):
+        # Override the version in InterfaceClass to cope with the fact that
+        # we don't have __module__
+        if self._p_oid is None:
+            return other is self
+        return (self._p_jar is getattr(other, '_p_jar', None) and
+                self._p_oid == getattr(other, '_p_oid', None))
+
+    def __ne__(self, other):
+        # Override the version in InterfaceClass to cope with the fact that
+        # we don't have __module__
+        if self._p_oid is None:
+            return other is not self
+        return (self._p_jar is not getattr(other, '_p_jar', None) or
+                self._p_oid != getattr(other, '_p_oid', None))
+
 # PersistentInterface is equivalent to the zope.interface.Interface object
 # except that it is also persistent.  It is used in conjunction with
 # zodb.code to support interfaces in persistent modules.

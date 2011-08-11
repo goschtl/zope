@@ -6,7 +6,8 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Handle hashing / equality / inequality properly given changes to
+  ``zope.interface`` which are inappropriate for persistent objects.
 
 
 3.6.0 (2010-09-20)

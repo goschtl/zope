@@ -42,6 +42,9 @@ from zope.interface import Interface
 class IFoo(Interface):
     pass
 
+class ISpam(Interface):
+    pass
+
 # This must be a classobj
 class Foo:
     __implemented__ = IFoo
@@ -118,6 +121,54 @@ class PersistentInterfaceTest(util.TestCase):
         self.assert_(imodule.IFoo.providedBy(imodule.aFoo))
         # the conversion should not affect Interface
         self.assert_(imodule.Interface is Interface)
+
+    def test___hash___no_jar(self):
+        class IFoo(PersistentInterface):
+            pass
+        self.assertEqual(hash(IFoo), hash((None, None)))
+
+    def test___hash___w_jar(self):
+        self.registry.newModule("imodule", code)
+        transaction.commit()
+        imodule = self.registry.findModule("imodule")
+        self.assertEqual(hash(imodule.IFoo),
+                         hash((self.conn, imodule.IFoo._p_oid)))
+
+    def test___eq___no_jar(self):
+        class IFoo(PersistentInterface):
+            pass
+        class IBar(PersistentInterface):
+            pass
+        self.failUnless(IFoo == IFoo)
+        self.failIf(IFoo == IBar)
+
+    def test___eq___w_jar(self):
+        class IFoo(PersistentInterface):
+            pass
+        self.registry.newModule("imodule", code)
+        transaction.commit()
+        imodule = self.registry.findModule("imodule")
+        self.failUnless(imodule.IFoo == imodule.IFoo) # Don't use assertEqual
+        self.failIf(imodule.IFoo == imodule.ISpam)
+        self.failIf(imodule.IFoo == IFoo)
+
+    def test___ne___no_jar(self):
+        class IFoo(PersistentInterface):
+            pass
+        class IBar(PersistentInterface):
+            pass
+        self.failIf(IFoo != IFoo)
+        self.failUnless(IFoo != IBar)
+
+    def test___ne___w_jar(self):
+        class IFoo(PersistentInterface):
+            pass
+        self.registry.newModule("imodule", code)
+        transaction.commit()
+        imodule = self.registry.findModule("imodule")
+        self.failIf(imodule.IFoo != imodule.IFoo) # Don't use assertNotEqual
+        self.failUnless(imodule.IFoo != imodule.ISpam)
+        self.failUnless(imodule.IFoo != IFoo)
 
     def test_provides(self):
         """Provides are persistent."""
