@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.8.1 (2011-08-11)
+------------------
+- logging spool directory location
+- check spool directory for write permissions
+
 0.8.0 (2011-08-02)
 ------------------
 - obsoleted Proxy() implementation

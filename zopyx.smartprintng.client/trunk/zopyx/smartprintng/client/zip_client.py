@@ -14,6 +14,9 @@ import zipfile
 import tempfile
 import zipfile
 import warnings
+import logging
+
+LOG = logging.getLogger()
 
 
 class Proxy(object):
@@ -30,6 +33,14 @@ class Proxy(object):
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
         self.output_directory = output_directory
+        # check if directory is writeable
+        try:
+            tmpname = os.path.join(self.output_directory, 'test')
+            file(tmpname, 'w').write('foo')
+            os.unlink(tmpname)
+        except IOError:
+            raise IOError('Spool directory %s is not writeable' % self.output_directory)
+        LOG.info('Using spool directory %s' % self.output_directory)
 
     def _makeZipFromDirectory(self, directory):
         """ Generate a ZIP file from a directory containing all its
@@ -136,6 +147,14 @@ class Proxy2(Proxy):
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
         self.output_directory = output_directory
+        # check if directory is writeable
+        try:
+            tmpname = os.path.join(self.output_directory, 'test')
+            file(tmpname, 'w').write('foo')
+            os.unlink(tmpname)
+        except IOError:
+            raise IOError('Spool directory %s is not writeable' % self.output_directory)
+        LOG.info('Using spool directory %s' % self.output_directory)
 
     def _makeZipFromDirectory(self, directory):
         """ Generate a ZIP file from a directory containing all its
