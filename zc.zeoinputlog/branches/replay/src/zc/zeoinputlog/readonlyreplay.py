@@ -552,7 +552,7 @@ def main(args=None):
 
     log = addr = sessionids = ()
     if options.zmq_boss:
-        [log] = args
+        [addr, log] = args
     else:
         if options.zmq_worker:
             addr, sessionids = args
