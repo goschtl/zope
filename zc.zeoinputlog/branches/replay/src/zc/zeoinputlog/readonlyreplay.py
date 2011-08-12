@@ -607,6 +607,7 @@ def main(args=None):
             sessions[session] = handler_queue.put
 
     print len(sessionids), 'sessions'
+    sys.stdout.flush()
 
     if options.zmq_worker:
         return
