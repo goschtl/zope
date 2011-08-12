@@ -171,33 +171,10 @@ class zmqQueue:
 
 class zmqBoss:
 
-    def __init__(self, zmqaddr, sessions, handlers_queue):
-        import zmq
-        context = zmq.Context()
-        socket = context.socket(zmq.XREP)
-        socket.bind(zmqaddr)
-        time.sleep(10) # Give lots of time to hook up w workers
-        poller = self.poller = zmq.Poller()
-        poller.register(socket, zmq.POLLIN)
-        session_addrs = {}
-        handler_queue = Queue.Queue()
-        while 1:
-            ready = dict(poller.poll(1000))
-            if ready.get(socket) == zmq.POLLIN:
-                addr, session = socket.recv_multipart()
-                session = cPickle.loads(session)
-                if isinstance(session, int):
-                    session_addrs[session] = addr
-                    sessions[session] = self.session_put(handler_queue, addr)
-                else:
-                    handlers_queue.put(session)
-            else:
-                break
-
-        print 'Got', len(sessions), 'zmq workers'
+    def __init__(self, zmqaddr, sessions, handlers_queue, event):
         thread = threading.Thread(
             target = self.run,
-            args = (poller, socket, handler_queue, handlers_queue),
+            args = (zmqaddr, sessions, handlers_queue, event),
             )
         thread.daemon = True
         thread.start()
@@ -209,8 +186,31 @@ class zmqBoss:
 
         return put
 
-    def run(self, poller, socket, handler_queue, handlers_queue):
+    def run(self, zmqaddr, sessions, handlers_queue, event):
         import zmq
+        context = zmq.Context()
+        socket = context.socket(zmq.XREP)
+        socket.bind(zmqaddr)
+        time.sleep(10) # Give lots of time to hook up w workers
+        poller = self.poller = zmq.Poller()
+        poller.register(socket, zmq.POLLIN)
+        session_addrs = {}
+        handler_queue = Queue.Queue()
+        while 1:
+            ready = dict(poller.poll(2000))
+            if ready.get(socket) == zmq.POLLIN:
+                addr, session = socket.recv_multipart()
+                session = cPickle.loads(session)
+                if isinstance(session, int):
+                    session_addrs[session] = addr
+                    sessions[session] = self.session_put(handler_queue, addr)
+                else:
+                    handlers_queue.put(session)
+            else:
+                break
+
+        event.set()
+        print 'Got', len(sessions), 'zmq workers'
         while 1:
             try:
                 addr, ob = handler_queue.get(False)
@@ -606,12 +606,16 @@ def main(args=None):
             processes.append(process)
             sessions[session] = handler_queue.put
 
+    print len(sessionids), 'sessions'
+
     if options.zmq_worker:
         return
 
     if options.zmq_boss:
         handlers_queue = Queue.Queue()
-        zmqBoss(options.zmq_boss, sessions, handlers_queue)
+        event = threading.Event()
+        zmqBoss(options.zmq_boss, sessions, handlers_queue, event)
+        event.wait()
 
     nsessions = len(sessions)
     handlers = Handlers(nsessions)
