@@ -531,6 +531,7 @@ Get blobs from an HTTP server at the given URL.
 parser.add_option("--status-port", "-p", dest='status_port',
                   type="int",
                   help="Port to get status data from.")
+parser.add_option("--report-frequency", type="int", default=10000)
 
 
 parser.add_option("--zmq-boss");
@@ -634,6 +635,9 @@ def main(args=None):
     firsttt = lasttt = log.start()
     speed = speed1 = None
     last_times = {}
+    report_frequency = options.report_frequency
+    summary_frequencey = report_frequency*10
+
     for session, timetime, msgid, async, op, args in log:
 
         if session not in sessions:     # Skip unknown sessions
@@ -656,8 +660,8 @@ def main(args=None):
             time.sleep(.01)
             nwaaa += 1
 
-        if nrecords and (nrecords%10000 == 0):
-            if (nrecords%100000 == 0):
+        if nrecords and (nrecords%report_frequency == 0):
+            if (nrecords%summary_frequencey == 0):
                 os.system("nc %s %s" % (addr[0], options.status_port))
                 os.system("uptime")
                 last_times = print_times(last_times, handlers.times,
