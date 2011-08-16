@@ -207,7 +207,7 @@ def getNextUtility(context, interface, name=''):
     """
     util = queryNextUtility(context, interface, name, _marker)
     if util is _marker:
-        raise zope.component.interfaces.ComponentLookupError(
+        raise ComponentLookupError(
               "No more utilities for %s, '%s' have been found." % (
                   interface, name))
     return util
@@ -234,3 +234,4 @@ def getFactoriesFor(interface, context=None):
                 if iface.isOrExtends(interface):
                     yield name, factory
                     break
+

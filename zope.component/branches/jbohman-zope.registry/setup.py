@@ -54,8 +54,6 @@ setup(
         + '\n' +
         read('src', 'zope', 'component', 'factory.txt')
         + '\n' +
-        read('src', 'zope', 'component', 'registry.txt')
-        + '\n' +
         read('src', 'zope', 'component', 'persistentregistry.txt')
         + '\n' +
         read('src', 'zope', 'component', 'socketexample.txt')
@@ -73,6 +71,7 @@ setup(
     install_requires=['setuptools',
                       'zope.interface',
                       'zope.event',
+                      'zope.registry',
                       ],
     include_package_data = True,
     zip_safe = False,
