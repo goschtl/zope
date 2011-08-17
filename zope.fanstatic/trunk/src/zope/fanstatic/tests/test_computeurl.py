@@ -17,7 +17,7 @@ from zope.publisher.browser import TestRequest
 from zope.traversing.interfaces import ITraversable
 
 import fanstatic
-from zope.fanstatic.zopesupport import ZopeFanstaticResource
+from zope.fanstatic.zopesupport import ZopeFanstaticResource, ensure_base_url
 from zope.fanstatic.tests import tests
 
 class ComputeURL(unittest.TestCase):
@@ -67,3 +67,14 @@ class ComputeURL(unittest.TestCase):
         a_js = resource.get('a.js')
         self.assertEquals(str(a_js), a_js())
 
+class NoComputeURLForDummyResources(unittest.TestCase):
+    # zopesupport.ensure_base_url() will call has_base_url() on the
+    # needed resources object, however DummyNeededResources will not
+    # implement this. We still need to be able to develop browser-tests in
+    # applications that depend on fanstatic/zope.fanstatic withou having
+    # to setup a full WSGI inclusing fanstatic. Make sure zopesupport
+    # works for DummyNeededResources.
+
+    def test_ensure_base_url(self):
+        dummy_needed = fanstatic.get_needed()
+        self.assertIsNone(ensure_base_url(dummy_needed, None))

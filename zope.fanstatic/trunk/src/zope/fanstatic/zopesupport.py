@@ -24,6 +24,9 @@ import fanstatic
 from zope.fanstatic.interfaces import IZopeFanstaticResource
 
 def ensure_base_url(needed, request):
+    if not isinstance(needed, fanstatic.NeededResources):
+        # Do nothing if there's no concrete NeededResources at all.
+        return
     if not needed.has_base_url():
         # Only set the base_url if it has not been set just yet.
         #
@@ -48,15 +51,13 @@ def set_base_url(event):
     # on essential information for computing URLs. One example of such
     # information is that of the virtualhost namespace traversal.
     needed = fanstatic.get_needed()
-    if not needed.has_resources():
-        # Do nothing if there're no resources needed at all.
-        return
     ensure_base_url(needed, event.request)
 
 @adapter(IHandleExceptionEvent)
 def clear_needed_resources(event):
     needed = fanstatic.get_needed()
     if isinstance(needed, fanstatic.NeededResources):
+        # Only if there's a concrete NeededResources.
         needed.clear()
 
 _sentinel = object()

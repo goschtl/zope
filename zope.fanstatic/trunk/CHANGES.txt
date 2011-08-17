@@ -4,14 +4,14 @@ CHANGES
 0.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Fix bug where calling `ensure_base_url()` failed for `DummyNeededResources`
+  objects. This was problematic when writing functional or "browser" tests
+  of applications that depend on fanstatic/zope.fanstatic.
 
 0.10 (2011-04-11)
 -----------------
 
 - Update to fanstatic 0.11 API.
-
 
 0.9.1 (2011-01-20)
 ------------------
