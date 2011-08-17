@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.11 (unreleased)
+0.11 (2011-08-17)
 -----------------
 
 - Fix bug where calling `ensure_base_url()` failed for `DummyNeededResources`
