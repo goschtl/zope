@@ -1,0 +1,45 @@
+CHANGES
+*******
+
+0.11 (2011-08-17)
+-----------------
+
+- Fix bug where calling `ensure_base_url()` failed for `DummyNeededResources`
+  objects. This was problematic when writing functional or "browser" tests
+  of applications that depend on fanstatic/zope.fanstatic.
+
+0.10 (2011-04-11)
+-----------------
+
+- Update to fanstatic 0.11 API.
+
+0.9.1 (2011-01-20)
+------------------
+
+- Do not clear resources on DummyNeededResources objects.
+
+0.9 (2011-01-20)
+----------------
+
+- Integrate zope.errorview, subscribing to the HandleExceptionEvent. This will
+  clear the needed resources thusfar required, to have a clean slate for the
+  error view to be rendered.
+
+0.9b (2011-01-06)
+-----------------
+
+Zope.fanstatic version 0.9 is a fundamental rewrite of `hurry.zoperesource`_,
+as a result of the rewrite of `hurry.resource`_ into `fanstatic`_.
+
+Here's a list of essential changes since version 0.7 of hurry.zoperesource:
+
+- Compliance with the Fanstatic API.
+
+- ``++resource++foo/bar/baz.jpg`` expressions in Page Templates are
+  still supported by way registering a traversable component for all
+  available resource libraries. There are no zope.browserresource
+  components involved anymore in zope.fanstatic.
+
+.. _`hurry.zoperesource`: http://pypi.python.org/pypi/hurry.zoperesource
+.. _`hurry.resource`: http://pypi.python.org/pypi/hurry.resource
+.. _`fanstatic`: http://fanstatic.org
