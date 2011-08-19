@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.m2rc', '0'
 
-install_requires = ['setuptools']
+install_requires = ['setuptools', 'pyzmq-static', 'pylru']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
+[console_scripts]
+simul = zc.m2rc.simul:main
 """
 
 from setuptools import setup

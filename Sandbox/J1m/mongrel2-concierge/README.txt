@@ -1,8 +1,10 @@
-Title Here
-**********
+Mongrel2-based request-concierge experiment
+*******************************************
 
-
-To learn more, see
+We have applications that manage and deliver large content collections
+spread over multiple machines.  We want to requests to these machines
+inteligently so that similar requests tend to stay on the same
+machines.
 
 
 Changes
