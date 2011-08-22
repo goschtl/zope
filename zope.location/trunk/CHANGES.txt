@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.9.1 (unreleased)
+3.9.1 (2011-08-22)
 ------------------
 
-- Added zcml and test extras as well as a test for configure.zcml.
+- Added zcml extra as well as a test for configure.zcml.
 
 
 3.9.0 (2009-12-29)
