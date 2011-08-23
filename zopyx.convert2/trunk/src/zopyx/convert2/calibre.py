@@ -24,7 +24,7 @@ calibre_available = _check_calibre()
 
 def html2calibre(html_filename, output_filename=None, cmdopts='', **calibre_options):
     """ Convert a HTML file using calibre """
-
+    
     if not html_filename.endswith('.html'):
         shutil.copy(html_filename, html_filename + '.html')
         html_filename += '.html'
@@ -47,7 +47,6 @@ def html2calibre(html_filename, output_filename=None, cmdopts='', **calibre_opti
     else:
         options = ' '.join(options)
         options = options + ' ' + cmdopts
-        options = options % dict(WORKDIR=os.path.dirname(html_filename))
         cmd = '"ebook-convert" "%s" "%s" %s' % (html_filename, output_filename, options)
     
     status, output = runcmd(cmd)
@@ -71,12 +70,13 @@ class HTML2Calibre(BaseConverter):
         return calibre_available
 
     def convert(self, output_filename=None, **calibre_options):
-    
+
         # check for commandlineoptions.txt file
         cmdopts = '' 
         cmdopts_filename = os.path.join(os.path.dirname(self.filename), 'commandlineoptions.txt')
         if os.path.exists(cmdopts_filename):
             cmdopts = file(cmdopts_filename).read()
+            cmdopts = cmdopts % dict(WORKDIR=os.path.dirname(self.filename))
 
         tidy_filename = tidyhtml(self.filename, self.encoding)
         result = html2calibre(tidy_filename, output_filename, cmdopts=cmdopts, **calibre_options)
