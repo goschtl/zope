@@ -22,6 +22,7 @@ PyQt4                                   python-qt4
 setuptools                              python-pkg-resources    reduced=python-setuptools
 python-gettext                          python-gettext
 wsgi_intercept                          python-wsgi-intercept
+pysqlite                                python-pysqlite2
 
 #
 # Soon will appear in automatically generated list
