@@ -47,6 +47,7 @@ def html2calibre(html_filename, output_filename=None, cmdopts='', **calibre_opti
     else:
         options = ' '.join(options)
         options = options + ' ' + cmdopts
+        options = options % dict(WORKDIR=os.path.dirname(html_filename))
         cmd = '"ebook-convert" "%s" "%s" %s' % (html_filename, output_filename, options)
     
     status, output = runcmd(cmd)

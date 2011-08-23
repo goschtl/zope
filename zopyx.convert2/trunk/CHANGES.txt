@@ -1,3 +1,7 @@
+2.3.2 (2011-08-23)
+==================
+- added support for %(WORKDIR)s substitution in Calibre converter
+
 2.3.1 (2011-06-15)
 ==================
 - support for PISA (pdf-pisa-bin) - requires that 'pisa'
