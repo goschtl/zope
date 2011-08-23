@@ -25,7 +25,7 @@
   <div>
       <span class="label">Self-test:</span>
       <tal:loop repeat ="c converters">
-        <a href="selftest?converter=$c">$c</a>
+        <a href="selftest?converter=${c}">${c}</a>
       </tal:loop>
   </div>   
 
