@@ -11,8 +11,8 @@ import mimetypes
 import xmlrpclib
 import pkg_resources
 from stat import ST_CTIME
-from pyramid.chameleon_zpt import render_template_to_response
-from pyramid.view import static
+from pyramid.renderers import render_to_response
+from pyramid.view import static_view
 from pyramid.view import view_config
 from pyramid_xmlrpc import xmlrpc_view
 from webob import Response
@@ -26,7 +26,7 @@ except ImportError:
     from nullauth import authenticateRequest, authorizeRequest
     have_authentication = False
 
-static_view = static('templates/static')
+static_view = static_view('templates/static', use_subpath=True)
 
 
 ##################
@@ -44,12 +44,13 @@ class index(object):
     def __call__(self):
         converters = self.context.availableConverters()
         version = pkg_resources.require('zopyx.smartprintng.server')[0].version 
-        return render_template_to_response('templates/index.pt',
-                                           context=self.context,
-                                           converters=converters,
-                                           request=self.request,
-                                           version=version,
-                                           project='zopyx.smartprintng.server')
+        params =  dict(context=self.context,
+                       project='zopyx.smartprintng.server',
+                       version=version,
+                       converters=converters)
+        return render_to_response('templates/index.pt',
+                                  params,
+                                  request=self.request)
 
 @view_config(for_=Server, request_method='GET', permission='read', name='selftest')
 class selftest(object):
