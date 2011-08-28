@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Foundation and Contributors.
+# Copyright (c) 2011 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,9 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Standard configuration errors
+""" Backwards compatibility
 """
+from zope.configmachine.exceptions import ConfigurationError # bw compat
+ConfigurationError = ConfigurationError # pyflakes
 
-class ConfigurationError(Exception):
-    """There was an error in a configuration
-    """

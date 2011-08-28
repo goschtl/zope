@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Foundation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,16 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope Configuration (ZCML) interfaces
+"""Test configuration machinery.
 """
-from zope.schema.interfaces import ValidationError
+import unittest
 
-from zope.configmachine.interfaces import IConfigurationContext # bw compat
-from zope.configmachine.interfaces import IGroupingContext # bw compat
+from doctest import DocTestSuite
 
-IConfigurationContext = IConfigurationContext # pyflakes
-IGroupingContext = IGroupingContext # pyflakes
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.configuration.fields'),
+        DocTestSuite(),
+        ))
 
-class InvalidToken(ValidationError):
-    """Invaid token in list."""
-
+if __name__ == '__main__': unittest.main()

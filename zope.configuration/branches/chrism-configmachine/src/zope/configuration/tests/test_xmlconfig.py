@@ -20,6 +20,7 @@ from doctest import DocTestSuite, DocFileSuite
 from zope.testing import renormalizing
 from zope.configuration import xmlconfig, config
 from zope.configuration.tests.samplepackage import foo
+from zope.configuration.config import _bootstrap
 from pprint import PrettyPrinter, pprint
 
 
