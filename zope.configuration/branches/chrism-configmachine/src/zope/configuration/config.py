@@ -80,7 +80,7 @@ class ConfigurationMachine(_ConfigurationMachine):
     def __init__(self):
         # the base configuration machine does not bootstrap any directives
         super(ConfigurationMachine, self).__init__()
-        _bootstrap(self)
+        bootstrap(self)
 
 ##############################################################################
 # Stack items
@@ -789,7 +789,7 @@ def toargs(context, schema, data):
 # Bootstrap code
 
 
-def _bootstrap(context):
+def bootstrap(context):
 
     # Set enough machinery to register other directives
 
@@ -883,3 +883,4 @@ def _bootstrap(context):
             schema="zope.configuration.config.IProvidesDirectiveInfo"
             )
 
+_bootstrap = bootstrap # bw compat
