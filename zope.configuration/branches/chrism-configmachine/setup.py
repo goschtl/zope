@@ -43,21 +43,18 @@ def alltests():
     logging.getLogger().addHandler(NullHandler())
 
     suite = unittest.TestSuite()
-    config_base = pkg_resources.working_set.find(
+    base = pkg_resources.working_set.find(
         pkg_resources.Requirement.parse('zope.configuration')).location
-    configmachine_base = pkg_resources.working_set.find(
-        pkg_resources.Requirement.parse('zope.configmachine')).location
-    for base in (config_base, configmachine_base):
-        for dirpath, dirnames, filenames in os.walk(base):
-            if os.path.basename(dirpath) == 'tests':
-                for filename in filenames:
-                    if ( filename.endswith('.py') and
-                         filename.startswith('test') ):
-                        mod = __import__(
-                            _modname(dirpath, base,
-                                     os.path.splitext(filename)[0]),
-                            {}, {}, ['*'])
-                        suite.addTest(mod.test_suite())
+    for dirpath, dirnames, filenames in os.walk(base):
+        if os.path.basename(dirpath) == 'tests':
+            for filename in filenames:
+                if ( filename.endswith('.py') and
+                     filename.startswith('test') ):
+                    mod = __import__(
+                        _modname(dirpath, base,
+                                 os.path.splitext(filename)[0]),
+                        {}, {}, ['*'])
+                    suite.addTest(mod.test_suite())
     return suite
 
 setup(name='zope.configuration',
@@ -96,6 +93,7 @@ setup(name='zope.configuration',
       install_requires=['zope.i18nmessageid',
                         'zope.interface',
                         'zope.schema',
+                        'zope.configmachine',
                         'setuptools',
                        ],
       include_package_data=True,
