@@ -1,0 +1,8 @@
+=======
+Changes
+=======
+
+Next release
+------------
+
+- Initial release.
