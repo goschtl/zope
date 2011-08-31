@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.12 (unreleased)
+0.12 (2011-08-31)
 -----------------
 
 - Similar to the fix in 0.11, make sure calling for the URL of a resource
