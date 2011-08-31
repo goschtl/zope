@@ -96,6 +96,10 @@ class ZopeFanstaticResource(object):
 
     def __str__(self):
         needed = fanstatic.get_needed()
+        if not isinstance(needed, fanstatic.NeededResources):
+            # We cannot render a URL in this case, we just return some
+            # fake url to indicate this.
+            return '++resource++%s%s' % (self.library.name, self.name)
         ensure_base_url(needed, self.request)
         return needed.library_url(self.library) + self.name
 

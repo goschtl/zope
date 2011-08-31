@@ -15,7 +15,6 @@ import unittest
 from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
 from zope.traversing.interfaces import ITraversable
-
 import fanstatic
 from zope.fanstatic.zopesupport import ZopeFanstaticResource, ensure_base_url
 from zope.fanstatic.tests import tests
@@ -75,6 +74,18 @@ class NoComputeURLForDummyResources(unittest.TestCase):
     # to setup a full WSGI inclusing fanstatic. Make sure zopesupport
     # works for DummyNeededResources.
 
-    def test_ensure_base_url(self):
+    layer = tests.no_injector_layer
+
+    def test_ensure_base_url_wont_fail(self):
         dummy_needed = fanstatic.get_needed()
         self.assertIsNone(ensure_base_url(dummy_needed, None))
+
+    def test_call_wont_fail(self):
+        context = object()
+        request = TestRequest()
+        resource_namespace  = getMultiAdapter(
+            (context, request), ITraversable, name='resource')
+        resource = resource_namespace.traverse('foo', [])
+        a_js = resource.get('a.js')
+        self.assertEquals('++resource++foo/a.js', a_js())
+

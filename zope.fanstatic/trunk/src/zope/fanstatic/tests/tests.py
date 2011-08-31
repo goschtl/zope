@@ -34,10 +34,14 @@ class TestLayer(ZopeFanstaticBrowserLayer):
         getGlobalSiteManager().registerAdapter(
             resource_factory, (IBrowserRequest,), Interface, foo.name)
 
-    def setup_middleware(self, app):
-        return fanstatic.Injector(app)
-
 layer = TestLayer(zope.fanstatic.tests)
+
+class NoInjectorTestLayer(TestLayer):
+
+    def setup_middleware(self, app):
+        return app
+
+no_injector_layer = NoInjectorTestLayer(zope.fanstatic.tests)
 
 def test_suite():
     readme = doctest.DocFileSuite(
