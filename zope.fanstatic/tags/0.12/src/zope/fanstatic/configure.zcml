@@ -1,0 +1,14 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:zf="http://namespaces.zope.org/zf">
+
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.fanstatic" file="meta.zcml" />
+
+  <zf:setupZopeFanstatic />
+
+  <subscriber handler=".zopesupport.set_base_url" />
+  <subscriber handler=".zopesupport.clear_needed_resources" />
+
+</configure>
