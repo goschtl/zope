@@ -5,7 +5,9 @@ Changes
 0.7.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- ``BasicSourceFactory`` now uses a class variable to tell what kind of
+  source to make. (Same mechanism as it was added for
+  ``ContextualSourceFactory`` in version 0.5.0).
 
 
 0.7.0 (2010-09-17)
