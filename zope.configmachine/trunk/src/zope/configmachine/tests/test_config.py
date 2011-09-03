@@ -14,134 +14,213 @@
 """Test configuration machinery.
 """
 
+import os
 import sys
 import unittest
 import re
-from doctest import DocTestSuite
-from zope.testing import renormalizing
-from zope import configmachine
 
-def test_basepath_absolute():
-    """Path must always return an absolute path.
+import zope.interface
+import zope.configmachine
 
-    >>> import os
-    >>> class stub:
-    ...     __file__ = os.path.join('relative', 'path')
-    >>> c = configmachine.ConfigurationContext()
-    >>> c.package = stub()
+from zope.configmachine.exceptions import ConfigurationError
 
-    >>> os.path.isabs(c.path('y/z'))
-    True
-    """
+class TestConfigurationContext(unittest.TestCase):
+    def _makeOne(self):
+        from zope.configmachine import ConfigurationContext
+        return ConfigurationContext()
 
-def test_basepath_uses_dunder_path():
-    """Determine package path using __path__ if __file__ isn't available.
-    (i.e. namespace package installed with --single-version-externally-managed)
+    def tearDown(self):
+        for name in ('zope.configmachine.tests.victim',
+                     'zope.configmachine.tests.bad'):
+            if name in sys.modules:
+                del sys.modules[name]
 
-    >>> import os
-    >>> class stub:
-    ...     __path__ = [os.path.join('relative', 'path')]
-    >>> c = configmachine.ConfigurationContext()
-    >>> c.package = stub()
+    def test_resolve_simple(self):
+        import zope
+        c = self._makeOne()
+        c.resolve('zope') is zope
 
-    >>> os.path.isabs(c.path('y/z'))
-    True
-    """
+    def test_resolve_missing(self):
+        c = self._makeOne()
+        self.assertRaises(ConfigurationError,
+                          c.resolve, 'zope.configmachine.eek')
 
-def test_trailing_dot_in_resolve():
-    """Dotted names are no longer allowed to end in dots
+    def test_resolve_starting_dot_no_package(self):
+        c = self._makeOne()
+        self.assertRaises(AttributeError, c.resolve, '.foo')
 
-    >>> c = configmachine.ConfigurationContext()
+    def test_resolve_starting_dot_with_package(self):
+        import zope
+        c = self._makeOne()
+        c.package = zope
+        result = c.resolve('.configmachine')
+        self.assertEqual(result, zope.configmachine)
 
-    >>> c.resolve('zope.')
-    Traceback (most recent call last):
-    ...
-    ValueError: Trailing dots are no longer supported in dotted names
+    def test_resolve_starting_double_dot_with_package(self):
+        c = self._makeOne()
+        c.package = zope.interface
+        result = c.resolve('..configmachine')
+        self.assertEqual(result, zope.configmachine)
 
-    >>> c.resolve('  ')
-    Traceback (most recent call last):
-    ...
-    ValueError: The given name is blank
-    """
+    def test_resolve_dot_no_package(self):
+        c = self._makeOne()
+        self.assertRaises(AttributeError, c.resolve, '.')
 
-def test_bad_dotted_last_import():
-    """
-    >>> c = configmachine.ConfigurationContext()
+    def test_resolve_builtin(self):
+        c = self._makeOne()
+        result = c.resolve('type')
+        self.assertEqual(result, type)
 
-    Import error caused by a bad last component in the dotted name.
+    def test_resolve_dot_with_package(self):
+        import zope
+        c = self._makeOne()
+        c.package = zope
+        result = c.resolve('.')
+        self.assertEqual(result, zope)
+        
+    def test_resolve_trailing_dot(self):
+        c = self._makeOne()
+        self.assertRaises(ValueError, c.resolve, 'zope.')
 
-    >>> c.resolve('zope.configmachine.tests.nosuch')
-    Traceback (most recent call last):
-    ...
-    ConfigurationError: ImportError: Module zope.configmachine.tests""" \
-                                               """ has no global nosuch
-    """
+    def test_resolve_blank(self):
+        c = self._makeOne()
+        self.assertRaises(ValueError, c.resolve, '   ')
 
-def test_bad_dotted_import():
-    """
-    >>> c = configmachine.ConfigurationContext()
+    def test_resolve_bad_dotted_last_import(self):
+        c = self._makeOne()
+        self.assertRaises(ConfigurationError, c.resolve,
+                          'zope.configmachine.tests.nosuch')
 
-    Import error caused by a totally wrong dotted name.
+    def test_resolve_bad_dotted_import(self):
+        c = self._makeOne()
+        self.assertRaises(ConfigurationError,
+                          c.resolve, 'zope.configmachine.nosuch.noreally')
 
-    >>> c.resolve('zope.configmachine.nosuch.noreally')
-    Traceback (most recent call last):
-    ...
-    ConfigurationError: ImportError: Couldn't import""" \
-                   """ zope.configmachine.nosuch, No module named nosuch
-    """
+    def test_resolve_bad_sub_last_import(self):
+        c = self._makeOne()
+        self.assertRaises(ImportError, c.resolve,
+                          'zope.configmachine.tests.victim')
 
-def test_bad_sub_last_import():
-    """
-    >>> c = configmachine.ConfigurationContext()
+    def test_resolve_bad_sub_import(self):
+        c = self._makeOne()
+        self.assertRaises(ImportError, c.resolve,
+                          'zope.configmachine.tests.victim.nosuch')
 
-    Import error caused by a bad sub import inside the referenced
-    dotted name. Here we keep the standard traceback.
+    def test_path_abs(self):
+        c = self._makeOne()
+        self.assertEqual(c.path('/x/y/z'), os.path.normpath('/x/y/z'))
 
-    >>> c.resolve('zope.configmachine.tests.victim')
-    Traceback (most recent call last):
-    ...
-      File "...bad.py", line 3 in ?
-       import bad_to_the_bone
-    ImportError: No module named bad_to_the_bone
+    def test_path_relative_no_package(self):
+        c = self._makeOne()
+        self.assertRaises(AttributeError, c.path, 'y/z')
 
-    Cleanup:
+    def test_path_relative_with_package(self):
+        c = self._makeOne()
+        c.package = zope.configmachine
+        d = os.path.dirname(zope.configmachine.__file__)
+        self.assertEqual(c.path('y/z'), d + os.path.normpath('/y/z'))
+        self.assertEqual(c.path('y/./z'), d + os.path.normpath('/y/z'))
+        self.assertEqual(c.path('y/../z'), d + os.path.normpath('/z'))
 
-    >>> for name in ('zope.configmachine.tests.victim',
-    ...              'zope.configmachine.tests.bad'):
-    ...    if name in sys.modules:
-    ...        del sys.modules[name]
-    """
+    def test_path_basepath_absolute(self):
+        class stub:
+            __file__ = os.path.join('relative', 'path')
+        c = self._makeOne()
+        c.package = stub()
+        self.assertTrue(os.path.isabs(c.path('y/z')))
 
-def test_bad_sub_import():
-    """
-    >>> c = configmachine.ConfigurationContext()
+    def test_path_basepath_uses_dunder_path(self):
+        class stub:
+            __path__ = [os.path.join('relative', 'path')]
+        c = self._makeOne()
+        c.package = stub()
+        self.assertTrue(os.path.isabs(c.path('y/z')))
 
-    Import error caused by a bad sub import inside part of the referenced
-    dotted name. Here we keep the standard traceback.
+    def test_checkDuplicate_simple(self):
+        c = self._makeOne()
+        self.assertEqual(c.checkDuplicate('/foo.zcml'), None)
+        self.assertRaises(ConfigurationError, c.checkDuplicate, '/foo.zcml')
 
-    >>> c.resolve('zope.configmachine.tests.victim.nosuch')
-    Traceback (most recent call last):
-    ...
-      File "...bad.py", line 3 in ?
-       import bad_to_the_bone
-    ImportError: No module named bad_to_the_bone
+    def test_checkDuplicate_aliases(self):
+        d = os.path.dirname(zope.configmachine.__file__)
+        c = self._makeOne()
+        c.package = zope.configmachine
+        self.assertEqual(c.checkDuplicate('bar.zcml'), None)
+        self.assertRaises(ConfigurationError, c.checkDuplicate,
+                          d + os.path.normpath('/bar.zcml'))
 
-    Cleanup:
+    def test_processFile_simple(self):
+        c = self._makeOne()
+        self.assertTrue(c.processFile('/foo.zcml'))
+        self.assertFalse(c.processFile('/foo.zcml'))
 
-    >>> for name in ('zope.configmachine.tests.victim',
-    ...              'zope.configmachine.tests.bad'):
-    ...    if name in sys.modules:
-    ...        del sys.modules[name]
-    """
+    def test_processFile_alias(self):
+        d = os.path.dirname(zope.configmachine.__file__)
+        c = self._makeOne()
+        c.package = zope.configmachine
+        self.assertTrue(c.processFile('/foo.zcml'))
+        self.assertFalse(c.checkDuplicate(d + os.path.normpath('/foo.zcml')))
 
-def test_suite():
+    def test_action_simple(self):
+        from zope.configmachine.tests.directives import f
+        c = self._makeOne()
+        c.actions = []
+        c.action(1, f, (1,), {'x':1})
+        self.assertEqual(c.actions, [(1, f, (1,), {'x': 1})])
+        c.action(None)
+        self.assertEqual(c.actions, [(1, f, (1,), {'x': 1}), (None, None)])
+
+    def test_action_with_includepath_and_info(self):
+        c = self._makeOne()
+        c.actions = []
+        c.includepath = ('foo.zcml',)
+        c.info = '?'
+        c.action(None)
+        self.assertEqual(c.actions,
+                         [(None, None, (), {}, ('foo.zcml',), '?')])
+
+    def test_action_with_order(self):
+        c = self._makeOne()
+        c.actions = []
+        c.action(None, order=99999)
+        self.assertEqual(c.actions, [(None, None, (), {}, (), '', 99999)])
+
+    def test_action_with_includepath_dynamic(self):
+        c = self._makeOne()
+        c.actions = []
+        c.action(None, includepath=('abc',))
+        self.assertEqual(c.actions, [(None, None, (), {}, ('abc',))])
+
+    def test_action_with_info_dynamic(self):
+        c = self._makeOne()
+        c.actions = []
+        c.action(None, info='abc')
+        self.assertEqual(c.actions, [(None, None, (), {}, (), 'abc')])
+
+    def test_hasFeature(self):
+        c = self._makeOne()
+        self.assertFalse(c.hasFeature('onlinehelp'))
+        c._features.add('onlinehelp')
+        self.assertTrue(c.hasFeature('onlinehelp'))
+
+    def test_provideFeature(self):
+        c = self._makeOne()
+        self.assertEqual(list(c._features), [])
+        c.provideFeature('foo')
+        self.assertEqual(list(c._features), ['foo'])
+
+def test_suite(): # pragma: no cover
+    from doctest import DocTestSuite
+    from zope.testing import renormalizing
     checker = renormalizing.RENormalizing([
         (re.compile(r"<type 'exceptions.(\w+)Error'>:"),
                     r'exceptions.\1Error:'),
         ])
-    return unittest.TestSuite((
+    suite = unittest.TestSuite((
         DocTestSuite('zope.configmachine',checker=checker),
+        unittest.TestLoader().loadTestsFromTestCase(TestConfigurationContext),
         DocTestSuite(),
         ))
+    return suite
 
 if __name__ == '__main__': unittest.main()
