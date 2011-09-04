@@ -36,12 +36,13 @@ setup(
     long_description=(
         read('README.txt')
         + '\n\n' +
-        '.. contents::\n'
-        + '\n\n' +
-        read('src', 'zope', 'deprecation', 'README.txt')
-        + '\n\n' +
         read('CHANGES.txt')
         ),
+    classifiers=[
+        "Intended Audience :: Developers",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        ],
     package_dir = {'': 'src'},
     packages=find_packages('src'),
     namespace_packages=['zope',],
