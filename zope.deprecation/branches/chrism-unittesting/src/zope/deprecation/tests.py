@@ -59,7 +59,7 @@ class WarningsSetupBase(object):
     def tearDown(self):
         from zope.deprecation import deprecation
         deprecation.warnings = self.oldwarnings
-        deprecation.show = self.oldshow
+        deprecation.__show__ = self.oldshow
 
 class TestDeprecationProxy(WarningsSetupBase, unittest.TestCase):
     def _getTargetClass(self):
@@ -442,6 +442,14 @@ class Test_moved(WarningsSetupBase, unittest.TestCase):
               'Import of zope.deprecation.tests will become unsupported in 1.3',
               DeprecationWarning, 3)])
 
+class Test_import_aliases(unittest.TestCase):
+    def test_it(self):
+        for name in ('deprecated', 'deprecate', 'moved', 'ShowSwitch',
+                     '__show__'):
+            real = getattr(sys.modules['zope.deprecation.deprecation'], name)
+            alias = getattr(sys.modules['zope.deprecation'], name)
+            self.assertEqual(real, alias, (real, alias))
+        
 class DummyWarningsModule(object):
     def __init__(self):
         self.w = []
