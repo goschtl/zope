@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1.3 (unreleased)
+1.1.3 (2011-09-05)
 ==================
 
 - Removed unused (and broken) import.

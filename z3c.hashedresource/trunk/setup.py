@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.hashedresource',
-    version = '1.1.3dev',
+    version='1.1.3',
     author='Wolfgang Schnerring',
     author_email='ws@gocept.com',
     description='Provides URLs for resources that change whenever their content changes.',
