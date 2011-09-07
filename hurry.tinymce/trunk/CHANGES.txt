@@ -1,6 +1,17 @@
 CHANGES
 *******
 
+3.3 (2011-09-06) (TinyMCE version 3.3.9.4)
+==========================================
+
+* Upgrade to TinyMCE version 3.3.9.4
+
+* Change download behaviour to match the current TinyMCE download
+  infrastructure.
+
+* Pin version of hurry.recource cause newer version have incompatible api
+  changes.
+
 3.2.3.2 (unreleased) (TinyMCE version: 3.2.3)
 =============================================
 
