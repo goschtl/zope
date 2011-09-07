@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-TINYMCE_VERSION = '3.2.3'
-
 import sys, os
 
 def read(*rnames):
@@ -18,7 +16,7 @@ long_description = (
 
 setup(
     name='hurry.tinymce',
-    version=TINYMCE_VERSION + '.2' + 'dev',
+    version='3.3.9.4',
     description="TinyMCE for hurry.resource.",
     long_description=long_description,
     classifiers=[],
