@@ -9,8 +9,8 @@ CHANGES
 * Change download behaviour to match the current TinyMCE download
   infrastructure.
 
-* Pin version of hurry.recource cause newer version have incompatible api
-  changes.
+* Pin version of hurry.recource to 0.9.1 because newer version have
+  incompatible api changes.
 
 3.2.3.2 (unreleased) (TinyMCE version: 3.2.3)
 =============================================
