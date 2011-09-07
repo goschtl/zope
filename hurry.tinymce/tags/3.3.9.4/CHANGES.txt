@@ -1,0 +1,34 @@
+CHANGES
+*******
+
+3.3.9.4 (2011-09-07)
+====================
+
+* Upgrade to TinyMCE version 3.3.9.4
+
+* Add ability to specify additional languages which are downloaded and
+  installed to TinyMCE. By default, german is installed additionally.
+
+* Change download behaviour to match the current TinyMCE download
+  infrastructure.
+
+* Pin version of hurry.recource to 0.9.1 because newer version have
+  incompatible api changes.
+
+3.2.3.1 (2009-05-04) (TinyMCE version: 3.2.3)
+=============================================
+
+* Upgrade to TinyMCE version 3.2.3.
+
+* Add ZCML configuration from `hurry.zopetinymce`. With Zope you can
+  now use `hurry.tinymce` without additional
+  `hurry.zopetinymce`. Please make sure, however, that
+  `hurry.zoperesource` is available at runtime.
+
+* Modified ``prepare.py`` to also cope with changed directory
+  structure of TinyMCE 3.2.3.
+
+3.2.0.2 (2008-10-13) (TinyMCE version: 3.2.0.2)
+===============================================
+
+* Initial public release.
