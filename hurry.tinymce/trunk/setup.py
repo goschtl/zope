@@ -31,7 +31,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource',
+        'hurry.resource<0.10dev',
         ],
     entry_points= {
     'console_scripts': [
