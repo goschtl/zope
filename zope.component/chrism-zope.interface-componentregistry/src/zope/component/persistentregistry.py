@@ -17,7 +17,7 @@ import persistent.mapping
 import persistent.list
 import zope.interface.adapter
 
-from zope.registry import Components
+from zope.interface.component import Components
 
 class PersistentAdapterRegistry(
     zope.interface.adapter.VerifyingAdapterRegistry,

@@ -15,8 +15,7 @@
 """
 from zope.interface import implements
 from zope.interface.adapter import AdapterRegistry
-from zope.registry import Components
-from zope.component.interfaces import ComponentLookupError
+from zope.interface.component import Components
 from zope.component.interfaces import IComponentLookup
 
 def GAR(components, registryName):

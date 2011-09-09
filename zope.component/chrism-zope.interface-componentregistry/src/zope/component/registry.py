@@ -13,15 +13,15 @@
 ##############################################################################
 """Basic components support
 """
-# BBB 2011-07-10, import registry from zope.registry
-from zope.registry import Components
-from zope.registry import _getUtilityProvided
-from zope.registry import _getAdapterProvided
-from zope.registry import _getAdapterRequired
-from zope.registry import UtilityRegistration
-from zope.registry import AdapterRegistration
-from zope.registry import SubscriptionRegistration
-from zope.registry import HandlerRegistration
+# BBB, import component-related from zope.interface
+from zope.interface.component import Components
+from zope.interface.component import _getUtilityProvided
+from zope.interface.component import _getAdapterProvided
+from zope.interface.component import _getAdapterRequired
+from zope.interface.component import UtilityRegistration
+from zope.interface.component import AdapterRegistration
+from zope.interface.component import SubscriptionRegistration
+from zope.interface.component import HandlerRegistration
 
 from zope.component._api import handle
 from zope.component._declaration import adapter
