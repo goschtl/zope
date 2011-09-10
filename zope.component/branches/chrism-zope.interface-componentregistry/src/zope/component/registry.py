@@ -14,14 +14,14 @@
 """Basic components support
 """
 # BBB, import component-related from zope.interface
-from zope.interface.component import Components
-from zope.interface.component import _getUtilityProvided
-from zope.interface.component import _getAdapterProvided
-from zope.interface.component import _getAdapterRequired
-from zope.interface.component import UtilityRegistration
-from zope.interface.component import AdapterRegistration
-from zope.interface.component import SubscriptionRegistration
-from zope.interface.component import HandlerRegistration
+from zope.interface.registry import Components
+from zope.interface.registry import _getUtilityProvided
+from zope.interface.registry import _getAdapterProvided
+from zope.interface.registry import _getAdapterRequired
+from zope.interface.registry import UtilityRegistration
+from zope.interface.registry import AdapterRegistration
+from zope.interface.registry import SubscriptionRegistration
+from zope.interface.registry import HandlerRegistration
 
 from zope.component._api import handle
 from zope.component._declaration import adapter
