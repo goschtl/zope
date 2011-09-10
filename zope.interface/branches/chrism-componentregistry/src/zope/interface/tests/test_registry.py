@@ -19,7 +19,7 @@ import unittest
 from zope import interface
 from zope.interface import implementedBy
 from zope.interface.interfaces import ComponentLookupError
-from zope.interface.component import Components
+from zope.interface.registry import Components
 
 import sys
 
