@@ -20,6 +20,7 @@ import sys
 from zope.interface.interface import Attribute
 from zope.interface.interface import Interface
 from zope.interface.declarations import implements
+from zope.interface.declarations import implementer # required by py3k fixers
 
 if sys.version_info[0] == 3:
     def _u(s):

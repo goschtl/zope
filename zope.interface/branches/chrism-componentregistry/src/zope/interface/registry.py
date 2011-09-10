@@ -36,6 +36,8 @@ from zope.interface.declarations import implementedBy
 from zope.interface.declarations import implements
 from zope.interface.declarations import implementsOnly
 from zope.interface.declarations import providedBy
+from zope.interface.declarations import implementer # required by py3k fixers
+from zope.interface.declarations import implementer_only # req by py3k fixers
 from zope.interface.adapter import AdapterRegistry
 
 if sys.version_info[0] == 3:
