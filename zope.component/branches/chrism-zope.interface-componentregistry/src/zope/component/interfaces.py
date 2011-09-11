@@ -17,16 +17,15 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface import implements
 
+def _u(s):
+    return unicode(s, 'unicode_escape')
+
 # BBB 2011-09-09, import interfaces from zope.interface 
 from zope.interface.interfaces import ComponentLookupError
 from zope.interface.interfaces import Invalid
-from zope.interface.interfaces import Misused
 from zope.interface.interfaces import IObjectEvent
 from zope.interface.interfaces import ObjectEvent
 from zope.interface.interfaces import IComponentLookup
-from zope.interface.interfaces import IComponentRegistrationConvenience
-from zope.interface.interfaces import IRegistry
-from zope.interface.interfaces import IFactory
 from zope.interface.interfaces import IRegistration
 from zope.interface.interfaces import IUtilityRegistration
 from zope.interface.interfaces import _IBaseAdapterRegistration
@@ -303,6 +302,97 @@ class IComponentArchitecture(Interface):
         """
 
 
+class IRegistry(Interface):
+    """Object that supports component registry
+    """
+
+    def registrations():
+        """Return an iterable of component registrations
+        """
+
+class IComponentRegistrationConvenience(Interface):
+    """API for registering components.
+
+    CAUTION: This API should only be used from test or
+    application-setup code. This api shouldn't be used by regular
+    library modules, as component registration is a configuration
+    activity.
+    """
+
+    def provideUtility(component, provides=None, name=_u('')):
+        """Register a utility globally
+
+        A utility is registered to provide an interface with a
+        name. If a component provides only one interface, then the
+        provides argument can be omitted and the provided interface
+        will be used. (In this case, provides argument can still be
+        provided to provide a less specific interface.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This API shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity.
+
+        """
+
+    def provideAdapter(factory, adapts=None, provides=None, name=_u('')):
+        """Register an adapter globally
+
+        An adapter is registered to provide an interface with a name
+        for some number of object types. If a factory implements only
+        one interface, then the provides argument can be omitted and
+        the provided interface will be used. (In this case, a provides
+        argument can still be provided to provide a less specific
+        interface.)
+
+        If the factory has an adapts declaration, then the adapts
+        argument can be omitted and the declaration will be used.  (An
+        adapts argument can be provided to override the declaration.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This API shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity.
+        """
+
+    def provideSubscriptionAdapter(factory, adapts=None, provides=None):
+        """Register a subscription adapter
+
+        A subscription adapter is registered to provide an interface
+        for some number of object types. If a factory implements only
+        one interface, then the provides argument can be omitted and
+        the provided interface will be used. (In this case, a provides
+        argument can still be provided to provide a less specific
+        interface.)
+
+        If the factory has an adapts declaration, then the adapts
+        argument can be omitted and the declaration will be used.  (An
+        adapts argument can be provided to override the declaration.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This API shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity.
+        """
+
+    def provideHandler(handler, adapts=None):
+        """Register a handler
+
+        Handlers are subscription adapter factories that don't produce
+        anything.  They do all of their work when called.  Handlers
+        are typically used to handle events.
+
+        If the handler has an adapts declaration, then the adapts
+        argument can be omitted and the declaration will be used.  (An
+        adapts argument can be provided to override the declaration.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This API shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity.
+        """
+
+
 class IPossibleSite(Interface):
     """An object that could be a site.
     """
@@ -317,7 +407,29 @@ class IPossibleSite(Interface):
         If there isn't a site manager, raise a component lookup.
         """
 
-
 class ISite(IPossibleSite):
     """Marker interface to indicate that we have a site"""
+
+class Misused(Exception):
+    """A component is being used (registered) for the wrong interface."""
+
+
+class IFactory(Interface):
+    """A factory is responsible for creating other components."""
+
+    title = Attribute("The factory title.")
+
+    description = Attribute("A brief description of the factory.")
+
+    def __call__(*args, **kw):
+        """Return an instance of the objects we're a factory for."""
+
+
+    def getInterfaces():
+        """Get the interfaces implemented by the factory
+
+        Return the interface(s), as an instance of Implements, that objects
+        created by this factory will implement. If the callable's Implements
+        instance cannot be created, an empty Implements instance is returned.
+        """
 
