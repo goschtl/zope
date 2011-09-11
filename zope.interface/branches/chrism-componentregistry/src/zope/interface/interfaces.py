@@ -15,19 +15,10 @@
 """
 __docformat__ = 'restructuredtext'
 
-import sys
-
 from zope.interface.interface import Attribute
 from zope.interface.interface import Interface
 from zope.interface.declarations import implements
 from zope.interface.declarations import implementer # required by py3k fixers
-
-if sys.version_info[0] == 3:
-    def _u(s):
-        return s
-else:
-    def _u(s):
-        return unicode(s, 'unicode_escape')
 
 class IElement(Interface):
     """Objects that have basic documentation and tagged values.
@@ -792,26 +783,26 @@ class IComponentLookup(Interface):
     utilities = Attribute(
         "Adapter Registry to manage all registered utilities.")
 
-    def queryAdapter(object, interface, name=_u(''), default=None):
+    def queryAdapter(object, interface, name=u'', default=None):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
         """
 
-    def getAdapter(object, interface, name=_u('')):
+    def getAdapter(object, interface, name=u''):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, a ComponentLookupError
         is raised.
         """
 
-    def queryMultiAdapter(objects, interface, name=_u(''), default=None):
+    def queryMultiAdapter(objects, interface, name=u'', default=None):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, returns the default.
         """
 
-    def getMultiAdapter(objects, interface, name=_u('')):
+    def getMultiAdapter(objects, interface, name=u''):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, a ComponentLookupError
@@ -951,7 +942,8 @@ class IComponentRegistry(Interface):
     """Register components
     """
 
-    def registerUtility(component=None, provided=None, name=_u(''), info=_u(''), factory=None):
+    def registerUtility(component=None, provided=None, name=u'',
+                        info=u'', factory=None):
         """Register a utility
 
         factory
@@ -977,7 +969,8 @@ class IComponentRegistry(Interface):
         A Registered event is generated with an IUtilityRegistration.
         """
 
-    def unregisterUtility(component=None, provided=None, name=_u(''), factory=None):
+    def unregisterUtility(component=None, provided=None, name=u'',
+                          factory=None):
         """Unregister a utility
 
         A boolean is returned indicating whether the registry was
@@ -1015,8 +1008,8 @@ class IComponentRegistry(Interface):
         in the object.
         """
 
-    def registerAdapter(factory, required=None, provided=None, name=_u(''),
-                       info=_u('')):
+    def registerAdapter(factory, required=None, provided=None, name=u'',
+                       info=u''):
         """Register an adapter factory
 
         Parameters:
@@ -1053,7 +1046,7 @@ class IComponentRegistry(Interface):
         """
 
     def unregisterAdapter(factory=None, required=None,
-                          provided=None, name=_u('')):
+                          provided=None, name=u''):
         """Register an adapter factory
 
         A boolean is returned indicating whether the registry was
@@ -1103,7 +1096,7 @@ class IComponentRegistry(Interface):
         """
 
     def registerSubscriptionAdapter(factory, required=None, provides=None,
-                                    name=_u(''), info=''):
+                                    name=u'', info=''):
         """Register a subscriber factory
 
         Parameters:
@@ -1144,7 +1137,7 @@ class IComponentRegistry(Interface):
         """
 
     def unregisterSubscriptionAdapter(factory=None, required=None,
-                                      provides=None, name=_u('')):
+                                      provides=None, name=u''):
         """Unregister a subscriber factory.
 
         A boolean is returned indicating whether the registry was
@@ -1198,7 +1191,7 @@ class IComponentRegistry(Interface):
         registrations in the object.
         """
 
-    def registerHandler(handler, required=None, name=_u(''), info=''):
+    def registerHandler(handler, required=None, name=u'', info=''):
         """Register a handler.
 
         A handler is a subscriber that doesn't compute an adapter
@@ -1236,7 +1229,7 @@ class IComponentRegistry(Interface):
         A Registered event is generated with an IHandlerRegistration.
         """
 
-    def unregisterHandler(handler=None, required=None, name=_u('')):
+    def unregisterHandler(handler=None, required=None, name=u''):
         """Unregister a handler.
 
         A handler is a subscriber that doesn't compute an adapter
