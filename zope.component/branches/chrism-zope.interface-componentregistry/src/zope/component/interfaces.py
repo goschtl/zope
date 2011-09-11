@@ -42,5 +42,22 @@ from zope.interface.interfaces import IUnregistered
 from zope.interface.interfaces import Unregistered
 from zope.interface.interfaces import IComponentRegistry
 from zope.interface.interfaces import IComponents
-from zope.interface.interfaces import IPossibleSite
-from zope.interface.interfaces import ISite
+
+class IPossibleSite(Interface):
+    """An object that could be a site.
+    """
+
+    def setSiteManager(sitemanager):
+        """Sets the site manager for this object.
+        """
+
+    def getSiteManager():
+        """Returns the site manager contained in this object.
+
+        If there isn't a site manager, raise a component lookup.
+        """
+
+
+class ISite(IPossibleSite):
+    """Marker interface to indicate that we have a site"""
+
