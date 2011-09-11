@@ -17,9 +17,6 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface import implements
 
-def _u(s):
-    return unicode(s, 'unicode_escape')
-
 # BBB 2011-09-09, import interfaces from zope.interface 
 from zope.interface.interfaces import ComponentLookupError
 from zope.interface.interfaces import Invalid
@@ -115,7 +112,7 @@ class IComponentArchitecture(Interface):
     # Adapter API
 
     def getAdapter(object,
-                   interface=Interface, name=_u(''),
+                   interface=Interface, name=u'',
                    context=None):
         """Get a named adapter to an interface for an object
 
@@ -170,7 +167,7 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface=Interface, name=_u(''),
+    def queryAdapter(object, interface=Interface, name=u'',
                      default=None, context=None):
         """Look for a named adapter to an interface for an object
 
@@ -207,7 +204,7 @@ class IComponentArchitecture(Interface):
         """
 
     def queryMultiAdapter(objects,
-                          interface=Interface, name=_u(''),
+                          interface=Interface, name=u'',
                           default=None,
                           context=None):
         """Look for a multi-adapter to an interface for objects
@@ -319,7 +316,7 @@ class IComponentRegistrationConvenience(Interface):
     activity.
     """
 
-    def provideUtility(component, provides=None, name=_u('')):
+    def provideUtility(component, provides=None, name=u''):
         """Register a utility globally
 
         A utility is registered to provide an interface with a
@@ -335,7 +332,7 @@ class IComponentRegistrationConvenience(Interface):
 
         """
 
-    def provideAdapter(factory, adapts=None, provides=None, name=_u('')):
+    def provideAdapter(factory, adapts=None, provides=None, name=u''):
         """Register an adapter globally
 
         An adapter is registered to provide an interface with a name
