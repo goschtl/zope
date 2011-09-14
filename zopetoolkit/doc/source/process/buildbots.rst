@@ -318,9 +318,11 @@ Linux
       - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu64 THA
-      - unsupported
+      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu64 THA
+        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.5.5%20Linux%2064bit AFPY
+      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu64 THA
+        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.6.5%20Linux%2064bit AFPY
+      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.7.2%20Linux%2064bit AFPY
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       - unsupported
@@ -328,9 +330,11 @@ Linux
       - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.5%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-ubuntu64 THA
-      - unsupported
+      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.5%20slave-ubuntu64 THA
+        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.5.5%20Linux%2064bit AFPY
+      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-ubuntu64 THA
+        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.6.5%20Linux%2064bit AFPY
+      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.7.2%20Linux%2064bit AFPY
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       -
@@ -340,7 +344,7 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.4.6%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.0%2064bit%20linux AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.2%2064bit%20linux AFPY
 
     * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
       - unsupported
@@ -392,7 +396,7 @@ We would like to thank all providers of automated test facilities:
     * - `AFPY <http://buildbot.afpy.org/>`_
       - Christophe Combelles
       - Linux 64
-      - 2.4, 2.5, 2.6, 2.7, 3.1
+      - 2.4, 2.5, 2.6, 2.7, 3.1, 3.2, pypy1.6
       - ZTK 1.0 (trunks and releases), BlueBream template
 
     * - Securactive
