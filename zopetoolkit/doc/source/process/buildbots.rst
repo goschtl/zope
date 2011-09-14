@@ -397,7 +397,7 @@ We would like to thank all providers of automated test facilities:
       - Christophe Combelles
       - Linux 64
       - 2.4, 2.5, 2.6, 2.7, 3.1, 3.2, pypy1.6
-      - ZTK 1.0 (trunks and releases), BlueBream template
+      - ZTK 1.0 (trunks and releases), ZTK 1.1 (trunks and releases), BlueBream template
 
     * - Securactive
                     `Zope <http://zope.buildbot.securactive.org/>`_
