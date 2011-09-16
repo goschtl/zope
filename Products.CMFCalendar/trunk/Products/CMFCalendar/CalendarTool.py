@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFCalendar portal_calendar tool.
-
-$Id$
 """
 
 import calendar
@@ -21,12 +19,13 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from DateTime.DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
-from zope.interface import implements
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.component import getUtility
+from zope.interface import implements
 
 from Products.CMFCalendar.interfaces import ICalendarTool
 from Products.CMFCalendar.permissions import ManagePortal
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.utils import UniqueObject
 
 def sort_by_date(x, y):
@@ -195,15 +194,13 @@ class CalendarTool (UniqueObject, SimpleItem):
     def catalog_getevents(self, year, month):
         """ given a year and month return a list of days that have events 
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         year = int(year)
         month = int(month)
         last_day = self._getCalendar().monthrange(year, month)[1]
         first_date = self.getBeginAndEndTimes(1, month, year)[0]
         last_date = self.getBeginAndEndTimes(last_day, month, year)[1]
 
-        ctool = getToolByName(self, 'portal_catalog')
+        ctool = getUtility(ICatalogTool)
         query = ctool(
                         portal_type=self.getCalendarTypes(),
                         review_state=self.getCalendarStates(),
@@ -289,8 +286,6 @@ class CalendarTool (UniqueObject, SimpleItem):
             B) End on this day  OR
             C) Start before this day  AND  end after this day
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         day, month, year = ( int(thisDay.day())
                            , int(thisDay.month())
                            , int(thisDay.year())
@@ -302,7 +297,7 @@ class CalendarTool (UniqueObject, SimpleItem):
         after_midnight = DateTime(after_midnight_str)
 
         # Get all events that Start on this day
-        ctool = getToolByName(self, 'portal_catalog')
+        ctool = getUtility(ICatalogTool)
         query = ctool(
                         portal_type=self.getCalendarTypes(),
                         review_state=self.getCalendarStates(),
@@ -379,12 +374,10 @@ class CalendarTool (UniqueObject, SimpleItem):
         
         start_date is expected to be a DateTime instance
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         if start_date is None:
             start_date = DateTime()
 
-        ctool = getToolByName(self, 'portal_catalog')
+        ctool = getUtility(ICatalogTool)
         query = ctool(
                     portal_type=self.getCalendarTypes(),
                     review_state=self.getCalendarStates(),

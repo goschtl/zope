@@ -4,6 +4,8 @@ Products.CMFCalendar Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Made sure converted tools are used as utilities.
+
 - Fixed tests to be compatibility with DateTime 3.
 
 - Event: Fixed object initialization.
