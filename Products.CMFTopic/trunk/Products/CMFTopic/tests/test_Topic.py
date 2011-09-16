@@ -20,11 +20,11 @@ ZopeTestCase.installProduct('CMFTopic', 1)
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Acquisition import Implicit
-
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.site.hooks import setSite
 
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ISyndicationTool
 from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import EventZCMLLayer
@@ -143,18 +143,17 @@ class TestTopic(ConformsToFolder, SecurityTest):
 
     def _initSite(self, max_items=15, index_ids=()):
         sm = getSiteManager()
-        self.site.portal_catalog = DummyCatalog( index_ids )
-        self.site.portal_syndication = DummySyndicationTool( max_items )
-        sm.registerUtility(self.site.portal_syndication, ISyndicationTool)
+        sm.registerUtility(DummyCatalog(index_ids), ICatalogTool)
+        sm.registerUtility(DummySyndicationTool(max_items), ISyndicationTool)
 
     def _initDocuments(self, **kw):
+        ctool = getSiteManager().getUtility(ICatalogTool)
         for k, v in kw.items():
-
-            document = DummyDocument( k )
+            document = DummyDocument(k)
             document.description = v
 
-            self.site._setObject( k, v )
-            self.site.portal_catalog._index( document )
+            self.site._setObject(k, v)
+            ctool._index(document)
 
     def setUp(self):
         SecurityTest.setUp(self)

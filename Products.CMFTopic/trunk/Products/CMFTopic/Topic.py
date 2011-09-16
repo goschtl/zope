@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Topic: Canned catalog queries
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -22,14 +20,14 @@ from zope.component import getUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ISyndicationTool
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.SkinnedFolder import SkinnedFolder
 from Products.CMFTopic.interfaces import IMutableTopic
 from Products.CMFTopic.interfaces import ITopic
-from Products.CMFTopic.permissions import View
 from Products.CMFTopic.permissions import AddTopics
 from Products.CMFTopic.permissions import ChangeTopics
+from Products.CMFTopic.permissions import View
 
 def addTopic(self, id, title='', REQUEST=None):
     """ Create an empty topic.
@@ -80,11 +78,11 @@ class Topic(SkinnedFolder):
     def listAvailableFields(self):
         """ Return a list of available fields for new criteria.
         """
-        portal_catalog = getToolByName( self, 'portal_catalog' )
+        ctool = getUtility(ICatalogTool)
         currentfields = map( lambda x: x.Field(), self.listCriteria() )
         availfields = filter(
             lambda field, cf=currentfields: field not in cf,
-            portal_catalog.indexes()
+            ctool.indexes()
             )
         return availfields
 
@@ -139,9 +137,9 @@ class Topic(SkinnedFolder):
 
         o Built-in criteria update any criteria passed in 'kw'.
         """
-        kw.update( self.buildQuery() )
-        portal_catalog = getToolByName( self, 'portal_catalog' )
-        return portal_catalog.searchResults(REQUEST, **kw)
+        kw.update(self.buildQuery())
+        ctool = getUtility(ICatalogTool)
+        return ctool.searchResults(REQUEST, **kw)
 
     security.declareProtected(View, 'synContentValues')
     def synContentValues(self):
