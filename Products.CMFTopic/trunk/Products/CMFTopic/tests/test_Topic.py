@@ -143,8 +143,7 @@ class TestTopic(ConformsToFolder, SecurityTest):
 
     def _initSite(self, max_items=15, index_ids=()):
         sm = getSiteManager()
-        self.site.portal_catalog = DummyCatalog(index_ids)
-        sm.registerUtility(self.site.portal_catalog, ICatalogTool)
+        sm.registerUtility(DummyCatalog(index_ids), ICatalogTool)
         sm.registerUtility(DummySyndicationTool(max_items), ISyndicationTool)
 
     def _initDocuments(self, **kw):

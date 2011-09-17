@@ -22,7 +22,6 @@ from zope.interface import implements
 
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ISyndicationTool
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.SkinnedFolder import SkinnedFolder
 from Products.CMFTopic.interfaces import IMutableTopic
 from Products.CMFTopic.interfaces import ITopic
@@ -139,9 +138,7 @@ class Topic(SkinnedFolder):
         o Built-in criteria update any criteria passed in 'kw'.
         """
         kw.update(self.buildQuery())
-# XXX: fix this
-#        ctool = getUtility(ICatalogTool)
-        ctool = getToolByName(self, 'portal_catalog')
+        ctool = getUtility(ICatalogTool)
         return ctool.searchResults(REQUEST, **kw)
 
     security.declareProtected(View, 'synContentValues')
