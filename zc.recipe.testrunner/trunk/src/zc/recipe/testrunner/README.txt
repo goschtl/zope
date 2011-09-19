@@ -296,6 +296,7 @@ extra-paths option to specify them:
         """Add site packages, as determined by zc.buildout.
     <BLANKLINE>
         See original_addsitepackages, below, for the original version."""
+    ...
         buildout_paths = [
             '/sample-buildout/demo',
             '/sample-buildout/eggs/zope.testrunner-4.0-py2.3.egg',
@@ -337,8 +338,8 @@ directory:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -397,8 +398,8 @@ using the -v option:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -498,8 +499,8 @@ the environment variable. Also, the tests pass again:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -558,8 +559,8 @@ end of the script:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -610,8 +611,8 @@ This will also work with a multi-line initialization section:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -667,8 +668,8 @@ generated relative to the test script.
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -694,6 +695,7 @@ generated relative to the test script.
         base = os.path.dirname(base)
         base = os.path.dirname(base)
         base = os.path.dirname(base)
+    ...
         buildout_paths = [
             join(base, 'demo'),
             join(base, 'eggs/zope.testrunner-4.0.0-py2.4.egg'),
@@ -742,8 +744,8 @@ The relative-paths option can be specified at the buildout level:
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -1066,8 +1068,8 @@ it overrides the initialization.
     import os
     path = sys.path[0]
     if os.environ.get('PYTHONPATH'):
-        os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ['PYTHONPATH']
         path = os.pathsep.join([path, os.environ['PYTHONPATH']])
+    os.environ['BUILDOUT_ORIGINAL_PYTHONPATH'] = os.environ.get('PYTHONPATH', '')
     os.environ['PYTHONPATH'] = path
     import site # imports custom buildout-generated site.py
     import os
@@ -1119,6 +1121,3 @@ you are using.  It is usually false.
 
 .. _`pertinent section of the zc.buildout documentation`:
     http://pypi.python.org/pypi/zc.buildout/1.5.0#working-with-a-system-python
-
-
-

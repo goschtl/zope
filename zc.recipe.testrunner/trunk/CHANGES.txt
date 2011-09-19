@@ -5,7 +5,7 @@ Change History
 1.4.1 (unreleased)
 ==================
 
-(no changes)
+- fix tests with zc.buildout 1.5.2
 
 1.4.0 (2010-08-27)
 ==================
