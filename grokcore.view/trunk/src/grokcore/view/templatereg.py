@@ -157,9 +157,16 @@ class FileTemplateRegistry(object):
             # Warning when importing files. This should be
             # allowed because people may be using editors that generate
             # '.bak' files and such.
-            warnings.warn("File '%s' has an unrecognized extension in "
-                          "directory '%s'" %
-                          (template_file, template_dir), UserWarning, 2)
+            if extension == 'pt':
+                warnings.warn("You forgot to embed the zcml slug for "
+                              "grokcore.view. It provides a renderer "
+                              "for pt files. Now the file '%s' in '%s' "
+                              "cannot be rendered" %
+                              (template_file, template_dir), UserWarning, 2)
+            else:
+                warnings.warn("File '%s' has an unrecognized extension in "
+                              "directory '%s'" %
+                              (template_file, template_dir), UserWarning, 2)
             return
         template = template_factory(template_file, template_dir)
         template._annotateGrokInfo(template_name, template_path)
