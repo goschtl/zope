@@ -6,7 +6,7 @@ Becoming a Committer
 Applying for Committer Status
 -----------------------------
 
-1. Mail webmaster@zope.org for a new user account at www.zope.org.
+1. Mail webmaster@zope.org for a new user account at old.zope.org.
    Pick a user id that is a valid Unix user id. Include this id when
    you fill out the committer agreement form.
 
@@ -37,7 +37,7 @@ Your SSH public key(s) must be uploaded using the application at:
 https://cvs.zope.org/upload-key.html
 
 When you go to that url, you'll get a basic auth login prompt.  Use your
-www.zope.org login and password.
+old.zope.org login and password.
 
 Your keys can use RSA or DSA, ssh v1 or v2. If the file being uploaded
 contains more than one public key, it should be formatted as if it
