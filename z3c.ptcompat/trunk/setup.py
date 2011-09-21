@@ -1,33 +1,24 @@
+import os
+
 from setuptools import setup, find_packages
-import sys, os
 
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '0.5.8dev'
+version = '1.0-dev'
 
 tests_require = [
-    'lxml',
-    'z3c.pt',
-    'zope.app.form',
-    'zope.app.pagetemplate',
-    'zope.app.publisher',
-    'zope.tal',
-    'zope.testing',
-    'zope.viewlet',
     ],
 
 
 setup(name='z3c.ptcompat',
       version=version,
-      description="Compatibility-layer for Zope Page Template engines.",
+      description="Zope-compatible page template engine based on Chameleon.",
       long_description=(
         ".. contents::\n\n" +
         read('README.txt')
-        + "\n\n" +
-        read('src', 'z3c', 'ptcompat', 'zcml.txt')
         + "\n\n" +
         read("CHANGES.txt")
         ),
@@ -50,12 +41,9 @@ setup(name='z3c.ptcompat',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'z3c.pt >= 2.1',
+          'zope.testing',
+          'zope.pagetemplate >= 3.6.2',
           ],
-      extras_require = dict(
-        zpt = ['zope.app.pagetemplate', 'zope.tal'],
-        z3cpt = ['z3c.pt'],
-        test = tests_require, # used by buildout.cfg testrunner
-        ),
-      tests_require = tests_require,
-      test_suite="z3c.ptcompat.tests.test_doctests.test_suite",
+      # test_suite="z3c.ptcompat.tests.test_doctests.test_suite",
       )
