@@ -47,7 +47,7 @@ If you need a NEW package to be processed contact:
 
 * Adam Groszer (agroszer-at-gmail-dot-com) or
 
-* Hanno Schlichting (hannosch-at-hannosch-dot-eu)
+* Hanno Schlichting (hanno-at-hannosch-dot-eu)
 
 The package that creates the eggs is here:
 svn://svn.zope.org/repos/main/zope.wineggbuilder
