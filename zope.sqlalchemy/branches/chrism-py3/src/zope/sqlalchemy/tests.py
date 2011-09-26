@@ -24,6 +24,21 @@
 # NOTE: The sqlite that ships with Mac OS X 10.4 is buggy. Install a newer version (3.5.6)
 #       and rebuild pysqlite2 against it.
 
+import sys
+
+PY3 = sys.version_info[0] == 3
+
+def u(s):
+    if PY3:
+        return s
+    else:
+        return s.decode('utf-8')
+
+def b(s):
+    if PY3:
+        return s.encode('utf-8')
+    else:
+        return s
 
 import os
 import unittest
@@ -128,7 +143,7 @@ class DummyDataManager(object):
         if self.target is not None:
             try:
                 result = self.target(*self.args, **self.kwargs)
-            except Exception, e:
+            except Exception as e:
                 raise DummyTargetRaised(e)
             raise DummyTargetResult(result)
         else:
@@ -231,7 +246,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         stmt = sql.select(test_users.columns).order_by('id')
         conn = session.connection()
         results = conn.execute(stmt)
-        self.assertEqual(results.fetchall(), [(1, u'udo', u'juergens'), (2, u'heino', u'n/a')])
+        self.assertEqual(results.fetchall(), [(1, 'udo', 'juergens'), (2, 'heino', 'n/a')])
         
     def testRelations(self):
         session = Session()
@@ -244,17 +259,17 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
     def testTransactionJoining(self):
         transaction.abort() # clean slate
         t = transaction.get()
-        self.failIf([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
+        self.assertFalse([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
              "Joined transaction too early")
         session = Session()
         session.add(User(id=1, firstname='udo', lastname='juergens'))
         t = transaction.get()
         # Expect this to fail with SQLAlchemy 0.4
-        self.failUnless([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
+        self.assertTrue([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
              "Not joined transaction")
         transaction.abort()
         conn = Session().connection()
-        self.failUnless([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
+        self.assertTrue([r for r in t._resources if isinstance(r, tx.SessionDataManager)],
              "Not joined transaction")
     
     def testSavepoint(self):
@@ -262,7 +277,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         t = transaction.get()
         session = Session()
         query = session.query(User)
-        self.failIf(query.all(), "Users table should be empty")
+        self.assertFalse(query.all(), "Users table should be empty")
         
         s0 = t.savepoint(optimistic=True) # this should always work
         
@@ -402,9 +417,9 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         result = None
         try:
             t.commit()
-        except DummyTargetResult, e:
+        except DummyTargetResult as e:
             result = e.args[0]
-        except DummyTargetRaised, e:
+        except DummyTargetRaised as e:
             raise e.args[0]
         
         self.assertEqual(len(result), 1, "Should have been one prepared transaction when dummy aborted")
@@ -437,7 +452,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
                 row1 = rows[0]
                 d = row1.asDict()
                 self.assertEqual(d, {'firstname' : 'udo', 'lastname' : 'juergens', 'id' : 1})
-            except Exception, err:
+            except Exception as err:
                 global thread_error
                 thread_error = err
             transaction.abort()
@@ -513,12 +528,12 @@ class RetryTests(unittest.TestCase):
         self.failUnless(len(s2.query(User).all())==1, "Users table should have one row")
         s1.query(User).delete()
         user = s2.query(User).get(1)
-        user.lastname = u'smith'
+        user.lastname = u('smith')
         tm1.commit()
         raised = False
         try:
             s2.flush()
-        except orm.exc.ConcurrentModificationError, e:
+        except orm.exc.ConcurrentModificationError as e:
             # This error is thrown when the number of updated rows is not as expected
             raised = True
         self.failUnless(raised, "Did not raise expected error")
@@ -543,7 +558,7 @@ class RetryTests(unittest.TestCase):
         thread.start()
         try:
             user = s2.query(User).with_lockmode('update').get(1)
-        except exc.DBAPIError, e:
+        except exc.DBAPIError as e:
             # This error wraps the underlying DBAPI module error, some of which are retryable
             raised = True
         self.failUnless(raised, "Did not raise expected error")
