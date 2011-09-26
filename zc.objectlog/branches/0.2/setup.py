@@ -76,7 +76,7 @@ long_description = (open("README.txt").read() +
 
 setup(
     name="zc.objectlog",
-    version="0.2.1",
+    version="0.2.2",
     license="ZPL 2.1",
     author="Gary Poster",
     author_email="gary@zope.com",
