@@ -94,6 +94,7 @@ setup(
         'setuptools',
         'zc.copy',
         'zope.app.keyreference',
+        'zope.app.zapi',
         'zope.schema >= 3.6',
     ],
     extras_require=dict(
