@@ -1,6 +1,9 @@
 ##parameters=base_url, month, year
+##
+from Products.CMFCore.utils import getUtilityByInterfaceName
 
-nextMonthTime = container.portal_calendar.getNextMonth(month, year)
+caltool = getUtilityByInterfaceName('Products.CMFCalendar.interfaces.ICalendarTool')
+nextMonthTime = caltool.getNextMonth(month, year)
 
 # Takes a base url and returns a link to the previous month
 x = '%s?month:int=%d&year:int=%d' % (

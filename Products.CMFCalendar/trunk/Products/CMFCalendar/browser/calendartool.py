@@ -11,12 +11,12 @@
 #
 ##############################################################################
 """Browser views for the portal calendar.
-
-$Id$
 """
 
 from DateTime.DateTime import DateTime
+from zope.component import getUtility
 
+from Products.CMFCalendar.interfaces import ICalendarTool
 from Products.CMFDefault.browser.utils import decode
 from Products.CMFDefault.browser.utils import memoize
 from Products.CMFDefault.browser.utils import ViewBase
@@ -34,7 +34,7 @@ class CalendarView(ViewBase):
         """
         day = self.viewDay()
         event_start = event_brain.getObject().start()
-        first_date = DateTime(day.Date()+" 00:00:00")
+        first_date = DateTime(day.Date() + " 00:00:00")
 
         if event_start < first_date:
             return event_start.aCommon()[:12]
@@ -46,7 +46,7 @@ class CalendarView(ViewBase):
         """
         day = self.viewDay()
         event_end = event_brain.getObject().end()
-        last_date = DateTime(day.Date()+" 23:59:59")
+        last_date = DateTime(day.Date() + " 23:59:59")
 
         if event_end > last_date:
             return event_end.aCommon()[:12]
@@ -76,7 +76,7 @@ class CalendarView(ViewBase):
         day = self.viewDay()
         view_url = self._getViewURL()
 
-        return '%s?date=%s' % (view_url, (day-1).Date())
+        return '%s?date=%s' % (view_url, (day - 1).Date())
 
     @memoize
     def nextDayURL(self):
@@ -85,14 +85,14 @@ class CalendarView(ViewBase):
         day = self.viewDay()
         view_url = self._getViewURL()
 
-        return '%s?date=%s' % (view_url, (day+1).Date())
+        return '%s?date=%s' % (view_url, (day + 1).Date())
 
     @memoize
     @decode
     def listItemInfos(self):
         """ List item infos for all event catalog records for a specific day.
         """
-        caltool = self._getTool('portal_calendar')
+        caltool = getUtility(ICalendarTool)
         thisDay = self.viewDay()
 
         items = [ {'title': item.Title,
@@ -112,7 +112,7 @@ class CalendarBoxView(ViewBase):
     def getMonthAndYear(self):
         """ Retrieve month/year tuple
         """
-        caltool = self._getTool('portal_calendar')
+        caltool = getUtility(ICalendarTool)
         current = DateTime()
         session = None
 
@@ -146,10 +146,10 @@ class CalendarBoxView(ViewBase):
     def getNextMonthLink(self, base_url, month, year):
         """ Return URL for the next month link
         """
-        caltool = self._getTool('portal_calendar')
+        caltool = getUtility(ICalendarTool)
         nextMonthTime = caltool.getNextMonth(month, year)
 
-        x = '%s?month:int=%d&year:int=%d' % ( base_url
+        x = '%s?month:int=%d&year:int=%d' % (base_url
                                             , nextMonthTime.month()
                                             , nextMonthTime.year()
                                             )
@@ -159,10 +159,10 @@ class CalendarBoxView(ViewBase):
     def getPreviousMonthLink(self, base_url, month, year):
         """ Return URL for the previous month link
         """
-        caltool = self._getTool('portal_calendar')
+        caltool = getUtility(ICalendarTool)
         prevMonthTime = caltool.getPreviousMonth(month, year)
 
-        x = '%s?month:int=%d&year:int=%d' % ( base_url
+        x = '%s?month:int=%d&year:int=%d' % (base_url
                                             , prevMonthTime.month()
                                             , prevMonthTime.year()
                                             )
@@ -174,9 +174,9 @@ class CalendarBoxView(ViewBase):
         """
         current = DateTime()
 
-        if ( current.year()==year and
-             current.month()==month and
-             current.day()==int(day) ):
+        if (current.year() == year and
+            current.month() == month and
+            current.day() == int(day)):
             if event:
                 return 'todayevent'
             else:

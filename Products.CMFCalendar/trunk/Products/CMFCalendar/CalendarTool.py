@@ -26,6 +26,7 @@ from zope.interface import implements
 from Products.CMFCalendar.interfaces import ICalendarTool
 from Products.CMFCalendar.permissions import ManagePortal
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 def sort_by_date(x, y):
@@ -35,7 +36,7 @@ def sort_by_date(x, y):
     if not z:
         return cmp(x.end, y.end)
     return z
-    
+
 def unique_results(results):
     """ Utility function to create a sequence of unique calendar results
     """
@@ -45,7 +46,7 @@ def unique_results(results):
     return rids.values()
 
 
-class CalendarTool (UniqueObject, SimpleItem):
+class CalendarTool(UniqueObject, SimpleItem):
 
     """ A tool for encapsulating how calendars work and are displayed """
 
@@ -67,25 +68,19 @@ class CalendarTool (UniqueObject, SimpleItem):
     #
     #   ZMI methods
     #
-    security.declareProtected( ManagePortal, 'manage_overview' )
+    security.declareProtected(ManagePortal, 'manage_overview')
     manage_overview = PageTemplateFile('www/explainCalendarTool', globals(),
                                    __name__='manage_overview')
 
-    security.declareProtected( ManagePortal, 'manage_configure' )
+    security.declareProtected(ManagePortal, 'manage_configure')
     manage_configure = PageTemplateFile('www/configureCalendarTool', globals(),
                                    __name__='manage_configure')
 
-    security.declareProtected( ManagePortal, 'edit_configuration' )
-    def edit_configuration( self
-                          , show_types
-                          , use_session
-                          , show_states=None
-                          , firstweekday=None
-                          ):
+    security.declareProtected(ManagePortal, 'edit_configuration')
+    def edit_configuration(self, show_types, use_session, show_states=None,
+                           firstweekday=None, REQUEST=None):
         """ Change the configuration of the calendar tool 
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
         self.calendar_types = tuple(show_types)
         self.use_session = bool(use_session)
 
@@ -103,8 +98,8 @@ class CalendarTool (UniqueObject, SimpleItem):
                 # Do nothing with illegal values
                 pass
 
-        if hasattr(self.REQUEST, 'RESPONSE'):
-            self.REQUEST.RESPONSE.redirect('manage_configure')
+        if REQUEST is not None:
+            REQUEST.RESPONSE.redirect('manage_configure')
 
     security.declarePrivate('_getCalendar')
     def _getCalendar(self):
@@ -367,7 +362,7 @@ class CalendarTool (UniqueObject, SimpleItem):
         end = DateTime('%d/%02d/%02d 23:59:59' % (year, month, day))
 
         return (begin, end)
-        
+
     security.declarePublic('getNextEvent')
     def getNextEvent(self, start_date=None):
         """ Get the next event that starts after start_date
@@ -390,3 +385,4 @@ class CalendarTool (UniqueObject, SimpleItem):
             return results[0]
 
 InitializeClass(CalendarTool)
+registerToolInterface('portal_calendar', ICalendarTool)
