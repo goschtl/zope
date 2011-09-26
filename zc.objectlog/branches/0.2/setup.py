@@ -93,7 +93,17 @@ setup(
     install_requires = [
         'setuptools',
         'zc.copy',
+        'zc.table',
         'zope.app.keyreference',
-    ],
+        'zope.app.zapi',
+        'zope.component',
+        'zope.i18n',
+        'zope.i18nmessageid',
+        'zope.interface',
+        'zope.location',
+        'zope.proxy',
+        'zope.publisher',
+        'zope.schema',
+        ],
     zip_safe = False
     )
