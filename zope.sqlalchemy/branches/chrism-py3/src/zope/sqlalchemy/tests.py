@@ -288,18 +288,18 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         s1 = t.savepoint()
         session.add(User(id=1, firstname='udo', lastname='juergens'))
         session.flush()
-        self.failUnless(len(query.all())==1, "Users table should have one row")
+        self.assertTrue(len(query.all())==1, "Users table should have one row")
         
         s2 = t.savepoint()
         session.add(User(id=2, firstname='heino', lastname='n/a'))
         session.flush()
-        self.failUnless(len(query.all())==2, "Users table should have two rows")
+        self.assertTrue(len(query.all())==2, "Users table should have two rows")
         
         s2.rollback()
-        self.failUnless(len(query.all())==1, "Users table should have one row")
+        self.assertTrue(len(query.all())==1, "Users table should have one row")
         
         s1.rollback()
-        self.failIf(query.all(), "Users table should be empty")
+        self.assertFalse(query.all(), "Users table should be empty")
 
     def testRollbackAttributes(self):
         use_savepoint = not engine.url.drivername in tx.NO_SAVEPOINT_SUPPORT
@@ -309,7 +309,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         t = transaction.get()
         session = Session()
         query = session.query(User)
-        self.failIf(query.all(), "Users table should be empty")
+        self.assertFalse(query.all(), "Users table should be empty")
         
         s1 = t.savepoint()
         user = User(id=1, firstname='udo', lastname='juergens')
@@ -491,7 +491,6 @@ class RetryTests(unittest.TestCase):
         self.mappers = setup_mappers()
         metadata.drop_all(engine)
         metadata.create_all(engine)
-
         self.tm1 = transaction.TransactionManager()
         self.tm2 = transaction.TransactionManager()
         # With psycopg2 you might supply isolation_level='SERIALIZABLE' here,
@@ -523,9 +522,9 @@ class RetryTests(unittest.TestCase):
         tm1, tm2, s1, s2 = self.tm1, self.tm2, self.s1, self.s2
         # make sure we actually start a session.
         tm1.begin()
-        self.failUnless(len(s1.query(User).all())==1, "Users table should have one row")
+        self.assertTrue(len(s1.query(User).all())==1, "Users table should have one row")
         tm2.begin()
-        self.failUnless(len(s2.query(User).all())==1, "Users table should have one row")
+        self.assertTrue(len(s2.query(User).all())==1, "Users table should have one row")
         s1.query(User).delete()
         user = s2.query(User).get(1)
         user.lastname = u('smith')
@@ -536,17 +535,17 @@ class RetryTests(unittest.TestCase):
         except orm.exc.ConcurrentModificationError as e:
             # This error is thrown when the number of updated rows is not as expected
             raised = True
-        self.failUnless(raised, "Did not raise expected error")
-        self.failUnless(tm2._retryable(type(e), e), "Error should be retryable")
+            self.assertTrue(tm2._retryable(type(e), e), "Error should be retryable")
+        self.assertTrue(raised, "Did not raise expected error")
 
     def testRetryThread(self):
         tm1, tm2, s1, s2 = self.tm1, self.tm2, self.s1, self.s2
         # make sure we actually start a session.
         tm1.begin()
-        self.failUnless(len(s1.query(User).all())==1, "Users table should have one row")
+        self.assertTrue(len(s1.query(User).all())==1, "Users table should have one row")
         tm2.begin()
         s2.connection().execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
-        self.failUnless(len(s2.query(User).all())==1, "Users table should have one row")
+        self.assertTrue(len(s2.query(User).all())==1, "Users table should have one row")
         s1.query(User).delete()
         raised = False
 
@@ -561,8 +560,9 @@ class RetryTests(unittest.TestCase):
         except exc.DBAPIError as e:
             # This error wraps the underlying DBAPI module error, some of which are retryable
             raised = True
-        self.failUnless(raised, "Did not raise expected error")
-        self.failUnless(tm2._retryable(type(e), e), "Error should be retryable")
+            retryable = tm2._retryable(type(e), e)
+            self.assertTrue(retryable, "Error should be retryable")
+        self.assertTrue(raised, "Did not raise expected error")
         thread.join() # well, we must have joined by now
 
 
