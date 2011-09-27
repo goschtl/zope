@@ -15,7 +15,7 @@ To run the test suite:
 
 - Run $env32/bin/python setup.py nosetests.
 
-Currently 2 tests fail, it'd be nice to get some help:
+Currently 2 tests fail:
 
  [chrism@thinko zope.sqlalchemy]$ env32/bin/python setup.py test
 running test
