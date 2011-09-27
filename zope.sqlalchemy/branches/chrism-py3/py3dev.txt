@@ -152,34 +152,6 @@ Ran 17 tests in 0.152s
 
 FAILED (errors=2)
 
-This appears to be some sort of Py3+SQLite thing, beacuse if I run the tests
-using Postgres isntead of SQLALchemy (after "env32/bin/easy_install
-py-postgresql", and then running the tests using
-'TEST_DSN="postgresql+pypostgresql://localhost:5432/testing" env32/bin/python
-setup.py nosetests' against Postgres 8.4.8 after a "createdb testing"), I get
-different failures:
-
-======================================================================
-FAIL: testRetryThread (zope.sqlalchemy.tests.RetryTests)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/chrism/projects/zope.sqlalchemy/src/zope/sqlalchemy/tests.py", line 564, in testRetryThread
-    self.assertTrue(retryable, "Error should be retryable")
-AssertionError: None is not true : Error should be retryable
--------------------- >> begin captured logging << --------------------
-txn.140333906949888: DEBUG: new transaction
-txn.140333906949888: DEBUG: commit <zope.sqlalchemy.datamanager.SessionDataManager object at 0x2dd6ed0>
-txn.140333906949888: DEBUG: commit
-txn.140333906949888: DEBUG: new transaction
-txn.140333906949888: DEBUG: new transaction
-txn.140333906949888: DEBUG: commit <zope.sqlalchemy.datamanager.SessionDataManager object at 0x2dda9d0>
-txn.140333906949888: DEBUG: commit
-txn.140333906949888: DEBUG: new transaction
-txn.140333906949888: DEBUG: abort
-txn.140333906949888: DEBUG: abort
---------------------- >> end captured logging << ---------------------
-
-----------------------------------------------------------------------
-Ran 18 tests in 5.099s
-
-FAILED (failures=1)
+This is because the setuptools (and nose) testrunners do not respect the
+``test_suite`` stanza at the bottom of ``tests.py``; these shouldn't be
+getting run unless the DSN has postgres in it.
