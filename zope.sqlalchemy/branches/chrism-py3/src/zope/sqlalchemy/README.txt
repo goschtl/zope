@@ -14,14 +14,19 @@ only to provide a data manager and makes no attempt to define a `zopeish` way
 to configure engines.
 
 For WSGI applications, Zope style automatic transaction management is
-available with `repoze.tm2`_, a part of `Repoze BFG`_ and `Turbogears 2`_.
+available with `repoze.tm2`_ (used by `Turbogears 2`_ and other systems).
+
+This package is also used by `pyramid_tm`_ (an add-on of the `Pyramid`_) web
+framework.
 
 You need to understand `SQLAlchemy`_ for this package and this README to make 
 any sense.
 
 .. _repoze.tm2: http://docs.repoze.org/tm2/
 
-.. _Repoze BFG: http://bfg.repoze.org/
+.. _pyramid_tm: https://docs.pylonsproject.org/projects/pyramid_tm/dev/
+
+.. _Pyramid: http://pylonsproject.org/
 
 .. _Turbogears 2: http://turbogears.org/
 
