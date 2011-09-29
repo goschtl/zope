@@ -1,5 +1,18 @@
+import sys
+
 import os.path
 from setuptools import setup, find_packages
+
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    extras_require = {}
+else:
+    extras_require= {
+        'test': [
+            'pysqlite',
+            ]
+        }
 
 setup(
     name='zope.sqlalchemy',
@@ -31,9 +44,5 @@ setup(
       'transaction',
       'zope.interface',
       ],
-    extras_require={
-        'test': [
-            'pysqlite',
-            ]
-        },
+    extras_require = extras_require,
     )
