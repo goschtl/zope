@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0'
+version = '1.1'
 
 setup(name='Products.Zope_Hotfix_CVE_2011_3587',
       version=version,
