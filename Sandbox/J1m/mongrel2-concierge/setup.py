@@ -19,6 +19,8 @@ extras_require = dict(test=['zope.testing'])
 entry_points = """
 [console_scripts]
 simul = zc.m2rc.simul:main
+broker_exec = zc.m2rc.simul:broker_exec
+m2_exec = zc.m2rc.simul:m2_exec
 """
 
 from setuptools import setup
