@@ -1,14 +1,10 @@
-Title Here
-**********
+Object Oriented Database (oodb)
+*******************************
 
+The oodb package is a namespace package to gather packages in support
+of object-oriented databases based on the Z Object Database
+Technology.  It's possible that packages currently in the ZODB
+distribution will migrate here.
 
-To learn more, see
-
-
-Changes
-*******
-
-0.1.0 (yyyy-mm-dd)
-==================
-
-Initial release
+Don't bother installing this package. It doesn't provide any
+code. It's just a place holder for the namespace package.
