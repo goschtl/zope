@@ -2,16 +2,16 @@
 The ``runscript`` Buildout Recipe
 =================================
 
-Some software is not easily installed using established build patterns, such
+Some software packages are not easily installed using established build patterns, such
 as "configure, make, make install". In those cases you want to be able to use
 arbitrary scripts to build a particular part. This recipe provides a simple
 implementation to run a Python callable for each installing and updating a
 part.
 
-  >>> import os
-  >>> import z3c.recipe.runscript.tests
-  >>> scriptFilename = os.path.join(
-  ...     os.path.dirname(z3c.recipe.runscript.tests.__file__), 'fooscripts.py')
+    >>> import os
+    >>> import z3c.recipe.runscript.tests
+    >>> scriptFilename = os.path.join(
+    ...     os.path.dirname(z3c.recipe.runscript.tests.__file__), 'fooscripts.py')
 
 Let's create a sample buildout to install it:
 
@@ -36,7 +36,7 @@ When running buildout, the ``installFoo()`` function is called:
     Now executing ``installFoo()``
 
 If we run the buildout again, the update method will be called, but since we
-did not specify any, ntohing happens:
+did not specify any, nothing happens:
 
     >>> print system('bin/buildout')
     Updating foo.

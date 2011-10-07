@@ -15,6 +15,7 @@
 import doctest
 import unittest
 import zc.buildout.testing
+from os.path import join, pardir
 
 
 def setUp(test):
@@ -24,7 +25,7 @@ def setUp(test):
 
 def test_suite():
     return doctest.DocFileSuite(
-        '../README.txt',
+        join(pardir, 'README.txt'),
         setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
         )

@@ -23,7 +23,7 @@ class Recipe:
             name)
 
     def callScript(self, script):
-        filename, callable = script.split(':')
+        filename, callable = script.rsplit(':', 1)
         filename = os.path.abspath(filename)
         module = imp.load_source('script', filename)
         # Run the script with all options
