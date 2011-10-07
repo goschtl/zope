@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-0.1.3 (unreleased)
+0.1.3 (2011-10-07)
 ------------------
 
-- Nothing changed yet.
+- Bug: fix Windows path support (containing semicolon such as 'c:\\')
 
 
 0.1.2 (2010-09-22)
