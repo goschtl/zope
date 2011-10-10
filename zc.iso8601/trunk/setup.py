@@ -16,7 +16,7 @@ def long_description():
 
 setuptools.setup(
     name="zc.iso8601",
-    version="0.2.0dev",
+    version="0.3.0dev",
     description="ISO 8601 utility functions",
     url="http://pypi.python.org/pypi/zc.iso8601/",
     long_description=long_description(),
