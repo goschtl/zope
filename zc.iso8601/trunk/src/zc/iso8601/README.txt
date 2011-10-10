@@ -13,6 +13,66 @@ The verbose form is generally preferred in practice since it is substantially
 more readable for humans.
 
 
+Parsing date values
+-------------------
+
+There's a simple function that parses a date:
+
+    >>> from zc.iso8601.parse import date
+
+This function only accepts a date; no time information may be included:
+
+    >>> date(u"2006-12-02T23:40:42")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: u'2006-12-02T23:40:42'
+
+    >>> date(u"2006-12-02T23:40:42Z")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: u'2006-12-02T23:40:42Z'
+
+    >>> date(u"2006-12-02T23:40:42+00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: u'2006-12-02T23:40:42+00:00'
+
+    >>> date(u"2006-12-02T23:40:42-00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: u'2006-12-02T23:40:42-00:00'
+
+    >>> date(u"2006-12-02T23:40:42-01:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: u'2006-12-02T23:40:42-01:00'
+
+A date without time information is parsed as expected:
+
+    >>> date(u"2011-10-10")
+    datetime.date(2011, 10, 10)
+    >>> date(u"20111010")
+    datetime.date(2011, 10, 10)
+
+    >>> date(u"0001-01-01")
+    datetime.date(1, 1, 1)
+    >>> date(u"00010101")
+    datetime.date(1, 1, 1)
+
+    >>> date(u"9999-12-31")
+    datetime.date(9999, 12, 31)
+    >>> date(u"99991231")
+    datetime.date(9999, 12, 31)
+
+Surrounding whitespace is ignored:
+
+    >>> date(u"\t\n\r 2011-10-10 \r\n\t")
+    datetime.date(2011, 10, 10)
+    >>> date(u"\t\n\r 20111010 \r\n\t")
+    datetime.date(2011, 10, 10)
+
+Embedded whitespace is not:
+
+    >>> date("2011 10 10")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 date: '2011 10 10'
+
+
 Parsing date/time values
 ------------------------
 

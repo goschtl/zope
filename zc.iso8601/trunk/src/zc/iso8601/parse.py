@@ -23,13 +23,28 @@ import pytz
 import re
 
 
-_tz_re = "(?:Z|(?P<tzdir>[-+])(?P<tzhour>\d\d):(?P<tzmin>\d\d))$"
-
 # "Verbose" ISO 8601, with hyphens and colons:
-_datetime_re1 = """\
+_date_re1 = """\
     (?P<year>\d\d\d\d)
     -(?P<month>\d\d)
     -(?P<day>\d\d)
+    """
+
+# "Compact" ISO 8601, without hyphens and colons:
+_date_re2 = """\
+    (?P<year>\d\d\d\d)
+    (?P<month>\d\d)
+    (?P<day>\d\d)
+    """
+
+_date_rx1 = re.compile(_date_re1 + "$", re.VERBOSE)
+_date_rx2 = re.compile(_date_re2 + "$", re.VERBOSE)
+_date_rxs = [_date_rx1, _date_rx2]
+
+_tz_re = "(?:Z|(?P<tzdir>[-+])(?P<tzhour>\d\d):(?P<tzmin>\d\d))$"
+
+# "Verbose" ISO 8601, with hyphens and colons:
+_datetime_re1 = _date_re1 + """\
     [T\ ]
     (?P<hour>\d\d)
     :(?P<minute>\d\d)
@@ -40,10 +55,7 @@ _datetimetz_re1 = _datetime_re1 + _tz_re
 _datetime_re1 += "$"
 
 # "Compact" ISO 8601, without hyphens and colons:
-_datetime_re2 = """\
-    (?P<year>\d\d\d\d)
-    (?P<month>\d\d)
-    (?P<day>\d\d)
+_datetime_re2 = _date_re2 + """\
     [T\ ]
     (?P<hour>\d\d)
     (?P<minute>\d\d)
@@ -60,6 +72,18 @@ _datetime_rxs = [_datetime_rx1, _datetime_rx2]
 _datetimetz_rx1 = re.compile(_datetimetz_re1, re.VERBOSE)
 _datetimetz_rx2 = re.compile(_datetimetz_re2, re.VERBOSE)
 _datetimetz_rxs = [_datetimetz_rx1, _datetimetz_rx2]
+
+
+def date(string):
+    """Parse an ISO 8601 date without time information.
+
+    Returns a Python date object.
+
+    """
+    m = _find_match(string, _date_rxs, "date")
+    year, month, day = map(int, m.group("year", "month", "day"))
+    return _datetime.date(year, month, day)
+    
 
 
 def datetime(string):
@@ -100,13 +124,13 @@ def datetimetz(string):
         tzinfo=pytz.UTC)
 
 
-def _find_match(string, rxs):
+def _find_match(string, rxs, what="datetime"):
     string = " ".join(string.split())
     for rx in rxs:
         m = rx.match(string)
         if m is not None:
             return m
-    raise ValueError("could not parse ISO 8601 datetime: %r" % string)
+    raise ValueError("could not parse ISO 8601 %s: %r" % (what, string))
 
 
 def _get_datetime_parts(m):
