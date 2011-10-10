@@ -14,6 +14,7 @@
 """Schema field tests
 """
 from unittest import TestCase, main, makeSuite
+from six import u, b
 from zope.interface import Interface
 from zope.schema import Bytes
 from zope.schema import getFields, getFieldsInOrder
@@ -21,28 +22,28 @@ from zope.schema import getFieldNames, getFieldNamesInOrder
 
 class ISchemaTest(Interface):
     title = Bytes(
-        title=u"Title",
-        description=u"Title",
-        default="",
+        title=u("Title"),
+        description=u("Title"),
+        default=b(""),
         required=True)
 
     description = Bytes(
-        title=u"Description",
-        description=u"Description",
-        default="",
+        title=u("Description"),
+        description=u("Description"),
+        default=b(""),
         required=True)
 
     spam = Bytes(
-        title=u"Spam",
-        description=u"Spam",
-        default="",
+        title=u("Spam"),
+        description=u("Spam"),
+        default=b(""),
         required=True)
 
 class ISchemaTestSubclass(ISchemaTest):
     foo = Bytes(
-        title=u'Foo',
-        description=u'Fooness',
-        default="",
+        title=u('Foo'),
+        description=u('Fooness'),
+        default=b(""),
         required=False)
 
 
@@ -66,24 +67,24 @@ class SchemaTest(TestCase):
     def test_getFields(self):
         fields = getFields(ISchemaTest)
 
-        self.assert_(fields.has_key('title'))
-        self.assert_(fields.has_key('description'))
-        self.assert_(fields.has_key('spam'))
+        self.assert_('title' in fields)
+        self.assert_('description' in fields)
+        self.assert_('spam' in fields)
 
         # test whether getName() has the right value
-        for key, value in fields.iteritems():
+        for key, value in fields.items():
             self.assertEquals(key, value.getName())
 
     def test_getFieldsAll(self):
         fields = getFields(ISchemaTestSubclass)
 
-        self.assert_(fields.has_key('title'))
-        self.assert_(fields.has_key('description'))
-        self.assert_(fields.has_key('spam'))
-        self.assert_(fields.has_key('foo'))
+        self.assert_('title' in fields)
+        self.assert_('description' in fields)
+        self.assert_('spam' in fields)
+        self.assert_('foo' in fields)
 
         # test whether getName() has the right value
-        for key, value in fields.iteritems():
+        for key, value in fields.items():
             self.assertEquals(key, value.getName())
 
     def test_getFieldsInOrder(self):

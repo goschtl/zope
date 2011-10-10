@@ -14,6 +14,8 @@
 """DottedName field tests
 """
 from unittest import main, makeSuite
+
+from six import b
 from zope.schema import DottedName
 from zope.schema.tests.test_field import FieldTestBase
 from zope.schema.interfaces import InvalidDottedName, RequiredMissing
@@ -27,21 +29,21 @@ class DottedNameTest(FieldTestBase):
         field = self._Field_Factory(required=False)
 
         field.validate(None)
-        field.validate('foo.bar')
-        field.validate('foo.bar0')
-        field.validate('foo0.bar')
+        field.validate(b('foo.bar'))
+        field.validate(b('foo.bar0'))
+        field.validate(b('foo0.bar'))
         
         # We used to incorrectly allow ^: https://bugs.launchpad.net/zope.schema/+bug/191236
-        self.assertRaises(InvalidDottedName, field.validate, 'foo.bar^foobar')
-        self.assertRaises(InvalidDottedName, field.validate, 'foo^foobar.bar')
+        self.assertRaises(InvalidDottedName, field.validate, b('foo.bar^foobar'))
+        self.assertRaises(InvalidDottedName, field.validate, b('foo^foobar.bar'))
         # dotted names cannot start with digits
-        self.assertRaises(InvalidDottedName, field.validate, 'foo.0bar')
-        self.assertRaises(InvalidDottedName, field.validate, '0foo.bar')
+        self.assertRaises(InvalidDottedName, field.validate, b('foo.0bar'))
+        self.assertRaises(InvalidDottedName, field.validate, b('0foo.bar'))
 
     def testValidateRequired(self):
         field = self._Field_Factory(required=True)
         
-        field.validate('foo.bar')
+        field.validate(b('foo.bar'))
         
         self.assertRaises(RequiredMissing, field.validate, None)
 

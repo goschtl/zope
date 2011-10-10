@@ -17,7 +17,7 @@ import unittest
 
 from zope.interface.verify import verifyObject
 from zope.interface.exceptions import DoesNotImplement
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
@@ -59,8 +59,8 @@ class RegistryTests(BaseTest):
 class SampleTerm(object):
     pass
 
+@implementer(interfaces.IVocabulary)
 class SampleVocabulary(object):
-    implements(interfaces.IVocabulary)
 
     def __iter__(self):
         return iter([self.getTerm(x) for x in range(0, 10)])
@@ -161,13 +161,13 @@ class SimpleVocabularyTests(unittest.TestCase):
     def test_nonunique_token_message(self):
         try:
             vocabulary.SimpleVocabulary.fromValues([2, '2'])
-        except ValueError, e:
+        except ValueError as e:
             self.assertEquals(str(e), "term tokens must be unique: '2'")
 
     def test_nonunique_token_messages(self):
         try:
             vocabulary.SimpleVocabulary.fromItems([(0, 'one'), (1, 'one')])
-        except ValueError, e:
+        except ValueError as e:
             self.assertEquals(str(e), "term values must be unique: 'one'")
 
     def test_overriding_createTerm(self):

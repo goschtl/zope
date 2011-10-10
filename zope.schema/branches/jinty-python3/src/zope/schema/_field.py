@@ -22,8 +22,9 @@ import threading
 from datetime import datetime, date, timedelta, time
 from zope.event import notify
 
-from zope.interface import classImplements, implements, Interface
+from zope.interface import classImplements, implementer, Interface
 from zope.interface.interfaces import IInterface, IMethod
+from six import u, b, text_type, string_types, binary_type, PY3
 
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
@@ -72,39 +73,61 @@ classImplements(Bool, IBool)
 classImplements(Bool, IFromUnicode)
 classImplements(Int, IInt)
 
+if PY3:
+    def _to_string(str):
+        return str.decode('ascii')
 
+    def _max_string_ord(bytes):
+        return max(bytes)
+else:
+    def _to_string(str):
+        return str
+    
+    def _max_string_ord(bytes):
+        return max(map(ord, bytes))
+
+def _re_on_bytes(re):
+    if PY3:
+        def f(in_bytes):
+            return re(_to_string(in_bytes))
+        return f
+    return re
+
+@implementer(ISourceText)
 class SourceText(Text):
     __doc__ = ISourceText.__doc__
-    implements(ISourceText)
-    _type = unicode
+    _type = text_type
 
 
+@implementer(IBytes, IFromUnicode)
 class Bytes(MinMaxLen, Field):
     __doc__ = IBytes.__doc__
-    implements(IBytes, IFromUnicode)
 
-    _type = str
+    _type = binary_type
 
     def fromUnicode(self, u):
         """
-        >>> b = Bytes(constraint=lambda v: 'x' in v)
+        >>> obj = Bytes(constraint=lambda v: b('x') in v)
 
-        >>> b.fromUnicode(u" foo x.y.z bat")
+        >>> obj.fromUnicode(u(" foo x.y.z bat"))
         ' foo x.y.z bat'
-        >>> b.fromUnicode(u" foo y.z bat")
+        >>> obj.fromUnicode(u(" foo y.z bat"))
         Traceback (most recent call last):
         ...
         ConstraintNotSatisfied:  foo y.z bat
 
         """
-        v = str(u)
+        if PY3:
+            v = b(u)
+        else:
+            v = str(u)
         self.validate(v)
         return v
 
 
+@implementer(IASCII)
 class ASCII(Bytes):
     __doc__ = IASCII.__doc__
-    implements(IASCII)
 
     def _validate(self, value):
         """
@@ -112,15 +135,15 @@ class ASCII(Bytes):
 
         Make sure we accept empty strings:
 
-        >>> empty = ''
+        >>> empty = b('')
         >>> ascii._validate(empty)
 
         and all kinds of alphanumeric strings:
 
-        >>> alphanumeric = "Bob\'s my 23rd uncle"
+        >>> alphanumeric = b("Bob\'s my 23rd uncle")
         >>> ascii._validate(alphanumeric)
 
-        >>> umlauts = "Köhlerstraße"
+        >>> umlauts = b("Köhlerstraße")
         >>> ascii._validate(umlauts)
         Traceback (most recent call last):
         ...
@@ -129,33 +152,31 @@ class ASCII(Bytes):
         super(ASCII, self)._validate(value)
         if not value:
             return
-        if not max(map(ord, value)) < 128:
+        if not _max_string_ord(value) < 128:
             raise InvalidValue
 
 
+@implementer(IBytesLine)
 class BytesLine(Bytes):
     """A Text field with no newlines."""
 
-    implements(IBytesLine)
-
     def constraint(self, value):
         # TODO: we should probably use a more general definition of newlines
-        return '\n' not in value
+        return b('\n') not in value
 
 
+@implementer(IASCIILine)
 class ASCIILine(ASCII):
     __doc__ = IASCIILine.__doc__
 
-    implements(IASCIILine)
-
     def constraint(self, value):
         # TODO: we should probably use a more general definition of newlines
-        return '\n' not in value
+        return b('\n') not in value
 
 
+@implementer(IFloat, IFromUnicode)
 class Float(Orderable, Field):
     __doc__ = IFloat.__doc__
-    implements(IFloat, IFromUnicode)
     _type = float
 
     def __init__(self, *args, **kw):
@@ -176,9 +197,9 @@ class Float(Orderable, Field):
         return v
 
 
+@implementer(IDecimal, IFromUnicode)
 class Decimal(Orderable, Field):
     __doc__ = IDecimal.__doc__
-    implements(IDecimal, IFromUnicode)
     _type = decimal.Decimal
 
     def __init__(self, *args, **kw):
@@ -205,18 +226,18 @@ class Decimal(Orderable, Field):
         return v
 
 
+@implementer(IDatetime)
 class Datetime(Orderable, Field):
     __doc__ = IDatetime.__doc__
-    implements(IDatetime)
     _type = datetime
 
     def __init__(self, *args, **kw):
         super(Datetime, self).__init__(*args, **kw)
 
 
+@implementer(IDate)
 class Date(Orderable, Field):
     __doc__ = IDate.__doc__
-    implements(IDate)
     _type = date
 
     def _validate(self, value):
@@ -225,28 +246,28 @@ class Date(Orderable, Field):
             raise WrongType(value, self._type, self.__name__)
 
 
+@implementer(ITimedelta)
 class Timedelta(Orderable, Field):
     __doc__ = ITimedelta.__doc__
-    implements(ITimedelta)
     _type = timedelta
 
 
+@implementer(ITime)
 class Time(Orderable, Field):
     __doc__ = ITime.__doc__
-    implements(ITime)
     _type = time
 
 
+@implementer(IChoice, IFromUnicode)
 class Choice(Field):
     """Choice fields can have a value found in a constant or dynamic set of
     values given by the field definition.
     """
-    implements(IChoice, IFromUnicode)
 
     def __init__(self, values=None, vocabulary=None, source=None, **kw):
         """Initialize object."""
         if vocabulary is not None:
-            assert (isinstance(vocabulary, basestring)
+            assert (isinstance(vocabulary, string_types)
                     or IBaseVocabulary.providedBy(vocabulary))
             assert source is None, (
                 "You cannot specify both source and vocabulary.")
@@ -262,7 +283,7 @@ class Choice(Field):
         self.vocabularyName = None
         if values is not None:
             self.vocabulary = SimpleVocabulary.fromValues(values)
-        elif isinstance(vocabulary, (unicode, str)):
+        elif isinstance(vocabulary, string_types):
             self.vocabularyName = vocabulary
         else:
             assert (ISource.providedBy(vocabulary) or
@@ -296,16 +317,16 @@ class Choice(Field):
 
     def fromUnicode(self, str):
         """
-        >>> from vocabulary import SimpleVocabulary
+        >>> from zope.schema.vocabulary import SimpleVocabulary
         >>> t = Choice(
-        ...     vocabulary=SimpleVocabulary.fromValues([u'foo',u'bar']))
+        ...     vocabulary=SimpleVocabulary.fromValues([u('foo'),u('bar')]))
         >>> IFromUnicode.providedBy(t)
         True
-        >>> t.fromUnicode(u"baz")
+        >>> t.fromUnicode(u("baz"))
         Traceback (most recent call last):
         ...
         ConstraintNotSatisfied: baz
-        >>> t.fromUnicode(u"foo")
+        >>> t.fromUnicode(u("foo"))
         u'foo'
         """
         self.validate(str)
@@ -327,9 +348,9 @@ class Choice(Field):
             raise ConstraintNotSatisfied(value)
 
 
+@implementer(IInterfaceField)
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
-    implements(IInterfaceField)
 
     def _validate(self, value):
         super(InterfaceField, self)._validate(value)
@@ -352,9 +373,9 @@ def _validate_sequence(value_type, value, errors=None):
 
         To validate a sequence of various values:
 
-            >>> errors = _validate_sequence(field, ('foo', u'bar', 1))
+            >>> errors = _validate_sequence(field, (b('foo'), u('bar'), 1))
             >>> errors
-            [WrongType('foo', <type 'unicode'>, ''), WrongType(1, <type 'unicode'>, '')]
+            [WrongType(b'foo', <type 'unicode'>, ''), WrongType(1, <type 'unicode'>, '')]
 
         The only valid value in the sequence is the second item. The others
         generated errors.
@@ -362,9 +383,9 @@ def _validate_sequence(value_type, value, errors=None):
         We can use the optional errors argument to collect additional errors
         for a new sequence:
 
-        >>> errors = _validate_sequence(field, (2, u'baz'), errors)
+        >>> errors = _validate_sequence(field, (2, u('baz')), errors)
         >>> errors
-        [WrongType('foo', <type 'unicode'>, ''), WrongType(1, <type 'unicode'>, ''), WrongType(2, <type 'unicode'>, '')]
+        [WrongType(b'foo', <type 'unicode'>, ''), WrongType(1, <type 'unicode'>, ''), WrongType(2, <type 'unicode'>, '')]
 
     """
     if errors is None:
@@ -374,7 +395,7 @@ def _validate_sequence(value_type, value, errors=None):
     for item in value:
         try:
             value_type.validate(item)
-        except ValidationError, error:
+        except ValidationError as error:
             errors.append(error)
     return errors
 
@@ -418,21 +439,21 @@ class AbstractCollection(MinMaxLen, Iterable):
             _validate_uniqueness(value)
 
 
+@implementer(ITuple)
 class Tuple(AbstractCollection):
     """A field representing a Tuple."""
-    implements(ITuple)
     _type = tuple
 
 
+@implementer(IList)
 class List(AbstractCollection):
     """A field representing a List."""
-    implements(IList)
     _type = list
 
 
+@implementer(ISet)
 class Set(AbstractCollection):
     """A field representing a set."""
-    implements(ISet)
     _type = set
 
     def __init__(self, **kw):
@@ -442,8 +463,8 @@ class Set(AbstractCollection):
         super(Set, self).__init__(unique=True, **kw)
 
 
+@implementer(IFrozenSet)
 class FrozenSet(AbstractCollection):
-    implements(IFrozenSet)
     _type = frozenset
 
     def __init__(self, **kw):
@@ -483,9 +504,9 @@ def _validate_fields(schema, value, errors=None):
                     if IField.providedBy(attribute):
                         # validate attributes that are fields
                         attribute.validate(getattr(value, name))
-                except ValidationError, error:
+                except ValidationError as error:
                     errors.append(error)
-                except AttributeError, error:
+                except AttributeError as error:
                     # property for the given name is not implemented
                     errors.append(SchemaNotFullyImplemented(error))
     finally:
@@ -493,9 +514,9 @@ def _validate_fields(schema, value, errors=None):
     return errors
 
 
+@implementer(IObject)
 class Object(Field):
     __doc__ = IObject.__doc__
-    implements(IObject)
 
     def __init__(self, schema, **kw):
         if not IInterface.providedBy(schema):
@@ -528,10 +549,9 @@ class Object(Field):
         super(Object, self).set(object, value)
 
 
+@implementer(IBeforeObjectAssignedEvent)
 class BeforeObjectAssignedEvent(object):
     """An object is going to be assigned to an attribute on another object."""
-
-    implements(IBeforeObjectAssignedEvent)
 
     def __init__(self, object, name, context):
         self.object = object
@@ -539,9 +559,9 @@ class BeforeObjectAssignedEvent(object):
         self.context = context
 
 
+@implementer(IDict)
 class Dict(MinMaxLen, Iterable):
     """A field representing a Dict."""
-    implements(IDict)
     _type = dict
     key_type = None
     value_type = None
@@ -588,20 +608,19 @@ _isuri = re.compile(
     r"[a-zA-z0-9+.-]+:"
     # non space (should be pickier)
     r"\S*$").match
+_isuri = _re_on_bytes(_isuri)
 
-
+@implementer(IURI, IFromUnicode)
 class URI(BytesLine):
     """URI schema field
     """
 
-    implements(IURI, IFromUnicode)
-
     def _validate(self, value):
         """
         >>> uri = URI(__name__='test')
-        >>> uri.validate("http://www.python.org/foo/bar")
-        >>> uri.validate("DAV:")
-        >>> uri.validate("www.python.org/foo/bar")
+        >>> uri.validate(b("http://www.python.org/foo/bar"))
+        >>> uri.validate(b("DAV:"))
+        >>> uri.validate(b("www.python.org/foo/bar"))
         Traceback (most recent call last):
         ...
         InvalidURI: www.python.org/foo/bar
@@ -627,7 +646,7 @@ class URI(BytesLine):
         ...
         InvalidURI: http://www.python.org/ foo/bar
         """
-        v = str(value.strip())
+        v = value.strip().encode('ascii')
         self.validate(v)
         return v
 
@@ -637,26 +656,26 @@ _isdotted = re.compile(
     r"([.][a-zA-Z][a-zA-Z0-9_]*)*"
     # use the whole line
     r"$").match
+_isdotted = _re_on_bytes(_isdotted)
 
 
+@implementer(IId, IFromUnicode)
 class Id(BytesLine):
     """Id field
 
     Values of id fields must be either uris or dotted names.
     """
 
-    implements(IId, IFromUnicode)
-
     def _validate(self, value):
         """
         >>> id = Id(__name__='test')
-        >>> id.validate("http://www.python.org/foo/bar")
-        >>> id.validate("zope.app.content")
-        >>> id.validate("zope.app.content/a")
+        >>> id.validate(b("http://www.python.org/foo/bar"))
+        >>> id.validate(b("zope.app.content"))
+        >>> id.validate(b("zope.app.content/a"))
         Traceback (most recent call last):
         ...
         InvalidId: zope.app.content/a
-        >>> id.validate("http://zope.app.content x y")
+        >>> id.validate(b("http://zope.app.content x y"))
         Traceback (most recent call last):
         ...
         InvalidId: http://zope.app.content x y
@@ -664,7 +683,7 @@ class Id(BytesLine):
         super(Id, self)._validate(value)
         if _isuri(value):
             return
-        if _isdotted(value) and "." in value:
+        if _isdotted(value) and b(".") in value:
             return
 
         raise InvalidId(value)
@@ -674,7 +693,7 @@ class Id(BytesLine):
         >>> id = Id(__name__='test')
         >>> id.fromUnicode("http://www.python.org/foo/bar")
         'http://www.python.org/foo/bar'
-        >>> id.fromUnicode(u" http://www.python.org/foo/bar ")
+        >>> id.fromUnicode(u(" http://www.python.org/foo/bar "))
         'http://www.python.org/foo/bar'
         >>> id.fromUnicode("http://www.python.org/ foo/bar")
         Traceback (most recent call last):
@@ -684,18 +703,19 @@ class Id(BytesLine):
         'x.y.z'
 
         """
-        v = str(value.strip())
+        v = value.strip()
+        if not isinstance(v, self._type):
+            v = v.encode('ascii')
         self.validate(v)
         return v
 
 
+@implementer(IDottedName)
 class DottedName(BytesLine):
     """Dotted name field.
 
     Values of DottedName fields must be Python-style dotted names.
     """
-
-    implements(IDottedName)
 
     def __init__(self, *args, **kw):
         """
@@ -742,44 +762,44 @@ class DottedName(BytesLine):
     def _validate(self, value):
         """
         >>> dotted_name = DottedName(__name__='test')
-        >>> dotted_name.validate("a.b.c")
-        >>> dotted_name.validate("a")
-        >>> dotted_name.validate("   a")
+        >>> dotted_name.validate(b("a.b.c"))
+        >>> dotted_name.validate(b("a"))
+        >>> dotted_name.validate(b("   a"))
         Traceback (most recent call last):
         ...
         InvalidDottedName:    a
 
         >>> dotted_name = DottedName(__name__='test', min_dots=1)
-        >>> dotted_name.validate('a.b')
-        >>> dotted_name.validate('a.b.c.d')
-        >>> dotted_name.validate('a')
+        >>> dotted_name.validate(b('a.b'))
+        >>> dotted_name.validate(b('a.b.c.d'))
+        >>> dotted_name.validate(b('a'))
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too few dots; 1 required', 'a')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=0)
-        >>> dotted_name.validate('a')
-        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate(b('a'))
+        >>> dotted_name.validate(b('a.b'))
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 0 allowed', 'a.b')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=2)
-        >>> dotted_name.validate('a')
-        >>> dotted_name.validate('a.b')
-        >>> dotted_name.validate('a.b.c')
-        >>> dotted_name.validate('a.b.c.d')
+        >>> dotted_name.validate(b('a'))
+        >>> dotted_name.validate(b('a.b'))
+        >>> dotted_name.validate(b('a.b.c'))
+        >>> dotted_name.validate(b('a.b.c.d'))
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 2 allowed', 'a.b.c.d')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=1, min_dots=1)
-        >>> dotted_name.validate('a.b')
-        >>> dotted_name.validate('a')
+        >>> dotted_name.validate(b('a.b'))
+        >>> dotted_name.validate(b('a'))
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too few dots; 1 required', 'a')
-        >>> dotted_name.validate('a.b.c')
+        >>> dotted_name.validate(b('a.b.c'))
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 1 allowed', 'a.b.c')
@@ -788,7 +808,7 @@ class DottedName(BytesLine):
         super(DottedName, self)._validate(value)
         if not _isdotted(value):
             raise InvalidDottedName(value)
-        dots = value.count(".")
+        dots = _to_string(value).count(".")
         if dots < self.min_dots:
             raise InvalidDottedName("too few dots; %d required" % self.min_dots,
                                     value)
@@ -797,6 +817,6 @@ class DottedName(BytesLine):
                                     self.max_dots, value)
 
     def fromUnicode(self, value):
-        v = str(value.strip())
+        v = b(value.strip())
         self.validate(v)
         return v

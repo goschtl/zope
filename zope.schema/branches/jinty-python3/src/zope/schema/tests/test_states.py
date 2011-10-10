@@ -15,6 +15,7 @@
 """
 import unittest
 
+from six import u
 from zope.interface import Interface
 from zope.interface.verify import verifyObject
 
@@ -26,25 +27,25 @@ from zope.schema.tests import states
 
 class IBirthInfo(Interface):
     state1 = Choice(
-        title=u'State of Birth',
-        description=u'The state in which you were born.',
+        title=u('State of Birth'),
+        description=u('The state in which you were born.'),
         vocabulary="states",
         default="AL",
         )
     state2 = Choice(
-        title=u'State of Birth',
-        description=u'The state in which you were born.',
+        title=u('State of Birth'),
+        description=u('The state in which you were born.'),
         vocabulary="states",
         default="AL",
         )
     state3 = Choice(
-        title=u'Favorite State',
-        description=u'The state you like the most.',
+        title=u('Favorite State'),
+        description=u('The state you like the most.'),
         vocabulary=states.StateVocabulary(),
         )
     state4 = Choice(
-        title=u"Name",
-        description=u"The name of your new state",
+        title=u("Name"),
+        description=u("The name of your new state"),
         vocabulary="states",
         )
 

@@ -15,13 +15,14 @@
 """
 import unittest
 
+from six import u
 from zope.schema import vocabulary
 from zope.schema import Choice
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import InvalidValue, NotAContainer, NotUnique
 
-from test_vocabulary import SampleVocabulary, DummyRegistry
+from zope.schema.tests.test_vocabulary import SampleVocabulary, DummyRegistry
 
 
 class Value_ChoiceFieldTests(unittest.TestCase):
@@ -41,7 +42,7 @@ class Value_ChoiceFieldTests(unittest.TestCase):
         choice = Choice(values=['a', 'c'])
         choice.validate('a')
         choice.validate('c')
-        choice.validate(u'c')
+        choice.validate(u('c'))
         self.assertRaises(ConstraintNotSatisfied, choice.validate, 'd')
 
     def test_validate_tuple(self):
