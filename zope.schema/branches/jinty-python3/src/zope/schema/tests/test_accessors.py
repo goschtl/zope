@@ -62,10 +62,10 @@ class Test(unittest.TestCase):
         for attr in ('title', 'description', 'readonly'):
             self.assertEqual(getattr(I['getFoo'], attr), getattr(field, attr))
 
-        self.assert_(IText.providedBy(I['getFoo']))
+        self.assertTrue(IText.providedBy(I['getFoo']))
         
-        self.assert_(IMethod.providedBy(I['getFoo']))
-        self.assert_(IMethod.providedBy(I['setFoo']))
+        self.assertTrue(IMethod.providedBy(I['getFoo']))
+        self.assertTrue(IMethod.providedBy(I['setFoo']))
 
         self.assertEqual(I['setFoo'].field, field)
         self.assertEqual(I['setFoo'].__name__, 'setFoo')
@@ -75,17 +75,17 @@ class Test(unittest.TestCase):
         self.assertRaises(Exception, verifyClass, I, Bad)
         self.assertRaises(Exception, verifyObject, I, Bad())
         
-        self.assertEquals(I['getFoo'].query(Bad(), 42), 42)
+        self.assertEqual(I['getFoo'].query(Bad(), 42), 42)
         self.assertRaises(AttributeError, I['getFoo'].get, Bad())
 
         verifyClass(I, Good)
         verifyObject(I, Good())
 
-        self.assertEquals(I['getFoo'].query(Good(), 42), u('foo'))
-        self.assertEquals(I['getFoo'].get(Good()), u('foo'))
+        self.assertEqual(I['getFoo'].query(Good(), 42), u('foo'))
+        self.assertEqual(I['getFoo'].get(Good()), u('foo'))
         instance = Good()
         I['getFoo'].set(instance, u('whatever'))
-        self.assertEquals(instance.set, 1)
+        self.assertEqual(instance.set, 1)
 
     def test_doc(self):
 

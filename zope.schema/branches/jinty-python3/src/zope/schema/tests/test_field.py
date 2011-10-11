@@ -49,7 +49,7 @@ class FieldTestBase(TestCase):
         self.assertEqual(field.queryTaggedValue('a'), field2.queryTaggedValue('a'))
         for n in ('__class__', '__name__', '__doc__', 'title', 'description',
                   'readonly', 'required', 'interface'):
-            self.assertEquals(getattr(field2, n), getattr(field, n), n)
+            self.assertEqual(getattr(field2, n), getattr(field, n), n)
 
     def testValidate(self):
         field = self._Field_Factory(
@@ -120,13 +120,13 @@ class FieldTest(FieldTestBase):
             a = Text()
             b = Text()
 
-        self.failUnless(S1['a'].order < S1['b'].order)
+        self.assertTrue(S1['a'].order < S1['b'].order)
 
         class S2(Interface):
             b = Text()
             a = Text()
 
-        self.failUnless(S2['a'].order > S2['b'].order)
+        self.assertTrue(S2['a'].order > S2['b'].order)
 
     def testConstraint(self):
         def isodd(x):
@@ -171,7 +171,7 @@ class FieldDefaultBehaviour(TestCase):
         class MyField(Field):
             pass
         field = MyField(title=u('my'))
-        self.assert_(field.required)
+        self.assertTrue(field.required)
 
 def test_suite():
     checker = renormalizing.RENormalizing([

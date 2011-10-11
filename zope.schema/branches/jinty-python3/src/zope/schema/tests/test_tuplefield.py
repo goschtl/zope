@@ -117,9 +117,9 @@ class TupleTest(CollectionFieldTestBase):
     
     def testImplements(self):
         field = Tuple()
-        self.failUnless(ITuple.providedBy(field))
-        self.failUnless(ISequence.providedBy(field))
-        self.failUnless(ICollection.providedBy(field))
+        self.assertTrue(ITuple.providedBy(field))
+        self.assertTrue(ISequence.providedBy(field))
+        self.assertTrue(ICollection.providedBy(field))
 
 def test_suite():
     suite = TestSuite()

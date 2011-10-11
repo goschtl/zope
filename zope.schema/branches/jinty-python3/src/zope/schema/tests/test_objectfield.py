@@ -233,7 +233,7 @@ class ObjectTest(CleanUp, FieldTestBase):
         self.assertRaises(ValidationError, field.validate, data)
         self.assertRaises(WrongContainedType, field.validate, data)
         errors = self.getErrors(field.validate, data)
-        self.assertEquals(errors[0], RequiredMissing('foo'))
+        self.assertEqual(errors[0], RequiredMissing('foo'))
 
     def test_validate_FieldPropertyTestData(self):
         field = self.makeTestObject(schema=ITestSchema, required=False)
@@ -250,7 +250,7 @@ class ObjectTest(CleanUp, FieldTestBase):
         self.assertRaises(ValidationError, field.validate, data)
         self.assertRaises(WrongContainedType, field.validate, data)
         errors = self.getErrors(field.validate, data)
-        self.assert_(isinstance(errors[0], SchemaNotFullyImplemented))
+        self.assertTrue(isinstance(errors[0], SchemaNotFullyImplemented))
 
     def test_validate_with_non_object_value(self):
         field = self.makeTestObject(
@@ -274,12 +274,12 @@ class ObjectTest(CleanUp, FieldTestBase):
             pass
         context = Dummy()
         field.set(context, data)
-        self.assertEquals(1, len(events))
+        self.assertEqual(1, len(events))
         event = events[0]
-        self.failUnless(IBeforeObjectAssignedEvent.providedBy(event))
-        self.assertEquals(data, event.object)
-        self.assertEquals('object_field', event.name)
-        self.assertEquals(context, event.context)
+        self.assertTrue(IBeforeObjectAssignedEvent.providedBy(event))
+        self.assertEqual(data, event.object)
+        self.assertEqual('object_field', event.name)
+        self.assertEqual(context, event.context)
 
     # cycles
 

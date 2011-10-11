@@ -72,11 +72,11 @@ class Vocabulary_ChoiceFieldTests(unittest.TestCase):
     def check_preconstructed(self, cls, okval, badval):
         v = SampleVocabulary()
         field = cls(vocabulary=v)
-        self.assert_(field.vocabulary is v)
-        self.assert_(field.vocabularyName is None)
+        self.assertTrue(field.vocabulary is v)
+        self.assertTrue(field.vocabularyName is None)
         bound = field.bind(None)
-        self.assert_(bound.vocabulary is v)
-        self.assert_(bound.vocabularyName is None)
+        self.assertTrue(bound.vocabulary is v)
+        self.assertTrue(bound.vocabularyName is None)
         bound.default = okval
         self.assertEqual(bound.default, okval)
         self.assertRaises(ValidationError, setattr, bound, "default", badval)
@@ -87,11 +87,11 @@ class Vocabulary_ChoiceFieldTests(unittest.TestCase):
     def check_constructed(self, cls, okval, badval):
         vocabulary.setVocabularyRegistry(DummyRegistry())
         field = cls(vocabulary="vocab")
-        self.assert_(field.vocabulary is None)
+        self.assertTrue(field.vocabulary is None)
         self.assertEqual(field.vocabularyName, "vocab")
         o = object()
         bound = field.bind(o)
-        self.assert_(isinstance(bound.vocabulary, SampleVocabulary))
+        self.assertTrue(isinstance(bound.vocabulary, SampleVocabulary))
         bound.default = okval
         self.assertEqual(bound.default, okval)
         self.assertRaises(ValidationError, setattr, bound, "default", badval)

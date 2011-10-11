@@ -158,14 +158,14 @@ class SetTest(CollectionFieldTestBase):
     def testNoUniqueArgument(self):
         self.assertRaises(TypeError, Set, unique=False)
         self.assertRaises(TypeError, Set, unique=True)
-        self.failUnless(Set().unique)
+        self.assertTrue(Set().unique)
     
     def testImplements(self):
         field = Set()
-        self.failUnless(ISet.providedBy(field))
-        self.failUnless(IUnorderedCollection.providedBy(field))
-        self.failUnless(IAbstractSet.providedBy(field))
-        self.failUnless(ICollection.providedBy(field))
+        self.assertTrue(ISet.providedBy(field))
+        self.assertTrue(IUnorderedCollection.providedBy(field))
+        self.assertTrue(IAbstractSet.providedBy(field))
+        self.assertTrue(ICollection.providedBy(field))
 
 class FrozenSetTest(CollectionFieldTestBase):
     """Test the Tuple Field."""
@@ -274,14 +274,14 @@ class FrozenSetTest(CollectionFieldTestBase):
     def testNoUniqueArgument(self):
         self.assertRaises(TypeError, FrozenSet, unique=False)
         self.assertRaises(TypeError, FrozenSet, unique=True)
-        self.failUnless(FrozenSet().unique)
+        self.assertTrue(FrozenSet().unique)
     
     def testImplements(self):
         field = FrozenSet()
-        self.failUnless(IFrozenSet.providedBy(field))
-        self.failUnless(IAbstractSet.providedBy(field))
-        self.failUnless(IUnorderedCollection.providedBy(field))
-        self.failUnless(ICollection.providedBy(field))
+        self.assertTrue(IFrozenSet.providedBy(field))
+        self.assertTrue(IAbstractSet.providedBy(field))
+        self.assertTrue(IUnorderedCollection.providedBy(field))
+        self.assertTrue(ICollection.providedBy(field))
 
 def test_suite():
     suite = TestSuite()

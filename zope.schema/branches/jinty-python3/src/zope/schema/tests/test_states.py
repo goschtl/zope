@@ -62,17 +62,17 @@ class StateSelectionTest(unittest.TestCase):
     def test_default_presentation(self):
         field = IBirthInfo.getDescriptionFor("state1")
         bound = field.bind(object())
-        self.assert_(verifyObject(IVocabulary, bound.vocabulary))
+        self.assertTrue(verifyObject(IVocabulary, bound.vocabulary))
         self.assertEqual(bound.vocabulary.getTerm("VA").title, "Virginia")
 
     def test_contains(self):
         vocab = states.StateVocabulary()
-        self.assert_(verifyObject(IVocabulary, vocab))
+        self.assertTrue(verifyObject(IVocabulary, vocab))
         count = 0
         L = list(vocab)
         for term in L:
             count += 1
-            self.assert_(term.value in vocab)
+            self.assertTrue(term.value in vocab)
         self.assertEqual(count, len(vocab))
         # make sure we get the same values the second time around:
         L = [term.value for term in L]
@@ -84,9 +84,9 @@ class StateSelectionTest(unittest.TestCase):
     def test_prebound_vocabulary(self):
         field = IBirthInfo.getDescriptionFor("state3")
         bound = field.bind(None)
-        self.assert_(bound.vocabularyName is None)
-        self.assert_(verifyObject(IVocabulary, bound.vocabulary))
-        self.assert_("AL" in bound.vocabulary)
+        self.assertTrue(bound.vocabularyName is None)
+        self.assertTrue(verifyObject(IVocabulary, bound.vocabulary))
+        self.assertTrue("AL" in bound.vocabulary)
 
 
 def test_suite():

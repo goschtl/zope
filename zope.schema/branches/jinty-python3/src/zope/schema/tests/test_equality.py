@@ -27,7 +27,7 @@ class FieldEqualityTests(TestCase):
 
     def test_equality(self):
         for text in self.equality:
-            self.assertEquals(eval(text), eval(text))
+            self.assertEqual(eval(text), eval(text))
 
 def test_suite():
     return TestSuite(

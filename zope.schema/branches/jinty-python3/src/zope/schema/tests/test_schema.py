@@ -52,62 +52,62 @@ class SchemaTest(TestCase):
     def test_getFieldNames(self):
         names = getFieldNames(ISchemaTest)
         self.assertEqual(len(names),3)
-        self.assert_('title' in names)
-        self.assert_('description' in names)
-        self.assert_('spam' in names)
+        self.assertTrue('title' in names)
+        self.assertTrue('description' in names)
+        self.assertTrue('spam' in names)
 
     def test_getFieldNamesAll(self):
         names = getFieldNames(ISchemaTestSubclass)
         self.assertEqual(len(names),4)
-        self.assert_('title' in names)
-        self.assert_('description' in names)
-        self.assert_('spam' in names)
-        self.assert_('foo' in names)
+        self.assertTrue('title' in names)
+        self.assertTrue('description' in names)
+        self.assertTrue('spam' in names)
+        self.assertTrue('foo' in names)
 
     def test_getFields(self):
         fields = getFields(ISchemaTest)
 
-        self.assert_('title' in fields)
-        self.assert_('description' in fields)
-        self.assert_('spam' in fields)
+        self.assertTrue('title' in fields)
+        self.assertTrue('description' in fields)
+        self.assertTrue('spam' in fields)
 
         # test whether getName() has the right value
         for key, value in fields.items():
-            self.assertEquals(key, value.getName())
+            self.assertEqual(key, value.getName())
 
     def test_getFieldsAll(self):
         fields = getFields(ISchemaTestSubclass)
 
-        self.assert_('title' in fields)
-        self.assert_('description' in fields)
-        self.assert_('spam' in fields)
-        self.assert_('foo' in fields)
+        self.assertTrue('title' in fields)
+        self.assertTrue('description' in fields)
+        self.assertTrue('spam' in fields)
+        self.assertTrue('foo' in fields)
 
         # test whether getName() has the right value
         for key, value in fields.items():
-            self.assertEquals(key, value.getName())
+            self.assertEqual(key, value.getName())
 
     def test_getFieldsInOrder(self):
         fields = getFieldsInOrder(ISchemaTest)
         field_names = [name for name, field in fields]
-        self.assertEquals(field_names, ['title', 'description', 'spam'])
+        self.assertEqual(field_names, ['title', 'description', 'spam'])
         for key, value in fields:
-            self.assertEquals(key, value.getName())
+            self.assertEqual(key, value.getName())
 
     def test_getFieldsInOrderAll(self):
         fields = getFieldsInOrder(ISchemaTestSubclass)
         field_names = [name for name, field in fields]
-        self.assertEquals(field_names, ['title', 'description', 'spam', 'foo'])
+        self.assertEqual(field_names, ['title', 'description', 'spam', 'foo'])
         for key, value in fields:
-            self.assertEquals(key, value.getName())
+            self.assertEqual(key, value.getName())
 
     def test_getFieldsNamesInOrder(self):
         names = getFieldNamesInOrder(ISchemaTest)
-        self.assertEquals(names, ['title', 'description', 'spam'])
+        self.assertEqual(names, ['title', 'description', 'spam'])
 
     def test_getFieldsNamesInOrderAll(self):
         names = getFieldNamesInOrder(ISchemaTestSubclass)
-        self.assertEquals(names, ['title', 'description', 'spam', 'foo'])
+        self.assertEqual(names, ['title', 'description', 'spam', 'foo'])
 
 def test_suite():
     return makeSuite(SchemaTest)

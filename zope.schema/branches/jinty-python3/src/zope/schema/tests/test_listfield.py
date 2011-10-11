@@ -112,9 +112,9 @@ class ListTest(CollectionFieldTestBase):
     
     def testImplements(self):
         field = List()
-        self.failUnless(IList.providedBy(field))
-        self.failUnless(ISequence.providedBy(field))
-        self.failUnless(ICollection.providedBy(field))
+        self.assertTrue(IList.providedBy(field))
+        self.assertTrue(ISequence.providedBy(field))
+        self.assertTrue(ICollection.providedBy(field))
 
 def test_suite():
     return makeSuite(ListTest)

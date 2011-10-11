@@ -140,11 +140,11 @@ class PasswordTest(SingleLine, TextTest):
 
         # Using a normal value, the field gets updated
         field.set(dummy, u('test'))
-        self.assertEquals(u('test'), dummy.password)
+        self.assertEqual(u('test'), dummy.password)
 
         # Using UNCHANGED_PASSWORD the field is not updated.
         field.set(dummy, field.UNCHANGED_PASSWORD)
-        self.assertEquals(u('test'), dummy.password)
+        self.assertEqual(u('test'), dummy.password)
 
 
 class LineTest(SingleLine, BytesTest):
