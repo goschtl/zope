@@ -86,7 +86,7 @@ class Publication:
 
         if v1keys:
             writef(self.tmp, ''.join(v1keys))
-            os.path.rename(self.tmp, os.path.join(self.keydir, login+'-1'))
+            os.rename(self.tmp, os.path.join(self.keydir, login+'-1'))
 
         if v2keys:
             writef(self.tmp, ''.join(v2keys))
