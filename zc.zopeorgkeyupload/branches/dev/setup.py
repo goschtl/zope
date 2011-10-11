@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 
 entry_points = """
 [zope.publisher.publication_factory]
-default = zc.zopeorgkeyupload:Publication
+default = zc.zopeorgkeyupload.upload:Publication
 
 [console_scripts]
 mvkey = zc.zopeorgkeyupload.mvkey:main

@@ -1,10 +1,14 @@
+import logging
 import os
 import pwd
 import re
+import ZEO
 import zope.app.security.basicauthadapter
 import zope.component
 import zope.publisher.http
 import zope.security.interfaces
+
+logging.basicConfig()
 
 zope.component.provideAdapter(zope.publisher.http.HTTPCharsets)
 
@@ -13,10 +17,10 @@ command = r'command="/usr/local/bin/scm $SSH_ORIGINAL_COMMAND" '
 
 class Publication:
 
-    def __init__(self, global_config, host, port, base, keydir):
-        self.host, self.port = host, int(port)
-        self.base, self.keydir = base, keydir
+    def __init__(self, global_config, keydir, zeo):
+        self.keydir = keydir
         self.tmp = os.path.join(keydir, '.tmp')
+        self.db = ZEO.DB(int(zeo), read_only=True)
 
     def beforeTraversal(self, request):
         pass
@@ -36,21 +40,22 @@ class Publication:
     def callObject(self, request, ob):
         cred = zope.app.security.basicauthadapter.BasicAuthAdapter(request)
         login = cred.getLogin()
+
         authorized = False
         if login is not None:
-            c = ldap.open(self.host, self.port)
-            dn = "cn=%s,%s" % (login, self.base)
-            try:
-                c.bind_s(dn, cred.getPassword())
-                authorized = True
-                c.unbind()
-            except ldap.INVALID_CREDENTIALS:
-                pass
+            with self.db.transaction() as conn:
+                users = conn.root.zaam_users
+                user = users.authenticateCredentials(dict(
+                    domain = 'svn.zope.org',
+                    login = login,
+                    password = cred.getPassword(),
+                    ))
+                if user is not None:
+                    authorized = True
 
         if not authorized:
             cred.needLogin('ZopeCVSAdmin')
-            return ("You need to register with www.zope.org and log in\n"
-                    "here with your www.zope.org login and password.")
+            return ("You need to become a registered user.")
 
         try:
             pwd.getpwnam(login)
