@@ -73,25 +73,6 @@ classImplements(Bool, IBool)
 classImplements(Bool, IFromUnicode)
 classImplements(Int, IInt)
 
-if PY3:
-    def _to_string(str):
-        return str.decode('ascii')
-
-    def _max_string_ord(bytes):
-        return max(bytes)
-else:
-    def _to_string(str):
-        return str
-    
-    def _max_string_ord(bytes):
-        return max(map(ord, bytes))
-
-def _re_on_bytes(re):
-    if PY3:
-        def f(in_bytes):
-            return re(_to_string(in_bytes))
-        return f
-    return re
 
 @implementer(ISourceText)
 class SourceText(Text):
@@ -124,9 +105,14 @@ class Bytes(MinMaxLen, Field):
         self.validate(v)
         return v
 
+# for things which are of the str type on both Python 2 and 3
+if PY3:
+    _Str = Text
+else:
+    _Str = Bytes
 
 @implementer(IASCII)
-class ASCII(Bytes):
+class ASCII(_Str):
     __doc__ = IASCII.__doc__
 
     def _validate(self, value):
@@ -135,15 +121,15 @@ class ASCII(Bytes):
 
         Make sure we accept empty strings:
 
-        >>> empty = b('')
+        >>> empty = ''
         >>> ascii._validate(empty)
 
         and all kinds of alphanumeric strings:
 
-        >>> alphanumeric = b("Bob\'s my 23rd uncle")
+        >>> alphanumeric = "Bob\'s my 23rd uncle"
         >>> ascii._validate(alphanumeric)
 
-        >>> umlauts = b("Köhlerstraße")
+        >>> umlauts = "Köhlerstraße"
         >>> ascii._validate(umlauts)
         Traceback (most recent call last):
         ...
@@ -152,7 +138,7 @@ class ASCII(Bytes):
         super(ASCII, self)._validate(value)
         if not value:
             return
-        if not _max_string_ord(value) < 128:
+        if not max(map(ord, value)) < 128:
             raise InvalidValue
 
 
@@ -164,6 +150,11 @@ class BytesLine(Bytes):
         # TODO: we should probably use a more general definition of newlines
         return b('\n') not in value
 
+# for things which are of the str type on both Python 2 and 3
+if PY3:
+    _StrLine = TextLine
+else:
+    _StrLine = BytesLine
 
 @implementer(IASCIILine)
 class ASCIILine(ASCII):
@@ -603,12 +594,11 @@ class Dict(MinMaxLen, Iterable):
         return clone
 
 
-_isuri = re.compile(
-    # scheme
-    r"[a-zA-z0-9+.-]+:"
-    # non space (should be pickier)
-    r"\S*$").match
-_isuri = _re_on_bytes(_isuri)
+_isuri = r"[a-zA-z0-9+.-]+:" # scheme
+_isuri += r"\S*$" # non space (should be pickier)
+
+_isuri_bytes = re.compile(_isuri.encode('ascii')).match
+_isuri = re.compile(_isuri).match
 
 @implementer(IURI, IFromUnicode)
 class URI(BytesLine):
@@ -627,7 +617,7 @@ class URI(BytesLine):
         """
 
         super(URI, self)._validate(value)
-        if _isuri(value):
+        if _isuri_bytes(value):
             return
 
         raise InvalidURI(value)
@@ -656,11 +646,10 @@ _isdotted = re.compile(
     r"([.][a-zA-Z][a-zA-Z0-9_]*)*"
     # use the whole line
     r"$").match
-_isdotted = _re_on_bytes(_isdotted)
 
 
 @implementer(IId, IFromUnicode)
-class Id(BytesLine):
+class Id(_StrLine):
     """Id field
 
     Values of id fields must be either uris or dotted names.
@@ -669,13 +658,13 @@ class Id(BytesLine):
     def _validate(self, value):
         """
         >>> id = Id(__name__='test')
-        >>> id.validate(b("http://www.python.org/foo/bar"))
-        >>> id.validate(b("zope.app.content"))
-        >>> id.validate(b("zope.app.content/a"))
+        >>> id.validate("http://www.python.org/foo/bar")
+        >>> id.validate("zope.app.content")
+        >>> id.validate("zope.app.content/a")
         Traceback (most recent call last):
         ...
         InvalidId: zope.app.content/a
-        >>> id.validate(b("http://zope.app.content x y"))
+        >>> id.validate("http://zope.app.content x y")
         Traceback (most recent call last):
         ...
         InvalidId: http://zope.app.content x y
@@ -683,7 +672,7 @@ class Id(BytesLine):
         super(Id, self)._validate(value)
         if _isuri(value):
             return
-        if _isdotted(value) and b(".") in value:
+        if _isdotted(value) and "." in value:
             return
 
         raise InvalidId(value)
@@ -711,7 +700,7 @@ class Id(BytesLine):
 
 
 @implementer(IDottedName)
-class DottedName(BytesLine):
+class DottedName(_StrLine):
     """Dotted name field.
 
     Values of DottedName fields must be Python-style dotted names.
@@ -762,44 +751,44 @@ class DottedName(BytesLine):
     def _validate(self, value):
         """
         >>> dotted_name = DottedName(__name__='test')
-        >>> dotted_name.validate(b("a.b.c"))
-        >>> dotted_name.validate(b("a"))
-        >>> dotted_name.validate(b("   a"))
+        >>> dotted_name.validate("a.b.c")
+        >>> dotted_name.validate("a")
+        >>> dotted_name.validate("   a")
         Traceback (most recent call last):
         ...
         InvalidDottedName:    a
 
         >>> dotted_name = DottedName(__name__='test', min_dots=1)
-        >>> dotted_name.validate(b('a.b'))
-        >>> dotted_name.validate(b('a.b.c.d'))
-        >>> dotted_name.validate(b('a'))
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a.b.c.d')
+        >>> dotted_name.validate('a')
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too few dots; 1 required', 'a')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=0)
-        >>> dotted_name.validate(b('a'))
-        >>> dotted_name.validate(b('a.b'))
+        >>> dotted_name.validate('a')
+        >>> dotted_name.validate('a.b')
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 0 allowed', 'a.b')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=2)
-        >>> dotted_name.validate(b('a'))
-        >>> dotted_name.validate(b('a.b'))
-        >>> dotted_name.validate(b('a.b.c'))
-        >>> dotted_name.validate(b('a.b.c.d'))
+        >>> dotted_name.validate('a')
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a.b.c')
+        >>> dotted_name.validate('a.b.c.d')
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 2 allowed', 'a.b.c.d')
 
         >>> dotted_name = DottedName(__name__='test', max_dots=1, min_dots=1)
-        >>> dotted_name.validate(b('a.b'))
-        >>> dotted_name.validate(b('a'))
+        >>> dotted_name.validate('a.b')
+        >>> dotted_name.validate('a')
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too few dots; 1 required', 'a')
-        >>> dotted_name.validate(b('a.b.c'))
+        >>> dotted_name.validate('a.b.c')
         Traceback (most recent call last):
         ...
         InvalidDottedName: ('too many dots; no more than 1 allowed', 'a.b.c')
@@ -808,7 +797,7 @@ class DottedName(BytesLine):
         super(DottedName, self)._validate(value)
         if not _isdotted(value):
             raise InvalidDottedName(value)
-        dots = _to_string(value).count(".")
+        dots = value.count(".")
         if dots < self.min_dots:
             raise InvalidDottedName("too few dots; %d required" % self.min_dots,
                                     value)

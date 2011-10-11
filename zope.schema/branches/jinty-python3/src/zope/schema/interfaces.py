@@ -16,7 +16,7 @@
 __docformat__ = "reStructuredText"
 
 from zope.interface import Interface, Attribute
-from six import u
+from six import u, PY3
 
 from zope.schema._messageid import _
 
@@ -285,7 +285,16 @@ class IBytes(IMinMaxLen, IIterable, IField):
     The value might be constrained to be with length limits.
     """
 
-class IASCII(IBytes):
+class IText(IMinMaxLen, IIterable, IField):
+    """Field containing a unicode string."""
+
+# for things which are of the str type on both Python 2 and 3
+if PY3:
+    _IStr = IText
+else:
+    _IStr = IBytes
+
+class IASCII(_IStr):
     """Field containing a 7-bit ASCII string. No characters > DEL
     (chr(127)) are allowed
 
@@ -298,14 +307,16 @@ class IBytesLine(IBytes):
 class IASCIILine(IASCII):
     """Field containing a 7-bit ASCII string without newlines."""
 
-class IText(IMinMaxLen, IIterable, IField):
-    """Field containing a unicode string."""
-
 class ISourceText(IText):
     """Field for source text of object."""
 
 class ITextLine(IText):
     """Field containing a unicode string without newlines."""
+
+if PY3:
+    _IStrLine = ITextLine
+else:
+    _IStrLine = IBytesLine
 
 class IPassword(ITextLine):
     "Field containing a unicode string without newlines that is a password."
@@ -365,14 +376,14 @@ class IURI(IBytesLine):
     """A field containing an absolute URI
     """
 
-class IId(IBytesLine):
+class IId(_IStrLine):
     """A field containing a unique identifier
 
     A unique identifier is either an absolute URI or a dotted name.
     If it's a dotted name, it should have a module/package name as a prefix.
     """
 
-class IDottedName(IBytesLine):
+class IDottedName(_IStrLine):
     """Dotted name field.
 
     Values of DottedName fields must be Python-style dotted names.
