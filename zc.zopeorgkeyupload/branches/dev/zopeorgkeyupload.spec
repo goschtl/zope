@@ -1,9 +1,10 @@
-Name: zopeorgkeyupload
+Name: zc.zopeorgkeyupload
 Version: 0
 Release: 0
 
 Summary: svn.zope.org public key upload
-Group: Applications/Database
+License: ZPL
+Group: Applications/Internet
 Requires: cleanpython26
 Requires: zaamdashboardapplication
 Requires: zcuser-zope
@@ -14,15 +15,16 @@ BuildRequires: zaamdashboardapplication
 ##########################################################################
 # Lines below this point normally shouldn't change
 
-%define source %{name}-%{version}-%{release}
+%define _prefix /opt
+%define source %{name}-%{version}
 
+URL: http://www.zope.com
 Vendor: Zope Corporation
 Packager: Zope Corporation <sales@zope.com>
-License: ZPL
-AutoReqProv: no
 Source: %{source}.tgz
-Prefix: /opt
-BuildRoot: /tmp/%{name}
+Prefix: %{_prefix}
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+AutoReqProv: no
 
 %description
 %{summary}
@@ -31,33 +33,35 @@ BuildRoot: /tmp/%{name}
 %setup -n %{source}
 
 %build
-rm -rf %{buildroot}
-mkdir %{buildroot} %{buildroot}/opt
-cp -r $RPM_BUILD_DIR/%{source} %{buildroot}/opt/%{name}
-%{python} %{buildroot}/opt/%{name}/install.py bootstrap
-%{python} %{buildroot}/opt/%{name}/install.py buildout:extensions=
-%{python} -m compileall -q -f -d /opt/%{name}/eggs  \
-   %{buildroot}/opt/%{name}/eggs \
-   > /dev/null 2>&1 || true
-rm -rf %{buildroot}/opt/%{name}/release-distributions
+%{python} install.py bootstrap
+%{python} install.py buildout:extensions=
+eggs="develop-eggs eggs"
+for egglink in develop-eggs/*.egg-link
+do
+    sed -i.bak -e "s|${RPM_BUILD_DIR}/%{source}|%{_prefix}/%{name}|" ${egglink}
+    rm -f ${egglink}.bak
+    src=$(sed -n -e "\|%{_prefix}/%{name}/|s|||p" ${egglink})
+    eggs="${eggs} ${src}"
+done
+for dir in ${eggs}
+do
+    %{python} -m compileall -q -f -d %{_prefix}/%{name}/${dir} ${dir} || true
+    %{python} -Om compileall -q -f -d %{_prefix}/%{name}/${dir} ${dir} || true
+done
 
-# Gaaaa! buildout doesn't handle relative paths in egg links. :(
-sed -i s-/tmp/%{name}-- \
-   %{buildroot}/opt/%{name}/develop-eggs/zc-zeo-rpm-recipes.egg-link 
+%install
+to_remove="install.py release-distributions sbo"
+for part in ${to_remove}
+do
+    rm -rf ${part}
+done
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/%{name}
+mkdir -p ${RPM_BUILD_ROOT}%{_prefix}/%{name}
+cp -a . ${RPM_BUILD_ROOT}%{_prefix}/%{name}
+
 %clean
-rm -rf %{buildroot}
-rm -rf $RPM_BUILD_DIR/%{source}
-
-%post
-if [[ ! -d /home/databases ]]
-then
-   mkdir /home/databases
-fi
-if [[ ! -d /etc/%{name} ]]
-then
-   mkdir /etc/%{name}
-fi
+rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-, root, root)
-/opt/%{name}
+%{_prefix}/%{name}
