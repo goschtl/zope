@@ -1,0 +1,63 @@
+Name: zopeorgkeyupload
+Version: 0
+Release: 0
+
+Summary: svn.zope.org public key upload
+Group: Applications/Database
+Requires: cleanpython26
+Requires: zaamdashboardapplication
+Requires: zcuser-zope
+BuildRequires: cleanpython26
+BuildRequires: zaamdashboardapplication
+%define python /opt/cleanpython26/bin/python
+
+##########################################################################
+# Lines below this point normally shouldn't change
+
+%define source %{name}-%{version}-%{release}
+
+Vendor: Zope Corporation
+Packager: Zope Corporation <sales@zope.com>
+License: ZPL
+AutoReqProv: no
+Source: %{source}.tgz
+Prefix: /opt
+BuildRoot: /tmp/%{name}
+
+%description
+%{summary}
+
+%prep
+%setup -n %{source}
+
+%build
+rm -rf %{buildroot}
+mkdir %{buildroot} %{buildroot}/opt
+cp -r $RPM_BUILD_DIR/%{source} %{buildroot}/opt/%{name}
+%{python} %{buildroot}/opt/%{name}/install.py bootstrap
+%{python} %{buildroot}/opt/%{name}/install.py buildout:extensions=
+%{python} -m compileall -q -f -d /opt/%{name}/eggs  \
+   %{buildroot}/opt/%{name}/eggs \
+   > /dev/null 2>&1 || true
+rm -rf %{buildroot}/opt/%{name}/release-distributions
+
+# Gaaaa! buildout doesn't handle relative paths in egg links. :(
+sed -i s-/tmp/%{name}-- \
+   %{buildroot}/opt/%{name}/develop-eggs/zc-zeo-rpm-recipes.egg-link 
+%clean
+rm -rf %{buildroot}
+rm -rf $RPM_BUILD_DIR/%{source}
+
+%post
+if [[ ! -d /home/databases ]]
+then
+   mkdir /home/databases
+fi
+if [[ ! -d /etc/%{name} ]]
+then
+   mkdir /etc/%{name}
+fi
+
+%files
+%defattr(-, root, root)
+/opt/%{name}
