@@ -33,7 +33,7 @@ class PropertiesUpdated(PASEvent):
     implements(IPropertiesUpdatedEvent)
 
     def __init__(self, principal, properties):
-        super(CredentialsUpdated, self).__init__(principal)
+        super(PropertiesUpdated, self).__init__(principal)
         self.properties=properties
 
 

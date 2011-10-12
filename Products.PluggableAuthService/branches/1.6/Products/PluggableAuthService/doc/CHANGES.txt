@@ -4,7 +4,8 @@ PluggableAuthService changelog
 PluggableAuthService 1.6.6 (unreleased)
 ---------------------------------------
 
-- TBD
+- Launchpad #795086:  fixed creation of PropertiesUpdated event.
+
 
 PluggableAuthService 1.6.5 (2011-05-30)
 ---------------------------------------
