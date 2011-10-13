@@ -3,28 +3,25 @@ Version: 0
 Release: 0
 
 Summary: svn.zope.org public key upload
-License: ZPL
-Group: Applications/Internet
+Group: Applications/Database
 Requires: cleanpython26
-Requires: zaamdashboardapplication
-Requires: zcuser-zope
+Requires: zaamdashboard
 BuildRequires: cleanpython26
-BuildRequires: zaamdashboardapplication
+BuildRequires: zaamdashboard
 %define python /opt/cleanpython26/bin/python
 
 ##########################################################################
 # Lines below this point normally shouldn't change
 
-%define _prefix /opt
-%define source %{name}-%{version}
+%define source %{name}-%{version}-%{release}
 
-URL: http://www.zope.com
 Vendor: Zope Corporation
 Packager: Zope Corporation <sales@zope.com>
-Source: %{source}.tgz
-Prefix: %{_prefix}
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
+License: ZPL
 AutoReqProv: no
+Source: %{source}.tgz
+Prefix: /opt
+BuildRoot: /tmp/%{name}
 
 %description
 %{summary}
@@ -33,35 +30,36 @@ AutoReqProv: no
 %setup -n %{source}
 
 %build
-%{python} install.py bootstrap
-%{python} install.py buildout:extensions=
-eggs="develop-eggs eggs"
-for egglink in develop-eggs/*.egg-link
-do
-    sed -i.bak -e "s|${RPM_BUILD_DIR}/%{source}|%{_prefix}/%{name}|" ${egglink}
-    rm -f ${egglink}.bak
-    src=$(sed -n -e "\|%{_prefix}/%{name}/|s|||p" ${egglink})
-    eggs="${eggs} ${src}"
-done
-for dir in ${eggs}
-do
-    %{python} -m compileall -q -f -d %{_prefix}/%{name}/${dir} ${dir} || true
-    %{python} -Om compileall -q -f -d %{_prefix}/%{name}/${dir} ${dir} || true
-done
+rm -rf %{buildroot}
+mkdir %{buildroot} %{buildroot}/opt
+cp -r $RPM_BUILD_DIR/%{source} %{buildroot}/opt/%{name}
+%{python} %{buildroot}/opt/%{name}/install.py bootstrap
+%{python} %{buildroot}/opt/%{name}/install.py buildout:extensions=
+%{python} -m compileall -q -f -d /opt/%{name}/eggs  \
+   %{buildroot}/opt/%{name}/eggs \
+   > /dev/null 2>&1 || true
+rm -rf %{buildroot}/opt/%{name}/release-distributions
 
-%install
-to_remove="install.py release-distributions sbo"
-for part in ${to_remove}
+# Gaaaa! buildout doesn't handle relative paths in egg links. :(
+for f in %{buildroot}/opt/%{name}/develop-eggs/*.egg-link
 do
-    rm -rf ${part}
+  sed -i s-/tmp/%{name}-- $f 
 done
-rm -rf ${RPM_BUILD_ROOT}%{_prefix}/%{name}
-mkdir -p ${RPM_BUILD_ROOT}%{_prefix}/%{name}
-cp -a . ${RPM_BUILD_ROOT}%{_prefix}/%{name}
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf %{buildroot}
+rm -rf $RPM_BUILD_DIR/%{source}
+
+%post
+if [[ ! -d /home/databases ]]
+then
+   mkdir /home/databases
+fi
+if [[ ! -d /etc/%{name} ]]
+then
+   mkdir /etc/%{name}
+fi
 
 %files
 %defattr(-, root, root)
-%{_prefix}/%{name}
+/opt/%{name}
