@@ -35,18 +35,11 @@ def getFields(schema):
             fields[name] = attr
     return fields
 
-_field_key = lambda x: x[1].order
-
 def getFieldsInOrder(schema,
-                     _fieldsorter=None):
+                     _field_key=lambda x: x[1].order):
     """Return a list of (name, value) tuples in native schema order.
     """
-    fields = list(getFields(schema).items())
-    if _fieldsorter is not None:
-        fields.sort(_fieldsorter)
-    else:
-        fields.sort(key=_field_key)
-    return fields
+    return sorted(getFields(schema).items(), key=_field_key)
 
 
 def getFieldNamesInOrder(schema):
