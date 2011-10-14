@@ -22,9 +22,6 @@ import doctest
 import itertools
 import unittest
 
-import z3c.ptcompat
-from z3c.ptcompat.testing import OutputChecker
-
 def setUp(test):
     root = setup.placefulSetUp(site=True)
     test.globs['root'] = root
@@ -33,25 +30,27 @@ def tearDown(test):
     setup.placefulTearDown()
 
 def setUpZPT(suite):
-    z3c.ptcompat.config.disable()
     setUp(suite)
 
 def setUpZ3CPT(suite):
-    z3c.ptcompat.config.enable()
     setUp(suite)
-    xmlconfig.XMLConfig('configure.zcml', z3c.pt)()
+    import z3c.ptcompat
+    xmlconfig.XMLConfig('configure.zcml', z3c.ptcompat)()
+
+    # We have to cook this template explicitly, because it's a module
+    # global.
+    from z3c.template.template import Macro
+    Macro.wrapper._cook()
+
 
 def test_suite():
-    checker = OutputChecker(doctest)
     tests = ((
         doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-            checker=checker,
             ),
         doctest.DocFileSuite('zcml.txt', setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-            checker=checker,
             ),
         ) for setUp in (setUpZPT, setUpZ3CPT,))
 

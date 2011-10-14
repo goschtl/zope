@@ -14,3 +14,5 @@
 """
 $Id$
 """
+
+from template import ViewPageTemplateFile

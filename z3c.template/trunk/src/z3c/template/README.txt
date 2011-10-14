@@ -88,7 +88,7 @@ We register the factory on a view interface and a layer.
   >>> template = component.getMultiAdapter((view, request),
   ...     interfaces.IPageTemplate)
 
-  >>> from z3c.ptcompat import ViewPageTemplateFile
+  >>> from z3c.template import ViewPageTemplateFile
   >>> isinstance(template, ViewPageTemplateFile)
   True
  
@@ -118,7 +118,7 @@ We create a new template.
 
 and a view:
 
-  >>> from z3c.ptcompat import ViewPageTemplateFile
+  >>> from z3c.template import ViewPageTemplateFile
   >>> class MyViewWithTemplate(BrowserPage):
   ...     zope.interface.implements(IMyView)
   ...     template = ViewPageTemplateFile(viewContent)

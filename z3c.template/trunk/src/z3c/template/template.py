@@ -17,39 +17,68 @@ $Id$
 
 from zope import component
 from zope.pagetemplate.interfaces import IPageTemplate
+from zope.pagetemplate.pagetemplate import PageTemplate
 
-from z3c import ptcompat
+try:
+    from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+    ViewPageTemplateFile  # Satisfy pyflakes
+except ImportError:
+    # The package does not require a particular view page template
+    # implementation
+    try:
+        from z3c.pt.pagetemplate import ViewPageTemplateFile
+    except ImportError:
+        raise ImportError("zope.app.pagetemplate or z3c.pt required.")
+
 from z3c.template import interfaces
 
+
 class Macro(object):
-    def __init__(self, template, macroName, view, request, contentType):
-        self.template = template
-        self.macroName = macroName
+    # XXX: We can't use Zope's `TALInterpreter` class directly
+    # because it (obviously) only supports the Zope page template
+    # implementation. As a workaround or trick we use a wrapper
+    # template.
+    wrapper = PageTemplate()
+    wrapper.write(
+        '<metal:main use-macro="python: options[\'macro\']" />'
+        )
+
+    def __init__(self, template, name, view, request, contentType):
+        self.macro = template.macros[name]
+        self.contentType = contentType
         self.view = view
         self.request = request
-        self.contentType = contentType
 
     def __call__(self, **kwargs):
-        render = ptcompat.bind_macro(
-            self.template, self.view, self.request, self.macroName)
-        return render(content_type=self.contentType, **kwargs)
-        
+        kwargs['macro'] = self.macro
+        kwargs.setdefault('view', self.view)
+        kwargs.setdefault('request', self.request)
+        result = self.wrapper(**kwargs)
+
+        if not self.request.response.getHeader("Content-Type"):
+            self.request.response.setHeader(
+                "Content-Type", self.contentType)
+
+        return result
+
+
 class TemplateFactory(object):
     """Template factory."""
 
     template = None
 
     def __init__(self, filename, contentType, macro=None):
-        self.macro = macro
         self.contentType = contentType
-        self.template = ptcompat.ViewPageTemplateFile(filename,
-            content_type=contentType)
+        self.template = ViewPageTemplateFile(
+            filename, content_type=contentType)
+        self.macro = macro
 
     def __call__(self, view, request, context=None):
         if self.macro is None:
             return self.template
         return Macro(
             self.template, self.macro, view, request, self.contentType)
+
 
 class BoundViewTemplate(object):
     def __init__(self, pt, ob):
@@ -69,8 +98,8 @@ class BoundViewTemplate(object):
     def __repr__(self):
         return "<BoundViewTemplate of %r>" % self.im_self
 
-class ViewTemplate(object):
 
+class ViewTemplate(object):
     def __init__(self, provides=IPageTemplate, name=u''):
         self.provides = provides
         self.name = name
