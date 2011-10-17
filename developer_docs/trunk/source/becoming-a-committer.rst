@@ -14,7 +14,8 @@ Applying for Committer Status
    `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
 
 3. Submit the agreement to the Zope Foundation. This can be done by
-   either email, fax or post (in order from fastest to slowest).
+   either email (contributor-admin@zope.org) or fax or post 
+   (in order from fastest to slowest).
 
    The contact details can be found on the
    `Zope Foundation website <http://foundation.zope.org/about>`_.
