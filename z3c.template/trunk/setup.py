@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.template',
-    version = '1.4.0',
+    version = '1.4.1dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A package implementing advanced Page Template patterns.",
