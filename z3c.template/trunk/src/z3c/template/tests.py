@@ -22,20 +22,40 @@ import doctest
 import itertools
 import unittest
 
+import z3c.template.template
+
+
+_templateViewClass = z3c.template.template.ViewPageTemplateFile
+
 def setUp(test):
     root = setup.placefulSetUp(site=True)
     test.globs['root'] = root
 
 def tearDown(test):
+    global _templateViewClass
+    z3c.template.template.ViewPageTemplateFile = _templateViewClass
     setup.placefulTearDown()
 
 def setUpZPT(suite):
     setUp(suite)
+    # apply correct template classes
+    global _templateViewClass
+    _templateViewClass = z3c.template.template.ViewPageTemplateFile
+    from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
+    z3c.template.template.ViewPageTemplateFile = ViewPageTemplateFile
 
 def setUpZ3CPT(suite):
     setUp(suite)
+    import z3c.pt
     import z3c.ptcompat
+    xmlconfig.XMLConfig('configure.zcml', z3c.pt)()
     xmlconfig.XMLConfig('configure.zcml', z3c.ptcompat)()
+
+    # apply correct template classes
+    global _templateViewClass
+    _templateViewClass = z3c.template.template.ViewPageTemplateFile
+    from z3c.pt.pagetemplate import ViewPageTemplateFile
+    z3c.template.template.ViewPageTemplateFile = ViewPageTemplateFile
 
     # We have to cook this template explicitly, because it's a module
     # global.

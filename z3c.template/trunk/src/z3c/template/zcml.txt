@@ -66,7 +66,7 @@ Let's get the template
 
 and check them:
 
-  >>> from z3c.template import ViewPageTemplateFile
+  >>> from z3c.template.template import ViewPageTemplateFile
   >>> isinstance(template, ViewPageTemplateFile)
   True
 
@@ -102,7 +102,7 @@ Let's get the template
 
 and check them:
 
-  >>> isinstance(layout, ViewPageTemplateFile)
+  >>> isinstance(template, ViewPageTemplateFile)
   True
 
   >>> print layout(view)

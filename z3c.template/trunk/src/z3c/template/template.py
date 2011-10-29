@@ -20,15 +20,11 @@ from zope.pagetemplate.interfaces import IPageTemplate
 from zope.pagetemplate.pagetemplate import PageTemplate
 
 try:
-    from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-    ViewPageTemplateFile  # Satisfy pyflakes
+    # use z3c.pt if available
+    from z3c.pt.pagetemplate import ViewPageTemplateFile
 except ImportError:
-    # The package does not require a particular view page template
-    # implementation
-    try:
-        from z3c.pt.pagetemplate import ViewPageTemplateFile
-    except ImportError:
-        raise ImportError("zope.app.pagetemplate or z3c.pt required.")
+    # or default if not
+    from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 
 from z3c.template import interfaces
 
@@ -38,6 +34,7 @@ class Macro(object):
     # because it (obviously) only supports the Zope page template
     # implementation. As a workaround or trick we use a wrapper
     # template.
+        
     wrapper = PageTemplate()
     wrapper.write(
         '<metal:main use-macro="python: options[\'macro\']" />'

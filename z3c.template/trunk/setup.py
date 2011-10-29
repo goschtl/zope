@@ -53,10 +53,16 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
-        test = ['zope.app.testing',
-                'zope.app.pagetemplate',
-                'zope.testing',
-                'z3c.ptcompat>=1.0'],
+        test = [
+            'zope.app.testing',
+            'zope.app.pagetemplate',
+            'zope.testing',
+            'z3c.ptcompat>=1.0',
+            ],
+        chameleon = [
+            'z3c.pt >= 2.1',
+            'z3c.ptcompat',
+            ],
         ),
     install_requires = [
         'setuptools',

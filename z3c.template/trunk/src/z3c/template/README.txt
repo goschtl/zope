@@ -78,6 +78,8 @@ Let's now register the template (commonly done using ZCML):
 The template factory allows us to create a ViewPageTeplateFile instance.
 
   >>> factory = TemplateFactory(contentTemplate, 'text/html')
+  >>> factory
+  <z3c.template.template.TemplateFactory object at ...>
 
 We register the factory on a view interface and a layer.
 
@@ -88,10 +90,9 @@ We register the factory on a view interface and a layer.
   >>> template = component.getMultiAdapter((view, request),
   ...     interfaces.IPageTemplate)
 
-  >>> from z3c.template import ViewPageTemplateFile
-  >>> isinstance(template, ViewPageTemplateFile)
-  True
- 
+  >>> template
+  <...ViewPageTemplateFile...>
+
 Now that we have a registered layout template for the default layer we can
 call our view again.
 
@@ -171,8 +172,8 @@ ILayoutTemplate interface.
   >>> layout = component.getMultiAdapter(
   ...     (view2, request), interfaces.ILayoutTemplate)
 
-  >>> isinstance(layout, ViewPageTemplateFile)
-  True
+  >>> layout
+  <...ViewPageTemplateFile...>
 
 Now that we have a registered layout template for the default layer we can
 call our view again.
