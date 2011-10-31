@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.3 (Unreleased)
+3.4.3 (2011-10-31)
 ------------------
 
 - LP #267820:  Fix broken multi-exception 'except:' clause.
