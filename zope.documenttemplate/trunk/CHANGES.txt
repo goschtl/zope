@@ -5,6 +5,8 @@ CHANGES
 3.4.3 (Unreleased)
 ------------------
 
+- LP #267820:  Fix broken multi-exception 'except:' clause.
+
 - Removed use of 'zope.testing.doctestunit' in favor of stdlib's doctest.
 
 - Simpler, faster implementation of dt_var.newline_to_br().
