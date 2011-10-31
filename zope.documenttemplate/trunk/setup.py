@@ -25,7 +25,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.documenttemplate',
-      version = '3.4.3',
+      version = '3.4.4dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Document Templating Markup Language (DTML)',
