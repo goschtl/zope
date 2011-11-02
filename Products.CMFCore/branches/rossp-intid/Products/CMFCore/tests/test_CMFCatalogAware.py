@@ -76,7 +76,7 @@ class DummyCatalog(SimpleItem):
         self.obs = []
     def indexObject(self, ob):
         self.log.append('index %s' % physicalpath(ob))
-    def reindexObject(self, ob, idxs=[], update_metadata=0, uid=None):
+    def reindexObject(self, ob, idxs=[], update_metadata=0):
         self.log.append('reindex %s %s' % (physicalpath(ob), idxs))
     def unindexObject(self, ob):
         self.log.append('unindex %s' % physicalpath(ob))

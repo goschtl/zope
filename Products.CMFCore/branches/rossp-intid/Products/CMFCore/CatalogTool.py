@@ -249,7 +249,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     manage_catalogFind = DTMLFile( 'catalogFind', _dtmldir )
 
-    def catalog_object(self, obj, uid=None, idxs=None, update_metadata=1,
+    def catalog_object(self, obj, idxs=None, update_metadata=1,
                        pghandler=None):
         # Wraps the object with workflow and accessibility
         # information just before cataloging.
@@ -262,7 +262,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             if w is None:
                 # BBB
                 w = IndexableObjectWrapper(obj, self)
-        ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
+        ZCatalog.catalog_object(self, w, idxs, update_metadata,
                                 pghandler)
 
     security.declarePrivate('indexObject')
@@ -280,7 +280,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         self.uncatalog_object(url)
 
     security.declarePrivate('reindexObject')
-    def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
+    def reindexObject(self, object, idxs=[], update_metadata=1):
         """Update catalog after object data has changed.
 
         The optional idxs argument is a list of specific indexes
@@ -288,16 +288,11 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
         The update_metadata flag controls whether the object's
         metadata record is updated as well.
-
-        If a non-None uid is passed, it will be used as the catalog uid
-        for the object instead of its physical path.
         """
-        if uid is None:
-            uid = self.__url(object)
         if idxs != []:
             # Filter out invalid indexes.
             valid_indexes = self._catalog.indexes.keys()
             idxs = [i for i in idxs if i in valid_indexes]
-        self.catalog_object(object, uid, idxs, update_metadata)
+        self.catalog_object(object, idxs, update_metadata)
 
 InitializeClass(CatalogTool)

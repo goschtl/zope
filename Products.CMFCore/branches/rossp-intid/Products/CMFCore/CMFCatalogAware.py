@@ -116,7 +116,7 @@ class CatalogAware(Base):
             # Recatalog with the same catalog uid.
             s = getattr(ob, '_p_changed', 0)
             catalog.reindexObject(ob, idxs=self._cmf_security_indexes,
-                                  update_metadata=0, uid=brain_path)
+                                  update_metadata=0)
             if s is None: ob._p_deactivate()
 
 InitializeClass(CatalogAware)
