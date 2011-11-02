@@ -262,8 +262,9 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             if w is None:
                 # BBB
                 w = IndexableObjectWrapper(obj, self)
-        ZCatalog.catalog_object(self, w, idxs, update_metadata,
-                                pghandler)
+        ZCatalog.catalog_object(
+            self, w, idxs=idxs, update_metadata=update_metadata,
+            pghandler=pghandler)
 
     security.declarePrivate('indexObject')
     def indexObject(self, object):
