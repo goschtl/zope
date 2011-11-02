@@ -21,13 +21,17 @@ from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
+from zope import interface
 from zope.interface import implements
+from zope import component
 from zope.component import adapts
 from zope.component import queryMultiAdapter
 from zope.interface import providedBy
+from zope.interface import implementedBy
 from zope.interface.declarations import getObjectSpecification
-from zope.interface.declarations import ObjectSpecification
+from zope.interface.declarations import Provides
 from zope.interface.declarations import ObjectSpecificationDescriptor
+from zope.keyreference import interfaces as keyref_ifaces
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
@@ -53,9 +57,11 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
         if inst is None:
             return getObjectSpecification(cls)
         else:
-            provided = providedBy(inst._IndexableObjectWrapper__ob)
-            cls = type(inst)
-            return ObjectSpecification(provided, cls)
+            assert cls is not None
+            obj = inst._IndexableObjectWrapper__ob
+            provided = providedBy(obj)
+            return Provides(
+                type(obj), implementedBy(cls), provided)
 
 
 class IndexableObjectWrapper(object):
@@ -113,6 +119,12 @@ class IndexableObjectWrapper(object):
         if safe_callable(cmf_uid):
             return cmf_uid()
         return cmf_uid
+
+
+@interface.implementer(keyref_ifaces.IKeyReference)
+@component.adapter(IIndexableObjectWrapper)
+def getObjectWrapperKeyReference(wrapper):
+    return keyref_ifaces.IKeyReference(wrapper._IndexableObjectWrapper__ob)
 
 
 class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
@@ -270,15 +282,13 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     def indexObject(self, object):
         """Add to catalog.
         """
-        url = self.__url(object)
-        self.catalog_object(object, url)
+        self.catalog_object(object)
 
     security.declarePrivate('unindexObject')
     def unindexObject(self, object):
         """Remove from catalog.
         """
-        url = self.__url(object)
-        self.uncatalog_object(url)
+        self.uncatalog_object(object)
 
     security.declarePrivate('reindexObject')
     def reindexObject(self, object, idxs=[], update_metadata=1):
@@ -294,6 +304,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             # Filter out invalid indexes.
             valid_indexes = self._catalog.indexes.keys()
             idxs = [i for i in idxs if i in valid_indexes]
-        self.catalog_object(object, idxs, update_metadata)
+        self.catalog_object(object, idxs=idxs,
+                            update_metadata=update_metadata)
 
 InitializeClass(CatalogTool)
+ 
