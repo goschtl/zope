@@ -18,5 +18,7 @@
      object="portal_setup"/>
   <utility interface="Products.MailHost.interfaces.IMailHost"
      object="MailHost"/>
+  <utility interface="zope.intid.IIntIds"
+     factory="zope.intid.IntIds"/>
  </utilities>
 </componentregistry>
