@@ -50,6 +50,7 @@ setup(name='Products.%s' % NAME,
           'five.localsitemanager',
           'Products.GenericSetup',
           'Products.ZSQLMethods',
+          'five.intid',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',

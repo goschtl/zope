@@ -2,9 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five">
 
-  <include package="zope.keyreference" />
-  <include package="zope.intid" file="subscribers.zcml" />
-
   <adapter
       name="add"
       factory=".namespace.AddViewTraverser"
@@ -42,4 +39,22 @@
       factory=".CatalogTool.getObjectWrapperKeyReference"
       trusted="y" />
 
+  <adapter 
+      for="Products.CMFCore.interfaces.IDynamicType"
+      factory="five.intid.keyreference.KeyReferenceToPersistent"
+      trusted="y"
+      />
+  <adapter factory="five.intid.keyreference.connectionOfPersistent"
+           />
+  <subscriber
+      handler="five.intid.intid.removeIntIdSubscriber"
+      for="Products.CMFCore.interfaces.IDynamicType
+           zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+      />
+  <subscriber
+      handler="five.intid.intid.moveIntIdSubscriber"
+      for="Products.CMFCore.interfaces.IDynamicType
+           zope.lifecycleevent.interfaces.IObjectMovedEvent"
+      />
+  
 </configure>
