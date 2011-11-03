@@ -129,6 +129,7 @@ class EventZCMLLayer(ZopeLite):
         except IOError:  # Zope <= 2.12.x
             zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
+        zcml.load_config('testing.zcml', Products.ZCatalog)
         setHooks()
 
     @classmethod
