@@ -33,10 +33,8 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.DiscussionTool import DiscussionTool
 from Products.CMFDefault.exceptions import DiscussionNotAllowed
 
-def has_path(catalog, path):
-    if isinstance(path, tuple):
-        path = '/'.join(path)
-    return bool(catalog.getrid(path))
+def has_path(catalog, obj):
+    return bool(catalog.getrid(obj))
 
 
 class DiscussionItemTests(unittest.TestCase):
@@ -179,7 +177,7 @@ class DiscussionTests(SecurityTest):
         test.allow_discussion = 1
 
         self.assertEqual( len(ctool), 1 )
-        self.failUnless(has_path(ctool, test.getPhysicalPath()))
+        self.failUnless(has_path(ctool, test))
         talkback = dtool.getDiscussionFor(test)
         self.assertEqual( talkback.getPhysicalPath(),
                           ('', 'bar', 'site', 'test', 'talkback') )
