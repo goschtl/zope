@@ -21,6 +21,7 @@ from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
+from Products.ZCatalog.Catalog import _deprecated
 from zope import interface
 from zope.interface import implements
 from zope import component
@@ -57,7 +58,6 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
         if inst is None:
             return getObjectSpecification(cls)
         else:
-            assert cls is not None
             obj = inst._IndexableObjectWrapper__ob
             provided = providedBy(obj)
             return Provides(
@@ -261,8 +261,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     manage_catalogFind = DTMLFile( 'catalogFind', _dtmldir )
 
-    def catalog_object(self, obj, idxs=None, update_metadata=1,
-                       pghandler=None):
+    def catalog_object(self, obj, uid=_deprecated, idxs=None,
+                       update_metadata=1, pghandler=None):
         # Wraps the object with workflow and accessibility
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
@@ -275,9 +275,9 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                 # BBB
                 w = IndexableObjectWrapper(obj, self)
         ZCatalog.catalog_object(
-            self, w, idxs=idxs, update_metadata=update_metadata,
-            pghandler=pghandler)
-
+            self, w, uid=_deprecated, idxs=idxs,
+            update_metadata=update_metadata, pghandler=pghandler)
+        
     security.declarePrivate('indexObject')
     def indexObject(self, object):
         """Add to catalog.
