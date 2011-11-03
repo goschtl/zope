@@ -77,10 +77,10 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                 self.assertEqual( len( catalog ), 1 )
 
             # find the right brain
-            rid = catalog._catalog.paths.keys()[0]
+            rid = catalog._catalog.data.keys()[0]
             title = _getMetadata( catalog, rid )
             if isUidEnabledFavorite and title == 'Portal':
-                rid = catalog._catalog.paths.keys()[1]
+                rid = catalog._catalog.data.keys()[1]
                 title = _getMetadata( catalog, rid )
             self.assertEqual( title, 'Foo' )
 
@@ -103,7 +103,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                                , portal_type='Document'
                                , title='Foo' )
 
-        rid = catalog._catalog.paths.keys()[0]
+        rid = catalog._catalog.data.keys()[0]
 
         doc.setTitle( 'Bar' )   # doesn't reindex
         self.assertEqual( _getMetadata( catalog, rid ), 'Foo' )
@@ -121,7 +121,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                                , portal_type='Image'
                                , title='Foo' )
 
-        rid = catalog._catalog.paths.keys()[0]
+        rid = catalog._catalog.data.keys()[0]
 
         doc.setTitle( 'Bar' )   # doesn't reindex
         self.assertEqual( _getMetadata( catalog, rid ), 'Foo' )
@@ -137,7 +137,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                                , portal_type='File'
                                , title='Foo' )
 
-        rid = catalog._catalog.paths.keys()[0]
+        rid = catalog._catalog.data.keys()[0]
 
         doc.setTitle( 'Bar' )   # doesn't reindex
         self.assertEqual( _getMetadata( catalog, rid ), 'Foo' )
@@ -153,7 +153,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                                , portal_type='Link'
                                , title='Foo' )
 
-        rid = catalog._catalog.paths.keys()[0]
+        rid = catalog._catalog.data.keys()[0]
 
         doc.setTitle( 'Bar' )   # doesn't reindex
         self.assertEqual( _getMetadata( catalog, rid ), 'Foo' )
@@ -169,7 +169,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
                                , portal_type='News Item'
                                , title='Foo' )
 
-        rid = catalog._catalog.paths.keys()[0]
+        rid = catalog._catalog.data.keys()[0]
 
         doc.setTitle( 'Bar' )   # doesn't reindex
         self.assertEqual( _getMetadata( catalog, rid ), 'Foo' )
