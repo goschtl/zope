@@ -1,6 +1,8 @@
-"""Testing that grokcore subscribers work under Zope2
+"""
+Testing that grokcore subscribers work under Zope2:
 
-  >>> grok.testing.grok(__name__)
+  >>> from five.grok.tests.subscribers import *
+  >>> grok.testing.grok('five.grok.tests.subscribers')
 
 You can subscribe to events using the @grok.subscribe decorator:
 

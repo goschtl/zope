@@ -1,6 +1,8 @@
-"""Testing that grokcore adapters work under Zope2
+"""
+Testing that grokcore adapters work under Zope2:
 
-  >>> grok.testing.grok(__name__)
+  >>> from five.grok.tests.adapters import *
+  >>> grok.testing.grok('five.grok.tests.adapters')
 
   >>> from OFS.SimpleItem import SimpleItem
   >>> item = SimpleItem()
@@ -10,7 +12,7 @@
   True
   >>> IId.providedBy(adapted)
   True
-  
+
   >>> adapted.id()
   'item'
 
@@ -24,7 +26,7 @@ from five import grok
 from OFS.interfaces import ISimpleItem
 
 class IId(Interface):
-    
+
     def id():
         """Returns the ID of the object"""
 

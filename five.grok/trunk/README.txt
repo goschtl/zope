@@ -61,17 +61,19 @@ And for this release we recommend to pin down the following version in
 your buildout::
 
   grokcore.annotation = 1.2
-  grokcore.component = 1.8
-  grokcore.formlib = 1.5
-  grokcore.security = 1.4
-  grokcore.site = 1.2
-  grokcore.view = 1.12.2
-  grokcore.viewlet = 1.4.1
-  five.localsitemanager = 2.0.3
-  martian = 0.11.2
+  grokcore.component = 2.4
+  grokcore.formlib = 1.8
+  grokcore.security = 1.5
+  grokcore.site = 1.5
+  grokcore.view = 2.6.1
+  grokcore.viewlet = 1.9
+  five.localsitemanager = 2.0.5
+  five.formlib = 1.0.4
+  martian = 0.14
 
-Zope 2.12 is required. If you wish to use a previous version of Zope
-2, look at the version 1.0 of five.grok.
+
+Zope 2.13 is required. If you wish to use a previous version of Zope
+2, look at five.grok 1.0 for Zope 2.10.x or five.grok 1.2 for Zope 2.12.x.
 
 
 More information

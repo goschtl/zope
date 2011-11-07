@@ -26,9 +26,6 @@ from five.grok.components import EditForm, DisplayForm
 from five.grok.components import View, ViewletManager
 from five.grok.formlib import AutoFields
 
-# backwards compatibility. Probably not needed by many, but just in case.
-# please start using grokcore.view.View again.
-CodeView = View
 
 # Override the one from grokcore.view so that we get Zope 2 semantics
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate

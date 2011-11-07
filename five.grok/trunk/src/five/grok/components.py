@@ -13,15 +13,13 @@
 ##############################################################################
 
 import martian
-import martian.util
 
 import os.path
 import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.location.interfaces import IPossibleSite
-from zope import interface, component
+from zope import interface
 
 from five.formlib import formbase
 
@@ -30,12 +28,11 @@ from grokcore.formlib.components import GrokForm as BaseGrokForm
 from grokcore.formlib.components import default_display_template, \
     default_form_template
 from grokcore.view.components import PageTemplate
-from grokcore.viewlet.components import Viewlet as BaseViewlet
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
 from grokcore.site.components import BaseSite
 import grokcore.view
-import grokcore.security
 
+from Products.Five.browser.pagetemplatefile import ViewMapper
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
@@ -47,7 +44,6 @@ from Products.PageTemplates.Expressions import SecureModuleImporter
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
 
-import Acquisition
 from AccessControl import getSecurityManager
 from Acquisition import aq_get
 
@@ -151,12 +147,13 @@ class ZopeTwoDirectoryResource(resource.DirectoryResource):
 
     # Allow traversal to contained resources from protected code
     __allow_access_to_unprotected_subobjects__ = True
-    
+
     # Allow subdirectories to work with restrictedTraverse() (in Zope >= 2.12.6)
     __roles__ = None
-    
+
     resource_factories = {}
-    for type, factory in (resource.DirectoryResource.resource_factories.items()):
+    for type, factory in (
+        resource.DirectoryResource.resource_factories.items()):
         if factory is resource.PageTemplateResourceFactory:
             continue
         resource_factories[type] = factory
@@ -165,7 +162,7 @@ class ZopeTwoDirectoryResource(resource.DirectoryResource):
 class ZopeTwoDirectoryResourceFactory(resource.DirectoryResourceFactory):
     # __name__ is needed if you want to get url's of resources
 
-    def __init__(self, name, path):
+    def __init__(self, name, path, resource_factory=None):
         self.__name = name
         self.__rsrc = self.factory(path, name)
 
@@ -185,19 +182,16 @@ class GrokForm(BaseGrokForm):
 
 
 class Form(GrokForm, formbase.PageForm, View):
-
     martian.baseclass()
     template = default_form_template
 
 
 class AddForm(GrokForm, formbase.AddForm, View):
-
     martian.baseclass()
     template = default_form_template
 
 
 class EditForm(GrokForm, formbase.EditForm, View):
-
     martian.baseclass()
     template = default_form_template
 
@@ -207,7 +201,6 @@ class EditForm(GrokForm, formbase.EditForm, View):
 
 
 class DisplayForm(GrokForm, formbase.DisplayForm, View):
-
     martian.baseclass()
     template = default_display_template
 

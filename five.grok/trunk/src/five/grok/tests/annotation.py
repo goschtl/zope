@@ -1,8 +1,8 @@
 """
-  >>> grok.testing.grok(__name__)
-  >>> from zope import component
-  >>> from zope.annotation.attribute import AttributeAnnotations
-  >>> component.provideAdapter(AttributeAnnotations)
+Testing that grokcore annotation work under Zope2:
+
+  >>> from five.grok.tests.annotation import *
+  >>> grok.testing.grok('five.grok.tests.annotation')
 
 We can adapt a model to an annotation interface and obtain a
 persistent annotation storage:

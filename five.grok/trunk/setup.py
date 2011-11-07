@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.2.1dev'
+version = '1.3.0dev'
 
 setup(name='five.grok',
       version=version,
@@ -29,17 +29,25 @@ setup(name='five.grok',
       install_requires=[
         'setuptools',
         'martian',
-        'Zope2>=2.12.3',
+        'Zope2>=2.13',
         'five.formlib',
         'five.localsitemanager > 2.0dev',
+        'grokcore.annotation',
         'grokcore.component',
         'grokcore.formlib >= 1.4',
-        'grokcore.view >= 1.12.1',
-        'grokcore.viewlet >= 1.3',
         'grokcore.security',
         'grokcore.site',
-        'grokcore.annotation',
-        'zope.app.pagetemplate',
-        'zope.app.container'
+        'grokcore.view >= 1.12.1',
+        'grokcore.viewlet >= 1.3',
+        'zope.annotation',
+        'zope.component',
+        'zope.container',
+        'zope.contentprovider',
+        'zope.formlib',
+        'zope.interface',
+        'zope.location',
+        'zope.pagetemplate',
+        'zope.publisher',
+        'zope.traversing',
         ],
       )

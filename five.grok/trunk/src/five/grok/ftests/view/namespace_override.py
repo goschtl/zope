@@ -2,7 +2,7 @@
   >>> from five.grok.ftests.view.namespace_override import *
   >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/manfred")

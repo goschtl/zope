@@ -3,7 +3,7 @@
   >>> root = getRootFolder()
   >>> id = root._setObject("manfred", Mammoth(id='manfred'))
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/manfred/@@painting")

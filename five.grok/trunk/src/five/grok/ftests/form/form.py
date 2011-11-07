@@ -2,7 +2,7 @@
   >>> from five.grok.ftests.form.form import *
   >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 

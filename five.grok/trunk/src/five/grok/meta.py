@@ -12,28 +12,21 @@
 #
 ##############################################################################
 
-import martian
-import five.grok
-import grokcore.security
-import grokcore.view
-import grokcore.component
-import grokcore.site.interfaces
-
-from zope import interface, component
-from zope.app.container.interfaces import INameChooser
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components, formlib
 from grokcore.view.meta.directoryresource import _get_resource_path
-from martian.error import GrokError
+from zope import interface, component
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+import five.grok
+import grokcore.component
+import grokcore.security
+import grokcore.view
+import martian
 
-from Products.Five.security import protectClass, protectName
+from AccessControl.security import protectClass, protectName
 from App.class_init import InitializeClass as initializeClass
-
-import os.path
 
 
 class FormGrokker(martian.ClassGrokker):
-
     martian.component(components.GrokForm)
     martian.directive(grokcore.component.context)
     martian.priority(800)       # Must be run before real formlib grokker.
@@ -101,23 +94,6 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
     def execute(self, factory, config, name, path, layer, **kw):
         resource_path = _get_resource_path(factory.module_info, path)
         name = name or factory.module_info.dotted_name
-        return _register_resource(config, resource_path, name, layer)
-
-
-class StaticResourcesGrokker(martian.GlobalGrokker):
-
-    def grok(self, name, module, module_info, config, **kw):
-        # we're only interested in static resources if this module
-        # happens to be a package
-        if not module_info.isPackage():
-            return False
-        resource_path = _get_resource_path(module_info, 'static')
-
-        if not os.path.exists(resource_path):
-            return False
-
-        name = module_info.dotted_name
-        layer = IDefaultBrowserLayer
         return _register_resource(config, resource_path, name, layer)
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 
 import grokcore.component
-from zope.app.container.interfaces import IObjectAddedEvent
+from zope.container.interfaces import IObjectAddedEvent
 from five.localsitemanager import make_objectmanager_site
 
 from five.grok.components import Site

@@ -2,7 +2,7 @@
   >>> from five.grok.ftests.form.autofields2 import *
   >>> id = getRootFolder()._setObject("montparnasse", House(id='montparnasse'))
 
-  >>> from Products.Five.testbrowser import Browser
+  >>> from Testing.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
 

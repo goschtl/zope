@@ -1,12 +1,12 @@
 Changelog
 =========
 
-1.2.1 (unreleased)
+1.3.0 (unreleased)
 ------------------
 
-- Added missing required dependencies: 
-  zope.app.pagetemplate and zope.app.container
-  [jfroche]
+- Clean up code, update dependencies and tests, this release only
+  works with Zope 2.13.  [thefunny42]
+
 
 1.2.0 (2011-01-22)
 ------------------

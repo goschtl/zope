@@ -18,14 +18,13 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 from grokcore.view.interfaces import IGrokView
 
-from Acquisition import aq_parent, aq_inner
+from Acquisition import aq_inner
 
 from zope import component
 from grokcore import component as grok
 
 
 class ViewAbsoluteURL(absoluteurl.AbsoluteURL, grok.MultiAdapter):
-
     grok.adapts(IGrokView, IBrowserRequest)
     grok.provides(IAbsoluteURL)
 

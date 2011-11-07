@@ -1,9 +1,8 @@
 """
-Testing that grokcore multiadapters work under Zope2
+Testing that grokcore multiadapters work under Zope2:
 
-__init__():
-
-  >>> grok.testing.grok(__name__)
+  >>> from five.grok.tests.multiadapter import *
+  >>> grok.testing.grok('five.grok.tests.multiadapter')
 
   >>> cave = Cave()
   >>> fireplace = Fireplace()
