@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.3.0dev'
+version = '1.3.0'
 
 setup(name='five.grok',
       version=version,
