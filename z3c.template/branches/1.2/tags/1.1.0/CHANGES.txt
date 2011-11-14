@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2007-10-08)
+------------------
+
+* Added an ``IContentTemplate`` interface which is used for 
+  ``<z3c:template>``.
+
+1.0.0 (2007-??-??)
+------------------
+
+* Initial release.

@@ -1,0 +1,8 @@
+=======
+Changes
+=======
+
+1.1 (unreleased)
+================
+
+* Added an IContentTemplate interface which is used for <z3c:template>.
