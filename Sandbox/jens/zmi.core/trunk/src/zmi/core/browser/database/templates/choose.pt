@@ -1,0 +1,23 @@
+<html>
+
+<title>Database Management</title>
+
+<body>
+
+<h1>Databases</h1>
+<p>Select a database to manage</p>
+
+<ul tal:define="databases python:view.getDatabaseNames(quote=True);">
+    <li tal:repeat="info databases">
+    <a tal:define="name python: info[0];
+                qname python: info[1]"
+    tal:content="name"
+    tal:attributes="href string:${context/absolute_url}/${qname}/manage_main">Database name
+    </a>
+    </li>
+</ul>
+
+
+
+</body>
+</html>
