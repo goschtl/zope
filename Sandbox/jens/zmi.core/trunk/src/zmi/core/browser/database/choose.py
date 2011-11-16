@@ -15,6 +15,10 @@
 Choose ZODB to manage
 """
 
+import urllib
+from App.config import getConfiguration
+
+
 class View(object):
 
     def __init__(self, context, request):
@@ -24,7 +28,11 @@ class View(object):
     def __call__(self):
         return self.index()
 
-    def getDatabaseNames(self, quote=True):
-        return (('Main', 'main'),
-                ('Temporary', 'temporary')
-                )
+    def getDatabaseNames(self, quote=False):
+        """Return a sorted list of databases as a tuple (name, URL-quoted name)"""
+        configuration = getConfiguration()
+        names = configuration.dbtab.listDatabaseNames()
+        names.sort()
+        if quote is True:
+            return [(name, urllib.quote(name)) for name in names]
+        return names
