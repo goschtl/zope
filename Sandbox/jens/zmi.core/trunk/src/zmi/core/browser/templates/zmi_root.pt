@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@zmi/view">
+    <div metal:fill-slot="body">
+      <h1>Zope Management Interface</h1>
+
+      <ul>
+        <li><a href="error_log">Error log</a></li>
+        <li><a href="interfaces">Interfaces</a></li>
+      </ul>
+
+    </div>
+</html>

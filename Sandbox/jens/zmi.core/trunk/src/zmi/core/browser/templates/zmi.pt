@@ -5,8 +5,9 @@
 <head>
 </head>
 <body>
-  Zope
-
+<div>
+  <span tal:content="context/@@helper/static/zopelogo.png/@@absolute_url" />
+</div>
 <div class="system-msg" tal:condition="request/manage_tabs_message|nothing"
   tal:content="request/manage_tabs_message">
 </div>

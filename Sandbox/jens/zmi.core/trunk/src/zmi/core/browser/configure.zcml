@@ -1,6 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser">
 
+  <!-- General ZMI skin configuration -->
+
   <interface
     interface="zmi.core.browser.skin.IZMISkin"
     type="zope.publisher.interfaces.browser.IBrowserSkinType"
@@ -11,6 +13,31 @@
     for="*"
     name="zmi"
     template="templates/zmi.pt"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
+
+  <browser:page
+    for="*"
+    name="helper"
+    class=".skin.Helper"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
+
+  <browser:resourceDirectory
+    name="zmi"
+    directory="static"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
+
+  <!-- Specific ZMI views -->
+
+  <browser:page
+    for="zope.site.interfaces.IRootFolder"
+    name="index_html"
+    template="templates/zmi_root.pt"
+    class="zmi.core.browser.zmi_interfaces.InterfacesView"
     permission="zope2.ViewManagementScreens"
     layer="zmi.core.browser.skin.IZMISkin"
     />

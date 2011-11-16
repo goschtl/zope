@@ -16,9 +16,18 @@
 
 import zope.interface
 import zope.publisher.interfaces.browser
+import zope.traversing.namespace
 
 
-class IZMISkin(zope.publisher.interfaces.browser.IBrowserRequest):
+class IZMISkin(zope.publisher.interfaces.browser.IDefaultBrowserLayer):
     """The Zope management interface exposes administrative and development
     functionality in a Zope server.
     """
+
+
+class Helper(object):
+
+    @property
+    def static(self):
+        return zope.traversing.namespace.getResource(
+            self.context, 'zmi', self.request)
