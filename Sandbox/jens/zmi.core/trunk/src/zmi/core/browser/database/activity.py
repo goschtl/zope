@@ -17,5 +17,20 @@ ZODB Activity
 
 class View(object):
 
+    # dummy variables for bootstrapping view
+    getHistoryLength = 1
+    start_time = "start_time"
+    end_time = "end_time"
+    divs = ()
+    connections = "connections"
+    trans_len = "trans_len"
+    store_len = "store_len"
+    load_len = "load_len"
+    total_store_count = "total_store_count"
+
     def __init__(self, context, request):
-        pass
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        return self.index()

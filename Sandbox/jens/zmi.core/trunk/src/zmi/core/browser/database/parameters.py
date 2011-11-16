@@ -18,4 +18,8 @@ ZODB Parameters
 class View(object):
 
     def __init__(self, context, request):
-        pass
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        return self.index()

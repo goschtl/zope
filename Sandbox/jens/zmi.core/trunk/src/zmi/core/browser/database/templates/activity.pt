@@ -19,7 +19,8 @@
  <h2>Keep History (seconds)</h2>
 
   <form method="POST" action="./">
-   <input type="text" name="length" value="&dtml-getHistoryLength;" />
+   <input type="text" name="length" value="&dtml-getHistoryLength;"
+          tal:attributes="value view/getHistoryLength" />
    <input type="submit" name="set_history" value="Save changes" />
   </form>
 
@@ -34,9 +35,9 @@
 <!--<dtml-with expr="getActivityChartData(200, REQUEST)" mapping>-->
 <div define="mapping python:view.getActivityChartData(200, REQUEST)">
 
-<tal:loop repeat="divs mapping">
+<tal:loop repeat="mapping view/divs">
  <a href=""
-    tal:attributes="href python:REQUEST['URL'] + ('?chart_start=%s&chart_end=%s'
+    tal:attributes="href python:request['URL'] + ('?chart_start=%s&chart_end=%s'
                % (start, end))">
  <tal:if tal:condition="view/trans_len">
  <img src="transparent_bar" width="32" height="" border="0"
@@ -55,9 +56,9 @@
 
  <dl>
   <dt color="red">Object stores</dt>
-  <dd tal:repeat="divs mapping">
+  <dd tal:repeat="mapping view/divs">
  <a href="" color="red" tal:content="store_count"
-    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end']))"></a>
 </dd>
  <dt>Total:</dt>
  <dd color="red" tal:content="view/total_store_count">total_store_count</dd>
@@ -65,9 +66,9 @@
 
  <dl>
   <dt color="red">Object loads</dt>
-  <dd tal:repeat="divs mapping">
+  <dd tal:repeat="mapping view/divs">
  <a href="" color="blue" tal:content="load_count"
-    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+    tal:attributes="href python: request['URL'] + '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
 </dd>
  <dt>Total:</dt>
  <dd color="blue" tal:content="view/total_store_count">total_load_count</dd>
@@ -75,9 +76,9 @@
 
  <dl>
   <dt>Connections</dt>
-  <dd tal:repeat="divs mapping">
+  <dd tal:repeat="mapping view/divs">
  <a href="" tal:content="connections"
-    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+    tal:attributes="href python: request['URL']+ '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
 </dd>
  <dt>Total:</dt>
  <dd tal:content="view/connections">connections</dd>
@@ -85,9 +86,9 @@
 
  <dl>
   <dt></dt>
-  <dd tal:repeat="divs mapping">
+  <dd tal:repeat="mapping view/divs">
  <a href="" tal:content="time_offset"
-    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+    tal:attributes="href python: request['URL'] + '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
 </dd>
  <dt>Total:</dt>
  </dl>
