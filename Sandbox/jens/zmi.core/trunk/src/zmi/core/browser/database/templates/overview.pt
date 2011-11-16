@@ -20,19 +20,25 @@ It also allows you to perform maintenance tasks such as database packing
 and cache management.
 </p>
 
-
   <h2>Database Location:</h2>
   <span tal:content="view/db_name">DB NAME</span>
 
   <h2>Database Size:</h2>
   <span tal:content="view/db_size">DB SIZE</span>
 
-<form action="." method="post">
+  <p class="feedback"
+     tal:condition="exists:request/manage_tabs_message"
+     tal:content="request/manage_tabs_message">Status message</p>
+
+
+<form action="." method="post"
+      tal:attributes="action request/ACTUAL_URL">
+
   <p>Click <em>pack</em> to pack the Zope database, removing previous revisions
   of objects that are older than</p>
   <label for="days">days</label>
   <input type="text" name="days" value="0">
-  <input type="submit" name="submit" value="Pack">
+  <input type="submit" name="pack" value="Pack">
 
 </form>
 
