@@ -1,28 +1,45 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser">
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface
+    interface="zmi.core.browser.skin.IZMISkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="zmi"
+    />
 
   <browser:page
-      for="*"
-      name="zmi_interfaces"
-      template="templates/zmi_interfaces.pt"
-      class="zmi.core.browser.zmi_interfaces.InterfacesView"
-      permission="zope2.ViewManagementScreens"
-      />
+    for="*"
+    name="zmi"
+    template="templates/zmi.pt"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
 
   <browser:page
-      for="Products.SiteErrorLog.SiteErrorLog.SiteErrorLog"
-      name="zmi_error_log"
-      template="templates/error_log.pt"
-      class="zmi.core.browser.error_log.ErrorLogView"
-      permission="zope2.ViewManagementScreens"
-      />
+    for="*"
+    name="interfaces"
+    template="templates/zmi_interfaces.pt"
+    class="zmi.core.browser.zmi_interfaces.InterfacesView"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
 
   <browser:page
-      for="Products.SiteErrorLog.SiteErrorLog.SiteErrorLog"
-      name="zmi_error_log_entry"
-      template="templates/error_log_entry.pt"
-      permission="zope2.ViewManagementScreens"
-      />
+    for="Products.SiteErrorLog.SiteErrorLog.SiteErrorLog"
+    name="index_html"
+    template="templates/error_log.pt"
+    class="zmi.core.browser.error_log.ErrorLogView"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
+
+  <browser:page
+    for="Products.SiteErrorLog.SiteErrorLog.SiteErrorLog"
+    name="view_entry"
+    template="templates/error_log_entry.pt"
+    permission="zope2.ViewManagementScreens"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
 
   <include package=".database" />
 

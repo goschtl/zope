@@ -21,7 +21,7 @@ class ErrorLogView(ZMIView):
 
     @property
     def entry_url(self):
-        return '%s/@@zmi_error_log_entry?id=' % self.context.absolute_url()
+        return '%s/@@view_entry?id=' % self.context.absolute_url()
 
     @property
     def forget_url(self):

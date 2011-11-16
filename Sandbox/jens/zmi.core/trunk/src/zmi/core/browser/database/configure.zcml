@@ -7,6 +7,7 @@
       template="templates/overview.pt"
       class=".overview.View"
       permission="zope2.ManageProperties"
+      layer="zmi.core.browser.skin.IZMISkin"
       />
 
    <browser:page
@@ -15,6 +16,7 @@
       template="templates/activity.pt"
       class=".activity.View"
       permission="zope2.ManageProperties"
+      layer="zmi.core.browser.skin.IZMISkin"
       />
 
    <browser:page
@@ -23,6 +25,7 @@
       template="templates/parameters.pt"
       class=".parameters.View"
       permission="zope2.ManageProperties"
+      layer="zmi.core.browser.skin.IZMISkin"
       />
 
    <browser:page
@@ -31,6 +34,7 @@
       template="templates/flush.pt"
       class=".flush.View"
       permission="zope2.ManageProperties"
+      layer="zmi.core.browser.skin.IZMISkin"
       />
 
 </configure>
