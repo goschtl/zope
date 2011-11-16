@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+      for="*"
+      name="zmi_interfaces"
+      template="templates/zmi_interfaces.pt"
+      class="zmi.core.browser.zmi_interfaces.InterfacesView"
+      permission="zope2.ManageProperties"
+      />
+
+</configure>

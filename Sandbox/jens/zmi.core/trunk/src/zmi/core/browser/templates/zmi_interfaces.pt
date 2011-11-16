@@ -1,0 +1,27 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+
+<metal:slot metal:fill-slot="body">
+<metal:macro metal:define-macro="heading">
+<h1 i18n:translate="heading_edit_marker">Show Interfaces</h1>
+</metal:macro>
+<metal:macro metal:define-macro="main">
+<p class="form-help formHelp" i18n:translate="">
+  This view shows all interfaces provided by 
+  <b tal:content="string:${context/meta_type|string:unknown} at ${context/absolute_url_path}">Foo at /root/foo_instance</b>
+</p>
+
+<fieldset>
+ <legend i18n:translate="legend_provided">Provided Interfaces</legend>
+ <tal:loop tal:repeat="interface view/getInterfaceNames">
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <label class="form-mono"
+    tal:content="interface/name" i18n:translate="">INTERFACE</label><br />
+ </tal:loop>
+</fieldset>
+
+</metal:macro>
+</metal:slot>
+
+</body>
+</html>
