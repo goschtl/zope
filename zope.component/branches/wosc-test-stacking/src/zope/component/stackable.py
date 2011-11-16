@@ -1,12 +1,13 @@
 import copy
 import inspect
+import persistent # XXX conditional import
+import persistent.list # XXX conditional import
 
 
-class StackableBase(object):
+class StackableBase(persistent.Persistent):
 
-    def __init__(self, original=None):
-        if original is not None:
-            self.stack = [original]
+    def __init__(self, original):
+        self.stack = persistent.list.PersistentList([original])
 
     def push(self):
         self.stack.append(copy.copy(self.stack[-1]))
@@ -23,8 +24,12 @@ class StackableBase(object):
     def __repr__(self):
         return 'stackable:%r' % self.stack[-1]
 
-    def __reduce_ex__(self, protocol):
-        return (self.__class__, (), dict(stack=self.stack))
+    # def __reduce_ex__(self, protocol):
+    #     return (self.__class__, (), dict(stack=self.stack))
+
+    # def __setstate__(self, state):
+    #     import pdb; pdb.set_trace();
+    #     super(StackableBase, self).__setstate__(state)
 
     @classmethod
     def delegate(cls, name):
@@ -34,16 +39,18 @@ class StackableBase(object):
 
     @classmethod
     def create_for(cls, type_):
-        exclude_methods = ['__getattribute__', '__setattr__']
+        exclude_methods = ['__getattribute__']
         overridden_methods = dict(
-            inspect.getmembers(cls, predicate=inspect.ismethod)).keys()
+            inspect.getmembers(cls, predicate=cls.ismethod)).keys()
+        overridden_methods += dict(
+            inspect.getmembers(
+                persistent.Persistent, predicate=cls.ismethod)).keys()
+        # XXX should we allow copying over of __getattr__?
         exclude_methods.extend(overridden_methods)
 
         copied_methods = {}
-        # XXX ismethoddescriptor is correct for type_ in [dict, list], but
-        # probably not in general
         for name in dict(
-            inspect.getmembers(type_, predicate=inspect.ismethoddescriptor)):
+            inspect.getmembers(type_, predicate=cls.ismethod)):
             if name in exclude_methods:
                 continue
             copied_methods[name] = cls.delegate(name)
@@ -51,9 +58,14 @@ class StackableBase(object):
         return type(
             'Stackable%s' % type_.__name__.title(), (cls,), copied_methods)
 
+    @staticmethod
+    def ismethod(x):
+        return inspect.ismethoddescriptor(x) or inspect.ismethod(x)
+
 
 SUPPORTED_TYPES = dict(
-    (type_, StackableBase.create_for(type_)) for type_ in [dict, list])
+    (type_, StackableBase.create_for(type_)) for type_ in [
+        dict, list, persistent.list.PersistentList])
 
 for type_ in SUPPORTED_TYPES.values():
     locals()[type_.__name__] = type_

@@ -1729,8 +1729,9 @@ class StackableTests(unittest.TestCase):
         # DemoStorage instead
         tmpfile = tempfile.NamedTemporaryFile()
         db = ZODB.DB(tmpfile.name)
-        root = db.open().root()
-        orig = [1]
+        conn = db.open()
+        root = conn.root()
+        orig = persistent.list.PersistentList([1])
         stack = zope.component.stackable.stackable(orig)
         root['stack'] = stack
         zope.component.stackable.push()
@@ -1738,6 +1739,7 @@ class StackableTests(unittest.TestCase):
         transaction.commit()
 
         # force deserialization
+        conn.close()
         db.close()
         db = ZODB.DB(tmpfile.name)
         root = db.open().root()
@@ -1745,6 +1747,7 @@ class StackableTests(unittest.TestCase):
         stack = root['stack']
         self.assertEqual([1, 2], stack)
         zope.component.stackable.pop()
+        transaction.commit()
         self.assertEqual([1], stack)
 
 
