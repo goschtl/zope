@@ -24,4 +24,6 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <include package=".database" />
+
 </configure>
