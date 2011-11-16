@@ -27,30 +27,31 @@
 <h2>Total number of objects in each cache:</h2>
 
 <table>
-<tr>
-    <th>Cache Name</th>
-    <th>Number of active objects</th>
-    <th>Total active and non-active objects</th>
-</tr>
+  <tr>
+      <th>Cache Name</th>
+      <th>Number of active objects</th>
+      <th>Total active and non-active objects</th>
+  </tr>
 
-<dtml-in cache_detail_length mapping>
+<!--<dtml-in cache_detail_length mapping>-->
 
-<tr tal:repeat="mapping view/cache_detail_length">
-    <td tal:content="mapping/connection">&dtml-connection;</td>
-    <td tal:content="mapping/ngsize">&dtml-ngsize;</td>
-    <td tal:content="mapping/size">&dtml-size;</td>
-</tr>
+  <tr tal:repeat="mapping view/cache_detail_length">
+      <td tal:content="mapping/connection">&dtml-connection;</td>
+      <td tal:content="mapping/ngsize">&dtml-ngsize;</td>
+      <td tal:content="mapping/size">&dtml-size;</td>
+  </tr>
 
-<tr class="row-hilite">
-    <td>Total</td>
-    <td tal:content="cache_length"></td>
-    <td></td>
-</tr>
+  <tr class="row-hilite">
+      <td>Total</td>
+      <td tal:content="view/cache_length"></td>
+      <td></td>
+  </tr>
 
 </table>
 
 <a href="?show_cache_detail=True">Show detail</a>
-<div tal:condition="request/show_cache_detail">
+
+<div tal:condition="exists:request/show_cache_detail">
   <h2>Cache Details</h2>
 
   <table>
@@ -58,16 +59,16 @@
       <th>Object Class</th>
       <th>Count</th>
     </tr>
-      <tr tal:repeat="object cache_detail">
+      <tr tal:repeat="object view/cache_detail">
       <td tal:content="object/key">Key name</td>
-      <td tal:content="object/value">Value</td></tr>
+      <td tal:content="object/value">Value</td>
+    </tr>
   </table>
 
 </div>
-</a>
 
 <a href="?show_cache_detail=True">Show detail</a>
-<div tal:condition="request/show_cache_extreme_detail">
+<div tal:condition="exists:request/show_cache_extreme_detail">
   <h2>Objects in the cache</h2>
 
   <table>
@@ -85,7 +86,6 @@
   </table>
 
 </div>
-</a>
 
 
 </body>
