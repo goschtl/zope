@@ -16,17 +16,6 @@ You can get a read-only Subversion checkout from there:
 
    $ svn checkout svn://svn.zope.org/repos/main/zmi.core/trunk zmi.core
 
-The project also mirrors the trunk from the Subversion repository as a
-Bazaar branch on Launchpad:
-
-https://code.launchpad.net/zmi.core
-
-You can branch the trunk from there using Bazaar:
-
-.. code-block:: sh
-
-   $ bzr branch lp:zmi.core
-
 
 Running the tests in a ``virtualenv``
 -------------------------------------
@@ -127,32 +116,6 @@ tests, you can build the docs:
 
    Build finished. The HTML pages are in _build/html.
 
-You can also test the code snippets in the documentation:
-
-.. code-block:: sh
-
-   $ PATH=/tmp/hack-zmi.core/bin:$PATH make doctest
-   sphinx-build -b doctest -d _build/doctrees   . _build/doctest
-   ...
-   running tests...
-
-   Document: index
-   ---------------
-   1 items passed all tests:
-     17 tests in default
-   17 tests in 1 items.
-   17 passed and 0 failed.
-   Test passed.
-
-   Doctest summary
-   ===============
-      17 tests
-       0 failures in tests
-       0 failures in setup code
-   build succeeded.
-   Testing of doctests in the sources finished, look at the  \
-       results in _build/doctest/output.txt.
-
 
 Running the tests using  :mod:`zc.buildout`
 -------------------------------------------
@@ -187,30 +150,11 @@ Building the documentation using :mod:`zc.buildout`
 ---------------------------------------------------
 
 The :mod:`zmi.core` buildout installs the Sphinx scripts required to build
-the documentation, including testing its code snippets:
+the documentation:
 
 .. code-block:: sh
 
-   $ cd docs
-   $ PATH=../bin:$PATH make doctest html
-   .../bin/sphinx-build -b doctest -d .../docs/_build/doctrees   .../docs .../docs/_build/doctest
-   running tests...
-
-   Document: index
-   ---------------
-   1 items passed all tests:
-     17 tests in default
-   17 tests in 1 items.
-   17 passed and 0 failed.
-   Test passed.
-
-   Doctest summary
-   ===============
-      17 tests
-       0 failures in tests
-       0 failures in setup code
-   build succeeded.
-   Testing of doctests in the sources finished, look at the  results in .../docs/_build/doctest/output.txt.
+   $ ./bin/docs
    .../bin/sphinx-build -b html -d .../docs/_build/doctrees   .../docs .../docs/_build/html
    ...
    build succeeded.
@@ -249,13 +193,3 @@ Subversion help you make a patch file:
 You can then upload that patch file as an attachment to a Launchpad bug
 report.
 
-If you branched the code from Launchpad using Bazaar, you have another
-option:  you can "push" your branch to Launchpad:
-
-.. code-block:: sh
-
-   $ bzr push lp:~tseaver/zmi.core/cool_feature
-
-After pushing your branch, you can link it to a bug report on Launchpad,
-or request that the maintainers merge your branch using the Launchpad
-"merge request" feature.

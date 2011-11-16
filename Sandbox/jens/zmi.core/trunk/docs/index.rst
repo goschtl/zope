@@ -1,16 +1,26 @@
-:mod:`zmi.core` Documentation
-==============================
+.. include:: ../README.txt
 
-This package contains core ZMI components and views.
 
-Contents:
+Narrative documentation
+=======================
 
 .. toctree::
    :maxdepth: 2
 
+   thoughts
    usage
-   api
    hacking
+   todo
+
+
+API documentation
+=================
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+
 
 Indices and tables
 ==================
