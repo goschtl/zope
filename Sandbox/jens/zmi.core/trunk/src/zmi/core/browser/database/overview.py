@@ -17,5 +17,12 @@ ZODB Overview
 
 class View(object):
 
+    db_name = "Name of the ZODB"
+    db_size = "Size of the ZODB"
+
     def __init__(self, context, request):
-        pass
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        return self.index()
