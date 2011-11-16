@@ -1,0 +1,98 @@
+<html>
+<title>Recent Database Activity</title>
+
+<body>
+
+<nav>
+  <ul>
+    <li>Overview</li>
+    <li>Activity</li>
+    <li>Cache Parameters</li>
+    <li>Flush Cache</li>
+  </ul>
+</nav>
+
+<h1>Recent Database Activity</h1>
+
+<!--<dtml-with expr="getActivityChartData(200, REQUEST)" mapping>-->
+
+ <h2>Keep History (seconds)</h2>
+
+  <form method="POST" action="./">
+   <input type="text" name="length" value="&dtml-getHistoryLength;" />
+   <input type="submit" name="set_history" value="Save changes" />
+  </form>
+
+ <h2>Displayed Range</h2>
+ <span tal:content="view/start_time"> </span>to<br />
+ <span tal:content="view/end_time"></span>
+
+  <form method="GET" action="./">
+   <input type="submit" name="current_chart" value="Show current chart" />
+  </form>
+
+<!--<dtml-with expr="getActivityChartData(200, REQUEST)" mapping>-->
+<div define="mapping python:view.getActivityChartData(200, REQUEST)">
+
+<tal:loop repeat="divs mapping">
+ <a href=""
+    tal:attributes="href python:REQUEST['URL'] + ('?chart_start=%s&chart_end=%s'
+               % (start, end))">
+ <tal:if tal:condition="view/trans_len">
+ <img src="transparent_bar" width="32" height="" border="0"
+      tal:attributes="height view/trans_len"/><br />
+ </tal:if>
+ <tal:if tal:condition="view/store_len">
+ <img src="store_bar" width="32" height="" border="0"
+      tal:attributes="height view/store_len"/><br />
+ </tal:if>
+ <tal:if tal:condition="view/load_len">
+ <img src="store_bar" width="32" height="" border="0"
+      tal:attributes="height view/load_len"/><br />
+ </tal:if>
+</a>
+</tal:loop>
+
+ <dl>
+  <dt color="red">Object stores</dt>
+  <dd tal:repeat="divs mapping">
+ <a href="" color="red" tal:content="store_count"
+    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+</dd>
+ <dt>Total:</dt>
+ <dd color="red" tal:content="view/total_store_count">total_store_count</dd>
+ </dl>
+
+ <dl>
+  <dt color="red">Object loads</dt>
+  <dd tal:repeat="divs mapping">
+ <a href="" color="blue" tal:content="load_count"
+    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+</dd>
+ <dt>Total:</dt>
+ <dd color="blue" tal:content="view/total_store_count">total_load_count</dd>
+ </dl>
+
+ <dl>
+  <dt>Connections</dt>
+  <dd tal:repeat="divs mapping">
+ <a href="" tal:content="connections"
+    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+</dd>
+ <dt>Total:</dt>
+ <dd tal:content="view/connections">connections</dd>
+ </dl>
+
+ <dl>
+  <dt></dt>
+  <dd tal:repeat="divs mapping">
+ <a href="" tal:content="time_offset"
+    tal:attributes="href REQUEST['URL'] + ('?chart_start=%s&chart_end=%s' % (start, end))">/a>
+</dd>
+ <dt>Total:</dt>
+ </dl>
+
+</div>
+
+</body>
+</html>

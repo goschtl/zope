@@ -1,0 +1,8 @@
+Source views
+
+Zope.App.ApplicationManager
+"manage_main" = dtml/dbMain
+"manage_activity" = dtml/activity
+"manage_cacheParameters" = dtml/manage_cacheParameters
+"manage_cacheGC" = dtml/cacheGC
+"manage_setHistoryLength" = ?

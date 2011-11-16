@@ -1,0 +1,29 @@
+<html>
+<title>Flush Cache</title>
+
+<body>
+
+<nav>
+  <ul>
+    <li>Overview</li>
+    <li>Activity</li>
+    <li>Cache Parameters</li>
+    <li>Flush Cache</li>
+  </ul>
+</nav>
+
+<h1>Flush Cache</h1>
+
+  <h2>Minimize</h2>
+  <p>Remove all objects from all ZODB in-memory caches</p>
+
+  <form action="./" method="Post">
+
+  <input type="submit" name="manage_minimize" value="Minimize" />
+
+  </form>
+
+<!--Cache details removed from this view - see cache parameters view-->
+
+</body>
+</html>

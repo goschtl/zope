@@ -1,0 +1,40 @@
+<html>
+<title>ZODB Overview</title>
+
+<body>
+
+<nav>
+  <ul>
+    <li>Overview</li>
+    <li>Activity</li>
+    <li>Cache Parameters</li>
+    <li>Flush Cache</li>
+  </ul>
+</nav>
+
+<h1>Database overview</h1>
+
+<p>
+The Database Manager allows you to view database status information.
+It also allows you to perform maintenance tasks such as database packing
+and cache management.
+</p>
+
+
+  <h2>Database Location:</h2>
+  <span tal:content="view/db_name">DB NAME</span>
+
+  <h2>Database Size:</h2>
+  <span tal:content="view/db_size">DB SIZE</span>
+
+<form action="." method="post">
+  <p>Click <em>pack</em> to pack the Zope database, removing previous revisions
+  of objects that are older than</p>
+  <label for="days">days</label>
+  <input type="text" name="days" value="0">
+  <input type="submit" name="submit" value="Pack">
+
+</form>
+
+</body>
+</html>
