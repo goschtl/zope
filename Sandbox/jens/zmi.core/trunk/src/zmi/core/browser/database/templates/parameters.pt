@@ -5,10 +5,10 @@
 
 <nav>
   <ul>
-    <li>Overview</li>
-    <li>Activity</li>
-    <li>Cache Parameters</li>
-    <li>Flush Cache</li>
+    <li><a href="./zodb_overview.html">Overview</a></li>
+    <li><a href="./zodb_activity.html">Activity</li>
+    <li><a href="./zodb_parameters.html">Cache Parameters</li>
+    <li><a href="./zodb_flush.html">Flush Cache</li>
   </ul>
 </nav>
 
