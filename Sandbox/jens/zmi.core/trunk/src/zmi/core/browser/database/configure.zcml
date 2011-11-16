@@ -1,0 +1,36 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+   <browser:page
+      for="*"
+      name="zodb_overview.html"
+      template="templates/overview.pt"
+      class=".overview.View"
+      permission="zope2.ManageProperties"
+      />
+
+   <browser:page
+      for="*"
+      name="zodb_activity.html"
+      template="templates/activity.pt"
+      class=".activity.View"
+      permission="zope2.ManageProperties"
+      />
+
+   <browser:page
+      for="*"
+      name="zodb_parameters.html"
+      template="templates/parameters.pt"
+      class=".parameters.View"
+      permission="zope2.ManageProperties"
+      />
+
+   <browser:page
+      for="*"
+      name="zodb_flush.html"
+      template="templates/flush.pt"
+      class=".flush.View"
+      permission="zope2.ManageProperties"
+      />
+
+</configure>
