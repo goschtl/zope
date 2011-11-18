@@ -18,6 +18,7 @@
 ##############################################################################
 """Setup for zope.keyreference package
 """
+
 import os
 from setuptools import setup, find_packages
 
@@ -35,7 +36,7 @@ setup(name = 'zc.persistentkeyreference',
           'Detailed Documentation\n' +
           '----------------------\n'
           + '\n\n' +
-          read('src', 'zope', 'keyreference', 'persistent.txt')
+          read('src', 'zc', 'persistentkeyreference', 'persistent.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -50,19 +51,16 @@ setup(name = 'zc.persistentkeyreference',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://pypi.python.org/pypi/zope.keyreference',
+      url='http://pypi.python.org/pypi/zc.persistentkeyreference',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
-      namespace_packages=['zope'],
+      namespace_packages=['zc'],
       extras_require={'test': ['zope.testing']},
       install_requires = ['setuptools',
                           'ZODB3',
-                          'zope.component',
-                          'zope.i18nmessageid',
                           'zope.interface',
-                          'zope.schema',
-                          'zope.keyreference'
+                          'zope.keyreference',
                           ],
       include_package_data = True,
       zip_safe = False,

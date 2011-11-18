@@ -14,7 +14,7 @@
 """Tests for the unique id utility.
 """
 import unittest
-from zope.testing import doctest
+import doctest
 
 def test_multi_databases():
     """
@@ -38,7 +38,8 @@ def test_multi_databases():
 
     >>> transaction.commit()
 
-    >>> from zc.persistentkeyreference import KeyReferenceToPersistent
+    >>> from zc.persistentkeyreference.persistent import (
+    ...     KeyReferenceToPersistent)
 
     >>> key1 = KeyReferenceToPersistent(conn1.root()['ob'])
     >>> key2 = KeyReferenceToPersistent(conn2.root()['ob'])

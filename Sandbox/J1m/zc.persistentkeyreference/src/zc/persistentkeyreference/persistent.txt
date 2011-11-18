@@ -24,7 +24,9 @@ in a database:
 
 Then we'll create some key references:
 
-    >>> from zope.keyreference.persistent import KeyReferenceToPersistent
+    >>> from zc.persistentkeyreference.persistent import (
+    ...    KeyReferenceToPersistent)
+
 
     >>> key1 = KeyReferenceToPersistent(root['ob1'])
     >>> key2 = KeyReferenceToPersistent(root['ob2'])
@@ -68,10 +70,10 @@ type-specific information:
     >>> keys = [key1, dummy_key1, dummy_key2, key2, dummy_key3]
     >>> keys.sort()
     >>> key_type_ids = [key.key_type_id for key in keys]
-    >>> key_type_ids[0:3].count('zope.app.keyreference.object')
-    3
-    >>> key_type_ids[3:].count('zope.app.keyreference.persistent')
+    >>> key_type_ids[:2].count('zc.persistentkeyreference')
     2
+    >>> key_type_ids[2:].count('zope.app.keyreference.object')
+    3
 
 We'll store the key references in the database:
 
@@ -228,19 +230,3 @@ not.  Here are a few examples.
     Traceback (most recent call last):
     ...
     ValueError: cannot sort reliably
-
-Location-based connection adapter
----------------------------------
-
-The function `zope.keyreference.connectionOfPersistent` adapts
-objects to connections using a simple location-based heuristic. It
-checked to see if the object has a `__parent__` that has a connection:
-
-    >>> from zope.keyreference.persistent import connectionOfPersistent
-    >>> ob3 = PersistentMapping()
-    >>> print connectionOfPersistent(ob3)
-    None
-
-    >>> ob3.__parent__ = root2['ob1']
-    >>> connectionOfPersistent(ob3) is conn2
-    True
