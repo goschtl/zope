@@ -8,4 +8,3 @@ To checkout trunk version a package:
 For example, to checkout zope.interface trunk:
 
  svn co svn://svn.zope.org/repos/main/zope.interface/trunk zope.interface
-
