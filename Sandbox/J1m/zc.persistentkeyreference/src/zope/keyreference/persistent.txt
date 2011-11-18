@@ -1,8 +1,8 @@
-=====================================
-Key References for Persistent Objects
-=====================================
+==================================================
+New Improved Key References for Persistent Objects
+==================================================
 
-`zope.keyreference.persistent.KeyReferenceToPersistent` provides an
+`zc.persistentkeyreference.KeyReferenceToPersistent` provides an
 `zope.keyreference.interfaces.IKeyReference` reference for persistent
 objects.
 

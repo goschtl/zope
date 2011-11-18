@@ -38,7 +38,7 @@ def test_multi_databases():
 
     >>> transaction.commit()
 
-    >>> from zope.keyreference.persistent import KeyReferenceToPersistent
+    >>> from zc.persistentkeyreference import KeyReferenceToPersistent
 
     >>> key1 = KeyReferenceToPersistent(conn1.root()['ob'])
     >>> key2 = KeyReferenceToPersistent(conn2.root()['ob'])

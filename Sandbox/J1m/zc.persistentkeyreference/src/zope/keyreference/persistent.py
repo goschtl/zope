@@ -20,42 +20,12 @@ from ZODB.ConflictResolution import PersistentReference
 import zope.interface
 
 import zope.keyreference.interfaces
+import zope.keyreference.persistent
 
-class KeyReferenceToPersistent(object):
-    """An IKeyReference for persistent objects which is comparable.
+class KeyReferenceToPersistent(
+    zope.keyreference.persistent.KeyReferenceToPersistent):
 
-    These references compare by database name and _p_oids of the objects they
-    reference.
-    """
-    zope.interface.implements(zope.keyreference.interfaces.IKeyReference)
-
-    key_type_id = 'zope.app.keyreference.persistent'
-
-    def __init__(self, object):
-        if not getattr(object, '_p_oid', None):
-            connection = IConnection(object, None)
-            if connection is None:
-                raise zope.keyreference.interfaces.NotYet(object)
-
-            connection.add(object)
-
-        self.object = object
-
-    def __call__(self):
-        return self.object
-
-    def __hash__(self):
-        if isinstance(self.object, PersistentReference):
-            # we are doing conflict resolution.
-            database_name = self.object.database_name
-            if database_name is None:
-                # we can't hash
-                raise ValueError('database name unavailable at this time')
-            oid = self.object.oid
-        else:
-            database_name = self.object._p_jar.db().database_name
-            oid = self.object._p_oid
-        return hash((database_name, oid))
+    key_type_id = 'zc.persistentkeyreference'
 
     def __cmp__(self, other):
         if self.key_type_id == other.key_type_id:
@@ -94,34 +64,3 @@ class KeyReferenceToPersistent(object):
             return cmp((self_name, self_oid), (other_name, other_oid))
 
         return cmp(self.key_type_id, other.key_type_id)
-
-
-@zope.interface.implementer(IConnection)
-def connectionOfPersistent(ob):
-    """An adapter which gets a ZODB connection of a persistent object.
-
-    We are assuming the object has a parent if it has been created in
-    this transaction.
-
-    Raises ValueError if it is impossible to get a connection.
-    """
-    cur = ob
-    while not getattr(cur, '_p_jar', None):
-        cur = getattr(cur, '__parent__', None)
-        if cur is None:
-            return None
-    return cur._p_jar
-
-# BBB: If zope.app.keyreference is not installed, we still want
-# old key references to be available. So fake a module to make
-# them unpickleable.
-try:
-    import zope.app.keyreference
-except ImportError:
-    import sys
-    from types import ModuleType as module
-    z_a_k = module('zope.app.keyreference')
-    sys.modules['zope.app.keyreference'] = z_a_k
-    z_a_k_p = module('zope.app.keyreference.persistent')
-    z_a_k_p.KeyReferenceToPersistent = KeyReferenceToPersistent
-    sys.modules['zope.app.keyreference.persistent'] = z_a_k_p

@@ -24,11 +24,11 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name = 'zope.keyreference',
-      version = '3.6.3dev',
+setup(name = 'zc.persistentkeyreference',
+      version = '0.1dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Key References',
+      description='Persistent Key References',
       long_description=(
           read('README.txt')
           + '\n\n' +
@@ -62,6 +62,7 @@ setup(name = 'zope.keyreference',
                           'zope.i18nmessageid',
                           'zope.interface',
                           'zope.schema',
+                          'zope.keyreference'
                           ],
       include_package_data = True,
       zip_safe = False,
