@@ -36,7 +36,6 @@ Let's add a deployment to a sample buildout:
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'GROUP'
 
-
 Note that we are providing a prefix and an etc-user here.  These options
 default to '/' and 'root', respectively.
 
