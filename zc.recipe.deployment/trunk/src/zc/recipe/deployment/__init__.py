@@ -118,13 +118,19 @@ class Configuration:
 
         deployment = options.get('deployment')
         if deployment:
-            options['location'] = os.path.join(
-                buildout[deployment]['etc-directory'],
-                name)
+            options['etc-user'] = buildout[deployment].get('etc-user', 'root')
+            options['prefix'] = buildout[deployment].get('prefix', '/')
+            directory = options.get("directory")
+            if directory:
+                directory = os.path.join(options['prefix'], directory)
+            else:
+                directory = os.path.join(
+                    buildout[deployment]['etc-directory'])
         else:
-            options['location'] = os.path.join(
-                buildout['buildout']['parts-directory'],
-                name)
+            directory = os.path.join(
+                buildout['buildout']['parts-directory'])
+        options["directory"] = directory
+        options["location"] = os.path.join(directory, name)
 
     def install(self):
         options = self.options
@@ -136,6 +142,21 @@ class Configuration:
             text = open(options['file'], 'r'+mode).read()
         else:
             text = options['text']
+        deployment = options.get('deployment')
+        if deployment:
+            etc_user = options['etc-user']
+            etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
+            created = []
+            try:
+                make_dir(options['directory'], etc_uid, etc_gid, 0755, created)
+            except Exception:
+                for d in created:
+                    try:
+                        shutil.rmtree(d)
+                    except OSError:
+                        # parent directory may have already been removed
+                        pass
+                raise
         open(options['location'], 'w'+mode).write(text)
         return options['location']
 
