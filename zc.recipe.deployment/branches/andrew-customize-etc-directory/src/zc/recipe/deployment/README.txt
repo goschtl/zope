@@ -354,15 +354,94 @@ deployment etc directory:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+
+    >>> os.path.exists(join('parts', 'x.cfg'))
+    False
+
+    >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
+    xxx
+    yyy
+    zzz
+
+If a directory is specified, then the file is placed in the directory.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... text = xxx
+    ...        yyy
+    ...        zzz
+    ... directory = etc/foobar
+    ... deployment = foo
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Creating 'PREFIX/etc/foobar',
+        mode 755, user 'USER', group 'GROUP'
+
+    >>> os.path.exists(join('parts', 'x.cfg'))
+    False
+    >>> os.path.exists(join(sample_buildout, 'etc/foo/x.cfg'))
+    False
+
+    >>> cat(os.path.join(sample_buildout, 'etc/foobar/x.cfg'))
+    xxx
+    yyy
+    zzz
+
+A directory option works only with a deployment option.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... text = xxx
+    ...        yyy
+    ...        zzz
+    ... directory = etc/foobar
+    ... ''' % (sample_buildout, user, user))
+
     >>> print system(join('bin', 'buildout')),
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
 
     >>> os.path.exists(join('parts', 'x.cfg'))
+    True
+    >>> os.path.exists(join(sample_buildout, 'etc/foobar/x.cfg'))
     False
 
-    >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
+    >>> cat('parts', 'x.cfg')
     xxx
     yyy
     zzz
@@ -389,10 +468,13 @@ configuration:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
 
     >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
     1
