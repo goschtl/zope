@@ -592,8 +592,14 @@ class SnapshotExportContext( BaseContext ):
         for element in path:
 
             if element not in current.objectIds():
-                # No Unicode IDs!
-                current._setObject( str( element ), Folder( element ) )
+                orig_check = current._checkId
+                current._checkId = lambda x: orig_check(x, allow_dup=True)
+
+                try:
+                    # No Unicode IDs!
+                    current._setObject( str( element ), Folder( element ) )
+                finally:
+                    del current._checkId
 
             current = current._getOb( element )
 
