@@ -9,6 +9,8 @@ Changes
 - Using Python's ``doctest`` module instead of deprecated
   ``zope.testing.doctest``.
 
+- Added a directory option for configuration to override default etc
+  directory.
 
 0.8.0 (2010-05-18)
 ==================
