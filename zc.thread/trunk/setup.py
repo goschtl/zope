@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.thread', '0'
 
 install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
+extras_require = dict(test=['zope.testing', 'mock'])
 
 entry_points = """
 """
