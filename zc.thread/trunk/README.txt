@@ -38,7 +38,8 @@ This package provides a very simple thread-creation API that:
 - After a thread finished, you can get the return value of the
   target function from the thread's ``value`` attribute, or, if the
   function raises an exception, you can get the exception object from
-  the thread's ``exception`` attribute.
+  the thread's ``exception`` attribute. (This feature was inspired by
+  the same feature in gevent greenlets.)
 
 There's also a Process constructor/decorator that works like Thread,
 but with multi-processing processes.
@@ -46,7 +47,7 @@ but with multi-processing processes.
 Changes
 *******
 
-0.1.0 (yyyy-mm-dd)
+0.1.0 (2011-11-27)
 ==================
 
 Initial release
