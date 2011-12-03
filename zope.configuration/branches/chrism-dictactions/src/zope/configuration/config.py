@@ -17,6 +17,7 @@ See README.txt.
 """
 __docformat__ = 'restructuredtext'
 import __builtin__
+import operator
 import os.path
 import sys
 
@@ -1643,9 +1644,7 @@ def resolveConflicts(actions):
         # We need to sort the actions by the paths so that the shortest
         # path with a given prefix comes first:
         def bypath(tup):
-            o, a = tup
-            return (a['includepath'], o, a['callable'], a['args'], a['kw'],
-                    a['info'])
+            return tup[1]['includepath'], tup[0]
         dups.sort(key=bypath)
         order, first = dups[0]
         output.append(dups[0])
@@ -1664,7 +1663,7 @@ def resolveConflicts(actions):
     if conflicts:
         raise ConfigurationConflictError(conflicts)
 
-    output.sort()
+    output.sort(key=operator.itemgetter(0))
     return [ x[1] for x in output ]
 
 class ConfigurationConflictError(ConfigurationError):
