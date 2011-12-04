@@ -42,6 +42,7 @@ border: 1px solid gray;
    display:block;
    float: left;
    width: 3em;
+   vertical-align: bottom;
    }
 
  span.blue {
@@ -76,7 +77,7 @@ border: 1px solid gray;
   </form>
 
  <h2>Displayed Range</h2>
- <span tal:content="view/start_time"> </span>to<br />
+ <span tal:content="view/start_time"> </span> to<br />
  <span tal:content="view/end_time"></span>
 
   <form method="GET" action="./">
@@ -89,10 +90,9 @@ border: 1px solid gray;
 
  <tr>
   <td></td>
-  <td tal:repeat="result activity/divs">
+  <td valign="bottom" tal:repeat="result activity/divs">
    <a href=""
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))">
-   <span class="bar" tal:attributes="style string:height: ${result/trans_len}"></span>
+    ttal:attributes="href string: ${request/URL}?${result/link}">
    <span class="bar red" tal:attributes="style string:height: ${result/store_len}"></span>
    <span class="bar blue" tal:attributes="style string:height: ${result/load_len}"></span>
    </a>
@@ -106,8 +106,8 @@ border: 1px solid gray;
  <tr class="red">
   <td class="title">Object stores</td>
   <td tal:repeat="result activity/divs">
-   <a href="" tal:content="result/store_count"
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+   <a href="" tal:content="result/stores"
+    tal:attributes="href string: ${request/URL}?${result/link}"></a>
  </td>
  <td class="total" tal:content="activity/total_store_count">total_store_count</td>
 </tr>
@@ -115,26 +115,24 @@ border: 1px solid gray;
  <tr class="blue">
   <td class="title">Object loads</td>
   <td tal:repeat="result activity/divs">
-   <a href="" tal:content="result/load_count"
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+   <a href="" tal:content="result/loads"
+    tal:attributes="href string: ${request/URL}?${result/link}"></a>
  </td>
  <td class="total" tal:content="activity/total_load_count">total_load_count</td>
 </tr>
 
  <tr>
   <td class="title">Connections</td>
-  <td tal:repeat="result activity/divs">
-   <a href="" tal:content="result/connections"
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+  <td tal:repeat="result activity/divs"
+     tal:content="result/connections">Connections
  </td>
  <td class="total" tal:content="activity/total_connections">total_connections</td>
 </tr>
 
  <tr>
   <td>Time offset</td>
-  <td tal:repeat="result activity/divs">
-   <a href="" tal:content="result/time_offset"
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+  <td tal:repeat="result activity/divs"
+     tal:content="result/time_offset">Time offset
  </td>
 </tr>
 </table>
