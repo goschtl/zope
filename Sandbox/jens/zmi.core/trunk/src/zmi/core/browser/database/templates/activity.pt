@@ -1,6 +1,59 @@
 <html>
+<head>
 <title>Recent Database Activity</title>
+<style>
 
+div#chart table {
+border: 1px solid gray;
+ font-size:75%;
+  }
+
+ tr td a {
+  text-decoration: none;
+ }
+
+ .red,
+ tr.red a {
+  color: #F00;
+  }
+
+ .blue,
+ tr.blue a{
+  color: #000080;
+  }
+
+ td {
+  width: 3.5em;
+  text-align: right;
+  }
+
+ td.title {
+  text-align: left;
+  width: auto;
+  }
+
+ td.total,
+ td.title {
+  font-weight: bold;
+  }
+
+
+ span.bar {
+   display:block;
+   float: left;
+   width: 3em;
+   }
+
+ span.blue {
+   background-color: #000080;
+   }
+
+ span.red {
+   background-color: #F00;
+   }
+
+</style>
+</head>
 <body>
 
 <nav>
@@ -14,12 +67,10 @@
 
 <h1>Recent Database Activity</h1>
 
-<!--<dtml-with expr="getActivityChartData(200, REQUEST)" mapping>-->
-
  <h2>Keep History (seconds)</h2>
 
   <form method="POST" action="./">
-   <input type="text" name="length" value="&dtml-getHistoryLength;"
+   <input type="text" name="length"
           tal:attributes="value view/getHistoryLength" />
    <input type="submit" name="set_history" value="Save changes" />
   </form>
@@ -32,66 +83,61 @@
    <input type="submit" name="current_chart" value="Show current chart" />
   </form>
 
-<!--<dtml-with expr="getActivityChartData(200, REQUEST)" mapping>-->
-<div define="mapping python:view.getActivityChartData(200, REQUEST)">
+<div id="chart" tal:define="activity view/getActivityChartData">
 
-<tal:loop repeat="mapping view/divs">
- <a href=""
-    tal:attributes="href python:request['URL'] + ('?chart_start=%s&chart_end=%s'
-               % (start, end))">
- <tal:if tal:condition="view/trans_len">
- <img src="transparent_bar" width="32" height="" border="0"
-      tal:attributes="height view/trans_len"/><br />
- </tal:if>
- <tal:if tal:condition="view/store_len">
- <img src="store_bar" width="32" height="" border="0"
-      tal:attributes="height view/store_len"/><br />
- </tal:if>
- <tal:if tal:condition="view/load_len">
- <img src="store_bar" width="32" height="" border="0"
-      tal:attributes="height view/load_len"/><br />
- </tal:if>
-</a>
-</tal:loop>
+<table id="chart">
 
- <dl>
-  <dt color="red">Object stores</dt>
-  <dd tal:repeat="mapping view/divs">
- <a href="" color="red" tal:content="store_count"
-    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end']))"></a>
-</dd>
- <dt>Total:</dt>
- <dd color="red" tal:content="view/total_store_count">total_store_count</dd>
- </dl>
+ <tr>
+  <td></td>
+  <td tal:repeat="result activity/divs">
+   <a href=""
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))">
+   <span class="bar" tal:attributes="style string:height: ${result/trans_len}"></span>
+   <span class="bar red" tal:attributes="style string:height: ${result/store_len}"></span>
+   <span class="bar blue" tal:attributes="style string:height: ${result/load_len}"></span>
+   </a>
+ </td>
+</tr>
 
- <dl>
-  <dt color="red">Object loads</dt>
-  <dd tal:repeat="mapping view/divs">
- <a href="" color="blue" tal:content="load_count"
-    tal:attributes="href python: request['URL'] + '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
-</dd>
- <dt>Total:</dt>
- <dd color="blue" tal:content="view/total_store_count">total_load_count</dd>
- </dl>
+ <tr>
+  <td colspan="11"></td>
+  <td class="total">Total</td>
+ </tr>
+ <tr class="red">
+  <td class="title">Object stores</td>
+  <td tal:repeat="result activity/divs">
+   <a href="" tal:content="result/store_count"
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+ </td>
+ <td class="total" tal:content="activity/total_store_count">total_store_count</td>
+</tr>
 
- <dl>
-  <dt>Connections</dt>
-  <dd tal:repeat="mapping view/divs">
- <a href="" tal:content="connections"
-    tal:attributes="href python: request['URL']+ '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
-</dd>
- <dt>Total:</dt>
- <dd tal:content="view/connections">connections</dd>
- </dl>
+ <tr class="blue">
+  <td class="title">Object loads</td>
+  <td tal:repeat="result activity/divs">
+   <a href="" tal:content="result/load_count"
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+ </td>
+ <td class="total" tal:content="activity/total_load_count">total_load_count</td>
+</tr>
 
- <dl>
-  <dt></dt>
-  <dd tal:repeat="mapping view/divs">
- <a href="" tal:content="time_offset"
-    tal:attributes="href python: request['URL'] + '?chart_start=%s&chart_end=%s' % (mapping['start'], mapping['end'])"></a>
-</dd>
- <dt>Total:</dt>
- </dl>
+ <tr>
+  <td class="title">Connections</td>
+  <td tal:repeat="result activity/divs">
+   <a href="" tal:content="result/connections"
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+ </td>
+ <td class="total" tal:content="activity/total_connections">total_connections</td>
+</tr>
+
+ <tr>
+  <td>Time offset</td>
+  <td tal:repeat="result activity/divs">
+   <a href="" tal:content="result/time_offset"
+    tal:attributes="href python: request['URL'] + ('?chart_start=%s&chart_end=%s' % (result['start'], result['end']))"></a>
+ </td>
+</tr>
+</table>
 
 </div>
 
