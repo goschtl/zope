@@ -15,8 +15,9 @@
 ZODB Activity
 """
 
+import time
+
 from Acquisition import aq_inner
-from DateTime import DateTime
 
 #dummy data
 
@@ -68,6 +69,7 @@ class View(object):
         """Returns information for generating an activity chart.
         Default height is 200 pixels
         """
+        segment_height = int(segment_height)
         am = self._getActivityMonitor()
         if am is None:
             return None
@@ -80,73 +82,63 @@ class View(object):
         else:
             analysis = am.getActivityAnalysis()
 
-        total_loads = 0
-        total_stores = 0
-        total_connections = 0
-        limit = 0
-        divs = []
-        for div in analysis:
-            total_stores = total_stores + div['stores']
-            total_loads = total_loads + div['loads']
-            total_connections = total_connections + div['connections']
-            sum = div['stores'] + div['loads']
-            if sum > limit:
-                limit = sum
-
-        if analysis:
+        segment_time = 0
+        start_time = ''
+        end_time = ''
+        if analysis is not None:
             segment_time = analysis[0]['end'] - analysis[0]['start']
-        else:
-            segment_time = 0
+            start_time = time.strftime("%a, %d %b %Y %H:%M:%S",
+                                       time.gmtime(analysis[0]['start']))
+            end_time = time.strftime("%a, %d %b %Y %H:%M:%S",
+                                     time.gmtime(analysis[-1]['end']))
 
-        for div in analysis:
-            stores = div['stores']
-            if stores > 0:
-                store_len = max(int(segment_height * stores / limit), 1)
-            else:
+        divs = []
+
+        total_stores, total_loads, total_connections = (
+            sum(d[k] for d in analysis)
+            for k in ('stores', 'loads', 'connections')
+        )
+
+        limit = max(((d['stores'] + d['loads']) for d in analysis))
+        now = analysis[-1]['end']
+
+        def calculated():
+            for div in analysis:
+                stores = div['stores']
+                loads = div['loads']
                 store_len = 0
-            loads = div['loads']
-            if loads > 0:
-                load_len = max(int(segment_height * loads / limit), 1)
-            else:
                 load_len = 0
 
-            t = div['end'] - analysis[-1]['end']  # Show negative numbers.
-            if segment_time >= 3600:
-                # Show hours.
-                time_offset = '%dh' % (t / 3600)
-            elif segment_time >= 60:
-                # Show minutes.
-                time_offset = '%dm' % (t / 60)
-            elif segment_time >= 1:
-                # Show seconds.
-                time_offset = '%ds' % t
-            else:
-                # Show fractions.
-                time_offset = '%.2fs' % t
-            div.update({'link': 'chart_start=%s&chart_end=%s' % (div['start'], div['end']),
-                        'time_offset': time_offset,
-                        'store_len': store_len,
-                        'load_len': load_len,
-                        })
-            divs.append(div)
+                if stores > 0:
+                    store_len = max((segment_height * stores / limit), 1)
+                if loads > 0:
+                    load_len = max((segment_height * loads / limit), 1)
 
+                offset = div['end'] - now  # Offset from most recent measurement.
+                if segment_time >= 3600:
+                    # Show hours.
+                    time_offset = '%dh' % (offset / 3600)
+                elif segment_time >= 60:
+                    # Show minutes.
+                    time_offset = '%dm' % (offset / 60)
+                elif segment_time >= 1:
+                    # Show seconds.
+                    time_offset = '%ds' % offset
+                else:
+                    # Show fractions.
+                    time_offset = '%.2fs' % offset
 
-        if analysis:
-            start_time = DateTime(divs[0]['start']).aCommonZ()
-            end_time = DateTime(divs[-1]['end']).aCommonZ()
-        else:
-            start_time = ''
-            end_time = ''
+                div.update({'link': 'chart_start=%s&chart_end=%s' % (div['start'], div['end']),
+                            'time_offset': time_offset,
+                            'store_len': store_len,
+                            'load_len': load_len,
+                            })
+                yield div
 
-        res = {'start_time': start_time,
+        return {'start_time': start_time,
                'end_time': end_time,
-               'divs': divs,
+               'divs': calculated,
                'total_store_count': total_stores,
                'total_load_count': total_loads,
                'total_connections': total_connections,
                }
-        return res
-
-    #def getActivityChartData(self):
-        #"""test graphing"""
-        #return activity

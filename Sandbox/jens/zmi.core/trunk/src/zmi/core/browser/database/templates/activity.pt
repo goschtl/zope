@@ -55,7 +55,7 @@ border: 1px solid gray;
 
 </style>
 </head>
-<body>
+<body tal:define="activity view/getActivityChartData">
 
 <nav>
   <ul>
@@ -77,14 +77,12 @@ border: 1px solid gray;
   </form>
 
  <h2>Displayed Range</h2>
- <span tal:content="view/start_time"> </span> to<br />
- <span tal:content="view/end_time"></span>
+ <span tal:content="activity/start_time"> </span> to<br />
+ <span tal:content="activity/end_time"></span>
 
   <form method="GET" action="./">
    <input type="submit" name="current_chart" value="Show current chart" />
   </form>
-
-<div id="chart" tal:define="activity view/getActivityChartData">
 
 <table id="chart">
 
@@ -136,8 +134,6 @@ border: 1px solid gray;
  </td>
 </tr>
 </table>
-
-</div>
 
 </body>
 </html>
