@@ -53,10 +53,8 @@ class View(object):
 
     def _getActivityMonitor(self):
         if not hasattr(self._db, 'getActivityMonitor'):
-            return None
+            return
         am = self._db.getActivityMonitor()
-        if am is None:
-            return None
         return am
 
     def getHistoryLength(self):
