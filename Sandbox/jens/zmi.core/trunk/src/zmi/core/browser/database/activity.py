@@ -87,9 +87,9 @@ class View(object):
         end_time = ''
         if analysis is not None:
             segment_time = analysis[0]['end'] - analysis[0]['start']
-            start_time = time.strftime("%a, %d %b %Y %H:%M:%S",
+            start_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
                                        time.gmtime(analysis[0]['start']))
-            end_time = time.strftime("%a, %d %b %Y %H:%M:%S",
+            end_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
                                      time.gmtime(analysis[-1]['end']))
 
         divs = []
@@ -100,9 +100,10 @@ class View(object):
         )
 
         limit = max(((d['stores'] + d['loads']) for d in analysis))
-        now = analysis[-1]['end']
 
         def calculated():
+            """Utility function to calculate bar heights and time offsets"""
+            now = analysis[-1]['end']
             for div in analysis:
                 stores = div['stores']
                 loads = div['loads']
