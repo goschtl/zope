@@ -40,6 +40,7 @@ border: 1px solid gray;
 
  span.bar {
    display:block;
+   color: #FFF;
    float: left;
    width: 3em;
    vertical-align: bottom;
@@ -70,7 +71,7 @@ border: 1px solid gray;
 
  <h2>Keep History (seconds)</h2>
 
-  <form method="POST" action="./">
+  <form method="POST" action="./" tal:attributes="action request/URL">
    <input type="text" name="length"
           tal:attributes="value view/getHistoryLength" />
    <input type="submit" name="set_history" value="Save changes" />
@@ -80,7 +81,7 @@ border: 1px solid gray;
  <span tal:content="activity/start_time"> </span> to<br />
  <span tal:content="activity/end_time"></span>
 
-  <form method="GET" action="./">
+  <form method="POST" action="./" tal:attributes="action request/URL">
    <input type="submit" name="current_chart" value="Show current chart" />
   </form>
 
@@ -90,9 +91,13 @@ border: 1px solid gray;
   <td></td>
   <td valign="bottom" tal:repeat="result activity/divs">
    <a href=""
-    ttal:attributes="href string: ${request/URL}?${result/link}">
-   <span class="bar red" tal:attributes="style string:height: ${result/store_len}"></span>
-   <span class="bar blue" tal:attributes="style string:height: ${result/load_len}"></span>
+    tal:attributes="href string: ${request/URL}?${result/link}">
+   <span class="bar red"
+        tal:content="python: result['stores'] > 0 and result['stores'] or None"
+        tal:attributes="style string:height: ${result/store_len}"></span>
+   <span class="bar blue"
+        tal:content="python: result['loads'] > 0 and result['loads'] or None"
+        tal:attributes="style string:height: ${result/load_len}"></span>
    </a>
  </td>
 </tr>
