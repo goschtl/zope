@@ -34,6 +34,7 @@ activity = {'start_time': 'Dec 4, 2011 6:15 pm GMT+1', 'total_load_count': 0, 'e
                      {'stores': 0, 'connections': 0, 'store_len': 40, 'end': 1323022511.8497, 'start': 1323022151.8497, 'load_len': 30, 'loads': 0, 'time_offset': '0m', 'link':''}],
             'total_store_count': 0, 'total_connections': 0}
 
+
 class View(object):
 
     start_time = 'start_time'
@@ -63,23 +64,8 @@ class View(object):
             return 0
         return am.getHistoryLength()
 
-    def getActivityChartData(self, segment_height=200, REQUEST=None):
-        """Returns information for generating an activity chart.
-        Default height is 200 pixels
-        """
-        segment_height = int(segment_height)
-        am = self._getActivityMonitor()
-        if am is None:
-            return None
-
-        if REQUEST is not None:
-            start = float(REQUEST.get('chart_start', 0))
-            end = float(REQUEST.get('chart_end', 0))
-            divisions = int(REQUEST.get('chart_divisions', 10))
-            analysis = am.getActivityAnalysis(start, end, divisions)
-        else:
-            analysis = am.getActivityAnalysis()
-
+    def _get_timings(self, analysis):
+        """Calculate time intervals and format start and end times"""
         segment_time = 0
         start_time = ''
         end_time = ''
@@ -89,54 +75,73 @@ class View(object):
                                        time.gmtime(analysis[0]['start']))
             end_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
                                      time.gmtime(analysis[-1]['end']))
+        return start_time, end_time, segment_time
 
-        divs = []
+    def _chart_data(self, segment_time, segment_height, analysis):
+        """Utility function to calculate bar heights and time offsets"""
+
+        limit = max(((d['stores'] + d['loads']) for d in analysis))
+
+        now = analysis[-1]['end']
+        for div in analysis:
+            stores = div['stores']
+            loads = div['loads']
+            store_len = 0
+            load_len = 0
+
+            if stores > 0:
+                store_len = max((segment_height * stores / limit), 1)
+            if loads > 0:
+                load_len = max((segment_height * loads / limit), 1)
+
+            offset = div['end'] - now  # Offset from most recent measurement.
+            if segment_time >= 3600:
+                # Show hours.
+                time_offset = '%dh' % (offset / 3600)
+            elif segment_time >= 60:
+                # Show minutes.
+                time_offset = '%dm' % (offset / 60)
+            elif segment_time >= 1:
+                # Show seconds.
+                time_offset = '%ds' % offset
+            else:
+                # Show fractions.
+                time_offset = '%.2fs' % offset
+
+            div.update({'link': 'chart_start=%s&chart_end=%s' % (div['start'], div['end']),
+                        'time_offset': time_offset,
+                        'store_len': store_len,
+                        'load_len': load_len,
+                        })
+            yield div
+
+    def getActivityChartData(self, segment_height=200, REQUEST=None):
+        """Returns information for generating an activity chart.
+        Default height is 200 pixels
+        """
+        segment_height = int(segment_height)
+        am = self._getActivityMonitor()
+        if am is None:
+            return
+
+        if REQUEST is not None:
+            start = float(REQUEST.get('chart_start', 0))
+            end = float(REQUEST.get('chart_end', 0))
+            divisions = int(REQUEST.get('chart_divisions', 10))
+            analysis = am.getActivityAnalysis(start, end, divisions)
+        else:
+            analysis = am.getActivityAnalysis()
+
+        start_time, end_time, segment_time = self._get_timings(analysis)
 
         total_stores, total_loads, total_connections = (
             sum(d[k] for d in analysis)
             for k in ('stores', 'loads', 'connections')
         )
 
-        limit = max(((d['stores'] + d['loads']) for d in analysis))
-
-        def calculated():
-            """Utility function to calculate bar heights and time offsets"""
-            now = analysis[-1]['end']
-            for div in analysis:
-                stores = div['stores']
-                loads = div['loads']
-                store_len = 0
-                load_len = 0
-
-                if stores > 0:
-                    store_len = max((segment_height * stores / limit), 1)
-                if loads > 0:
-                    load_len = max((segment_height * loads / limit), 1)
-
-                offset = div['end'] - now  # Offset from most recent measurement.
-                if segment_time >= 3600:
-                    # Show hours.
-                    time_offset = '%dh' % (offset / 3600)
-                elif segment_time >= 60:
-                    # Show minutes.
-                    time_offset = '%dm' % (offset / 60)
-                elif segment_time >= 1:
-                    # Show seconds.
-                    time_offset = '%ds' % offset
-                else:
-                    # Show fractions.
-                    time_offset = '%.2fs' % offset
-
-                div.update({'link': 'chart_start=%s&chart_end=%s' % (div['start'], div['end']),
-                            'time_offset': time_offset,
-                            'store_len': store_len,
-                            'load_len': load_len,
-                            })
-                yield div
-
         return {'start_time': start_time,
                'end_time': end_time,
-               'divs': calculated,
+               'divs': self._chart_data(segment_time, segment_height, analysis),
                'total_store_count': total_stores,
                'total_load_count': total_loads,
                'total_connections': total_connections,
