@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.zkzopeserver', '0'
 
-install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
+install_requires = ['setuptools', 'zc.zk', 'zope.server']
+extras_require = dict(test=['zope.testing', 'zc.zk [static,test]'])
 
 entry_points = """
+[paste.server_runner]
+main = zc.zkzopeserver:run
 """
 
 from setuptools import setup
@@ -28,7 +30,7 @@ setup(
 
     name = name, version = version,
     long_description=open('README.txt').read(),
-    description = open('README.txt').read().strip().split('\n')[0],
+    description = open('README.txt').read().strip().split('\n')[1],
     packages = [name.split('.')[0], name],
     namespace_packages = [name.split('.')[0]],
     package_dir = {'': 'src'},
