@@ -2,11 +2,14 @@
 Change History
 ==============
 
-0.2.1 (unreleased)
+0.2.1 (2011-12-10)
 ------------------
 
 - Added an ``address`` option to ``start`` to be able to specify an adapter
   to bind to.
+
+- ``start`` now returns the address being listened on, which is useful
+  when binding to port 0.
 
 - Using Python's ``doctest`` module instead of depreacted
   ``zope.testing.doctest``.

@@ -75,8 +75,9 @@ last_listener = None
 def start(address):
     """start monitor server.
 
-    Returns True if monitor server started; returns False if the port is
-    already in use; and raises an exception otherwise.
+    Returns the listener address (which may be different from the
+    given address) if monitor server started; returns False if the
+    port is already in use; and raises an exception otherwise.
     """
     import zc.ngi.async
 
@@ -105,7 +106,7 @@ def start(address):
             return False
         else:
             raise
-    return True
+    return last_listener.address
 
 # default commands
 

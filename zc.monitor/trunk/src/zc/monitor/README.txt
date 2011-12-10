@@ -219,7 +219,7 @@ Start server
 
 
     >>> zc.monitor.start(9644)
-    True
+    ('', 9644)
 
     >>> print loghandler
     zc.ngi.async.server INFO
@@ -229,16 +229,24 @@ Start server
     >>> zc.monitor.last_listener = None
     >>> time.sleep(0.1)
 
-
-
     >>> loghandler.clear()
 
     >>> zc.monitor.start(('127.0.0.1', 9644))
-    True
+    ('127.0.0.1', 9644)
 
     >>> print loghandler
     zc.ngi.async.server INFO
       listening on ('127.0.0.1', 9644)
+
+    >>> zc.monitor.last_listener.close()
+    >>> zc.monitor.last_listener = None
+    >>> time.sleep(0.1)
+
+Bind to port 0:
+
+    >>> addr = zc.monitor.start(0)
+    >>> addr == zc.monitor.last_listener.address
+    True
 
     >>> zc.monitor.last_listener.close()
     >>> zc.monitor.last_listener = None
@@ -249,7 +257,7 @@ Trying to rebind to a port in use:
     >>> loghandler.clear()
 
     >>> zc.monitor.start(('127.0.0.1', 9644))
-    True
+    ('127.0.0.1', 9644)
 
     >>> zc.monitor.start(('127.0.0.1', 9644))
     False
