@@ -32,7 +32,7 @@ class Server:
     def __init__(self, connection):
         connection = zc.ngi.adapters.Lines(connection)
         self.connection = connection
-        connection.setHandler(self)
+        connection.set_handler(self)
         self.mode = QUIT_MARKER
 
     def handle_input(self, connection, data):
