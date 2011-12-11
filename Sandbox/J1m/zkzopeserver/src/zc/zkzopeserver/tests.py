@@ -20,6 +20,7 @@ import re
 import time
 import unittest
 import urllib
+#import zc.ngi.async
 import zc.thread
 import zc.zk.testing
 import zope.testing.renormalizing
@@ -30,6 +31,7 @@ def reset():
     r = maxactive
     maxactive = active = 0
     return r
+
 def slow_app(environ, start_response):
     global active, maxactive
     active += 1
@@ -40,12 +42,6 @@ def slow_app(environ, start_response):
     start_response(status, response_headers)
     active -= 1
     return ['Hello world!\n']
-
-def stop_server(thread):
-    for s in asyncore.socket_map.values():
-        s.close()
-    asyncore.socket_map.clear()
-    thread.join(1)
 
 def test_options():
     """
@@ -63,7 +59,8 @@ def test_options():
     ...         threads='3',
     ...         )
 
-    >>> time.sleep(.1)
+    >>> import zc.zkzopeserver
+    >>> zc.zkzopeserver.event_for_testing.wait(1)
     >>> zk = zc.zk.ZooKeeper('zookeeper.example.com:2181')
 
     Did it get registered with the given host and port?
@@ -100,7 +97,7 @@ def test_options():
 
     When the server stops, it's unregistered:
 
-    >>> stop_server(server)
+    >>> zc.zkzopeserver.stop_for_testing(server)
     >>> zk.print_tree('/fooservice/providers')
     /providers
 
