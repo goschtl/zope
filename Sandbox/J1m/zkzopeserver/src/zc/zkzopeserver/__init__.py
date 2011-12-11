@@ -57,13 +57,7 @@ def run(wsgi_app, global_conf,
 
     props = {}
     if monitor_server:
-        host, port = '127.0.0.1', 0
-        if ':' in monitor_server:
-            host, port = monitor.rsplit(':', 1)
-        elif re.match('\d+$', monitor_server):
-            port = monitor_server
-        elif monitor_server != 'true':
-            host = monitor_server
+        host, port = monitor_server.rsplit(':', 1)
         global zc
         import zc.monitor
         props['monitor'] = "%s:%s" % zc.monitor.start((host, int(port)))

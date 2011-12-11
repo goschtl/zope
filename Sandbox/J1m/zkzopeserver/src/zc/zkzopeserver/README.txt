@@ -45,10 +45,8 @@ threads
 monitor_server
    A ``zc.monitor`` server address.
 
-   The value can be a host name, a port or a host:port address.  If
-   the port isn't specified, it defaults to ``0``. If the host isn't
-   specified, it defaults to ```127.0.0.1```.  The value ``true`` is
-   an alias for ``0``.  See `Monitor server`_ below.
+   The value is an address of the form HOST:PORT.  See `Monitor
+   server`_ below. (Host can be empty to listen on all interfaces.)
 
 .. test
 
@@ -101,7 +99,7 @@ earler example::
    use = egg:zc.zkzopeserver
    zookeeper = zookeeper.example.com:2181
    path = /fooservice/providers
-   monitor_server = true
+   monitor_server = 127.0.0.1:0
 
 .. -> server_config
 
