@@ -10,7 +10,7 @@ server by looking in ZooKeeper.
 Basic Usage
 ===========
 
-The wrapper is used in a past-deply configuration file::
+The wrapper is used in a past-deploy configuration file::
 
    [server:main]
    use = egg:zc.zkzopeserver
@@ -25,7 +25,7 @@ zookeeper
    required ZooKeeper connection string
 
 path
-   required path at which to register your server.
+   required path at which to register your server
 
    Your server is registered by adding a ZooKeeper ephemeral node as a
    child of the path with the server address as the name.
@@ -103,9 +103,6 @@ earler example::
 
 .. -> server_config
 
-Here we've used ``monitor = true``, which is equivalent to ``0``,
-``127.0.0.1:0``, and ``127.0.0.1``.
-
 When our web server is running, the ``/fooservice/providers`` node
 would look something like::
 
@@ -159,7 +156,7 @@ Some notes on the monitor server:
 Change History
 ==============
 
-0.1.0 (2011-12-??)
+0.1.0 (2011-12-11)
 ------------------
 
 Initial release
