@@ -94,7 +94,7 @@ provides a simple extensible command server for gathering monitoring
 data or providing run-time control of servers.  If ``zc.monitor`` is
 in the Python path, ``zc.zkzopeserver`` can start a monitor server
 and make it's address available as the ``monitor`` property of a
-servers ephemeral port.  To see how this works, let's update the
+server's ephemeral port.  To see how this works, let's update the
 earler example::
 
    [server:main]
@@ -151,7 +151,7 @@ would look something like::
 
 Some notes on the monitor server:
 
-- A momnitor server won't be useful unless you've registered some
+- A monitor server won't be useful unless you've registered some
   command plugins.
 
 - ``zc.monitor`` isn't a dependency of ``zc.zkzopeserver`` and won't
