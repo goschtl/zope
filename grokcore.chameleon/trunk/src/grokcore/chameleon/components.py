@@ -16,12 +16,20 @@ import os
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
-from z3c.pt.pagetemplate import ViewPageTemplate, ViewPageTemplateFile
+from chameleon.zpt.template import PageTemplate, PageTemplateFile
+from chameleon.tales import PythonExpr
+from chameleon.tales import StringExpr
+from chameleon.tales import NotExpr
+from chameleon.tales import ExistsExpr
+from chameleon.tales import ImportExpr
+from chameleon.tales import StructureExpr
+from z3c.pt.expressions import PathExpr, ProviderExpr
+
 
 #
 # Chameleon Zope Page Templates...
 #
-class PageTemplate(ViewPageTemplate):
+class PageTemplate(PageTemplate):
     """A `z3c.pt` page template suitable for use with views.
 
     This page template implementation is different from `z3c.pt`
@@ -32,17 +40,19 @@ class PageTemplate(ViewPageTemplate):
     """
     default_expression = 'python' # Use the chameleon default
 
-    def _pt_get_context(self, view, request, kwargs):
-        """Get context vars for a template.
+    expression_types = {
+        'python': PythonExpr,
+        'string': StringExpr,
+        'not': NotExpr,
+        'path': PathExpr,
+        'provider': ProviderExpr,
+        'exists': ExistsExpr,
+        'import': ImportExpr,
+        'structure': StructureExpr,
+        }
 
-        Inject ``static`` var in template namespace.
-        """
-        context = super(PageTemplate, self)._pt_get_context(
-            view, request, kwargs)
-        context.update(kwargs)
-        return context
 
-class PageTemplateFile(PageTemplate, ViewPageTemplateFile):
+class PageTemplateFile(PageTemplate, PageTemplateFile):
     """A `z3c.pt` page template file suitable for use with views.
 
     This implementation is different from `z3c.pt` implementation in

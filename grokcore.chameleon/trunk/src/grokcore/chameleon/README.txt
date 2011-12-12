@@ -350,8 +350,8 @@ and render it:
         </div>
     <BLANKLINE>
         <!-- We support `not` -->
-        <div></div>
-        <div></div>
+        <div>False</div>
+        <div>False</div>
         <div>True</div>
         <div>True</div>
     <BLANKLINE>
