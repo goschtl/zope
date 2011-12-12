@@ -27,13 +27,16 @@ To see this, we'll create a hello plugin:
 
 and register it:
 
-    >>> import zope.component, zc.monitor.interfaces
-    >>> zope.component.provideUtility(
-    ...   hello, zc.monitor.interfaces.IMonitorPlugin, 'hello')
+    >>> zc.monitor.register(hello)
+
+When we register a command, we can provide a name. To see this, we'll
+register ``hello`` again:
+
+    >>> zc.monitor.register(hello, 'hi')
 
 Now we can give the hello command to the server:
 
-    >>> connection.test_input('hello\n')
+    >>> connection.test_input('hi\n')
     Hi world, nice to meet ya!
     -> CLOSE
 
@@ -49,18 +52,7 @@ The server comes with a few basic commands.  Let's register
 them so we can see what they do.  We'll use the simplfied registration
 interface:
 
-    >>> zc.monitor.register(zc.monitor.help)
-    >>> zc.monitor.register(zc.monitor.interactive)
-    >>> zc.monitor.register(zc.monitor.quit)
-
-The simplified interface takes a command object (usually a function)
-and an optional name.  Bu default, the name is taken from the
-``__name__`` attribute of the command. You can also specify a name:
-
-    >>> zc.monitor.register(zc.monitor.quit, 'exit')
-
-The simplified interface simply registers a utility, as we did above
-for the hello command.
+    >>> zc.monitor.register_basics()
 
 The first is the help command.  Giving help without input, gives a
 list of available commands:
@@ -69,9 +61,9 @@ list of available commands:
     >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('help\n')
     Supported commands:
-      exit -- Quit the monitor
       hello -- Say hello
       help -- Get help about server commands
+      hi -- Say hello
       interactive -- Turn on monitor's interactive mode
       quit -- Quit the monitor
     -> CLOSE
@@ -192,8 +184,7 @@ Here's a command that implements a calculator.
 
 If we register this command...
 
-    >>> zope.component.provideUtility(calc,
-    ...     zc.monitor.interfaces.IMonitorPlugin, 'calc')
+    >>> zc.monitor.register(calc)
 
 ...we can invoke it and we get a prompt.
 

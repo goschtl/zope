@@ -159,3 +159,8 @@ def register(command, name=None):
         name = command.__name__
     zope.component.provideUtility(
         command, zc.monitor.interfaces.IMonitorPlugin, name)
+
+def register_basics():
+    register(help)
+    register(interactive)
+    register(quit)
