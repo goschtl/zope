@@ -153,3 +153,9 @@ def help(connection, command_name=None):
         connection.write("Help for %s:\n\n%s\n"
                          % (command_name, command.__doc__)
                          )
+
+def register(command, name=None):
+    if name is None:
+        name = command.__name__
+    zope.component.provideUtility(
+        command, zc.monitor.interfaces.IMonitorPlugin, name)

@@ -46,14 +46,21 @@ We can pass a name:
     -> CLOSE
 
 The server comes with a few basic commands.  Let's register
-them so we can see what they do:
+them so we can see what they do.  We'll use the simplfied registration
+interface:
 
-    >>> zope.component.provideUtility(zc.monitor.help,
-    ...     zc.monitor.interfaces.IMonitorPlugin, 'help')
-    >>> zope.component.provideUtility(zc.monitor.interactive,
-    ...     zc.monitor.interfaces.IMonitorPlugin, 'interactive')
-    >>> zope.component.provideUtility(zc.monitor.quit,
-    ...     zc.monitor.interfaces.IMonitorPlugin, 'quit')
+    >>> zc.monitor.register(zc.monitor.help)
+    >>> zc.monitor.register(zc.monitor.interactive)
+    >>> zc.monitor.register(zc.monitor.quit)
+
+The simplified interface takes a command object (usually a function)
+and an optional name.  Bu default, the name is taken from the
+``__name__`` attribute of the command. You can also specify a name:
+
+    >>> zc.monitor.register(zc.monitor.quit, 'exit')
+
+The simplified interface simply registers a utility, as we did above
+for the hello command.
 
 The first is the help command.  Giving help without input, gives a
 list of available commands:
@@ -62,6 +69,7 @@ list of available commands:
     >>> server = zc.monitor.Server(connection)
     >>> connection.test_input('help\n')
     Supported commands:
+      exit -- Quit the monitor
       hello -- Say hello
       help -- Get help about server commands
       interactive -- Turn on monitor's interactive mode

@@ -2,6 +2,11 @@
 Change History
 ==============
 
+0.3.0 (2011-12-12)
+------------------
+
+- Added a simplified registration interface.
+
 0.2.1 (2011-12-10)
 ------------------
 
