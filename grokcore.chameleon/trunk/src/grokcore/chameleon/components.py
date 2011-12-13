@@ -12,7 +12,11 @@
 #
 ##############################################################################
 """Chameleon page template components"""
+
 import os
+import sys
+import martian
+
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
@@ -29,7 +33,7 @@ from z3c.pt.expressions import PathExpr, ProviderExpr
 #
 # Chameleon Zope Page Templates...
 #
-class PageTemplate(PageTemplate):
+class PageTemplate(PageTemplate, GrokTemplate):
     """A `z3c.pt` page template suitable for use with views.
 
     This page template implementation is different from `z3c.pt`
@@ -38,7 +42,7 @@ class PageTemplate(PageTemplate):
     - It sets ``python`` as default mode (instead of ``path``)
     - It injects any views ``static`` variable in template namespace.
     """
-    default_expression = 'python' # Use the chameleon default
+    default_expression = 'python'  # Use the chameleon default
 
     expression_types = {
         'python': PythonExpr,
@@ -63,6 +67,7 @@ class PageTemplateFile(PageTemplate, PageTemplateFile):
     """
     default_expression = 'python'
 
+
 class ChameleonPageTemplate(GrokTemplate):
 
     def setFromString(self, string):
@@ -81,6 +86,17 @@ class ChameleonPageTemplate(GrokTemplate):
 
     def render(self, view):
         return self._template(**self.getNamespace(view))
+
+
+class ChameleonPageTemplateFile(ChameleonPageTemplate):
+
+    def __init__(self, filename, _prefix=None):
+        self.__grok_module__ = martian.util.caller_module()
+        if _prefix is None:
+            module = sys.modules[self.__grok_module__]
+            _prefix = os.path.dirname(module.__file__)
+        self.setFromFilename(filename, _prefix)
+
 
 class ChameleonPageTemplateFactory(GlobalUtility):
     implements(interfaces.ITemplateFileFactory)
