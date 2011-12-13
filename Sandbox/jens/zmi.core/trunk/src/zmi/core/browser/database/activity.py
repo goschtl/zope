@@ -37,8 +37,11 @@ activity = {'start_time': 'Dec 4, 2011 6:15 pm GMT+1', 'total_load_count': 0, 'e
 
 class View(object):
 
-    start_time = 'start_time'
-    end_time = 'end_time'
+    start_time = ""
+    end_time = ""
+    segment_height = 200
+    time_unit = 1
+    time_fmt = "%.2fs" # microseconds
 
     def __init__(self, context, request):
         self.context = context
@@ -65,19 +68,23 @@ class View(object):
         return am.getHistoryLength()
 
     def _get_timings(self, analysis):
-        """Calculate time intervals and format start and end times"""
-        segment_time = 0
-        start_time = ''
-        end_time = ''
+        """Calculate time format and start and end times"""
         if analysis is not None:
             segment_time = analysis[0]['end'] - analysis[0]['start']
-            start_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
+            self.start_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
                                        time.gmtime(analysis[0]['start']))
-            end_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
+            self.end_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z",
                                      time.gmtime(analysis[-1]['end']))
-        return start_time, end_time, segment_time
+        if segment_time >= 3600: # hours
+            self.time_unit = 3600
+            self.time_fmt = "%dh"
+        elif segment_time >= 60: # minutes
+            self.time_unit = 60
+            self.time_fmt = "%dm"
+        elif segment_time >= 1: # seconds
+            self.time_fmt = "%ds"
 
-    def _chart_data(self, segment_time, segment_height, analysis):
+    def _chart_data(self, analysis):
         """Utility function to calculate bar heights and time offsets"""
 
         limit = max(((d['stores'] + d['loads']) for d in analysis))
@@ -90,23 +97,12 @@ class View(object):
             load_len = 0
 
             if stores > 0:
-                store_len = max((segment_height * stores / limit), 1)
+                store_len = max((self.segment_height * stores / limit), 1)
             if loads > 0:
-                load_len = max((segment_height * loads / limit), 1)
+                load_len = max((self.segment_height * loads / limit), 1)
 
             offset = div['end'] - now  # Offset from most recent measurement.
-            if segment_time >= 3600:
-                # Show hours.
-                time_offset = '%dh' % (offset / 3600)
-            elif segment_time >= 60:
-                # Show minutes.
-                time_offset = '%dm' % (offset / 60)
-            elif segment_time >= 1:
-                # Show seconds.
-                time_offset = '%ds' % offset
-            else:
-                # Show fractions.
-                time_offset = '%.2fs' % offset
+            time_offset = self.time_fmt % (offset / self.time_unit)
 
             div.update({'link': 'chart_start=%s&chart_end=%s' % (div['start'], div['end']),
                         'time_offset': time_offset,
@@ -119,7 +115,7 @@ class View(object):
         """Returns information for generating an activity chart.
         Default height is 200 pixels
         """
-        segment_height = int(segment_height)
+        self.segment_height = int(segment_height)
         am = self._getActivityMonitor()
         if am is None:
             return
@@ -132,16 +128,16 @@ class View(object):
         else:
             analysis = am.getActivityAnalysis()
 
-        start_time, end_time, segment_time = self._get_timings(analysis)
+        self._get_timings(analysis)
 
         total_stores, total_loads, total_connections = (
             sum(d[k] for d in analysis)
             for k in ('stores', 'loads', 'connections')
         )
 
-        return {'start_time': start_time,
-               'end_time': end_time,
-               'divs': self._chart_data(segment_time, segment_height, analysis),
+        return {'start_time': self.start_time,
+               'end_time': self.end_time,
+               'divs': self._chart_data(analysis),
                'total_store_count': total_stores,
                'total_load_count': total_loads,
                'total_connections': total_connections,

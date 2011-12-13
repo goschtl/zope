@@ -20,8 +20,8 @@ seconds_activity = [
 ]
 
 minutes_activity = [
-    {'end':3600, 'connections':15, 'start':0, 'stores':250, 'loads':1000},
-    {'end':3601, 'connections':15, 'start':86400, 'stores':500, 'loads':2000}
+    {'end':3599, 'connections':15, 'start':0, 'stores':250, 'loads':1000},
+    {'end':7199, 'connections':15, 'start':3600, 'stores':500, 'loads':2000}
 ]
 
 hours_activity = [
@@ -95,40 +95,40 @@ class Tests(unittest.TestCase):
 
     def test_timings_seconds(self):
         view = self._makeOne()
-        data = view._get_timings(seconds_activity)
-        expected = ('Thu, 01 Jan 1970 00:00:00 CET',
-                    'Thu, 01 Jan 1970 00:00:02 CET',
-                    1)
-        self.assertEqual(data, expected)
+        view._get_timings(seconds_activity)
+        self.assertEqual(view.start_time, 'Thu, 01 Jan 1970 00:00:00 CET')
+        self.assertEqual(view.end_time, 'Thu, 01 Jan 1970 00:00:02 CET')
+        self.assertEqual(view.time_unit, 1)
+        self.assertEqual(view.time_fmt, "%ds")
 
     def test_timings_minutes(self):
         view = self._makeOne()
-        data = view._get_timings(minutes_activity)
-        expected = ('Thu, 01 Jan 1970 00:00:00 CET',
-                    'Thu, 01 Jan 1970 01:00:01 CET',
-                    3600)
-        self.assertEqual(data, expected)
+        view._get_timings(minutes_activity)
+        self.assertEqual(view.start_time, 'Thu, 01 Jan 1970 00:00:00 CET')
+        self.assertEqual(view.end_time, 'Thu, 01 Jan 1970 01:59:59 CET')
+        self.assertEqual(view.time_unit, 60)
+        self.assertEqual(view.time_fmt, "%dm")
 
     def test_timings_hours(self):
         view = self._makeOne()
-        data = view._get_timings(hours_activity)
-        expected = ('Thu, 01 Jan 1970 00:00:00 CET',
-                    'Sat, 03 Jan 1970 00:00:00 CET',
-                    86400)
-        self.assertEqual(data, expected)
+        view._get_timings(hours_activity)
+        self.assertEqual(view.start_time, 'Thu, 01 Jan 1970 00:00:00 CET')
+        self.assertEqual(view.end_time, 'Sat, 03 Jan 1970 00:00:00 CET')
+        self.assertEqual(view.time_unit, 3600)
+        self.assertEqual(view.time_fmt, "%dh")
 
     def test_timings_fractions(self):
         view = self._makeOne()
-        data = view._get_timings(fractional_activity)
-        expected = ('Thu, 01 Jan 1970 00:00:00 CET',
-                    'Thu, 01 Jan 1970 00:00:01 CET',
-                    0.5)
-        self.assertEqual(data, expected)
+        view._get_timings(fractional_activity)
+        self.assertEqual(view.start_time, 'Thu, 01 Jan 1970 00:00:00 CET')
+        self.assertEqual(view.end_time, 'Thu, 01 Jan 1970 00:00:01 CET')
+        self.assertEqual(view.time_unit, 1)
+        self.assertEqual(view.time_fmt, "%.2fs")
 
     def test_chart_data(self):
         view = self._makeOne()
-        start, end, interval = view._get_timings(seconds_activity)
-        data = view._chart_data(interval, 200, seconds_activity).next()
+        view._get_timings(seconds_activity)
+        data = view._chart_data(seconds_activity).next()
         expected = {'store_len': 40, 'end': 1, 'load_len': 80,
                     'connections': 15, 'start': 0, 'link':
                     'chart_start=0&chart_end=1', 'stores': 5, 'loads': 10,
