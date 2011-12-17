@@ -6,26 +6,24 @@ Becoming a Committer
 Applying for Committer Status
 -----------------------------
 
-1. Mail webmaster@zope.org for a new user account at old.zope.org.
-   Pick a user id that is a valid Unix user id. Include this id when
-   you fill out the committer agreement form.
-
-2. Print, fill out and sign the
+1. Print, fill out and sign the
    `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
+   (Leave the zope.org username field empty - an new username will
+    be assigned by the committer committee)
 
-3. Submit the agreement to the Zope Foundation. This can be done by
+2. Submit the agreement to the Zope Foundation. This can be done by
    either email (contributor-admin@zope.org) or fax or post 
    (in order from fastest to slowest).
 
    The contact details can be found on the
    `Zope Foundation website <http://foundation.zope.org/about>`_.
 
-4. Wait for an acknowledgement. If you don't get this in a reasonable amount
+3. Wait for an acknowledgement. If you don't get this in a reasonable amount
    of time, then ask back on the Zope Foundation list
    (foundation-info@zope.org) or try to contact a member of the repository
    committee (Andreas Jung and Christian Theune).
 
-5. Deposit your SSH public key(s) as described in :ref:`deposit-ssh-pubkey`
+4. Deposit your SSH public key(s) as described in :ref:`deposit-ssh-pubkey`
 
 6. Get a :doc:`writeable checkout <subversion-writable-checkouts>`.
 
