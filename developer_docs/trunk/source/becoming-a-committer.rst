@@ -9,7 +9,7 @@ Applying for Committer Status
 1. Print, fill out and sign the
    `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
    (Leave the zope.org username field empty - an new username will
-    be assigned by the committer committee)
+   be assigned by the committer committee)
 
 2. Submit the agreement to the Zope Foundation. This can be done by
    either email (contributor-admin@zope.org) or fax or post 
