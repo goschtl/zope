@@ -12,22 +12,21 @@
 #
 ##############################################################################
 
+from zope.testing import renormalizing
+import doctest
+import getpass
+import grp
+import os
+import pwd
 import re
+import stat
+import unittest
 import zc.buildout.testing
 
-import unittest
-import doctest
-from zope.testing import renormalizing
-import getpass
-import os
-import os.path
-import stat
-import logging
-import pwd
-import grp
 
 user = pwd.getpwuid(os.geteuid()).pw_name
 group = grp.getgrgid(os.getegid()).gr_name
+
 
 def ls(path):
     def perm(power, mode):
@@ -49,6 +48,7 @@ def ls(path):
     permissions = ''.join(permissions + [
         perm(power, st.st_mode) for power in reversed(xrange(9))])
     return '%s %s %s %s' % (permissions, user, group, path)
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
