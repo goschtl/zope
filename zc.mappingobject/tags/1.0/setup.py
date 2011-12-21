@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.mappingobject', '0'
+name, version = 'zc.mappingobject', '1.0.0'
 
 install_requires = ['setuptools']
 
