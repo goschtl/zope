@@ -16,10 +16,16 @@
 $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
-import grp, logging, os, pwd, shutil
+import grp
+import logging
+import os
+import pwd
+import shutil
 import zc.buildout
 
+
 logger = logging.getLogger('zc.recipe.deployment')
+
 
 class Install:
 
@@ -30,7 +36,6 @@ class Install:
 
         name = options['name']
 
-        create = []
         options['prefix'] = options.get('prefix', '/')
         options['run-directory'] = os.path.join(
             options['prefix'], options.get('run', 'var/run'), name)
@@ -96,6 +101,7 @@ def uninstall(name, options):
                 os.rmdir(path)
                 logger.info("Removing %r.", path)
 
+
 def make_dir(name, uid, gid, mode, created):
     uname = pwd.getpwuid(uid)[0]
     gname = grp.getgrgid(gid)[0]
@@ -110,6 +116,7 @@ def make_dir(name, uid, gid, mode, created):
                     name, mode, uname, gname)
 
     os.chown(name, uid, gid)
+
 
 class Configuration:
 
@@ -161,6 +168,7 @@ class Configuration:
         return options['location']
 
     update = install
+
 
 class Crontab:
 
@@ -246,4 +254,3 @@ def uninstall_shared_config(name, options):
                 new_config.append(line)
 
     open(options['location'], 'w').write(''.join(new_config))
-
