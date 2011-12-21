@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.parse_addr', '0'
+name, version = 'zc.parse_addr', '1.0.0'
 
 install_requires = ['setuptools']
 
