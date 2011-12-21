@@ -11,15 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.parse_addr', '0'
 
 install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
-
-entry_points = """
-"""
 
 from setuptools import setup
+
+import os
+doc = open(
+    os.path.join(os.path.dirname(__file__), 'src', *name.split('.'))+'.py'
+    ).read().split('"""')[1]
 
 setup(
     author = 'Jim Fulton',
@@ -27,16 +28,12 @@ setup(
     license = 'ZPL 2.1',
 
     name = name, version = version,
-    long_description=open('README.txt').read(),
-    description = open('README.txt').read().strip().split('\n')[0],
-    packages = [name.split('.')[0], name],
+    long_description=doc,
+    description = doc.split('\n')[0],
+    packages = [name.split('.')[0]],
     namespace_packages = [name.split('.')[0]],
     package_dir = {'': 'src'},
     install_requires = install_requires,
     zip_safe = False,
-    entry_points=entry_points,
-    package_data = {name: ['*.txt', '*.test', '*.html']},
-    extras_require = extras_require,
-    tests_require = extras_require['test'],
-    test_suite = name+'.tests.test_suite',
+    test_suite = name+'.test_suite',
     )
