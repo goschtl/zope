@@ -1,4 +1,4 @@
-Using the deployment recipe is pretty simple. Jusr specify a
+Using the deployment recipe is pretty simple.  Just specify a
 deployment name, specified via the part name, and a deployment user.
 
 Let's add a deployment to a sample buildout:
