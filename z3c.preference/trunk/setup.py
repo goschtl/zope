@@ -16,7 +16,8 @@
 import os
 from setuptools import setup, find_packages
 
-def read(*rnames):
+def read(path):
+    rnames = path.split('/')
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup (
@@ -25,15 +26,13 @@ setup (
     author = "Michael Howitz",
     author_email = "zope-dev@zope.org",
     description = "UI for zope.preference using z3c.pagelet and z3c.form.",
-    long_description=(
-        read('README.txt')
-        + '\n\n.. contents::\n\n' +
-        read('src', 'z3c', 'preference', 'README.txt')
-        + '\n\n' +
-        read('TODO.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
-        ),
+    long_description='\n\n'.join([
+            read('README.txt'),
+            '.. contents::',
+            read('CHANGES.txt'),
+            read('src/z3c/preference/README.txt'),
+            read('TODO.txt'),
+        ]),
     license = "ZPL 2.1",
     keywords = "zope3 bluebream z3c preference ui",
     classifiers = [

@@ -1,6 +1,5 @@
-==============
-z3c.preference
-==============
+Overview
+========
 
 ``z3c.preference`` renders forms in the browser for the preference
 sets which were defined using zope.preference_.
@@ -21,9 +20,11 @@ There are some preconditions to use `z3c.preference`:
   permission to the users resp. roles which should be able to access
   the preferences views.
 
+Editing preferences
+===================
 
 Set up for tests
-================
+----------------
 
 At first we have to define a preference interface:
 
@@ -62,7 +63,6 @@ The interface must be registered for preferenes:
   ...           id="BackEndSettings"
   ...           title="Back End Settings"
   ...           schema="z3c.preference.README.IBackEndSettings"
-  ...           category="true"
   ...           />
   ...
   ...     </configure>''', context)
@@ -76,8 +76,8 @@ the preferences are stored in the principal annotations:
 >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
 
-Editing preferences
-===================
+Editing preferences using browser
+---------------------------------
 
 There is a name space to access the preferences. On the page a form is
 displayed which show the default values:

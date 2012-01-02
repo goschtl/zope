@@ -1,5 +1,4 @@
-=======
- To do
+To do
 =======
 
 - Add a tree to access preferences deeper in the preference tree.
