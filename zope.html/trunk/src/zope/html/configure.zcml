@@ -47,7 +47,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for=".field.IHtmlFragmentField"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".widget.FckeditorWidget"
       permission="zope.Public"
       />
@@ -55,7 +55,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for=".field.IXhtmlFragmentField"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory=".widget.FckeditorWidget"
       permission="zope.Public"
       />

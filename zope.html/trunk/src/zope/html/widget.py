@@ -21,7 +21,7 @@ import zope.app.form.browser
 import zc.resourcelibrary
 
 
-class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
+class FckeditorWidget(zope.formlib.widgets.TextAreaWidget):
 
     editorWidth = 600
     editorHeight = 400
@@ -60,7 +60,7 @@ var oFCKeditor_%(shortname)s = new FCKeditor(
 </script>
 '''
 
-class CkeditorWidget(zope.app.form.browser.TextAreaWidget):
+class CkeditorWidget(zope.formlib.widgets.TextAreaWidget):
 
     editorHeight = 400
     fckVersion = '3.5.2'
