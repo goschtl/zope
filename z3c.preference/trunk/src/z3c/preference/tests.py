@@ -20,14 +20,17 @@ import zope.testing.module
 
 def setUp(test):
     zope.testing.module.setUp(test, 'z3c.preference.README')
+    zope.testing.module.setUp(test, 'z3c.preference.categories')
 
 
 def tearDown(test):
-    zope.component.testing.tearDown(test)
     zope.testing.module.tearDown(test)
 
 
 def test_suite():
-    suite = doctest.DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown)
+    suite = doctest.DocFileSuite(
+        'README.txt',
+        'categories.txt',
+        setUp=setUp, tearDown=tearDown)
     suite.layer = z3c.preference.testing.Layer
     return suite

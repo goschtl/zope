@@ -5,7 +5,7 @@ Changes
 0.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added form for preference categories, see `Editing preference group trees`_.
 
 
 0.1.1 (2010-07-17)

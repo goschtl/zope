@@ -31,6 +31,7 @@ setup (
             '.. contents::',
             read('CHANGES.txt'),
             read('src/z3c/preference/README.txt'),
+            read('src/z3c/preference/categories.txt'),
             read('TODO.txt'),
         ]),
     license = "ZPL 2.1",

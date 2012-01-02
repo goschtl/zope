@@ -13,20 +13,43 @@
 #############################################################################
 
 import z3c.form.field
+import z3c.form.group
 import z3c.formui.form
 import zope.security.proxy
 
 
+def to_fields(context):
+    """Convert a preference group to a z3c.form.field.Field."""
+    schema = zope.security.proxy.getObject(context.__schema__)
+    if schema is None:
+        # no schema set on preference group, so we have no fields
+        return z3c.form.field.Fields()
+    return z3c.form.field.Fields(schema)
+
+
 class EditForm(z3c.formui.form.EditForm):
+    """Edit form for preference groups."""
 
     def __init__(self, *args, **kw):
         super(EditForm, self).__init__(*args, **kw)
         self.label = self.context.__title__
+        self.fields = to_fields(self.context)
 
-    @property
-    def fields(self):
-        schema = zope.security.proxy.getObject(self.context.__schema__)
-        if schema is None:
-            # no schema set on prefence group, so we have no fields
-            return z3c.form.field.Fields()
-        return z3c.form.field.Fields(schema)
+
+class PreferenceGroup(z3c.form.group.Group):
+    """z3c.form group of a preference group."""
+
+    def __init__(self, *args, **kw):
+        super(PreferenceGroup, self).__init__(*args, **kw)
+        self.fields = to_fields(self.context)
+
+
+class CategoryEditForm(z3c.form.group.GroupForm,
+                       EditForm):
+    """Edit form for preference categories."""
+
+    def __init__(self, *args, **kw):
+        super(CategoryEditForm, self).__init__(*args, **kw)
+        groups = [PreferenceGroup(pref, self.request, self)
+                  for pref in self.context.values()]
+        self.groups = tuple(groups)

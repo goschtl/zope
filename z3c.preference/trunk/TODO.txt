@@ -1,8 +1,6 @@
 To do
 =======
 
-- Add a tree to access preferences deeper in the preference tree.
-
 - Render preference description.
 
 - Document how to use it in own projects. (ZCML and skin)
