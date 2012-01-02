@@ -79,8 +79,8 @@ the preferences are stored in the principal annotations:
 Editing preferences using browser
 ---------------------------------
 
-There is a name space to access the preferences. On the page a form is
-displayed which show the default values:
+There is a namespace to access the preferences. On the page a form is
+displayed which shows the default values:
 
 >>> browser.open('http://localhost/++preferences++/BackEndSettings')
 >>> browser.getControl('E-mail Address').value
@@ -99,7 +99,7 @@ The values can be changed and submitting the form makes them persistent:
 >>> browser.getControl('no').click()
 >>> browser.getControl('Apply').click()
 
-After submitting the form gets displayed again and shown the changed values:
+After submitting the form gets displayed again and shows the changed values:
 
 >>> 'Data successfully updated.' in browser.contents
 True
