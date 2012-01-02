@@ -247,7 +247,7 @@ function. This takes the following main arguments:
 ``constructors``
   A list of constructor methods. An element in the list can be a callable object
   with a ``__name__`` attribute giving the name the method should have in the
-  product, or the a tuple consisting of a name and a callable
+  product, or a tuple consisting of a name and a callable
   object. The first method will be used as the initial method called
   when creating an object through the web (in the ZMI).
 
@@ -421,7 +421,7 @@ capable object that implements ``__bobo_traverse__`` as follows:
   simple ``App.FactoryDispatcher.Product`` wrapper if persistent product
   installation has not taken place.
 * Create an instance of the factory dispatcher on the fly, passing in the
-  product descriptor and the parent object (i.e. the continer).
+  product descriptor and the parent object (i.e. the container).
 * Return this, acquisition-wrapped in ``self``, to allow traversal to continue.
 
 Traversal then continues over the ``FactoryDispatcher``. In the version of
