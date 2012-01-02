@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2010 Zope Foundation and Contributors.
+# Copyright (c) 2010, 2012 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,8 +14,8 @@
 
 import z3c.form.field
 import z3c.formui.form
-import zope.i18n
 import zope.security.proxy
+
 
 class EditForm(z3c.formui.form.EditForm):
 
