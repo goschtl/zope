@@ -152,7 +152,7 @@ in ``ZServer.HTTPServer.zhttp_server``, which derives from
 ``ZServer.medusa.http_server``, which in turn is an ``asyncore.dispatcher``.
 
 Servers are created in ``ZopeStarter.setupServers()``, which loops over the
-``ZConfig``-defined server factories and call their ``create()`` metohod. The
+``ZConfig``-defined server factories and call their ``create()`` method. The
 server factories are defined in ``ZServer.datatypes``. (The word ``datatypes``
 refers to ``ZConfig`` data types.)
 
@@ -226,7 +226,7 @@ processed and any referenced ``initialize()`` method in the variable
 loops over this list, calling ``install_package()`` for each. This works very
 much like ``install_product()``. When it is done, it calls the function
 ``OFS.metaconfigure.package_initialized()`` to remove the package from the
-list of packages to initalise.
+list of packages to initialise.
 
 How do Zope 2 product constructors work?
 ----------------------------------------

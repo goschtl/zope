@@ -516,7 +516,7 @@ Global and local roles
 ----------------------
 
 The list of known (valid) roles in any context is set in the attribute
-``__ac_roles__``. On the initalisation of the application root during startup,
+``__ac_roles__``. On the initialisation of the application root during startup,
 in ``install_required_roles()`` in ``OFS.Application.AppInitializer``, this is
 made to include at least ``Owner`` and ``Authenticated``. The ``RoleManager``
 base class set it as a class variable to contain

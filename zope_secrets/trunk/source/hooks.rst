@@ -19,7 +19,7 @@ Process lifecycle
 * ``IDatabaseOpened``, notified when the main ZODB has been opened, but before
   the root application object is set.
 * ``IDatabaseOpenedWithRoot``, notified later in the startup cycle, when the
-  application root has been set and initalised.
+  application root has been set and initialised.
 * ``IProcessStarting``, notified when the Zope startup process has completed,
   but before the Zope server runs (and so can listen to requests).
 
