@@ -48,7 +48,7 @@ At first we have to define a preference interface:
   ...         description=u"Specifies whether the logo should be displayed.",
   ...         default=True)
 
-The interface must be registered for preferenes:
+The interface must be registered for preferences:
 
   >>> from zope.configuration import xmlconfig
   >>> import zope.preference
@@ -68,7 +68,7 @@ The interface must be registered for preferenes:
   ...     </configure>''', context)
 
 
-To access the forms a browser is needed, the user must be autorized as
+To access the forms a browser is needed, the user must be authorized as
 the preferences are stored in the principal annotations:
 
 >>> from zope.app.wsgi.testlayer import Browser
