@@ -9,7 +9,7 @@ setup(name='five.formlib',
       description='zope.formlib integration for Zope 2',
       author='Zope Foundation',
       author_email='zope-dev@zope.org',
-      long_description=open("README.txt").read() + "\n" + 
+      long_description=open("README.txt").read() + "\n" +
                        open("CHANGES.txt").read(),
       classifiers=[
           'Environment :: Web Environment',

@@ -33,11 +33,11 @@
           <div class="label">Extra top</div>
           <div class="field"><input type="text" style="width:100%" /></div>
         </div>
-        
+
         <div metal:use-macro="context/@@form_macros/widget_rows" />
-        
+
         <div class="separator"></div>
-        
+
         <div class="row"
              metal:define-slot="extra_bottom" tal:replace="nothing">
           <div class="label">Extra bottom</div>
@@ -48,9 +48,9 @@
 
       <div class="row">
         <div class="controls">
-          <input type="submit" value="Refresh" 
+          <input type="submit" value="Refresh"
               i18n:attributes="value refresh-button" />
-          <input type="submit" name="UPDATE_SUBMIT" value="Change" 
+          <input type="submit" name="UPDATE_SUBMIT" value="Change"
               i18n:attributes="value submit-button"/>
         </div>
       </div>

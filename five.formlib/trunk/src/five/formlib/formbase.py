@@ -32,7 +32,7 @@ _SUBPAGEFORM_PATH = os.path.join(_FORMLIB_DIR, 'subpageform.pt')
 
 class FiveFormlibMixin(object):
 
-    # Overrides the formlib.form.FormBase.template attributes implemented 
+    # Overrides the formlib.form.FormBase.template attributes implemented
     # using NamedTemplates. NamedTemplates using ViewPageTemplateFile (like
     # formlib does by default) cannot work in Zope2.
 

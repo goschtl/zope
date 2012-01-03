@@ -18,5 +18,5 @@ $Id$
 from Products.Five.skin.standardmacros import StandardMacros
 
 # copy of zope.app.form.browser.macros.FormMacros
-class FormMacros(StandardMacros):    
+class FormMacros(StandardMacros):
     macro_pages = ('widget_macros', 'addform_macros')
