@@ -3,3 +3,6 @@ include *
 recursive-include src *
 
 global-exclude *pyc
+prune src/z3c/autoinclude/tests/*/build
+prune src/z3c/autoinclude/tests/*/dist
+prune src/z3c/autoinclude/tests/*/*.egg-info
