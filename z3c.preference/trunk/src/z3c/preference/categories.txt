@@ -95,7 +95,6 @@ Editing preference group trees using browser
 There is a namespace to access the preferences. On the page a form is
 displayed which shows the default values:
 
->>> browser.handleErrors = False
 >>> browser.open('http://localhost/++preferences++/app')
 >>> browser.getControl('Language').displayValue
 ['German']
