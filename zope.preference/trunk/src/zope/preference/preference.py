@@ -72,9 +72,9 @@ class PreferenceGroup(Location):
     # the property to an actual value during binding, but because we overrode
     # ``__setattr__`` this is not possible anymore.
     __parent = None
+    @property
     def __parent__(self):
         return self.__parent or zope.component.hooks.getSite()
-    __parent__ = property(__parent__)
 
 
     def __bind__(self, parent):
@@ -175,6 +175,7 @@ class PreferenceGroup(Location):
         else:
             del self.__dict__[key]
 
+    @property
     def data(self):
         # TODO: what if we have multiple participations?
         principal = getInteraction().participations[0].principal
@@ -190,7 +191,6 @@ class PreferenceGroup(Location):
             prefs[self.__id__] = OOBTree()
 
         return prefs[self.__id__]
-    data = property(data)
 
 
 def PreferenceGroupChecker(instance):
