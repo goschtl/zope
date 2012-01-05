@@ -1,0 +1,49 @@
+=======
+CHANGES
+=======
+
+1.3.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+1.3.0 (2010-07-05)
+------------------
+
+- Tests now require ``zope.browserpage >= 3.12`` instead of
+  ``zope.app.pagetemplate`` as the expression type registration has
+  been moved there recently.
+
+- No longer using deprecated ``zope.testing.doctestunit`` but built-in
+  ``doctest`` instead.
+
+
+1.2.1 (2009-03-07)
+------------------
+
+- Presence of ``z3c.pt`` is not sufficient to register macro-utility,
+  ``chameleon.zpt`` is required otherwise the factory for the utility
+  is not defined.
+
+
+1.2.0 (2009-03-07)
+------------------
+
+- Allow use of ``z3c.pt`` using ``z3c.ptcompat`` compatibility layer.
+
+- Change package's mailing list address to zope-dev at zope.org.
+
+
+1.1.0 (2007-11-01)
+------------------
+
+- Update package info data.
+
+- Add z3c namespace package declaration.
+
+
+1.0.0 (2007-09-30)
+------------------
+
+- Initial release.
