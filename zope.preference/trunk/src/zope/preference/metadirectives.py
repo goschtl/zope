@@ -15,9 +15,9 @@
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
 from zope.interface import Interface
 from zope.configuration import fields
+
 
 class IPreferenceGroupDirective(Interface):
     """Register a preference group."""
@@ -35,7 +35,7 @@ class IPreferenceGroupDirective(Interface):
         title=u"Schema",
         description=u"Schema of the preference group used defining the "
                     u"preferences of the group.",
-        required=False        
+        required=False
         )
 
     title = fields.MessageID(

@@ -15,19 +15,17 @@
 
 $Id$
 """
-__docformat__ = "reStructuredText"
-import persistent
 from BTrees.OOBTree import OOBTree
-
-import zope.interface
-import zope.component
+from zope.container.contained import Contained
+from zope.location import locate
+from zope.preference import preference, interfaces
 from zope.security.checker import defineChecker
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location import locate
-
+import persistent
 import zope.component
-from zope.container.contained import Contained
-from zope.preference import preference, interfaces
+import zope.component
+import zope.interface
+
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):
     zope.interface.implements(interfaces.IDefaultPreferenceProvider)

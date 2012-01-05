@@ -72,17 +72,16 @@ class PreferenceGroup(Location):
     # the property to an actual value during binding, but because we overrode
     # ``__setattr__`` this is not possible anymore.
     __parent = None
+
     @property
     def __parent__(self):
         return self.__parent or zope.component.hooks.getSite()
-
 
     def __bind__(self, parent):
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
         clone.__parent = parent
         return clone
-
 
     def get(self, key, default=None):
         id = self.__id__ and self.__id__ + '.' + key or key
@@ -91,9 +90,8 @@ class PreferenceGroup(Location):
             return default
         return group.__bind__(self)
 
-
     def items(self):
-        cutoff = self.__id__ and len(self.__id__)+1 or 0
+        cutoff = self.__id__ and len(self.__id__) + 1 or 0
         utilities = zope.component.getUtilitiesFor(IPreferenceGroup)
         return [(id[cutoff:], group.__bind__(self))
                 for id, group in utilities
@@ -234,6 +232,7 @@ def UserPreferences(context=None):
     rootGroup.__name__ = '++preferences++'
     zope.interface.alsoProvides(rootGroup, IContainmentRoot)
     return rootGroup
+
 
 class preferencesNamespace(object):
     """Used to traverse to the root preferences group."""

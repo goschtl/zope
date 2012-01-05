@@ -22,6 +22,7 @@ import zope.schema
 from zope.configuration.fields import MessageID
 from zope.location.interfaces import ILocation
 
+
 class IPreferenceGroup(ILocation):
     """A group of preferences.
 
@@ -32,7 +33,7 @@ class IPreferenceGroup(ILocation):
     The fields specified in the schema *must* be available as attributes and
     items of the group instance. It is up to the implementation how this is
     realized, however, most often one will implement __setattr__ and
-    __getattr__ as well as the common mapping API. 
+    __getattr__ as well as the common mapping API.
 
     The reason all the API fields are doubly underlined is to avoid name
     clashes.
@@ -67,6 +68,7 @@ class IPreferenceCategory(zope.interface.Interface):
     prefernce groups.
     """
 
+
 class IUserPreferences(zope.interface.Interface):
     """Objects providing this interface have to provide the root preference
     group API as well."""
@@ -81,5 +83,5 @@ class IDefaultPreferenceProvider(zope.interface.Interface):
     """
 
     preferences = zope.schema.Field(
-        title = u"Default Preferences Root",
-        description = u"Link to the default preferences")
+        title=u"Default Preferences Root",
+        description=u"Link to the default preferences")
