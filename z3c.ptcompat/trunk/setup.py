@@ -7,9 +7,11 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '1.0'
+version = '1.0.1dev'
 
 tests_require = [
+    'zope.component [test]',
+    'zope.configuration',
     ],
 
 
@@ -42,8 +44,12 @@ setup(name='z3c.ptcompat',
       install_requires=[
           'setuptools',
           'z3c.pt >= 2.1',
-          'zope.testing',
           'zope.pagetemplate >= 3.6.2',
+          'zope.traversing',
           ],
-      # test_suite="z3c.ptcompat.tests.test_doctests.test_suite",
+      extras_require=dict(
+          test=tests_require,
+      ),
+      tests_require=tests_require,
+      test_suite="z3c.ptcompat",
       )
