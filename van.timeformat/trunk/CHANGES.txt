@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.1.1 (unreleased)
+1.1.1 (2012-01-05)
 ------------------
 
 Features:
@@ -11,6 +11,7 @@ Features:
 Bugfixes:
 
 - Conform to Zope repository policy.
+- Remove conditional on zope.app.pagetemplate being installed, was a bad idea.
 
 1.1.0 (2010-01-20)
 ------------------

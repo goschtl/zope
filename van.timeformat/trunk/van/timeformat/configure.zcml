@@ -5,19 +5,17 @@
     xmlns:v="http://namespaces.vanguardistas.net/vanguardistas"
     >
 
-  <configure zcml:condition="installed zope.app.pagetemplate">
+  <!-- Onlu include this file if you have zope.browserpage meta.zcml loaded -->
 
-    <tales:expressiontype
-        name="timefmt"
-        handler=".tales.TimeFormatExpr"
-        />
+  <tales:expressiontype
+      name="timefmt"
+      handler=".tales.TimeFormatExpr"
+      />
 
-    <tales:expressiontype
-        name="ltimefmt"
-        handler=".tales.LocalTimeFormatExpr"
-        />
-
-  </configure>
+  <tales:expressiontype
+      name="ltimefmt"
+      handler=".tales.LocalTimeFormatExpr"
+      />
 
   <v:time_format
       name='rfc2822'
