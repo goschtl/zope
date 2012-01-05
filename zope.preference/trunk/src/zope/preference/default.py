@@ -101,12 +101,12 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
         # Nothing found, raise an attribute error
         raise AttributeError("'%s' is not a preference or sub-group." % key)
 
+    @property
     def data(self):
         if self.__id__ not in self.provider.data:
             self.provider.data[self.__id__] = OOBTree()
 
         return self.provider.data[self.__id__]
-    data = property(data)
 
 
 defineChecker(DefaultPreferenceGroup, preference.PreferenceGroupChecker)
