@@ -31,7 +31,7 @@ path
    child of the path with the server address as the name.
 
 host
-   host name or ip to listen on, defaultiong to ''
+   host name or ip to listen on, defaulting to ''
 
 port
    The port to listen on, defaulting to 0
