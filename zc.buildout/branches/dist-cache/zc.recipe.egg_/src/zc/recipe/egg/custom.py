@@ -93,7 +93,7 @@ class Custom(Base):
             return zc.buildout.easy_install.build(
                 distribution, options['_d'], self.build_ext,
                 self.links, self.index, options['executable'], [options['_e']],
-                newest=self.newest,
+                newest=self.newest, env=self.buildout.env,
                 )
         finally:
             self._restore_environment()

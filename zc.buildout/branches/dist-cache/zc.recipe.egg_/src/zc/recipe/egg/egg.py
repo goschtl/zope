@@ -83,6 +83,7 @@ class Eggs(object):
                  options['eggs-directory']],
                 include_site_packages=self.include_site_packages,
                 allowed_eggs_from_site_packages=self.allowed_eggs,
+                env=self.buildout.env,
                 )
         else:
             kw = {}
@@ -98,6 +99,7 @@ class Eggs(object):
                 include_site_packages=self.include_site_packages,
                 allowed_eggs_from_site_packages=self.allowed_eggs,
                 allow_hosts=self.allow_hosts,
+                env=self.buildout.env,
                 **kw)
 
         return orig_distributions, ws

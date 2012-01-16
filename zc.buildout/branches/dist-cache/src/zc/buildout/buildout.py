@@ -323,6 +323,18 @@ class Buildout(UserDict.DictMixin):
 
             zc.buildout.easy_install.download_cache(download_cache)
 
+        executable = options['executable']
+        stdlib, site_packages = zc.buildout.easy_install._get_system_paths(
+            executable)
+        path = zc.buildout.easy_install.get_path(
+            executable=executable,
+            path=[options['develop-eggs-directory']],
+            dest=options['eggs-directory'],
+            site_packages=site_packages,
+            include_site_packages=self.include_site_packages)
+        self.env = pkg_resources.Environment(
+            path, python=zc.buildout.easy_install._get_version(executable))
+
         # "Use" each of the defaults so they aren't reported as unused options.
         for name in _buildout_default_options:
             options[name]
@@ -1124,7 +1136,8 @@ def _install_and_load(spec, group, entry, buildout):
                 working_set=pkg_resources.working_set,
                 newest=buildout.newest,
                 allow_hosts=buildout._allow_hosts,
-                prefer_final=not buildout.accept_buildout_test_releases)
+                prefer_final=not buildout.accept_buildout_test_releases,
+                env=buildout.env)
 
         __doing__ = 'Loading %s recipe entry %s:%s.', group, spec, entry
         return pkg_resources.load_entry_point(

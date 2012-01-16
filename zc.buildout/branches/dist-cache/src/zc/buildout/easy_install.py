@@ -309,6 +309,25 @@ _easy_install_cmd = (
     'from setuptools.command.easy_install import main;main()')
 
 
+def get_path(executable, path, dest,
+             site_packages, include_site_packages):
+    path = (path and path[:] or [])
+    version_info = _get_version_info(executable)
+    if version_info == sys.version_info:
+        # Maybe we can add the buildout and setuptools path.  If we
+        # are including site_packages, we only have to include the extra
+        # bits here, so we don't duplicate.  On the other hand, if we
+        # are not including site_packages, we only want to include the
+        # parts that are not in site_packages, so the code is the same.
+        path.extend(
+            set(buildout_and_setuptools_path).difference(site_packages))
+    if include_site_packages:
+        path.extend(site_packages)
+    if dest is not None and dest not in path:
+        path.insert(0, dest)
+    return path
+
+
 class Installer:
 
     _versions = {}
@@ -335,6 +354,7 @@ class Installer:
                  include_site_packages=None,
                  allowed_eggs_from_site_packages=None,
                  prefer_final=None,
+                 env=None,
                  ):
         self._dest = dest
         self._allow_hosts = allow_hosts
@@ -359,7 +379,6 @@ class Installer:
         self._has_broken_dash_S = _has_broken_dash_S(self._executable)
         if always_unzip is not None:
             self._always_unzip = always_unzip
-        path = (path and path[:] or [])
         if include_site_packages is not None:
             self._include_site_packages = include_site_packages
         if allowed_eggs_from_site_packages is not None:
@@ -377,26 +396,17 @@ class Installer:
             self._easy_install_cmd = _easy_install_preface + _easy_install_cmd
         self._easy_install_cmd = _safe_arg(self._easy_install_cmd)
         stdlib, self._site_packages = _get_system_paths(executable)
-        version_info = _get_version_info(executable)
-        if version_info == sys.version_info:
-            # Maybe we can add the buildout and setuptools path.  If we
-            # are including site_packages, we only have to include the extra
-            # bits here, so we don't duplicate.  On the other hand, if we
-            # are not including site_packages, we only want to include the
-            # parts that are not in site_packages, so the code is the same.
-            path.extend(
-                set(buildout_and_setuptools_path).difference(
-                    self._site_packages))
-        if self._include_site_packages:
-            path.extend(self._site_packages)
-        if dest is not None and dest not in path:
-            path.insert(0, dest)
-        self._path = path
+        self._path = path = get_path(
+            executable, path, dest,
+            self._site_packages, self._include_site_packages)
         if self._dest is None:
             newest = False
         self._newest = newest
-        self._env = pkg_resources.Environment(path,
-                                              python=_get_version(executable))
+        if env is None:
+            self._env = env = pkg_resources.Environment(
+                self._path, python=_get_version(executable))
+        else:
+            self._env = env
         self._index = _get_index(executable, index, links, self._allow_hosts,
                                  self._path)
 
@@ -1080,13 +1090,13 @@ def install(specs, dest,
             path=None, working_set=None, newest=True, versions=None,
             use_dependency_links=None, allow_hosts=('*',),
             include_site_packages=None, allowed_eggs_from_site_packages=None,
-            prefer_final=None):
+            prefer_final=None, env=None):
     installer = Installer(
         dest, links, index, executable, always_unzip, path, newest,
         versions, use_dependency_links, allow_hosts=allow_hosts,
         include_site_packages=include_site_packages,
         allowed_eggs_from_site_packages=allowed_eggs_from_site_packages,
-        prefer_final=prefer_final)
+        prefer_final=prefer_final, env=env)
     return installer.install(specs, working_set)
 
 
@@ -1094,12 +1104,14 @@ def build(spec, dest, build_ext,
           links=(), index=None,
           executable=sys.executable,
           path=None, newest=True, versions=None, allow_hosts=('*',),
-          include_site_packages=None, allowed_eggs_from_site_packages=None):
+          include_site_packages=None,
+          allowed_eggs_from_site_packages=None, env=None):
     installer = Installer(
         dest, links, index, executable, True, path, newest, versions,
         allow_hosts=allow_hosts,
         include_site_packages=include_site_packages,
-        allowed_eggs_from_site_packages=allowed_eggs_from_site_packages)
+        allowed_eggs_from_site_packages=allowed_eggs_from_site_packages,
+        env=env)
     return installer.build(spec, build_ext)
 
 
@@ -1194,12 +1206,13 @@ def develop(setup, dest,
         [f() for f in undo]
 
 def working_set(specs, executable, path, include_site_packages=None,
-                allowed_eggs_from_site_packages=None, prefer_final=None):
+                allowed_eggs_from_site_packages=None,
+                prefer_final=None, env=None):
     return install(
         specs, None, executable=executable, path=path,
         include_site_packages=include_site_packages,
         allowed_eggs_from_site_packages=allowed_eggs_from_site_packages,
-        prefer_final=prefer_final)
+        prefer_final=prefer_final, env=env)
 
 ############################################################################
 # Script generation functions
