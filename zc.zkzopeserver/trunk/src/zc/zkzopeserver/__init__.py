@@ -17,7 +17,6 @@ import threading
 import zc.zk
 import zope.server.dualmodechannel
 import zope.server.taskthreads
-import zope.server.http.wsgihttpserver
 
 event_for_testing = threading.Event()
 server_for_testing = None
@@ -45,15 +44,19 @@ def stop_for_testing(thread=None):
 def run(wsgi_app, global_conf,
         zookeeper, path, session_timeout=None,
         name=__name__, host='', port=0, threads=1, monitor_server=None,
+        zservertracelog=None,
         ):
     port = int(port)
     threads = int(threads)
 
     task_dispatcher = zope.server.taskthreads.ThreadedTaskDispatcher()
     task_dispatcher.setThreadCount(threads)
-    server = zope.server.http.wsgihttpserver.WSGIHTTPServer(
-        wsgi_app, name, host, port,
-        task_dispatcher=task_dispatcher)
+    if zservertracelog == 'true':
+        from zc.zservertracelog.tracelog import Server
+    else:
+        from zope.server.http.wsgihttpserver import WSGIHTTPServer as Server
+
+    server = Server(wsgi_app, name, host, port, task_dispatcher=task_dispatcher)
 
     props = {}
     if monitor_server:

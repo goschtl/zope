@@ -108,6 +108,8 @@ def test_options():
 def test_suite():
     checker = zope.testing.renormalizing.RENormalizing([
         (re.compile('pid = \d+'), 'pid = 9999'),
+        (re.compile(r' \d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d\.\d+'),
+         ' IIIII DDDD-MM-DD HH:MM:SS.SS'),
         ])
     suite = unittest.TestSuite((
         manuel.testing.TestSuite(

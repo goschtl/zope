@@ -15,7 +15,8 @@ name, version = 'zc.zkzopeserver', '0'
 
 install_requires = ['setuptools', 'zc.zk', 'zope.server']
 extras_require = dict(
-    test=['zope.testing', 'zc.zk [static,test]', 'zc.monitor']
+    test=['zope.testing', 'zc.zk [static,test]', 'zc.monitor',
+          'zc.zservertracelog']
     )
 
 entry_points = """
