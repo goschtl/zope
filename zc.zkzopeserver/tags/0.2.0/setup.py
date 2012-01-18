@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.zkzopeserver', '0'
+name, version = 'zc.zkzopeserver', '0.2.0'
 
 install_requires = ['setuptools', 'zc.zk', 'zope.server']
 extras_require = dict(
