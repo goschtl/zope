@@ -136,9 +136,9 @@ table rendered in a layout with an render method
 """
 
 import grokcore.component as grok
+from grokcore.layout import Layout
 from zope.interface import Interface
 from megrok.z3ctable.tests import Container
-from megrok.layout import Layout
 from megrok.z3ctable import (TableView, table, 
                              GetAttrColumn, NameColumn, TablePage)
 

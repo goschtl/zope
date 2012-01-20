@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import megrok.layout
+import grokcore.layout as layout
 import grokcore.view as view
 import grokcore.component as grok
 from z3c.table import table, column, interfaces
@@ -29,13 +29,13 @@ class TableView(view.View, Table):
     render.base_method = True
 
 
-class TablePage(megrok.layout.Page, Table):
+class TablePage(layout.Page, Table):
     """A Page that renders a Table.
     """
     grok.baseclass()
 
     def __init__(self, context, request):
-        megrok.layout.Page.__init__(self, context, request)
+        layout.Page.__init__(self, context, request)
         Table.__init__(self, context, request)
 
     def update(self):
