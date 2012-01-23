@@ -27,7 +27,7 @@ from zope.app.testing import ztapi
 from zope.container.interfaces import IReadContainer
 from zope.app.component.site import LocalSiteManager
 from zope.app.component.testing import PlacefulSetup
-from zope.app.folder.folder import Folder
+from zope.site.folder import Folder
 
 from zope.app.rotterdam.tests import util
 from zope.app.rotterdam.xmlobject import ReadContainerXmlObjectView
