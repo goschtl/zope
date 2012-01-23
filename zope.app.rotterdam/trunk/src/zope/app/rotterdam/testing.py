@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """zope.app.rotterdam common test related classes/functions/objects.
-
-$Id$
 """
 
 __docformat__ = "reStructuredText"

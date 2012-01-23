@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """``Rotterdam`` skin package.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 from zope.publisher.interfaces.browser import IBrowserRequest

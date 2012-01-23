@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id$
+"""Tests for navigation tree
 """
 import unittest
 from xml.dom import minidom

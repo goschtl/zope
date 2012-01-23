@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Custom Widgets for the rotterdam layer.
-
-$Id$
 """
 __docformat__ = 'restructuredtext'
 

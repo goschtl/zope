@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Rotterdam layer standard macros
-
-$Id$
 """
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 

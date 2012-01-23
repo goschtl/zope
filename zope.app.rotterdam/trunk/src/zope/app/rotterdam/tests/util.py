@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Rotterdam utilities tests
-
-$Id$
 """
 import os
 import zope.app.rotterdam.tests

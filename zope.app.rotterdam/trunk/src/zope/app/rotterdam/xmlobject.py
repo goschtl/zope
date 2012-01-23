@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Support classes for XML-based tree
-
-$Id$
 """
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr

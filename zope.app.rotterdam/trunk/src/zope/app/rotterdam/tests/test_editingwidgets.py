@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Tests for zope.app.rotterdam.editingwidgets.
-
-$Id$
 """
 import doctest
 
