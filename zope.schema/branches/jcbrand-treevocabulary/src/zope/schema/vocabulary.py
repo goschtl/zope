@@ -16,7 +16,8 @@
 from zope.interface.declarations import directlyProvides, implementer
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
-from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
+from zope.schema.interfaces import IVocabularyTokenized
+from zope.schema.interfaces import ITreeVocabulary
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
 # simple vocabularies performing enumerated-like tasks
@@ -138,16 +139,22 @@ class SimpleVocabulary(object):
         return len(self.by_value)
 
 
+@implementer(ITreeVocabulary)
 class TreeVocabulary(SimpleVocabulary):
     """ Vocabulary that has a tree (i.e nested) structure.
     """
 
     def __init__(self, terms, *interfaces):
-        """Initialize the vocabulary given a dict of terms.
+        """Initialize the vocabulary given a recursive dict (i.e tree) with 
+        SimpleTerm terms for keys and self-similar dicts representing the 
+        children for values.
 
-        All keys and values (including nested ones) must be unique.
+        Refer to the method fromDict for more details.
 
-        gne or more interfaces may also be provided so that alternate
+        Concerning the SimpleTerm keys, the 'value' and 'token' attributes of
+        each key (including nested ones) must be unique.
+
+        One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
         self._terms = terms
@@ -219,14 +226,26 @@ class TreeVocabulary(SimpleVocabulary):
             createTree(tree, key[0], key[1], key[-1], _dict[key])
         return cls(tree, *interfaces)
 
-    def getTerm(self, value):
-        """See zope.schema.interfaces.IBaseVocabulary"""
-        try:
-            return self.by_value[value]
-        except KeyError:
-            raise LookupError(value)
+    @classmethod
+    def fromItems(cls, items, *interfaces):
+        """Inherited from SimpleVocabulary. Not applicable to a TreeVocabulary 
+        """
+        raise NotImplementedError('The TreeVocabulary must be constructed from '
+                'a dict. Please use the fromDict method.')
+
+    @classmethod
+    def fromValues(cls, values, *interfaces):
+        """Inherited from SimpleVocabulary. Not applicable to a TreeVocabulary 
+        """
+        raise NotImplementedError('The TreeVocabulary must be constructed from '
+                'a dict. Please use the fromDict method.')
 
     def getTermPath(self, value): 
+        """Returns a list of strings representing the path from the root node 
+           to the node with the given value in the tree. 
+
+           Returns an empty string if no node has that value.
+        """
         def recurse(_dict, value):
             if value in _dict.keys():
                 return [value]
