@@ -16,6 +16,7 @@
 __docformat__ = "reStructuredText"
 
 from zope.interface import Interface, Attribute
+from zope.interface.common.mapping import IEnumerableMapping
 from six import u, PY3
 
 from zope.schema._messageid import _
@@ -43,6 +44,7 @@ from zope.schema._bootstrapinterfaces import TooLong
 from zope.schema._bootstrapinterfaces import TooShort
 from zope.schema._bootstrapinterfaces import InvalidValue
 from zope.schema._bootstrapinterfaces import IContextAwareDefaultFactory
+
 
 class WrongContainedType(ValidationError):
     __doc__ = _("""Wrong contained type""")
@@ -652,8 +654,12 @@ class IVocabularyTokenized(IVocabulary):
         is raised.
         """
 
-class ITreeVocabulary(IVocabularyTokenized):
-    """A tokenized vocabulary with a tree-like structure.
+class ITreeVocabulary(IVocabularyTokenized, IEnumerableMapping):
+    """A tokenized vocabulary with a tree-like structure. 
+    
+       The tree is implemented as dictionary, with keys being ITokenizedTerm
+       terms and the values being similar dictionaries. Leaf values are empty
+       dictionaries.
     """
 
 class IVocabularyRegistry(Interface):

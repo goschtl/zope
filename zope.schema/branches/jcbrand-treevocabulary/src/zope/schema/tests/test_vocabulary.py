@@ -18,6 +18,7 @@ import unittest
 from zope.interface.verify import verifyObject
 from zope.interface.exceptions import DoesNotImplement
 from zope.interface import Interface, implementer
+from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
@@ -215,10 +216,10 @@ class TreeVocabularyTests(unittest.TestCase):
 
     def test_implementation(self):
         for v in [self.tree_vocab_2, self.tree_vocab_3]:
+            self.assertTrue(verifyObject(IEnumerableMapping, v))
             self.assertTrue(verifyObject(interfaces.IVocabulary, v))
             self.assertTrue(verifyObject(interfaces.IVocabularyTokenized, v))
             self.assertTrue(verifyObject(interfaces.ITreeVocabulary, v))
-            self.assertEqual(dict, type(v.data))
 
     def test_addt_interfaces(self):
         class IStupid(Interface):
