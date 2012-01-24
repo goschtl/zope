@@ -71,6 +71,7 @@ class SimpleVocabulary(object):
         if interfaces:
             directlyProvides(self, *interfaces)
 
+    @classmethod
     def fromItems(cls, items, *interfaces):
         """Construct a vocabulary from a list of (token, value) pairs.
 
@@ -83,8 +84,8 @@ class SimpleVocabulary(object):
         """
         terms = [cls.createTerm(value, token) for (token, value) in items]
         return cls(terms, *interfaces)
-    fromItems = classmethod(fromItems)
 
+    @classmethod
     def fromValues(cls, values, *interfaces):
         """Construct a vocabulary from a simple list.
 
@@ -99,8 +100,8 @@ class SimpleVocabulary(object):
         """
         terms = [cls.createTerm(value) for value in values]
         return cls(terms, *interfaces)
-    fromValues = classmethod(fromValues)
 
+    @classmethod
     def createTerm(cls, *args):
         """Create a single term from data.
 
@@ -108,7 +109,6 @@ class SimpleVocabulary(object):
         a term of the appropriate type from the arguments.
         """
         return SimpleTerm(*args)
-    createTerm = classmethod(createTerm)
 
     def __contains__(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
