@@ -652,6 +652,9 @@ class IVocabularyTokenized(IVocabulary):
         is raised.
         """
 
+class ITreeVocabulary(IVocabularyTokenized):
+    """A tokenized vocabulary with a tree-like structure.
+    """
 
 class IVocabularyRegistry(Interface):
     """Registry that provides IBaseVocabulary objects for specific fields.
@@ -663,6 +666,7 @@ class IVocabularyRegistry(Interface):
 
         When the vocabulary cannot be found, LookupError is raised.
         """
+
 
 class IVocabularyFactory(Interface):
     """Can create vocabularies."""
