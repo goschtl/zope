@@ -189,10 +189,6 @@ class SimpleVocabularyTests(unittest.TestCase):
 
 class TreeVocabularyTests(unittest.TestCase):
 
-    list_vocab = vocabulary.SimpleVocabulary.fromValues([1, 2, 3])
-    items_vocab = vocabulary.SimpleVocabulary.fromItems(
-        [('one', 1), ('two', 2), ('three', 3), ('fore!', 4)])
-
     tree_vocab_2 = vocabulary.TreeVocabulary.fromDict(
         { ('regions', 'Regions'): {
                 ('aut', 'Austria'): {
@@ -218,9 +214,10 @@ class TreeVocabularyTests(unittest.TestCase):
 
     def test_implementation(self):
         for v in [self.tree_vocab_2, self.tree_vocab_3]:
-            self.assertTrue(verifyObject(interfaces.IVocabulary, v))
-            self.assertTrue(verifyObject(interfaces.IVocabularyTokenized, v))
-            self.assertTrue(dict, type(v._terms))
+            self.assertEqual(verifyObject(interfaces.IVocabulary, v), 1)
+            self.assertEqual(verifyObject(interfaces.IVocabularyTokenized, v), 1)
+            self.assertEqual(verifyObject(interfaces.ITreeVocabulary, v), 1)
+            self.assertEqual(dict, type(v._terms))
 
     def test_addt_interfaces(self):
         class IStupid(Interface):
@@ -246,21 +243,21 @@ class TreeVocabularyTests(unittest.TestCase):
                     ['marketing', 'marketing_sales', 'marketing_sales_call_center'])
 
     def test_len(self):
-        """ len returns the number of all nodes in die dict
+        """ len returns the number of all nodes in the dict
         """
         self.assertEqual(len(self.tree_vocab_2), 6)
         self.assertEqual(len(self.tree_vocab_3), 5)
 
     def test_contains(self):
-        self.assertTrue('Regions' in self.tree_vocab_2 and \
-                        'Austria' in self.tree_vocab_2 and \
+        self.assertTrue('Regions' in self.tree_vocab_2 and 
+                        'Austria' in self.tree_vocab_2 and 
                         'Bavaria' in self.tree_vocab_2)
 
         self.assertTrue('bav' not in self.tree_vocab_2)
         self.assertTrue('xxx' not in self.tree_vocab_2)
 
-        self.assertTrue('marketing' in self.tree_vocab_3 and \
-                        'marketing_sales' in self.tree_vocab_3 and \
+        self.assertTrue('marketing' in self.tree_vocab_3 and 
+                        'marketing_sales' in self.tree_vocab_3 and 
                         'marketing_loyalty' in self.tree_vocab_3)
 
         self.assertTrue('Marketing' not in self.tree_vocab_3)
