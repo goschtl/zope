@@ -20,6 +20,8 @@ from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITreeVocabulary
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
+from persistent.mapping import PersistentMapping
+
 # simple vocabularies performing enumerated-like tasks
 
 _marker = object()
@@ -138,8 +140,6 @@ class SimpleVocabulary(object):
         """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self.by_value)
 
-
-from persistent.mapping import PersistentMapping
 
 @implementer(ITreeVocabulary)
 class TreeVocabulary(PersistentMapping):
