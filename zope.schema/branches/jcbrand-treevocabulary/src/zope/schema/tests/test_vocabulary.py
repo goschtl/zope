@@ -214,9 +214,9 @@ class TreeVocabularyTests(unittest.TestCase):
 
     def test_implementation(self):
         for v in [self.tree_vocab_2, self.tree_vocab_3]:
-            self.assertEqual(verifyObject(interfaces.IVocabulary, v), 1)
-            self.assertEqual(verifyObject(interfaces.IVocabularyTokenized, v), 1)
-            self.assertEqual(verifyObject(interfaces.ITreeVocabulary, v), 1)
+            self.assertTrue(verifyObject(interfaces.IVocabulary, v))
+            self.assertTrue(verifyObject(interfaces.IVocabularyTokenized, v))
+            self.assertTrue(verifyObject(interfaces.ITreeVocabulary, v))
             self.assertEqual(dict, type(v._terms))
 
     def test_addt_interfaces(self):
