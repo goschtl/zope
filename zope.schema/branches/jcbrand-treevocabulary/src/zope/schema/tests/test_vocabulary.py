@@ -209,7 +209,8 @@ class TreeVocabularyTests(unittest.TestCase):
                 ('marketing_sales', 'marketing_sales', 'Sales'): {
                     ('marketing_sales_call_center', 'marketing_sales_call_center', 'Call Center'): {},
                 },
-            }
+            },
+           ('administration', 'administration', 'Administration'): {},
         })
 
     def test_implementation(self):
@@ -217,7 +218,7 @@ class TreeVocabularyTests(unittest.TestCase):
             self.assertTrue(verifyObject(interfaces.IVocabulary, v))
             self.assertTrue(verifyObject(interfaces.IVocabularyTokenized, v))
             self.assertTrue(verifyObject(interfaces.ITreeVocabulary, v))
-            self.assertEqual(dict, type(v._terms))
+            self.assertEqual(dict, type(v.data))
 
     def test_addt_interfaces(self):
         class IStupid(Interface):
@@ -245,8 +246,8 @@ class TreeVocabularyTests(unittest.TestCase):
     def test_len(self):
         """ len returns the number of all nodes in the dict
         """
-        self.assertEqual(len(self.tree_vocab_2), 6)
-        self.assertEqual(len(self.tree_vocab_3), 5)
+        self.assertEqual(len(self.tree_vocab_2), 1)
+        self.assertEqual(len(self.tree_vocab_3), 2)
 
     def test_contains(self):
         self.assertTrue('Regions' in self.tree_vocab_2 and 
@@ -268,6 +269,9 @@ class TreeVocabularyTests(unittest.TestCase):
             for term in v:
                 self.assertTrue(v.getTerm(term.value) is term)
                 self.assertTrue(v.getTermByToken(term.token) is term)
+
+            self.assertRaises(LookupError, v.getTerm, 'non-present-value')
+            self.assertRaises(LookupError, v.getTermByToken, 'non-present-token')
 
     def test_nonunique_values(self):
         self.assertRaises(

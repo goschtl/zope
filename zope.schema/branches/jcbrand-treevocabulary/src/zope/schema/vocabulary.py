@@ -16,7 +16,7 @@
 from zope.interface.declarations import directlyProvides, implementer
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
-from zope.schema.interfaces import IVocabularyTokenized
+from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITreeVocabulary
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
@@ -139,15 +139,17 @@ class SimpleVocabulary(object):
         return len(self.by_value)
 
 
+from persistent.mapping import PersistentMapping
+
 @implementer(ITreeVocabulary)
-class TreeVocabulary(SimpleVocabulary):
+class TreeVocabulary(PersistentMapping):
     """ Vocabulary that has a tree (i.e nested) structure.
     """
 
     def __init__(self, terms, *interfaces):
-        """Initialize the vocabulary given a recursive dict (i.e tree) with 
+        """Initialize the vocabulary given a recursive dict (i.e a tree) with 
         SimpleTerm terms for keys and self-similar dicts representing the 
-        children for values.
+        branches for values.
 
         Refer to the method fromDict for more details.
 
@@ -157,7 +159,7 @@ class TreeVocabulary(SimpleVocabulary):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        self._terms = terms
+        super(TreeVocabulary, self).__init__(dict=terms)
 
         def by_attr(terms, _dict, attr, structure='flat'):
             """ A recursing method to construct either a flat dict where the 
@@ -190,6 +192,14 @@ class TreeVocabulary(SimpleVocabulary):
 
         if interfaces:
             directlyProvides(self, *interfaces)
+            
+    def __contains__(self, value):
+        """See zope.schema.interfaces.IBaseVocabulary"""
+        try:
+            return value in self.by_value
+        except TypeError:
+            # sometimes values are not hashable
+            return False
              
     @classmethod
     def fromDict(cls, _dict, *interfaces):
@@ -227,18 +237,27 @@ class TreeVocabulary(SimpleVocabulary):
         return cls(tree, *interfaces)
 
     @classmethod
-    def fromItems(cls, items, *interfaces):
-        """Inherited from SimpleVocabulary. Not applicable to a TreeVocabulary 
-        """
-        raise NotImplementedError('The TreeVocabulary must be constructed from '
-                'a dict. Please use the fromDict method.')
+    def createTerm(cls, *args):
+        """Create a single term from data.
 
-    @classmethod
-    def fromValues(cls, values, *interfaces):
-        """Inherited from SimpleVocabulary. Not applicable to a TreeVocabulary 
+        Subclasses may override this with a class method that creates
+        a term of the appropriate type from the arguments.
         """
-        raise NotImplementedError('The TreeVocabulary must be constructed from '
-                'a dict. Please use the fromDict method.')
+        return SimpleTerm(*args)
+
+    def getTerm(self, value):
+        """See zope.schema.interfaces.IBaseVocabulary"""
+        try:
+            return self.by_value[value]
+        except KeyError:
+            raise LookupError(value)
+
+    def getTermByToken(self, token):
+        """See zope.schema.interfaces.IVocabularyTokenized"""
+        try:
+            return self.by_token[token]
+        except KeyError:
+            raise LookupError(token)
 
     def getTermPath(self, value): 
         """Returns a list of strings representing the path from the root node 
