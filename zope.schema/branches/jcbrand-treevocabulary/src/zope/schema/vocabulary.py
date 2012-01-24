@@ -20,10 +20,7 @@ from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITreeVocabulary
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
-from persistent.mapping import PersistentMapping
-
 # simple vocabularies performing enumerated-like tasks
-
 _marker = object()
 
 @implementer(ITokenizedTerm)
@@ -142,7 +139,7 @@ class SimpleVocabulary(object):
 
 
 @implementer(ITreeVocabulary)
-class TreeVocabulary(PersistentMapping):
+class TreeVocabulary(dict):
     """ Vocabulary that has a tree (i.e nested) structure.
     """
 
@@ -159,7 +156,7 @@ class TreeVocabulary(PersistentMapping):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        super(TreeVocabulary, self).__init__(dict=terms)
+        self.update(terms)
 
         def by_attr(terms, _dict, attr, structure='flat'):
             """ A recursing method to construct either a flat dict where the 
