@@ -63,7 +63,7 @@ var oFCKeditor_%(shortname)s = new FCKeditor(
 class CkeditorWidget(zope.formlib.widgets.TextAreaWidget):
 
     editorHeight = 400
-    fckVersion = '3.5.2'
+    fckVersion = '3.6.2'
 
     configurationPath = "/@@/zope_ckconfig.js"
 

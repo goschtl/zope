@@ -45,7 +45,7 @@ We should also test the CkeditorWidget.
 The "fckVersion" attribute holds the version of CKEditor library.
 
   >>> ckwidget.fckVersion
-  '3.5.2'
+  '3.6.2'
 
   >>> print ckwidget()
   <textarea...></textarea>
