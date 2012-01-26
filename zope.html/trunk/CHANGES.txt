@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+2.4.0 (2012-01-26)
+------------------
+
+- Use CKEditor 3.5.2
+- Using Python's ``doctest`` module instead of deprecated
+  ``zope.testing.doctest``.
+
+
 2.3.0 (2011-02-22)
 ------------------
 
