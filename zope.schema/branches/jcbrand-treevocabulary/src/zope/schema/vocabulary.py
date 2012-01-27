@@ -183,7 +183,7 @@ class TreeVocabulary(dict):
                     by_attr(terms[term], _dict, attr, structure)
             return _dict
 
-        self.dict_by_value = by_attr(terms, {}, 'value', 'nested')
+        self.tree_by_value = by_attr(terms, {}, 'value', 'nested')
         self.by_value = by_attr(terms, {}, 'value', 'flat')
         self.by_token = by_attr(terms, {}, 'token', 'flat')
 
@@ -197,7 +197,21 @@ class TreeVocabulary(dict):
         except TypeError:
             # sometimes values are not hashable
             return False
-             
+
+    @classmethod
+    def _createTree(cls, branch):
+        """ Helper method that turns a tree-like dict with tuples as keys, into
+        a tree-like dict with ITokenizedTerm objects as keys.
+
+        See fromDict for more details.
+        """
+        for key in branch.keys():
+            term = cls.createTerm(key[1], key[0], key[-1])
+            branch[term] = branch[key]
+            del branch[key]
+            cls._createTree(branch[term])
+        return branch
+
     @classmethod
     def fromDict(cls, _dict, *interfaces):
         """Constructs a vocabulary from a dictionary with tuples as keys.
@@ -221,17 +235,7 @@ class TreeVocabulary(dict):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        def createTree(tree, token, value, title, branch):
-            """ """
-            key = cls.createTerm(value, token, title)
-            tree[key] = {}
-            for _key in branch.keys():
-                createTree(tree[key], _key[0], _key[1], _key[-1], branch[_key])
-
-        tree = {}
-        for key in _dict.keys():
-            createTree(tree, key[0], key[1], key[-1], _dict[key])
-        return cls(tree, *interfaces)
+        return cls(cls._createTree(_dict), *interfaces)
 
     @classmethod
     def createTerm(cls, *args):
@@ -256,12 +260,17 @@ class TreeVocabulary(dict):
         except KeyError:
             raise LookupError(token)
 
-    def _getPathToTreeNode(self, tree, value):
-        if value in tree.keys():
-            return [value]
+    def _getPathToTreeNode(self, tree, node):
+        """Helper method that computes the path in the tree from the root
+        to the given node.
+
+        The tree must be a recursive IEnumerableMapping object.
+        """
+        if node in tree.keys():
+            return [node]
         path = []
         for key in tree.keys():
-            path = self._getPathToTreeNode(tree[key], value)
+            path = self._getPathToTreeNode(tree[key], node)
             if path:
                 path = [key] + path
                 break
@@ -269,11 +278,11 @@ class TreeVocabulary(dict):
 
     def getTermPath(self, value): 
         """Returns a list of strings representing the path from the root node 
-           to the node with the given value in the tree. 
+        to the node with the given value in the tree. 
 
-           Returns an empty string if no node has that value.
+        Returns an empty string if no node has that value.
         """
-        return self._getPathToTreeNode(self.dict_by_value, value)
+        return self._getPathToTreeNode(self.tree_by_value, value)
 
 
 # registry code
