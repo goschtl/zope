@@ -256,25 +256,24 @@ class TreeVocabulary(dict):
         except KeyError:
             raise LookupError(token)
 
+    def _getPathToTreeNode(self, tree, value):
+        if value in tree.keys():
+            return [value]
+        path = []
+        for key in tree.keys():
+            path = self._getPathToTreeNode(tree[key], value)
+            if path:
+                path = [key] + path
+                break
+        return path
+
     def getTermPath(self, value): 
         """Returns a list of strings representing the path from the root node 
            to the node with the given value in the tree. 
 
            Returns an empty string if no node has that value.
         """
-        def recurse(_dict, value):
-            if value in _dict.keys():
-                return [value]
-            path = []
-            for key in _dict.keys():
-                path = recurse(_dict[key], value)
-                if path:
-                    path.append(key)
-                    break
-            return path
-        path = recurse(self.dict_by_value, value)
-        path.reverse()
-        return path
+        return self._getPathToTreeNode(self.dict_by_value, value)
 
 
 # registry code
