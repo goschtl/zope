@@ -172,18 +172,17 @@ class TreeVocabulary(dict):
             return False
 
     @classmethod
-    def _createTree(cls, branch):
-        """ Helper method that turns a tree-like dict with tuples as keys, into
-        a tree-like dict with ITokenizedTerm objects as keys.
+    def _createTermTree(cls, tree, branch):
+        """ Helper method that creates a tree-like dict with ITokenizedTerm 
+        objects as keys from a similar tree with tuples as keys.
 
         See fromDict for more details.
         """
         for key in branch.keys():
             term = cls.createTerm(key[1], key[0], key[-1])
-            branch[term] = branch[key]
-            del branch[key]
-            cls._createTree(branch[term])
-        return branch
+            tree[term] = {}
+            cls._createTermTree(tree[term], branch[key])
+        return tree 
 
     @classmethod
     def fromDict(cls, _dict, *interfaces):
@@ -208,7 +207,7 @@ class TreeVocabulary(dict):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        return cls(cls._createTree(_dict), *interfaces)
+        return cls(cls._createTermTree({}, _dict), *interfaces)
 
     @classmethod
     def createTerm(cls, *args):
