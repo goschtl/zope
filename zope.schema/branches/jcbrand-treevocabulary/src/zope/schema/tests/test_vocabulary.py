@@ -190,8 +190,7 @@ class SimpleVocabularyTests(unittest.TestCase):
 
 class TreeVocabularyTests(unittest.TestCase):
 
-    tree_vocab_2 = vocabulary.TreeVocabulary.fromDict(
-        { ('regions', 'Regions'): {
+    region_tree = { ('regions', 'Regions'): {
                 ('aut', 'Austria'): {
                     ('tyr', 'Tyrol'): {
                         ('auss', 'Ausserfern'): {},
@@ -201,18 +200,30 @@ class TreeVocabularyTests(unittest.TestCase):
                     ('bav', 'Bavaria'):{}
                 },
             }
-        })
+        }
+    tree_vocab_2 = vocabulary.TreeVocabulary.fromDict(region_tree)
 
-    tree_vocab_3 = vocabulary.TreeVocabulary.fromDict(
-        { ('marketing', 'marketing', 'Marketing'): {
-                ('marketing_marketing', 'marketing_marketing', 'Marketing'): {},
-                ('marketing_loyalty', 'marketing_loyalty', 'Loyalty'): {},
-                ('marketing_sales', 'marketing_sales', 'Sales'): {
-                    ('marketing_sales_call_center', 'marketing_sales_call_center', 'Call Center'): {},
+    business_tree = {
+            ('services', 'services', 'Services'): {
+                ('reservations', 'reservations', 'Reservations'): {
+                    ('res_host', 'res_host', 'Res Host'): {},
+                    ('res_gui', 'res_gui', 'Res GUI'): {},
+                },
+                ('check_in', 'check_in', 'Check-in'): {
+                    ('dcs_host', 'dcs_host', 'DCS Host'): {},
                 },
             },
-           ('administration', 'administration', 'Administration'): {},
-        })
+            ('infrastructure', 'infrastructure', 'Infrastructure'): {
+                ('communication_network', 'communication_network', 'Communication/Network'): {
+                    ('messaging', 'messaging', 'Messaging'): {},
+                },
+                ('data_transaction', 'data_transaction', 'Data/Transaction'): {
+                    ('database', 'database', 'Database'): {},
+                },
+                ('security', 'security', 'Security'): {},
+            },
+        }
+    tree_vocab_3 = vocabulary.TreeVocabulary.fromDict(business_tree)
 
     def test_implementation(self):
         for v in [self.tree_vocab_2, self.tree_vocab_3]:
@@ -241,8 +252,8 @@ class TreeVocabularyTests(unittest.TestCase):
                     self.tree_vocab_2.getTermPath('Non-existent'), 
                     [])
         self.assertEqual(
-                    self.tree_vocab_3.getTermPath('marketing_sales_call_center'),
-                    ['marketing', 'marketing_sales', 'marketing_sales_call_center'])
+                    self.tree_vocab_3.getTermPath('database'),
+                    ["infrastructure", "data_transaction", "database"])
 
     def test_len(self):
         """ len returns the number of all nodes in the dict
@@ -258,12 +269,12 @@ class TreeVocabularyTests(unittest.TestCase):
         self.assertTrue('bav' not in self.tree_vocab_2)
         self.assertTrue('xxx' not in self.tree_vocab_2)
 
-        self.assertTrue('marketing' in self.tree_vocab_3 and 
-                        'marketing_sales' in self.tree_vocab_3 and 
-                        'marketing_loyalty' in self.tree_vocab_3)
+        self.assertTrue('database' in self.tree_vocab_3 and 
+                        'security' in self.tree_vocab_3 and 
+                        'services' in self.tree_vocab_3)
 
-        self.assertTrue('Marketing' not in self.tree_vocab_3)
-        self.assertTrue('Call Center' not in self.tree_vocab_3)
+        self.assertTrue('Services' not in self.tree_vocab_3)
+        self.assertTrue('Database' not in self.tree_vocab_3)
 
     def test_iter_and_get_term(self):
         for v in (self.tree_vocab_2, self.tree_vocab_3):
@@ -310,6 +321,37 @@ class TreeVocabularyTests(unittest.TestCase):
                     {(1, 1):{}, (2, 2):{}, (3, 3):{ (4,4):{} }} )
         for term in vocab:
             self.assertEqual(term.value + 1, term.nextvalue)
+
+    def test_recursive_methods(self):
+        """Test the _createTermTree and _getPathToTreeNode methods
+        """
+        tree = vocabulary.TreeVocabulary._createTermTree({}, self.business_tree)
+        vocab = vocabulary.TreeVocabulary.fromDict(self.business_tree)
+
+        term_path = vocab._getPathToTreeNode(tree, "infrastructure")
+        vocab_path = vocab._getPathToTreeNode(vocab, "infrastructure")
+        self.assertEqual(term_path, vocab_path)
+        self.assertEqual(term_path, ["infrastructure"])
+
+        term_path = vocab._getPathToTreeNode(tree, "security")
+        vocab_path = vocab._getPathToTreeNode(vocab, "security")
+        self.assertEqual(term_path, vocab_path)
+        self.assertEqual(term_path, ["infrastructure", "security"])
+
+        term_path = vocab._getPathToTreeNode(tree, "database")
+        vocab_path = vocab._getPathToTreeNode(vocab, "database")
+        self.assertEqual(term_path, vocab_path)
+        self.assertEqual(term_path, ["infrastructure", "data_transaction", "database"])
+
+        term_path = vocab._getPathToTreeNode(tree, "dcs_host")
+        vocab_path = vocab._getPathToTreeNode(vocab, "dcs_host")
+        self.assertEqual(term_path, vocab_path)
+        self.assertEqual(term_path, ["services", "check_in", "dcs_host"])
+
+        term_path = vocab._getPathToTreeNode(tree, "dummy")
+        vocab_path = vocab._getPathToTreeNode(vocab, "dummy")
+        self.assertEqual(term_path, vocab_path)
+        self.assertEqual(term_path, [])
 
 
 def test_suite():
