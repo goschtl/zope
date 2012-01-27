@@ -11,12 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.zookeeperrecipes', '0'
 
-install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
+install_requires = ['setuptools', 'zc.zk [static]']
+extras_require = dict(test=[
+    'zope.testing', 'zc.buildout', 'zc.zk [test]'
+    ])
 
 entry_points = """
+[zc.buildout]
+devtree = zc.zookeeperrecipes:DevTree
 """
 
 from setuptools import setup
