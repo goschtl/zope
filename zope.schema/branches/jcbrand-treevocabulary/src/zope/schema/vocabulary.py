@@ -145,47 +145,20 @@ class TreeVocabulary(dict):
 
     def __init__(self, terms, *interfaces):
         """Initialize the vocabulary given a recursive dict (i.e a tree) with 
-        SimpleTerm terms for keys and self-similar dicts representing the 
+        ITokenizedTerm objects for keys and self-similar dicts representing the 
         branches for values.
 
         Refer to the method fromDict for more details.
 
-        Concerning the SimpleTerm keys, the 'value' and 'token' attributes of
+        Concerning the ITokenizedTerm keys, the 'value' and 'token' attributes of
         each key (including nested ones) must be unique.
 
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
         self.update(terms)
-
-        def by_attr(terms, _dict, attr, structure='flat'):
-            """ A recursing method to construct either a flat dict where the 
-            keys are all the nodes in the tree, or a nested dict that mirrors 
-            the original tree.
-
-            _dict:      The dictionary that will contain the data.
-            attr:       Specifies the ISimpleTerm attribute that will be the 
-                        keys of the _dict 
-            structure: 'flat' or 'nested'
-            """
-            for term in terms.keys():
-                if structure == 'nested':
-                    _dict[getattr(term, attr)] = \
-                            by_attr(terms[term], {}, attr, structure)
-                elif structure == 'flat':
-                    attrval = getattr(term, attr)
-                    if attrval in _dict:
-                        raise ValueError(
-                            'term %ss must be unique: %s' \
-                                % (attr, repr(attrval)))
-
-                    _dict[attrval] = term
-                    by_attr(terms[term], _dict, attr, structure)
-            return _dict
-
-        self.tree_by_value = by_attr(terms, {}, 'value', 'nested')
-        self.by_value = by_attr(terms, {}, 'value', 'flat')
-        self.by_token = by_attr(terms, {}, 'token', 'flat')
+        self.by_value = self._flattenTree(terms, {}, 'value')
+        self.by_token = self._flattenTree(terms, {}, 'token')
 
         if interfaces:
             directlyProvides(self, *interfaces)
@@ -245,6 +218,29 @@ class TreeVocabulary(dict):
         a term of the appropriate type from the arguments.
         """
         return SimpleTerm(*args)
+        
+    def _flattenTree(self, tree, _dict, attr):
+        """A helper method to create a flat (non-nested) dictionary from a 
+        tree. 
+        
+        Each key of the dictionary is the attribute "attr" of a node in
+        the tree, with the value being the corresponding node.
+
+        tree:  The tree (a nested/recursive dictionary) that must be flattened.
+        _dict: Dictionary to contain the flattened tree.
+        attr:  The attribute of the tree nodes that should be the key in the
+               flattened tree.
+        """
+        for term in tree.keys():
+            attrval = getattr(term, attr)
+            if attrval in _dict:
+                raise ValueError(
+                    'term %ss must be unique: %s' \
+                        % (attr, repr(attrval)))
+
+            _dict[attrval] = term
+            self._flattenTree(tree[term], _dict, attr)
+        return _dict
 
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
@@ -266,13 +262,13 @@ class TreeVocabulary(dict):
 
         The tree must be a recursive IEnumerableMapping object.
         """
-        if node in tree.keys():
+        if node in [k.value for k in tree.keys()]:
             return [node]
         path = []
         for key in tree.keys():
             path = self._getPathToTreeNode(tree[key], node)
             if path:
-                path = [key] + path
+                path = [key.value] + path
                 break
         return path
 
@@ -282,7 +278,7 @@ class TreeVocabulary(dict):
 
         Returns an empty string if no node has that value.
         """
-        return self._getPathToTreeNode(self.tree_by_value, value)
+        return self._getPathToTreeNode(self, value)
 
 
 # registry code
