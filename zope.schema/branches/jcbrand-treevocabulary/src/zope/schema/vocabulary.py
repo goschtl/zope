@@ -193,11 +193,6 @@ class TreeVocabulary(object):
             # sometimes values are not hashable
             return False
     
-    def __delitem__(self, key):
-        """x.__delitem__(y) <==> del x[y]
-        """
-        return self._terms.__delitem__(key)
-
     def __getitem__(self, key):
         """x.__getitem__(y) <==> x[y]
         """
