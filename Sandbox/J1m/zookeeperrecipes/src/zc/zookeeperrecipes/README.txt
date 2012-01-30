@@ -377,7 +377,7 @@ import-file
 import-text
    Optional import text.
 
-   Unfortunately, because of the way buildout parsers configuration
+   Unfortunately, because of the way buildout parses configuration
    files, leading whitespace is stripped, making this option hard to
    specify.
 
