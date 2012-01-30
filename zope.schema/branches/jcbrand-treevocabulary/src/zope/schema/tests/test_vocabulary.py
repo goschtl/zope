@@ -305,27 +305,10 @@ class TreeVocabularyTests(unittest.TestCase):
         except ValueError as e:
             self.assertEqual(str(e), "term values must be unique: '1'")
 
-    def test_overriding_createTerm(self):
-        class MyTerm(object):
-            def __init__(self, value):
-                self.value = value
-                self.token = repr(value)
-                self.nextvalue = value + 1
-
-        class MyVocabulary(vocabulary.TreeVocabulary):
-            def createTerm(cls, token, value, title=None):
-                return MyTerm(value)
-            createTerm = classmethod(createTerm)
-
-        vocab = MyVocabulary.fromDict(
-                    {(1, 1):{}, (2, 2):{}, (3, 3):{ (4,4):{} }} )
-        for term in vocab:
-            self.assertEqual(term.value + 1, term.nextvalue)
-
     def test_recursive_methods(self):
         """Test the _createTermTree and _getPathToTreeNode methods
         """
-        tree = vocabulary.TreeVocabulary._createTermTree({}, self.business_tree)
+        tree = vocabulary._createTermTree({}, self.business_tree)
         vocab = vocabulary.TreeVocabulary.fromDict(self.business_tree)
 
         term_path = vocab._getPathToTreeNode(tree, "infrastructure")
