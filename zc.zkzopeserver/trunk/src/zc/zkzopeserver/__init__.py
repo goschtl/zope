@@ -60,15 +60,15 @@ def run(wsgi_app, global_conf,
 
     props = {}
     if monitor_server:
-        host, port = monitor_server.rsplit(':', 1)
+        mhost, mport = monitor_server.rsplit(':', 1)
         global zc
         import zc.monitor
-        props['monitor'] = "%s:%s" % zc.monitor.start((host, int(port)))
+        props['monitor'] = "%s:%s" % zc.monitor.start((mhost, int(mport)))
 
     server.ZooKeeper = zc.zk.ZooKeeper(
         zookeeper, session_timeout and int(session_timeout))
     server.ZooKeeper.register_server(
-        path, "%s:%s" % server.socket.getsockname(), **props)
+        path, "%s:%s" % (host, server.socket.getsockname()[1]), **props)
 
     map = asyncore.socket_map
     poll_fun = asyncore.poll

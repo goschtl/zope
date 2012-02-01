@@ -107,7 +107,7 @@ When our web server is running, the ``/fooservice/providers`` node
 would look something like::
 
     /providers
-      /0.0.0.0:61181
+      /1.2.3.4:61181
         monitor = u'127.0.0.1:61182'
         pid = 4525
 
@@ -136,7 +136,8 @@ would look something like::
     >>> import re, zope.testing.renormalizing
     >>> checker = zope.testing.renormalizing.RENormalizing([
     ...     (re.compile('pid = \d+'), 'pid = 999'),
-    ...     (re.compile('(0\.0\.[01]):\d+'), '\1:99999'),
+    ...     (re.compile('1.2.3.4:\d+'), '1.2.3.4:99999'),
+    ...     (re.compile('127.0.0.1:\d+'), '1.2.3.4:99999'),
     ...     ])
     >>> actual_tree = zk.export_tree('/fooservice/providers', True)
     >>> checker.check_output(expected_tree.strip(), actual_tree.strip(), 0)
@@ -218,6 +219,12 @@ the ``zservertracelog`` option in your server section::
 
 Change History
 ==============
+
+0.2.1 (2012-02-??)
+------------------
+
+- Fixed: servers were registered with the host information returned by
+  socket.getsockname(), which was unhelpful.
 
 0.2.0 (2012-01-18)
 ------------------

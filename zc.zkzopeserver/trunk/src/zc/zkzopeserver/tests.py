@@ -11,11 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from zope.testing import setupstack
 import asyncore
 import doctest
 import manuel.capture
 import manuel.doctest
 import manuel.testing
+import mock
 import re
 import time
 import unittest
@@ -54,7 +56,7 @@ def test_options():
     ...         zookeeper='zookeeper.example.com:2181',
     ...         path='/fooservice/providers',
     ...         session_timeout='4242',
-    ...         host='127.0.0.1',
+    ...         host='localhost',
     ...         port='3042',
     ...         threads='3',
     ...         )
@@ -67,8 +69,10 @@ def test_options():
 
     >>> zk.print_tree('/fooservice/providers')
     /providers
-      /127.0.0.1:3042
+      /localhost:3042
         pid = 3699
+
+    Note that localhost didn't get resolved!
 
     How many can we do at once? Should be 3
 
@@ -104,6 +108,42 @@ def test_options():
     >>> zk.close()
     """
 
+def test_monitor_server_w_empty_host():
+    r"""
+
+    >>> @zc.thread.Thread
+    ... def server():
+    ...     zc.zkzopeserver.run(
+    ...         slow_app, {},
+    ...         zookeeper='zookeeper.example.com:2181',
+    ...         path='/fooservice/providers',
+    ...         monitor_server=':0',
+    ...         )
+
+    >>> import zc.zkzopeserver
+    >>> zc.zkzopeserver.event_for_testing.wait(1)
+    >>> zk = zc.zk.ZooKeeper('zookeeper.example.com:2181')
+
+    >>> zk.export_tree('/fooservice/providers', ephemeral=True
+    ...    ).strip().split('\n')[-2].strip().split(':')[0]
+    u"monitor = u'"
+
+    >>> zc.zkzopeserver.stop_for_testing(server)
+    >>> zk.close()
+
+    """
+
+def readmesetup(test):
+    zc.zk.testing.setUp(test)
+    setupstack.context_manager(
+        test, mock.patch('netifaces.interfaces')).return_value = 'iface'
+    setupstack.context_manager(
+        test, mock.patch('netifaces.ifaddresses')
+        ).return_value = {2: [dict(addr='1.2.3.4')]}
+
+def readmeteardown(test):
+    setupstack.tearDown(test)
+    zc.zk.testing.tearDown(test)
 
 def test_suite():
     checker = zope.testing.renormalizing.RENormalizing([
@@ -115,7 +155,7 @@ def test_suite():
         manuel.testing.TestSuite(
             manuel.doctest.Manuel(checker=checker) + manuel.capture.Manuel(),
             'README.txt',
-            setUp=zc.zk.testing.setUp, tearDown=zc.zk.testing.tearDown,
+            setUp=readmesetup, tearDown=readmeteardown,
             ),
         doctest.DocTestSuite(
             setUp=zc.zk.testing.setUp, tearDown=zc.zk.testing.tearDown,
