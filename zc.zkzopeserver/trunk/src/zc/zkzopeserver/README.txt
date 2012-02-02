@@ -48,12 +48,34 @@ monitor_server
    The value is an address of the form HOST:PORT.  See `Monitor
    server`_ below. (Host can be empty to listen on all interfaces.)
 
+loggers
+   Logging configuration.
+
+   This can be one of:
+
+   - A logging level name (CRITICAL, ERROR, WARNING, INFO, or DEBUG),
+     or
+
+   - A ZConfig loggers-definition string.
+
+     If the configuration includes format strings, you'll need to use
+     double dollar signs rather than %, as in::
+
+        format $$(message)s
+
+     This is necessary due to the use of string formats in the Paste
+     Deployment configuration syntax.
+
 .. test
 
     >>> import ConfigParser, StringIO
     >>> parser = ConfigParser.RawConfigParser()
     >>> parser.readfp(StringIO.StringIO(server_config))
     >>> kw = dict(parser.items('server:main'))
+
+    >>> import zope.testing.loggingsupport
+    >>> loghandler = zope.testing.loggingsupport.InstalledHandler(
+    ...     'zc.zkzopeserver')
 
     >>> import pkg_resources
     >>> dist = kw.pop('use').split(':')[1]
@@ -83,6 +105,36 @@ monitor_server
     >>> zc.zkzopeserver.stop_for_testing(server)
     >>> zk.get_children('/fooservice/providers')
     []
+
+  A SIGTERM signal handler is installed:
+
+    >>> import signal
+    >>> [sig, handler] = signal.signal.call_args[0]
+    >>> sig == signal.SIGTERM
+    True
+    >>> try: handler(sig, None)
+    ... except SystemExit, v: print v
+    0
+
+    >>> signal.getsignal.return_value = handler
+    >>> signal.signal.reset_mock()
+
+  The fact that a handler was installed is logged, as is the address:
+
+    >>> print loghandler
+    zc.zkzopeserver INFO
+      Installed SIGTERM handler
+    zc.zkzopeserver INFO
+      Serving on :35177
+
+    >>> loghandler.clear()
+
+  Nothing was done w logging:
+
+    >>> import logging
+    >>> logging.basicConfig.call_args
+    >>> import ZConfig
+    >>> ZConfig.configureLoggers.call_args
 
 Monitor server
 ==============
@@ -152,6 +204,15 @@ would look something like::
 
     >>> handler.uninstall()
 
+  The signal handler wasn't set again, as it was already set:
+
+    >>> signal.signal.call_args
+    >>> print loghandler
+    zc.zkzopeserver INFO
+      Serving on :46834
+
+    >>> loghandler.uninstall()
+
 Some notes on the monitor server:
 
 - A monitor server won't be useful unless you've registered some
@@ -220,11 +281,17 @@ the ``zservertracelog`` option in your server section::
 Change History
 ==============
 
-0.2.1 (2012-02-??)
+0.3.0 (2012-02-??)
 ------------------
+
+- Added logging-configuration support.
 
 - Fixed: servers were registered with the host information returned by
   socket.getsockname(), which was unhelpful.
+
+- Fixed: Killing a server (with SIGTERM) didn't shut down the
+  ZooKeeper connection cleanly, causing a delay in removing registered
+  ephemeral nodes.
 
 0.2.0 (2012-01-18)
 ------------------

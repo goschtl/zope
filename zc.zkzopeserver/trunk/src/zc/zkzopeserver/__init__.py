@@ -12,11 +12,16 @@
 #
 ##############################################################################
 import asyncore
+import logging
 import re
+import signal
+import sys
 import threading
 import zc.zk
 import zope.server.dualmodechannel
 import zope.server.taskthreads
+
+logger = logging.getLogger(__name__)
 
 event_for_testing = threading.Event()
 server_for_testing = None
@@ -45,9 +50,17 @@ def run(wsgi_app, global_conf,
         zookeeper, path, session_timeout=None,
         name=__name__, host='', port=0, threads=1, monitor_server=None,
         zservertracelog=None,
+        loggers=None,
         ):
     port = int(port)
     threads = int(threads)
+
+    if loggers:
+        if re.match('\w+$', loggers) and hasattr(logging, loggers):
+            logging.basicConfig(level=getattr(logging, loggers))
+        else:
+            import ZConfig
+            ZConfig.configureLoggers(loggers.replace('$$(', '%('))
 
     task_dispatcher = zope.server.taskthreads.ThreadedTaskDispatcher()
     task_dispatcher.setThreadCount(threads)
@@ -67,8 +80,8 @@ def run(wsgi_app, global_conf,
 
     server.ZooKeeper = zc.zk.ZooKeeper(
         zookeeper, session_timeout and int(session_timeout))
-    server.ZooKeeper.register_server(
-        path, "%s:%s" % (host, server.socket.getsockname()[1]), **props)
+    addr = "%s:%s" % (host, server.socket.getsockname()[1])
+    server.ZooKeeper.register_server(path, addr, **props)
 
     map = asyncore.socket_map
     poll_fun = asyncore.poll
@@ -77,7 +90,12 @@ def run(wsgi_app, global_conf,
     server_for_testing = server
     event_for_testing.set()
 
+    if not signal.getsignal(signal.SIGTERM):
+        signal.signal(signal.SIGTERM, lambda *a: sys.exit(0))
+        logger.info('Installed SIGTERM handler')
+
     try:
+        logger.info('Serving on %s', addr)
         while server.accepting:
             poll_fun(30.0, map)
     finally:

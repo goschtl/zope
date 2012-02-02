@@ -59,6 +59,7 @@ def test_options():
     ...         host='localhost',
     ...         port='3042',
     ...         threads='3',
+    ...         loggers='INFO',
     ...         )
 
     >>> import zc.zkzopeserver
@@ -92,6 +93,11 @@ def test_options():
     >>> reset()
     3
 
+    basicConfig was called:
+
+    >>> import logging
+    >>> logging.basicConfig.assert_called_with(level=logging.INFO)
+
     Did session_timeout get passed? If we're using the mock ZooKeeper,
     we camn tell:
 
@@ -106,6 +112,29 @@ def test_options():
     /providers
 
     >>> zk.close()
+    """
+
+def test_ZConfig_logger_config():
+    """
+    Make sure various advertized options work:
+
+    >>> @zc.thread.Thread
+    ... def server():
+    ...     zc.zkzopeserver.run(
+    ...         slow_app, {},
+    ...         zookeeper='zookeeper.example.com:2181',
+    ...         path='/fooservice/providers',
+    ...         loggers='This is not real $$(message)s $$(whatever)s',
+    ...         )
+
+    >>> import zc.zkzopeserver
+    >>> zc.zkzopeserver.event_for_testing.wait(1)
+
+    >>> import ZConfig
+    >>> ZConfig.configureLoggers.assert_called_with(
+    ...     'This is not real %(message)s %(whatever)s')
+
+    >>> zc.zkzopeserver.stop_for_testing(server)
     """
 
 def test_monitor_server_w_empty_host():
@@ -131,9 +160,9 @@ def test_monitor_server_w_empty_host():
     >>> zc.zkzopeserver.stop_for_testing(server)
     >>> zk.close()
 
-    """
+    """ # '
 
-def readmesetup(test):
+def setup(test):
     zc.zk.testing.setUp(test)
     setupstack.context_manager(
         test, mock.patch('netifaces.interfaces')).return_value = 'iface'
@@ -141,13 +170,23 @@ def readmesetup(test):
         test, mock.patch('netifaces.ifaddresses')
         ).return_value = {2: [dict(addr='1.2.3.4')]}
 
-def readmeteardown(test):
+    setupstack.context_manager(
+        test, mock.patch('signal.getsignal')
+        ).return_value = 0
+    setupstack.context_manager(test, mock.patch('signal.signal'))
+
+    setupstack.context_manager(test, mock.patch('logging.basicConfig'))
+
+    setupstack.context_manager(test, mock.patch('ZConfig.configureLoggers'))
+
+def teardown(test):
     setupstack.tearDown(test)
     zc.zk.testing.tearDown(test)
 
 def test_suite():
     checker = zope.testing.renormalizing.RENormalizing([
         (re.compile('pid = \d+'), 'pid = 9999'),
+        (re.compile('Serving on :\d+'), 'Serving on :9999'),
         (re.compile(r' \d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d\.\d+'),
          ' IIIII DDDD-MM-DD HH:MM:SS.SS'),
         ])
@@ -155,11 +194,8 @@ def test_suite():
         manuel.testing.TestSuite(
             manuel.doctest.Manuel(checker=checker) + manuel.capture.Manuel(),
             'README.txt',
-            setUp=readmesetup, tearDown=readmeteardown,
+            setUp=setup, tearDown=teardown,
             ),
-        doctest.DocTestSuite(
-            setUp=zc.zk.testing.setUp, tearDown=zc.zk.testing.tearDown,
-            checker=checker,
-            ),
+        doctest.DocTestSuite(setUp=setup, tearDown=teardown, checker=checker),
         ))
     return suite
