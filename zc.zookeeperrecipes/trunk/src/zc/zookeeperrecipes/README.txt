@@ -393,3 +393,11 @@ contain different ZooKeeper paths.
 If such nodes are found, then the nodes are removed and, if the nodes
 had any ephemeral subnodes with pids, those pids are sent a SIGTERM
 signal.
+
+Change History
+==============
+
+0.1.0 (2011-02-02)
+------------------
+
+Initial release
