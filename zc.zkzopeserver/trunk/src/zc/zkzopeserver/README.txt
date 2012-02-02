@@ -281,7 +281,7 @@ the ``zservertracelog`` option in your server section::
 Change History
 ==============
 
-0.3.0 (2012-02-??)
+0.3.0 (2012-02-02)
 ------------------
 
 - Added logging-configuration support.
