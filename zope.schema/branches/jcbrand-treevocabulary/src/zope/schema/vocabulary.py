@@ -13,6 +13,11 @@
 ##############################################################################
 """Vocabulary support for schema.
 """
+try:
+    from collections import OrderedDict
+except:
+    from ordereddict import OrderedDict
+
 from zope.interface.declarations import directlyProvides, implementer
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
@@ -158,7 +163,7 @@ class TreeVocabulary(object):
     # The default implementation uses a dict to create the tree structure. This
     # can however be overridden in a subclass by any other IEnumerableMapping
     # compliant object type. Python 2.7's OrderableDict for example.
-    terms_factory = dict
+    terms_factory = OrderedDict
 
     def __init__(self, terms, *interfaces):
         """Initialize the vocabulary given a recursive dict (i.e a tree) with 
