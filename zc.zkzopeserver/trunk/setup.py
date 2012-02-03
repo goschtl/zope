@@ -26,14 +26,17 @@ main = zc.zkzopeserver:run
 
 from setuptools import setup
 
+def read(path):
+    return open(path).read().strip()
+
 setup(
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     license = 'ZPL 2.1',
 
     name = name, version = version,
-    long_description=open('README.txt').read(),
-    description = open('README.txt').read().strip().split('\n')[1],
+    long_description=read('src/zc/zkzopeserver/README.txt'),
+    description = read('src/zc/zkzopeserver/README.txt').split('\n')[1],
     packages = [name.split('.')[0], name],
     namespace_packages = [name.split('.')[0]],
     package_dir = {'': 'src'},
