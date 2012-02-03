@@ -15,6 +15,11 @@
 """
 import unittest
 
+try:
+    from collections import OrderedDict
+except:
+    from ordereddict import OrderedDict
+
 from zope.interface.verify import verifyObject
 from zope.interface.exceptions import DoesNotImplement
 from zope.interface import Interface, implementer
@@ -189,7 +194,6 @@ class SimpleVocabularyTests(unittest.TestCase):
 
 
 class TreeVocabularyTests(unittest.TestCase):
-
     region_tree = { 
             ('regions', 'Regions'): {
                 ('aut', 'Austria'): {
@@ -238,6 +242,31 @@ class TreeVocabularyTests(unittest.TestCase):
             pass
         v = vocabulary.TreeVocabulary.fromDict({('one', '1'): {}}, IStupid)
         self.assertTrue(IStupid.providedBy(v))
+
+    def test_ordering(self):
+        """The TreeVocabulary makes use of an OrderedDict to store it's
+           internal tree representation.
+
+           Check that they keys are indeed oredered.
+        """
+
+        d = {   (1, 'new_york', 'New York'): {
+                    (2, 'ny_albany', 'Albany'): {},
+                    (3, 'ny_new_york', 'New York'): {},
+                },
+                (4, 'california', 'California'): {
+                    (5, 'ca_los_angeles', 'Los Angeles'): {},
+                    (6, 'ca_san_francisco', 'San Francisco'): {},
+                },
+                (7, 'texas', 'Texas'): {},
+                (8, 'florida', 'Florida'): {},
+                (9, 'utah', 'Utah'): {},
+            }
+        dict_ = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+        vocab = vocabulary.TreeVocabulary.fromDict(dict_)
+        self.assertEqual([k.token for k in vocab.keys()], ['1', '4', '7', '8', '9'])
+        self.assertEqual([k.token for k in vocab[vocab.keys()[0]].keys()], ['2', '3'])
+        self.assertEqual([k.token for k in vocab[vocab.keys()[1]].keys()], ['5', '6'])
 
     def test_indexes(self):
         """ The TreeVocabulary creates three indexes for quick lookups,
