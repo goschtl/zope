@@ -180,9 +180,11 @@ class TreeVocabulary(object):
         """
         self._terms = self.terms_factory()
         self._terms.update(terms)
-        self.path_index = self._getPathIndex(terms, {}, 'value')
-        self.by_value = self._flattenTree(terms, {}, 'value')
-        self.by_token = self._flattenTree(terms, {}, 'token')
+
+        self.path_by_value = {}
+        self.term_by_value = {}
+        self.term_by_token = {}
+        self._populateIndexes(terms)
 
         if interfaces:
             directlyProvides(self, *interfaces)
@@ -193,7 +195,7 @@ class TreeVocabulary(object):
         D.__contains__(k) -> True if D has a key k, else False
         """
         try:
-            return value in self.by_value
+            return value in self.term_by_value
         except TypeError:
             # sometimes values are not hashable
             return False
@@ -262,54 +264,44 @@ class TreeVocabulary(object):
         """
         return cls(_createTermTree({}, dict_), *interfaces)
 
-    def _flattenTree(self, tree, dict_, attr):
-        """A helper method to create a flat (non-nested) dictionary from a 
-        tree. 
-        
-        Each key of the dictionary is the attribute "attr" of a node in
-        the tree, with the value being the corresponding node.
+    def _populateIndexes(self, tree):
+        """ The TreeVocabulary contains three helper indexes for quick lookups.
+        They are: term_by_value, term_by_token and path_by_value
 
-        tree:  The tree (a nested/recursive dictionary) that must be flattened.
-        dict_: Dictionary to contain the flattened tree.
-        attr:  The attribute of the tree nodes that should be the key in the
-               flattened tree.
+        This method recurses through the tree and populates these indexes.
+        
+        tree:  The tree (a nested/recursive dictionary).
         """
         for term in tree.keys():
-            attrval = getattr(term, attr)
-            if attrval in dict_:
+            value = getattr(term, 'value')
+            token = getattr(term, 'token')
+
+            if value in self.term_by_value: 
                 raise ValueError(
-                    'term %ss must be unique: %s' \
-                        % (attr, repr(attrval)))
+                    "Term values must be unique: '%s'" % value)
 
-            dict_[attrval] = term
-            self._flattenTree(tree[term], dict_, attr)
-        return dict_
+            if token in self.term_by_token:
+                raise ValueError(
+                    "Term tokens must be unique: '%s'" % token)
+
+            self.term_by_value[value] = term
+            self.term_by_token[token] = term
+
+            if value not in self.path_by_value:
+               self.path_by_value[value] = self._getPathToTreeNode(self, value)
+            self._populateIndexes(tree[term])
     
-    def _getPathIndex(self, tree, index, attr):
-        """ Create an index of all the paths of all the nodes, keyed by the
-        nodes' values.
-        
-        This allows for a quick lookup of a node's tree-path, given its value.
-        """
-        for term in tree.keys():
-            attrval = getattr(term, attr)
-            if term.value not in index:
-               index[attrval] = \
-                        self._getPathToTreeNode(self, term.value)
-            self._getPathIndex(tree[term], index, attr)
-        return index
-
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
         try:
-            return self.by_value[value]
+            return self.term_by_value[value]
         except KeyError:
             raise LookupError(value)
 
     def getTermByToken(self, token):
         """See zope.schema.interfaces.IVocabularyTokenized"""
         try:
-            return self.by_token[token]
+            return self.term_by_token[token]
         except KeyError:
             raise LookupError(token)
 
@@ -335,7 +327,7 @@ class TreeVocabulary(object):
 
         Returns an empty string if no node has that value.
         """
-        return self.path_index.get(value, [])
+        return self.path_by_value.get(value, [])
 
 # registry code
 class VocabularyRegistryError(LookupError):
