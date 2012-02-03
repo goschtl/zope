@@ -151,7 +151,7 @@ def _createTermTree(tree, branch):
     """
     for key in branch.keys():
         term = SimpleTerm(key[1], key[0], key[-1])
-        tree[term] = {}
+        tree[term] = TreeVocabulary.terms_factory()
         _createTermTree(tree[term], branch[key])
     return tree 
 
@@ -262,7 +262,7 @@ class TreeVocabulary(object):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        return cls(_createTermTree({}, dict_), *interfaces)
+        return cls(_createTermTree(cls.terms_factory(), dict_), *interfaces)
 
     def _populateIndexes(self, tree):
         """ The TreeVocabulary contains three helper indexes for quick lookups.
