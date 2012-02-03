@@ -285,11 +285,42 @@ class TreeVocabularyTests(unittest.TestCase):
             self.assertRaises(LookupError, v.getTerm, 'non-present-value')
             self.assertRaises(LookupError, v.getTermByToken, 'non-present-token')
 
-    def test_nonunique_values(self):
+    def test_nonunique_values_and_tokens(self):
+        """Since we do term and value lookups, all terms' values and tokens
+        must be unique. This rule applies recursively.
+        """
         self.assertRaises(
             ValueError, vocabulary.TreeVocabulary.fromDict,
             { ('one', '1'): {},
               ('two', '1'): {},
+            })
+        self.assertRaises(
+            ValueError, vocabulary.TreeVocabulary.fromDict,
+            { ('one', '1'): {},
+              ('one', '2'): {},
+            })
+        # Even nested tokens must be unique.
+        self.assertRaises(
+            ValueError, vocabulary.TreeVocabulary.fromDict,
+            { ('new_york', 'New York'): {
+                    ('albany', 'Albany'): {},
+                    ('new_york', 'New York'): {},
+                },
+            })
+        # The same applies to nested values.
+        self.assertRaises(
+            ValueError, vocabulary.TreeVocabulary.fromDict,
+            { ('1', 'new_york'): {
+                    ('2', 'albany'): {},
+                    ('3', 'new_york'): {},
+                },
+            })
+        # The title attribute does however not have to be unique.
+        vocabulary.TreeVocabulary.fromDict(
+            { ('1', 'new_york', 'New York'): {
+                    ('2', 'ny_albany', 'Albany'): {},
+                    ('3', 'ny_new_york', 'New York'): {},
+                },
             })
         vocabulary.TreeVocabulary.fromDict({
                 ('one', '1', 'One'): {},
@@ -303,7 +334,16 @@ class TreeVocabularyTests(unittest.TestCase):
               ('two', '1'): {},
             })
         except ValueError as e:
-            self.assertEqual(str(e), "term values must be unique: '1'")
+            self.assertEqual(str(e), "Term values must be unique: '1'")
+
+    def test_nonunique_token_message(self):
+        try:
+            vocabulary.TreeVocabulary.fromDict(
+            { ('one', '1'): {},
+              ('one', '2'): {},
+            })
+        except ValueError as e:
+            self.assertEqual(str(e), "Term tokens must be unique: 'one'")
 
     def test_recursive_methods(self):
         """Test the _createTermTree and _getPathToTreeNode methods
@@ -335,7 +375,6 @@ class TreeVocabularyTests(unittest.TestCase):
         vocab_path = vocab._getPathToTreeNode(vocab, "dummy")
         self.assertEqual(term_path, vocab_path)
         self.assertEqual(term_path, [])
-
 
 def test_suite():
     suite = unittest.makeSuite(RegistryTests)
