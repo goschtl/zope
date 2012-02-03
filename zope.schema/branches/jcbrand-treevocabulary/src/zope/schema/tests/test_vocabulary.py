@@ -190,7 +190,8 @@ class SimpleVocabularyTests(unittest.TestCase):
 
 class TreeVocabularyTests(unittest.TestCase):
 
-    region_tree = { ('regions', 'Regions'): {
+    region_tree = { 
+            ('regions', 'Regions'): {
                 ('aut', 'Austria'): {
                     ('tyr', 'Tyrol'): {
                         ('auss', 'Ausserfern'): {},
@@ -237,6 +238,81 @@ class TreeVocabularyTests(unittest.TestCase):
             pass
         v = vocabulary.TreeVocabulary.fromDict({('one', '1'): {}}, IStupid)
         self.assertTrue(IStupid.providedBy(v))
+
+    def test_indexes(self):
+        """ The TreeVocabulary creates three indexes for quick lookups,
+        term_by_value, term_by_value and path_by_value.
+        """
+        self.assertEqual(
+            self.tree_vocab_2.term_by_value.keys(), 
+            ['Tyrol', 'Bavaria', 'Regions', 'Austria', 'Germany', 'Ausserfern'])
+
+        self.assertEqual(
+            self.tree_vocab_2.term_by_token.keys(),
+            ['bav', 'ger', 'auss', 'regions', 'aut', 'tyr'])
+
+        self.assertEqual(
+            self.tree_vocab_2.path_by_value.keys(), 
+            ['Tyrol', 'Bavaria', 'Regions', 'Austria', 'Germany', 'Ausserfern'])
+
+        self.assertEqual(
+            self.tree_vocab_2.path_by_value.values(), 
+            [
+                ['Regions', 'Austria', 'Tyrol'], 
+                ['Regions', 'Germany', 'Bavaria'], 
+                ['Regions'], 
+                ['Regions', 'Austria'], 
+                ['Regions', 'Germany'], 
+                ['Regions', 'Austria', 'Tyrol', 'Ausserfern']
+            ])
+
+        self.assertEqual(
+            self.tree_vocab_3.term_by_value.keys(), 
+            [   'data_transaction', 
+                'check_in', 
+                'infrastructure', 
+                'res_gui', 
+                'database', 
+                'reservations', 
+                'dcs_host', 
+                'communication_network', 
+                'res_host', 
+                'services', 
+                'messaging', 
+                'security'
+            ])
+
+        self.assertEqual(
+            self.tree_vocab_3.term_by_token.keys(),
+            [   'data_transaction', 
+                'check_in', 
+                'infrastructure', 
+                'res_gui', 
+                'database', 
+                'reservations', 
+                'dcs_host', 
+                'communication_network', 
+                'res_host', 
+                'services', 
+                'messaging', 
+                'security'
+            ])
+
+        self.assertEqual(
+            self.tree_vocab_3.path_by_value.values(), 
+            [   ['infrastructure', 'data_transaction'], 
+                ['services', 'check_in'],
+                ['infrastructure'], 
+                ['services', 'reservations', 'res_gui'],
+                ['infrastructure', 'data_transaction', 'database'], 
+                ['services', 'reservations'], 
+                ['services', 'check_in', 'dcs_host'],
+                ['infrastructure', 'communication_network'], 
+                ['services', 'reservations', 'res_host'], 
+                ['services'], 
+                ['infrastructure', 'communication_network', 'messaging'], 
+                ['infrastructure', 'security']
+            ])
 
     def test_termpath(self):
         self.assertEqual(
