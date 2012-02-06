@@ -264,7 +264,11 @@ class TreeVocabularyTests(unittest.TestCase):
             }
         dict_ = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
         vocab = vocabulary.TreeVocabulary.fromDict(dict_)
+        # Test keys
         self.assertEqual([k.token for k in vocab.keys()], ['1', '4', '7', '8', '9'])
+        # Test __iter__
+        self.assertEqual([k.token for k in vocab], ['1', '4', '7', '8', '9'])
+
         self.assertEqual([k.token for k in vocab[vocab.keys()[0]].keys()], ['2', '3'])
         self.assertEqual([k.token for k in vocab[vocab.keys()[1]].keys()], ['5', '6'])
 
@@ -381,12 +385,23 @@ class TreeVocabularyTests(unittest.TestCase):
         self.assertTrue('Services' not in self.tree_vocab_3)
         self.assertTrue('Database' not in self.tree_vocab_3)
 
-    def test_iter_and_get_term(self):
+    def test_values_and_items(self):
+        for v in (self.tree_vocab_2, self.tree_vocab_3):
+            for term in v:
+                self.assertEqual(v.values(), v._terms.values())
+                self.assertEqual(v.items(), v._terms.items())
+
+    def test_get(self):
+        for v in [self.tree_vocab_2, self.tree_vocab_3]:
+            for key, value in v.items():
+                self.assertEqual(v.get(key), value)
+                self.assertEqual(v[key], value)
+
+    def test_get_term(self):
         for v in (self.tree_vocab_2, self.tree_vocab_3):
             for term in v:
                 self.assertTrue(v.getTerm(term.value) is term)
                 self.assertTrue(v.getTermByToken(term.token) is term)
-
             self.assertRaises(LookupError, v.getTerm, 'non-present-value')
             self.assertRaises(LookupError, v.getTermByToken, 'non-present-token')
 
