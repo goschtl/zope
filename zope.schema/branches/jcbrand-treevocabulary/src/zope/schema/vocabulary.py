@@ -241,8 +241,10 @@ class TreeVocabulary(object):
 
     @classmethod
     def fromDict(cls, dict_, *interfaces):
-        """Constructs a vocabulary from a dictionary with tuples as keys.
-        The tuples can have 2 or three values, i.e: 
+        """Constructs a vocabulary from a dictionary-like object (like dict or
+        OrderedDict), that has tuples for keys.
+
+        The tuples should have either 2 or 3 values, i.e: 
         (token, value, title) or (token, value)
         
         For example, a dict with 2-valued tuples:  

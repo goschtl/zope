@@ -376,7 +376,7 @@ class TreeVocabularyTests(unittest.TestCase):
                         'Bavaria' in self.tree_vocab_2)
 
         self.assertTrue('bav' not in self.tree_vocab_2)
-        self.assertTrue('xxx' not in self.tree_vocab_2)
+        self.assertTrue('foo' not in self.tree_vocab_2)
 
         self.assertTrue('database' in self.tree_vocab_3 and 
                         'security' in self.tree_vocab_3 and 
