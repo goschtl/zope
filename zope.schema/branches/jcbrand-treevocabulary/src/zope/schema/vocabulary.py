@@ -143,17 +143,17 @@ class SimpleVocabulary(object):
         return len(self.by_value)
 
 
-def _createTermTree(tree, branch):
+def _createTermTree(ttree, dict_):
     """ Helper method that creates a tree-like dict with ITokenizedTerm 
     objects as keys from a similar tree with tuples as keys.
 
     See fromDict for more details.
     """
-    for key in branch.keys():
+    for key in dict_.keys():
         term = SimpleTerm(key[1], key[0], key[-1])
-        tree[term] = TreeVocabulary.terms_factory()
-        _createTermTree(tree[term], branch[key])
-    return tree 
+        ttree[term] = TreeVocabulary.terms_factory()
+        _createTermTree(ttree[term], dict_[key])
+    return ttree 
 
 
 @implementer(ITreeVocabulary)
