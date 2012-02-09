@@ -26,7 +26,8 @@ Procedure for accepting new committer applications
    https://svn.zope.org/manage-profile . The new committer will 
    receive an email automatically upon registration containing
    a password reset link giving him/her the option to choose
-   a new password.
+   a new password. Reminder: use ``Domain: svn.zope.org`` for
+   login into the user management site.
 
 
 4) Create SVN account for new committer::
