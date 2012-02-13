@@ -31,6 +31,10 @@ class DevTree:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
+
+        if 'zookeeper' not in options:
+            options['zookeeper'] = '127.0.0.1:2181'
+
         if 'import-file' in options:
             options['import-text'] = open(os.path.join(
                 buildout['buildout']['directory'],
@@ -63,7 +67,7 @@ class DevTree:
 
     def install(self):
         options = self.options
-        connection = options.get('zookeeper', '127.0.0.1:2181')
+        connection = options['zookeeper']
         zk = zc.zk.ZooKeeper(connection)
         location = options['location']
         path = options['effective-path']

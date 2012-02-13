@@ -60,7 +60,8 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
      'import-text': "\nx=1\ntype = 'foo'\n/a\n   /b\n/c\n",
      'location': '/testdirectory/parts/myproject',
      'path': '/myproject',
-     'recipe': 'zc.zookeeperrecipes:devtree'}
+     'recipe': 'zc.zookeeperrecipes:devtree',
+     'zookeeper': '127.0.0.1:2181'}
 
     >>> recipe.install()
     ()
@@ -175,7 +176,8 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
      'import-text': '\n/a\n  /b\n/c\n',
      'location': '/testdirectory/parts/myproj',
      'path': '/myproj',
-     'recipe': 'zc.zookeeperrecipes:devtree'}
+     'recipe': 'zc.zookeeperrecipes:devtree',
+     'zookeeper': '127.0.0.1:2181'}
 
     >>> with mock.patch('os.getpid') as getpid:
     ...     getpid.return_value = 42
@@ -215,7 +217,8 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
      'import-text': '\n/a\n  /b\n/c\n',
      'location': '/tmp/tmpZ3mohq/testdirectory/parts/myproj',
      'path': '/ztest/path',
-     'recipe': 'zc.zookeeperrecipes:devtree'}
+     'recipe': 'zc.zookeeperrecipes:devtree',
+     'zookeeper': '127.0.0.1:2181'}
 
     >>> with mock.patch('os.getpid') as getpid:
     ...     getpid.return_value = 42
@@ -260,7 +263,8 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
      'import-file': 'tree.txt',
      'import-text': '\n/a\n  /b\n/c\n',
      'location': '/testdirectory/parts/myproj',
-     'recipe': 'zc.zookeeperrecipes:devtree'}
+     'recipe': 'zc.zookeeperrecipes:devtree',
+     'zookeeper': '127.0.0.1:2181'}
 
     >>> zk.print_tree() # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     /my
@@ -396,6 +400,12 @@ signal.
 
 Change History
 ==============
+
+0.1.2 (2011-02-13)
+------------------
+
+Fixed: default ZooKeeper connection string wasn't set as option and
+       was thus not usable from other parts.
 
 0.1.1 (2011-02-09)
 ------------------
