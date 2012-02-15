@@ -5,7 +5,10 @@ CHANGES
 1.4.1 (unreleased)
 ------------------
 
-- ...
+- Remove hooks to use ViewPageTemplateFile from z3c.pt because this breaks when
+  z3c.pt is available, but z3c.ptcompat is not included. As recommended by notes
+  below.
+
 
 1.4.0 (2011-10-29)
 ------------------

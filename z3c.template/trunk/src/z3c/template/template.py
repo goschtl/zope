@@ -18,13 +18,7 @@ $Id$
 from zope import component
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.pagetemplate.pagetemplate import PageTemplate
-
-try:
-    # use z3c.pt if available
-    from z3c.pt.pagetemplate import ViewPageTemplateFile
-except ImportError:
-    # or default if not
-    from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
+from zope.browserpage.viewpagetemplatefile import ViewPageTemplateFile
 
 from z3c.template import interfaces
 
