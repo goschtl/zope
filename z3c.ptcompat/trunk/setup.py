@@ -10,7 +10,7 @@ def read(*rnames):
 version = '1.0.1dev'
 
 tests_require = [
-    'zope.component [test]',
+    'zope.testing',
     'zope.configuration',
     ],
 
