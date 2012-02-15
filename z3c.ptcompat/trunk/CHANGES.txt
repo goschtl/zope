@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.1 (unreleased)
+1.0.1 (2012-02-15)
 ------------------
 
 - Move ``zope.testing`` to test dependencies, add undeclared dependencies.
