@@ -3,10 +3,12 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+ <title>Zope ZMI</title>
 </head>
 <body>
 <div>
-  <span tal:content="context/@@helper/static/zopelogo.png/@@absolute_url" />
+  <img tal:attributes="src context/@@helper/static/zopelogo.png/@@absolute_url"
+    alt="Zope Logo" />
 </div>
 <div class="system-msg" tal:condition="request/manage_tabs_message|nothing"
   tal:content="request/manage_tabs_message">

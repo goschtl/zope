@@ -98,11 +98,11 @@
             </div>
         </form>
 
-        <p>
         <form action="." method="post"
             tal:attributes="action request/ACTUAL_URL">
+        <p>
             <input type="submit" name="REFRESH" value=" Refresh " />
-        </form>
         </p>
+        </form>
     </div>
 </html>

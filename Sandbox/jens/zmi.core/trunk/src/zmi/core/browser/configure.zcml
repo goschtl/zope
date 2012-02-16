@@ -9,6 +9,12 @@
     name="zmi"
     />
 
+  <browser:defaultView
+    for="*"
+    name="index_html"
+    layer="zmi.core.browser.skin.IZMISkin"
+    />
+
   <browser:page
     for="*"
     name="zmi"
@@ -34,7 +40,7 @@
   <!-- Specific ZMI views -->
 
   <browser:page
-    for="zope.site.interfaces.IRootFolder"
+    for="zope.location.interfaces.IRoot"
     name="index_html"
     template="templates/zmi_root.pt"
     class="zmi.core.browser.zmi_interfaces.InterfacesView"
