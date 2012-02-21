@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import re, unittest
-import logging, sys
-
+from zope.testing import renormalizing, setupstack
+import doctest
+import logging
+import mock
+import re
+import sys
+import unittest
 import ZODB.MappingStorage
-
-from zope.testing import doctest, renormalizing
 
 
 class FauxCache:
@@ -35,6 +37,15 @@ ZODB.MappingStorage.MappingStorage._cache = FauxCache()
 ZODB.MappingStorage.MappingStorage._is_connected = True
 ZODB.MappingStorage.MappingStorage.is_connected = is_connected
 
+def setUpInitialize(test):
+    for name in (
+        'zope.app.appsetup.product.getProductConfiguration',
+        'zope.component.getUtilitiesFor',
+        'ZODB.ActivityMonitor.ActivityMonitor',
+        'zc.monitor.start',
+        ):
+        setupstack.context_manager(test, mock.patch(name))
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
@@ -44,5 +55,8 @@ def test_suite():
                 (re.compile("\d+[.]\d+ seconds"), 'N.NNNNNN seconds'),
                 ]),
             ),
-        
+        doctest.DocFileSuite(
+            'initialize.test',
+            setUp = setUpInitialize, tearDown=setupstack.tearDown,
+            )
         ))

@@ -22,6 +22,7 @@ setup(
     install_requires = [
         'setuptools', 'zc.monitor', 'ZODB3', 'zope.component',
         'zope.publisher', 'zope.app.appsetup', 'zope.testing',
+        'mock',
         ],
     include_package_data = True,
     zip_safe = False,
