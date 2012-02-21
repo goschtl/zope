@@ -38,7 +38,7 @@ def tearDown(test):
 
 def test_suite():
     checker = zope.testing.renormalizing.RENormalizing([
-        (re.compile(r'(/\w+)+/testdirectory/'), '/testdirectory/'),
+        (re.compile(r'/\S+/testdirectory/'), '/testdirectory/'),
         # (re.compile(r''), ''),
         # (re.compile(r''), ''),
         ])

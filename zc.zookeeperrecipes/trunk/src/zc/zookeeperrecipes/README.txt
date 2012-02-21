@@ -35,11 +35,25 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
     ...     'parts-directory': os.path.join(here, 'parts'),
     ...     }
 
+    >>> from pprint import pprint
+    >>> class Raw:
+    ...     def __init__(self, parent):
+    ...         self.parent = parent
+    ...     def __setitem__(self, key, value):
+    ...         self.parent[key] = value
+    ...         print 'Raw: ', key
+    ...         pprint(value)
+
+    >>> class TestBuildout(dict):
+    ...     @property
+    ...     def _raw(self):
+    ...         return Raw(self)
+
     >>> def buildout():
     ...     parser = ConfigParser.RawConfigParser()
     ...     parser.readfp(StringIO.StringIO(conf))
-    ...     buildout = dict((name, dict(parser.items(name)))
-    ...                     for name in parser.sections())
+    ...     buildout = TestBuildout((name, dict(parser.items(name)))
+    ...                             for name in parser.sections())
     ...     [name] = buildout.keys()
     ...     buildout['buildout'] = buildoutbuildout
     ...     options = buildout[name]
@@ -53,7 +67,6 @@ The devtree recipe sets up temporary ZooKeeper tree for a buildout::
     ...     recipe, options = buildout()
 
 
-    >>> from pprint import pprint
     >>> pprint(options)
     {'effective-path': '/myproject2012-01-26T14:50:14.864772',
      'import-file': 'tree.txt',
@@ -348,7 +361,7 @@ In this example, we're creating a ZooKeeper tree at the path
 buildout-local file ``tree.txt``, where YYYY-MM-DDTHH:MM:SS.SSSSSS is
 the ISO date-time when the node was created.
 
-The ``tree`` recipe options are:
+The ``devtree`` recipe options are:
 
 zookeeper
    Optional ZooKeeper connection string.
@@ -385,6 +398,69 @@ import-text
    files, leading whitespace is stripped, making this option hard to
    specify.
 
+helper-scripts
+   Helper-script prefix
+
+   If provided, 4 helper scripts will be generated with the given
+   prefix:
+
+   PREFIXexport
+      Export a zookeepeer tree.
+
+   PREFIXimport
+      Import a zookeepeer tree.
+
+   PREFIXprint
+      Print a zookeepeer tree.
+
+   PREFIXport
+      Print the port of the first child of a given path.
+
+   Where PREFIX is the profix given to the helper-scripts option.
+
+.. test
+
+    >>> conf = """
+    ... [myproj]
+    ... recipe = zc.zookeeperrecipes:devtree
+    ... import-text = /a
+    ... zookeeper = zookeeper.example.com:2181
+    ... helper-scripts = zk-
+    ... """
+
+
+    >>> with mock.patch('os.kill') as kill:
+    ...     def noway(pid, sig):
+    ...         print 'wtf killed'
+    ...     kill.side_effect = noway
+    ...     with mock.patch('zc.zookeeperrecipes.timestamp') as ts:
+    ...         ts.return_value = '2012-01-26T14:50:24.864772'
+    ...         recipe, options = buildout()
+    ...     recipe.install() # doctest: +NORMALIZE_WHITESPACE
+    Raw:  zk-scripts
+    {'arguments':
+     "['zookeeper.example.com:2181/myproj2012-01-26T14:50:24.864772']
+     + sys.argv[1:]",
+     'eggs': 'zc.zk [static]',
+     'recipe': 'zc.recipe.egg',
+     'scripts': 'zookeeper_export=zk-export zookeeper_import=zk-import'}
+    Raw:  zk-print
+    {'arguments':
+     '[\'zookeeper.example.com:2181/myproj2012-01-26T14:50:24.864772\', "-e"]
+     + sys.argv[1:]',
+     'eggs': 'zc.zk [static]',
+     'recipe': 'zc.recipe.egg',
+     'scripts': 'zookeeper_export=zk-print'}
+    Raw:  zk-port
+    {'eggs': 'zc.zk [static]',
+     'entry-points': 'zk-port=time:time',
+     'initialization': "\nimport zc.zk\nzk =
+      zc.zk.ZK('zookeeper.example.com:2181/myproj2012-01-26T14:50:24.864772')\nprint zk.get_children(sys.argv[1])[0].split(':')[-1]\nzk.close()\n",
+     'recipe': 'zc.recipe.egg',
+     'scripts': 'zk-port'}
+    ()
+
+
 Cleanup
 -------
 
@@ -400,6 +476,12 @@ signal.
 
 Change History
 ==============
+
+0.2.0 (2011-02-21)
+------------------
+
+Add an option to define buildout-specific helper scripts for working
+with the buildout's ZooKeeper tree.
 
 0.1.2 (2011-02-13)
 ------------------

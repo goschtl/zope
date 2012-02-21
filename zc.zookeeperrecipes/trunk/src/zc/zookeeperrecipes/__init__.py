@@ -64,6 +64,40 @@ class DevTree:
             raise zc.buildout.UserError(
                 'clean must be one of "auto", "yes", or "no"')
 
+        # helper scripts
+        prefix = options.get('helper-scripts')
+        if prefix:
+            def add_section(name, options):
+                buildout._raw[name] = options
+                buildout[name]
+
+            zk = options['zookeeper']+options['effective-path']
+            if prefix+'scripts' not in buildout:
+                add_section(prefix+'scripts', dict(
+                    recipe = 'zc.recipe.egg',
+                    eggs = 'zc.zk [static]',
+                    scripts = ('zookeeper_export=%(prefix)sexport '
+                               'zookeeper_import=%(prefix)simport'
+                               % dict(prefix=prefix)
+                               ),
+                    arguments = '[%r] + sys.argv[1:]' % zk,
+                    ))
+            if prefix+'print' not in buildout:
+                add_section(prefix+'print', dict(
+                    recipe = 'zc.recipe.egg',
+                    eggs = 'zc.zk [static]',
+                    scripts = 'zookeeper_export=%sprint' % prefix,
+                    arguments = '[%r, "-e"] + sys.argv[1:]' % zk,
+                    ))
+            if prefix+'port' not in buildout:
+                add_section(prefix+'port', dict(
+                    recipe = 'zc.recipe.egg',
+                    eggs = 'zc.zk [static]',
+                    scripts = prefix+'port',
+                    initialization=zkport % zk,
+                    **{'entry-points': prefix+'port=time:time'}
+                    ))
+
 
     def install(self):
         options = self.options
@@ -129,3 +163,10 @@ class DevTree:
 def readfile(path):
     with open(path) as f:
         return f.read()
+
+zkport = """
+import zc.zk
+zk = zc.zk.ZK(%r)
+print zk.get_children(sys.argv[1])[0].split(':')[-1]
+zk.close()
+"""
