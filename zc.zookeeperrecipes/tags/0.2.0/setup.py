@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.zookeeperrecipes', '0'
+name, version = 'zc.zookeeperrecipes', '0.2.0'
 
 install_requires = ['setuptools', 'zc.zk [static]']
 extras_require = dict(test=[
