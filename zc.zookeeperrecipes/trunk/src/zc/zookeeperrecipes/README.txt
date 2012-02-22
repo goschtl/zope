@@ -454,8 +454,7 @@ helper-scripts
     Raw:  zk-port
     {'eggs': 'zc.zk [static]',
      'entry-points': 'zk-port=time:time',
-     'initialization': "\nimport zc.zk\nzk =
-      zc.zk.ZK('zookeeper.example.com:2181/myproj2012-01-26T14:50:24.864772')\nprint zk.get_children(sys.argv[1])[0].split(':')[-1]\nzk.close()\n",
+     'initialization': "\nargs = sys.argv[1:]\nimport zc.zk\nzk = zc.zk.ZK('zookeeper.example.com:2181/myproj2012-01-26T14:50:24.864772')\npath = args.pop(0)\nif path[-1:] == '/':\n    path += 'providers'\nchild = zk.get_children(path)[0]\nif args:\n    [prop] = args\n    child = zk.get_properties(path + '/' + child)[prop]\nprint child.split(':')[-1]\nzk.close()\n",
      'recipe': 'zc.recipe.egg',
      'scripts': 'zk-port'}
     ()
@@ -477,7 +476,7 @@ signal.
 Change History
 ==============
 
-0.2.0 (2011-02-21)
+0.2.0 (2011-02-22)
 ------------------
 
 Add an option to define buildout-specific helper scripts for working

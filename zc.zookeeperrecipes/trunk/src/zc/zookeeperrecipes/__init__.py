@@ -165,8 +165,16 @@ def readfile(path):
         return f.read()
 
 zkport = """
+args = sys.argv[1:]
 import zc.zk
 zk = zc.zk.ZK(%r)
-print zk.get_children(sys.argv[1])[0].split(':')[-1]
+path = args.pop(0)
+if path[-1:] == '/':
+    path += 'providers'
+child = zk.get_children(path)[0]
+if args:
+    [prop] = args
+    child = zk.get_properties(path + '/' + child)[prop]
+print child.split(':')[-1]
 zk.close()
 """
