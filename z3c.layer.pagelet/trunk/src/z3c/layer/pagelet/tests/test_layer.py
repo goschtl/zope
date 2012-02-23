@@ -18,12 +18,8 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 import doctest
 import re
 import unittest
-import z3c.layer.pagelet.tests
-import zope.app.wsgi.testlayer
+import z3c.layer.pagelet.testing
 import zope.testing.renormalizing
-
-
-TestLayer = zope.app.wsgi.testlayer.BrowserLayer(z3c.layer.pagelet.tests)
 
 
 checker = zope.testing.renormalizing.RENormalizing([
@@ -33,9 +29,10 @@ checker = zope.testing.renormalizing.RENormalizing([
 
 def create_suite(*args, **kw):
     kw['optionflags'] = doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-    kw['globs'] = dict(getRootFolder=TestLayer.getRootFolder)
+    kw['globs'] = dict(
+        getRootFolder=z3c.layer.pagelet.testing.TestLayer.getRootFolder)
     suite = doctest.DocFileSuite(*args, **kw)
-    suite.layer = TestLayer
+    suite.layer = z3c.layer.pagelet.testing.TestLayer
     return suite
 
 

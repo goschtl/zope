@@ -145,9 +145,12 @@ Common exception (system error)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 And check error view registred for
-``zope.interface.common.interfaces.IException``:
+``zope.interface.common.interfaces.IException``, it sets the HTTP status
+code to 500 if called during tests or if development mode is switched on:
 
   >>> manager.open(skinURL + '/@@systemerror.html')
+  Traceback (most recent call last):
+  HTTPError: HTTP Error 500: Internal Server Error
   >>> print manager.contents
   <!DOCTYPE...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

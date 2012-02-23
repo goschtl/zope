@@ -15,19 +15,37 @@
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
-import zope.interface
-import zope.component
+from z3c.layer.pagelet import interfaces
 import z3c.pagelet.browser
 import z3c.template.interfaces
 import zope.authentication.interfaces
+import zope.component
+import zope.interface
 
-from z3c.layer.pagelet import interfaces
+def inDevMode():
+    """Are we are running in debug mode? Can error messages be more telling?"""
+    try:
+        from zope.app.appsetup.appsetup import getConfigContext
+    except ImportError:
+        # We are outside a Zope 3 context, so let's play safe:
+        return False
+
+    config_context = getConfigContext()
+    if config_context is None:
+        # We are probably inside a test:
+        return True
+    return config_context.hasFeature('devmode')
 
 
 class SystemErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
     """SystemError pagelet."""
 
     zope.interface.implements(interfaces.ISystemErrorPagelet)
+
+    def update(self):
+        if inDevMode():
+            self.request.response.setStatus(500)
+
 
     def isSystemError(self):
         return True
