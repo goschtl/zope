@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name='z3c.layer.pagelet',
-    version='1.9.1dev',
+    version='1.10.0',
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Pagelet layer setup for Zope 3",

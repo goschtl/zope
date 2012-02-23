@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-1.9.1 (unreleased)
-------------------
+1.10.0 (2012-02-23)
+-------------------
 
 - Sets HTTP status code to 500 on system errors but only in devmode and in
   tests.
