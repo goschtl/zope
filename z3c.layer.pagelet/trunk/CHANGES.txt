@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.10.1 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
 1.10.0 (2012-02-23)
 -------------------
 
@@ -183,7 +189,7 @@ CHANGES
 
 - Bug: Fixed test failures due to depency updates.
 
-- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+- Restructure: Fixed deprecation warning for ``ZopeSecurityPolicy``.
 
 
 0.2.1 (2007-??-??)
