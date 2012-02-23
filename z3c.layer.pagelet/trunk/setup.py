@@ -54,13 +54,13 @@ setup(
     namespace_packages = ['z3c', 'z3c.layer'],
     extras_require = dict(
         test = [
-            'zope.testbrowser',
             'zope.app.wsgi >= 3.8',
             'zope.exceptions',
             'zope.principalregistry',
             'zope.publisher',
             'zope.security',
             'zope.securitypolicy',
+            'zope.testbrowser',
             'zope.testing',
             ],
         ),
