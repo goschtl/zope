@@ -42,6 +42,7 @@ class PreferenceGroup(z3c.form.group.Group):
     def __init__(self, *args, **kw):
         super(PreferenceGroup, self).__init__(*args, **kw)
         self.fields = to_fields(self.context)
+        self.label = self.context.__title__
 
 
 class CategoryEditForm(z3c.form.group.GroupForm,
