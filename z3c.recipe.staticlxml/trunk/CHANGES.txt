@@ -1,3 +1,8 @@
+DEVELOPMENT MOVED TO GITHUB:
+
+https://github.com/seletz/z3c.recipe.staticlxml
+
+
 0.9 (unreleased)
 ================
 
