@@ -786,6 +786,7 @@ to reflect that:
     Running uninstall recipe.
     --del acme
 
+
 Regression Tests
 ================
 
@@ -795,21 +796,22 @@ Exception formatting bug
 If we do not provide a runscript, we get an exception (bug was: improperly
 formatted exception string, contained literal '%s'):
 
-    .. >>> write('buildout.cfg',
-    .. ... """
-    .. ... [buildout]
-    .. ... parts = zoperc
-    .. ...
-    .. ... [zoperc]
-    .. ... recipe = zc.recipe.rhrc
-    .. ... parts = zope
-    .. ... dest = %(dest)s
-    .. ...
-    .. ... [zope]
-    .. ... """ % dict(dest=demo))
-    .. >>> print system('bin/buildout'),
-    .. Installing zoperc.
-    .. zc.recipe.rhrc: Part zope doesn't define run-script and /demo/zope doesn't exist.
-    .. While:
-    ..   Installing zoperc.
-    .. Error: No script for zope
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = zope
+    ... dest = %(dest)s
+    ...
+    ... [zope]
+    ... """ % dict(dest=demo))
+    >>> print system('bin/buildout'),
+
+        Installing zoperc.
+    zc.recipe.rhrc: Part zope doesn't define run-script and /demo/zope doesn't exist.
+    While:
+      Installing zoperc.
+    Error: No script for zope

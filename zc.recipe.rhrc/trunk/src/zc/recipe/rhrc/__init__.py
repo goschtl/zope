@@ -129,7 +129,7 @@ class Recipe:
             logger.error("Part %s doesn't define run-script "
                          "and %s doesn't exist."
                          % (part, path))
-            raise zc.buildout.UserError("No script for %s", part)
+            raise zc.buildout.UserError("No script for", part)
 
         return script + ' "$@"'
 
