@@ -416,7 +416,7 @@ helper-scripts
    PREFIXport
       Print the port of the first child of a given path.
 
-   Where PREFIX is the profix given to the helper-scripts option.
+   Where PREFIX is the prefix given to the helper-scripts option.
 
 .. test
 
