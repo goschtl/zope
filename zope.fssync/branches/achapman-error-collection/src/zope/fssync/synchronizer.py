@@ -49,7 +49,7 @@ class SynchronizableAnnotations(dict):
 
     def modify(self, target):
         """Transfers the namespaces to the target annotations.
-        
+
         Returns a lifecycleevent.interfaces.ISequence modification
         descriptor or None if nothing changed.
         """
@@ -68,12 +68,12 @@ class SynchronizableAnnotations(dict):
 
 class Synchronizer(object):
     """A convenient base class for serializers."""
-    
+
     interface.implements(interfaces.ISynchronizer)
-    
+
     def __init__(self, context):
         self.context = context
-        
+
     def getObject(self):
         return self.context
 
@@ -87,7 +87,7 @@ class Synchronizer(object):
 
     def setmetadata(self, metadata):
         """Loads metadata from a dict.
-        
+
         Specializations should return an IModificationDescription
         if a ModifiedEvent should be thrown.
         """
@@ -116,12 +116,12 @@ class Synchronizer(object):
 
     def setextras(self, extras):
         """Consumes de-serialized extra attributes.
-        
+
         Returns an unspecific IModificationDescription.
         Application specific adapters may provide more informative
         descriptors.
         """
-        
+
         modified = []
         for key, value in extras.iteritems():
             if hasattr(self.context, key):
@@ -147,15 +147,15 @@ class FileSynchronizer(Synchronizer):
 
 class DefaultSynchronizer(FileSynchronizer):
     """A synchronizer that stores an object as an xml pickle."""
-    
+
     interface.implements(interfaces.IDefaultSynchronizer)
-    
+
     def __init__(self, context):
         self.context = context
 
     def metadata(self):
         """Returns None.
-        
+
         A missing factory indicates that the object has
         has to be unpickled.
         """
@@ -163,13 +163,13 @@ class DefaultSynchronizer(FileSynchronizer):
 
     def extras(self):
         """Returns None.
-        
+
         A pickle is self contained."""
         return None
 
     def annotations(self):
         """Returns None.
-        
+
         The annotations are already stored in the pickle.
         This is only the right thing if the annotations are
         stored in the object's attributes (such as IAttributeAnnotatable);
@@ -194,14 +194,14 @@ class DirectorySynchronizer(Synchronizer):
         """Traverses the name in the given context.
         """
         return self.context[name]
-    
+
     def iteritems(self):
         return self.context.items()
 
     def update(self, items):
         """Updates the context."""
         self.context.update(items)
-        
+
     def __setitem__(self, name, obj):
         """Sets the item."""
         self.context[name] = obj
@@ -212,10 +212,10 @@ class DirectorySynchronizer(Synchronizer):
 
 
 class FileGenerator(object):
-    """A generator that creates file-like objects 
+    """A generator that creates file-like objects
     from a serialized representation.
-    
-    Should be registered as the IFileGenerator utility 
+
+    Should be registered as the IFileGenerator utility
     and be used if no other class-based serializer can be found.
     """
 
@@ -223,7 +223,7 @@ class FileGenerator(object):
 
     def create(self, location, name, extension):
         """Creates a file.
-        
+
         This implementation uses the registered zope.filerepresentation adapters.
         """
         factory = component.queryAdapter(location, IFileFactory, extension)
@@ -231,15 +231,15 @@ class FileGenerator(object):
             factory = IFileFactory(location, None)
         if factory is not None:
             return factory(name, None, '')
-            
+
     def load(self, obj, readable):
         obj.data = readable.read()
 
 class DirectoryGenerator(object):
     """A generator that creates a directory-like object
     from a serialized representation.
-    
-    Should be registered as the IDirectoryGenerator utility 
+
+    Should be registered as the IDirectoryGenerator utility
     and be used if no other class-based serializer can be found.
     """
 
@@ -247,10 +247,10 @@ class DirectoryGenerator(object):
 
     def create(self, location, name):
         """Creates a directory like object.
-        
+
         This implementation uses the registered zope.filerepresentation adapters.
         """
-        
+
         factory = component.queryAdapter(location, IDirectoryFactory)
         if factory is None:
             factory = IDirectoryFactory(location, None)
@@ -261,7 +261,7 @@ class DirectoryGenerator(object):
 def getSynchronizer(obj, raise_error=False):
     """Looks up a synchronizer.
 
-    Sometimes no serializer might be defined or sometimes access 
+    Sometimes no serializer might be defined or sometimes access
     to a serializer may be forbidden. We return None in those cases.
 
     Those cases may be unexpected and it may be a problem that

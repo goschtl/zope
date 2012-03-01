@@ -2,51 +2,51 @@
 Filesystem Synchronization
 ==========================
 
-This package provides an API for the synchronization of Python objects 
-with a serialized filesystem representation. This API does not address 
-security issues. (See zope.app.fssync for a protected web-based API). 
+This package provides an API for the synchronization of Python objects
+with a serialized filesystem representation. This API does not address
+security issues. (See zope.app.fssync for a protected web-based API).
 This API is Zope and ZODB independent.
 
 The main use cases are
 
     - data export / import (e.g. moving data from one place to another)
-    
+
     - content management (e.g. managing a wiki or other collections of
       documents offline)
-      
-The target representation depends on your use case. In the use case of 
-data export/import, for instance, it is crucial that all data are 
-exported as completely as possible. Since the data need not be read 
-by humans in most circumstances a pickle format may be the most 
+
+The target representation depends on your use case. In the use case of
+data export/import, for instance, it is crucial that all data are
+exported as completely as possible. Since the data need not be read
+by humans in most circumstances a pickle format may be the most
 complete and easy one to use.
-In the use case of content management it may be more important that 
-all metadata are readable by humans. In this case another format, 
+In the use case of content management it may be more important that
+all metadata are readable by humans. In this case another format,
 e.g. RDFa, may be more appropriate.
 
 Main components
 ===============
 
-A synchronizer serializes content objects and stores the serialized 
-data in a repository in an application specific format. It uses 
+A synchronizer serializes content objects and stores the serialized
+data in a repository in an application specific format. It uses
 deserializers to read the object back into the content space.
 The serialization format must be rich enough to preserve various forms
 of references which should be reestablished on deserialization.
 
-All these components should be replaceable. Application may use 
-different serialization formats with different references for 
+All these components should be replaceable. Application may use
+different serialization formats with different references for
 different purposes (e.g. backup vs. content management) and different
-target systems (e.g. a zip archive vs. a svn repository). 
+target systems (e.g. a zip archive vs. a svn repository).
 
 The main components are:
 
     - ISyncTasks like Checkout, Check, and Commit which synchronize
       a content space with a repository. These tasks uses serializers
-      to produce serialized data for a repository in an application 
+      to produce serialized data for a repository in an application
       specific format. They use deserializers to read the data back.
-      The default implementation uses xmlpickle for python objects, 
-      data streams for file contents, and special directories for 
-      extras and metadata. Alternative implementations may use 
-      standard pickles, a human readable format like RDFa, or 
+      The default implementation uses xmlpickle for python objects,
+      data streams for file contents, and special directories for
+      extras and metadata. Alternative implementations may use
+      standard pickles, a human readable format like RDFa, or
       application specific formats.
 
     - ISynchronizer: Synchronizers produce serialized pieces of a
@@ -55,8 +55,8 @@ The main components are:
       IDeserializer part of a synchronizer).
 
     - IPickler: An adapter that determines the pickle format.
-    
-    - IRepository: represents a target system that can be used 
+
+    - IRepository: represents a target system that can be used
       to read and write serialized data.
 
 
@@ -70,7 +70,7 @@ Let's take some samples:
     >>> from zope.fssync import synchronizer
     >>> from zope.fssync import repository
     >>> from zope.fssync import pickle
-    
+
     >>> class A(object):
     ...     data = 'data of a'
     >>> class B(A):
@@ -85,14 +85,14 @@ Let's take some samples:
 Persistent References
 =====================
 
-Many applications use more than one system of persistent references. 
-Zope, for instance, uses p_oids, int ids, key references, 
+Many applications use more than one system of persistent references.
+Zope, for instance, uses p_oids, int ids, key references,
 traversal paths, dotted names, named utilities, etc.
 
 Other systems might use generic reference systems like global unique
-ids or primary keys together with domain specific references, like 
+ids or primary keys together with domain specific references, like
 emails, URI, postal addresses, code numbers, etc.
-All these references are candidates for exportable references as long 
+All these references are candidates for exportable references as long
 as they can be resolved on import or reimport.
 
 In our example we use simple integer ids:
@@ -131,7 +131,7 @@ In our examples we use a SnarfRepository which can easily be examined:
 >>> checkout = task.Checkout(synchronizer.getSynchronizer, snarf)
 
 Snarf is a Zope3 specific archive format where the key
-need is for simple software. The format is dead simple: each file 
+need is for simple software. The format is dead simple: each file
 is represented by the string
 
     '<size> <pathname>\n'
@@ -144,9 +144,9 @@ Entry Ids
 =========
 
 Persistent ids are also used in the metadata files of fssync.
-The references are generated by an IEntryId adapter which must 
+The references are generated by an IEntryId adapter which must
 have a string representation in order to be saveable in a text file.
-Typically these object ids correspond to the persistent pickle ids, but 
+Typically these object ids correspond to the persistent pickle ids, but
 this is not necessarily the case.
 
 Since we do not have paths we use our integer ids:
@@ -162,26 +162,26 @@ Since we do not have paths we use our integer ids:
 Synchronizer
 ============
 
-In the use case of data export / import it is crucial that fssync is 
+In the use case of data export / import it is crucial that fssync is
 able to serialize "all" object data. Note that it isn't always obvious
-what data is intrinsic to an object. Therefore we must provide 
-special serialization / de-serialization tools which take care of 
+what data is intrinsic to an object. Therefore we must provide
+special serialization / de-serialization tools which take care of
 writing and reading "all" data.
 
 An obvious solution would be to use inheriting synchronization
 adapters. But this solution bears a risk. If someone created a subclass
 and forgot to create an adapter, then their data would be serialized
-incompletely. To give an example: What happens if someone has a 
+incompletely. To give an example: What happens if someone has a
 serialization adapter for class Person which serializes every aspect of
 Person instances and defines a subclass Employee(Person) later on?
-If the Employee class has some extra aspects (for example additional 
-attributes like insurance id, wage, etc.) these would never be serialized 
-as long as there is no special serialization adapter for Employees 
-which handles this extra aspects. The behavior is different if the 
-adapters are looked up by their dotted class name (i.e. the most specific 
-class) and not their class or interface (which might led to adapters 
-written for super classes). If no specific adapter exists a default 
-serializer (e.g a xmlpickler) can serialize the object completely. So 
+If the Employee class has some extra aspects (for example additional
+attributes like insurance id, wage, etc.) these would never be serialized
+as long as there is no special serialization adapter for Employees
+which handles this extra aspects. The behavior is different if the
+adapters are looked up by their dotted class name (i.e. the most specific
+class) and not their class or interface (which might led to adapters
+written for super classes). If no specific adapter exists a default
+serializer (e.g a xmlpickler) can serialize the object completely. So
 even if you forget to provide special serializers for all your classes
 you can be sure that your data are complete.
 
@@ -192,11 +192,11 @@ class as lookup key. The default synchronizer is registered as a
 unnamed ISynchronizerFactory utility. This synchronizer ensures that
 all data are pickled to the target repository.
 
-    >>> component.provideUtility(synchronizer.DefaultSynchronizer, 
-    ...                             provides=interfaces.ISynchronizerFactory) 
+    >>> component.provideUtility(synchronizer.DefaultSynchronizer,
+    ...                             provides=interfaces.ISynchronizerFactory)
 
 All special synchronizers are registered for a specific content class and
-not an abstract interface. The class is represented by the dotted class 
+not an abstract interface. The class is represented by the dotted class
 name in the factory registration:
 
     >>> class AFileSynchronizer(synchronizer.Synchronizer):
@@ -206,7 +206,7 @@ name in the factory registration:
     ...     def load(self, readable):
     ...         self.context.data = readable.read()
 
-    >>> component.provideUtility(AFileSynchronizer, 
+    >>> component.provideUtility(AFileSynchronizer,
     ...                             interfaces.ISynchronizerFactory,
     ...                             name=synchronizer.dottedname(A))
 
@@ -217,7 +217,7 @@ a named utility. The IDefaultSynchronizer utility is used as a fallback:
     >>> synchronizer.getSynchronizer(a)
     <zope.fssync.doctest.AFileSynchronizer object at ...>
 
-If no named adapter is registered it returns the registered unnamed default 
+If no named adapter is registered it returns the registered unnamed default
 adapter (as long as the permissions allow this):
 
     >>> synchronizer.getSynchronizer(b)
@@ -229,7 +229,7 @@ by the IPickler adapter. Here we use Zope's xmlpickle.
     >>> component.provideAdapter(pickle.XMLPickler)
     >>> component.provideAdapter(pickle.XMLUnpickler)
 
-For container like objects we must provide an adapter that maps the 
+For container like objects we must provide an adapter that maps the
 container to a directory. In our example we use the buildin dict class:
 
     >>> component.provideUtility(synchronizer.DirectorySynchronizer,
@@ -291,7 +291,7 @@ serialized data from the repository:
 
     >>> component.provideUtility(synchronizer.FileGenerator(),
     ...                                 provides=interfaces.IFileGenerator)
-    
+
     >>> target = {}
     >>> commit = task.Commit(synchronizer.getSynchronizer, snarf)
     >>> commit.perform(target, 'root', 'test')
@@ -299,10 +299,10 @@ serialized data from the repository:
     ['root']
     >>> sorted(target['root'].keys())
     ['a', 'b']
-    
+
     >>> target['root']['a'].data
     'data of a'
-    
+
     >>> target['root']['b'].extra
     'extra of b'
 
@@ -317,12 +317,12 @@ We modify the objects in place to see what happens:
 
     >>> root['a'].data = 'overwritten'
     >>> root['b'].extra = 'overwritten'
-    
+
     >>> check = task.Check(synchronizer.getSynchronizer, snarf)
     >>> check.check(root, '', 'test')
     >>> check.errors()
     ['test/a', 'test/b']
-    
+
     >>> commit.perform(root, '', 'test')
     >>> sorted(root.keys())
     ['a', 'b']
@@ -330,17 +330,17 @@ We modify the objects in place to see what happens:
     'data of a'
     >>> root['b'].extra
     'extra of b'
-    
+
     >>> del root['a']
     >>> commit.perform(root, '', 'test')
     >>> sorted(root.keys())
     ['a', 'b']
-    
+
     >>> del root['b']
     >>> commit.perform(root, '', 'test')
     >>> sorted(root.keys())
     ['a', 'b']
-    
+
     >>> del root['a']
     >>> del root['b']
     >>> commit.perform(root, '', 'test')
@@ -348,7 +348,7 @@ We modify the objects in place to see what happens:
     ['a', 'b']
 
 
-Pickling 
+Pickling
 ========
 
 In many data structures, large, complex objects are composed of
@@ -357,7 +357,7 @@ ways:
 
     1.  The smaller objects are stored inside the larger object.
 
-    2.  The smaller objects are allocated in their own location, 
+    2.  The smaller objects are allocated in their own location,
         and the larger object stores references to them.
 
 In case 1 the object is self-contained and can be pickled
@@ -451,7 +451,7 @@ an object should be pickled completely or only by reference:
     ...         if isinstance(obj, Complex):
     ...             return None
     ...         return globalIds.getId(obj)
-    
+
     >>> component.provideAdapter(PersistentIdGenerator)
 
     >>> globalIds.register(a)
@@ -460,7 +460,7 @@ an object should be pickled completely or only by reference:
     2
     >>> globalIds.register(root)
     3
-    
+
     >>> xml = interfaces.IPickler(c).dumps()
     >>> print xml
     <?xml version="1.0" encoding="utf-8" ?>
@@ -480,7 +480,7 @@ an object should be pickled completely or only by reference:
       </object>
     </pickle>
     <BLANKLINE>
-    
+
 The persistent ids can be loaded if we define and register
 a IPersistentIdLoader adapter first:
 
@@ -504,8 +504,8 @@ Annotations, Extras, and Metadata
 
 Complex objects often combine metadata and content data in various ways.
 The fssync package allows to distinguish between file content, extras,
-annotations, and fssync specific metadata: 
-    
+annotations, and fssync specific metadata:
+
     - The file content or body is directly stored in a corresponding
       file.
     - The extras are object attributes which are part of the object but not
@@ -553,7 +553,7 @@ synchronizer:
     >>> [x for x in interface.directlyProvidedBy(b)]
     [<InterfaceClass zope.fssync.doctest.IMarkerInterface>]
 
-In order to serialize annotations we must first provide a 
+In order to serialize annotations we must first provide a
 ISynchronizableAnnotations adapter:
 
     >>> snarf = repository.SnarfRepository(StringIO())
@@ -565,26 +565,26 @@ ISynchronizableAnnotations adapter:
     >>> class IAnnotatableSample(interface.Interface):
     ...     pass
     >>> class AnnotatableSample(object):
-    ...     interface.implements(IAnnotatableSample, 
+    ...     interface.implements(IAnnotatableSample,
     ...                             annotation.interfaces.IAttributeAnnotatable)
     ...     data = 'Main file content'
     ...     extra = None
     >>> sample = AnnotatableSample()
-    
+
     >>> class ITestAnnotations(interface.Interface):
     ...     a = interface.Attribute('A')
     ...     b = interface.Attribute('B')
     >>> import persistent
     >>> class TestAnnotations(persistent.Persistent):
-    ...     interface.implements(ITestAnnotations, 
+    ...     interface.implements(ITestAnnotations,
     ...                             annotation.interfaces.IAnnotations)
     ...     component.adapts(IAnnotatableSample)
     ...     def __init__(self):
     ...         self.a = None
     ...         self.b = None
-    
+
     >>> component.provideAdapter(synchronizer.SynchronizableAnnotations)
-    
+
 
 
     >>> from zope.annotation.factory import factory
@@ -593,8 +593,8 @@ ISynchronizableAnnotations adapter:
     >>> ITestAnnotations(sample).a
     'annotation a'
     >>> sample.extra = 'extra'
-    
-Without a special serializer the annotations are pickled since 
+
+Without a special serializer the annotations are pickled since
 the annotations are stored in the __annotions__ attribute:
 
     >>> root = dict()
@@ -631,7 +631,7 @@ the annotations are stored in the __annotions__ attribute:
     </pickle>
     <BLANKLINE>
 
-If we provide a directory serializer for annotations and extras we get a 
+If we provide a directory serializer for annotations and extras we get a
 file for each extra attribute and annotation namespace.
 
     >>> component.provideUtility(
@@ -645,7 +645,7 @@ file for each extra attribute and annotation namespace.
     ...     name=synchronizer.dottedname(
     ...                 synchronizer.SynchronizableAnnotations))
 
-Since the annotations are already handled by the Synchronizer base class 
+Since the annotations are already handled by the Synchronizer base class
 we only need to specify the extra attribute here:
 
     >>> class SampleFileSynchronizer(synchronizer.Synchronizer):
@@ -656,7 +656,7 @@ we only need to specify the extra attribute here:
     ...         return synchronizer.Extras(extra=self.context.extra)
     ...     def load(self, readable):
     ...         self.context.data = readable.read()
-    >>> component.provideUtility(SampleFileSynchronizer, 
+    >>> component.provideUtility(SampleFileSynchronizer,
     ...     interfaces.ISynchronizerFactory,
     ...     name=synchronizer.dottedname(AnnotatableSample))
 
@@ -743,10 +743,10 @@ we only need to specify the extra attribute here:
     <pickle> <string>extra</string> </pickle>
     00000017 test/test
     Main file content
-    
+
 The annotations and extras can of course also be deserialized. The default
 deserializer handles both cases:
-    
+
     >>> target = {}
     >>> commit = task.Commit(synchronizer.getSynchronizer, snarf)
     >>> commit.perform(target, 'root', 'test')
@@ -755,8 +755,8 @@ deserializer handles both cases:
     'extra'
     >>> ITestAnnotations(result).a
     'annotation a'
-    
-Since we use an IDirectorySynchronizer each extra attribute and 
+
+Since we use an IDirectorySynchronizer each extra attribute and
 annotation namespace get's it's own file:
 
     >>> for path in sorted(snarf.iterPaths()):
@@ -768,9 +768,9 @@ annotation namespace get's it's own file:
     test/@@Zope/Extra/test/@@Zope/Entries.xml
     test/@@Zope/Extra/test/extra
     test/test
-    
+
 The number of files can be reduced if we provide the default synchronizer
-which uses a single file for all annotations and a single file for 
+which uses a single file for all annotations and a single file for
 all extras:
 
     >>> component.provideUtility(
@@ -783,7 +783,7 @@ all extras:
     ...     interfaces.ISynchronizerFactory,
     ...     name=synchronizer.dottedname(
     ...                 synchronizer.SynchronizableAnnotations))
-    
+
     >>> root['test'] = sample
     >>> snarf = repository.SnarfRepository(StringIO())
     >>> checkout.repository = snarf
@@ -795,10 +795,10 @@ all extras:
     test/@@Zope/Entries.xml
     test/@@Zope/Extra/test
     test/test
-    
+
 The annotations and extras can of course also be deserialized. The default
-deserializer handles both 
-    
+deserializer handles both
+
     >>> target = {}
     >>> commit = task.Commit(synchronizer.getSynchronizer, snarf)
     >>> commit.perform(target, 'root', 'test')
@@ -810,4 +810,27 @@ deserializer handles both
     >>> [x for x in interface.directlyProvidedBy(result)]
     [<InterfaceClass zope.fssync.doctest.IMarkerInterface>]
 
+If we encounter an error, or multiple errors, while commiting we'll
+see them in the traceback.
 
+    >>> def bad_sync(container, key, fspath, add_callback):
+    ...     raise ValueError('1','2','3')
+
+    >>> target = {}
+    >>> commit = task.Commit(synchronizer.getSynchronizer, snarf)
+    >>> old_sync_new = commit.synchNew
+    >>> commit.synchNew = bad_sync
+    >>> commit.perform(target, 'root', 'test')
+    Traceback (most recent call last):
+        ...
+    Exception: 1,2,3
+
+    >>> commit.synchNew = old_sync_new
+    >>> old_sync_old = commit.synchOld
+    >>> commit.synchOld = bad_sync
+    >>> commit.perform(target, 'root', 'test')
+    Traceback (most recent call last):
+        ...
+    Exception: 1,2,3
+
+    >>> commit.synchOld = old_sync_old
