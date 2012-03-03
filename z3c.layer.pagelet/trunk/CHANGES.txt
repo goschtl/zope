@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.10.1 (unreleased)
+1.10.1 (2012-03-03)
 -------------------
 
 - Added adapter registration for `zope.browserresource.interfaces.IETag`
