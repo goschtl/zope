@@ -5,7 +5,9 @@ CHANGES
 1.10.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added adapter registration for `zope.browserresource.interfaces.IETag`
+  interface to be available on ``IPageletBrowserLayer``. This adapter is
+  necessary to deliver file resources.
 
 
 1.10.0 (2012-02-23)

@@ -12,4 +12,10 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <adapter
+      for="zope.browserresource.interfaces.IFileResource
+           z3c.layer.pagelet.IPageletBrowserLayer"
+      factory="zope.browserresource.file.FileETag" />
+
+
 </configure>
