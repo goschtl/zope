@@ -2,7 +2,7 @@ Changes
 =======
 
 
-0.3 (unreleased)
+0.3 (2012-03-15)
 ----------------
 
 - Descriptions of preference groups are now rendered in the ``extra-info``
