@@ -825,12 +825,16 @@ see them in the traceback.
         ...
     Exception: 1,2,3
 
-    >>> commit.synchNew = old_sync_new
+Notice that if we encounter multiple exceptions we print them all
+out at the end.
+
     >>> old_sync_old = commit.synchOld
     >>> commit.synchOld = bad_sync
     >>> commit.perform(target, 'root', 'test')
     Traceback (most recent call last):
         ...
     Exception: 1,2,3
+    1,2,3
 
+    >>> commit.synchNew = old_sync_new
     >>> commit.synchOld = old_sync_old
