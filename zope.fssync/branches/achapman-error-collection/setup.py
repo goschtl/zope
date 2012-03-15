@@ -24,7 +24,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.fssync',
-      version = '3.5.4dev',
+      version = '3.6.0dev',
       url='http://pypi.python.org/pypi/zope.fssync',
       license='ZPL 2.1',
       description="Filesystem synchronization utility for Zope 3.",
