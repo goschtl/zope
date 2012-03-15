@@ -162,6 +162,11 @@ class Checkout(SyncTask):
             self.dumpMetadata(epath, entries)
 
 
+class Exceptions(Exception):
+    # We use this to pluralize "Exception".
+    pass
+
+
 class Commit(SyncTask):
     """Commit changes from a repository to the object database.
 
@@ -186,7 +191,10 @@ class Commit(SyncTask):
 
         # check for errors
         if self.errors:
-            raise Exception('\n'.join(self.errors))
+            if len(self.errors) == 1:
+                raise Exception(self.errors[0])
+            else:
+                raise Exceptions("\n    ".join([""] + self.errors))
 
         # process callbacks
         passes = 0

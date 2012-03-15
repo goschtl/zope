@@ -833,8 +833,9 @@ out at the end.
     >>> commit.perform(target, 'root', 'test')
     Traceback (most recent call last):
         ...
-    Exception: 1,2,3
-    1,2,3
+    Exceptions:
+        1,2,3
+        1,2,3
 
     >>> commit.synchNew = old_sync_new
     >>> commit.synchOld = old_sync_old
