@@ -1,7 +1,7 @@
 Changes
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2012-03-15)
 ------------------
 
 - Commit task will collect errors and send them all back rather
