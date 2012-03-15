@@ -809,3 +809,33 @@ deserializer handles both
     'annotation a'
     >>> [x for x in interface.directlyProvidedBy(result)]
     [<InterfaceClass zope.fssync.doctest.IMarkerInterface>]
+
+If we encounter an error, or multiple errors, while commiting we'll
+see them in the traceback.
+
+    >>> def bad_sync(container, key, fspath, add_callback):
+    ...     raise ValueError('1','2','3')
+
+    >>> target = {}
+    >>> commit = task.Commit(synchronizer.getSynchronizer, snarf)
+    >>> old_sync_new = commit.synchNew
+    >>> commit.synchNew = bad_sync
+    >>> commit.perform(target, 'root', 'test')
+    Traceback (most recent call last):
+        ...
+    Exception: 1,2,3
+
+Notice that if we encounter multiple exceptions we print them all
+out at the end.
+
+    >>> old_sync_old = commit.synchOld
+    >>> commit.synchOld = bad_sync
+    >>> commit.perform(target, 'root', 'test')
+    Traceback (most recent call last):
+        ...
+    Exceptions:
+        1,2,3
+        1,2,3
+
+    >>> commit.synchNew = old_sync_new
+    >>> commit.synchOld = old_sync_old
