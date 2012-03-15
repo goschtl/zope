@@ -22,6 +22,17 @@
       permission="z3c.preference.EditPreference"
       class=".browser.CategoryEditForm" />
 
+  <z3c:template
+     template="form.pt"
+     for=".browser.EditForm"
+     layer=".interfaces.IPreferenceLayer" />
+
+  <z3c:macro
+      name="z3c-preferences-description"
+      macro="description"
+      template="form.pt"
+      layer=".interfaces.IPreferenceLayer" />
+
   <browser:defaultView
       layer=".interfaces.IPreferenceLayer"
       name="index.html" />

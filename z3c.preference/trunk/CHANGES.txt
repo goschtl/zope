@@ -5,7 +5,8 @@ Changes
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Descriptions of preference groups are now rendered in the ``extra-info``
+  slot of the form.
 
 
 0.2 (2012-02-23)

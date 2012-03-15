@@ -33,6 +33,7 @@ class EditForm(z3c.formui.form.EditForm):
     def __init__(self, *args, **kw):
         super(EditForm, self).__init__(*args, **kw)
         self.label = self.context.__title__
+        self.description = self.context.__description__
         self.fields = to_fields(self.context)
 
 
