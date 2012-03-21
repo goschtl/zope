@@ -1,7 +1,7 @@
 Products.CMFCalendar Changelog
 ==============================
 
-2.3.0-alpha (unreleased)
+2.3.0-beta (2012-03-21)
 ------------------------
 
 - Converted the CalendarTool into a local utility.
