@@ -1,12 +1,12 @@
 Products.CMFTopic Changelog
 ===========================
 
-2.3.0-alpha (unreleased)
-------------------------
+2.3.0-beta (2012-03-21)
+-----------------------
 
--- Made sure converted tools are used as utilities.
+- Made sure converted tools are used as utilities.
 
- Correct test assertion about the value of DateCriteria. It's edit method
+- Correct test assertion about the value of DateCriteria. It's edit method
   mandates the value to be of type int, so we should respect that in tests.
 
 - Require at least Zope 2.13.4.
