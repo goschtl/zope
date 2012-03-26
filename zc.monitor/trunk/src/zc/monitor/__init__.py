@@ -18,7 +18,6 @@ import errno, logging, traceback, socket
 
 import zope.component
 
-import zc.ngi.adapters
 import zc.monitor.interfaces
 
 INTERACTIVE_MARKER = object()
@@ -30,6 +29,7 @@ class Server:
     last_command = None
 
     def __init__(self, connection):
+        import zc.ngi.adapters
         connection = zc.ngi.adapters.Lines(connection)
         self.connection = connection
         connection.set_handler(self)
