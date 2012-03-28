@@ -18,6 +18,7 @@ import sys
 from unittest import TestCase, makeSuite
 
 from zope.exceptions.exceptionformatter import format_exception
+from zope.exceptions.exceptionformatter import extract_stack
 
 
 def tb(as_html=0):
@@ -27,6 +28,12 @@ def tb(as_html=0):
     finally:
         del b
 
+def st(as_html=0):
+    f = sys.exc_info()[2].tb_frame
+    try:
+        return ''.join(extract_stack(f, as_html=as_html))
+    finally:
+        del f
 
 class ExceptionForTesting (Exception):
     pass
@@ -60,6 +67,19 @@ class Test(TestCase):
     def testBasicNamesHTML(self):
         self.testBasicNamesText(1)
 
+    def testBasicNamesText_stack(self, as_html=0):
+        try:
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            s = st(as_html)
+            # The stack trace should include the name of this function.
+            self.assertTrue(s.find('testBasicNamesText_stack') >= 0)
+        else:
+            self.fail('no exception occurred')
+
+    def testBasicNamesHTML_stack(self):
+        self.testBasicNamesText_stack(1)
+
     def testSupplement(self, as_html=0):
         try:
             __traceback_supplement__ = (TestingTracebackSupplement,
@@ -83,6 +103,29 @@ class Test(TestCase):
     def testSupplementHTML(self):
         self.testSupplement(1)
 
+    def testSupplement_stack(self, as_html=0):
+        try:
+            __traceback_supplement__ = (TestingTracebackSupplement,
+                                        "You're one in a million")
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            s = st(as_html)
+            # The source URL
+            self.assertTrue(s.find('/somepath') >= 0, s)
+            # The line number
+            self.assertTrue(s.find('634') >= 0, s)
+            # The column number
+            self.assertTrue(s.find('57') >= 0, s)
+            # The expression
+            self.assertTrue(s.find("You're one in a million") >= 0, s)
+            # The warning
+            self.assertTrue(s.find("Repent, for the end is nigh") >= 0, s)
+        else:
+            self.fail('no exception occurred')
+
+    def testSupplementHTML_stack(self):
+        self.testSupplement_stack(1)
+
     def testTracebackInfo(self, as_html=0):
         try:
             __traceback_info__ = "Adam & Eve"
@@ -99,6 +142,23 @@ class Test(TestCase):
 
     def testTracebackInfoHTML(self):
         self.testTracebackInfo(1)
+
+    def testTracebackInfo_stack(self, as_html=0):
+        try:
+            __traceback_info__ = "Adam & Eve"
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            s = st(as_html)
+            if as_html:
+                # Be sure quoting is happening.
+                self.assertTrue(s.find('Adam &amp; Eve') >= 0, s)
+            else:
+                self.assertTrue(s.find('Adam & Eve') >= 0, s)
+        else:
+            self.fail('no exception occurred')
+
+    def testTracebackInfoHTML_stack(self):
+        self.testTracebackInfo_stack(1)
 
     def testTracebackInfoTuple(self):
         try:
@@ -157,9 +217,9 @@ class Test(TestCase):
 
         class FormatterException(Exception):
             pass
-            
+
         class FailingFormatter(TextExceptionFormatter):
-            def formatLine(self, tb):
+            def formatLine(self, tb=None, f=None):
                 raise FormatterException("Formatter failed")
 
         fmt = FailingFormatter()
@@ -175,6 +235,7 @@ class Test(TestCase):
         # and we fellback to the stdlib rather than hid the real error
         self.assertEqual(s.splitlines()[-2], '    raise FormatterException("Formatter failed")')
         self.assertTrue('FormatterException: Formatter failed' in s.splitlines()[-1])
+
 
 def test_suite():
     return makeSuite(Test)

@@ -98,9 +98,14 @@ class TextExceptionFormatter(object):
     def formatTracebackInfo(self, tbi):
         return self.formatSupplementLine('__traceback_info__: %s' % (tbi, ))
 
-    def formatLine(self, tb):
-        f = tb.tb_frame
-        lineno = tb.tb_lineno
+    def formatLine(self, tb=None, f=None):
+        if tb and not f:
+            f = tb.tb_frame
+            lineno = tb.tb_lineno
+        elif not tb and f:
+            lineno = f.f_lineno
+        else:
+            raise ValueError("tb or f needs to be passed")
         co = f.f_code
         filename = co.co_filename
         name = co.co_name
@@ -174,12 +179,31 @@ class TextExceptionFormatter(object):
                 result.append('(Recursive formatException() stopped, trying traceback.format_tb)\n')
                 result.extend(traceback.format_tb(tb))
                 break
-            line = self.formatLine(tb)
+            line = self.formatLine(tb=tb)
             result.append(line + '\n')
             tb = tb.tb_next
             n = n + 1
         exc_line = self.formatExceptionOnly(etype, value)
         result.append(self.formatLastLine(exc_line))
+        return result
+
+    def extractStack(self, f=None):
+        if f is None:
+            try:
+                raise ZeroDivisionError
+            except ZeroDivisionError:
+                f = sys.exc_info()[2].tb_frame.f_back
+
+        # The next line provides a way to detect recursion.
+        __exception_formatter__ = 1
+        result = []
+        limit = self.getLimit()
+        n = 0
+        while f is not None and (limit is None or n < limit):
+            line = self.formatLine(f=f)
+            result.append(line + '\n')
+            f = f.f_back
+            n = n + 1
         return result
 
 
@@ -201,8 +225,8 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         s = s.replace('\n', self.line_sep)
         return '__traceback_info__: %s' % (s, )
 
-    def formatLine(self, tb):
-        line = TextExceptionFormatter.formatLine(self, tb)
+    def formatLine(self, tb=None, f=None):
+        line = TextExceptionFormatter.formatLine(self, tb, f)
         return '<li>%s</li>' % line
 
     def formatLastLine(self, exc_line):
@@ -237,3 +261,17 @@ def print_exception(t, v, tb, limit=None, file=None, as_html=False,
     lines = format_exception(t, v, tb, limit, as_html, with_filenames)
     for line in lines:
         file.write(line)
+
+def extract_stack(f, limit=None, as_html=False,
+                  with_filenames=True):
+    """Format a stack trace and the exception information.
+
+    Similar to 'traceback.format_exception', but adds supplemental
+    information to the traceback and accepts two options, 'as_html'
+    and 'with_filenames'.
+    """
+    if as_html:
+        fmt = HTMLExceptionFormatter(limit, with_filenames)
+    else:
+        fmt = TextExceptionFormatter(limit, with_filenames)
+    return fmt.extractStack(f)

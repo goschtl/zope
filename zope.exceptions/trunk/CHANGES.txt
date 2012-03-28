@@ -5,7 +5,7 @@ Changes
 3.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added TextExceptionFormatter.extractStack and extract_stack
 
 
 3.6.2 (2012-03-28)
