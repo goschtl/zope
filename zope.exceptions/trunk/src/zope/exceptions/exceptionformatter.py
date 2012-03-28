@@ -204,6 +204,7 @@ class TextExceptionFormatter(object):
             result.append(line + '\n')
             f = f.f_back
             n = n + 1
+        result.reverse()
         return result
 
 
