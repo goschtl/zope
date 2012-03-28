@@ -2,7 +2,7 @@
 Changes
 =======
 
-3.7.1 (unreleased)
+3.7.1 (2012-03-28)
 ------------------
 
 - Fix: missed to reverse extractStack entries
