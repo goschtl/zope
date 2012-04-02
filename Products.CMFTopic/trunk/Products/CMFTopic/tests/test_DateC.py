@@ -17,7 +17,7 @@ import unittest
 from Testing import ZopeTestCase
 
 from DateTime.DateTime import DateTime
-from zope.site.hooks import setSite
+from zope.component.hooks import setSite
 
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFDefault.testing import FunctionalLayer
