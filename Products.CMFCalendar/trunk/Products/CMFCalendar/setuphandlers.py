@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFCalendar setup handlers.
-
-$Id$
 """
 
 from zope.component import getUtility

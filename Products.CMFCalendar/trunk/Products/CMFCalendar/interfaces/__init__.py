@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFCalendar.interfaces package.
-
-$Id$
 """
 
 from _content import *

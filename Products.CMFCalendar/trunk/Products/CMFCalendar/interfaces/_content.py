@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFCalendar content interfaces.
-
-$Id$
 """
 
 from zope.interface import Interface
@@ -54,6 +52,7 @@ class IEvent(Interface):
     def getMetadataHeaders():
         """ Return metadata attributes in RFC-822-style header spec.
         """
+
 
 class IMutableEvent(IEvent):
 
@@ -99,4 +98,3 @@ class IMutableEvent(IEvent):
         o Only those attributes that are passed in with the mapping are
         manipulated
         """
-

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Browser views for events.
-
-$Id$
 """
 
 import time
@@ -178,6 +176,7 @@ class EventEditView(EventViewMixin, ContentEditFormBase):
     form_fields['start_date'].custom_widget = DatetimeI18nWidget
     form_fields['stop_date'].custom_widget = DatetimeI18nWidget
 
+
 class EventiCalView(ViewBase):
     
     """iCal view"""
@@ -215,6 +214,7 @@ class EventiCalView(ViewBase):
         response.setHeader('Content-Disposition', 'filename=cmf.ics')
         response.write(body.encode("UTF-8"))
 
+
 class EventvCalView(EventiCalView):
 
     """vCal view"""
@@ -225,4 +225,3 @@ class EventvCalView(EventiCalView):
         response.setHeader('Content-Type', 'text/vCal')
         response.setHeader('Content-Disposition', 'filename=cmf.vcs')
         response.write(body.encode("UTF-8"))
-

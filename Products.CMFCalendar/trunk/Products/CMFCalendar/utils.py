@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Utility functions.
-
-$Id$
 """
 
 from AccessControl import ModuleSecurityInfo
