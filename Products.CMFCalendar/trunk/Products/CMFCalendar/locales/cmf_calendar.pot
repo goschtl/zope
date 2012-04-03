@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2009 Zope Foundation and Contributors.
+# Copyright (c) 2012 Zope Foundation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -12,58 +12,58 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: CMF 2.2\n"
+"Project-Id-Version: CMF 2.3\n"
 "POT-Creation-Date: $Date$\n"
 "Language-Team: CMF Developers <zope-cmf@zope.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Products/CMFCalendar/browser/event.py:104
+#: Products/CMFCalendar/browser/event.py:102
 msgid "URL"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:110
+#: Products/CMFCalendar/browser/event.py:108
 msgid "From"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:113
+#: Products/CMFCalendar/browser/event.py:111
 msgid "To"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:116
+#: Products/CMFCalendar/browser/event.py:114
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:160
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:61
 msgid "Description"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:70
+#: Products/CMFCalendar/browser/event.py:68
 msgid "Title"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:76
+#: Products/CMFCalendar/browser/event.py:74
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:21
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:16
 msgid "Contact Name"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:82
+#: Products/CMFCalendar/browser/event.py:80
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:29
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:20
 msgid "Location"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:88
+#: Products/CMFCalendar/browser/event.py:86
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:35
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:22
 msgid "Contact Email"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:92
+#: Products/CMFCalendar/browser/event.py:90
 msgid "Category"
 msgstr ""
 
-#: Products/CMFCalendar/browser/event.py:98
+#: Products/CMFCalendar/browser/event.py:96
 #: Products/CMFCalendar/skins/zpt_calendar/event_edit_template.pt:56
 #: Products/CMFCalendar/skins/zpt_calendar/event_view_template.pt:33
 msgid "Contact Phone"
@@ -191,23 +191,23 @@ msgstr ""
 msgid "Events are objects for use in Calendar topical queries on the catalog."
 msgstr ""
 
-#: Products/CMFCalendar/setuphandlers.py:51
+#: Products/CMFCalendar/setuphandlers.py:49
 msgid "Appointment"
 msgstr ""
 
-#: Products/CMFCalendar/setuphandlers.py:52
+#: Products/CMFCalendar/setuphandlers.py:50
 msgid "Convention"
 msgstr ""
 
-#: Products/CMFCalendar/setuphandlers.py:53
+#: Products/CMFCalendar/setuphandlers.py:51
 msgid "Meeting"
 msgstr ""
 
-#: Products/CMFCalendar/setuphandlers.py:54
+#: Products/CMFCalendar/setuphandlers.py:52
 msgid "Social Event"
 msgstr ""
 
-#: Products/CMFCalendar/setuphandlers.py:55
+#: Products/CMFCalendar/setuphandlers.py:53
 msgid "Work"
 msgstr ""
 
