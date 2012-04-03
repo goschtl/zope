@@ -17,7 +17,7 @@ Products.CMFCalendar Changelog
 - Event: Fixed object initialization.
   Default start and stop times are now rounded and offset-naive.
 
-- Require at least Zope 2.13.4.
+- Require at least Zope 2.13.12.
 
 
 2.2.2 (2010-10-31)
