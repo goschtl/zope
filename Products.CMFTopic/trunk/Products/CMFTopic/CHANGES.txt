@@ -15,7 +15,17 @@ Products.CMFTopic Changelog
 
 - Require at least Zope 2.13.4.
 
+
+2.2.1 (2010-07-04)
+------------------
+
 - Deal with deprecation warnings for Zope 2.13.
+
+
+2.2.0 (2010-01-04)
+------------------
+
+- no changes from version 2.2.0-beta
 
 
 2.2.0-beta (2009-12-06)
