@@ -19,9 +19,27 @@ Products.CMFCalendar Changelog
 
 - Require at least Zope 2.13.4.
 
-- Deal with deprecation warnings for Zope 2.13.
+
+2.2.2 (2010-10-31)
+------------------
+
+- Adjusted test layer setup to work with Zope 2.13.0a2.
+
+- Fixed Chameleon incompatibilities in some templates.
+
+
+2.2.1 (2010-07-04)
+------------------
 
 - Fixed ViewPageTemplateFile import to use the correct version from Five.
+
+- Deal with deprecation warnings for Zope 2.13.
+
+
+2.2.0 (2010-01-04)
+------------------
+
+- no changes from version 2.2.0-beta
 
 
 2.2.0-beta (2009-12-06)
