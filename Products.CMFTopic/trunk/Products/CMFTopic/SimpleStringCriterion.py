@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Simple string-matching criterion class
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

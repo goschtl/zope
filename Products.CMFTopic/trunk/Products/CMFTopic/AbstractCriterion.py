@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Home of the abstract Criterion base class.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

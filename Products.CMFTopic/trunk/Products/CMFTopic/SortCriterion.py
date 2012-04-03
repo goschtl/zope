@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Allow topic to specify sorting.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

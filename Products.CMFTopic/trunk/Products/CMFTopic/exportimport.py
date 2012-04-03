@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ GenericSetup export / import support for topics / criteria.
-
-$Id$
 """
 
 from xml.dom.minidom import parseString

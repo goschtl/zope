@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Topic: Canned catalog queries
-
-$Id$
 """
 
 def initialize(context):

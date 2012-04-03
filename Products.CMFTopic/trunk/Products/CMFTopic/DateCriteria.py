@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Various date criteria
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

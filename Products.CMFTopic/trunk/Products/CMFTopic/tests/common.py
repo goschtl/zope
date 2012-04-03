@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFTopic product:  unit test utilities.
-
-$Id$
 """
 
 from unittest import TestCase
