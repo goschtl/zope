@@ -28,6 +28,7 @@ setup(
         'setuptools',
         'pyflakes == 0.4.0',  # pyflakes 0.5.0 does not like python 2.6's AST
         'polib',
+        'cssutils',
     ],
     extras_require=dict(
         test=[]),

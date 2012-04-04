@@ -3,7 +3,7 @@ Source checking/linting tool
 
 It's easy to use.
 
-Import the package yuou want to check:
+Import the package you want to check:
 
   >>> import refline.srccheck
 
@@ -17,6 +17,10 @@ It will pinpoint the problems found.
   >>> c = checker(refline.srccheck)
   >>> c.run()
   <BLANKLINE>
+  testing/bad.css
+  ---------------
+    PropertyValue: No match: ('CHAR', u':', 4, 10)
+  <BLANKLINE>
   testing/bad.py
   --------------
     Tab found in file
@@ -25,6 +29,18 @@ It will pinpoint the problems found.
   --------------
     undefined name 'bar'
     6:     foo = bar
+  <BLANKLINE>
+  testing/some.js
+  ---------------
+    Breakpoint found in line
+    2:     console.log("blabla");
+  <BLANKLINE>
+  testing/z3c.form.po
+  -------------------
+    Fuzzy/untranslated found
+    1: 1 untranslated items
+    Fuzzy/untranslated found
+    1: 1 fuzzy items
 
 
 Just in case you cannot / do not want to avoid those problems,

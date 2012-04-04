@@ -14,12 +14,14 @@
 """Sourcecode checker, to be used in unittests
 """
 
+import logging
 import os
 import os.path
 import string
 import polib
 import fnmatch
 
+from cssutils import parse
 from refline.srccheck import pyflakes
 
 INDENT = '  '
@@ -226,6 +228,41 @@ class PTFragmentNeedsDomain(BaseChecker):
             self.log(0, '')
 
 
+class CSSLogger(object):
+    # this is a fake logger that redirects the actual logging calls to us
+
+    def __init__(self, checker):
+        self.checker = checker
+
+    def noop(self, *args, **kw):
+        pass
+
+    debug = noop
+    info = noop
+    setLevel = noop
+    getEffectiveLevel = noop
+    addHandler = noop
+    removeHandler = noop
+
+    def error(self, msg):
+        self.checker.error = msg
+        # can't add much help, all info is encoded in msg
+        self.checker.log(0)
+
+    warn = error
+    critical = error
+    fatal = error
+
+
+class CSSChecker(BaseChecker):
+    error = 'CSS'
+
+    def check(self, filename, content, lines):
+        parse.CSSParser(log=CSSLogger(self),
+                        loglevel=logging.WARN,
+                        validate=True).parseString(content)
+
+
 PY_CHECKS = [
     TabChecker(),
     NonAsciiChecker(),
@@ -258,6 +295,9 @@ JPG_CHECKS = [
 ]
 ZCML_CHECKS = [
 ]
+CSS_CHECKS = [
+    CSSChecker(),
+]
 
 CHECKS = {
     'py':   PY_CHECKS,
@@ -268,6 +308,7 @@ CHECKS = {
     'po':   PO_CHECKS,
     'jpg':  JPG_CHECKS,
     'zcml': ZCML_CHECKS,
+    'css':  CSS_CHECKS,
 }
 
 
