@@ -4,7 +4,7 @@ CHANGES
 0.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix: cleanup the madness in logging
 
 
 0.5.2 (2012-04-04)

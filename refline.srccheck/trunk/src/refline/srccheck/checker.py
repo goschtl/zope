@@ -33,7 +33,7 @@ class BaseChecker(object):
     basename = None
     error = None
 
-    def log(self, lineidx, line=None, pos=None):
+    def log(self, lineidx=0, line=None, pos=None, noInfo=False):
         if not self.fnameprinted:
             # always slash please, for cross platform stability
             filename = self.filename.replace('\\', '/')
@@ -41,17 +41,13 @@ class BaseChecker(object):
             print
             print filename
             print '-' * len(filename)
-
-        if line is None:
-            #no details
-            if not self.fnameprinted:
-                print "%s%s" % (INDENT, self.error)
             self.fnameprinted = True
-            return
-
-        self.fnameprinted = True
 
         print "%s%s" % (INDENT, self.error)
+
+        if noInfo:
+            return
+
         lineidx = str(lineidx + 1) + ': '
         print "%s%s%s" % (INDENT, lineidx, line)
         if pos is not None:
@@ -72,9 +68,10 @@ class TabChecker(BaseChecker):
     error = 'Tab found in file'
 
     def check(self, filename, content, lines):
-        for idx, line in enumerate(lines):
+        for lineidx, line in enumerate(lines):
             if '\t' in line:
-                self.log(idx)
+                pos = line.index('\t')
+                self.log(lineidx, line, pos)
 
 VALIDCHARS = string.printable
 
@@ -83,10 +80,10 @@ class NonAsciiChecker(BaseChecker):
     error = 'Non ASCII char found in line'
 
     def check(self, filename, content, lines):
-        for idx, line in enumerate(lines):
-            for cidx, c in enumerate(line):
+        for lineidx, line in enumerate(lines):
+            for pos, c in enumerate(line):
                 if c not in VALIDCHARS:
-                    self.log(idx, line, cidx)
+                    self.log(lineidx, line, pos)
                     break
 
 
@@ -94,29 +91,29 @@ class BreakChecker(BaseChecker):
     error = 'Breakpoint found in line'
 
     def check(self, filename, content, lines):
-        for idx, line in enumerate(lines):
+        for lineidx, line in enumerate(lines):
             if 'pdb.set_trace' in line \
                 and not (-1 < line.find('#') < line.find('pdb.set_trace')):
-                self.log(idx, line)
+                self.log(lineidx, line)
 
             if 'from dbgp.client import brk; brk(' in line \
                 and not (-1 < line.find('#') < line.find('dbgp.client.brk')):
-                self.log(idx, line)
+                self.log(lineidx, line)
 
             if 'import rpdb2; rpdb2.start_embedded_debugger' in line \
                 and not (-1 < line.find('#') < line.find(
                 'rpdb2.start_embedded_debugger')):
-                self.log(idx, line)
+                self.log(lineidx, line)
 
 
 class OpenInBrowserChecker(BaseChecker):
     error = 'openInBrowser found in line'
 
     def check(self, filename, content, lines):
-        for idx, line in enumerate(lines):
+        for lineidx, line in enumerate(lines):
             if 'openInBrowser' in line \
                 and not (-1 < line.find('#') < line.find('openInBrowser')):
-                self.log(idx, line)
+                self.log(lineidx, line)
 
 
 class PyflakesChecker(BaseChecker):
@@ -152,7 +149,7 @@ class PyflakesChecker(BaseChecker):
         if isinstance(result, basestring):
             #something fatal occurred
             self.error = result
-            self.log(0)
+            self.log(noInfo=True)
         else:
             #there are messages
             for warning in result:
@@ -166,10 +163,10 @@ class ConsoleLogChecker(BaseChecker):
     error = 'Breakpoint found in line'
 
     def check(self, filename, content, lines):
-        for idx, line in enumerate(lines):
+        for lineidx, line in enumerate(lines):
             if 'console.log' in line \
                 and not (-1 < line.find('//') < line.find('console.log')):
-                self.log(idx, line)
+                self.log(lineidx, line)
 
 
 class POChecker(BaseChecker):
@@ -225,7 +222,7 @@ class PTFragmentNeedsDomain(BaseChecker):
 
         if not 'i18n:domain' in content:
             #bummer, here we go
-            self.log(0, '')
+            self.log(noInfo=True)
 
 
 class CSSLogger(object):
@@ -251,7 +248,7 @@ class CSSLogger(object):
             # unicode in doctests drives me mad
             self.checker.error = msg.encode('ascii', 'replace')
         # can't add much help, all info is encoded in msg
-        self.checker.log(0)
+        self.checker.log(noInfo=True)
 
     warn = error
     critical = error

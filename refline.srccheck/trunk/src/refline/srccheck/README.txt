@@ -20,10 +20,18 @@ It will pinpoint the problems found.
   testing/bad.css
   ---------------
     PropertyValue: No match: ('CHAR', u':', 4, 10)
+    PropertyValue: Unknown syntax or no value:  10px
+      width: 20
+  <BLANKLINE>
+    CSSStyleDeclaration: Syntax Error in Property: height: 10px
+      width: 20
+  <BLANKLINE>
   <BLANKLINE>
   testing/bad.py
   --------------
     Tab found in file
+    9: 	print "there's a tab"
+       ^
   <BLANKLINE>
   testing/bad.py
   --------------
