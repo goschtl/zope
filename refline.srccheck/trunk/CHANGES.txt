@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-0.5.1 (unreleased)
+0.5.1 (2012-04-04)
 ------------------
 
 - Added CSS checking via cssutils
