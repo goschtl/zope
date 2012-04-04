@@ -1,7 +1,7 @@
 PortalTopic Overview
 
   *Note: this help file is old and being updated (ney, replaced) as
-  **CMF Topic Overview**.*
+  :doc:`Topics`
 
   PortalTopics present collections of portal items according to catalog
   searches formulated by the PortalTopic creator/configurer.
