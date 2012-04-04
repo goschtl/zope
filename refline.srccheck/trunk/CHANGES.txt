@@ -4,7 +4,7 @@ CHANGES
 0.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix unicode encoding issues in CSSChecker
 
 
 0.5.1 (2012-04-04)

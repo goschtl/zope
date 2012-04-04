@@ -245,7 +245,11 @@ class CSSLogger(object):
     removeHandler = noop
 
     def error(self, msg):
-        self.checker.error = msg
+        try:
+            self.checker.error = str(msg)
+        except UnicodeEncodeError:
+            # unicode in doctests drives me mad
+            self.checker.error = msg.encode('ascii', 'replace')
         # can't add much help, all info is encoded in msg
         self.checker.log(0)
 
