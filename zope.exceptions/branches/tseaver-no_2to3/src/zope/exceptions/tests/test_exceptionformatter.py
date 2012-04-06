@@ -244,6 +244,127 @@ class TextExceptionFormatterTests(unittest.TestCase):
         self.assertEqual(len(lines), 2)
         self.assertEqual(lines[1], '   - __traceback_info__: %s' % INFO_T)
 
+    def test_formatExceptionOnly(self):
+        import traceback
+        fmt = self._makeOne()
+        err = ValueError('testing')
+        self.assertEqual(fmt.formatExceptionOnly(ValueError, err),
+                         ''.join(
+                            traceback.format_exception_only(ValueError, err)))
+
+    def test_formatLastLine(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatLastLine('XXX'), 'XXX')
+
+    def test_formatException_empty_tb_stack(self):
+        import traceback
+        fmt = self._makeOne()
+        err = ValueError('testing')
+        lines = fmt.formatException(ValueError, err, None)
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[0], 'Traceback (most recent call last):\n')
+        self.assertEqual(lines[1],
+                         ''.join(
+                            traceback.format_exception_only(ValueError, err)))
+
+    def test_formatException_non_empty_tb_stack(self):
+        import traceback
+        fmt = self._makeOne()
+        err = ValueError('testing')
+        tb = DummyTB()
+        tb.tb_frame = DummyFrame()
+        lines = fmt.formatException(ValueError, err, tb)
+        self.assertEqual(len(lines), 3)
+        self.assertEqual(lines[0], 'Traceback (most recent call last):\n')
+        self.assertEqual(lines[1], '  Module dummy/filename.py, line 14, '
+                                   'in dummy_function\n')
+        self.assertEqual(lines[2],
+                         ''.join(
+                            traceback.format_exception_only(ValueError, err)))
+
+    def test_formatException_deep_tb_stack_with_limit(self):
+        import traceback
+        fmt = self._makeOne(limit=1)
+        err = ValueError('testing')
+        tb0 = DummyTB()
+        tb0.tb_lineno = 27
+        tb0.tb_frame = DummyFrame()
+        tb = DummyTB()
+        tb.tb_frame = DummyFrame()
+        tb.tb_next = tb0
+        lines = fmt.formatException(ValueError, err, tb)
+        self.assertEqual(len(lines), 3)
+        self.assertEqual(lines[0], 'Traceback (most recent call last):\n')
+        self.assertEqual(lines[1], '  Module dummy/filename.py, line 14, '
+                                   'in dummy_function\n')
+        self.assertEqual(lines[2],
+                         ''.join(
+                            traceback.format_exception_only(ValueError, err)))
+
+    def test_formatException_recursion_in_tb_stack(self):
+        import traceback
+        fmt = self._makeOne()
+        err = ValueError('testing')
+        tb_recurse = DummyTB()
+        tb_recurse.tb_lineno = 27
+        r_f = tb_recurse.tb_frame = DummyFrame()
+        r_f.f_lineno = 27
+        r_f.f_locals['__exception_formatter__'] = 1
+        tb = DummyTB()
+        tb.tb_frame = DummyFrame()
+        tb.tb_next = tb_recurse
+        lines = fmt.formatException(ValueError, err, tb)
+        self.assertEqual(len(lines), 5)
+        self.assertEqual(lines[0], 'Traceback (most recent call last):\n')
+        self.assertEqual(lines[1], '  Module dummy/filename.py, line 14, '
+                                   'in dummy_function\n')
+        self.assertEqual(lines[2], '(Recursive formatException() stopped, '
+                                   'trying traceback.format_tb)\n')
+        self.assertEqual(lines[3], '  File "dummy/filename.py", line 27, '
+                                   'in dummy_function\n')
+        self.assertEqual(lines[4],
+                         ''.join(
+                            traceback.format_exception_only(ValueError, err)))
+
+    def test_extractStack_wo_frame(self):
+        import sys
+        fmt = self._makeOne(limit=1)
+        f = sys._getframe(); lineno = f.f_lineno
+        lines = fmt.extractStack()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], '  Module '
+                         'zope.exceptions.tests.test_exceptionformatter, '
+                         'line %d, in test_extractStack_wo_frame\n'
+                         '    lines = fmt.extractStack()\n' % (lineno + 1))
+
+    def test_extractStack_w_single_frame(self):
+        fmt = self._makeOne()
+        f = DummyFrame()
+        lines = fmt.extractStack(f)
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], '  Module dummy/filename.py, line 137, '
+                                   'in dummy_function\n')
+
+    def test_extractStack_w_multiple_frames_and_limit(self):
+        fmt = self._makeOne(limit=1)
+        f0 = DummyFrame()
+        f0.f_lineno = 213
+        f = DummyFrame()
+        f.f_back = f0
+        lines = fmt.extractStack(f)
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], '  Module dummy/filename.py, line 137, '
+                                   'in dummy_function\n')
+
+    def test_extractStack_w_recursive_frames_and_limit(self):
+        fmt = self._makeOne(limit=1)
+        f = DummyFrame()
+        f.f_back = f
+        lines = fmt.extractStack(f)
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], '  Module dummy/filename.py, line 137, '
+                                   'in dummy_function\n')
+
 
 class Test_format_exception(unittest.TestCase):
 
@@ -506,10 +627,12 @@ class DummySupplement(object):
 
 class DummyTB(object):
     tb_lineno = 14
+    tb_next = None
 
 
 class DummyFrame(object):
     f_lineno = 137
+    f_back = None
     def __init__(self):
         self.f_locals = {}
         self.f_globals = {}
