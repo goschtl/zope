@@ -140,6 +140,11 @@ class TextExceptionFormatterTests(unittest.TestCase):
         supplement = DummySupplement(INFO)
         self.assertEqual(fmt.formatSupplement(supplement, tb=None), [INFO])
 
+    def test_formatSupplementInfo(self):
+        INFO = 'Some days\nI wish I had stayed in bed.'
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementInfo(INFO), INFO)
+
     def test_formatTracebackInfo(self):
         fmt = self._makeOne()
         self.assertEqual(fmt.formatTracebackInfo('XYZZY'),
@@ -400,6 +405,49 @@ class HTMLExceptionFormatterTests(unittest.TestCase):
         fmt = self._makeOne()
         self.assertEqual(fmt.getPrefix(),
                          '<p>Traceback (most recent call last):</p>\r\n<ul>')
+
+    def test_formatSupplementLine(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementLine('XXX'), '<b>XXX</b>')
+
+    def test_formatSupplementLine_w_markup(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementLine('XXX & YYY'),
+                         '<b>XXX &amp; YYY</b>')
+
+    def test_formatSupplementInfo_simple(self):
+        INFO = 'Some days\nI wonder.'
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementInfo(INFO),
+                         'Some&nbsp;days<br />\r\nI&nbsp;wonder.')
+
+    def test_formatSupplementInfo_w_markup(self):
+        INFO = 'Some days\nI wonder, <b>Why?</b>.'
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementInfo(INFO),
+                         'Some&nbsp;days<br />\r\nI&nbsp;wonder,&nbsp;'
+                         '&lt;b&gt;Why?&lt;/b&gt;.')
+
+    def test_formatTracebackInfo(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatTracebackInfo('XXX & YYY\nZZZ'),
+                         '__traceback_info__: XXX &amp; YYY<br />\r\nZZZ')
+
+    def test_formatLine_simple(self):
+        fmt = self._makeOne(with_filenames=True)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        result = fmt.formatLine(tb)
+        self.assertEqual(result,
+                         '<li>  File "%s", line %d, in %s</li>'
+                          % (f.f_code.co_filename,
+                             tb.tb_lineno,
+                             f.f_code.co_name,
+                            ))
+
+    def test_formatLastLine(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatLastLine('XXX'), '</ul><p>XXX</p>')
 
 
 class Test_format_exception(unittest.TestCase):
