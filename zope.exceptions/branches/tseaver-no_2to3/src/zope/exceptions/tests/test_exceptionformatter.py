@@ -212,7 +212,6 @@ class TextExceptionFormatterTests(unittest.TestCase):
     def test_formatLine_w_supplement_in_locals(self):
         INFO_L = 'I wish I had stayed in bed.'
         INFO_G = 'I would rather soak my head.'
-        fmt = self._makeOne()
         fmt = self._makeOne(with_filenames=False)
         tb = DummyTB()
         tb.tb_frame = f = DummyFrame()
@@ -225,7 +224,6 @@ class TextExceptionFormatterTests(unittest.TestCase):
 
     def test_formatLine_w_supplement_in_globals(self):
         INFO_G = 'I would rather soak my head.'
-        fmt = self._makeOne()
         fmt = self._makeOne(with_filenames=False)
         tb = DummyTB()
         tb.tb_frame = f = DummyFrame()
@@ -237,7 +235,6 @@ class TextExceptionFormatterTests(unittest.TestCase):
 
     def test_formatLine_w_traceback_info(self):
         INFO_T = 'I would rather soak my head.'
-        fmt = self._makeOne()
         fmt = self._makeOne(with_filenames=False)
         tb = DummyTB()
         tb.tb_frame = f = DummyFrame()
@@ -246,6 +243,7 @@ class TextExceptionFormatterTests(unittest.TestCase):
         lines = fmt.formatLine(tb).splitlines()
         self.assertEqual(len(lines), 2)
         self.assertEqual(lines[1], '   - __traceback_info__: %s' % INFO_T)
+
 
 class Test_format_exception(unittest.TestCase):
 
