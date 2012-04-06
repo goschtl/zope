@@ -25,7 +25,6 @@ DEBUG_EXCEPTION_FORMATTER = 1
 class TextExceptionFormatter(object):
 
     line_sep = '\n'
-    show_revisions = 0
 
     def __init__(self, limit=None, with_filenames=False):
         self.limit = limit
@@ -84,16 +83,15 @@ class TextExceptionFormatter(object):
             try:
                 extra = getInfo()
                 if extra:
-                    extra = self.escape(extra)
-                    if self.line_sep != "\n":
-                        extra = extra.replace(" ", "&nbsp;")
-                        extra = extra.replace("\n", self.line_sep)
-                    result.append(extra)
-            except:
+                    result.append(self.formatSupplementInfo(extra))
+            except: #pragma NO COVER
                 if DEBUG_EXCEPTION_FORMATTER:
                     traceback.print_exc()
                 # else just swallow the exception.
         return result
+
+    def formatSupplementInfo(self, info):
+        return self.escape(info)
 
     def formatTracebackInfo(self, tbi):
         return self.formatSupplementLine('__traceback_info__: %s' % (tbi, ))
@@ -109,8 +107,9 @@ class TextExceptionFormatter(object):
         co = f.f_code
         filename = co.co_filename
         name = co.co_name
-        locals = f.f_locals
-        globals = f.f_globals
+        locals = f.f_locals    # XXX shadowing normal builtins deliberately?
+        globals = f.f_globals  # XXX shadowing normal builtins deliberately?
+
 
         if self.with_filenames:
             s = '  File "%s", line %d' % (filename, lineno)
@@ -144,7 +143,7 @@ class TextExceptionFormatter(object):
             try:
                 supp = factory(*args)
                 result.extend(self.formatSupplement(supp, tb))
-            except:
+            except: #pragma NO COVER
                 if DEBUG_EXCEPTION_FORMATTER:
                     traceback.print_exc()
                 # else just swallow the exception.
@@ -153,7 +152,7 @@ class TextExceptionFormatter(object):
             tbi = locals.get('__traceback_info__', None)
             if tbi is not None:
                 result.append(self.formatTracebackInfo(tbi))
-        except:
+        except: #pragma NO COVER
             if DEBUG_EXCEPTION_FORMATTER:
                 traceback.print_exc()
             # else just swallow the exception.
@@ -221,6 +220,12 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
 
     def formatSupplementLine(self, line):
         return '<b>%s</b>' % self.escape(str(line))
+
+    def formatSupplementInfo(self, info):
+        info = self.escape(info)
+        info = info.replace(" ", "&nbsp;")
+        info = info.replace("\n", self.line_sep)
+        return info
 
     def formatTracebackInfo(self, tbi):
         s = self.escape(str(tbi))
