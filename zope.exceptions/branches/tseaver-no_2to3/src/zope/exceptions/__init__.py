@@ -22,11 +22,11 @@ from zope.exceptions.interfaces import UserError, IUserError
 # avoid dependency on zope.security:
 try:
     import zope.security
-except ImportError, v:
+except ImportError, v: #pragma NO COVER
     # "ImportError: No module named security"
     if not str(v).endswith('security'):
         raise
-else:
+else: #pragma NO COVER
     from zope.security.interfaces import IUnauthorized, Unauthorized
     from zope.security.interfaces import IForbidden, IForbiddenAttribute
     from zope.security.interfaces import Forbidden, ForbiddenAttribute
