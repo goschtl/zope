@@ -572,13 +572,13 @@ class Test_format_exception(unittest.TestCase):
 
     def test_multiline_exception(self):
         try:
-            exec 'syntax error\n'
+            exec('syntax error\n')
         except Exception:
             s = self._callFUT(False)
-        self.assertEqual(s.splitlines()[-3:],
-                         ['    syntax error',
-                          '               ^',
-                          'SyntaxError: invalid syntax'])
+        lines = s.splitlines()[-3:]
+        self.assertEqual(lines[0], '    syntax error')
+        self.assertTrue(lines[1].endswith('    ^')) #PyPy has a shorter prefix
+        self.assertEqual(lines[2], 'SyntaxError: invalid syntax')
 
     def test_recursion_failure(self):
         import sys
@@ -612,7 +612,10 @@ class Test_format_exception(unittest.TestCase):
 class Test_print_exception(unittest.TestCase):
 
     def _callFUT(self, as_html=False):
-        from StringIO import StringIO
+        try:
+            from StringIO import StringIO
+        except ImportError:
+            from io import StringIO
         buf = StringIO()
         import sys
         from zope.exceptions.exceptionformatter import print_exception

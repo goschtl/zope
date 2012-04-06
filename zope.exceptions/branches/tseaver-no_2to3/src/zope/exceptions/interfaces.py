@@ -28,16 +28,18 @@ arguments to pass to the factory.  The traceback formatter makes an
 effort to clearly present the information provided by the
 ITracebackSupplement.
 """
-from zope.interface import Interface, Attribute, implements
+from zope.interface import Interface
+from zope.interface import Attribute
+from zope.interface import implementer
 
 
 class IDuplicationError(Interface):
     pass
 
 
+@implementer(IDuplicationError)
 class DuplicationError(Exception):
     """A duplicate registration was attempted"""
-    implements(IDuplicationError)
 
 
 class IUserError(Interface):
@@ -45,13 +47,13 @@ class IUserError(Interface):
     """
 
 
+@implementer(IUserError)
 class UserError(Exception):
     """User errors
 
     These exceptions should generally be displayed to users unless
     they are handled.
     """
-    implements(IUserError)
 
 
 class ITracebackSupplement(Interface):

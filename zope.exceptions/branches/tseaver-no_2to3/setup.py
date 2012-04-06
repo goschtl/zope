@@ -28,12 +28,6 @@ extra = {
                       }
 }
 
-if sys.version_info >= (3, ):
-    # Python 3 support:
-    extra['use_2to3'] = True
-    extra['setup_requires'] = ['zope.fixers']
-    extra['use_2to3_fixers'] = ['zope.fixers']
-
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -57,6 +51,8 @@ setup(name='zope.exceptions',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.2',
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
