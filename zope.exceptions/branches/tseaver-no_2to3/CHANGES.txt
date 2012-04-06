@@ -5,6 +5,8 @@ Changes
 4.0.0 (unreleased)
 ------------------
 
+- Added Sphinx documentation.
+
 - Added support for continuous integration using ``tox`` and ``jenkins``.
 
 - Removed use of '2to3' and associated fixers when installing under Py3k.
