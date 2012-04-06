@@ -176,7 +176,8 @@ class TextExceptionFormatter(object):
         while tb is not None and (limit is None or n < limit):
             if tb.tb_frame.f_locals.get('__exception_formatter__'):
                 # Stop recursion.
-                result.append('(Recursive formatException() stopped, trying traceback.format_tb)\n')
+                result.append('(Recursive formatException() stopped, '
+                              'trying traceback.format_tb)\n')
                 result.extend(traceback.format_tb(tb))
                 break
             line = self.formatLine(tb=tb)
