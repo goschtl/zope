@@ -366,6 +366,42 @@ class TextExceptionFormatterTests(unittest.TestCase):
                                    'in dummy_function\n')
 
 
+class HTMLExceptionFormatterTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from zope.exceptions.exceptionformatter import HTMLExceptionFormatter
+        return HTMLExceptionFormatter
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
+    def test_ctor_defaults(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.line_sep, '<br />\r\n')
+        self.assertEqual(fmt.limit, None)
+        self.assertEqual(fmt.with_filenames, False)
+
+    def test_ctor_explicit(self):
+        fmt = self._makeOne(limit=20, with_filenames=True)
+        self.assertEqual(fmt.line_sep, '<br />\r\n')
+        self.assertEqual(fmt.limit, 20)
+        self.assertEqual(fmt.with_filenames, True)
+
+    def test_escape_simple(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.escape('XXX'), 'XXX')
+
+    def test_escape_w_markup(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.escape('<span>XXX & YYY<span>'),
+                                    '&lt;span&gt;XXX &amp; YYY&lt;span&gt;')
+
+    def test_getPrefix(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.getPrefix(),
+                         '<p>Traceback (most recent call last):\r\n<ul>')
+
+
 class Test_format_exception(unittest.TestCase):
 
     def _callFUT(self, as_html=False):
@@ -664,6 +700,7 @@ class _Monkey(object):
 
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(TextExceptionFormatterTests),
         unittest.makeSuite(Test_format_exception),
         unittest.makeSuite(Test_extract_stack),
     ))
