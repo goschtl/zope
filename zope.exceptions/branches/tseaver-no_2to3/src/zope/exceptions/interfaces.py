@@ -104,10 +104,6 @@ class ITracebackSupplement(Interface):
         itself provides enough information.
         """)
 
-    def getInfo(as_html=0):
+    def getInfo():
         """Optional.  Returns a string containing any other useful info.
-
-        If as_html is set, the implementation must HTML-quote the result
-        (normally using cgi.escape()).  Returns None to provide no
-        extra info.
         """
