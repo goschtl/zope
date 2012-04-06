@@ -103,7 +103,7 @@ class TextExceptionFormatter(object):
         elif not tb and f:
             lineno = f.f_lineno
         else:
-            raise ValueError("tb or f needs to be passed")
+            raise ValueError("Pass exactly one of tb or f")
         co = f.f_code
         filename = co.co_filename
         name = co.co_name
