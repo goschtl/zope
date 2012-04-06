@@ -263,7 +263,7 @@ def print_exception(t, v, tb, limit=None, file=None, as_html=False,
     information to the traceback and accepts two options, 'as_html'
     and 'with_filenames'.
     """
-    if file is None:
+    if file is None: #pragma NO COVER
         file = sys.stderr
     lines = format_exception(t, v, tb, limit, as_html, with_filenames)
     for line in lines:

@@ -609,6 +609,41 @@ class Test_format_exception(unittest.TestCase):
                         in s.splitlines()[-1])
 
 
+class Test_print_exception(unittest.TestCase):
+
+    def _callFUT(self, as_html=False):
+        from StringIO import StringIO
+        buf = StringIO()
+        import sys
+        from zope.exceptions.exceptionformatter import print_exception
+        t, v, b = sys.exc_info()
+        try:
+            print_exception(t, v, b, file=buf, as_html=as_html)
+            return buf.getvalue()
+        finally:
+            del b
+
+    def test_basic_names_text(self):
+        try:
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            s = self._callFUT(False)
+        # The traceback should include the name of this function.
+        self.assertTrue(s.find('test_basic_names_text') >= 0)
+        # The traceback should include the name of the exception.
+        self.assertTrue(s.find('ExceptionForTesting') >= 0)
+
+    def test_basic_names_html(self):
+        try:
+            raise ExceptionForTesting
+        except ExceptionForTesting:
+            s = self._callFUT(True)
+        # The traceback should include the name of this function.
+        self.assertTrue(s.find('test_basic_names_html') >= 0)
+        # The traceback should include the name of the exception.
+        self.assertTrue(s.find('ExceptionForTesting') >= 0)
+
+
 class Test_extract_stack(unittest.TestCase):
 
     def _callFUT(self, as_html=False):
@@ -749,6 +784,8 @@ class _Monkey(object):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TextExceptionFormatterTests),
+        unittest.makeSuite(HTMLExceptionFormatterTests),
         unittest.makeSuite(Test_format_exception),
+        unittest.makeSuite(Test_print_exception),
         unittest.makeSuite(Test_extract_stack),
     ))
