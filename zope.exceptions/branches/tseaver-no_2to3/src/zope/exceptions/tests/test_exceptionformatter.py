@@ -132,14 +132,12 @@ class TextExceptionFormatterTests(unittest.TestCase):
     def test_formatSupplement_w_getInfo_empty(self):
         fmt = self._makeOne()
         supplement = DummySupplement()
-        supplement.getInfo = lambda *args: ''
         self.assertEqual(fmt.formatSupplement(supplement, tb=None), [])
 
     def test_formatSupplement_w_getInfo_text(self):
         INFO = 'Some days\nI wish I had stayed in bed.'
         fmt = self._makeOne()
-        supplement = DummySupplement()
-        supplement.getInfo = lambda *args: INFO
+        supplement = DummySupplement(INFO)
         self.assertEqual(fmt.formatSupplement(supplement, tb=None), [INFO])
 
     def test_formatTracebackInfo(self):
@@ -151,6 +149,103 @@ class TextExceptionFormatterTests(unittest.TestCase):
         fmt = self._makeOne()
         self.assertRaises(ValueError, fmt.formatLine, None, None)
 
+    def test_formatLine_w_tb_and_f(self):
+        fmt = self._makeOne()
+        tb = DummyTB()
+        f = DummyFrame()
+        self.assertRaises(ValueError, fmt.formatLine, tb, f)
+
+    def test_formatLine_w_tb_bogus_linecache_w_filenames(self):
+        fmt = self._makeOne(with_filenames=True)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        lines = fmt.formatLine(tb).splitlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         '  File "%s", line %d, in %s'
+                          % (f.f_code.co_filename,
+                             tb.tb_lineno,
+                             f.f_code.co_name,
+                            ))
+
+    def test_formatLine_w_f_bogus_linecache_w_filenames(self):
+        fmt = self._makeOne(with_filenames=True)
+        f = DummyFrame()
+        lines = fmt.formatLine(f=f).splitlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         '  File "%s", line %d, in %s'
+                          % (f.f_code.co_filename,
+                             f.f_lineno,
+                             f.f_code.co_name,
+                            ))
+
+    def test_formatLine_w_tb_bogus_linecache_wo_filenames(self):
+        fmt = self._makeOne(with_filenames=False)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        f.f_globals['__name__'] = 'dummy.filename'
+        lines = fmt.formatLine(tb).splitlines()
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         '  Module dummy.filename, line %d, in %s'
+                          % (tb.tb_lineno,
+                             f.f_code.co_name,
+                            ))
+
+    def test_formatLine_w_f_real_linecache_w_filenames(self):
+        import sys
+        fmt = self._makeOne(with_filenames=True)
+        f = sys._getframe(); lineno = f.f_lineno
+        result = fmt.formatLine(f=f)
+        lines = result.splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[0],
+                         '  File "%s", line %d, in %s'
+                          % (f.f_code.co_filename,
+                             lineno + 1,
+                             f.f_code.co_name,
+                            ))
+        self.assertEqual(lines[1],
+                         '    result = fmt.formatLine(f=f)')
+
+    def test_formatLine_w_supplement_in_locals(self):
+        INFO_L = 'I wish I had stayed in bed.'
+        INFO_G = 'I would rather soak my head.'
+        fmt = self._makeOne()
+        fmt = self._makeOne(with_filenames=False)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        f.f_globals['__name__'] = 'dummy.filename'
+        f.f_locals['__traceback_supplement__'] = (DummySupplement, INFO_L)
+        f.f_globals['__traceback_supplement__'] = (DummySupplement, INFO_G)
+        lines = fmt.formatLine(tb).splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[1], INFO_L)
+
+    def test_formatLine_w_supplement_in_globals(self):
+        INFO_G = 'I would rather soak my head.'
+        fmt = self._makeOne()
+        fmt = self._makeOne(with_filenames=False)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        f.f_globals['__name__'] = 'dummy.filename'
+        f.f_globals['__traceback_supplement__'] = (DummySupplement, INFO_G)
+        lines = fmt.formatLine(tb).splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[1], INFO_G)
+
+    def test_formatLine_w_traceback_info(self):
+        INFO_T = 'I would rather soak my head.'
+        fmt = self._makeOne()
+        fmt = self._makeOne(with_filenames=False)
+        tb = DummyTB()
+        tb.tb_frame = f = DummyFrame()
+        f.f_globals['__name__'] = 'dummy.filename'
+        f.f_locals['__traceback_info__'] = INFO_T
+        lines = fmt.formatLine(tb).splitlines()
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[1], '   - __traceback_info__: %s' % INFO_T)
 
 class Test_format_exception(unittest.TestCase):
 
@@ -405,12 +500,26 @@ class TestingTracebackSupplement(object):
 
 
 class DummySupplement(object):
-    pass
+    def __init__(self, info=''):
+        self._info = info
+    def getInfo(self):
+        return self._info
 
 
 class DummyTB(object):
     tb_lineno = 14
 
+
+class DummyFrame(object):
+    f_lineno = 137
+    def __init__(self):
+        self.f_locals = {}
+        self.f_globals = {}
+        self.f_code = DummyCode()
+
+class DummyCode(object):
+    co_filename = 'dummy/filename.py'
+    co_name = 'dummy_function'
 
 class _Monkey(object):
     # context-manager for replacing module names in the scope of a test.
