@@ -16,6 +16,142 @@
 import unittest
 
 
+class TextExceptionFormatterTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from zope.exceptions.exceptionformatter import TextExceptionFormatter
+        return TextExceptionFormatter
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
+    def test_ctor_defaults(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.line_sep, '\n')
+        self.assertEqual(fmt.limit, None)
+        self.assertEqual(fmt.with_filenames, False)
+
+    def test_ctor_explicit(self):
+        fmt = self._makeOne(limit=20, with_filenames=True)
+        self.assertEqual(fmt.line_sep, '\n')
+        self.assertEqual(fmt.limit, 20)
+        self.assertEqual(fmt.with_filenames, True)
+
+    def test_escape(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.escape('XXX'), 'XXX')
+
+    def test_getPrefix(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.getPrefix(),
+                         'Traceback (most recent call last):')
+
+    def test_getLimit_default(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.getLimit(), 200)
+
+    def test_getLimit_sys_has_limit(self):
+        import sys
+        fmt = self._makeOne()
+        with _Monkey(sys, tracebacklimit=15):
+            self.assertEqual(fmt.getLimit(), 15)
+
+    def test_getLimit_explicit(self):
+        fmt = self._makeOne(limit=10)
+        self.assertEqual(fmt.getLimit(), 10)
+
+    def test_formatSupplementLine(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSupplementLine('XXX'), '   - XXX')
+
+    def test_formatSourceURL(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatSourceURL('http://example.com/'),
+                         ['   - http://example.com/'])
+
+    def test_formatSupplement_no_info(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None), [])
+
+    def test_formatSupplement_w_source_url(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.source_url = 'http://example.com/'
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - http://example.com/'])
+
+    def test_formatSupplement_w_line_as_marker(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.line = -1
+        tb = DummyTB()
+        self.assertEqual(fmt.formatSupplement(supplement, tb=tb),
+                         ['   - Line 14'])
+
+    def test_formatSupplement_w_line_no_column(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.line = 23
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - Line 23'])
+
+    def test_formatSupplement_w_column_no_line(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.column = 47
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - Column 47'])
+
+    def test_formatSupplement_w_line_and_column(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.line = 23
+        supplement.column = 47
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - Line 23, Column 47'])
+
+    def test_formatSupplement_w_expression(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.expression = 'a*x^2 + b*x + c'
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - Expression: a*x^2 + b*x + c'])
+
+    def test_formatSupplement_w_warnings(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.warnings = ['Beware the ides of March!',
+                               'You\'re gonna get wasted.',
+                              ]
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None),
+                         ['   - Warning: Beware the ides of March!',
+                          '   - Warning: You\'re gonna get wasted.',
+                         ])
+
+    def test_formatSupplement_w_getInfo_empty(self):
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.getInfo = lambda *args: ''
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None), [])
+
+    def test_formatSupplement_w_getInfo_text(self):
+        INFO = 'Some days\nI wish I had stayed in bed.'
+        fmt = self._makeOne()
+        supplement = DummySupplement()
+        supplement.getInfo = lambda *args: INFO
+        self.assertEqual(fmt.formatSupplement(supplement, tb=None), [INFO])
+
+    def test_formatTracebackInfo(self):
+        fmt = self._makeOne()
+        self.assertEqual(fmt.formatTracebackInfo('XYZZY'),
+                         '   - __traceback_info__: XYZZY')
+
+    def test_formatLine_no_tb_no_f(self):
+        fmt = self._makeOne()
+        self.assertRaises(ValueError, fmt.formatLine, None, None)
+
+
 class Test_format_exception(unittest.TestCase):
 
     def _callFUT(self, as_html=False):
@@ -260,18 +396,44 @@ class ExceptionForTesting (Exception):
 
 
 class TestingTracebackSupplement(object):
-
     source_url = '/somepath'
     line = 634
     column = 57
     warnings = ['Repent, for the end is nigh']
-
     def __init__(self, expression):
         self.expression = expression
+
+
+class DummySupplement(object):
+    pass
+
+
+class DummyTB(object):
+    tb_lineno = 14
+
+
+class _Monkey(object):
+    # context-manager for replacing module names in the scope of a test.
+    def __init__(self, module, **kw):
+        self.module = module
+        self.to_restore = dict([(key, getattr(module, key, self))
+                                    for key in kw])
+        for key, value in kw.items():
+            setattr(module, key, value)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for key, value in self.to_restore.items():
+            if value is not self:
+                setattr(self.module, key, value)
+            else:
+                delattr(self.module, key)
 
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_format_exception),
         unittest.makeSuite(Test_extract_stack),
-        ))
+    ))
