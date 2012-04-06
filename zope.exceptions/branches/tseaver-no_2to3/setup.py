@@ -21,15 +21,18 @@
 import os
 from setuptools import setup, find_packages
 import sys
-if sys.version_info < (3, ):
-    extra = {}
-else:
+
+extra = {
+    'extras_require': {'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
+                       'testing': ['nose', 'coverage'],
+                      }
+}
+
+if sys.version_info >= (3, ):
     # Python 3 support:
-    extra = dict(
-        use_2to3=True,
-        setup_requires=['zope.fixers'],
-        use_2to3_fixers = ['zope.fixers'],
-    )
+    extra['use_2to3'] = True
+    extra['setup_requires'] = ['zope.fixers']
+    extra['use_2to3_fixers'] = ['zope.fixers']
 
 
 def read(*rnames):

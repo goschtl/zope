@@ -7,6 +7,11 @@ Changes
 
 - Dropped explicit support for Python 2.4 / 2.5 / 3.1.
 
+- Added 'setup.py dev' alias (runs ``setup.py develop`` plus installs
+  ``nose`` and ``coverage``).
+
+- Added 'setup.py docs' alias (installs ``Sphinx`` and dependencies).
+
 
 3.7.1 (2012-03-28)
 ------------------
