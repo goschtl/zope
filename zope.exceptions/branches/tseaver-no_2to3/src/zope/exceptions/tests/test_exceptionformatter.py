@@ -399,7 +399,7 @@ class HTMLExceptionFormatterTests(unittest.TestCase):
     def test_getPrefix(self):
         fmt = self._makeOne()
         self.assertEqual(fmt.getPrefix(),
-                         '<p>Traceback (most recent call last):\r\n<ul>')
+                         '<p>Traceback (most recent call last):</p>\r\n<ul>')
 
 
 class Test_format_exception(unittest.TestCase):

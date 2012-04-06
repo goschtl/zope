@@ -216,7 +216,7 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         return cgi.escape(s)
 
     def getPrefix(self):
-        return '<p>Traceback (most recent call last):\r\n<ul>'
+        return '<p>Traceback (most recent call last):</p>\r\n<ul>'
 
     def formatSupplementLine(self, line):
         return '<b>%s</b>' % self.escape(str(line))
@@ -237,7 +237,7 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         return '<li>%s</li>' % line
 
     def formatLastLine(self, exc_line):
-        return '</ul>%s</p>' % self.escape(exc_line)
+        return '</ul><p>%s</p>' % self.escape(exc_line)
 
 
 def format_exception(t, v, tb, limit=None, as_html=False,
