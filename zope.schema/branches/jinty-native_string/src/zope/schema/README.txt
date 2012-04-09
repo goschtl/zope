@@ -65,7 +65,7 @@ by first validating and then setting the value on the object. The first step
 is to define some data:
 
   >>> title = u('Zope 3 Website')
-  >>> url = b('http://dev.zope.org/Zope3')
+  >>> url = 'http://dev.zope.org/Zope3'
 
 Now we, get the fields from the interface:
 
@@ -91,7 +91,7 @@ occurs a ``ValidationError`` will be raised; for example:
   ...
   WrongType: (u'http://zope.org/foo', <type 'str'>, 'url')
 
-  >>> url_bound.validate(b('foo.bar'))
+  >>> url_bound.validate('foo.bar')
   Traceback (most recent call last):
   ...
   InvalidURI: foo.bar

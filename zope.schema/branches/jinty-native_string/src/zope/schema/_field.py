@@ -602,27 +602,26 @@ class Dict(MinMaxLen, Iterable):
 _isuri = r"[a-zA-z0-9+.-]+:" # scheme
 _isuri += r"\S*$" # non space (should be pickier)
 
-_isuri_bytes = re.compile(_isuri.encode('ascii')).match
 _isuri = re.compile(_isuri).match
 
 @implementer(IURI, IFromUnicode)
-class URI(BytesLine):
+class URI(NativeStringLine):
     """URI schema field
     """
 
     def _validate(self, value):
         """
         >>> uri = URI(__name__='test')
-        >>> uri.validate(b("http://www.python.org/foo/bar"))
-        >>> uri.validate(b("DAV:"))
-        >>> uri.validate(b("www.python.org/foo/bar"))
+        >>> uri.validate("http://www.python.org/foo/bar")
+        >>> uri.validate("DAV:")
+        >>> uri.validate("www.python.org/foo/bar")
         Traceback (most recent call last):
         ...
         InvalidURI: www.python.org/foo/bar
         """
 
         super(URI, self)._validate(value)
-        if _isuri_bytes(value):
+        if _isuri(value):
             return
 
         raise InvalidURI(value)
@@ -641,7 +640,7 @@ class URI(BytesLine):
         ...
         InvalidURI: http://www.python.org/ foo/bar
         """
-        v = value.strip().encode('ascii')
+        v = value.strip()
         self.validate(v)
         return v
 
