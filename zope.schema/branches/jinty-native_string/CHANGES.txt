@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-4.1.2 (unreleased)
+4.2.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Introduce NativeString and NativeStringLine which are equal to Bytes and
+  BytesLine on Python 2 and Text and TextLine on Python 3.
+
+- Change IURI from a Bytes string to a "native" string. This is a backwards
+  incompatibility which only affects Python 3.
 
 
 4.1.1 (2012-03-23)

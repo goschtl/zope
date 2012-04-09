@@ -373,7 +373,7 @@ def _fields(values):
     return True
 
 
-class IURI(IBytesLine):
+class IURI(_IStrLine):
     """A field containing an absolute URI
     """
 

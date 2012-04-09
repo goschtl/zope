@@ -86,11 +86,6 @@ Now that the fields are bound, we can finally validate the data:
 If the validation is successful, ``None`` is returned. If a validation error
 occurs a ``ValidationError`` will be raised; for example:
 
-  >>> url_bound.validate(u('http://zope.org/foo'))
-  Traceback (most recent call last):
-  ...
-  WrongType: (u'http://zope.org/foo', <type 'str'>, 'url')
-
   >>> url_bound.validate('foo.bar')
   Traceback (most recent call last):
   ...
