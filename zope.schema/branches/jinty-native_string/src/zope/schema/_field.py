@@ -107,12 +107,12 @@ class Bytes(MinMaxLen, Field):
 
 # for things which are of the str type on both Python 2 and 3
 if PY3:
-    _Str = Text
+    NativeString = Text
 else:
-    _Str = Bytes
+    NativeString = Bytes
 
 @implementer(IASCII)
-class ASCII(_Str):
+class ASCII(NativeString):
     __doc__ = IASCII.__doc__
 
     def _validate(self, value):
@@ -152,9 +152,9 @@ class BytesLine(Bytes):
 
 # for things which are of the str type on both Python 2 and 3
 if PY3:
-    _StrLine = TextLine
+    NativeStringLine = TextLine
 else:
-    _StrLine = BytesLine
+    NativeStringLine = BytesLine
 
 @implementer(IASCIILine)
 class ASCIILine(ASCII):
@@ -654,7 +654,7 @@ _isdotted = re.compile(
 
 
 @implementer(IId, IFromUnicode)
-class Id(_StrLine):
+class Id(NativeStringLine):
     """Id field
 
     Values of id fields must be either uris or dotted names.
@@ -705,7 +705,7 @@ class Id(_StrLine):
 
 
 @implementer(IDottedName)
-class DottedName(_StrLine):
+class DottedName(NativeStringLine):
     """Dotted name field.
 
     Values of DottedName fields must be Python-style dotted names.
