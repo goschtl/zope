@@ -13,7 +13,7 @@
 ##############################################################################
 """Test directives
 """
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope.schema import Text, BytesLine
 from zope.configuration.config import GroupingContextDecorator
 from zope.configuration.interfaces import IConfigurationContext
@@ -48,9 +48,9 @@ class IPackaged(Interface):
 class IPackagedContext(IPackaged, IConfigurationContext):
     pass
 
+@implementer(IPackagedContext)
 class Packaged(GroupingContextDecorator):
-
-    implements(IPackagedContext)
+    pass
 
 
 class IFactory(Interface):

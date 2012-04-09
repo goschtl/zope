@@ -121,15 +121,16 @@ Now we should see some file information in the  registry:
 
 >>> from zope.configuration.tests.test_xmlconfig import clean_text_w_paths
 >>> from zope.configuration.tests.test_xmlconfig import clean_path
+>>> from six import print_
 >>> for i in file_registry:
-...   print "path:", clean_path(i.path)
-...   print "title:", i.title
-...   print "description:", '\n'.join(
+...   print_("path:", clean_path(i.path))
+...   print_("title:", i.title)
+...   print_("description:", '\n'.join(
 ...               [l.rstrip()
 ...                for l in i.description.strip().split('\n')
-...                if l.rstrip()])
-...   print "info:"
-...   print clean_text_w_paths(i.info)
+...                if l.rstrip()]))
+...   print_("info:")
+...   print_(clean_text_w_paths(i.info))
 path: tests/test_simple.py
 title: How to create a simple directive
 description: Describes how to implement a simple directive

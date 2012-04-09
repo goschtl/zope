@@ -114,7 +114,7 @@ And verify that the schema registery has the schemas we expect:
 
 >>> from pprint import PrettyPrinter
 >>> pprint=PrettyPrinter(width=70).pprint
->>> pprint(list(schema_registry))
+>>> pprint(sorted(schema_registry))
 ['zope.configuration.tests.test_nested.I1',
  'zope.configuration.tests.test_nested.I2']
 
@@ -151,13 +151,13 @@ happens if we use a field directive outside of a schema dorective.
 (Note that we used the context we created above, so we don't have to
 redefine our directives:
 
+>>> from six import print_
 >>> try:
 ...    v = xmlconfig.string(
 ...      '<text xmlns="http://sample.namespaces.zope.org/schema" name="x" />',
 ...      context)
-... except xmlconfig.ZopeXMLConfigurationError, v:
-...   pass
->>> print v
+... except xmlconfig.ZopeXMLConfigurationError as v:
+...   print_(v)
 File "<string>", line 1.0
     ConfigurationError: The directive """ \
         """(u'http://sample.namespaces.zope.org/schema', u'text') """ \
@@ -175,16 +175,20 @@ Let's see what happens if we declare duplicate fields:
 ...      </schema>
 ...      ''',
 ...      context)
-... except xmlconfig.ZopeXMLConfigurationError, v:
-...   pass
->>> print v
+... except xmlconfig.ZopeXMLConfigurationError as v:
+...   print_(v)
 File "<string>", line 5.7-5.24
     ValueError: ('Duplicate field', 'x')
 """
 
+import re
 import unittest
 from doctest import DocTestSuite
+
+import six
 from zope import interface, schema
+from zope.testing import renormalizing
+
 from zope.configuration import config, xmlconfig, fields
 
 
@@ -210,11 +214,10 @@ class ISchema(interface.Interface):
     fields = interface.Attribute("Dictionary of field definitions"
         )
     
+@interface.implementer(config.IConfigurationContext, ISchema)
 class Schema(config.GroupingContextDecorator):
     """Handle schema directives
     """
-
-    interface.implements(config.IConfigurationContext, ISchema)
 
     def __init__(self, context, name, id):
         self.context, self.name, self.id = context, name, id
@@ -312,8 +315,21 @@ def intField(context, **kw):
     
 
 def test_suite():
+    checkers = []
+    if six.PY3:
+        checkers.extend([
+        (re.compile(r"b'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'b"([^"]*)"'),
+                    r'"\1"'),
+        (re.compile(r"u'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'u"([^"]*)"'),
+                    r'"\1"'),
+        ])
+    checker = renormalizing.RENormalizing(checkers)
     return unittest.TestSuite((
-        DocTestSuite(),
+        DocTestSuite(checker=checker),
         ))
 
 if __name__ == '__main__': unittest.main()

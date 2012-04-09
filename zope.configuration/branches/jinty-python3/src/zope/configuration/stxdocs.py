@@ -28,6 +28,7 @@ Options:
         sub-directories with files in them. 
 """
 import sys, os, getopt
+from six import print_
 import zope.configuration
 from zope.schema import getFieldsInOrder 
 from zope.configuration import config, xmlconfig
@@ -35,9 +36,9 @@ from zope.configuration.docutils import wrap, makeDocStructures
 
 def usage(code, msg=''):
     # Python 2.1 required
-    print >> sys.stderr, __doc__
+    print_(__doc__, file=sys.stderr)
     if msg:
-        print >> sys.stderr, msg
+        print_(msg, file=sys.stderr)
     sys.exit(code)
 
 def _directiveDocs(name, schema, handler, info, indent_offset=0):
@@ -88,7 +89,7 @@ def _directiveDocs(name, schema, handler, info, indent_offset=0):
 
 def _subDirectiveDocs(subdirs, namespace, name):
     """Appends a list of sub-directives and their full specification."""
-    if subdirs.has_key((namespace, name)):
+    if (namespace, name) in subdirs:
         text = '\n  Subdirectives\n\n'
         sub_dirs = []
         # Simply walk through all sub-directives here.
@@ -127,7 +128,7 @@ def _makeabs(path):
     if not path == os.path.abspath(path):
         cwd = os.getcwd()
         # This is for symlinks.
-        if os.environ.has_key('PWD'):
+        if 'PWD' in os.environ:
             cwd = os.environ['PWD']
         path = os.path.normpath(os.path.join(cwd, path))    
     return path
@@ -138,7 +139,7 @@ def main(argv=sys.argv):
             sys.argv[1:],
             'h:f:o:',
             ['help'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         usage(1, msg)
 
     zcml_file = None

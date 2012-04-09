@@ -25,15 +25,16 @@ def wrap(text, width=78, indent=0):
 
     Examples:
 
-    >>> print wrap('foo bar')[:-2]
+    >>> from six import print_
+    >>> print_(wrap('foo bar')[:-2])
     foo bar
-    >>> print wrap('foo bar', indent=2)[:-2]
+    >>> print_(wrap('foo bar', indent=2)[:-2])
       foo bar
-    >>> print wrap('foo bar, more foo bar', 10)[:-2]
+    >>> print_(wrap('foo bar, more foo bar', 10)[:-2])
     foo bar,
     more foo
     bar
-    >>> print wrap('foo bar, more foo bar', 10, 2)[:-2]
+    >>> print_(wrap('foo bar, more foo bar', 10, 2)[:-2])
       foo bar,
       more foo
       bar

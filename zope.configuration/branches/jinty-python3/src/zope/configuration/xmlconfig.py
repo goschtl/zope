@@ -25,6 +25,7 @@ import sys
 import logging
 import zope.configuration.config as config
 
+import six
 from glob import glob
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
@@ -48,7 +49,7 @@ class ZopeXMLConfigurationError(ConfigurationError):
     info and the wrapped error type and value:
 
     >>> v = ZopeXMLConfigurationError("blah", AttributeError, "xxx")
-    >>> print v
+    >>> six.print_(v)
     'blah'
         AttributeError: xxx
 
@@ -61,13 +62,13 @@ class ZopeXMLConfigurationError(ConfigurationError):
         # Only use the repr of the info. This is because we expect to
         # get a parse info and we only want the location information.
         return "%s\n    %s: %s" % (
-            `self.info`, self.etype.__name__, self.evalue)
+            repr(self.info), self.etype.__name__, self.evalue)
 
 class ZopeSAXParseException(ConfigurationError):
     """Sax Parser errors, reformatted in an emacs friendly way
 
     >>> v = ZopeSAXParseException("foo.xml:12:3:Not well formed")
-    >>> print v
+    >>> six.print_(v)
     File "foo.xml", line 12.3, Not well formed
 
     """
@@ -93,7 +94,7 @@ class ParserInfo(object):
     >>> info
     File "tests//sample.zcml", line 1.0
 
-    >>> print info
+    >>> six.print_(info)
     File "tests//sample.zcml", line 1.0
 
     >>> info.characters("blah\\n")
@@ -105,7 +106,7 @@ class ParserInfo(object):
     >>> info
     File "tests//sample.zcml", line 1.0-7.0
 
-    >>> print info
+    >>> six.print_(info)
     File "tests//sample.zcml", line 1.0-7.0
       <configure xmlns='http://namespaces.zope.org/zope'>
         <!-- zope.configure -->
@@ -177,7 +178,7 @@ class ParserInfo(object):
                 # unicode won't be printable, at least on my console
                 src = src.encode('ascii','replace')
 
-        return "%s\n%s" % (`self`, src)
+        return "%s\n%s" % (repr(self), src)
 
     def characters(self, characters):
         self.text += characters
@@ -235,8 +236,10 @@ class ConfigurationHandler(ContentHandler):
         except:
             if self.testing:
                 raise
-            raise ZopeXMLConfigurationError(info, sys.exc_info()[0],
-                sys.exc_info()[1]), None, sys.exc_info()[2]
+            six.reraise(
+                    ZopeXMLConfigurationError,
+                    ZopeXMLConfigurationError(info, sys.exc_info()[0], sys.exc_info()[1]),
+                    sys.exc_info()[2])
 
         self.context.setInfo(info)
 
@@ -362,8 +365,9 @@ class ConfigurationHandler(ContentHandler):
         except:
             if self.testing:
                 raise
-            raise ZopeXMLConfigurationError(info, sys.exc_info()[0],
-                sys.exc_info()[1]), None, sys.exc_info()[2]
+            six.reraise(ZopeXMLConfigurationError,
+                    ZopeXMLConfigurationError(info, sys.exc_info()[0], sys.exc_info()[1]),
+                    sys.exc_info()[2])
 
 
 def processxmlfile(file, context, testing=False):
@@ -379,7 +383,10 @@ def processxmlfile(file, context, testing=False):
     try:
         parser.parse(src)
     except SAXParseException:
-        raise ZopeSAXParseException(sys.exc_info()[1]), None, sys.exc_info()[2]
+        six.reraise(
+                ZopeSAXParseException,
+                ZopeSAXParseException(sys.exc_info()[1]),
+                sys.exc_info()[2])
 
 
 def openInOrPlain(filename):
@@ -418,17 +425,17 @@ def openInOrPlain(filename):
     >>> try:
     ...     f = openInOrPlain('.')
     ... except IOError:
-    ...     print "passed"
+    ...     six.print_("passed")
     ... else:
-    ...     print "failed"
     ...
+    ...     six.print_("failed")
     passed
 
     """
     try:
         fp = open(filename)
-    except IOError, (code, msg):
-        if code == errno.ENOENT:
+    except IOError as e:
+        if e.errno == errno.ENOENT:
             fn = filename + ".in"
             if os.path.exists(fn):
                 fp = open(fn)
@@ -446,7 +453,7 @@ class IInclude(Interface):
     files in each package and then link them together.
     """
 
-    file = schema.BytesLine(
+    file = schema.NativeStringLine(
         title=u"Configuration file name",
         description=u"The name of a configuration file to be included/excluded, "
                     u"relative to the directive containing the "
@@ -454,7 +461,7 @@ class IInclude(Interface):
         required=False,
         )
 
-    files = schema.BytesLine(
+    files = schema.NativeStringLine(
         title=u"Configuration file name pattern",
         description=u"""
         The names of multiple configuration files to be included/excluded,
@@ -530,8 +537,7 @@ def include(_context, file=None, package=None, files=None):
 
     if files:
         paths = glob(context.path(files))
-        paths = zip([path.lower() for path in paths], paths)
-        paths.sort()
+        paths = sorted(zip([path.lower() for path in paths], paths))
         paths = [path for (l, path) in paths]
     else:
         paths = [context.path(file)]
@@ -571,8 +577,7 @@ def exclude(_context, file=None, package=None, files=None):
 
     if files:
         paths = glob(context.path(files))
-        paths = zip([path.lower() for path in paths], paths)
-        paths.sort()
+        paths = sorted(zip([path.lower() for path in paths], paths))
         paths = [path for (l, path) in paths]
     else:
         paths = [context.path(file)]
@@ -652,7 +657,7 @@ def file(name, package=None, context=None, execute=True):
 def string(s, context=None, name="<string>", execute=True):
     """Execute a zcml string
     """
-    from StringIO import StringIO
+    from six import StringIO
 
     if context is None:
         context = config.ConfigurationMachine()

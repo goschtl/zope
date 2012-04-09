@@ -17,6 +17,8 @@ import unittest
 import os
 import re
 from doctest import DocTestSuite, DocFileSuite
+import six
+from six import print_
 from zope.testing import renormalizing
 from zope.configuration import xmlconfig, config
 from zope.configuration.tests.samplepackage import foo
@@ -97,9 +99,8 @@ def test_ConfigurationHandler_err_start():
     ...                               (None, u"a"): u"avalue",
     ...                               (None, u"b"): u"bvalue",
     ...                              })
-    ... except xmlconfig.ZopeXMLConfigurationError, v:
-    ...   pass
-    >>> print v
+    ... except xmlconfig.ZopeXMLConfigurationError as v:
+    ...   print_(v)
     File "tests//sample.zcml", line 1.1
         AttributeError: xxx
 
@@ -126,9 +127,8 @@ def test_ConfigurationHandler_err_end():
     >>> locator.line, locator.column = 7, 16
     >>> try:
     ...   v = handler.endElementNS((u"ns", u"foo"), u"foo")
-    ... except xmlconfig.ZopeXMLConfigurationError, v:
-    ...   pass
-    >>> print v
+    ... except xmlconfig.ZopeXMLConfigurationError as v:
+    ...   print_(v)
     File "tests//sample.zcml", line 1.1-7.16
         AttributeError: xxx
 
@@ -165,10 +165,10 @@ def test_processxmlfile():
     >>> data.args
     (('x', 'blah'), ('y', 0))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
         <test:foo x="blah" y="0" />
 
@@ -187,15 +187,15 @@ def test_file():
     >>> data.args
     (('x', 'blah'), ('y', 0))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
         <test:foo x="blah" y="0" />
 
     >>> data.package
-    >>> print clean_path(data.basepath)
+    >>> print_(clean_path(data.basepath))
     tests/samplepackage
     """
 
@@ -212,10 +212,10 @@ def test_include_by_package():
     >>> data.args
     (('x', 'blah'), ('y', 0))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
         <test:foo x="blah" y="0" />
 
@@ -255,10 +255,10 @@ def test_include_by_file():
     >>> data.args
     (('x', 'foo'), ('y', 2))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
         <test:foo x="foo" y="2" />
 
@@ -284,10 +284,10 @@ def test_include_by_file_glob():
     >>> data.args
     (('x', 'foo'), ('y', 3))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/baz3.zcml", line 5.2-5.28
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/baz3.zcml", line 5.2-5.28
         <test:foo x="foo" y="3" />
 
@@ -303,10 +303,10 @@ def test_include_by_file_glob():
     >>> data.args
     (('x', 'foo'), ('y', 2))
 
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/baz2.zcml", line 5.2-5.28
 
-    >>> print clean_info_path(str(data.info))
+    >>> print_(clean_info_path(str(data.info)))
     File "tests/samplepackage/baz2.zcml", line 5.2-5.28
         <test:foo x="foo" y="2" />
 
@@ -322,7 +322,7 @@ def test_include_by_file_glob():
 def clean_actions(actions):
     return [
       {'discriminator': action['discriminator'],
-       'info': clean_info_path(`action['info']`),
+       'info': clean_info_path(repr(action['info'])),
        'includepath': [clean_path(p) for p in action['includepath']],
        }
       for action in actions
@@ -330,7 +330,7 @@ def clean_actions(actions):
 
 def clean_text_w_paths(error):
     r = []
-    for line in unicode(error).split("\n"):
+    for line in six.text_type(error).split("\n"):
       line = line.rstrip()
       if not line:
         continue
@@ -404,9 +404,8 @@ def test_includeOverrides():
 
     >>> try:
     ...    v = context.execute_actions()
-    ... except config.ConfigurationConflictError, v:
-    ...    pass
-    >>> print clean_text_w_paths(str(v))
+    ... except config.ConfigurationConflictError as v:
+    ...    print_(clean_text_w_paths(str(v)))
     Conflicting configuration actions
       For: (('x', 'blah'), ('y', 0))
         File "tests/samplepackage/configure.zcml", line 12.2-12.29
@@ -475,19 +474,19 @@ def test_includeOverrides():
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
 
 
@@ -553,19 +552,19 @@ def test_XMLConfig():
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
 
     Finally, clean up.
@@ -597,19 +596,19 @@ def test_XMLConfig_w_module():
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
 
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
-    >>> print clean_info_path(`data.info`)
+    >>> print_(clean_info_path(repr(data.info)))
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
 
     Finally, clean up.
@@ -621,15 +620,28 @@ def test_XMLConfig_w_module():
 
 
 def test_suite():
+    checkers = []
+    if six.PY3:
+        checkers.extend([
+        (re.compile(r"b'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'b"([^"]*)"'),
+                    r'"\1"'),
+        (re.compile(r"u'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'u"([^"]*)"'),
+                    r'"\1"'),
+        ])
+    checker = renormalizing.RENormalizing(checkers)
     return unittest.TestSuite((
-        DocTestSuite('zope.configuration.xmlconfig'),
-        DocTestSuite(),
+        DocTestSuite('zope.configuration.xmlconfig', checker=checker),
+        DocTestSuite(checker=checker),
         DocFileSuite('../exclude.txt',
             checker=renormalizing.RENormalizing([
                 (re.compile('include [^\n]+zope.configuration[\S+]'),
                  'include /zope.configuration\2'),
                 (re.compile(r'\\'), '/'),
-                ]))
+                ] + checkers))
         ))
 
 if __name__ == '__main__':

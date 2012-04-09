@@ -1,1 +1,1 @@
-import bad
+from . import bad

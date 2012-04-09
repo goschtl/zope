@@ -17,6 +17,7 @@
 import sys
 import unittest
 import re
+import six
 from doctest import DocTestSuite
 from zope.testing import renormalizing
 from zope.configuration.config import metans, ConfigurationMachine
@@ -382,7 +383,7 @@ def test_bad_sub_last_import():
     >>> c.resolve('zope.configuration.tests.victim')
     Traceback (most recent call last):
     ...
-      File "...bad.py", line 3 in ?
+      File "...bad.py", line 3 in ...
        import bad_to_the_bone
     ImportError: No module named bad_to_the_bone
 
@@ -417,14 +418,36 @@ def test_bad_sub_import():
     """
 
 def test_suite():
-    checker = renormalizing.RENormalizing([
+    checkers = [
         (re.compile(r"<type 'exceptions.(\w+)Error'>:"),
                     r'exceptions.\1Error:'),
+        ]
+    if six.PY3:
+        checkers.extend([
+        (re.compile(r"^zope.schema._bootstrapinterfaces.([a-zA-Z]*):"),
+                    r'\1:'),
+        (re.compile(r"^zope.configuration.interfaces.([a-zA-Z]*):"),
+                    r'\1:'),
+        (re.compile(r"^zope.configuration.exceptions.([a-zA-Z]*):"),
+                    r'\1:'),
+        (re.compile(r"b'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'b"([^"]*)"'),
+                    r'"\1"'),
+        (re.compile(r"u'([^']*)'"),
+                    r"'\1'"),
+        (re.compile(r'u"([^"]*)"'),
+                    r'"\1"'),
+        (re.compile(r"\(<class 'int'>,\)"),
+                    r"(<type 'int'>, <type 'long'>)"),
+        (re.compile(r"No module named '([^']*)'"),
+                    r'No module named \1'),
         ])
+    checker = renormalizing.RENormalizing(checkers)
     return unittest.TestSuite((
-        DocTestSuite('zope.configuration.fields'),
-        DocTestSuite('zope.configuration.config',checker=checker),
-        DocTestSuite(),
+        DocTestSuite('zope.configuration.fields', checker=checker),
+        DocTestSuite('zope.configuration.config', checker=checker),
+        DocTestSuite(checker=checker),
         ))
 
 if __name__ == '__main__': unittest.main()

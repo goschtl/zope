@@ -16,11 +16,12 @@
 See README.txt.
 """
 __docformat__ = 'restructuredtext'
-import __builtin__
+from six.moves import builtins
 import operator
 import os.path
 import sys
 
+import six
 import zope.schema
 
 from keyword import iskeyword
@@ -28,7 +29,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.interfaces import IConfigurationContext
 from zope.configuration.interfaces import IGroupingContext
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import Interface, implements, providedBy
+from zope.interface import Interface, implementer, providedBy
 from zope.configuration import fields
 
 
@@ -121,8 +122,8 @@ class ConfigurationContext(object):
         1
         >>> c.resolve('..interface') is zope.interface
         1
-        >>> c.resolve('unicode')
-        <type 'unicode'>
+        >>> c.resolve('str') is str
+        True
         """
 
         name = dottedname.strip()
@@ -140,7 +141,7 @@ class ConfigurationContext(object):
         if len(names) == 1:
             # Check for built-in objects
             marker = object()
-            obj = getattr(__builtin__, names[0], marker)
+            obj = getattr(builtins, names[0], marker)
             if obj is not marker:
                 return obj
 
@@ -176,7 +177,7 @@ class ConfigurationContext(object):
 
         try:
             mod = __import__(mname, *_import_chickens)
-        except ImportError, v:
+        except ImportError as v:
             if sys.exc_info()[2].tb_next is not None:
                 # ImportError was caused deeper
                 raise
@@ -259,7 +260,7 @@ class ConfigurationContext(object):
         >>> c.checkDuplicate('/foo.zcml')
         >>> try:
         ...     c.checkDuplicate('/foo.zcml')
-        ... except ConfigurationError, e:
+        ... except ConfigurationError as e:
         ...     # On Linux the exact msg has /foo, on Windows \foo.
         ...     str(e).endswith("foo.zcml' included more than once")
         True
@@ -273,7 +274,7 @@ class ConfigurationContext(object):
         >>> c.checkDuplicate('bar.zcml')
         >>> try:
         ...   c.checkDuplicate(d + os.path.normpath('/bar.zcml'))
-        ... except ConfigurationError, e:
+        ... except ConfigurationError as e:
         ...   str(e).endswith("bar.zcml' included more than once")
         ...
         True
@@ -542,7 +543,7 @@ class ConfigurationAdapterRegistry(object):
         r.register([interface], Interface, '', factory)
 
     def document(self, name, schema, usedIn, handler, info, parent=None):
-        if isinstance(name, (str, unicode)):
+        if isinstance(name, six.string_types):
             name = ('', name)
         self._docRegistry.append((name, schema, usedIn, handler, info, parent))
 
@@ -561,6 +562,7 @@ class ConfigurationAdapterRegistry(object):
                 "The directive %s cannot be used in this context" % (name, ))
         return f
 
+@implementer(IConfigurationContext)
 class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     """Configuration machine
 
@@ -592,8 +594,6 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
 
     A more extensive example can be found in the unit tests.
     """
-
-    implements(IConfigurationContext)
 
     package = None
     basepath = None
@@ -663,9 +663,8 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
         ...   ]
         >>> try:
         ...    v = context.execute_actions()
-        ... except ConfigurationExecutionError, v:
-        ...    pass
-        >>> print v
+        ... except ConfigurationExecutionError as v:
+        ...    six.print_(v)
         exceptions.AttributeError: 'function' object has no attribute 'xxx'
           in:
           oops
@@ -696,7 +695,10 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
                         raise
                     t, v, tb = sys.exc_info()
                     try:
-                        raise ConfigurationExecutionError(t, v, info), None, tb
+                        six.reraise(
+                                ConfigurationExecutionError,
+                                ConfigurationExecutionError(t, v, info),
+                                tb)
                     finally:
                        del t, v, tb
                 
@@ -741,6 +743,7 @@ class IStackItem(Interface):
         """Finish processing a directive
         """
 
+@implementer(IStackItem)
 class SimpleStackItem(object):
     """Simple stack item
 
@@ -751,8 +754,6 @@ class SimpleStackItem(object):
     It also defers any computation until the end of the directive
     has been reached.
     """
-
-    implements(IStackItem)
 
     def __init__(self, context, handler, info, *argdata):
         newcontext = GroupingContextDecorator(context)
@@ -800,6 +801,7 @@ class RootStackItem(object):
     def finish(self):
         pass
 
+@implementer(IStackItem)
 class GroupingStackItem(RootStackItem):
     """Stack item for a grouping directive
 
@@ -950,8 +952,6 @@ class GroupingStackItem(RootStackItem):
       'order': 0}]
     """
 
-    implements(IStackItem)
-
     def __init__(self, context):
         super(GroupingStackItem, self).__init__(context)
 
@@ -980,6 +980,7 @@ class GroupingStackItem(RootStackItem):
 def noop():
     pass
 
+@implementer(IStackItem)
 class ComplexStackItem(object):
     """Complex stack item
 
@@ -1109,8 +1110,6 @@ class ComplexStackItem(object):
       'order': 0}]
     """
 
-    implements(IStackItem)
-
     def __init__(self, meta, context, data, info):
         newcontext = GroupingContextDecorator(context)
         newcontext.info = info
@@ -1142,7 +1141,7 @@ class ComplexStackItem(object):
 
         try:
             actions = self.handler()
-        except AttributeError, v:
+        except AttributeError as v:
             if v[0] == '__call__':
                 return # noncallable
             raise
@@ -1159,13 +1158,12 @@ class ComplexStackItem(object):
 ##############################################################################
 # Helper classes
 
+@implementer(IConfigurationContext, IGroupingContext)
 class GroupingContextDecorator(ConfigurationContext):
     """Helper mix-in class for building grouping directives
 
     See the discussion (and test) in GroupingStackItem.
     """
-
-    implements(IConfigurationContext, IGroupingContext)
 
     def __init__(self, context, **kw):
         self.context = context
@@ -1204,6 +1202,7 @@ class IDirectivesInfo(Interface):
 class IDirectivesContext(IDirectivesInfo, IConfigurationContext):
     pass
 
+@implementer(IDirectivesContext)
 class DirectivesHandler(GroupingContextDecorator):
     """Handler for the directives directive
 
@@ -1211,8 +1210,6 @@ class DirectivesHandler(GroupingContextDecorator):
     to the normal directive context.
 
     """
-    implements(IDirectivesContext)
-
 
 class IDirectiveInfo(Interface):
     """Information common to all directive definitions have
@@ -1377,13 +1374,12 @@ def defineGroupingDirective(context, name, schema, handler,
 class IComplexDirectiveContext(IFullInfo, IConfigurationContext):
     pass
 
+@implementer(IComplexDirectiveContext)
 class ComplexDirectiveDefinition(GroupingContextDecorator, dict):
     """Handler for defining complex directives
 
     See the description and tests for ComplexStackItem.
     """
-
-    implements(IComplexDirectiveContext)
 
     def before(self):
 
@@ -1557,14 +1553,16 @@ def toargs(context, schema, data):
 
         s = data.get(n, data)
         if s is not data:
-            s = unicode(s)
+            s = six.text_type(s)
             del data[n]
 
             try:
                 args[str(name)] = field.fromUnicode(s)
-            except zope.schema.ValidationError, v:
-                raise ConfigurationError(
-                    "Invalid value for", n, str(v)), None, sys.exc_info()[2]
+            except zope.schema.ValidationError as v:
+                six.reraise(
+                        ConfigurationError,
+                        ConfigurationError("Invalid value for", n, str(v)),
+                        sys.exc_info()[2])
         elif field.required:
             # if the default is valid, we can use that:
             default = field.default
@@ -1697,12 +1695,11 @@ class ConfigurationConflictError(ConfigurationError):
 
     def __str__(self):
         r = ["Conflicting configuration actions"]
-        items = self._conflicts.items()
-        items.sort()
+        items = sorted(self._conflicts.items())
         for discriminator, infos in items:
             r.append("  For: %s" % (discriminator, ))
             for info in infos:
-                for line in unicode(info).rstrip().split(u'\n'):
+                for line in six.text_type(info).rstrip().split(u'\n'):
                     r.append(u"    "+line)
 
         return "\n".join(r)

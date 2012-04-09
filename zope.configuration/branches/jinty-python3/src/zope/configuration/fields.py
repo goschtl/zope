@@ -19,12 +19,13 @@ from zope import schema
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import implements
+from zope.interface import implementer
 from zope.configuration.interfaces import InvalidToken
 
 PYIDENTIFIER_REGEX = u'\\A[a-zA-Z_]+[a-zA-Z0-9_]*\\Z'
 pyidentifierPattern = re.compile(PYIDENTIFIER_REGEX)
 
+@implementer(IFromUnicode)
 class PythonIdentifier(schema.TextLine):
     r"""This field describes a python identifier, i.e. a variable name.
 
@@ -50,20 +51,19 @@ class PythonIdentifier(schema.TextLine):
     ...     field._validate(value)
     >>>
     >>> from zope import schema
+    >>> from six import print_
     >>>
     >>> for value in (u'3foo', u'foo:', u'\\', u''):
     ...     try:
     ...         field._validate(value)
     ...     except schema.ValidationError:
-    ...         print 'Validation Error'
+    ...         print_('Validation Error')
     Validation Error
     Validation Error
     Validation Error
     Validation Error
 
     """
-    implements(IFromUnicode)
-
     def fromUnicode(self, u):
         return u.strip()
 
@@ -72,6 +72,7 @@ class PythonIdentifier(schema.TextLine):
         if pyidentifierPattern.match(value) is None:
             raise schema.ValidationError(value)
 
+@implementer(IFromUnicode)
 class GlobalObject(schema.Field):
     """An object that can be accessed as a module global.
 
@@ -115,8 +116,6 @@ class GlobalObject(schema.Field):
 
     """
 
-    implements(IFromUnicode)
-
     def __init__(self, value_type=None, **kw):
         self.value_type = value_type
         super(GlobalObject, self).__init__(**kw)
@@ -135,7 +134,7 @@ class GlobalObject(schema.Field):
 
         try:
             value = self.context.resolve(name)
-        except ConfigurationError, v:
+        except ConfigurationError as v:
             raise schema.ValidationError(v)
 
         self.validate(value)
@@ -175,6 +174,7 @@ class GlobalInterface(GlobalObject):
     def __init__(self, **kw):
         super(GlobalInterface, self).__init__(schema.InterfaceField(), **kw)
 
+@implementer(IFromUnicode)
 class Tokens(schema.List):
     """A list that can be read from a space-separated string
 
@@ -215,7 +215,6 @@ class Tokens(schema.List):
     >>>
 
     """
-    implements(IFromUnicode)
 
     def fromUnicode(self, u):
         u = u.strip()
@@ -225,7 +224,7 @@ class Tokens(schema.List):
             for s in u.split():
                 try:
                     v = vt.fromUnicode(s)
-                except schema.ValidationError, v:
+                except schema.ValidationError as v:
                     raise InvalidToken("%s in %s" % (v, u))
                 else:
                     values.append(v)
@@ -236,6 +235,7 @@ class Tokens(schema.List):
 
         return values
 
+@implementer(IFromUnicode)
 class Path(schema.Text):
     r"""A file path name, which may be input as a relative path
 
@@ -248,6 +248,7 @@ class Path(schema.Text):
 
     We'll be careful to do this in an os-independent fashion.
 
+    >>> import six
     >>> class FauxContext(object):
     ...    def path(self, p):
     ...       return os.path.join(os.sep, 'faux', 'context', p)
@@ -257,7 +258,7 @@ class Path(schema.Text):
 
     Lets try an absolute path first:
 
-    >>> p = unicode(os.path.join(os.sep, 'a', 'b'))
+    >>> p = six.text_type(os.path.join(os.sep, 'a', 'b'))
     >>> n = field.fromUnicode(p)
     >>> n.split(os.sep)
     [u'', u'a', u'b']
@@ -271,15 +272,13 @@ class Path(schema.Text):
 
     Now try a relative path:
 
-    >>> p = unicode(os.path.join('a', 'b'))
+    >>> p = six.text_type(os.path.join('a', 'b'))
     >>> n = field.fromUnicode(p)
     >>> n.split(os.sep)
     [u'', u'faux', u'context', u'a', u'b']
 
 
     """
-
-    implements(IFromUnicode)
 
     def fromUnicode(self, u):
         u = u.strip()
@@ -289,6 +288,7 @@ class Path(schema.Text):
         return self.context.path(u)
 
 
+@implementer(IFromUnicode)
 class Bool(schema.Bool):
     """A boolean value
 
@@ -305,8 +305,6 @@ class Bool(schema.Bool):
     0
     """
 
-    implements(IFromUnicode)
-
     def fromUnicode(self, u):
         u = u.lower()
         if u in ('1', 'true', 'yes', 't', 'y'):
@@ -315,6 +313,7 @@ class Bool(schema.Bool):
             return False
         raise schema.ValidationError
 
+@implementer(IFromUnicode)
 class MessageID(schema.Text):
     """Text string that should be translated.
 
@@ -385,7 +384,7 @@ class MessageID(schema.Text):
                                    ('file location', 8)]}}
 
     >>> from zope.i18nmessageid import Message
-    >>> isinstance(context.i18n_strings['testing'].keys()[0], Message)
+    >>> isinstance(list(context.i18n_strings['testing'].keys())[0], Message)
     1
 
     Explicit Message IDs
@@ -402,8 +401,6 @@ class MessageID(schema.Text):
     >>> i.default is None
     True
     """
-
-    implements(IFromUnicode)
 
     __factories = {}
 
