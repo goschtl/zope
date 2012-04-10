@@ -152,7 +152,8 @@ class ParserInfo(object):
         except IOError:
             src = "  Could not read source."
         else:
-            lines = f.readlines()[self.line-1:self.eline]
+            with f:
+                lines = f.readlines()[self.line-1:self.eline]
             ecolumn = self.ecolumn
             if lines[-1][ecolumn:ecolumn+2] == '</':
                 # We're pointing to the start of an end tag. Try to find
@@ -406,16 +407,16 @@ def openInOrPlain(filename):
 
     >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, 'tests', 'samplepackage', 'configure.zcml')
-    >>> f = openInOrPlain(path)
-    >>> f.name[-14:]
+    >>> with openInOrPlain(path) as f:
+    ...     f.name[-14:]
     'configure.zcml'
 
     But if we open foo.zcml, we'll get foo.zcml.in, since there isn't a
     foo.zcml:
 
     >>> path = os.path.join(here, 'tests', 'samplepackage', 'foo.zcml')
-    >>> f = openInOrPlain(path)
-    >>> f.name[-11:]
+    >>> with openInOrPlain(path) as f:
+    ...     f.name[-11:]
     'foo.zcml.in'
 
     Make sure other IOErrors are re-raised.  We need to do this in a
@@ -544,15 +545,14 @@ def include(_context, file=None, package=None, files=None):
 
     for path in paths:
         if context.processFile(path):
-            f = openInOrPlain(path)
-            logger.debug("include %s" % f.name)
+            with openInOrPlain(path) as f:
+                logger.debug("include %s" % f.name)
 
-            context.basepath = os.path.dirname(path)
-            context.includepath = _context.includepath + (f.name, )
-            _context.stack.append(config.GroupingStackItem(context))
+                context.basepath = os.path.dirname(path)
+                context.includepath = _context.includepath + (f.name, )
+                _context.stack.append(config.GroupingStackItem(context))
 
-            processxmlfile(f, context)
-            f.close()
+                processxmlfile(f, context)
             assert _context.stack[-1].context is context
             _context.stack.pop()
 
