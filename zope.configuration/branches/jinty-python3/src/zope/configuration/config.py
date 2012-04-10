@@ -664,11 +664,8 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
         >>> try:
         ...    v = context.execute_actions()
         ... except ConfigurationExecutionError as v:
-        ...    six.print_(v)
-        exceptions.AttributeError: 'function' object has no attribute 'xxx'
-          in:
-          oops
-
+        ...    six.print_(repr(v))
+        ConfigurationExecutionError()
 
         Note that actions executed before the error still have an effect:
 
@@ -1057,24 +1054,21 @@ class ComplexStackItem(object):
     Note that the name passed to ``contained`` is a 2-part name, consisting of
     a namespace and a name within the namespace.
 
-    >>> from pprint import PrettyPrinter
-    >>> pprint=PrettyPrinter(width=60).pprint
-
-    >>> pprint(context.actions)
-    [{'args': (),
-      'callable': f,
-      'discriminator': 'init',
-      'includepath': (),
-      'info': 'foo',
-      'kw': {},
-      'order': 0},
-     {'args': (),
-      'callable': f,
-      'discriminator': ('sub', u'av', u'bv'),
-      'includepath': (),
-      'info': 'baz',
-      'kw': {},
-      'order': 0}]
+    >>> context.actions == [{'args': (),
+    ...                      'callable': f,
+    ...                      'discriminator': 'init',
+    ...                      'includepath': (),
+    ...                      'info': 'foo',
+    ...                      'kw': {},
+    ...                      'order': 0},
+    ...                     {'args': (),
+    ...                      'callable': f,
+    ...                      'discriminator': ('sub', u'av', u'bv'),
+    ...                      'includepath': (),
+    ...                      'info': 'baz',
+    ...                      'kw': {},
+    ...                      'order': 0}]
+    True
 
     The new stack item returned by contained is one that doesn't allow
     any more subdirectives,
@@ -1086,28 +1080,28 @@ class ComplexStackItem(object):
 
     The stack item will call the handler if it is callable.
 
-    >>> pprint(context.actions)
-    [{'args': (),
-      'callable': f,
-      'discriminator': 'init',
-      'includepath': (),
-      'info': 'foo',
-      'kw': {},
-      'order': 0},
-     {'args': (),
-      'callable': f,
-      'discriminator': ('sub', u'av', u'bv'),
-      'includepath': (),
-      'info': 'baz',
-      'kw': {},
-      'order': 0},
-     {'args': (),
-      'callable': f,
-      'discriminator': ('call', u'xv', u'yv'),
-      'includepath': (),
-      'info': 'foo',
-      'kw': {},
-      'order': 0}]
+    >>> context.actions == [{'args': (),
+    ...                      'callable': f,
+    ...                      'discriminator': 'init',
+    ...                      'includepath': (),
+    ...                      'info': 'foo',
+    ...                      'kw': {},
+    ...                      'order': 0},
+    ...                     {'args': (),
+    ...                      'callable': f,
+    ...                      'discriminator': ('sub', u'av', u'bv'),
+    ...                      'includepath': (),
+    ...                      'info': 'baz',
+    ...                      'kw': {},
+    ...                      'order': 0},
+    ...                     {'args': (),
+    ...                      'callable': f,
+    ...                      'discriminator': ('call', u'xv', u'yv'),
+    ...                      'includepath': (),
+    ...                      'info': 'foo',
+    ...                      'kw': {},
+    ...                      'order': 0}]
+    True
     """
 
     def __init__(self, meta, context, data, info):

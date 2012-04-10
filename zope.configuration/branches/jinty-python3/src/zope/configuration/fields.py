@@ -376,12 +376,10 @@ class MessageID(schema.Text):
 
     >>> i = field.fromUnicode(u"Foo Bar")
     >>> i = field.fromUnicode(u"Hello world!")
-    >>> from pprint import PrettyPrinter
-    >>> pprint=PrettyPrinter(width=70).pprint
-    >>> pprint(context.i18n_strings)
-    {'testing': {u'Foo Bar': [('file location', 8)],
-                 u'Hello world!': [('file location', 8),
-                                   ('file location', 8)]}}
+    >>> context.i18n_strings == {'testing': {u'Foo Bar': [('file location', 8)],
+    ...                                      u'Hello world!': [('file location', 8),
+    ...                                                        ('file location', 8)]}}
+    True
 
     >>> from zope.i18nmessageid import Message
     >>> isinstance(list(context.i18n_strings['testing'].keys())[0], Message)

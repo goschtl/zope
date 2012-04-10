@@ -126,19 +126,19 @@ And verify that the schema registery has the schemas we expect:
 >>> i1 = schema_registry['zope.configuration.tests.test_nested.I1']
 >>> sorted(i1)
 ['a', 'b']
->>> i1['a'].__class__.__name__
+>>> i1[b'a'].__class__.__name__
 'Text'
->>> i1['a'].description.strip()
+>>> i1[b'a'].description.strip()
 u'A\n\n          Blah blah'
->>> i1['a'].min_length
+>>> i1[b'a'].min_length
 1
->>> i1['b'].__class__.__name__
+>>> i1[b'b'].__class__.__name__
 'Int'
->>> i1['b'].description.strip()
+>>> i1[b'b'].description.strip()
 u'B\n\n          Not feeling very creative'
->>> i1['b'].min
+>>> i1[b'b'].min
 1
->>> i1['b'].max
+>>> i1[b'b'].max
 10
 
 >>> i2 = schema_registry['zope.configuration.tests.test_nested.I2']

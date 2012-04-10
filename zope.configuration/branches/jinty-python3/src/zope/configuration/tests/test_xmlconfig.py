@@ -14,6 +14,7 @@
 """Test XML configuration (ZCML) machinery.
 """
 import unittest
+import sys
 import os
 import re
 from doctest import DocTestSuite, DocFileSuite
@@ -50,36 +51,33 @@ class FauxContext(object):
 def path(*p):
     return os.path.join(os.path.dirname(__file__), *p)
 
-def test_ConfigurationHandler_normal():
-    """
-    >>> context = FauxContext()
-    >>> locator = FauxLocator('tests//sample.zcml', 1, 1)
-    >>> handler = xmlconfig.ConfigurationHandler(context)
-    >>> handler.setDocumentLocator(locator)
 
-    >>> handler.startElementNS((u"ns", u"foo"), u"foo",
-    ...                        {(u"xxx", u"splat"): u"splatv",
-    ...                         (None, u"a"): u"avalue",
-    ...                         (None, u"b"): u"bvalue",
-    ...                        })
-    >>> context.info
-    File "tests//sample.zcml", line 1.1
-    >>> from pprint import PrettyPrinter
-    >>> pprint=PrettyPrinter(width=50).pprint
-    >>> pprint(context.begin_args)
-    ((u'ns', u'foo'),
-     {'a': u'avalue', 'b': u'bvalue'})
-    >>> getattr(context, "end_called", 0)
-    0
+class TestConfigurationHandler(unittest.TestCase):
 
-    >>> locator.line, locator.column = 7, 16
-    >>> handler.endElementNS((u"ns", u"foo"), u"foo")
-    >>> context.info
-    File "tests//sample.zcml", line 1.1-7.16
-    >>> context.end_called
-    1
+    def test_normal(self):
+        context = FauxContext()
+        locator = FauxLocator('tests//sample.zcml', 1, 1)
+        handler = xmlconfig.ConfigurationHandler(context)
+        handler.setDocumentLocator(locator)
 
-    """
+        handler.startElementNS((u"ns", u"foo"),
+                u"foo",
+                {(u"xxx", u"splat"): u"splatv",
+                    (None, u"a"): u"avalue",
+                    (None, u"b"): u"bvalue",
+                    })
+
+        self.assertEqual(repr(context.info), 'File "tests//sample.zcml", line 1.1')
+        self.assertEqual(context.begin_args, ((u'ns', u'foo'),
+                    {'a': u'avalue', 'b': u'bvalue'}))
+        self.assertEqual(getattr(context, "end_called", 0), 0)
+
+        locator.line, locator.column = 7, 16
+        handler.endElementNS((u"ns", u"foo"), u"foo")
+
+        self.assertEqual(repr(context.info), 'File "tests//sample.zcml", line 1.1-7.16')
+        self.assertEqual(context.end_called, 1)
+
 
 def test_ConfigurationHandler_err_start():
     """
@@ -634,6 +632,7 @@ def test_suite():
         ])
     checker = renormalizing.RENormalizing(checkers)
     return unittest.TestSuite((
+        unittest.findTestCases(sys.modules[__name__]),
         DocTestSuite('zope.configuration.xmlconfig', checker=checker),
         DocTestSuite(checker=checker),
         DocFileSuite('../exclude.txt',
