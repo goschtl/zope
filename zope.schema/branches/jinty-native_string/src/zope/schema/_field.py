@@ -627,20 +627,7 @@ class URI(NativeStringLine):
         raise InvalidURI(value)
 
     def fromUnicode(self, value):
-        """
-        >>> uri = URI(__name__='test')
-        >>> uri.fromUnicode("http://www.python.org/foo/bar")
-        'http://www.python.org/foo/bar'
-        >>> uri.fromUnicode("          http://www.python.org/foo/bar")
-        'http://www.python.org/foo/bar'
-        >>> uri.fromUnicode("      \\n    http://www.python.org/foo/bar\\n")
-        'http://www.python.org/foo/bar'
-        >>> uri.fromUnicode("http://www.python.org/ foo/bar")
-        Traceback (most recent call last):
-        ...
-        InvalidURI: http://www.python.org/ foo/bar
-        """
-        v = value.strip()
+        v = str(value.strip())
         self.validate(v)
         return v
 
