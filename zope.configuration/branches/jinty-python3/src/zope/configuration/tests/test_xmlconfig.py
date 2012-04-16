@@ -78,59 +78,53 @@ class TestConfigurationHandler(unittest.TestCase):
         self.assertEqual(repr(context.info), 'File "tests//sample.zcml", line 1.1-7.16')
         self.assertEqual(context.end_called, 1)
 
+    def test_err_start(self):
+        raised = AttributeError("xxx")
+        class MyFauxContext(FauxContext):
+          def begin(self, *args):
+            raise raised
 
-def test_ConfigurationHandler_err_start():
-    """
+        context = MyFauxContext()
+        locator = FauxLocator('tests//sample.zcml', 1, 1)
+        handler = xmlconfig.ConfigurationHandler(context)
+        handler.setDocumentLocator(locator)
 
-    >>> class FauxContext(FauxContext):
-    ...   def begin(self, *args):
-    ...     raise AttributeError("xxx")
+        try:
+            v = handler.startElementNS((u"ns", u"foo"), u"foo",
+                                     {(u"xxx", u"splat"): u"splatv",
+                                      (None, u"a"): u"avalue",
+                                      (None, u"b"): u"bvalue",
+                                     })
+        except xmlconfig.ZopeXMLConfigurationError as v:
+            exc = v
+        self.assertEqual(exc.evalue, raised)
+        self.assertEqual(repr(exc.info), 'File "tests//sample.zcml", line 1.1')
 
-    >>> context = FauxContext()
-    >>> locator = FauxLocator('tests//sample.zcml', 1, 1)
-    >>> handler = xmlconfig.ConfigurationHandler(context)
-    >>> handler.setDocumentLocator(locator)
+    def test_err_end(self):
+        raised = AttributeError("xxx")
+        class MyFauxContext(FauxContext):
+          def end(self):
+            raise raised
 
-    >>> try:
-    ...   v = handler.startElementNS((u"ns", u"foo"), u"foo",
-    ...                              {(u"xxx", u"splat"): u"splatv",
-    ...                               (None, u"a"): u"avalue",
-    ...                               (None, u"b"): u"bvalue",
-    ...                              })
-    ... except xmlconfig.ZopeXMLConfigurationError as v:
-    ...   print_(v)
-    File "tests//sample.zcml", line 1.1
-        AttributeError: xxx
+        context = MyFauxContext()
+        locator = FauxLocator('tests//sample.zcml', 1, 1)
+        handler = xmlconfig.ConfigurationHandler(context)
+        handler.setDocumentLocator(locator)
 
-    """
+        handler.startElementNS((u"ns", u"foo"), u"foo",
+                               {(u"xxx", u"splat"): u"splatv",
+                                (None, u"a"): u"avalue",
+                                (None, u"b"): u"bvalue",
+                               })
 
-def test_ConfigurationHandler_err_end():
-    """
+        locator.line, locator.column = 7, 16
+        try:
+            v = handler.endElementNS((u"ns", u"foo"), u"foo")
+        except xmlconfig.ZopeXMLConfigurationError as v:
+            exc = v
+        self.assertEqual(exc.evalue, raised)
+        self.assertEqual(repr(exc.info), 'File "tests//sample.zcml", line 1.1-7.16')
 
-    >>> class FauxContext(FauxContext):
-    ...   def end(self):
-    ...     raise AttributeError("xxx")
-
-    >>> context = FauxContext()
-    >>> locator = FauxLocator('tests//sample.zcml', 1, 1)
-    >>> handler = xmlconfig.ConfigurationHandler(context)
-    >>> handler.setDocumentLocator(locator)
-
-    >>> handler.startElementNS((u"ns", u"foo"), u"foo",
-    ...                        {(u"xxx", u"splat"): u"splatv",
-    ...                         (None, u"a"): u"avalue",
-    ...                         (None, u"b"): u"bvalue",
-    ...                        })
-
-    >>> locator.line, locator.column = 7, 16
-    >>> try:
-    ...   v = handler.endElementNS((u"ns", u"foo"), u"foo")
-    ... except xmlconfig.ZopeXMLConfigurationError as v:
-    ...   print_(v)
-    File "tests//sample.zcml", line 1.1-7.16
-        AttributeError: xxx
-
-    """
 
 def clean_info_path(s):
     part1 = s[:6]
@@ -145,177 +139,184 @@ def clean_path(s):
     s = s.replace(os.sep, '/')
     return s
 
-def test_processxmlfile():
-    """
+class TestFileLoading(unittest.TestCase):
 
-    >>> file = open(path("samplepackage", "configure.zcml"))
-    >>> context = config.ConfigurationMachine()
-    >>> xmlconfig.registerCommonDirectives(context)
-    >>> xmlconfig.processxmlfile(file, context)
+    def tearDown(self):
+        del foo.data[:]
 
-    >>> foo.data
-    []
+    def setUp(self):
+        del foo.data[:]
 
-    >>> context.execute_actions()
+    def test_processxmlfile(self):
+        context = config.ConfigurationMachine()
+        xmlconfig.registerCommonDirectives(context)
 
-    >>> data = foo.data.pop()
+        with open(path("samplepackage", "configure.zcml")) as file:
+            xmlconfig.processxmlfile(file, context)
 
-    >>> data.args
-    (('x', 'blah'), ('y', 0))
+        self.assertEqual(foo.data, [])
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
+        context.execute_actions()
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
-        <test:foo x="blah" y="0" />
+        data = foo.data.pop()
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 0)))
 
-    >>> data.package
-    >>> data.basepath
-    """
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/configure.zcml", line 12.2-12.29')
 
-def test_file():
-    """
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/configure.zcml", line 12.2-12.29
+    <test:foo x="blah" y="0" />""")
 
-    >>> file_name = path("samplepackage", "configure.zcml")
-    >>> context = xmlconfig.file(file_name)
+        self.assertEqual(data.package, None)
+        self.assertEqual(data.basepath, None)
 
-    >>> data = foo.data.pop()
+    def test_file(self):
+        file_name = path("samplepackage", "configure.zcml")
+        context = xmlconfig.file(file_name)
 
-    >>> data.args
-    (('x', 'blah'), ('y', 0))
+        data = foo.data.pop()
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 0)))
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
-        <test:foo x="blah" y="0" />
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/configure.zcml", line 12.2-12.29')
 
-    >>> data.package
-    >>> print_(clean_path(data.basepath))
-    tests/samplepackage
-    """
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/configure.zcml", line 12.2-12.29
+    <test:foo x="blah" y="0" />""")
 
-def test_include_by_package():
-    """
-    >>> context = config.ConfigurationMachine()
-    >>> xmlconfig.registerCommonDirectives(context)
-    >>> import zope.configuration.tests.samplepackage as package
-    >>> xmlconfig.include(context, 'configure.zcml', package)
-    >>> context.execute_actions()
+        self.assertEqual(data.package, None)
+        self.assertEqual(
+                clean_path(data.basepath),
+                'tests/samplepackage')
 
-    >>> data = foo.data.pop()
+    def test_include_by_package(self):
+        context = config.ConfigurationMachine()
+        xmlconfig.registerCommonDirectives(context)
+        import zope.configuration.tests.samplepackage as package
+        xmlconfig.include(context, 'configure.zcml', package)
+        context.execute_actions()
 
-    >>> data.args
-    (('x', 'blah'), ('y', 0))
+        data = foo.data.pop()
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 0)))
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/configure.zcml", line 12.2-12.29
-        <test:foo x="blah" y="0" />
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/configure.zcml", line 12.2-12.29')
 
-    >>> data.package is package
-    1
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/configure.zcml", line 12.2-12.29
+    <test:foo x="blah" y="0" />""")
 
-    >>> data.basepath[-13:]
-    'samplepackage'
+        self.assertTrue(data.package is package)
 
-    >>> [clean_path(p) for p in data.includepath]
-    ['tests/samplepackage/configure.zcml']
+        self.assertEqual(
+                data.basepath[-13:],
+                'samplepackage')
 
+        self.assertEqual(
+                [clean_path(p) for p in data.includepath],
+                ['tests/samplepackage/configure.zcml'])
 
-    """
+        # Not any more
+        ##     Including the same file more than once produces an error:
 
-# Not any more
-##     Including the same file more than once produces an error:
+        ##     >>> try:
+        ##     ...   xmlconfig.include(context, 'configure.zcml', package)
+        ##     ... except xmlconfig.ConfigurationError, e:
+        ##     ...   'OK'
+        ##     ...
+        ##     'OK'
 
-##     >>> try:
-##     ...   xmlconfig.include(context, 'configure.zcml', package)
-##     ... except xmlconfig.ConfigurationError, e:
-##     ...   'OK'
-##     ...
-##     'OK'
+    def test_include_by_file(self):
+        context = config.ConfigurationMachine()
+        xmlconfig.registerCommonDirectives(context)
+        here = os.path.dirname(__file__)
+        path = os.path.join(here, "samplepackage", "foo.zcml")
+        xmlconfig.include(context, path)
+        context.execute_actions()
 
-def test_include_by_file():
-    """
-    >>> context = config.ConfigurationMachine()
-    >>> xmlconfig.registerCommonDirectives(context)
-    >>> here = os.path.dirname(__file__)
-    >>> path = os.path.join(here, "samplepackage", "foo.zcml")
-    >>> xmlconfig.include(context, path)
-    >>> context.execute_actions()
+        data = foo.data.pop()
 
-    >>> data = foo.data.pop()
+        self.assertEqual(data.args, (('x', b'foo'), ('y', 2)))
 
-    >>> data.args
-    (('x', 'foo'), ('y', 2))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/foo.zcml.in", line 12.2-12.28')
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
+    <test:foo x="foo" y="2" />""")
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
-        <test:foo x="foo" y="2" />
+        self.assertEqual(data.package, None)
 
-    >>> data.package
+        self.assertEqual(
+                data.basepath[-13:],
+                'samplepackage')
 
-    >>> data.basepath[-13:]
-    'samplepackage'
+        self.assertEqual(
+                [clean_path(p) for p in data.includepath],
+                ['tests/samplepackage/foo.zcml.in'])
 
-    >>> [clean_path(p) for p in data.includepath]
-    ['tests/samplepackage/foo.zcml.in']
-    """
+    def test_include_by_file_glob(self):
+        context = config.ConfigurationMachine()
+        xmlconfig.registerCommonDirectives(context)
+        here = os.path.dirname(__file__)
+        path = os.path.join(here, "samplepackage/baz*.zcml")
+        xmlconfig.include(context, files=path)
+        context.execute_actions()
 
-def test_include_by_file_glob():
-    """
-    >>> context = config.ConfigurationMachine()
-    >>> xmlconfig.registerCommonDirectives(context)
-    >>> here = os.path.dirname(__file__)
-    >>> path = os.path.join(here, "samplepackage/baz*.zcml")
-    >>> xmlconfig.include(context, files=path)
-    >>> context.execute_actions()
+        data = foo.data.pop()
+        self.assertEqual(data.args, (('x', b'foo'), ('y', 3)))
 
-    >>> data = foo.data.pop()
-    >>> data.args
-    (('x', 'foo'), ('y', 3))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/baz3.zcml", line 5.2-5.28')
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/baz3.zcml", line 5.2-5.28
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/baz3.zcml", line 5.2-5.28
+    <test:foo x="foo" y="3" />""")
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/baz3.zcml", line 5.2-5.28
-        <test:foo x="foo" y="3" />
+        self.assertEqual(data.package, None)
 
-    >>> data.package
+        self.assertEqual(
+                data.basepath[-13:],
+                'samplepackage')
 
-    >>> data.basepath[-13:]
-    'samplepackage'
+        self.assertEqual(
+                [clean_path(p) for p in data.includepath],
+                ['tests/samplepackage/baz3.zcml'])
 
-    >>> [clean_path(p) for p in data.includepath]
-    ['tests/samplepackage/baz3.zcml']
+        data = foo.data.pop()
+        self.assertEqual(data.args, (('x', b'foo'), ('y', 2)))
 
-    >>> data = foo.data.pop()
-    >>> data.args
-    (('x', 'foo'), ('y', 2))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/baz2.zcml", line 5.2-5.28')
 
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/baz2.zcml", line 5.2-5.28
+        self.assertEqual(
+                clean_info_path(str(data.info)),
+                """File "tests/samplepackage/baz2.zcml", line 5.2-5.28
+    <test:foo x="foo" y="2" />""")
 
-    >>> print_(clean_info_path(str(data.info)))
-    File "tests/samplepackage/baz2.zcml", line 5.2-5.28
-        <test:foo x="foo" y="2" />
+        self.assertEqual(data.package, None)
 
-    >>> data.package
+        self.assertEqual(
+                data.basepath[-13:],
+                'samplepackage')
 
-    >>> data.basepath[-13:]
-    'samplepackage'
-
-    >>> [clean_path(p) for p in data.includepath]
-    ['tests/samplepackage/baz2.zcml']
-    """
+        self.assertEqual(
+                [clean_path(p) for p in data.includepath],
+                ['tests/samplepackage/baz2.zcml'])
 
 def clean_actions(actions):
     return [
@@ -526,95 +527,82 @@ def test_includeOverrides():
 
     """
 
-def test_XMLConfig():
-    """Test processing a configuration file.
+class TestOverrides(unittest.TestCase):
 
-    We'll use the same example from test_includeOverrides:
+    def setUp(self):
+        del foo.data[:]
 
-    >>> here = os.path.dirname(__file__)
-    >>> path = os.path.join(here, "samplepackage", "baro.zcml")
+    def tearDown(self):
+        del foo.data[:]
+        from zope.testing.cleanup import CleanUp
+        CleanUp().cleanUp()
 
-    First, process the configuration file:
+    def test_XMLConfig(self):
+        # Test processing a configuration file.
 
-    >>> x = xmlconfig.XMLConfig(path)
+        # We'll use the same example from test_includeOverrides:
+        here = os.path.dirname(__file__)
+        path = os.path.join(here, "samplepackage", "baro.zcml")
 
-    Second, call the resulting object to process the actions:
+        # First, process the configuration file:
+        x = xmlconfig.XMLConfig(path)
 
-    >>> x()
+        # Second, call the resulting object to process the actions:
+        x()
 
-    And verify the data as above:
+        # And verify the data as above:
+        self.assertEqual(len(foo.data), 3)
 
-    >>> len(foo.data)
-    3
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 0)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar21.zcml", line 3.2-3.24')
 
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 0))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar21.zcml", line 3.2-3.24
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 2)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar2.zcml", line 5.2-5.24')
 
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 2))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar2.zcml", line 5.2-5.24
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 1)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar2.zcml", line 6.2-6.24')
 
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 1))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar2.zcml", line 6.2-6.24
+    def test_XMLConfig_w_module(self):
+        # Test processing a configuration file for a module.
 
-    Finally, clean up.
+        # We'll use the same example from test_includeOverrides:
+        import zope.configuration.tests.samplepackage as module
 
-    >>> from zope.testing.cleanup import CleanUp
-    >>> CleanUp().cleanUp()
-    """
+        # First, process the configuration file:
+        x = xmlconfig.XMLConfig("baro.zcml", module)
 
-def test_XMLConfig_w_module():
-    """Test processing a configuration file for a module.
+        # Second, call the resulting object to process the actions:
+        x()
 
-    We'll use the same example from test_includeOverrides:
+        # And verify the data as above:
+        self.assertEqual(len(foo.data), 3)
 
-    >>> import zope.configuration.tests.samplepackage as module
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 0)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar21.zcml", line 3.2-3.24')
 
-    First, process the configuration file:
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 2)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar2.zcml", line 5.2-5.24')
 
-    >>> x = xmlconfig.XMLConfig("baro.zcml", module)
-
-    Second, call the resulting object to process the actions:
-
-    >>> x()
-
-    And verify the data as above:
-
-    >>> len(foo.data)
-    3
-
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 0))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar21.zcml", line 3.2-3.24
-
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 2))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar2.zcml", line 5.2-5.24
-
-    >>> data = foo.data.pop(0)
-    >>> data.args
-    (('x', 'blah'), ('y', 1))
-    >>> print_(clean_info_path(repr(data.info)))
-    File "tests/samplepackage/bar2.zcml", line 6.2-6.24
-
-    Finally, clean up.
-
-    >>> from zope.testing.cleanup import CleanUp
-    >>> CleanUp().cleanUp()
-    """
-
+        data = foo.data.pop(0)
+        self.assertEqual(data.args, (('x', b'blah'), ('y', 1)))
+        self.assertEqual(
+                clean_info_path(repr(data.info)),
+                'File "tests/samplepackage/bar2.zcml", line 6.2-6.24')
 
 
 def test_suite():
@@ -640,7 +628,7 @@ def test_suite():
                 (re.compile('include [^\n]+zope.configuration[\S+]'),
                  'include /zope.configuration\2'),
                 (re.compile(r'\\'), '/'),
-                ] + checkers))
+                ]))
         ))
 
 if __name__ == '__main__':
