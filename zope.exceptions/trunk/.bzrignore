@@ -7,3 +7,6 @@
 .coverage
 __pycache__
 docs/_build
+.tox
+nosetests.xml
+coverage.xml
