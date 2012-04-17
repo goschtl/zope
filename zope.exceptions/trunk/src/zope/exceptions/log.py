@@ -15,7 +15,10 @@
 """
 
 import logging
-import cStringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from zope.exceptions.exceptionformatter import print_exception
 
@@ -27,7 +30,7 @@ class Formatter(logging.Formatter):
 
         Uses zope.exceptions.exceptionformatter to generate the traceback.
         """
-        sio = cStringIO.StringIO()
+        sio = StringIO()
         print_exception(ei[0], ei[1], ei[2], file=sio, with_filenames=True)
         s = sio.getvalue()
         if s.endswith("\n"):

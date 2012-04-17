@@ -4,3 +4,6 @@
 ./eggs
 ./parts
 *.egg-info
+.coverage
+__pycache__
+docs/_build

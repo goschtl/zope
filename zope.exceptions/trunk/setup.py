@@ -21,15 +21,12 @@
 import os
 from setuptools import setup, find_packages
 import sys
-if sys.version_info < (3, ):
-    extra = {}
-else:
-    # Python 3 support:
-    extra = dict(
-        use_2to3=True,
-        setup_requires=['zope.fixers'],
-        use_2to3_fixers = ['zope.fixers'],
-    )
+
+extra = {
+    'extras_require': {'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
+                       'testing': ['nose', 'coverage'],
+                      }
+}
 
 
 def read(*rnames):
@@ -37,7 +34,7 @@ def read(*rnames):
 
 
 setup(name='zope.exceptions',
-      version='3.7.2.dev0',
+      version='4.0dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Exceptions',
@@ -50,13 +47,12 @@ setup(name='zope.exceptions',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2.4',
-          'Programming Language :: Python :: 2.5',
           'Programming Language :: Python :: 2.6',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.1',
           'Programming Language :: Python :: 3.2',
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
