@@ -4,8 +4,9 @@ CHANGES
 0.11 (unreleased)
 =================
 
-- Nothing changed yet.
+- Updated bootstrap.py.
 
+- Remove unused variable.
 
 0.10.1 (2010-01-18)
 ===================
