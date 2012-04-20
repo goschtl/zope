@@ -31,6 +31,8 @@ def test_suite():
     suite = doctest.DocFileSuite(
         'README.txt',
         'categories.txt',
-        setUp=setUp, tearDown=tearDown)
+        setUp=setUp,
+        tearDown=tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = z3c.preference.testing.Layer
     return suite

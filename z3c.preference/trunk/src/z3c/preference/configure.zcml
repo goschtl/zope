@@ -33,6 +33,12 @@
       template="form.pt"
       layer=".interfaces.IPreferenceLayer" />
 
+  <z3c:macro
+      name="z3c-preferences-group-description"
+      macro="group-description"
+      template="form.pt"
+      layer=".interfaces.IPreferenceLayer" />
+
   <browser:defaultView
       layer=".interfaces.IPreferenceLayer"
       name="index.html" />

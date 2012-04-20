@@ -43,6 +43,7 @@ class PreferenceGroup(z3c.form.group.Group):
     def __init__(self, *args, **kw):
         super(PreferenceGroup, self).__init__(*args, **kw)
         self.fields = to_fields(self.context)
+        self.description = self.context.__description__
         self.label = self.context.__title__
 
 

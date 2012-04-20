@@ -60,6 +60,7 @@ The interfaces must be registered for preferences:
   ...       <preferenceGroup
   ...           id="app"
   ...           title="General Settings"
+  ...           description="Settings for the whole app"
   ...           schema="z3c.preference.categories.IGeneralSettings"
   ...           category="true"
   ...           />
@@ -67,6 +68,7 @@ The interfaces must be registered for preferences:
   ...       <preferenceGroup
   ...           id="app.rss"
   ...           title="RSS Settings"
+  ...           description="Settings for the RSS feeds"
   ...           schema="z3c.preference.categories.IRSSSettings"
   ...           category="false"
   ...           />
@@ -88,6 +90,16 @@ the preferences are stored in the principal annotations:
 >>> browser = Browser()
 >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
+The form displays the titles and descriptions of the categories:
+
+>>> browser.open('http://localhost/++preferences++/app')
+>>> print browser.contents
+<!DOCTYPE ...
+...General Settings...
+...Settings for the whole app...
+...RSS Settings...
+...Settings for the RSS feeds...
+...Search Settings...
 
 Editing preference group trees using browser
 --------------------------------------------
