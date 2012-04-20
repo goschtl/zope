@@ -42,7 +42,6 @@ def parse(pattern_str):
     returns the pattern tuple.
     """
     pattern_str = normalize(pattern_str)
-    result = []
     pattern = tuple(pattern_str.split('/'))
     known_variables = set()
     for step in pattern:
