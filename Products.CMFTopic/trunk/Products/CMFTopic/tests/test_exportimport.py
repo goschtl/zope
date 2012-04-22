@@ -66,7 +66,7 @@ class TopicExportImportTests(BaseRegistryTests,
         return topic
 
     def test_listExportableItems(self):
-        topic = self._makeTopic('lEI', False).__of__(self.root)
+        topic = self._makeTopic('lEI', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         self.assertEqual(len(adapter.listExportableItems()), 0)
@@ -74,32 +74,32 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(len(adapter.listExportableItems()), 0)
 
     def test__getExportInfo_empty(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         info = adapter._getExportInfo()
         self.assertEqual(len(info['criteria']), 0)
 
     def test_export_empty(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/empty/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/empty/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/empty/criteria.xml' )
-        self._compareDOM( text, _EMPTY_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/empty/criteria.xml')
+        self._compareDOM(text, _EMPTY_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test__getExportInfo_with_criteria(self):
-        topic = self._makeTopic('with_criteria', True).__of__(self.root)
+        topic = self._makeTopic('with_criteria', True).__of__(self.app)
         adapter = self._makeOne(topic)
 
         info = adapter._getExportInfo()
@@ -117,7 +117,7 @@ class TopicExportImportTests(BaseRegistryTests,
             self.assertEqual(dict(found['attributes']), attributes)
 
     def test_export_with_string_criterion(self):
-        topic = self._makeTopic('with_string', False).__of__(self.root)
+        topic = self._makeTopic('with_string', False).__of__(self.app)
         data = _CRITERIA_DATA[0]
         topic.addCriterion(data[0], data[1])
         topic.getCriterion(data[0]).edit(**data[2])
@@ -126,19 +126,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_string/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_string/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_string/criteria.xml' )
-        self._compareDOM( text, _STRING_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_string/criteria.xml')
+        self._compareDOM(text, _STRING_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_export_with_integer_criterion(self):
-        topic = self._makeTopic('with_integer', False).__of__(self.root)
+        topic = self._makeTopic('with_integer', False).__of__(self.app)
         data = _CRITERIA_DATA[1]
         topic.addCriterion(data[0], data[1])
         topic.getCriterion(data[0]).edit(**data[2])
@@ -147,19 +147,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_integer/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_integer/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_integer/criteria.xml' )
-        self._compareDOM( text, _INTEGER_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_integer/criteria.xml')
+        self._compareDOM(text, _INTEGER_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_export_with_date_criterion(self):
-        topic = self._makeTopic('with_date', False).__of__(self.root)
+        topic = self._makeTopic('with_date', False).__of__(self.app)
         data = _CRITERIA_DATA[2]
         topic.addCriterion(data[0], data[1])
         topic.getCriterion(data[0]).edit(**data[2])
@@ -168,19 +168,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_date/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_date/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_date/criteria.xml' )
-        self._compareDOM( text, _DATE_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_date/criteria.xml')
+        self._compareDOM(text, _DATE_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_export_with_list_criterion(self):
-        topic = self._makeTopic('with_list', False).__of__(self.root)
+        topic = self._makeTopic('with_list', False).__of__(self.app)
         data = _CRITERIA_DATA[3]
         topic.addCriterion(data[0], data[1])
         topic.getCriterion(data[0]).edit(**data[2])
@@ -189,19 +189,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_list/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_list/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_list/criteria.xml' )
-        self._compareDOM( text, _LIST_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_list/criteria.xml')
+        self._compareDOM(text, _LIST_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_export_with_sort_criterion(self):
-        topic = self._makeTopic('with_sort', False).__of__(self.root)
+        topic = self._makeTopic('with_sort', False).__of__(self.app)
         data = _CRITERIA_DATA[4]
         topic.addCriterion(data[0], data[1])
         topic.getCriterion(data[0]).edit(**data[2])
@@ -210,19 +210,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_sort/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_sort/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_sort/criteria.xml' )
-        self._compareDOM( text, _SORT_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_sort/criteria.xml')
+        self._compareDOM(text, _SORT_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_export_with_mixed_criteria(self):
-        topic = self._makeTopic('with_mixed', False).__of__(self.root)
+        topic = self._makeTopic('with_mixed', False).__of__(self.app)
         for index in 0, 2, 4:
             data = _CRITERIA_DATA[index]
             topic.addCriterion(data[0], data[1])
@@ -232,19 +232,19 @@ class TopicExportImportTests(BaseRegistryTests,
         context = DummyExportContext(topic)
         adapter.export(context, 'test', False)
 
-        self.assertEqual( len( context._wrote ), 2 )
-        filename, text, content_type = context._wrote[ 0 ]
-        self.assertEqual( filename, 'test/with_mixed/.objects' )
-        self.assertEqual( text, '' )
-        self.assertEqual( content_type, 'text/comma-separated-values' )
+        self.assertEqual(len(context._wrote), 2)
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'test/with_mixed/.objects')
+        self.assertEqual(text, '')
+        self.assertEqual(content_type, 'text/comma-separated-values')
 
-        filename, text, content_type = context._wrote[ 1 ]
-        self.assertEqual( filename, 'test/with_mixed/criteria.xml' )
-        self._compareDOM( text, _MIXED_TOPIC_CRITERIA )
-        self.assertEqual( content_type, 'text/xml' )
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'test/with_mixed/criteria.xml')
+        self._compareDOM(text, _MIXED_TOPIC_CRITERIA)
+        self.assertEqual(content_type, 'text/xml')
 
     def test_import_empty_with_string_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -264,7 +264,7 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(criterion.value, expected[2]['value'])
 
     def test_import_empty_with_integer_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -285,7 +285,7 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(criterion.direction, expected[2]['direction'])
 
     def test_import_empty_with_date_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -307,7 +307,7 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(criterion.daterange, expected[2]['daterange'])
 
     def test_import_empty_with_list_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -328,7 +328,7 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(criterion.operator, expected[2]['operator'])
 
     def test_import_empty_with_sort_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -349,7 +349,7 @@ class TopicExportImportTests(BaseRegistryTests,
         self.assertEqual(criterion.reversed, bool(expected[2]['reversed']))
 
     def test_import_empty_with_mixed_criterion(self):
-        topic = self._makeTopic('empty', False).__of__(self.root)
+        topic = self._makeTopic('empty', False).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, encoding='ascii')
@@ -389,7 +389,7 @@ class TopicExportImportTests(BaseRegistryTests,
 
     def test_import_without_purge_leaves_existing_criteria(self):
 
-        topic = self._makeTopic('with_criteria', True).__of__(self.root)
+        topic = self._makeTopic('with_criteria', True).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, purge=False)
@@ -402,7 +402,7 @@ class TopicExportImportTests(BaseRegistryTests,
 
     def test_import_with_purge_removes_existing_criteria(self):
 
-        topic = self._makeTopic('with_criteria', True).__of__(self.root)
+        topic = self._makeTopic('with_criteria', True).__of__(self.app)
         adapter = self._makeOne(topic)
 
         context = DummyImportContext(topic, purge=True)

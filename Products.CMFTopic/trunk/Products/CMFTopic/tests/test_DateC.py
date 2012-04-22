@@ -34,19 +34,15 @@ def _replace_DC__as_of(new_callable):
 
 class FriendlyDateCriterionTests(CriterionTestCase, unittest.TestCase):
 
-    lessThanFiveDaysOld = { 'value': 5
-                          , 'operation': 'max'
-                          , 'daterange': 'old'
-                          }
-
-    lessThanOneMonthAhead = { 'value': 31
-                            , 'operation': 'max'
-                            , 'daterange': 'ahead'
-                            }
-    today = { 'value': 0
-            , 'operation': 'within_day'
-            , 'daterange': 'ahead'
-            }
+    lessThanFiveDaysOld = {'value': 5,
+                           'operation': 'max',
+                           'daterange': 'old'}
+    lessThanOneMonthAhead = {'value': 31,
+                             'operation': 'max',
+                             'daterange': 'ahead'}
+    today = {'value': 0,
+             'operation': 'within_day',
+             'daterange': 'ahead'}
 
     def setUp(self):
         self._now = DateTime()
@@ -60,105 +56,104 @@ class FriendlyDateCriterionTests(CriterionTestCase, unittest.TestCase):
 
         return FriendlyDateCriterion
 
-    def test_Empty( self ):
+    def test_Empty(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        self.assertEqual( friendly.getId(), 'foo' )
-        self.assertEqual( friendly.field, 'foofield' )
-        self.assertEqual( friendly.value, None )
-        self.assertEqual( friendly.operation, 'min' )
-        self.assertEqual( friendly.daterange, 'old' )
-        self.assertEqual( len( friendly.getCriteriaItems() ), 0 )
+        self.assertEqual(friendly.getId(), 'foo')
+        self.assertEqual(friendly.field, 'foofield')
+        self.assertEqual(friendly.value, None)
+        self.assertEqual(friendly.operation, 'min')
+        self.assertEqual(friendly.daterange, 'old')
+        self.assertEqual(len(friendly.getCriteriaItems()), 0)
 
-    def test_ListOfDefaultDates( self ):
+    def test_ListOfDefaultDates(self):
         friendly = self._makeOne('foo', 'foofield')
 
         d = friendly.defaultDateOptions()
-        self.assertEqual( d[0][0], 0 )
-        self.assertEqual( d[1][0], 1 )
-        self.assertEqual( d[2][0], 2 )
+        self.assertEqual(d[0][0], 0)
+        self.assertEqual(d[1][0], 1)
+        self.assertEqual(d[2][0], 2)
 
-    def test_Clear( self ):
+    def test_Clear(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.edit( value=None )
-        self.assertEqual( friendly.value, None )
-        self.assertEqual( friendly.operation, 'min' )
-        self.assertEqual( friendly.daterange, 'old' )
+        friendly.edit(value=None)
+        self.assertEqual(friendly.value, None)
+        self.assertEqual(friendly.operation, 'min')
+        self.assertEqual(friendly.daterange, 'old')
 
-    def test_Basic( self ):
+    def test_Basic(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.apply( self.lessThanFiveDaysOld )
-        self.assertEqual( friendly.value, 5 )
-        self.assertEqual( friendly.operation, 'max' )
-        self.assertEqual( friendly.daterange, 'old' )
+        friendly.apply(self.lessThanFiveDaysOld)
+        self.assertEqual(friendly.value, 5)
+        self.assertEqual(friendly.operation, 'max')
+        self.assertEqual(friendly.daterange, 'old')
 
-    def test_BadInput( self ):
+    def test_BadInput(self):
         friendly = self._makeOne('foo', 'foofield')
 
         # Bogus value
-        self.assertRaises( ValueError, friendly.edit, 'blah' )
+        self.assertRaises(ValueError, friendly.edit, 'blah')
 
         # Bogus operation
-        self.assertRaises( ValueError, friendly.edit, 4, 'min:max', 'old' )
+        self.assertRaises(ValueError, friendly.edit, 4, 'min:max', 'old')
 
         # Bogus daterange
-        self.assertRaises( ValueError, friendly.edit, 4, 'max', 'new' )
+        self.assertRaises(ValueError, friendly.edit, 4, 'max', 'new')
 
-    def test_StringAsValue( self ):
+    def test_StringAsValue(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.edit( '4' )
-        self.assertEqual( friendly.value, 4 )
+        friendly.edit('4')
+        self.assertEqual(friendly.value, 4)
 
-        friendly.edit( '-4' )
-        self.assertEqual( friendly.value, -4 )
+        friendly.edit('-4')
+        self.assertEqual(friendly.value, -4)
 
-        friendly.edit( '' )
-        self.assertEqual( friendly.value, None )
+        friendly.edit('')
+        self.assertEqual(friendly.value, None)
 
-    def test_Today( self ):
+    def test_Today(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.apply( self.today )
-        self.assertEqual( friendly.daterange, 'ahead' )
+        friendly.apply(self.today)
+        self.assertEqual(friendly.daterange, 'ahead')
 
         now = DateTime()
 
         result = friendly.getCriteriaItems()
-        self.assertEqual( len(result), 1 )
-        self.assertEqual( result[0][0], 'foofield' )
-        self.assertEqual( result[0][1]['query'],
-                          ( now.earliestTime(), now.latestTime() ) )
-        self.assertEqual( result[0][1]['range'], 'min:max' )
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][0], 'foofield')
+        self.assertEqual(result[0][1]['query'],
+                         (now.earliestTime(), now.latestTime()))
+        self.assertEqual(result[0][1]['range'], 'min:max')
 
-    def test_FiveDaysOld( self ):
+    def test_FiveDaysOld(self):
         # This should create a query
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.apply( self.lessThanFiveDaysOld )
-        self.assertEqual( friendly.daterange, 'old' )
+        friendly.apply(self.lessThanFiveDaysOld)
+        self.assertEqual(friendly.daterange, 'old')
 
         result = friendly.getCriteriaItems()
-        self.assertEqual( len(result), 1 )
-        self.assertEqual( result[0][0], 'foofield' )
-        expect_earliest, expect_now = result[0][1]['query']
-        self.assertEqual( expect_earliest.Date(),
-                          ( DateTime() - 5 ).Date() )
-        self.assertEqual( result[0][1]['range'], 'min:max' )
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][0], 'foofield')
+        expect_earliest, _expect_now = result[0][1]['query']
+        self.assertEqual(expect_earliest.Date(), (DateTime() - 5).Date())
+        self.assertEqual(result[0][1]['range'], 'min:max')
 
-    def test_OneMonthAhead( self ):
+    def test_OneMonthAhead(self):
         friendly = self._makeOne('foo', 'foofield')
 
-        friendly.apply( self.lessThanOneMonthAhead )
-        self.assertEqual( friendly.daterange, 'ahead' )
+        friendly.apply(self.lessThanOneMonthAhead)
+        self.assertEqual(friendly.daterange, 'ahead')
 
         result = friendly.getCriteriaItems()
         expect_now, expect_latest = result[0][1]['query']
-        self.assertEqual( expect_latest.Date(), ( DateTime() + 31 ).Date() )
-        self.assertEqual( expect_now.Date(), DateTime().Date() )
-        self.assertEqual( result[0][1]['range'], 'min:max' )
+        self.assertEqual(expect_latest.Date(), (DateTime() + 31).Date())
+        self.assertEqual(expect_now.Date(), DateTime().Date())
+        self.assertEqual(result[0][1]['range'], 'min:max')
 
 
 class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
@@ -174,7 +169,7 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
     def afterSetUp(self):
         setSite(self.app.site)
         self.site = self.app.site
-        self.site._setObject( 'topic', Topic('topic') )
+        self.site._setObject('topic', Topic('topic'))
         self.topic = self.site.topic
         self.topic.addCriterion('modified', 'Friendly Date Criterion')
         self.topic.addCriterion('portal_type', 'String Criterion')
@@ -186,9 +181,8 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
 
         for i in self.day_diffs:
             dummy_id = 'dummy%i' % i
-            self.site._setObject( dummy_id, DummyContent( id=dummy_id
-                                                        , catalog=1
-                                                        ) )
+            self.site._setObject(dummy_id,
+                                 DummyContent(id=dummy_id, catalog=1))
             dummy_ob = getattr(self.site, dummy_id)
             dummy_ob.modified_date = self.now + i
             dummy_ob.reindexObject()
@@ -207,42 +201,35 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
     def test_WithinDayAgo(self):
         # What items were modified "On the day X days ago"
         for diff in self.selectable_diffs:
-            self.criterion.edit( value=abs(diff)
-                               , operation='within_day'
-                               , daterange='old'
-                               )
+            self.criterion.edit(value=abs(diff),
+                                operation='within_day',
+                                daterange='old')
             results = self.topic.queryCatalog()
 
             # There is only one item with an modified date for this day
-            self.assertEquals(len(results), 1)
-            self.assertEquals( results[0].modified.Date()
-                             , (self.now-diff).Date()
-                             )
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].modified.Date(),
+                             (self.now - diff).Date())
 
     def test_WithinDayAhead(self):
         # What items were modified "On the day X days ahead"
         for diff in self.selectable_diffs:
-            self.criterion.edit( value=abs(diff)
-                               , operation='within_day'
-                               , daterange='ahead'
-                               )
+            self.criterion.edit(value=abs(diff),
+                                operation='within_day',
+                                daterange='ahead')
             results = self.topic.queryCatalog()
 
             # There is only one item with an modified date for this day
-            self.assertEquals(len(results), 1)
-            self.assertEquals( results[0].modified.Date()
-                             , (self.now+diff).Date()
-                             )
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].modified.Date(),
+                             (self.now + diff).Date())
 
     def test_MoreThanDaysAgo(self):
         # What items are modified "More than X days ago"
         resultset_size = len(self.nonzero_diffs)
 
         for diff in self.nonzero_diffs:
-            self.criterion.edit( value=diff
-                               , operation='min'
-                               , daterange='old'
-                               )
+            self.criterion.edit(value=diff, operation='min', daterange='old')
             results = self.topic.queryCatalog()
 
             # As we move up in our date difference range, we must find as
@@ -250,9 +237,9 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
             # in our sequence of user-selectable time differences. As we
             # increase the "value", we actually move backwards in time, so
             # the expected count of results *decreases*
-            self.assertEquals(len(results), resultset_size)
+            self.assertEqual(len(results), resultset_size)
             for brain in results:
-                self.failUnless(brain.modified <= self.now-diff)
+                self.assertTrue(brain.modified <= self.now - diff)
 
             resultset_size -= 1
 
@@ -263,24 +250,18 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
         # are not applied and the search is a simple
         # "everything in the future" search.
         resultset_size = len(self.selectable_diffs)
-        self.criterion.edit( value=0
-                           , operation='min'
-                           , daterange='old'
-                           )
+        self.criterion.edit(value=0, operation='min', daterange='old')
         results = self.topic.queryCatalog()
-        self.assertEquals(len(results), resultset_size)
+        self.assertEqual(len(results), resultset_size)
         for brain in results:
-            self.failUnless(brain.modified >= self.now)
+            self.assertTrue(brain.modified >= self.now)
 
     def test_MoreThanDaysAhead(self):
         # What items are modified "More than X days ahead"
         resultset_size = len(self.nonzero_diffs)
 
         for diff in self.nonzero_diffs:
-            self.criterion.edit( value=diff
-                               , operation='min'
-                               , daterange='ahead'
-                               )
+            self.criterion.edit(value=diff, operation='min', daterange='ahead')
             results = self.topic.queryCatalog()
 
             # As we move up in our date difference range, we must find as
@@ -288,9 +269,9 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
             # in our sequence of user-selectable time differences. As we
             # increase the "value", we actually move formward in time, so
             # the expected count of results *decreases*
-            self.assertEquals(len(results), resultset_size)
+            self.assertEqual(len(results), resultset_size)
             for brain in results:
-                self.failUnless(brain.modified >= self.now+diff)
+                self.assertTrue(brain.modified >= self.now + diff)
 
             resultset_size -= 1
 
@@ -301,33 +282,27 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
         # are not applied and the search is a simple
         # "everything in the future" search.
         resultset_size = len(self.selectable_diffs)
-        self.criterion.edit( value=0
-                           , operation='min'
-                           , daterange='ahead'
-                           )
+        self.criterion.edit(value=0, operation='min', daterange='ahead')
         results = self.topic.queryCatalog()
-        self.assertEquals(len(results), resultset_size)
+        self.assertEqual(len(results), resultset_size)
         for brain in results:
-            self.failUnless(brain.modified >= self.now)
+            self.assertTrue(brain.modified >= self.now)
 
     def test_LessThanDaysAgo(self):
         # What items are modified "Less than X days ago"
         resultset_size = 2
 
         for diff in self.nonzero_diffs:
-            self.criterion.edit( value=diff
-                               , operation='max'
-                               , daterange='old'
-                               )
+            self.criterion.edit(value=diff, operation='max', daterange='old')
             results = self.topic.queryCatalog()
 
             # With this query we are looking for items modified "less than
             # X days ago", meaning between the given time and now. As we move
             # through the selectable day values we increase the range to
             # search through and thus increase the resultset size.
-            self.assertEquals(len(results), resultset_size)
+            self.assertEqual(len(results), resultset_size)
             for brain in results:
-                self.failUnless(self.now-diff <= brain.modified <= self.now)
+                self.assertTrue(self.now - diff <= brain.modified <= self.now)
 
             resultset_size += 1
 
@@ -338,33 +313,27 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
         # are not applied and the search is a simple
         # "everything in the past" search.
         resultset_size = len(self.selectable_diffs)
-        self.criterion.edit( value=0
-                           , operation='max'
-                           , daterange='old'
-                           )
+        self.criterion.edit(value=0, operation='max', daterange='old')
         results = self.topic.queryCatalog()
-        self.assertEquals(len(results), resultset_size)
+        self.assertEqual(len(results), resultset_size)
         for brain in results:
-            self.failUnless(brain.modified <= self.now)
+            self.assertTrue(brain.modified <= self.now)
 
     def test_LessThanDaysAhead(self):
         # What items are modified "Less than X days ahead"
         resultset_size = 2
 
         for diff in self.nonzero_diffs:
-            self.criterion.edit( value=diff
-                               , operation='max'
-                               , daterange='ahead'
-                               )
+            self.criterion.edit(value=diff, operation='max', daterange='ahead')
             results = self.topic.queryCatalog()
 
             # With this query we are looking for items modified "less than
             # X days ahead", meaning between now and the given time. As we move
             # through the selectable day values we increase the range to
             # search through and thus increase the resultset size.
-            self.assertEquals(len(results), resultset_size)
+            self.assertEqual(len(results), resultset_size)
             for brain in results:
-                self.failUnless(self.now+diff >= brain.modified >= self.now)
+                self.assertTrue(self.now + diff >= brain.modified >= self.now)
 
             resultset_size += 1
 
@@ -375,14 +344,11 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
         # are not applied and the search is a simple
         # "everything in the past" search.
         resultset_size = len(self.selectable_diffs)
-        self.criterion.edit( value=0
-                           , operation='max'
-                           , daterange='ahead'
-                           )
+        self.criterion.edit(value=0, operation='max', daterange='ahead')
         results = self.topic.queryCatalog()
-        self.assertEquals(len(results), resultset_size)
+        self.assertEqual(len(results), resultset_size)
         for brain in results:
-            self.failUnless(brain.modified <= self.now)
+            self.assertTrue(brain.modified <= self.now)
 
 
 def test_suite():

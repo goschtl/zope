@@ -26,56 +26,56 @@ class ListCriterionTests(CriterionTestCase, unittest.TestCase):
 
         return ListCriterion
 
-    def test_Empty( self ):
+    def test_Empty(self):
         listc = self._makeOne('foo', 'foofield')
 
-        self.assertEqual( listc.getId(), 'foo' )
-        self.assertEqual( listc.field, 'foofield' )
-        self.assertEqual( listc.value, ('',) )
-        self.assertEqual( len(listc.getCriteriaItems()), 0 )
+        self.assertEqual(listc.getId(), 'foo')
+        self.assertEqual(listc.field, 'foofield')
+        self.assertEqual(listc.value, ('',))
+        self.assertEqual(len(listc.getCriteriaItems()), 0)
 
-    def test_Edit_withString( self ):
+    def test_Edit_withString(self):
         listc = self._makeOne('foo', 'foofield')
 
         listc.edit('bar\nbaz')
-        self.assertEqual( listc.getId(), 'foo' )
-        self.assertEqual( listc.field, 'foofield' )
-        self.assertEqual( listc.value, ( 'bar', 'baz' ) )
+        self.assertEqual(listc.getId(), 'foo')
+        self.assertEqual(listc.field, 'foofield')
+        self.assertEqual(listc.value, ('bar', 'baz'))
 
         items = listc.getCriteriaItems()
-        self.assertEqual( len( items ), 1 )
-        self.assertEqual( len( items[0] ), 2 )
-        self.assertEqual( items[0][0], 'foofield' )
-        self.assertEqual( items[0][1], ( 'bar', 'baz' ) )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(len(items[0]), 2)
+        self.assertEqual(items[0][0], 'foofield')
+        self.assertEqual(items[0][1], ('bar', 'baz'))
 
-    def test_Edit_withList( self ):
+    def test_Edit_withList(self):
         listc = self._makeOne('foo', 'foofield')
 
-        abc = [ 'a', 'b', 'c' ]
-        listc.edit( abc )
+        abc = ['a', 'b', 'c']
+        listc.edit(abc)
 
         items = listc.getCriteriaItems()
-        self.failUnless( 'foofield' in map( lambda x: x[0], items ) )
-        self.failUnless( tuple( abc ) in map( lambda x: x[1], items ) )
+        self.assertTrue('foofield' in map(lambda x: x[0], items))
+        self.assertTrue(tuple(abc) in map(lambda x: x[1], items))
 
-    def test_operator( self ):
+    def test_operator(self):
         listc = self._makeOne('foo', 'foofield')
 
-        abc = [ 'a', 'b', 'c' ]
+        abc = ['a', 'b', 'c']
 
-        listc.edit( abc )
+        listc.edit(abc)
         items = listc.getCriteriaItems()
-        self.assertEqual( len( items ), 1 )
+        self.assertEqual(len(items), 1)
 
-        listc.edit( abc, 'or' )
+        listc.edit(abc, 'or')
         items = listc.getCriteriaItems()
-        self.assertEqual( len( items ), 2 )
-        self.failUnless( ( 'foofield_operator', 'or' ) in items )
+        self.assertEqual(len(items), 2)
+        self.assertTrue(('foofield_operator', 'or') in items)
 
-        listc.edit( abc, 'and' )
+        listc.edit(abc, 'and')
         items = listc.getCriteriaItems()
-        self.assertEqual( len( items ), 2 )
-        self.failUnless( ( 'foofield_operator', 'and' ) in items )
+        self.assertEqual(len(items), 2)
+        self.assertTrue(('foofield_operator', 'and') in items)
 
 
 def test_suite():
