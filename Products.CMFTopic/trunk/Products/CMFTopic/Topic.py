@@ -32,13 +32,13 @@ from Products.CMFTopic.permissions import View
 def addTopic(self, id, title='', REQUEST=None):
     """ Create an empty topic.
     """
-    topic = Topic( id )
+    topic = Topic(id)
     topic.id = id
     topic.title = title
     self._setObject(id, topic, suppress_events=True)
 
     if REQUEST is not None:
-        REQUEST['RESPONSE'].redirect( 'manage_main' )
+        REQUEST['RESPONSE'].redirect('manage_main')
 
 
 class Topic(SkinnedFolder):
@@ -61,7 +61,7 @@ class Topic(SkinnedFolder):
     def listCriteria(self):
         """ Return a list of our criteria objects.
         """
-        return self.objectValues( self._criteria_metatype_ids() )
+        return self.objectValues(self._criteria_metatype_ids())
 
     security.declareProtected(ChangeTopics, 'listCriteriaTypes')
     def listCriteriaTypes(self):
@@ -70,7 +70,7 @@ class Topic(SkinnedFolder):
         out = []
 
         for ct in self._criteriaTypes:
-            out.append( { 'name': ct.meta_type } )
+            out.append({'name': ct.meta_type})
 
         return out
 
@@ -79,7 +79,7 @@ class Topic(SkinnedFolder):
         """ Return a list of available fields for new criteria.
         """
         ctool = getUtility(ICatalogTool)
-        currentfields = map( lambda x: x.Field(), self.listCriteria() )
+        currentfields = map(lambda x: x.Field(), self.listCriteria())
         availfields = filter(
             lambda field, cf=currentfields: field not in cf,
             ctool.indexes()
@@ -90,7 +90,7 @@ class Topic(SkinnedFolder):
     def listSubtopics(self):
         """ Return a list of our subtopics.
         """
-        return self.objectValues( self.meta_type )
+        return self.objectValues(self.meta_type)
 
     security.declareProtected(ChangeTopics, 'edit')
     def edit(self, acquireCriteria, title=None, description=None):
@@ -118,8 +118,8 @@ class Topic(SkinnedFolder):
             try:
                 # Tracker 290 asks to allow combinations, like this:
                 # parent = aq_parent( self )
-                parent = aq_parent( aq_inner( self ) )
-                result.update( parent.buildQuery() )
+                parent = aq_parent(aq_inner(self))
+                result.update(parent.buildQuery())
 
             except: # oh well, can't find parent, or it isn't a Topic.
                 pass
@@ -127,7 +127,7 @@ class Topic(SkinnedFolder):
         for criterion in self.listCriteria():
 
             for key, value in criterion.getCriteriaItems():
-                result[ key ] = value
+                result[key] = value
 
         return result
 
@@ -149,8 +149,8 @@ class Topic(SkinnedFolder):
           syndication tool.
         """
         syn_tool = getUtility(ISyndicationTool)
-        limit = syn_tool.getMaxItems( self )
-        brains = self.queryCatalog( sort_limit=limit )[ :limit ]
+        limit = syn_tool.getMaxItems(self)
+        brains = self.queryCatalog(sort_limit=limit)[:limit]
         return [ brain.getObject() for brain in brains ]
 
     ### Criteria adding/editing/deleting
@@ -164,32 +164,32 @@ class Topic(SkinnedFolder):
         for ct in self._criteriaTypes:
 
             if criterion_type == ct.meta_type:
-                crit = ct( newid, field )
+                crit = ct(newid, field)
 
         if crit is None:
             # No criteria type matched passed in value
-            raise NameError, 'Unknown Criterion Type: %s' % criterion_type
+            raise NameError('Unknown Criterion Type: %s' % criterion_type)
 
-        self._setObject( newid, crit )
+        self._setObject(newid, crit)
 
     security.declareProtected(ChangeTopics, 'deleteCriterion')
     def deleteCriterion(self, criterion_id):
         """ Delete selected criterion.
         """
-        if type( criterion_id ) is type( '' ):
-            self._delObject( criterion_id )
-        elif type( criterion_id ) in ( type( () ), type( [] ) ):
+        if type(criterion_id) is type(''):
+            self._delObject(criterion_id)
+        elif type(criterion_id) in (type(()), type([])):
             for cid in criterion_id:
-                self._delObject( cid )
+                self._delObject(cid)
 
     security.declareProtected(View, 'getCriterion')
     def getCriterion(self, criterion_id):
         """ Get the criterion object.
         """
         try:
-            return self._getOb( 'crit__%s' % criterion_id )
+            return self._getOb('crit__%s' % criterion_id)
         except AttributeError:
-            return self._getOb( criterion_id )
+            return self._getOb(criterion_id)
 
     security.declareProtected(AddTopics, 'addSubtopic')
     def addSubtopic(self, id):
@@ -197,7 +197,7 @@ class Topic(SkinnedFolder):
         """
         ti = self.getTypeInfo()
         ti.constructInstance(self, id)
-        return self._getOb( id )
+        return self._getOb(id)
 
     #
     #   Helper methods
@@ -208,9 +208,9 @@ class Topic(SkinnedFolder):
         result = []
 
         for mt in self._criteriaTypes:
-            result.append( mt.meta_type )
+            result.append(mt.meta_type)
 
-        return tuple( result )
+        return tuple(result)
 
 InitializeClass(Topic)
 
