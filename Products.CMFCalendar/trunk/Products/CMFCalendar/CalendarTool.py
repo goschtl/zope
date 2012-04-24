@@ -51,7 +51,7 @@ class CalendarTool(UniqueObject, SimpleItem):
     """ A tool for encapsulating how calendars work and are displayed """
 
     id = 'portal_calendar'
-    meta_type= 'CMF Calendar Tool'
+    meta_type = 'CMF Calendar Tool'
     security = ClassSecurityInfo()
 
     implements(ICalendarTool)
@@ -61,9 +61,10 @@ class CalendarTool(UniqueObject, SimpleItem):
     use_session = False
     firstweekday = 6 # 6 is Sunday
 
-    manage_options = (({'label' : 'Overview', 'action' : 'manage_overview'},
-                       {'label' : 'Configure', 'action' : 'manage_configure'},
-                      ) + SimpleItem.manage_options)
+    manage_options = (
+        ({'label': 'Overview', 'action': 'manage_overview'},
+         {'label': 'Configure', 'action': 'manage_configure'}) +
+        SimpleItem.manage_options)
 
     #
     #   ZMI methods
@@ -79,7 +80,7 @@ class CalendarTool(UniqueObject, SimpleItem):
     security.declareProtected(ManagePortal, 'edit_configuration')
     def edit_configuration(self, show_types, use_session, show_states=None,
                            firstweekday=None, REQUEST=None):
-        """ Change the configuration of the calendar tool 
+        """ Change the configuration of the calendar tool
         """
         self.calendar_types = tuple(show_types)
         self.use_session = bool(use_session)
@@ -116,25 +117,25 @@ class CalendarTool(UniqueObject, SimpleItem):
 
     security.declarePublic('getCalendarTypes')
     def getCalendarTypes(self):
-        """ Returns a list of type that will show in the calendar 
+        """ Returns a list of type that will show in the calendar
         """
         return self.calendar_types
 
     security.declarePublic('getCalendarStates')
     def getCalendarStates(self):
-        """ Returns a list of workflow states that will show in the calendar 
+        """ Returns a list of workflow states that will show in the calendar
         """
         return self.calendar_states
 
     security.declarePublic('getUseSession')
     def getUseSession(self):
-        """ Returns the Use_Session option 
+        """ Returns the Use_Session option
         """
         return bool(self.use_session)
 
     security.declarePublic('getDays')
     def getDays(self):
-        """ Returns a list of days with the correct start day first 
+        """ Returns a list of days with the correct start day first
         """
         return self._getCalendar().weekheader(2).split()
 
@@ -176,10 +177,10 @@ class CalendarTool(UniqueObject, SimpleItem):
         for week in daysByWeek:
             days = []
             for day in week:
-                if events.has_key(day):
+                if day in events:
                     days.append(events[day])
                 else:
-                    days.append({'day': day, 'event': 0, 'eventslist':[]})
+                    days.append({'day': day, 'event': 0, 'eventslist': []})
 
             weeks.append(days)
 
@@ -187,7 +188,7 @@ class CalendarTool(UniqueObject, SimpleItem):
 
     security.declarePublic('catalog_getevents')
     def catalog_getevents(self, year, month):
-        """ given a year and month return a list of days that have events 
+        """ given a year and month return a list of days that have events
         """
         year = int(year)
         month = int(month)
@@ -201,10 +202,10 @@ class CalendarTool(UniqueObject, SimpleItem):
                         review_state=self.getCalendarStates(),
                         start={'query': last_date, 'range': 'max'},
                         end={'query': first_date, 'range': 'min'},
-                        sort_on='start' )
+                        sort_on='start')
 
         # compile a list of the days that have events
-        eventDays={}
+        eventDays = {}
         for daynumber in range(1, 32): # 1 to 31
             eventDays[daynumber] = {'eventslist': [],
                                     'event': 0,
@@ -215,7 +216,7 @@ class CalendarTool(UniqueObject, SimpleItem):
                 break
             else:
                 includedevents.append(result.getRID())
-            event={}
+            event = {}
             # we need to deal with events that end next month
             if  result.end.greaterThan(last_date):
                 eventEndDay = last_day
@@ -237,31 +238,32 @@ class CalendarTool(UniqueObject, SimpleItem):
             event['title'] = result.Title or result.getId
 
             if eventStartDay != eventEndDay:
-                allEventDays = range(eventStartDay, eventEndDay+1)
+                allEventDays = range(eventStartDay, eventEndDay + 1)
                 eventDays[eventStartDay]['eventslist'].append(
                         {'end': None,
                          'start': result.start.Time(),
-                         'title': event['title']} )
+                         'title': event['title']})
                 eventDays[eventStartDay]['event'] = 1
 
                 for eventday in allEventDays[1:-1]:
                     eventDays[eventday]['eventslist'].append(
                         {'end': None,
                          'start': None,
-                         'title': event['title']} )
+                         'title': event['title']})
                     eventDays[eventday]['event'] = 1
 
-                if (result.end == result.end.earliestTime() and 
-                    event['end'] is not None): 
+                if (result.end == result.end.earliestTime() and
+                    event['end'] is not None):
                     # ends some day this month at midnight
                     last_day_data = eventDays[allEventDays[-2]]
                     last_days_event = last_day_data['eventslist'][-1]
-                    last_days_event['end'] = (result.end-1).latestTime().Time()
+                    last_days_event['end'] = (result.end
+                                              - 1).latestTime().Time()
                 else:
-                    eventDays[eventEndDay]['eventslist'].append( 
-                        { 'end': event['end'],
-                          'start': None,
-                          'title': event['title']} )
+                    eventDays[eventEndDay]['eventslist'].append(
+                        {'end': event['end'],
+                         'start': None,
+                         'title': event['title']})
                     eventDays[eventEndDay]['event'] = 1
             else:
                 eventDays[eventStartDay]['eventslist'].append(event)
@@ -281,14 +283,13 @@ class CalendarTool(UniqueObject, SimpleItem):
             B) End on this day  OR
             C) Start before this day  AND  end after this day
         """
-        day, month, year = ( int(thisDay.day())
-                           , int(thisDay.month())
-                           , int(thisDay.year())
-                           )
+        day, month, year = (int(thisDay.day()), int(thisDay.month()),
+                            int(thisDay.year()))
 
         first_date, last_date = self.getBeginAndEndTimes(day, month, year)
         zone = first_date.localZone()
-        after_midnight_str = '%d-%02d-%02d 00:01:00 %s' % (year,month,day,zone)
+        after_midnight_str = '%d-%02d-%02d 00:01:00 %s' % (year, month, day,
+                                                           zone)
         after_midnight = DateTime(after_midnight_str)
 
         # Get all events that Start on this day
@@ -297,21 +298,21 @@ class CalendarTool(UniqueObject, SimpleItem):
                         portal_type=self.getCalendarTypes(),
                         review_state=self.getCalendarStates(),
                         start={'query': (first_date, last_date),
-                               'range': 'minmax'} )
+                               'range': 'minmax'})
 
         # Get all events that End on this day
         query += ctool(
                          portal_type=self.getCalendarTypes(),
                          review_state=self.getCalendarStates(),
                          end={'query': (after_midnight, last_date),
-                              'range': 'minmax'} )
+                              'range': 'minmax'})
 
         # Get all events that Start before this day AND End after this day
         query += ctool(
                          portal_type=self.getCalendarTypes(),
                          review_state=self.getCalendarStates(),
                          start={'query': first_date, 'range': 'max'},
-                         end={'query': last_date, 'range': 'min'} )
+                         end={'query': last_date, 'range': 'min'})
 
         # Unique the results
         results = unique_results(query)
@@ -366,7 +367,7 @@ class CalendarTool(UniqueObject, SimpleItem):
     security.declarePublic('getNextEvent')
     def getNextEvent(self, start_date=None):
         """ Get the next event that starts after start_date
-        
+
         start_date is expected to be a DateTime instance
         """
         if start_date is None:

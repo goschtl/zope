@@ -37,50 +37,47 @@ from Products.CMFDefault.utils import parseHeadersBody
 from Products.CMFDefault.utils import SimpleHTMLParser
 from Products.GenericSetup.interfaces import IDAVAware
 
-def addEvent( self
-            , id
-            , title=''
-            , description=''
-            , effective_date = None 
-            , expiration_date = None 
-            , start_date = None 
-            , end_date = None
-            , location=''
-            , contact_name=''
-            , contact_email=''
-            , contact_phone=''
-            , event_url=''
-            , REQUEST=None
-            ):
+def addEvent(self,
+             id,
+             title='',
+             description='',
+             effective_date=None,
+             expiration_date=None,
+             start_date=None,
+             end_date=None,
+             location='',
+             contact_name='',
+             contact_email='',
+             contact_phone='',
+             event_url='',
+             REQUEST=None):
     """Create an empty event.
     """
-    event = Event( id
-                 , title
-                 , description
-                 , effective_date
-                 , expiration_date
-                 , start_date
-                 , end_date
-                 , location
-                 , contact_name
-                 , contact_email
-                 , contact_phone
-                 , event_url
-                 )
+    event = Event(id,
+                  title,
+                  description,
+                  effective_date,
+                  expiration_date,
+                  start_date,
+                  end_date,
+                  location,
+                  contact_name,
+                  contact_email,
+                  contact_phone,
+                  event_url)
     self._setObject(id, event, suppress_events=True)
 
-def _dateStrings( when ):
-
+def _dateStrings(when):
     strings = {}
 
     if when is not None:
-        strings[ 'year' ]   = str( when.year() )
-        strings[ 'month' ]  = str( when.month() )
-        strings[ 'day' ]    = str( when.day() )
+        strings['year'] = str(when.year())
+        strings['month'] = str(when.month())
+        strings['day'] = str(when.day())
     else:
-        strings[ 'year' ]   = ''
-        strings[ 'month' ]  = ''
-        strings[ 'day' ]    = ''
+        strings['year'] = ''
+        strings['month'] = ''
+        strings['day'] = ''
 
     return strings
 
@@ -96,20 +93,19 @@ class Event(PortalContent, DefaultDublinCoreImpl):
 
     implements(IMutableEvent, IEvent, IDAVAware)
 
-    def __init__( self
-                , id
-                , title=''
-                , description=''
-                , effective_date = None 
-                , expiration_date = None 
-                , start_date = None
-                , end_date = None
-                , location=''
-                , contact_name=''
-                , contact_email=''
-                , contact_phone=''
-                , event_url=''
-                ):
+    def __init__(self,
+                 id,
+                 title='',
+                 description='',
+                 effective_date=None,
+                 expiration_date=None,
+                 start_date=None,
+                 end_date=None,
+                 location='',
+                 contact_name='',
+                 contact_email='',
+                 contact_phone='',
+                 event_url=''):
         DefaultDublinCoreImpl.__init__(self)
         self.id = id
         self.setTitle(title)
@@ -140,13 +136,13 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         self.contact_phone = contact_phone
         self.event_url = event_url
 
-    security.declarePrivate( '_datify' )
-    def _datify( self, attrib ):
+    security.declarePrivate('_datify')
+    def _datify(self, attrib):
         if attrib == 'None':
             attrib = None
-        elif not isinstance( attrib, DateTime ):
+        elif not isinstance(attrib, DateTime):
             if attrib is not None:
-                attrib = DateTime( attrib )
+                attrib = DateTime(attrib)
         return attrib
 
     security.declarePublic('getEndStrings')
@@ -166,30 +162,29 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         return _dateStrings(self.start())
 
     security.declareProtected(ChangeEvents, 'edit')
-    def edit( self
-            , title=None
-            , description=None
-            , eventType=None
-            , effectiveDay=None
-            , effectiveMo=None
-            , effectiveYear=None
-            , expirationDay=None
-            , expirationMo=None
-            , expirationYear=None
-            , start_time=None
-            , startAMPM=None
-            , stop_time=None
-            , stopAMPM=None
-            , location=None
-            , contact_name=None
-            , contact_email=None
-            , contact_phone=None
-            , event_url=None
-            ):
+    def edit(self,
+             title=None,
+             description=None,
+             eventType=None,
+             effectiveDay=None,
+             effectiveMo=None,
+             effectiveYear=None,
+             expirationDay=None,
+             expirationMo=None,
+             expirationYear=None,
+             start_time=None,
+             startAMPM=None,
+             stop_time=None,
+             stopAMPM=None,
+             location=None,
+             contact_name=None,
+             contact_email=None,
+             contact_phone=None,
+             event_url=None):
         """\
         """
 
-        if title is not None: 
+        if title is not None:
             self.setTitle(title)
         if description is not None:
             self.setDescription(description)
@@ -199,31 +194,27 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         start_date = end_date = None
 
         if effectiveDay and effectiveMo and effectiveYear and start_time:
-            efdate = '%s/%s/%s %s %s' % (effectiveYear
-                                         , effectiveMo
-                                         , effectiveDay
-                                         , start_time
-                                         , startAMPM
-                                         )
-            start_date = DateTime( efdate )
+            efdate = '%s/%s/%s %s %s' % (effectiveYear,
+                                         effectiveMo,
+                                         effectiveDay,
+                                         start_time,
+                                         startAMPM)
+            start_date = DateTime(efdate)
 
         if expirationDay and expirationMo and expirationYear and stop_time:
-
-            exdate = '%s/%s/%s %s %s' % (expirationYear
-                                         , expirationMo
-                                         , expirationDay
-                                         , stop_time
-                                         , stopAMPM
-                                         )
-            end_date = DateTime( exdate )
+            exdate = '%s/%s/%s %s %s' % (expirationYear,
+                                         expirationMo,
+                                         expirationDay,
+                                         stop_time,
+                                         stopAMPM)
+            end_date = DateTime(exdate)
 
         if start_date and end_date:
-
             if end_date < start_date:
                 end_date = start_date
 
-            self.setStartDate( start_date )
-            self.setEndDate( end_date )
+            self.setStartDate(start_date)
+            self.setEndDate(end_date)
 
         if location is not None:
             self.location = location
@@ -240,7 +231,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     security.declarePublic('buildTimes')
     def buildTimes(self):
         result = []
-        for hour in range (1, 13):
+        for hour in range(1, 13):
             for min in (00, 30):
                 result.append('%02d:%02d' % (hour, min))
         return result
@@ -248,14 +239,14 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     security.declarePublic('buildDays')
     def buildDays(self):
         result = []
-        for day in range (1, 32):
+        for day in range(1, 32):
             result.append(str('%d' % (day)))
         return result
 
     security.declarePublic('buildMonths')
     def buildMonths(self):
         result = []
-        for month in range (1, 13):
+        for month in range(1, 13):
             result.append(str('%d' % (month)))
         return result
 
@@ -264,7 +255,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         result = []
         start = (DateTime().year() - 2)
         end = (DateTime().year() + 5)
-        for year in range (start, end):
+        for year in range(start, end):
             result.append(str(year))
         return result
 
@@ -284,27 +275,27 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     def start(self):
         """ Return our start time as a DateTime object
         """
-        date = getattr( self, 'start_date', None )
+        date = getattr(self, 'start_date', None)
         return date is None and self.created() or date
 
     security.declarePublic('end')
     def end(self):
         """ Return our end time as a DateTime object
         """
-        date = getattr( self, 'end_date', None )
+        date = getattr(self, 'end_date', None)
         return date is None and self.start() or date
 
     security.declarePublic('getStartTimeString')
-    def getStartTimeString( self ):
+    def getStartTimeString(self):
         """ Return our start time as a string.
         """
-        return self.start().AMPMMinutes() 
+        return self.start().AMPMMinutes()
 
     security.declarePublic('getStopTimeString')
-    def getStopTimeString( self ):
+    def getStopTimeString(self):
         """ Return our stop time as a string.
         """
-        return self.end().AMPMMinutes() 
+        return self.end().AMPMMinutes()
 
     security.declarePrivate('handleText')
     def handleText(self, text, format=None):
@@ -338,21 +329,19 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         headers['Subject'] = new_subject or self.Subject()
         new_contrib = contributorsplitter(headers)
         headers['Contributors'] = new_contrib or self.Contributors()
-        haveheader = headers.has_key
         for key, value in self.getMetadataHeaders():
-            if not haveheader(key):
+            if not key in headers:
                 headers[key] = value
         self._editMetadata(title=headers['Title'],
-                          subject=headers['Subject'],
-                          contributors=headers['Contributors'],
-                          effective_date=headers['Effective_date'],
-                          expiration_date=headers['Expiration_date'],
-                          format=headers['Format'],
-                          language=headers['Language'],
-                          rights=headers['Rights'],
-                          )
+                           subject=headers['Subject'],
+                           contributors=headers['Contributors'],
+                           effective_date=headers['Effective_date'],
+                           expiration_date=headers['Expiration_date'],
+                           format=headers['Format'],
+                           language=headers['Language'],
+                           rights=headers['Rights'])
 
-    security.declarePublic( 'getMetadataHeaders' )
+    security.declarePublic('getMetadataHeaders')
     def getMetadataHeaders(self):
         """ Return metadata attributes in RFC-822-style header spec.
         """
@@ -360,7 +349,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         hdrlist = [x for x in DefaultDublinCoreImpl.getMetadataHeaders(self)
                          if x[0] != 'Description']
         hdrlist.append(('Startdate', self.start().strftime(fmt)))
-        hdrlist.append(('Enddate',  self.end().strftime(fmt)))
+        hdrlist.append(('Enddate', self.end().strftime(fmt)))
         hdrlist.append(('Location', self.location))
         hdrlist.append(('Contactname', self.contact_name))
         hdrlist.append(('Contactemail', self.contact_email))
@@ -380,23 +369,24 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         guessedformat = REQUEST.get_header('Content-Type', 'text/plain')
         ishtml = (guessedformat == 'text/html') or html_headcheck(body)
 
-        if ishtml: self.setFormat('text/html')
-        else: self.setFormat('text/plain')
+        if ishtml:
+            self.setFormat('text/html')
+        else:
+            self.setFormat('text/plain')
 
         try:
             headers, body, format = self.handleText(text=body)
             self.setMetadata(headers)
             self.setStartDate(headers['Startdate'])
             self.setEndDate(headers['Enddate'])
-            self.edit( location=headers['Location']
-             , contact_name=headers['Contactname']
-             , contact_email=headers['Contactemail']
-             , contact_phone=headers['Contactphone']
-             , event_url=headers['Eventurl']
-             , description=body
-             )
+            self.edit(location=headers['Location'],
+                      contact_name=headers['Contactname'],
+                      contact_email=headers['Contactemail'],
+                      contact_phone=headers['Contactphone'],
+                      event_url=headers['Eventurl'],
+                      description=body)
 
-        except ResourceLockedError, msg:
+        except ResourceLockedError:
             transaction.abort()
             RESPONSE.setStatus(423)
             return RESPONSE
@@ -409,13 +399,13 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     def manage_FTPget(self):
         "Get the document body for FTP download (also used for the WebDAV SRC)"
         hdrlist = self.getMetadataHeaders()
-        hdrtext = formatRFC822Headers( hdrlist )
-        bodytext = '%s\r\n\r\n%s' % ( hdrtext, self.Description() )
+        hdrtext = formatRFC822Headers(hdrlist)
+        bodytext = '%s\r\n\r\n%s' % (hdrtext, self.Description())
 
         return bodytext
 
     security.declareProtected(View, 'get_size')
-    def get_size( self ):
+    def get_size(self):
         """ Used for FTP and apparently the ZMI now too """
         return len(self.manage_FTPget())
 
