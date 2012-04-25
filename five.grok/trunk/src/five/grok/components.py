@@ -79,6 +79,9 @@ class View(grokcore.view.View):
             # Set parent so that we have an acquisition chain
             self.static.__parent__ = context
 
+    def redirect(self, url, status=302, trusted=False):
+        """ We don't need trusted in Zope2 """
+        self.request.response.redirect(url, status=status)
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
 
