@@ -1,5 +1,5 @@
 Name: resumelb
-Version: 0
+Version: 0.4.0
 Release: 1
 
 Summary: Résumé-Based Load Balancer
