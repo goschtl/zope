@@ -13,9 +13,16 @@
 ##############################################################################
 
 import doctest
+import sys
+import unittest
 
 def test_suite():
-    return doctest.DocFileSuite(
-        'README.txt',
-        optionflags=doctest.NORMALIZE_WHITESPACE,
-        )
+    suite = unittest.TestSuite([
+        doctest.DocFileSuite(
+            'README.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE,
+            ),
+        ])
+    if not sys.platform.lower().startswith('win'):
+        suite.addTest(doctest.DocFileSuite('unix-sockets.txt'))
+    return suite

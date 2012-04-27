@@ -14,7 +14,7 @@
 """Zope 3 Monitor Server
 """
 
-import errno, logging, traceback, socket
+import errno, logging, os, stat, traceback, socket
 
 import zope.component
 
@@ -91,6 +91,10 @@ def start(address):
     elif isinstance(address, basestring):
         #a unix domain socket string is passed
         ourAddress = address
+        if os.path.exists(ourAddress):
+            m = os.stat(ourAddress)
+            if stat.S_ISSOCK(m.st_mode):
+                os.unlink(ourAddress)
 
     try:
         global last_listener
@@ -99,6 +103,9 @@ def start(address):
         if e.args[0] == errno.EADDRINUSE:
             # Don't kill the process just because somebody else has our port.
             # This might be a zopectl debug or some other innocuous problem.
+            # (Existing Unix-domain sockets are removed before binding, so
+            # this doesn't work that way for those.  Use a separate offline
+            # configuration in that case.)
             logging.warning(
                 'unable to start zc.monitor server because the address %s '\
                 'is in use.',
