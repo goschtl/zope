@@ -14,7 +14,7 @@
 
 
 from grokcore.component import *
-from grokcore.site.directive import local_utility
+from grokcore.site.directive import site, local_utility
 from grokcore.site.components import Site, LocalUtility
 from grokcore.site.util import getApplication
 

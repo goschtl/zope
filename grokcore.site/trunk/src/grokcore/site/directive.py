@@ -25,6 +25,16 @@ import martian
 from martian import util
 from martian.error import GrokImportError
 
+
+class site(martian.Directive):
+    """This directive is used to indicate the Grok site
+    object for which the component should be used/registered.
+    """
+    scope = martian.CLASS
+    store = martian.ONCE
+    validate = martian.validateInterfaceOrClass
+
+
 class local_utility(martian.Directive):
     """The `grokcore.site.local_utility()` directive.
 
