@@ -12,8 +12,33 @@
 #
 ##############################################################################
 
-from zope.interface import Interface, Attribute
+from zope.interface import Interface, Attribute, implements
+from zope.component.interfaces import IObjectEvent
 from grokcore.component.interfaces import IGrokcoreComponentAPI
+
+
+class IApplication(Interface):
+    """Interface to mark the local site used as application root.
+    """
+
+
+class IApplicationInitializedEvent(IObjectEvent):
+    """A Grok Application has been created with success and is now ready
+    to be used.
+
+    This event can be used to trigger the creation of contents or other tasks
+    that require the application to be fully operational : utilities installed
+    and indexes created in the catalog."""
+
+
+class ApplicationInitializedEvent(object):
+    """A Grok Application has been created and is now ready to be used.
+    """
+    implements(IApplicationInitializedEvent)
+
+    def __init__(self, app):
+        assert IApplication.providedBy(app)
+        self.object = app
 
 
 class IUtilityInstaller(Interface):
@@ -27,14 +52,10 @@ class IUtilityInstaller(Interface):
         """
 
 
-class IApplication(Interface):
-    """Interface to mark the local site used as application root.
-    """
-
-
 class IBaseClasses(Interface):
     Site = Attribute("Mixin class for sites.")
     LocalUtility = Attribute("Base class for local utilities.")
+    Application = Attribute("Base class for applications.")
 
 
 class IDirectives(Interface):

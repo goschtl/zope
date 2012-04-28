@@ -16,6 +16,7 @@ tests_require = [
     'zope.configuration',
     'zope.location',
     'zope.testing',
+    'grokcore.content',
     ]
 
 setup(
@@ -42,6 +43,7 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'ZODB3',
+                      'zope.event',
                       'grokcore.component >= 2.1',
                       'martian >= 0.13',
                       'zope.annotation',

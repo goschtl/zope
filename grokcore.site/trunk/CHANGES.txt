@@ -4,7 +4,7 @@ Changes
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Moved the directive `site` from Grok to this package.
 
 
 1.5 (2011-01-03)

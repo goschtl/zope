@@ -42,7 +42,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['utility']:
+    for name in ['utility', 'application']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

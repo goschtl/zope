@@ -25,6 +25,7 @@ import grokcore.site
 import grokcore.site.components
 import grokcore.site.interfaces
 
+
 class SiteGrokker(martian.ClassGrokker):
     """Grokker for subclasses of `grokcore.site.Site`."""
     martian.component(grokcore.site.components.BaseSite)
@@ -110,5 +111,21 @@ def setupUtility(site, utility, provides, name=u'',
     if setup is not None:
         setup(utility)
 
-    site_manager.registerUtility(utility, provided=provides,
-                                 name=name)
+    site_manager.registerUtility(utility, provided=provides, name=name)
+
+
+class ApplicationGrokker(martian.ClassGrokker):
+    """Grokker for Grok application classes."""
+    martian.component(grokcore.site.components.Application)
+    martian.priority(500)
+
+    def grok(self, name, factory, module_info, config, **kw):
+        # XXX fail loudly if the same application name is used twice.
+        provides = grokcore.site.interfaces.IApplication
+        name = '%s.%s' % (module_info.dotted_name, name)
+        config.action(
+            discriminator=('utility', provides, name),
+            callable=component.provideUtility,
+            args=(factory, provides, name),
+            )
+        return True

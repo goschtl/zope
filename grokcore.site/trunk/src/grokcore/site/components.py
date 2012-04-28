@@ -12,14 +12,13 @@
 #
 ##############################################################################
 
-from grokcore.component.interfaces import IContext
-
 from persistent import Persistent
-
-from zope.interface import implements
+from grokcore.component.interfaces import IContext
+from grokcore.site.interfaces import IApplication
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.site.site import SiteManagerContainer
 from zope.container.contained import Contained
+from zope.interface import implements
+from zope.site.site import SiteManagerContainer
 
 
 class BaseSite(object):
@@ -39,8 +38,22 @@ class Site(BaseSite, SiteManagerContainer):
     Architecture entities like :class:`grokcore.site.LocalUtility` and
     :class:`grok.Indexes` objects; see those classes for more
     information.
-
     """
+
+
+class Application(Site):
+    """Mixin for creating Grok application objects.
+
+    When a :class:`grokcore.content.Container` (or a
+    :class:`grokcore.content.Model`, though most developers
+    use containers) also inherits from :class:`grokcore.site.Application`,
+    it not only gains the component registration abilities of a
+    :class:`grokcore.site.site`, but will also be listed in the
+    Grok admin control panel as one of the applications
+    that the admin can install directly at the root of their Zope
+    database.
+    """
+    implements(IApplication)
 
 
 class LocalUtility(Contained, Persistent):
@@ -62,6 +75,5 @@ class LocalUtility(Contained, Persistent):
     is one that the `grok.LocalUtility` already implements, in which
     case Grok cannot tell them apart, and `grok.provides()` must be
     used explicitly anyway).
-
     """
     implements(IContext, IAttributeAnnotatable)

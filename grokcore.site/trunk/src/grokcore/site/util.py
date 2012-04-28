@@ -12,12 +12,15 @@
 #
 ##############################################################################
 
-from grokcore.site.interfaces import IApplication
+import grokcore.site
+from grokcore.site.interfaces import IApplication, ApplicationInitializedEvent
 from zope.component.hooks import getSite
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 
 
 def getApplication():
-    """Return the nearest enclosing :class:`grok.Application`.
+    """Return the nearest enclosing :class:`grokcore.site.Application`.
 
     Raises :exc:`ValueError` if no application can be found.
     """
@@ -33,3 +36,29 @@ def getApplication():
         obj = obj.__parent__
     raise ValueError("No application found.")
 
+
+def create_application(factory, container, name):
+    """Creates an application and triggers the events from
+    the application lifecycle.
+    """
+    # Check the factory.
+    assert IApplication.implementedBy(factory)
+
+    # Check the availability of the name in the container.
+    if name in container:
+        raise KeyError(name)
+
+    # Instanciate the application
+    application = factory()
+
+    # Trigger the creation event.
+    notify(ObjectCreatedEvent(application))
+
+    # Persist the application.
+    # This may raise a KeyError.
+    container[name] = application
+
+    # Trigger the initialization event.
+    notify(ApplicationInitializedEvent(application))
+
+    return application
