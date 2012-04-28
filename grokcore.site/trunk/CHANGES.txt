@@ -6,6 +6,9 @@ Changes
 
 - Moved the directive `site` from Grok to this package.
 
+- Moved the component `Application` and all the related utilities from Grok
+  to this package.
+
 
 1.5 (2011-01-03)
 ----------------
