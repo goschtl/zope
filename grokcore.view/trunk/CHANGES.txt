@@ -4,6 +4,9 @@ Changes
 2.6.2 (unreleased)
 ------------------
 
+- Improve error message when a templatedir() directive points to a non-
+  existent directory. (fix launchpad issue 680528).
+
 - Improve error message when a template is required for a component
   but cannot be found (Fix Launchpad issue #225855, #242698).
 

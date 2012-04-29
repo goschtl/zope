@@ -29,7 +29,12 @@ def validateLocalPath(directive, value):
         raise GrokImportError(
             "The '%s' directive can not contain path separator."
             % directive.name)
-
+    # XXX kinda hackish...
+    dirname = os.path.dirname(directive.frame.f_locals['__file__'])
+    if not os.path.isdir(os.path.join(dirname, value)):
+        raise GrokImportError(
+            "The directory '%s' specified by the '%s' directive "
+            "cannot be found." % (value, directive.name))
 
 # Define grok directives
 

@@ -204,6 +204,7 @@ class FileTemplateRegistry(object):
             template_dir_name = module_info.name + '_templates'
 
         template_dir = module_info.getResourcePath(template_dir_name)
+
         return template_dir
 
 inline_template_registry = InlineTemplateRegistry()

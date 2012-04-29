@@ -2,16 +2,13 @@
 If the template directory you specify doesn't exist, you have a comprehensible
 error:
 
-  >>> grok.testing.grok(__name__)
+  >>> grok.testing.grok(
+  ...     'grokcore.view.tests.view.templatedirectorynotfound_fixture')
+  Traceback (most recent call last):
+  ...
+  GrokImportError: The directory 'idontexit' specified by the
+  'templatedir' directive cannot be found.
 
 """
 
-import grokcore.view as grok
-
-grok.templatedir('idontexit')
-
-class Mammoth(grok.Context):
-    pass
-
-class Food(grok.View):
-    pass
+from grokcore import view as grok
