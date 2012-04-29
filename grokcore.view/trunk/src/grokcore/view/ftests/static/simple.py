@@ -9,7 +9,7 @@ instead of the dummy implementation in this test:
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> root = getRootFolder()
-  >>> from grokcore.view.ftests.staticdir.simple_fixture.ellie import Mammoth
+  >>> from grokcore.view.ftests.static.simple_fixture.ellie import Mammoth
   >>> root[u'ellie'] = Mammoth()
   >>> browser.open('http://localhost/ellie')
   >>> print browser.contents
@@ -45,4 +45,4 @@ class DummyResource(object):
 zope.component.provideAdapter(factory=DummyResource,
     adapts=(IBrowserRequest,),
     provides=zope.interface.Interface,
-    name='grokcore.view.ftests.staticdir.simple_fixture')
+    name='grokcore.view.ftests.static.simple_fixture')
