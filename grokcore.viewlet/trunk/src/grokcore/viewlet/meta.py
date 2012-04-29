@@ -20,6 +20,7 @@ from zope.viewlet.interfaces import IViewletManager, IViewlet
 import martian
 
 import grokcore.component
+import grokcore.component.util
 import grokcore.view
 from grokcore.view.meta.views import default_view_name, TemplateGrokker
 import grokcore.security
@@ -59,7 +60,7 @@ class ViewletManagerGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('viewletManager', context, layer, view, name),
-            callable=component.provideAdapter,
+            callable=grokcore.component.util.provideAdapter,
             args=(factory, (context, layer, view), IViewletManager, name))
         return True
 
@@ -98,7 +99,7 @@ class ViewletGrokker(martian.ClassGrokker):
         config.action(
             discriminator=(
                 'viewlet', context, layer, view, viewletmanager, name),
-            callable=component.provideAdapter,
+            callable=grokcore.component.util.provideAdapter,
             args=(factory, (context, layer, view, viewletmanager),
                   IViewlet, name))
 
