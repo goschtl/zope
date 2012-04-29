@@ -25,8 +25,8 @@ of a Grok-based web application.
 import martian
 import grokcore.traverser
 import grokcore.component
+import grokcore.component.util
 
-from zope import component
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
@@ -40,7 +40,7 @@ class TraverserGrokker(martian.ClassGrokker):
         adapts = (context, IHTTPRequest)
         config.action(
             discriminator=('adapter', adapts, IBrowserPublisher, ''),
-            callable=component.provideAdapter,
+            callable=grokcore.component.util.provideAdapter,
             args=(factory, adapts, IBrowserPublisher),
             )
         return True
