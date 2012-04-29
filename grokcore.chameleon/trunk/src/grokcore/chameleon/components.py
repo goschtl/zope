@@ -20,6 +20,7 @@ import martian
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
+import zope.i18n
 from chameleon.zpt.template import PageTemplate, PageTemplateFile
 from chameleon.tales import PythonExpr
 from chameleon.tales import StringExpr
@@ -85,8 +86,16 @@ class ChameleonPageTemplate(GrokTemplate):
         return self._template.macros
 
     def render(self, view):
-        return self._template(**self.getNamespace(view))
+        context = self.getNamespace(view)
 
+        if 'target_language' not in context:
+            try:
+                target_language = zope.i18n.negotiate(context['request'])
+            except:
+                target_language = None
+            context['target_language'] = target_language
+
+        return self._template(**context)
 
 class ChameleonPageTemplateFile(ChameleonPageTemplate):
 

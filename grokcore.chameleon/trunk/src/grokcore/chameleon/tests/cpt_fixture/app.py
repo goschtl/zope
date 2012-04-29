@@ -54,3 +54,6 @@ class Namespace(grokcore.view.View):
 
     def namespace(self):
         return {'myname': 'Henk'}
+
+class Menu(grokcore.view.View):
+    pass

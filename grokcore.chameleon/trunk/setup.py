@@ -9,6 +9,7 @@ install_requires = [
     'grokcore.view',
     'Chameleon >= 2.0-rc1',
     'z3c.pt >= 2.0-rc1',
+    'zope.i18n',
     ]
 
 tests_require = [

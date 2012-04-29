@@ -365,6 +365,40 @@ and render it:
     </body>
     </html>
 
+Translation
+===========
+
+    >>> # Monkeypatch zope.i18n.negotiate
+    >>> import zope.i18n
+    >>> import zope.i18n.config
+    >>> print getMultiAdapter((manfred, request), name='menu')()
+    <html>
+    <body>
+      <h1>Menu</h1>
+      <ol>
+        <li>Deepfried breaded veal cutlets</li>
+      </ol>
+    </body>
+    </html>
+
+    >>> # What's for food today in Germany?
+    >>> # We need to monkey patch the language settings for this test.
+    >>> old_1, old_2 = zope.i18n.negotiate, zope.i18n.config.ALLOWED_LANGUAGES
+    >>> zope.i18n.negotiate = lambda context: 'de'
+    >>> zope.i18n.config.ALLOWED_LANGUAGES = ['de']
+    >>> print getMultiAdapter((manfred, request), name='menu')()
+    <html>
+    <body>
+      <h1>Menu</h1>
+      <ol>
+        <li>Schnitzel</li>
+      </ol>
+    </body>
+    </html>
+
+    >>> # Restore the monkey patch.
+    >>> zope.i18n.negotiate, zope.i18n.config.ALLOWED_LANGUAGES = old_1, old_2
+
 Macros
 ======
 
