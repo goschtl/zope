@@ -303,17 +303,28 @@ def associate_template(module_info, factory, component_name,
     try:
         factory.template = lookup(
             module_info, template_name, mark_as_associated=True)
+
+        # If we associate a template, set the static_name to use to
+        # the same package name as where the template is found.
+        factory.__static_name__ = module_info.package_dotted_name
+
+        # We now have a template.
         factory_have_template = True
     except TemplateLookupError:
         pass
 
-    # Check for have both render and template
-    if factory_have_template and has_render(factory):
-        raise GrokError(
-            "Multiple possible ways to render %s %r. "
-            "It has both a 'render' method as well as "
-            "an associated template." %
-            (component_name, factory), factory)
+    if has_render(factory):
+        # Check for have both render and template
+        if factory_have_template:
+            raise GrokError(
+                "Multiple possible ways to render %s %r. "
+                "It has both a 'render' method as well as "
+                "an associated template." %
+                (component_name, factory), factory)
+
+        # Set static_name to use if no template are found.
+        if getattr(factory, '__static_name__', None) is None:
+            factory.__static_name__ = module_info.package_dotted_name
 
     # Check for no render and no template
     if not factory_have_template and has_no_render(factory):

@@ -4,8 +4,11 @@ Changes
 2.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix how the static resource are found. Instead of using as name the
+  package name where the component is defined, using as name the
+  package where the template for the component is defined, or the base
+  component. This fix missing resources when you extend the component
+  and don't redefined the template.
 
 2.6.1 (2011-06-28)
 ------------------
