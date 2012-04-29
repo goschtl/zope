@@ -4,6 +4,9 @@ Changes
 2.6.2 (unreleased)
 ------------------
 
+- Improve error message when a template is required for a component
+  but cannot be found.
+
 - Fix how the static resource are found. Instead of using as name the
   package name where the component is defined, using as name the
   package where the template for the component is defined, or the base

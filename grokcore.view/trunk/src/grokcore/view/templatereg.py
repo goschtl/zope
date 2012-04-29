@@ -265,6 +265,7 @@ def associate_template(module_info, factory, component_name,
     """Associate a template to a factory located in the module
     described by module_info.
     """
+    explicit_template = False
     factory_name = factory.__name__.lower()
     module_name, template_name = grokcore.view.template.bind(
         default=(None, None)).get(factory)
@@ -279,6 +280,7 @@ def associate_template(module_info, factory, component_name,
         assert module_name is not None, \
             u"module_name cannot be None if template_name is specified."
         module_info = module_info_from_dotted_name(module_name)
+        explicit_template = True
 
     # We used grok.template, to specify a template which is different
     # than the class name. Check if there is no template with the same
@@ -313,6 +315,19 @@ def associate_template(module_info, factory, component_name,
     except TemplateLookupError:
         pass
 
+    if not factory_have_template:
+        # If a template was explicitly asked, error.
+        if explicit_template:
+            raise GrokError(
+                "Template %s for %s %r cannot be found." %
+                (template_name, component_name.title(), factory), factory)
+
+        # Check for render or error.
+        if  has_no_render(factory):
+            raise GrokError(
+                "%s %r has no associated template or 'render' method." %
+                (component_name.title(), factory), factory)
+
     if has_render(factory):
         # Check for have both render and template
         if factory_have_template:
@@ -325,12 +340,6 @@ def associate_template(module_info, factory, component_name,
         # Set static_name to use if no template are found.
         if getattr(factory, '__static_name__', None) is None:
             factory.__static_name__ = module_info.package_dotted_name
-
-    # Check for no render and no template
-    if not factory_have_template and has_no_render(factory):
-        raise GrokError("%s %r has no associated template or "
-                        "'render' method." %
-                        (component_name.title(), factory), factory)
 
     if factory_have_template:
         factory.template._initFactory(factory)
