@@ -31,11 +31,14 @@ class ViewletManager(ViewletManagerBase):
         self.request = request
         self.view = view
         self.__name__ = self.__view_name__
-        self.static = component.queryAdapter(
-            self.request,
-            interface.Interface,
-            name=self.module_info.package_dotted_name,
-            )
+        static_name = getattr(self, '__static_name__', None)
+        if static_name is not None:
+            self.static = component.queryAdapter(
+                self.request,
+                interface.Interface,
+                name=static_name)
+        else:
+            self.static = None
 
     def sort(self, viewlets):
         """Sort the viewlets.
@@ -99,11 +102,14 @@ class Viewlet(ViewletBase):
         self.view = view
         self.viewletmanager = manager
         self.__name__ = self.__view_name__
-        self.static = component.queryAdapter(
-            self.request,
-            interface.Interface,
-            name=self.module_info.package_dotted_name,
-            )
+        static_name = getattr(self, '__static_name__', None)
+        if static_name is not None:
+            self.static = component.queryAdapter(
+                self.request,
+                interface.Interface,
+                name=static_name)
+        else:
+            self.static = None
 
     def default_namespace(self):
         namespace = {}
