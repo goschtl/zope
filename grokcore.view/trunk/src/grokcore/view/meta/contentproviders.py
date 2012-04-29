@@ -19,6 +19,7 @@ import martian
 
 import grokcore.security
 import grokcore.view
+import grokcore.component.util
 from grokcore.view.interfaces import IContentProvider
 from grokcore.view.meta.views import default_view_name, TemplateGrokker
 
@@ -47,7 +48,7 @@ class ContentProviderGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('contentprovider', context, layer, view, name),
-            callable=component.provideAdapter,
+            callable=grokcore.component.util.provideAdapter,
             args=(factory, (context, layer, view), IContentProvider, name))
         return True
 

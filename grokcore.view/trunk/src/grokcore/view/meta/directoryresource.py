@@ -23,6 +23,7 @@ import martian
 from martian.error import GrokError
 
 import grokcore.view
+import grokcore.component.util
 from grokcore.view import components
 
 allowed_resource_names = (
@@ -58,7 +59,7 @@ def _register(config, resource_path, name, layer):
     provides = interface.Interface
     config.action(
         discriminator=('adapter', adapts, provides, name),
-        callable=component.provideAdapter,
+        callable=grokcore.component.util.provideAdapter,
         args=(resource_factory, adapts, provides, name),
         )
     return True

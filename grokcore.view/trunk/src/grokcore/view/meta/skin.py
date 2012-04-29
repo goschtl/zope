@@ -14,7 +14,6 @@
 """Grokkers for the skin support."""
 
 
-import zope.component.interface
 from zope.interface.interface import InterfaceClass
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserSkinType
@@ -23,6 +22,7 @@ import martian
 from martian.error import GrokError
 
 import grokcore.view
+import grokcore.component
 
 _skin_not_used = object()
 
@@ -48,6 +48,6 @@ class SkinInterfaceDirectiveGrokker(martian.InstanceGrokker):
                 )
         config.action(
             discriminator=('utility', IBrowserSkinType, skin),
-            callable=zope.component.interface.provideInterface,
+            callable=grokcore.component.util.provideInterface,
             args=(skin, interface, IBrowserSkinType))
         return True
