@@ -14,6 +14,7 @@ tests_require = [
     'grokcore.view[test]',
     'zope.app.wsgi',
     'zope.configuration',
+    'zope.securitypolicy',
     'zope.testing',
     ]
 
@@ -45,8 +46,12 @@ setup(
         'zope.component',
         'zope.interface',
         'zope.security',
-        'zope.securitypolicy',
         ],
     tests_require=tests_require,
-    extras_require={'test': tests_require},
+    extras_require={
+        'role': [
+            'zope.securitypolicy',
+            ],
+        'test': tests_require
+        },
 )
