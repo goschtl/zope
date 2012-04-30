@@ -30,6 +30,10 @@ class IDirectives(Interface):
         grok.require can be used as a class-level directive or as a
         method decorator."""
 
+    def permissions(permissions):
+        """Specify the permissions that comprise a role.
+        """
+
 
 class IGrokcoreSecurityAPI(IBaseClasses, IDirectives):
     Public = Attribute("Permission identifier to denote public access.")
