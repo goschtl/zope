@@ -13,4 +13,3 @@
 ##############################################################################
 
 from grokcore.permission.components import Role
-from grokcore.permission.directive import permissions

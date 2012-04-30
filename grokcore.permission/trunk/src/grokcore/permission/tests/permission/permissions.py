@@ -10,8 +10,8 @@ by "name" or by class.
 
 import grokcore.component as grok
 import grokcore.permission.testing
-from grokcore.permission import permissions, Role
-from grokcore.security import Permission
+from grokcore.permission import Role
+from grokcore.security import Permission, permissions
 import zope.interface
 
 class FirstPermission(Permission):

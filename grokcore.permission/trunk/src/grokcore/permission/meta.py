@@ -33,7 +33,7 @@ from martian.error import GrokError
 from grokcore.security.meta import PermissionGrokker
 from zope.securitypolicy.rolepermission import rolePermissionManager
 from grokcore.permission.components import Role
-from grokcore.permission.directive import permissions
+from grokcore.security.directive import permissions
 from zope.securitypolicy.interfaces import IRole
 
 

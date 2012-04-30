@@ -64,7 +64,7 @@ class ApprovePermission(grokcore.security.Permission):
 class PaintingOwner(grokcore.permission.Role):
     grok.name('paint.PaintingOwner')
     grok.title('Painting Owner')
-    grokcore.permission.permissions(
+    grokcore.security.permissions(
         'paint.ViewPainting', 'paint.EditPainting', 'paint.ErasePainting')
 
 class CavePainting(grokcore.view.View):

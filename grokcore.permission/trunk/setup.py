@@ -44,10 +44,11 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'martian',
         'grokcore.component',
         'grokcore.security',
         'zope.securitypolicy',
-        'martian',
+
         'zope.component',
         'zope.interface',
         'zope.publisher',

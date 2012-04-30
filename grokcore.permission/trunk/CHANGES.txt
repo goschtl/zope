@@ -5,8 +5,7 @@ Changes
 1.2 (unreleased)
 ================
 
-- Nothing changed yet.
-
+- Move permissions directive to grokcore.security where it belongs.
 
 1.1 (2011-01-20)
 ================
