@@ -28,9 +28,10 @@ class RequireDirectiveStore(StoreMultipleTimes):
         if (permissions is default) or not permissions:
             return default
         if len(permissions) > 1:
-            raise GrokError('grok.require was called multiple times in '
-                            '%r. It may only be set once for a class.'
-                            % component, component)
+            raise GrokError(
+                'grok.require was called multiple times in '
+                '%r. It may only be set once for a class.'
+                % component, component)
         return permissions[0]
 
     def pop(self, locals_, directive):
@@ -88,8 +89,7 @@ class permissions(martian.Directive):
             if martian.util.not_unicode_or_ascii(value):
                 raise GrokImportError(
                     "You can only pass unicode values, ASCII values, or "
-                    "subclasses of grokcore.security.Permission to the '%s'"
-                    " directive."
+                    "subclasses of grok.Permission to the '%s' directive."
                     % self.name)
 
     def factory(self, *values):

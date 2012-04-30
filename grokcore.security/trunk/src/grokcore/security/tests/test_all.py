@@ -38,8 +38,9 @@ def suiteFromPackage(name):
 def test_suite():
     suite = unittest.TestSuite()
     for name in [
-        'security',
         'permissions',
+        'role',
+        'security',
         ]:
         suite.addTest(suiteFromPackage(name))
     return suite

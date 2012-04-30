@@ -18,6 +18,7 @@ from zope.interface import Interface, Attribute
 class IBaseClasses(Interface):
     Permission = Attribute("Base class for permissions.")
 
+    Role = Attribute("Base class for roles.")
 
 class IDirectives(Interface):
 

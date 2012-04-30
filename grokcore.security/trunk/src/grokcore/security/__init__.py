@@ -16,6 +16,7 @@
 from grokcore.component import *
 
 from grokcore.security.components import Permission, Public
+from grokcore.security.components import Role
 from grokcore.security.directive import require, permissions
 
 # Import this module so that it's available as soon as you import the
