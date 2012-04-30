@@ -1,0 +1,15 @@
+#!/Users/christian/work/sprint/grokcore.permission/../bin/python
+
+import sys
+sys.path[0:0] = [
+    '/Users/christian/.buildout/eggs/mr.developer-1.17-py2.6.egg',
+    '/Users/christian/.buildout/eggs/argparse-1.1-py2.6.egg',
+    '/Users/christian/.buildout/eggs/zc.buildout-1.5.2-py2.6.egg',
+    '/Users/christian/.buildout/eggs/setuptools-0.6c11-py2.6.egg',
+    ]
+
+
+import mr.developer.develop
+
+if __name__ == '__main__':
+    mr.developer.develop.develop()
