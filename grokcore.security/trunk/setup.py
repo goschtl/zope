@@ -11,6 +11,7 @@ long_description = (
     )
 
 tests_require = [
+    'zope.app.wsgi',
     'zope.configuration',
     'zope.testing',
     ]
