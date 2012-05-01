@@ -54,7 +54,9 @@ class IUtilityInstaller(Interface):
 
 class IBaseClasses(Interface):
     Site = Attribute("Mixin class for sites.")
+
     LocalUtility = Attribute("Base class for local utilities.")
+
     Application = Attribute("Base class for applications.")
 
 
@@ -81,6 +83,11 @@ class IDirectives(Interface):
 
 class IGrokcoreSiteAPI(IGrokcoreComponentAPI, IBaseClasses, IDirectives):
     """grokcore.site's public API."""
+
+    IApplication = Attribute('The application model interface')
+
+    def getSite():
+        """Get the current site."""
 
     def getApplication():
         """Return the nearest enclosing `grok.Application`."""

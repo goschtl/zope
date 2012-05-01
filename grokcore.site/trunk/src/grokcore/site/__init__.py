@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-
+from zope.site.hooks import getSite
 from grokcore.component import *
 from grokcore.site.directive import site, local_utility
 from grokcore.site.components import Site, LocalUtility, Application
