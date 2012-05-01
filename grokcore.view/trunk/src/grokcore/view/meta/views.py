@@ -24,7 +24,6 @@ from martian import util
 
 import grokcore.security
 import grokcore.view
-import grokcore.component.util
 from grokcore.security.util import protect_getattr
 from grokcore.view import components
 from grokcore.view import templatereg
@@ -105,7 +104,7 @@ class ViewGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('adapter', adapts, provides, name),
-            callable=grokcore.component.util.provideAdapter,
+            callable=grokcore.component.provideAdapter,
             args=(factory, adapts, provides, name),
             )
         return True

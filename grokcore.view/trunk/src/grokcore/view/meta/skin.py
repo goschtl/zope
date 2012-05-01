@@ -48,6 +48,6 @@ class SkinInterfaceDirectiveGrokker(martian.InstanceGrokker):
                 )
         config.action(
             discriminator=('utility', IBrowserSkinType, skin),
-            callable=grokcore.component.util.provideInterface,
+            callable=grokcore.component.provideInterface,
             args=(skin, interface, IBrowserSkinType))
         return True
