@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.6 (unreleased)
+1.6 (2012-05-01)
 ----------------
 
 - The Permission and Role components moved from the grok package to the
