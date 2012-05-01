@@ -11,7 +11,7 @@ long_description = (
     )
 
 install_requires = [
-    'grokcore.component >= 2.1',
+    'grokcore.component >= 2.5dev',
     'grokcore.security >= 1.5',
     'martian >= 0.13',
     'setuptools',

@@ -4,6 +4,8 @@ Changes
 2.6.2 (unreleased)
 ------------------
 
+- Use the component registration api in grokcore.component.
+
 - Improve error message when a templatedir() directive points to a non-
   existent directory. (fix launchpad issue 680528).
 
