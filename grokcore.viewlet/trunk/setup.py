@@ -47,7 +47,7 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'grokcore.component >= 2.1',
-                      'grokcore.security >= 1.5',
+                      'grokcore.security[role] >= 1.6dev',
                       'grokcore.view >= 2.2',
                       'martian >= 0.13',
                       'zope.viewlet',
