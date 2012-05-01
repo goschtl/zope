@@ -4,10 +4,11 @@ Changes
 1.10 (unreleased)
 -----------------
 
+- Use the component registration api from grokcore.component.
+
 - Update how the static resources are found on a ``ViewletManager``
   and a ``Viewlet``, following the new name ``__static_name__`` set by
   the template association.
-
 
 1.9 (2011-06-28)
 ----------------
