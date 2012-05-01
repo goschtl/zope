@@ -52,7 +52,7 @@ class SiteGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=None,
-            callable=grokcore.component.util.provideHandler,
+            callable=grokcore.component.provideHandler,
             args=(localUtilityRegistrationSubscriber, adapts),
             )
         return True
@@ -125,7 +125,7 @@ class ApplicationGrokker(martian.ClassGrokker):
         name = '%s.%s' % (module_info.dotted_name, name)
         config.action(
             discriminator=('utility', provides, name),
-            callable=grokcore.component.util.provideUtility,
+            callable=grokcore.component.provideUtility,
             args=(factory, provides, name),
             )
         return True
