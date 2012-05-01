@@ -4,8 +4,7 @@ Changes
 1.1 (unreleased)
 ================
 
-- Nothing changed yet.
-
+- Use the component registration api of grokcore.component.
 
 1.0 (2011-01-03)
 ================
