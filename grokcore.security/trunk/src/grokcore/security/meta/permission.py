@@ -15,7 +15,6 @@
 
 import martian
 import grokcore.component
-import grokcore.component.util
 import grokcore.security
 
 from zope.security.interfaces import IPermission
@@ -45,7 +44,7 @@ class PermissionGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('utility', IPermission, name),
-            callable=grokcore.component.util.provideUtility,
+            callable=grokcore.component.provideUtility,
             args=(permission, IPermission, name),
             order=-1 # need to do this early in the process
             )

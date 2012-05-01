@@ -15,7 +15,6 @@
 
 import martian
 import grokcore.component
-import grokcore.component.util
 import grokcore.security
 
 from martian.error import GrokError
@@ -62,7 +61,7 @@ class RoleGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('utility', IRole, name),
-            callable=grokcore.component.util.provideUtility,
+            callable=grokcore.component.provideUtility,
             args=(role, IRole, name),
             )
 
