@@ -1,0 +1,8 @@
+Changes
+=======
+
+1.0 (unreleased)
+----------------
+
+- megrok.resource lives on as grokcore.resource.
+
