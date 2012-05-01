@@ -17,7 +17,7 @@ from zope.security.checker import NamesChecker, defineChecker
 
 from grokcore.security.util import check_permission
 # BBB
-from grokcore.component. import sort_components
+from grokcore.component import sort_components
 
 
 def make_checker(factory, view_factory, permission, method_names=None):
