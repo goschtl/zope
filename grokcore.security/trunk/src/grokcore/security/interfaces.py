@@ -20,6 +20,7 @@ class IBaseClasses(Interface):
 
     Role = Attribute("Base class for roles.")
 
+
 class IDirectives(Interface):
 
     def require(permission):
