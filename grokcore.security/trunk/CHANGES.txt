@@ -4,6 +4,9 @@ Changes
 1.6 (unreleased)
 ----------------
 
+- The Permission and Role components moved from the grok package to the
+  grokcore.security package where it belongs.
+
 - The permissions() directive moved from the grok package to
   grokcore.security where it belongs.
 
