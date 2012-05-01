@@ -1,8 +1,8 @@
 CHANGES
 *******
 
-1.0rc5 (unreleased)
-===================
+1.0 (2012-05-01)
+================
 
 - The ``target_language`` mangling was lost in version 1.0rc4. Copied from z3c.pt.
 
