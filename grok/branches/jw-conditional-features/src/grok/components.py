@@ -40,7 +40,6 @@ import martian.util
 
 import grokcore.view
 import grokcore.site
-import grokcore.message
 import grokcore.layout
 from grok import interfaces, util
 
@@ -62,8 +61,17 @@ class ViewSupportMixin(object):
         return util.application_url(self.request, self.context, name, data)
 
     def flash(self, message, type='message'):
-        """Send a short message to the user."""
-        grokcore.message.send(message, type=type, name='session')
+        """Send a short message to the user.
+        """
+        try:
+            import grokcore.message
+        except ImportError:
+            raise NotImplementedError(
+                'The flash() method is not available. Please list '
+                'grokcore.message in the install_requires of your '
+                'application to use it.')
+        else:
+            grokcore.message.send(message, type=type, name='session')
 
 
 class View(ViewSupportMixin, grokcore.view.View):

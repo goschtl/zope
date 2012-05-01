@@ -1,14 +1,23 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:meta="http://namespaces.zope.org/meta"
-  xmlns:grok="http://namespaces.zope.org/grok">
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  >
   <include package="z3c.autoinclude" file="meta.zcml" />
   <include package="grokcore.component" file="meta.zcml" />
-  <include package="grokcore.formlib" file="meta.zcml" />
   <include package="grokcore.security" file="meta.zcml" />
   <include package="grokcore.view" file="meta.zcml" />
-  <include package="grokcore.viewlet" file="meta.zcml" />
   <include package="grokcore.annotation" file="meta.zcml" />
   <include package="grokcore.site" file="meta.zcml" />
-  <include package="grokcore.catalog" file="meta.zcml" />
+
+  <configure zcml:condition="installed grokcore.formlib">
+    <include package="grokcore.formlib" file="meta.zcml" />
+  </configure>
+  <configure zcml:condition="installed grokcore.viewlet">
+    <include package="grokcore.viewlet" file="meta.zcml" />
+  </configure>
+  <configure zcml:condition="installed grokcore.catalog">
+    <include package="grokcore.catalog" file="meta.zcml" />
+  </configure>
 </configure>

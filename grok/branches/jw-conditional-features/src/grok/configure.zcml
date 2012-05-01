@@ -1,8 +1,9 @@
-
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:grok="http://namespaces.zope.org/grok">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  >
 
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.browserpage" file="meta.zcml" />
@@ -39,17 +40,35 @@
   <include package="zope.app.wsgi" />
 
   <include package="grokcore.annotation" />
-  <include package="grokcore.chameleon" />
-  <include package="grokcore.formlib" />
-  <include package="grokcore.json" />
-  <include package="grokcore.layout" />
   <include package="grokcore.site" />
   <include package="grokcore.traverser" />
   <include package="grokcore.view" />
   <include package="grokcore.view" file="publication_security.zcml" />
-  <include package="grokcore.viewlet" />
-  <include package="grokcore.rest" />
-  <include package="grokcore.xmlrpc" />
+
+  <configure zcml:condition="installed grokcore.catalog">
+    <include package="grokcore.catalog" />
+  </configure>
+  <configure zcml:condition="installed grokcore.chameleon">
+    <include package="grokcore.chameleon" />
+  </configure>
+  <configure zcml:condition="installed grokcore.layout">
+    <include package="grokcore.layout" />
+  </configure>
+  <configure zcml:condition="installed grokcore.formlib">
+    <include package="grokcore.formlib" />
+  </configure>
+  <configure zcml:condition="installed grokcore.viewlet">
+    <include package="grokcore.viewlet" />
+  </configure>
+  <configure zcml:condition="installed grokcore.json">
+    <include package="grokcore.json" />
+  </configure>
+  <configure zcml:condition="installed grokcore.rest">
+    <include package="grokcore.rest" />
+  </configure>
+  <configure zcml:condition="installed grokcore.xmlrpc">
+    <include package="grokcore.xmlrpc" />
+  </configure>
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
