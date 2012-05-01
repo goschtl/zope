@@ -10,7 +10,7 @@ long_description = "%s\n\n%s\n" % (readme, changes)
 
 install_requires = [
     'setuptools',
-    'grokcore.component',
+    'grokcore.component >= 2.5dev',
     'z3c.flashmessage',
     'zope.component',
     'zope.traversing', # zope.session seems not to declare this dep.?
