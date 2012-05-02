@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.7 (unreleased)
-----------------
+1.6.1 (unreleased)
+------------------
 
 - Exposed ApplicationInitializedEvent and IApplicationInitializedEvent.
 
