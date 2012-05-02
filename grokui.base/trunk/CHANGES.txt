@@ -1,11 +1,10 @@
 CHANGES
 *******
 
-0.7 (unreleased)
+0.7 (2012-05-02)
 ================
 
-- Nothing changed yet.
-
+- Make sure to pick up latest grok and grokcore.layout.
 
 0.6 (2011-07-14)
 ================

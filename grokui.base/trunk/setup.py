@@ -24,7 +24,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='grokui.base',
-      version='0.7dev',
+      version='0.7',
       description="The Grok administration and development UI (base)",
       long_description=(
         read('README.txt') +
@@ -56,7 +56,8 @@ setup(name='grokui.base',
       namespace_packages = ['grokui'],
       install_requires=[
           'fanstatic',
-          'grok',
+          'grok >= 1.10',
+          'grokcore.layout >= 1.5',
           'grokcore.message',
           'megrok.menu',
           'setuptools',
