@@ -18,13 +18,9 @@ from grokcore.security import *
 from grokcore.site import *
 from grokcore.view import *
 from grokcore.viewlet import *
-from grokcore.formlib import *
 
 from five.grok.components import Model, Container, Site, LocalUtility
-from five.grok.components import Form, AddForm
-from five.grok.components import EditForm, DisplayForm
 from five.grok.components import View, ViewletManager
-from five.grok.formlib import AutoFields
 
 
 # Override the one from grokcore.view so that we get Zope 2 semantics
@@ -35,5 +31,11 @@ from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile
 from five.grok.components import ZopeTwoDirectoryResource as DirectoryResource
 
 # Only export public API
-from five.grok.interfaces import IFiveGrokAPI
+from five.grok.interfaces import IFiveGrokAPI, HAVE_FORMLIB
+if HAVE_FORMLIB:
+    from grokcore.formlib import *
+    from five.grok.components import Form, AddForm
+    from five.grok.components import EditForm, DisplayForm
+    from five.grok.formlib import AutoFields
+
 __all__ = list(IFiveGrokAPI)

@@ -3,6 +3,14 @@ import os
 
 version = '1.4.0dev'
 
+form_requires = [
+    'grokcore.formlib >= 1.4',
+    'five.formlib',
+    'zope.formlib',
+    ]
+test_requires = form_requires + [
+    ]
+
 setup(name='five.grok',
       version=version,
       description="Grok-like layer for Zope 2",
@@ -30,12 +38,10 @@ setup(name='five.grok',
         'setuptools',
         'martian',
         'Zope2>=2.13',
-        'five.formlib',
         'five.localsitemanager > 2.0dev',
         'grokcore.annotation',
-        'grokcore.component',
-        'grokcore.formlib >= 1.4',
-        'grokcore.security',
+        'grokcore.component >= 2.5',
+        'grokcore.security [role] >= 1.6.1',
         'grokcore.site',
         'grokcore.view >= 1.12.1',
         'grokcore.viewlet >= 1.3',
@@ -43,11 +49,13 @@ setup(name='five.grok',
         'zope.component',
         'zope.container',
         'zope.contentprovider',
-        'zope.formlib',
         'zope.interface',
         'zope.location',
         'zope.pagetemplate',
         'zope.publisher',
         'zope.traversing',
         ],
+      extras_require={
+        'form': form_requires,
+        'test': form_requires},
       )

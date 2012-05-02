@@ -18,7 +18,18 @@ import grokcore.security.interfaces
 import grokcore.site.interfaces
 import grokcore.view.interfaces
 import grokcore.viewlet.interfaces
-import grokcore.formlib.interfaces
+
+try:
+    from grokcore.formlib.interfaces import IGrokcoreFormlibAPI
+
+    HAVE_FORMLIB = True
+except ImportError:
+    from zope.interface import Interface
+
+    class IGrokcoreFormlibAPI(Interface):
+        """Empty FormlibAPI
+        """
+    HAVE_FORMLIB = False
 
 
 class IFiveGrokView(grokcore.view.interfaces.IGrokView):
@@ -33,6 +44,6 @@ class IFiveGrokAPI(grokcore.annotation.interfaces.IGrokcoreAnnotationAPI,
                    grokcore.site.interfaces.IGrokcoreSiteAPI,
                    grokcore.view.interfaces.IGrokcoreViewAPI,
                    grokcore.viewlet.interfaces.IGrokcoreViewletAPI,
-                   grokcore.formlib.interfaces.IGrokcoreFormlibAPI):
+                   IGrokcoreFormlibAPI):
     """Official five.grok API.
     """

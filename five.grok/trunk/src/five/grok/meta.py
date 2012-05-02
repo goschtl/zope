@@ -12,10 +12,11 @@
 #
 ##############################################################################
 
-from five.grok import components, formlib
+from five.grok import components
 from grokcore.view.meta.directoryresource import _get_resource_path
-from zope import interface, component
+from zope import interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
 import five.grok
 import grokcore.component
 import grokcore.security
@@ -26,17 +27,20 @@ from AccessControl.security import protectClass, protectName
 from App.class_init import InitializeClass as initializeClass
 
 
-class FormGrokker(martian.ClassGrokker):
-    martian.component(components.GrokForm)
-    martian.directive(grokcore.component.context)
-    martian.priority(800)       # Must be run before real formlib grokker.
+if components.HAVE_FORMLIB:
+    from five.grok import formlib
 
-    def execute(self, factory, config, context, **kw):
-        # Set up form_fields from context class if they haven't been
-        # configured manually already using our version of get_auto_fields
-        if getattr(factory, 'form_fields', None) is None:
-            factory.form_fields = formlib.get_auto_fields(context)
-        return True
+    class FormGrokker(martian.ClassGrokker):
+        martian.component(components.GrokForm)
+        martian.directive(grokcore.component.context)
+        martian.priority(800)       # Must be run before real formlib grokker.
+
+        def execute(self, factory, config, context, **kw):
+            # Set up form_fields from context class if they haven't been
+            # configured manually already using our version of get_auto_fields
+            if getattr(factory, 'form_fields', None) is None:
+                factory.form_fields = formlib.get_auto_fields(context)
+            return True
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):
@@ -71,7 +75,7 @@ def _register_resource(config, resource_path, name, layer):
 
     config.action(
         discriminator=('adapter', adapts, provides, name),
-        callable=component.provideAdapter,
+        callable=grokcore.component.util.provideAdapter,
         args=(resource_factory, adapts, provides, name),
         )
     return True

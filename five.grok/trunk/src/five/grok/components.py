@@ -21,16 +21,13 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.location.interfaces import IPossibleSite
 from zope import interface
 
-from five.formlib import formbase
-
 from grokcore.component.interfaces import IContext
-from grokcore.formlib.components import GrokForm as BaseGrokForm
-from grokcore.formlib.components import default_display_template, \
-    default_form_template
 from grokcore.view.components import PageTemplate
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
 from grokcore.site.components import BaseSite
 import grokcore.view
+
+from five.grok.interfaces import HAVE_FORMLIB
 
 from Products.Five.browser.pagetemplatefile import ViewMapper
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
@@ -175,38 +172,6 @@ class ZopeTwoDirectoryResourceFactory(resource.DirectoryResourceFactory):
         return resource
 
 
-# forms from formlib
-
-class GrokForm(BaseGrokForm):
-
-    def __init__(self, *args):
-        super(GrokForm, self).__init__(*args)
-        self.__name__ = self.__view_name__
-
-
-class Form(GrokForm, formbase.PageForm, View):
-    martian.baseclass()
-    template = default_form_template
-
-
-class AddForm(GrokForm, formbase.AddForm, View):
-    martian.baseclass()
-    template = default_form_template
-
-
-class EditForm(GrokForm, formbase.EditForm, View):
-    martian.baseclass()
-    template = default_form_template
-
-    # grokcore.formlib defines empty actions since 1.1. Restore save
-    # option here.
-    actions = formbase.EditForm.actions
-
-
-class DisplayForm(GrokForm, formbase.DisplayForm, View):
-    martian.baseclass()
-    template = default_display_template
-
 
 # Viewlet / Viewlet Manager
 
@@ -222,4 +187,43 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
     def __getitem__(self, key):
         # XXX Need Zope 2 __getitem__
         return ZopeTwoBaseViewletManager.__getitem__(self, key)
+
+if HAVE_FORMLIB:
+    from five.formlib import formbase
+    from grokcore.formlib.components import GrokForm as BaseGrokForm
+    from grokcore.formlib.components import default_display_template, \
+        default_form_template
+
+    # forms from formlib
+
+    class GrokForm(BaseGrokForm):
+
+        def __init__(self, *args):
+            super(GrokForm, self).__init__(*args)
+            self.__name__ = self.__view_name__
+
+
+    class Form(GrokForm, formbase.PageForm, View):
+        martian.baseclass()
+        template = default_form_template
+
+
+    class AddForm(GrokForm, formbase.AddForm, View):
+        martian.baseclass()
+        template = default_form_template
+
+
+    class EditForm(GrokForm, formbase.EditForm, View):
+        martian.baseclass()
+        template = default_form_template
+
+        # grokcore.formlib defines empty actions since 1.1. Restore save
+        # option here.
+        actions = formbase.EditForm.actions
+
+
+    class DisplayForm(GrokForm, formbase.DisplayForm, View):
+        martian.baseclass()
+        template = default_display_template
+
 

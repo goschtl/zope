@@ -11,7 +11,8 @@
   <include package="Products.Five" />
   <include package="five.grok" file="meta.zcml" />
 
-  <include package="five.formlib" />
+  <include package="five.formlib"
+           zcml:condition="installed five.formlib" />
   <include package="five.localsitemanager" />
   <include package="grokcore.annotation" />
   <include package="grokcore.view" />
