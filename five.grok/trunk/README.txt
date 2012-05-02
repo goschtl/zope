@@ -60,13 +60,13 @@ Note
 And for this release we recommend to pin down the following version in
 your buildout::
 
-  grokcore.annotation = 1.2
-  grokcore.component = 2.4
-  grokcore.formlib = 1.8
-  grokcore.security = 1.5
-  grokcore.site = 1.5
-  grokcore.view = 2.6.1
-  grokcore.viewlet = 1.9
+  grokcore.annotation = 1.3
+  grokcore.component = 2.5
+  grokcore.formlib = 1.9
+  grokcore.security = 1.6.1
+  grokcore.site = 1.6.1
+  grokcore.view = 2.7
+  grokcore.viewlet = 1.10.1
   five.localsitemanager = 2.0.5
   five.formlib = 1.0.4
   martian = 0.14
