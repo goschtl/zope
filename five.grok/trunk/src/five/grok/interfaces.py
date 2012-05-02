@@ -19,17 +19,18 @@ import grokcore.site.interfaces
 import grokcore.view.interfaces
 import grokcore.viewlet.interfaces
 
-try:
-    from grokcore.formlib.interfaces import IGrokcoreFormlibAPI
-
-    HAVE_FORMLIB = True
-except ImportError:
+def api(name):
+    from zope.dottedname.resolve import resolve
     from zope.interface import Interface
 
-    class IGrokcoreFormlibAPI(Interface):
-        """Empty FormlibAPI
-        """
-    HAVE_FORMLIB = False
+    try:
+        return True, resolve(name)
+    except ImportError:
+        return False, Interface
+
+
+HAVE_FORMLIB, IGrokcoreFormlibAPI = api(
+    'grokcore.formlib.interfaces.IGrokcoreFormlibAPI')
 
 
 class IFiveGrokView(grokcore.view.interfaces.IGrokView):
