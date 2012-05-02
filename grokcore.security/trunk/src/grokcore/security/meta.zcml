@@ -2,6 +2,5 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:grok="http://namespaces.zope.org/grok">
   <include package="grokcore.component" file="meta.zcml" />
-  <grok:grok package=".meta.permission" />
-  <grok:grok package=".meta.role" />
+  <grok:grok package=".meta" />
 </configure>

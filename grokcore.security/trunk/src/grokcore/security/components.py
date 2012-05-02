@@ -15,23 +15,35 @@
 
 from zope.security.permission import Permission
 
+def api(name):
+    from zope.dottedname.resolve import resolve
+    from zope.interface import Interface
+
+    try:
+        return True, resolve(name)
+    except ImportError:
+        return False, Interface
+
+
 class Permission(Permission):
     pass
 
 Public = 'zope.Public'
 
-from zope.securitypolicy.role import Role as securitypolicy_Role
 
-class Role(securitypolicy_Role):
-    """Base class for roles in Grok applications.
+HAVE_ROLE, securitypolicy_Role = api('zope.securitypolicy.role.Role')
 
-    A role is a description of a class of users that gives them a
-    machine-readable name, a human-readable title, and a set of
-    permissions which users belong to that role should possess::
+if HAVE_ROLE:
+    class Role(securitypolicy_Role):
+        """Base class for roles in Grok applications.
 
-        class Editor(grok.Role):
-            grok.name('news.Editor')
-            grok.title('Editor')
-            grok.permissions('news.EditArticle', 'news.PublishArticle')
+        A role is a description of a class of users that gives them a
+        machine-readable name, a human-readable title, and a set of
+        permissions which users belong to that role should possess::
 
-    """
+            class Editor(grok.Role):
+                grok.name('news.Editor')
+                grok.title('Editor')
+                grok.permissions('news.EditArticle', 'news.PublishArticle')
+
+        """
