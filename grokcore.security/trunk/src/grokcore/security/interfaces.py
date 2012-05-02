@@ -15,10 +15,24 @@
 """
 from zope.interface import Interface, Attribute
 
+def api(name):
+    from zope.dottedname.resolve import resolve
+    from zope.interface import Interface
+
+    try:
+        return True, resolve(name)
+    except ImportError:
+        return False, Interface
+
+
+HAVE_ROLE, IRole = api('zope.securitypolicy.interfaces.IRole')
+
+
 class IBaseClasses(Interface):
     Permission = Attribute("Base class for permissions.")
 
-    Role = Attribute("Base class for roles.")
+    if HAVE_ROLE:
+        Role = Attribute("Base class for roles.")
 
 
 class IDirectives(Interface):

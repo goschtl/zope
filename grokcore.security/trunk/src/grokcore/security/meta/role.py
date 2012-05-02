@@ -14,7 +14,7 @@
 """Grokkers for security-related components."""
 
 
-from grokcore.security.components import HAVE_ROLE
+from grokcore.security.interfaces import HAVE_ROLE
 
 if HAVE_ROLE:
     import martian

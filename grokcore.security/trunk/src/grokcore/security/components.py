@@ -14,15 +14,7 @@
 """Grok components"""
 
 from zope.security.permission import Permission
-
-def api(name):
-    from zope.dottedname.resolve import resolve
-    from zope.interface import Interface
-
-    try:
-        return True, resolve(name)
-    except ImportError:
-        return False, Interface
+from grokcore.security.interfaces import HAVE_ROLE
 
 
 class Permission(Permission):
@@ -31,9 +23,9 @@ class Permission(Permission):
 Public = 'zope.Public'
 
 
-HAVE_ROLE, securitypolicy_Role = api('zope.securitypolicy.role.Role')
-
 if HAVE_ROLE:
+    from zope.securitypolicy.role import Role as securitypolicy_Role
+
     class Role(securitypolicy_Role):
         """Base class for roles in Grok applications.
 

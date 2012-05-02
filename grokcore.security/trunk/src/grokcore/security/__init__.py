@@ -15,7 +15,7 @@
 """
 from grokcore.component import *
 
-from grokcore.security.components import Permission, Role
+from grokcore.security.components import Permission
 from grokcore.security.components import Public
 from grokcore.security.directive import require, permissions
 
@@ -24,5 +24,8 @@ from grokcore.security.directive import require, permissions
 import grokcore.security.testing
 
 # Only export public API
-from grokcore.security.interfaces import IGrokcoreSecurityAPI
+from grokcore.security.interfaces import IGrokcoreSecurityAPI, HAVE_ROLE
+if HAVE_ROLE:
+    from grokcore.security.components import Role
+
 __all__ = list(IGrokcoreSecurityAPI)
