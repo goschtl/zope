@@ -1,14 +1,12 @@
 Changelog
 =========
 
-1.3.1 (unreleased)
+1.3.1 (2012-05-02)
 ------------------
 
 - Make formlib support optional. This is not included by default. If
   you whish to use formlib, you need to include the extra ``form`` for
-  ``five.grok``. Example::
-
-  five.grok [form] >= 1.3.1
+  ``five.grok``. Example:  ``five.grok [form] >= 1.3.1``.
 
 - Fix the redirect method to properly work. Unlike in Zope 3, it
   doesn't support trusted.
