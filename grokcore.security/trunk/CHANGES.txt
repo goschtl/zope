@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.7 (unreleased)
-----------------
+1.6.1 (2012-05-02)
+------------------
 
 - Fix the package to properly work if the extra ``role`` is not
   specified.
