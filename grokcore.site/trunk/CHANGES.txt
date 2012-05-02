@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.6.1 (unreleased)
+1.6.1 (2012-05-02)
 ------------------
 
 - Exposed ApplicationInitializedEvent and IApplicationInitializedEvent.
