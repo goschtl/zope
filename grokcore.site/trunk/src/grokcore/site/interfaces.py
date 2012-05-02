@@ -86,6 +86,12 @@ class IGrokcoreSiteAPI(IGrokcoreComponentAPI, IBaseClasses, IDirectives):
 
     IApplication = Attribute('The application model interface')
 
+    IApplicationInitializedEvent = Attribute(
+        'The application initialized event interface')
+
+    ApplicationInitializedEvent = Attribute(
+        'The application initialized event factory')
+
     def getSite():
         """Get the current site."""
 

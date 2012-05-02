@@ -4,8 +4,9 @@ Changes
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Exposed ApplicationInitializedEvent and IApplicationInitializedEvent.
 
+- Added the missing import for the exposed IApplication interface.
 
 1.6 (2012-05-01)
 ----------------
@@ -15,13 +16,11 @@ Changes
 - Moved the component `Application` and all the related utilities from Grok
   to this package.
 
-
 1.5 (2011-01-03)
 ----------------
 
 - Moved IApplication and getApplication from the Grok package into
   this one.
-
 
 1.4 (2010-11-01)
 ----------------
