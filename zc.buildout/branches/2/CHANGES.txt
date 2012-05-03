@@ -30,6 +30,8 @@ Bugs fixed:
 - https://bugs.launchpad.net/bugs/697913 : Buildout doesn't honor exit code
   from scripts. Fixed.
 
+-Work around distribute's way of dealing with setuptools.
+
 1.5.2 (2010-10-11)
 ==================
 
