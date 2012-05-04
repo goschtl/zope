@@ -214,12 +214,16 @@ getXmlHttpRequest = function() {
         }
         return req;
     }
+    // see comments about the MSXML2.XMLHTTP order,
+    // http://blogs.msdn.com/b/xmlteam/archive/2006/10/23/
+    // using-the-right-version-of-msxml-in-internet-explorer.aspx
     else if (window.ActiveXObject) {
         var MSXML_XMLHTTP_IDS = new Array(
-            "MSXML2.XMLHTTP.5.0",
-            "MSXML2.XMLHTTP.4.0",
+            "MSXML2.XMLHTTP.6.0",
             "MSXML2.XMLHTTP.3.0",
             "MSXML2.XMLHTTP",
+            "MSXML2.XMLHTTP.5.0",
+            "MSXML2.XMLHTTP.4.0",
             "Microsoft.XMLHTTP");
         var success = false;
         for (var i = 0; i < MSXML_XMLHTTP_IDS.length && !success; i++) {

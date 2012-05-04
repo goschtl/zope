@@ -2,8 +2,11 @@
 CHANGES
 =======
 
-0.5.1dev (unreleased)
----------------------
+0.5.1 (unreleased)
+------------------
+
+- cleanup msxml2 setup. See comments about the correct MSXML2.XMLHTTP usage at
+  http://blogs.msdn.com/b/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx
 
 - Removed slugs for ZPKG and ZCML.
 
