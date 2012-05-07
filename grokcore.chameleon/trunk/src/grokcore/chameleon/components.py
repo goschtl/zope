@@ -31,7 +31,7 @@ from chameleon.tales import StructureExpr
 from z3c.pt.expressions import PathExpr, ProviderExpr
 
 
-class PageTemplate(PageTemplate, GrokTemplate):
+class PageTemplate(PageTemplate):
     """A Chameleon page template suitable for use with views.
 
     It defines the path and provider expression types to the template in
@@ -47,6 +47,15 @@ class PageTemplate(PageTemplate, GrokTemplate):
         'import': ImportExpr,
         'structure': StructureExpr,
         }
+
+    def render(self, **vars):
+        if 'target_language' not in vars:
+            try:
+                target_language = zope.i18n.negotiate(vars['request'])
+            except:
+                target_language = None
+            vars['target_language'] = target_language
+        return super(PageTemplate, self).render(**vars)
 
 def _module_relative_to_abs(ctx, filename):
     # Taken and adapted from z3c.pth.pagetemplate.
@@ -105,12 +114,6 @@ class ChameleonPageTemplate(GrokTemplate):
 
     def render(self, view):
         context = self.getNamespace(view)
-        if 'target_language' not in context:
-            try:
-                target_language = zope.i18n.negotiate(context['request'])
-            except:
-                target_language = None
-            context['target_language'] = target_language
         return self._template(**context)
 
 
