@@ -1,11 +1,12 @@
 CHANGES
 *******
 
-1.0.2 (unreleased)
+1.0.2 (2012-05-07)
 ==================
 
-- Nothing changed yet.
-
+- With not using the z3c.pt PageTemplateFile baseclass, the behaviour of
+  finding the template file relative to the module was lost. This has been
+  fixed.
 
 1.0.1 (2012-05-03)
 ==================

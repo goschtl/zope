@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '1.0.2.dev0'
+version = '1.0.2'
 
 install_requires = [
     'Chameleon >= 2.8.4',
