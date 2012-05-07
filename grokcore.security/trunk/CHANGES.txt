@@ -4,8 +4,7 @@ Changes
 1.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Properly declare zope.dottedname as a dependency.
 
 1.6.1 (2012-05-02)
 ------------------

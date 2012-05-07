@@ -44,6 +44,7 @@ setup(
         'grokcore.component >= 2.1',
         'martian >= 0.13',
         'zope.component',
+        'zope.dottedname',
         'zope.interface',
         'zope.security',
         ],
