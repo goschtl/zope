@@ -31,20 +31,12 @@ from chameleon.tales import StructureExpr
 from z3c.pt.expressions import PathExpr, ProviderExpr
 
 
-#
-# Chameleon Zope Page Templates...
-#
 class PageTemplate(PageTemplate, GrokTemplate):
-    """A `z3c.pt` page template suitable for use with views.
+    """A Chameleon page template suitable for use with views.
 
-    This page template implementation is different from `z3c.pt`
-    implementation in two respects:
-
-    - It sets ``python`` as default mode (instead of ``path``)
-    - It injects any views ``static`` variable in template namespace.
+    It defines the path and provider expression types to the template in
+    addition to the "standard" expressions types.
     """
-    default_expression = 'python'  # Use the chameleon default
-
     expression_types = {
         'python': PythonExpr,
         'string': StringExpr,
@@ -56,20 +48,46 @@ class PageTemplate(PageTemplate, GrokTemplate):
         'structure': StructureExpr,
         }
 
+def _module_relative_to_abs(ctx, filename):
+    # Taken and adapted from z3c.pth.pagetemplate.
+    if os.path.isabs(filename):
+        return filename
+    for depth in (2, 3):
+        frame = sys._getframe(depth)
+        package_name = frame.f_globals.get('__name__', None)
+        if package_name is not None and \
+               package_name != ctx:
+            module = sys.modules[package_name]
+            try:
+                path = module.__path__[0]
+            except AttributeError:
+                path = module.__file__
+                path = path[:path.rfind(os.sep)]
+            break
+        else:
+            package_path = frame.f_globals.get('__file__', None)
+            if package_path is not None:
+                path = os.path.dirname(package_path)
+                break
+    return os.path.join(path, filename)
+
 
 class PageTemplateFile(PageTemplate, PageTemplateFile):
-    """A `z3c.pt` page template file suitable for use with views.
+    """A Chameleon page template file suitable for use with views.
 
-    This implementation is different from `z3c.pt` implementation in
-    two respects:
-
-    - It sets ``python`` as default mode (instead of ``path``)
-    - It injects any views ``static`` variable in template namespace.
+    Takes an absolute path to the template file as the first argument.
     """
-    default_expression = 'python'
+    def __init__(self, filename):
+        filename = _module_relative_to_abs(self, filename)
+        super(PageTemplateFile, self).__init__(filename)
 
 
 class ChameleonPageTemplate(GrokTemplate):
+    """Encapsulates a Chameleon-based template as a GrokTemplate
+    implementation.
+
+    Used for Grok View components by way of the grok.template() directive.
+    """
 
     def setFromString(self, string):
         self._filename = None
@@ -87,17 +105,24 @@ class ChameleonPageTemplate(GrokTemplate):
 
     def render(self, view):
         context = self.getNamespace(view)
-
         if 'target_language' not in context:
             try:
                 target_language = zope.i18n.negotiate(context['request'])
             except:
                 target_language = None
             context['target_language'] = target_language
-
         return self._template(**context)
 
+
 class ChameleonPageTemplateFile(ChameleonPageTemplate):
+    """Encapsulates a Chameleon-based template file as a GrokTemplate
+    implementation.
+
+    Used for Grok View components by way of the grok.template() directive.
+
+    The filename will be relative to the module in which the Grok View
+    component is defined.
+    """
 
     def __init__(self, filename, _prefix=None):
         self.__grok_module__ = martian.util.caller_module()

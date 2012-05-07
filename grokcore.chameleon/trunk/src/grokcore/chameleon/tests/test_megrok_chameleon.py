@@ -43,7 +43,7 @@ def test_suite():
     """Get a testsuite of all doctests.
     """
     suite = unittest.TestSuite()
-    test = doctest.DocFileSuite(
+    readme = doctest.DocFileSuite(
         'README.txt',
         setUp=setUpStatic,
         package=grokcore.chameleon,
@@ -52,6 +52,13 @@ def test_suite():
             ),
         optionflags=FLAGS,
         )
-    test.layer = FunctionalLayer
-    suite.addTest(test)
+    readme.layer = FunctionalLayer
+    suite.addTest(readme)
+    suite.addTest(
+        doctest.DocTestSuite(
+            'grokcore.chameleon.tests.templatefile',
+            setUp=setUpStatic,
+            optionflags=FLAGS,
+            )
+        )
     return suite
