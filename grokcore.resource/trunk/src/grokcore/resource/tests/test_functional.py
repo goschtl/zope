@@ -87,16 +87,14 @@ class Functional(unittest.TestCase):
 </html>
 ''', browser.contents)
 
-    def test_stacking(self):
-        '''The `include` directive can be stacked, if several resources are
-        to be included.'''
+    def test_resources_override_in_subclass(self):
+        '''The `include` directive overrides resources needed in super classes.'''
         from zope.app.wsgi.testlayer import Browser
-        browser = Browser('http://localhost/@@viewwithextraresource')
+        browser = Browser('http://localhost/@@viewwithownresource')
         self.assertEqual('''\
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/a.css" />
-<link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/b.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/b.css" />
 
 </head>
 <body>

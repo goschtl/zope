@@ -20,7 +20,7 @@ class MyView(grokcore.view.View):
     grokcore.resource.include(css_a)
     grokcore.view.template('index')
 
-class ViewWithExtraResource(MyView):
+class ViewWithOwnResource(MyView):
     grokcore.resource.include(css_b)
 
 class ViewWithMultipleResources(grokcore.view.View):
