@@ -5,6 +5,8 @@ Changes
 4.0.0 (unreleased)
 ------------------
 
+- Automated build of Sphinx HTML docs and running doctest snippets via tox.
+
 - Added Sphinx documentation.
 
 - Added support for continuous integration using ``tox`` and ``jenkins``.
