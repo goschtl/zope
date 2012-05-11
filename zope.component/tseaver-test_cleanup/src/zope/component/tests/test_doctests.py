@@ -318,7 +318,7 @@ def testAdapterInContext(self):
       Traceback (most recent call last):
       ...
       ComponentLookupError: (<Component implementing 'I1'>,
-                             <InterfaceClass zope.component.tests.I4>)
+                             <InterfaceClass zope.component.tests.test_doctests.I4>)
 
     ...otherwise, you get the default:
 
@@ -347,7 +347,7 @@ def testAdapter():
       Traceback (most recent call last):
       ...
       ComponentLookupError: (<instance Ob>,
-                             <InterfaceClass zope.component.tests.I2>,
+                             <InterfaceClass zope.component.tests.test_doctests.I2>,
                              '')
 
     ...otherwise, you get the default
@@ -405,7 +405,7 @@ def testInterfaceCall():
       Traceback (most recent call last):
       ...
       TypeError: ('Could not adapt', <instance Ob2>,
-                  <InterfaceClass zope.component.tests.I1>)
+                  <InterfaceClass zope.component.tests.test_doctests.I1>)
 
     ...unless we specify an alternative adapter:
 
@@ -431,7 +431,7 @@ def testNamedAdapter():
       Traceback (most recent call last):
       ...
       ComponentLookupError:
-      (<instance Ob>, <InterfaceClass zope.component.tests.I2>, 'bar')
+      (<instance Ob>, <InterfaceClass zope.component.tests.test_doctests.I2>, 'bar')
 
     ...otherwise, you get the default
 
@@ -471,7 +471,7 @@ def testMultiAdapter():
       ...
       ComponentLookupError:
       ((<instance Ob>, <instance Ob2>),
-       <InterfaceClass zope.component.tests.I3>,
+       <InterfaceClass zope.component.tests.test_doctests.I3>,
        u'')
 
     ...otherwise, you get the default
@@ -573,7 +573,7 @@ def testUtility():
       Traceback (most recent call last):
       ...
       ComponentLookupError: \
-      (<InterfaceClass zope.component.tests.I1>, '')
+      (<InterfaceClass zope.component.tests.test_doctests.I1>, '')
 
     ...otherwise, you get the default
 
@@ -606,7 +606,7 @@ def testNamedUtility():
       Traceback (most recent call last):
       ...
       ComponentLookupError:
-      (<InterfaceClass zope.component.tests.I1>, 'foo')
+      (<InterfaceClass zope.component.tests.test_doctests.I1>, 'foo')
 
 
     ...otherwise, you get the default
@@ -671,7 +671,7 @@ def testNotBrokenWhenNoSiteManager():
       ...
       TypeError: ('Could not adapt',
                   <instance Ob>,
-                  <InterfaceClass zope.component.tests.I2>)
+                  <InterfaceClass zope.component.tests.test_doctests.I2>)
 
 
       >>> I2(ob, 42)
@@ -1023,7 +1023,7 @@ def test_next_utilities():
       Traceback (most recent call last):
       ...
       ComponentLookupError:
-      No more utilities for <InterfaceClass zope.component.tests.IMyUtility>,
+      No more utilities for <InterfaceClass zope.component.tests.test_doctests.IMyUtility>,
       'myutil' have been found.
 
     You can also use `queryNextUtility` and specify a default:

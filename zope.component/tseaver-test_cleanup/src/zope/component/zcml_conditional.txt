@@ -44,7 +44,7 @@ are registered with the <adapter /> directive.
 Before we register the first test adapter, we can verify that adapter
 lookup doesn't work yet:
 
-  >>> from zope.component.tests import clearZCML
+  >>> from zope.component.tests.test_doctests import clearZCML
   >>> clearZCML()
   >>> from zope.component.testfiles.components import IApp
   >>> IApp(Content(), None) is None
@@ -67,7 +67,6 @@ required interface, provided interface and name makes the adapter
 lookup unique.  The name is supplied using the ``name`` argument to
 the <adapter /> directive:
 
-  >>> from zope.component.tests import clearZCML
   >>> clearZCML()
   >>> import zope.component
   >>> zope.component.queryAdapter(Content(), IApp, 'test') is None
@@ -588,7 +587,7 @@ Then we provide a test interface that we'd like to register:
 
 It doesn't yet provide ``ITestType``:
 
-  >>> from zope.component.tests import ITestType
+  >>> from zope.component.tests.test_doctests import ITestType
   >>> ITestType.providedBy(I)
   False
 
@@ -601,7 +600,7 @@ However, after calling the directive handler...
     <function provideInterface>,
     ('',
      <InterfaceClass __builtin__.I>,
-     <InterfaceClass zope.component.tests.ITestType>)),)
+     <InterfaceClass zope.component.tests.test_doctests.ITestType>)),)
 
 ...it does provide ``ITestType``:
 

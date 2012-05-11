@@ -29,7 +29,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.component.tests import ITestType
+    >>> from zope.component.tests.test_doctests import ITestType
 
     >>> class I(Interface):
     ...     pass
@@ -103,7 +103,7 @@ def getInterface(context, id):
     """Return interface or raise ComponentLookupError
 
     >>> from zope.interface import Interface
-    >>> from zope.component.tests import ITestType
+    >>> from zope.component.tests.test_doctests import ITestType
 
     >>> class I4(Interface):
     ...     pass
@@ -134,7 +134,7 @@ def queryInterface(id, default=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.component.tests import ITestType
+    >>> from zope.component.tests.test_doctests import ITestType
 
     >>> class I3(Interface):
     ...     pass
@@ -159,7 +159,7 @@ def searchInterface(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.component.tests import ITestType
+    >>> from zope.component.tests.test_doctests import ITestType
 
     >>> class I5(Interface):
     ...     pass
@@ -185,7 +185,7 @@ def searchInterfaceIds(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
-    >>> from zope.component.tests import ITestType
+    >>> from zope.component.tests.test_doctests import ITestType
 
     >>> class I5(Interface):
     ...     pass
