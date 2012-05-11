@@ -186,6 +186,8 @@ def testInterfaces():
 def test_getGlobalSiteManager():
     """One of the most important functions is to get the global site manager.
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> from zope.component.interfaces import IComponentLookup
       >>> from zope.component.globalregistry import base
 
@@ -206,6 +208,7 @@ def test_getGlobalSiteManager():
 
       >>> component.getGlobalSiteManager() is gsm
       True
+      >>> tearDown()
     """
 
 def test_getSiteManager():
@@ -215,6 +218,8 @@ def test_getSiteManager():
     We don't know anything about the default service manager, except that it
     is an `IComponentLookup`.
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> from zope.component.interfaces import IComponentLookup
       >>> IComponentLookup.providedBy(component.getSiteManager())
       True
@@ -252,6 +257,7 @@ def test_getSiteManager():
       ...
       ComponentLookupError: ('Could not adapt', <instance Ob>,
       <InterfaceClass zope...interfaces.IComponentLookup>)
+      >>> tearDown()
     """
 
 def testAdapterInContext(self):
@@ -263,6 +269,8 @@ def testAdapterInContext(self):
     Let's start by creating a component that support's the PEP 246's
     `__conform__()` method:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> class Component(object):
       ...     interface.implements(I1)
       ...     def __conform__(self, iface, default=None):
@@ -332,6 +340,7 @@ def testAdapterInContext(self):
       43
       >>> component.queryAdapterInContext(ob, I3, context)
       43
+      >>> tearDown()
     """
 
 def testAdapter():
@@ -343,6 +352,8 @@ def testAdapter():
     If an adapter isn't registered for the given object and interface, and you
     provide no default, raise `ComponentLookupError`...
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getAdapter(ob, I2, '') #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
       ...
@@ -378,6 +389,7 @@ def testAdapter():
       True
       >>> adapter.context is ob
       True
+      >>> tearDown()
     """
 
 def testInterfaceCall():
@@ -387,6 +399,8 @@ def testInterfaceCall():
 
     First, we need to register an adapter:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getGlobalSiteManager().registerAdapter(
       ...     Comp, [I1], I2, '')
 
@@ -412,6 +426,7 @@ def testInterfaceCall():
       >>> marker = object()
       >>> I2(object(), marker) is marker
       True
+      >>> tearDown()
     """
 
 def testNamedAdapter():
@@ -420,6 +435,8 @@ def testNamedAdapter():
 
     First we register some named adapter:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getGlobalSiteManager().registerAdapter(
       ...     lambda x: 0, [I1], I2, 'foo')
 
@@ -450,6 +467,7 @@ def testNamedAdapter():
       True
       >>> adapter.context is ob
       True
+      >>> tearDown()
     """
 
 def testMultiAdapter():
@@ -459,6 +477,8 @@ def testMultiAdapter():
     this demonstration non-trivial, we need to create a second object to be
     adapted:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> ob2 = Ob2()
 
     Like for regular adapters, if an adapter isn't registered for the given
@@ -505,12 +525,15 @@ def testMultiAdapter():
       True
       >>> adapter.second is ob2
       True
+      >>> tearDown()
     """
 
 def testAdapterForInterfaceNone():
     """Providing an adapter for None says that your adapter can adapt anything
     to `I2`.
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getGlobalSiteManager().registerAdapter(
       ...     Comp, (None,), I2, '')
 
@@ -528,6 +551,7 @@ def testAdapterForInterfaceNone():
       True
       >>> adapter.context is something
       True
+      >>> tearDown()
     """
 
 def testGetAdapters():
@@ -537,6 +561,8 @@ def testGetAdapters():
 
     Let's register some adapters first:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getGlobalSiteManager().registerAdapter(
       ...     Comp, [I1], I2, '')
       >>> component.getGlobalSiteManager().registerAdapter(
@@ -557,7 +583,7 @@ def testGetAdapters():
       >>> adapters = sorted(component.getAdapters((ob,), I2))
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
-
+      >>> tearDown()
     """
 
 def testUtility():
@@ -569,6 +595,8 @@ def testUtility():
     course. The pure instatiation of an object does not make it a utility. If
     you do not specify a default, you get a `ComponentLookupError`...
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getUtility(I1) #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
       ...
@@ -590,6 +618,7 @@ def testUtility():
 
       >>> component.getUtility(I1) is ob
       True
+      >>> tearDown()
     """
 
 def testNamedUtility():
@@ -597,6 +626,8 @@ def testNamedUtility():
 
     Just because you register an utility having no name
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> component.getGlobalSiteManager().registerUtility(ob, I1)
 
     does not mean that they are available when you specify a name:
@@ -623,6 +654,7 @@ def testNamedUtility():
 
       >>> component.getUtility(I1, 'foo') is ob
       True
+      >>> tearDown()
     """
 
 def test_getAllUtilitiesRegisteredFor():
@@ -632,6 +664,8 @@ def test_getAllUtilitiesRegisteredFor():
 
     Thus, let's create a derivative interface of `I1`:
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> class I11(I1):
       ...     pass
 
@@ -655,6 +689,7 @@ def test_getAllUtilitiesRegisteredFor():
       >>> uts = sorted([util.__class__.__name__ for util in uts])
       >>> uts
       ['Ob', 'Ob', 'Ob11']
+      >>> tearDown()
 
     Note that `getAllUtilitiesRegisteredFor()` does not return the names of
     the utilities.
@@ -666,6 +701,8 @@ def testNotBrokenWhenNoSiteManager():
 
     Both of those things emit `DeprecationWarnings`.
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> I2(ob) #doctest: +NORMALIZE_WHITESPACE
       Traceback (most recent call last):
       ...
@@ -676,6 +713,7 @@ def testNotBrokenWhenNoSiteManager():
 
       >>> I2(ob, 42)
       42
+      >>> tearDown()
     """
 
 
@@ -684,6 +722,8 @@ def testNo__component_adapts__leakage():
     We want to make sure that an `adapts()` call in a class definition
     doesn't affect instances.
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> class C:
       ...     component.adapts()
 
@@ -693,6 +733,7 @@ def testNo__component_adapts__leakage():
       Traceback (most recent call last):
       ...
       AttributeError: __component_adapts__
+      >>> tearDown()
     """
 
 def test_ability_to_pickle_globalsitemanager():
@@ -701,7 +742,9 @@ def test_ability_to_pickle_globalsitemanager():
     and its two global adapter registries.
 
       >>> from zope.component import globalSiteManager
+      >>> from zope.component.testing import setUp, tearDown
       >>> import cPickle
+      >>> setUp()
       >>> pickle = cPickle.dumps(globalSiteManager)
       >>> sm = cPickle.loads(pickle)
       >>> sm is globalSiteManager
@@ -713,6 +756,7 @@ def test_ability_to_pickle_globalsitemanager():
       >>> adapters = cPickle.loads(pickle)
       >>> adapters is globalSiteManager.adapters
       True
+      >>> tearDown()
     """
 
 def test_persistent_component_managers():
@@ -723,6 +767,8 @@ a database and when accessed from multiple connections.
 Start by setting up a database and creating two transaction
 managers and database connections to work with.
 
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> import ZODB.tests.util
     >>> db = ZODB.tests.util.DB()
     >>> import transaction
@@ -816,10 +862,13 @@ connections.
     >>> t2.abort()
 
     >>> db.close()
+    >>> tearDown()
     """
 
 def persistent_registry_doesnt_scew_up_subsribers():
     """
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> import ZODB.tests.util
     >>> db = ZODB.tests.util.DB()
     >>> import transaction
@@ -850,7 +899,7 @@ def persistent_registry_doesnt_scew_up_subsribers():
     >>> len(list(r2[1].registeredSubscriptionAdapters()))
     1
     >>> t2.abort()
-
+    >>> tearDown()
     """
 
 
@@ -880,6 +929,8 @@ def test_deghostification_of_persistent_adapter_registries():
 
 We want to make sure that we see updates corrextly.
 
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> len(base._v_subregistries)
     0
 
@@ -931,7 +982,7 @@ Cleanup:
 
     >>> db.close()
     >>> clear_base()
-
+    >>> tearDown()
     """
 
 
@@ -941,6 +992,8 @@ def test_multi_handler_unregistration():
     specification would all be removed when one of them was
     unregistered:
 
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> class I(zope.interface.Interface):
     ...     pass
     >>> def factory1(event):
@@ -960,6 +1013,7 @@ def test_multi_handler_unregistration():
     True
     >>> registry.handle(Event())
     | Factory 2 is here
+    >>> tearDown()
     """
 
 def test_next_utilities():
@@ -968,6 +1022,8 @@ def test_next_utilities():
     providing the same interface in one of the component registry's
     bases. Let's first create a global utility::
 
+      >>> from zope.component.testing import setUp, tearDown
+      >>> setUp()
       >>> import zope.interface
       >>> class IMyUtility(zope.interface.Interface):
       ...     pass
@@ -1058,6 +1114,7 @@ def test_next_utilities():
 
       >>> queryNextUtility(object(), IMyUtility, 'myutil', 'default')
       'default'
+      >>> tearDown()
     """
 
 def dont_leak_utility_registrations_in__subscribers():
@@ -1066,6 +1123,8 @@ def dont_leak_utility_registrations_in__subscribers():
     We've observed utilities getting left in _subscribers when they
     get unregistered.
 
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> import zope.interface.registry
     >>> reg = zope.interface.registry.Components()
     >>> class C:
@@ -1090,7 +1149,7 @@ def dont_leak_utility_registrations_in__subscribers():
 
     >>> list(reg.getAllUtilitiesRegisteredFor(I1))
     [C(2)]
-
+    >>> tearDown()
     """
 
 def test_zcml_handler_site_manager():
@@ -1099,6 +1158,8 @@ def test_zcml_handler_site_manager():
     method to get the registry where to register the components. This makes
     possible to hook ``getSiteManager`` before loading a ZCML file:
 
+    >>> from zope.component.testing import setUp, tearDown
+    >>> setUp()
     >>> from zope.interface.registry import Components
     >>> registry = Components()
     >>> def dummy(context=None):
@@ -1112,7 +1173,7 @@ def test_zcml_handler_site_manager():
     >>> registry.getUtility(IApp) is comp
     True
     >>> ignore = getSiteManager.reset()
-
+    >>> tearDown()
     """
 
 class StandaloneTests(unittest.TestCase):

@@ -25,11 +25,12 @@ from zope.interface.interfaces import IInterface
 def provideInterface(id, interface, iface_type=None, info=''):
     """register Interface with global site manager as utility
 
-    >>> gsm = zope.component.getGlobalSiteManager()
-
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
+    >>> from zope.component.testing import setUp, tearDown
     >>> from zope.component.tests.test_doctests import ITestType
+    >>> setUp()
+    >>> gsm = zope.component.getGlobalSiteManager()
 
     >>> class I(Interface):
     ...     pass
@@ -79,6 +80,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
     [u'zope.component.interface.I']
     >>> [iface.__name__ for (name, iface) in interfaces]
     ['I']
+    >>> tearDown()
     """
     if not id:
         id = "%s.%s" % (interface.__module__, interface.__name__)
@@ -103,7 +105,9 @@ def getInterface(context, id):
     """Return interface or raise ComponentLookupError
 
     >>> from zope.interface import Interface
+    >>> from zope.component.testing import setUp, tearDown
     >>> from zope.component.tests.test_doctests import ITestType
+    >>> setUp()
 
     >>> class I4(Interface):
     ...     pass
@@ -122,6 +126,7 @@ def getInterface(context, id):
                 """ 'zope.component.interface.I4')
     >>> iface.__name__
     'I4'
+    >>> tearDown()
     """
     iface = queryInterface(id, None)
     if iface is None:
@@ -134,7 +139,9 @@ def queryInterface(id, default=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
+    >>> from zope.component.testing import setUp, tearDown
     >>> from zope.component.tests.test_doctests import ITestType
+    >>> setUp()
 
     >>> class I3(Interface):
     ...     pass
@@ -150,6 +157,7 @@ def queryInterface(id, default=None):
     >>> iface = queryInterface('zope.component.interface.I3')
     >>> iface.__name__
     'I3'
+    >>> tearDown()
     """
     return zope.component.queryUtility(IInterface, id, default)
 
@@ -159,7 +167,9 @@ def searchInterface(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
+    >>> from zope.component.testing import setUp, tearDown
     >>> from zope.component.tests.test_doctests import ITestType
+    >>> setUp()
 
     >>> class I5(Interface):
     ...     pass
@@ -175,6 +185,7 @@ def searchInterface(context, search_string=None, base=None):
     >>> iface = searchInterface(None, 'zope.component.interface.I5')
     >>> iface[0].__name__
     'I5'
+    >>> tearDown()
     """
     return [iface_util[1] for iface_util in
             searchInterfaceUtilities(context, search_string, base)]
@@ -185,7 +196,9 @@ def searchInterfaceIds(context, search_string=None, base=None):
 
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
+    >>> from zope.component.testing import setUp, tearDown
     >>> from zope.component.tests.test_doctests import ITestType
+    >>> setUp()
 
     >>> class I5(Interface):
     ...     pass
@@ -201,6 +214,7 @@ def searchInterfaceIds(context, search_string=None, base=None):
     >>> iface = searchInterfaceIds(None, 'zope.component.interface.I5')
     >>> iface
     [u'zope.component.interface.I5']
+    >>> tearDown()
     """
     return [iface_util[0] for iface_util in
             searchInterfaceUtilities(context, search_string, base)]
