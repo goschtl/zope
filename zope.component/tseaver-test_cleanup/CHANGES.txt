@@ -4,6 +4,8 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
+- Added support for continuous integration using ``tox`` and ``jenkins``.
+
 - Got tests to run using ``setup.py test``.
 
 - Added ``Sphinx`` documentation.
