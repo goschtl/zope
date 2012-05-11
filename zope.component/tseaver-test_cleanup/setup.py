@@ -23,11 +23,13 @@ import os
 from setuptools import setup, find_packages
 
 
-tests_require = [
-    'ZODB3',
-    'zope.hookable',
+TESTS_REQUIRE = [
     'zope.testing',
     'zope.testrunner',
+    'zope.component[hook]',
+    'zope.component[persistentregistry]',
+    'zope.component[security]',
+    'zope.component[zcml]',
     ]
 
 
@@ -81,23 +83,24 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     namespace_packages=['zope',],
-    tests_require = tests_require,
+    tests_require = TESTS_REQUIRE,
     install_requires=['setuptools',
                       'zope.interface>=3.8.0',
                       'zope.event',
                       ],
     include_package_data = True,
     zip_safe = False,
-    extras_require = dict(
-        hook = ['zope.hookable'],
-        persistentregistry = ['ZODB3'],
-        security = ['zope.location',
+    extras_require = {
+        'hook': ['zope.hookable'],
+        'persistentregistry': ['ZODB3'],
+        'security': ['zope.location',
                     'zope.proxy',
                     'zope.security',
                     ],
-        zcml = ['zope.configuration',
+        'zcml': ['zope.configuration',
                 'zope.i18nmessageid',
                 ],
-        test = tests_require,
-        ),
+        'test': TESTS_REQUIRE,
+        'testing': TESTS_REQUIRE + ['nose', 'coverage'],
+        },
     )
