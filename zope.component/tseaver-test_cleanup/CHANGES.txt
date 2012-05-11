@@ -4,6 +4,8 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
+- Got tests to run using ``setup.py test``.
+
 - Added ``Sphinx`` documentation.
 
 - Added ``setup.py docs`` alias (installs ``Sphinx`` and dependencies).

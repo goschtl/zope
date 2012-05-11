@@ -32,6 +32,39 @@ TESTS_REQUIRE = [
     'zope.component[zcml]',
     ]
 
+def _modname(path, base, name=''):
+    if path == base:
+        return name
+    dirname, basename = os.path.split(path)
+    return _modname(dirname, base, basename + '.' + name)
+
+def alltests():
+    import logging
+    import pkg_resources
+    import unittest
+
+    class NullHandler(logging.Handler):
+        level = 50
+        
+        def emit(self, record):
+            pass
+
+    logging.getLogger().addHandler(NullHandler())
+
+    suite = unittest.TestSuite()
+    base = pkg_resources.working_set.find(
+        pkg_resources.Requirement.parse('zope.component')).location
+    for dirpath, dirnames, filenames in os.walk(base):
+        if os.path.basename(dirpath) == 'tests':
+            for filename in filenames:
+                if ( filename.endswith('.py') and
+                     filename.startswith('test') ):
+                    mod = __import__(
+                        _modname(dirpath, base, os.path.splitext(filename)[0]),
+                        {}, {}, ['*'])
+                    suite.addTest(mod.test_suite())
+    return suite
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -84,6 +117,7 @@ setup(
     ],
     namespace_packages=['zope',],
     tests_require = TESTS_REQUIRE,
+    test_suite='__main__.alltests',
     install_requires=['setuptools',
                       'zope.interface>=3.8.0',
                       'zope.event',

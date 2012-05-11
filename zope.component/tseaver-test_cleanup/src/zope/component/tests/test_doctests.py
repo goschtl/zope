@@ -1704,12 +1704,13 @@ def test_suite():
                     r'exceptions.\1Error:'),
         ])
 
-    zcml_conditional = doctest.DocFileSuite('zcml_conditional.txt', checker=checker)
+    zcml_conditional = doctest.DocFileSuite('../zcml_conditional.txt',
+                                            checker=checker)
     zcml_conditional.layer = ConditionalSecurityLayer()
 
     with_globs = dict(with_statement=__future__.with_statement)
     hooks_conditional = doctest.DocFileSuite(
-        'hooks.txt', checker=checker, globs=with_globs)
+        '../hooks.txt', checker=checker, globs=with_globs)
     hooks_conditional.layer = ConditionalSecurityLayer()
 
     return unittest.TestSuite((
@@ -1718,23 +1719,23 @@ def test_suite():
         doctest.DocTestSuite('zope.component.interface',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.nexttesting'),
-        doctest.DocFileSuite('README.txt',
+        doctest.DocFileSuite('../README.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('socketexample.txt',
+        doctest.DocFileSuite('../socketexample.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('factory.txt',
+        doctest.DocFileSuite('../factory.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('hooks.txt', checker=checker,
+        doctest.DocFileSuite('../hooks.txt', checker=checker,
                              setUp=setUp, tearDown=tearDown,
                              globs=with_globs),
-        doctest.DocFileSuite('event.txt',
+        doctest.DocFileSuite('../event.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.security'),
-        doctest.DocFileSuite('zcml.txt', checker=checker,
+        doctest.DocFileSuite('../zcml.txt', checker=checker,
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('configure.txt',
+        doctest.DocFileSuite('../configure.txt',
                              setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('testlayer.txt',
+        doctest.DocFileSuite('../testlayer.txt',
                              optionflags=(doctest.ELLIPSIS +
                                           doctest.NORMALIZE_WHITESPACE +
                                           doctest.REPORT_NDIFF)),
