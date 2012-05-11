@@ -102,5 +102,6 @@ setup(
                 ],
         'test': TESTS_REQUIRE,
         'testing': TESTS_REQUIRE + ['nose', 'coverage'],
+        'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
         },
     )
