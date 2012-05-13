@@ -55,7 +55,7 @@ class Functional(unittest.TestCase):
 ''', browser.contents)
 
     def test_multiple_resources(self):
-        '''The `include` directive accepts multiple resources.'''
+        '''The `resources` directive accepts multiple resources.'''
         from zope.app.wsgi.testlayer import Browser
         browser = Browser('http://localhost/@@viewwithmultipleresources')
         self.assertEqual('''\
@@ -71,7 +71,7 @@ class Functional(unittest.TestCase):
 ''', browser.contents)
 
     def test_multiple_resource_calls(self):
-        '''The `include` directive can be called multiple times.'''
+        '''The `resources` directive can be called multiple times.'''
         from zope.app.wsgi.testlayer import Browser
         browser = Browser('http://localhost/@@viewwithmultipleresourcecalls')
         self.assertEqual('''\
@@ -88,7 +88,7 @@ class Functional(unittest.TestCase):
 ''', browser.contents)
 
     def test_resources_override_in_subclass(self):
-        '''The `include` directive overrides resources needed in super classes.'''
+        '''The `resources` directive overrides resources needed in super classes.'''
         from zope.app.wsgi.testlayer import Browser
         browser = Browser('http://localhost/@@viewwithownresource')
         self.assertEqual('''\
@@ -103,17 +103,81 @@ class Functional(unittest.TestCase):
 ''', browser.contents)
 
     def test_validation(self):
-        '''The `include` directive will raise an error if the provided
+        '''The `resources` directive will raise an error if the provided
         value is not a valid inclusion object.'''
         import grokcore.resource
         sneaky = object()
 
         try:
             class Sneaky(object):
-                grokcore.resource.include(object())
+                grokcore.resource.resources(object())
         except ValueError as err:
             pass
         self.assertEqual('You can only include fanstatic Dependable '
             '(Resource or Group) components.', str(err))
 
-# XXX Test clearing of needed resources in case of error.
+    def test_layout(self):
+        '''In case of a layout with resources, the resources are needed as part
+        of rendering the page.'''
+        from zope.app.wsgi.testlayer import Browser
+        browser = Browser()
+        browser.handleErrors = False
+        browser.open('http://localhost/@@mypage')
+        self.assertEqual('''\
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/a.css" />
+<link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/b.css" />
+
+    <title>mylayout</title>
+  </head>
+  <body>
+    <div class="layout"><div>
+  <p>page</p>
+</div>
+</div>
+  </body>
+</html>
+''', browser.contents)
+
+    def test_viewletmanager(self):
+        '''In case of using a viewletmanager, the resources associated to the
+        individual viewlets are also in the result html.'''
+        from zope.app.wsgi.testlayer import Browser
+        browser = Browser()
+        browser.handleErrors = False
+        browser.open('http://localhost/@@viewwithviewletmanager')
+        self.assertEqual('''\
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/a.css" />
+<link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/c.css" />
+
+    <title>viewlets!</title>
+  </head>
+  <body>
+    aaa
+ccc
+  </body>
+</html>
+''', browser.contents)
+
+    def test_contentprovider(self):
+        '''In case of using a content provider, the resources associated to the
+        content provider are also in the result html.'''
+        from zope.app.wsgi.testlayer import Browser
+        browser = Browser()
+        browser.handleErrors = False
+        browser.open('http://localhost/@@viewwithcontentprovider')
+        self.assertEqual('''\
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://localhost/fanstatic/grokcore.resource.tests/b.css" />
+
+    <title>contentprovider!</title>
+  </head>
+  <body>
+    bar
+  </body>
+</html>
+''', browser.contents)
