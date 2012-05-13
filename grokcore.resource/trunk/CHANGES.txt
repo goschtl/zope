@@ -4,5 +4,4 @@ Changes
 1.0 (unreleased)
 ----------------
 
-- megrok.resource lives on as grokcore.resource.
-
+- grokcore.resource inherits base functionality from `megrok.resource`.
