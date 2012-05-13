@@ -1,39 +1,41 @@
-=================
 grokcore.resource
 =================
 
-`grokcore.resource` is a package destined to integrate `fanstatic`
-into Grok applications.
+`grokcore.resource` can be used to integrate fanstatic_ resources into Grok
+applications. When not using grokcore.resource, fanstatic resources are
+typically `needed` in the `update` method of a view or view component.
 
+grokcore.resource moves the definition of what resources come with a view
+to the configuration layer. Using the `grokcore.resource.resources` directive,
+one or more resources can be associated to a view or view component as such::
 
-Including resources in components
-=================================
+  from mypackage.resource import a, b
 
-When rendering a web page we want to be able to include the resources
-where we need them.
+  class DocTest(grok.View):
+      grokcore.resource.resources(a, b)
 
-There are several ways to include them. It can be done automatically
-upon traversal on any IResourcesIncluder component, or manually specified.
+When rendering this view, the resources a and b will be automatically
+registered with fanstatic; fanstatic takes care of rendering the resource URLs
+into the result html::
 
-Traversal inclusion
--------------------
+  >>> from zope.app.wsgi.testlayer import Browser
+  >>> browser = Browser('http://localhost/doctest')
+  >>> print browser.contents
+  <html>
+  <head>
+    <link rel="stylesheet" type="text/css"
+          href="http://localhost/fanstatic/grokcore.resource.tests/a.css" />
+    <link rel="stylesheet" type="text/css"
+          href="http://localhost/fanstatic/grokcore.resource.tests/b.css" />
+  </head>
+  <body>
+  </body>
+  </html>
 
-For this example, we'll create a view and use the automatic inclusion,
-using the `include` directive::
+Supported view components
+-------------------------
 
-XXX
+The grok.View, grok.Layout, grok.Viewlet and grok.ContentProvider components
+are supported by grokcore.resource.
 
-For the resources to be automatically included during the traversal,
-we need to inform the publishing machinery that our component (the
-view), is a IResourcesIncluder. This is done automatically, when using
-the "include" directive::
-
-XXX
-
-The `include` directive can be stacked, if several resources are to be
-included::
-
-XXX
-
-grok.View()
-    grokcore.resource.include(a, b, c)
+.. _fanstatic: http://www.fanstatic.org/
