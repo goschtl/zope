@@ -1,1 +1,1 @@
-from grokcore.resource.directives import include
+from grokcore.resource.directives import resources

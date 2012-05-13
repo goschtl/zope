@@ -4,32 +4,9 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
-  <include package="zope.component" file="meta.zcml" />
-  <include package="zope.security" file="meta.zcml" />
-  <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="zope.principalregistry" file="meta.zcml" />
-  <include package="zope.publisher" file="meta.zcml" />
-  <include package="zope.app.publication" file="meta.zcml" />
-  <include package="zope.browserpage" file="meta.zcml" />
+  <include package="grok"/>
 
-  <include package="grokcore.view" file="meta.zcml" />
-
-  <include package="zope.annotation" />
-  <include package="zope.component" />
-  <include package="zope.security" />
-  <include package="zope.securitypolicy" />
-  <include package="zope.principalregistry" />
-  <include package="zope.password" />
-  <include package="zope.site" />
-  <include package="zope.container" />
-  <include package="zope.publisher" />
-  <include package="zope.traversing" />
-  <include package="zope.traversing.browser" />
-  <include package="zope.annotation" />
-  <include package="zope.app.appsetup" />
-  <include package="zope.app.publication" />
   <include package="zope.fanstatic" />
-  <include package="grokcore.view"/>
 
   <include package="grokcore.resource" />
   <grok:grok package="grokcore.resource.tests.fixtures" />
