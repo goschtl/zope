@@ -1,0 +1,8 @@
+<html>
+  <head>
+    <title>viewlets!</title>
+  </head>
+  <body>
+    <div tal:replace="structure provider:foo"/>
+  </body>
+</html>

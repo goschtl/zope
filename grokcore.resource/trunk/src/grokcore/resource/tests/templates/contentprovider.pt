@@ -1,0 +1,8 @@
+<html>
+  <head>
+    <title>contentprovider!</title>
+  </head>
+  <body>
+    <div tal:replace="structure provider:bar"/>
+  </body>
+</html>

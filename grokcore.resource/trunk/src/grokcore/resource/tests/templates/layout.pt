@@ -1,0 +1,8 @@
+<html>
+  <head>
+    <title>mylayout</title>
+  </head>
+  <body>
+    <div class="layout" tal:content="structure view/content"/>
+  </body>
+</html>
