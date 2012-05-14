@@ -106,8 +106,6 @@ class Functional(unittest.TestCase):
         '''The `resources` directive will raise an error if the provided
         value is not a valid inclusion object.'''
         import grokcore.resource
-        sneaky = object()
-
         try:
             class Sneaky(object):
                 grokcore.resource.resources(object())

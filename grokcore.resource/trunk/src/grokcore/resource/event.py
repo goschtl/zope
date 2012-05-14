@@ -13,7 +13,8 @@ import grokcore.resource.directives
     zope.app.publication.interfaces.IBeforeTraverseEvent)
 def handle_resources(includer, event):
     includer = zope.security.proxy.removeSecurityProxy(includer)
-    for resources in grokcore.resource.directives.resources.bind().get(includer):
+    for resources in grokcore.resource.directives.resources.bind().get(
+            includer):
         for resource in resources:
             resource.need()
 
@@ -34,6 +35,7 @@ def handle_resources(includer, event):
     zope.contentprovider.interfaces.IBeforeUpdateEvent)
 def handle_inclusion(includer, event):
     includer = zope.security.proxy.removeSecurityProxy(includer)
-    for resources in grokcore.resource.directives.resources.bind().get(includer):
+    for resources in grokcore.resource.directives.resources.bind().get(
+            includer):
         for resource in resources:
             resource.need()
