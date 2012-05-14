@@ -133,6 +133,8 @@ from grokcore.rest import IRESTSkinType
 from grokcore.rest import REST
 from grokcore.rest import restskin
 
+from grok.resource import resources
+
 # BBB These two functions are meant for test fixtures and should be
 # imported from grok.testing, not from grok.
 from grok.testing import grok, grok_component
