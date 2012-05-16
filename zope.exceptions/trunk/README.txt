@@ -1,5 +1,4 @@
-=======================
-General Zope Exceptions
+zope.exceptions README
 =======================
 
 This package contains exception interfaces and implementations which are so
