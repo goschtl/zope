@@ -20,13 +20,6 @@
 """
 import os
 from setuptools import setup, find_packages
-import sys
-
-extra = {
-    'extras_require': {'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
-                       'testing': ['nose', 'coverage'],
-                      }
-}
 
 
 def read(*rnames):
@@ -34,7 +27,7 @@ def read(*rnames):
 
 
 setup(name='zope.exceptions',
-      version='4.0.0dev',
+      version='4.0.0',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Exceptions',
@@ -68,4 +61,8 @@ setup(name='zope.exceptions',
       test_suite = 'zope.exceptions.tests',
       include_package_data = True,
       zip_safe = False,
-      **extra)
+      extras_require = {
+        'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
+        'testing': ['nose', 'coverage'],
+      },
+)
