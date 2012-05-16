@@ -17,7 +17,7 @@
 import logging
 try:
     from StringIO import StringIO
-except ImportError:
+except ImportError: #pragma NO COVER Python3
     from io import StringIO
 
 from zope.exceptions.exceptionformatter import print_exception
