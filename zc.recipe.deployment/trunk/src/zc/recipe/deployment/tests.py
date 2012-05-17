@@ -79,7 +79,6 @@ def test_suite():
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
                ]),
-            optionflags = doctest.REPORT_NDIFF,
             ),
         ))
 
