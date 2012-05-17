@@ -51,7 +51,7 @@ setup(
     entry_points=entry_points,
     packages = find_packages('.'),
     namespace_packages = ['zc'],
-    extras_require = dict(test=['zdaemon']),
+    extras_require = dict(test=['zdaemon', 'zope.testing']),
     install_requires = ['setuptools',
                         'zc.buildout', 'zc.recipe.egg',
                         'ZConfig'],
