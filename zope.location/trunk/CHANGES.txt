@@ -5,13 +5,13 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
-- Replace deprecated ``zope.component.adapts`` usage with equivalent
+- Replaced deprecated ``zope.component.adapts`` usage with equivalent
   ``zope.component.adapter`` decorator.
 
-- Replace deprecated ``zope.interface.implements`` usage with equivalent
+- Replaced deprecated ``zope.interface.implements`` usage with equivalent
   ``zope.interface.implementer`` decorator.
 
-- Drop support for Python 2.4 and 2.5.
+- Dropped support for Python 2.4 and 2.5.
 
 
 3.9.1 (2011-08-22)
