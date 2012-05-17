@@ -7,7 +7,7 @@ recipes.
 
 It accepts 2 options:
 
-program 
+program
    The anme of the program and, optionally, command-line arguments.
    (Note that, due to limitations in zdaemon, the command-line options
    cannot have embedded spaces.)
@@ -60,7 +60,7 @@ configuration file and a run script in the bin directory:
       </logfile>
     </eventlog>
 
-    >>> cat('bin', 'run')
+    >>> cat('bin', 'run') # doctest: +NORMALIZE_WHITESPACE
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -116,7 +116,7 @@ deployment-defined locations:
     ... logrotate-directory = logrotate
     ... user = bob
     ... ''')
-    
+
     >>> print system(buildout),
     Uninstalling run.
     Installing run.
@@ -145,7 +145,7 @@ deployment-defined locations:
       </logfile>
     </eventlog>
 
-    >>> cat('init.d', 'test-deploy-run')
+    >>> cat('init.d', 'test-deploy-run') # doctest: +NORMALIZE_WHITESPACE
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
