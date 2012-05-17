@@ -24,13 +24,13 @@ from zope.proxy import ProxyBase, non_overridable
 from zope.proxy.decorator import DecoratorSpecificationDescriptor
 
 
+@zope.interface.implementer(ILocation)
 class Location(object):
     """Mix-in that implements ILocation.
 
     It provides the `__parent__` and `__name__` attributes.
 
     """
-    zope.interface.implements(ILocation)
 
     __parent__ = None
     __name__ = None
@@ -84,6 +84,8 @@ class ClassAndInstanceDescr(object):
         return self.funcs[0](inst)
 
 
+@zope.interface.implementer(ILocation)
+@zope.component.adapter(zope.interface.Interface)
 class LocationProxy(ProxyBase):
     """Location-object proxy
 
@@ -92,8 +94,6 @@ class LocationProxy(ProxyBase):
 
     """
 
-    zope.component.adapts(zope.interface.Interface)
-    zope.interface.implements(ILocation)
 
     __slots__ = '__parent__', '__name__'
     __safe_for_unpickling__ = True

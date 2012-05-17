@@ -23,6 +23,8 @@ from zope.location.interfaces import ILocation, IRoot
 from zope.location.location import Location
 
 
+@zope.interface.implementer(ILocationInfo)
+@zope.component.adapter(ILocation)
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
     
@@ -33,8 +35,6 @@ class LocationPhysicallyLocatable(object):
     
     """
 
-    zope.component.adapts(ILocation)
-    zope.interface.implements(ILocationInfo)
 
     def __init__(self, context):
         self.context = context
@@ -279,6 +279,8 @@ class LocationPhysicallyLocatable(object):
                 return parent
         return self.getRoot()
 
+@zope.interface.implementer(ILocationInfo)
+@zope.component.adapter(IRoot)
 class RootPhysicallyLocatable(object):
     """Provide location information for the root object
     
@@ -293,8 +295,6 @@ class RootPhysicallyLocatable(object):
     
     """
 
-    zope.component.adapts(IRoot)
-    zope.interface.implements(ILocationInfo)
 
     def __init__(self, context):
         self.context = context

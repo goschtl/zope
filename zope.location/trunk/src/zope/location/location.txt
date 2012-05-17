@@ -10,7 +10,7 @@ The `Location` base class is a stupid mix-in that defines `__parent__` and
 
 Usage within an Object field:
 
-  >>> from zope.interface import implements, Interface
+  >>> from zope.interface import implementer, Interface
   >>> from zope.schema import Object
   >>> from zope.schema.fieldproperty import FieldProperty
   >>> from zope.location.interfaces import ILocation
@@ -18,8 +18,8 @@ Usage within an Object field:
   
   >>> class IA(Interface):
   ...     location = Object(schema=ILocation, required=False, default=None)
-  >>> class A(object):
-  ...     implements(IA)
+  >>> @implementer(IA)
+  ... class A(object):
   ...     location = FieldProperty(IA['location'])
   
   >>> a = A()
