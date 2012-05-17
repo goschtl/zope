@@ -47,7 +47,7 @@ setup(
     description = 'ZC Buildout recipe for zdaemon scripts',
     long_description=long_description,
     license = 'ZPL 2.1',
-    
+
     entry_points=entry_points,
     packages = find_packages('.'),
     namespace_packages = ['zc'],
