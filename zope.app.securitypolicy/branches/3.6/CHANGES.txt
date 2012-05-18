@@ -1,0 +1,96 @@
+=======
+CHANGES
+=======
+
+3.6.1 (2010-09-25)
+------------------
+
+- Added missing minimum version declaration for `zope.app.authentication`,
+  namely 3.8.
+
+
+3.6.0 (2010-09-25)
+------------------
+
+- LP: #161906: Remove superfluous "helpful" message. Improve wording of of the
+  relation between roles and permissions in the manage_permissionform.
+
+- Moved the following views to `zope.app.authentication` to inverse
+  dependency between these two packages, as `zope.app.securitypolicy` is
+  deprecated in ZTK 1.0 (leaving BBB imports in place):
+
+  - ``@@grant.html``
+  - ``@@AllRolePermissions.html``
+  - ``@@RolePermissions.html``
+  - ``@@RolesWithPermission.html``
+
+
+3.5.2 (2010-01-08)
+------------------
+
+- Remove deprecated compatibility imports. Now, this package only
+  contains ZMI views for zope.securitypolicy.
+
+- Update package's description and mailing list address.
+
+- Fix tests using a newer zope.publisher that requires zope.login.
+
+3.5.1 (2009-01-27)
+------------------
+
+- Added missing dependency for tests: zope.app.zcmlfiles
+
+3.5.0 (2008-12-11)
+------------------
+
+- use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
+  This version requires zope.app.form 3.7.0 or higher if you use the browser
+  part of this package. (grant form)
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302
+
+
+3.4.6 (2007-11-09)
+------------------
+
+- zope.app.securitypolicy needs at least zope.i18nmessageid 3.4.2, it
+  wasn't stating that in its dependencies.
+
+
+3.4.5 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+- Re-activated the functional tests.
+
+
+3.4.4 (2007-10-23)
+------------------
+
+- Avoid deprecation warnings.
+
+
+3.4.3 (2007-10-01)
+------------------
+
+- Correct deferred import for BBB.
+
+
+3.4.2 (2007-09-27)
+------------------
+
+- Add back securitypolicy.zcml
+  (https://bugs.launchpad.net/zope3/+bug/145655)
+
+
+3.4.1 (2007-09-26)
+------------------
+
+- Zip releases don't seem to work, so let's create a new one.
+
+
+3.4.0 (2007-09-25)
+------------------
+
+- Initial documented release

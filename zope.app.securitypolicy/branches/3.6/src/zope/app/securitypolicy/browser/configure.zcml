@@ -1,0 +1,43 @@
+<zope:configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+<!-- Role Utility -->
+
+  <addform
+      label="New Role"
+      name="addRole.html"
+      schema="zope.securitypolicy.interfaces.IRole"
+      permission="zope.Security"
+      content_factory="zope.securitypolicy.role.LocalRole"
+      arguments="title"
+      keyword_arguments="description"
+      fields="title description" />
+
+  <editform
+      schema="zope.securitypolicy.interfaces.IRole"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"/>
+
+  <defaultView
+      for="zope.securitypolicy.interfaces.IRole"
+      name="edit.html" />
+
+  <!-- Menu entry for "Add Utility" menu -->
+  <addMenuItem
+      class="zope.securitypolicy.role.LocalRole"
+      title="Role"
+      description="A Security Role"
+      permission="zope.Security"
+      view="addRole.html"
+      />
+
+<!-- Role Permissions -->
+<!-- RadioWidget for build a matrix for granting permissions -->
+<!-- Granting Roles and Permissions to Principals -->
+
+  <include package="zope.app.authentication.browser" file="grant.zcml" />
+
+</zope:configure>
