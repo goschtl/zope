@@ -1,0 +1,13 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2009-02-01)
+==================
+
+- Use zope.container instead of zope.app.container.
+
+3.4.0 (2007-10-24)
+==================
+
+- Initial release independent of the main Zope tree.
