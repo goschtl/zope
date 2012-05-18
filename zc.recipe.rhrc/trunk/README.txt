@@ -16,7 +16,7 @@ Changes
 - Added optional process-management support.  If requested, then run
   scripts are run as part of install and uninstall.
 
-- Fixed: missing dependency on ``zope.testing``
+- Fixed: missing **test** dependency on ``zope.testing``
 
 1.3.0 (2010/05/26)
 ==================
