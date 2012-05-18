@@ -1,0 +1,24 @@
+=======
+CHANGES
+=======
+
+3.4.0 (2007-10-10)
+------------------
+
+- No changes since beta 2, but verified test success within the stable set.
+
+
+3.4.0b2 (2007-10-10)
+--------------------
+
+- Adjust code to work with latest version of ZODB (3.8).
+
+- Converted ``module.txt`` to REST from STX.
+
+- Improved package meta-data.
+
+
+3.4.0b1 (2007-??-10)
+--------------------
+
+- Initial release independent of the main Zope tree.
