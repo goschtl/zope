@@ -28,13 +28,12 @@ from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
    
 # TODO: register utility as adapter for IAnnotations on utility activation.
    
+@interface.implementer(IPrincipalAnnotationUtility, IContained)
 class PrincipalAnnotationUtility(Persistent):
     """Stores `IAnnotations` for `IPrinicipals`.
     
     The utility ID is 'PrincipalAnnotation'.
     """
-   
-    interface.implements(IPrincipalAnnotationUtility, IContained)
 
     __parent__ = None
     __name__ = None
@@ -66,10 +65,9 @@ class PrincipalAnnotationUtility(Persistent):
         return principal.id in self.annotations
 
 
+@interface.implementer(IAnnotations)
 class Annotations(Persistent, Location):
     """Stores annotations."""
-
-    interface.implements(IAnnotations)
 
     def __init__(self, principalId, store=None):
         self.principalId = principalId
