@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 from zope.component.interface import interfaceToName
 from zope.component.interfaces import IUtilityRegistration
-from zope.interface import implements, classProvides, Interface, providedBy
+from zope.interface import implementer, provider, Interface, providedBy
 from zope.interface.interfaces import IInterface
 from zope.security.proxy import removeSecurityProxy
 from zope.schema.interfaces import IVocabularyTokenized
@@ -31,6 +31,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.componentvocabulary.i18n import ZopeMessageFactory as _
 
 
+@implementer(ITokenizedTerm)
 class UtilityTerm(object):
     """A term representing a utility.
 
@@ -52,7 +53,6 @@ class UtilityTerm(object):
     >>> term
     <UtilityTerm zope.schema.interfaces.IVocabulary, instance of InterfaceClass>
     """
-    implements(ITokenizedTerm)
 
     def __init__(self, value, token):
         """Create a term for value and token."""
@@ -64,6 +64,8 @@ class UtilityTerm(object):
             self.token, self.value.__class__.__name__)
 
 
+@implementer(IVocabularyTokenized)
+@provider(IVocabularyFactory)
 class UtilityVocabulary(object):
     """Vocabulary that provides utilities of a specified interface.
 
@@ -74,8 +76,8 @@ class UtilityVocabulary(object):
     >>> class IObject(Interface):
     ...     'Simple interface to mark object utilities.'
     >>>
-    >>> class Object(object):
-    ...     implements(IObject)
+    >>> @implementer(IObject)
+    ... class Object(object):
     ...     def __init__(self, name):
     ...         self.name = name
     ...     def __repr__(self):
@@ -177,8 +179,6 @@ class UtilityVocabulary(object):
     >>> pprint.pprint([term.value for term in vocab])
     [u'object1', u'object2', u'object3']
     """
-    implements(IVocabularyTokenized)
-    classProvides(IVocabularyFactory)
 
     # override these in subclasses
     interface = Interface
@@ -231,18 +231,19 @@ class UtilityVocabulary(object):
         return len(self._terms)
 
 
+@provider(IVocabularyFactory)
 class InterfacesVocabulary(UtilityVocabulary):
-    classProvides(IVocabularyFactory)
     interface = IInterface
 
 
+@provider(IVocabularyFactory)
 class ObjectInterfacesVocabulary(SimpleVocabulary):
     """A vocabulary that provides a list of all interfaces that its context
     provides.
 
     Here a quick demonstration:
 
-    >>> from zope.interface import Interface, implements
+    >>> from zope.interface import Interface, implementer
     >>> class I1(Interface):
     ...     pass
     >>> class I2(Interface):
@@ -250,8 +251,9 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
     >>> class I3(I2):
     ...     pass
 
-    >>> class Object(object):
-    ...     implements(I3, I1)
+    >>> @implementer(I3, I1)
+    ... class Object(object):
+    ...     pass
 
     >>> vocab = ObjectInterfacesVocabulary(Object())
     >>> import pprint
@@ -263,7 +265,6 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
      'zope.componentvocabulary.vocabulary.I3',
      'zope.interface.Interface']
     """
-    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         # Remove the security proxy so the values from the vocabulary
@@ -275,8 +276,8 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
         super(ObjectInterfacesVocabulary, self).__init__(terms)
 
 
+@provider(IVocabularyFactory)
 class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
-    classProvides(IVocabularyFactory)
 
     def __init__(self, context):
         if IUtilityRegistration.providedBy(context):
@@ -285,6 +286,7 @@ class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
             context)
 
 
+@implementer(ITitledTokenizedTerm)
 class UtilityNameTerm:
     r"""Simple term that provides a utility name as a value.
 
@@ -319,8 +321,6 @@ class UtilityNameTerm:
 
     """
 
-    implements(ITitledTokenizedTerm)
-
     def __init__(self, value):
         self.value = unicode(value)
 
@@ -337,14 +337,16 @@ class UtilityNameTerm:
         return self.value or _("(unnamed utility)")
 
 
+@implementer(IVocabularyTokenized)
 class UtilityNames:
     """Vocabulary with utility names for a single interface as values.
 
     >>> class IMyUtility(Interface):
     ...     pass
 
-    >>> class MyUtility(object):
-    ...     implements(IMyUtility)
+    >>> @implementer(IMyUtility)
+    ... class MyUtility(object):
+    ...     pass
 
     >>> vocab = UtilityNames(IMyUtility)
 
@@ -395,7 +397,6 @@ class UtilityNames:
     >>> ps.tearDown()
     """
 
-    implements(IVocabularyTokenized)
 
     def __init__(self, interface):
         self.interface = interface

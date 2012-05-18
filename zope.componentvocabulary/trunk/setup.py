@@ -22,7 +22,7 @@ def read(*rnames):
 
 
 setup(name='zope.componentvocabulary',
-      version='1.0.2dev',
+      version='2.0.0dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Component vocabularies',
@@ -38,6 +38,9 @@ setup(name='zope.componentvocabulary',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.6',
+          'Programming Language :: Python :: 2.7',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
