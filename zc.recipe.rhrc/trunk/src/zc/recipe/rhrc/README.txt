@@ -786,6 +786,69 @@ to reflect that:
     Running uninstall recipe.
     --del acme
 
+Process Management
+==================
+
+Normally, the recipe doesn't start and stop processes.  If we want it
+to, we can use the process-management option with a 'true' value.
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = zope
+    ... dest = %(dest)s
+    ... process-management = true
+    ...
+    ... [zope]
+    ... run-script = echo zope
+    ... """ % dict(dest=demo))
+
+    >>> print system('bin/buildout'),
+    Installing zoperc.
+    zope start
+
+    >>> print system('bin/buildout buildout:parts='),
+    Uninstalling zoperc.
+    Running uninstall recipe.
+    zope stop
+
+.. make sure it works with multiple parts
+
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = zope zeo
+    ... dest = %(dest)s
+    ... process-management = true
+    ...
+    ... [zeo]
+    ... run-script = echo zeo
+    ...
+    ... [zope]
+    ... run-script = echo zope
+    ... """ % dict(dest=demo))
+
+    >>> print system('bin/buildout'),
+    Installing zoperc.
+    zope start
+    zeo start
+
+    >>> print system('bin/buildout buildout:parts='),
+    Uninstalling zoperc.
+    Running uninstall recipe.
+    zeo stop
+    zope stop
+
+
 
 Regression Tests
 ================
@@ -809,8 +872,7 @@ formatted exception string, contained literal '%s'):
     ... [zope]
     ... """ % dict(dest=demo))
     >>> print system('bin/buildout'),
-
-        Installing zoperc.
+    Installing zoperc.
     zc.recipe.rhrc: Part zope doesn't define run-script and /demo/zope doesn't exist.
     While:
       Installing zoperc.

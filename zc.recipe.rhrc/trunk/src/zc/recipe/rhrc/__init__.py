@@ -12,7 +12,11 @@
 #
 ##############################################################################
 
-import logging, os, shutil, stat
+import logging
+import os
+import shutil
+import subprocess
+import stat
 import zc.buildout
 
 logger = logging.getLogger('zc.recipe.rhrc')
@@ -47,6 +51,11 @@ class Recipe:
                 raise zc.buildout.UserError(
                     'Invalid value for independent-processes:', independent)
 
+        if options.get('process-management', 'false') not in (
+            'true', 'false'):
+            raise zc.buildout.UserError('Invalid process-management option: %r'
+                                        % (options['process-management']))
+
     def install(self):
         options = self.options
         name = options.get('deployment-name', self.name)
@@ -60,6 +69,7 @@ class Recipe:
             user = '' # no need to su to root
         envs = options['envs'].split('\n')
         created = []
+        start = self.options.get('process-management')
         try:
             if len(scripts) == 1:
                 # No mongo script
@@ -78,7 +88,8 @@ class Recipe:
 
                 if chkconfig:
                     script += ' \\\n      </dev/null'
-                self.output(chkconfig, script, name, created)
+                self.output(chkconfig, script, name, created,
+                            start=start)
             else:
                 cooked = []
                 for part, env, script in zip(parts, envs, scripts):
@@ -110,6 +121,7 @@ class Recipe:
                 self.output(
                     chkconfig, script, name, created, rscript,
                     independent=options.get('independent-processes') == 'true',
+                    start=start,
                     )
             return created
         except:
@@ -134,7 +146,7 @@ class Recipe:
         return script + ' "$@"'
 
     def output(self, chkconfig, script, ctl, created,
-               rscript=None, independent=False):
+               rscript=None, independent=False, start=False):
         if independent:
             rc = independent_template % dict(
                 rootcheck = self.options.get('user') and rootcheck or '',
@@ -144,15 +156,13 @@ class Recipe:
                 CTL_SCRIPT = script,
                 )
         else:
-            if rscript is None:
-                rscript = script
             rc = rc_template % dict(
                 rootcheck = self.options.get('user') and rootcheck or '',
                 CHKCONFIG = (chkconfig
                              and (chkconfig_template % chkconfig)
                              or non_chkconfig_template),
                 CTL_SCRIPT = script,
-                CTL_SCRIPT_R = rscript,
+                CTL_SCRIPT_R = rscript or script,
                 )
         dest = self.options.get('dest', '/etc/init.d')
         ctlpath = os.path.join(dest, ctl)
@@ -165,11 +175,18 @@ class Recipe:
                                                 '/sbin/chkconfig')
             os.system(chkconfigcommand+' --add '+ctl)
 
+        if start and subprocess.call([ctlpath, 'start']):
+            raise RuntimeError("%s start failed" % ctlpath)
+
     def update(self):
         pass
 
 def uninstall(name, options):
     name = options.get('deployment-name', name)
+    if options.get('process-management') == 'true':
+        ctlpath = os.path.join(options.get('dest', '/etc/init.d'), name)
+        if subprocess.call([ctlpath, 'stop']):
+            raise RuntimeError("%s start failed" % ctlpath)
     if options.get('chkconfig'):
         chkconfigcommand = options.get('chkconfigcommand', '/sbin/chkconfig')
         os.system(chkconfigcommand+' --del '+name)

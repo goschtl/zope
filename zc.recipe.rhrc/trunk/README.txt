@@ -10,11 +10,13 @@ compatible run-control scripts.
 Changes
 *******
 
-1.3.1 (unreleased)
+1.4.0 (2012-05-18)
 ==================
 
-- Added not declared, but needed test dependency on `zope.testing`.
+- Added optional process-management support.  If requested, then run
+  scripts are run as part of install and uninstall.
 
+- Fixed: missing dependency on ``zope.testing``
 
 1.3.0 (2010/05/26)
 ==================
