@@ -1,0 +1,136 @@
+<configure xmlns="http://namespaces.zope.org/browser" i18n_domain="zope">
+
+<!-- Allow a catalog to be added to content space -->
+<addMenuItem
+    title="Catalog"
+    description="A Catalog allows indexing and searching of objects"
+    class="zope.catalog.catalog.Catalog"
+    permission="zope.ManageServices"
+    />
+
+<icon
+    name="zmi_icon"
+    for="zope.catalog.interfaces.ICatalog"
+    file="catalog_icon.gif"
+    />
+
+<containerViews
+     for="zope.catalog.interfaces.ICatalog"
+     contents="zope.ManageServices"
+     index="zope.ManageServices"
+     add="zope.ManageServices"
+     />
+
+<pages
+    for="zope.catalog.interfaces.ICatalog"
+    class=".catalog.Advanced"
+    permission="zope.ManageContent">
+
+  <page name="advanced.html" template="advanced.pt"
+        menu="zmi_views" title="Advanced"/>
+  <page name="reindex.html" attribute="reindex"/>
+</pages>
+
+<!-- Indexes -->
+
+<addform
+    name="AddFieldIndex"
+    label="Add a field index"
+    schema="zope.catalog.interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.catalog.field.FieldIndex"
+    arguments="field_name"
+    keyword_arguments="interface field_callable"
+    />
+
+<addMenuItem
+    title="Field Index"
+    description="Index items based on an orderable field value"
+    class="zope.catalog.field.FieldIndex"
+    permission="zope.ManageServices"
+    view="AddFieldIndex"
+   />
+
+<schemadisplay
+    name="index.html"
+    schema="zope.catalog.field.IFieldIndex"
+    label="Field Index"
+    fields="interface field_name field_callable"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
+
+<addform
+    name="AddKeywordIndex"
+    label="Add a keyword index"
+    schema="zope.catalog.interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.catalog.keyword.KeywordIndex"
+    arguments="field_name"
+    keyword_arguments="interface field_callable"
+    />
+
+<addMenuItem
+    title="Keyword Index"
+    description="Index items based on sequence of keywords"
+    class="zope.catalog.keyword.KeywordIndex"
+    permission="zope.ManageServices"
+    view="AddKeywordIndex"
+   />
+
+<addform
+    name="AddCaseInsensitiveKeywordIndex"
+    label="Add a keyword index (case-insensitive)"
+    schema="zope.catalog.interfaces.IAttributeIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.catalog.keyword.CaseInsensitiveKeywordIndex"
+    arguments="field_name"
+    keyword_arguments="interface field_callable"
+    />
+
+<addMenuItem
+    title="Keyword Index (case-insensitive)"
+    description="Index items based on sequence of keywords"
+    class="zope.catalog.keyword.CaseInsensitiveKeywordIndex"
+    permission="zope.ManageServices"
+    view="AddCaseInsensitiveKeywordIndex"
+   />
+
+<schemadisplay
+    name="index.html"
+    schema="zope.catalog.keyword.IKeywordIndex"
+    label="Keyword Index"
+    fields="interface field_name field_callable"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
+
+<addform
+    name="AddTextIndex"
+    label="Add a text index"
+    schema="zope.catalog.text.ITextIndex"
+    fields="interface field_name field_callable"
+    permission="zope.ManageServices"
+    content_factory="zope.catalog.text.TextIndex"
+    arguments="field_name"
+    keyword_arguments="interface field_callable"
+    />
+
+<addMenuItem
+    title="Text Index"
+    description="Index items by their text values"
+    class="zope.catalog.text.TextIndex"
+    permission="zope.ManageServices"
+    view="AddTextIndex"
+   />
+
+<schemadisplay
+    name="index.html"
+    fields="interface field_name field_callable"
+    schema="zope.catalog.text.ITextIndex"
+    label="Text Index"
+    permission="zope.ManageServices"
+    menu="zmi_views" title="Configuration"
+    />
+
+</configure>
