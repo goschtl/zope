@@ -16,7 +16,7 @@
 import unittest
 
 from zope.configuration.xmlconfig import XMLConfig
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -44,16 +44,18 @@ class I12(I1): pass
 class I111(I11): pass
 
 
+@implementer(I1)
 class C1(object):
-    implements(I1)
+    pass
 
 class I2(Interface): pass
 
+@implementer(I2)
 class C2(object):
-    implements(I2)
+    pass
 
+@implementer(IBrowserPublisher, I111)
 class TestObject(object):
-    implements(IBrowserPublisher, I111)
 
     def f(self):
         pass

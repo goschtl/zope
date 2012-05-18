@@ -49,8 +49,8 @@ content component first:
   >>> from zope.publisher.interfaces.browser import IBrowserPublisher
   >>> from zope.security.interfaces import Unauthorized, Forbidden
 
-  >>> class Content(object):
-  ...     zope.interface.implements(IContent, IBrowserPublisher)
+  >>> @zope.interface.implementer(IContent, IBrowserPublisher)
+  ... class Content(object):
   ...
   ...     def foo(self):
   ...         pass
@@ -356,8 +356,8 @@ Now we create a menu using the names to create a menu:
 
   >>> from zope.browsermenu.interfaces import IBrowserMenu
 
-  >>> class Items(object):
-  ...     zope.interface.implements(IBrowserMenu)
+  >>> @zope.interface.implementer(IBrowserMenu)
+  ... class Items(object):
   ...  
   ...     def __init__(self, id, title=u'', description=u''):
   ...         self.id = id

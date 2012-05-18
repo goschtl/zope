@@ -17,7 +17,7 @@ __docformat__ = "reStructuredText"
 import sys
 
 from zope.component import getAdapters, getUtility
-from zope.interface import Interface, implements, providedBy
+from zope.interface import Interface, implementer, providedBy
 from zope.interface.interfaces import IInterface
 from zope.pagetemplate.engine import Engine
 from zope.publisher.browser import BrowserView
@@ -30,9 +30,9 @@ from zope.browsermenu.interfaces import IBrowserMenu, IMenuItemType
 from zope.browsermenu.interfaces import IBrowserMenuItem, IBrowserSubMenuItem
 from zope.browsermenu.interfaces import IMenuAccessView
 
+@implementer(IBrowserMenu)
 class BrowserMenu(object):
     """Browser Menu"""
-    implements(IBrowserMenu)
 
     def __init__(self, id, title=u'', description=u''):
         self.id = id
@@ -87,9 +87,9 @@ class BrowserMenu(object):
         return result
 
 
+@implementer(IBrowserMenuItem)
 class BrowserMenuItem(BrowserView):
     """Browser Menu Item Class"""
-    implements(IBrowserMenuItem)
 
     title = u''
     description = u''
@@ -163,9 +163,9 @@ class BrowserMenuItem(BrowserView):
         return False
 
 
+@implementer(IBrowserSubMenuItem)
 class BrowserSubMenuItem(BrowserMenuItem):
     """Browser Menu Item Base Class"""
-    implements(IBrowserSubMenuItem)
 
     submenuId = None
 
@@ -189,9 +189,9 @@ def getFirstMenuItem(id, object, request):
     return None
 
 
+@implementer(IMenuAccessView)
 class MenuAccessView(BrowserView):
     """A view allowing easy access to menus."""
-    implements(IMenuAccessView)
 
     def __getitem__(self, menuId):
         return getMenu(menuId, self.context, self.request)
