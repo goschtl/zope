@@ -14,7 +14,7 @@
 """Page Template Resource
 """
 
-from zope.interface import implements, classProvides
+from zope.interface import implementer, classProvides
 from zope.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.publisher.browser import BrowserView
@@ -49,9 +49,8 @@ class PageTemplate(TrustedAppPT, PageTemplateFile):
             )
         return self.pt_render(namespace)
 
+@implementer(IBrowserPublisher)
 class PageTemplateResource(BrowserView, Resource):
-
-    implements(IBrowserPublisher)
 
     def publishTraverse(self, request, name):
         '''See interface IBrowserPublisher'''
@@ -75,9 +74,8 @@ class PageTemplateResource(BrowserView, Resource):
             response.setHeader("Content-Type", pt.content_type)
         return pt(self.request)
 
+@implementer(IResourceFactory)
 class PageTemplateResourceFactory(object):
-
-    implements(IResourceFactory)
     classProvides(IResourceFactoryFactory)
 
     def __init__(self, path, checker, name):
