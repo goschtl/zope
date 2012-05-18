@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+3.6.1 (2010-12-22)
+------------------
+
+- Fixed evolve3 that used no longer existing API.
+
+
+3.6.0 (2010-09-18)
+------------------
+
+- Now depends on ``zope.generations`` instead of ``zope.app.generations``.
+
+
+3.5.0 (2009-04-05)
+------------------
+
+- Moved ``getRootFolder`` utility method from
+  ``zope.app.zopeappgenerations`` to ``zope.app.generations.utility``.
+
+- Fixed author email and home page address.
+
+
+3.4.0 (2007-10-29)
+------------------
+
+- Initial release independent of the main Zope tree.
