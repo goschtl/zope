@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2010-09-25)
+------------------
+
+- Added not declared but needed dependency on ``zope.component``.
+
+- Added test extra to declare test dependency on ``zope.component [test]``.
+
+
+1.0 (2009-05-19)
+----------------
+
+* Initial public release, derived from zope.app.component and
+  zope.app.interface to replace them.
