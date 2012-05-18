@@ -1,0 +1,61 @@
+=======
+CHANGES
+=======
+
+3.7.1 (2010-01-10)
+------------------
+
+- Fix ftesting.zcml due to the zope.securitypolicy update.
+
+- Removed unneeded dependency on zope.app.publisher, added the missing one on
+  zope.security.
+
+- Added test dependency on zope.login.
+
+3.7.0 (2009-02-01)
+------------------
+
+- Move core functionality to new ``zope.intid`` package, leaving only
+  ZMI-related browser views here.
+  
+  Note, that if you used the ``exclude`` directive from ``zc.configuration``
+  package to exclude the ``subscribers.zcml`` file from ``zope.app.intid``,
+  you need to change the directive to exclude it from ``zope.intid`` now.
+
+3.6.0 (2009-01-31)
+------------------
+
+- Changed dependency from ``zope.app.container`` to
+  ``zope.container``.
+
+- Move test dependencies ``zope.app.folder`` and
+  ``zope.app.component`` as ``zope.site``.
+
+3.5.1 (2008-12-11)
+------------------
+
+- Make it possible to subscribe object-specific handlers
+  for IntIdAddedEvent/IntIdRemovedEvent. Use them like
+  the zope.app.container.interfaces.IObjectAddedEvent.
+
+- Include utility->id mapping of added ids to the
+  IntIdAddedEvent.
+
+- Removed testing dependencies from install_requires.
+
+3.5.0 (2008-06-19)
+------------------
+
+- Separate subscriber configuration into a separate ZCML file.
+
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
