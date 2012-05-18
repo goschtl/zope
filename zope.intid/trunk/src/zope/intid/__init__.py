@@ -24,7 +24,7 @@ import BTrees
 from persistent import Persistent
 from zope.component import adapter, getAllUtilitiesRegisteredFor, subscribers
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 from zope.keyreference.interfaces import IKeyReference, NotYet
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
@@ -35,13 +35,13 @@ from zope.security.proxy import removeSecurityProxy
 from zope.intid.interfaces import IIntIds, IIntIdEvent
 from zope.intid.interfaces import IntIdAddedEvent, IntIdRemovedEvent
 
+@implementer(IIntIds, IContained)
 class IntIds(Persistent):
     """This utility provides a two way mapping between objects and
     integer ids.
 
     IKeyReferences to objects are stored in the indexes.
     """
-    implements(IIntIds, IContained)
 
     __parent__ = __name__ = None
 

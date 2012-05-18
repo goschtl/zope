@@ -25,7 +25,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'zope.intid',
-      version = '3.7.3dev',
+      version = '4.0.0dev',
       author='Albertas Agejevas and Gintautas Miliauskas',
       maintainer='Zope developers',
       maintainer_email='zope-dev@zope.org',
@@ -42,6 +42,9 @@ setup(name = 'zope.intid',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.6',
+          'Programming Language :: Python :: 2.7',
           'Natural Language :: English',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',

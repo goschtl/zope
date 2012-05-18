@@ -25,7 +25,7 @@ from zope.component import provideAdapter
 from zope.component import provideHandler
 from zope.component import testing, eventtesting
 from zope.component.interfaces import ISite, IComponentLookup
-from zope.interface import implements, Interface
+from zope.interface import implementer, Interface
 from zope.interface.verify import verifyObject
 from zope.keyreference.persistent import KeyReferenceToPersistent
 from zope.keyreference.persistent import connectionOfPersistent
@@ -67,8 +67,9 @@ def createSiteManager(folder, setsite=False):
     return api.traverse(folder, "++etc++site")
 
 
+@implementer(ILocation)
 class P(Persistent):
-    implements(ILocation)
+    pass
 
 
 class ConnectionStub(object):

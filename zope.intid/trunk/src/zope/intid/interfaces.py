@@ -1,6 +1,6 @@
 """Interfaces for the unique id utility.
 """
-from zope.interface import Interface, Attribute, implements
+from zope.interface import Interface, Attribute, implementer
 
 
 class IIntIdsQuery(Interface):
@@ -77,12 +77,11 @@ class IIntIdRemovedEvent(IIntIdEvent):
     """
 
 
+@implementer(IIntIdRemovedEvent)
 class IntIdRemovedEvent(object):
     """The event which is published before the unique id is removed
     from the utility so that the catalogs can unindex the object.
     """
-
-    implements(IIntIdRemovedEvent)
 
     def __init__(self, object, event):
         self.object = object
@@ -99,12 +98,11 @@ class IIntIdAddedEvent(IIntIdEvent):
     idmap = Attribute("The dictionary that holds an (utility -> id) mapping of created ids")
 
 
+@implementer(IIntIdAddedEvent)
 class IntIdAddedEvent(object):
     """The event which gets sent when an object is registered in a
     unique id utility.
     """
-
-    implements(IIntIdAddedEvent)
 
     def __init__(self, object, event, idmap=None):
         self.object = object
