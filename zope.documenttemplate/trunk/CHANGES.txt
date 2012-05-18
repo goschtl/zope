@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.4.4 (unreleased)
+4.0.0 (unreleased)
 ------------------
 
-- TBD
+- Drop support for Python 2.4 / 2.5.
 
 3.4.3 (2011-10-31)
 ------------------
