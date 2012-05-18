@@ -20,7 +20,7 @@ from threading import Lock
 from cPickle import dumps
 
 from persistent import Persistent
-from zope.interface import implements
+from zope.interface import implementer
 from zope.location.interfaces import IContained
 
 from zope.ramcache.interfaces.ram import IRAMCache
@@ -37,6 +37,7 @@ cache_id_counter = 0
 cache_id_writelock = Lock()
 
 
+@implementer(IRAMCache, IContained)
 class RAMCache(Persistent):
     """The design of this class is heavily based on RAMCacheManager in Zope2.
 
@@ -50,8 +51,6 @@ class RAMCache(Persistent):
     object, which can be acquired/created by calling ``_getStorage()``. Storage
     objects are shared between threads and handle their blocking internally.
     """
-
-    implements(IRAMCache, IContained)
 
     __parent__ = __name__ = None
 
