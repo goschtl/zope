@@ -1,0 +1,45 @@
+=======
+CHANGES
+=======
+
+3.5.3 (2010-03-11)
+------------------
+
+- Avoid creating a DAV namespace adapter per property in PROPPATCH
+  (create only one per namespace in a given request).  See LP #98454.
+
+
+3.5.2 (2010-01-08)
+------------------
+
+- Fix tests using a newer zope.publisher that requires zope.login.
+
+3.5.1 (2009-09-15)
+------------------
+
+- Corrected invalid use of datetime.strftime. The timezone is denoted by %Z.
+
+3.5.0 (2009-02-01)
+------------------
+
+- Use ``zope.container`` instead of ``zope.app.container``.
+
+- Use ``zope.site`` instead of ``zope.app.folder``.
+
+3.4.2 (2009-01-27)
+------------------
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See
+  bug 219302.
+
+3.4.1 (2007-10-30)
+------------------
+
+- Removed deprecation warnings for ``ZopeMessageFactory`` and
+  ``ZopeSecurityPolicy``.
+
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
