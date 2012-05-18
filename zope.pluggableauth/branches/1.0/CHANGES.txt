@@ -1,0 +1,32 @@
+=======
+Changes
+=======
+
+1.0.3 (2010-07-09)
+------------------
+
+* Fixed dependency declaration.
+
+
+1.0.2 (2010-07-90)
+------------------
+
+* Added persistent.Persistent and zope.container.contained.Contained as
+  bases zope.pluggableauth.plugins.session.SessionCredentialsPlugin, so
+  instances of zope.app.authentication.session.SessionCredentialsPlugin
+  won't be changed.
+  (https://mail.zope.org/pipermail/zope-dev/2010-July/040898.html)
+
+
+1.0.1 (2010-02-11)
+------------------
+
+* Adapters are now declared in a new ZCML file :
+  `principalfactories.zcml`. This avoids duplication errors in
+  ``zope.app.authentication``.
+
+
+1.0 (2010-02-05)
+----------------
+
+* Splitting off from zope.app.authentication
