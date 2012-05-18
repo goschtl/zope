@@ -1,0 +1,38 @@
+=======
+CHANGES
+=======
+
+3.6.0 (2009-02-01)
+------------------
+
+- Converted from using zope.app.container to zope.container.
+
+3.5.1 (2009-01-29)
+------------------
+
+- Add compatibility for newer zope.traversing releases that require us
+  to explicitly set up testing. This also works with older releases.
+
+3.5.0 (2009-01-17)
+------------------
+
+- Get rid of zope.app.zapi dependency, replacing its uses with
+  direct imports.
+
+- Clean up dependencies, move testing and rotterdam dependencies
+  to extra requires.
+
+- Fix mailing list address to zope-dev@zope.org instead of retired
+  zope3-dev@zope.org. Change `cheeseshop` to `pypi` in the package
+  url.
+
+- Replace __used_for__ in adapters.py with zope.component.adapts
+  calls to make more sense. 
+
+- Remove obsolete zpkg files, zcml include file for mkzopeinstance-based
+  installations, versions.txt that makes no sense now. 
+
+3.4.0 (2007-10-28)
+------------------
+
+- Initial release independent of the main Zope tree.
