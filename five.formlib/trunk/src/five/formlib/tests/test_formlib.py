@@ -27,12 +27,7 @@ def test_get_widgets_for_schema_fields():
 
     First, load the configuration files:
 
-      # BBB for Zope 2.12
-      >>> try:
-      ...     from Zope2.App import zcml
-      ... except ImportError:
-      ...     from Products.Five import zcml
-
+      >>> from Zope2.App import zcml
       >>> import Products.Five
       >>> zcml.load_config('configure.zcml', Products.Five)
       >>> import zope.app.form.browser
@@ -51,9 +46,9 @@ def test_get_widgets_for_schema_fields():
       >>> contactname = contactname.bind(request)
 
       >>> from zope.component import getMultiAdapter
-      >>> from zope.app.form.interfaces import IInputWidget
-      >>> from zope.app.form.browser.textwidgets import TextWidget
-      >>> from zope.app.form.browser.itemswidgets import DropdownWidget
+      >>> from zope.formlib.interfaces import IInputWidget
+      >>> from zope.formlib.textwidgets import TextWidget
+      >>> from zope.formlib.itemswidgets import DropdownWidget
 
       >>> view1 = getMultiAdapter((contactname, request), IInputWidget)
       >>> view1.__class__ == TextWidget

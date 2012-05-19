@@ -32,7 +32,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IObject"
-      provides="zope.app.form.interfaces.IInputWidget"
+      provides="zope.formlib.interfaces.IInputWidget"
       factory="five.formlib.objectwidget.ObjectWidget"
       permission="zope.Public"
       />
@@ -47,7 +47,7 @@
 
       <widget
          field="description"
-         class="zope.app.form.browser.TextAreaWidget"
+         class="zope.formlib.textwidgets.TextAreaWidget"
          />
 
   </browser:editform>
@@ -69,7 +69,7 @@
 
      <widget
          field="description"
-         class="zope.app.form.browser.TextAreaWidget"
+         class="zope.formlib.textwidgets.TextAreaWidget"
          />
 
   </browser:addform>

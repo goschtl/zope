@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.0.5dev'
+version = '1.1.0dev'
 
 setup(name='five.formlib',
       version=version,
@@ -29,9 +29,10 @@ setup(name='five.formlib',
         'transaction',
         'zope.app.form',
         'zope.browser',
+        'zope.browsermenu',
         'zope.component',
         'zope.event',
-        'zope.formlib',
+        'zope.formlib>=4.0',
         'zope.i18nmessageid',
         'zope.interface',
         'zope.lifecycleevent',
@@ -39,10 +40,7 @@ setup(name='five.formlib',
         'zope.publisher',
         'zope.schema',
         'ExtensionClass',
-        'Zope2',
-        # Either one of these, we rely on Zope2 to provide the correct one
-        # 'zope.browsermenu',
-        # 'zope.app.publisher',
+        'Zope2>=2.13',
       ],
       zip_safe = False,
       )

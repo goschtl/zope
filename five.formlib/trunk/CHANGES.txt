@@ -1,10 +1,12 @@
 Changelog
 =========
 
-1.0.5 - unreleased
+1.1.0 - unreleased
 ------------------
 
-* Deal with forward compatibility with Zope 2.14.
+* Update various imports to zope.formlib and require at least Zope 2.13.
+
+* Deal with forward compatibility with Zope 4.
 
 * Avoid charset negotiation.
 

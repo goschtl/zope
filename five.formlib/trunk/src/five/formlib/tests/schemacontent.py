@@ -18,14 +18,15 @@ $Id$
 from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from zope.formlib.widget import CustomWidgetFactory
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implements, Interface
 from zope.schema import TextLine, Text, Object, Int, List
-from zope.app.form import CustomWidgetFactory
 
 from five.formlib.objectwidget import ObjectWidget
 
 _ = MessageFactory('formtest')
+
 
 class IFieldContent(Interface):
 

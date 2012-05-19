@@ -47,7 +47,7 @@ class FiveFormlibMixin(object):
         # BBB: for CMFDefault < 2.3 (explicit charset required)
         self.request.RESPONSE.setHeader('Content-Type',
             'text/html; charset=%s' % HTTPRequest.default_encoding)
-        # BBB: for Zope < 2.14
+        # BBB: for Zope < 4
         if not getattr(self.request, 'postProcessInputs', False):
             processInputs(self.request, [HTTPRequest.default_encoding])
         super(FiveFormlibMixin, self).update()

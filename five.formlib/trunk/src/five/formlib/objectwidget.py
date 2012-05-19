@@ -23,8 +23,9 @@ $Id$
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from zope.app.form.browser.objectwidget import ObjectWidget as OWBase
-from zope.app.form.browser.objectwidget import ObjectWidgetView as OWVBase
+from zope.formlib.objectwidget import ObjectWidget as OWBase
+from zope.formlib.objectwidget import ObjectWidgetView as OWVBase
+
 
 class ObjectWidgetView(OWVBase):
     security = ClassSecurityInfo()
@@ -33,6 +34,7 @@ class ObjectWidgetView(OWVBase):
     template = ViewPageTemplateFile('objectwidget.pt')
 
 InitializeClass(ObjectWidgetView)
+
 
 class ObjectWidgetClass(OWBase):
 

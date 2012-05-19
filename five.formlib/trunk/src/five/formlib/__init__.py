@@ -20,23 +20,27 @@ from datetime import datetime
 
 import transaction
 from zope.event import notify
+from zope.formlib.interfaces import IInputWidget
+from zope.formlib.interfaces import WidgetsError
+from zope.formlib.utility import applyWidgetsChanges
+from zope.formlib.utility import setUpWidgets
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 from zope.location.interfaces import ILocation
 from zope.location import LocationProxy
 from zope.schema.interfaces import ValidationError
 from zope.i18nmessageid import MessageFactory
-_ = MessageFactory('zope')
 
 from zope.app.form.browser.submit import Update
-from zope.app.form.interfaces import IInputWidget
-from zope.app.form.interfaces import WidgetsError
-from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
-from zope.app.form.utility import setUpWidgets, getWidgetsData
+from zope.app.form.utility import setUpEditWidgets
+from zope.app.form.utility import getWidgetsData
 
 from Products.Five.browser import BrowserView
 from Products.Five.browser.decode import processInputs, setPageEncoding
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
+
+_ = MessageFactory('zope')
+
 
 class EditView(BrowserView):
     """Simple edit-view base class
