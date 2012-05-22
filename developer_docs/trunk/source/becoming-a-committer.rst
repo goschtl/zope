@@ -35,8 +35,12 @@ Depositing your SSH public key(s)
 Your SSH public key(s) must be uploaded using the application at: 
 https://cvs.zope.org/upload-key.html
 
-When you go to that url, you'll get a basic auth login prompt.  Use your
-old.zope.org login and password.
+When you go to that url, you'll get a basic auth login prompt.  
+Use your old.zope.org login and password. 
+If you never had an old.zope.org account, 
+you got your account information when you registered as a committer.
+If you forgot your password, you can reset it here:
+https://svn.zope.org/manage-profile/password.html
 
 Your keys can use RSA or DSA, ssh v1 or v2. If the file being uploaded
 contains more than one public key, it should be formatted as if it
