@@ -1,0 +1,11 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   package="mypkg2"
+   >
+
+  <include package="zope.component" file="meta.zcml" />
+  <utility component=".app.FooUtility"
+	   provides=".interfaces.IFoo"
+	   name="baz" />
+
+</configure>

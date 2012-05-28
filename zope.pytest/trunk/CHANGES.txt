@@ -4,7 +4,11 @@ CHANGES
 0.2 (unreleased)
 ================
 
-- No changes yet.
+- Changed scope of `configure` from 'session' to 'function'. This
+  guarantees proper test separation (ZCML registrations done in one
+  test will not show up in another test). Drawback is that single
+  tests are more expensive in setup/teardown resulting in longer test
+  runs.
 
 0.1 (2011-03-05)
 ================

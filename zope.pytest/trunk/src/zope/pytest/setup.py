@@ -112,7 +112,7 @@ def configure(request, module, zcml):
 
     return request.cached_setup(setup=setup_function,
                                 teardown=teardown_config,
-                                scope='session')
+                                scope='function')
 
 def setup_config(package, zcml_file):
     """Setup a configuration.
