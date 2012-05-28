@@ -13,4 +13,3 @@ class IFoo(zope.interface.Interface):
     def do_foo():
         """Do the foo.
         """
-        pass
