@@ -4,8 +4,8 @@
    >
 
   <include package="zope.component" file="meta.zcml" />
-  <utility component=".app.FooUtility" 
-	   provides=".interfaces.IFoo" 
+  <utility component=".app.FooUtility"
+	   provides=".interfaces.IFoo"
 	   name="foo utility" />
 
 </configure>
