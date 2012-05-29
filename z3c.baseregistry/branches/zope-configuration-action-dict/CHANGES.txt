@@ -2,10 +2,13 @@
 CHANGES
 =======
 
-1.3.1 (unreleased)
+2.0.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- zope.configuration changed action tuples to action dicts. This version works
+  with the new action dict given from zope.configuration since version 3.8.0.
+  This version is not compatible with zope.configuration version less then
+  3.8.0
 
 
 1.3.0 (2010-10-28)

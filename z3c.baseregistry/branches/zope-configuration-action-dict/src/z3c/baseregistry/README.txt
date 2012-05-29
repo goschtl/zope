@@ -112,9 +112,9 @@ However, when reading the jar, we get an error:
   >>> cPickle.loads(jar)
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (ComponentLookupError(<InterfaceClass zope.component.interfaces.IComponents>, 'myRegistry'),
-                        <function BC at 0x...>,
-                        (<BaseGlobalComponents base>, 'myRegistry'))
+  ComponentLookupError: (ComponentLookupError(<InterfaceClass zope.interface.interfaces.IComponents>, 'myRegistry'),
+                         <function BC at ...>,
+                         (<BaseGlobalComponents base>, 'myRegistry'))
 
 This is because we have not registered the registry in its parent as an
 ``IComponents`` utility, yet:

@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name = "z3c.baseregistry",
-    version='1.3.1dev',
+    version='2.0.0',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Manage IComponents instances using Python code and ZCML.",

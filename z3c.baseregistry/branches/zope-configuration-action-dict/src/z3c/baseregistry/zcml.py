@@ -43,11 +43,21 @@ class ActionsProxy(object):
         self.original = original
         self.registry = registry
 
-    def __decorate(self, item):
-        discriminator = None
-        if item[0] is not None:
-            discriminator = (self.registry, item[0])
-        return (discriminator,) + item[1:]
+    def __decorate(self, action):
+        # handle action dict
+        # (was a tuple before 2.0, see zope.configuration 3.8 for changes)
+        # discriminator is a tuple like:
+        # ('utility',
+        #  <InterfaceClass zope.component.interfaces.IFactory>,
+        #  'my.package.interfaces.IMyInterface')
+        # in the sample above this means we need to prepend our registry
+        # to the existing discriminator.
+        discriminator = action.get('discriminator', None)
+        if discriminator is not None:
+            # replace the first part from the existing descriminator tuple
+            # with our registry
+            action['discriminator'] = (self.registry, discriminator)
+        return action
 
     def __setitem__(self, i, item):
         self.original.__setitem__(i, self.__decorate(item))
