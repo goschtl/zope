@@ -102,7 +102,7 @@ follows::
 The idea here is that the meta recipe allows us to specify the minimal
 information necessary.  A meta-recipe often automates policies and
 assumptions that are application and organization dependent.  The
-example above assumes, for example, assumes that we want to pack to 3
+example above assumes, for example, that we want to pack to 3
 days in the past on Saturdays.
 
 So now, let's see the meta recipe that automates this::
