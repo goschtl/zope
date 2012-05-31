@@ -2,9 +2,9 @@
 Meta-recipes
 ============
 
-Buildout recipes provide resuable Python modukes for common
+Buildout recipes provide reusable Python modules for common
 configuration tasks. The most widely used recipes tend to provide
-low-level functions, like installing eggs or softwarte distributions,
+low-level functions, like installing eggs or software distributions,
 creating configuration files, and so on.  The normal recipe framework
 is fairly well suited to building these general components.
 
@@ -13,7 +13,7 @@ Defining the many parts that make up an application can be tedious and
 often entails a lot of repetition.  Buildout provides a number of
 mechanisms to avoid repetition, including merging of configuration
 files and macros, but these, while useful to an extent, don't scale
-very will.  Buildout isn't and shouldn't be a programming language.
+very well.  Buildout isn't and shouldn't be a programming language.
 
 Meta-recipes allow us to bring Python to bear to provide higher-level
 abstractions for buildouts.
@@ -23,13 +23,13 @@ creating parts.  A meta recipe isn't merely a high level recipe.  It's
 a recipe that defers most of it's work to lower-level recipe by
 manipulating the buildout database.
 
-Unfortunatly, buildout doesn't yet provide a high-level API for
+Unfortunately, buildout doesn't yet provide a high-level API for
 creating parts.  It has a private low-level API which has been
 promoted to public (meaning it won't be broken by future release), and
 it's straightforward to write the needed high-level API, but it's
 annoying to repeat the high-level API in each meta recipe.
 
-This small package provides the high-lebel API needed for meta recipes
+This small package provides the high-level API needed for meta recipes
 and a simple testing framework.  It will be merged into a future
 buildout release.
 
