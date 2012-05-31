@@ -57,7 +57,7 @@ buildout configuration that builds a database deployment::
   recipe = zc.recipe.rhrc
   deployment = deployment
   chkconfig = 345 99 10
-  parts = main index
+  parts = main
 
   [main]
   recipe = zc.zodbrecipes:server
@@ -154,7 +154,7 @@ So now, let's see the meta recipe that automates this::
               recipe = zc.recipe.rhrc
               deployment = deployment
               chkconfig = 345 99 10
-              parts = main index
+              parts = main
               ''')
 
 .. -> source
@@ -206,7 +206,7 @@ zc.metarecipe.testing module.
     [ctl]
     chkconfig = 345 99 10
     deployment = deployment
-    parts = main index
+    parts = main
     recipe = zc.recipe.rhrc
     [pack]
     command = ${buildout:bin-directory}/zeopack -d3 -t00 ${main:address}
