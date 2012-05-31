@@ -37,6 +37,8 @@ A `presentation at PyCon 2011
 <http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-deploying-applications-with-zc-buildout-4897770>`_
 described early work with meta recipes.
 
+.. contents::
+
 A simple meta-recipe example
 ============================
 
@@ -170,6 +172,9 @@ string substitutions and other dependencies are evaluated, so the
 referenced parts must be defined first.  This is why, for example, the
 ``pack`` part is added after the ``main`` part.
 
+Testing
+=======
+
 Now, let's test it.  We'll test it without actually running
 buildout. Rather, we'll use a faux buildout provided by the
 zc.metarecipe.testing module.
@@ -214,3 +219,11 @@ these are simply printed as added, so we can verify that the correct
 data was generated.
 
 That's pretty much it.
+
+Changes
+=======
+
+0.1.0 (2012-05-31)
+------------------
+
+Initial release
