@@ -100,8 +100,8 @@ follows::
 The idea here is that the meta recipe allows us to specify the minimal
 information necessary.  A meta-recipe often automates policies and
 assumptions that are application and organization dependent.  The
-example above assumes, for exampe, that we want to pack on Saturdays
-to to 3 days in the past.
+example above assumes, for example, assumes that we want to pack to 3
+days in the past on Saturdays.
 
 So now, let's see the meta recipe that automates this::
 
@@ -159,6 +159,17 @@ So now, let's see the meta recipe that automates this::
 
     >>> exec source
 
+The meta recipe just adds parts to the buildout. It does this by
+calling inherited __setitem__ and ``parse`` methods.  The ``parse``
+method just takes a string in ``ConfigParser`` syntax.  It's useful
+when we want to add static, or nearly static part data.  The setitem
+syntax is useful when we have non-trivial computation for part data.
+
+The order that we add parts is important.  When adding a part, any
+string substitutions and other dependencies are evaluated, so the
+referenced parts must be defined first.  This is why, for example, the
+``pack`` part is added after the ``main`` part.
+
 Now, let's test it.  We'll test it without actually running
 buildout. Rather, we'll use a faux buildout provided by the
 zc.metarecipe.testing module.
@@ -198,3 +209,8 @@ zc.metarecipe.testing module.
     recipe = zc.recipe.deployment:crontab
     times = 1 2 * * 6
 
+When we call our recipe, it will add sections to the test buildout and
+these are simply printed as added, so we can verify that the correct
+data was generated.
+
+That's pretty much it.
