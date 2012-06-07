@@ -15,16 +15,17 @@
 """
 __docformat__ = 'restructuredtext'
 
-import zope.component
-import zope.component.interfaces
-import zope.interface
+from zope.component import adapter
+from zope.component.interfaces import ISite
+from zope.interface import implementer
+
+from zope.location.interfaces import ILocation
 from zope.location.interfaces import ILocationInfo
-from zope.location.interfaces import ILocation, IRoot
-from zope.location.location import Location
+from zope.location.interfaces import IRoot
 
 
-@zope.interface.implementer(ILocationInfo)
-@zope.component.adapter(ILocation)
+@implementer(ILocationInfo)
+@adapter(ILocation)
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
     """
@@ -50,7 +51,6 @@ class LocationPhysicallyLocatable(object):
     def getPath(self):
         """See ILocationInfo.
         """
-
         path = []
         context = self.context
         max = 9999
@@ -89,7 +89,7 @@ class LocationPhysicallyLocatable(object):
         parents = []
         w = self.context
         while 1:
-            w = w.__parent__
+            w = getattr(w, '__parent__', None)
             if w is None:
                 break
             parents.append(w)
@@ -107,15 +107,15 @@ class LocationPhysicallyLocatable(object):
     def getNearestSite(self):
         """See ILocationInfo
         """
-        if zope.component.interfaces.ISite.providedBy(self.context):
+        if ISite.providedBy(self.context):
             return self.context
         for parent in self.getParents():
-            if zope.component.interfaces.ISite.providedBy(parent):
+            if ISite.providedBy(parent):
                 return parent
         return self.getRoot()
 
-@zope.interface.implementer(ILocationInfo)
-@zope.component.adapter(IRoot)
+@implementer(ILocationInfo)
+@adapter(IRoot)
 class RootPhysicallyLocatable(object):
     """Provide location information for the root object
     
