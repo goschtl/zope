@@ -67,7 +67,8 @@ setup(name='zope.location',
                         ],
       extras_require={
         'zcml': ['zope.configuration'],
-        },
+        'testing': ['nose', 'coverage'],
+      },
       include_package_data = True,
       zip_safe = False,
-      )
+)
