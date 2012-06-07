@@ -5,6 +5,16 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Removed backward-compatibility imports:
+
+  - ``zope.copy.clone`` (aliased as ``zope.location.pickling.locationCopy``)
+
+  - ``zope.copy.CopyPersistent`` (aliased as
+    ``zope.location.pickling.CopyPersistent``).
+
+  - ``zope.site.interfaces.IPossibleSite`` (aliased as
+    ``zope.location.interfaces.IPossibleSite``).
+
 - Added Python 3.2 support.
 
 - Made ``zope.component`` dependency optional.  Use the ``component`` extra

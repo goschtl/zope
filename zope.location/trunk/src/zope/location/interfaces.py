@@ -128,9 +128,6 @@ class LocationError(KeyError, LookupError):
 # backwardc-comppatibiltiy
 try:
     from zope.component.interfaces import ISite
-    from zope.component.interfaces import IPossibleSite  # BBB
 except ImportError: #pragma NO COVER
     class ISite(Interface):
-        pass
-    class IPossibleSite(Interface):  # BBB
         pass

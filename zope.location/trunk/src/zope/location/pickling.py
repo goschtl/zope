@@ -37,13 +37,3 @@ class LocationCopyHook(object):
         if not inside(self.context, toplevel):
             return self.context
         raise ResumeCopy
-
-# BBB 2009-09-02
-# The locationCopy was replaced by more generic "clone" function
-# in the zope.copy package. This reference may be removed someday.
-from zope.copy import clone as locationCopy
-
-# BBB 2009-09-02
-# The CopyPersistent was made more generic and moved to the
-# zope.copy package. This reference may be removed someday.
-from zope.copy import CopyPersistent
