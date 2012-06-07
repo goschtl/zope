@@ -33,11 +33,6 @@ setup(name='zope.location',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Documentation\n' +
-          '======================'
-          + '\n\n' +
-          read('src', 'zope', 'location', 'location.txt')
-          + '\n\n' +
           read('CHANGES.txt')
           ),
       license='ZPL 2.1',
@@ -67,7 +62,12 @@ setup(name='zope.location',
                         ],
       extras_require={
         'zcml': ['zope.configuration'],
-        'testing': ['nose', 'coverage'],
+        'testing': [
+            'nose',
+            'coverage',
+            'zope.configuration',
+            'zope.copy',
+        ],
         'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
       },
       include_package_data = True,
