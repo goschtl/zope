@@ -68,6 +68,7 @@ setup(name='zope.location',
       extras_require={
         'zcml': ['zope.configuration'],
         'testing': ['nose', 'coverage'],
+        'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
       },
       include_package_data = True,
       zip_safe = False,
