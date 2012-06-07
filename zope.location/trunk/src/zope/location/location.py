@@ -110,15 +110,16 @@ class LocationProxy(ProxyBase):
     def __getattribute__(self, name):
         if name in LocationProxy.__dict__:
             return object.__getattribute__(self, name)
-        return super(ProxyBase, self).__getattribute__(name)
+        return ProxyBase.__getattribute__(self, name)
 
     def __setattr__(self, name, value):
-        if name in ('_wrapped', '__parent__', '__name__'):
+        if name in self.__slots__ + getattr(ProxyBase, '__slots__', ()):
+            #('_wrapped', '__parent__', '__name__'):
             try:
                 return ProxyBase.__setattr__(self, name, value)
-            except AttributeError:
+            except AttributeError: #pragma NO COVER PyPy
                 return object.__setattr__(self, name, value)
-        setattr(self._wrapped, name, value)
+        return ProxyBase.__setattr__(self, name, value)
 
     @non_overridable
     def __reduce__(self, proto=None):

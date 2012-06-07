@@ -264,6 +264,21 @@ class LocationProxyTests(unittest.TestCase, ConformsToILocation):
         self.assertTrue(proxy.__parent__ is parent)
         self.assertEqual(proxy.__name__, 'name')
 
+    def test___getattribute___wrapped(self):
+        class Context(object):
+            attr = 'ATTR'
+        context = Context()
+        proxy = self._makeOne(context)
+        self.assertEqual(proxy.attr, 'ATTR')
+
+    def test___setattr___wrapped(self):
+        class Context(object):
+            attr = 'BEFORE'
+        context = Context()
+        proxy = self._makeOne(context)
+        proxy.attr = 'AFTER'
+        self.assertEqual(context.attr, 'AFTER')
+
     def test___doc___from_derived_class(self):
         klass = self._getTargetClass()
         class Derived(klass):
@@ -297,6 +312,17 @@ class LocationProxyTests(unittest.TestCase, ConformsToILocation):
     def test___reduce_ex__(self):
         proxy = self._makeOne()
         self.assertRaises(TypeError, proxy.__reduce_ex__, 1)
+
+    def test___reduce___via_pickling(self):
+        import pickle
+        class Context(object):
+            def __reduce__(self):
+                return {'a': 1}
+        proxy = self._makeOne(Context())
+        # XXX: this TypeError is not due to LocationProxy.__reduce__:
+        #      it's descriptor (under pure Python) isn't begin triggered
+        #      properly
+        self.assertRaises(TypeError, pickle.dumps, proxy)
 
     def test__providedBy___class(self):
         from zope.interface import Interface
