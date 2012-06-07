@@ -31,7 +31,8 @@ original object as we might want.
 
   >>> from zope.component import provideAdapter
   >>> from zope.location.pickling import LocationCopyHook
-  >>> provideAdapter(LocationCopyHook)
+  >>> from zope.location.interfaces import ILocation
+  >>> provideAdapter(LocationCopyHook, (ILocation,))
 
   >>> from zope.copy import copy
   >>> page_copy = copy(page)
