@@ -15,26 +15,24 @@
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.interface import implementer
 from zope.location.interfaces import ILocation
 from zope.location.location import inside
 
 try:
     from zope.copy.interfaces import ICopyHook, ResumeCopy
-except ImportError:
+except ImportError: #pragma NO COVER
     raise NotImplementedError("zope.location.pickling is not supported "
         "because zope.copy is not available")
 
 
+@adapter(ILocation)
 @implementer(ICopyHook)
 class LocationCopyHook(object):
     """Copy hook to preserve copying referenced objects that are not
     located inside object that's being copied.
     """
-    
-    adapts(ILocation)
-    
     def __init__(self, context):
         self.context = context
     
