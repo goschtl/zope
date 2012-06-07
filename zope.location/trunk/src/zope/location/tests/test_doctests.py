@@ -25,6 +25,6 @@ def test_suite():
     except ImportError:
         pass
     else:
-        suite.addTest(doctest.DocFileSuite('configure.txt'))
+        suite.addTest(doctest.DocFileSuite('../configure.txt'))
 
     return suite

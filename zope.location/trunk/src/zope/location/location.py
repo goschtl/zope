@@ -46,7 +46,6 @@ def located(obj, parent, name=None):
     """Ensure and return the location of an object.
 
     Updates the location's coordinates.
-
     """
     location = zope.location.interfaces.ILocation(obj)
     locate(location, parent, name)
@@ -70,7 +69,7 @@ def inside(l1, l2):
     while l1 is not None:
         if l1 is l2:
             return True
-        l1 = l1.__parent__
+        l1 = getattr(l1, '__parent__', None)
     return False
 
 class ClassAndInstanceDescr(object):
