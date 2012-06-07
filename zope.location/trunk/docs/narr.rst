@@ -1,8 +1,8 @@
 Using :mod:`zope.location`
 ==========================
 
-Location Base Class
--------------------
+:class:`~zope.location.location.Location`
+-----------------------------------------
 
 The `Location` base class is a mix-in that defines `__parent__` and
 `__name__` attributes.
@@ -39,8 +39,8 @@ Usage within an Object field:
   WrongContainedType: ([WrongType('foo', <type 'unicode'>, '__name__')], 'location')
 
 
-The func:`~zope.location.location.inside` Function
---------------------------------------------------
+:func:`~zope.location.location.inside`
+--------------------------------------
 
 The `inside` function tells if l1 is inside l2.  L1 is inside l2 if l2 is an
 ancestor of l1.
@@ -148,8 +148,8 @@ This function allows us to iterate over object and all its parents.
   StopIteration
 
 
-The :func:`~zope.location.location.located` function
-----------------------------------------------------
+:func:`~zope.location.location.located`
+---------------------------------------
 
 `located` locates an object in another and returns it:
 

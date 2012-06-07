@@ -5,7 +5,7 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
-- Added Sphinx documentation.
+- Added Sphinx documentation:  moved doctest examples to API reference.
 
 - Added 'setup.py docs' alias (installs ``Sphinx`` and dependencies).
 

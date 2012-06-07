@@ -19,11 +19,7 @@ import unittest
 
 
 def test_suite():
-    suite = unittest.TestSuite((
-        doctest.DocFileSuite('location.txt'),
-        doctest.DocTestSuite('zope.location.traversing'),
-    ))
-
+    suite = unittest.TestSuite()
     try:
         import zope.configuration
     except ImportError:
