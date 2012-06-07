@@ -91,7 +91,7 @@ class LocationProxy(ProxyBase):
     This is a non-picklable proxy that can be put around objects that
     don't implement `ILocation`.
     """
-    __slots__ = '__parent__', '__name__'
+    __slots__ = ('__parent__', '__name__')
     __safe_for_unpickling__ = True
 
     __doc__ = ClassAndInstanceDescr(
@@ -106,6 +106,19 @@ class LocationProxy(ProxyBase):
         ProxyBase.__init__(self, ob)
         self.__parent__ = container
         self.__name__ = name
+
+    def __getattribute__(self, name):
+        if name in LocationProxy.__dict__:
+            return object.__getattribute__(self, name)
+        return super(ProxyBase, self).__getattribute__(name)
+
+    def __setattr__(self, name, value):
+        if name in ('_wrapped', '__parent__', '__name__'):
+            try:
+                return ProxyBase.__setattr__(self, name, value)
+            except AttributeError:
+                return object.__setattr__(self, name, value)
+        setattr(self._wrapped, name, value)
 
     @non_overridable
     def __reduce__(self, proto=None):
