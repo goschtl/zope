@@ -5,6 +5,8 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Added Python 3.2 support.
+
 - Made ``zope.component`` dependency optional.  Use the ``component`` extra
   to force its installation (or just require it directly).  If
   ``zope.component`` is not present, this package defines the ``ISite``
