@@ -57,7 +57,7 @@ class LocationPhysicallyLocatable(object):
                 if path:
                     path.append('')
                     path.reverse()
-                    return u('/'.join(path))
+                    return u('/').join(path)
                 else:
                     return u('/')
             path.append(context.__name__)
