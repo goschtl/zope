@@ -11,20 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Location support tests
+"""Test ZCML loading
 """
-
-import doctest
 import unittest
 
+class Test_ZCML_loads(unittest.TestCase):
+
+    def test_it(self):
+        try:
+            from zope.configuration.xmlconfig import _clearContext
+            from zope.configuration.xmlconfig import _getContext
+            from zope.configuration.xmlconfig import XMLConfig
+        except ImportError:
+            pass
+        else:
+            import zope.location
+            _clearContext()
+            context = _getContext()
+            XMLConfig('configure.zcml', zope.location)
+            adapters = ([x for x in context.actions
+                            if x['discriminator'] is not None])
+            self.assertEqual(len(adapters), 4)
+        
 
 def test_suite():
-    suite = unittest.TestSuite()
-    try:
-        import zope.configuration
-    except ImportError:
-        pass
-    else:
-        suite.addTest(doctest.DocFileSuite('../configure.txt'))
-
-    return suite
+    return unittest.TestSuite((
+        unittest.makeSuite(Test_ZCML_loads),
+    ))
