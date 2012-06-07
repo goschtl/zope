@@ -70,6 +70,7 @@ setup(name='zope.location',
         ],
         'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
       },
+      test_suite='zope.location.tests',
       include_package_data = True,
       zip_safe = False,
 )
