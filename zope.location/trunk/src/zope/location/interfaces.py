@@ -15,14 +15,17 @@
 """
 __docformat__ = 'restructuredtext'
 
-import zope.interface
-import zope.schema
+from zope.interface import Interface
+from zope.interface import Attribute
+from zope.schema import TextLine
 
 # BBB
-from zope.component.interfaces import IPossibleSite, ISite
+from zope.component.interfaces import IPossibleSite
+from zope.component.interfaces import ISite
 
+from zope.location._compat import u
 
-class ILocation(zope.interface.Interface):
+class ILocation(Interface):
     """Objects that can be located in a hierachy.
 
     Given a parent and a name an object can be located within that parent. The
@@ -40,12 +43,12 @@ class ILocation(zope.interface.Interface):
 
     """
 
-    __parent__ = zope.interface.Attribute("The parent in the location hierarchy.")
+    __parent__ = Attribute("The parent in the location hierarchy.")
 
-    __name__ = zope.schema.TextLine(
-        title=u"The name within the parent",
-        description=u"The object can be looked up from the parent's "
-            "sublocations using this name.",
+    __name__ = TextLine(
+        title=u("The name within the parent"),
+        description=u("The object can be looked up from the parent's "
+            "sublocations using this name."),
         required=False,
         default=None)
 
@@ -57,7 +60,7 @@ class ILocation(zope.interface.Interface):
 class IContained(ILocation):
     """Objects contained in containers."""
 
-class ILocationInfo(zope.interface.Interface):
+class ILocationInfo(Interface):
     """Provides supplemental information for located objects.
 
     Requires that the object has been given a location in a hierarchy.
@@ -103,7 +106,7 @@ class ILocationInfo(zope.interface.Interface):
         """
 
 
-class ISublocations(zope.interface.Interface):
+class ISublocations(Interface):
     """Provide access to sublocations of an object.
 
     All objects with the same parent object are called the ``sublocations`` of
@@ -115,7 +118,7 @@ class ISublocations(zope.interface.Interface):
         """Return an iterable of the object's sublocations."""
 
 
-class IRoot(zope.interface.Interface):
+class IRoot(Interface):
     """Marker interface to designate root objects within a location hierarchy.
     """
 
