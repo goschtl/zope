@@ -1,14 +1,15 @@
-========
-Location
-========
+Using :mod:`zope.location`
+==========================
 
 Location Base Class
 -------------------
 
-The `Location` base class is a stupid mix-in that defines `__parent__` and
+The `Location` base class is a mix-in that defines `__parent__` and
 `__name__` attributes.
 
 Usage within an Object field:
+
+.. doctest::
 
   >>> from zope.interface import implementer, Interface
   >>> from zope.schema import Object
@@ -38,11 +39,13 @@ Usage within an Object field:
   WrongContainedType: ([WrongType('foo', <type 'unicode'>, '__name__')], 'location')
 
 
-The `inside` Function
----------------------
+The func:`~zope.location.location.inside` Function
+--------------------------------------------------
 
 The `inside` function tells if l1 is inside l2.  L1 is inside l2 if l2 is an
 ancestor of l1.
+
+.. doctest::
 
   >>> o1 = Location()
   >>> o2 = Location(); o2.__parent__ = o1
@@ -70,11 +73,13 @@ ancestor of l1.
   False
 
 
-LocationProxy
--------------
+:class:`~zope.location.location.LocationProxy`
+----------------------------------------------
 
-The LocationProxy is a non-picklable proxy that can be put around
+`LocationProxy` is a non-picklable proxy that can be put around
 objects that don't implement `ILocation`.
+
+.. doctest::
 
   >>> from zope.location.location import LocationProxy
   >>> l = [1, 2, 3]
@@ -98,11 +103,15 @@ objects that don't implement `ILocation`.
 
 Proxies should get their doc strings from the object they proxy:
 
+.. doctest::
+
   >>> p.__doc__ == l.__doc__
   True
 
 If we get a "located class" somehow, its doc string well be available
 through proxy as well:
+
+.. doctest::
 
   >>> class LocalClass(object):
   ...     """This is class that can be located"""
@@ -111,10 +120,12 @@ through proxy as well:
   >>> p.__doc__ == LocalClass.__doc__
   True
 
-LocationInterator
------------------
+:func:`~zope.location.location.LocationInterator`
+-------------------------------------------------
 
 This function allows us to iterate over object and all its parents.
+
+.. doctest::
 
   >>> from zope.location.location import LocationIterator
 
@@ -137,10 +148,12 @@ This function allows us to iterate over object and all its parents.
   StopIteration
 
 
-The `located` function
-----------------------
+The :func:`~zope.location.location.located` function
+----------------------------------------------------
 
 `located` locates an object in another and returns it:
+
+.. doctest::
 
   >>> from zope.location.location import located
   >>> a = Location()
@@ -155,11 +168,15 @@ The `located` function
 
 If we locate the object again, nothing special happens:
 
+.. doctest::
+
   >>> a_located_2 = located(a_located, parent, 'a')
   >>> a_located_2 is a_located
   True
 
 If the object does not provide ILocation an adapter can be provided:
+
+.. doctest::
 
   >>> import zope.interface
   >>> import zope.component
@@ -182,6 +199,8 @@ If the object does not provide ILocation an adapter can be provided:
   True
 
 When changing the name, we still do not get a different proxied object:
+
+.. doctest::
 
   >>> l_located_3 = located(l_located, parent, 'new-name')
   >>> l_located_3 is l_located_2
