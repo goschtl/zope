@@ -15,9 +15,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import adapter
 from zope.interface import implementer
-from zope.location.interfaces import ILocation
 from zope.location.location import inside
 
 try:
@@ -27,7 +25,6 @@ except ImportError: #pragma NO COVER
         "because zope.copy is not available")
 
 
-@adapter(ILocation)
 @implementer(ICopyHook)
 class LocationCopyHook(object):
     """Copy hook to preserve copying referenced objects that are not

@@ -214,7 +214,7 @@ class LocationPhysicallyLocatableTests(
         self.assertEqual(proxy.getName(), 'name')
 
     def test_getNearestSite_context_is_site(self):
-        from zope.component.interfaces import ISite
+        from zope.location.interfaces import ISite # zope.component, if present
         from zope.interface import directlyProvides
         class Dummy(object):
             pass
@@ -224,7 +224,7 @@ class LocationPhysicallyLocatableTests(
         self.assertTrue(proxy.getNearestSite() is context)
 
     def test_getNearestSite_ancestor_is_site(self):
-        from zope.component.interfaces import ISite
+        from zope.location.interfaces import ISite # zope.component, if present
         from zope.interface import directlyProvides
         from zope.location.interfaces import IRoot
         class Dummy(object):

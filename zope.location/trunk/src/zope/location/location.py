@@ -15,8 +15,6 @@
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import adapter
-from zope.interface import Interface
 from zope.interface import implementer
 from zope.proxy import ProxyBase
 from zope.proxy import getProxiedObject
@@ -84,7 +82,6 @@ class ClassAndInstanceDescr(object):
 
 
 @implementer(ILocation)
-@adapter(Interface)
 class LocationProxy(ProxyBase):
     """Location-object proxy
 

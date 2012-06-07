@@ -59,11 +59,11 @@ setup(name='zope.location',
       install_requires=['setuptools',
                         'zope.interface',
                         'zope.schema>=3.6',
-                        'zope.component>=3.8',
                         'zope.proxy>3.3',
                         ],
       extras_require={
         'zcml': ['zope.configuration'],
+        'component': ['zope.component>=3.8'],
         'testing': [
             'nose',
             'coverage',

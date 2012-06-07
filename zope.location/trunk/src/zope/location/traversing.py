@@ -15,17 +15,14 @@
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import adapter
-from zope.component.interfaces import ISite
 from zope.interface import implementer
 
-from zope.location.interfaces import ILocation
 from zope.location.interfaces import ILocationInfo
 from zope.location.interfaces import IRoot
+from zope.location.interfaces import ISite # zope.component, if present
 
 
 @implementer(ILocationInfo)
-@adapter(ILocation)
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
     """
@@ -115,7 +112,6 @@ class LocationPhysicallyLocatable(object):
         return self.getRoot()
 
 @implementer(ILocationInfo)
-@adapter(IRoot)
 class RootPhysicallyLocatable(object):
     """Provide location information for the root object
     
@@ -123,8 +119,6 @@ class RootPhysicallyLocatable(object):
     for parents and nearest sites, so we are only working with context
     object, knowing that its the root object already.
     """
-
-
     def __init__(self, context):
         self.context = context
 

@@ -19,6 +19,12 @@ class Test_ZCML_loads(unittest.TestCase):
 
     def test_it(self):
         try:
+            import zope.component # no registrations made if not present
+        except ImportError:
+            ADAPTERS_REGISTERED = 0
+        else:
+            ADAPTERS_REGISTERED = 4
+        try:
             from zope.configuration.xmlconfig import _clearContext
             from zope.configuration.xmlconfig import _getContext
             from zope.configuration.xmlconfig import XMLConfig
@@ -31,7 +37,7 @@ class Test_ZCML_loads(unittest.TestCase):
             XMLConfig('configure.zcml', zope.location)
             adapters = ([x for x in context.actions
                             if x['discriminator'] is not None])
-            self.assertEqual(len(adapters), 4)
+            self.assertEqual(len(adapters), ADAPTERS_REGISTERED)
         
 
 def test_suite():

@@ -5,6 +5,11 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Made ``zope.component`` dependency optional.  Use the ``component`` extra
+  to force its installation (or just require it directly).  If
+  ``zope.component`` is not present, this package defines the ``ISite``
+  interface itself, and omits adapter registrations from its ZCML.
+
 - Added support for PyPy.
 
 - Added support for continuous integration using ``tox`` and ``jenkins``.

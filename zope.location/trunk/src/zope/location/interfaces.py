@@ -19,10 +19,6 @@ from zope.interface import Interface
 from zope.interface import Attribute
 from zope.schema import TextLine
 
-# BBB
-from zope.component.interfaces import IPossibleSite
-from zope.component.interfaces import ISite
-
 from zope.location._compat import u
 
 class ILocation(Interface):
@@ -125,3 +121,16 @@ class IRoot(Interface):
 
 class LocationError(KeyError, LookupError):
     """There is no object for a given location."""
+
+# Soft dependency on zope.component.
+#
+# Also, these interfaces used to be defined here directly, so this provides
+# backwardc-comppatibiltiy
+try:
+    from zope.component.interfaces import ISite
+    from zope.component.interfaces import IPossibleSite  # BBB
+except ImportError: #pragma NO COVER
+    class ISite(Interface):
+        pass
+    class IPossibleSite(Interface):  # BBB
+        pass
