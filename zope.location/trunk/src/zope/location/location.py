@@ -15,21 +15,21 @@
 """
 __docformat__ = 'restructuredtext'
 
-import zope.interface
-import zope.component
-
-# XXX import error when doing import zope.location.interfaces :/
-from zope.location.interfaces import ILocation
-from zope.proxy import ProxyBase, non_overridable
+from zope.component import adapter
+from zope.interface import Interface
+from zope.interface import implementer
+from zope.proxy import ProxyBase
+from zope.proxy import getProxiedObject
+from zope.proxy import non_overridable
 from zope.proxy.decorator import DecoratorSpecificationDescriptor
 
+from zope.location.interfaces import ILocation
 
-@zope.interface.implementer(ILocation)
+@implementer(ILocation)
 class Location(object):
     """Mix-in that implements ILocation.
 
     It provides the `__parent__` and `__name__` attributes.
-
     """
 
     __parent__ = None
@@ -47,7 +47,7 @@ def located(obj, parent, name=None):
 
     Updates the location's coordinates.
     """
-    location = zope.location.interfaces.ILocation(obj)
+    location = ILocation(obj)
     locate(location, parent, name)
     return location
 
@@ -83,19 +83,21 @@ class ClassAndInstanceDescr(object):
         return self.funcs[0](inst)
 
 
-@zope.interface.implementer(ILocation)
-@zope.component.adapter(zope.interface.Interface)
+@implementer(ILocation)
+@adapter(Interface)
 class LocationProxy(ProxyBase):
     """Location-object proxy
 
     This is a non-picklable proxy that can be put around objects that
     don't implement `ILocation`.
-
     """
-
-
     __slots__ = '__parent__', '__name__'
     __safe_for_unpickling__ = True
+
+    __doc__ = ClassAndInstanceDescr(
+        lambda inst: getProxiedObject(inst).__doc__,
+        lambda cls, __doc__ = __doc__: __doc__,
+        )
 
     def __new__(self, ob, container=None, name=None):
         return ProxyBase.__new__(self, ob)
@@ -108,13 +110,6 @@ class LocationProxy(ProxyBase):
     @non_overridable
     def __reduce__(self, proto=None):
         raise TypeError("Not picklable")
-
-
-    __doc__ = ClassAndInstanceDescr(
-        lambda inst: getProxiedObject(inst).__doc__,
-        lambda cls, __doc__ = __doc__: __doc__,
-        )
-
     __reduce_ex__ = __reduce__
 
     __providedBy__ = DecoratorSpecificationDescriptor()
