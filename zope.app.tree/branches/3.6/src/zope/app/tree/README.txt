@@ -86,8 +86,8 @@ This product is released under the terms of the `Zope Public License
 (ZPL) v2.1`__. See the `ZopePublicLicense.txt` file at the root of your
 Zope distribution.
 
-Copyright (c) 2003 Philipp "philiKON" von Weitershausen
-Copyright (c) 2004 Zope Corporation and Contributors
+Copyright (c) 2003 Zope Foundation and Contributors
+Copyright (c) 2004 Zope Foundation and Contributors
 
 .. __: http://www.zope.org/Resources/ZPL/ZPL-2.1
 
