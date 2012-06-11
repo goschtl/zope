@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Abstract file-system tests
 
-$Id: fstests.py 26559 2004-07-15 21:22:32Z srichter $
+$Id$
 """
 from StringIO import StringIO
 from zope.interface.verify import verifyObject

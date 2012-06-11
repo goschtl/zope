@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Demo Filesystem implementation.
 
-$Id: test_demofs.py 26476 2004-07-13 16:59:11Z srichter $
+$Id$
 """
 import demofs
 from unittest import TestCase, TestSuite, main, makeSuite
