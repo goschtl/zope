@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,7 @@
 ##############################################################################
 """Demo file-system implementation, for testing
 
-$Id: demofs.py 27459 2004-09-07 01:45:52Z shane $
+$Id$
 """
 execute = 1
 read = 2
