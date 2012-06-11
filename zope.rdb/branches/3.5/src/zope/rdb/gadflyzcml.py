@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """'gadflyRoot' Directive Handler
 
-$Id: metaconfigure.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
