@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Test makeDOMStandalone utility
 
-$Id: test_adapter.py 27505 2004-09-12 14:46:41Z philikon $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
