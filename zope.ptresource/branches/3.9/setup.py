@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -33,6 +33,7 @@ setup(name='zope.ptresource',
                      ],
       description='Page template resource plugin for zope.browserresource',
       long_description=long_description,
+      license='ZPL 2.1',
 
       packages=find_packages('src'),
       package_dir={'': 'src'},
