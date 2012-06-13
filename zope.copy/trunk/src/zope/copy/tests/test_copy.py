@@ -43,12 +43,13 @@ class Test_clone(unittest.TestCase):
         from zope.copy.examples import Demo
         demo = Demo()
         demo.freeze()
-        def _factory(obj, register):
-            return None
         @implementer(ICopyHook)
-        def data_copyfactory(obj):
-            return _factory
-        provideAdapter(data_copyfactory, (Data,))
+        class Hook(object):
+            def __init__(self, context):
+                self.context = context
+            def __call__(self, obj, register):
+                return None
+        provideAdapter(Hook, (Data,))
         copied = self._callFUT(demo)
         self.assertFalse(copied is demo)
         self.assertTrue(isinstance(copied, Demo))
@@ -87,15 +88,16 @@ class Test_clone(unittest.TestCase):
         self.assertEqual(o.subobject(), 1)
         self.assertEqual(o.subobject(), 2)
         @implementer(ICopyHook)
-        def subobject_copyfactory(original):
-            def factory(obj, register):
+        class Hook(object):
+            def __init__(self, context):
+                self.context = context
+            def __call__(self, obj, register):
                 obj = Subobject()
                 def reparent(translate):
-                    obj.__parent__ = translate(original.__parent__)
+                    obj.__parent__ = translate(self.context.__parent__)
                 register(reparent)
                 return obj
-            return factory
-        provideAdapter(subobject_copyfactory, (Subobject,))
+        provideAdapter(Hook, (Subobject,))
         c = self._callFUT(o)
         self.assertTrue(c.subobject.__parent__ is c)
         self.assertEqual(c.subobject(), 0)
@@ -178,12 +180,13 @@ class CopyPersistentTests(unittest.TestCase):
         obj = object()
         cp = self._makeOne(obj)
         cp.pids_by_id[id(obj)] = 'PID'
-        def _factory(obj, register):
-            return None
         @implementer(ICopyHook)
-        def copyfactory(obj):
-            return _factory
-        provideAdapter(copyfactory, (Interface,))
+        class Hook(object):
+            def __init__(self, context):
+                self.context = context
+            def __call__(self, obj, register):
+                return None
+        provideAdapter(Hook, (Interface,))
         self.assertEqual(cp.id(obj), 'PID')
 
     def test_id_w_hook_raising_ResumeCopy(self):
@@ -194,12 +197,13 @@ class CopyPersistentTests(unittest.TestCase):
         from zope.copy.interfaces import ResumeCopy
         obj = object()
         cp = self._makeOne(obj)
-        def _factory(obj, register):
-            raise ResumeCopy()
         @implementer(ICopyHook)
-        def copyfactory(obj):
-            return _factory
-        provideAdapter(copyfactory, (Interface,))
+        class Hook(object):
+            def __init__(self, context):
+                self.context = context
+            def __call__(self, obj, register):
+                raise ResumeCopy()
+        provideAdapter(Hook, (Interface,))
         self.assertEqual(cp.id(obj), None)
 
     def test_id_w_hook_normal(self):
@@ -209,12 +213,13 @@ class CopyPersistentTests(unittest.TestCase):
         from zope.copy.interfaces import ICopyHook
         obj = object()
         cp = self._makeOne(obj)
-        def _factory(obj, register):
-            return None
         @implementer(ICopyHook)
-        def copyfactory(obj):
-            return _factory
-        provideAdapter(copyfactory, (Interface,))
+        class Hook(object):
+            def __init__(self, context):
+                self.context = context
+            def __call__(self, obj, register):
+                return None
+        provideAdapter(Hook, (Interface,))
         self.assertEqual(cp.id(obj), 1)
         obj2 = object()
         self.assertEqual(cp.id(obj2), 2)
