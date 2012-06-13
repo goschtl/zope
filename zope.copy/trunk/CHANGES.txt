@@ -5,6 +5,8 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- 100% unit test coverage.
+
 - Added support for continuous integration using ``tox`` and ``jenkins``.
 
 - Added Sphinx documentation:  moved doctest examples to API reference.
