@@ -59,6 +59,7 @@ setup(name = 'zope.copy',
                           ],
       include_package_data = True,
       zip_safe = False,
+      test_suite='zope.copy.tests',
       extras_require={
         'test': TESTS_REQUIRE,
         'testing': TESTS_REQUIRE + ['nose', 'coverage'],

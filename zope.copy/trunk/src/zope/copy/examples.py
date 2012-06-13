@@ -15,7 +15,7 @@
 """
 import zope.location.location
 
-class Demo(object):
+class Demo(object): #pragma NO COVER
 
     _frozen = None
 
@@ -26,11 +26,11 @@ class Demo(object):
         self._frozen = Data()
 
 
-class Data(object):
+class Data(object): #pragma NO COVER
     pass
 
 
-class Subobject(zope.location.location.Location):
+class Subobject(zope.location.location.Location): #pragma NO COVER
 
     def __init__(self):
         self.counter = 0
@@ -41,14 +41,14 @@ class Subobject(zope.location.location.Location):
         return res
 
 
-class Something(object):
+class Something(object): #pragma NO COVER
     pass
 
 
 root = object()
 
 
-class Other(object):
+class Other(object): #pragma NO COVER
     @apply
     def __name__():
         def fget(self):
