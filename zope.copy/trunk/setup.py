@@ -19,8 +19,14 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+TESTS_REQUIRE = [
+    'zope.component',
+    'zope.location',
+    'zope.testing',
+]
+
 setup(name = 'zope.copy',
-      version = '3.5.1dev',
+      version = '4.0.0dev',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Pluggable object copying mechanism',
@@ -37,6 +43,10 @@ setup(name = 'zope.copy',
           'License :: OSI Approved :: Zope Public License',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.6',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Database',
           ],
       url='http://pypi.python.org/pypi/zope.copy',
@@ -44,12 +54,13 @@ setup(name = 'zope.copy',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope'],
-      extras_require={'test': ['zope.component',
-                               'zope.location',
-                               'zope.testing']},
       install_requires = ['setuptools',
                           'zope.interface',
                           ],
       include_package_data = True,
       zip_safe = False,
-      )
+      extras_require={
+        'test': TESTS_REQUIRE,
+        'testing': TESTS_REQUIRE + ['nose', 'coverage'],
+      },
+)

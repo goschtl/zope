@@ -5,6 +5,9 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Added 'setup.py dev' alias (runs ``setup.py develop`` plus installs
+  ``nose``, ``coverage``, and testing dependencies).
+
 - Dropped support for Python 2.4 and 2.5.
 
 - Include tests of the LocationCopyHook from zope.location.
