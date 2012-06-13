@@ -13,13 +13,18 @@
 ##############################################################################
 import unittest
 
-
-class Test_clone(unittest.TestCase):
+class _Base(object):
 
     def setUp(self):
-        from zope.component.globalregistry import base
-        base.__init__('base') # blow away previous registrations
-    tearDown = setUp
+        from zope.interface.interface import adapter_hooks
+        self._restore = adapter_hooks[:]
+        
+    def tearDown(self):
+        from zope.interface.interface import adapter_hooks
+        adapter_hooks[:] = self._restore
+
+
+class Test_clone(_Base, unittest.TestCase):
 
     def _callFUT(self, obj):
         from zope.copy import clone
@@ -36,20 +41,20 @@ class Test_clone(unittest.TestCase):
         self.assertTrue(copied.isFrozen())
 
     def test_w_simple_hook(self):
-        from zope.component import provideAdapter
-        from zope.interface import implementer
         from zope.copy.interfaces import ICopyHook
         from zope.copy.examples import Data
         from zope.copy.examples import Demo
         demo = Demo()
         demo.freeze()
-        @implementer(ICopyHook)
         class Hook(object):
             def __init__(self, context):
                 self.context = context
             def __call__(self, obj, register):
                 return None
-        provideAdapter(Hook, (Data,))
+        def _adapt(iface, obj):
+            if iface is ICopyHook and isinstance(obj, Data):
+                return Hook(obj)
+        _registerAdapterHook(_adapt)
         copied = self._callFUT(demo)
         self.assertFalse(copied is demo)
         self.assertTrue(isinstance(copied, Demo))
@@ -73,8 +78,6 @@ class Test_clone(unittest.TestCase):
         self.assertEqual(o.subobject(), 3)
 
     def test_subobject_w_post_copy_hook(self):
-        from zope.component import provideAdapter
-        from zope.interface import implementer
         from zope.copy.interfaces import ICopyHook
         from zope.location.location import Location
         from zope.location.location import locate
@@ -87,7 +90,6 @@ class Test_clone(unittest.TestCase):
         self.assertEqual(o.subobject(), 0)
         self.assertEqual(o.subobject(), 1)
         self.assertEqual(o.subobject(), 2)
-        @implementer(ICopyHook)
         class Hook(object):
             def __init__(self, context):
                 self.context = context
@@ -97,19 +99,17 @@ class Test_clone(unittest.TestCase):
                     obj.__parent__ = translate(self.context.__parent__)
                 register(reparent)
                 return obj
-        provideAdapter(Hook, (Subobject,))
+        def _adapt(iface, obj):
+            if iface is ICopyHook and isinstance(obj, Subobject):
+                return Hook(obj)
+        _registerAdapterHook(_adapt)
         c = self._callFUT(o)
         self.assertTrue(c.subobject.__parent__ is c)
         self.assertEqual(c.subobject(), 0)
         self.assertEqual(o.subobject(), 3)
 
 
-class Test_copy(unittest.TestCase):
-
-    def setUp(self):
-        from zope.component.globalregistry import base
-        base.__init__('base') # blow away previous registrations
-    tearDown = setUp
+class Test_copy(_Base, unittest.TestCase):
 
     def _callFUT(self, obj):
         from zope.copy import copy
@@ -145,12 +145,7 @@ class Test_copy(unittest.TestCase):
         self.assertEqual(copied.__name__, 'foo')
 
 
-class CopyPersistentTests(unittest.TestCase):
-
-    def setUp(self):
-        from zope.component.globalregistry import base
-        base.__init__('base') # blow away previous registrations
-    tearDown = setUp
+class CopyPersistentTests(_Base, unittest.TestCase):
 
     def _getTargetClass(self):
         from zope.copy import CopyPersistent
@@ -173,58 +168,60 @@ class CopyPersistentTests(unittest.TestCase):
         self.assertEqual(cp.id(obj), None)
 
     def test_id_w_hook_already_cached(self):
-        from zope.component import provideAdapter
-        from zope.interface import implementer
-        from zope.interface import Interface
         from zope.copy.interfaces import ICopyHook
         obj = object()
         cp = self._makeOne(obj)
         cp.pids_by_id[id(obj)] = 'PID'
-        @implementer(ICopyHook)
         class Hook(object):
             def __init__(self, context):
                 self.context = context
             def __call__(self, obj, register):
                 return None
-        provideAdapter(Hook, (Interface,))
+        def _adapt(iface, obj):
+            if iface is ICopyHook:
+                return Hook(obj)
+        _registerAdapterHook(_adapt)
         self.assertEqual(cp.id(obj), 'PID')
 
     def test_id_w_hook_raising_ResumeCopy(self):
-        from zope.component import provideAdapter
-        from zope.interface import implementer
-        from zope.interface import Interface
         from zope.copy.interfaces import ICopyHook
         from zope.copy.interfaces import ResumeCopy
         obj = object()
         cp = self._makeOne(obj)
-        @implementer(ICopyHook)
         class Hook(object):
             def __init__(self, context):
                 self.context = context
             def __call__(self, obj, register):
                 raise ResumeCopy()
-        provideAdapter(Hook, (Interface,))
+        def _adapt(iface, obj):
+            if iface is ICopyHook:
+                return Hook(obj)
+        _registerAdapterHook(_adapt)
         self.assertEqual(cp.id(obj), None)
 
     def test_id_w_hook_normal(self):
-        from zope.component import provideAdapter
-        from zope.interface import implementer
-        from zope.interface import Interface
         from zope.copy.interfaces import ICopyHook
         obj = object()
         cp = self._makeOne(obj)
-        @implementer(ICopyHook)
         class Hook(object):
             def __init__(self, context):
                 self.context = context
             def __call__(self, obj, register):
                 return None
-        provideAdapter(Hook, (Interface,))
+        def _adapt(iface, obj):
+            if iface is ICopyHook:
+                return Hook(obj)
+        _registerAdapterHook(_adapt)
         self.assertEqual(cp.id(obj), 1)
         obj2 = object()
         self.assertEqual(cp.id(obj2), 2)
         self.assertEqual(cp.pids_by_id, {id(obj): 1, id(obj2): 2})
         self.assertEqual(cp.others_by_pid, {1: None, 2: None})
+
+
+def _registerAdapterHook(func):
+    from zope.interface.interface import adapter_hooks
+    adapter_hooks.insert(0, func)
 
 
 def test_suite():

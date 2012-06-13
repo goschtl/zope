@@ -5,6 +5,9 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Dropped ``zope.component`` as a testing requirement. Instead, register
+  explicit (dummy) adapter hooks where needed.
+
 - Added PyPy support.
 
 - 100% unit test coverage.
