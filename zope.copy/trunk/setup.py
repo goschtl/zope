@@ -62,5 +62,6 @@ setup(name = 'zope.copy',
       extras_require={
         'test': TESTS_REQUIRE,
         'testing': TESTS_REQUIRE + ['nose', 'coverage'],
+        'docs': ['Sphinx', 'repoze.sphinx.autointerface'],
       },
 )
