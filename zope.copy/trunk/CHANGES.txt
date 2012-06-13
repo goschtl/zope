@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+4.0.0 (unreleased)
 ------------------
+
+- Dropped support for Python 2.4 and 2.5.
 
 - Include tests of the LocationCopyHook from zope.location.
 
