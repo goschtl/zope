@@ -5,6 +5,8 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Added support for Python 3.2.
+
 - Dropped ``zope.component`` as a testing requirement. Instead, register
   explicit (dummy) adapter hooks where needed.
 

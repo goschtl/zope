@@ -15,6 +15,8 @@
 """
 import zope.location.location
 
+from zope.copy._compat import _apply
+
 class Demo(object): #pragma NO COVER
 
     _frozen = None
@@ -49,14 +51,14 @@ root = object()
 
 
 class Other(object): #pragma NO COVER
-    @apply
+    @_apply
     def __name__():
         def fget(self):
             return 'something'
         def fset(self, value):
             raise AttributeError
         return property(fget, fset)
-    @apply
+    @_apply
     def __parent__():
         def fget(self):
             return root

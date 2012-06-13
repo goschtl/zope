@@ -12,9 +12,12 @@
 #
 ##############################################################################
 import tempfile
-import cPickle
 
 from zope.copy import interfaces
+from zope.copy._compat import Pickler
+from zope.copy._compat import Unpickler
+from zope.copy._compat import _get_pid
+from zope.copy._compat import _get_obj
 
 def clone(obj):
     """Clone an object by pickling and unpickling it"""
@@ -22,23 +25,23 @@ def clone(obj):
     persistent = CopyPersistent(obj)
 
     # Pickle the object to a temporary file
-    pickler = cPickle.Pickler(tmp, 2)
+    pickler = Pickler(tmp, 2)
     pickler.persistent_id = persistent.id
     pickler.dump(obj)
 
     # Now load it back
     tmp.seek(0)
-    unpickler = cPickle.Unpickler(tmp)
+    unpickler = Unpickler(tmp)
     unpickler.persistent_load = persistent.load
 
     res = unpickler.load()
     # run the registered cleanups
     def convert(obj):
-        pid = pickler.memo[id(obj)][0]
+        pid = _get_pid(pickler, id(obj))
         try:
-            return unpickler.memo[pid]
+            return _get_obj(unpickler, pid)
         except KeyError: #pragma NO COVER pypy
-            return unpickler.memo[str(pid)]
+            return _get_obj(unpickler, str(pid))
     for call in persistent.registered:
         call(convert)
     return res
