@@ -31,7 +31,7 @@ setup(name = 'zope.copy',
       author_email='zope-dev@zope.org',
       description='Pluggable object copying mechanism',
       long_description=(
-          read('src', 'zope', 'copy', 'README.txt')
+          read('README.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
