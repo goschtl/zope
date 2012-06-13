@@ -34,7 +34,11 @@ def clone(obj):
     res = unpickler.load()
     # run the registered cleanups
     def convert(obj):
-        return unpickler.memo[pickler.memo[id(obj)][0]]
+        pid = pickler.memo[id(obj)][0]
+        try:
+            return unpickler.memo[pid]
+        except KeyError: #pragma NO COVER pypy
+            return unpickler.memo[str(pid)]
     for call in persistent.registered:
         call(convert)
     return res

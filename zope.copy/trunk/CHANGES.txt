@@ -5,6 +5,8 @@ CHANGES
 4.0.0 (unreleased)
 ------------------
 
+- Added PyPy support.
+
 - 100% unit test coverage.
 
 - Added support for continuous integration using ``tox`` and ``jenkins``.
