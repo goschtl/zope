@@ -5,7 +5,7 @@ This package provides support for implementing an S3 upload queue
 using a file directory.
 
 An application that wants to upload to S3 writes a temporary file and
-then moved it into a directory and then goes on about it's business.
+then moves it into a directory and then goes on about it's business.
 
 Separately, either in a daemon, or in a separate application thread,
 zc.s3uploadqueue.main is run, which watches the directory and moves
