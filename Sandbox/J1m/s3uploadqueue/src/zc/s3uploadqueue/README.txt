@@ -108,6 +108,16 @@ This starts a daemonic threads that upload any files placed in the directory.
 
     >>> write('/'.join(['test', name.strip()]), '')
 
+    >>> import logging
+    >>> import zope.testing.loggingsupport
+
+    >>> handler = zope.testing.loggingsupport.InstalledHandler(
+    ...     "zc.s3uploadqueue", level=logging.INFO)
+
+    >>> def show_log():
+    ...     print handler
+    ...     handler.clear()
+
     Start the processor:
 
     >>> exec src
@@ -132,3 +142,26 @@ The file that we put in is processed and uploaded to S3:
     [call(<MagicMock name='S3Connection().get_bucket()' id='...'>),
      call(<MagicMock name='S3Connection().get_bucket()' id='...'>),
      call().set_contents_from_filename('test/2012-06-14%2F01.txt')]
+
+    >>> show_log()
+    zc.s3uploadqueue INFO
+      Transferred '2012-06-14%2F01.txt'
+
+If there's an exception, that'll be logged as well. To simulate an exception,
+we'll monkey-patch the "urllib.unquote" method to raise an exception.
+
+    >>> import urllib
+    >>> orig_unquote = urllib.unquote
+    >>> def fake_unquote(s):
+    ...     1/0
+    >>> urllib.unquote = fake_unquote
+    >>> write('/'.join(['test', name.strip()]), '')
+    >>> exec src
+
+    >>> show_log()
+    zc.s3uploadqueue ERROR
+      processing '2012-06-14%2F01.txt'
+
+    >>> urllib.unquote = orig_unquote
+    >>> handler.uninstall()
+
