@@ -11,6 +11,13 @@ asynchronously. To learn more, see `src/zc/s3uploadqueue/README.txt`
 Changes
 *******
 
+0.1.1 (2012-06-15)
+==================
+
+- Use 'OrdinaryCallingFormat' to HTTPS certificate validation works 
+  when accessing buckets with period in the name. 
+
+
 0.1.0 (2012-06-15)
 ==================
 

@@ -76,6 +76,7 @@ def process(config=None):
         conn = boto.s3.connection.S3Connection(
             options['Credentials']['aws_access_key_id'],
             options['Credentials']['aws_secret_access_key'],
+            calling_format=boto.s3.connection.OrdinaryCallingFormat()
             )
         try:
             bucket = conn.get_bucket(options['Queue']['bucket'])
