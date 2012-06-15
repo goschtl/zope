@@ -16,6 +16,7 @@ import doctest
 import manuel.capture
 import manuel.doctest
 import manuel.testing
+import mock
 import os
 import unittest
 import zc.s3uploadqueue
@@ -23,28 +24,6 @@ import zc.s3uploadqueue
 def write(path, s):
     with open(path, 'w') as f:
         f.write(s)
-
-def basic():
-    """
-
-    >>> os.mkdir('test')
-    >>> write('queue.cfg', '''
-    ... [Credentials]
-    ... aws_access_key_id = 42
-    ... aws_secret_access_key = k3y
-    ...
-    ... [Queue]
-    ... directory = test
-    ... bucket = testbucket
-    ... poll-interval = 1
-    ... ''')
-
-    >>>
-
-    """
-
-
-
 
 def setup(test):
     setupstack.setUpDirectory(test)
@@ -59,15 +38,12 @@ def test_suite():
         manuel.testing.TestSuite(
             manuel.doctest.Manuel() + manuel.capture.Manuel(),
             'README.txt',
+            globs={'write': write},
             setUp=setup, tearDown=setupstack.tearDown,
             ),
-        # doctest.DocTestSuite(
-        #     setUp=setup, tearDown=setupstack.tearDown()
-        #     ),
         ))
 
 
 
 
-def test_suite():
 

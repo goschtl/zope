@@ -14,7 +14,7 @@
 name, version = 'zc.s3uploadqueue', '0'
 
 install_requires = ['setuptools', 'boto', 'zc.thread']
-extras_require = dict(test=['zope.testing', 'mock'])
+extras_require = dict(test=['zope.testing', 'manuel', 'mock'])
 
 entry_points = """
 """

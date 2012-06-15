@@ -26,25 +26,27 @@ import zc.thread
 logger = logging.getLogger(__name__)
 
 levels = dict(
-    CRITICAL=50
-    ERROR=40
-    WARNING=30
-    INFO=20
-    DEBUG=10
-    NOTSET=0
+    CRITICAL=50,
+    ERROR=40,
+    WARNING=30,
+    INFO=20,
+    DEBUG=10,
+    NOTSET=0,
     )
 
 def process(config=None):
+    return_stop = True
     if config is None:
         [config] = sys.argv[1:]
+        return_stop = False
 
     parser = ConfigParser.RawConfigParser()
     parser.read(config)
-    options = dict(dict(parser.items(section)) for section in parser.sections)
+    options = dict((section, dict(parser.items(section))) for section in parser.sections())
 
     logging.basicConfig(level=levels[options['Queue'].get('log-level', 'INFO')])
 
-    queue = queue.Queue
+    queue = Queue.Queue()
     srcdir = options['Queue']['directory']
     nthreads = int(options['Queue'].get('threads', 9))
     poll_interval = int(options['Queue'].get('poll-interval', 9))
@@ -73,7 +75,7 @@ def process(config=None):
             finally:
                 queue.task_done()
 
-    theads = [zc.thread.Thread(process_queue) for i in range(nthreads)]
+    threads = [zc.thread.Thread(process_queue) for i in range(nthreads)]
     running = [1]
 
     def stop():
@@ -94,7 +96,7 @@ def process(config=None):
         for thread in threads:
             queue.put(None)
 
-    if testing:
+    if return_stop:
         return stop
 
 if __name__ == '__main__':

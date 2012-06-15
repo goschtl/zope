@@ -72,6 +72,10 @@ Here's a sample configuration::
 
 .. -> config
 
+    >>> import os
+    >>> os.mkdir('test')
+    >>> write('queue.cfg', config)
+
 If we were to put files in S3, we'd place them in the ``test``
 directory.  For example, to put data at the key:
 ``2012-06-14/01.txt``, we'd store the data in the file::
@@ -91,7 +95,8 @@ process.  To run from an existing process, just import the ``process``
 function and run it::
 
    import zc.s3uploadqueue
-   zc.s3uploadqueue.process(config)
+   stop = zc.s3uploadqueue.process('queue.cfg')
+   stop()
 
 .. -> src
 
@@ -101,17 +106,29 @@ This starts a daemonic threads that upload any files placed in the directory.
 
     Place some data:
 
-    >>> write(name.strip(), '')
+    >>> write('/'.join(['test', name.strip()]), '')
 
     Start the processor:
 
-    >>> exec(src)
+    >>> exec src
 
     Wait a bit and see that boto was called:
 
     >>> import time
     >>> time.sleep(.1)
 
-    >>> import boto.s3.connection, pprint
-    >>> pprint(boto.s3.connection.S3Connection.calls)
+The two threads we created setup the necessary connection with S3:
 
+    >>> import boto.s3.connection, pprint
+    >>> pprint.pprint(boto.s3.connection.S3Connection.mock_calls)
+    [call('42', 'k3y'),
+     call().get_bucket('testbucket'),
+     call('42', 'k3y'),
+     call().get_bucket('testbucket')]
+
+The file that we put in is processed and uploaded to S3:
+
+    >>> pprint.pprint(boto.s3.key.Key.mock_calls) #doctest: +ELLIPSIS
+    [call(<MagicMock name='S3Connection().get_bucket()' id='...'>),
+     call(<MagicMock name='S3Connection().get_bucket()' id='...'>),
+     call().set_contents_from_filename('test/2012-06-14%2F01.txt')]
