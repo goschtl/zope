@@ -17,6 +17,8 @@ install_requires = ['setuptools', 'boto', 'zc.thread']
 extras_require = dict(test=['zope.testing', 'manuel', 'mock'])
 
 entry_points = """
+[console_scripts]
+s3upload = zc.s3uploadqueue:process
 """
 
 from setuptools import setup

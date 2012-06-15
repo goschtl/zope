@@ -100,5 +100,5 @@ def process(config=None):
         return stop
 
 if __name__ == '__main__':
-    main()
+    process()
 
