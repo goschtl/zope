@@ -51,12 +51,7 @@ def process(config=None):
     nthreads = int(options['Queue'].get('threads', 9))
     poll_interval = int(options['Queue'].get('poll-interval', 9))
 
-    def process_queue():
-        conn = boto.s3.connection.S3Connection(
-            options['Credentials']['aws_access_key_id'],
-            options['Credentials']['aws_secret_access_key'],
-            )
-        bucket = conn.get_bucket(options['Queue']['bucket'])
+    def process_queue(bucket):
         key = boto.s3.key.Key(bucket)
 
         while 1:
@@ -75,8 +70,19 @@ def process(config=None):
             finally:
                 queue.task_done()
 
-    threads = [zc.thread.Thread(process_queue) for i in range(nthreads)]
     running = [1]
+    threads = []
+    for i in range(nthreads):
+        conn = boto.s3.connection.S3Connection(
+            options['Credentials']['aws_access_key_id'],
+            options['Credentials']['aws_secret_access_key'],
+            )
+        try:
+            bucket = conn.get_bucket(options['Queue']['bucket'])
+        except Exception:
+            logger.exception('Error accessing bucket: %r', options['Queue']['bucket'])
+            return
+        threads.append(zc.thread.Thread(process_queue, args=[bucket]))
 
     def stop():
         running.pop()

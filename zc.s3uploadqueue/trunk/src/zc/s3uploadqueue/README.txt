@@ -96,7 +96,7 @@ function and run it::
 
    import zc.s3uploadqueue
    stop = zc.s3uploadqueue.process('queue.cfg')
-   stop()
+   if stop: stop()
 
 .. -> src
 
@@ -163,5 +163,17 @@ we'll monkey-patch the "urllib.unquote" method to raise an exception.
       processing '2012-06-14%2F01.txt'
 
     >>> urllib.unquote = orig_unquote
+
+If there's an error getting the S3 bucket, an exception will be printed.
+
+    >>> def foo(self, s):
+    ...     raise Exception('some error accessing an S3 bucket.')
+    >>> boto.s3.connection.S3Connection.return_value.get_bucket.side_effect = foo
+    >>> write('/'.join(['test', name.strip()]), '')
+    >>> exec src
+    >>> show_log()
+    zc.s3uploadqueue ERROR
+      Error accessing bucket: 'testbucket'
+
     >>> handler.uninstall()
 
