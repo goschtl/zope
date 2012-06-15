@@ -130,10 +130,10 @@ This starts a daemonic threads that upload any files placed in the directory.
 The two threads we created setup the necessary connection with S3:
 
     >>> import boto.s3.connection, pprint
-    >>> pprint.pprint(boto.s3.connection.S3Connection.mock_calls)
-    [call('42', 'k3y'),
+    >>> pprint.pprint(boto.s3.connection.S3Connection.mock_calls) #doctest: +ELLIPSIS
+    [call('42', 'k3y', calling_format=<boto.s3.connection.OrdinaryCallingFormat object at ...>),
      call().get_bucket('testbucket'),
-     call('42', 'k3y'),
+     call('42', 'k3y', calling_format=<boto.s3.connection.OrdinaryCallingFormat object at ...>),
      call().get_bucket('testbucket')]
 
 The file that we put in is processed and uploaded to S3:
