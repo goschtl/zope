@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.s3uploadqueue', '0'
+name, version = 'zc.s3uploadqueue', '0.1.1'
 
 install_requires = ['setuptools', 'boto', 'zc.thread']
 extras_require = dict(test=['zope.testing', 'manuel', 'mock'])
