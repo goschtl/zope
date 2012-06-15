@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.', '0'
+name, version = 'zc.s3uploadqueue', '0'
 
-install_requires = ['setuptools']
-extras_require = dict(test=['zope.testing'])
+install_requires = ['setuptools', 'boto', 'zc.testing']
+extras_require = dict(test=['zope.testing', 'mock'])
 
 entry_points = """
 """
