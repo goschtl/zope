@@ -10,7 +10,6 @@ Contents:
    socketexample
    event
    factory
-   registry
    persistentregistry
    zcml
    configure
