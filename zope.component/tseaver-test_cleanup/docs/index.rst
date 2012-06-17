@@ -16,7 +16,6 @@ Contents:
    configure
    hooks
    testlayer
-   zcml_conditional
 
 Indices and tables
 ==================
