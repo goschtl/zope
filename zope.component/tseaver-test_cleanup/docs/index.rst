@@ -1,5 +1,5 @@
-Welcome to zope.component's documentation!
-==========================================
+:mod:`zope.component`
+=====================
 
 Contents:
 
@@ -15,6 +15,8 @@ Contents:
    configure
    hooks
    testlayer
+
+   api
 
 Indices and tables
 ==================
