@@ -72,7 +72,6 @@ There also is a context manager for setting the site, which is especially
 useful when writing tests:
 
 >>> import zope.component.hooks
->>> dummy = with_statement # support for Python-2.5
 >>> print getSite()
 None
 >>> with zope.component.hooks.site(site2):
