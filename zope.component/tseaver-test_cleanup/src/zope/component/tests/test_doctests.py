@@ -166,14 +166,6 @@ class ConformsToIComponentLookup(object):
             return self.sitemanager
 
 
-def testInterfaces():
-    """Ensure that the component architecture API is provided by
-    `zope.component`.
-
-    >>> verifyObject(IComponentArchitecture, component)
-    True
-    """
-
 def test_getGlobalSiteManager():
     """One of the most important functions is to get the global site manager.
 
