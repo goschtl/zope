@@ -1335,9 +1335,9 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         XMLConfig('meta.zcml', zope.component)()
         XMLConfig('meta.zcml', zope.security)()
 
-    def _config(self, zcml):
+    def _config(self, zcml, testing=0):
         from cStringIO import StringIO
-        xmlconfig(StringIO(template % zcml))
+        xmlconfig(StringIO(template % zcml), testing=testing)
 
     def testView(self):
         ob = Ob3()
@@ -1500,7 +1500,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
               type="zope.component.testfiles.views.IR"
               factory="zope.component.testfiles.adapter.A1"
               />
-            '''))
+            ''')
 
         content = Content()
         a1 = zope.component.getMultiAdapter((content, Request(IR)))
@@ -1583,8 +1583,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
     def testIncompleteProtectedViewNoPermission(self):
         self.assertRaises(
             ConfigurationError,
-            self._config(
-            StringIO(template %
+            self._config,
             '''
             <view name="test"
                   factory="zope.component.testfiles.views.V1"
@@ -1592,7 +1591,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
                   type="zope.component.testfiles.views.IV"
                   allowed_attributes="action index"
                   />
-            ''')
+            ''',
+            )
 
     def testViewUndefinedPermission(self):
         self.assertRaises(ValueError,
