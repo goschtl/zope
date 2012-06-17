@@ -95,6 +95,10 @@ Site Manager APIs
 Utility Registration APIs
 -------------------------
 
+.. autofunction:: zope.component.getUtility
+
+.. autofunction:: zope.component.queryUtility
+
 Utilities are components that simply provide an interface. They are
 instantiated at the time or before they are registered. Here we test the
 simple query interface.
@@ -174,8 +178,12 @@ Registering the utility under the correct name makes it available:
 Querying Multiple Utilities
 ###########################
 
+.. autofunction:: zope.component.getUtilitiesFor
+
+.. autofunction:: zope.component.getAllUtilitiesRegisteredFor
+
 Sometimes it may be useful to query all utilities, both anonymous and named
-for a given interface.  The :function:`~zope.component.getUtilitiesFor` API
+for a given interface.  The :func:`~zope.component.getUtilitiesFor` API
 returns a sequence of ``(name, utility)`` tuples, where ``name`` is the
 empty string for the anonymous utility:
 
@@ -190,7 +198,7 @@ empty string for the anonymous utility:
    >>> ('foo', ob2) in tuples
    True
 
-The :function:`~zope.component.getAllUtilitiesRegisteredFor` API returns
+The :func:`~zope.component.getAllUtilitiesRegisteredFor` API returns
 utilities that have been registered for a particular interface. Utilities
 providing a derived interface are also listed.
 
@@ -242,6 +250,10 @@ the utilities.
 
 Delegated Utility Lookup
 ########################
+
+.. autofunction:: zope.component.getNextUtility
+
+.. autofunction:: zope.component.queryNextUtility
 
 It is common for a utility to delegate its answer to a utility
 providing the same interface in one of the component registry's
@@ -366,11 +378,6 @@ retruned:
 
    from zope.component.testing import tearDown
    tearDown()
-
-
-.. autofunction:: zope.component.getUtility
-
-.. autofunction:: zope.component.queryUtility
 
 
 
