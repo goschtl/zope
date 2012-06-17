@@ -164,10 +164,30 @@ Registering the utility under the correct name makes it available:
 
 .. doctest::
 
-   >>> getGlobalSiteManager().registerUtility(ob, I1, name='foo')
-   >>> getUtility(I1, 'foo') is ob
+   >>> ob2 = object()
+   >>> getGlobalSiteManager().registerUtility(ob2, I1, name='foo')
+   >>> getUtility(I1, 'foo') is ob2
    True
-   >>> queryUtility(I1, 'foo') is ob
+   >>> queryUtility(I1, 'foo') is ob2
+   True
+
+Querying Multiple Utilities
+###########################
+
+Sometimes it may be useful to query all utilities, both anonymous and named
+for a given interface.  The :function:`~zope.component.getUtilitiesFor` API
+returns a sequence of ``(name, utility)`` tuples, where ``name`` is the
+empty string for the anonymous utility:
+
+.. doctest::
+
+   >>> from zope.component import getUtilitiesFor
+   >>> tuples = list(getUtilitiesFor(I1))
+   >>> len(tuples)
+   2
+   >>> ('', ob) in tuples
+   True
+   >>> ('foo', ob2) in tuples
    True
 
 Delegated Utility Lookup

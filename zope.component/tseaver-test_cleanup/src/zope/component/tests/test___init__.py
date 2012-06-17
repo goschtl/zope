@@ -191,6 +191,28 @@ class PackageAPITests(unittest.TestCase):
         getGlobalSiteManager().registerUtility(obj1, IFoo)
         self.assertTrue(queryUtility(IFoo, context=context) is obj2)
 
+    def test_getUtiltiesFor_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getUtilitiesFor
+        class IFoo(Interface):
+            pass
+        self.assertEqual(list(getUtilitiesFor(IFoo)), [])
+
+    def test_getUtiltiesFor_anonymous_hit(self):
+        from zope.interface import Interface
+        from zope.component import getGlobalSiteManager
+        from zope.component import getUtilitiesFor
+        class IFoo(Interface):
+            pass
+        obj = object()
+        obj1 = object()
+        getGlobalSiteManager().registerUtility(obj, IFoo)
+        getGlobalSiteManager().registerUtility(obj1, IFoo, name='bar')
+        tuples = list(getUtilitiesFor(IFoo))
+        self.assertEqual(len(tuples), 2)
+        self.assertTrue(('', obj) in tuples)
+        self.assertTrue(('bar', obj1) in tuples)
+
     def test_getNextUtility_global(self):
         from zope.component import getGlobalSiteManager
         from zope.component import getNextUtility
