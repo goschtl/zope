@@ -80,25 +80,7 @@ setup(
     long_description=(
         read('README.txt')
         + '\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
-        + '\n' +
-        read('src', 'zope', 'component', 'README.txt')
-        + '\n' +
-        read('src', 'zope', 'component', 'event.txt')
-        + '\n' +
-        read('src', 'zope', 'component', 'factory.txt')
-        + '\n' +
-        read('src', 'zope', 'component', 'registry.txt')
-        + '\n' +
-        read('src', 'zope', 'component', 'persistentregistry.txt')
-        + '\n' +
-        read('src', 'zope', 'component', 'socketexample.txt')
-        + '\n' +
         read('CHANGES.txt')
-        + '\n' +
-        'Download\n'
-        '********\n'
         ),
     packages = find_packages('src'),
     package_dir = {'': 'src'},
