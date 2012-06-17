@@ -2,6 +2,9 @@
 =========================
 
 
+Site Manager APIs
+-----------------
+
 .. automodule:: zope.component
 
    .. autofunction:: getGlobalSiteManager
@@ -91,8 +94,65 @@
         <InterfaceClass zope...interfaces.IComponentLookup>)
 
 
+Utility Registration APIs
+-------------------------
+
+Utilities are components that simply provide an interface. They are
+instantiated at the time or before they are registered. Here we test the
+simple query interface.
+
+Before we register any utility, there is no utility available, of
+course. The pure instatiation of an object does not make it a utility. If
+you do not specify a default, you get a `ComponentLookupError`.
+
+.. doctest::
+
+   >>> from zope.component import getUtility
+   >>> from zope.component import queryUtility
+   >>> from zope.component.testing import setUp, tearDown
+   >>> from zope.component.tests.test_doctests import I1
+   >>> setUp()
+   >>> getUtility(I1) #doctest: +NORMALIZE_WHITESPACE
+   Traceback (most recent call last):
+   ...
+   ComponentLookupError: \
+   (<InterfaceClass zope.component.tests.test_doctests.I1>, '')
+
+Otherwise, you get the default:
+
+.. doctest::
+
+   >>> queryUtility(I1, default='<default>')
+   '<default>'
+
+Now we declare `ob` to be the utility providing `I1`:
+
+.. doctest::
+
+   >>> ob = object()
+   >>> from zope.component import getGlobalSiteManager
+   >>> getGlobalSiteManager().registerUtility(ob, I1)
+
+Now the component is available:
+
+.. doctest::
+
+   >>> getUtility(I1) is ob
+   True
+   >>> queryUtility(I1) is ob
+   True
+   >>> tearDown()
+
+.. automodule:: zope.component
+
+   .. autofunction:: getUtility
+
+   .. autofunction:: queryUtility
+
+
+
 :mod:`zope.component.interfaces`
---------------------------------
+================================
 
 .. automodule:: zope.component.interfaces
 

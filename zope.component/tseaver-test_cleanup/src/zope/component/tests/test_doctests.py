@@ -492,41 +492,6 @@ def testGetAdapters():
       >>> tearDown()
     """
 
-def testUtility():
-    """Utilities are components that simply provide an interface. They are
-    instantiated at the time or before they are registered. Here we test the
-    simple query interface.
-
-    Before we register any utility, there is no utility available, of
-    course. The pure instatiation of an object does not make it a utility. If
-    you do not specify a default, you get a `ComponentLookupError`...
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getUtility(I1) #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      ComponentLookupError: \
-      (<InterfaceClass zope.component.tests.test_doctests.I1>, '')
-
-    ...otherwise, you get the default
-
-      >>> component.queryUtility(I1, default='<default>')
-      '<default>'
-      >>> component.queryUtility(I2, default='<default>')
-      '<default>'
-
-    Now we declare `ob` to be the utility providing `I1`
-
-      >>> component.getGlobalSiteManager().registerUtility(ob, I1)
-
-    so that the component is now available:
-
-      >>> component.getUtility(I1) is ob
-      True
-      >>> tearDown()
-    """
-
 def testNamedUtility():
     """Like adapters, utilities can be named.
 
