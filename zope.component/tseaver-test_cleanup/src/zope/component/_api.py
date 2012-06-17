@@ -33,7 +33,7 @@ from zope.component._declaration import adapts
 # to our Python version if not.
 try:
     from zope.hookable import hookable
-except ImportError:
+except ImportError: #pragma NO COVER
     from zope.component.hookable import hookable
 
 # getSiteManager() returns a component registry.  Although the term
@@ -42,6 +42,8 @@ except ImportError:
 base = None
 @hookable
 def getSiteManager(context=None):
+    """ See IComponentArchitecture.
+    """
     global base
     if context is None:
         if base is None:
