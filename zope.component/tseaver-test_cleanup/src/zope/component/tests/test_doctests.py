@@ -492,42 +492,6 @@ def testGetAdapters():
       >>> tearDown()
     """
 
-def testNamedUtility():
-    """Like adapters, utilities can be named.
-
-    Just because you register an utility having no name
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getGlobalSiteManager().registerUtility(ob, I1)
-
-    does not mean that they are available when you specify a name:
-
-      >>> component.getUtility(I1, name='foo') \\
-      ... #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      ComponentLookupError:
-      (<InterfaceClass zope.component.tests.test_doctests.I1>, 'foo')
-
-
-    ...otherwise, you get the default
-
-      >>> component.queryUtility(I1, name='foo', default='<default>')
-      '<default>'
-
-    Registering the utility under the correct name
-
-      >>> component.getGlobalSiteManager().registerUtility(
-      ...     ob, I1, name='foo')
-
-    really helps:
-
-      >>> component.getUtility(I1, 'foo') is ob
-      True
-      >>> tearDown()
-    """
-
 def test_getAllUtilitiesRegisteredFor():
     """Again, like for adapters, it is often useful to get a list of all
     utilities that have been registered for a particular interface. Utilities
