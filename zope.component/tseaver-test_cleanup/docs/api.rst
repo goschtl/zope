@@ -190,6 +190,56 @@ empty string for the anonymous utility:
    >>> ('foo', ob2) in tuples
    True
 
+The :function:`~zope.component.getAllUtilitiesRegisteredFor` API returns
+utilities that have been registered for a particular interface. Utilities
+providing a derived interface are also listed.
+
+.. doctest::
+
+   >>> from zope.interface import implementer
+   >>> from zope.component.tests.test_doctests import Comp
+   >>> from zope.component.tests.test_doctests import I2
+   >>> from zope.component.tests.test_doctests import Ob
+   >>> class I11(I1):
+   ...     pass
+
+   >>> @implementer(I11)
+   ... class Ob11(Ob):
+   ...     pass
+
+   >>> ob11 = Ob11()
+   >>> ob_bob = Ob()
+
+Now we register the new utilities:
+
+.. doctest::
+
+   >>> gsm.registerUtility(ob, I1)
+   >>> gsm.registerUtility(ob11, I11)
+   >>> gsm.registerUtility(ob_bob, I1, name='bob')
+   >>> gsm.registerUtility(Comp(2), I2)
+
+We can now get all the utilities that provide interface `I1`:
+
+.. doctest::
+
+   >>> from zope.component import getAllUtilitiesRegisteredFor
+   >>> uts = list(getAllUtilitiesRegisteredFor(I1))
+   >>> len(uts)
+   4
+   >>> ob in uts
+   True
+   >>> ob2 in uts
+   True
+   >>> ob_bob in uts
+   True
+   >>> ob11 in uts
+   True
+
+Note that `getAllUtilitiesRegisteredFor()` does not return the names of
+the utilities.
+
+
 Delegated Utility Lookup
 ########################
 

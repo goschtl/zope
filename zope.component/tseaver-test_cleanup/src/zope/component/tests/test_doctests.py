@@ -492,44 +492,6 @@ def testGetAdapters():
       >>> tearDown()
     """
 
-def test_getAllUtilitiesRegisteredFor():
-    """Again, like for adapters, it is often useful to get a list of all
-    utilities that have been registered for a particular interface. Utilities
-    providing a derived interface are also listed.
-
-    Thus, let's create a derivative interface of `I1`:
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> class I11(I1):
-      ...     pass
-
-      >>> class Ob11(Ob):
-      ...     interface.implements(I11)
-
-      >>> ob11 = Ob11()
-      >>> ob_bob = Ob()
-
-    Now we register the new utilities:
-
-      >>> gsm = component.getGlobalSiteManager()
-      >>> gsm.registerUtility(ob, I1)
-      >>> gsm.registerUtility(ob11, I11)
-      >>> gsm.registerUtility(ob_bob, I1, name='bob')
-      >>> gsm.registerUtility(Comp(2), I2)
-
-    We can now get all the utilities that provide interface `I1`:
-
-      >>> uts = list(component.getAllUtilitiesRegisteredFor(I1))
-      >>> uts = sorted([util.__class__.__name__ for util in uts])
-      >>> uts
-      ['Ob', 'Ob', 'Ob11']
-      >>> tearDown()
-
-    Note that `getAllUtilitiesRegisteredFor()` does not return the names of
-    the utilities.
-    """
-
 def testNotBrokenWhenNoSiteManager():
     """Make sure that the adapter lookup is not broken, when no site manager
     is available.
