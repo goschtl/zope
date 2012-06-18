@@ -466,41 +466,6 @@ def test_multi_handler_unregistration():
     >>> tearDown()
     """
 
-def dont_leak_utility_registrations_in__subscribers():
-    """
-
-    We've observed utilities getting left in _subscribers when they
-    get unregistered.
-
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
-    >>> import zope.interface.registry
-    >>> reg = zope.interface.registry.Components()
-    >>> class C:
-    ...     def __init__(self, name):
-    ...         self.name = name
-    ...     def __repr__(self):
-    ...         return "C(%s)" % self.name
-
-    >>> c1 = C(1)
-    >>> reg.registerUtility(c1, I1)
-    >>> reg.registerUtility(c1, I1)
-    >>> list(reg.getAllUtilitiesRegisteredFor(I1))
-    [C(1)]
-
-    >>> reg.unregisterUtility(provided=I1)
-    True
-    >>> list(reg.getAllUtilitiesRegisteredFor(I1))
-    []
-
-    >>> reg.registerUtility(c1, I1)
-    >>> reg.registerUtility(C(2), I1)
-
-    >>> list(reg.getAllUtilitiesRegisteredFor(I1))
-    [C(2)]
-    >>> tearDown()
-    """
-
 def test_zcml_handler_site_manager():
     """
     The ZCML directives provided by zope.component use the ``getSiteManager``
