@@ -435,37 +435,6 @@ Cleanup:
     >>> tearDown()
     """
 
-
-def test_multi_handler_unregistration():
-    """
-    There was a bug where multiple handlers for the same required
-    specification would all be removed when one of them was
-    unregistered:
-
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
-    >>> class I(zope.interface.Interface):
-    ...     pass
-    >>> def factory1(event):
-    ...     print "| Factory 1 is here"
-    >>> def factory2(event):
-    ...     print "| Factory 2 is here"
-    >>> class Event(object):
-    ...     zope.interface.implements(I)
-    >>> from zope.interface.registry import Components
-    >>> registry = Components()
-    >>> registry.registerHandler(factory1, [I,])
-    >>> registry.registerHandler(factory2, [I,])
-    >>> registry.handle(Event())
-    | Factory 1 is here
-    | Factory 2 is here
-    >>> registry.unregisterHandler(factory1, [I,])
-    True
-    >>> registry.handle(Event())
-    | Factory 2 is here
-    >>> tearDown()
-    """
-
 def test_zcml_handler_site_manager():
     """
     The ZCML directives provided by zope.component use the ``getSiteManager``
