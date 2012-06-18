@@ -185,29 +185,6 @@ def testNo__component_adapts__leakage():
       >>> tearDown()
     """
 
-def test_ability_to_pickle_globalsitemanager():
-    """
-    We need to make sure that it is possible to pickle the global site manager
-    and its two global adapter registries.
-
-      >>> from zope.component import globalSiteManager
-      >>> from zope.component.testing import setUp, tearDown
-      >>> import cPickle
-      >>> setUp()
-      >>> pickle = cPickle.dumps(globalSiteManager)
-      >>> sm = cPickle.loads(pickle)
-      >>> sm is globalSiteManager
-      True
-
-    Now let's ensure that the registries themselves can be pickled as well:
-
-      >>> pickle = cPickle.dumps(globalSiteManager.adapters)
-      >>> adapters = cPickle.loads(pickle)
-      >>> adapters is globalSiteManager.adapters
-      True
-      >>> tearDown()
-    """
-
 def test_persistent_component_managers():
     """
 Here, we'll demonstrate that changes work even when data are stored in

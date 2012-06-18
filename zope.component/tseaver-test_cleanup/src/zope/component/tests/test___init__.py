@@ -39,6 +39,22 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(IComponentLookup.providedBy(gsm))
         self.assertTrue(getGlobalSiteManager() is gsm)
 
+    def test_getGlobalSiteManager_pickling(self):
+        import cPickle
+        from zope.component import getGlobalSiteManager
+        gsm = getGlobalSiteManager()
+        dumped = cPickle.dumps(gsm)
+        loaded = cPickle.loads(dumped)
+        self.assertTrue(loaded is gsm)
+
+        dumped_utilities = cPickle.dumps(gsm.utilities)
+        loaded_utilities = cPickle.loads(dumped_utilities)
+        self.assertTrue(loaded_utilities is gsm.utilities)
+
+        dumped_adapters = cPickle.dumps(gsm.adapters)
+        loaded_adapters = cPickle.loads(dumped_adapters)
+        self.assertTrue(loaded_adapters is gsm.adapters)
+
     def test_getSiteManager_no_args(self):
         from zope.component.globalregistry import base
         from zope.component.interfaces import IComponentLookup
