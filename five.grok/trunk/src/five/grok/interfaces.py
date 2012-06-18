@@ -31,6 +31,8 @@ def api(name):
 
 HAVE_FORMLIB, IGrokcoreFormlibAPI = api(
     'grokcore.formlib.interfaces.IGrokcoreFormlibAPI')
+HAVE_LAYOUT, IGrokcoreLayoutAPI = api(
+    'grokcore.layout.interfaces.IGrokcoreLayoutAPI')
 
 
 class IFiveGrokView(grokcore.view.interfaces.IGrokView):
@@ -45,6 +47,7 @@ class IFiveGrokAPI(grokcore.annotation.interfaces.IGrokcoreAnnotationAPI,
                    grokcore.site.interfaces.IGrokcoreSiteAPI,
                    grokcore.view.interfaces.IGrokcoreViewAPI,
                    grokcore.viewlet.interfaces.IGrokcoreViewletAPI,
-                   IGrokcoreFormlibAPI):
+                   IGrokcoreFormlibAPI,
+                   IGrokcoreLayoutAPI):
     """Official five.grok API.
     """

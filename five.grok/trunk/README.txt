@@ -31,11 +31,13 @@ developers:
 
 - Page Templates (using the Zope 2 Page Templates),
 
-- Formlib forms,
+- Formlib forms (optional, you need to include the extra ``form``),
 
 - Local sites and local utilities,
 
-- Annotations.
+- Annotations,
+
+- Layout (optional, you need to include the extra ``layout``).
 
 All those components are available with exactly the same syntax than
 in grok. You just have to do::
@@ -60,15 +62,16 @@ Note
 And for this release we recommend to pin down the following version in
 your buildout::
 
+  five.formlib = 1.0.4
+  five.localsitemanager = 2.0.5
   grokcore.annotation = 1.3
   grokcore.component = 2.5
   grokcore.formlib = 1.9
+  grokcore.layout = 1.5.1
   grokcore.security = 1.6.1
   grokcore.site = 1.6.1
   grokcore.view = 2.7
   grokcore.viewlet = 1.10.1
-  five.localsitemanager = 2.0.5
-  five.formlib = 1.0.4
   martian = 0.14
 
 

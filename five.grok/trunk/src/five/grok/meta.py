@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from five.grok import components
+from five.grok import components, interfaces
 from grokcore.view.meta.directoryresource import _get_resource_path
 from zope import interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -27,7 +27,7 @@ from AccessControl.security import protectClass, protectName
 from App.class_init import InitializeClass as initializeClass
 
 
-if components.HAVE_FORMLIB:
+if interfaces.HAVE_FORMLIB:
     from five.grok import formlib
 
     class FormGrokker(martian.ClassGrokker):
@@ -65,6 +65,13 @@ class ViewSecurityGrokker(martian.ClassGrokker):
             )
 
         return True
+
+
+if interfaces.HAVE_LAYOUT:
+    import grokcore.layout
+
+    class PageSecurityGrokker(ViewSecurityGrokker):
+        martian.component(grokcore.layout.Page)
 
 
 def _register_resource(config, resource_path, name, layer):

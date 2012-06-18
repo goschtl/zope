@@ -8,7 +8,10 @@ form_requires = [
     'five.formlib',
     'zope.formlib',
     ]
-test_requires = form_requires + [
+layout_requires = [
+    'grokcore.layout',
+    ]
+test_requires = form_requires + layout_requires + [
     ]
 
 setup(name='five.grok',
@@ -57,5 +60,6 @@ setup(name='five.grok',
         ],
       extras_require={
         'form': form_requires,
+        'layout': layout_requires,
         'test': form_requires},
       )

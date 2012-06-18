@@ -17,6 +17,8 @@
   <include package="grokcore.annotation" />
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
+  <include package="grokcore.layout"
+           zcml:condition="installed grokcore.layout" />
 
   <grok:grok package=".subscribers" />
   <grok:grok package=".absoluteurl" />
