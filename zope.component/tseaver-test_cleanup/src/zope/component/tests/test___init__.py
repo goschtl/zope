@@ -191,14 +191,14 @@ class PackageAPITests(unittest.TestCase):
         getGlobalSiteManager().registerUtility(obj1, IFoo)
         self.assertTrue(queryUtility(IFoo, context=context) is obj2)
 
-    def test_getUtiltiesFor_nonesuch(self):
+    def test_getUtilitiesFor_nonesuch(self):
         from zope.interface import Interface
         from zope.component import getUtilitiesFor
         class IFoo(Interface):
             pass
         self.assertEqual(list(getUtilitiesFor(IFoo)), [])
 
-    def test_getUtiltiesFor_anonymous_hit(self):
+    def test_getUtilitiesFor_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
         from zope.component import getUtilitiesFor
@@ -851,6 +851,34 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(adapted.__class__ is Local)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
+
+    def test_getAdapters_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getAdapters
+        class IFoo(Interface):
+            pass
+        self.assertEqual(list(getAdapters((object(),), IFoo)), [])
+
+    def test_getAdapters_hit(self):
+        from zope.interface import Interface
+        from zope.component import getGlobalSiteManager
+        from zope.component import getAdapters
+        class IFoo(Interface):
+            pass
+        class BarAdapter(object):
+            def __init__(self, context):
+                self.context = context
+        class BazAdapter(object):
+            def __init__(self, context):
+                self.context = context
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(BarAdapter, (None,), IFoo)
+        gsm.registerAdapter(BazAdapter, (None,), IFoo, name='bar')
+        tuples = list(getAdapters((object(),), IFoo))
+        self.assertEqual(len(tuples), 2)
+        names = [(x, y.__class__.__name__) for x, y in tuples]
+        self.assertTrue(('', 'BarAdapter') in names)
+        self.assertTrue(('bar', 'BazAdapter') in names)
 
 
 IMyUtility = None

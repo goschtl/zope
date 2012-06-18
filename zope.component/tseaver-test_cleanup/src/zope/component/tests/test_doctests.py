@@ -165,38 +165,6 @@ class ConformsToIComponentLookup(object):
         if interface is IComponentLookup:
             return self.sitemanager
 
-def testGetAdapters():
-    """It is sometimes desireable to get a list of all adapters that are
-    registered for a particular output interface, given a set of
-    objects.
-
-    Let's register some adapters first:
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, [I1], I2, '')
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, [None], I2, 'foo')
-
-    Now we get all the adapters that are registered for `ob` that provide
-    `I2`:
-
-      >>> adapters = sorted(component.getAdapters((ob,), I2))
-      >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
-      [(u'', 'Comp'), (u'foo', 'Comp')]
-
-    Note that the output doesn't include None values. If an adapter
-    factory returns None, it is as if it wasn't present.
-
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     lambda context: None, [I1], I2, 'nah')
-      >>> adapters = sorted(component.getAdapters((ob,), I2))
-      >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
-      [(u'', 'Comp'), (u'foo', 'Comp')]
-      >>> tearDown()
-    """
-
 def testNotBrokenWhenNoSiteManager():
     """Make sure that the adapter lookup is not broken, when no site manager
     is available.

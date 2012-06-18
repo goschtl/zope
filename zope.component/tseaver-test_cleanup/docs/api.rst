@@ -724,6 +724,40 @@ Finding More Than One Adapter
 
 .. autofunction:: zope.component.getAdapters
 
+It is sometimes desireable to get a list of all adapters that are
+registered for a particular output interface, given a set of
+objects.
+
+Let's register some adapters first:
+
+.. doctest::
+
+   >>> class I5(I1):
+   ...     pass
+   >>> gsm.registerAdapter(Comp, [I1], I5, '')
+   >>> gsm.registerAdapter(Comp, [None], I5, 'foo')
+
+Now we get all the adapters that are registered for ``ob`` that provide
+``I5``:
+
+.. doctest::
+
+   >>> from zope.component import getAdapters
+   >>> adapters = sorted(getAdapters((ob,), I5))
+   >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
+   [(u'', 'Comp'), (u'foo', 'Comp')]
+
+Note that the output doesn't include None values. If an adapter
+factory returns None, it is as if it wasn't present.
+
+.. doctest::
+
+   >>> gsm.registerAdapter(lambda context: None, [I1], I5, 'nah')
+   >>> adapters = sorted(getAdapters((ob,), I5))
+   >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
+   [(u'', 'Comp'), (u'foo', 'Comp')]
+
+
 Subscription Adapters
 #####################
 
