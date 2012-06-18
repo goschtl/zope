@@ -586,7 +586,7 @@ After registering under that name:
    True
 
 Invoking an Interface to Perform Adapter Lookup
-===============================================
+###############################################
 
 :mod:`zope.component` registers an adapter hook with
 :mod:`zope.interface.interface`, allowing a convenient spelling for
@@ -618,15 +618,98 @@ unless we pass a default:
    >>> adapted is marker
    True
 
+Looking Up Adapters Using Multiple Objects
+##########################################
+
 .. autofunction:: zope.component.getMultiAdapter
 
 .. autofunction:: zope.component.queryMultiAdapter
 
+Multi-adapters adapt one or more objects to another interface. To make
+this demonstration non-trivial, we need to create a second object to be
+adapted:
+
+.. doctest::
+
+   >>> from zope.component.tests.test_doctests import Ob2
+   >>> ob2 = Ob2()
+
+As with regular adapters, if an adapter isn't registered for the given
+objects and interface, the :func:`~zope.component.getMultiAdapter` API
+raises `ComponentLookupError`:
+
+.. doctest::
+
+   >>> from zope.component import getMultiAdapter
+   >>> getMultiAdapter((ob, ob2), I3)
+   Traceback (most recent call last):
+   ...
+   ComponentLookupError:
+   ((<instance Ob>, <instance Ob2>),
+    <InterfaceClass zope.component.tests.test_doctests.I3>,
+    u'')
+
+while the :func:`~zope.component.queryMultiAdapter` API returns the default:
+
+.. doctest::
+
+   >>> from zope.component import queryMultiAdapter
+   >>> queryMultiAdapter((ob, ob2), I3, default='<default>')
+   '<default>'
+
+Note that ``name`` is not a required attribute here.
+
+To test multi-adapters, we also have to create an adapter class that
+handles to context objects:
+
+.. doctest::
+
+   >>> from zope.interface import implementer
+   >>> @implementer(I3)
+   ... class DoubleAdapter(object):
+   ...     def __init__(self, first, second):
+   ...         self.first = first
+   ...         self.second = second
+
+Now we can register the multi-adapter:
+
+.. doctest::
+
+   >>> from zope.component import getGlobalSiteManager
+   >>> getGlobalSiteManager().registerAdapter(DoubleAdapter, (I1, I2), I3, '')
+
+Notice how the required interfaces are simply provided by a tuple.
+
+Now we can get the adapter:
+
+.. doctest::
+
+   >>> adapter = getMultiAdapter((ob, ob2), I3)
+   >>> adapter.__class__ is DoubleAdapter
+   True
+   >>> adapter.first is ob
+   True
+   >>> adapter.second is ob2
+   True
+
+
+Finding More Than One Adapter
+#############################
+
 .. autofunction:: zope.component.getAdapters
+
+Subscription Adapters
+#####################
 
 .. autofunction:: zope.component.subscribers
 
+Event handlers
+##############
+
 .. autofunction:: zope.component.handle
+
+Helpers for Declaring / Testing Adapters
+########################################
 
 .. autofunction:: zope.component.adapter
 

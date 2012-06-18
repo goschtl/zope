@@ -307,7 +307,7 @@ class PackageAPITests(unittest.TestCase):
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getAdapterInContext, object, IFoo, context=None)
+                          getAdapterInContext, object(), IFoo, context=None)
 
     def test_getAdapterInContext_hit_via_sm(self):
         from zope.interface import Interface
@@ -350,7 +350,7 @@ class PackageAPITests(unittest.TestCase):
         class IFoo(Interface):
             pass
         self.assertEqual(
-            queryAdapterInContext(object, IFoo, context=None), None)
+            queryAdapterInContext(object(), IFoo, context=None), None)
 
     def test_queryAdapterInContext_w_object_conforming(self):
         from zope.interface import Interface
@@ -411,7 +411,8 @@ class PackageAPITests(unittest.TestCase):
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
-        self.assertRaises(ComponentLookupError, getAdapter, object, IFoo, '')
+        self.assertRaises(ComponentLookupError,
+                          getAdapter, object(), IFoo, '')
 
     def test_getAdapter_named_nonesuch(self):
         from zope.interface import Interface
@@ -419,7 +420,8 @@ class PackageAPITests(unittest.TestCase):
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
-        self.assertRaises(ComponentLookupError, getAdapter, object, IFoo, 'bar')
+        self.assertRaises(ComponentLookupError,
+                          getAdapter, object(), IFoo, 'bar')
 
     def test_getAdapter_anonymous_hit(self):
         from zope.interface import Interface
@@ -592,6 +594,203 @@ class PackageAPITests(unittest.TestCase):
         adapted = IFoo(bar)
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
+
+    def test_getMultiAdapter_anonymous_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getMultiAdapter
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        self.assertRaises(ComponentLookupError,
+                          getMultiAdapter, (object(), object()), IFoo, '')
+
+    def test_getMultiAdapter_named_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getMultiAdapter
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        self.assertRaises(ComponentLookupError,
+                          getMultiAdapter, (object(), object()), IFoo, 'bar')
+
+    def test_getMultiAdapter_anonymous_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import getMultiAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        @implementer(IFoo)
+        class FooAdapter(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        getGlobalSiteManager().registerAdapter(
+                                FooAdapter, (IBar, IBaz), IFoo, '')
+        bar = Bar()
+        baz = Baz()
+        adapted = getMultiAdapter((bar, baz), IFoo, '')
+        self.assertTrue(adapted.__class__ is FooAdapter)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
+
+    def test_getMultiAdapter_named_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getMultiAdapter
+        from zope.component import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        @implementer(IFoo)
+        class FooAdapter(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        getGlobalSiteManager().registerAdapter(
+                                    FooAdapter, (IBar, IBaz), IFoo, 'named')
+        bar = Bar()
+        baz = Baz()
+        adapted = getMultiAdapter((bar, baz), IFoo, 'named')
+        self.assertTrue(adapted.__class__ is FooAdapter)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
+
+    def test_queryMultiAdapter_anonymous_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import queryMultiAdapter
+        class IFoo(Interface):
+            pass
+        self.assertEqual(queryMultiAdapter((object(), object()), IFoo, '',
+                                            '<default>'),
+                         '<default>')
+
+    def test_queryMultiAdapter_named_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import queryMultiAdapter
+        class IFoo(Interface):
+            pass
+        self.assertEqual(queryMultiAdapter((object(), object()), IFoo, 'bar'),
+                         None)
+
+    def test_queryMultiAdapter_anonymous_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryMultiAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        @implementer(IFoo)
+        class FooAdapter(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        getGlobalSiteManager().registerAdapter(
+                                    FooAdapter, (IBar, IBaz), IFoo, '')
+        bar = Bar()
+        baz = Baz()
+        adapted = queryMultiAdapter((bar, baz), IFoo, '')
+        self.assertTrue(adapted.__class__ is FooAdapter)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
+
+    def test_queryMultiAdapter_named_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryMultiAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        @implementer(IFoo)
+        class FooAdapter(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        getGlobalSiteManager().registerAdapter(
+                                    FooAdapter, (IBar, IBaz), IFoo, 'named')
+        bar = Bar()
+        baz = Baz()
+        adapted = queryMultiAdapter((bar, baz), IFoo, 'named')
+        self.assertTrue(adapted.__class__ is FooAdapter)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
+
+    def test_queryMultiAdapter_nested(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface.registry import Components
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryMultiAdapter
+        from zope.component.tests.test_doctests \
+            import ConformsToIComponentLookup
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        @implementer(IFoo)
+        class Global(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        @implementer(IFoo)
+        class Local(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        class Context(ConformsToIComponentLookup):
+            def __init__(self, sm):
+                self.sitemanager = sm
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(Global, (IBar, IBaz), IFoo, '')
+        sm1 = Components('sm1', bases=(gsm, ))
+        sm1.registerAdapter(Local, (IBar, IBaz), IFoo, '')
+        bar = Bar()
+        baz = Baz()
+        adapted = queryMultiAdapter((bar, baz), IFoo, '', context=Context(sm1))
+        self.assertTrue(adapted.__class__ is Local)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
 
 
 IMyUtility = None

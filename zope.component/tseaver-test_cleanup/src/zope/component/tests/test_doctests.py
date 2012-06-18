@@ -165,64 +165,6 @@ class ConformsToIComponentLookup(object):
         if interface is IComponentLookup:
             return self.sitemanager
 
-def testMultiAdapter():
-    """Adapting a combination of 2 objects to an interface
-
-    Multi-adapters adapt one or more objects to another interface. To make
-    this demonstration non-trivial, we need to create a second object to be
-    adapted:
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> ob2 = Ob2()
-
-    Like for regular adapters, if an adapter isn't registered for the given
-    objects and interface, and you provide no default, raise
-    `ComponentLookupError`...
-
-      >>> component.getMultiAdapter((ob, ob2), I3) \\
-      ... #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      ComponentLookupError:
-      ((<instance Ob>, <instance Ob2>),
-       <InterfaceClass zope.component.tests.test_doctests.I3>,
-       u'')
-
-    ...otherwise, you get the default
-
-      >>> component.queryMultiAdapter((ob, ob2), I3, default='<default>')
-      '<default>'
-
-    Note that the name is not a required attribute here.
-
-    To test multi-adapters, we also have to create an adapter class that
-    handles to context objects:
-
-      >>> class DoubleAdapter(object):
-      ...     interface.implements(I3)
-      ...     def __init__(self, first, second):
-      ...         self.first = first
-      ...         self.second = second
-
-    Now we can register the multi-adapter using
-
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     DoubleAdapter, (I1, I2), I3, '')
-
-    Notice how the required interfaces are simply provided by a tuple. Now we
-    can get the adapter:
-
-      >>> adapter = component.getMultiAdapter((ob, ob2), I3)
-      >>> adapter.__class__ is DoubleAdapter
-      True
-      >>> adapter.first is ob
-      True
-      >>> adapter.second is ob2
-      True
-      >>> tearDown()
-    """
-
 def testAdapterForInterfaceNone():
     """Providing an adapter for None says that your adapter can adapt anything
     to `I2`.
