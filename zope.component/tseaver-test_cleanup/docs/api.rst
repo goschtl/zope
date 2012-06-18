@@ -383,9 +383,75 @@ retruned:
 Adapter Registration APIs
 -------------------------
 
+Named Adapter Lookup
+####################
+
 .. autofunction:: zope.component.getAdapter
 
 .. autofunction:: zope.component.getAdapterInContext
+
+.. testsetup::
+
+   from zope.component.testing import setUp
+   setUp()
+
+The ``getAdapter`` and ``queryAdapter`` API functions are similar to
+``{get|query}AdapterInContext()`` functions, except that they do not care
+about the ``__conform__()`` but also handle named adapters. (Actually, the
+name is a required argument.)
+
+If no adapter is registered for the given object, interface, and name,
+``getAdapter`` raises ``ComponentLookupError``, while ``queryAdapter``
+returns the default:
+
+.. doctest::
+
+   >>> from zope.component import getAdapter
+   >>> from zope.component import queryAdapter
+   >>> from zope.component.tests.test_doctests import I2
+   >>> from zope.component.tests.test_doctests import ob
+   >>> getAdapter(ob, I2, '')
+   Traceback (most recent call last):
+   ...
+   ComponentLookupError: (<instance Ob>,
+                          <InterfaceClass zope.component.tests.test_doctests.I2>,
+                          '')
+   >>> queryAdapter(ob, I2, '', '<default>')
+   '<default>'
+
+The 'requires' argument to `registerAdapter` must be a sequence, rather than
+a single interface:
+
+.. doctest::
+
+   >>> gsm.registerAdapter(Comp, I1, I2, '')
+   Traceback (most recent call last):
+     ...
+   TypeError: the required argument should be a list of interfaces, not a single interface
+
+After register an adapter from `I1` to `I2` with the global site manager:
+
+.. doctest::
+
+   >>> from zope.component import getGlobalSiteManager
+   >>> from zope.component.tests.test_doctests import Comp
+   >>> gsm = getGlobalSiteManager()
+   >>> gsm.registerAdapter(Comp, (I1,), I2, '')
+
+We can access the adapter using the `getAdapter()` API:
+
+.. doctest::
+
+   >>> adapter = getAdapter(ob, I2, '')
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is ob
+   True
+   >>> adapter = queryAdapter(ob, I2, '')
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is ob
+   True
 
 .. autofunction:: zope.component.getMultiAdapter
 
@@ -407,6 +473,11 @@ Adapter Registration APIs
 
 .. autofunction:: zope.component.adapts
 
+
+.. testcleanup::
+
+   from zope.component.testing import tearDown
+   tearDown()
 
 Factory APIs
 ------------

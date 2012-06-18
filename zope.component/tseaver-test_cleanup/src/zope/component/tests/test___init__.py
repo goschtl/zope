@@ -65,7 +65,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.component.interfaces import ComponentLookupError
         self.assertRaises(ComponentLookupError, getSiteManager, object())
 
-    def test_getUtilty_anonymous_nonesuch(self):
+    def test_getUtility_anonymous_nonesuch(self):
         from zope.interface import Interface
         from zope.component import getUtility
         from zope.component.interfaces import ComponentLookupError
@@ -73,7 +73,7 @@ class PackageAPITests(unittest.TestCase):
             pass
         self.assertRaises(ComponentLookupError, getUtility, IFoo)
 
-    def test_getUtilty_named_nonesuch(self):
+    def test_getUtility_named_nonesuch(self):
         from zope.interface import Interface
         from zope.component import getUtility
         from zope.component.interfaces import ComponentLookupError
@@ -81,7 +81,7 @@ class PackageAPITests(unittest.TestCase):
             pass
         self.assertRaises(ComponentLookupError, getUtility, IFoo, name='bar')
 
-    def test_getUtilty_anonymous_hit(self):
+    def test_getUtility_anonymous_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
         from zope.component import getUtility
@@ -91,7 +91,7 @@ class PackageAPITests(unittest.TestCase):
         getGlobalSiteManager().registerUtility(obj, IFoo)
         self.assertTrue(getUtility(IFoo) is obj)
 
-    def test_getUtilty_named_hit(self):
+    def test_getUtility_named_hit(self):
         from zope.interface import Interface
         from zope.component import getUtility
         from zope.component import getGlobalSiteManager
@@ -121,14 +121,14 @@ class PackageAPITests(unittest.TestCase):
         getGlobalSiteManager().registerUtility(obj1, IFoo)
         self.assertTrue(getUtility(IFoo, context=context) is obj2)
 
-    def test_queryUtilty_anonymous_nonesuch(self):
+    def test_queryUtility_anonymous_nonesuch(self):
         from zope.interface import Interface
         from zope.component import queryUtility
         class IFoo(Interface):
             pass
         self.assertEqual(queryUtility(IFoo), None)
 
-    def test_queryUtilty_anonymous_nonesuch_w_default(self):
+    def test_queryUtility_anonymous_nonesuch_w_default(self):
         from zope.interface import Interface
         from zope.component import queryUtility
         class IFoo(Interface):
@@ -136,14 +136,14 @@ class PackageAPITests(unittest.TestCase):
         obj = object()
         self.assertTrue(queryUtility(IFoo, default=obj) is obj)
 
-    def test_queryUtilty_named_nonesuch(self):
+    def test_queryUtility_named_nonesuch(self):
         from zope.interface import Interface
         from zope.component import queryUtility
         class IFoo(Interface):
             pass
         self.assertEqual(queryUtility(IFoo, name='bar'), None)
 
-    def test_queryUtilty_named_nonesuch_w_default(self):
+    def test_queryUtility_named_nonesuch_w_default(self):
         from zope.interface import Interface
         from zope.component import queryUtility
         class IFoo(Interface):
@@ -151,7 +151,7 @@ class PackageAPITests(unittest.TestCase):
         obj = object()
         self.assertTrue(queryUtility(IFoo, name='bar', default=obj) is obj)
 
-    def test_queryUtilty_anonymous_hit(self):
+    def test_queryUtility_anonymous_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
         from zope.component import queryUtility
@@ -161,7 +161,7 @@ class PackageAPITests(unittest.TestCase):
         getGlobalSiteManager().registerUtility(obj, IFoo)
         self.assertTrue(queryUtility(IFoo) is obj)
 
-    def test_queryUtilty_named_hit(self):
+    def test_queryUtility_named_hit(self):
         from zope.interface import Interface
         from zope.component import queryUtility
         from zope.component import getGlobalSiteManager
@@ -299,6 +299,160 @@ class PackageAPITests(unittest.TestCase):
                                             is custom_util)
         self.assertTrue(queryNextUtility(sm1, IMyUtility, 'myutil')
                                             is gutil)
+
+    def test_getAdapter_anonymous_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getAdapter
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        self.assertRaises(ComponentLookupError, getAdapter, object, IFoo, '')
+
+    def test_getAdapter_named_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import getAdapter
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        self.assertRaises(ComponentLookupError, getAdapter, object, IFoo, 'bar')
+
+    def test_getAdapter_anonymous_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import getAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, '')
+        bar = Bar()
+        adapted = getAdapter(bar, IFoo, '')
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is bar)
+
+    def test_getAdapter_named_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getAdapter
+        from zope.component import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, 'named')
+        bar = Bar()
+        adapted = getAdapter(bar, IFoo, 'named')
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is bar)
+
+    def test_queryAdapter_anonymous_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapter
+        class IFoo(Interface):
+            pass
+        self.assertEqual(queryAdapter(object(), IFoo, '', '<default>'),
+                         '<default>')
+
+    def test_queryAdapter_named_nonesuch(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapter
+        class IFoo(Interface):
+            pass
+        self.assertEqual(queryAdapter(object(), IFoo, 'bar'), None)
+
+    def test_queryAdapter_anonymous_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, '')
+        bar = Bar()
+        adapted = queryAdapter(bar, IFoo, '')
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is bar)
+
+    def test_queryAdapter_named_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, 'named')
+        bar = Bar()
+        adapted = queryAdapter(bar, IFoo, 'named')
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is bar)
+
+    def test_queryAdapter_nested(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface.registry import Components
+        from zope.component import getGlobalSiteManager
+        from zope.component import queryAdapter
+        from zope.component.tests.test_doctests \
+            import ConformsToIComponentLookup
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Global(object):
+            def __init__(self, context):
+                self.context = context
+        @implementer(IFoo)
+        class Local(object):
+            def __init__(self, context):
+                self.context = context
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        class Context(ConformsToIComponentLookup):
+            def __init__(self, sm):
+                self.sitemanager = sm
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(Global, (IBar,), IFoo, '')
+        sm1 = Components('sm1', bases=(gsm, ))
+        sm1.registerAdapter(Local, (IBar,), IFoo, '')
+        bar = Bar()
+        adapted = queryAdapter(bar, IFoo, '', context=Context(sm1))
+        self.assertTrue(adapted.__class__ is Local)
+        self.assertTrue(adapted.context is bar)
 
 
 IMyUtility = None

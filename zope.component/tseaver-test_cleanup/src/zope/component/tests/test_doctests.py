@@ -249,55 +249,6 @@ def testAdapterInContext(self):
       >>> tearDown()
     """
 
-def testAdapter():
-    """The `getAdapter()` and `queryAdapter()` API functions are similar to
-    `{get|query}AdapterInContext()` functions, except that they do not care
-    about the `__conform__()` but also handle named adapters. (Actually, the
-    name is a required argument.)
-
-    If an adapter isn't registered for the given object and interface, and you
-    provide no default, raise `ComponentLookupError`...
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getAdapter(ob, I2, '') #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      ComponentLookupError: (<instance Ob>,
-                             <InterfaceClass zope.component.tests.test_doctests.I2>,
-                             '')
-
-    ...otherwise, you get the default
-
-      >>> component.queryAdapter(ob, I2, '', '<default>')
-      '<default>'
-
-    Now get the global site manager and register an adapter from `I1` to `I2`
-    without a name:
-
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, (I1,), I2, '')
-
-    You should get a sensible error message if you forget that the 'requires'
-    argument is supposed to be a sequence
-
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, I1, I2, '')
-      Traceback (most recent call last):
-        ...
-      TypeError: the required argument should be a list of interfaces, not a single interface
-
-    You can now simply access the adapter using the `getAdapter()` API
-    function:
-
-      >>> adapter = component.getAdapter(ob, I2, '')
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is ob
-      True
-      >>> tearDown()
-    """
-
 def testInterfaceCall():
     """Here we test the `adapter_hook()` function that we registered with the
     `zope.interface` adapter hook registry, so that we can call interfaces to
