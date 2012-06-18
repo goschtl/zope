@@ -383,17 +383,120 @@ retruned:
 Adapter Registration APIs
 -------------------------
 
-Named Adapter Lookup
-####################
-
-.. autofunction:: zope.component.getAdapter
-
-.. autofunction:: zope.component.getAdapterInContext
+Conforming Adapter Lookup
+#########################
 
 .. testsetup::
 
    from zope.component.testing import setUp
    setUp()
+
+.. autofunction:: zope.component.getAdapterInContext
+
+.. autofunction:: zope.component.queryAdapterInContext
+
+The :function:`~zope.component.getAdapterInContext` and
+:function:`~zope.component.queryAdapterInContext` APIs first check the
+context object to see if it already conforms to the requested interface.
+If so, the object is returned immediately.  Otherwise, the adapter factory
+is looked up in the site manager, and called.
+
+Let's start by creating a component that supports the `__conform__()` method:
+
+.. doctest::
+
+   >>> from zope.interface import implementer
+   >>> from zope.component.tests.test_doctests import I1
+   >>> from zope.component.tests.test_doctests import I2
+   >>> @implementer(I1)
+   ... class Component(object):
+   ...     def __conform__(self, iface, default=None):
+   ...         if iface == I2:
+   ...             return 42
+   >>> ob = Component()
+
+We also gave the component a custom representation, so it will be easier
+to use in these tests.
+
+We now have to create a site manager (other than the default global one)
+with which we can register adapters for `I1`.
+
+.. doctest::
+
+   >>> from zope.component.globalregistry import BaseGlobalComponents
+   >>> sitemanager = BaseGlobalComponents()
+
+Now we create a new `context` that knows how to get to our custom site
+manager.
+
+.. doctest::
+
+   >>> from zope.component.tests.test_doctests \
+   ...      import ConformsToIComponentLookup
+   >>> context = ConformsToIComponentLookup(sitemanager)
+
+If an object implements the interface you want to adapt to,
+`getAdapterInContext()` should simply return the object.
+
+.. doctest::
+
+   >>> from zope.component import getAdapterInContext
+   >>> from zope.component import queryAdapterInContext
+   >>> getAdapterInContext(ob, I1, context) is ob
+   True
+   >>> queryAdapterInContext(ob, I1, context) is ob
+   True
+
+If an object conforms to the interface you want to adapt to,
+`getAdapterInContext()` should simply return the conformed object.
+
+.. doctest::
+
+   >>> getAdapterInContext(ob, I2, context)
+   42
+   >>> queryAdapterInContext(ob, I2, context)
+   42
+
+If an adapter isn't registered for the given object and interface, and you
+provide no default, the `getAdapterInContext` API raises ComponentLookupError:
+
+.. doctest::
+
+   >>> from zope.interface import Interface
+   >>> class I4(Interface):
+   ...     pass
+
+   >>> getAdapterInContext(ob, I4, context)
+   Traceback (most recent call last):
+   ...
+   ComponentLookupError: (<Component implementing 'I1'>,
+                          <InterfaceClass zope.component.tests.test_doctests.I4>)
+
+While the `queryAdapterInContext` API returns the default:
+
+.. doctest::
+
+   >>> queryAdapterInContext(ob, I4, context, 44)
+   44
+
+If you ask for an adapter for which something's registered you get the
+registered adapter:
+
+.. doctest::
+
+   >>> from zope.component.tests.test_doctests import I3
+   >>> sitemanager.registerAdapter(lambda x: 43, (I1,), I3, '')
+   >>> getAdapterInContext(ob, I3, context)
+   43
+   >>> queryAdapterInContext(ob, I3, context)
+   43
+
+Named Adapter Lookup
+####################
+
+.. autofunction:: zope.component.getAdapter
+
+.. autofunction:: zope.component.queryAdapter
 
 The ``getAdapter`` and ``queryAdapter`` API functions are similar to
 ``{get|query}AdapterInContext()`` functions, except that they do not care
@@ -454,10 +557,6 @@ We can access the adapter using the `getAdapter()` API:
    True
 
 .. autofunction:: zope.component.getMultiAdapter
-
-.. autofunction:: zope.component.queryAdapter
-
-.. autofunction:: zope.component.queryAdapterInContext
 
 .. autofunction:: zope.component.queryMultiAdapter
 
