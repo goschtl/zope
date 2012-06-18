@@ -15,120 +15,50 @@
 """
 import unittest
 
-from zope import interface, component
-from zope.interface.verify import verifyObject
+from zope.configuration.xmlconfig import XMLConfig, xmlconfig
+from zope.configuration.exceptions import ConfigurationError
+from zope.interface import Interface
+from zope.interface import implements
 from zope.interface.interfaces import IInterface
-from zope.testing import renormalizing
+from zope.security.checker import ProxyFactory
 from zope.testrunner.layer import UnitTests
 
 from zope.component.interfaces import ComponentLookupError
-from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IComponentLookup
-from zope.component.testing import setUp, tearDown, PlacelessSetup
-import zope.component.persistentregistry
-import zope.component.globalregistry
-
-from zope.configuration.xmlconfig import XMLConfig, xmlconfig
-from zope.configuration.exceptions import ConfigurationError
-from zope.security.checker import ProxyFactory
-
-from zope.component.testfiles.adapter import A1, A2, A3
-from zope.component.testfiles.components import IContent, Content
-from zope.component.testfiles.components import IApp
-from zope.component.testfiles.views import Request, IC, IV, V1, R1, IR
+from zope.component.testfiles.adapter import A1
+from zope.component.testfiles.adapter import A2
+from zope.component.testfiles.adapter import A3
+from zope.component.testfiles.components import Content
+from zope.component.testfiles.components import IContent
+from zope.component.testfiles.views import Request
+from zope.component.testfiles.views import IC
+from zope.component.testfiles.views import IV
+from zope.component.testfiles.views import V1
+from zope.component.testfiles.views import R1
+from zope.component.testfiles.views import IR
+from zope.component.testing import setUp
+from zope.component.testing import tearDown
+from zope.component.testing import PlacelessSetup
 
 # side effect gets component-based event dispatcher installed.
 # we should obviously make this more explicit
 import zope.component.event
 
-class I1(interface.Interface):
+class I1(Interface):
     pass
-class I2(interface.Interface):
+class I2(Interface):
     pass
-class I2e(I2):
-    pass
-class I3(interface.Interface):
+class I3(Interface):
     pass
 
 class ITestType(IInterface):
     pass
 
-class U:
-
-    def __init__(self, name):
-        self.__name__ = name
-
-    def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.__name__)
-
-class U1(U):
-    interface.implements(I1)
-
-class U12(U):
-    interface.implements(I1, I2)
-
-class IA1(interface.Interface):
-    pass
-
-class IA2(interface.Interface):
-    pass
-
-class IA3(interface.Interface):
-    pass
-
-class A:
-
-    def __init__(self, *context):
-        self.context = context
-
-    def __repr__(self):
-        return "%s%r" % (self.__class__.__name__, self.context)
-
-class A12_1(A):
-    component.adapts(I1, I2)
-    interface.implements(IA1)
-
-class A12_(A):
-    component.adapts(I1, I2)
-
-class A_2(A):
-    interface.implements(IA2)
-
-class A_3(A):
-    interface.implements(IA3)
-
-class A1_12(U):
-    component.adapts(I1)
-    interface.implements(IA1, IA2)
-
-class A1_2(U):
-    component.adapts(I1)
-    interface.implements(IA2)
-
-class A1_23(U):
-    component.adapts(I1)
-    interface.implements(IA1, IA3)
-
 def noop(*args):
     pass
 
-@component.adapter(I1)
-def handle1(x):
-    print 'handle1', x
-
-def handle(*objects):
-    print 'handle', objects
-
-@component.adapter(I1)
-def handle3(x):
-    print 'handle3', x
-
-@component.adapter(I1)
-def handle4(x):
-    print 'handle4', x
-
 class Ob(object):
-    interface.implements(I1)
+    implements(I1)
     def __repr__(self):
         return '<instance Ob>'
 
@@ -136,19 +66,19 @@ class Ob(object):
 ob = Ob()
 
 class Ob2(object):
-    interface.implements(I2)
+    implements(I2)
     def __repr__(self):
         return '<instance Ob2>'
 
 class Comp(object):
-    interface.implements(I2)
+    implements(I2)
     def __init__(self, context):
         self.context = context
 
 comp = Comp(1)
 
 class Comp2(object):
-    interface.implements(I3)
+    implements(I3)
     def __init__(self, context):
         self.context = context
 
@@ -172,9 +102,10 @@ def testNo__component_adapts__leakage():
     doesn't affect instances.
 
       >>> from zope.component.testing import setUp, tearDown
+      >>> from zope.component import adapts
       >>> setUp()
       >>> class C:
-      ...     component.adapts()
+      ...     adapts()
 
       >>> C.__component_adapts__
       ()
@@ -183,233 +114,6 @@ def testNo__component_adapts__leakage():
       ...
       AttributeError: __component_adapts__
       >>> tearDown()
-    """
-
-def test_persistent_component_managers():
-    """
-Here, we'll demonstrate that changes work even when data are stored in
-a database and when accessed from multiple connections.
-
-Start by setting up a database and creating two transaction
-managers and database connections to work with.
-
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
-    >>> import ZODB.tests.util
-    >>> db = ZODB.tests.util.DB()
-    >>> import transaction
-    >>> t1 = transaction.TransactionManager()
-    >>> c1 = db.open(transaction_manager=t1)
-    >>> r1 = c1.root()
-    >>> t2 = transaction.TransactionManager()
-    >>> c2 = db.open(transaction_manager=t2)
-    >>> r2 = c2.root()
-
-Create a set of components registries in the database, alternating
-connections.
-
-    >>> from zope.component.persistentregistry import PersistentComponents
-
-    >>> _ = t1.begin()
-    >>> r1[1] = PersistentComponents('1')
-    >>> t1.commit()
-
-    >>> _ = t2.begin()
-    >>> r2[2] = PersistentComponents('2', (r2[1], ))
-    >>> t2.commit()
-
-    >>> _ = t1.begin()
-    >>> r1[3] = PersistentComponents('3', (r1[1], ))
-    >>> t1.commit()
-
-    >>> _ = t2.begin()
-    >>> r2[4] = PersistentComponents('4', (r2[2], r2[3]))
-    >>> t2.commit()
-
-    >>> _ = t1.begin()
-    >>> r1[1].__bases__
-    ()
-    >>> r1[2].__bases__ == (r1[1], )
-    True
-
-    >>> r1[1].registerUtility(U1(1))
-    >>> r1[1].queryUtility(I1)
-    U1(1)
-    >>> r1[2].queryUtility(I1)
-    U1(1)
-    >>> t1.commit()
-
-    >>> _ = t2.begin()
-    >>> r2[1].registerUtility(U1(2))
-    >>> r2[2].queryUtility(I1)
-    U1(2)
-
-    >>> r2[4].queryUtility(I1)
-    U1(2)
-    >>> t2.commit()
-
-
-    >>> _ = t1.begin()
-    >>> r1[1].registerUtility(U12(1), I2)
-    >>> r1[4].queryUtility(I2)
-    U12(1)
-    >>> t1.commit()
-
-
-    >>> _ = t2.begin()
-    >>> r2[3].registerUtility(U12(3), I2)
-    >>> r2[4].queryUtility(I2)
-    U12(3)
-    >>> t2.commit()
-
-    >>> _ = t1.begin()
-
-    >>> r1[1].registerHandler(handle1, info="First handler")
-    >>> r1[2].registerHandler(handle, required=[U])
-
-    >>> r1[3].registerHandler(handle3)
-
-    >>> r1[4].registerHandler(handle4)
-
-    >>> r1[4].handle(U1(1))
-    handle1 U1(1)
-    handle3 U1(1)
-    handle (U1(1),)
-    handle4 U1(1)
-
-    >>> t1.commit()
-
-    >>> _ = t2.begin()
-    >>> r2[4].handle(U1(1))
-    handle1 U1(1)
-    handle3 U1(1)
-    handle (U1(1),)
-    handle4 U1(1)
-    >>> t2.abort()
-
-    >>> db.close()
-    >>> tearDown()
-    """
-
-def persistent_registry_doesnt_scew_up_subsribers():
-    """
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
-    >>> import ZODB.tests.util
-    >>> db = ZODB.tests.util.DB()
-    >>> import transaction
-    >>> t1 = transaction.TransactionManager()
-    >>> c1 = db.open(transaction_manager=t1)
-    >>> r1 = c1.root()
-    >>> t2 = transaction.TransactionManager()
-    >>> c2 = db.open(transaction_manager=t2)
-    >>> r2 = c2.root()
-
-    >>> from zope.component.persistentregistry import PersistentComponents
-
-    >>> _ = t1.begin()
-    >>> r1[1] = PersistentComponents('1')
-    >>> r1[1].registerHandler(handle1)
-    >>> r1[1].registerSubscriptionAdapter(handle1, provided=I2)
-    >>> _ = r1[1].unregisterHandler(handle1)
-    >>> _ = r1[1].unregisterSubscriptionAdapter(handle1, provided=I2)
-    >>> t1.commit()
-    >>> _ = t1.begin()
-    >>> r1[1].registerHandler(handle1)
-    >>> r1[1].registerSubscriptionAdapter(handle1, provided=I2)
-    >>> t1.commit()
-
-    >>> _ = t2.begin()
-    >>> len(list(r2[1].registeredHandlers()))
-    1
-    >>> len(list(r2[1].registeredSubscriptionAdapters()))
-    1
-    >>> t2.abort()
-    >>> tearDown()
-    """
-
-
-
-class GlobalRegistry:
-    pass
-
-base = zope.component.globalregistry.GlobalAdapterRegistry(
-    GlobalRegistry, 'adapters')
-GlobalRegistry.adapters = base
-def clear_base():
-    base.__init__(GlobalRegistry, 'adapters')
-
-def test_deghostification_of_persistent_adapter_registries():
-    """
-
-We want to make sure that we see updates corrextly.
-
-    >>> import persistent
-    >>> import transaction
-    >>> class IFoo(interface.Interface):
-    ...     pass
-    >>> class Foo(persistent.Persistent):
-    ...     interface.implements(IFoo)
-    ...     name = ''
-    ...     def __init__(self, name=''):
-    ...         self.name = name
-    ...     def __repr__(self):
-    ...         return 'Foo(%r)' % self.name
-
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
-    >>> len(base._v_subregistries)
-    0
-
-    >>> import ZODB.tests.util
-    >>> db = ZODB.tests.util.DB()
-    >>> tm1 = transaction.TransactionManager()
-    >>> c1 = db.open(transaction_manager=tm1)
-    >>> r1 = zope.component.persistentregistry.PersistentAdapterRegistry(
-    ...           (base,))
-    >>> r2 = zope.component.persistentregistry.PersistentAdapterRegistry((r1,))
-    >>> c1.root()[1] = r1
-    >>> c1.root()[2] = r2
-    >>> tm1.commit()
-    >>> r1._p_deactivate()
-
-    >>> len(base._v_subregistries)
-    0
-
-    >>> tm2 = transaction.TransactionManager()
-    >>> c2 = db.open(transaction_manager=tm2)
-    >>> r1 = c2.root()[1]
-    >>> r2 = c2.root()[2]
-
-    >>> r1.lookup((), IFoo, '')
-
-    >>> base.register((), IFoo, '', Foo(''))
-    >>> r1.lookup((), IFoo, '')
-    Foo('')
-
-    >>> r2.lookup((), IFoo, '1')
-
-    >>> r1.register((), IFoo, '1', Foo('1'))
-
-    >>> r2.lookup((), IFoo, '1')
-    Foo('1')
-
-    >>> r1.lookup((), IFoo, '2')
-    >>> r2.lookup((), IFoo, '2')
-
-    >>> base.register((), IFoo, '2', Foo('2'))
-
-    >>> r1.lookup((), IFoo, '2')
-    Foo('2')
-
-    >>> r2.lookup((), IFoo, '2')
-    Foo('2')
-
-Cleanup:
-
-    >>> db.close()
-    >>> clear_base()
-    >>> tearDown()
     """
 
 def test_zcml_handler_site_manager():
@@ -587,7 +291,7 @@ class HookableTests(unittest.TestCase):
             self.fail('Deleted implementation')
 
 class Ob3(object):
-    interface.implements(IC)
+    implements(IC)
 
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
@@ -775,7 +479,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assert_(isinstance(a1, A1))
 
         class MyContent:
-            interface.implements(IContent)
+            implements(IContent)
 
         self.assertRaises(ComponentLookupError, zope.component.getMultiAdapter,
                           (MyContent(), Request(IR)))
@@ -994,9 +698,10 @@ def tearDownRegistryTests(tests):
     zope.event.subscribers.pop()
 
 def clearZCML(test=None):
+    import zope.component
     tearDown()
     setUp()
-    XMLConfig('meta.zcml', component)()
+    XMLConfig('meta.zcml', zope.component)()
 
 def test_suite():
     import doctest
