@@ -395,8 +395,8 @@ Conforming Adapter Lookup
 
 .. autofunction:: zope.component.queryAdapterInContext
 
-The :function:`~zope.component.getAdapterInContext` and
-:function:`~zope.component.queryAdapterInContext` APIs first check the
+The :func:`~zope.component.getAdapterInContext` and
+:func:`~zope.component.queryAdapterInContext` APIs first check the
 context object to see if it already conforms to the requested interface.
 If so, the object is returned immediately.  Otherwise, the adapter factory
 is looked up in the site manager, and called.
@@ -470,7 +470,7 @@ provide no default, the `getAdapterInContext` API raises ComponentLookupError:
    Traceback (most recent call last):
    ...
    ComponentLookupError: (<Component implementing 'I1'>,
-                          <InterfaceClass zope.component.tests.test_doctests.I4>)
+                          <InterfaceClass ...I4>)
 
 While the `queryAdapterInContext` API returns the default:
 
@@ -551,6 +551,35 @@ We can access the adapter using the `getAdapter()` API:
    >>> adapter.context is ob
    True
    >>> adapter = queryAdapter(ob, I2, '')
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is ob
+   True
+
+If we search using a non-anonymous name, before registering:
+
+.. doctest::
+
+   >>> getAdapter(ob, I2, 'named')
+   Traceback (most recent call last):
+   ...
+   ComponentLookupError: (<instance Ob>,
+                          <InterfaceClass ....I2>,
+                          'named')
+   >>> queryAdapter(ob, I2, 'named', '<default>')
+   '<default>'
+
+After registering under that name:
+
+.. doctest::
+
+   >>> gsm.registerAdapter(Comp, (I1,), I2, 'named')
+   >>> adapter = getAdapter(ob, I2, 'named')
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is ob
+   True
+   >>> adapter = queryAdapter(ob, I2, 'named')
    >>> adapter.__class__ is Comp
    True
    >>> adapter.context is ob

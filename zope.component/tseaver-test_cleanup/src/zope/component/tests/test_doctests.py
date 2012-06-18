@@ -202,47 +202,6 @@ def testInterfaceCall():
       >>> tearDown()
     """
 
-def testNamedAdapter():
-    """Make sure that adapters with names are correctly selected from the
-    registry.
-
-    First we register some named adapter:
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     lambda x: 0, [I1], I2, 'foo')
-
-    If an adapter isn't registered for the given object and interface,
-    and you provide no default, raise `ComponentLookupError`...
-
-      >>> component.getAdapter(ob, I2, 'bar') \\
-      ... #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      ComponentLookupError:
-      (<instance Ob>, <InterfaceClass zope.component.tests.test_doctests.I2>, 'bar')
-
-    ...otherwise, you get the default
-
-      >>> component.queryAdapter(ob, I2, 'bar', '<default>')
-      '<default>'
-
-    But now we register an adapter for the object having the correct name
-
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, [I1], I2, 'bar')
-
-    so that the lookup succeeds:
-
-      >>> adapter = component.getAdapter(ob, I2, 'bar')
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is ob
-      True
-      >>> tearDown()
-    """
-
 def testMultiAdapter():
     """Adapting a combination of 2 objects to an interface
 

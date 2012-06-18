@@ -300,6 +300,111 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(queryNextUtility(sm1, IMyUtility, 'myutil')
                                             is gutil)
 
+    def test_getAdapterInContext_miss(self):
+        from zope.interface import Interface
+        from zope.component import getAdapterInContext
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        self.assertRaises(ComponentLookupError,
+                          getAdapterInContext, object, IFoo, context=None)
+
+    def test_getAdapterInContext_hit_via_sm(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface.registry import Components
+        from zope.component import getGlobalSiteManager
+        from zope.component import getAdapterInContext
+        from zope.component.tests.test_doctests \
+            import ConformsToIComponentLookup
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Global(object):
+            def __init__(self, context):
+                self.context = context
+        @implementer(IFoo)
+        class Local(object):
+            def __init__(self, context):
+                self.context = context
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        class Context(ConformsToIComponentLookup):
+            def __init__(self, sm):
+                self.sitemanager = sm
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(Global, (IBar,), IFoo, '')
+        sm1 = Components('sm1', bases=(gsm, ))
+        sm1.registerAdapter(Local, (IBar,), IFoo, '')
+        bar = Bar()
+        adapted = getAdapterInContext(bar, IFoo, context=Context(sm1))
+        self.assertTrue(adapted.__class__ is Local)
+        self.assertTrue(adapted.context is bar)
+
+    def test_queryAdapterInContext_miss(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapterInContext
+        class IFoo(Interface):
+            pass
+        self.assertEqual(
+            queryAdapterInContext(object, IFoo, context=None), None)
+
+    def test_queryAdapterInContext_w_object_conforming(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapterInContext
+        class IFoo(Interface):
+            pass
+        _adapted = object()
+        class Foo(object):
+            def __conform__(self, iface, default=None):
+                if iface is IFoo:
+                    return _adapted
+                return default
+        self.assertTrue(
+                queryAdapterInContext(Foo(), IFoo, context=None) is _adapted)
+
+    def test_queryAdapterInContext___conform___raises_TypeError_via_class(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapterInContext
+        class IFoo(Interface):
+            pass
+        _adapted = object()
+        class Foo(object):
+            def __conform__(self, iface, default=None):
+                if iface is IFoo:
+                    return _adapted
+                return default
+        # call via class, triggering TypeError
+        self.assertEqual(queryAdapterInContext(Foo, IFoo, context=None), None)
+
+    def test_queryAdapterInContext___conform___raises_TypeError_via_inst(self):
+        from zope.interface import Interface
+        from zope.component import queryAdapterInContext
+        class IFoo(Interface):
+            pass
+        _adapted = object()
+        class Foo(object):
+            def __conform__(self, iface, default=None):
+                raise TypeError
+        self.assertRaises(TypeError,
+                         queryAdapterInContext, Foo(), IFoo, context=None)
+
+    def test_queryAdapterInContext_w_object_implementing(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import queryAdapterInContext
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+              pass
+        foo = Foo()
+        self.assertTrue(
+                queryAdapterInContext(foo, IFoo, context=None) is foo)
+
     def test_getAdapter_anonymous_nonesuch(self):
         from zope.interface import Interface
         from zope.component import getAdapter
@@ -453,111 +558,6 @@ class PackageAPITests(unittest.TestCase):
         adapted = queryAdapter(bar, IFoo, '', context=Context(sm1))
         self.assertTrue(adapted.__class__ is Local)
         self.assertTrue(adapted.context is bar)
-
-    def test_getAdapterInContext_miss(self):
-        from zope.interface import Interface
-        from zope.component import getAdapterInContext
-        from zope.component.interfaces import ComponentLookupError
-        class IFoo(Interface):
-            pass
-        self.assertRaises(ComponentLookupError,
-                          getAdapterInContext, object, IFoo, context=None)
-
-    def test_getAdapterInContext_hit_via_sm(self):
-        from zope.interface import Interface
-        from zope.interface import implementer
-        from zope.interface.registry import Components
-        from zope.component import getGlobalSiteManager
-        from zope.component import getAdapterInContext
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
-        class IFoo(Interface):
-            pass
-        class IBar(Interface):
-            pass
-        @implementer(IFoo)
-        class Global(object):
-            def __init__(self, context):
-                self.context = context
-        @implementer(IFoo)
-        class Local(object):
-            def __init__(self, context):
-                self.context = context
-        @implementer(IBar)
-        class Bar(object):
-            pass
-        class Context(ConformsToIComponentLookup):
-            def __init__(self, sm):
-                self.sitemanager = sm
-        gsm = getGlobalSiteManager()
-        gsm.registerAdapter(Global, (IBar,), IFoo, '')
-        sm1 = Components('sm1', bases=(gsm, ))
-        sm1.registerAdapter(Local, (IBar,), IFoo, '')
-        bar = Bar()
-        adapted = getAdapterInContext(bar, IFoo, context=Context(sm1))
-        self.assertTrue(adapted.__class__ is Local)
-        self.assertTrue(adapted.context is bar)
-
-    def test_queryAdapterInContext_miss(self):
-        from zope.interface import Interface
-        from zope.component import queryAdapterInContext
-        class IFoo(Interface):
-            pass
-        self.assertEqual(
-            queryAdapterInContext(object, IFoo, context=None), None)
-
-    def test_queryAdapterInContext_w_object_conforming(self):
-        from zope.interface import Interface
-        from zope.component import queryAdapterInContext
-        class IFoo(Interface):
-            pass
-        _adapted = object()
-        class Foo(object):
-            def __conform__(self, iface, default=None):
-                if iface is IFoo:
-                    return _adapted
-                return default
-        self.assertTrue(
-                queryAdapterInContext(Foo(), IFoo, context=None) is _adapted)
-
-    def test_queryAdapterInContext___conform___raises_TypeError_via_class(self):
-        from zope.interface import Interface
-        from zope.component import queryAdapterInContext
-        class IFoo(Interface):
-            pass
-        _adapted = object()
-        class Foo(object):
-            def __conform__(self, iface, default=None):
-                if iface is IFoo:
-                    return _adapted
-                return default
-        # call via class, triggering TypeError
-        self.assertEqual(queryAdapterInContext(Foo, IFoo, context=None), None)
-
-    def test_queryAdapterInContext___conform___raises_TypeError_via_inst(self):
-        from zope.interface import Interface
-        from zope.component import queryAdapterInContext
-        class IFoo(Interface):
-            pass
-        _adapted = object()
-        class Foo(object):
-            def __conform__(self, iface, default=None):
-                raise TypeError
-        self.assertRaises(TypeError,
-                         queryAdapterInContext, Foo(), IFoo, context=None)
-
-    def test_queryAdapterInContext_w_object_implementing(self):
-        from zope.interface import Interface
-        from zope.interface import implementer
-        from zope.component import queryAdapterInContext
-        class IFoo(Interface):
-            pass
-        @implementer(IFoo)
-        class Foo(object):
-              pass
-        foo = Foo()
-        self.assertTrue(
-                queryAdapterInContext(foo, IFoo, context=None) is foo)
 
 
 IMyUtility = None
