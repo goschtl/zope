@@ -165,43 +165,6 @@ class ConformsToIComponentLookup(object):
         if interface is IComponentLookup:
             return self.sitemanager
 
-def testInterfaceCall():
-    """Here we test the `adapter_hook()` function that we registered with the
-    `zope.interface` adapter hook registry, so that we can call interfaces to
-    do adaptation.
-
-    First, we need to register an adapter:
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, [I1], I2, '')
-
-    Then we try to adapt `ob` to provide an `I2` interface by calling the `I2`
-    interface with the obejct as first argument:
-
-      >>> adapter = I2(ob)
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is ob
-      True
-
-    If no adapter is found, a `TypeError is raised...
-
-      >>> I1(Ob2()) #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      TypeError: ('Could not adapt', <instance Ob2>,
-                  <InterfaceClass zope.component.tests.test_doctests.I1>)
-
-    ...unless we specify an alternative adapter:
-
-      >>> marker = object()
-      >>> I2(object(), marker) is marker
-      True
-      >>> tearDown()
-    """
-
 def testMultiAdapter():
     """Adapting a combination of 2 objects to an interface
 

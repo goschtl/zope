@@ -545,15 +545,15 @@ We can access the adapter using the `getAdapter()` API:
 
 .. doctest::
 
-   >>> adapter = getAdapter(ob, I2, '')
-   >>> adapter.__class__ is Comp
+   >>> adapted = getAdapter(ob, I2, '')
+   >>> adapted.__class__ is Comp
    True
-   >>> adapter.context is ob
+   >>> adapted.context is ob
    True
-   >>> adapter = queryAdapter(ob, I2, '')
-   >>> adapter.__class__ is Comp
+   >>> adapted = queryAdapter(ob, I2, '')
+   >>> adapted.__class__ is Comp
    True
-   >>> adapter.context is ob
+   >>> adapted.context is ob
    True
 
 If we search using a non-anonymous name, before registering:
@@ -574,15 +574,48 @@ After registering under that name:
 .. doctest::
 
    >>> gsm.registerAdapter(Comp, (I1,), I2, 'named')
-   >>> adapter = getAdapter(ob, I2, 'named')
-   >>> adapter.__class__ is Comp
+   >>> adapted = getAdapter(ob, I2, 'named')
+   >>> adapted.__class__ is Comp
    True
-   >>> adapter.context is ob
+   >>> adapted.context is ob
    True
-   >>> adapter = queryAdapter(ob, I2, 'named')
-   >>> adapter.__class__ is Comp
+   >>> adapted = queryAdapter(ob, I2, 'named')
+   >>> adapted.__class__ is Comp
    True
-   >>> adapter.context is ob
+   >>> adapted.context is ob
+   True
+
+Invoking an Interface to Perform Adapter Lookup
+===============================================
+
+:mod:`zope.component` registers an adapter hook with
+:mod:`zope.interface.interface`, allowing a convenient spelling for
+adapter lookup:  just "call" the interface, passing the context:
+
+.. doctest::
+
+   >>> adapted = I2(ob)
+   >>> adapted.__class__ is Comp
+   True
+   >>> adapted.context is ob
+   True
+
+If the lookup fails, we get a `TypeError`:
+
+.. doctest::
+
+   >>> I2(object())
+   Traceback (most recent call last):
+   ...
+   TypeError: ('Could not adapt'...
+
+unless we pass a default:
+
+.. doctest::
+
+   >>> marker = object()
+   >>> adapted = I2(object(), marker)
+   >>> adapted is marker
    True
 
 .. autofunction:: zope.component.getMultiAdapter

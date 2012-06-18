@@ -559,6 +559,40 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(adapted.__class__ is Local)
         self.assertTrue(adapted.context is bar)
 
+    def test_interface_call_miss(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        self.assertRaises(TypeError, IFoo, object())
+
+    def test_interface_call_miss_w_default(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        marker = object()
+        self.assertTrue(IFoo(object(), marker) is marker)
+
+    def test_interface_call_hit(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, '')
+        bar = Bar()
+        adapted = IFoo(bar)
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is bar)
+
 
 IMyUtility = None
 def _makeMyUtility(name, sm):
