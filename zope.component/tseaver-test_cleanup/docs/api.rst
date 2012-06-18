@@ -380,6 +380,43 @@ retruned:
    tearDown()
 
 
+Adapter Registration APIs
+-------------------------
+
+.. autofunction:: zope.component.getAdapter
+
+.. autofunction:: zope.component.getAdapterInContext
+
+.. autofunction:: zope.component.getMultiAdapter
+
+.. autofunction:: zope.component.queryAdapter
+
+.. autofunction:: zope.component.queryAdapterInContext
+
+.. autofunction:: zope.component.queryMultiAdapter
+
+.. autofunction:: zope.component.getAdapters
+
+.. autofunction:: zope.component.subscribers
+
+.. autofunction:: zope.component.handle
+
+.. autofunction:: zope.component.adapter
+
+.. autofunction:: zope.component.adaptedBy
+
+.. autofunction:: zope.component.adapts
+
+
+Factory APIs
+------------
+
+.. autofunction:: zope.component.createObject
+
+.. autofunction:: zope.component.getFactoryInterfaces
+
+.. autofunction:: zope.component.getFactoriesFor
+
 
 :mod:`zope.component.interfaces`
 ================================

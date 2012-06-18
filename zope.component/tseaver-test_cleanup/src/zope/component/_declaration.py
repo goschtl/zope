@@ -16,7 +16,7 @@
 import types
 import sys
 
-class adapter:
+class adapter(object):
 
     def __init__(self, *interfaces):
         self.interfaces = interfaces
