@@ -165,27 +165,6 @@ class ConformsToIComponentLookup(object):
         if interface is IComponentLookup:
             return self.sitemanager
 
-def testNotBrokenWhenNoSiteManager():
-    """Make sure that the adapter lookup is not broken, when no site manager
-    is available.
-
-    Both of those things emit `DeprecationWarnings`.
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> I2(ob) #doctest: +NORMALIZE_WHITESPACE
-      Traceback (most recent call last):
-      ...
-      TypeError: ('Could not adapt',
-                  <instance Ob>,
-                  <InterfaceClass zope.component.tests.test_doctests.I2>)
-
-
-      >>> I2(ob, 42)
-      42
-      >>> tearDown()
-    """
-
 
 def testNo__component_adapts__leakage():
     """
