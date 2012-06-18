@@ -618,6 +618,32 @@ unless we pass a default:
    >>> adapted is marker
    True
 
+Registering Adapters For Arbitrary Objects
+##########################################
+
+Providing an adapter for None says that your adapter can adapt anything
+to `I2`.
+
+.. doctest::
+
+   >>> gsm.registerAdapter(Comp, (None,), I2, '')
+   >>> adapter = I2(ob)
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is ob
+   True
+
+It can really adapt any arbitrary object:
+
+.. doctest::
+
+   >>> something = object()
+   >>> adapter = I2(something)
+   >>> adapter.__class__ is Comp
+   True
+   >>> adapter.context is something
+   True
+
 Looking Up Adapters Using Multiple Objects
 ##########################################
 

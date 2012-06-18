@@ -445,6 +445,23 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
 
+    def test_getAdapter_anonymous_hit_registered_for_None(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import getAdapter
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (None,), IFoo, '')
+        ctx = object()
+        adapted = getAdapter(ctx, IFoo, '')
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is ctx)
+
     def test_getAdapter_named_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
@@ -595,6 +612,22 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
 
+    def test_interface_call_hit_registered_for_None(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Baz(object):
+            def __init__(self, context):
+                self.context = context
+        getGlobalSiteManager().registerAdapter(Baz, (None,), IFoo, '')
+        ctx = object()
+        adapted = IFoo(ctx)
+        self.assertTrue(adapted.__class__ is Baz)
+        self.assertTrue(adapted.context is ctx)
+
     def test_getMultiAdapter_anonymous_nonesuch(self):
         from zope.interface import Interface
         from zope.component import getMultiAdapter
@@ -638,6 +671,33 @@ class PackageAPITests(unittest.TestCase):
                                 FooAdapter, (IBar, IBaz), IFoo, '')
         bar = Bar()
         baz = Baz()
+        adapted = getMultiAdapter((bar, baz), IFoo, '')
+        self.assertTrue(adapted.__class__ is FooAdapter)
+        self.assertTrue(adapted.first is bar)
+        self.assertTrue(adapted.second is baz)
+
+    def test_getMultiAdapter_anonymous_hit_registered_for_None(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component import getGlobalSiteManager
+        from zope.component import getMultiAdapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IFoo)
+        class FooAdapter(object):
+            def __init__(self, first, second):
+                self.first, self.second = first, second
+        getGlobalSiteManager().registerAdapter(
+                                FooAdapter, (IBar, None), IFoo, '')
+        bar = Bar()
+        baz = object()
         adapted = getMultiAdapter((bar, baz), IFoo, '')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)

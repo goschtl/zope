@@ -165,32 +165,6 @@ class ConformsToIComponentLookup(object):
         if interface is IComponentLookup:
             return self.sitemanager
 
-def testAdapterForInterfaceNone():
-    """Providing an adapter for None says that your adapter can adapt anything
-    to `I2`.
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> setUp()
-      >>> component.getGlobalSiteManager().registerAdapter(
-      ...     Comp, (None,), I2, '')
-
-      >>> adapter = I2(ob)
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is ob
-      True
-
-    It can really adapt any arbitrary object:
-
-      >>> something = object()
-      >>> adapter = I2(something)
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is something
-      True
-      >>> tearDown()
-    """
-
 def testGetAdapters():
     """It is sometimes desireable to get a list of all adapters that are
     registered for a particular output interface, given a set of
