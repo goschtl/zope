@@ -15,27 +15,16 @@
 """
 import unittest
 
-from zope.configuration.xmlconfig import XMLConfig, xmlconfig
-from zope.configuration.exceptions import ConfigurationError
 from zope.interface import Interface
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.interfaces import IInterface
-from zope.security.checker import ProxyFactory
-from zope.testrunner.layer import UnitTests
 
-from zope.component.interfaces import ComponentLookupError
-from zope.component.interfaces import IComponentLookup
-from zope.component.testfiles.adapter import A1
-from zope.component.testfiles.adapter import A2
-from zope.component.testfiles.adapter import A3
-from zope.component.testfiles.components import Content
-from zope.component.testfiles.components import IContent
-from zope.component.testfiles.views import Request
 from zope.component.testfiles.views import IC
 from zope.component.testfiles.views import IV
 from zope.component.testfiles.views import V1
 from zope.component.testfiles.views import R1
 from zope.component.testfiles.views import IR
+
 from zope.component.testing import setUp
 from zope.component.testing import tearDown
 from zope.component.testing import PlacelessSetup
@@ -46,8 +35,10 @@ import zope.component.event
 
 class I1(Interface):
     pass
+
 class I2(Interface):
     pass
+
 class I3(Interface):
     pass
 
@@ -57,28 +48,32 @@ class ITestType(IInterface):
 def noop(*args):
     pass
 
+@implementer(I1)
 class Ob(object):
-    implements(I1)
     def __repr__(self):
         return '<instance Ob>'
 
 
 ob = Ob()
 
+@implementer(I2)
 class Ob2(object):
-    implements(I2)
     def __repr__(self):
         return '<instance Ob2>'
 
+@implementer(IC)
+class Ob3(object):
+    pass
+
+@implementer(I2)
 class Comp(object):
-    implements(I2)
     def __init__(self, context):
         self.context = context
 
 comp = Comp(1)
 
+@implementer(I3)
 class Comp2(object):
-    implements(I3)
     def __init__(self, context):
         self.context = context
 
@@ -92,6 +87,7 @@ class ConformsToIComponentLookup(object):
 
     def __conform__(self, interface):
         """This method is specified by the adapter PEP to do the adaptation."""
+        from zope.component.interfaces import IComponentLookup
         if interface is IComponentLookup:
             return self.sitemanager
 
@@ -145,7 +141,6 @@ class StandaloneTests(unittest.TestCase):
         import subprocess
         import sys
         import os
-        import tempfile
         import pickle
 
         executable = os.path.abspath(sys.executable)
@@ -181,118 +176,6 @@ class StandaloneTests(unittest.TestCase):
         if not success:
             self.fail(''.join(lines))
 
-class HookableTests(unittest.TestCase):
-
-    def test_ctor_no_func(self):
-        from zope.component.hookable import hookable
-        self.assertRaises(TypeError, hookable)
-
-    def test_ctor_simple(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        hooked = hookable(foo)
-        self.failUnless(hooked.original is foo)
-        self.failUnless(hooked.implementation is foo)
-
-    def test_ctor_extra_arg(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        self.assertRaises(TypeError, hookable, foo, foo)
-
-    def test_ctor_extra_arg(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        self.assertRaises(TypeError, hookable, foo, nonesuch=foo)
-
-    def test_sethook(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        def bar():
-            pass
-        hooked = hookable(foo)
-        hooked.sethook(bar)
-        self.failUnless(hooked.original is foo)
-        self.failUnless(hooked.implementation is bar)
-
-    def test_reset(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        def bar():
-            pass
-        hooked = hookable(foo)
-        hooked.sethook(bar)
-        hooked.reset()
-        self.failUnless(hooked.original is foo)
-        self.failUnless(hooked.implementation is foo)
-
-    def test_cant_assign_original(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        def bar():
-            pass
-        hooked = hookable(foo)
-        try:
-            hooked.original = bar
-        except TypeError:
-            pass
-        except AttributeError:
-            pass
-        else:
-            self.fail('Assigned original')
-
-    def test_cant_delete_original(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        hooked = hookable(foo)
-        try:
-            del hooked.original
-        except TypeError:
-            pass
-        except AttributeError:
-            pass
-        else:
-            self.fail('Deleted original')
-
-    def test_cant_assign_original(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        def bar():
-            pass
-        hooked = hookable(foo)
-        try:
-            hooked.implementation = bar
-        except TypeError:
-            pass
-        except AttributeError:
-            pass
-        else:
-            self.fail('Assigned implementation')
-
-    def test_readonly_original(self):
-        from zope.component.hookable import hookable
-        def foo():
-            pass
-        hooked = hookable(foo)
-        try:
-            del hooked.implementation
-        except TypeError:
-            pass
-        except AttributeError:
-            pass
-        else:
-            self.fail('Deleted implementation')
-
-class Ob3(object):
-    implements(IC)
-
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
    i18n_domain='zope'>
@@ -303,15 +186,18 @@ template = """<configure
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        from zope.configuration.xmlconfig import XMLConfig
         super(ResourceViewTests, self).setUp()
         XMLConfig('meta.zcml', zope.component)()
         XMLConfig('meta.zcml', zope.security)()
 
     def _config(self, zcml, testing=0):
         from cStringIO import StringIO
+        from zope.configuration.xmlconfig import xmlconfig
         xmlconfig(StringIO(template % zcml), testing=testing)
 
     def testView(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         request = Request(IV)
         self.assertEqual(
@@ -332,6 +218,10 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
 
     def testMultiView(self):
+        from zope.component.testfiles.adapter import A1
+        from zope.component.testfiles.adapter import A2
+        from zope.component.testfiles.adapter import A3
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -354,6 +244,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
 
     def testMultiView_fails_w_multiple_factories(self):
+        from zope.configuration.exceptions import ConfigurationError
         self.assertRaises(ConfigurationError,
             self._config,
             '''
@@ -367,6 +258,10 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
             ''')
 
     def testView_w_multiple_factories(self):
+        from zope.component.testfiles.adapter import A1
+        from zope.component.testfiles.adapter import A2
+        from zope.component.testfiles.adapter import A3
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -393,6 +288,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(a1.context[0], ob)
 
     def testView_fails_w_no_factories(self):
+        from zope.configuration.exceptions import ConfigurationError
         self.assertRaises(ConfigurationError,
             self._config,
             '''
@@ -404,6 +300,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
 
     def testViewThatProvidesAnInterface(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         self.assertEqual(
             zope.component.queryMultiAdapter((ob, Request(IR)), IV, u'test'),
@@ -437,6 +334,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
 
     def testUnnamedViewThatProvidesAnInterface(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         self.assertEqual(
             zope.component.queryMultiAdapter((ob, Request(IR)), IV), None)
@@ -465,6 +363,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.__class__, V1)
 
     def testViewHavingARequiredClass(self):
+        from zope.component.interfaces import ComponentLookupError
+        from zope.component.testfiles.adapter import A1
+        from zope.component.testfiles.components import Content
+        from zope.component.testfiles.components import IContent
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view
@@ -478,13 +381,16 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         a1 = zope.component.getMultiAdapter((content, Request(IR)))
         self.assert_(isinstance(a1, A1))
 
+        @implementer(IContent)
         class MyContent:
-            implements(IContent)
+            pass
 
         self.assertRaises(ComponentLookupError, zope.component.getMultiAdapter,
                           (MyContent(), Request(IR)))
 
     def testInterfaceProtectedView(self):
+        from zope.security.checker import ProxyFactory
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -502,6 +408,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertRaises(Exception, getattr, v, 'action')
 
     def testAttributeProtectedView(self):
+        from zope.security.checker import ProxyFactory
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -519,6 +427,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertRaises(Exception, getattr, v, 'index')
 
     def testInterfaceAndAttributeProtectedView(self):
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -536,6 +445,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.action(), 'done')
 
     def testDuplicatedInterfaceAndAttributeProtectedView(self):
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -553,6 +463,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.action(), 'done')
 
     def testIncompleteProtectedViewNoPermission(self):
+        from zope.configuration.exceptions import ConfigurationError
         self.assertRaises(
             ConfigurationError,
             self._config,
@@ -582,6 +493,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
             testing=1)
 
     def testResource(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         self.assertEqual(
             zope.component.queryAdapter(Request(IV), name=u'test'), None)
@@ -597,6 +509,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
             R1)
 
     def testResourceThatProvidesAnInterface(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         self.assertEqual(zope.component.queryAdapter(Request(IR), IV, u'test'),
                          None)
@@ -627,6 +540,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.__class__, R1)
 
     def testUnnamedResourceThatProvidesAnInterface(self):
+        from zope.component.testfiles.views import Request
         ob = Ob3()
         self.assertEqual(zope.component.queryAdapter(Request(IR), IV), None)
 
@@ -664,40 +578,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
             ''',
             testing=1)
 
-
-class ConditionalSecurityLayer(UnitTests):
-
-    __name__ = 'ConditionalSecurity'
-    __bases__ = ()
-
-    def setUp(self):
-        import sys
-        import zope.component.zcml
-        setUp()
-        self.modules = {}
-        for m in ('zope.security', 'zope.proxy'):
-            self.modules[m] = sys.modules[m]
-            sys.modules[m] = None
-        reload(zope.component.zcml)
-
-    def tearDown(self):
-        import sys
-        import zope.component.zcml
-        tearDown()
-        for m in ('zope.security', 'zope.proxy'):
-            sys.modules[m] = self.modules[m]
-        reload(zope.component.zcml)
-
-
-def setUpRegistryTests(tests):
-    setUp()
-
-def tearDownRegistryTests(tests):
-    tearDown()
-    import zope.event
-    zope.event.subscribers.pop()
-
 def clearZCML(test=None):
+    from zope.configuration.xmlconfig import XMLConfig
     import zope.component
     tearDown()
     setUp()
@@ -707,7 +589,6 @@ def test_suite():
     import doctest
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-        unittest.makeSuite(HookableTests),
         doctest.DocTestSuite('zope.component.interface',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.nexttesting'),
