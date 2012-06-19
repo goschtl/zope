@@ -21,7 +21,6 @@ import zope.interface
 import zope.i18nmessageid
 
 from z3c.form import button
-from z3c.form import field
 from z3c.formui import form
 from z3c.table import table
 from z3c.template.template import getPageTemplate
@@ -29,6 +28,7 @@ from z3c.template.template import getPageTemplate
 from z3c.tabular import interfaces
 
 _ = zope.i18nmessageid.MessageFactory('z3c')
+
 
 # simple template rendering aware table base class
 class TemplateTable(table.Table):
@@ -70,6 +70,7 @@ class TableBase(TemplateTable):
 
     # customize this part
     allowCancel = True
+    supportsCancel = False
 
     def update(self):
         # 1. setup widgets
