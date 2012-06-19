@@ -1,4 +1,5 @@
-<div metal:use-macro="macro:form">
+<div metal:define-macro="z3c-tabular-subformtable"
+     metal:extend-macro="macro:form">
   <div metal:fill-slot="main">
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>

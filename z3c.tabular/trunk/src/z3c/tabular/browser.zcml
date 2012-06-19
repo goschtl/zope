@@ -22,4 +22,22 @@
       layer="zope.publisher.interfaces.browser.IBrowserRequest"
       />
 
+  <z3c:macro
+      name="z3c-tabular-table"
+      template="formtable.pt"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <z3c:macro
+      name="z3c-tabular-formtable"
+      template="formtable.pt"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <z3c:macro
+      name="z3c-tabular-subformtable"
+      template="formtable.pt"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
 </configure>

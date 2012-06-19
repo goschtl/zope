@@ -13,7 +13,8 @@ CHANGES
 0.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Made the pagetemplates provide macros to make it easier to replace specific
+  contents
 
 
 0.6.1 (2012-06-19)
