@@ -10,7 +10,7 @@
 CHANGES
 =======
 
-0.6.2 (unreleased)
+0.6.2 (2012-06-19)
 ------------------
 
 - Made the pagetemplates provide macros to make it easier to replace specific
