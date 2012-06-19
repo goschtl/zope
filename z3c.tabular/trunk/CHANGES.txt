@@ -10,11 +10,12 @@
 CHANGES
 =======
 
-0.6.1 (unreleased)
+0.6.1 (2012-06-19)
 ------------------
 
 - Fixed package metadata (home page and author e-mail).
 
+- Added a default supportsCancel = False to TableBase
 
 0.6.0 (2010-10-28)
 ------------------
