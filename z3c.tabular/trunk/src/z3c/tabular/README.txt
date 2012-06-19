@@ -186,9 +186,7 @@ set the relevant data in the request:
   >>> selectedItemTable.__name__ = 'view.html'
   >>> selectedItemTable.update()
   >>> print selectedItemTable.render()
-  <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="subFormTable" id="subFormTable">
+  <form action="http://127.0.0.1" method="post" enctype="multipart/form-data" class="edit-form" name="subFormTable" id="subFormTable">
     <div class="viewspace">
       <div>
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -217,15 +215,13 @@ set the relevant data in the request:
           </td>
           <td valign="top">
             <div class="tableForm">
-              <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="form" id="form">
+              <form action="http://127.0.0.1" method="post" enctype="multipart/form-data" class="edit-form" name="form" id="form">
     <div class="viewspace">
         <div class="required-info">
            <span class="required">*</span>&ndash; required
         </div>
       <div>
-            <div id="form-widgets-title-row" class="row">
+            <div id="form-widgets-title-row" class="row required">
                 <div class="label">
                   <label for="form-widgets-title">
                     <span>Title</span>
@@ -233,12 +229,10 @@ set the relevant data in the request:
                   </label>
                 </div>
                 <div class="widget">
-      <input id="form-widgets-title" name="form.widgets.title"
-             class="text-widget required textline-field"
-             value="Second" type="text" />
+      <input id="form-widgets-title" name="form.widgets.title" class="text-widget required textline-field" value="Second" type="text" />
   </div>
             </div>
-            <div id="form-widgets-number-row" class="row">
+            <div id="form-widgets-number-row" class="row required">
                 <div class="label">
                   <label for="form-widgets-number">
                     <span>Number</span>
@@ -246,19 +240,14 @@ set the relevant data in the request:
                   </label>
                 </div>
                 <div class="widget">
-      <input id="form-widgets-number"
-             name="form.widgets.number"
-             class="text-widget required int-field" value="2"
-             type="text" />
+      <input id="form-widgets-number" name="form.widgets.number" class="text-widget required int-field" value="2" type="text" />
   </div>
             </div>
       </div>
     </div>
     <div>
       <div class="buttons">
-  <input id="form-buttons-apply" name="form.buttons.apply"
-         class="submit-widget button-field" value="Apply"
-         type="submit" />
+  <input id="form-buttons-apply" name="form.buttons.apply" class="submit-widget button-field" value="Apply" type="submit" />
       </div>
     </div>
   </form>
@@ -270,18 +259,9 @@ set the relevant data in the request:
     </div>
     <div>
       <div class="buttons">
-  <input id="subFormTable-buttons-delete"
-         name="subFormTable.buttons.delete"
-         class="submit-widget button-field" value="Delete"
-         type="submit" />
-  <input id="subFormTable-buttons-edit"
-         name="subFormTable.buttons.edit"
-         class="submit-widget button-field" value="Edit"
-         type="submit" />
-  <input id="subFormTable-buttons-cancel"
-         name="subFormTable.buttons.cancel"
-         class="submit-widget button-field" value="Cancel"
-         type="submit" />
+  <input id="subFormTable-buttons-delete" name="subFormTable.buttons.delete" class="submit-widget button-field" value="Delete" type="submit" />
+  <input id="subFormTable-buttons-edit" name="subFormTable.buttons.edit" class="submit-widget button-field" value="Edit" type="submit" />
+  <input id="subFormTable-buttons-cancel" name="subFormTable.buttons.cancel" class="submit-widget button-field" value="Cancel" type="submit" />
       </div>
     </div>
   </form>
@@ -297,9 +277,7 @@ Clicking the ``Edit`` button at the same time should hold the same result:
   >>> selectedItemTable.__name__ = 'view.html'
   >>> selectedItemTable.update()
   >>> print selectedItemTable.render()
-  <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="subFormTable" id="subFormTable">
+  <form action="http://127.0.0.1" method="post" enctype="multipart/form-data" class="edit-form" name="subFormTable" id="subFormTable">
     <div class="viewspace">
       <div>
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -328,15 +306,13 @@ Clicking the ``Edit`` button at the same time should hold the same result:
           </td>
           <td valign="top">
             <div class="tableForm">
-              <form action="http://127.0.0.1" method="post"
-        enctype="multipart/form-data" class="edit-form"
-        name="form" id="form">
+              <form action="http://127.0.0.1" method="post" enctype="multipart/form-data" class="edit-form" name="form" id="form">
     <div class="viewspace">
         <div class="required-info">
            <span class="required">*</span>&ndash; required
         </div>
       <div>
-            <div id="form-widgets-title-row" class="row">
+            <div id="form-widgets-title-row" class="row required">
                 <div class="label">
                   <label for="form-widgets-title">
                     <span>Title</span>
@@ -344,12 +320,10 @@ Clicking the ``Edit`` button at the same time should hold the same result:
                   </label>
                 </div>
                 <div class="widget">
-      <input id="form-widgets-title" name="form.widgets.title"
-             class="text-widget required textline-field"
-             value="Second" type="text" />
+      <input id="form-widgets-title" name="form.widgets.title" class="text-widget required textline-field" value="Second" type="text" />
   </div>
             </div>
-            <div id="form-widgets-number-row" class="row">
+            <div id="form-widgets-number-row" class="row required">
                 <div class="label">
                   <label for="form-widgets-number">
                     <span>Number</span>
@@ -357,19 +331,14 @@ Clicking the ``Edit`` button at the same time should hold the same result:
                   </label>
                 </div>
                 <div class="widget">
-      <input id="form-widgets-number"
-             name="form.widgets.number"
-             class="text-widget required int-field" value="2"
-             type="text" />
+      <input id="form-widgets-number" name="form.widgets.number" class="text-widget required int-field" value="2" type="text" />
   </div>
             </div>
       </div>
     </div>
     <div>
       <div class="buttons">
-  <input id="form-buttons-apply" name="form.buttons.apply"
-         class="submit-widget button-field" value="Apply"
-         type="submit" />
+  <input id="form-buttons-apply" name="form.buttons.apply" class="submit-widget button-field" value="Apply" type="submit" />
       </div>
     </div>
   </form>
@@ -381,18 +350,9 @@ Clicking the ``Edit`` button at the same time should hold the same result:
     </div>
     <div>
       <div class="buttons">
-  <input id="subFormTable-buttons-delete"
-         name="subFormTable.buttons.delete"
-         class="submit-widget button-field" value="Delete"
-         type="submit" />
-  <input id="subFormTable-buttons-edit"
-         name="subFormTable.buttons.edit"
-         class="submit-widget button-field" value="Edit"
-         type="submit" />
-  <input id="subFormTable-buttons-cancel"
-         name="subFormTable.buttons.cancel"
-         class="submit-widget button-field" value="Cancel"
-         type="submit" />
+  <input id="subFormTable-buttons-delete" name="subFormTable.buttons.delete" class="submit-widget button-field" value="Delete" type="submit" />
+  <input id="subFormTable-buttons-edit" name="subFormTable.buttons.edit" class="submit-widget button-field" value="Edit" type="submit" />
+  <input id="subFormTable-buttons-cancel" name="subFormTable.buttons.cancel" class="submit-widget button-field" value="Cancel" type="submit" />
       </div>
     </div>
   </form>
