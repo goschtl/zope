@@ -1,5 +1,5 @@
 """
-Standalone Tests
+See: https://bugs.launchpad.net/zope3/+bug/98401
 """
 import unittest
 import doctest
@@ -33,7 +33,7 @@ class Comp(object):
 def providing_adapter_sets_adapter_hook():
     """
     A side effect of importing installs the adapter hook.  See
-    http://www.zope.org/Collectors/Zope3-dev/674.
+    https://bugs.launchpad.net/zope3/+bug/98401
 
       >>> import zope.component
       >>> zope.component.provideAdapter(Comp, (I1,), I2)

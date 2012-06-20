@@ -76,7 +76,7 @@ def provideSubscriptionAdapter(factory, adapts=None, provides=None):
 def provideHandler(factory, adapts=None):
     base.registerHandler(factory, adapts, event=False)
 
-import zope.component._api # see http://www.zope.org/Collectors/Zope3-dev/674
+import zope.component._api # see https://bugs.launchpad.net/zope3/+bug/98401
 # Ideally, we will switch to an explicit adapter hook registration.  For now,
 # if you provide an adapter, we want to make sure that the adapter hook is
 # registered, and that registration depends on code in _api, which itself

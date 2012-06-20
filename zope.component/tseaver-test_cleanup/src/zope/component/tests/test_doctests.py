@@ -138,6 +138,7 @@ def test_zcml_handler_site_manager():
 
 class StandaloneTests(unittest.TestCase):
     def testStandalone(self):
+        # See: https://bugs.launchpad.net/zope3/+bug/98401
         import subprocess
         import sys
         import os
